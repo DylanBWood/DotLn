@@ -95,3 +95,7 @@ One line per `.claude/` or CLAUDE.md change (see execution guide):
 
 - 2026-08-30: added `.claude/settings.json` with `autoMemoryEnabled: false` —
   DotLn builds its own external memory; no ambient layer meanwhile.
+- 2026-08-31: CLAUDE.md — added the destructive-git rule for work-order
+  worktrees (nothing is committed until final review; intake is single-copy).
+  Verifier documentation correction during the WO-003 verification window; the
+  executable guard is specified for the repair pass.

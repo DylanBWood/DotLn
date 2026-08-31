@@ -59,7 +59,13 @@ cd ../DotLn-wo002
 claude --model opus "Verify the working tree against docs/work-orders/WO-002-pure-kernel.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to the next unused docs/verifications/WO-002/VER-NNN.md number. Never replace a prior report. Do not fix anything."
 ```
 
-**4. Repair or final review.** If red, don't debug in your head. The verifier saves findings as the next
+**4. Repair or final review.** **Checkpoint before you dispatch.** Before any
+repair or re-verification episode, make a recovery point in the subject
+worktree: `git add -A && git commit -m 'WO-NNN checkpoint'`. The loop's first
+mandatory commit is at final-review pass, so until then the deliverable, every
+`VER-NNN`, and the control log are one destructive command from gone.
+`git add -A` honors `.gitignore`, so `docs/intake` is NOT in that commit — back
+it up separately. If red, don't debug in your head. The verifier saves findings as the next
 unused immutable `docs/verifications/WO-00N/VER-NNN.md`. Dispatch a *repair*
 session in the same worktree with both the authoritative original work order
 and that specific report, then re-verify into the next number. Never update or
@@ -124,7 +130,9 @@ stays clean for you and the planning session.
 ## When things break
 
 - **Session dies / rate-limited mid-WO:** nothing is lost — the repo + WO are
-  the memory. Start a fresh session in the same worktree: "Continue executing
+  the memory, but that memory is uncommitted working-tree state until final
+  review commits. A dead session loses nothing; a reset or a clean loses
+  everything not checkpointed. Start a fresh session in the same worktree: "Continue executing
   WO-00X; inspect the working tree to see what's done." (Disposable
   incarnations; the workflow remembers the worker.)
 - **Out of Claude budget:** route `Model: any` work to Codex; park
@@ -133,13 +141,24 @@ stays clean for you and the planning session.
   the answer is in the WO's evidence gate. Say "follow the work order" and
   note it — that's a future compiled feedback unit.
 - **Executor went sideways:** kill it, don't argue with it. Fix the WO or the
-  doc that misled it (that's the real bug), reset the worktree, redispatch
-  cold. Arguing pollutes; redispatching is free.
+  doc that misled it (that's the real bug), then **checkpoint first**
+  (`git add -A && git commit -m 'WO-NNN checkpoint'` in the subject worktree),
+  reset to that commit, and redispatch cold. Arguing pollutes; redispatching is
+  free. Never `git checkout .`, `git restore .`, `git reset --hard`, or
+  `git clean -fd` here without that checkpoint — nothing in this loop is
+  committed until final review, so those destroy the deliverable, every
+  `VER-NNN` written so far, and `docs/control/resume.jsonl`. Never
+  `git clean -fdx`/`-fdX` at all: it also deletes gitignored `docs/intake`,
+  which is single-copy and in no commit. `git stash -u` is the safe way to park
+  a dirty tree — it preserves ignored intake and `.env`.
 
 ## Weekly hygiene (until DotLn does it for you)
 
-- `npm run backup:intake` — create a validated, owner-only ZIP of the local raw
-  intake beside the project, then move it to the trusted backup location.
+- `npm run backup:intake` — run this whenever you capture new intake, not only
+  at `finish`. `docs/intake` is gitignored and single-copy: no commit, no
+  checkpoint, and no branch contains it, so a `git clean -fdx` or a forced
+  worktree removal ends it. Creates a validated, owner-only ZIP beside the
+  project; move it to the trusted backup location.
 - `git worktree list` — remove strays.
 - Skim `docs/lineage/idea-ledger.md` Session additions — anything learned this
   week that belongs there?

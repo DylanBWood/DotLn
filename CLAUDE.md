@@ -56,4 +56,8 @@ The blueprint is the shared memory. Cold-start read order:
 `docs/product/07-execution-guide.md` → your work order in `docs/work-orders/`
 → only the blueprint sections it cites. Settled questions live in
 `docs/decisions/` and the Resolutions section of
-`docs/lineage/idea-ledger.md` — do not relitigate them. Keep this file tiny.
+`docs/lineage/idea-ledger.md` — do not relitigate them. Nothing in a
+work-order worktree is committed until final review, and `docs/intake` is
+gitignored single-copy — never run a destructive git command (`reset --hard`,
+`checkout .`, `clean`) in one without a checkpoint commit first. Keep this file
+tiny.

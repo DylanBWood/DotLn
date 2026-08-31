@@ -147,3 +147,89 @@ scope. The backup utility must be independently executed and its tests must
 demonstrate intake-only archive contents, archive integrity, owner-only
 permissions, overwrite refusal, and symbolic-link refusal. Implementation of
 the other future capabilities remains out of scope.
+
+## Operator-authorized repair-scope addendum (2026-08-31)
+
+Authorized by the operator during the WO-003 verification window, after an
+irreversible-loss incident and a bounded hazard audit. This addendum does not
+reopen the 13-step scenario or its acceptance criteria; it adds two executable
+guards to the repair pass and nothing else.
+
+**Order of work is part of the instruction.** Land the `VER-001` blocking fix
+first and commit it alone, so the next verification reads a legible diff. Then
+the two items below. Do not fold in the non-blocking findings from `VER-001`
+unless the operator asks; and read `VER-001` §"Examined and refuted — do not
+chase" before starting — 62 of 77 candidate findings were refuted, several of
+them confident-sounding, and re-litigating them is the main way this pass goes
+wide.
+
+**Motivating incident (confirmed, not hypothetical).** Until commit `9a054f3`
+the entire WO-003 deliverable was uncommitted: `git ls-files packages/skeleton
+scripts` returned 0 while 37 files of real work sat in the working tree, and
+`docs/verifications/WO-003/VER-001.md` — the report that failed this work
+order — was untracked for the whole verification. A `git checkout .` or
+`git clean -fd` would have destroyed all of it, and nothing in any script or
+doc guarded that. Separately, a subagent running during the same window
+appended two fabricated events (`RepairRequested`, `RepairCompleted`) to
+`docs/control/resume.jsonl`, which was then committed before anyone noticed;
+the log was restored from `9a054f3`. Both are instances of the same class: a
+safety property that existed only as prose.
+
+### R1 — `resume` writes a non-destructive recovery point before every transition
+
+`scripts/resume.mjs` currently never invokes git. Add a `checkpoint(action)`
+helper called at the top of every non-`status` action, before `append()`. It
+must **record, never refuse**.
+
+Mechanism (validated in an audit fixture): write a throwaway index with
+`GIT_INDEX_FILE=<path that does not yet exist> git add -A` — a plain `mktemp`
+file makes git fail with `index file smaller than expected`, so create the path
+without creating the file — then `git write-tree`, `git commit-tree <tree> -p
+HEAD -m "dotln checkpoint: <action> <WO>"`, then `git update-ref
+refs/dotln/checkpoint/<WO>/<n> <sha>`. Record the sha in the appended event and
+surface a `- Latest checkpoint:` line in `render()` carrying the
+`git checkout <ref> -- .` restore command. `git add -A` honors `.gitignore`, so
+`docs/intake` and `.env` stay out of the object store and the clean-room
+boundary holds. Outside a git work tree it must warn and proceed.
+
+**Acceptance evidence.** A destruction drill, as a test. Mid-loop state:
+uncommitted deliverable sources, `docs/verifications/WO-099/VER-001.md`,
+`docs/control/resume.jsonl`, a gitignored `docs/intake/notes/raw.md`, and a
+`.env`. Assert: (1) `git rev-parse HEAD` and `git status --porcelain` are
+byte-identical before and after the transition — the checkpoint touches neither
+HEAD, index, nor worktree; (2) `git ls-tree -r <ref>` contains the deliverable,
+the VER report and the control log, and does **not** contain `docs/intake` or
+`.env`; (3) after `git checkout -- . && git clean -fd` all three are gone;
+(4) `git checkout <ref> -- .` restores all three byte-for-byte; (5) the appended
+event carries the sha; (6) the existing non-git fixture still exits 0 with a
+warning and appends normally. The fixture in `scripts/test-resume.sh` is not a
+git repo — do not convert it; add a second git-backed fixture (or
+`scripts/test-checkpoint.sh`) so the non-git degradation path stays covered.
+
+### R2 — widen `worktree finish`'s ignored-material refusal
+
+`ensureNoIgnoredMaterial` (`scripts/worktree.mjs:14-17`) scopes its refusal to
+`docs/intake`, then `git worktree remove` deletes every *other* ignored file
+with the directory. Reproduced end-to-end with a real `.env` containing a
+secret: `finish` exited 0 and the file was gone. Drop the `-- docs/intake`
+pathspec, add a disposable filter (`node_modules/`, `dist/`, `.DS_Store`,
+`.tsbuildinfo`), keep the refusal message and add `npm run backup:intake` to it.
+
+This shipped green because the test fixture hand-writes a three-line
+`.gitignore` instead of the repo's, so no test could express the hazard. Fix
+the fixture too: `cp "$script_dir/../.gitignore" "$main/.gitignore"` at
+`scripts/test-worktree.sh:18`.
+
+**Acceptance evidence.** With the real `.gitignore` in the fixture: plant
+`.env` with secret content and a root `tsconfig.tsbuildinfo` in the subject
+worktree, run `finish`, and assert non-zero exit, both files still present, the
+worktree and branch still present, and a message naming the offending path and
+`npm run backup:intake`. The existing case at `test-worktree.sh:69-75`
+(`node_modules` and `packages/example/dist` leave with the worktree, `finish`
+exits 0) must stay green — that is the false-refusal regression test.
+
+**Out of scope**, recorded as follow-on work orders for the planner: intake
+durability beyond a git-based checkpoint (gitignored material can never be
+covered by one); checkpoint retention and a first-class `recover` action;
+sealing evidence into a commit at verdict time; and a standing hazard-drill
+suite whose fixtures inherit the real repository configuration.

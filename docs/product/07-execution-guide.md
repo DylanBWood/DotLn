@@ -106,6 +106,14 @@ work order; an intentional defer records why and what will trigger reconsiderati
 - **Evidence gates over prose.** Completion claims require the work order's
   evidence: passing tests you ran, output you captured, behavior you
   witnessed. Read your own diff before reporting. Never infer completion.
+- **Recovery point before destruction.** Never run `git checkout .`,
+  `git restore .`, `git reset --hard`, `git clean` (any flags), or
+  `git stash drop` in a work-order worktree. Until final review, the
+  deliverable, every `VER-NNN`, and `docs/control/resume.jsonl` are typically
+  uncommitted, and `docs/intake` is gitignored single-copy raw material that is
+  in no commit at all. If you need a clean tree, commit a checkpoint
+  (`git add -A && git commit -m 'WO-NNN checkpoint'`) or `git stash -u` first,
+  and say in your result which you did.
 - **Verification artifacts are immutable and numbered.** Verifiers write to
   `docs/verifications/WO-NNN/VER-NNN.md`; the first pass is `VER-001.md` and
   every re-verification creates the next number instead of replacing a prior
