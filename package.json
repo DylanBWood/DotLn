@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "build": "tsc -b",
-    "test": "bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-worktree.sh && rm -rf packages/kernel/dist packages/skeleton/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/skeleton/dist/test/*.test.js",
+    "test": "bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-checkpoint.sh && bash scripts/test-worktree.sh && rm -rf packages/kernel/dist packages/skeleton/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/skeleton/dist/test/*.test.js",
     "skeleton": "npm run build --silent && node packages/skeleton/dist/src/cli.js",
     "backup:intake": "bash scripts/backup-intake.sh",
     "resume": "node scripts/resume.mjs",

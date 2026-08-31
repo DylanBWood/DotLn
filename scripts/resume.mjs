@@ -1,11 +1,14 @@
 #!/usr/bin/env node
-import { existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, renameSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const logPath = join(repoRoot, "docs/control/resume.jsonl");
 const currentPath = join(repoRoot, "docs/control/current.md");
+let checkpointRecord = {};
 const containedRegularFile = (path, root) => {
   if (!existsSync(path) || !lstatSync(path).isFile()) return false;
   return realpathSync(path).startsWith(`${realpathSync(root)}${sep}`);
@@ -16,10 +19,10 @@ const readEvents = () => existsSync(logPath) ? readFileSync(logPath, "utf8").tri
 }) : [];
 
 const fold = events => {
-  const state = { workOrderId: undefined, workOrderPath: undefined, phase: "none", latestVerificationId: undefined, latestVerificationPath: undefined, latestVerdict: undefined, finalReviewId: undefined, finalReviewPath: undefined, failureSourceId: undefined, failureSourcePath: undefined };
+  const state = { workOrderId: undefined, workOrderPath: undefined, phase: "none", latestVerificationId: undefined, latestVerificationPath: undefined, latestVerdict: undefined, finalReviewId: undefined, finalReviewPath: undefined, failureSourceId: undefined, failureSourcePath: undefined, latestCheckpointSha: undefined, latestCheckpointRef: undefined };
   for (const event of events) {
     switch (event.type) {
-      case "WorkOrderActivated": Object.assign(state, { workOrderId: event.workOrderId, workOrderPath: event.workOrderPath, phase: "active", latestVerificationId: undefined, latestVerificationPath: undefined, latestVerdict: undefined, finalReviewId: undefined, finalReviewPath: undefined, failureSourceId: undefined, failureSourcePath: undefined }); break;
+      case "WorkOrderActivated": Object.assign(state, { workOrderId: event.workOrderId, workOrderPath: event.workOrderPath, phase: "active", latestVerificationId: undefined, latestVerificationPath: undefined, latestVerdict: undefined, finalReviewId: undefined, finalReviewPath: undefined, failureSourceId: undefined, failureSourcePath: undefined, latestCheckpointSha: undefined, latestCheckpointRef: undefined }); break;
       case "ImplementationReady": state.phase = "ready-to-verify"; break;
       case "VerificationRequested": Object.assign(state, { phase: "verifying", latestVerificationId: event.verificationId, latestVerificationPath: event.reportPath, latestVerdict: undefined }); break;
       case "VerificationCompleted": Object.assign(state, { phase: event.verdict === "pass" ? "verified" : "needs-fix", latestVerificationId: event.verificationId, latestVerificationPath: event.reportPath, latestVerdict: event.verdict, failureSourceId: event.verdict === "fail" ? event.verificationId : undefined, failureSourcePath: event.verdict === "fail" ? event.reportPath : undefined }); break;
@@ -28,13 +31,14 @@ const fold = events => {
       case "FinalReviewRequested": Object.assign(state, { phase: "final-review", finalReviewId: event.finalReviewId, finalReviewPath: event.reportPath }); break;
       case "FinalReviewCompleted": Object.assign(state, { phase: event.verdict === "pass" ? "closed" : "needs-fix", failureSourceId: event.verdict === "fail" ? event.finalReviewId : undefined, failureSourcePath: event.verdict === "fail" ? event.reportPath : undefined }); break;
     }
+    if (typeof event.checkpointSha === "string" && typeof event.checkpointRef === "string") Object.assign(state, { latestCheckpointSha: event.checkpointSha, latestCheckpointRef: event.checkpointRef });
   }
   return state;
 };
 
 const append = event => {
   mkdirSync(dirname(logPath), { recursive: true });
-  const record = { schemaVersion: 1, ...event };
+  const record = { schemaVersion: 1, ...event, ...checkpointRecord };
   writeFileSync(logPath, `${JSON.stringify(record)}\n`, { flag: "a", mode: 0o644 });
   return record;
 };
@@ -58,6 +62,39 @@ const legalActions = state => ({
   "none": ["activate"], active: ["implementation-ready"], "ready-to-verify": ["verify"], verifying: ["verification-result"], "needs-fix": ["fix"], repairing: ["repair-complete"], verified: ["final-review"], "final-review": ["final-review-result"], closed: ["next"],
 }[state.phase] ?? []);
 
+const checkpoint = (action, workOrderId) => {
+  const warn = detail => {
+    process.stderr.write(`warning: could not create recovery checkpoint for ${action}: ${detail}; proceeding without one\n`);
+    return {};
+  };
+  if (!/^WO-\d{3}$/.test(workOrderId ?? "")) return warn(`work order id is unavailable (${workOrderId ?? "none"})`);
+  const runGit = (args, env = process.env) => {
+    const result = spawnSync("git", ["-C", repoRoot, ...args], { encoding: "utf8", env });
+    if (result.status !== 0) throw new Error((result.stderr || result.stdout || result.error?.message || `git ${args.join(" ")} failed`).trim());
+    return result.stdout.trim();
+  };
+  try {
+    if (runGit(["rev-parse", "--is-inside-work-tree"]) !== "true") return warn(`${repoRoot} is not a git work tree`);
+    const prefix = `refs/dotln/checkpoint/${workOrderId}/`;
+    const used = runGit(["for-each-ref", "--format=%(refname)", prefix]).split("\n").filter(Boolean).map(ref => Number(ref.slice(prefix.length))).filter(Number.isInteger);
+    const checkpointRef = `${prefix}${Math.max(0, ...used) + 1}`;
+    const temporaryRoot = mkdtempSync(join(tmpdir(), "dotln-checkpoint-"));
+    try {
+      const indexPath = join(temporaryRoot, "index");
+      const checkpointEnv = { ...process.env, GIT_INDEX_FILE: indexPath };
+      runGit(["add", "-A"], checkpointEnv);
+      const tree = runGit(["write-tree"], checkpointEnv);
+      const checkpointSha = runGit(["commit-tree", tree, "-p", "HEAD", "-m", `dotln checkpoint: ${action} ${workOrderId}`]);
+      runGit(["update-ref", checkpointRef, checkpointSha]);
+      return { checkpointSha, checkpointRef };
+    } finally {
+      rmSync(temporaryRoot, { recursive: true, force: true });
+    }
+  } catch (error) {
+    return warn(error instanceof Error ? error.message : String(error));
+  }
+};
+
 const render = state => `# Current control state
 
 - Work order: ${state.workOrderId ?? "none"}
@@ -68,6 +105,7 @@ const render = state => `# Current control state
 - Latest verdict: ${state.latestVerdict ?? "none"}
 - Final review: ${state.finalReviewId ?? "none"}
 - Final-review path: ${state.finalReviewPath ?? "none"}
+- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : "none"}
 - Legal next actions: ${legalActions(state).join(", ") || "none"}
 
 Generated from the append-only \`docs/control/resume.jsonl\`; do not edit this projection manually.
@@ -84,6 +122,7 @@ const requirePhase = (state, ...phases) => { if (!phases.includes(state.phase)) 
 const [action = "status", ...args] = process.argv.slice(2);
 let state = fold(readEvents());
 let message;
+if (action !== "status") checkpointRecord = checkpoint(action, action === "activate" ? args[0] : state.workOrderId);
 
 switch (action) {
   case "status": message = render(state); break;

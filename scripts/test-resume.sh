@@ -13,9 +13,10 @@ printf '# fixture\n' >"$fixture_repo/docs/work-orders/WO-099-fixture.md"
 mkdir -p "$fixture_repo/docs/verifications/WO-099" "$fixture_repo/docs/final-reviews/WO-099"
 printf '# existing verification\n' >"$fixture_repo/docs/verifications/WO-099/VER-001.md"
 printf '# existing final review\n' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-001.md"
-run() { node "$fixture_repo/scripts/resume.mjs" "$@" >/dev/null; }
+run() { node "$fixture_repo/scripts/resume.mjs" "$@" >/dev/null 2>/dev/null; }
 
-run activate WO-099 docs/work-orders/WO-099-fixture.md
+activate_warning="$(node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md 2>&1 >/dev/null)"
+grep -q 'warning: could not create recovery checkpoint.*not a git repository' <<<"$activate_warning"
 run implementation-ready
 run verify
 grep -q 'VER-002.md' "$fixture_repo/docs/control/current.md"
@@ -35,7 +36,7 @@ run final-review
 grep -q 'FINAL-002.md' "$fixture_repo/docs/control/current.md"
 printf '# failed final\n' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-002.md"
 run final-review-result fail
-node "$fixture_repo/scripts/resume.mjs" fix | grep -q 'FINAL-002.md'
+node "$fixture_repo/scripts/resume.mjs" fix 2>/dev/null | grep -q 'FINAL-002.md'
 run repair-complete
 run verify
 grep -q 'VER-004.md' "$fixture_repo/docs/control/current.md"
