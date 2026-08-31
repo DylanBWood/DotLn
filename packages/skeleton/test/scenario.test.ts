@@ -55,10 +55,37 @@ test("step 12 folds return, guards the queued pulse, and executes declared cance
 
 test("row 1 crash+restart re-dispatches pending command while adapter dedupe prevents duplicate effect", () => {
   const normal = runScenario(fixture);
-  const result = runScenario(fixture, { crashAfterPersist: true });
+  const durableMarker = "reconstructed-from-persisted-log";
+  const result = runScenario(fixture, {
+    crashAfterPersist: true,
+    recoveryLogTransform: persistedLog => encodeLog(decodeLog(persistedLog).map(event => {
+      if (event.type !== "CommandPersisted") return event;
+      const payload = event.payload as unknown as { command: { intent: { payload: { workOrder: { baseCommit: string } } } } };
+      return {
+        ...event,
+        payload: {
+          command: {
+            ...(event.payload as unknown as { command: object }).command,
+            intent: {
+              ...(payload.command.intent as unknown as object),
+              payload: {
+                ...(payload.command.intent.payload as unknown as object),
+                workOrder: { ...payload.command.intent.payload.workOrder, baseCommit: durableMarker },
+              },
+            },
+          },
+        },
+      };
+    })),
+  });
   assert.equal(expectedInspectCommandId, "cmd_5ee0c6d8e207bd25");
   assert.equal(result.adapterDispatches.length, 2, "restart redispatch plus duplicate delivery are both observable");
   assert.deepEqual(result.adapterDispatches, [expectedInspectCommandId, expectedInspectCommandId]);
+  assert.equal(
+    ((result.recoveredCommands[0]?.intent.payload as { workOrder?: { baseCommit?: string } }).workOrder?.baseCommit),
+    durableMarker,
+    "the re-dispatched command must be reconstructed from durable log state",
+  );
   assert.equal(result.adapterEffects, 1, "recovery dispatch plus normal dispatch produce one adapter effect");
   assert.deepEqual({ candidates: result.candidates, verified: result.verified, traces: result.traces, cancelled: result.cancelledScheduleIds }, { candidates: normal.candidates, verified: normal.verified, traces: normal.traces, cancelled: normal.cancelledScheduleIds });
   assert.deepEqual(pendingCommands(replayOutbox(decodeLog(result.log))), []);

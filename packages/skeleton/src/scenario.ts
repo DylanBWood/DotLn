@@ -16,11 +16,15 @@ export interface Candidate { readonly path: string; readonly classification: str
 export interface FixtureFile { readonly path: string; readonly referencedBy: readonly string[]; readonly classification: string }
 export interface FixtureTree { readonly files: readonly FixtureFile[] }
 export interface Loadout { readonly identity: "Repo Gardener"; readonly activeMechanic: "Seiri"; readonly semantics: readonly string[]; readonly normative: false }
-export interface ScenarioOptions { readonly crashAfterPersist?: boolean }
+export interface ScenarioOptions {
+  readonly crashAfterPersist?: boolean;
+  readonly recoveryLogTransform?: (persistedLog: string) => string;
+}
 export interface ScenarioResult {
   readonly log: string; readonly traces: readonly DecisionTrace[]; readonly timeline: readonly string[];
   readonly glyphScene: string; readonly workOrder: WorkOrder; readonly candidates: readonly Candidate[];
   readonly verified: boolean; readonly adapterEffects: number; readonly adapterDispatches: readonly string[];
+  readonly recoveredCommands: readonly Command[];
   readonly cancelledScheduleIds: readonly string[]; readonly activeScheduleIds: readonly string[];
 }
 
@@ -152,7 +156,7 @@ export function replayScenario(log: string, fixture: FixtureTree): ScenarioResul
   const cancelledScheduleIds = cancelled === undefined ? [] : (cancelled.payload as { scheduleIds: readonly string[] }).scheduleIds;
   const verifiedEvent = events.find(event => event.type === "VerificationCompleted");
   const verified = verifiedEvent !== undefined && verifiedEvent.payload !== null && !Array.isArray(verifiedEvent.payload) && typeof verifiedEvent.payload === "object" && (verifiedEvent.payload as Readonly<Record<string, JsonValue>>)["accepted"] === true;
-  return { log, traces, timeline: project(events), glyphScene: renderGlyphScene(events), workOrder, candidates, verified, adapterEffects: 0, adapterDispatches: [], cancelledScheduleIds, activeScheduleIds: [] };
+  return { log, traces, timeline: project(events), glyphScene: renderGlyphScene(events), workOrder, candidates, verified, adapterEffects: 0, adapterDispatches: [], recoveredCommands: [], cancelledScheduleIds, activeScheduleIds: [] };
 }
 
 export function runScenario(fixture: FixtureTree, options: ScenarioOptions = {}): ScenarioResult {
@@ -183,9 +187,12 @@ export function runScenario(fixture: FixtureTree, options: ScenarioOptions = {})
   append(draft("CommandPersisted", pulse.occurredAt + 1, { command: command as unknown as JsonValue }, pulse.eventId));
 
   const adapter = new FakeExecutor(fixture);
+  let recoveredCommands: readonly Command[] = [];
   if (options.crashAfterPersist) {
+    log = options.recoveryLogTransform?.(log) ?? log;
     const recovered = replayOutbox(decodeLog(log));
-    for (const pending of pendingCommands(recovered)) {
+    recoveredCommands = pendingCommands(recovered);
+    for (const pending of recoveredCommands) {
       adapter.dispatch(pending);
       append(draft("CommandRedispatched", pulse.occurredAt + 1, { commandId: pending.commandId }));
     }
@@ -216,7 +223,7 @@ export function runScenario(fixture: FixtureTree, options: ScenarioOptions = {})
   scheduler.cancel(guarded.cancelledScheduleIds);
   append(draft("SchedulesCancelled", queued.occurredAt, { scheduleIds: guarded.cancelledScheduleIds, activeScheduleIds: scheduler.activeScheduleIds }));
   const events = decodeLog(log);
-  return { log, traces, timeline: project(events), glyphScene: renderGlyphScene(events), workOrder, candidates, verified, adapterEffects: adapter.effects, adapterDispatches: adapter.dispatches, cancelledScheduleIds: guarded.cancelledScheduleIds, activeScheduleIds: scheduler.activeScheduleIds };
+  return { log, traces, timeline: project(events), glyphScene: renderGlyphScene(events), workOrder, candidates, verified, adapterEffects: adapter.effects, adapterDispatches: adapter.dispatches, recoveredCommands, cancelledScheduleIds: guarded.cancelledScheduleIds, activeScheduleIds: scheduler.activeScheduleIds };
 }
 
 export const expectedInspectCommandId = commandId(WORKSTREAM, EPISODE, 1, 0);
