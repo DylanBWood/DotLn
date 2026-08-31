@@ -9,7 +9,7 @@ later verification reports land.
 policies (the levels table, activation/utilization/XP separation, the
 progression-policy list, and "The first implementation can remain simple");
 01-principles.md Principles 9, 11, 15; docs/discovery/environment.md and
-docs/work-orders/WO-002-verification.md (the two existing evidence corpora).
+docs/verifications/WO-002/VER-002.md (the two existing evidence corpora).
 
 **Objective:** Author the reviewed capability table the roadmap names as the
 first implementation of capability progression — a Markdown table, not

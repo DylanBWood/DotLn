@@ -52,8 +52,15 @@ Codex reads this file via the `AGENTS.md` symlink — same rules apply.
 
 ## 3. Start here
 
-The blueprint is the shared memory. Cold-start read order:
+The blueprint is the shared memory. If the operator's whole instruction is a
+`resume:` phrase, that is your dispatch — see
+`docs/product/07-execution-guide.md` §Operator resume phrases, which resolves it
+to the active work order and the artifacts you must read. Cold-start read order:
 `docs/product/07-execution-guide.md` → your work order in `docs/work-orders/`
 → only the blueprint sections it cites. Settled questions live in
 `docs/decisions/` and the Resolutions section of
-`docs/lineage/idea-ledger.md` — do not relitigate them. Keep this file tiny.
+`docs/lineage/idea-ledger.md` — do not relitigate them. Nothing in a
+work-order worktree is committed until final review, and `docs/intake` is
+gitignored single-copy — never run a destructive git command (`reset --hard`,
+`checkout .`, `clean`) in one without a checkpoint commit first. Keep this file
+tiny.

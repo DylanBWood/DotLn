@@ -19,6 +19,17 @@ Two standing rules:
 - **`Model:` line in the work order is law** (Principle 8). `Model: any` means
   route freely — including by which meter has budget left. Never silently
   downgrade mid-work-order; switch executors between work orders instead.
+- **Effort is part of the assignment, and nothing self-reports it.** The table
+  above states each actor's reasoning effort, but that is prose, not a checked
+  fact. It has already been wrong: through WO-001, WO-002 and WO-003 the Codex
+  executor actually ran at **low** while this table read `xhigh`, and no doc,
+  script, or verification detected the drift (operator disclosure and
+  correction to xHigh, 2026-08-31). The WO-003 verification's surviving
+  findings were almost entirely thin-evidence defects — tests that pass without
+  pinning what they claim — which is the signature that setting produces.
+  `Model: any capable model` pins the family, not the effort. Until an
+  executable check exists, confirm the executor's actual effort at dispatch and
+  have it record model + effort in its result.
 
 ## The loop, per work order
 
@@ -30,7 +41,7 @@ checkout is the control plane — no implementation happens here.
 
 ```bash
 cd ~/Projects/DotLn
-git worktree add ../DotLn-wo002 -b wo-002
+npm run worktree -- start WO-002 docs/work-orders/WO-002-pure-kernel.md
 cd ../DotLn-wo002
 
 codex "Execute docs/work-orders/WO-002-pure-kernel.md"
@@ -45,30 +56,72 @@ implementer's, no implementer narrative. Feed it: the WO + the diff.
 
 ```bash
 cd ../DotLn-wo002
-claude --model opus "Verify the working tree against docs/work-orders/WO-002-pure-kernel.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-002-verification.md. Do not fix anything."
+claude --model opus "Verify the working tree against docs/work-orders/WO-002-pure-kernel.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to the next unused docs/verifications/WO-002/VER-NNN.md number. Never replace a prior report. Do not fix anything."
 ```
 
-**4. Review + merge (you, five minutes).** Read the result envelope and the
-verifier's per-criterion report. Skim the diff like you'd skim a PR title +
-summary. If green:
-
-```bash
-cd ~/Projects/DotLn
-git merge wo-002
-git worktree remove ../DotLn-wo002
-git branch -d wo-002
-git push
-```
-
-If red: don't debug in your head — save the findings at
-`docs/work-orders/WO-00N-verification.md`, then dispatch a *repair* session in
-the same worktree with that file and re-verify. (Findings → fresh
+**4. Repair or final review.** **Checkpoint before you dispatch.** Before any
+repair or re-verification episode, make a recovery point in the subject
+worktree: `git add -A && git commit -m 'WO-NNN checkpoint'`. The loop's first
+mandatory commit is at final-review pass, so until then the deliverable, every
+`VER-NNN`, and the control log are one destructive command from gone.
+`git add -A` honors `.gitignore`, so `docs/intake` is NOT in that commit — back
+it up separately. If red, don't debug in your head. The verifier saves findings as the next
+unused immutable `docs/verifications/WO-00N/VER-NNN.md`. Dispatch a *repair*
+session in the same worktree with both the authoritative original work order
+and that specific report, then re-verify into the next number. Never update or
+delete an earlier report. (Findings → fresh
 repair episode → stale evidence regenerated: same shape DotLn itself will
 automate at v0.5.0.)
 
-**5. Close (Fable 5, main checkout).** Check the completed work order against
-the plan: did anything supersede or transform a blueprint idea? Ledger + doc
-updates ride in this closing pass. Then pick the next WO.
+When verification is green, dispatch final review. It reads the original work
+order, complete verification sequence, diff, tests, ideation receipt, and all
+affected product/ledger/schema surfaces. It may make bounded last-mile fixes
+only when they are non-substantive handoff/documentation corrections. Any
+acceptance-relevant change records a failed `FINAL-NNN` and goes through repair
+plus a fresh independent `VER-NNN`. A pass writes the next immutable `FINAL-NNN`,
+commits the clean result, and opens a PR:
+
+```bash
+cd ~/Projects/DotLn-wo002
+npm run worktree -- publish WO-002 --title ':sparkles: Pure kernel' --body-file docs/final-reviews/WO-002/PR.md
+```
+
+**5. Merge, clean up, and release-close.** You review and merge the PR. Then:
+
+First run `npm run backup:intake` from the subject worktree and reconcile any
+worktree-local raw notes into the surviving main intake or another trusted
+backup. `finish` deliberately refuses while any non-disposable ignored file
+remains — `docs/intake` material, a stray `.env`, anything else `.gitignore`
+hides — naming the offending path; it will not guess whether local-only files
+are disposable. Ordinary untracked dirt also fails the clean check, while
+ignored `node_modules`, `dist`, `.DS_Store`, and `*.tsbuildinfo` output may be
+discarded with the worktree.
+
+```bash
+cd ~/Projects/DotLn
+npm run worktree -- finish WO-002
+```
+
+`finish` refuses before the branch is contained in `origin/main`. If this work
+completes a roadmap release, perform the release-closeout task described below.
+Then use `resume: next` to select the next work order.
+
+### Repeated code → verify → fix loops
+
+The original `WO-00N` never becomes a verifier-owned work order. It remains the
+scope authority. Each `VER-NNN` is an immutable finding artifact that can
+contain a bounded repair checklist. For every additional loop:
+
+1. Repair reads `docs/work-orders/WO-00N-*.md` plus the latest dispatched
+   `docs/verifications/WO-00N/VER-NNN.md`.
+2. The verifier reads the original work order, current diff, and relevant prior
+   reports, then writes `VER-(NNN+1).md` without modifying older reports.
+3. Final review reads the full sequence, so fixed, recurring, stale, and newly
+   introduced findings remain distinguishable.
+
+When asking Codex conversationally, use: “Repair the current work order from
+`docs/verifications/WO-00N/VER-NNN.md`; read both it and the original work
+order.”
 
 ## Concurrency
 
@@ -79,7 +132,9 @@ stays clean for you and the planning session.
 ## When things break
 
 - **Session dies / rate-limited mid-WO:** nothing is lost — the repo + WO are
-  the memory. Start a fresh session in the same worktree: "Continue executing
+  the memory, but that memory is uncommitted working-tree state until final
+  review commits. A dead session loses nothing; a reset or a clean loses
+  everything not checkpointed. Start a fresh session in the same worktree: "Continue executing
   WO-00X; inspect the working tree to see what's done." (Disposable
   incarnations; the workflow remembers the worker.)
 - **Out of Claude budget:** route `Model: any` work to Codex; park
@@ -88,335 +143,67 @@ stays clean for you and the planning session.
   the answer is in the WO's evidence gate. Say "follow the work order" and
   note it — that's a future compiled feedback unit.
 - **Executor went sideways:** kill it, don't argue with it. Fix the WO or the
-  doc that misled it (that's the real bug), reset the worktree, redispatch
-  cold. Arguing pollutes; redispatching is free.
+  doc that misled it (that's the real bug), then **checkpoint first**
+  (`git add -A && git commit -m 'WO-NNN checkpoint'` in the subject worktree),
+  reset to that commit, and redispatch cold. Arguing pollutes; redispatching is
+  free. Never `git checkout .`, `git restore .`, `git reset --hard`, or
+  `git clean -fd` here without that checkpoint — nothing in this loop is
+  committed until final review, so those destroy the deliverable, every
+  `VER-NNN` written so far, and `docs/control/resume.jsonl`. Never
+  `git clean -fdx`/`-fdX` at all: it also deletes gitignored `docs/intake`,
+  which is single-copy and in no commit. `git stash -u` is the safe way to park
+  a dirty tree — it preserves ignored intake and `.env`.
 
 ## Weekly hygiene (until DotLn does it for you)
 
+- `npm run backup:intake` — run this whenever you capture new intake, not only
+  at `finish`. `docs/intake` is gitignored and single-copy: no commit, no
+  checkpoint, and no branch contains it, so a `git clean -fdx` or a forced
+  worktree removal ends it. Creates a validated, owner-only ZIP beside the
+  project; move it to the trusted backup location.
 - `git worktree list` — remove strays.
 - Skim `docs/lineage/idea-ledger.md` Session additions — anything learned this
   week that belongs there?
 - Ask: does the current rung still ship a visible payoff? If not, re-cut it.
 
-## Copy/paste command ledger
+## Resume command surface
 
-Append one block here whenever a work order is added. Run each block from the
-main checkout unless it begins with a worktree `cd`. WO-002 also includes the
-operator-authorized additions of this ledger and the execution guide's
-PR-title/gitmoji rule beyond its original repair scope.
+The append-only control log replaces the per-work-order copy/paste ledger. In a fresh session, use one operator phrase:
 
-### WO-001 — environment truth (completed)
-
-```bash
-codex "Execute docs/work-orders/WO-001-environment-truth.md"
+```text
+resume: status
+resume: fix
+resume: verify
+resume: final review
+resume: next
 ```
 
-### WO-002 — pure kernel
+The agent reads `docs/control/current.md`, runs the matching `npm run resume -- <action>` when the action is a state transition, and follows the emitted authoritative paths. `status` is read-only. `next` confirms the current WO is closed; after selecting the next roadmap work order, activate it with:
 
 ```bash
-cd ~/Projects/DotLn
-claude --model fable "Plan or refine docs/work-orders/WO-002-pure-kernel.md. Update the durable product docs first if the plan changes them."
-git fetch origin main
-git worktree add ../DotLn-wo002 -b wo-002 origin/main
-cd ../DotLn-wo002
-codex "Execute docs/work-orders/WO-002-pure-kernel.md"
-claude --model opus "Verify the working tree against docs/work-orders/WO-002-pure-kernel.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-002-verification.md. Do not fix anything."
+npm run resume -- activate WO-00N docs/work-orders/WO-00N-name.md
+npm run resume -- implementation-ready   # executor, after evidence is green
+npm run resume -- verify                 # allocates the next immutable VER-NNN
+npm run resume -- verification-result pass|fail
+npm run resume -- fix                    # emits original WO + failing VER paths
+npm run resume -- repair-complete
+npm run resume -- final-review
+npm run resume -- final-review-result pass|fail
 ```
 
-Only if verification is red:
+Verifiers write the exact report path allocated by `verify`, then record its verdict. Repair and final-review completion actions are recorded only after their evidence exists. Illegal transitions refuse without appending. The JSONL log is canonical; `docs/control/current.md` is regenerated projection.
 
-```bash
-cd ~/Projects/DotLn-wo002
-codex "Execute fixes in docs/work-orders/WO-002-verification.md"
-claude --model opus "Re-verify the repaired working tree against docs/work-orders/WO-002-pure-kernel.md and replace docs/work-orders/WO-002-verification.md with the current per-criterion report. Do not fix anything."
-```
+## End-of-workflow release task
 
-After verification is green:
+After final review opens the PR, you review and merge it. Then run the guarded
+worktree `finish` action from the main checkout. The final task is release
+closeout: if the merged work order completes a roadmap version, rerun its full
+evidence on the exact merged `origin/main` commit, generate and validate the
+release manifest, and ask for operator authorization before creating or
+pushing the annotated tag. WO-003 proposes the first source-only boundary,
+`v0.2.0`. Do not backfill `v0.1.0` unless its exact commit and evidence are
+reconstructable; do not treat a Git tag as an npm or binary publication.
 
-```bash
-cd ~/Projects/DotLn
-git merge wo-002
-git worktree remove ../DotLn-wo002
-git branch -d wo-002
-git push
-claude --model fable "Close docs/work-orders/WO-002-pure-kernel.md: check the completed work against the plan, update blueprint or lineage docs for any transformed decisions, and identify the next work order."
-```
-
-### WO-003 — walking skeleton
-
-```bash
-cd ~/Projects/DotLn
-claude --model fable "Plan or refine docs/work-orders/WO-003-walking-skeleton.md. Update the durable product docs first if the plan changes them."
-git fetch origin main
-git worktree add ../DotLn-wo003 -b wo-003 origin/main
-cd ../DotLn-wo003
-codex "Execute docs/work-orders/WO-003-walking-skeleton.md"
-claude --model opus "Verify the working tree against docs/work-orders/WO-003-walking-skeleton.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-003-verification.md. Do not fix anything."
-```
-
-Only if verification is red:
-
-```bash
-cd ~/Projects/DotLn-wo003
-codex "Execute fixes in docs/work-orders/WO-003-verification.md"
-claude --model opus "Re-verify the repaired working tree against docs/work-orders/WO-003-walking-skeleton.md and replace docs/work-orders/WO-003-verification.md with the current per-criterion report. Do not fix anything."
-```
-
-After verification is green:
-
-```bash
-cd ~/Projects/DotLn
-git merge wo-003
-git worktree remove ../DotLn-wo003
-git branch -d wo-003
-git push
-claude --model fable "Close docs/work-orders/WO-003-walking-skeleton.md: check the completed work against the plan, update blueprint or lineage docs for any transformed decisions, and identify the next work order."
-```
-
-### WO-004 — environment truth addendum
-
-```bash
-cd ~/Projects/DotLn
-claude --model fable "Plan or refine docs/work-orders/WO-004-environment-truth-addendum.md. Update the durable product docs first if the plan changes them."
-git fetch origin main
-git worktree add ../DotLn-wo004 -b wo-004 origin/main
-cd ../DotLn-wo004
-codex "Execute docs/work-orders/WO-004-environment-truth-addendum.md"
-claude --model opus "Verify the working tree against docs/work-orders/WO-004-environment-truth-addendum.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-004-verification.md. Do not fix anything."
-```
-
-Only if verification is red:
-
-```bash
-cd ~/Projects/DotLn-wo004
-codex "Execute fixes in docs/work-orders/WO-004-verification.md"
-claude --model opus "Re-verify the repaired working tree against docs/work-orders/WO-004-environment-truth-addendum.md and replace docs/work-orders/WO-004-verification.md with the current per-criterion report. Do not fix anything."
-```
-
-After verification is green:
-
-```bash
-cd ~/Projects/DotLn
-git merge wo-004
-git worktree remove ../DotLn-wo004
-git branch -d wo-004
-git push
-claude --model fable "Close docs/work-orders/WO-004-environment-truth-addendum.md: check the completed work against the plan, update blueprint or lineage docs for any transformed decisions, and identify the next work order."
-```
-
-### WO-005 — capability table v1
-
-```bash
-cd ~/Projects/DotLn
-claude --model fable "Plan or refine docs/work-orders/WO-005-capability-table.md. Update the durable product docs first if the plan changes them."
-git fetch origin main
-git worktree add ../DotLn-wo005 -b wo-005 origin/main
-cd ../DotLn-wo005
-codex "Execute docs/work-orders/WO-005-capability-table.md"
-claude --model opus "Verify the working tree against docs/work-orders/WO-005-capability-table.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-005-verification.md. Do not fix anything."
-```
-
-Only if verification is red:
-
-```bash
-cd ~/Projects/DotLn-wo005
-codex "Execute fixes in docs/work-orders/WO-005-verification.md"
-claude --model opus "Re-verify the repaired working tree against docs/work-orders/WO-005-capability-table.md and replace docs/work-orders/WO-005-verification.md with the current per-criterion report. Do not fix anything."
-```
-
-After verification is green:
-
-```bash
-cd ~/Projects/DotLn
-git merge wo-005
-git worktree remove ../DotLn-wo005
-git branch -d wo-005
-git push
-claude --model fable "Close docs/work-orders/WO-005-capability-table.md: check the completed work against the plan, update blueprint or lineage docs for any transformed decisions, and identify the next work order."
-```
-
-### WO-006 — publication bootstrap
-
-```bash
-cd ~/Projects/DotLn
-claude --model fable "Plan or refine docs/work-orders/WO-006-publication-bootstrap.md. Update the durable product docs first if the plan changes them."
-git fetch origin main
-git worktree add ../DotLn-wo006 -b wo-006 origin/main
-cd ../DotLn-wo006
-codex "Execute docs/work-orders/WO-006-publication-bootstrap.md"
-claude --model opus "Verify the working tree against docs/work-orders/WO-006-publication-bootstrap.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-006-verification.md. Do not fix anything."
-```
-
-Only if verification is red:
-
-```bash
-cd ~/Projects/DotLn-wo006
-codex "Execute fixes in docs/work-orders/WO-006-verification.md"
-claude --model opus "Re-verify the repaired working tree against docs/work-orders/WO-006-publication-bootstrap.md and replace docs/work-orders/WO-006-verification.md with the current per-criterion report. Do not fix anything."
-```
-
-After verification is green:
-
-```bash
-cd ~/Projects/DotLn
-git merge wo-006
-git worktree remove ../DotLn-wo006
-git branch -d wo-006
-git push
-claude --model fable "Close docs/work-orders/WO-006-publication-bootstrap.md: check the completed work against the plan, update blueprint or lineage docs for any transformed decisions, and identify the next work order."
-```
-
-### WO-007 — audit-record baseline
-
-```bash
-cd ~/Projects/DotLn
-claude --model fable "Plan or refine docs/work-orders/WO-007-audit-record-baseline.md. Update the durable product docs first if the plan changes them."
-git fetch origin main
-git worktree add ../DotLn-wo007 -b wo-007 origin/main
-cd ../DotLn-wo007
-codex "Execute docs/work-orders/WO-007-audit-record-baseline.md"
-claude --model opus "Verify the working tree against docs/work-orders/WO-007-audit-record-baseline.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-007-verification.md. Do not fix anything."
-```
-
-Only if verification is red:
-
-```bash
-cd ~/Projects/DotLn-wo007
-codex "Execute fixes in docs/work-orders/WO-007-verification.md"
-claude --model opus "Re-verify the repaired working tree against docs/work-orders/WO-007-audit-record-baseline.md and replace docs/work-orders/WO-007-verification.md with the current per-criterion report. Do not fix anything."
-```
-
-After verification is green:
-
-```bash
-cd ~/Projects/DotLn
-git merge wo-007
-git worktree remove ../DotLn-wo007
-git branch -d wo-007
-git push
-claude --model fable "Close docs/work-orders/WO-007-audit-record-baseline.md: check the completed work against the plan, update blueprint or lineage docs for any transformed decisions, and identify the next work order."
-```
-
-### WO-008 — composition compiler v1
-
-```bash
-cd ~/Projects/DotLn
-claude --model fable "Plan or refine docs/work-orders/WO-008-composition-compiler.md. Update the durable product docs first if the plan changes them."
-git fetch origin main
-git worktree add ../DotLn-wo008 -b wo-008 origin/main
-cd ../DotLn-wo008
-codex "Execute docs/work-orders/WO-008-composition-compiler.md"
-claude --model opus "Verify the working tree against docs/work-orders/WO-008-composition-compiler.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-008-verification.md. Do not fix anything."
-```
-
-Only if verification is red:
-
-```bash
-cd ~/Projects/DotLn-wo008
-codex "Execute fixes in docs/work-orders/WO-008-verification.md"
-claude --model opus "Re-verify the repaired working tree against docs/work-orders/WO-008-composition-compiler.md and replace docs/work-orders/WO-008-verification.md with the current per-criterion report. Do not fix anything."
-```
-
-After verification is green:
-
-```bash
-cd ~/Projects/DotLn
-git merge wo-008
-git worktree remove ../DotLn-wo008
-git branch -d wo-008
-git push
-claude --model fable "Close docs/work-orders/WO-008-composition-compiler.md: check the completed work against the plan, update blueprint or lineage docs for any transformed decisions, and identify the next work order."
-```
-
-### WO-009 — real disposable worker
-
-```bash
-cd ~/Projects/DotLn
-claude --model fable "Plan or refine docs/work-orders/WO-009-real-disposable-worker.md. Update the durable product docs first if the plan changes them."
-git fetch origin main
-git worktree add ../DotLn-wo009 -b wo-009 origin/main
-cd ../DotLn-wo009
-codex "Execute docs/work-orders/WO-009-real-disposable-worker.md"
-claude --model opus "Verify the working tree against docs/work-orders/WO-009-real-disposable-worker.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-009-verification.md. Do not fix anything."
-```
-
-Only if verification is red:
-
-```bash
-cd ~/Projects/DotLn-wo009
-codex "Execute fixes in docs/work-orders/WO-009-verification.md"
-claude --model opus "Re-verify the repaired working tree against docs/work-orders/WO-009-real-disposable-worker.md and replace docs/work-orders/WO-009-verification.md with the current per-criterion report. Do not fix anything."
-```
-
-After verification is green:
-
-```bash
-cd ~/Projects/DotLn
-git merge wo-009
-git worktree remove ../DotLn-wo009
-git branch -d wo-009
-git push
-claude --model fable "Close docs/work-orders/WO-009-real-disposable-worker.md: check the completed work against the plan, update blueprint or lineage docs for any transformed decisions, and identify the next work order."
-```
-
-### WO-010 — independent verification
-
-```bash
-cd ~/Projects/DotLn
-claude --model fable "Plan or refine docs/work-orders/WO-010-independent-verification.md. Update the durable product docs first if the plan changes them."
-git fetch origin main
-git worktree add ../DotLn-wo010 -b wo-010 origin/main
-cd ../DotLn-wo010
-codex "Execute docs/work-orders/WO-010-independent-verification.md"
-claude --model opus "Verify the working tree against docs/work-orders/WO-010-independent-verification.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-010-verification.md. Do not fix anything."
-```
-
-Only if verification is red:
-
-```bash
-cd ~/Projects/DotLn-wo010
-codex "Execute fixes in docs/work-orders/WO-010-verification.md"
-claude --model opus "Re-verify the repaired working tree against docs/work-orders/WO-010-independent-verification.md and replace docs/work-orders/WO-010-verification.md with the current per-criterion report. Do not fix anything."
-```
-
-After verification is green:
-
-```bash
-cd ~/Projects/DotLn
-git merge wo-010
-git worktree remove ../DotLn-wo010
-git branch -d wo-010
-git push
-claude --model fable "Close docs/work-orders/WO-010-independent-verification.md: check the completed work against the plan, update blueprint or lineage docs for any transformed decisions, and identify the next work order."
-```
-
-### WO-011 — feedback compiler v1
-
-```bash
-cd ~/Projects/DotLn
-claude --model fable "Plan or refine docs/work-orders/WO-011-feedback-compiler.md. Update the durable product docs first if the plan changes them."
-git fetch origin main
-git worktree add ../DotLn-wo011 -b wo-011 origin/main
-cd ../DotLn-wo011
-codex "Execute docs/work-orders/WO-011-feedback-compiler.md"
-claude --model opus "Verify the working tree against docs/work-orders/WO-011-feedback-compiler.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to docs/work-orders/WO-011-verification.md. Do not fix anything."
-```
-
-Only if verification is red:
-
-```bash
-cd ~/Projects/DotLn-wo011
-codex "Execute fixes in docs/work-orders/WO-011-verification.md"
-claude --model opus "Re-verify the repaired working tree against docs/work-orders/WO-011-feedback-compiler.md and replace docs/work-orders/WO-011-verification.md with the current per-criterion report. Do not fix anything."
-```
-
-After verification is green:
-
-```bash
-cd ~/Projects/DotLn
-git merge wo-011
-git worktree remove ../DotLn-wo011
-git branch -d wo-011
-git push
-claude --model fable "Close docs/work-orders/WO-011-feedback-compiler.md: check the completed work against the plan, update blueprint or lineage docs for any transformed decisions, and identify the next work order."
-```
+This task is currently a documented gate, not a hidden side effect of
+`worktree finish`. A later work order may add a `release prepare` projection;
+tag creation and publication must remain separately authorized.

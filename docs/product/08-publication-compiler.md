@@ -201,6 +201,32 @@ claim inspector shows the canonical source, implementation status, evidence,
 other editions that use it, and what the current edition omitted. This is the
 publication equivalent of DotLn's mechanics inspector.
 
+## Release-note edition
+
+Patch notes are a compact, layered edition over the release manifest, diff,
+work-order lineage, verification sequence, and final-review evidence. Their
+editorial contract is:
+
+1. **Release overview:** the visible payoff, intended audience, and why the
+   release matters in plain language.
+2. **Read-before-upgrading:** breaking contracts, migration steps, schema or
+   compatibility changes, security/privacy implications, authority changes,
+   data-loss risks, removals, known incidents, and required operator action.
+3. **Substantive changes:** grouped by recognizable product area and described
+   in terms of changed behavior, not commit or filename trivia.
+4. **Progressive polish:** an explicit aggregate for repetitive low-impact
+   asset, copy, fixture, diagnostic, accessibility, performance, or visual
+   refinement. Representative examples may be named, but exhaustive churn is
+   linked rather than promoted into the narrative.
+5. **Evidence and compatibility:** exact source tag/commit, release manifest,
+   supported versions, migration paths, verification result, known limitations,
+   and links to deeper technical notes.
+
+Compression is editorial, never evasive. A change cannot enter “progressive
+polish” if it affects observable semantics, saved-data interpretation,
+compatibility, authority, security/privacy, recovery, or an operator's required
+action. Generated notes should flag uncertain classification for human review.
+
 ## Bootstrap path
 
 Do not begin with an elaborate content-management system. The first proof is:

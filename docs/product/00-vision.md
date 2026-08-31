@@ -130,6 +130,97 @@ away.
 Horizon 3 must emerge from the same kernel (deterministic replay is what makes
 counterfactuals possible at all) and is not allowed to distort Horizon 1.
 
+## Inspirational sources
+
+Named here because the mechanisms below kept surviving synthesis while their
+sources kept getting dropped. Attribution is part of the design record: a
+mechanism whose origin is known can be mined again.
+
+- **Gödel, Escher, Bach** — prime material, and still the least deliberately
+  mined. Its organizing ideas are already load-bearing here under other names:
+  isomorphism is the "isomorphically equivalent representations" behind every
+  projection in `04-interfaces.md`; strange loops and tangled hierarchies
+  describe what this system structurally *is* — an event log that replays the
+  system that produced it, a feedback compiler whose rules govern the reviewer
+  who wrote them, an identity version that evaluates its own successor; and
+  formal systems reasoning about themselves is the kernel's purity and replay
+  contract. Unmined seams are recorded in the idea ledger rather than
+  pre-emptively architected here.
+- **Westworld** — two distinct borrowings. *Reveries*: feedback agents built
+  from single rules with their verbatim originating incidents, recombinable as
+  identity fragments. *Old configurations on modern builds*: historical
+  artifacts stay runnable rather than becoming import debris, which is the
+  requirement behind `10-ir-compatibility.md`.
+- **Iron Man / JARVIS** — the operator relationship to aim at: declare intent
+  conversationally, have the machinery carry the work and keep its own records,
+  and never wonder what it did. DotLn takes the posture and inverts one thing
+  deliberately. Fiction's assistant is trusted because it is charming and
+  never wrong; this one has to earn it every time with replayable evidence, and
+  operator absence never enlarges its authority.
+  The films also supply this project's counterweight, in Stark's line to JARVIS
+  before flying an untested suit: *"sometimes you gotta run before you can
+  walk."* It sits on the same pole as §Discipline's "driving the car
+  while you're still building it" in the execution guide — one licensing the
+  unfinished flight, the other keeping you honest about it — and both stand
+  opposite the disciplined ordering that finishes and tests the machine before
+  it leaves the ground. Note
+  where the scene goes: the suit ices up and nearly kills him, and the fix comes
+  from the telemetry he was capturing the whole time. Running before you walk is
+  licensed by the instrumentation, not by the confidence.
+- **Ex Machina** — the verifier's problem, dramatised: an evaluator who is
+  himself inside the experiment, an agent optimising to pass the evaluation
+  rather than to be what the evaluation measures, and a judge disarmed by
+  fluency. This is the argument for implementer ≠ verifier as a *structural*
+  rule rather than a habit, for adversarial evaluators that try to refute
+  rather than confirm, and for evidence that a persuasive summary cannot
+  substitute for.
+- **Black Mirror, especially Bandersnatch** — branching state made navigable:
+  choice points, rewind, paths not taken, and a participant who can see the
+  branch structure they are inside. That is Horizon 3's counterfactual replay
+  almost literally — paired runs, first-divergence detection, and the
+  scrubbable run-orb. The series' broader use is as a standing negative
+  oracle: it is a catalogue of systems that worked exactly as specified and
+  were still wrong, which is the failure mode an ObjectiveContract and the
+  six-month livability test exist to catch.
+- **Christopher Nolan's films — and their productions.** Three distinct axes,
+  and the third is the one that matters most here.
+  *Story:* nonlinear and multi-rate time is the recurring subject. **Memento**
+  is close to a literal statement of this system's execution model — a
+  protagonist with no session memory who stays coherent only through durable
+  external artifacts he has disciplined himself to trust, and who is
+  demonstrably corruptible through those artifacts. That is the disposable
+  executor, the event log as the only memory, and the reason provenance and
+  immutability are not decoration. **Inception** is nested episodes running at
+  different time bases with a delegation depth, an explicit termination signal,
+  and totems as provenance checks. **Dunkirk** is three workstreams on
+  different cadences converging on one outcome.
+  *Presentation:* practical effects wherever they are possible, because a real
+  mechanism photographs differently than a simulated one. DotLn's version of
+  that rule already exists and is called the analog-completeness test — if a
+  feature only works because a model improvises around missing semantics, it is
+  not in the core grammar.
+  *The meta level — the actual lesson:* the quality comes from the whole
+  production holding a standard, not from one person having taste. Crew,
+  cast, and composer all operate at it. That is precisely the bet in The core
+  bet above, viewed from the other end: a standard that lives only in one
+  person's judgment does not survive contact with scale, and the work of this
+  project is to compile that standard into machinery every participant — human
+  or model, present or replaced — is held to.
+- Already carried elsewhere in the blueprint: Poincaré via Pirsig (the
+  selection function, in The core bet above), ZAMM's gumption traps, Donella
+  Meadows' leverage points, Goldratt's bottleneck pacing, 5S, and the RPG
+  vocabulary — gems, links, supports, loadouts — that gives the whole system
+  its authoring metaphor.
+- **Game inspirations: to be added by the operator.** Deliberately left open
+  rather than guessed at; the RPG mechanics already in use are a fraction of
+  what the operator intends to name.
+
+Provenance note: Gödel, Escher, Bach, Iron Man / JARVIS, Ex Machina, Black
+Mirror, and the Nolan filmography appear nowhere in the captured intake corpus
+and are recorded on the operator's direct instruction (2026-08-31). Westworld and the rest are
+traceable to the raw material. Do not attribute a specific claim to an
+unsourced influence without asking.
+
 ## What DotLn is not
 
 - Not a prompt library, and not a wrapper that makes one vendor's model nicer.

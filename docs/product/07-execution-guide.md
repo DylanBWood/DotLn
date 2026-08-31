@@ -11,6 +11,134 @@ transcript, is the shared memory. This guide is the operating contract.
    do not bulk-load the corpus into context. The ledger and intake exist for
    lookup, not for reading end-to-end.
 
+## Operator resume phrases — how you get dispatched
+
+The operator's entire instruction to you may be a single phrase of the form
+`resume: <intent>`. That phrase **is** your dispatch. Do not ask for context and
+do not ask which work order: the durable control state answers both, and the
+operator is deliberately not repeating themselves.
+
+1. Read `docs/control/current.md`. It names the active work order and its
+   authoritative path, the current phase, the latest verification artifact and
+   verdict, and the legal next actions. It is a generated projection of the
+   append-only `docs/control/resume.jsonl`; never edit it by hand.
+2. Run the matching transition and follow the paths it prints — they are
+   authoritative, and they are the whole briefing:
+
+   | Operator says | You run | You then |
+   |---|---|---|
+   | `resume: status` | `npm run resume -- status` | report; this is read-only and appends nothing |
+   | `resume: fix` | `npm run resume -- fix` | repair, reading BOTH the original work order and the named failing `VER-NNN` |
+   | `resume: verify` | `npm run resume -- verify` | verify, writing the exact `VER-NNN` path it allocates |
+   | `resume: final review` | `npm run resume -- final-review` | review, writing the exact `FINAL-NNN` path it allocates |
+   | `resume: next` | `npm run resume -- next` | confirm closure, then await the operator's next work order |
+
+3. Record your outcome when your evidence exists, not before:
+   `npm run resume -- implementation-ready` (executor: the deliverable is
+   built and its work-order evidence is green, so it is ready to verify),
+   `npm run resume -- verification-result pass|fail`,
+   `npm run resume -- repair-complete`, or
+   `npm run resume -- final-review-result pass|fail`. **A repair episode is not
+   finished until `repair-complete` is recorded** — otherwise the next session
+   resumes into the wrong phase. The remaining action,
+   `npm run resume -- activate WO-NNN docs/work-orders/<file>.md`, opens a
+   work order from phase `none` or `closed`; `npm run worktree -- start` runs
+   it automatically when creating a work-order worktree.
+4. Illegal transitions refuse and append nothing. A refusal means your
+   understanding of the phase is wrong: re-read `docs/control/current.md`
+   rather than forcing or working around it.
+
+The operator's own copy of this loop lives in `docs/PLAYBOOK.md`; this section
+is the executor's half of the same contract.
+
+## Operator-opened ideation mode
+
+The operator may explicitly pause work-order execution and reopen ideation,
+including by expanding the subject of the current work order. That instruction
+changes the session's job from implementer/verifier to intake and synthesis;
+the work order is then context, not a scope fence, until the operator resumes
+execution. Do not make the operator restate the documentation pipeline.
+
+In ideation mode:
+
+1. Capture unedited material in a dated file under `docs/intake/chats/`,
+   `docs/intake/notes/`, or `docs/intake/images/`. Intake is local-only and
+   gitignored; preserve fragments, repetition, uncertainty, and contradictions.
+2. Apply the clean-room boundary before synthesis. If material resembles
+   employer code, configuration, identifiers, proprietary API shapes,
+   internal services, or managed-work-host details, stop and flag it. Never
+   promote suspect material.
+3. When the operator asks to synthesize, rewrite rather than copy. Append each
+   significant idea to `docs/lineage/idea-ledger.md` with lifecycle status and
+   provenance; never rewrite an older ledger entry.
+4. Promote only durable product understanding into the relevant
+   `docs/product/` document, and update an ADR only through its permitted
+   amendment mechanism. Preserve speculative ideas as `raw` or `preserved`
+   instead of forcing premature architecture.
+5. Treat tensions with settled resolutions as tensions to surface, not license
+   to silently overwrite them. A real challenge based on new evidence becomes
+   a decision-record proposal.
+6. Keep pre-existing implementation changes intact and distinguish them from
+   ideation artifacts. Do not resume coding, verification, or work-order
+   closeout until the operator asks.
+
+### Ideation breakout receipt and verification
+
+An ideation breakout that changes committed documentation is not complete at
+synthesis. Record the operator's explicit scope-expansion authority in the
+affected work order (or a new bounded work order), together with a receipt that
+names the raw intake batch, ledger entries, product/decision/schema surfaces
+changed, unresolved choices, and required review.
+
+The eventual verifier and final reviewer must digest that receipt and the
+synthesized documents as part of their subject—not treat them as incidental
+notes. They verify clean-room rewriting, traceability to operator intent,
+consistency with settled decisions and canonical vocabulary, version/schema
+effects, internal cross-references, and whether speculative choices were
+accidentally presented as settled. They may propose and apply authorized,
+non-substantive handoff/documentation corrections. Any correction affecting
+code, contracts, acceptance, schema, compatibility, authority, or prior
+evidence fails final review and returns through repair plus a fresh independent
+numbered verification before another final-review attempt.
+They do not promote raw intake verbatim or expand implementation merely because
+the ideation describes a future feature.
+
+Any executable helper, migration, generator, backup utility, or other ad hoc
+tool created during an ideation breakout is implementation subject to the same
+separation and evidence rules as work-order code. It must have associated
+automated tests proportionate to its risks, be named in the breakout receipt,
+and be independently inspected and executed by the verifier. The final reviewer
+checks both its product fit and whether the tests cover its consequential
+failure modes; “small script” is not an evidence exemption.
+
+The default capture path for ideation opened around a work order is
+`docs/intake/notes/<work-order>-expanded-ideation-<date>.md`; the naming scheme
+is a convenience, not a requirement.
+
+## Workflow closeout and releases
+
+Final review prepares and publishes a clean PR; the operator retains merge
+authority. After the PR is merged, the lifecycle helper updates `main`, proves
+the reviewed branch is contained in `origin/main`, and removes only its known
+worktree and merged branch. Ordinary tracked or untracked dirt is refused by
+the clean-worktree gate. Ignored raw material under `docs/intake/` must be
+backed up and reconciled into the surviving main intake as appropriate; the
+helper separately refuses removal while any non-disposable ignored file
+exists — protected intake material, a stray `.env`, any other ignored path —
+naming the offending file, and never deletes or auto-promotes it. Known
+disposable ignored dependency/build outputs (`node_modules`, `dist`,
+`.DS_Store`, `*.tsbuildinfo`) may leave with the worktree. The last workflow
+task then evaluates whether the
+completed roadmap rung is a release boundary.
+
+For a release boundary, work from the exact merged commit: rerun the release
+evidence, generate and validate the immutable release manifest described in
+`06-roadmap.md`, and present the annotated tag and publication command for
+explicit operator authorization. Never tag the feature branch, tag failing
+evidence, move an existing tag, or imply that npm/binary/hosted distribution
+occurred when the release is source-only. A failed release check opens a patch
+work order; an intentional defer records why and what will trigger reconsideration.
+
 ## Discipline
 
 - **Work only from the current work order.** No opportunistic scope expansion;
@@ -20,6 +148,57 @@ transcript, is the shared memory. This guide is the operating contract.
 - **Evidence gates over prose.** Completion claims require the work order's
   evidence: passing tests you ran, output you captured, behavior you
   witnessed. Read your own diff before reporting. Never infer completion.
+- **Recovery point before destruction.** Never run `git checkout .`,
+  `git restore .`, `git reset --hard`, `git clean` (any flags), or
+  `git stash drop` in a work-order worktree. Until final review, the
+  deliverable, every `VER-NNN`, and `docs/control/resume.jsonl` are typically
+  uncommitted, and `docs/intake` is gitignored single-copy raw material that is
+  in no commit at all. If you need a clean tree, commit a checkpoint
+  (`git add -A && git commit -m 'WO-NNN checkpoint'`) or `git stash -u` first,
+  and say in your result which you did.
+- **Verification artifacts are immutable and numbered.** Verifiers write to
+  `docs/verifications/WO-NNN/VER-NNN.md`; the first pass is `VER-001.md` and
+  every re-verification creates the next number instead of replacing a prior
+  report. The original `docs/work-orders/WO-NNN-*.md` remains scope authority.
+  A repair episode reads both that original work order and the specific
+  verification artifact it was dispatched to fix. A verifier reads the
+  original work order, the subject diff, and prior reports needed to establish
+  whether findings were repaired, then writes a new report. Final review reads
+  the work order and the full numbered verification sequence; no actor treats
+  a verifier report as permission to expand scope.
+- **We are driving the car while we are still building it.** This project uses
+  its own process to build that process; the machinery under construction is
+  also the machinery in force. Four consequences bind every session:
+  *Time-index the standard.* Judge a past artifact against the process that
+  existed when it was made, not today's — and say which you are applying. A
+  missing artifact whose convention had not been invented yet is not a defect.
+  *The excuse has a hard boundary.* "We were still building it" explains absent
+  **process** scaffolding. It never excuses a **behavioral or evidence** defect:
+  a test that does not test, a guard that does not guard, work that was lost.
+  Process immaturity is not an evidence exemption, exactly as "small script" is
+  not one.
+  *Expect retroactive non-compliance.* Every hardening makes prior work look
+  non-conforming. Record the discontinuity as a dated migration note where a
+  reader will hit it; never back-fill artifacts to make history look tidy.
+  `docs/verifications/README.md` already does this ("Do not fabricate it to make
+  the sequence appear complete") — that is this rule in practice.
+  *Prefer forward-only enforcement.* A new guard binds new work. Do not
+  retroactively invalidate merged work unless a real defect is demonstrated.
+  *Disclose a self-referential instrument.* When the machinery you use to do
+  your job — the control log, a lifecycle script, a generator — is itself part
+  of the deliverable you are judging, say so explicitly in your report, and
+  verify that machinery independently rather than trusting it because it
+  appeared to work. A broken instrument records the finding that it is broken.
+  This is not hypothetical: `VER-001` was allocated and its verdict recorded
+  through `scripts/resume.mjs`, a WO-003 deliverable under verification in that
+  same report. **This is a disclosure duty on the verifier, not a reason to
+  avoid using new machinery.** Dogfooding a tool in the work order that built it
+  is how it hardens, and refusing to would ship control planes nobody has
+  driven. Abstain only in the narrow case where the instrument's correctness is
+  itself the question *and* its failure would be silent — you do not verify a
+  checksum tool with itself. Prefer instruments that fail loudly; an append-only
+  log with a regenerated projection is safe to dogfood precisely because
+  corruption shows rather than producing a plausible record.
 - **Settled is settled.** The idea-ledger Resolutions and `docs/decisions/`
   close their questions. Do not relitigate; a genuine new-evidence challenge
   becomes a new decision record proposal, never an in-place edit. Exception:
@@ -73,6 +252,11 @@ transcript, is the shared memory. This guide is the operating contract.
   if you are not it, stop and say so; never silently proceed as a substitute.
   Every work order carries a `Model:` line; `Model: any` means any capable
   model. An absent line is a defect in the work order — flag it, don't guess.
+  Note the gap: the `Model:` line pins a model family and has no effort field,
+  and no executable check compares the configured effort to the documented one.
+  State the model **and effort** you actually ran at in your result, so evidence
+  is attributable to the configuration that produced it. This is not
+  hypothetical — see the effort-drift note in `docs/PLAYBOOK.md` §Who does what.
 - Behavioral guidance rots across model generations; that is why it lives here
   as typed mechanisms and docs instead of prompts. If an instruction here
   fights your model's defaults (e.g., built-in verification), flag it in your

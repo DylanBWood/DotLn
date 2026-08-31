@@ -1,0 +1,10 @@
+{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-003","workOrderPath":"docs/work-orders/WO-003-walking-skeleton.md"}
+{"schemaVersion":1,"type":"ImplementationReady","workOrderId":"WO-003"}
+{"schemaVersion":1,"type":"VerificationRequested","workOrderId":"WO-003","verificationId":"VER-001","reportPath":"docs/verifications/WO-003/VER-001.md"}
+{"schemaVersion":1,"type":"VerificationCompleted","workOrderId":"WO-003","verificationId":"VER-001","reportPath":"docs/verifications/WO-003/VER-001.md","verdict":"fail"}
+{"schemaVersion":1,"type":"RepairRequested","workOrderId":"WO-003","sourceFindingId":"VER-001","sourceReportPath":"docs/verifications/WO-003/VER-001.md"}
+{"schemaVersion":1,"type":"RepairCompleted","workOrderId":"WO-003","sourceVerificationId":"VER-001","checkpointSha":"7b5ddc71b38e0699b1260bf0d6649c5d289a9537","checkpointRef":"refs/dotln/checkpoint/WO-003/1"}
+{"schemaVersion":1,"type":"VerificationRequested","workOrderId":"WO-003","verificationId":"VER-002","reportPath":"docs/verifications/WO-003/VER-002.md","checkpointSha":"559a353a864653855b18c33cb186f3956578fd3f","checkpointRef":"refs/dotln/checkpoint/WO-003/2"}
+{"schemaVersion":1,"type":"VerificationCompleted","workOrderId":"WO-003","verificationId":"VER-002","reportPath":"docs/verifications/WO-003/VER-002.md","verdict":"pass","checkpointSha":"0de3c250ccfeef17a0a2045e1205d8363bbdf6c8","checkpointRef":"refs/dotln/checkpoint/WO-003/3"}
+{"schemaVersion":1,"type":"FinalReviewRequested","workOrderId":"WO-003","throughVerificationId":"VER-002","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-003/FINAL-001.md","checkpointSha":"7f58eedcd193df6ccb5fe4ae38fc259337741b3b","checkpointRef":"refs/dotln/checkpoint/WO-003/4"}
+{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-003","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-003/FINAL-001.md","verdict":"pass","checkpointSha":"026d51d35edc2feda13e4ec6db41e65c326b5942","checkpointRef":"refs/dotln/checkpoint/WO-003/5"}

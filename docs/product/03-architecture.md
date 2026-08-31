@@ -233,6 +233,21 @@ failure in a new format. Skills activate by tags, state, relationship, and
 capability; their context cost is visible; expiry and removal follow the
 episode lifecycle.
 
+The repository's operator workflow should converge on the same model. Stable
+DevEx intents such as `resume: verify`, `resume: fix`, `resume: final review`,
+and `resume: next` resolve durable control state first, then load only the
+reviewed role skill needed for that transition. The skill supplies procedure,
+input contract, artifact locations, evidence obligations, and stopping rules;
+it does not duplicate phase state or grant authority. This replaces large
+autoloaded role explanations with on-demand, versioned protocol adapters while
+preserving a CLI path for humans and runtimes that cannot load skills.
+
+Skill delivery is incremental rather than a single rewrite: first define and
+test the shared intent-to-transition contract, then package verifier and repair
+skills, then final-review and lifecycle skills, and finally measure startup
+context saved, invocation accuracy, and parity with the CLI. Until those work
+orders land, the current resume resolver and durable docs remain authoritative.
+
 #### Runtime primitive catalogs
 
 An agent runtime is not merely a text-completion endpoint. Claude, Codex, and
@@ -369,7 +384,67 @@ The LoadoutGraph (see domain model) is compiled per episode:
    plan + the (small) prompt fragment residue. Per-support cost is declared:
    mechanism type, prompt tokens (usually 0), runtime cost, extra episodes.
 
+Before type-checking a historical loadout, resolve its IR, mechanic, support,
+runtime, and environment versions into a compatibility plan
+(`10-ir-compatibility.md` §Transformation graph). Availability may be
+non-monotonic across releases. Missing or inactive
+mechanics remain visible with their declared fallback behavior; the compiler
+never silently drops a requested component. Validation and planning are pure;
+JIT execution or AOT migration occurs only after an explicit plan is accepted.
+
+## Agent-originated product suggestions
+
+At a mature rung, independent maintenance and 5S episodes may emit typed
+`ProductSuggestion` records when repeated friction, waste, risk, or an unmet
+opportunity survives their local authority boundary. Suggestion is a speech
+act, not permission: the submitting agent cannot schedule its own proposal,
+expand a work order, or manufacture priority through volume.
+
+The suggestion pipeline normalizes and deduplicates records, links corroborating
+and dissenting evidence, clusters common causes, checks settled decisions and
+existing roadmap items, and applies explicit value/risk/novelty/effort filters.
+Rejections and deferrals retain reason and lineage so the same weak request does
+not repeatedly consume review. A product-planning role periodically examines
+the small high-signal remainder—the operator's “pearls”—and proposes which
+candidates deserve implementation. Under the current operating model that role
+is Fable; model assignment remains replaceable and is never embedded in the
+semantic record.
+
+Only an operator-authorized planning transition may promote a suggestion into a
+real WorkOrder. Promotion records source suggestions, selection rationale,
+alternatives, evidence, scope boundary, and the acceptance gate. Agents that
+benefit from accepted changes do not verify their own proposal by default.
+
 ## Session lifecycle & resilience
+
+Resume control v1 uses an append-only JSONL control log
+(`docs/control/resume.jsonl`) plus a generated human projection
+(`docs/control/current.md`). A small deterministic resolver exposes the stable
+intents status, fix, verify, final review, and next; it resolves the active work
+order, current phase, immutable verification sequence, next legal transition,
+and required artifacts from durable state. Conversation-first `resume:` phrases
+map to the same `npm run resume -- <action>` surface. Internal completion
+actions record verifier, repair, and final-review outcomes. The log is canonical;
+the Markdown file is disposable projection. One writable agent per worktree
+serializes appends in v1; concurrent control-log writers are deferred.
+
+The operator surface also needs an always-legible runtime projection: remaining
+context budget, active and completed delegated episodes, current phase, blocked
+or awaiting-input state, and the next legal workflow action. A TUI status line,
+agent drawer, CLI status view, and future console are projections of the same
+typed state, not separate sources of truth. If a host cannot expose exact
+context remaining or subagent telemetry, it must label the value unavailable
+or estimated instead of implying continuous observability.
+
+The operator worktree projection automates the reversible control-plane edges
+around that state: start from a clean `main`, fetch and fast-forward the base,
+create one sibling worktree/branch, and activate its WorkOrder; after a recorded
+passing final review and clean commit, publish the branch and open a PR for the
+operator to review and merge. Cleanup runs only after `origin/main` contains the
+subject branch, then removes its worktree and safely deletes the merged branch.
+Divergence, dirty state, missing closure, naming collisions, or an unmerged
+branch refuse. The tool never rebases, force-deletes, auto-merges, or discards
+changes.
 
 - Statechart-first: `rate_limited`, `environment_blocked`, `operator_paused`,
   `interrupted` are lifecycle states, not failures. 429 → persist continuation

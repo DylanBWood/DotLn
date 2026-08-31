@@ -126,6 +126,14 @@ import all use the same manifest and preview flow. Social metadata may help
 discovery, but the primary review surface is always mechanics and evidence—not
 screenshots, popularity, or persuasive descriptions.
 
+An artifact can also be pasted into a lightweight IR verifier. Before Preview,
+it reports artifact/schema identity, native runtime range, validation failures,
+and available JIT-compatibility or AOT-migration paths. Historical builds keep
+their requested component versions; inactive, emulated, substituted, lossy,
+and blocking mechanics remain visible. A share code or generated string is a
+portable projection of the immutable manifest, never an authority grant or a
+replacement for provenance (10-ir-compatibility.md).
+
 ## Agent projection (the sparse twin)
 
 Every state the human views richly also renders as a deliberately **sparse,
@@ -155,6 +163,21 @@ links: which agents can exchange which typed messages, which communicate only
 through the blackboard, who may delegate or cancel, and which handoff schema is
 active. Removing a role or ending the episode removes its preloaded skills;
 coordination affordances do not linger as ambient prompt text.
+
+The terminal projection keeps workflow state glanceable without requiring the
+operator to interrogate every agent. Its compact status region shows context
+remaining when the runtime exposes it, current WorkOrder and phase, delegated
+episode counts by running/waiting/finished/failed, and whether operator input is
+required. Expanding the agent view shows each episode's role, assignment,
+heartbeat or last transition, evidence destination, and parent relationship.
+Unknown telemetry is displayed as unknown, never synthesized from silence.
+
+DevEx phrases are also skill selectors. Entering `resume: verify` (and the
+corresponding fix, final-review, next, or status intent) resolves the control
+log, validates the transition, and loads the smallest native role skill on
+demand. The UI previews what will load and why. The same intent remains usable
+through the CLI, so skill-capable hosts gain lower context cost rather than a
+different workflow.
 
 The build inspector also exposes a **runtime lowering view**. Select Claude,
 Codex, or another discovered runtime to see how the same semantic build maps to
