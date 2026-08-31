@@ -11,6 +11,41 @@ transcript, is the shared memory. This guide is the operating contract.
    do not bulk-load the corpus into context. The ledger and intake exist for
    lookup, not for reading end-to-end.
 
+## Operator resume phrases — how you get dispatched
+
+The operator's entire instruction to you may be a single phrase of the form
+`resume: <intent>`. That phrase **is** your dispatch. Do not ask for context and
+do not ask which work order: the durable control state answers both, and the
+operator is deliberately not repeating themselves.
+
+1. Read `docs/control/current.md`. It names the active work order and its
+   authoritative path, the current phase, the latest verification artifact and
+   verdict, and the legal next actions. It is a generated projection of the
+   append-only `docs/control/resume.jsonl`; never edit it by hand.
+2. Run the matching transition and follow the paths it prints — they are
+   authoritative, and they are the whole briefing:
+
+   | Operator says | You run | You then |
+   |---|---|---|
+   | `resume: status` | `npm run resume -- status` | report; this is read-only and appends nothing |
+   | `resume: fix` | `npm run resume -- fix` | repair, reading BOTH the original work order and the named failing `VER-NNN` |
+   | `resume: verify` | `npm run resume -- verify` | verify, writing the exact `VER-NNN` path it allocates |
+   | `resume: final review` | `npm run resume -- final-review` | review, writing the exact `FINAL-NNN` path it allocates |
+   | `resume: next` | `npm run resume -- next` | confirm closure, then await the operator's next work order |
+
+3. Record your outcome when your evidence exists, not before:
+   `npm run resume -- verification-result pass|fail`,
+   `npm run resume -- repair-complete`, or
+   `npm run resume -- final-review-result pass|fail`. **A repair episode is not
+   finished until `repair-complete` is recorded** — otherwise the next session
+   resumes into the wrong phase.
+4. Illegal transitions refuse and append nothing. A refusal means your
+   understanding of the phase is wrong: re-read `docs/control/current.md`
+   rather than forcing or working around it.
+
+The operator's own copy of this loop lives in `docs/PLAYBOOK.md`; this section
+is the executor's half of the same contract.
+
 ## Operator-opened ideation mode
 
 The operator may explicitly pause work-order execution and reopen ideation,
