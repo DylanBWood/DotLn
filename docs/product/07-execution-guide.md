@@ -34,11 +34,16 @@ operator is deliberately not repeating themselves.
    | `resume: next` | `npm run resume -- next` | confirm closure, then await the operator's next work order |
 
 3. Record your outcome when your evidence exists, not before:
+   `npm run resume -- implementation-ready` (executor: the deliverable is
+   built and its work-order evidence is green, so it is ready to verify),
    `npm run resume -- verification-result pass|fail`,
    `npm run resume -- repair-complete`, or
    `npm run resume -- final-review-result pass|fail`. **A repair episode is not
    finished until `repair-complete` is recorded** — otherwise the next session
-   resumes into the wrong phase.
+   resumes into the wrong phase. The remaining action,
+   `npm run resume -- activate WO-NNN docs/work-orders/<file>.md`, opens a
+   work order from phase `none` or `closed`; `npm run worktree -- start` runs
+   it automatically when creating a work-order worktree.
 4. Illegal transitions refuse and append nothing. A refusal means your
    understanding of the phase is wrong: re-read `docs/control/current.md`
    rather than forcing or working around it.
@@ -118,9 +123,11 @@ the reviewed branch is contained in `origin/main`, and removes only its known
 worktree and merged branch. Ordinary tracked or untracked dirt is refused by
 the clean-worktree gate. Ignored raw material under `docs/intake/` must be
 backed up and reconciled into the surviving main intake as appropriate; the
-helper separately refuses removal while that protected material exists and
-never deletes or auto-promotes it. Known disposable ignored dependency/build
-outputs such as `node_modules` and `dist` may leave with the worktree. The last workflow
+helper separately refuses removal while any non-disposable ignored file
+exists — protected intake material, a stray `.env`, any other ignored path —
+naming the offending file, and never deletes or auto-promotes it. Known
+disposable ignored dependency/build outputs (`node_modules`, `dist`,
+`.DS_Store`, `*.tsbuildinfo`) may leave with the worktree. The last workflow
 task then evaluates whether the
 completed roadmap rung is a release boundary.
 

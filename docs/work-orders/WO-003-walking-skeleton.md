@@ -148,6 +148,23 @@ demonstrate intake-only archive contents, archive integrity, owner-only
 permissions, overwrite refusal, and symbolic-link refusal. Implementation of
 the other future capabilities remains out of scope.
 
+**Receipt corrections (final review FINAL-001, 2026-08-31).** Appended by the
+final reviewer under this gate's "report or correct: omissions" authority; the
+bullets above are preserved as written. Four synthesized surfaces exist, were
+covered by VER-001/VER-002, and are absent from the receipt above:
+
+- Root `README.md`, the public front door (operator dump 012; flagged open in
+  both VER reports).
+- `docs/product/00-vision.md` §Inspirational sources, added on operator
+  instruction during the verification window (dumps 019–021; disclosed in
+  VER-001).
+- The agent-suggestions surfaces from operator dump 018: the
+  `ProductSuggestion` row in `docs/product/02-domain-model.md` and
+  `docs/product/03-architecture.md` §Agent-originated product suggestions
+  (ledger: "Agent-originated suggestions, planner-selected pearls").
+- `docs/product/08-publication-compiler.md` §Release-note edition, cited by
+  the release-policy bullet above but missing from the updated-surfaces list.
+
 ## Operator-authorized repair-scope addendum (2026-08-31)
 
 Authorized by the operator during the WO-003 verification window, after an

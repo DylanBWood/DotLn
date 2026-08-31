@@ -90,10 +90,12 @@ npm run worktree -- publish WO-002 --title ':sparkles: Pure kernel' --body-file 
 
 First run `npm run backup:intake` from the subject worktree and reconcile any
 worktree-local raw notes into the surviving main intake or another trusted
-backup. `finish` deliberately refuses while ignored `docs/intake` material
-remains; it will not guess whether local-only notes are disposable. Ordinary
-untracked dirt also fails the clean check, while ignored `node_modules` and
-generated `dist` output may be discarded with the worktree.
+backup. `finish` deliberately refuses while any non-disposable ignored file
+remains — `docs/intake` material, a stray `.env`, anything else `.gitignore`
+hides — naming the offending path; it will not guess whether local-only files
+are disposable. Ordinary untracked dirt also fails the clean check, while
+ignored `node_modules`, `dist`, `.DS_Store`, and `*.tsbuildinfo` output may be
+discarded with the worktree.
 
 ```bash
 cd ~/Projects/DotLn

@@ -3,6 +3,7 @@
 ## Map
 
 ```
+../README.md       repo front door — what DotLn is, what runs today, horizons
 docs/intake/       raw, local-only (gitignored) — the founding dump lives here
 docs/PLAYBOOK.md   the operator's canonical loop (models, worktrees, verify)
 docs/product/      the blueprint: vision, principles, domain model,
@@ -99,3 +100,7 @@ One line per `.claude/` or CLAUDE.md change (see execution guide):
   worktrees (nothing is committed until final review; intake is single-copy).
   Verifier documentation correction during the WO-003 verification window; the
   executable guard is specified for the repair pass.
+- 2026-08-31: CLAUDE.md — §Start here now resolves a bare `resume:` phrase via
+  the execution guide's §Operator resume phrases (commit c339aef, executor
+  dispatch wiring). Logged retroactively at final review (FINAL-001); the
+  change itself shipped without its config-log line.
