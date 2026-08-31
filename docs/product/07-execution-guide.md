@@ -55,6 +55,14 @@ transcript, is the shared memory. This guide is the operating contract.
 - **Projection boundary.** Internal vocabulary (gems, masks, DotLn taxonomy)
   stays out of artifacts consumed outside the system (PRs to other repos,
   generated reports for third parties).
+- **PR titles carry a gitmoji shortcode.** Open each PR title with the shortcode matching
+  the change — `:memo:` for documentation-only deliverables,
+  `:adhesive_bandage:` for a simple fix to a non-critical issue, standard
+  gitmoji otherwise. Titles only: commit messages stay plain, and a merged
+  commit is never rewritten to add one. On a squash merge the platform copies
+  the PR title into the commit subject — that inherited emoji is fine; the
+  plain rule governs hand-authored messages. Retitle with
+  `gh pr edit <n> --title`.
 - **Return shape.** End with a compact result: what changed, evidence
   pointers, deviations from the work order, open questions. Terse; no
   narration theater, no apology theater.

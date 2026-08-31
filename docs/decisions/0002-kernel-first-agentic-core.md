@@ -45,4 +45,7 @@ same LoadoutGraph IR regardless of which verticals are plugged in.
 Appendable without relitigating the decision (see execution guide): dependency
 notes and tooling choices within the decided constraints.
 
-- *(none yet)*
+- WO-002 uses TypeScript 5.4.5 and `@types/node` 22.20.1 as exact dev
+  dependencies, matching the compiler and Node 22 line observed by WO-001.
+  The Node types bring the runtime acceptance suite under strict compilation;
+  tests use Node's built-in runner and the kernel has zero runtime dependencies.

@@ -98,6 +98,34 @@ Edits propagate bidirectionally through the IR (change the 20-minute pulse in
 the rhythm editor → tooltip updates; unequip → transitions and permissions
 vanish from the running program).
 
+## Community build workshop
+
+Sharing uses a compact build file, link, or copyable code that resolves to an
+immutable `CommunityBuild` manifest. Opening one enters **Preview**, never
+Install: the current local build and community build appear side by side with
+cross-highlighted additions, removals, substitutions, dependency changes,
+permission requests, costs, evidence, and semantic hashes.
+
+The operator can remix it like a build planner:
+
+- drag individual actives, supports, roles, evaluators, or workstream pieces
+  into a scratch loadout;
+- swap equivalent components and immediately see compiled-effect changes;
+- save named variants or fork the entire build without losing provenance;
+- run variants against shared fixtures or approved local replay slices;
+- compare timelines, outcomes, evidence, resource use, and first divergence;
+- promote only the winning pieces to a reviewed local version.
+
+Sandbox state is visually unmistakable and cannot invoke live integrations.
+Missing capabilities and rejected combinations remain visible in place rather
+than disappearing. A one-click "Inspect Mechanics" path exists at every level,
+from the whole community implementation down to one support contribution.
+
+Public discovery, private team sharing, filesystem exchange, and air-gapped
+import all use the same manifest and preview flow. Social metadata may help
+discovery, but the primary review surface is always mechanics and evidence—not
+screenshots, popularity, or persuasive descriptions.
+
 ## Agent projection (the sparse twin)
 
 Every state the human views richly also renders as a deliberately **sparse,
@@ -106,6 +134,35 @@ few statechart-gated actions, one result form — token-budgeted by design,
 whether rendered as a page, CLI output, or file. Never force an agent to parse
 an 80-row dashboard; never let it see an action the current state makes
 illegal (gated affordances, 03 §agentic core).
+
+Agent-runtime skills are another projection of this sparse twin. An
+implementation may ship Claude, Codex, or future-runtime skills that expose its
+current WorkOrder, definitions, schemas, commands, and evidence protocol in the
+native ergonomics of that runtime. Skills should be generated or validated
+against the same contracts as the CLI and agent-facing screen; they never
+become the canonical home of permissions or organizational semantics.
+
+The onboarding view supports bring-your-own agents: select or describe a model
+and harness, inspect detected capabilities, choose an implementation and role,
+then preview the exact participation/coordination skills DotLn will download or
+preload. The preview shows why each skill is present, its context and tool cost,
+what contract it projects, what capability it requires, and when it expires.
+Operators can export the same negotiated bundle for a remotely managed agent
+without exporting implementation secrets.
+
+During a team episode, the inspector shows the coordination surface as actual
+links: which agents can exchange which typed messages, which communicate only
+through the blackboard, who may delegate or cancel, and which handoff schema is
+active. Removing a role or ending the episode removes its preloaded skills;
+coordination affordances do not linger as ambient prompt text.
+
+The build inspector also exposes a **runtime lowering view**. Select Claude,
+Codex, or another discovered runtime to see how the same semantic build maps to
+native agents, skills, hooks, permissions, tools, schemas, sessions, and host
+mechanisms. Cross-highlighting runs both ways: selecting a DotLn support lights
+every native primitive that realizes it; selecting a hook or skill identifies
+the semantic obligation it serves. Missing, substituted, and lossy mappings are
+visually explicit and participate in compatibility checks.
 
 ## Glyph system (visual prototype zero)
 

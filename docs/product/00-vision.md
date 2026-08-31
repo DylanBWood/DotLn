@@ -5,8 +5,8 @@ DAYs-of-the-LN, and doubles as a technical pun: behavior evolving over time
 through additive log-odds composition of influences) is a **local-first,
 model-agnostic compiler and runtime for human judgment**.
 
-It turns one person's values, craftsmanship, organizational patterns, and
-accumulated corrections into:
+It turns a person, team, organization, or field's values, craftsmanship,
+organizational patterns, and accumulated corrections into:
 
 - deterministic control logic (pure reactors, statecharts, function tables),
 - bounded work orders,
@@ -16,6 +16,55 @@ accumulated corrections into:
 so that the operator declares intent at a high level and improves the
 **meta-process**, while the machinery — not the operator's attention — carries
 the rules.
+
+## Common substrate, local doctrine
+
+DotLn distributes the same **legos**, not the same finished organization. Its
+product is the level playing field: a common event grammar, deterministic
+kernel, composition rules, authority boundaries, provenance, replay,
+inspection, and interchangeable execution ports. The secret sauce belongs to
+each DotLn implementation.
+
+An individual, team, organization, or entire field can define its own:
+
+- workstream types, objectives, continuations, and completion contracts;
+- integrations, input sources, effect adapters, and projections;
+- security boundaries, authority policy, audit requirements, retention, and
+  logging posture;
+- identities, roles, personalities, masks, active mechanics, supports, and
+  valid combinations;
+- evidence standards, evaluators, exemplars, feedback units, and learned
+  defaults;
+- vocabulary and presentation skins appropriate to its domain.
+
+These definitions are inspectable, versioned, portable instance content—not
+forks hidden in kernel code. Two implementations may use the same DotLn
+runtime and share no doctrine beyond the rules required for safe composition
+and interoperability.
+
+The founding patterns in this repo are the author's first implementation and
+an executable proving ground. They are valuable starter content and examples,
+not a privileged canon. A clean installation must be able to replace or omit
+them while retaining the same expressive power, evidence model, and mechanics
+inspector. DotLn succeeds when it makes sophisticated organizational
+programming available to everyone without pretending everyone should build
+the same organization.
+
+That boundary naturally permits an ecosystem: people can publish and exchange
+roles, identities, patterns, supports, workstream templates, evaluators,
+adapters, projections, and complete starter configurations. A marketplace is
+distribution infrastructure, not the differentiated thesis. DotLn's claim is
+that every acquired component remains typed, inspectable, permission-bounded,
+version-pinned, and reducible to the same visible mechanics as a locally
+authored one.
+
+The repository also compiles outward as an authoritative learning and
+decision resource. The same reviewed purpose, mechanics, implementation,
+decisions, and evidence can produce an everyday-user book, programmer guide,
+manager handbook, IT architecture reference, executive briefing, or finance
+case without maintaining six contradictory narratives. Audience changes the
+path and language, never the underlying facts. See the
+[`publication compiler`](08-publication-compiler.md).
 
 ## The one-paragraph story
 
@@ -84,6 +133,12 @@ counterfactuals possible at all) and is not allowed to distort Horizon 1.
 ## What DotLn is not
 
 - Not a prompt library, and not a wrapper that makes one vendor's model nicer.
+- Not a prescribed catalog of ideal agents, roles, personalities, workflows,
+  or organizational doctrine. Bundled patterns are examples and optional
+  starting points, not kernel truth.
+- Not dependent on a public marketplace. Local files, private catalogs,
+  organization-internal registries, and offline or air-gapped installations
+  remain complete authoring and distribution paths.
 - Not an autonomous company. Operator absence never enlarges authority.
 - Not a metrics theater: no invented numbers, no activity-as-progress. Evidence
   precedes "done"; utilization is explicitly not the objective.

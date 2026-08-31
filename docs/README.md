@@ -6,11 +6,13 @@
 docs/intake/       raw, local-only (gitignored) — the founding dump lives here
 docs/PLAYBOOK.md   the operator's canonical loop (models, worktrees, verify)
 docs/product/      the blueprint: vision, principles, domain model,
-                   architecture, interfaces, patterns, roadmap, execution guide
+                   architecture, interfaces, patterns, roadmap, execution guide,
+                   multi-audience publication compiler, and audit/resilience map
 docs/lineage/      idea-ledger.md — append-only record of every founding idea
 docs/decisions/    ADRs — settled questions
 docs/work-orders/  bounded, executable next steps (feed one to any model)
-docs/discovery/    machine-audit outputs (created by WO-001)
+docs/discovery/    machine-audit outputs and runtime target maps (WO-001 and
+                   later discovery passes)
 ```
 
 Pipeline status: intake ingested and synthesized (2026-08-30). The blueprint

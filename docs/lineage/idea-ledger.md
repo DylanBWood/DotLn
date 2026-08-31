@@ -1026,3 +1026,298 @@ Ideas from the operator's first notes file not already woven into chat entries:
     reintroduces them from intake that still contains them, while correctly
     believing it is following the rules.
 
+## WO-002 implementation additions (2026-08-31)
+
+- **Pinned serializable kernel contracts.** `adopted` WO-002 pins
+  EventEnvelope v1, every Program payload, versioned predicate references, and
+  deterministic command/event ID boundaries in the domain model and the pure
+  TypeScript kernel. This transforms the earlier illustrative grammar into an
+  executable, replayable contract without adding a new product concept.
+
+## Session additions (2026-08-31 — polar support ideation)
+
+- **Oppositional Counsel support** `raw` `recovered`
+  - Candidate support linked to an active mechanic that makes the active's
+    PolarAxis relation materially present: it can alter soft activation
+    pressure, produce an evidence-bearing critique of the favored option, or
+    request a separately authorized review/refusal effect. Enthusiasm,
+    argument quality, and authority remain orthogonal so confident opposition
+    cannot manufacture permissions or veto power. Its proposed durable output
+    is a typed `OppositionBrief`, reduced deterministically according to the
+    relation taxonomy: inverse restores, complement supplies an omitted pair,
+    counterweight checks excess, compensation attaches a repair. Preserved as
+    an unsettled candidate in `05-pattern-library.md`; no implementation shape
+    is pinned until a concrete scenario exercises it.
+- **Beware of Naive Interventionism support** `raw` `recovered`
+  - The operator manually adds "beware of naive interventionism" to nearly
+    every task; preserve the exact phrase as the familiar lens and compile its
+    intent instead of repeatedly paying for prompt prose. The candidate support
+    compares action against non-intervention, asks what hidden functions and
+    affected consumers the current system has, examines second-order harm and
+    reversibility, and seeks the smallest discriminating probe. Its typed
+    `InterventionBrief` may recommend proceed, stage, observe, NoOp, or
+    escalation. It is a proportional counterweight to action bias—not ambient
+    conservatism, analysis paralysis, or authority to veto—and remains
+    unsettled in `05-pattern-library.md` until exercised by concrete scenarios.
+- **Do Nothing as both active and support** `raw` `recovered`
+  - Operator burst: `"do nothing" as both an active skill and a support. boom.
+    figure it out`. The active form makes deliberate restraint the episode's
+    primary behavior and emits an evidenced `NoOpIntent` with a reevaluation
+    cadence and usefulness predicate. The support form modifies a linked
+    active by making abstention a valid successful branch, with an action
+    threshold and explicit conditions for reconsideration. This is distinct
+    from waiting, stopping, failure, and the Naive Interventionism evaluator:
+    evaluation may recommend non-action, while Do Nothing enacts and maintains
+    it. Preserved as a dual-form candidate in `05-pattern-library.md`; exact
+    compiler types remain unpinned pending a scenario using both forms.
+- **Default to True / Default to False supports** `raw` `recovered`
+  - Gladwell-derived paired supports that choose a provisional polarity only
+    when applicable evidence, guards, and authority leave a proposition
+    genuinely undecided. Default to True favors provisional acceptance,
+    trust, or continuation; Default to False favors provisional skepticism,
+    refusal, or verification. The trace must label the result as a default
+    rather than evidence, name its scope and override condition, and expire or
+    reevaluate when appropriate. They form a PolarAxis over provisional
+    acceptance/skepticism, never a global personality trait or a way to bypass
+    hard constraints. Preserved as an unsettled paired-support candidate in
+    `05-pattern-library.md`.
+- **Graded-proposition generalization for defaults** `raw` `recovered`
+  - Operator follow-up: Default to True / False may be projections of a fuzzy
+    or graded primitive. Preserve the generalization while separating
+    epistemic support, behavioral activation, and decision policy so one
+    scalar never impersonates truth, confidence, enthusiasm, and authority at
+    once. Candidate starting point is an evidence lattice (`Supported |
+    Refuted | Unknown | Conflicted`) with optional measured degrees; the two
+    Gladwell supports choose how scoped `Unknown` resolves, while PolarAxes
+    consume activation pressure independently. Recorded as an open refinement
+    in `05-pattern-library.md`, not a supersession.
+- **Default supports reduce to the existing PolarAxis** `transformed` `recovered`
+  - Operator realization: the paired Gladwell supports may already be fully
+    expressible as opposite scoped factors on a `provisionalAcceptance ↔
+    provisionalSkepticism` PolarAxis. This becomes the leading hypothesis:
+    reuse baseline + factors + `deriveBehavior(...)` and show the contribution
+    in the build inspector. The graded/fuzzy proposition idea remains only a
+    fallback if concrete scenarios cannot separate evidence, predicates, and
+    activation pressure with current primitives. This avoids creating a new
+    uncertainty subsystem merely because the UI exposes two named supports.
+- **Common legos, local secret sauce** `adopted` `recovered`
+  - Operator directive: DotLn is a customizable base for individuals, teams,
+    organizations, and entire fields. It levels the playing field by giving
+    everyone the same kernel, grammar, composition, authority, evidence,
+    replay, and inspection legos; each implementation owns the valuable
+    doctrine—its workstreams, integrations, sources, security, audit, logging,
+    identities, roles, personalities, active/support combinations,
+    evaluators, and learned history. The founding library is the author's
+    first instance and proving ground, not a privileged canon. Instance
+    content must compile through public IR and ports, remain inspectable and
+    portable apart from secrets, and never require private kernel branches.
+    Adopted into the vision, architecture boundary, and Principle 18.
+- **Package ecosystem and marketplace** `adopted` `recovered`
+  - Sparked while the operator watched a DHH interview on Lex: mature
+    platforms commonly grow marketplaces for plugins, roles, configurations,
+    and extensions. For DotLn this follows from the common-legos/local-doctrine
+    boundary, but the marketplace itself is commodity infrastructure. The
+    differentiator is inspectable distribution: roles, patterns, workstreams,
+    evaluators, integrations, views, and starter implementations remain typed,
+    version-pinned, permission-bounded, and mechanically transparent. Install
+    never means activate; definition packs and executable adapters occupy
+    different trust classes; compiled-effect and permission previews precede
+    activation; private registries, local files, forks, and air-gapped use are
+    first-class. Adopted as an ecosystem consequence in vision and architecture,
+    not as near-term marketplace scope.
+- **Agent enablement skill packs** `adopted` `recovered`
+  - Implementations can offer skills that help their Claude, Codex, and other
+    agents work effectively with DotLn: orient to WorkOrders, participate in
+    episode lifecycle, inspect mechanics and authority, emit valid results and
+    evidence, author instance definitions, run prescribed verification, and
+    manage catalog packages. Base skills project the stable DotLn protocol;
+    implementation skills add local vocabulary, schemas, integrations, and
+    procedures. Skills remain ergonomic projections, ideally generated from
+    the same contracts as CLI/help/UI and checked by conformance fixtures. They
+    cannot become hidden canonical behavior or grant authority. Adopted as an
+    agent-enablement package family and sparse-interface projection.
+- **Community build workshop** `adopted` `recovered`
+  - Operator wants community options, builds, and configurations to be easy to
+    share, preview, mix and match, and sandbox. A `CommunityBuild` is a compact,
+    content-addressed manifest over pinned components, shareable by file, link,
+    or code without carrying credentials, protected sources, or event history.
+    Opening enters Preview, not Install: resolve dependencies, show mechanics,
+    permissions, costs, provenance, evidence, and semantic diff; remix or fork
+    components; sandbox variants with fake adapters and fixtures or separately
+    approved redacted replay; compare outcomes and first divergence; then
+    selectively promote reviewed pieces into a reversible local version.
+    Community content is untrusted by default, upstream updates are proposals,
+    and the same flow supports public, private, filesystem, and air-gapped
+    exchange. Adopted into package architecture and interfaces, not near-term
+    marketplace implementation scope.
+- **Bring-your-own-agent participation and preloaded coordination skills** `adopted` `recovered`
+  - Operator clarification: a person may bring an independent harness and
+    model, then download a runtime-compatible skill pack that lets the agent
+    participate in that person's chosen DotLn implementation. DotLn negotiates
+    runtime capabilities and can preload the minimum episode-scoped skills for
+    protocol participation and intra-agent coordination: typed speech acts,
+    claim/handoff/delegation, blackboard conventions, evidence exchange,
+    dissent/escalation, topology duties, synchronization, cancellation, and
+    continuation handoff. The bundle derives from WorkOrder + role + loadout +
+    topology + runtime + authority, remains inspectable, and expires with the
+    episode. Preloading every skill would recreate the aura stack; absent
+    runtime enforcement cannot be faked with prose. Adopted as the onboarding
+    membrane between arbitrary agents and a DotLn organization.
+- **Runtime-native primitive universe** `adopted` `recovered`
+  - Operator realization: DotLn can deeply use Claude's base primitives rather
+    than treating Claude as a generic prompt endpoint. A discovered, versioned
+    `RuntimePrimitiveCatalog` makes each harness a compiler target: semantic
+    roles, actives, supports, permissions, integrations, WorkOrders, episodes,
+    verification, and evidence may lower into combinations of native agents,
+    subagents, skills, hooks, permissions, tools/MCP, commands, workflows,
+    sessions, background execution, and structured outputs. The same mechanism
+    may deliberately span several primitives. Claude is one rich target, not
+    the ontology; Codex and other runtimes have their own catalogs, mappings,
+    and explicit gaps. Runtime recipes can be shared and tested independently
+    of instance doctrine. Adopted into architecture and the build inspector.
+- **Codex as the first testable runtime target** `adopted` `recovered`
+  - Operator chose Codex as the first concrete runtime map because it is the
+    harness currently in use and can become the initial conformance target.
+    The map inventories native instruction, skill, plugin, subagent, hook,
+    permission, integration, session, structured-output, and lifecycle
+    surfaces; proposes explicit DotLn lowerings; labels observation separately
+    from documentation and untested hypotheses; and orders tests from inert
+    inventory through skill activation, schema-bound episodes, opposition,
+    authority, lifecycle, and package removal. Added as a discovery artifact,
+    not a claim that Codex defines the portable ontology.
+- **One source, many authoritative editions** `adopted` `recovered`
+  - Operator wants the repo's purpose, vision, implementation, and evidence to
+    recompile easily into multiple authoritative resources: initially books
+    and conventional documentation for an everyday AI user, software
+    engineer, manager, IT director, VP of development, CFO, and later other
+    audiences. Adopted as a publication compiler over reviewed repository
+    claims, not independent rewrites. Audience profiles change sequence,
+    vocabulary, examples, and decision emphasis while preserving facts,
+    limitations, authority, implementation status, and source lineage.
+    Outputs may include books, reference sites, handbooks, briefings, training,
+    in-product help, and agent skills. The bootstrap test is two divergent
+    books from one claim graph with automatic staleness when a source changes.
+- **Outline-first publication planning with implementation overlays** `adopted` `recovered`
+  - Operator refinement: an outline may be all the publication system needs;
+    if structure becomes necessary, use a small publication IR that references
+    the existing DotLn IR and repository evidence rather than duplicating
+    product truth. The current workflow has Fable 5 plan the authoritative
+    DotLn/repository outline and the repeatable process/template for each
+    concrete implementation, then assigns bounded rendering work to Opus 5 or
+    Codex. Durable synthesis adopts `PublicationPlan` as a provisional,
+    outline-shaped projection plan and `base plan + implementation overlay +
+    audience profile` as the compilation formula. A claim-level IR is deferred
+    until two editions demonstrate that source references are insufficient.
+- **Audit as a family of evidence projections** `adopted` `recovered`
+  - Operator wants the implementation space mapped for logging, auditing,
+    persistence, recovery, backup, disaster recovery, and privacy, with audit
+    first: different readers, visualizations, raw-data access, output levels,
+    and recorded properties. Adopted as a shared audit-record vocabulary plus
+    implementation-owned policy. One event/evidence graph can project receipts,
+    narratives, control views, technical traces, governed raw records,
+    timelines, causal/delegation/provenance graphs, authority overlays,
+    evidence matrices, privacy/data-flow maps, recovery topologies, and bounded
+    exports. Fidelity and seniority never imply access. The design separates
+    diagnostics from durable audit, canonical state from rebuildable
+    projections, effect reconciliation from backup, and auditability from
+    indiscriminate sensitive-data retention. Bootstrap begins with six
+    consequential record types and three views, then proves access control,
+    ambiguous-effect recovery, and restore before adding platform complexity.
+- **Skill-level feature progression** `adopted` `recovered`
+  - Operator proposes rating features like skills, initially at zero or one,
+    then selecting an implementation traversal: breadth-first laps that make
+    each feature one skill point better; depth-first focus that carries one to
+    production, professional, and polished quality; minimum release thresholds;
+    or golf-style selection of the feature furthest behind. Adopted as
+    evidence-gated capability levels and selectable portfolio policies, not an
+    activity score. XP means admissible proof, and a level promotion requires
+    every gate; the minimum required dimension prevents polished UI from
+    averaging away security, recovery, or correctness gaps. The current
+    semver roadmap remains intact, and the bootstrap artifact is a reviewed
+    capability table rather than a premature scheduler subsystem.
+- **Activation, utilization, and XP feed the constraint loop** `adopted` `recovered`
+  - Operator connects the feature-leveling idea to the existing distinction
+    between utilization and activation, then uses Theory of Constraints to
+    decide which capabilities receive development attention. Durable synthesis
+    keeps opportunity, activation, utilization, and XP/evidence gain separate:
+    selection is not use, use is not causal value, and frequency is not
+    maturity. Their gaps diagnose selection waste, aura passengers, unmeasured
+    outcomes, weak capabilities, or blocked promotion gates. The constraint
+    loop combines those signals with waits, failures, retries, handoffs,
+    evidence gaps, operator burden, consequence, and counterfactual leverage;
+    it never equates most-used with most-important or least-used with neglected.
+- **Activation events retain option value** `adopted` `recovered`
+  - Operator correction: activation itself produces events that may become
+    useful later, even without present utilization. The model now preserves
+    activation context, trigger fit, competing/suppressed candidates, cost,
+    expiry, and later outcome linkage so future analysis can discover demand,
+    false or missed activation, co-activation, drift, seasonality, and roads
+    not taken. Activation evidence may advance the selector or activation
+    policy and improve knowledge of applicability; it does not automatically
+    claim that the activated capability became more effective.
+- **Getting the reps in without constraint tyranny** `adopted` `recovered`
+  - Operator does not want Theory of Constraints or maturity scoring to punish
+    working on whatever currently attracts effort and getting better through
+    repetition. Adopted as two evidence accounts: practice XP recognizes
+    attributable reps, varied contexts, familiarity, samples, and discoveries;
+    promotion evidence alone proves a maturity gate. ToC remains an advisory
+    leverage lens unless a release contract explicitly makes a constraint
+    blocking. Free practice/follow-interest becomes a first-class progression
+    policy; DotLn may show opportunity cost and dependencies but must not shame,
+    erase, or prohibit curiosity-driven craft within the authority envelope.
+- **Final authorization of the post-WO-002 ideation set** `adopted` `recovered`
+  - Before handing the worktree to Fable 5 for closeout, the operator explicitly
+    authorized all extra ideation edits and files created during this stream,
+    including the Codex runtime map, publication compiler, audit/resilience/
+    privacy map, capability-progression additions, their blueprint references,
+    the final efficiency-level refinement, ledger
+    entries, and gitignored raw notes. This is documentation authority,
+    not retroactive expansion of the WO-002 kernel implementation scope; the
+    verifier record contains the complete path and topic reconciliation.
+- **Efficiency level for every capability** `adopted` `recovered`
+  - Operator's final refinement: continually consider avenues for efficiency,
+    and give each skill/domain/capability an efficiency level even though the
+    exact model was initially unclear. Durable synthesis separates maturity
+    from efficiency and measures a resource vector per verified outcome:
+    elapsed time, operator attention, tokens/calls, tool use, cost, retries,
+    storage, and optional energy under comparable quality, authority, and risk
+    conditions. Levels run from unknown baseline through measured, economical,
+    profile-fit, local Pareto frontier, and adaptive. Efficiency awareness
+    emits reversible optimization candidates rather than perpetual change;
+    naive-interventionism and constraint checks prevent easy metric gains from
+    exporting cost into correctness, privacy, recovery, or human burden.
+
+## WO-002 closeout additions (2026-08-31)
+
+- **Namespace-tagged command identity** `adopted`
+  - The `commandId` hash input now carries an `ep:`/`ws:` discriminator: an
+    `episodeId` equal to any `workstreamId` used to collide with that
+    workstream's episode-less commands, and the outbox idempotence guard then
+    silently swallowed one of two distinct commands — live data loss on the
+    recovery path. Pinned in the domain model's ID scheme as load-bearing.
+- **Kernel declares, runtime executes (row 5)** `adopted`
+  - Failure-matrix row 5's v0.1.0 scope is the pure guard: `guardQueuedPulse`
+    re-evaluates presence and *declares* the NoOp-with-trace and the schedule
+    ids to cancel; queue ownership, event-sourced presence, and executed
+    cancellation are scheduler-runtime work (v0.4.0). Pinned in
+    03-architecture.md so later rungs stop relitigating it.
+- **A green runner over an absent suite is not evidence** `adopted`
+  - WO-002's verifier proved the suite passed with the tests deleted (stale
+    compiled output), and the first fix exposed a second hole (Node 22's own
+    glob expansion runs zero tests green). The runner now cleans, force
+    -builds, asserts compiled test files exist, then globs. Candidate future
+    FeedbackUnit: evidence-gate runners must fail on an empty suite.
+- **Refuse, never throw, at the authority boundary** `adopted`
+  - `authorize` treats malformed intents (non-string effect, reachable
+    through deserialized continuations) as structural refusals with trace,
+    never TypeErrors — a thrown error produces no refusal event, no trace,
+    and no log entry, which is exactly what the guard exists to prevent.
+- **`documented officially` epistemic label** `adopted`
+  - The Codex runtime map needed a class for vendor documentation distinct
+    from locally installed help; Principle 15's label set gains
+    `documented officially`. Origin: docs/discovery/codex-runtime-map.md.
+- **Ideation anchored on the ladder; eight work orders drafted** `adopted`
+  - The publication compiler (08) and audit map (09) gained roadmap rungs
+    (v0.0.4 and v0.2.1), joined by v0.0.2 (environment addendum) and v0.0.3
+    (capability table). WO-004 through WO-011 are drafted through v0.6.0,
+    each with an evidence gate; PLAYBOOK carries their command blocks.
