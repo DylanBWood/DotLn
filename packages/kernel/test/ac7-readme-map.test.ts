@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { commandId, stableHash } from "../src/index.js";
 
 // AC7: `packages/kernel/README.md` maps each exported type to its domain-model entry.
-// Evidence hardening against the three defeats named in WO-002-verification.md §AC7:
+// Evidence hardening against the three defeats named in docs/verifications/WO-002/VER-002.md §AC7:
 //   (a) matching export names against the description column instead of the left column;
 //   (b) missing export forms (namespace members, `export { X }` lists, multi-declarator
 //       consts) and reading a hard-coded file list instead of globbing dist/src/*.d.ts;

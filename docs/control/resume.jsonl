@@ -1,0 +1,4 @@
+{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-003","workOrderPath":"docs/work-orders/WO-003-walking-skeleton.md"}
+{"schemaVersion":1,"type":"ImplementationReady","workOrderId":"WO-003"}
+{"schemaVersion":1,"type":"VerificationRequested","workOrderId":"WO-003","verificationId":"VER-001","reportPath":"docs/verifications/WO-003/VER-001.md"}
+{"schemaVersion":1,"type":"VerificationCompleted","workOrderId":"WO-003","verificationId":"VER-001","reportPath":"docs/verifications/WO-003/VER-001.md","verdict":"fail"}

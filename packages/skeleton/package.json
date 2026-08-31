@@ -1,0 +1,8 @@
+{
+  "name": "@dotln/skeleton",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "tsc -b", "test": "tsc -b --force && node --test dist/test/*.test.js", "start": "node dist/src/cli.js" },
+  "dependencies": { "@dotln/kernel": "0.1.0" }
+}

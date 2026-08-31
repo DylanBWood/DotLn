@@ -11,6 +11,92 @@ transcript, is the shared memory. This guide is the operating contract.
    do not bulk-load the corpus into context. The ledger and intake exist for
    lookup, not for reading end-to-end.
 
+## Operator-opened ideation mode
+
+The operator may explicitly pause work-order execution and reopen ideation,
+including by expanding the subject of the current work order. That instruction
+changes the session's job from implementer/verifier to intake and synthesis;
+the work order is then context, not a scope fence, until the operator resumes
+execution. Do not make the operator restate the documentation pipeline.
+
+In ideation mode:
+
+1. Capture unedited material in a dated file under `docs/intake/chats/`,
+   `docs/intake/notes/`, or `docs/intake/images/`. Intake is local-only and
+   gitignored; preserve fragments, repetition, uncertainty, and contradictions.
+2. Apply the clean-room boundary before synthesis. If material resembles
+   employer code, configuration, identifiers, proprietary API shapes,
+   internal services, or managed-work-host details, stop and flag it. Never
+   promote suspect material.
+3. When the operator asks to synthesize, rewrite rather than copy. Append each
+   significant idea to `docs/lineage/idea-ledger.md` with lifecycle status and
+   provenance; never rewrite an older ledger entry.
+4. Promote only durable product understanding into the relevant
+   `docs/product/` document, and update an ADR only through its permitted
+   amendment mechanism. Preserve speculative ideas as `raw` or `preserved`
+   instead of forcing premature architecture.
+5. Treat tensions with settled resolutions as tensions to surface, not license
+   to silently overwrite them. A real challenge based on new evidence becomes
+   a decision-record proposal.
+6. Keep pre-existing implementation changes intact and distinguish them from
+   ideation artifacts. Do not resume coding, verification, or work-order
+   closeout until the operator asks.
+
+### Ideation breakout receipt and verification
+
+An ideation breakout that changes committed documentation is not complete at
+synthesis. Record the operator's explicit scope-expansion authority in the
+affected work order (or a new bounded work order), together with a receipt that
+names the raw intake batch, ledger entries, product/decision/schema surfaces
+changed, unresolved choices, and required review.
+
+The eventual verifier and final reviewer must digest that receipt and the
+synthesized documents as part of their subject—not treat them as incidental
+notes. They verify clean-room rewriting, traceability to operator intent,
+consistency with settled decisions and canonical vocabulary, version/schema
+effects, internal cross-references, and whether speculative choices were
+accidentally presented as settled. They may propose and apply authorized,
+non-substantive handoff/documentation corrections. Any correction affecting
+code, contracts, acceptance, schema, compatibility, authority, or prior
+evidence fails final review and returns through repair plus a fresh independent
+numbered verification before another final-review attempt.
+They do not promote raw intake verbatim or expand implementation merely because
+the ideation describes a future feature.
+
+Any executable helper, migration, generator, backup utility, or other ad hoc
+tool created during an ideation breakout is implementation subject to the same
+separation and evidence rules as work-order code. It must have associated
+automated tests proportionate to its risks, be named in the breakout receipt,
+and be independently inspected and executed by the verifier. The final reviewer
+checks both its product fit and whether the tests cover its consequential
+failure modes; “small script” is not an evidence exemption.
+
+The default capture path for ideation opened around a work order is
+`docs/intake/notes/<work-order>-expanded-ideation-<date>.md`; the naming scheme
+is a convenience, not a requirement.
+
+## Workflow closeout and releases
+
+Final review prepares and publishes a clean PR; the operator retains merge
+authority. After the PR is merged, the lifecycle helper updates `main`, proves
+the reviewed branch is contained in `origin/main`, and removes only its known
+worktree and merged branch. Ordinary tracked or untracked dirt is refused by
+the clean-worktree gate. Ignored raw material under `docs/intake/` must be
+backed up and reconciled into the surviving main intake as appropriate; the
+helper separately refuses removal while that protected material exists and
+never deletes or auto-promotes it. Known disposable ignored dependency/build
+outputs such as `node_modules` and `dist` may leave with the worktree. The last workflow
+task then evaluates whether the
+completed roadmap rung is a release boundary.
+
+For a release boundary, work from the exact merged commit: rerun the release
+evidence, generate and validate the immutable release manifest described in
+`06-roadmap.md`, and present the annotated tag and publication command for
+explicit operator authorization. Never tag the feature branch, tag failing
+evidence, move an existing tag, or imply that npm/binary/hosted distribution
+occurred when the release is source-only. A failed release check opens a patch
+work order; an intentional defer records why and what will trigger reconsideration.
+
 ## Discipline
 
 - **Work only from the current work order.** No opportunistic scope expansion;
@@ -20,6 +106,16 @@ transcript, is the shared memory. This guide is the operating contract.
 - **Evidence gates over prose.** Completion claims require the work order's
   evidence: passing tests you ran, output you captured, behavior you
   witnessed. Read your own diff before reporting. Never infer completion.
+- **Verification artifacts are immutable and numbered.** Verifiers write to
+  `docs/verifications/WO-NNN/VER-NNN.md`; the first pass is `VER-001.md` and
+  every re-verification creates the next number instead of replacing a prior
+  report. The original `docs/work-orders/WO-NNN-*.md` remains scope authority.
+  A repair episode reads both that original work order and the specific
+  verification artifact it was dispatched to fix. A verifier reads the
+  original work order, the subject diff, and prior reports needed to establish
+  whether findings were repaired, then writes a new report. Final review reads
+  the work order and the full numbered verification sequence; no actor treats
+  a verifier report as permission to expand scope.
 - **Settled is settled.** The idea-ledger Resolutions and `docs/decisions/`
   close their questions. Do not relitigate; a genuine new-evidence challenge
   becomes a new decision record proposal, never an in-place edit. Exception:

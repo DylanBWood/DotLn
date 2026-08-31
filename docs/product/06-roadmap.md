@@ -13,6 +13,50 @@ as second executor, personal GitHub); managed-environment constraints (enterpris
 gateways, centrally managed settings) are out of scope until such a
 deployment exists.
 
+## Release boundary
+
+The headings below originally named product milestones, not a complete release
+procedure. Begin source releases when a rung produces a reproducible artifact
+that another build, saved configuration, or compatibility rule can name. The
+first useful boundary is `v0.2.0`: after WO-003 receives passing final review,
+its PR is merged, and the exact merged commit passes the full evidence gate,
+create an annotated Git tag and a small immutable release manifest. Do not tag
+the feature branch or an unreviewed commit.
+
+The manifest records the Git commit, application release, package/component
+versions, supported schema and artifact ranges, transformation-set version (or
+explicitly `none`), evidence commands/results, and known limitations. A release
+may initially be source-only. Publishing npm packages, executables, containers,
+or hosted artifacts is a separate projection selected only when a consumer
+needs it; a Git tag must not imply those channels exist.
+
+Patch releases contain compatible corrections and evidence improvements; minor
+releases add backwards-compatible capability; breaking public contracts require
+the next major boundary even before 1.0 unless an explicitly experimental
+surface says otherwise. Historical tags and manifests are immutable. Never
+move a tag to make the past resemble the present; issue a new patch release.
+Do not invent a retroactive `v0.1.0` tag unless its exact reviewed commit and
+evidence can be reconstructed. Tag creation and remote publication remain
+explicit operator actions.
+
+Release closeout is the final workflow task after PR merge and worktree
+cleanup, not an activity hidden inside final review. The closeout task checks
+the merged `origin/main` commit, reruns the declared release evidence, builds
+and validates the manifest, and presents the exact tag/publish operation for
+operator authorization. If evidence fails, open a patch work order instead of
+tagging. A deliberately deferred release records its reason rather than leaving
+the milestone's publication state ambiguous.
+
+Each published release also carries layered patch notes. Lead with the release's
+visible payoff and a short explanation of why it matters; isolate breaking,
+migration, compatibility, security, data-loss, authority, and operator-action
+items where they cannot be missed; then group substantive changes by product
+area. Collapse low-signal repetition into honest aggregate lines such as
+progressive copy, fixture, diagnostic, or visual polish instead of narrating
+every touched file. The aggregate must not conceal a behavioral, schema,
+compatibility, safety, or recovery change. Link detailed evidence and manifests
+for readers who need the full trace.
+
 ## Capability progression policies
 
 The semver ladder is one release view. Inside and across its rungs, DotLn can
@@ -373,6 +417,18 @@ substantive repair marks affected evidence stale. Exit: a deliberately-planted
 defect is caught by the verifier, repaired via continuation, re-verified — and
 the implementer episode never certifies itself.
 
+Follow-on work orders should project the proven resume protocol as native,
+on-demand agent skills rather than ambient role prose: (1) a shared typed
+intent/transition contract and conformance fixtures, (2) verifier and repair
+skills, and (3) final-review plus worktree-lifecycle skills. Each projection
+must remain behaviorally equivalent to the CLI, refuse illegal transitions,
+write the same immutable artifacts, and demonstrate measured startup-context
+reduction. Runtime observability work should expose context remaining and the
+delegation graph in a persistent TUI status projection when the host provides
+those signals, with explicit unknown states otherwise. Exact release placement
+waits on evidence from WO-009 and WO-010 rather than expanding those orders by
+implication.
+
 ## v0.6.0 — Feedback compiler v1 (ten units)  → WO-011
 
 Ten representative FeedbackUnits authored from the corpus (this repo's ledger,
@@ -437,3 +493,12 @@ attention aggregation (the full catalog lives in the ledger's chat-005
 entries; this list is not exhaustive); the full pattern shelf (Compendium
 skin); remaining transmog skins; physical-card importer; hypothesis flywheel.
 All gated on the same kernel; none may distort Horizon 1.
+
+Additional horizon: a lightweight offline-capable IR verifier; explicit
+application/schema/artifact/component version lineage; inspectable JIT
+compatibility and AOT migration of historical configurations; release-scoped,
+non-monotonic active/support availability with declared inactive behavior; and
+a general behavioral toolbox whose game-AI use tests whether actors, loadouts,
+Programs, Cadences, preview, simulation, and replay genuinely generalize. See
+10-ir-compatibility.md. Distribution as package, executable, cloneable repo,
+web generator, or compact share code remains an evidence-driven choice.
