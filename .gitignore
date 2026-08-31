@@ -1,0 +1,12 @@
+# Raw ideation dumps stay local until synthesized and scrubbed.
+# See docs/README.md for why. (Directories are re-included so the
+# structure survives a clone; only their contents are ignored.)
+docs/intake/**
+!docs/intake/**/
+!docs/intake/**/.gitkeep
+
+.DS_Store
+node_modules/
+.env
+.env.*
+!.env.example
