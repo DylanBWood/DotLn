@@ -2,3 +2,5 @@
 {"schemaVersion":1,"type":"ImplementationReady","workOrderId":"WO-003"}
 {"schemaVersion":1,"type":"VerificationRequested","workOrderId":"WO-003","verificationId":"VER-001","reportPath":"docs/verifications/WO-003/VER-001.md"}
 {"schemaVersion":1,"type":"VerificationCompleted","workOrderId":"WO-003","verificationId":"VER-001","reportPath":"docs/verifications/WO-003/VER-001.md","verdict":"fail"}
+{"schemaVersion":1,"type":"RepairRequested","workOrderId":"WO-003","sourceFindingId":"VER-001","sourceReportPath":"docs/verifications/WO-003/VER-001.md"}
+{"schemaVersion":1,"type":"RepairCompleted","workOrderId":"WO-003","sourceVerificationId":"VER-001"}

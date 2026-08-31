@@ -19,6 +19,17 @@ Two standing rules:
 - **`Model:` line in the work order is law** (Principle 8). `Model: any` means
   route freely — including by which meter has budget left. Never silently
   downgrade mid-work-order; switch executors between work orders instead.
+- **Effort is part of the assignment, and nothing self-reports it.** The table
+  above states each actor's reasoning effort, but that is prose, not a checked
+  fact. It has already been wrong: through WO-001, WO-002 and WO-003 the Codex
+  executor actually ran at **low** while this table read `xhigh`, and no doc,
+  script, or verification detected the drift (operator disclosure and
+  correction to xHigh, 2026-08-31). The WO-003 verification's surviving
+  findings were almost entirely thin-evidence defects — tests that pass without
+  pinning what they claim — which is the signature that setting produces.
+  `Model: any capable model` pins the family, not the effort. Until an
+  executable check exists, confirm the executor's actual effort at dispatch and
+  have it record model + effort in its result.
 
 ## The loop, per work order
 

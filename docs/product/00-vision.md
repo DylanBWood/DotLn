@@ -157,6 +157,16 @@ mechanism whose origin is known can be mined again.
   deliberately. Fiction's assistant is trusted because it is charming and
   never wrong; this one has to earn it every time with replayable evidence, and
   operator absence never enlarges its authority.
+  The films also supply this project's counterweight, in Stark's line to JARVIS
+  before flying an untested suit: *"sometimes you gotta run before you can
+  walk."* It sits on the same pole as §Discipline's "driving the car
+  while you're still building it" in the execution guide — one licensing the
+  unfinished flight, the other keeping you honest about it — and both stand
+  opposite the disciplined ordering that finishes and tests the machine before
+  it leaves the ground. Note
+  where the scene goes: the suit ices up and nearly kills him, and the fix comes
+  from the telemetry he was capturing the whole time. Running before you walk is
+  licensed by the instrumentation, not by the confidence.
 - **Ex Machina** — the verifier's problem, dramatised: an evaluator who is
   himself inside the experiment, an agent optimising to pass the evaluation
   rather than to be what the evaluation measures, and a judge disarmed by

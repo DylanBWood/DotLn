@@ -116,6 +116,39 @@ work order; an intentional defer records why and what will trigger reconsiderati
   whether findings were repaired, then writes a new report. Final review reads
   the work order and the full numbered verification sequence; no actor treats
   a verifier report as permission to expand scope.
+- **We are driving the car while we are still building it.** This project uses
+  its own process to build that process; the machinery under construction is
+  also the machinery in force. Four consequences bind every session:
+  *Time-index the standard.* Judge a past artifact against the process that
+  existed when it was made, not today's — and say which you are applying. A
+  missing artifact whose convention had not been invented yet is not a defect.
+  *The excuse has a hard boundary.* "We were still building it" explains absent
+  **process** scaffolding. It never excuses a **behavioral or evidence** defect:
+  a test that does not test, a guard that does not guard, work that was lost.
+  Process immaturity is not an evidence exemption, exactly as "small script" is
+  not one.
+  *Expect retroactive non-compliance.* Every hardening makes prior work look
+  non-conforming. Record the discontinuity as a dated migration note where a
+  reader will hit it; never back-fill artifacts to make history look tidy.
+  `docs/verifications/README.md` already does this ("Do not fabricate it to make
+  the sequence appear complete") — that is this rule in practice.
+  *Prefer forward-only enforcement.* A new guard binds new work. Do not
+  retroactively invalidate merged work unless a real defect is demonstrated.
+  *Disclose a self-referential instrument.* When the machinery you use to do
+  your job — the control log, a lifecycle script, a generator — is itself part
+  of the deliverable you are judging, say so explicitly in your report, and
+  verify that machinery independently rather than trusting it because it
+  appeared to work. A broken instrument records the finding that it is broken.
+  This is not hypothetical: `VER-001` was allocated and its verdict recorded
+  through `scripts/resume.mjs`, a WO-003 deliverable under verification in that
+  same report. **This is a disclosure duty on the verifier, not a reason to
+  avoid using new machinery.** Dogfooding a tool in the work order that built it
+  is how it hardens, and refusing to would ship control planes nobody has
+  driven. Abstain only in the narrow case where the instrument's correctness is
+  itself the question *and* its failure would be silent — you do not verify a
+  checksum tool with itself. Prefer instruments that fail loudly; an append-only
+  log with a regenerated projection is safe to dogfood precisely because
+  corruption shows rather than producing a plausible record.
 - **Settled is settled.** The idea-ledger Resolutions and `docs/decisions/`
   close their questions. Do not relitigate; a genuine new-evidence challenge
   becomes a new decision record proposal, never an in-place edit. Exception:
@@ -169,6 +202,11 @@ work order; an intentional defer records why and what will trigger reconsiderati
   if you are not it, stop and say so; never silently proceed as a substitute.
   Every work order carries a `Model:` line; `Model: any` means any capable
   model. An absent line is a defect in the work order — flag it, don't guess.
+  Note the gap: the `Model:` line pins a model family and has no effort field,
+  and no executable check compares the configured effort to the documented one.
+  State the model **and effort** you actually ran at in your result, so evidence
+  is attributable to the configuration that produced it. This is not
+  hypothetical — see the effort-drift note in `docs/PLAYBOOK.md` §Who does what.
 - Behavioral guidance rots across model generations; that is why it lives here
   as typed mechanisms and docs instead of prompts. If an instruction here
   fights your model's defaults (e.g., built-in verification), flag it in your
