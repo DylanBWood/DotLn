@@ -15,6 +15,7 @@ docs/work-orders/  bounded, executable next steps (feed one to any model)
 docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
 docs/control/       append-only resume log and generated current-state projection
+docs/releases/     immutable release manifests and layered patch notes
 docs/discovery/    machine-audit outputs and runtime target maps (WO-001 and
                    later discovery passes)
 ```
