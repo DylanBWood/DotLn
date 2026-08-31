@@ -7,7 +7,8 @@
     "executedBy": {"agent": "codex-cli", "surface": "codex-tui", "cliVersion": "0.151.0", "model": "gpt-5.6-sol"},
     "executorSandbox": {"type": "workspace-write", "networkAccess": false, "envNamesPresent": ["CODEX_SANDBOX", "CODEX_SANDBOX_NETWORK_DISABLED"]},
     "note": "Every remaining blocked classification is a property of the executing session's sandbox, not of this machine and not of a corporate or managed environment.",
-    "correctedBy": {"agent": "claude-code", "version": "2.1.251", "correctedAt": "2026-08-31", "corrected": ["toolchain.playwright", "toolchain.localhostHttpServing", "blockedCauseAttribution"]}
+    "correctedBy": {"agent": "claude-code", "version": "2.1.251", "correctedAt": "2026-08-31", "corrected": ["toolchain.playwright", "toolchain.localhostHttpServing", "blockedCauseAttribution"]},
+    "reviewCorrections": {"agent": "claude-code", "version": "2.1.251", "correctedAt": "2026-08-31", "corrected": ["claudeCode.startupContext.files", "codexCli.agentsMd.files", "blockedCauseAttributionNarrowedToSandboxLevel"]}
   },
   "labels": ["observed", "documented locally", "untested", "blocked", "not found", "ambiguous"],
   "toolchain": {
@@ -46,7 +47,7 @@
     "version": {"classification": "observed", "value": "2.1.251"},
     "printMode": {"classification": "documented locally", "flag": "--print"},
     "outputFormats": {"classification": "documented locally", "values": ["text", "json", "stream-json"]},
-    "jsonSchemaOutput": {"classification": "blocked", "flag": "--json-schema", "reason": "single smoke invocation returned Not logged in", "cause": "executing session sandbox had networkAccess false; host is authenticated (Claude Code-credentials keychain item exists)"},
+    "jsonSchemaOutput": {"classification": "blocked", "flag": "--json-schema", "reason": "single smoke invocation returned Not logged in", "cause": "executing session's sandbox, not the account (host is authenticated: Claude Code-credentials keychain item exists); whether its network denial or its keychain denial produced the error is not established"},
     "modelSelection": {"classification": "documented locally", "flags": ["--model", "--fallback-model"]},
     "effortSelection": {"classification": "documented locally", "flag": "--effort", "values": ["low", "medium", "high", "xhigh", "max"]},
     "sessionPersistence": {"classification": "documented locally", "controls": ["--no-session-persistence", "--session-id", "--continue", "--resume", "--fork-session"]},
@@ -66,12 +67,12 @@
       "classification": "observed",
       "files": [
         {"path": "~/.claude/CLAUDE.md", "lines": 13, "bytes": 660},
-        {"path": "CLAUDE.md", "lines": 52, "bytes": 1950}
+        {"path": "CLAUDE.md", "lines": 59, "bytes": 2409, "correctedFrom": {"lines": 52, "bytes": 1950, "note": "pre-blueprint working-tree draft; no such version exists in committed history"}}
       ],
       "projectAgentsSymlinkTarget": "CLAUDE.md",
       "deduplication": "ambiguous"
     },
-    "smoke": {"classification": "blocked", "attempts": 1, "exitCode": 1, "reason": "Not logged in", "cause": "executing session sandbox had networkAccess false; not an authentication failure"}
+    "smoke": {"classification": "blocked", "attempts": 1, "exitCode": 1, "reason": "Not logged in", "cause": "executing session's sandbox, not the account; whether its network denial or its keychain denial produced the error is not established"}
   },
   "codexCli": {
     "version": {"classification": "observed", "value": "0.151.0"},
@@ -85,14 +86,14 @@
       "classification": "observed",
       "files": [
         {"path": "~/.codex/AGENTS.md", "lines": 13, "bytes": 660},
-        {"path": "AGENTS.md", "lines": 52, "bytes": 1950, "symlinkTarget": "CLAUDE.md"}
+        {"path": "AGENTS.md", "lines": 59, "bytes": 2409, "symlinkTarget": "CLAUDE.md", "correctedFrom": {"lines": 52, "bytes": 1950, "note": "pre-blueprint working-tree draft; no such version exists in committed history"}}
       ],
       "mergeBehavior": "ambiguous"
     },
     "smoke": {"classification": "blocked", "attempts": 1, "exitCode": 1, "reason": "in-process app-server initialization denied", "cause": "executing session's own Codex sandbox (networkAccess false); not a machine or corporate constraint"}
   },
   "recommendations": [
-    {"priority": 1, "adapter": "ClaudeCliPrintWorkOrderTransport", "integrationGate": "schema-conforming smoke succeeds from a runner with network access to the model endpoint (host is already authenticated)"},
+    {"priority": 1, "adapter": "ClaudeCliPrintWorkOrderTransport", "integrationGate": "schema-conforming smoke succeeds from a runner executing outside a restrictive sandbox, with the model endpoint reachable (host is already authenticated)"},
     {"priority": 2, "adapter": "CodexCliExecWorkOrderTransport", "integrationGate": "ephemeral read-only JSON smoke initializes successfully outside a network-disabled sandbox"}
   ],
   "nonGoalsPerformed": [],
