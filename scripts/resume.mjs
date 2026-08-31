@@ -8,7 +8,6 @@ import { spawnSync } from "node:child_process";
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const logPath = join(repoRoot, "docs/control/resume.jsonl");
 const currentPath = join(repoRoot, "docs/control/current.md");
-let checkpointRecord = {};
 const containedRegularFile = (path, root) => {
   if (!existsSync(path) || !lstatSync(path).isFile()) return false;
   return realpathSync(path).startsWith(`${realpathSync(root)}${sep}`);
@@ -38,7 +37,7 @@ const fold = events => {
 
 const append = event => {
   mkdirSync(dirname(logPath), { recursive: true });
-  const record = { schemaVersion: 1, ...event, ...checkpointRecord };
+  const record = { schemaVersion: 1, ...event };
   writeFileSync(logPath, `${JSON.stringify(record)}\n`, { flag: "a", mode: 0o644 });
   return record;
 };
@@ -94,6 +93,7 @@ const checkpoint = (action, workOrderId) => {
     return warn(error instanceof Error ? error.message : String(error));
   }
 };
+const appendTransition = (action, event) => append({ ...event, ...checkpoint(action, event.workOrderId) });
 
 const render = state => `# Current control state
 
@@ -122,7 +122,6 @@ const requirePhase = (state, ...phases) => { if (!phases.includes(state.phase)) 
 const [action = "status", ...args] = process.argv.slice(2);
 let state = fold(readEvents());
 let message;
-if (action !== "status") checkpointRecord = checkpoint(action, action === "activate" ? args[0] : state.workOrderId);
 
 switch (action) {
   case "status": message = render(state); break;
@@ -133,16 +132,16 @@ switch (action) {
     const expectedRoot = join(repoRoot, "docs/work-orders");
     const authorityPath = resolve(repoRoot, workOrderPath);
     if (!authorityPath.startsWith(`${expectedRoot}${sep}`) || !containedRegularFile(authorityPath, expectedRoot) || !basename(authorityPath).startsWith(`${workOrderId}-`)) throw new Error(`invalid work-order authority path for ${workOrderId}: ${workOrderPath}`);
-    append({ type: "WorkOrderActivated", workOrderId, workOrderPath });
+    appendTransition(action, { type: "WorkOrderActivated", workOrderId, workOrderPath });
     message = `Activated ${workOrderId}.`;
     break;
   }
-  case "implementation-ready": requirePhase(state, "active"); append({ type: "ImplementationReady", workOrderId: state.workOrderId }); message = `${state.workOrderId} is ready for verification.`; break;
+  case "implementation-ready": requirePhase(state, "active"); appendTransition(action, { type: "ImplementationReady", workOrderId: state.workOrderId }); message = `${state.workOrderId} is ready for verification.`; break;
   case "verify": {
     requirePhase(state, "ready-to-verify");
     const verificationId = nextVerification(state);
     const reportPath = `docs/verifications/${state.workOrderId}/${verificationId}.md`;
-    append({ type: "VerificationRequested", workOrderId: state.workOrderId, verificationId, reportPath });
+    appendTransition(action, { type: "VerificationRequested", workOrderId: state.workOrderId, verificationId, reportPath });
     message = `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}.`;
     break;
   }
@@ -152,17 +151,17 @@ switch (action) {
     if (verdict !== "pass" && verdict !== "fail") throw new Error("usage: resume verification-result pass|fail");
     const verificationRoot = join(repoRoot, "docs/verifications", state.workOrderId);
     if (!state.latestVerificationPath || !containedRegularFile(join(repoRoot, state.latestVerificationPath), verificationRoot)) throw new Error(`verification report is not a contained regular file: ${state.latestVerificationPath}`);
-    append({ type: "VerificationCompleted", workOrderId: state.workOrderId, verificationId: state.latestVerificationId, reportPath: state.latestVerificationPath, verdict });
+    appendTransition(action, { type: "VerificationCompleted", workOrderId: state.workOrderId, verificationId: state.latestVerificationId, reportPath: state.latestVerificationPath, verdict });
     message = `Recorded ${state.latestVerificationId}: ${verdict}.`;
     break;
   }
-  case "fix": requirePhase(state, "needs-fix"); append({ type: "RepairRequested", workOrderId: state.workOrderId, sourceFindingId: state.failureSourceId, sourceReportPath: state.failureSourcePath }); message = `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.`; break;
-  case "repair-complete": requirePhase(state, "repairing"); append({ type: "RepairCompleted", workOrderId: state.workOrderId, sourceVerificationId: state.latestVerificationId }); message = `${state.workOrderId} repair is ready for re-verification.`; break;
+  case "fix": requirePhase(state, "needs-fix"); appendTransition(action, { type: "RepairRequested", workOrderId: state.workOrderId, sourceFindingId: state.failureSourceId, sourceReportPath: state.failureSourcePath }); message = `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.`; break;
+  case "repair-complete": requirePhase(state, "repairing"); appendTransition(action, { type: "RepairCompleted", workOrderId: state.workOrderId, sourceVerificationId: state.latestVerificationId }); message = `${state.workOrderId} repair is ready for re-verification.`; break;
   case "final-review": {
     requirePhase(state, "verified");
     const finalReviewId = nextFinalReview(state);
     const reportPath = `docs/final-reviews/${state.workOrderId}/${finalReviewId}.md`;
-    append({ type: "FinalReviewRequested", workOrderId: state.workOrderId, throughVerificationId: state.latestVerificationId, finalReviewId, reportPath });
+    appendTransition(action, { type: "FinalReviewRequested", workOrderId: state.workOrderId, throughVerificationId: state.latestVerificationId, finalReviewId, reportPath });
     message = `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}.`;
     break;
   }
@@ -172,7 +171,7 @@ switch (action) {
     if (verdict !== "pass" && verdict !== "fail") throw new Error("usage: resume final-review-result pass|fail");
     const finalReviewRoot = join(repoRoot, "docs/final-reviews", state.workOrderId);
     if (!state.finalReviewPath || !containedRegularFile(join(repoRoot, state.finalReviewPath), finalReviewRoot)) throw new Error(`final-review report is not a contained regular file: ${state.finalReviewPath}`);
-    append({ type: "FinalReviewCompleted", workOrderId: state.workOrderId, finalReviewId: state.finalReviewId, reportPath: state.finalReviewPath, verdict }); message = verdict === "pass" ? "Recorded final review pass; commit the reviewed state, then publish its PR." : "Recorded final review failure; return to bounded repair."; break;
+    appendTransition(action, { type: "FinalReviewCompleted", workOrderId: state.workOrderId, finalReviewId: state.finalReviewId, reportPath: state.finalReviewPath, verdict }); message = verdict === "pass" ? "Recorded final review pass; commit the reviewed state, then publish its PR." : "Recorded final review failure; return to bounded repair."; break;
   }
   case "next": requirePhase(state, "closed"); message = "Current work order is closed. Resolve the next planned WO, then run resume activate WO-NNN <path>."; break;
   default: throw new Error(`unknown resume action: ${action}`);

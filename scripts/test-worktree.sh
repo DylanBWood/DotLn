@@ -65,6 +65,7 @@ printf 'disposable build state\n' >"$subject/tsconfig.tsbuildinfo"
 if finish_output="$(node "$main/scripts/worktree.mjs" finish WO-099 2>&1)"; then printf 'error: ignored secret was deleted\n' >&2; exit 1; fi
 grep -Fq '.env' <<<"$finish_output"
 grep -Fq 'npm run backup:intake' <<<"$finish_output"
+if grep -Fq 'SECRET=fixture-only' <<<"$finish_output"; then printf 'error: ignored-file content leaked in refusal\n' >&2; exit 1; fi
 test -f "$subject/.env"
 test -f "$subject/tsconfig.tsbuildinfo"
 test -d "$subject"
@@ -81,6 +82,8 @@ rmdir -- "$subject/docs/intake"
 mkdir -p "$subject/node_modules/fixture" "$subject/packages/example/dist"
 printf 'disposable\n' >"$subject/node_modules/fixture/file"
 printf 'generated\n' >"$subject/packages/example/dist/file"
+printf 'finder metadata\n' >"$subject/.DS_Store"
+printf 'disposable build state\n' >"$subject/tsconfig.tsbuildinfo"
 node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null
 test ! -e "$subject"
 test "$(git -C "$main" branch --list wo-099)" = ""
