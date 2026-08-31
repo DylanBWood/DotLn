@@ -42,6 +42,9 @@ constraints; changing one requires a decision record that names the evidence.
    *Activating* a resource is not *utilizing* it; output that outruns the
    binding constraint (usually operator judgment bandwidth) is inventory, not
    progress.
+   Efficiency is a scoped resource vector per verified outcome, never a single
+   utilization score. Improve the Pareto frontier without silently exporting
+   cost into quality, authority, privacy, recoverability, or human attention.
 10. **Every intervention has scope and expiry.** Repo conventions, roles,
     context factors, and experiments cannot leak globally by accident.
     Authority is a typed envelope (allowed/denied effects, limits, required
@@ -66,7 +69,8 @@ constraints; changing one requires a decision record that names the evidence.
     transport, storage, UI stack) are outputs of empirical discovery on the
     actual machine, not of product documentation. Unknown is an acceptable
     finding; claims carry an epistemic label (observed / documented locally /
-    untested / blocked / not found / ambiguous).
+    documented officially — vendor documentation / untested / blocked /
+    not found / ambiguous).
 16. **Original terms stay primary — and the RPG skin stays on.** Seiri / Sort /
     整理 keeps its name in the IR and everywhere canonical; the RPG rendering is
     nonetheless the *default presentation skin* of the operator's own console —
@@ -79,6 +83,15 @@ constraints; changing one requires a decision record that names the evidence.
     that codebase's demonstrated architecture — captured in its RepoProfile —
     never in the model's training-set fashion. "Latest best practice" is not a
     reason to rewrite an established repository.
+
+18. **Common legos, local secret sauce.** DotLn standardizes the primitives,
+    compiler contracts, safety boundaries, evidence, replay, and inspection
+    needed to build an agentic organization; it does not standardize the
+    organization itself. Individuals, teams, organizations, and fields own
+    their workstreams, integrations, sources, controls, identities, roles,
+    personalities, combinations, evaluators, and learned doctrine as
+    versioned instance content. Bundled patterns are optional examples, never
+    privileged kernel behavior.
 
 A closing note on altitude: the numbered principles are invariants. Specific
 formulas in the domain model (the AttentionPolicy candidate, log-odds

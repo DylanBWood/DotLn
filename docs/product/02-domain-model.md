@@ -1,8 +1,8 @@
 # Domain model
 
 The canonical vocabulary. Every view, doc, and code identifier uses these terms
-exactly. TypeScript shapes are normative for structure, illustrative for field
-names until the kernel package pins them.
+exactly. The v0.1 kernel pins the structures below; its public definitions live
+in `packages/kernel/src/types.ts`.
 
 ## Events and decisions (the kernel loop)
 
@@ -10,12 +10,12 @@ names until the kernel package pins them.
 |---|---|
 | **Event** | An immutable observation that occurred. The only way anything enters the system. |
 | **EventEnvelope** | Identity wrapper: `schemaVersion, eventId, type, occurredAt, actorId, workstreamId, episodeId, correlationId, causationId, payload`. Enables idempotency, correlation, replay. |
-| **Reactor** | A pure function `(state, event, env) → Decision`. No hidden clock, RNG, I/O, or model call. **`env` is a pure projection of the log**: clock ticks, presence changes (`OperatorPresenceChanged` away/returned), and resource-pressure changes enter the system as events; post-draw RNG state is carried in kernel state; replay never consults anything outside the log. |
-| **Decision** | `{ state', intents[], continuation?, schedules[], trace }`. |
+| **Reactor** | A pure function `(state, event, env) → Decision`. No hidden clock, RNG, I/O, or model call. **`env` is a pure projection of the log**: clock ticks, presence changes (`OperatorPresenceChanged` away/returned), and resource-pressure changes enter the system as events; post-draw RNG state is carried in kernel state; replay never consults anything outside the log. Reactor purity is an author obligation the kernel does not enforce at runtime: the kernel's own functions consult no ambient source (pinned by poisoning tests), but a reactor that reaches for `Date.now()` silently breaks replay identity. `replay` projects `env` from state by reserved key: the RNG seed must live at the state field `rngState` (any other name replays as `0`), and a state field named `policy` is promoted into `env.policy`. |
+| **Decision** | `{ state', intents[], continuation?, schedules[], trace }`. `decideProgram` populates `continuation` with the residual Program after each step; other deciders may omit it. |
 | **DecisionTrace** | Normative minimum: reactor id + version, matched rule/branch path, env inputs consumed, cadence evaluations performed. The trace explains *why* — reproducible even though model output isn't. |
-| **Schedule** | A cadence bound to an emission: `{ scheduleId (stable), cadence, eventToEmit, cancelOn }`. |
+| **Schedule** | A cadence bound to an emission: `{ scheduleId (stable), cadence, eventToEmit, cancelOn }`. `eventToEmit` is an event draft without `eventId`; the store boundary assigns that identity. |
 | **Intent** | A proposed side effect, not yet authorized. `Act | Wait | Observe | NoOp` — where NoOp carries reason, evidence, reevaluation cadence, and the condition that would make action useful. |
-| **Command** | An authorized effect sent to an adapter, carrying a stable `commandId` (outbox protocol; duplicate delivery is ignored deterministically). ID discipline: `commandId = hash(episodeId ?? workstreamId, decisionIndex, intentIndex)` — kernel-computed, deterministic; `eventId` is edge-assigned at the store boundary (monotonic per log), never kernel-computed. |
+| **Command** | An authorized effect sent to an adapter, carrying a stable `commandId` (outbox protocol; duplicate delivery is ignored deterministically). ID discipline: `commandId = hash(namespace-tagged nonempty episodeId or workstreamId, decisionIndex, intentIndex)` — kernel-computed, deterministic; `eventId` is edge-assigned at the store boundary (monotonic per log), never kernel-computed. The outbox protocol's pinned event types are `CommandPersisted` (an authorized command reached the log), `CommandResult` (an adapter's result, matched on `payload.commandId`), and `CommandRefused` (the authorization guard's structural refusal). |
 | **CommandReceipt** | The transport's acknowledgment of an accepted dispatch: `{ commandId, transport, acceptedAt }` — an event like everything else. |
 | **Continuation** | A serializable description of what remains after a result arrives — the residual Program after each step. |
 | **Cadence** | Temporal-algebra AST: `Once | After | Every | Burst | Calendar | Window | While | Until | Gate | Sequence | Merge | Race | Repeat | Backoff`. Cadences are *derived from state* (`cadenceFor(state, ctx)`), never orphan cron jobs. Marble/Morse notation is a projection and test language, not the stored syntax. |
@@ -27,7 +27,7 @@ Program ::= Done | Emit | Invoke | Await | Sequence | Choose
           | All | Race | Guard | Repeat | Compensate
 ```
 
-Normative payload minimums: `Emit(event, next)` · `Invoke(command,
+Normative payload minimums: `Emit(eventDraft, next)` · `Invoke(commandId, command,
 continuationByResult)` · `Await(eventPattern matching on correlationId/
 commandId + type, timeout: Cadence, next)` · `Choose(policyRef, alternatives)`
 · `Guard(conditionRef, whenTrue, whenFalse)` · `Repeat(program, stopConditionRef)`
@@ -35,8 +35,36 @@ commandId + type, timeout: Cadence, next)` · `Choose(policyRef, alternatives)`
 
 **Conditions are data, never closures** (continuations must serialize): a
 condition is a stable-id reference into a versioned registry of pure predicates,
-optionally parameterized by a small expression AST over state/event fields.
-The kernel package pins the exact shapes (WO-002) and writes them back here.
+parameterized by opaque JSON interpreted by that registered predicate. A
+general expression AST is deferred until a consumer requires one.
+Pinned predicate reference: `{ registryId: string, version: number, params?:
+Record<string, JsonValue> }`. A `PredicateRegistry` maps `registryId`, then
+numeric version, to a pure `(context, params) → boolean` implementation.
+Serialized Programs contain only the reference and JSON parameters, never the
+implementation. `EventPattern` is `{ type, correlationId?, commandId? }`;
+`commandId` matching reads the `commandId` field in a result event's payload.
+
+Pinned Program payloads use a discriminant `kind` and are exactly:
+`Done {}`; `Emit { event, next }`; `Invoke { commandId, command,
+continuationByResult: Record<string, Program> }`; `Await { pattern, timeout,
+next }`; `Sequence/All/Race { programs }`; `Choose { policyRef,
+alternatives }`; `Guard { conditionRef, whenTrue, whenFalse }`; `Repeat {
+program, stopConditionRef }`; and `Compensate { program, compensation }`.
+The compensation applies only to its paired `program`.
+
+Pinned EventEnvelope schema version 1 is `{ schemaVersion: 1, eventId, type,
+occurredAt, actorId, workstreamId, episodeId?, correlationId?, causationId?,
+payload }`; timestamps are numeric virtual/log time and payload is JSON data.
+The append boundary assigns monotonic-per-log `eventId` values `evt_<n>`.
+The kernel computes `commandId` as `cmd_` plus the 16-hex-digit FNV-1a-64 hash
+of `"ep:<episodeId>:<decisionIndex>:<intentIndex>"` when a non-empty
+`episodeId` is present, else `"ws:<workstreamId>:<decisionIndex>:<intentIndex>"`.
+The `ep:`/`ws:` namespace discriminator is load-bearing: without it, an
+`episodeId` equal to any `workstreamId` collides with that workstream's
+episode-less commands, and the outbox's idempotence guard then silently
+swallows one of the two distinct commands. These exact inputs, UTF-8 byte
+encoding, prefix, and hash algorithm are part of the v0.1 ID scheme. Empty
+`episodeId` falls back to `workstreamId`.
 
 Name collisions between the Cadence and Program grammars (`Sequence`, `Race`,
 `Repeat`) are sanctioned: in code they live under `Cadence.*` and `Program.*`
@@ -64,7 +92,7 @@ namespaces; the bare term stays canonical in prose.
 | **Link / link group** | A link declares scope — *this support participates in this behavior's semantics* — never execution order (Principle 13). A link group is one compiled behavioral program. Six links is the default composition budget; a nine-link is a smell prompting decomposition. |
 | **Phenotype** | The computed present behavior of an agent — prompt fragments, thresholds, permissions, cadence, budgets, stopping rules — derived per episode from stored ingredients. A session is one incarnation of a phenotype. |
 | **PolarAxis** | A behavioral pair (research/execute, create/remove, challenge/support, continue/stop) tagged with relation type — inverse, complement, counterweight, compensation — plus baseline and factors. `deriveBehavior(...)` computes the active tension. Candidate default for soft-influence stacking (the project's namesake): each influence contributes an odds multiplier, `O_eff = O_base × ∏ rᵢ`; taking ln makes composition additive — identity + role + supports + environment + learning sum to current disposition. Hard-precedence layers never stack this way. |
-| **AuthorityEnvelope** | Structural autonomy bound: allowed/denied effect patterns, resource limits, required evidence, expiresAt, revocation events. |
+| **AuthorityEnvelope** | Structural autonomy bound: allowed/denied effect patterns, resource limits, required evidence, expiresAt, revocation events. Effect patterns are exact strings or prefix globs ending in `*`. A successful authorization consumes one unit of its named resource and returns the updated envelope; callers persist/thread that value. Resource names must be own properties of `resourceLimits`. |
 | **ObjectiveContract** | Typed, lexicographic definition of "optimal": desiredOutcome, hardConstraints, ordered priorities (safety > correctness > intent-fidelity > evidence > recoverability > operator-burden > throughput > cost), stopConditions, escalationConditions, acceptableUncertainty. |
 | **Budget tranches** | Progressive budget stages per task: Probe (cheap existence/scope check) → Sow (research fan-out) → Commit (implementation grant) → Verify (a protected independent-verification reserve) → Recover (small retry/repair reserve). Distribution is deliberately uneven by task type. |
 | **AttentionPolicy** | A pluggable policy slot deciding which mechanisms activate. **v1 baseline (the operator's own, measurable):** load the top ~50% of mechanisms by observed invocation frequency; factorize when the set outgrows the budget. Candidate default to beat empirically: priority = scope match × trigger confidence × consequence severity × evidence relevance × historical prevention value − context/tool cost. One hard rule regardless of policy: a rare catastrophic invariant always outranks a frequent preference — frequency alone is never activation authority. |
@@ -80,7 +108,7 @@ namespaces; the bare term stays canonical in prose.
 | **AcceptanceEvidenceMatrix** | The living operational spec of a workstream: rows of acceptance criterion × source evidence × code surface × automated test × live evidence × status. It evolves through the whole workstream (never a table pasted into the deliverable at the end); a criterion without sufficient evidence is incomplete; the blinded verifier completes it. |
 | **VerificationFinding** | Typed verification failure: criterion, severity (blocking/major/minor), observed vs expected, reproduction steps, evidence refs, likely surface. Drives a focused repair WorkOrder in a fresh episode; substantive repair marks affected evidence stale. |
 | **InterruptionPolicy** | When the operator may be interrupted — see the six materiality conditions in `04-interfaces.md` §Terminal first. |
-| **Comparison** | The Eye Dr Test event: `{ itemA, itemB, dimension?, judge, winner|draw, context, orderRandomized }`. Comparisons are source of truth; ratings (Elo/Glicko/Bradley-Terry) are pure-fold projections over the comparison stream — replaceable without losing anything. Judges themselves accrue agreement-with-operator ratings; "draw" is a result (the just-noticeable-difference floor), not a failure. Applies only below hard constraints in the composition precedence: a guard-violating candidate gets rejected, not ranked. |
+| **Comparison** | The Eye Dr Test event payload: `{ itemA, itemB, dimension?, judge, result: itemA|itemB|draw, context, orderRandomized }`. Comparisons are source of truth; ratings (Elo/Glicko/Bradley-Terry) are pure-fold projections over the comparison stream — replaceable without losing anything. Judges themselves accrue agreement-with-operator ratings; "draw" is a result (the just-noticeable-difference floor), not a failure. Applies only below hard constraints in the composition precedence: a guard-violating candidate gets rejected, not ranked. |
 | **Semantic correction events** | Typed operator signals (`OperatorCorrectionReceived, OperatorReportsRegression, OperatorRejectsUnsupportedAssumption, OperatorReportsRepeatedFailure`) — surface language (including profanity) is at most a weak classifier feature. The correction reactor is **fail-conservative**: a false positive only tightens behavior (freeze destructive authority, preserve evidence, prohibit scope expansion, dispatch diagnosis, no apology theater). |
 
 ## Memory and observation

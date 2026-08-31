@@ -1,0 +1,698 @@
+# WO-002 verification report (re-verification of the repaired tree)
+
+Produced by a blinded verifier session (PLAYBOOK.md step 3) against the working
+tree of branch `wo-002` at base `dff984e`, 2026-08-31. This file **replaces** the
+previous report, which verified the pre-repair tree. The verifier fixed nothing.
+
+**Verdict: WO-002 does not pass.** Two blocking kernel defects, one blocking
+evidence-gate defect, one live data-loss defect, and the evidence gate is unmet
+for AC3, AC4, AC5 (rows 1/3/5), AC6 and AC7.
+
+**But the shape of the failure has changed completely, and the repair was real.**
+The previous report found three of seven criteria holding in substance and none
+on evidence. This tree is much better than that: the kernel is now largely
+correct under execution, 21 of the previous report's 24 checklist items are
+genuinely fixed, and the tests are no longer tautologies — they drive kernel
+exports and kill real mutants. What remains is (a) two new defects, one of them
+introduced *by* a repair, and (b) a body of named tests that pass over broken
+kernels. Most of what follows is evidence, not behaviour. That distinction is
+marked on every item; do not repair a kernel that is already correct.
+
+## How the repair session should use this file
+
+Read `WO-002-pure-kernel.md` first — it remains the authority on scope. Work the
+Repair scope checklist. Every item is a gap against a clause the work order
+already contains; nothing here expands it.
+
+**Findings are deduplicated.** The same defect was independently reported by up
+to four verification dimensions under different ids; each appears here once, at
+one severity. Fixing the cited line closes the whole cluster.
+
+Severity means:
+- **blocking** — a named acceptance criterion or Constraint genuinely does not
+  hold, or a live correctness/security hole reachable from data the kernel
+  treats as untrusted input.
+- **major** — the behaviour is correct but the *required evidence* does not
+  establish it (the evidence gate says "every criterion mapped to a named test";
+  a named test that a defect-introducing mutant survives is not evidence), or a
+  doc the Write-back duty covers contradicts the code.
+- **minor** — cosmetic, or a latent hazard with no present consequence.
+
+## Evidence baseline
+
+```
+rm -rf packages/kernel/dist && npm install --no-package-lock && npx tsc -b && npm test
+  tsc -b      -> clean, exit 0
+  node --test -> # tests 9  # pass 9  # fail 0
+```
+
+All nine tests pass. As before, that is the problem, not the proof.
+
+**Aggregate mutation score: 104 killed / 187 = 55.6%** across three independent
+sweeps (cadence+program 45/95, authorization+ids 32/45, replay+outbox+store
+27/47). The previous report measured 23/42 = 54.8% — a similar ratio over 4.5×
+the mutants, against a kernel whose defects are largely repaired. The score did
+not improve because the repair fixed the kernel without strengthening the
+assertions that were supposed to guard it.
+
+### State this report is pinned to
+
+`packages/kernel/src` and `packages/kernel/test` were **byte-identical
+throughout verification** and were re-confirmed identical after it, so every
+finding below is against a stable subject. A concurrent operator-authorized
+ideation session was editing product docs during the run (see the
+**Operator-authorized ideation** section at the end of this file); the work
+order, the kernel sections of `02-domain-model.md`, and the failure-injection
+matrix in `03-architecture.md` were each confirmed unchanged, so no criterion
+was scored against a moving target.
+
+```
+base                          dff984e
+packages/kernel/src/core.ts   89f0d19b169fa66e37ca2fa22c718bc7843db0e6
+packages/kernel/src/types.ts  3b621fd48d0f18a952a3e86ba20e1de22bdbac32
+packages/kernel/src/store.ts  3ac397b96af2acedfb96a2bffa4baa551a155006
+packages/kernel/src/index.ts  6cd74d2014c8a9d3bb2864ea465fc496d4978b36
+packages/kernel/test/kernel.test.ts      3f5e011a9a87d0f5a3a1ca5abe426981577114b3
+packages/kernel/test/public-api.test.ts  39e444deffcc639fd59e691bcb1e2dc41e3384c7
+```
+
+The verifier's only writes were to a scratch directory outside the repo. No file
+under the worktree was created, edited, or deleted by this session except this
+report.
+
+## Per-criterion verdicts
+
+| # | Criterion | Verdict | Why |
+|---|---|---|---|
+| AC1 | Reactor purity property test | **partial** | Genuine property test over kernel code now — kills 5 purity mutants, both branches hit 50/50. But the oracle is two back-to-back calls deep-compared: collection-order nondeterminism is invisible (only 1-element arrays passed) and an ambient `Date.now()` escaped 7 of 9 runs. 100 seeds collapse to 2 Decision shapes; `env` is never exercised. |
+| AC2 | Replay identity | **partial** | Clauses 1–2 hold and are genuinely tested (9/9 replay mutants killed, real values pinned). Clause 3 — "consulting nothing outside the log" — is enforced by nothing and tested by nothing: `Math.random()` and `Date.now()` inserted *into `replay()` itself* leave the suite 9/9 green. Store round-trip untested. |
+| AC3 | Cadence virtual time | **fail** (evidence) | Kernel is correct and both prior defects are genuinely repaired — 2.4M Backoff draws, zero exceed `maxMs`; 185k `Every` combinations, zero fixed points. The named test cannot see any of it: its single Backoff call saturates the clamp for every possible draw, so the jitter AC3 names verbatim has zero discriminating evidence. |
+| AC4 | Continuations | **fail** | Blocking kernel defect (B1). The three-step program does drive end to end through the kernel with lossless round-trips at every step — genuinely repaired — but the correlation the test is named for is unasserted, and the "never closures" check is vacuous. |
+| AC5·1 | Crash after command persist | **fail** (evidence) | Machinery is present and correct on the happy path. 3 of 4 mutations to it survive the whole suite; matrix parts (iii) re-dispatch and (iv) no-duplicate-effects are never demonstrated. |
+| AC5·3 | Duplicate result | **partial** | All four matrix parts hold under probe, in real kernel code — genuinely repaired. Clause (iv) "trace records the dedup" is satisfiable by a constant: fabricating the `dedup` label on every path survives. Null payload crashes the outbox. |
+| AC5·5 | Operator-return race | **fail** | Predicate registry genuinely consulted now — the prior "registry reads: 0" defect is fixed. But there is no queue, no ordering and no race; `cancelledScheduleIds` is an inert echo of the caller's own input; the test survives both registry bypass and presence inversion. |
+| AC6 | Authorization guard | **fail** | Blocking kernel defect (B2). The prior bypass is genuinely fixed and exotic resource names all refuse correctly. But `authorize` throws instead of refusing on a non-string effect, and every list-valued envelope field is blind past its first element under mutation. |
+| AC7 | README maps each export | **partial** | The artifact is right: 56/56 exports mapped, clean bijection, zero ghosts. The test guarding it is defeatable three ways, and the "domain-model entry" half of the criterion is guarded by nothing — no test reads `02-domain-model.md` at all. |
+| — | Evidence gate | **fail** | Blocking (B3): `npm test` passes 9/9 with `packages/kernel/test/` **deleted**. Plus the 55.6% mutation score. |
+| — | Write-back duty | **partial** | All four named write-backs are field-exact and independently verified. The catch-all — "the doc must not rot against the code" — fails on one sentence added by this very change. |
+| — | Constraints | **pass** | All seven bullets hold on a literal, independently executed reading. |
+| — | Scope discipline | **pass** | 11/11 Program nodes, 14/14 Cadence constructors, evaluation boundary exactly the named 6+6, all 13 deferred kinds throw, rows 2/4/6 untouched. |
+| — | Non-goals | **pass** | Clean under execution, not just grep. |
+| — | Clean-room boundary | **pass** | Exhaustive token sweep over `packages/`, every modified doc, and both branch commits: zero violations. |
+
+## Blocking defects
+
+### B1 — `Invoke` returns a native function as the continuation *(kernel, AC4)*
+
+`packages/kernel/src/core.ts:36`
+
+```ts
+const continuation = program.continuationByResult[result];
+```
+
+`result` comes from the event payload — adapter-supplied, untrusted. The lookup
+has no own-property guard, so prototype keys resolve up the chain. Verified
+directly against the built kernel:
+
+```
+result="ok"              -> residual {"kind":"Done"}          (correct)
+result="constructor"     -> residual is a native function (Object)
+result="toString"        -> residual is a native function
+result="hasOwnProperty"  -> residual is a native function
+result="__proto__"       -> residual {} with no kind
+result="nope"            -> throws (correct)
+JSON.stringify(residual) -> undefined
+```
+
+The last line is the damage: `serializeContinuation` silently produces
+`undefined` and the continuation is destroyed. This directly violates AC4 — a
+continuation that is a native function does not survive serialize → deserialize
+→ resume.
+
+**This was introduced by the A1 repair**, and it is the exact sibling of the
+prototype bypass the A2 repair closed seven lines earlier with `Object.hasOwn`
+at `core.ts:72`. The guard was added on one path and not the other.
+
+Fix: `Object.hasOwn(program.continuationByResult, result)` before the lookup,
+falling through to the existing `throw`.
+
+### B2 — `authorize` throws instead of refusing *(kernel, AC6)*
+
+`packages/kernel/src/core.ts:70`
+
+```ts
+const effectMatches = (pattern, effect) =>
+  pattern.endsWith("*") ? effect.startsWith(pattern.slice(0, -1)) : pattern === effect;
+```
+
+When the envelope carries any prefix glob and `intent.effect` is not a string,
+this throws instead of returning a refusal. Verified against the built kernel
+with `allowedEffects: ["git.*"]`:
+
+```
+effect="git.commit"   -> AUTHORIZED
+effect=123            -> THREW TypeError: effect.startsWith is not a function
+effect=null           -> THREW TypeError: Cannot read properties of null
+effect=undefined      -> THREW TypeError
+effect={} / [] / true -> THREW TypeError
+```
+
+Reachable through the kernel's own API: `deserializeContinuation` (`core.ts:64`)
+is an unchecked `JSON.parse(...) as Program.T`, so a persisted continuation
+carrying `effect: 42` flows through `stepProgram` into `authorize` and throws.
+Same result through a full JSONL round trip.
+
+AC6 requires that a command outside its envelope "produces a refusal event with
+trace — **structurally**". A thrown TypeError produces no `CommandRefused`
+draft, no `DecisionTrace`, and no log entry. The codebase's own standard for
+this is already present two lines away (`Object.hasOwn` at `:72`, the payload
+shape check at `:41`).
+
+Fix: validate `typeof intent.effect === "string"` and refuse with a reason.
+
+### B3 — the suite passes with the tests deleted *(evidence gate)*
+
+`package.json:9` and `packages/kernel/package.json:8`
+
+```
+"test": "npm run build && node --test packages/kernel/dist/test/kernel.test.js"
+```
+
+`tsc -b` does not prune stale outputs and there is no clean step, so the runner
+executes whatever compiled file was there last. Verified:
+
+```
+rm -rf packages/kernel/test && npm test
+  -> ok 1 - AC1 ... through ok 9 - AC7 ...
+  -> # tests 9  # pass 9  # fail 0   (exit 0)
+```
+
+Nine criterion-named `ok` lines, with no test source in the tree at all. A
+rename plus a deliberately wrong assertion is masked the same way. The evidence
+gate — "test run output captured in the result; every criterion mapped to a
+named test" — cannot be met by a runner that reports green over an absent suite.
+
+*Methodology note, checked so it does not invalidate the rest of this report:*
+src-only mutations **are** picked up (`tsc -b` rebuilds changed sources —
+verified by mutating `core.ts` without deleting `dist` and watching AC4 fail).
+Every mutation result in this report therefore stands. Only test-file deletion
+or renaming is masked.
+
+Fix: glob the runner (`node --test packages/kernel/dist/test/*.test.js`) or
+clean `dist` before building. The glob form immediately surfaces the real state:
+`# tests 19  # pass 18  # fail 1`.
+
+### B4 — `commandId` collides across the episode/workstream namespaces *(kernel, live data loss)*
+
+`packages/kernel/src/core.ts:67` — the scope key is `episodeId || workstreamId`
+with no discriminator between the two namespaces. Verified against the shipped
+kernel, no mutation:
+
+```
+commandId(ws="wsA", ep="wsB",      3, 0) = cmd_c2bf87731084c066
+commandId(ws="wsB", ep=undefined,  3, 0) = cmd_c2bf87731084c066
+COLLISION: true
+
+two DISTINCT commands persisted -> pending count: 1  surviving effect: ['e-A']
+```
+
+An `episodeId` equal to any `workstreamId` collides with that workstream's
+episode-less commands, and `persistCommand`'s own idempotence guard
+(`core.ts:99`) then silently swallows the second command — it is never
+dispatched. That is the mirror image of the duplicate effect matrix row 1 exists
+to prevent, and `02-domain-model.md:18` and `:59-62` pin `commandId` as the
+outbox dedup identity.
+
+Related, same area: `replayOutbox` keys entries by JS property coercion — a
+numeric `7` becomes `"7"`, two distinct object commandIds both become
+`"[object Object]"` (one command lost), and `""` or `0` produce no key at all.
+
+Fix: include a namespace discriminator in the hash input, and pin it in the
+domain model's ID-scheme paragraph in the same change.
+
+## Evidence-gate failures
+
+The kernel behaviour below is **correct under probe**. What follows are named
+tests that a defect-introducing mutant survives. Repair the assertions, not the
+kernel.
+
+### AC3 — Backoff jitter has zero discriminating evidence
+
+`packages/kernel/test/kernel.test.ts:48` uses one parameter set:
+
+```ts
+evaluateCadence(Cadence.Backoff(1000, 2, 1000, 2, .5), {}, env(100, 42))
+```
+
+`base = 1000 × 2² = 4000`; jitter `.5` gives 2000–6000; `Math.min(1000, …)`
+saturates for every possible draw. Probed over 20,000 rngStates: **one distinct
+`dueAt` value, 1100.** The only bound assertion is `b1.dueAt <= 1100`, which the
+kernel hits with equality every time. Five mutants survive at 9/9 green: jitter
+term deleted; jitter unit hard-coded; `factor ** attempt` dropped;
+`Math.max(0, …)` floor deleted; RNG chain replaced by `env.rngState + 1`.
+
+AC3 names this clause verbatim — "jitter drawn from explicit RNG state".
+Fix: pick parameters where the clamp does not bind, and assert exact `dueAt`
+values for two or more pinned rngStates.
+
+### AC3 — `Every` boundary branches unreachable
+
+Both test cases land strictly after `startAt`. Two mutants survive: the
+before-`startAt` arm can return `start + 999999`, and relaxing `env.now < start`
+to `<=` makes `Every(20, 50) @ now=50` return `dueAt = 50 = now` — a fixed-point
+busy loop, undetected. (The unmutated kernel is correct on both.)
+
+### AC3 — `Until` open path, and the predicate registry generally
+
+`Until`'s non-cancelling arm can stop recursing into the inner cadence and the
+suite stays green. More broadly the conditions-as-data mechanism is inert under
+test: `predicate()` scores 3/8 — version selection, `params` passing, event
+threading and the unknown-predicate throw are all unverified — and `Guard` can
+stop consulting its predicate entirely (every `Guard` in the suite runs with
+`flag: true`). `02-domain-model.md` pins conditions-as-data as a rule; nothing
+tests it.
+
+### AC4 — the correlation the test is named for
+
+`stepProgram`'s `Invoke` can ignore `commandId`, `Invoke` can ignore the event
+type, and `Await` can ignore `correlationId` and the event type — all with the
+suite green. The wrong-`commandId` step asserts only
+`residual.kind === "Sequence"`, which is true whether `Invoke` correctly refuses
+the foreign result or wrongly consumes it. Additionally `Invoke` can re-dispatch
+its command on every non-matching event and the suite stays green — precisely
+the duplicate-effect mode matrix row 1 exists to exclude.
+
+### AC4 — `decideProgram` and the closure check
+
+`decideProgram` scores 0/8: every mutant survives, because its only assertion
+(`kernel.test.ts:59`) compares its `continuation` against `step.residual`, which
+the same code path produced. The "never closures" assertion is vacuous —
+`findFunctions()` walks a value that has already been through `JSON.stringify`,
+which silently drops function-valued fields, so it can never find one. Replace
+with a structural check over the pre-serialization value. The `waits` channel is
+never asserted anywhere (`grep -c waits` → 0). *(minor)*
+
+### AC5 row 1 — three of four mutants survive
+
+`replayOutbox` ignoring `CommandResult` events, `persistCommand` overwriting an
+existing entry back to `pending`, and `pendingCommands` returning all entries
+all survive 9/9. Each causes a **completed command to be re-dispatched** — the
+one outcome matrix row 1 forbids. The test replays a one-event log and checks
+the result against an in-memory oracle built by the same two functions.
+
+Fix: assert against a literal expected outbox, and add a case where a completed
+command must *not* appear in `pendingCommands` after replay.
+
+### AC5 row 3 — the dedup trace is satisfiable by a constant
+
+The test asserts the duplicate's `branchPath` is `["result","dedup"]` but never
+asserts the first delivery's is `["result","accepted"]`, so a kernel that labels
+every accepted result `dedup` passes. Matrix clause (iv) is "trace records the
+dedup"; a constant records nothing.
+
+Also untested: the `Object.hasOwn` guard in `applyCommandResult`
+(`core.ts:117`). Removing it lets a `CommandResult` whose `commandId` is
+`__proto__`, `toString`, `constructor` or `hasOwnProperty` fabricate a phantom
+completed outbox entry reporting `["result","accepted"]` — suite green.
+
+### AC5 row 5 — the row's own semantics are undetected
+
+The test survives inverting the presence branch, bypassing `env.predicates`
+entirely with a constant stub, and gutting the NoOp payload. It asserts only
+`intents[0].kind === "NoOp"`; the `reason`, `evidence` and `reevaluation` fields
+— the three the work order names as the deliverable — can all be replaced.
+
+Beyond evidence, the row is structurally incomplete: there is no queue and no
+ordering. `guardQueuedPulse` is a 5-arity free function that cannot be passed to
+`replay` as a `Reactor`; `OperatorPresenceChanged` appears zero times in kernel
+source; presence reaches the guard as a bare field on a hand-made object rather
+than from the log; and `cancelledScheduleIds` is an inert echo of the caller's
+own input array — the kernel cancels nothing. Decide whether row 5 at v0.1.0
+requires real ordering or whether the function-level guard is the whole scope,
+and say so in the architecture doc either way.
+
+### AC6 — list-valued envelope fields are blind past element one
+
+Every list-valued `AuthorityEnvelope` field is exercised with an empty list or a
+singleton, so reducing each quantifier to first-element-only survives 9/9 — and
+each is a live bypass in the mutant:
+
+```
+deny ["shell.*","git.*"] vs git.push  -> MUTANT AUTHORIZED / PRISTINE refused
+revoke ["Paused","Revoked"] + Revoked -> MUTANT AUTHORIZED / PRISTINE refused
+evidence ["a","b"], have ["a"]        -> MUTANT AUTHORIZED / PRISTINE refused
+```
+
+Also untested: the effect matcher itself (5 of 5 semantic mutants survive; four
+open live escalations — widening the prefix glob to a substring match makes
+`allowedEffects: ["git.*"]` authorize `rm-rf-then-git.commit`), the deny/allow
+argument order, and `authorize`'s purity — replacing the copy-on-decrement with
+an in-place mutation survives, and corrupts the caller's envelope.
+
+The shipped kernel is correct on all of these. The test only ever asserts
+`authorized` and `refusal.payload.reason` — never the refusal envelope, never
+the trace, and never a glob that *refuses*.
+
+### AC7 — the guard is defeatable three ways
+
+The test matches each export name with `\b<name>\b` against the whole map slice,
+including the right-hand description column. Three new, wholly unmapped exports
+named `Continuation`, `Outbox` and `Result` keep the suite green because those
+words appear in descriptions. The enumeration set is domain-central (`Act`,
+`Await`, `NoOp`, `Observe`, `Wait`, `JSON`, `Result`, …) — the names most likely
+to be exported next are exactly the ones the test cannot police.
+
+The scrape also misses real export forms: namespace members (line-start
+anchored), `export { X }` re-exports, and multi-declarator consts — verified by
+adding `Program.Fork` and a re-export, both green. And it reads a hard-coded
+three-file list.
+
+Finally, the criterion's operative verb is "maps each exported type **to its
+domain-model entry**", and **no test in the repo reads `02-domain-model.md`**.
+Several right-hand cells name no entry that exists there.
+
+Fix: anchor the assertion to the left column, enumerate `.d.ts` files by glob,
+and check the right-hand cell against a heading or row in the domain model.
+
+### AC2 — clause 3 and the store round trip
+
+"Consulting nothing outside the log" is enforced by nothing. A reactor reading
+`Date.now()`/`Math.random()` passes through `replay()` silently and yields
+divergent state across two replays of one log — and live `Math.random()` and
+`Date.now()` calls inserted *into `replay()` itself* leave the suite 9/9 green.
+Either enforce it, or state plainly in the domain model that it is a reactor
+obligation the kernel does not check.
+
+The store round trip AC2 rests on is untested: `appendEvent` assigning every
+event `evt_1`, dropping the `+1`, `decodeLog` deleting `correlationId` /
+`causationId` / `episodeId`, and `encodeLog` dropping the trailing newline all
+survive. The last one corrupts the log on the next append. The AC2 test's two
+events carry no optional fields at all, and no literal `evt_<n>` is asserted
+anywhere — which also leaves the Constraints deliverable "eventId edge-assigned
+at the store boundary" with no named test.
+
+### AC1 — the purity oracle
+
+Two real purity violations pass: nondeterministic ordering of
+`cancelledScheduleIds` (the test only ever passes a one-element array, where a
+reversal is invisible), and an ambient `Date.now()` read, which escaped 7 of 9
+runs because the two compared calls happen microseconds apart. The property is
+also thin: 100 seeds collapse to 2 distinct Decision shapes, and the subject
+provably ignores `env`, so the `env` leg of the `(state, event, env)` triple is
+never exercised.
+
+Fix: compare across a *simulated* time gap rather than back-to-back, pass
+multi-element collections, and vary `env`.
+
+## Doc rot — the Write-back duty
+
+The four write-backs the work order names by hand are **field-exact**, and each
+was independently re-derived by execution: the FNV-1a-64/UTF-8 hash matches an
+independently written implementation on ASCII and non-ASCII input; the append
+boundary produces `evt_1`…`evt_5` with no skip or repeat; `tsc` rejects a
+literal `eventId` at both `Emit.event` and `Schedule.eventToEmit`; `Await`
+matches `commandId` in the payload only; a serialized `Guard` carries nothing
+but the ref and its JSON params; and every `AuthorityEnvelope` sentence holds.
+
+The catch-all does not.
+
+- **`docs/product/02-domain-model.md:14` — false, and added by this change.**
+  "Kernel row handlers populate `continuation` with their residual Program."
+  No row handler does. Probed: `decideProgram` populates it (and is not a row
+  handler); `guardQueuedPulse` returns keys
+  `state,intents,schedules,cancelledScheduleIds,trace` — no `continuation`;
+  `applyCommandResult` returns `{state,trace}` and is not a Decision at all;
+  `replayOutbox` returns `{entries}`. Either restate it about `decideProgram`
+  (true) or make the row handlers populate it.
+- **`commandId` namespace collision** (B4) must be written back to the ID-scheme
+  paragraph at `:59-62` in the same change as the fix.
+- **Reserved state keys.** `replay()` requires the RNG seed to live at exactly
+  `rngState` and silently promotes any field named `policy` into `env.policy`.
+  A state naming the seed anything else replays with `rngState: 0`. Worth one
+  sentence in the Reactor/env row. *(minor — a third-pass check found the
+  behaviour is at least indirectly pinned by test.)*
+- **Three event type names** — `CommandResult`, `CommandPersisted`,
+  `CommandRefused` — are branched on by string literal in the kernel and appear
+  nowhere in `docs/product/` or `docs/decisions/`. *(minor)*
+
+## What passes
+
+Recorded so the repair does not churn it.
+
+- **Constraints (7/7)**, on a literal, independently executed reading: strict TS
+  with a clean cold `tsc -b --force`; a kernel package with no dependency fields
+  at all and only relative imports; ADR-0002 §Amendments recording exactly the
+  installed dev-dep versions; **zero ambient time/RNG proved dynamically** —
+  `Date`, `Math.random`, `performance` and `process.hrtime` poisoned to throw
+  before import, then all 21 runtime exports and all 25 grammar constructors
+  exercised: 0 violations in 52 calls; a pure store; npm-per-WO-001 layout; and
+  an ID scheme matching the domain model byte-for-byte (`stableHash` verified as
+  genuine FNV-1a-64 over UTF-8 against canonical vectors on 11 cases including
+  non-ASCII). The absent `packages/kernel/harness/` is **not** a shortfall —
+  that bullet is a carve-out scoping the no-I/O rule, not a deliverable.
+- **Scope discipline (all sub-questions)**: 11/11 Program nodes and 14/14
+  Cadence kinds ship as both interface and constructor, field-for-field against
+  the pinned payloads; exactly the named 6+6 evaluate and all 13 others throw a
+  clear deferral error, including through `Sequence`/`Guard` recursion, with no
+  silent default anywhere; rows 2/4/6 have no machinery. `authorize`'s expiry
+  check is AC6 pre-dispatch gating, structurally distinct from row 4.
+- **Non-goals**: clean under execution. 21 runtime exports, none an adapter,
+  model call, UI, SQLite, pattern compiler, LoadoutGraph or rating projection.
+  `Comparison` ships as a type and round-trips the log with zero kernel
+  interpretation; `KernelEnv.policy` is genuinely opaque and reaches a reactor
+  verbatim.
+- **Clean-room boundary**: exhaustive token sweep over every file in
+  `packages/`, the full diff of every modified doc, both branch commits, and
+  this report's predecessor — zero URLs, hostnames, emails, credentials, ticket
+  keys, commercial ticketing/ALM product names, predecessor-system names, or
+  managed-host/gateway descriptions. Every forbidden term present in the repo at
+  all is pre-existing, outside the change set, and is either CLAUDE.md's own rule
+  text, a sanctioned generic, or an explicit negation.
+- **Packaging** is genuinely fixed and was proved three ways: the bare specifier
+  `@dotln/kernel` resolves at runtime from an outside directory, from the
+  workspace symlink, and from an installed `npm pack` tarball; a NodeNext
+  consumer `.ts` compiles clean against `dist/src/index.d.ts`. `test/` is inside
+  the tsconfig include and both test files are really typechecked. The suite is
+  deterministic across runs, CWD-independent, and passes with `node_modules`
+  deleted.
+- **The repair itself**: 21 of 24 prior checklist items genuinely fixed.
+  `Invoke` is no longer a fixpoint; the authorization prototype bypass is really
+  closed (the mutant restoring it is killed); resource accounting works; the
+  Backoff clamp is applied last; `Every` has no fixed points; `eventId` no
+  longer leaks into `Emit`/`Schedule`; rows 1/3/5 have real kernel machinery;
+  the tests drive kernel exports rather than test-local reactors; AC7 has a
+  test; the `exports` target is valid.
+
+## Repair scope
+
+### A. Kernel code (blocking)
+
+- [ ] **B1** `core.ts:36` — guard `continuationByResult` with `Object.hasOwn`.
+- [ ] **B2** `core.ts:70` — validate `typeof intent.effect === "string"`; refuse,
+      do not throw.
+- [ ] **B4** `core.ts:67` — add a namespace discriminator to the `commandId`
+      scope key; write it back to `02-domain-model.md:59-62`.
+- [ ] `core.ts:106` and `:116` — a type-legal `payload: null` (mintable through
+      the kernel's own `appendEvent`) crashes `replayOutbox` and
+      `applyCommandResult` with a TypeError, on the row-1 recovery path. The two
+      casts suppress exactly the strict-TS check that would have caught it
+      (`TS18047: 'payload' is possibly 'null'`). Graded major by cross-dimension
+      review, minor by a third-pass check reading it narrowly as a Constraints
+      question — treat as major, since the crash is on a recovery path.
+
+### B. Evidence gate (blocking)
+
+- [ ] **B3** `package.json:9` and `packages/kernel/package.json:8` — glob the
+      test runner, or clean `dist` before building.
+- [ ] Strengthen the assertions listed under **Evidence-gate failures** above:
+      AC3 Backoff parameters and `Every` boundaries; AC4 correlation,
+      `decideProgram`, and a real closure check; AC5 row 1 literal outbox
+      expectations; AC5 row 3 accepted-vs-dedup trace; AC5 row 5 NoOp payload
+      and registry consultation; AC6 refusal envelope, trace, glob refusal, and
+      multi-element lists; AC7 left-column anchoring and a domain-model read;
+      AC2 clause 3 and the store round trip; AC1 time gap and multi-element
+      collections.
+- [ ] Decide AC5 row 5's real scope (ordering/queue vs. function-level guard) and
+      record it in `03-architecture.md`.
+
+### C. Docs
+
+- [ ] `02-domain-model.md:14` — the row-handler sentence is false; restate or
+      implement.
+- [ ] ID-scheme paragraph — write back the `commandId` namespace fix.
+- [ ] *(minor)* reserved `rngState`/`policy` state keys; the three kernel event
+      type names.
+
+### D. Packaging
+
+Nothing. The prior `exports` defect is fixed and verified three ways.
+
+## Withdrawn from the previous report
+
+These were raised before and are now settled — do not carry them forward:
+
+- The prior report's AC1 verdict ("asserts a reactor literal equals itself,
+  passes with the kernel import deleted") does not hold against this tree.
+- The `cli-exec` change to the `WorkOrderTransport` row is **not** in the WO-002
+  change set — it landed in the branch base via the WO-001 corrections merge
+  (`dff984e`), so it carries no WO-002 ledger duty.
+- The stale predecessor of this file is not a WO-002 defect: it is untracked, so
+  `git merge` does not carry it, and replacing it is this session's own step-3
+  duty — now done.
+- `Schedule.cancelOn` being unread, and the single-file test pin considered
+  purely as "a new test file would not run", were both refuted on independent
+  re-check as not falsifying anything the work order contains. (The single-file
+  pin *does* matter, but for the stale-`dist` reason in B3, not that one.)
+
+## Out of scope for the repair
+
+Deferred by the work order and correctly untouched — do not implement:
+`Calendar` evaluation; Program `Choose`/`All`/`Race`/`Repeat`/`Compensate`
+evaluation; failure-injection rows 2, 4, 6; adapters, model calls, UI, SQLite,
+the pattern compiler, LoadoutGraph, and rating projections over `Comparison`.
+
+## Downstream note
+
+`WO-003-walking-skeleton.md` conditions its acceptance on "a crash+restart at
+step 8 recovers to the same outcome (matrix row 1 machinery)". That machinery
+now **exists and is correct on the happy path** — a materially better position
+than the previous report described. But B4 (commandId collision) sits directly
+on it, and row 1's re-dispatch and no-duplicate-effect clauses have no evidence.
+Fix B4 before WO-003 depends on outbox identity.
+
+## Method and reproduction
+
+18 verification dimensions were run independently and blinded (one per
+acceptance criterion with AC5 split by matrix row, plus Constraints, Scope
+discipline, Write-back duty, Packaging, Clean-room, three mutation sweeps, and
+an audit of the previous report's checklist). Each dimension's findings were
+then re-executed by a second agent instructed to refute them, and every
+surviving blocking/major finding by a third, independent skeptic — 100 agents in
+total, of which 10 findings were refuted outright and 15 duplicate clusters
+merged. Two cross-cutting critics resolved contradictions between dimensions and
+corrected four severity outliers.
+
+Mutants were built and run only in scratch copies outside the repo; the working
+tree was never modified. B1, B2, B3 and B4 were additionally reproduced by hand
+by the lead verifier against the built kernel, and the probe transcripts for
+those four are quoted verbatim above. Every other claim is reproducible from the
+file:line references given.
+
+---
+
+## Operator-authorized ideation after WO-002
+
+**Provenance.** The block below was written into this file by the executor
+(Codex) session at the operator's direction, and the operator confirmed the
+authorization directly to this verifier session. It is preserved verbatim. It is
+an authorization record, not a verification finding — this session did not
+verify the ideation content itself, and none of the documents it lists were
+scored against WO-002. Scope review of WO-002 above is unaffected: every
+acceptance criterion was evaluated against `packages/`, which was byte-identical
+before, during, and after verification.
+
+**Operator-authorized ideation after WO-002 (2026-08-31):** the operator
+explicitly ended work-order execution and began a product-ideation stream in
+this same worktree. All resulting ideation edits are authorized beyond WO-002
+scope and must not be treated as accidental implementation drift. They include
+all synthesized edits and new files produced by that stream:
+
+- `docs/README.md`;
+- `docs/discovery/codex-runtime-map.md`;
+- `docs/product/00-vision.md` through `docs/product/06-roadmap.md` where the
+  ideation touched existing blueprint material;
+- new `docs/product/08-publication-compiler.md` and
+  `docs/product/09-audit-resilience-privacy.md`;
+- the corresponding append-only entries in
+  `docs/lineage/idea-ledger.md`;
+- local raw notes created under `docs/intake/notes/` and the `.gitignore`
+  treatment that keeps those notes out of committed output.
+
+The authorized topics include Oppositional Counsel; Beware of Naive
+Interventionism; Do Nothing as active and support; Default to True/False and
+their PolarAxis reduction; common legos with implementation-owned doctrine;
+package/marketplace and community-build distribution; bring-your-own-agent and
+runtime-native skills/coordination; the first Codex runtime target map;
+multi-audience books and publication compilation; audit, logging, persistence,
+recovery, backup/DR, and privacy projections; evidence-backed feature levels;
+breadth/depth/floor/constraint/free-practice progression; activation,
+utilization, XP, getting the reps in, and capability-specific efficiency levels
+measured as protected resource/outcome frontiers.
+
+This is the operator's final authorization reconciliation before handing the
+worktree to Fable 5 for closeout. The listed documentation additions and files
+are intentional and must not fail scope review merely because they exceed the
+original WO-002 plan. Authorization covers documentation and ideation only,
+not additional WO-002 kernel implementation. The separately authorized
+PR-title/gitmoji and playbook-command changes remain covered by the preceding
+paragraph.
+
+---
+
+## Closeout addendum (2026-08-31, repair record — not a blinded re-verification)
+
+Written by the Fable 5 closeout session the operator handed this worktree to.
+This section records the disposition of the Repair scope above, with the
+evidence for each item. It is a repair record by the session that performed
+the repair; the blinded step for any future dispute is a fresh verifier per
+PLAYBOOK step 3.
+
+### A. Kernel code — all fixed, re-probed with this report's own transcripts
+
+- **B1 fixed** (`core.ts` Invoke): `Object.hasOwn` guard added.
+  `constructor`/`toString`/`hasOwnProperty`/`__proto__` all throw
+  `No Invoke continuation`, same as unknown results; no residual can reach
+  `serializeContinuation` as a native function.
+- **B2 fixed** (`authorize`): non-string `intent.effect` (123, null,
+  undefined, {}, [], true — each probed) refuses with reason
+  `effect is not a string` and trace `["refused","effect is not a string"]`;
+  no path throws.
+- **B4 fixed** (`commandId`): the hash input now carries an `ep:`/`ws:`
+  namespace tag. `commandId("wsA","wsB",3,0)` ≠ `commandId("wsB",undefined,3,0)`
+  and both commands persist as two pending entries; the empty-string ≡
+  undefined episode equivalence is preserved. Written back to the domain
+  model's ID-scheme paragraph as load-bearing.
+- **Null payload fixed** (`replayOutbox`/`applyCommandResult`): null and
+  non-object payloads are skipped/traced `unknown` instead of crashing;
+  non-string and empty-string commandIds are never coerced into keys.
+
+### B. Evidence gate — closed
+
+- **B3 fixed twice.** The runner is now `rm -rf … && tsc -b --force && ls
+  …/dist/test/*.test.js >/dev/null && node --test …/dist/test/*.test.js`. The
+  clean+force step removes the stale-`dist` mask; the `ls` guard closes a
+  second hole found while fixing the first — with the test sources deleted,
+  Node 22.2 expands the unmatched pattern itself and reports zero tests
+  *green*. Probed: tests deleted → exit 1; restored → 62/62.
+- **Assertions strengthened.** Seven new per-criterion test files
+  (`ac1-purity` … `ac7-readme-map`), suite 9 → 62 tests, all green. Every
+  mutant this report names was re-applied in isolated scratch copies of the
+  tree and is now killed by at least one named test (per-section sweeps:
+  AC1 ≥7, AC2 8, AC3 13, AC4 15, AC5 13, AC6 17, AC7 7 mutants — including
+  the ambient-clock, first-element-only, glob-widening, constant-dedup,
+  description-column, and evt_1 classes). The AC2 clause-3 obligation is now
+  a committed poison test (Date.now/Math.random stubbed to throw across
+  replay/step/evaluate/authorize), and the reactor-side obligation is stated
+  in the domain model's Reactor row.
+- **Row 5 scope decided and recorded** in 03-architecture.md ("Row 5 scope at
+  v0.1.0"): the kernel's contribution is the pure guard that *declares*
+  NoOp-with-trace and the ids to cancel; queue ownership, event-sourced
+  presence, and executed cancellation are v0.4.0 runtime work. WO-003 step 12
+  now cites it.
+
+### C. Docs — written back
+
+Decision row restated for `decideProgram`; ID-scheme paragraph carries the
+namespace tag and its rationale; reserved `rngState`/`policy` state keys and
+the three pinned outbox event types added; README map cells name entries that
+exist in the domain model (and a test now checks the left column against the
+full discovered export surface, and each right cell against the domain-model
+text).
+
+### Authorization-trail completion
+
+The operator-authorization block above lists changed paths but omits two the
+same stream touched: `docs/PLAYBOOK.md` and
+`docs/product/07-execution-guide.md`. Its own closing sentence covers both
+("the separately authorized PR-title/gitmoji and playbook-command changes");
+they are recorded here so the file-level reconciliation is complete.
