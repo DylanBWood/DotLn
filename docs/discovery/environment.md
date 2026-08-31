@@ -2,8 +2,10 @@
 
 Scope: bounded inspection for WO-001 on the personal machine. No packages or
 configuration were changed. Values of environment variables and configuration
-files were not printed. Labels are: `observed`, `documented locally`,
-`untested`, `blocked`, `not found`, and `ambiguous`.
+files were not printed. None of the spec's non-goals (benchmarking, rate-limit
+probing, work-machine inspection, package/framework selection) were performed.
+Labels are: `observed`, `documented locally`, `untested`, `blocked`,
+`not found`, and `ambiguous`.
 
 Patch levels: exact OS build and browser patch versions were measured but are
 deliberately not published here. This is a public repository, and a precise
@@ -19,9 +21,9 @@ Provenance: the inspection was executed by a Codex CLI TUI session
 `CODEX_SANDBOX_NETWORK_DISABLED` were present in that session's own
 environment-name list. That sandbox — not this machine, and not a corporate
 or managed environment — is the cause of every `blocked` row that remains
-below. Rows marked *(corrected)* were re-measured on 2026-08-31 by a Claude
-Code `2.1.251` session; see "Corrections and known gaps" and the second
-command log.
+below. Rows marked *(corrected)* were revised on 2026-08-31 by Claude Code
+`2.1.251` sessions; see "Corrections and known gaps" and the command logs
+that follow the original one.
 
 ## Summary
 
@@ -45,7 +47,7 @@ command log.
 | Installed version | observed | `claude --version` returned `2.1.251 (Claude Code)` |
 | Print mode | documented locally | `--print` is present in installed help |
 | JSON and streaming JSON output | documented locally | `--output-format text|json|stream-json` is present in installed help |
-| JSON Schema result | blocked | installed help exposes `--json-schema`; the one permitted smoke invocation emitted a valid JSON result envelope but exited 1 with `Not logged in`, so schema-conforming model output was not obtained. The host itself is authenticated (a `Claude Code-credentials` keychain item exists); the blocker was the executing session's network-disabled sandbox, not the account *(cause corrected)* |
+| JSON Schema result | blocked | installed help exposes `--json-schema`; the one permitted smoke invocation emitted a valid JSON result envelope but exited 1 with `Not logged in`, so schema-conforming model output was not obtained. The host itself is authenticated (a `Claude Code-credentials` keychain item exists); the blocker was the executing session's sandbox, not the account — whether its network denial or its keychain denial produced the error is not established *(cause corrected; narrowed to sandbox level on review)* |
 | Model selection | documented locally | `--model` and print-only `--fallback-model` are present |
 | Effort selection | documented locally | `--effort low|medium|high|xhigh|max` is present |
 | Session persistence | documented locally | `--no-session-persistence`, `--session-id`, `--continue`, `--resume`, and `--fork-session` are present |
@@ -56,14 +58,16 @@ command log.
 | Worktree launch | documented locally | `--worktree [name]` and worktree-dependent `--tmux` are present |
 | Hooks | documented locally | help states `--bare` and `--safe-mode` skip/disable hooks and exposes hook-event streaming flags; neither discovered settings file has a top-level `hooks` key |
 | Settings sources | observed | default-source candidates present: user `~/.claude/settings.json` (362 bytes) and project `.claude/settings.json` (104 bytes); user-local and project-local files were not found. Help documents `--setting-sources user,project,local`. Exact effective values were intentionally not printed |
-| Fresh startup context | observed | metadata-only candidates: `~/.claude/CLAUDE.md` (13 lines, 660 bytes) and project `CLAUDE.md` (52 lines, 1950 bytes). Project `AGENTS.md` is a symlink to `CLAUDE.md`; no parent instruction file was found. Claude help explicitly says `--bare` skips `CLAUDE.md` auto-discovery. Whether both user files with identical content are deduplicated is ambiguous |
+| Fresh startup context | observed | metadata-only candidates: `~/.claude/CLAUDE.md` (13 lines, 660 bytes) and project `CLAUDE.md` (59 lines, 2409 bytes) *(corrected; originally `52 lines, 1950 bytes`, a pre-blueprint draft)*. Project `AGENTS.md` is a symlink to `CLAUDE.md`; no parent instruction file was found. Claude help explicitly says `--bare` skips `CLAUDE.md` auto-discovery. Whether both user files with identical content are deduplicated is ambiguous |
 
 Claude smoke result: **blocked**. Command used print mode, disabled tools and
 session persistence, requested JSON plus a trivial schema, made one attempt,
 and returned `Not logged in`. No rate-limit probing or retry occurred. The
-cause is the executing session's sandbox (`network_access: false`), not the
-account: the host holds a `Claude Code-credentials` keychain item and runs
-authenticated Claude Code sessions *(cause corrected)*.
+cause is the executing session's sandbox, not the account: the host holds a
+`Claude Code-credentials` keychain item and runs authenticated Claude Code
+sessions. Whether the sandbox's network denial (`network_access: false`) or
+its keychain denial produced the error is not established by the logged
+evidence *(cause corrected; narrowed to sandbox level on review)*.
 
 ## Codex CLI 0.151.0
 
@@ -76,7 +80,7 @@ authenticated Claude Code sessions *(cause corrected)*.
 | Sandboxing | documented locally | `--sandbox read-only|workspace-write|danger-full-access`, approval policy, additional writable directories, and bypass controls are present |
 | Session persistence | documented locally | `exec --ephemeral`, plus exec resume/fork commands, are present |
 | Config locations | observed | installed help names `~/.codex/config.toml`; that file exists (3138 bytes). Project `.codex/config.toml` was not found. A `CODEX_HOME` override was not set in the observed environment-name list |
-| AGENTS.md handling | observed | this active session received the project `AGENTS.md`; it is a symlink to `CLAUDE.md`. Metadata candidates are `~/.codex/AGENTS.md` (13 lines, 660 bytes) and project `AGENTS.md` (52 lines, 1950 bytes); no parent file was found. Exact merge/deduplication behavior is ambiguous |
+| AGENTS.md handling | observed | this active session received the project `AGENTS.md`; it is a symlink to `CLAUDE.md`. Metadata candidates are `~/.codex/AGENTS.md` (13 lines, 660 bytes) and project `AGENTS.md` (59 lines, 2409 bytes) *(corrected; originally `52 lines, 1950 bytes`, a pre-blueprint draft)*; no parent file was found. Exact merge/deduplication behavior is ambiguous |
 | Feature surface | observed | local `codex features list` reports stable enabled hooks, multi-agent, browser, app, plugin, and workspace-dependency features; this is availability metadata, not an execution test |
 | Noninteractive smoke | blocked | the single `codex exec --ephemeral --ignore-user-config --sandbox read-only --json` attempt exited 1: in-process app-server initialization was denied by the executing session's own Codex sandbox (`network_access: false`) — not by a machine limitation or a corporate/managed environment *(cause corrected)* |
 
@@ -85,20 +89,21 @@ authenticated Claude Code sessions *(cause corrected)*.
 Build these first, as peer `WorkOrderTransport` adapters already settled by
 ADR-0002:
 
-1. **Claude CLI print adapter.** The installed binary locally documents the
-   complete desired launch shape: print mode, explicit model and effort,
-   project/local setting-source selection, tools control, no persistence,
-   worktree launch, and JSON Schema output. Gate its integration test on the
-   runner having network access to the model endpoint — the host is already
+1. **Claude CLI print adapter** (`ClaudeCliPrintWorkOrderTransport`). The
+   installed binary locally documents the complete desired launch shape: print
+   mode, explicit model and effort, project/local setting-source selection,
+   tools control, no persistence, worktree launch, and JSON Schema output.
+   Gate its integration test on the runner executing outside a restrictive
+   sandbox, with the model endpoint reachable — the host is already
    authenticated, and the sandbox, not the account, is what blocked the smoke
-   call. Explicitly
-   disable ambient auto-memory (project setting or a reviewed minimal settings
-   payload), since no narrow CLI switch was observed.
-2. **Codex CLI exec adapter.** The installed binary locally documents the
-   equivalent noninteractive shape: explicit model, sandbox, ephemeral mode,
-   ignored user config, JSONL events, and an output schema. Gate its integration
-   test on successful app-server initialization outside a network-disabled
-   sandbox; the current smoke call is blocked, not passing.
+   call. Explicitly disable ambient auto-memory (project setting or a reviewed
+   minimal settings payload), since no narrow CLI switch was observed.
+2. **Codex CLI exec adapter** (`CodexCliExecWorkOrderTransport`). The
+   installed binary locally documents the equivalent noninteractive shape:
+   explicit model, sandbox, ephemeral mode, ignored user config, JSONL events,
+   and an output schema. Gate its integration test on successful app-server
+   initialization outside a network-disabled sandbox; the current smoke call
+   is blocked, not passing.
 
 Both adapters should fail closed on unavailable model/auth/runtime rather than
 silently substituting. Begin with CLI-process transports, not background or
@@ -117,9 +122,28 @@ sandbox was reported as a property of the machine.
    binaries installed; the narrower "no CLI/global/repo package" finding was
    true and is retained.
 3. **Blocked-cause attribution.** Both model smokes and the JSON-schema row
-   now name the network-disabled executing sandbox rather than the account or
-   an unspecified "managed" environment, and recommendation 1's integration
-   gate points at network access instead of authentication.
+   were reattributed to the network-disabled executing sandbox rather than
+   the account or an unspecified "managed" environment, and recommendation
+   1's integration gate was pointed at network access instead of
+   authentication. *(The network-level wording was since narrowed by
+   correction 5.)*
+
+Two further corrections were applied later on 2026-08-31, from a post-merge
+review pass:
+
+4. **Project instruction-file metadata.** `CLAUDE.md` and its `AGENTS.md`
+   symlink were recorded at 52 lines / 1950 bytes — a pre-blueprint
+   working-tree draft. The file was already 59 lines / 2409 bytes in the
+   commit this inspection ran on, and no 52-line version exists anywhere in
+   committed history. Both startup-context rows and their JSON counterparts
+   now carry the measured values.
+5. **Blocked-cause attribution narrowed to sandbox level.** Correction 3
+   named the sandbox's network denial as the specific cause of the Claude
+   smoke's `Not logged in`, but the logged evidence establishes only "the
+   sandbox, not the account" — a keychain-access denial by the same sandbox
+   would produce the same error. The Claude smoke rows and recommendation 1's
+   integration gate now claim exactly what the evidence supports; the Codex
+   smoke row is unchanged — its denial by the sandbox was directly observed.
 
 Gaps identified in the same pass and deliberately **not** closed here, so a
 later work order can scope them:
@@ -179,7 +203,7 @@ npx --no-install playwright --version 2>/dev/null || true
 
 ## Verification command log (2026-08-31)
 
-Re-measurement that produced the corrections above, run from
+Re-measurement that produced corrections 1–3, run from
 `/Users/dylanwood/Projects/DotLn-wo001` by a Claude Code `2.1.251` session.
 Read-only; no values of secrets or configuration files were printed.
 
@@ -196,4 +220,17 @@ ROLLOUT=/Users/dylanwood/.codex/sessions/2026/08/30/rollout-2026-08-30T23-08-46-
 grep -oh '"sandbox_policy":{[^}]*}' $ROLLOUT | sort -u
 grep -ohE '"(model|cli_version|originator)":"[^"]*"' $ROLLOUT | sort -u
 grep -ch CODEX_SANDBOX_NETWORK_DISABLED $ROLLOUT
+```
+
+## Review-pass command log (2026-08-31)
+
+Read-only commands behind corrections 4–5, run post-merge from the repo root
+by a Claude Code `2.1.251` session. Correction 5 required no new measurement —
+it narrows an inference to what the already-logged evidence supports.
+
+```sh
+wc -l -c CLAUDE.md
+git show 4bae5f3:CLAUDE.md | wc -l -c
+git show 6310344:CLAUDE.md | wc -l -c
+git rev-list --parents -n1 4bae5f3
 ```
