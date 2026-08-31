@@ -12,8 +12,9 @@ const run = (cwd, ...args) => {
 };
 const ensureClean = path => { if (run(path, "status", "--porcelain") !== "") throw new Error(`worktree is not clean: ${path}`); };
 const ensureNoIgnoredMaterial = path => {
-  const ignored = run(path, "ls-files", "--others", "--ignored", "--exclude-standard", "--", "docs/intake");
-  if (ignored !== "") throw new Error(`worktree contains ignored material and will not be removed: ${ignored.split("\n")[0]} (back up or move it, then retry)`);
+  const disposable = candidate => candidate.split("/").some(segment => segment === "node_modules" || segment === "dist") || basename(candidate) === ".DS_Store" || candidate.endsWith(".tsbuildinfo");
+  const ignored = run(path, "ls-files", "--others", "--ignored", "--exclude-standard").split("\n").filter(Boolean).filter(candidate => !disposable(candidate));
+  if (ignored.length > 0) throw new Error(`worktree contains ignored material and will not be removed: ${ignored[0]} (run npm run backup:intake or move it, then retry)`);
 };
 const containedRegularFile = (path, root) => existsSync(path) && lstatSync(path).isFile() && realpathSync(path).startsWith(`${realpathSync(root)}${sep}`);
 const worktrees = () => {

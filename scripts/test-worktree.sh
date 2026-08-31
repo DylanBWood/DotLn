@@ -15,7 +15,7 @@ git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control"
 cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
 printf '# fixture\n' >"$main/docs/work-orders/WO-099-fixture.md"
-printf 'docs/intake/\nnode_modules/\npackages/*/dist/\n' >"$main/.gitignore"
+cp "$script_dir/../.gitignore" "$main/.gitignore"
 git -C "$main" add .
 git -C "$main" commit -m initial >/dev/null
 git -C "$main" push -u origin main >/dev/null 2>&1
@@ -60,9 +60,21 @@ if node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null 2>&1; then printf 
 git -C "$main" fetch origin wo-099 >/dev/null 2>&1
 git -C "$main" merge --ff-only origin/wo-099 >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
+printf 'SECRET=fixture-only\n' >"$subject/.env"
+printf 'disposable build state\n' >"$subject/tsconfig.tsbuildinfo"
+if finish_output="$(node "$main/scripts/worktree.mjs" finish WO-099 2>&1)"; then printf 'error: ignored secret was deleted\n' >&2; exit 1; fi
+grep -Fq '.env' <<<"$finish_output"
+grep -Fq 'npm run backup:intake' <<<"$finish_output"
+test -f "$subject/.env"
+test -f "$subject/tsconfig.tsbuildinfo"
+test -d "$subject"
+test -n "$(git -C "$main" branch --list wo-099)"
+rm -- "$subject/.env" "$subject/tsconfig.tsbuildinfo"
 mkdir -p "$subject/docs/intake"
 printf 'raw local note\n' >"$subject/docs/intake/raw.md"
-if node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null 2>&1; then printf 'error: ignored material was deleted\n' >&2; exit 1; fi
+if intake_output="$(node "$main/scripts/worktree.mjs" finish WO-099 2>&1)"; then printf 'error: ignored material was deleted\n' >&2; exit 1; fi
+grep -Fq 'docs/intake/raw.md' <<<"$intake_output"
+grep -Fq 'npm run backup:intake' <<<"$intake_output"
 test -f "$subject/docs/intake/raw.md"
 rm -f -- "$subject/docs/intake/raw.md"
 rmdir -- "$subject/docs/intake"
