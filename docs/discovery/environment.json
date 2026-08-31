@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "0.0.1",
+  "workOrder": "WO-001",
+  "observedAt": "2026-08-30T23:10:46-04:00",
+  "scope": "personal machine, bounded inspection",
+  "provenance": {
+    "executedBy": {"agent": "codex-cli", "surface": "codex-tui", "cliVersion": "0.151.0", "model": "gpt-5.6-sol"},
+    "executorSandbox": {"type": "workspace-write", "networkAccess": false, "envNamesPresent": ["CODEX_SANDBOX", "CODEX_SANDBOX_NETWORK_DISABLED"]},
+    "note": "Every remaining blocked classification is a property of the executing session's sandbox, not of this machine and not of a corporate or managed environment.",
+    "correctedBy": {"agent": "claude-code", "version": "2.1.251", "correctedAt": "2026-08-31", "corrected": ["toolchain.playwright", "toolchain.localhostHttpServing", "blockedCauseAttribution"]}
+  },
+  "labels": ["observed", "documented locally", "untested", "blocked", "not found", "ambiguous"],
+  "toolchain": {
+    "os": {"classification": "observed", "name": "macOS", "version": "15", "kernel": "Darwin 24.x", "arch": "arm64", "precisionWithheld": "exact point release and build omitted: public repository"},
+    "shell": {"classification": "observed", "path": "/bin/zsh", "version": "5.9"},
+    "node": {"classification": "observed", "version": "22.2.0"},
+    "npm": {"classification": "observed", "version": "10.8.0"},
+    "pnpm": {"classification": "observed", "version": "9.1.2"},
+    "yarn": {"classification": "observed", "version": "1.22.22"},
+    "tsc": {"classification": "observed", "version": "5.4.5"},
+    "git": {"classification": "observed", "version": "2.55.0"},
+    "gitWorktree": {"classification": "observed", "currentBranch": "wo-001", "worktreeCount": 2},
+    "sqlite3": {"classification": "observed", "version": "3.43.2"},
+    "browsers": {
+      "classification": "observed",
+      "installed": ["Brave", "Firefox", "Chrome", "Safari"],
+      "currentChromiumAvailable": true,
+      "precisionWithheld": "exact patch levels omitted: public repository"
+    },
+    "playwright": {
+      "classification": "observed",
+      "correctedFrom": "not found",
+      "availableVia": "mcp",
+      "mcpServer": {"name": "playwright", "command": "npx -y @playwright/mcp@latest", "status": "connected"},
+      "browserBinaries": {"path": "~/Library/Caches/ms-playwright", "entries": ["chromium-1234", "chromium_headless_shell-1234", "ffmpeg-1011"], "createdAt": "2026-08-30T23:02:08-04:00"},
+      "standaloneCli": {"classification": "not found", "detail": "no executable, global npm package, or repository package; npx --no-install playwright --version produces no version"}
+    },
+    "localhostHttpServing": {
+      "classification": "observed",
+      "correctedFrom": "blocked",
+      "evidence": "in-process bind plus fetch on 127.0.0.1 returned localhost_http_status=200",
+      "originalReadingCause": "race in the probe: it curled a backgrounded server with no readiness wait (no_wait_curl_status=7, after_1s_curl_status=0 against the identical server)"
+    }
+  },
+  "claudeCode": {
+    "version": {"classification": "observed", "value": "2.1.251"},
+    "printMode": {"classification": "documented locally", "flag": "--print"},
+    "outputFormats": {"classification": "documented locally", "values": ["text", "json", "stream-json"]},
+    "jsonSchemaOutput": {"classification": "blocked", "flag": "--json-schema", "reason": "single smoke invocation returned Not logged in", "cause": "executing session sandbox had networkAccess false; host is authenticated (Claude Code-credentials keychain item exists)"},
+    "modelSelection": {"classification": "documented locally", "flags": ["--model", "--fallback-model"]},
+    "effortSelection": {"classification": "documented locally", "flag": "--effort", "values": ["low", "medium", "high", "xhigh", "max"]},
+    "sessionPersistence": {"classification": "documented locally", "controls": ["--no-session-persistence", "--session-id", "--continue", "--resume", "--fork-session"]},
+    "autoMemory": {"classification": "documented locally", "controls": ["--bare", "--safe-mode", "project autoMemoryEnabled setting"], "narrowCliDisableFlag": "not found"},
+    "subagents": {"classification": "documented locally", "controls": ["--agent", "--agents", "agents"]},
+    "workflows": {"classification": "ambiguous", "evidence": "safe-mode help names workflows, but no dedicated invocation command was observed"},
+    "backgroundExecution": {"classification": "documented locally", "controls": ["--background", "agents", "attach", "logs", "stop", "rm"]},
+    "worktreeFlag": {"classification": "documented locally", "flag": "--worktree"},
+    "hooks": {"classification": "documented locally", "configuredTopLevelHooks": false},
+    "settingsSources": {
+      "classification": "observed",
+      "documentedSources": ["user", "project", "local"],
+      "present": ["~/.claude/settings.json", ".claude/settings.json"],
+      "notFound": ["~/.claude/settings.local.json", ".claude/settings.local.json"]
+    },
+    "startupContext": {
+      "classification": "observed",
+      "files": [
+        {"path": "~/.claude/CLAUDE.md", "lines": 13, "bytes": 660},
+        {"path": "CLAUDE.md", "lines": 52, "bytes": 1950}
+      ],
+      "projectAgentsSymlinkTarget": "CLAUDE.md",
+      "deduplication": "ambiguous"
+    },
+    "smoke": {"classification": "blocked", "attempts": 1, "exitCode": 1, "reason": "Not logged in", "cause": "executing session sandbox had networkAccess false; not an authentication failure"}
+  },
+  "codexCli": {
+    "version": {"classification": "observed", "value": "0.151.0"},
+    "noninteractive": {"classification": "documented locally", "command": "codex exec"},
+    "outputFormats": {"classification": "documented locally", "controls": ["--json", "--output-last-message", "--output-schema"]},
+    "modelSelection": {"classification": "documented locally", "flag": "--model"},
+    "sandboxing": {"classification": "documented locally", "values": ["read-only", "workspace-write", "danger-full-access"]},
+    "sessionPersistence": {"classification": "documented locally", "controls": ["--ephemeral", "resume", "fork"]},
+    "configLocations": {"classification": "observed", "present": ["~/.codex/config.toml"], "notFound": [".codex/config.toml"], "codexHomeOverrideSet": false},
+    "agentsMd": {
+      "classification": "observed",
+      "files": [
+        {"path": "~/.codex/AGENTS.md", "lines": 13, "bytes": 660},
+        {"path": "AGENTS.md", "lines": 52, "bytes": 1950, "symlinkTarget": "CLAUDE.md"}
+      ],
+      "mergeBehavior": "ambiguous"
+    },
+    "smoke": {"classification": "blocked", "attempts": 1, "exitCode": 1, "reason": "in-process app-server initialization denied", "cause": "executing session's own Codex sandbox (networkAccess false); not a machine or corporate constraint"}
+  },
+  "recommendations": [
+    {"priority": 1, "adapter": "ClaudeCliPrintWorkOrderTransport", "integrationGate": "schema-conforming smoke succeeds from a runner with network access to the model endpoint (host is already authenticated)"},
+    {"priority": 2, "adapter": "CodexCliExecWorkOrderTransport", "integrationGate": "ephemeral read-only JSON smoke initializes successfully outside a network-disabled sandbox"}
+  ],
+  "nonGoalsPerformed": [],
+  "knownGaps": [
+    "MCP is not covered as a Claude Code capability, though installed help exposes mcp, --mcp-config and --strict-mcp-config and a Playwright MCP server is connected",
+    "startupContext accounts for CLAUDE.md only; --safe-mode help enumerates roughly ten auto-loaded categories",
+    "settingsSources records file existence, not effective loading; the managed/policy source and ~/.claude.json are not enumerated",
+    "a user-level model key exists in ~/.claude/settings.json and was not recorded, though it bears on the recommended explicit-model launch shape",
+    "recommendations rest on documented-locally rows; no observed row discriminates between the candidate transports",
+    "the original command log omits three of the executor's thirteen shell calls and both file writes",
+    "no JSON counterpart exists for the environment.md Codex Feature surface row"
+  ]
+}
