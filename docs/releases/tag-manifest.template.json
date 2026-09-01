@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "release": {
+    "application": null,
+    "commit": null,
+    "subject": null,
+    "committedAt": null,
+    "previousRelease": null,
+    "distribution": "source-only"
+  },
+  "workOrder": {
+    "id": null,
+    "path": null
+  },
+  "versions": {
+    "root": null,
+    "components": {}
+  },
+  "schemas": {
+    "eventEnvelope": null,
+    "controlLog": null,
+    "ir": null,
+    "artifactConfiguration": null,
+    "transformationSet": null
+  },
+  "cadence": {
+    "evaluable": [],
+    "deferred": []
+  },
+  "toolchain": {
+    "node": null,
+    "npm": null,
+    "typescript": null,
+    "platform": null
+  },
+  "evidence": [],
+  "notes": {
+    "visiblePayoff": null,
+    "critical": [],
+    "operatorActions": [],
+    "changes": [],
+    "changedFiles": [],
+    "reviewArtifacts": [],
+    "knownLimitations": []
+  }
+}

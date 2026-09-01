@@ -69,3 +69,11 @@ mapped to a named test.
 LoadoutGraph (v0.3.0 — keep policy/loadout inputs to reactors as opaque typed
 parameters), rating projections over Comparison events (the event type ships;
 the fold comes later).
+
+## 2026-08-31 roadmap retiming note
+
+This completed order retains its original future pointers as time-indexed
+planning history. The current application targets are `v0.4.0` for
+LoadoutGraph/composition and `v0.5.0` for failure-matrix rows 2, 4, and 6; see
+the roadmap's dated forward-retiming table. Its implemented `v0.1.0` scope and
+evidence are unchanged.

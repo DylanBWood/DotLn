@@ -1,4 +1,6 @@
-# Walking skeleton v0.2.0
+# `@dotln/skeleton` 0.2.0
+
+The walking-skeleton component first shipped in application release `v0.2.0`.
 
 The deterministic Repo Gardener + Seiri vertical. It compiles a provisional,
 hand-assembled loadout into a bounded `WorkOrder`, runs it against a fake
@@ -31,6 +33,6 @@ replayed decision identity, trace-tamper resistance, structural deletion
 refusal, executed scheduler cancellation, and crash/restart redispatch with
 adapter deduplication.
 
-The loadout shape is deliberately non-normative for v0.3.0. The fake adapter
+The loadout shape is deliberately non-normative for v0.4.0. The fake adapter
 deduplicates by the kernel-generated command id so crash recovery can safely
 re-dispatch pending outbox commands.

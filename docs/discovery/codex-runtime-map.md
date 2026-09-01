@@ -23,8 +23,8 @@ private identifiers are deliberately excluded.
 | hooks | observed feature, untested here | lifecycle observation, evidence capture, and fail-closed guards where the event supports enforcement | do not disguise advisory prompt text as a hard hook |
 | sandbox and approvals | documented locally | lower `AuthorityEnvelope` filesystem, network, and command restrictions | the DotLn host remains the canonical authority source and must reject loss |
 | MCP tools, apps, and browser/computer use | observed feature families | integrations and source/effect adapters | capability discovery precedes use; secrets stay outside portable builds |
-| `codex exec --ephemeral` | documented locally, blocked smoke | disposable worker episode | the earlier nested smoke was blocked by the executing sandbox, not proven unavailable on the host |
-| `exec --json`, `--output-schema`, `--output-last-message` | documented locally, blocked smoke | typed result envelope, event stream, and final artifact capture | schema validation and evidence persistence remain host responsibilities |
+| `codex exec --ephemeral` | observed | disposable worker episode | WO-004's later authenticated smoke completed outside the earlier blocking sandbox; ephemeral session-store absence was observed |
+| `exec --json`, `--output-schema`, `--output-last-message` | observed for JSONL + schema; last-message file untested | typed result envelope, event stream, and final artifact capture | the schema-bound JSONL result passed; durable evidence persistence and independent model-selection proof remain host responsibilities |
 | resume and fork commands | documented locally | continuation, repair, and deliberately branched investigation | never imply that an interactive session is durable orchestration |
 | goals | observed feature, untested for DotLn | bounded persistence toward a declared objective | candidate convenience primitive; WorkOrder lifecycle stays canonical |
 | workspace dependencies | observed feature, untested here | make runtime prerequisites explicit | dependency presence does not imply permission or semantic compatibility |
@@ -69,9 +69,11 @@ passes. No test should require private configuration in committed artifacts.
 3. **Skill fixture.** Add a tiny repo-local skill that returns a recognizable,
    schema-valid support contribution; test explicit invocation first, then
    implicit activation and non-activation.
-4. **Structured episode fixture.** Run an ephemeral, read-only `codex exec`
-   with an output schema and persist JSONL plus the final result. This requires
-   a context where nested app-server initialization is permitted.
+4. **Structured episode transport — observed; reusable fixture pending.**
+   WO-004 ran an ephemeral, read-only `codex exec` with JSONL and an output
+   schema successfully in a context where app-server initialization was
+   permitted. A committed temporary-repository conformance fixture that
+   persists and revalidates the stream still remains to be built.
 5. **Opposition fixture.** Give maker and dissenter the same frozen claim,
    isolate their contexts, then verify that adjudication preserves evidence
    and disagreement rather than averaging prose.
@@ -83,9 +85,10 @@ passes. No test should require private configuration in committed artifacts.
    permission it introduces, sandbox it, then uninstall it without residue.
 
 The smallest useful prototype is steps 2–4: one instruction hierarchy, one
-support skill, and one schema-bound read-only episode. That is enough to test
-the compiler-target idea without prematurely building a marketplace or a full
-coordination universe.
+support skill, and one schema-bound read-only episode. The transport behavior
+for step 4 is now observed, but the reusable fixture and steps 2–3 remain. That
+is enough scope to test the compiler-target idea without prematurely building
+a marketplace or a full coordination universe.
 
 ## Sources
 
@@ -95,4 +98,3 @@ coordination universe.
 - [Skills and plugins](https://learn.chatgpt.com/docs/skills-and-plugins.md)
 - [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents.md)
 - [Codex noninteractive mode](https://learn.chatgpt.com/docs/non-interactive-mode.md)
-

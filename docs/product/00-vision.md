@@ -69,15 +69,17 @@ path and language, never the underlying facts. See the
 ## The one-paragraph story
 
 A predecessor system (not present in this repo) proved the concept and then
-collapsed under its own success: ~140 accumulated feedback rules loaded as
-prose pushed every fresh session to ~400-500k tokens of always-on context,
-where rules fired wrongly or vanished when needed most. The diagnosis, in the project's own RPG vocabulary: an **aura
-stacker** — every rule reserved as a permanent global aura before entering any
-map. DotLn's answer is not fewer rules but *compiled* rules: each correction
-becomes a typed mechanism (a permission, a guard, a reactor, an evaluator, a
-transformer, a workflow gate) attached only where relevant. A session gets **a
-build, not a biography** — one active behavior, a handful of linked supports, a
-tiny immutable safety layer, and the exact task state.
+collapsed under its own success: roughly 140 accumulated feedback rules loaded
+as prose pushed fresh sessions toward 400–500k tokens of always-on context,
+where rules fired wrongly or vanished when needed most. In the project's RPG
+vocabulary, it brought the **whole stash into every map**, as if every support
+were linked to every skill. In plain language, irrelevant rules consumed
+attention and created unintended interactions before the task began. DotLn's
+answer is not fewer rules but *compiled* rules: each correction becomes a typed
+mechanism (a permission, a guard, a reactor, an evaluator, a transformer, a
+workflow gate) attached only where relevant. A session gets **a build, not a
+biography** — one active behavior, a handful of linked supports, a tiny
+immutable safety layer, and the exact task state.
 
 ## The core bet
 

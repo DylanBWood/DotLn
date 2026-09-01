@@ -18,10 +18,10 @@ const readEvents = () => existsSync(logPath) ? readFileSync(logPath, "utf8").tri
 }) : [];
 
 const fold = events => {
-  const state = { workOrderId: undefined, workOrderPath: undefined, phase: "none", latestVerificationId: undefined, latestVerificationPath: undefined, latestVerdict: undefined, finalReviewId: undefined, finalReviewPath: undefined, failureSourceId: undefined, failureSourcePath: undefined, latestCheckpointSha: undefined, latestCheckpointRef: undefined };
+  const state = { workOrderId: undefined, workOrderPath: undefined, phase: "none", latestVerificationId: undefined, latestVerificationPath: undefined, latestVerdict: undefined, finalReviewId: undefined, finalReviewPath: undefined, failureSourceId: undefined, failureSourcePath: undefined, latestCheckpointSha: undefined, latestCheckpointRef: undefined, checkpointUnavailable: false };
   for (const event of events) {
     switch (event.type) {
-      case "WorkOrderActivated": Object.assign(state, { workOrderId: event.workOrderId, workOrderPath: event.workOrderPath, phase: "active", latestVerificationId: undefined, latestVerificationPath: undefined, latestVerdict: undefined, finalReviewId: undefined, finalReviewPath: undefined, failureSourceId: undefined, failureSourcePath: undefined, latestCheckpointSha: undefined, latestCheckpointRef: undefined }); break;
+      case "WorkOrderActivated": Object.assign(state, { workOrderId: event.workOrderId, workOrderPath: event.workOrderPath, phase: "active", latestVerificationId: undefined, latestVerificationPath: undefined, latestVerdict: undefined, finalReviewId: undefined, finalReviewPath: undefined, failureSourceId: undefined, failureSourcePath: undefined, latestCheckpointSha: undefined, latestCheckpointRef: undefined, checkpointUnavailable: false }); break;
       case "ImplementationReady": state.phase = "ready-to-verify"; break;
       case "VerificationRequested": Object.assign(state, { phase: "verifying", latestVerificationId: event.verificationId, latestVerificationPath: event.reportPath, latestVerdict: undefined }); break;
       case "VerificationCompleted": Object.assign(state, { phase: event.verdict === "pass" ? "verified" : "needs-fix", latestVerificationId: event.verificationId, latestVerificationPath: event.reportPath, latestVerdict: event.verdict, failureSourceId: event.verdict === "fail" ? event.verificationId : undefined, failureSourcePath: event.verdict === "fail" ? event.reportPath : undefined }); break;
@@ -30,7 +30,11 @@ const fold = events => {
       case "FinalReviewRequested": Object.assign(state, { phase: "final-review", finalReviewId: event.finalReviewId, finalReviewPath: event.reportPath }); break;
       case "FinalReviewCompleted": Object.assign(state, { phase: event.verdict === "pass" ? "closed" : "needs-fix", failureSourceId: event.verdict === "fail" ? event.finalReviewId : undefined, failureSourcePath: event.verdict === "fail" ? event.reportPath : undefined }); break;
     }
-    if (typeof event.checkpointSha === "string" && typeof event.checkpointRef === "string") Object.assign(state, { latestCheckpointSha: event.checkpointSha, latestCheckpointRef: event.checkpointRef });
+    if (typeof event.checkpointSha === "string" && typeof event.checkpointRef === "string") {
+      Object.assign(state, { latestCheckpointSha: event.checkpointSha, latestCheckpointRef: event.checkpointRef, checkpointUnavailable: false });
+    } else if (event.workOrderId === state.workOrderId) {
+      Object.assign(state, { latestCheckpointSha: undefined, latestCheckpointRef: undefined, checkpointUnavailable: true });
+    }
   }
   return state;
 };
@@ -58,13 +62,26 @@ const nextFinalReview = state => {
 };
 
 const legalActions = state => ({
-  "none": ["activate"], active: ["implementation-ready"], "ready-to-verify": ["verify"], verifying: ["verification-result"], "needs-fix": ["fix"], repairing: ["repair-complete"], verified: ["final-review"], "final-review": ["final-review-result"], closed: ["next"],
+  "none": ["activate"], active: ["next", "implementation-ready"], "ready-to-verify": ["verify"], verifying: ["verification-result"], "needs-fix": ["fix"], repairing: ["repair-complete"], verified: ["final-review"], "final-review": ["final-review-result"], closed: ["release-close", "next", "activate"],
 }[state.phase] ?? []);
+
+const commandFor = action => ({
+  activate: "npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md",
+  next: "npm run resume -- next",
+  "implementation-ready": "npm run resume -- implementation-ready",
+  verify: "npm run resume -- verify",
+  "verification-result": "npm run resume -- verification-result pass|fail",
+  fix: "npm run resume -- fix",
+  "repair-complete": "npm run resume -- repair-complete",
+  "final-review": "npm run resume -- final-review",
+  "final-review-result": "npm run resume -- final-review-result pass|fail",
+  "release-close": "npm run release -- close WO-NNN --publish",
+}[action] ?? `npm run resume -- ${action}`);
 
 const checkpoint = (action, workOrderId) => {
   const warn = detail => {
     process.stderr.write(`warning: could not create recovery checkpoint for ${action}: ${detail}; proceeding without one\n`);
-    return {};
+    return { checkpointUnavailable: true };
   };
   if (!/^WO-\d{3}$/.test(workOrderId ?? "")) return warn(`work order id is unavailable (${workOrderId ?? "none"})`);
   const runGit = (args, env = process.env) => {
@@ -105,7 +122,7 @@ const render = state => `# Current control state
 - Latest verdict: ${state.latestVerdict ?? "none"}
 - Final review: ${state.finalReviewId ?? "none"}
 - Final-review path: ${state.finalReviewPath ?? "none"}
-- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : "none"}
+- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : state.checkpointUnavailable ? "unavailable for the latest transition; do not use an older checkpoint" : "none"}
 - Legal next actions: ${legalActions(state).join(", ") || "none"}
 
 Generated from the append-only \`docs/control/resume.jsonl\`; do not edit this projection manually.
@@ -118,7 +135,13 @@ const project = state => {
   renameSync(temporary, currentPath);
 };
 
-const requirePhase = (state, ...phases) => { if (!phases.includes(state.phase)) throw new Error(`cannot perform action in phase ${state.phase}; legal actions: ${legalActions(state).join(", ") || "none"}`); };
+const requirePhase = (state, ...phases) => {
+  if (phases.includes(state.phase)) return;
+  const commands = legalActions(state).map(commandFor);
+  throw new Error(`cannot perform action in phase ${state.phase}; run: ${commands.join(" or ") || "no command is currently legal"}`);
+};
+
+const main = () => {
 const [action = "status", ...args] = process.argv.slice(2);
 let state = fold(readEvents());
 let message;
@@ -171,12 +194,30 @@ switch (action) {
     if (verdict !== "pass" && verdict !== "fail") throw new Error("usage: resume final-review-result pass|fail");
     const finalReviewRoot = join(repoRoot, "docs/final-reviews", state.workOrderId);
     if (!state.finalReviewPath || !containedRegularFile(join(repoRoot, state.finalReviewPath), finalReviewRoot)) throw new Error(`final-review report is not a contained regular file: ${state.finalReviewPath}`);
-    appendTransition(action, { type: "FinalReviewCompleted", workOrderId: state.workOrderId, finalReviewId: state.finalReviewId, reportPath: state.finalReviewPath, verdict }); message = verdict === "pass" ? "Recorded final review pass; commit the reviewed state, then publish its PR." : "Recorded final review failure; return to bounded repair."; break;
+    appendTransition(action, { type: "FinalReviewCompleted", workOrderId: state.workOrderId, finalReviewId: state.finalReviewId, reportPath: state.finalReviewPath, verdict }); message = verdict === "pass" ? `Recorded final review pass; commit the reviewed state, then run npm run worktree -- publish ${state.workOrderId} --title <title> --body-file <contained-reviewed-body-path>.` : "Recorded final review failure; return to bounded repair."; break;
   }
-  case "next": requirePhase(state, "closed"); message = "Current work order is closed. Resolve the next planned WO, then run resume activate WO-NNN <path>."; break;
+  case "next": {
+    requirePhase(state, "active", "closed");
+    message = state.phase === "active"
+      ? `Execute ${state.workOrderPath}. Read that authority and only its cited blueprint sections; after its evidence gate passes, run npm run resume -- implementation-ready.`
+      : `Current work order ${state.workOrderId} is closed. The repository is between work orders; start a valid next work order with npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md.`;
+    break;
+  }
+  case "release-close":
+    requirePhase(state, "closed");
+    message = `After the operator merges the PR, run from the main checkout: npm run release -- close ${state.workOrderId} --publish. This is tag authority only; never push main.`;
+    break;
   default: throw new Error(`unknown resume action: ${action}`);
 }
 
 state = fold(readEvents());
 if (action !== "status") project(state);
 process.stdout.write(`${message}\n`);
+};
+
+try {
+  main();
+} catch (error) {
+  process.stderr.write(`error: ${error instanceof Error ? error.message : String(error)}\n`);
+  process.exitCode = 1;
+}

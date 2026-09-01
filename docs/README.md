@@ -15,7 +15,8 @@ docs/work-orders/  bounded, executable next steps (feed one to any model)
 docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
 docs/control/       append-only resume log and generated current-state projection
-docs/releases/     immutable release manifests and layered patch notes
+docs/releases/     historical v0.2.0 records + forward tag-manifest template;
+                   later immutable manifests/notes live in annotated tags
 docs/discovery/    machine-audit outputs and runtime target maps (WO-001 and
                    later discovery passes)
 ```
@@ -28,18 +29,20 @@ requiring the operator to restate the intake → ledger → product-doc pipeline
 
 ## Why intake is gitignored
 
-`docs/intake/` is excluded from git on purpose. Raw chat exports are the single
-most likely place for work context to leak into a personal repo — a pasted
-snippet, a config value, an internal service name you forgot was in there.
-Dumping freely into a local-only folder means you never have to self-censor
-while dumping.
+`docs/intake/` is excluded from Git so unfinished personal ideation can stay
+local while it is reconciled. Gitignore is not a security boundary: employer
+code or configuration, credentials, internal identifiers, proprietary API
+shapes, and managed-host details do not belong there or anywhere else in this
+repository. If raw material contains any of those, stop and quarantine it
+outside the repository rather than reading it into the synthesis pipeline.
 
 The synthesized docs in `docs/product/` are written fresh from your ideation and
 *are* committed. That's the scrub boundary: nothing reaches GitHub without
 passing through a rewrite first.
 
-If a piece of intake is clearly clean and worth keeping in history, move it out
-of `intake/` deliberately rather than loosening the ignore rule.
+If a piece of intake is clearly clean and worth keeping in history, synthesize
+and rewrite it into the appropriate committed document. Do not move or copy raw
+intake verbatim, and do not loosen the ignore rule.
 
 ## Dumping into intake
 
@@ -80,16 +83,21 @@ The normal operator interface is:
 
 ```text
 resume: status
+resume: next
 resume: fix
 resume: verify
 resume: final review
-resume: next
+resume: release close
 ```
 
-The executable/debug equivalent is `npm run resume -- <action>`. The resolver
-rejects illegal phase transitions and prints the authoritative work order and
-verification artifact to read. Verifiers and reviewers record completion with
-the internal actions documented in `docs/PLAYBOOK.md`.
+The executable/debug actions for the first five phrases are `status`, `next`,
+`fix`, `verify`, and `final-review`, invoked as
+`npm run resume -- <action>`. The resolver rejects illegal phase transitions
+and prints the authoritative work order and verification artifact to read.
+`release close` is the separate guarded post-merge operation projected as
+`npm run release -- close WO-NNN --publish`; it carries narrow annotated-tag
+authority. Verifiers and reviewers record completion with the internal actions
+documented in `docs/PLAYBOOK.md`.
 
 ## Config log
 

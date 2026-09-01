@@ -15,6 +15,7 @@ git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control"
 cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
 printf '# fixture\n' >"$main/docs/work-orders/WO-099-fixture.md"
+printf '{"private":true,"scripts":{}}\n' >"$main/package.json"
 cp "$script_dir/../.gitignore" "$main/.gitignore"
 git -C "$main" add .
 git -C "$main" commit -m initial >/dev/null
@@ -24,10 +25,17 @@ if node "$main/scripts/worktree.mjs" start XX-098 docs/work-orders/WO-099-fixtur
 test ! -e "$test_root/project-wo098"
 test "$(git -C "$main" branch --list wo-098)" = ""
 
-node "$main/scripts/worktree.mjs" start WO-099 docs/work-orders/WO-099-fixture.md >/dev/null
+mkdir -p "$test_root/bin"
+printf '#!/usr/bin/env bash\nprintf invoked >"%s"\n' "$test_root/codex-invoked" >"$test_root/bin/codex"
+chmod +x "$test_root/bin/codex"
+start_output="$(PATH="$test_root/bin:$PATH" node "$main/scripts/worktree.mjs" start WO-099 docs/work-orders/WO-099-fixture.md)"
 subject="$test_root/project-wo099"
 test -d "$subject"
 grep -q '"workOrderId":"WO-099"' "$subject/docs/control/resume.jsonl"
+grep -Fq "cd '$subject'" <<<"$start_output"
+grep -Fq '  codex' <<<"$start_output"
+grep -Fq 'resume: next' <<<"$start_output"
+test ! -e "$test_root/codex-invoked"
 if node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null 2>&1; then printf 'error: unfinished worktree merged\n' >&2; exit 1; fi
 
 node "$subject/scripts/resume.mjs" implementation-ready >/dev/null
@@ -41,10 +49,20 @@ printf '# final pass\n' >"$subject/docs/final-reviews/WO-099/FINAL-001.md"
 node "$subject/scripts/resume.mjs" final-review-result pass >/dev/null
 printf 'done\n' >"$subject/result.txt"
 printf 'PR body\n' >"$subject/pr-body.md"
+printf '#!/usr/bin/env node\n' >"$subject/scripts/release.mjs"
 git -C "$subject" add .
 git -C "$subject" commit -m complete >/dev/null
 
-mkdir -p "$test_root/bin"
+node_bin="$(command -v node)"
+git_bin="$(command -v git)"
+mkdir -p "$test_root/no-gh-bin"
+ln -s "$git_bin" "$test_root/no-gh-bin/git"
+ln -s "$node_bin" "$test_root/no-gh-bin/node"
+if missing_gh_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted a missing gh executable\n' >&2; exit 1; fi
+grep -Fq 'gh is required before any remote mutation' <<<"$missing_gh_output"
+if grep -Fq 'at file://' <<<"$missing_gh_output"; then printf 'error: missing-gh refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: branch pushed before gh preflight\n' >&2; exit 1; fi
+
 printf '#!/usr/bin/env bash\nprintf "https://example.invalid/pr/99\\n"\n' >"$test_root/bin/gh"
 chmod +x "$test_root/bin/gh"
 mkdir -p "$test_root/outside"
@@ -53,8 +71,16 @@ ln -s "$test_root/outside" "$subject/link"
 if PATH="$test_root/bin:$PATH" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file link/secret.md >/dev/null 2>&1; then printf 'error: symlinked PR body accepted\n' >&2; exit 1; fi
 rm -- "$subject/link"
 if PATH="$test_root/bin:$PATH" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file ../outside.md >/dev/null 2>&1; then printf 'error: outside PR body accepted\n' >&2; exit 1; fi
-PATH="$test_root/bin:$PATH" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md >/dev/null
+git -C "$subject" tag -a v7.7.7 -m 'unrelated local annotated tag'
+git -C "$subject" config push.followTags true
+publish_output="$(PATH="$test_root/bin:$PATH" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md)"
 test "$(git -C "$subject" rev-parse wo-099)" = "$(git --git-dir="$test_root/origin.git" rev-parse refs/heads/wo-099)"
+remote_refs="$(git --git-dir="$test_root/origin.git" for-each-ref --format='%(refname)' | LC_ALL=C sort)"
+test "$remote_refs" = $'refs/heads/main\nrefs/heads/wo-099'
+grep -Fq "cd '$main'" <<<"$publish_output"
+grep -Fq "'$node_bin' '$subject/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"
+git -C "$subject" config --unset push.followTags
+git -C "$subject" tag -d v7.7.7 >/dev/null
 if node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null 2>&1; then printf 'error: unmerged PR cleaned up\n' >&2; exit 1; fi
 
 git -C "$main" fetch origin wo-099 >/dev/null 2>&1
@@ -84,6 +110,7 @@ printf 'disposable\n' >"$subject/node_modules/fixture/file"
 printf 'generated\n' >"$subject/packages/example/dist/file"
 printf 'finder metadata\n' >"$subject/.DS_Store"
 printf 'disposable build state\n' >"$subject/tsconfig.tsbuildinfo"
+git -C "$subject" branch --unset-upstream
 node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null
 test ! -e "$subject"
 test "$(git -C "$main" branch --list wo-099)" = ""

@@ -1,122 +1,277 @@
 # DotLn
 
-**A local-first workbench for building behavior you can inspect, replay, and
-trust.**
+> **Give an agent a build, not your biography.**
 
-DotLn asks a slightly different question about agentic software: what if the
-important part were not the chat session, but the durable system around it?
+**DotLn is a local-first workbench for turning human judgment into behavior you
+can inspect, replay, and learn to trust.**
 
-An operator declares intent. DotLn compiles that intent into bounded work,
-structural authority, cadence, continuations, and independent verification.
-Executors can come and go. The event log, evidence, and identity lineage remain.
+Every useful agent workflow accumulates hard-won lessons:
+
+- do not delete what you cannot prove is dead;
+- show evidence before claiming success;
+- preserve the operator's intent across handoffs;
+- ask only when the decision is genuinely material; and
+- let absence reduce authority, never enlarge it.
+
+Today, those lessons usually end up in a giant prompt, one person's memory, or
+nowhere durable at all. DotLn is building a third option: compile each lesson
+into the smallest mechanism that can actually carry it—a guard, reactor,
+evaluator, workflow gate, typed support, or task-local instruction.
+
+In RPG terms, loading every correction into every session is like taking your
+**whole stash into every map**, or linking **every support gem to every skill**.
+You pay for mechanics that do nothing and invite interactions you never meant
+to create.
+
+In plain English: give each task only the rules it needs, enforce the dangerous
+ones outside the model, and preserve the evidence needed to understand what
+happened later.
 
 ```text
-intent → WorkOrder → disposable executor → evidence → verifier → reviewed PR
-            ↑                                               │
-            └──────────── replayable control loop ──────────┘
+intent → task-scoped build → bounded WorkOrder → disposable executor
+                              │                         │
+                       authority guard              evidence
+                              │                         │
+                              └────── event log ← verifier
+                                               │
+                                      replay / inspect / resume
 ```
 
-The project borrows from places that already know how to shape behavior:
-organizational design, software patterns, 5S, statecharts, game systems, and
-craft practice. Those ideas become typed mechanics instead of inspirational
-prompt text. A Repo Gardener can equip Seiri. A support can strengthen a
-behavior without silently granting authority. A cadence can wake work when the
-operator leaves and cancel it when they return. Every friendly glyph maps back
-to real state.
+Models can rotate. Sessions can die. The organization's memory, constraints,
+and standards remain.
 
-## What works today
+## The smallest proof that the idea works
 
-The v0.2.0 walking skeleton runs a complete deterministic vertical:
+> **Executable product baseline: the `v0.2.0` walking skeleton.**
+>
+> It is deliberately narrow: deterministic kernel, fake executor, separate
+> deterministic fake verifier, and terminal projections. Maintenance releases
+> can harden its evidence and lifecycle without pretending the planned real
+> model worker or interactive application already exists.
 
-- a Repo Gardener equips the Seiri maintenance contract;
-- virtual time schedules bounded repository inspection while the operator is
-  away;
-- a fake executor produces evidence-backed deletion candidates;
-- the authority guard structurally refuses deletion;
-- an independent fake verifier checks the candidates;
-- operator return cancels future work and turns a queued pulse into a traced
-  NoOp; and
-- the JSONL log replays to the same decisions and renders as a terminal timeline
-  plus a zero-asset glyph scene.
+The executable scenario gives a Repo Gardener one active mechanic:
+**Seiri / Sort / 整理**.
+
+```text
+🌙 operator away
+      → ⏱️ 20-minute virtual pulse
+      → 🐛 Repo Gardener inspects a fixture repository
+      → 🔎 evidence-backed deletion candidates
+      → 🛡️ deletion structurally refused
+      → ✅ candidates checked by the fake verifier
+      → ☀️ operator returns
+      → 💤 future and already-queued work cancelled
+```
+
+The CLI renders the live JSONL log as a numbered timeline and zero-asset glyph
+scene. The test suite replays that same log and proves the decisions remain
+identical.
+
+Current evidence was recorded with Node 22 on macOS. The complete shell suite
+uses macOS-specific utilities and fails loudly on unsupported platforms. The
+kernel has zero runtime dependencies; the skeleton depends only on the local
+kernel package. Neither has yet earned a broader platform claim. See the
+compatibility manifest for the exact profile.
+
+Run it:
 
 ```bash
 npm install
 npm run skeleton
 ```
 
-The final line should read:
+The final receipt should be:
 
 ```text
 verified=true candidates=1
 ```
 
-Run all kernel, skeleton, backup, resume-control, and real-Git worktree tests:
+Run the complete repository evidence suite:
 
 ```bash
 npm test
 ```
 
-## Designed for work that outlives a session
+That suite covers the kernel and skeleton alongside intake backup,
+resume-control, recovery checkpoints, real-Git worktree lifecycle, and guarded
+release-close behavior.
 
-DotLn keeps planning, implementation, verification, repair, and final review as
-separate evidence-bearing phases. Immutable `VER-NNN` and `FINAL-NNN` artifacts
-preserve every loop instead of replacing yesterday's findings with today's
-green checkmark.
+Read the layered [v0.2.0 release notes](docs/releases/v0.2.0-notes.md) and
+[compatibility manifest](docs/releases/v0.2.0.md) for the exact evidence,
+version axes, and known limitations.
 
-The operator interface is intentionally becoming smaller:
+## What `v0.2.0` proves—and what it does not
+
+It proves that:
+
+- a framework-free, zero-runtime-dependency kernel can keep decisions pure;
+- virtual time and logged state can reproduce controller behavior;
+- authority can refuse an effect structurally instead of asking a model to
+  remember not to do it;
+- persisted commands can recover after a crash without duplicating the fake
+  adapter's effect;
+- operator return can cancel future work and turn a queued pulse into a traced
+  `NoOp`; and
+- friendly glyphs can remain projections of real event state.
+
+It does **not** yet provide:
+
+- real Claude, Codex, human, or shell worker adapters;
+- the general loadout and support composition compiler;
+- saved community builds or compatibility migration;
+- a web, spatial, or drag-and-drop console;
+- SQLite persistence, hosted operation, or a published package; or
+- the complete independently verified source-to-deliverable pipeline.
+
+Those are roadmap commitments, not retroactive descriptions of the current
+release.
+
+## The RPG skin carries real mechanics
+
+DotLn borrows the build vocabulary of RPGs such as Path of Exile because it is
+a surprisingly good language for scoped, composable behavior—not because the
+mechanics are decorative.
+
+| RPG view | DotLn mechanic |
+|---|---|
+| Build / loadout | The exact behavior assembled for this task |
+| Active skill | Something the actor can do |
+| Support gem | A typed modifier that participates only through a valid link |
+| Reservation cost | Context, tools, attention, or resources held by a mechanic |
+| Map / zone | The repository and isolated worktree |
+| Summon | A disposable worker episode |
+| Save point | A serializable continuation |
+| Combat log | The append-only event and evidence history |
+| Guarded ability | Authority checked before an effect can occur |
+| Item tooltip | Grants, restrictions, obligations, cadence, and cancellation made inspectable |
+
+The long-term composition surface is a **Path of Building for organizations**:
+equip a pattern, inspect its exact compiled effect, compare builds, and replay
+where two variants first diverge.
+
+Only the Repo Gardener + Seiri loadout is executable today, and its loadout
+shape is deliberately provisional. The general composition system remains
+ahead on the roadmap.
+
+## The bets underneath the game language
+
+DotLn is opinionated about a few things:
+
+- **A session is an incarnation, not a memory system.** Durable state lives in
+  artifacts and the event log.
+- **The core is deterministic; the edge may be strange.** Models, humans,
+  browsers, and shell scripts can execute work, but they do not get to redefine
+  the control logic invisibly.
+- **Hard safety should be boring.** Permissions, guards, worktrees, and
+  evidence gates carry invariants outside prompt prose.
+- **Evidence comes before “done.”** A persuasive completion message is not a
+  test result.
+- **Implementer and verifier are different roles.** The system should make
+  self-certification structurally difficult.
+- **Every metaphor must reveal its mechanics.** RPG, business, statechart,
+  function-table, timeline, and code views should resolve to the same truth—or
+  say plainly when a projection is lossy.
+- **The substrate is shared; the doctrine is yours.** DotLn aims to provide
+  common composition, replay, authority, evidence, and inspection primitives
+  without prescribing one universal organization.
+- **The operator stays in the fun loop.** Choosing patterns, shaping
+  identities, and exercising judgment remain first-class human work. The
+  machinery should carry the clerical burden around them.
+
+The scarce resource is not generation. It is the selection function: knowing
+which combination is good, which correction matters, and when doing nothing is
+the right decision.
+
+## Three horizons, one kernel
+
+The roadmap grows outward without changing the foundation:
+
+1. **Work operating system** — bounded work, disposable workers, external
+   memory, explicit authority, and evidence-backed completion.
+2. **Executable pattern workshop** — compose craftsmanship, organizational
+   patterns, roles, and supports as inspectable mechanics.
+3. **Agent ecology and simulation laboratory** — compare builds, swap actors,
+   replay counterfactuals, and find the first meaningful divergence.
+
+The near-term path is concrete: audit projections, a real composition compiler,
+real disposable-worker transports, independent verification, a feedback
+compiler, then synchronized terminal and visual consoles.
+
+See the [application release roadmap](docs/product/06-roadmap.md) for exit
+criteria and the [IR compatibility horizon](docs/product/10-ir-compatibility.md)
+for how old builds can remain inspectable on newer runtimes.
+
+## The repository practices what the product preaches
+
+DotLn's development loop already uses bounded work orders, separate
+verification, immutable finding reports, final review, isolated worktrees,
+recovery checkpoints, and an append-only control log.
+
+A fresh session can resume from one compact operator phrase:
 
 ```text
 resume: status
+resume: next
 resume: fix
 resume: verify
 resume: final review
-resume: next
+resume: release close
 ```
 
-An append-only control log resolves those phrases to the active work order and
-the exact artifacts a fresh session must read. Tested helpers also create new
-WO worktrees, publish a final-reviewed branch as a PR, and clean up only after
-the operator merges it.
+The phrase resolves to the active work order and exact artifacts the session
+must read. Older `VER-NNN` and `FINAL-NNN` reports remain immutable, so a later
+green result never erases the path that produced it.
 
-## Where this could go
+`resume: release close` is intentionally separate: after the operator merges a
+reviewed PR, it authorizes guarded closeout and, when a new SemVer boundary is
+eligible, publication of the annotated source tag. It never authorizes pushing
+`main`, deploying, or publishing a package.
 
-The longer horizon is a general workbench for versioned, composable behavior:
+The [operator playbook](docs/PLAYBOOK.md) documents the complete loop.
 
-- paste JSON IR into a lightweight offline verifier and learn exactly which
-  schema and application era it belongs to;
-- run historical configurations on modern runtimes through inspectable JIT
-  compatibility plans, or migrate them ahead of time without destroying the
-  source;
-- turn active and support mechanics on, off, emulated, or migratable per
-  release—with explicit behavior when a saved build encounters an unavailable
-  mechanic;
-- share compact, regenerable builds that open in Preview rather than silently
-  installing authority; and
-- spawn blank actors or game sprites, equip algorithms and behavioral patterns,
-  then simulate, replay, compare, and inspect their first divergence.
+## Repository map
 
-Those are product directions, not claims about the current release. The point
-is the common substrate: behavior as versioned, inspectable material rather
-than an ephemeral improvisation.
+- [`packages/kernel/`](packages/kernel/) — deterministic, framework-free event
+  and decision core.
+- [`packages/skeleton/`](packages/skeleton/) — executable Repo Gardener + Seiri
+  vertical.
+- [`docs/product/`](docs/product/) — durable product blueprint and
+  compatibility horizons.
+- [`docs/work-orders/`](docs/work-orders/) — bounded implementation authority.
+- [`docs/verifications/`](docs/verifications/) — immutable independent
+  verification history.
+- [`docs/final-reviews/`](docs/final-reviews/) — immutable closeout reports and
+  PR handoffs.
+- [`docs/control/`](docs/control/) — append-only resume state and generated
+  projection.
+- [`docs/releases/`](docs/releases/) — release evidence, compatibility records,
+  and layered notes.
+- `docs/intake/` — local-only raw ideation, deliberately excluded from Git.
 
-## The shape of the repository
-
-- `packages/kernel/` — deterministic, framework-free event/decision core.
-- `packages/skeleton/` — the Repo Gardener + Seiri executable vertical.
-- `docs/product/` — durable product blueprint and compatibility horizons.
-- `docs/work-orders/` — authoritative bounded implementation scope.
-- `docs/verifications/` — immutable independent verification history.
-- `docs/final-reviews/` — immutable closeout reports and PR handoffs.
-- `docs/control/` — append-only resume state and its generated projection.
-- `docs/intake/` — local-only raw ideation, intentionally excluded from Git.
-
-Start with [the vision](docs/product/00-vision.md), explore
-[the domain model](docs/product/02-domain-model.md), or run
-[the walking skeleton](packages/skeleton/README.md).
+If you want the idea first, read [the vision](docs/product/00-vision.md). If you
+want the machinery, start with [the domain model](docs/product/02-domain-model.md)
+and [architecture](docs/product/03-architecture.md). If you want to see
+something move, run [the walking skeleton](packages/skeleton/README.md).
 
 ## One boundary that does not move
 
 This is a personal clean-room project. Employer code, configuration,
 identifiers, internal services, and proprietary implementation details do not
-belong here. Raw ideation stays local until it has been deliberately rewritten
-across that boundary.
+belong here.
+
+Raw ideation stays local until it has been deliberately synthesized and
+rewritten. The public repository contains original product reasoning and
+implementation only.
+
+<details>
+<summary><strong>Why “DotLn”?</strong></summary>
+
+“Days of the Natural Logarithm” hides *Dylan* in `DAYs-of-the-LN` and nods to
+the project's interest in behavior changing over time through composed
+influences. The name is personal, mathematical, and just strange enough to fit
+the thing being built.
+
+</details>
+
+DotLn is early on purpose: the current proof is small enough to understand all
+the way through. The ambition is not.

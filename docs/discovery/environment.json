@@ -1,16 +1,18 @@
 {
-  "schemaVersion": "0.0.1",
-  "workOrder": "WO-001",
-  "observedAt": "2026-08-30T23:10:46-04:00",
-  "scope": "personal machine, bounded inspection",
+  "schemaVersion": "0.0.2",
+  "workOrder": "WO-004",
+  "extendsWorkOrder": "WO-001",
+  "observedAt": "2026-08-31T19:08:36-04:00",
+  "scope": "personal machine, bounded inspection plus authenticated transport addendum",
   "provenance": {
     "executedBy": {"agent": "codex-cli", "surface": "codex-tui", "cliVersion": "0.151.0", "model": "gpt-5.6-sol"},
     "executorSandbox": {"type": "workspace-write", "networkAccess": false, "envNamesPresent": ["CODEX_SANDBOX", "CODEX_SANDBOX_NETWORK_DISABLED"]},
-    "note": "Every remaining blocked classification is a property of the executing session's sandbox, not of this machine and not of a corporate or managed environment.",
+    "note": "The WO-001 blocked rows retain their time-indexed sandbox attribution. WO-004 re-ran the candidate transports outside that sandbox and records its results separately.",
     "correctedBy": {"agent": "claude-code", "version": "2.1.251", "correctedAt": "2026-08-31", "corrected": ["toolchain.playwright", "toolchain.localhostHttpServing", "blockedCauseAttribution"]},
-    "reviewCorrections": {"agent": "claude-code", "version": "2.1.251", "correctedAt": "2026-08-31", "corrected": ["claudeCode.startupContext.files", "codexCli.agentsMd.files", "blockedCauseAttributionNarrowedToSandboxLevel"]}
+    "reviewCorrections": {"agent": "claude-code", "version": "2.1.251", "correctedAt": "2026-08-31", "corrected": ["claudeCode.startupContext.files", "codexCli.agentsMd.files", "blockedCauseAttributionNarrowedToSandboxLevel"]},
+    "addendumExecutedBy": {"agent": "codex-cli", "surface": "codex-tui", "cliVersion": "0.151.0", "model": "gpt-5.6-sol", "workOrder": "WO-004"}
   },
-  "labels": ["observed", "documented locally", "untested", "blocked", "not found", "ambiguous"],
+  "labels": ["observed", "documented locally", "documented officially", "untested", "blocked", "not found", "ambiguous"],
   "toolchain": {
     "os": {"classification": "observed", "name": "macOS", "version": "15", "kernel": "Darwin 24.x", "arch": "arm64", "precisionWithheld": "exact point release and build omitted: public repository"},
     "shell": {"classification": "observed", "path": "/bin/zsh", "version": "5.9"},
@@ -20,7 +22,7 @@
     "yarn": {"classification": "observed", "version": "1.22.22"},
     "tsc": {"classification": "observed", "version": "5.4.5"},
     "git": {"classification": "observed", "version": "2.55.0"},
-    "gitWorktree": {"classification": "observed", "currentBranch": "wo-001", "worktreeCount": 2},
+    "gitWorktree": {"classification": "observed", "currentBranch": "wo-004", "worktreeCount": 2, "baselineWo001CurrentBranch": "wo-001"},
     "sqlite3": {"classification": "observed", "version": "3.43.2"},
     "browsers": {
       "classification": "observed",
@@ -44,66 +46,94 @@
     }
   },
   "claudeCode": {
-    "version": {"classification": "observed", "value": "2.1.251"},
-    "printMode": {"classification": "documented locally", "flag": "--print"},
-    "outputFormats": {"classification": "documented locally", "values": ["text", "json", "stream-json"]},
-    "jsonSchemaOutput": {"classification": "blocked", "flag": "--json-schema", "reason": "single smoke invocation returned Not logged in", "cause": "executing session's sandbox, not the account (host is authenticated: Claude Code-credentials keychain item exists); whether its network denial or its keychain denial produced the error is not established"},
-    "modelSelection": {"classification": "documented locally", "flags": ["--model", "--fallback-model"]},
-    "effortSelection": {"classification": "documented locally", "flag": "--effort", "values": ["low", "medium", "high", "xhigh", "max"]},
-    "sessionPersistence": {"classification": "documented locally", "controls": ["--no-session-persistence", "--session-id", "--continue", "--resume", "--fork-session"]},
-    "autoMemory": {"classification": "documented locally", "controls": ["--bare", "--safe-mode", "project autoMemoryEnabled setting"], "narrowCliDisableFlag": "not found"},
+    "version": {"classification": "observed", "value": "2.1.252"},
+    "printMode": {"classification": "observed", "flag": "--print"},
+    "outputFormats": {"classification": "documented locally", "values": ["text", "json", "stream-json"], "wo004Observed": {"classification": "observed", "value": "json"}},
+    "jsonSchemaOutput": {"classification": "observed", "flag": "--json-schema", "result": {"ok": true, "transport": "claude-cli-print"}},
+    "modelSelection": {"classification": "documented locally", "flags": ["--model", "--fallback-model"], "wo004Observed": {"classification": "observed", "flag": "--model sonnet", "resultEnvelopeModels": ["claude-haiku-4-5-20251001", "claude-sonnet-5"]}},
+    "effortSelection": {"classification": "documented locally", "flag": "--effort", "values": ["low", "medium", "high", "xhigh", "max"], "wo004Observed": {"classification": "observed", "value": "high"}},
+    "sessionPersistence": {"classification": "documented locally", "controls": ["--no-session-persistence", "--session-id", "--continue", "--resume", "--fork-session"], "wo004Observed": {"classification": "observed", "control": "--no-session-persistence", "sessionIdInEnvelope": true, "sessionFileFound": false}},
+    "autoMemory": {"classification": "documented locally", "controls": ["--bare", "--safe-mode", "project autoMemoryEnabled setting", "--settings JSON"], "wo004Observed": {"classification": "observed", "controls": ["project autoMemoryEnabled key present", "command-line autoMemoryEnabled false"], "projectMemoryDirectory": {"files": 0, "bytes": 0}}, "narrowCliDisableFlag": "not found"},
     "subagents": {"classification": "documented locally", "controls": ["--agent", "--agents", "agents"]},
     "workflows": {"classification": "ambiguous", "evidence": "safe-mode help names workflows, but no dedicated invocation command was observed"},
     "backgroundExecution": {"classification": "documented locally", "controls": ["--background", "agents", "attach", "logs", "stop", "rm"]},
     "worktreeFlag": {"classification": "documented locally", "flag": "--worktree"},
-    "hooks": {"classification": "documented locally", "configuredTopLevelHooks": false},
+    "hooks": {"classification": "observed", "configuredTopLevelHooks": false},
+    "mcp": {
+      "command": {"classification": "observed", "value": "mcp", "evidence": "claude mcp list exited 0"},
+      "configFlag": {"classification": "documented locally", "value": "--mcp-config"},
+      "strictConfigFlag": {"classification": "documented locally", "value": "--strict-mcp-config"},
+      "connectedServers": {"classification": "observed", "servers": [{"name": "playwright", "status": "connected"}]}
+    },
+    "plugins": {"classification": "observed", "installedCount": 0, "cacheDirectoryFiles": 443, "cacheDirectoryClassification": "application data, not installed-plugin count"},
     "settingsSources": {
       "classification": "observed",
-      "documentedSources": ["user", "project", "local"],
-      "present": ["~/.claude/settings.json", ".claude/settings.json"],
-      "notFound": ["~/.claude/settings.local.json", ".claude/settings.local.json"]
+      "selectedByWo004": ["project", "local"],
+      "present": ["~/.claude/settings.json", ".claude/settings.json", "~/.claude.json"],
+      "notFound": ["~/.claude/settings.local.json", "main-checkout .claude/settings.local.json", "managed-settings.json", "remote-settings.json"],
+      "macosManagedPreferences": {"classification": "observed", "domainPresent": true, "topLevelKeyCount": 0},
+      "debugReferences": ["~/.claude/settings.json", "~/.claude.json", ".claude/settings.json"],
+      "debugSkips": ["main-checkout .claude/settings.local.json", "managed-settings.json"],
+      "precedence": {"classification": "documented officially", "highestToLowest": ["managed", "command line", "project local", "project", "user"]},
+      "userModelKey": {"classification": "observed", "present": true, "valueRead": false},
+      "effectiveValueAttribution": "ambiguous: debug establishes referenced/skipped paths but does not identify the winning file for each key"
     },
     "startupContext": {
       "classification": "observed",
       "files": [
         {"path": "~/.claude/CLAUDE.md", "lines": 13, "bytes": 660},
-        {"path": "CLAUDE.md", "lines": 59, "bytes": 2409, "correctedFrom": {"lines": 52, "bytes": 1950, "note": "pre-blueprint working-tree draft; no such version exists in committed history"}}
+        {"path": "CLAUDE.md", "lines": 66, "bytes": 2870, "correctedFrom": {"lines": 59, "bytes": 2409, "note": "WO-004 re-measurement after the execution-contract additions"}}
       ],
       "projectAgentsSymlinkTarget": "CLAUDE.md",
-      "deduplication": "ambiguous"
+      "deduplication": "ambiguous",
+      "categories": {
+        "skills": {"classification": "not found", "userFiles": 0, "projectFiles": 0},
+        "plugins": {"classification": "observed", "installed": 0},
+        "hooks": {"classification": "observed", "configured": false},
+        "mcpServers": {"classification": "observed", "configFile": "~/.claude.json", "configFileLines": 1360, "configFileBytes": 52290, "connectedNames": ["playwright"]},
+        "commands": {"classification": "not found", "userFiles": 0, "projectFiles": 0},
+        "agents": {"classification": "not found", "userFiles": 0, "projectFiles": 0},
+        "outputStyles": {"classification": "not found", "userFiles": 0, "projectFiles": 0},
+        "workflows": {"classification": "not found", "userFiles": 0, "projectFiles": 0},
+        "themes": {"classification": "not found", "userFiles": 0},
+        "keybindings": {"classification": "not found", "userFiles": 0},
+        "rules": {"classification": "not found", "userFiles": 0, "projectFiles": 0},
+        "autoMemory": {"classification": "observed", "candidateFiles": 0, "enabledForWo004": false}
+      }
     },
-    "smoke": {"classification": "blocked", "attempts": 1, "exitCode": 1, "reason": "Not logged in", "cause": "executing session's sandbox, not the account; whether its network denial or its keychain denial produced the error is not established"}
+    "smoke": {"classification": "observed", "attempts": 2, "exitCode": 0, "result": {"ok": true, "transport": "claude-cli-print"}, "resultEnvelope": {"type": "result", "subtype": "success", "json": true, "structuredOutputPresent": true}, "noSessionPersistence": true, "totalCostUsd": 0.055491, "budgetCapUsd": 0.25, "initialBudgetPreflight": {"exitCode": 1, "reason": "error_max_budget_usd", "totalCostUsd": 0.055659, "cause": "executor-supplied $0.05 ceiling was too low"}},
+    "wo001Smoke": {"classification": "blocked", "attempts": 1, "exitCode": 1, "reason": "Not logged in", "cause": "executing session's sandbox, not the account; whether its network denial or its keychain denial produced the error was not established"}
   },
   "codexCli": {
     "version": {"classification": "observed", "value": "0.151.0"},
     "noninteractive": {"classification": "documented locally", "command": "codex exec"},
-    "outputFormats": {"classification": "documented locally", "controls": ["--json", "--output-last-message", "--output-schema"]},
-    "modelSelection": {"classification": "documented locally", "flag": "--model"},
-    "sandboxing": {"classification": "documented locally", "values": ["read-only", "workspace-write", "danger-full-access"]},
-    "sessionPersistence": {"classification": "documented locally", "controls": ["--ephemeral", "resume", "fork"]},
+    "outputFormats": {"classification": "documented locally", "controls": ["--json", "--output-last-message", "--output-schema"], "wo004Observed": {"classification": "observed", "controls": ["--json", "--output-schema"], "eventTypes": ["thread.started", "turn.started", "item.completed", "turn.completed"], "schemaConformingFinalMessage": true}, "wo004UntestedControls": ["--output-last-message"]},
+    "modelSelection": {"classification": "observed", "flag": "--model", "wo004Flag": "--model gpt-5.6-luna", "selectedModelEchoed": false},
+    "ignoredUserConfig": {"classification": "observed", "flag": "--ignore-user-config", "authResolution": "CODEX_HOME remained available as locally documented"},
+    "sandboxing": {"classification": "documented locally", "values": ["read-only", "workspace-write", "danger-full-access"], "wo004Observed": {"classification": "observed", "value": "read-only", "repositoryMutationObserved": false}},
+    "sessionPersistence": {"classification": "documented locally", "controls": ["--ephemeral", "resume", "fork"], "wo004Observed": {"classification": "observed", "control": "--ephemeral", "threadIdInEnvelope": true, "sessionFileFound": false}},
     "configLocations": {"classification": "observed", "present": ["~/.codex/config.toml"], "notFound": [".codex/config.toml"], "codexHomeOverrideSet": false},
     "agentsMd": {
       "classification": "observed",
       "files": [
         {"path": "~/.codex/AGENTS.md", "lines": 13, "bytes": 660},
-        {"path": "AGENTS.md", "lines": 59, "bytes": 2409, "symlinkTarget": "CLAUDE.md", "correctedFrom": {"lines": 52, "bytes": 1950, "note": "pre-blueprint working-tree draft; no such version exists in committed history"}}
+        {"path": "AGENTS.md", "lines": 66, "bytes": 2870, "symlinkTarget": "CLAUDE.md", "correctedFrom": {"lines": 59, "bytes": 2409, "note": "WO-004 re-measurement after the execution-contract additions"}}
       ],
       "mergeBehavior": "ambiguous"
     },
-    "smoke": {"classification": "blocked", "attempts": 1, "exitCode": 1, "reason": "in-process app-server initialization denied", "cause": "executing session's own Codex sandbox (networkAccess false); not a machine or corporate constraint"}
+    "featureSurface": {"classification": "observed", "command": "codex features list", "stableEnabled": ["apps", "auth_elicitation", "browser_use", "browser_use_external", "browser_use_full_cdp_access", "code_mode_host", "compaction_image_budget", "computer_use", "content_item_kinds", "enable_request_compression", "fast_mode", "goals", "guardian_approval", "hooks", "image_generation", "in_app_browser", "in_app_chat", "in_app_dictation", "in_app_local_automation", "in_app_updates", "mentions_v2", "multi_agent", "personality", "plugin_sharing", "plugins", "remote_compaction_v2", "remote_plugin", "shell_snapshot", "shell_tool", "skill_mcp_dependency_install", "skill_search", "tool_call_mcp_elicitation", "tool_suggest", "unbounded_connection_retries", "unified_exec", "view_image", "workspace_dependencies"]},
+    "smoke": {"classification": "observed", "successfulAttempts": 1, "exitCode": 0, "result": {"ok": true, "transport": "codex-cli-exec"}, "invalidPreflight": {"exitCode": 1, "inferenceReached": false, "reason": "test schema used const without explicit property types and was rejected as invalid_json_schema"}, "stderr": "PATH-alias warning only"},
+    "wo001Smoke": {"classification": "blocked", "attempts": 1, "exitCode": 1, "reason": "in-process app-server initialization denied", "cause": "executing session's own Codex sandbox (networkAccess false); not a machine or corporate constraint"}
   },
   "recommendations": [
-    {"priority": 1, "adapter": "ClaudeCliPrintWorkOrderTransport", "integrationGate": "schema-conforming smoke succeeds from a runner executing outside a restrictive sandbox, with the model endpoint reachable (host is already authenticated)"},
-    {"priority": 2, "adapter": "CodexCliExecWorkOrderTransport", "integrationGate": "ephemeral read-only JSON smoke initializes successfully outside a network-disabled sandbox"}
+    {"priority": 1, "adapter": "ClaudeCliPrintWorkOrderTransport", "basis": "observed end-to-end with explicit model and effort, project/local settings only, auto-memory disabled, no session persistence, JSON envelope, and schema-conforming structured output"},
+    {"priority": 2, "adapter": "CodexCliExecWorkOrderTransport", "basis": "observed end-to-end with explicit model, ephemeral persistence, ignored user config, read-only sandbox, JSONL events, and schema-conforming final output"}
   ],
   "nonGoalsPerformed": [],
   "knownGaps": [
-    "MCP is not covered as a Claude Code capability, though installed help exposes mcp, --mcp-config and --strict-mcp-config and a Playwright MCP server is connected",
-    "startupContext accounts for CLAUDE.md only; --safe-mode help enumerates roughly ten auto-loaded categories",
-    "settingsSources records file existence, not effective loading; the managed/policy source and ~/.claude.json are not enumerated",
-    "a user-level model key exists in ~/.claude/settings.json and was not recorded, though it bears on the recommended explicit-model launch shape",
-    "recommendations rest on documented-locally rows; no observed row discriminates between the candidate transports",
+    "Claude debug output establishes referenced and skipped settings paths but not per-key winning-source attribution; that remains ambiguous",
+    "Codex accepted the explicit model flag but its JSONL event stream did not echo the selected model, so silent-substitution evidence remains incomplete",
     "the original command log omits three of the executor's thirteen shell calls and both file writes",
-    "no JSON counterpart exists for the environment.md Codex Feature surface row"
+    "installed Claude plugin count is zero even though the application cache directory contains historical/cache files; those cache files were not enumerated as startup context"
   ]
 }

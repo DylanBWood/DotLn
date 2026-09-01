@@ -1,8 +1,8 @@
-# Roadmap — semver ladder
+# Roadmap — application release ladder
 
-Versions with exit criteria; pivots are gated on evidence at each rung. Ideas
-recorded in the ledger never block a rung and never sneak into one — the
-deferral list is part of each milestone's definition. Two pacing rules:
+Application versions with exit criteria; pivots are gated on evidence at each
+rung. Ideas recorded in the ledger never block a rung and never sneak into one
+— the deferral list is part of each milestone's definition. Two pacing rules:
 **point of view before efficiency** (explore until a perspective exists, then
 optimize), and **every rung ships a visible payoff** — this is a solo project
 run on momentum; six rungs of invisible infrastructure is a project-death
@@ -15,36 +15,99 @@ deployment exists.
 
 ## Release boundary
 
-The headings below originally named product milestones, not a complete release
-procedure. Begin source releases when a rung produces a reproducible artifact
-that another build, saved configuration, or compatibility rule can name. The
-first useful boundary is `v0.2.0`: after WO-003 receives passing final review,
-its PR is merged, and the exact merged commit passes the full evidence gate,
-create an annotated Git tag and a small immutable release manifest. Do not tag
-the feature branch or an unreviewed commit.
+The sole `vX.Y.Z` in a current work-order heading is its planned
+**application release**, not its work-order number, package version, schema
+version, or conceptual insertion point. An unpublished target may be retimed
+only by explicit operator authorization and a dated migration note; when that
+changes active scope or acceptance, the work order and its independent review
+subject change with it. A published tag may not move. Begin source releases
+when a rung produces a reproducible artifact that another build, saved
+configuration, or compatibility rule can name. The first useful boundary was
+`v0.2.0`: after WO-003 received
+passing final review, its PR was merged, and the exact merged commit passed the
+full evidence gate, an annotated Git tag and immutable release manifest were
+created. Never tag the feature branch or an unreviewed commit.
+
+### 2026-08-31 forward retiming
+
+WO-004 through WO-011 were drafted before `v0.2.0` was published. Three
+belated foundation tasks were inserted at conceptual pre-release positions
+`v0.0.2`–`v0.0.4`, and WO-007 was called `v0.2.1`; those planning labels then
+looked like backwards application releases when the work orders were executed
+numerically. Current and pending plans are retimed onto one monotonic
+application sequence:
+
+| Work order / milestone | Superseded planning label | Application release target |
+|---|---:|---:|
+| WO-004 — environment and lifecycle corrections | `v0.0.2` | `v0.2.1` |
+| WO-005 — capability evidence table | `v0.0.3` | `v0.2.2` |
+| WO-006 — documentation-publication bootstrap | `v0.0.4` | `v0.2.3` |
+| WO-007 — audit-record baseline | `v0.2.1` | `v0.3.0` |
+| WO-008 — composition compiler | `v0.3.0` | `v0.4.0` |
+| WO-009 — real disposable worker | `v0.4.0` | `v0.5.0` |
+| WO-010 — independent verification | `v0.5.0` | `v0.6.0` |
+| WO-011 — feedback compiler | `v0.6.0` | `v0.7.0` |
+| projections and console | `v0.7.0` | `v0.8.0` |
+| pattern workshop | `v0.8.0` | `v0.9.0` |
+| source-to-deliverable vertical | `v0.9.0` | `v0.10.0` |
+
+This is a forward-only planning correction. The `v0.2.0` tag, its manifest,
+immutable verification/final-review reports, component versions, schema
+versions, and earlier ledger entries remain historical truth. The `v0.2.x`
+maintenance line is intentionally narrow: WO-004 corrects evidence and
+lifecycle behavior, WO-005 inventories existing evidence, and WO-006 proves a
+documentation-publication loop without extending the exported application
+runtime. If execution expands one of those scopes into public runtime
+capability, its release target must be reclassified before implementation.
 
 The manifest records the Git commit, application release, package/component
 versions, supported schema and artifact ranges, transformation-set version (or
-explicitly `none`), evidence commands/results, and known limitations. A release
-may initially be source-only. Publishing npm packages, executables, containers,
-or hosted artifacts is a separate projection selected only when a consumer
-needs it; a Git tag must not imply those channels exist.
+explicitly `none`), evidence commands/results, evaluable and deferred cadence
+kinds, toolchain, and known limitations. A release may initially be
+source-only. Publishing npm packages, executables, containers, or hosted
+artifacts is a separate projection selected only when a consumer needs it; a
+Git tag must not imply those channels exist.
 
-Patch releases contain compatible corrections and evidence improvements; minor
-releases add backwards-compatible capability; breaking public contracts require
-the next major boundary even before 1.0 unless an explicitly experimental
+The hand-closed `v0.2.0` manifest and notes under `docs/releases/` remain their
+immutable historical projection. For later releases, the annotated tag message
+is the immutable location for both the canonical JSON manifest and layered
+notes. The generator starts from
+`docs/releases/tag-manifest.template.json`; the validator re-derives its fields
+from the tagged source, control state, installed toolchain, and observed
+evidence before any tag ref is created. This order is deliberate: **the tag
+names the reviewed merged commit, and its annotation carries the record**. A
+tracked manifest committed after the tag would describe a different commit;
+committing one before the tag would require guessing its own commit identity.
+
+Patch releases contain compatible corrections, documentation, and evidence
+improvements; minor releases add backwards-compatible application capability;
+breaking public contracts require the next major boundary even before 1.0
+unless an explicitly experimental
 surface says otherwise. Historical tags and manifests are immutable. Never
 move a tag to make the past resemble the present; issue a new patch release.
 Do not invent a retroactive `v0.1.0` tag unless its exact reviewed commit and
 evidence can be reconstructed. Tag creation and remote publication remain
 explicit operator actions.
 
-Release closeout is the final workflow task after PR merge and worktree
-cleanup, not an activity hidden inside final review. The closeout task checks
-the merged `origin/main` commit, reruns the declared release evidence, builds
-and validates the manifest, and presents the exact tag/publish operation for
-operator authorization. If evidence fails, open a patch work order instead of
-tagging. A deliberately deferred release records its reason rather than leaving
+Release closeout is the final workflow task after PR merge, not an activity
+hidden inside final review. The guarded close command finishes the merged
+worktree/branch, fast-forwards the clean main checkout to `origin/main`, and
+requires the closed control state to name the same work order. At a new SemVer
+boundary it runs `npm ci` before evidence, proves tracked files remain
+unchanged, reruns the declared evidence, builds and validates the manifest and
+notes, and creates/pushes only the annotated tag when its explicit publish
+form was authorized. It never pushes `main`. The `resume: release close`
+phrase is that explicit tag-publication authorization. Without it, the raw
+command still performs guarded closeout and validation but withholds tag
+creation and publication. If evidence fails, open a patch work order instead
+of tagging. An application target in a work-order heading that is strictly
+below the latest release is a successful no-release closeout, leaving clean
+`main` in the closed, between-work-orders state rather than publishing
+backwards. An equal version
+is idempotent only when the existing validated annotated tag names that exact
+commit; any conflict refuses.
+An operator who deliberately defers an otherwise eligible release records the
+reason in a reviewed durable artifact; absence of a tag alone must not leave
 the milestone's publication state ambiguous.
 
 Each published release also carries layered patch notes. Lead with the release's
@@ -59,7 +122,7 @@ for readers who need the full trace.
 
 ## Capability progression policies
 
-The semver ladder is one release view. Inside and across its rungs, DotLn can
+The application ladder is one release view. Inside and across its rungs, DotLn can
 treat each feature, integration, projection, pattern, or operational capability
 like a skill that advances through evidence-backed levels. This makes several
 implementation strategies explicit rather than letting whichever feature is
@@ -106,7 +169,7 @@ into one popularity score:
 | Signal | Likely question |
 |---|---|
 | high opportunity, low activation | Is selection, discoverability, tagging, or policy wrong? |
-| high activation, low utilization | Is this an aura-stack passenger adding cost without changing outcomes? |
+| high activation, low utilization | Did we bring part of the whole stash into this map without changing the outcome? |
 | high utilization, low evidence gain | Is it repeatedly working without learning, or are outcomes unmeasured? |
 | high utilization, poor outcomes | Is the capability weak, mis-scoped, or blocking the system? |
 | low use, catastrophic consequence | Is this a rare invariant that must remain mature despite low frequency? |
@@ -124,7 +187,7 @@ version, trigger/predicate, matched facts, scope, competing candidates,
 selection score or reason, selected/suppressed outcome, expected cost,
 reserved context/tools, expiry, and the later utilization/result link. Over
 time these events reveal demand, false and missed activation, trigger drift,
-co-activation patterns, expensive passengers, seasonality, and candidates for
+co-activation patterns, unused loadout weight, seasonality, and candidates for
 prefetching, retirement, composition, or deeper investment.
 
 Therefore activation evidence can earn **selector/activation-policy XP** and
@@ -291,6 +354,38 @@ incremental computation; better stop conditions; archival/tiering; and reduced
 operator cognitive load. Efficiency improvements retain before/after evidence
 and note which resource moved elsewhere.
 
+### Counterfactual profiling work orders
+
+An optimization candidate can compile into a bounded profiling work order so
+candidate generation, implementation, measurement, and judgment do not blur
+together. The work order pins an immutable baseline; one hypothesis or a
+bounded candidate family; representative scenarios and fixtures; protected
+correctness, quality, authority, and risk invariants; exact build, test, and
+benchmark commands; the environment and toolchain profile; warm-up, repetition,
+and run-order rules; the resource vector; decision thresholds; evidence paths;
+and cleanup and rollback. The representation is intentionally executable by a
+low-cost model because the important judgment has already been compiled into
+the contract. Model assignment remains per work order and is never hardcoded.
+
+The deterministic harness measures; models propose candidates and interpret
+results. Every candidate runs in an isolated worktree or equivalent sandbox,
+must pass the semantic and quality gate before comparison, and is never
+promoted or merged automatically. Baseline and candidate runs are repeated and
+interleaved or randomized where order can bias the result. Conclusions report
+the distribution and uncertainty rather than treating one timing as truth.
+
+Results are append-only, machine-readable observations linked to the exact
+commits, scenarios, environment, and evidence. Retain regressions, failed
+candidates, no-change results, and improvements that merely move cost to a
+different resource. A generator may fan one reviewed optimization program into
+many small profiling work orders for inexpensive executors, followed by a
+comparison projection that shows protected outcomes, the resource frontier,
+and first divergence. Candidate families may vary code, prompts, loadouts,
+models, runtimes, or harness choices only when their authority and quality
+conditions remain comparable. This is the concrete code-efficiency projection
+of the graded-counterfactual-build idea in the lineage ledger, not permission
+to optimize output volume or weaken the contract.
+
 The capability table can add `efficiencyLevel`, `baseline`, `resourceVector`,
 `protectedOutcomes`, `frontierAlternatives`, and `nextExperiment`. Efficiency
 XP comes from trustworthy measurements and successful or informative
@@ -315,33 +410,6 @@ surface; Playwright availability; SQLite; localhost serving. Exit:
 `docs/discovery/environment.md` + machine-readable summary; a named choice of
 worker-transport adapters to build first, from evidence.
 
-## v0.0.2 — Environment truth addendum (transports observed)  → WO-004
-
-Close the gaps WO-001 deliberately deferred: both candidate transport launch
-shapes exercised for real from an unsandboxed authenticated session, MCP as a
-capability row, full startup-context accounting, effective settings loading,
-the user-level `model` key. Exit: the v0.4.0 transport recommendation
-re-stated over `observed` rows (or honestly re-labeled with cause), and
-`environment.json` row parity including the Codex feature-surface row.
-
-## v0.0.3 — Capability table v1  → WO-005
-
-The Capability-progression section's own "first implementation can remain
-simple": a reviewed Markdown table — evidence-linked levels,
-minimum-of-dimensions composites, `E0 — unknown` efficiency defaults, one
-recorded progression policy. Exit: `docs/planning/capability-table.md` with
-every non-latent row naming its blocking gate.
-
-## v0.0.4 — Publication bootstrap  → WO-006
-
-Steps 1–4 of the publication-compiler bootstrap (08): audience/status index
-over the blueprint, base outline + implementation-overlay template, two
-sharply different tables of contents from the same sources, one dual-voice
-sample, and a demonstrated staleness loop. This anchors 08's "first-class
-output from the beginning" on the ladder; further editions stay gated on this
-loop working. Exit: `docs/publication/` exists and the staleness
-demonstration is captured.
-
 ## v0.1.0 — Pure kernel  → WO-002
 
 TypeScript, **zero runtime dependencies, no I/O**. Events + EventEnvelope
@@ -352,10 +420,14 @@ the walking skeleton consumes — *types* for the full Program and Cadence
 grammars, *evaluation semantics* only for the subset WO-002 names; the rest
 arrives on contact at later rungs (the domain model holds the target shape).
 Exit criteria: rows 1, 3, 5 of the canonical failure-injection matrix
-(03-architecture) pass; same event log ⇒ same controller transitions,
-provably. Visible payoff: `replay` pretty-prints a decision trace you can
-actually read. Deferred: remaining grammar/matrix rows, every UI, every real
-adapter, the pattern compiler.
+(03-architecture) pass at the kernel boundary. For row 5 the kernel declares
+cancellation and NoOp; the walking skeleton proves those declarations in its
+fake scheduler, while durable scheduler ownership for real workers arrives at
+v0.5.0. Same event log ⇒ same controller transitions, provably. Visible proof:
+the evidence suite inspects the structured replay decisions and
+`DecisionTrace`; the first human-readable CLI projection arrives with
+`v0.2.0`. Deferred: remaining grammar/matrix rows, every UI, every real adapter,
+the pattern compiler.
 
 ## v0.2.0 — Walking skeleton (fake executor)  → WO-003
 
@@ -371,17 +443,46 @@ operator's own visual-prototype-zero: 🐛 gardener plus glyph states from the
 visual grammar, printed to terminal or a static HTML page — zero assets, a
 pure projection of the log). Deferred: real model calls, interactive web UI.
 
-## v0.2.1 — Audit-record baseline (three projections)  → WO-007
+## v0.2.1 — Environment truth addendum and lifecycle corrections  → WO-004
+
+Close the gaps WO-001 deliberately deferred: both candidate transport launch
+shapes exercised for real from an unsandboxed authenticated session, MCP as a
+capability row, full startup-context accounting, effective settings loading,
+the user-level `model` key. Exit: the v0.5.0 transport recommendation
+re-stated over `observed` rows (or honestly re-labeled with cause), and
+`environment.json` row parity including the Codex feature-surface row. The
+operator-authorized expansion also makes the worktree, review, repair, and
+release-close lifecycle executable and restartable.
+
+## v0.2.2 — Capability table v1  → WO-005
+
+The Capability-progression section's own "first implementation can remain
+simple": a reviewed Markdown table — evidence-linked levels,
+minimum-of-dimensions composites, `E0 — unknown` efficiency defaults, one
+recorded progression policy. Exit: `docs/planning/capability-table.md` with
+every non-latent row naming its blocking gate.
+
+## v0.2.3 — Publication bootstrap  → WO-006
+
+Steps 1–4 of the publication-compiler bootstrap (08): audience/status index
+over the blueprint, base outline + implementation-overlay template, two
+sharply different tables of contents from the same sources, one dual-voice
+sample, and a demonstrated staleness loop. This anchors 08's "first-class
+output from the beginning" on the ladder; further editions stay gated on this
+loop working. Exit: `docs/publication/` exists and the staleness
+demonstration is captured.
+
+## v0.3.0 — Audit-record baseline (three projections)  → WO-007
 
 Bootstrap steps 1–3 of the audit map (09), against the walking skeleton's
 real demo log: consequential-action enumeration with the question each record
 answers, a minimal pinned AuditRecord envelope referencing the event store
 (never a second truth), and three pure-fold projections — L0 receipt, causal
 timeline, governed raw JSON. This anchors 09's bootstrap on the ladder; steps
-4–7 wait for v0.4.0's machinery. Exit: identical projection output over live
+4–7 wait for v0.5.0's machinery. Exit: identical projection output over live
 and replayed logs, with step 9's structural refusal visible in the receipt.
 
-## v0.3.0 — Composition compiler v1  → WO-008
+## v0.4.0 — Composition compiler v1  → WO-008
 
 LoadoutGraph + support facets + link type-checking + deterministic precedence
 + compiled-diff preview (CLI). The Seiri link group compiles to heterogeneous
@@ -392,15 +493,18 @@ across at least {code DSL, function table, statechart JSON}. Visible payoff:
 the compiled-diff preview renders as an **RPG item tooltip** (GRANTS /
 RESTRICTIONS / OBLIGATION / PASSIVE / PULSE / INTERRUPT), not only CLI text.
 
-## v0.4.0 — Real disposable worker  → WO-009
+## v0.5.0 — Real disposable worker  → WO-009
 
-WorkOrderTransport adapters chosen by v0.0.1 evidence — expected: claude
-CLI print-mode with the canonical launch shape (fresh bounded invocation,
+WorkOrderTransport adapters chosen from discovery through WO-004's observed
+evidence — expected: Claude CLI print-mode with the canonical launch shape
+(fresh bounded invocation,
 project+local settings only, **ambient/auto memory disabled** — no
 harness-owned memory loads into a fresh episode; external memory is
-deliberate — isolated worktree, explicit model + effort, no session
-persistence, JSON schema output) and a codex equivalent. Worktree
-lifecycle is deterministic (create, verify cwd, clean up). Exit: one real
+deliberate — isolated worktree, explicit model and effort, no session
+persistence, JSON schema output) and a Codex equivalent using only controls
+the installed host exposes. If Codex still offers no effort selector, record
+`unknown`; never invent a flag. Worktree lifecycle is deterministic (create,
+verify cwd, clean up). Exit: one real
 episode replaces the fake executor in the v0.2.0 demo and returns a compact
 result envelope; the main session's transcript grows by only the envelope; a
 killed worker leaves a recoverable pending command (matrix rows 2, 4, 6 pass
@@ -409,7 +513,7 @@ here); **`dotln status` exists** — a live in-flight projection of the store
 real workers never run blind. **No silent model substitution** — unavailable
 model ⇒ queue or fail closed.
 
-## v0.5.0 — Independent verification  → WO-010
+## v0.6.0 — Independent verification  → WO-010
 
 Blinded verifier episodes; claim-typed evidence mapping; typed
 VerificationFinding → focused repair continuation in a fresh episode;
@@ -429,7 +533,7 @@ those signals, with explicit unknown states otherwise. Exact release placement
 waits on evidence from WO-009 and WO-010 rather than expanding those orders by
 implication.
 
-## v0.6.0 — Feedback compiler v1 (ten units)  → WO-011
+## v0.7.0 — Feedback compiler v1 (ten units)  → WO-011
 
 Ten representative FeedbackUnits authored from the corpus (this repo's ledger,
 not any external rule stack): anti-oscillation; correctness-over-sycophancy;
@@ -444,10 +548,14 @@ removed; **and the first self-hosted step** — one DotLn work order for this
 repo itself is compiled, dispatched, executed, and verified by DotLn
 (ADR-0001's strangler experiment gets its vehicle).
 
-## v0.7.0 — Projections & console
+## v0.8.0 — Projections & console
 
-Web console (UI framework decided *here* by ADR with v0.0.1 evidence; default
-recommendation: Angular, the operator's fluency — the kernel doesn't care).
+Web console (UI framework and repository boundary decided *here* by ADR with
+representative evidence; Angular and its operator-fluent baseline are the
+default conventional-shell candidate, Babylon.js is the spatial-view
+candidate, and a plain workspace remains the default unless Nx proves enough
+measured value and reliability to justify its weight — the kernel doesn't
+care).
 Synchronized views: RPG loadout + statechart + function table + event timeline
 + raw IR, semantic-hash equality across editable views; glyph system with the
 visual grammar; replay scrubber; the first full transmog skin beyond glyphs
@@ -456,7 +564,7 @@ for v1.0. Terminal remains a complete control surface.
 Exit: the v0.2.0 demo watched entirely from the console, then re-watched via
 replay; every animated element opens its mechanics inspector.
 
-## v0.8.0 — Pattern workshop v1
+## v0.9.0 — Pattern workshop v1
 
 5S equipment set with compiled set bonuses; Marquet ladder as the
 operator-agent protocol (autonomy rung computed, not set); mitigated-speech
@@ -464,7 +572,7 @@ voice selector; drag-and-drop equip with exact compiled diff preview. Exit:
 dragging Seiri onto Repo Gardener in the console produces the same semantic
 hash as authoring the equivalent link group in code.
 
-## v0.9.0 — Source-to-deliverable vertical
+## v0.10.0 — Source-to-deliverable vertical
 
 Prove the ports with a personal-flavor vertical: GitHub Issue → SourceBundle →
 StoryContract → RepoProfile + ImpactMap → **Live Witness baseline** (reproduce

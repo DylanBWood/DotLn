@@ -1,9 +1,11 @@
-# WO-008 — Composition compiler v1, v0.3.0
+# WO-008 — Composition compiler v1, v0.4.0
 
 **Model:** any capable model.
+**Release classification:** `v0.4.0` minor — adds the backwards-compatible
+composition compiler and its inspectable projections.
 **Depends on:** WO-003 complete.
 
-**Cites (read these sections):** 06-roadmap.md v0.3.0; 02-domain-model.md
+**Cites (read these sections):** 06-roadmap.md v0.4.0; 02-domain-model.md
 (LoadoutGraph, Active mechanic, Support facet, Link/link group, Identity,
 Role, Phenotype, PolarAxis, AuthorityEnvelope); 03-architecture.md
 §Composition system (the four compile steps and the nine-level precedence);
@@ -22,7 +24,7 @@ this moment).
   only for what the Seiri link group and the walking-skeleton scenario
   consume. The rest arrives on contact at the rungs that consume it.
 - View equivalence across exactly {code DSL, function table, statechart
-  JSON} (the roadmap's minimum set); further views are v0.7.0's.
+  JSON} (the roadmap's minimum set); further views are v0.8.0's.
 - PolarAxis ships as types; its evaluation compiles only if the Seiri compile
   consumes it — otherwise policy inputs stay opaque, as in WO-002.
 - Presentation is CLI text plus the tooltip rendering; no interactive UI.
@@ -60,6 +62,6 @@ and 04-interfaces.md in the same change; ledger duty applies.
 **Evidence gate:** test output captured; every criterion mapped to a named
 test; the semantic-hash equality and the tooltip rendering captured verbatim.
 
-**Non-goals:** drag-and-drop or console UI (v0.7.0/v0.8.0); 5S set bonuses
-and the Marquet autonomy computation (v0.8.0); the feedback compiler
-(v0.6.0); real workers; saved-build invocation; rating projections.
+**Non-goals:** drag-and-drop or console UI (v0.8.0/v0.9.0); 5S set bonuses
+and the Marquet autonomy computation (v0.9.0); the feedback compiler
+(v0.7.0); real workers; saved-build invocation; rating projections.

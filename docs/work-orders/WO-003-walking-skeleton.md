@@ -250,3 +250,11 @@ durability beyond a git-based checkpoint (gitignored material can never be
 covered by one); checkpoint retention and a first-class `recover` action;
 sealing evidence into a commit at verdict time; and a standing hazard-drill
 suite whose fixtures inherit the real repository configuration.
+
+## 2026-08-31 roadmap retiming note
+
+This completed order retains its original `v0.3.0` composition-compiler
+pointer as time-indexed planning history. The current application target for
+that same milestone is `v0.4.0`; see the roadmap's dated forward-retiming
+table. The published `v0.2.0` walking-skeleton scope and evidence are
+unchanged.

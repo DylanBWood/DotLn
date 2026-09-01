@@ -1,6 +1,9 @@
-# WO-006 — Publication bootstrap (two contents, one staleness loop), v0.0.4
+# WO-006 — Publication bootstrap (two contents, one staleness loop), v0.2.3
 
 **Model:** any capable model.
+**Release classification:** `v0.2.3` patch — documentation-publication
+artifacts and an internal staleness proof, not exported runtime capability.
+Reclassify before implementation if scope expands beyond that boundary.
 **Depends on:** nothing executable (doc-only; runs against the blueprint as
 committed).
 
@@ -34,8 +37,8 @@ index, base outline, overlay template, the two tables of contents, and the
 dual-voice sample; a map line in `docs/README.md`.
 
 **Acceptance criteria (all required)**
-1. Every section of docs/product/00–09 appears in the index with audience
-   tags and a status label.
+1. Every section of every current `docs/product/` document (currently 00–10)
+   appears in the index with audience tags and a status label.
 2. The two tables of contents differ sharply in sequence, vocabulary, and
    depth, cite only shared committed sources, and differ in no fact,
    limitation, permission, or evidence (08's audience rule).
@@ -48,7 +51,7 @@ dual-voice sample; a map line in `docs/README.md`.
 **Evidence gate:** the captured staleness demonstration plus the index
 coverage check (no untagged section), recorded in the result.
 
-**Write-back duty:** the roadmap's v0.0.4 entry already points here; the
+**Write-back duty:** the roadmap's v0.2.3 entry already points here; the
 `docs/README.md` map line lands in the same change; ledger duty for any transformed publication idea.
 
 **Non-goals:** manager / IT-director / VP-development / CFO editions (08

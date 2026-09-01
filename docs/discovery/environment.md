@@ -25,12 +25,19 @@ below. Rows marked *(corrected)* were revised on 2026-08-31 by Claude Code
 `2.1.251` sessions; see "Corrections and known gaps" and the command logs
 that follow the original one.
 
+**Current transport status:** the original tables below preserve WO-001's
+time-indexed blocked smokes. WO-004 later observed successful authenticated,
+schema-bound end-to-end runs for both Claude CLI print and Codex CLI exec; the
+dated addendum and machine-readable companion are the current classification.
+That addendum extends the original label vocabulary with `documented
+officially` for claims grounded in public vendor documentation.
+
 ## Summary
 
 | Area | Classification | Evidence |
 |---|---|---|
 | OS and shell | observed | macOS 15 on arm64 (Darwin 24.x); `/bin/zsh`, zsh 5.9. Exact point release and build withheld — see the patch-level note above |
-| Node | observed | `/Users/dylanwood/.nvm/versions/node/v22.2.0/bin/node`, v22.2.0 |
+| Node | observed | `$HOME/.nvm/versions/node/v22.2.0/bin/node`, v22.2.0 |
 | npm / pnpm / yarn | observed | npm 10.8.0; pnpm 9.1.2; yarn 1.22.22 |
 | TypeScript compiler | observed | `tsc` 5.4.5 |
 | Git | observed | git 2.55.0 |
@@ -84,7 +91,11 @@ evidence *(cause corrected; narrowed to sandbox level on review)*.
 | Feature surface | observed | local `codex features list` reports stable enabled hooks, multi-agent, browser, app, plugin, and workspace-dependency features; this is availability metadata, not an execution test |
 | Noninteractive smoke | blocked | the single `codex exec --ephemeral --ignore-user-config --sandbox read-only --json` attempt exited 1: in-process app-server initialization was denied by the executing session's own Codex sandbox (`network_access: false`) — not by a machine limitation or a corporate/managed environment *(cause corrected)* |
 
-## Recommendations for v0.4.0
+## Recommendations for the real-worker milestone
+
+This section originally targeted `v0.4.0`; the 2026-08-31 forward roadmap
+retiming moves the same milestone to `v0.5.0`. The evidence and adapter choice
+did not change.
 
 Build these first, as peer `WorkOrderTransport` adapters already settled by
 ADR-0002:
@@ -169,7 +180,7 @@ later work order can scope them:
 
 ## Command log
 
-Commands were run from `/Users/dylanwood/Projects/DotLn-wo001`. Compound
+Commands were run from the personal `wo-001` worktree. Compound
 read-only probes are retained as compound commands here; no secret values were
 requested or recorded.
 
@@ -203,8 +214,8 @@ npx --no-install playwright --version 2>/dev/null || true
 
 ## Verification command log (2026-08-31)
 
-Re-measurement that produced corrections 1–3, run from
-`/Users/dylanwood/Projects/DotLn-wo001` by a Claude Code `2.1.251` session.
+Re-measurement that produced corrections 1–3, run from the personal `wo-001`
+worktree by a Claude Code `2.1.251` session.
 Read-only; no values of secrets or configuration files were printed.
 
 ```sh
@@ -216,7 +227,7 @@ claude mcp list
 grep -ci mcp docs/discovery/environment.md docs/discovery/environment.json
 jq -r 'keys|join(", ")' ~/.claude/settings.json .claude/settings.json
 security find-generic-password -s "Claude Code-credentials" >/dev/null 2>&1 && echo "keychain item EXISTS"
-ROLLOUT=/Users/dylanwood/.codex/sessions/2026/08/30/rollout-2026-08-30T23-08-46-*.jsonl
+ROLLOUT=~/.codex/sessions/2026/08/30/rollout-2026-08-30T23-08-46-*.jsonl
 grep -oh '"sandbox_policy":{[^}]*}' $ROLLOUT | sort -u
 grep -ohE '"(model|cli_version|originator)":"[^"]*"' $ROLLOUT | sort -u
 grep -ch CODEX_SANDBOX_NETWORK_DISABLED $ROLLOUT
@@ -233,4 +244,201 @@ wc -l -c CLAUDE.md
 git show 4bae5f3:CLAUDE.md | wc -l -c
 git show 6310344:CLAUDE.md | wc -l -c
 git rev-list --parents -n1 4bae5f3
+```
+
+## WO-004 transport and startup-context addendum (2026-08-31)
+
+This addendum extends, rather than rewrites, the time-indexed WO-001 findings.
+Inspection ran from the personal `wo-004` worktree. The two transport attempts
+ran outside the invoking Codex session's workspace sandbox as WO-004 requires;
+all other probes were read-only. No configuration value, credential, request
+id, session id, or local file content is recorded here.
+
+### Claude Code print transport
+
+Installed version: Claude Code `2.1.252` (`observed`). The canonical attempt
+used print mode, an explicit model and effort, JSON plus a schema, disabled
+session persistence, selected project and local settings, disabled tools and
+skills, and overrode auto-memory off:
+
+```sh
+claude --print --model sonnet --effort high --output-format json \
+  --json-schema "$(jq -c . /private/tmp/dotln-wo004-claude-schema.json)" \
+  --no-session-persistence --setting-sources project,local \
+  --settings '{"autoMemoryEnabled":false}' --tools "" \
+  --disable-slash-commands --max-budget-usd 0.05 \
+  --debug config --debug-file /private/tmp/dotln-wo004-claude-debug.log \
+  'Return the smallest object that satisfies the supplied schema.'
+```
+
+| Claim | Classification | Evidence |
+|---|---|---|
+| Print invocation and JSON envelope | observed | exit 1 still returned a parseable `type=result`, `subtype=error_max_budget_usd` JSON envelope |
+| Explicit model | observed | `--model sonnet` was accepted; the envelope's model-usage keys named the Sonnet target plus a Haiku auxiliary call |
+| Explicit effort | observed | `--effort high` was accepted by the authenticated invocation |
+| Project/local source selection | observed | the debug log referenced the project settings file and global app-state file, and explicitly skipped the absent main-checkout local file; exact winning-file attribution per key remains `ambiguous` |
+| Ambient auto-memory disabled | observed | project settings carry the key, the invocation supplied `autoMemoryEnabled=false`, and the current project memory directory contains zero files / zero bytes |
+| No session persistence | observed | the result envelope carried an in-memory session id, but that id was absent from the Claude project-session store after exit |
+| Schema-conforming final result | observed | an operator-authorized corrected attempt returned `{"ok":true,"transport":"claude-cli-print"}` under the supplied schema |
+
+The first result counted two internal turns but no structured output because
+the executor's `$0.05` cap was too low; it stopped at `$0.055659`. The operator
+explicitly authorized one correction. The schema properties gained explicit
+types and the otherwise identical command used `--max-budget-usd 0.25`:
+
+```sh
+claude --print --model sonnet --effort high --output-format json \
+  --json-schema "$(jq -c . /private/tmp/dotln-wo004-claude-schema.json)" \
+  --no-session-persistence --setting-sources project,local \
+  --settings '{"autoMemoryEnabled":false}' --tools "" \
+  --disable-slash-commands --max-budget-usd 0.25 \
+  --debug config \
+  --debug-file /private/tmp/dotln-wo004-claude-debug-corrected.log \
+  'Return the smallest object that satisfies the supplied schema.'
+```
+
+The corrected attempt exited 0, cost `$0.055491`, returned a successful JSON
+result envelope plus the schema-conforming structured object, wrote nothing to
+stderr, and left no session file. The budget failure remains recorded as a
+discarded harness preflight rather than being misclassified as transport
+evidence.
+
+### Codex CLI exec transport
+
+Installed version: Codex CLI `0.151.0` (`observed`). The first request used a
+test schema whose `const` properties lacked explicit JSON types. The service
+rejected it as `invalid_json_schema` with HTTP 400 before inference. The schema
+was corrected locally, and the actual smoke was:
+
+```sh
+codex exec --ephemeral --ignore-user-config --sandbox read-only --json \
+  --output-schema /private/tmp/dotln-wo004-codex-schema.json \
+  --model gpt-5.6-luna \
+  'Return the smallest JSON object that satisfies the supplied output schema.'
+```
+
+| Claim | Classification | Evidence |
+|---|---|---|
+| End-to-end exec transport | observed | exit 0; final agent message was `{"ok":true,"transport":"codex-cli-exec"}` and satisfied the supplied schema |
+| Ephemeral persistence | observed | the JSONL stream carried a thread id, but that id was absent from the Codex session store after exit |
+| Read-only sandbox | observed | `--sandbox read-only` completed and the repository acquired no smoke-created file or modification |
+| JSONL event stream | observed | one each of `thread.started`, `turn.started`, `item.completed`, and `turn.completed` |
+| Output schema | observed | the corrected schema constrained both properties and the final object passed |
+| Explicit model | observed | `--model gpt-5.6-luna` was accepted and the request completed; the JSONL stream does not echo the selected model, so independent no-substitution proof remains `ambiguous` |
+| Ignored user configuration | observed | `--ignore-user-config` was accepted; auth still resolved through `CODEX_HOME` as local help documents |
+
+The invalid-schema request is recorded because it actually happened, but it is
+not a second model smoke or rate probe: validation failed before inference.
+
+### Claude MCP capability
+
+| Capability | Classification | Evidence |
+|---|---|---|
+| `mcp` command | observed | `claude mcp list` exited 0 |
+| `--mcp-config` | documented locally | installed `--help` describes file or inline JSON configs |
+| `--strict-mcp-config` | documented locally | installed `--help` says configured sources other than the explicit MCP config are ignored |
+| Connected servers | observed | one server, `playwright`, reported `Connected` |
+
+### Startup-context accounting
+
+The inventory follows the categories named by installed `--safe-mode` help.
+`not found` means the documented user/project path did not exist. Plugin cache
+files are application data, not installed-plugin definitions: `claude plugin
+list --json` reported zero installed plugins even though the cache tree held
+443 files.
+
+| Category | Classification | Metadata-only evidence |
+|---|---|---|
+| Instructions | observed | `~/.claude/CLAUDE.md`: 13 lines / 660 bytes; project `CLAUDE.md`: 66 lines / 2870 bytes; project `AGENTS.md` symlinks to it |
+| Skills | not found | zero files under user or project `skills/` paths |
+| Plugins | observed | installed count 0; cache directory present (443 files, contents not read) |
+| Hooks | observed | no top-level `hooks` key in user or project settings |
+| MCP servers | observed | `~/.claude.json`: 1360 lines / 52,290 bytes; only key names were inspected; `claude mcp list` reported `playwright` connected |
+| Commands | not found | zero files under user or project `commands/` paths |
+| Agents | not found | zero files under user or project `agents/` paths |
+| Output styles | not found | zero files under user or project `output-styles/` paths |
+| Workflows | not found | zero files under user or project `workflows/` paths |
+| Themes | not found | zero files under the user `themes/` path |
+| Keybindings | not found | `~/.claude/keybindings.json` absent |
+| Rules | not found | zero files under user or project `rules/` paths |
+| Auto-memory | observed | one project memory directory exists but contains zero files / zero bytes; disabled for the smoke |
+
+### Effective settings and precedence
+
+| Source | Classification | Finding |
+|---|---|---|
+| Managed remote | not found | `remote-settings.json` absent; `claude doctor` reported remote managed settings not fetched because no usable settings-fetch credential was available |
+| Managed macOS policy | observed | preferences domain exists with zero top-level keys |
+| Managed file | not found | `/Library/Application Support/ClaudeCode/managed-settings.json` absent; the smoke debug log marked it skipped |
+| Command line | observed | `--setting-sources project,local`, `--model`, `--effort`, and the inline auto-memory setting were accepted |
+| Project local | not found | in a worktree, current Claude documentation points local settings at the main checkout; that file was absent and the debug log marked it skipped |
+| Shared project | observed | `.claude/settings.json`: 4 lines / 104 bytes; keys only: `$schema`, `autoMemoryEnabled` |
+| User | observed, excluded from the smoke | `~/.claude/settings.json`: 17 lines / 362 bytes; a `model` key exists and its value was not read; `--setting-sources project,local` excludes this tier |
+| Global app state | observed | `~/.claude.json`: 1360 lines / 52,290 bytes; it is not a `--setting-sources` tier, but the smoke debug log referenced it and MCP/auth use it |
+
+Official Claude documentation supplies the precedence rule because a safe
+read-only CLI projection does not expose per-key winners: managed settings,
+command-line arguments, project-local, shared project, then user. Lists and a
+small security-sensitive subset have documented merge/strictness exceptions.
+Exact per-key effective attribution in this smoke remains `ambiguous`; the
+file/source presence and selection above are observed. Source:
+<https://code.claude.com/docs/en/settings#settings-precedence>.
+
+### Restated v0.5.0 recommendation
+
+Build the same two peer adapters settled by ADR-0002, now grounded in observed
+end-to-end evidence:
+
+1. **Claude CLI print first.** It is observed with explicit model and effort,
+   project/local settings only, auto-memory disabled, no session persistence,
+   JSON envelope, and schema-conforming structured output.
+2. **Codex CLI exec second.** It is observed with explicit model, ephemeral
+   persistence, ignored user config, read-only sandbox, JSONL events, and
+   schema-conforming output.
+
+Both remain required peers and both must fail closed on unavailable
+model/auth/runtime. The ordering retains the original recommendation now that
+both gates pass; it is not an ADR change.
+
+### WO-004 command log
+
+Read-only and smoke commands that produced the addendum are recorded below.
+Temporary-output parsers printed only envelope keys, classifications, counts,
+and presence booleans; identifiers and configuration values were discarded.
+
+```sh
+claude --version
+claude --help
+claude doctor --help
+claude doctor
+claude plugin list --help
+claude plugin list --json
+claude mcp list --help
+claude mcp list
+codex --version
+codex --help
+codex exec --help
+codex features list
+jq -r 'keys|join(",")' ~/.claude/settings.json ~/.claude.json .claude/settings.json
+stat -f '%N|%z' ~/.claude/settings.json ~/.claude.json .claude/settings.json ~/.claude/CLAUDE.md CLAUDE.md
+wc -l ~/.claude/settings.json ~/.claude.json .claude/settings.json ~/.claude/CLAUDE.md CLAUDE.md
+find ~/.claude/{skills,commands,agents,output-styles,workflows,themes,rules,agent-memory} -type f
+find .claude/{skills,commands,agents,output-styles,workflows,rules,agent-memory} -type f
+find ~/.claude/projects -type d -name memory
+defaults export com.anthropic.claudecode -
+test -f '/Library/Application Support/ClaudeCode/managed-settings.json'
+test -f ~/Projects/DotLn/.claude/settings.local.json
+test -f ~/.claude/remote-settings.json
+
+# Both Claude commands are shown in full under “Claude Code print transport”.
+# Codex invalid-schema preflight used the same command shown above with the
+# original const-only property schemas; validation failed before inference.
+# Codex corrected command shown in full under “Codex CLI exec transport”.
+
+jq -s '[.[].type] | group_by(.) | map({type:.[0],count:length})' /private/tmp/dotln-wo004-codex-output-corrected.jsonl
+jq '{type,subtype,is_error,structured_output_present:has("structured_output")}' /private/tmp/dotln-wo004-claude-output.json
+rg -F '<session-id>' ~/.claude/projects
+rg -F '<thread-id>' ~/.codex/sessions
+git status --short
+date -Iseconds
 ```

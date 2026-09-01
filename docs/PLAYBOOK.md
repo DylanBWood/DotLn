@@ -13,7 +13,7 @@ until it's muscle memory; edit it when reality disagrees.
 | **Sonnet 5** | Bounded mechanical work: test scaffolds, renames, formatting, running fixtures, small fan-outs | Anything requiring judgment about the blueprint |
 | **Codex** (GPT 5.6 Sol, xhigh) | Execute and repair work orders | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
 
-Two standing rules:
+Three standing rules:
 - **Implementer ≠ verifier.** Codex executes and repairs; Opus 5 verifies in a
   fresh blinded session; Fable 5 plans and performs the closing check.
 - **`Model:` line in the work order is law** (Principle 8). `Model: any` means
@@ -42,69 +42,119 @@ checkout is the control plane — no implementation happens here.
 ```bash
 cd ~/Projects/DotLn
 npm run worktree -- start WO-002 docs/work-orders/WO-002-pure-kernel.md
-cd ../DotLn-wo002
-
-codex "Execute docs/work-orders/WO-002-pure-kernel.md"
 ```
 
-Give the executor ONE line: *execute this work order*. Everything it needs is
-in the repo (that's the whole design). Don't paste context; don't explain.
-Ramble into the *planning* session, never into an executor.
+`start` creates and activates the isolated worktree, then prints an absolute,
+shell-quoted `cd` command and the rest of the handoff. Run those steps yourself:
+
+```bash
+cd '/absolute/path/printed/by/start'
+codex
+```
+
+Then enter only this chat phrase:
+
+```text
+resume: next
+```
+
+In phase `active`, `next` resolves the work-order path and dispatches the
+executor. Project tooling does not open or inspect Codex in this current
+projection; that is a present workflow choice, not a permanent ban on later
+governed worker launching. Everything the executor needs is in the repo. Don't
+paste context or explain the work order again.
 
 **3. Verify (Opus 5, fresh session, blinded).** New session — not the
 implementer's, no implementer narrative. Feed it: the WO + the diff.
 
-```bash
-cd ../DotLn-wo002
-claude --model opus "Verify the working tree against docs/work-orders/WO-002-pure-kernel.md. Run every acceptance criterion yourself. Write the per-criterion pass/fail report with evidence to the next unused docs/verifications/WO-002/VER-NNN.md number. Never replace a prior report. Do not fix anything."
+Open the assigned verifier in the subject worktree, then enter:
+
+```text
+resume: verify
 ```
 
-**4. Repair or final review.** **Checkpoint before you dispatch.** Before any
-repair or re-verification episode, make a recovery point in the subject
-worktree: `git add -A && git commit -m 'WO-NNN checkpoint'`. The loop's first
-mandatory commit is at final-review pass, so until then the deliverable, every
-`VER-NNN`, and the control log are one destructive command from gone.
-`git add -A` honors `.gitignore`, so `docs/intake` is NOT in that commit — back
-it up separately. If red, don't debug in your head. The verifier saves findings as the next
-unused immutable `docs/verifications/WO-00N/VER-NNN.md`. Dispatch a *repair*
-session in the same worktree with both the authoritative original work order
-and that specific report, then re-verify into the next number. Never update or
-delete an earlier report. (Findings → fresh
-repair episode → stale evidence regenerated: same shape DotLn itself will
-automate at v0.5.0.)
+The phrase allocates the immutable `VER-NNN` path and prints the authoritative
+work-order path. The verifier runs the acceptance evidence, writes only that
+report, and records `pass` or `fail`; it does not repair its own findings.
 
-When verification is green, dispatch final review. It reads the original work
-order, complete verification sequence, diff, tests, ideation receipt, and all
-affected product/ledger/schema surfaces. It may make bounded last-mile fixes
-only when they are non-substantive handoff/documentation corrections. Any
-acceptance-relevant change records a failed `FINAL-NNN` and goes through repair
-plus a fresh independent `VER-NNN`. A pass writes the next immutable `FINAL-NNN`,
-commits the clean result, and opens a PR:
+**4. Repair or final review.** Each state transition attempts to mint a local
+checkpoint ref before it appends, so use the chat command instead of
+hand-writing a checkpoint commit. If checkpoint creation fails, the projected
+state says it is unavailable and must not advertise an older recovery ref.
+Those refs do not include ignored `docs/intake` material; back raw intake up
+separately. If verification is red, open a fresh Codex session in the same
+worktree and enter:
 
-```bash
-cd ~/Projects/DotLn-wo002
-npm run worktree -- publish WO-002 --title ':sparkles: Pure kernel' --body-file docs/final-reviews/WO-002/PR.md
+```text
+resume: fix
 ```
 
-**5. Merge, clean up, and release-close.** You review and merge the PR. Then:
+It prints both the authoritative work order and the specific immutable failing
+report. When the repair evidence is green, it records `repair-complete`; open a
+fresh verifier and use `resume: verify` again. Never update or delete an older
+report.
 
-First run `npm run backup:intake` from the subject worktree and reconcile any
-worktree-local raw notes into the surviving main intake or another trusted
-backup. `finish` deliberately refuses while any non-disposable ignored file
-remains — `docs/intake` material, a stray `.env`, anything else `.gitignore`
-hides — naming the offending path; it will not guess whether local-only files
-are disposable. Ordinary untracked dirt also fails the clean check, while
-ignored `node_modules`, `dist`, `.DS_Store`, and `*.tsbuildinfo` output may be
-discarded with the worktree.
+When verification is green, open the final-review session in the subject
+worktree and enter:
 
-```bash
-cd ~/Projects/DotLn
-npm run worktree -- finish WO-002
+```text
+resume: final review
 ```
 
-`finish` refuses before the branch is contained in `origin/main`. If this work
-completes a roadmap release, perform the release-closeout task described below.
-Then use `resume: next` to select the next work order.
+It reads the original work order, complete verification sequence, diff, tests,
+ideation receipt, and all affected product/ledger/schema surfaces. It may make
+only non-substantive handoff corrections. An acceptance-relevant change fails
+the review and returns through repair plus fresh verification. On pass, this
+phrase is explicit authority to write the immutable `FINAL-NNN`, record the
+pass, commit the reviewed state, push only the WO branch, and open a mergeable
+PR. It never merges the PR; that remains yours.
+
+After the reviewed commit exists, the final reviewer invokes the bounded PR
+publisher with a committed body file inside the worktree:
+
+```bash
+npm run worktree -- publish WO-NNN --title '<reviewed title>' --body-file <contained-reviewed-body-path>
+```
+
+The publisher prints the exact release-close handoff to use after you merge.
+
+`main` requires a PR through the repository's GitHub ruleset. A 404 from the
+classic `/branches/main/protection` endpoint is not evidence that the branch is
+unprotected; ruleset-aware inspection is required. Project tooling therefore
+has no direct-push-to-main path.
+
+**5. Merge, clean up, and release-close.** You review and merge the PR. In the
+still-open subject session, enter:
+
+```text
+resume: release close
+```
+
+That phrase is explicit authority for the agent to run the guarded close from
+the main checkout with tag publication enabled. The command proves the PR is
+merged, fast-forwards `main`, removes the known merged worktree/branch, and
+then checks the work order's application release target. At a new boundary it
+runs `npm ci`, full
+release evidence, manifest/notes generation and validation, and pushes only
+the annotated tag. A strictly lower target records an honest no-release close;
+an equal target succeeds only when the existing validated tag names the exact
+commit, otherwise it refuses. Either successful path leaves clean `main` in
+the closed, between-work-orders state. WO-004 is the planned `v0.2.1` patch.
+
+WO-004 has one bootstrap wrinkle: the old main checkout cannot run a package
+script that WO-004 has not merged yet. Its PR publisher prints an exact
+`cd <main>` plus `node <WO-004-worktree>/scripts/release.mjs ...` handoff.
+Use that printed command after merging and after entering `resume: release
+close`; the helper updates main before removing its own source worktree. Later
+work orders use the ordinary main-checkout package command.
+
+Closeout refuses rather than deleting non-disposable ignored material —
+`docs/intake` notes, `.env`, or anything else hidden by `.gitignore`. If that
+happens, run `npm run backup:intake` in the subject worktree, reconcile the raw
+material into surviving trusted storage, and repeat the phrase. Disposable
+`node_modules`, `dist`, `.DS_Store`, and `*.tsbuildinfo` may leave with the
+worktree. A failed release evidence gate creates no tag and must become a patch
+work order.
 
 ### Repeated code → verify → fix loops
 
@@ -134,25 +184,35 @@ stays clean for you and the planning session.
 - **Session dies / rate-limited mid-WO:** nothing is lost — the repo + WO are
   the memory, but that memory is uncommitted working-tree state until final
   review commits. A dead session loses nothing; a reset or a clean loses
-  everything not checkpointed. Start a fresh session in the same worktree: "Continue executing
-  WO-00X; inspect the working tree to see what's done." (Disposable
-  incarnations; the workflow remembers the worker.)
+  everything not checkpointed. Start a fresh session in the same worktree and
+  enter `resume: next`; the resolved work order tells the new executor to
+  inspect the existing tree before continuing. (Disposable incarnations; the
+  workflow remembers the worker.)
 - **Out of Claude budget:** route `Model: any` work to Codex; park
   model-pinned work orders — never substitute silently.
 - **Executor asks you a question it shouldn't** ("should I run the tests?"):
   the answer is in the WO's evidence gate. Say "follow the work order" and
   note it — that's a future compiled feedback unit.
 - **Executor went sideways:** kill it, don't argue with it. Fix the WO or the
-  doc that misled it (that's the real bug), then **checkpoint first**
-  (`git add -A && git commit -m 'WO-NNN checkpoint'` in the subject worktree),
-  reset to that commit, and redispatch cold. Arguing pollutes; redispatching is
-  free. Never `git checkout .`, `git restore .`, `git reset --hard`, or
-  `git clean -fd` here without that checkpoint — nothing in this loop is
-  committed until final review, so those destroy the deliverable, every
-  `VER-NNN` written so far, and `docs/control/resume.jsonl`. Never
-  `git clean -fdx`/`-fdX` at all: it also deletes gitignored `docs/intake`,
-  which is single-copy and in no commit. `git stash -u` is the safe way to park
-  a dirty tree — it preserves ignored intake and `.env`.
+  doc that misled it (that's the real bug), then preserve the entire dirty tree
+  with a named stash, for example
+  `git stash push --include-untracked -m 'WO-NNN recovery'`; never drop that
+  stash. The stash stack is shared across every worktree of this repository, so
+  a concurrent session can reorder or consume entries — re-find yours by its
+  `-m` tag, never by `stash@{n}` position, and restore with `git stash apply`,
+  not `pop`. Check `npm run resume -- status`. If it advertises a checkpoint for
+  the latest transition, a fresh agent may use that exact restore command only
+  after the stash succeeds; otherwise repair from the parked diff instead of
+  guessing at an older ref. Do not create a hand-written checkpoint commit on
+  the work-order branch: valid transitions already mint local
+  `refs/dotln/checkpoint/...` commits, while branch commits wait for final
+  review. Never `git checkout .`, `git restore .`, `git reset --hard`, or
+  `git clean -fd` here without a current recoverable copy — those can destroy
+  the deliverable, every `VER-NNN` written so far, and
+  `docs/control/resume.jsonl`. Never `git clean -fdx`/`-fdX` at all: it also
+  deletes gitignored `docs/intake`, which is single-copy and in no commit. The
+  stash includes untracked files, not ignored intake or `.env`; back those up
+  separately.
 
 ## Weekly hygiene (until DotLn does it for you)
 
@@ -175,13 +235,23 @@ resume: status
 resume: fix
 resume: verify
 resume: final review
+resume: release close
 resume: next
 ```
 
-The agent reads `docs/control/current.md`, runs the matching `npm run resume -- <action>` when the action is a state transition, and follows the emitted authoritative paths. `status` is read-only. `next` confirms the current WO is closed; after selecting the next roadmap work order, activate it with:
+The agent reads `docs/control/current.md`, runs the matching transition, and
+follows the emitted authoritative paths. `status` is read-only. `next` means
+“execute the active order” in phase `active`; in phase `closed` it reports the
+between-work-orders state and gives the start syntax. `release close` is a
+guarded lifecycle command rather than a control-log transition, so successful
+closeout does not dirty `main` with transient release state.
+
+The raw command surface remains available for debugging. In the normal loop,
+the operator-owned shell steps are worktree start, the printed `cd`, and the
+Codex launch; agents run the remaining commands after their chat dispatches:
 
 ```bash
-npm run resume -- activate WO-00N docs/work-orders/WO-00N-name.md
+npm run worktree -- start WO-00N docs/work-orders/WO-00N-name.md
 npm run resume -- implementation-ready   # executor, after evidence is green
 npm run resume -- verify                 # allocates the next immutable VER-NNN
 npm run resume -- verification-result pass|fail
@@ -189,21 +259,32 @@ npm run resume -- fix                    # emits original WO + failing VER paths
 npm run resume -- repair-complete
 npm run resume -- final-review
 npm run resume -- final-review-result pass|fail
+npm run worktree -- publish WO-00N --title '<title>' --body-file <contained-reviewed-body-path>
+npm run release -- close WO-00N           # closes/prepares; creates no tag
+npm run release -- close WO-00N --publish # explicit annotated-tag authority
 ```
 
 Verifiers write the exact report path allocated by `verify`, then record its verdict. Repair and final-review completion actions are recorded only after their evidence exists. Illegal transitions refuse without appending. The JSONL log is canonical; `docs/control/current.md` is regenerated projection.
 
 ## End-of-workflow release task
 
-After final review opens the PR, you review and merge it. Then run the guarded
-worktree `finish` action from the main checkout. The final task is release
-closeout: if the merged work order completes a roadmap version, rerun its full
-evidence on the exact merged `origin/main` commit, generate and validate the
-release manifest, and ask for operator authorization before creating or
-pushing the annotated tag. WO-003 proposes the first source-only boundary,
-`v0.2.0`. Do not backfill `v0.1.0` unless its exact commit and evidence are
-reconstructable; do not treat a Git tag as an npm or binary publication.
+The canonical operator interface is `resume: release close` after you merge
+the final-review PR. That phrase authorizes the agent to run `npm run release
+-- close WO-NNN --publish` from the main checkout. The tool integrates guarded
+worktree finish, exact-main synchronization, lockfile installation, evidence,
+manifest/notes validation, and annotated-tag publication. It pushes no main
+commit and publishes no npm, binary, container, or hosted artifact.
 
-This task is currently a documented gate, not a hidden side effect of
-`worktree finish`. A later work order may add a `release prepare` projection;
-tag creation and publication must remain separately authorized.
+The form without `--publish` is not read-only: it still performs guarded
+merged-worktree cleanup and fast-forwards local main. At a new eligible
+boundary it also installs the lockfile and runs release evidence; lower or
+already-published targets return after their own validation. The form withholds
+only tag creation/publication. If you deliberately defer an otherwise eligible
+release, require a reviewed durable reason rather than leaving publication
+state ambiguous.
+
+Forward manifests and layered notes live in the annotated tag message; the
+checked-in `v0.2.0` files remain the immutable historical exception. A rerun
+accepts the same validated remote tag as already complete, but conflicting or
+moved tags refuse. Do not backfill `v0.1.0` without a reconstructable reviewed
+commit and evidence.

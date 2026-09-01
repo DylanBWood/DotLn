@@ -1,15 +1,16 @@
-# WO-010 — Independent verification, v0.5.0
+# WO-010 — Independent verification, v0.6.0
 
 **Model:** any capable model.
+**Release classification:** `v0.6.0` minor — adds backwards-compatible
+verifier episodes, findings, repair continuation, and evidence staleness.
 **Depends on:** WO-009 complete.
 
-**Cites (read these sections):** 06-roadmap.md v0.5.0; 03-architecture.md
+**Cites (read these sections):** 06-roadmap.md v0.6.0; 03-architecture.md
 §Ports `VerificationAdapter` (blinding, claim-typed evidence, Live Witness,
 verification-vs-review separation); 02-domain-model.md (VerificationFinding,
 AcceptanceEvidenceMatrix, Evaluation, Verification radius); 01-principles.md
-Principle 6; docs/PLAYBOOK.md step 3 (the manual loop this rung begins to
-automate — the playbook itself predicts it: "same shape DotLn itself will
-automate at v0.5.0").
+Principle 6; docs/PLAYBOOK.md step 3 (the current manual verification loop
+whose evidence-bearing shape this rung begins to automate).
 
 **Objective:** Blinded verifier episodes as a first-class mechanism:
 claim-typed evidence mapped into the workstream's AcceptanceEvidenceMatrix;
@@ -23,7 +24,7 @@ episode; substantive repair marking affected evidence stale.
   criteria, the diff, and repo access — never the implementer's narrative,
   transcript, or result prose.
 - Verification only; independent code review as a separate episode type is
-  v0.9.0's pairing.
+  v0.10.0's pairing.
 
 **Constraints:** verifier episodes dispatch through the WO-009 transports
 (fake transport for the deterministic suite); the matrix is a projection over
@@ -54,7 +55,7 @@ duty applies.
 finding → repair continuation → re-verification) with event-log excerpts;
 every criterion mapped to a named test or witnessed run.
 
-**Non-goals:** independent code-review episodes (v0.9.0); CI classification
-and post-PR loops (v0.9.0); the feedback compiler (v0.6.0); rating
+**Non-goals:** independent code-review episodes (v0.10.0); CI classification
+and post-PR loops (v0.10.0); the feedback compiler (v0.7.0); rating
 projections over verifier agreement (the Comparison fold stays deferred); web
 console.

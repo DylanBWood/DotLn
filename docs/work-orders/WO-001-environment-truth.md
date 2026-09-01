@@ -39,3 +39,9 @@ build (v0.4.0), from observed evidence.
 
 **Non-goals:** benchmarking, rate-limit probing, work-machine anything,
 package/framework selection.
+
+## 2026-08-31 roadmap retiming note
+
+This completed order retains its original `v0.4.0` real-worker pointer as
+time-indexed planning history. The current application release target for that
+same milestone is `v0.5.0`; see the roadmap's dated forward-retiming table.

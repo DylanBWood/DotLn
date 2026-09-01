@@ -49,3 +49,8 @@ notes and tooling choices within the decided constraints.
   dependencies, matching the compiler and Node 22 line observed by WO-001.
   The Node types bring the runtime acceptance suite under strict compilation;
   tests use Node's built-in runner and the kernel has zero runtime dependencies.
+- 2026-08-31 roadmap retiming: the accepted build order is unchanged. The UI
+  decision point described above moves from the original planning label
+  `v0.7.0` to application release target `v0.8.0`, and the personal
+  source-to-deliverable vertical moves from `v0.9.0` to `v0.10.0`. Published
+  history and the substance of this decision do not change.
