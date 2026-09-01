@@ -9,6 +9,7 @@ docs/PLAYBOOK.md   the operator's canonical loop (models, worktrees, verify)
 docs/product/      the blueprint: vision, principles, domain model,
                    architecture, interfaces, patterns, roadmap, execution guide,
                    publication compiler, audit/resilience map, and IR compatibility
+docs/planning/     capability-table.md — evidence-backed progression inventory
 docs/lineage/      idea-ledger.md — append-only record of every founding idea
 docs/decisions/    ADRs — settled questions
 docs/work-orders/  bounded, executable next steps (feed one to any model)
