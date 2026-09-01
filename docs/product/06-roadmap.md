@@ -100,7 +100,18 @@ form was authorized. It never pushes `main`. The `resume: release close`
 phrase is that explicit tag-publication authorization. Without it, the raw
 command still performs guarded closeout and validation but withholds tag
 creation and publication. If evidence fails, open a patch work order instead
-of tagging. An application target in a work-order heading that is strictly
+of tagging. The lifecycle should grow a first-class **fix-in-place** recovery
+for a failed release close: preserve the failed release obligation and target,
+open and activate a bounded patch work order from current `origin/main`, drive
+it through the ordinary implementation, independent verification, final
+review, and merge gates, then resume the interrupted closeout. “In place”
+means continuity of the parent closeout episode, not editing `main`, reusing a
+removed worktree, bypassing review, or carrying tag-publication authority into
+the patch. WO-012 is the reference case for the current manual composition of
+those steps; the durable command/event surface and repeated-failure semantics
+remain a future bounded design task.
+
+An application target in a work-order heading that is strictly
 below the latest release is a successful no-release closeout, leaving clean
 `main` in the closed, between-work-orders state rather than publishing
 backwards. An equal version
@@ -443,7 +454,7 @@ operator's own visual-prototype-zero: 🐛 gardener plus glyph states from the
 visual grammar, printed to terminal or a static HTML page — zero assets, a
 pure projection of the log). Deferred: real model calls, interactive web UI.
 
-## v0.2.1 — Environment truth addendum and lifecycle corrections  → WO-004
+## v0.2.1 — Environment truth addendum and lifecycle corrections  → WO-004 + WO-012
 
 Close the gaps WO-001 deliberately deferred: both candidate transport launch
 shapes exercised for real from an unsandboxed authenticated session, MCP as a
@@ -453,6 +464,13 @@ re-stated over `observed` rows (or honestly re-labeled with cause), and
 `environment.json` row parity including the Codex feature-surface row. The
 operator-authorized expansion also makes the worktree, review, repair, and
 release-close lifecycle executable and restartable.
+
+WO-004 merged after passing independent verification and final review, but
+publication of its eligible release was deferred on 2026-09-01 when release
+close misclassified a protected `docs/intake/` pathname containing U+202F as
+contaminating ignored material. That failed close created no `v0.2.1` tag.
+WO-012 repairs that release-gate defect; the tag is cut only when WO-012 closes
+and carries both work orders.
 
 ## v0.2.2 — Capability table v1  → WO-005
 

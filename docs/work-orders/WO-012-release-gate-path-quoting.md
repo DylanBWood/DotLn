@@ -117,3 +117,32 @@ contains WO-004, so it blocks nothing, but it should be deleted.
 **Non-goals:** changing the allow/disposable classification policy; changing
 which commit release close tags; ruleset-aware push preflight; the carried
 non-blocking findings G2–G6 from FINAL-001; any new release capability.
+
+## Ideation breakout receipt — 2026-09-01
+
+- **Authority:** While WO-012 was active, the operator proposed support for
+  “fix in place” based on this patch's orchestration inside the interrupted
+  WO-004 release close, then explicitly directed synthesis and resumption.
+- **Raw intake:**
+  `docs/intake/notes/WO-012-expanded-ideation-2026-09-01.md` (local-only,
+  gitignored).
+- **Ledger write-back:** `docs/lineage/idea-ledger.md` §WO-012 release-close
+  recovery ideation records the adopted requirement and the boundary around
+  “in place.”
+- **Product write-back:** `docs/product/06-roadmap.md` §Release boundary now
+  describes the future recovery outcome and names WO-012's manual orchestration
+  as the reference case.
+- **Decision/schema effects:** none. No ADR, control-log schema, command, or
+  executable lifecycle transition is selected by this breakout.
+- **Execution scope:** WO-012 still implements only its original path-decoding
+  correction and evidence. The future recovery capability remains excluded by
+  this order's non-goals and requires a separately bounded design task.
+- **Unresolved choices:** command/intent naming, control-log representation,
+  patch identifier allocation, repeated-failure behavior, and how the parent
+  release obligation is projected across patch episodes.
+- **Required review:** The verifier and final reviewer must inspect this receipt,
+  the named ledger entry, and the roadmap paragraph for clean-room rewriting,
+  traceability to operator intent, consistency with release authority and
+  worktree isolation, and an honest distinction between current manual
+  orchestration and future support. They must also confirm that no executable
+  scope or acceptance criterion silently expanded.
