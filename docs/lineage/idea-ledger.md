@@ -23,6 +23,80 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-004 post-ready ideation batch 003 (2026-08-31)
+
+Raw source:
+`docs/intake/notes/WO-004-expanded-ideation-2026-08-31-version-documentation-sync.md`.
+
+- **One monotonic application ladder supersedes conceptual backfill versions
+  in active plans** `adopted`
+  - WO-004 through WO-011 were drafted before the first application tag. The
+    `v0.0.2`–`v0.0.4` labels placed belated foundation work conceptually before
+    the walking skeleton, but later became operationally misleading when the
+    release helper treated the SemVer in each work-order heading as the
+    application target. Current and pending plans are retimed forward:
+    WO-004–006 become `v0.2.1`–`v0.2.3`; WO-007–011 become
+    `v0.3.0`–`v0.7.0`; console, workshop, and source-to-deliverable become
+    `v0.8.0`–`v0.10.0`. Published `v0.2.0`, immutable evidence, and the earlier
+    planning record do not change. Package, schema, artifact, identity, and
+    transformation versions remain separate axes. This supersedes the old
+    labels only as forward application-release targets.
+  - The maintenance classification is bounded, not a loophole: WO-004 is
+    compatible correction/evidence/tooling work; WO-005 inventories existing
+    evidence; WO-006 proves a documentation-publication loop. Any expansion
+    into exported application capability requires release reclassification
+    before execution.
+- **The whole stash in every map replaces “aura stacker” as the explanatory
+  failure metaphor** `adopted`
+  - The older phrase was technically suggestive to a Path of Exile player but
+    did not land clearly and wrongly made a valid, budgeted aura build sound
+    inherently defective. The current story is: the predecessor brought the
+    whole stash into every map, as if every support were linked to every skill.
+    Plain-English translation must accompany it: irrelevant context consumes
+    attention and creates unintended interactions before the task begins.
+    Historical ledger wording remains visible, and **aura** remains a valid
+    domain mechanic for an explicit team-wide policy with visible reservation
+    cost; only the failure analogy is superseded.
+- **The repository README is the public product doorway, not a directory
+  preface** `adopted`
+  - Lead with the pain, the bet, and the memorable build metaphor; then earn
+    ambition with a runnable receipt and an unusually explicit shipped-versus-
+    planned boundary. The README may carry excitement, RPG texture, and the
+    long horizon, but it must not imply that the current source release already
+    has real model workers, the composition compiler, native independent
+    verification, compatibility migration, or the full console. The final
+    contrast is intentional: the current proof is small enough to understand
+    end to end; the ambition is not.
+
+## WO-004 post-ready ideation batch 002 (2026-08-31)
+
+Raw source:
+`docs/intake/notes/WO-004-expanded-ideation-2026-08-31-work-order-intake.md`.
+
+- **Conversation, PR review, and an in-repo proposal packet are layers, not
+  alternatives** `transformed`
+  - Issues, Discussions, chat, and later application surfaces accept early or
+    ambiguous suggestions cheaply. A mature agent-authored candidate travels
+    through a pull request adding a normalized packet under `docs/proposals/`,
+    gaining diff review, checks, evidence review, and a request-changes loop.
+    GitHub is the first adapter; the portable proposal record belongs to the
+    repository and later event store. This operationalizes the existing
+    **Agent-originated suggestions, planner-selected pearls** entry.
+- **A proposal merge registers a planning candidate; it does not authorize
+  execution** `adopted`
+  - Proposed work never lands directly in `docs/work-orders/`. Only a separate
+    operator-authorized planning transition resolves open choices and compiles
+    the official identifier, authority, model/effort, scope, acceptance gate,
+    and base revision. This prevents a submitting agent from creating its own
+    authority while still letting it do serious planning work.
+- **Proposer evidence is useful but not independent acceptance evidence**
+  `adopted`
+  - Agents may provide reproduction, feasibility, impact, benchmark, and
+    adversarial evidence and revise it through review. Executable submissions
+    are untrusted and run without secrets or write authority. If promoted, the
+    real work order still requires independent verification by an actor that
+    did not benefit from its own proposal.
+
 ## WO-003 verification-window corrections (2026-08-31)
 
 Operator corrections and ideas raised during WO-003 verification (raw: `docs/intake/notes/wo-003-expanded-ideation-2026-08-31.md`, dumps 019 onward). Corrections to *committed* records are documented rather than applied silently, so what the ledger previously claimed stays visible. Misunderstandings that arose and were resolved inside the originating conversation are not recorded — they superseded nothing.
@@ -244,6 +318,94 @@ Operator corrections and ideas raised during WO-003 verification (raw: `docs/int
     material is preserved without premature architecture, and execution does
     not resume until the operator asks. The cold-start behavior is pinned in
     `docs/product/07-execution-guide.md` §Operator-opened ideation mode.
+
+## WO-004 lifecycle hardening additions (2026-08-31)
+
+- **One phase-relative chat phrase dispatches or selects work** `adopted`
+  `operator-authorized`
+  - The failed post-start `resume: next` incident established that “next” is
+    naturally read as proceed, while the control plane used it only to select
+    a later work order. In phase `active`, it now resolves and dispatches the
+    active work-order authority without appending; in phase `closed`, it
+    reports the between-orders state and the exact `worktree start` syntax.
+    Refusals name the corrective command instead of emitting a stack trace.
+- **Current worktree handoff is manual without banning future worker launch**
+  `adopted` `operator-authorized`
+  - `worktree start` creates and activates the isolated worktree, then prints
+    shell-safe absolute `cd`, `codex`, and `resume: next` instructions. It does
+    not inspect or launch Codex now because the operator wants to perform that
+    handoff manually. The operator explicitly corrected this into a current
+    projection choice, not a permanent rule: governed automatic worker launch
+    remains compatible with later roadmap machinery and explicit authority.
+- **Release closeout is one guarded, restartable post-merge operation**
+  `adopted` `operator-authorized`
+  - After the operator merges the final-review PR, one authorized phrase
+    finishes the merged worktree, synchronizes clean `main`, installs locked
+    dependencies, runs evidence, validates notes plus compatibility metadata,
+    and creates/pushes only the annotated release tag when the work-order
+    version advances SemVer. A lower version is an explicit no-release result.
+    Progress is derived from Git and remote-tag state rather than transient
+    tracked release events, so success leaves the closed checkout clean and
+    ready for the next worktree.
+- **Forward release manifests live in the annotated tag object** `adopted`
+  `operator-authorized`
+  - A manifest that names its own tracked commit has a self-reference problem,
+    and a second notes PR would violate the requested one-PR closeout. Forward
+    releases therefore tag the reviewed merged commit and embed the generated
+    manifest plus layered notes in that annotated tag. The historical
+    `v0.2.0` files retain their original projection. Publication remains
+    explicit, never pushes `main`, and never implies package/binary/hosted
+    distribution.
+- **Lifecycle transitions mint recovery checkpoints before append** `adopted`
+  `recovered`
+  - The closeout review identified the missing durable idea behind the resume
+    implementation: every mutating control transition first snapshots tracked
+    and ordinary untracked work into a local namespaced Git ref. This gives a
+    recovery point without forcing interim commits onto the work-order branch.
+    Ignored intake is outside Git and still requires its separate backup path.
+- **Tests clean only artifacts they created inside owned fixtures** `adopted`
+  `recovered`
+  - Operator dump 011's test-hygiene rule is now explicit lineage: a test owns
+    a uniquely created fixture root, validates that root before recursive
+    cleanup, and never treats ambient project files as disposable setup. This
+    is why lifecycle/release fixtures use `mktemp` roots and guarded traps;
+    cleanup authority follows provenance, not filename familiarity.
+
+## WO-004 post-ready ideation batch 001 (2026-08-31)
+
+- **Plural UI hosts share one canonical projection contract** `adopted`
+  `operator-authorized`
+  - Conventional, spatial, simulation, terminal, and future UI hosts may
+    coexist, but each projects the same normalized state, commands, authority,
+    events, and semantic hashes. Babylon.js is a promising spatial/RPG host;
+    Angular is a familiar conventional-shell candidate. Neither becomes a
+    second domain implementation. Pinned in `docs/product/04-interfaces.md`
+    §Plural UI hosts, one projection contract.
+- **Operator-fluent Angular setup is an evaluation baseline** `preserved`
+  `operator-authorized`
+  - If an Angular host is chosen, evaluate the operator's normal combination
+    of Prettier, NgRx, RxJS, Ramda, Ramda Adjunct, and Transloco or an equivalent
+    message catalog. Localization should also keep user-facing strings out of
+    components. This records desired ergonomics without prematurely selecting
+    every library or fixing the UI architecture.
+- **Plain workspace by default; Nx remains an evidence-gated option**
+  `preserved` `operator-authorized`
+  - Current Vitest performance removes unit-test speed as a reason to introduce
+    Nx. Repeated operator and community experience with Nx daemon failures,
+    including CI failures, is an explicit reliability cost. A later proposal
+    may still adopt Nx for a bounded UI surface or the monorepo if measured
+    graph, cache, generator, or orchestration benefits outweigh that cost and
+    daemon-disabled operation remains dependable.
+- **Code counterfactuals compile into profiling work orders** `adopted`
+  `operator-authorized`
+  - Generate bounded candidate changes, require semantic and quality parity,
+    and measure them against an immutable baseline with a deterministic,
+    repeatable harness. Machine-readable results preserve regressions and
+    cost-shifting as well as wins; no candidate is promoted automatically.
+    Reviewed contracts make the individual work orders executable even by
+    inexpensive models. This specializes the earlier **Graded counterfactual
+    builds** idea for code efficiency and is pinned in `docs/product/06-roadmap.md`
+    §Counterfactual profiling work orders.
 
 ## WO-002 closeout additions (2026-08-31)
 

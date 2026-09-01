@@ -34,6 +34,14 @@ Do not collapse these identities into one version number:
 - transformation-set/compiler version; and
 - environment capability profile.
 
+A `WO-NNN` identifier orders and names a unit of work; it is not another
+version axis. The SemVer in a current work-order heading is its planned
+application release target. While unpublished, it may be retimed only by
+explicit operator authorization and a dated migration note, with any active
+scope or acceptance impact carried into independent review. Once published,
+the annotated application tag is immutable. Neither operation changes package,
+schema, artifact, identity, or transformation versions by implication.
+
 A release manifest records the schema ranges, component versions, and
 transformation set supported by an application release. This permits the
 verifier to answer “this artifact corresponds to the v0.4.3 era” without
@@ -43,6 +51,12 @@ Release manifests are created from the reviewed merged commit, not inferred
 later from package numbers. They are immutable compatibility anchors even when
 the release is source-only; distribution-channel metadata is additive and must
 not be confused with the application, schema, or component version axes.
+The historical `v0.2.0` files under `docs/releases/` retain their original
+projection. Forward releases embed the generated JSON manifest in the
+annotated tag message, so the exact commit and its compatibility record form
+one immutable Git object graph without a self-referential manifest commit.
+`docs/releases/tag-manifest.template.json` pins the field layout and the
+release validator re-derives the source-owned fields before publication.
 
 ## Transformation graph
 

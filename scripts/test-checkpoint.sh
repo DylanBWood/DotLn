@@ -66,4 +66,26 @@ cmp "$saved/resume.jsonl" "$fixture_repo/docs/control/resume.jsonl"
 test -f "$fixture_repo/docs/intake/notes/raw.md"
 test -f "$fixture_repo/.env"
 
+stale_repo="$test_root/stale-repo"
+mkdir -p "$stale_repo/scripts" "$stale_repo/docs/work-orders" "$test_root/failing-git"
+cp -- "$script_dir/resume.mjs" "$stale_repo/scripts/resume.mjs"
+cp -- "$script_dir/../.gitignore" "$stale_repo/.gitignore"
+printf '# fixture\n' >"$stale_repo/docs/work-orders/WO-098-fixture.md"
+git init "$stale_repo" >/dev/null
+git -C "$stale_repo" config user.email test@example.invalid
+git -C "$stale_repo" config user.name "DotLn Test"
+git -C "$stale_repo" add .
+git -C "$stale_repo" commit -m initial >/dev/null
+node "$stale_repo/scripts/resume.mjs" activate WO-098 docs/work-orders/WO-098-fixture.md >/dev/null
+prior_checkpoint="$(git -C "$stale_repo" for-each-ref --format='%(refname)' refs/dotln/checkpoint/WO-098/)"
+test -n "$prior_checkpoint"
+printf '#!/usr/bin/env bash\nexit 73\n' >"$test_root/failing-git/git"
+chmod +x "$test_root/failing-git/git"
+node_bin="$(command -v node)"
+checkpoint_warning="$(PATH="$test_root/failing-git" "$node_bin" "$stale_repo/scripts/resume.mjs" implementation-ready 2>&1 >/dev/null)"
+grep -Fq 'warning: could not create recovery checkpoint for implementation-ready' <<<"$checkpoint_warning"
+grep -Fq 'Latest checkpoint: unavailable for the latest transition; do not use an older checkpoint' "$stale_repo/docs/control/current.md"
+if grep -Fq "$prior_checkpoint" "$stale_repo/docs/control/current.md"; then printf 'error: stale checkpoint remained advertised\n' >&2; exit 1; fi
+grep -Fq '"checkpointUnavailable":true' "$stale_repo/docs/control/resume.jsonl"
+
 printf 'checkpoint tests passed\n'

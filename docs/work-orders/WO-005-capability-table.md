@@ -1,15 +1,22 @@
-# WO-005 — Capability table v1, v0.0.3
+# WO-005 — Capability table v1, v0.2.2
 
 **Model:** any capable model.
-**Depends on:** nothing executable (doc-only). Authorable today — levels carry
-evidence links and a last-change date, so they update rather than rot as
-later verification reports land.
+**Release classification:** `v0.2.2` patch — a reviewed inventory of existing
+evidence, not exported runtime capability. Reclassify before implementation if
+scope expands beyond that boundary.
+**Depends on:** WO-004 complete for the pinned evidence corpus; no executable
+package or runtime prerequisite (this order is doc-only). Levels carry evidence
+links and a last-change date, so they update rather than rot as later
+verification reports land.
 
 **Cites (read these sections):** 06-roadmap.md §Capability progression
 policies (the levels table, activation/utilization/XP separation, the
 progression-policy list, and "The first implementation can remain simple");
-01-principles.md Principles 9, 11, 15; docs/discovery/environment.md and
-docs/verifications/WO-002/VER-002.md (the two existing evidence corpora).
+01-principles.md Principles 9, 11, 15; all admissible discovery, verification,
+final-review, release, and hardening evidence present at the pinned base
+revision. This includes the WO-003 closure record and the completed WO-004
+evidence rather than freezing the table to the two corpora that existed when
+this order was first drafted.
 
 **Objective:** Author the reviewed capability table the roadmap names as the
 first implementation of capability progression — a Markdown table, not
@@ -23,13 +30,14 @@ dependencies | last change | next smallest promotable increment | blocking
 gate.
 
 **Scope discipline (one step at a time):**
-- Levels are claimed only from admissible evidence that exists in the repo
-  today (named tests, verification verdicts, discovery rows); everything else
-  is `0 — latent` or unknown. XP is evidence, never confidence or effort.
+- Levels are claimed only from admissible evidence at the pinned base revision
+  (named tests, verification verdicts, discovery rows); everything else is
+  `0 — latent` or unknown. XP is evidence, never confidence or effort.
 - A composite's level is the minimum of its required dimensions — no
   averaging (the roadmap's anti-hiding rule).
-- Efficiency column: `E0 — unknown` everywhere no trustworthy baseline exists
-  (today: nowhere does). Do not fabricate baselines.
+- Efficiency column: `E0 — unknown` everywhere no trustworthy baseline exists.
+  Any higher claim requires a linked baseline at the pinned revision; do not
+  fabricate one.
 - Record the selected progression policy for the current horizon (one of the
   roadmap's listed policies) with a one-paragraph rationale; the ladder's
   visible-payoff pacing rule stays binding regardless of policy.
@@ -49,7 +57,7 @@ map line in `docs/README.md`.
 their cited evidence (links resolve to files/tests that exist at the cited
 revision), captured in the result.
 
-**Write-back duty:** the roadmap's v0.0.3 entry already points here; the
+**Write-back duty:** the roadmap's v0.2.2 entry already points here; the
 `docs/README.md` map line lands in the same change; ledger duty applies if authoring transforms any
 progression idea.
 

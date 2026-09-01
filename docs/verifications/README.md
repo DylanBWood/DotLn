@@ -21,6 +21,11 @@ verification sequence so the code → verify → fix history remains visible.
 Reports may contain bounded repair checklists, but they do not expand work-order
 scope. New authority comes only from the operator or an amended/new work order.
 
+A work order may explicitly require an implementer-owned hardening receipt in
+this directory. Such a receipt uses a non-`VER-NNN` name, states that it is not
+independent verification, and is ignored by the verification-number allocator.
+It supplements rather than replaces the next independent `VER-NNN` report.
+
 Migration note: WO-002's surviving re-verification is honestly numbered
 `VER-002`; its earlier VER-001 artifact predates this convention and is not
 available. Do not fabricate it to make the sequence appear complete.

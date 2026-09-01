@@ -1,5 +1,11 @@
 # Architecture
 
+**Status:** target architecture. The `v0.2.0` baseline implements the pure
+kernel, JSONL-backed deterministic fake walking skeleton, and its projections;
+compiler, real-worker, native verification, durable adapter persistence, and
+console layers below remain planned unless a section explicitly says
+otherwise. See the roadmap for their evidence gates.
+
 ## Layer diagram
 
 ```
@@ -228,19 +234,23 @@ receive mutation procedures; a verifier does not inherit the maker's
 narrative.
 
 This is the skills-layer version of "a build, not a biography." Loading every
-available coordination skill into every agent would reproduce the aura-stacker
-failure in a new format. Skills activate by tags, state, relationship, and
-capability; their context cost is visible; expiry and removal follow the
-episode lifecycle.
+available coordination skill into every agent would send each one into every
+map carrying the whole stash—as if every support were linked to every skill.
+In plain language, irrelevant context would consume attention and widen the
+interaction surface before the task began. Skills activate by tags, state,
+relationship, and capability; their context cost is visible; expiry and
+removal follow the episode lifecycle.
 
 The repository's operator workflow should converge on the same model. Stable
-DevEx intents such as `resume: verify`, `resume: fix`, `resume: final review`,
-and `resume: next` resolve durable control state first, then load only the
-reviewed role skill needed for that transition. The skill supplies procedure,
-input contract, artifact locations, evidence obligations, and stopping rules;
-it does not duplicate phase state or grant authority. This replaces large
-autoloaded role explanations with on-demand, versioned protocol adapters while
-preserving a CLI path for humans and runtimes that cannot load skills.
+DevEx intents such as `resume: status`, `resume: next`, `resume: verify`,
+`resume: fix`, `resume: final review`, and `resume: release close` resolve
+durable control state first, then load only the reviewed role skill needed for
+that intent. The skill supplies procedure, input contract, artifact locations,
+evidence obligations, and stopping rules; it does not duplicate phase state or
+grant authority. Release close retains its separate, narrow post-merge tag
+authority. This replaces large autoloaded role explanations with on-demand,
+versioned protocol adapters while preserving a CLI path for humans and
+runtimes that cannot load skills.
 
 Skill delivery is incremental rather than a single rewrite: first define and
 test the shared intent-to-transition contract, then package verifier and repair
@@ -406,27 +416,64 @@ existing roadmap items, and applies explicit value/risk/novelty/effort filters.
 Rejections and deferrals retain reason and lineage so the same weak request does
 not repeatedly consume review. A product-planning role periodically examines
 the small high-signal remainder—the operator's “pearls”—and proposes which
-candidates deserve implementation. Under the current operating model that role
-is Fable; model assignment remains replaceable and is never embedded in the
-semantic record.
+candidates deserve implementation. The role occupant is selected by the
+current operating model; model assignment remains replaceable and is never
+embedded in the semantic record.
 
 Only an operator-authorized planning transition may promote a suggestion into a
 real WorkOrder. Promotion records source suggestions, selection rationale,
 alternatives, evidence, scope boundary, and the acceptance gate. Agents that
 benefit from accepted changes do not verify their own proposal by default.
 
+### Channel-plural intake, PR-backed registration
+
+GitHub Issues, Discussions, pull requests, in-application forms, chat, and
+local files are intake transports, not competing sources of authority. Use the
+cheapest surface that matches the suggestion's maturity: an Issue or Discussion
+can hold an unformed question and human conversation; a mature agent-authored
+suggestion should arrive as a pull request so its claims, evidence, and proposed
+scope can receive line review, automated checks, requested revisions, and an
+immutable diff.
+
+For this repository's bootstrap, such a pull request adds one normalized
+proposal packet under `docs/proposals/<suggestion-id>/`, never directly under
+`docs/work-orders/`. The packet contains the `ProductSuggestion`, source and
+provenance, corroborating and dissenting evidence, alternatives, risks,
+duplication hints, and optionally a clearly non-authoritative candidate work
+order. Executable demonstrations or benchmarks are untrusted inputs and run
+without repository secrets or write authority. The author may revise the
+packet and may supply feasibility evidence, but that evidence cannot satisfy a
+later work order's independent verification obligation.
+
+Merging a proposal pull request means **registered for durable planning**, not
+accepted for implementation, prioritized, scheduled, funded, or activated. A
+closed, deferred, rejected, duplicated, or superseded proposal retains its
+reason and fingerprint so volume cannot manufacture priority or repeatedly
+consume review. GitHub remains a replaceable collaboration adapter; the
+normalized proposal and eventual event-store record are the portable truth.
+
+Promotion is a separate operator-authorized planning act. It selects from the
+registered proposal, resolves its open choices, assigns the official identifier,
+model and effort, base revision, authority envelope, scope and non-goals,
+acceptance criteria, and independent evidence gate, then compiles the real file
+under `docs/work-orders/`. A submitting agent may therefore do substantial
+proposal work and survive a demanding review loop without ever issuing itself
+execution authority.
+
 ## Session lifecycle & resilience
 
 Resume control v1 uses an append-only JSONL control log
 (`docs/control/resume.jsonl`) plus a generated human projection
 (`docs/control/current.md`). A small deterministic resolver exposes the stable
-intents status, fix, verify, final review, and next; it resolves the active work
-order, current phase, immutable verification sequence, next legal transition,
-and required artifacts from durable state. Conversation-first `resume:` phrases
-map to the same `npm run resume -- <action>` surface. Internal completion
-actions record verifier, repair, and final-review outcomes. The log is canonical;
-the Markdown file is disposable projection. One writable agent per worktree
-serializes appends in v1; concurrent control-log writers are deferred.
+intents status, next, fix, verify, final review, and release close; it resolves
+the active work order, current phase, immutable verification sequence, next
+legal transition, and required artifacts from durable state.
+Conversation-first `resume:` phrases map to the same command surface. Release
+close is a guarded post-merge lifecycle operation rather than a control-log
+transition. Internal completion actions record verifier, repair, and
+final-review outcomes. The log is canonical; the Markdown file is a disposable
+projection. One writable agent per worktree serializes appends in v1;
+concurrent control-log writers are deferred.
 
 The operator surface also needs an always-legible runtime projection: remaining
 context budget, active and completed delegated episodes, current phase, blocked
@@ -461,11 +508,11 @@ changes.
   | # | Injection | Expected outcome | Required by |
   |---|---|---|---|
   | 1 | Crash after command persist, before dispatch | Restart finds the pending command via replay and re-dispatches; no duplicate effects (adapter dedups by commandId) | v0.1.0 |
-  | 2 | Crash after effect, before result persist | Command remains pending; recovery re-queries or re-dispatches idempotently; never double-applies | v0.4.0 |
+  | 2 | Crash after effect, before result persist | Command remains pending; recovery re-queries or re-dispatches idempotently; never double-applies | v0.5.0 |
   | 3 | Duplicate result event | Second delivery ignored deterministically (commandId); state unchanged; trace records the dedup | v0.1.0 |
-  | 4 | Result after authority expiry | Event is persisted (it happened); reactor decides quarantine/NoOp with trace naming the expired envelope; payload causes no state mutation | v0.4.0 |
+  | 4 | Result after authority expiry | Event is persisted (it happened); reactor decides quarantine/NoOp with trace naming the expired envelope; payload causes no state mutation | v0.5.0 |
   | 5 | Operator-return racing a queued cadence pulse | The already-queued pulse is processed, but its guard re-evaluates presence and decides NoOp-with-trace; future pulses cancel | v0.1.0 |
-  | 6 | Interruption mid-episode (network loss, kill) | Lease expires; continuation + work order recoverable; a fresh episode resumes or a recovery episode inspects | v0.4.0 |
+  | 6 | Interruption mid-episode (network loss, kill) | Lease expires; continuation + work order recoverable; a fresh episode resumes or a recovery episode inspects | v0.5.0 |
   Without these, "offline-capable" is a slogan.
 
   Row 5 scope at v0.1.0 (pinned by WO-002's repair): the kernel's contribution
@@ -475,7 +522,7 @@ changes.
   cancel. Like every kernel Decision it performs nothing: queue ownership,
   event-sourced presence (`OperatorPresenceChanged` folded into state), and
   executed cancellation belong to the scheduler runtime that arrives at
-  v0.4.0 with rows 2/4/6.
+  v0.5.0 with rows 2/4/6.
 
 **Perception cost hierarchy** (distinct from Principle 6's evidence-strength
 ordering — this ranks *reading* cost, that ranks *proof* strength): episodes
@@ -562,8 +609,9 @@ sources regenerate summaries, never the reverse.
 
 ## Learning loop
 
-Every episode records: loadout version, work-order version, model + runtime
-config, inputs, tool events, artifacts, git state, evidence, duration,
+Every episode records: loadout version, work-order identity and source revision,
+model + runtime config, inputs, tool events, artifacts, git state, evidence,
+duration,
 resource use, retry behavior, human rework, outcome class. The system learns
 at the *controller* level: which topology per task class, which patterns
 activate usefully, when to stop researching, how much verification is

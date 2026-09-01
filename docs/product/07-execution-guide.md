@@ -28,10 +28,11 @@ operator is deliberately not repeating themselves.
    | Operator says | You run | You then |
    |---|---|---|
    | `resume: status` | `npm run resume -- status` | report; this is read-only and appends nothing |
+   | `resume: next` | `npm run resume -- next` | in `active`, execute the emitted work-order path; in `closed`, report that the repo is between work orders and give the exact `worktree start` command |
    | `resume: fix` | `npm run resume -- fix` | repair, reading BOTH the original work order and the named failing `VER-NNN` |
    | `resume: verify` | `npm run resume -- verify` | verify, writing the exact `VER-NNN` path it allocates |
-   | `resume: final review` | `npm run resume -- final-review` | review, writing the exact `FINAL-NNN` path it allocates |
-   | `resume: next` | `npm run resume -- next` | confirm closure, then await the operator's next work order |
+   | `resume: final review` | `npm run resume -- final-review` | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR |
+   | `resume: release close` | from the main checkout, `npm run release -- close WO-NNN --publish` (one-time WO-004 bootstrap: pre-merge main has no `release` script, so run the exact command `worktree publish` printed — see §Workflow closeout and releases) | finish the merged worktree, update main, and either publish the validated annotated tag or record the honest no-release result |
 
 3. Record your outcome when your evidence exists, not before:
    `npm run resume -- implementation-ready` (executor: the deliverable is
@@ -43,10 +44,37 @@ operator is deliberately not repeating themselves.
    resumes into the wrong phase. The remaining action,
    `npm run resume -- activate WO-NNN docs/work-orders/<file>.md`, opens a
    work order from phase `none` or `closed`; `npm run worktree -- start` runs
-   it automatically when creating a work-order worktree.
+   it automatically when creating a work-order worktree, then prints the
+   shell-safe absolute `cd`, `codex`, and `resume: next` handoff. It does not
+   launch or inspect Codex in this projection; the operator performs those
+   three handoff steps manually.
 4. Illegal transitions refuse and append nothing. A refusal means your
-   understanding of the phase is wrong: re-read `docs/control/current.md`
-   rather than forcing or working around it.
+   understanding of the phase is wrong. Run the corrective command named in
+   the refusal rather than forcing or working around it.
+
+`resume: final review` and `resume: release close` carry narrowly scoped
+external-effect authority. A passing final reviewer may commit the reviewed
+state, push only its work-order branch, and open the mergeable PR; it may never
+merge it. Release close may create and push only the validated annotated tag;
+it may never push `main`, publish packages/binaries, or change repository
+settings. The operator retains PR merge authority and explicitly supplies the
+release-close phrase before tag publication.
+
+After recording a passing final review and committing the reviewed state, the
+reviewer uses the durable publication mechanism below with a committed,
+contained PR body file:
+
+```bash
+npm run worktree -- publish WO-NNN --title '<reviewed title>' --body-file <contained-reviewed-body-path>
+```
+
+The helper preflights GitHub CLI before mutation, pushes only the work-order
+branch, opens the PR, and prints the exact post-merge release-close handoff.
+
+`main` is protected by a GitHub ruleset requiring a PR. The classic branch
+protection endpoint can return 404 while that ruleset is active, so its result
+alone must never justify a direct push. The workflow has no direct-main-push
+path; ruleset-aware API preflight remains a separate hardening candidate.
 
 The operator's own copy of this loop lives in `docs/PLAYBOOK.md`; this section
 is the executor's half of the same contract.
@@ -118,26 +146,53 @@ is a convenience, not a requirement.
 ## Workflow closeout and releases
 
 Final review prepares and publishes a clean PR; the operator retains merge
-authority. After the PR is merged, the lifecycle helper updates `main`, proves
-the reviewed branch is contained in `origin/main`, and removes only its known
-worktree and merged branch. Ordinary tracked or untracked dirt is refused by
-the clean-worktree gate. Ignored raw material under `docs/intake/` must be
+authority. After the PR is merged, `resume: release close` runs the guarded
+close command. It updates `main`, proves the reviewed branch is contained in
+`origin/main`, and removes only its known worktree and merged branch. Ordinary
+tracked or untracked dirt is refused by the clean-worktree gate. Ignored raw
+material under `docs/intake/` must be
 backed up and reconciled into the surviving main intake as appropriate; the
 helper separately refuses removal while any non-disposable ignored file
 exists — protected intake material, a stray `.env`, any other ignored path —
 naming the offending file, and never deletes or auto-promotes it. Known
 disposable ignored dependency/build outputs (`node_modules`, `dist`,
-`.DS_Store`, `*.tsbuildinfo`) may leave with the worktree. The last workflow
-task then evaluates whether the
-completed roadmap rung is a release boundary.
+`.DS_Store`, `*.tsbuildinfo`) may leave with the worktree. The same command
+then evaluates whether the completed roadmap rung is a release boundary.
 
-For a release boundary, work from the exact merged commit: rerun the release
-evidence, generate and validate the immutable release manifest described in
-`06-roadmap.md`, and present the annotated tag and publication command for
-explicit operator authorization. Never tag the feature branch, tag failing
-evidence, move an existing tag, or imply that npm/binary/hosted distribution
-occurred when the release is source-only. A failed release check opens a patch
-work order; an intentional defer records why and what will trigger reconsideration.
+For a release boundary, the command works from the exact merged commit. It
+runs `npm ci` before release evidence, proves the install/evidence leave
+tracked files unchanged, populates and re-validates the immutable manifest and
+layered notes, then creates and pushes only their annotated tag. The publish
+form is authorized by the operator's phrase; a raw run without `--publish`
+performs guarded closeout and validation, then prints the exact authorized tag
+command. Never tag the feature
+branch, tag failing evidence, move an existing tag, push `main`, or imply that
+npm/binary/hosted distribution occurred when the release is source-only. A
+failed release check opens a patch work order. A version strictly below the
+latest tag is an explicit no-release outcome and leaves the clean closed
+checkout between work orders. An equal version is idempotent only when the
+existing validated annotated tag names the exact current commit; a mismatch
+refuses.
+
+Both release-close forms perform guarded synchronization and cleanup before
+evaluating the release boundary: they may fast-forward local `main` and remove
+the known merged worktree and local branch. At a new eligible boundary they
+also run `npm ci` and the evidence gate; lower or already-published targets
+return after their own validation. Omitting `--publish` withholds tag creation
+and tag pushing; it is preparation, not a read-only command.
+
+WO-004 is the one-time bootstrap because the pre-merge `main` commit does not
+yet contain `scripts/release.mjs` or the `release` package script. Its
+`worktree publish` output therefore prints an exact command that runs the
+reviewed helper from the still-present WO-004 worktree while the shell's
+working directory is the main checkout. That helper first fast-forwards main
+to the merged PR, then may safely remove the worktree containing its already
+loaded source. After WO-004 is merged, later closeouts use the ordinary
+`npm run release -- close WO-NNN --publish` command from main.
+
+A deliberately deferred eligible release must retain a durable reason in the
+follow-on patch work order or another reviewed repository artifact; silence is
+not a release disposition.
 
 ## Discipline
 
@@ -153,9 +208,18 @@ work order; an intentional defer records why and what will trigger reconsiderati
   `git stash drop` in a work-order worktree. Until final review, the
   deliverable, every `VER-NNN`, and `docs/control/resume.jsonl` are typically
   uncommitted, and `docs/intake` is gitignored single-copy raw material that is
-  in no commit at all. If you need a clean tree, commit a checkpoint
-  (`git add -A && git commit -m 'WO-NNN checkpoint'`) or `git stash -u` first,
-  and say in your result which you did.
+  in no commit at all. Valid control transitions create the only pre-final-
+  review checkpoint commits as local `refs/dotln/checkpoint/...` refs; do not
+  add hand-written checkpoint commits to the work-order branch. Before any
+  rollback, preserve the current dirty tree with a named
+  `git stash push --include-untracked -m 'WO-NNN recovery before rollback'`
+  and never drop that stash. Git's stash stack is shared across every worktree
+  of this repository, so a concurrent session can reorder or consume entries;
+  re-find yours by its `-m` tag, never by `stash@{n}` position, and restore
+  with `git stash apply`, not `pop`. Restore only from the exact latest checkpoint ref
+  advertised by the current control projection, and say in your result which
+  recovery point you used. Ignored intake is outside both mechanisms and must
+  be backed up separately.
 - **Verification artifacts are immutable and numbered.** Verifiers write to
   `docs/verifications/WO-NNN/VER-NNN.md`; the first pass is `VER-001.md` and
   every re-verification creates the next number instead of replacing a prior

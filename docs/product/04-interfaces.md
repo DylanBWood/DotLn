@@ -1,5 +1,10 @@
 # Interfaces — the isomorphic views
 
+**Status:** target interface contract. The `v0.2.0` baseline ships the CLI
+timeline and zero-asset glyph scene only; the complete terminal control surface,
+web/spatial console, editable equivalent views, replay UI, and build inspector
+remain planned unless a section explicitly says otherwise.
+
 One normalized program; an **open-ended, increasing** set of equivalent views
 (the set is extensible by design — an operator nuance, not a fixed list). Editable views satisfy round-trip laws: `decode(encode(x)) =
 normalize(x)`; equivalence is provable by `semanticHash(normalize(compile(view)))`
@@ -40,6 +45,41 @@ and agent definitions via the reviewed-markdown workflow (proposed changes as
 one syntax-highlighted document to read and shape) is a first-class permanent
 path — the compiler accepts hand-written sources and never requires the GUI.
 Automating that layer is explicitly out of bounds: it is the fun part.
+
+## Plural UI hosts, one projection contract
+
+DotLn may have several simultaneous UI hosts: the complete terminal, a
+conventional application shell, spatial or simulation views, and later forms
+that are not known yet. A Babylon.js host is a promising candidate for the
+spatial/RPG/simulation projection, while an Angular host is the operator's
+familiar candidate for a conventional application shell. Neither is the
+canonical application. Each consumes the same normalized view models,
+commands, event history, authority checks, and semantic hashes; no UI host may
+grow a second workflow state machine or domain truth.
+
+Framework selection remains local to the projection and is decided when the
+corresponding UI work order has representative evidence. If Angular is chosen,
+the operator-fluent evaluation baseline is Angular with Prettier, NgRx, RxJS,
+Ramda, Ramda Adjunct, and Transloco or an equivalent message-catalog system.
+That list records fluency and desired ergonomics, not dependencies already
+selected. The evaluation must account for bundle, type, maintenance, and
+interoperability costs instead of adopting every familiar library by default.
+User-facing strings belong in the chosen localization/message system from the
+start so localization and removal of hardcoded UI copy share one mechanism.
+
+A clean plain workspace is the default repository structure. Nx remains an
+option only if later evidence shows that its dependency graph, caching,
+generators, or task orchestration solve a measured problem better than the
+simpler workspace. No current repository evidence establishes test speed as
+an Nx adoption reason. Reported daemon reliability concerns remain a cost
+hypothesis to reproduce with representative local and CI fixtures before the
+choice. Any Nx proposal must bound its ownership to the UI subtree unless
+whole-repository evidence justifies more, and must prove reliable
+daemon-disabled and CI operation. Either way, the pure kernel and schemas
+remain framework-agnostic and usable without importing the UI toolchain.
+Shared contracts must permit an Angular shell and Babylon.js canvas to
+coexist, exchange selection and command intents, and render the same
+underlying state without either owning the other.
 
 ## RPG / Path-of-Exile view
 
@@ -134,6 +174,27 @@ and blocking mechanics remain visible. A share code or generated string is a
 portable projection of the immutable manifest, never an authority grant or a
 replacement for provenance (10-ir-compatibility.md).
 
+## Suggestion and proposal review
+
+Potential work may begin in conversation—chat, a GitHub Issue or Discussion,
+or an in-application suggestion surface—without forcing a complete work order
+from the first thought. Once mature enough for structured review, the same idea
+renders as a proposal pull request over a normalized in-repo packet. GitHub is
+the first collaboration projection, not a semantic dependency.
+
+The review surface shows the observed problem or opportunity, provenance,
+corroborating and dissenting evidence, alternatives, risks, duplicates,
+uncertainty, proposed scope, and any candidate work-order draft. It separates
+author-supplied evidence from independent evidence still required after
+promotion. Reviewers can request changes, register, defer, reject, mark a
+duplicate, or send the candidate to operator-authorized planning; each action
+retains its reason and lineage.
+
+The authority distinction must be impossible to miss: **merge proposal** means
+“keep this as a durable planning candidate,” while **promote to WorkOrder** is a
+separate operator action that compiles official scope and gates. Neither a
+persuasive discussion nor a green proposal PR may activate work by itself.
+
 ## Agent projection (the sparse twin)
 
 Every state the human views richly also renders as a deliberately **sparse,
@@ -172,10 +233,11 @@ required. Expanding the agent view shows each episode's role, assignment,
 heartbeat or last transition, evidence destination, and parent relationship.
 Unknown telemetry is displayed as unknown, never synthesized from silence.
 
-DevEx phrases are also skill selectors. Entering `resume: verify` (and the
-corresponding fix, final-review, next, or status intent) resolves the control
-log, validates the transition, and loads the smallest native role skill on
-demand. The UI previews what will load and why. The same intent remains usable
+DevEx phrases are also skill selectors. Entering `resume: verify` (or status,
+next, fix, final-review, or release-close) resolves the durable control state,
+validates the intent, and loads the smallest native role skill on demand. The
+UI previews what will load and why. Release close remains a separate guarded
+post-merge operation with narrow tag authority. Every intent remains usable
 through the CLI, so skill-capable hosts gain lower context cost rather than a
 different workflow.
 
@@ -221,9 +283,9 @@ scrubbable: a timeline slider replays spawns/despawns, ghost incarnations,
 links lighting, supports arming, failures flipping glyphs, work products
 traveling, continuations as unfilled paths, the Watcher narrating at the edge.
 This answers "what is DotLn doing?" without reading transcripts — and it is
-the same machinery Horizon 3 uses for counterfactual comparison (run-orbs — each replayed run rendered as one
-scrubbable object with its parameter dials — with
-parameter dials, side by side; find first divergence).
+the same machinery Horizon 3 uses for counterfactual comparison: run-orbs,
+each replayed run rendered as one scrubbable object with parameter dials, shown
+side by side to find the first divergence.
 
 ## Physical channel
 

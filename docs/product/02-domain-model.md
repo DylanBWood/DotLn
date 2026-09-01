@@ -1,8 +1,12 @@
 # Domain model
 
-The canonical vocabulary. Every view, doc, and code identifier uses these terms
-exactly. The v0.1 kernel pins the structures below; its public definitions live
-in `packages/kernel/src/types.ts`.
+The canonical target vocabulary. Every view, doc, and code identifier uses
+these terms exactly when that concept is implemented. `@dotln/kernel` 0.1.0,
+implemented at the `v0.1.0` application milestone and first included in tagged
+source release `v0.2.0`, pins the event/decision core and the subset required by
+the walking skeleton; its public definitions live in
+`packages/kernel/src/types.ts`. Later rows remain specified targets until their
+named roadmap rung promotes them into code.
 
 ## Events and decisions (the kernel loop)
 

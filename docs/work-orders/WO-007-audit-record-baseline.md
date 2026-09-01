@@ -1,6 +1,8 @@
-# WO-007 — Audit-record baseline (three projections), v0.2.1
+# WO-007 — Audit-record baseline (three projections), v0.3.0
 
 **Model:** any capable model.
+**Release classification:** `v0.3.0` minor — adds backwards-compatible audit
+record and projection capability to the `v0.2.x` source application.
 **Depends on:** WO-003 complete (its 13-step demo's JSONL log is the
 fixture).
 
@@ -26,7 +28,7 @@ an L0 receipt, a causal timeline, and governed raw JSON.
 - Required properties per action class only — a refusal needs more detail
   than a NoOp; nothing populates every field (09 says so explicitly).
 - Steps 4–7 of the bootstrap sequence are explicitly deferred: no access
-  control, no crash-ambiguity simulation (that machinery is v0.4.0's), no
+  control, no crash-ambiguity simulation (that machinery is v0.5.0's), no
   backup/restore exercise, no dashboards.
 
 **Constraints:** zero new runtime dependencies; lives beside or inside the
@@ -48,7 +50,7 @@ untouched.
 
 **Write-back duty:** the pinned minimal envelope and its action classes go
 back into 09-audit-resilience-privacy.md (candidate → pinned for this rung);
-the roadmap's v0.2.1 line already points here; ledger duty applies.
+the roadmap's v0.3.0 line already points here; ledger duty applies.
 
 **Evidence gate:** captured projection outputs over the real demo log; every
 criterion mapped to a named test or captured output.

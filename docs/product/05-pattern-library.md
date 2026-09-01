@@ -1,5 +1,9 @@
 # Founding pattern library
 
+**Status:** target pattern catalog. The current walking skeleton executes one
+hand-assembled Repo Gardener + Seiri behavior; PatternDefinition compilation,
+set bonuses, and the remaining patterns are planned work.
+
 For the founding slice, deeply implement a small number of patterns before
 broadly implementing many. This is one selected progression policy, not a
 universal law; the roadmap defines breadth-first, depth-first, floor-raising,
@@ -27,7 +31,7 @@ referees."
 — patient, evidence-bound, propose-don't-destroy; invariants — no deletion
 authority at base rank, every candidate carries evidence, active only while
 the operator is absent, stops on return, re-evaluates on a pulse. It is the
-walking skeleton's character (WO-003) and the v0.8.0 drag-equip target.
+walking skeleton's character (WO-003) and the v0.9.0 drag-equip target.
 
 ## Leadership & autonomy — Marquet
 
