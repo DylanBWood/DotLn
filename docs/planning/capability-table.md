@@ -1,0 +1,111 @@
+# Capability table v1
+
+This is the first reviewed capability-progression table described by the
+[roadmap](../product/06-roadmap.md#capability-progression-policies). It is an
+evidence inventory, not scheduler IR, an XP engine, or a claim that every
+planned capability exists.
+
+## Evidence boundary
+
+The assessment is pinned to revision
+`e3f8cbda968ef9ba258f093facaac21ea9e66a7b`, which was `HEAD` and
+`origin/main` when WO-005 was activated. The observation window is committed
+repository evidence dated 2026-08-30 through 2026-09-01 and present at that
+revision. Uncommitted WO-005 control events, later files, ambient model
+knowledge, and `docs/intake/` are outside the evidence set.
+
+The evidence families were read as sequences, including their failures and
+scope limits:
+
+- Environment evidence comprises the
+  [human-readable inventory](../discovery/environment.md), its
+  [machine-readable projection](../discovery/environment.json), and the
+  [Codex runtime map](../discovery/codex-runtime-map.md). The observed launch
+  smokes establish discovery truth only; they are not in-repository transport
+  adapters.
+- The surviving [WO-002 VER-002](../verifications/WO-002/VER-002.md) is a
+  failing report against a pre-repair tree. The
+  [closure note](../verifications/README.md) records the later reviewed repair.
+  Current kernel levels therefore rest on named tests plus later passing
+  integration evidence, never on that failing verdict.
+- WO-003 is the complete
+  [VER-001 fail](../verifications/WO-003/VER-001.md) →
+  [VER-002 pass](../verifications/WO-003/VER-002.md) →
+  [FINAL-001 pass](../final-reviews/WO-003/FINAL-001.md) sequence, followed by
+  the [v0.2.0 release evidence](../releases/v0.2.0.md). Its final-review pass is
+  also retained in the [canonical control log](../control/resume.jsonl), rather
+  than inferred from the later release.
+- WO-004 is the complete
+  [VER-001 fail](../verifications/WO-004/VER-001.md) →
+  [implementer hardening receipt](../verifications/WO-004/HARDENING-001.md) →
+  [VER-002 pass](../verifications/WO-004/VER-002.md) →
+  [FINAL-001 pass](../final-reviews/WO-004/FINAL-001.md) sequence. The
+  hardening receipt is supporting evidence, not independent verification.
+- The first WO-004 release-close attempt failed safely. The later
+  [WO-012 VER-001](../verifications/WO-012/VER-001.md) and
+  [FINAL-001](../final-reviews/WO-012/FINAL-001.md) verify its path-classification
+  repair. The annotated `v0.2.1` tag at the pinned revision carries WO-004,
+  WO-012, and intervening commits; it is not treated as a WO-004-only release.
+  The [release-record contract](../releases/README.md) explains where that
+  tag's immutable manifest and evidence live.
+- The evidence-only WO-101 corpus has a passing
+  [VER-001](../verifications/WO-101/VER-001.md) and
+  [FINAL-001](../final-reviews/WO-101/FINAL-001.md). It strengthens the bounded
+  Program/continuation and command-identity regression floor without adding
+  runtime behavior or advancing a capability beyond level 2. Its harness is
+  intentionally outside the root release-evidence test command.
+
+No opportunity, activation, utilization, or XP counts are used. At the pinned
+revision those measures are **unknown**, not zero: there is no activation-event
+capture or common observation window for them. Links below are qualitative XP
+(admissible evidence). A fixture establishes causality only for the behavior it
+varies; otherwise the evidence is described as participation or a witnessed
+example. No trustworthy resource-per-verified-outcome baseline exists, so
+every efficiency value is `E0 — unknown`.
+
+## Selected progression policy
+
+For the current horizon, use **breadth first / one skill point better**. Each
+target is exactly one level above the row's current minimum, which exposes the
+next integration seam without polishing one already-shipped slice while
+adjacent capabilities remain latent. Dependencies, authority, expected value,
+and verification capacity still govern execution order. The roadmap's
+visible-payoff rule remains binding: a promotion must deliver coherent,
+witnessable behavior, not a disconnected stub.
+
+## Capability inventory
+
+Levels are scoped by the capability labels in the first column. Every required
+dimension carries its own level, and the composite current level is their
+minimum—never an average. `Last change` is the date this row's assessment last
+changed; linked artifacts retain their own evidence dates.
+
+| Capability and declared scope | Current level | Target level | Required dimensions | Evidence links | Dependencies | Last change | Next smallest promotable increment | Blocking gate | Efficiency |
+|---|---:|---:|---|---|---|---|---|---|---|
+| Kernel event loop (`kernel.event-loop`) | **2 — dependable** (min 2) | **3 — integrated** | reactor/Decision stepping L2;<br>explicit environment and purity L2;<br>event identity and DecisionTrace L2 | [AC1 purity](../../packages/kernel/test/ac1-purity.test.ts), [AC2 replay](../../packages/kernel/test/ac2-replay-store.test.ts), [AC5 failure rows](../../packages/kernel/test/ac5-failure-rows.test.ts), [WO-101 Program corpus](../../corpus/harness/wo101-program-corpus.test.mjs), [WO-003 VER-002](../verifications/WO-003/VER-002.md) | EventEnvelope, KernelEnv, predicate registry; real host/store adapters for the target | 2026-09-01 | Drive one real-worker event through the reactor, persist its decision inputs, then replay the same transition and trace after restart. | No real workflow yet supplies end-to-end lifecycle, recovery, authority, and audit evidence together. | **E0 — unknown** |
+| Cadence (`cadence.evaluable-subset`: Once, After, Every, Until, Gate, Backoff) | **2 — dependable** (min 2) | **3 — integrated** | bounded evaluator L2;<br>virtual time and explicit RNG L2;<br>predicate gating and cancellation L2 | [AC3 cadence](../../packages/kernel/test/ac3-cadence.test.ts), [skeleton scheduler checks](../../packages/skeleton/test/scenario.test.ts), [kernel scope map](../../packages/kernel/README.md), [v0.2.0 supported-range evidence](../releases/v0.2.0.md) | KernelEnv and predicate registry; durable scheduler ownership for the target | 2026-09-01 | Fire one host-owned schedule in a real worker episode and prove restart plus operator-return cancellation from the durable log. | Cadence has no real scheduler lifecycle, recovery, or audit evidence; the other typed constructors remain intentionally unevaluated. | **E0 — unknown** |
+| Authorization guard (`kernel.authorize`) | **2 — dependable** (min 2) | **3 — integrated** | allow/deny matching L2;<br>expiry, revocation, evidence, and resource accounting L2;<br>structural refusal event and trace L2;<br>command identity L2 | [AC6 authorization](../../packages/kernel/test/ac6-authorization.test.ts), [AC5 authorized outbox path](../../packages/kernel/test/ac5-failure-rows.test.ts), [WO-101 identity corpus](../../corpus/harness/wo101-id-corpus.test.mjs), [skeleton refusal test](../../packages/skeleton/test/scenario.test.ts), [WO-003 VER-002](../verifications/WO-003/VER-002.md) | Intent and AuthorityEnvelope; command identity and store; real effect adapter for the target | 2026-09-01 | Route one real transport intent through the guard with non-empty evidence/resource/revocation constraints, then persist both its grant and a denied-effect refusal. | No real adapter boundary has exercised authority through recovery and audit; the skeleton's required-evidence list is empty. | **E0 — unknown** |
+| Store/replay (`kernel.jsonl-replay` and outbox) | **2 — dependable** (min 2) | **3 — integrated** | JSONL codec and edge-assigned ids L2;<br>deterministic state/decision replay L2;<br>outbox reconstruction and deduplication L2 | [AC2 store/replay](../../packages/kernel/test/ac2-replay-store.test.ts), [AC5 outbox recovery](../../packages/kernel/test/ac5-failure-rows.test.ts), [skeleton crash/restart](../../packages/skeleton/test/scenario.test.ts), [WO-003 VER-002](../verifications/WO-003/VER-002.md) | EventEnvelope and reactor; filesystem/durable adapter plus restore path for the target | 2026-09-01 | Add one durable append/reload boundary and prove a killed real worker resumes the pending command without duplicating its effect. | The shipped kernel stores a pure JSONL value; no durable adapter, backup/restore exercise, or real-worker recovery is integrated. | **E0 — unknown** |
+| Continuations (`program.evaluable-subset`: Done, Emit, Invoke, Await, Sequence, Guard) | **2 — dependable** (min 2) | **3 — integrated** | bounded Program stepper L2;<br>correlation and data predicates L2;<br>serialization/residual round-trip L2 | [AC4 continuations](../../packages/kernel/test/ac4-continuations.test.ts), [WO-101 Program corpus](../../corpus/harness/wo101-program-corpus.test.mjs), [WO-101 VER-001](../verifications/WO-101/VER-001.md) | Program grammar, predicate registry, Cadence timeout, store; real episodes for the target | 2026-09-01 | Persist one Await residual, resume it in a fresh real episode, deliver its correlated event, and compare the resulting decision trace. | No continuation has crossed a real session boundary with lifecycle, recovery, authority, and audit evidence. | **E0 — unknown** |
+| Walking-skeleton vertical (`skeleton.fake-vertical`, including its verifier and visible projection) | **1 — demonstrable** (min 1) | **2 — dependable** | provisional WorkOrder compilation L2;<br>fake transport/execution L2;<br>authority, crash recovery, and return race L2;<br>live/replay decision identity L2;<br>application verifier L1;<br>CLI/glyph projection L1 | [scenario implementation](../../packages/skeleton/src/scenario.ts), [scenario suite](../../packages/skeleton/test/scenario.test.ts), [WO-003 VER-002](../verifications/WO-003/VER-002.md), [WO-003 FINAL-001](../final-reviews/WO-003/FINAL-001.md), [v0.2.0 evidence and limits](../releases/v0.2.0.md) | Kernel event loop, cadence, guard, store/replay, continuations | 2026-09-01 | Add a mutation-resistant verifier-rejection case and automated canonical-state CLI/glyph checks, including enforcement of non-empty candidate evidence. | The negative verifier path is untested, the integrated required-evidence gate is inert, and the CLI/glyph surface lacks exact automated coverage. | **E0 — unknown** |
+| Composition compile (`compiler.seiri-v1`) | **0 — latent** (min 0; no usable behavior) | **1 — demonstrable** | LoadoutGraph/support facets L0;<br>link checking L0;<br>precedence, normalization, and semantic hash L0;<br>compiled-diff tooltip L0 | Explicit latent source and outcome: [WO-008](../work-orders/WO-008-composition-compiler.md); the current hand-built input is provisional in the [scenario implementation](../../packages/skeleton/src/scenario.ts) and [suite](../../packages/skeleton/test/scenario.test.ts) | Walking-skeleton fixture and kernel contracts | 2026-09-01 | Compile the current Seiri loadout, reject one incompatible link, and render the deterministic diff from equivalent bounded views. | No compiler package, normalized IR, link checker, or semantic-hash implementation exists. | **E0 — unknown** |
+| Transports (`runtime.work-order-transport`) | **0 — latent** (min 0; observed host shapes are not adapters) | **1 — demonstrable** | adapter launch L0;<br>schema-bound Result envelope L0;<br>isolation and persistence controls L0;<br>fail-closed model/auth/runtime handling L0 | [Observed transport smokes](../discovery/environment.md#wo-004-transport-and-startup-context-addendum-2026-08-31), [runtime map](../discovery/codex-runtime-map.md), implementation source and outcome: [WO-009](../work-orders/WO-009-real-disposable-worker.md) | Composition compiler per WO-009; WO-004 discovery; host process boundary | 2026-09-01 | Implement one bounded CLI adapter profile that completes a read-only WorkOrder with schema-conforming output and fails closed when its requested model is unavailable. | Only manual discovery smokes exist; the repository contains no WorkOrderTransport adapter or real-episode lifecycle. | **E0 — unknown** |
+| Verification (`runtime.independent-verification`) | **0 — latent** (min 0; repository review reports are process precedent, not runtime behavior) | **1 — demonstrable** | blinded verifier episode L0;<br>claim-typed evidence matrix L0;<br>typed finding and repair continuation L0;<br>staleness and re-verification L0 | Source and intended outcome: [WO-010](../work-orders/WO-010-independent-verification.md); process precedent: [WO-003 sequence](../verifications/WO-003/VER-002.md), [WO-004 sequence](../verifications/WO-004/VER-002.md) | Real transports, store/status projection, continuations | 2026-09-01 | Run one planted-defect fixture through blinded finding, focused repair continuation, evidence staleness, and green re-verification. | No VerificationAdapter, runtime evidence matrix, typed repair compiler, or staleness projection exists. | **E0 — unknown** |
+| Projections (`projection.skeleton-cli`: timeline and glyph scene) | **1 — demonstrable** (min 1) | **2 — dependable** | log-derived timeline L1;<br>glyph scene L1;<br>live/replay source equivalence L2 | [scenario projection assertions](../../packages/skeleton/test/scenario.test.ts), [skeleton usage](../../packages/skeleton/README.md), [WO-003 VER-002 limits](../verifications/WO-003/VER-002.md), [release limitations](../releases/v0.2.0.md#known-limitations) | Walking-skeleton log and store/replay | 2026-09-01 | Pin exact CLI timeline, glyph, and receipt output for normal, refusal, empty/malformed-log, and negative-verification cases in automated tests. | The CLI itself is witnessed but unautomated; rejected-verification glyph semantics and negative/error paths lack a maintained regression gate. | **E0 — unknown** |
+| Publication bootstrap (`publication.bootstrap`) | **0 — latent** (min 0; no artifacts) | **1 — demonstrable** | audience/status index L0;<br>shared outline and dual contents L0;<br>dual-voice claim links L0;<br>staleness loop L0 | Explicit latent source and outcome: [WO-006](../work-orders/WO-006-publication-bootstrap.md) | Committed blueprint only | 2026-09-01 | Produce the bounded source index, two audience contents, one dual-voice sample, and one captured two-edition staleness demonstration. | `docs/publication/` and every bootstrap artifact are absent. | **E0 — unknown** |
+| Audit projections (`audit.baseline-three`) | **0 — latent** (min 0; the skeleton log is input, not an audit implementation) | **1 — demonstrable** | canonical-reference AuditRecord L0;<br>L0 receipt L0;<br>causal timeline L0;<br>governed raw JSON L0;<br>replay equivalence L0 | Explicit latent source and outcome: [WO-007](../work-orders/WO-007-audit-record-baseline.md); available input fixture: [skeleton scenario](../../packages/skeleton/test/scenario.test.ts) | Completed walking-skeleton JSONL log and canonical ids | 2026-09-01 | Build all three pure folds over the existing demo log, expose the structural refusal, and reproduce byte-identical output from replay. | No AuditRecord type or audit fold exists; the current event timeline is not the three governed audit projections. | **E0 — unknown** |
+
+## Reading the table
+
+- A level-2 claim means only that the declared scope has automated checks and
+  repeatable evidence for its normal and important failure paths. It does not
+  promote deferred grammar kinds or future adapters by association.
+- Level 3 remains blocked wherever the evidence is a deterministic fake,
+  manual smoke, or repository delivery process rather than a real DotLn
+  workflow with lifecycle, recovery, authority, and audit evidence.
+- Latent rows have explicit source/outcome links. Discovery or fixture inputs
+  beside them reduce uncertainty but do not turn absence of behavior into
+  level 1.
+- Efficiency stays separate from maturity. Corpus sizes, test counts, command
+  costs, and smoke costs in linked reports are not a comparable
+  resource-per-verified-outcome baseline.
