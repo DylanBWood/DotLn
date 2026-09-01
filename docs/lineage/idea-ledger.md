@@ -23,6 +23,41 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-012 release-gate path handling (2026-09-01)
+
+- **Git pathname output is encoded unless the consumer requests `-z`**
+  `adopted`
+  - Commands such as `git ls-files`, `git diff --name-only`, and
+    `git ls-tree --name-only` C-quote pathnames containing non-ASCII bytes or
+    special characters by default. A machine consumer that classifies paths
+    must request NUL-delimited output with `-z`, preserve stdout without
+    trimming, and split on `\0`; disabling `core.quotePath` is insufficient
+    because line-delimited output cannot represent a filename containing a
+    newline. WO-012 applies the rule to release evidence and worktree cleanup
+    after a protected intake pathname containing U+202F exposed the false
+    classification.
+
+## WO-012 release-close recovery ideation (2026-09-01)
+
+Raw source:
+`docs/intake/notes/WO-012-expanded-ideation-2026-09-01.md`.
+
+- **A failed release close needs a first-class fix-in-place recovery path**
+  `adopted`
+  - Preserve the interrupted release obligation while a bounded patch work
+    order starts from current `origin/main`, traverses the normal implementation,
+    verification, final-review, and merge gates, and returns control to release
+    close. “In place” names continuity of the enclosing closeout episode; it
+    does not authorize direct edits on `main`, reuse a removed worktree, skipped
+    review, or implicit tag publication.
+  - The WO-004 → WO-012 episode is the reference case: publication of an
+    eligible release for reviewed WO-004 was deferred by a closeout-tool defect,
+    and the standard work-order machinery is manually orchestrating its patch
+    without abandoning the `v0.2.1` obligation. A future bounded design must
+    choose the command and control-log surface, define repeated-failure
+    recovery, and prove restartability. This ideation does not add that
+    executable capability to WO-012.
+
 ## WO-004 post-ready ideation batch 003 (2026-08-31)
 
 Raw source:

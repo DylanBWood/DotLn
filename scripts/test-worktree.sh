@@ -5,12 +5,19 @@ script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 test_root="$(mktemp -d /private/tmp/dotln-worktree-test.XXXXXX)"
 cleanup() { case "$test_root" in /private/tmp/dotln-worktree-test.*) rm -rf -- "$test_root" ;; *) exit 1 ;; esac; }
 trap cleanup EXIT INT TERM
+node_bin="$(command -v node)"
+u202f="$(printf '\342\200\257')"
+assert_u202f() {
+  "$node_bin" -e 'if (!Buffer.from(process.argv[1], "utf8").toString("hex").includes("e280af")) process.exit(1)' "$1"
+}
+test "$("$node_bin" -e 'process.stdout.write(Buffer.from(process.argv[1], "utf8").toString("hex"))' "$u202f")" = e280af
 
 git init --bare "$test_root/origin.git" >/dev/null
 git clone "$test_root/origin.git" "$test_root/project" >/dev/null 2>&1
 main="$test_root/project"
 git -C "$main" config user.email test@example.invalid
 git -C "$main" config user.name "DotLn Test"
+git -C "$main" config core.quotePath true
 git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control"
 cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
@@ -53,7 +60,6 @@ printf '#!/usr/bin/env node\n' >"$subject/scripts/release.mjs"
 git -C "$subject" add .
 git -C "$subject" commit -m complete >/dev/null
 
-node_bin="$(command -v node)"
 git_bin="$(command -v git)"
 mkdir -p "$test_root/no-gh-bin"
 ln -s "$git_bin" "$test_root/no-gh-bin/git"
@@ -98,18 +104,29 @@ test -d "$subject"
 test -n "$(git -C "$main" branch --list wo-099)"
 rm -- "$subject/.env" "$subject/tsconfig.tsbuildinfo"
 mkdir -p "$subject/docs/intake"
-printf 'raw local note\n' >"$subject/docs/intake/raw.md"
+intake_path="docs/intake/raw${u202f}note.md"
+assert_u202f "$intake_path"
+printf 'raw local note\n' >"$subject/$intake_path"
 if intake_output="$(node "$main/scripts/worktree.mjs" finish WO-099 2>&1)"; then printf 'error: ignored material was deleted\n' >&2; exit 1; fi
-grep -Fq 'docs/intake/raw.md' <<<"$intake_output"
-grep -Fq 'npm run backup:intake' <<<"$intake_output"
-test -f "$subject/docs/intake/raw.md"
-rm -f -- "$subject/docs/intake/raw.md"
+test "$intake_output" = "error: worktree contains ignored material and will not be removed: $intake_path (run npm run backup:intake or move it, then retry)"
+test -f "$subject/$intake_path"
+test -d "$subject"
+test -n "$(git -C "$main" branch --list wo-099)"
+rm -- "$subject/$intake_path"
 rmdir -- "$subject/docs/intake"
-mkdir -p "$subject/node_modules/fixture" "$subject/packages/example/dist"
-printf 'disposable\n' >"$subject/node_modules/fixture/file"
-printf 'generated\n' >"$subject/packages/example/dist/file"
-printf 'finder metadata\n' >"$subject/.DS_Store"
-printf 'disposable build state\n' >"$subject/tsconfig.tsbuildinfo"
+node_module_path="node_modules/fixture${u202f}/file"
+dist_path="dist/generated${u202f}/file"
+ds_store_path="assets${u202f}/.DS_Store"
+tsbuildinfo_path="compiler${u202f}.tsbuildinfo"
+assert_u202f "$node_module_path"
+assert_u202f "$dist_path"
+assert_u202f "$ds_store_path"
+assert_u202f "$tsbuildinfo_path"
+mkdir -p "$subject/$(dirname "$node_module_path")" "$subject/$(dirname "$dist_path")" "$subject/$(dirname "$ds_store_path")"
+printf 'disposable\n' >"$subject/$node_module_path"
+printf 'generated\n' >"$subject/$dist_path"
+printf 'finder metadata\n' >"$subject/$ds_store_path"
+printf 'disposable build state\n' >"$subject/$tsbuildinfo_path"
 git -C "$subject" branch --unset-upstream
 node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null
 test ! -e "$subject"

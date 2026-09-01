@@ -10,6 +10,13 @@ const run = (cwd, ...args) => {
   if (result.status !== 0) throw new Error((result.stderr || result.stdout || `git ${args.join(" ")} failed`).trim());
   return result.stdout.trim();
 };
+const runPathList = (cwd, ...args) => {
+  const result = spawnSync("git", ["-C", cwd, ...args], { encoding: "utf8" });
+  if (result.status !== 0) throw new Error((result.stderr || result.stdout || `git ${args.join(" ")} failed`).trim());
+  if (result.stdout === "") return [];
+  if (!result.stdout.endsWith("\0")) throw new Error(`git ${args.join(" ")} returned a non-NUL-terminated path list`);
+  return result.stdout.slice(0, -1).split("\0");
+};
 const shellQuote = value => `'${value.replaceAll("'", `'\\''`)}'`;
 const ensureClean = path => { if (run(path, "status", "--porcelain") !== "") throw new Error(`worktree is not clean: ${path}`); };
 const ensureCommand = (command, guidance) => {
@@ -18,7 +25,7 @@ const ensureCommand = (command, guidance) => {
 };
 const ensureNoIgnoredMaterial = path => {
   const disposable = candidate => candidate.split("/").some(segment => segment === "node_modules" || segment === "dist") || basename(candidate) === ".DS_Store" || candidate.endsWith(".tsbuildinfo");
-  const ignored = run(path, "ls-files", "--others", "--ignored", "--exclude-standard").split("\n").filter(Boolean).filter(candidate => !disposable(candidate));
+  const ignored = runPathList(path, "ls-files", "-z", "--others", "--ignored", "--exclude-standard").filter(candidate => !disposable(candidate));
   if (ignored.length > 0) throw new Error(`worktree contains ignored material and will not be removed: ${ignored[0]} (run npm run backup:intake or move it, then retry)`);
 };
 const containedRegularFile = (path, root) => existsSync(path) && lstatSync(path).isFile() && realpathSync(path).startsWith(`${realpathSync(root)}${sep}`);

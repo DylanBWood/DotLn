@@ -6,6 +6,11 @@ test_root="$(mktemp -d /private/tmp/dotln-release-test.XXXXXX)"
 cleanup() { case "$test_root" in /private/tmp/dotln-release-test.*) rm -rf -- "$test_root" ;; *) exit 1 ;; esac; }
 trap cleanup EXIT INT TERM
 node_bin="$(command -v node)"
+u202f="$(printf '\342\200\257')"
+assert_u202f() {
+  "$node_bin" -e 'if (!Buffer.from(process.argv[1], "utf8").toString("hex").includes("e280af")) process.exit(1)' "$1"
+}
+test "$("$node_bin" -e 'process.stdout.write(Buffer.from(process.argv[1], "utf8").toString("hex"))' "$u202f")" = e280af
 
 write_control_events() {
   local path="$1" id="$2" authority="$3"
@@ -28,6 +33,7 @@ make_repo() {
   git clone "$origin" "$main" >/dev/null 2>&1
   git -C "$main" config user.email test@example.invalid
   git -C "$main" config user.name "DotLn Release Test"
+  git -C "$main" config core.quotePath true
   git -C "$main" switch -c main >/dev/null 2>&1
   mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/releases" "$main/packages/kernel/src" "$main/packages/skeleton/dist/src" "$main/packages/skeleton/src"
   cp "$script_dir/release.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
@@ -130,8 +136,12 @@ printf 'dirty\n' >"$main/untracked.txt"
 if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: dirty release close succeeded\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
 rm -- "$main/untracked.txt"
-printf 'IGNORED=fixture\n' >"$main/.env"
-if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: ignored release influence succeeded\n' >&2; exit 1; fi
+foreign_path=".env.fixture${u202f}foreign"
+assert_u202f "$foreign_path"
+printf 'IGNORED=fixture\n' >"$main/$foreign_path"
+if ignored_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: ignored release influence succeeded\n' >&2; exit 1; fi
+test "$ignored_output" = "error: main checkout contains ignored material that can contaminate release evidence: $foreign_path"
+test -f "$main/$foreign_path"
 assert_no_candidate_tag "$main" "$origin"
 
 make_repo nonmain
@@ -159,13 +169,15 @@ assert_no_candidate_tag "$main" "$origin"
 make_repo lower
 commit_candidate "$main" WO-099 v0.0.2
 git -C "$main" push origin main >/dev/null 2>&1
-mkdir -p "$main/docs/intake"
-printf 'surviving raw fixture\n' >"$main/docs/intake/local.md"
+mkdir -p "$main/docs/intake/images"
+intake_path="docs/intake/images/Screenshot 2026-08-30 at 10.01.24${u202f}PM.jpg"
+assert_u202f "$intake_path"
+printf 'surviving raw fixture\n' >"$main/$intake_path"
 lower_output="$(release_close WO-099 --publish)"
 grep -Fq 'below latest release v0.2.0' <<<"$lower_output"
 test ! -e "$npm_log"
 test "$(git -C "$main" status --porcelain)" = ""
-test -f "$main/docs/intake/local.md"
+test -f "$main/$intake_path"
 assert_no_candidate_tag "$main" "$origin" v0.0.2
 
 make_repo failures
@@ -214,6 +226,12 @@ assert_no_candidate_tag "$main" "$origin"
 make_repo success
 subject="$fixture/project-wo099"
 git -C "$main" worktree add "$subject" -b wo-099 >/dev/null
+tracked_path="scripts/release.${u202f}fixture.mjs"
+leading_path=" ${u202f}leading.md"
+assert_u202f "$tracked_path"
+assert_u202f "$leading_path"
+printf 'tracked Unicode fixture\n' >"$subject/$tracked_path"
+printf 'leading-space fixture\n' >"$subject/$leading_path"
 commit_candidate "$subject" WO-099 v0.2.1
 git -C "$subject" push -u origin wo-099 >/dev/null 2>&1
 git clone "$origin" "$fixture/integrator" >/dev/null 2>&1
@@ -253,6 +271,14 @@ test "$(git -C "$main" rev-parse v0.2.1^{tag})" = "$published_object"
 test ! -e "$main/node_modules"
 (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" npm ci >/dev/null)
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" manifest-from-tag v0.2.1 >"$fixture/manifest.json"
+"$node_bin" -e '
+  const fs = require("node:fs");
+  const [path, tracked, leading] = process.argv.slice(1);
+  const manifest = JSON.parse(fs.readFileSync(path, "utf8"));
+  if (!manifest.notes.changedFiles.includes(tracked)) process.exit(1);
+  if (!manifest.notes.changedFiles.includes(leading)) process.exit(1);
+  if (!manifest.notes.critical.includes("Workflow authority, recovery, or publication tooling changed; inspect the operator guide and release evidence.")) process.exit(1);
+' "$fixture/manifest.json" "$tracked_path" "$leading_path"
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" validate "$fixture/manifest.json" >/dev/null
 
 for mutation in commit application component toolchain schema evidence cadence; do
@@ -273,5 +299,25 @@ for mutation in commit application component toolchain schema evidence cadence; 
   ' "$mutated" "$mutation"
   if PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" validate "$mutated" >/dev/null 2>&1; then printf 'error: validator accepted %s mutation\n' "$mutation" >&2; exit 1; fi
 done
+
+make_repo firstrelease
+git -C "$main" tag -d v0.2.0 >/dev/null
+git --git-dir="$origin" update-ref -d refs/tags/v0.2.0
+first_release_path="${u202f}first-release.md"
+assert_u202f "$first_release_path"
+printf 'first release Unicode fixture\n' >"$main/$first_release_path"
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+first_release_output="$(release_close WO-099 --publish)"
+grep -Fq 'Published annotated v0.2.1' <<<"$first_release_output"
+PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" manifest-from-tag v0.2.1 >"$fixture/first-release-manifest.json"
+"$node_bin" -e '
+  const fs = require("node:fs");
+  const [path, expected] = process.argv.slice(1);
+  const manifest = JSON.parse(fs.readFileSync(path, "utf8"));
+  if (manifest.release.previousRelease !== null) process.exit(1);
+  if (!manifest.notes.changedFiles.includes(expected)) process.exit(1);
+' "$fixture/first-release-manifest.json" "$first_release_path"
+PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" validate "$fixture/first-release-manifest.json" >/dev/null
 
 printf 'release tests passed\n'

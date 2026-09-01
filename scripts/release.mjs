@@ -28,13 +28,20 @@ const runGit = (cwd, args, options = {}) => {
   if (result.status !== 0) throw new Error(failureOf(result, `git ${args.join(" ")} failed`));
   return result.stdout.trim();
 };
+const runGitPathList = (cwd, args, options = {}) => {
+  const result = execute("git", ["-C", cwd, ...args], options);
+  if (result.status !== 0) throw new Error(failureOf(result, `git ${args.join(" ")} failed`));
+  if (result.stdout === "") return [];
+  if (!result.stdout.endsWith("\0")) throw new Error(`git ${args.join(" ")} returned a non-NUL-terminated path list`);
+  return result.stdout.slice(0, -1).split("\0");
+};
 const ensureClean = path => {
   const dirty = runGit(path, ["status", "--porcelain", "--untracked-files=all"]);
   if (dirty !== "") throw new Error(`working tree is not clean: ${path} (${dirty.split("\n")[0]})`);
 };
 const ensureNoIgnoredInfluence = path => {
   const allowed = candidate => candidate.startsWith("docs/intake/") || candidate.split("/").some(segment => segment === "node_modules" || segment === "dist") || basename(candidate) === ".DS_Store" || candidate.endsWith(".tsbuildinfo");
-  const ignored = runGit(path, ["ls-files", "--others", "--ignored", "--exclude-standard"]).split("\n").filter(Boolean).filter(candidate => !allowed(candidate));
+  const ignored = runGitPathList(path, ["ls-files", "-z", "--others", "--ignored", "--exclude-standard"]).filter(candidate => !allowed(candidate));
   if (ignored.length > 0) throw new Error(`main checkout contains ignored material that can contaminate release evidence: ${ignored[0]}`);
 };
 const containedRegularFile = (path, root) => existsSync(path) && lstatSync(path).isFile() && realpathSync(path).startsWith(`${realpathSync(root)}${sep}`);
@@ -186,8 +193,8 @@ const changedSubjects = (root, previousRelease) => {
   return runGit(root, ["log", "--reverse", "--format=%s", range]).split("\n").filter(Boolean);
 };
 const changedFiles = (root, previousRelease) => {
-  const args = previousRelease ? ["diff", "--name-only", `${previousRelease}..HEAD`] : ["ls-tree", "-r", "--name-only", "HEAD"];
-  return runGit(root, args).split("\n").filter(Boolean).sort();
+  const args = previousRelease ? ["diff", "--name-only", "-z", `${previousRelease}..HEAD`] : ["ls-tree", "-r", "--name-only", "-z", "HEAD"];
+  return runGitPathList(root, args).sort();
 };
 const reviewArtifacts = (root, workOrderId) => ["docs/verifications", "docs/final-reviews"].flatMap(parent => {
   const directory = join(root, parent, workOrderId);

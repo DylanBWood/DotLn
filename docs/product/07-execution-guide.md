@@ -159,13 +159,16 @@ disposable ignored dependency/build outputs (`node_modules`, `dist`,
 `.DS_Store`, `*.tsbuildinfo`) may leave with the worktree. The same command
 then evaluates whether the completed roadmap rung is a release boundary.
 
-For a release boundary, the command works from the exact merged commit. It
-runs `npm ci` before release evidence, proves the install/evidence leave
-tracked files unchanged, populates and re-validates the immutable manifest and
-layered notes, then creates and pushes only their annotated tag. The publish
-form is authorized by the operator's phrase; a raw run without `--publish`
-performs guarded closeout and validation, then prints the exact authorized tag
-command. Never tag the feature
+For a release boundary, the command works from the fetched `origin/main` HEAD
+to which local `main` was fast-forwarded, not a separately resolved work-order
+merge commit. The reviewed work-order branch must be contained in that
+history; any later commits already present at synchronization are included in
+the tagged source. The command runs `npm ci` before release evidence, proves
+the install/evidence leave tracked files unchanged, populates and re-validates
+the immutable manifest and layered notes, then creates and pushes only their
+annotated tag. The publish form is authorized by the operator's phrase; a raw
+run without `--publish` performs guarded closeout and validation, then prints
+the exact authorized tag command. Never tag the feature
 branch, tag failing evidence, move an existing tag, push `main`, or imply that
 npm/binary/hosted distribution occurred when the release is source-only. A
 failed release check opens a patch work order. A version strictly below the
