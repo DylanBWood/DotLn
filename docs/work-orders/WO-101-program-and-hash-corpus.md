@@ -1,15 +1,21 @@
-# WO-101 — Program stepper enumeration, continuation round-trip, and hash-identity corpus (version assigned at activation)
+# WO-101 — Program stepper enumeration, continuation round-trip, and hash-identity corpus, v0.2.0
 
 **Model:** Codex (any capable tier); any capable model may substitute. State the
 model and effort actually run in the result (07-execution-guide.md
 §Model-specific notes).
-**Release classification:** assigned by the planner at activation. Before
-`resume -- activate`, the planner MUST rewrite this H1 to carry exactly one
-strict `vX.Y.Z` (`scripts/release.mjs` refuses any other heading at close) and
-MUST pin the close disposition: a version strictly below the latest published
-tag (honest no-release close) or an operator-authorized, dated retiming.
-Never an unauthorized patch between the reserved v0.2.2 (WO-005) and v0.2.3
-(WO-006) rungs. Expected class: internal tooling/evidence only.
+**Release classification:** `v0.2.0` internal tooling/evidence-only close.
+This version is strictly below the latest published tag, `v0.2.1`, so release
+close MUST record the honest no-release result and MUST NOT create or push a
+tag. The reserved v0.2.2 (WO-005) and v0.2.3 (WO-006) rungs are unchanged.
+
+**Activation correction — 2026-09-01:** WO-101 was activated before its
+version and close disposition were pinned and before dependency preflight was
+completed. The operator explicitly authorized this in-place authority
+correction after dispatch. This note records the timing deviation rather than
+presenting the prerequisite as having occurred before activation; the
+append-only `WorkOrderActivated` event
+remains unchanged. The operator also authorized executor-side dependency
+provisioning for this episode.
 **Series note:** reserved adjacent WO-10x series; numbering provisional — the
 operator may renumber at activation. This order absorbs the durable kernel of
 the withdrawn WO-104 hash-identity candidate (see Objective lane c).
@@ -102,10 +108,12 @@ work, the operator names the closeout path at activation (numbered
 verification, final review, PR, explicit no-release disposition). The choice
 happens at activation, not mid-flight.
 
-**Preflight (operator):** node_modules provisioned in the worktree (the
-recorded Codex sandbox is network-disabled; `npm ci` cannot run mid-flight);
-`npm run build && npm test` green at the base commit. After handoff the run
-is fully offline and model-invocation-free.
+**Preflight (operator/executor):** This execution environment has network
+access, and the executor MAY provision missing dependencies with `npm ci`;
+the earlier network-disabled assumption was incorrect. `npm ci` and
+`npm run build && npm test` must be green at the base commit before corpus
+execution. Once provisioned, the corpus run is fully offline and
+model-invocation-free.
 
 **Deliverables:**
 1. `corpus/harness/generate-program-corpus.mjs` and

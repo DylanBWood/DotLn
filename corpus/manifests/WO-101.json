@@ -1,0 +1,585 @@
+{
+  "schemaVersion": 1,
+  "workOrderId": "WO-101",
+  "corpusVersion": 1,
+  "pinnedBaseCommit": "329820e14c55a46a987b9d788449eca14e42b6db",
+  "seeds": {
+    "program": "wo101-seed-20260901",
+    "ids": "wo101-seed-20260901"
+  },
+  "generators": {
+    "program": "corpus/harness/generate-program-corpus.mjs",
+    "ids": "corpus/harness/generate-id-corpus.mjs",
+    "modes": [
+      "--write",
+      "--check"
+    ]
+  },
+  "program": {
+    "bounds": {
+      "maximumNodes": 4,
+      "maximumDepth": 4,
+      "sequenceArities": [
+        0,
+        1,
+        2
+      ],
+      "invokeContinuationShape": {
+        "keys": [
+          "ok"
+        ],
+        "entries": 1
+      },
+      "committedProgramsPerRootKind": 32,
+      "committedShardMaximumRows": 250
+    },
+    "atomAlphabet": {
+      "eventDrafts": [
+        {
+          "schemaVersion": 1,
+          "type": "Emitted",
+          "occurredAt": 0,
+          "actorId": "actor:a",
+          "workstreamId": "ws:a",
+          "payload": null
+        },
+        {
+          "schemaVersion": 1,
+          "type": "Émitted:β",
+          "occurredAt": 1,
+          "actorId": "actor:β",
+          "workstreamId": "ws:β",
+          "episodeId": "ep:1",
+          "payload": {
+            "flag": true,
+            "values": [
+              0,
+              null,
+              "é"
+            ]
+          }
+        }
+      ],
+      "commandIds": [
+        "cmd:alpha",
+        "cmd:β"
+      ],
+      "actIntents": [
+        {
+          "kind": "Act",
+          "effect": "effect.alpha",
+          "payload": null
+        },
+        {
+          "kind": "Act",
+          "effect": "effect:β",
+          "resource": "cpu",
+          "payload": [
+            "x",
+            null,
+            {
+              "nested": true
+            }
+          ]
+        }
+      ],
+      "invokeResultKeys": [
+        "ok"
+      ],
+      "awaitPatterns": [
+        {
+          "type": "Signal"
+        },
+        {
+          "type": "Signal",
+          "commandId": "cmd:alpha"
+        },
+        {
+          "type": "Signal",
+          "correlationId": "corr:match"
+        },
+        {
+          "type": "Signal",
+          "correlationId": "corr:match",
+          "commandId": "cmd:alpha"
+        },
+        {
+          "type": "CommandResult"
+        },
+        {
+          "type": "CommandResult",
+          "commandId": "cmd:alpha"
+        },
+        {
+          "type": "CommandResult",
+          "correlationId": "corr:match"
+        },
+        {
+          "type": "CommandResult",
+          "correlationId": "corr:match",
+          "commandId": "cmd:alpha"
+        }
+      ],
+      "awaitTimeouts": [
+        {
+          "kind": "After",
+          "delayMs": 7
+        }
+      ],
+      "predicateRefs": [
+        {
+          "registryId": "state.equals",
+          "version": 1,
+          "params": {
+            "field": "flag",
+            "expected": true
+          }
+        },
+        {
+          "registryId": "event.type",
+          "version": 1,
+          "params": {
+            "type": "Signal"
+          }
+        }
+      ],
+      "executionContexts": [
+        "no-event",
+        "matching-result",
+        "foreign-result",
+        "signal",
+        "malformed-null-payload"
+      ]
+    },
+    "matchingTableAlphabet": {
+      "eventTypes": [
+        "CommandResult",
+        "Other"
+      ],
+      "correlationIds": {
+        "absent": "event.correlationId omitted",
+        "match": "corr:match",
+        "other": "corr:other"
+      },
+      "commandIds": {
+        "absent": "payload.commandId omitted when the payload is an object",
+        "match": "cmd:match",
+        "other": "cmd:other",
+        "non-string": 7
+      },
+      "payloadShapes": {
+        "object-known-result": "object carrying result=ok",
+        "object-unknown-result": "object carrying result=unknown",
+        "object-missing-result": "object with no result field",
+        "object-non-string-result": "object carrying numeric result=7",
+        "null": null,
+        "array": "[commandId-or-null, ok]",
+        "scalar": "payload"
+      },
+      "invoke": {
+        "commandId": "cmd:match",
+        "continuationKeys": [
+          "ok"
+        ]
+      },
+      "awaitPatternModes": [
+        {
+          "id": "type-only",
+          "pattern": {
+            "type": "CommandResult"
+          }
+        },
+        {
+          "id": "correlation",
+          "pattern": {
+            "type": "CommandResult",
+            "correlationId": "corr:match"
+          }
+        },
+        {
+          "id": "command",
+          "pattern": {
+            "type": "CommandResult",
+            "commandId": "cmd:match"
+          }
+        },
+        {
+          "id": "correlation-command",
+          "pattern": {
+            "type": "CommandResult",
+            "correlationId": "corr:match",
+            "commandId": "cmd:match"
+          }
+        }
+      ]
+    },
+    "predicateRegistry": {
+      "data": {
+        "schemaVersion": 1,
+        "entries": [
+          {
+            "registryId": "state.equals",
+            "version": 1,
+            "semantics": "true iff object state field params.field strictly equals params.expected",
+            "params": {
+              "field": "string",
+              "expected": "JsonValue"
+            }
+          },
+          {
+            "registryId": "event.type",
+            "version": 1,
+            "semantics": "true iff an event exists and event.type strictly equals params.type",
+            "params": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "sha256": "50b326743679e36c6bab004359a95ffa9e68b40e5c8ad77375e34325ede79168"
+    },
+    "counts": {
+      "fullEnumeration": {
+        "programs": 7784,
+        "executionContexts": 5,
+        "evaluationInputs": 38920,
+        "generatedVectorArtifact": {
+          "format": "JSONL regenerated in memory; digest and counts committed in the manifest",
+          "rows": 38920,
+          "bytes": 85474032,
+          "sha256": "47fc882275368cac9823d6af36ff248d5fd1919876edcbbf078a7d08d7ebd7d9",
+          "outcomeCounts": {
+            "return:Await": 20692,
+            "return:Done": 914,
+            "return:Emit": 1408,
+            "return:Guard": 176,
+            "return:Invoke": 11852,
+            "return:Sequence": 3878
+          }
+        },
+        "exactSizeCounts": {
+          "1": 2,
+          "2": 30,
+          "3": 462,
+          "4": 7290
+        },
+        "rootKindCounts": {
+          "Await": 3952,
+          "Done": 1,
+          "Emit": 988,
+          "Guard": 248,
+          "Invoke": 1976,
+          "Sequence": 619
+        },
+        "allNodeOccurrenceCounts": {
+          "Await": 11584,
+          "Done": 4168,
+          "Emit": 2896,
+          "Guard": 368,
+          "Invoke": 5792,
+          "Sequence": 5800
+        }
+      },
+      "committedEnumeration": {
+        "programs": 161,
+        "vectors": 805,
+        "rootKindCounts": {
+          "Await": 32,
+          "Done": 1,
+          "Emit": 32,
+          "Guard": 32,
+          "Invoke": 32,
+          "Sequence": 32
+        },
+        "contextCounts": {
+          "foreign-result": 161,
+          "malformed-null-payload": 161,
+          "matching-result": 161,
+          "no-event": 161,
+          "signal": 161
+        }
+      },
+      "invokeTruthTable": {
+        "actualEventCells": 168,
+        "noEventCells": 1,
+        "dimensions": {
+          "eventType": 2,
+          "correlationId": 3,
+          "commandId": 4,
+          "payloadShape": 7
+        },
+        "levels": {
+          "eventType": [
+            "CommandResult",
+            "Other"
+          ],
+          "correlationId": [
+            "absent",
+            "match",
+            "other"
+          ],
+          "commandId": [
+            "absent",
+            "match",
+            "other",
+            "non-string"
+          ],
+          "payloadShape": [
+            "object-known-result",
+            "object-unknown-result",
+            "object-missing-result",
+            "object-non-string-result",
+            "null",
+            "array",
+            "scalar"
+          ]
+        },
+        "outcomeCounts": {
+          "return:Done": 3,
+          "return:Invoke": 163,
+          "throw:No Invoke continuation for result unknown": 3
+        }
+      },
+      "awaitTruthTable": {
+        "actualEventCells": 672,
+        "noEventCells": 4,
+        "patternModes": 4,
+        "dimensions": {
+          "eventType": 2,
+          "correlationId": 3,
+          "commandId": 4,
+          "payloadShape": 7
+        },
+        "levels": {
+          "eventType": [
+            "CommandResult",
+            "Other"
+          ],
+          "correlationId": [
+            "absent",
+            "match",
+            "other"
+          ],
+          "commandId": [
+            "absent",
+            "match",
+            "other",
+            "non-string"
+          ],
+          "payloadShape": [
+            "object-known-result",
+            "object-unknown-result",
+            "object-missing-result",
+            "object-non-string-result",
+            "null",
+            "array",
+            "scalar"
+          ]
+        },
+        "outcomeCounts": {
+          "return:Await": 548,
+          "return:Done": 128
+        }
+      },
+      "sequenceLaws": 12
+    },
+    "cellCoverage": {
+      "invoke": {
+        "distinctCartesianCells": 168,
+        "observedDistinctCells": 168,
+        "observedRows": 168,
+        "rowsPerCell": 1,
+        "missingCells": 0,
+        "duplicateCells": 0,
+        "unexpectedCells": 0,
+        "separateNoEventRows": 1
+      },
+      "await": {
+        "distinctCartesianCells": 672,
+        "observedDistinctCells": 672,
+        "observedRows": 672,
+        "rowsPerCell": 1,
+        "missingCells": 0,
+        "duplicateCells": 0,
+        "unexpectedCells": 0,
+        "separateNoEventRows": 4
+      }
+    },
+    "committedBudget": {
+      "maximumFiles": 8,
+      "maximumRows": 2000,
+      "maximumBytesPerFile": 8388608,
+      "maximumTotalBytes": 16777216,
+      "fullEnumerationPolicy": "All ASTs and execution contexts regenerate from seed and run in the harness; only a root-kind-stratified golden sample is committed."
+    }
+  },
+  "ids": {
+    "algorithm": "FNV-1a-64 over UTF-8 bytes, lowercase 16-hex output",
+    "referenceImplementation": "independent unsigned 32-bit high/low pair arithmetic using Buffer UTF-8 encoding",
+    "publishedVectorSource": {
+      "title": "RFC 9923 §8.3 Test64 — published FNV64svalues/FNV64bvalues",
+      "url": "https://www.rfc-editor.org/rfc/rfc9923.html#section-8.3",
+      "nulMapping": "The final three JavaScript strings contain an explicit NUL and correspond to the RFC block tests over strlen+1 bytes, not its C-string tests."
+    },
+    "handComputedCommandAnchor": {
+      "input": {
+        "workstreamId": "a",
+        "decisionIndex": 0,
+        "intentIndex": 0
+      },
+      "preimage": "ws:a:0:0",
+      "expected": "cmd_6b46f97735167cca",
+      "derivation": "Manual per-byte unsigned high:low recurrence from the FNV-1a-64 offset basis; each state is after the named UTF-8 byte.",
+      "byteTrace": [
+        {
+          "byteHex": "77",
+          "state": "af63ea4c86020456"
+        },
+        {
+          "byteHex": "73",
+          "state": "08cb4507b56d0adf"
+        },
+        {
+          "byteHex": "3a",
+          "state": "5e7131194849831f"
+        },
+        {
+          "byteHex": "61",
+          "state": "c3d9ebf5d4ea6f1a"
+        },
+        {
+          "byteHex": "3a",
+          "state": "b5bb12b8ca5ad360"
+        },
+        {
+          "byteHex": "30",
+          "state": "27b41fffd85510f0"
+        },
+        {
+          "byteHex": "3a",
+          "state": "cc2329bc988b873e"
+        },
+        {
+          "byteHex": "30",
+          "state": "6b46f97735167cca"
+        }
+      ]
+    },
+    "normalizationPolicy": "Byte-honest: no Unicode normalization; paired NFC and NFD inputs are expected to hash differently.",
+    "counts": {
+      "stableHash": {
+        "generatedInputs": 2054,
+        "categoryCounts": {
+          "ascii-numeric-colon": 256,
+          "boundary-long": 256,
+          "control": 256,
+          "normalization": 256,
+          "published-anchor": 6,
+          "seeded-mixed-utf16": 256,
+          "surrogate-shape": 384,
+          "unicode-scalar": 384
+        },
+        "normalizationPairs": 128,
+        "publishedAnchors": 6
+      },
+      "commandId": {
+        "generatedInputs": 2048,
+        "categoryCounts": {
+          "colon-control": 256,
+          "empty-long-id": 256,
+          "fallback-equivalence": 256,
+          "namespace-pair": 512,
+          "numeric-string-edge": 256,
+          "seeded-mixed-tuple": 256,
+          "unicode-combining-surrogate": 256
+        },
+        "namespacePairs": 256,
+        "fallbackPairs": 128
+      }
+    },
+    "committedBudget": {
+      "maximumFiles": 2,
+      "maximumRows": 5000,
+      "maximumBytesPerFile": 12582912,
+      "maximumTotalBytes": 16777216
+    }
+  },
+  "fixtures": [
+    {
+      "path": "corpus/fixtures/ids/command-id-vectors.jsonl",
+      "rows": 2048,
+      "bytes": 1780353,
+      "sha256": "873b9517429fc4527ebd7382772275e669b11a019b5cc1c288b5313d17219feb"
+    },
+    {
+      "path": "corpus/fixtures/ids/stable-hash-vectors.jsonl",
+      "rows": 2054,
+      "bytes": 2240352,
+      "sha256": "d666f0d4fa5360513add561188b373a6338e186f4279a9e81282abcf25ffd6e3"
+    },
+    {
+      "path": "corpus/fixtures/program/enumerated-000.jsonl",
+      "rows": 250,
+      "bytes": 498778,
+      "sha256": "c25b66d964cda95cebb7e6d41802024b935588ba63ccf0262b0d4e2bee480f31"
+    },
+    {
+      "path": "corpus/fixtures/program/enumerated-001.jsonl",
+      "rows": 250,
+      "bytes": 574939,
+      "sha256": "e555dddafbddfcc6c9fa68bb897c7521d4dfdf5eaa28f06e53d03f1202bd2b5a"
+    },
+    {
+      "path": "corpus/fixtures/program/enumerated-002.jsonl",
+      "rows": 250,
+      "bytes": 388741,
+      "sha256": "3fdf4e97df7c37a030ed6be38f90726028a7c9910d8cb4b6560bdde709833658"
+    },
+    {
+      "path": "corpus/fixtures/program/enumerated-003.jsonl",
+      "rows": 55,
+      "bytes": 68423,
+      "sha256": "4d9e9805779f2b4482356106e4bee04daf27a5947e4e1e48e5de513a690eaa2f"
+    },
+    {
+      "path": "corpus/fixtures/program/matching-await.jsonl",
+      "rows": 676,
+      "bytes": 969250,
+      "sha256": "a0f476d7fbb1ec1e7b876d89d4c4204735f1c6aeb006a1d73219a5246eb7de83"
+    },
+    {
+      "path": "corpus/fixtures/program/matching-invoke.jsonl",
+      "rows": 169,
+      "bytes": 209697,
+      "sha256": "f6df90095c24654bda60098f557aebf4806e3f408acfd8b9ad2dbb06117c77c4"
+    },
+    {
+      "path": "corpus/fixtures/program/sequence-laws.jsonl",
+      "rows": 12,
+      "bytes": 13574,
+      "sha256": "968079666e47b9361585b936c61c54aa0ab94505b9dc2617ec6cbcc1a2f8c9a3"
+    }
+  ],
+  "fixtureTotals": {
+    "files": 9,
+    "rows": 5764,
+    "bytes": 6744107
+  },
+  "toolchainProfile": {
+    "node": "v22.2.0",
+    "npm": "10.8.0",
+    "typescript": "5.4.5",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "osKernel": "Darwin 24.6.0"
+  },
+  "evidence": {
+    "runLog": "corpus/manifests/runs/WO-101-329820e14c55a46a987b9d788449eca14e42b6db.log",
+    "runLogCommitMeaning": "The filename keys the run to the pinned base commit because implementation evidence is captured before the final reviewed commit exists.",
+    "findings": "corpus/manifests/findings-WO-101.md"
+  },
+  "layoutExtension": {
+    "generatedCorpusRoot": ".",
+    "architectureSyncRequired": "docs/product/03-architecture.md §Corpus policy requires a later authorized documentation pass."
+  }
+}
