@@ -96,17 +96,18 @@ notes, and creates/pushes only the annotated tag when its explicit publish form
 was authorized. It never pushes `main`. The `resume: release close` phrase is
 that explicit tag-publication authorization. Without it, the raw command still
 performs guarded closeout and validation but withholds tag creation and
-publication. If evidence fails, open a patch work order instead of tagging. The
-lifecycle should grow a first-class **fix-in-place** recovery for a failed
-release close: preserve the failed release obligation and target, open and
-activate a bounded patch work order from current `origin/main`, drive it through
-the ordinary implementation, independent verification, final review, and merge
-gates, then resume the interrupted closeout. “In place” means continuity of the
-parent closeout episode, not editing `main`, reusing a removed worktree,
-bypassing review, or carrying tag-publication authority into the patch. WO-012
-is the reference case for the current manual composition of those steps; the
-durable command/event surface and repeated-failure semantics remain a future
-bounded design task.
+publication. If any guarded release-close check refuses before tag creation —
+including declared evidence, manifest derivation or validation, or another
+release gate — do not tag. The lifecycle should grow a first-class
+**fix-in-place** recovery for such a failure: preserve the interrupted release
+obligation and target, open and activate a bounded patch work order from current
+`origin/main`, drive it through the ordinary implementation, independent
+verification, final review, and merge gates, then resume the interrupted
+closeout. “In place” means continuity of the parent closeout episode, not
+editing `main`, reusing a removed worktree, bypassing review, or carrying
+tag-publication authority into the patch. WO-012 and WO-015 are reference cases
+for the current manual composition of those steps; neither adds the still-future
+durable command/event surface or repeated-failure semantics.
 
 An application target in a work-order heading that is strictly below the latest
 release is a successful no-release closeout, leaving clean `main` in the closed,
@@ -547,6 +548,15 @@ and the brain/hands, harness/orchestration, isolation, LangGraph-accommodation,
 and foundation-first synthesis. These remain documentation, process, and
 dev-tooling changes; they add no exported runtime capability and do not move the
 release boundary.
+
+WO-006 merged after independent verification and final review. Its authorized
+release close on 2026-09-01 then passed dependency installation, the declared
+test evidence, and the built skeleton CLI before manifest derivation refused:
+the cadence compatibility parser could not read the canonical Prettier-formatted
+type union. No local or origin `v0.2.3` tag was created. WO-015 is the bounded
+fix-in-place continuation of that interrupted release obligation. The target
+remains unpublished until WO-015 completes its own ordinary verification, final
+review, and merge, followed by a separately authorized release close.
 
 <!-- prettier-ignore -->
 ## v0.3.0 — Audit-record baseline (three projections)  → WO-007

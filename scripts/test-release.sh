@@ -55,25 +55,8 @@ make_repo() {
     '}' >"$main/package-lock.json"
   printf '{"name":"@dotln/kernel","version":"0.1.0"}\n' >"$main/packages/kernel/package.json"
   printf '{"name":"@dotln/skeleton","version":"0.2.0"}\n' >"$main/packages/skeleton/package.json"
-  printf '%s\n' \
-    'export interface EventEnvelope {' \
-    '  readonly schemaVersion: 1;' \
-    '}' \
-    'export namespace Cadence {' \
-    '  export type T = Once | After | Every | Burst | Calendar | Window | While | Until | Gate | Sequence | Merge | Race | Repeat | Backoff;' \
-    '}' >"$main/packages/kernel/src/types.ts"
-  printf '%s\n' \
-    'export function evaluateCadence(cadence) {' \
-    '  switch (cadence.kind) {' \
-    '    case "Once": return 1;' \
-    '    case "After": return 1;' \
-    '    case "Every": return 1;' \
-    '    case "Gate": return 1;' \
-    '    case "Until": return 1;' \
-    '    case "Backoff": return 1;' \
-    '    default: throw new Error(`Cadence ${cadence.kind} evaluation is deferred`);' \
-    '  }' \
-    '}' >"$main/packages/kernel/src/core.ts"
+  cp "$script_dir/../packages/kernel/src/types.ts" "$main/packages/kernel/src/types.ts"
+  cp "$script_dir/../packages/kernel/src/core.ts" "$main/packages/kernel/src/core.ts"
   printf '%s\n' \
     'if (process.env.DOTLN_FIXTURE_NPM_FAIL === "skeleton") process.exit(9);' \
     'process.stdout.write("fixture skeleton passed\\n");' >"$main/packages/skeleton/dist/src/cli.js"
@@ -188,6 +171,27 @@ assert_no_candidate_tag "$main" "$origin"
 if DOTLN_FIXTURE_NPM_FAIL=test release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: evidence failure published\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
 
+make_repo cadencefailure
+"$node_bin" -e '
+  const fs = require("node:fs");
+  const path = process.argv[1];
+  const source = fs.readFileSync(path, "utf8");
+  const malformed = source.replace("\n    default:\n", "\n");
+  if (malformed === source) process.exit(1);
+  fs.writeFileSync(path, malformed);
+' "$main/packages/kernel/src/core.ts"
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+cadence_origin_before="$(git --git-dir="$origin" for-each-ref --format='%(objectname) %(refname)' | LC_ALL=C sort)"
+cadence_trace="$fixture/git.trace"
+if cadence_failure="$(GIT_TRACE="$cadence_trace" release_close WO-099 --publish 2>&1)"; then printf 'error: malformed cadence source published\n' >&2; exit 1; fi
+grep -Fq 'cannot derive cadence evaluator cases from source' <<<"$cadence_failure"
+if grep -Fq ' mktag' "$cadence_trace"; then printf 'error: malformed cadence source reached git mktag\n' >&2; exit 1; fi
+if grep -Fq ':refs/tags/v0.2.1' "$cadence_trace"; then printf 'error: malformed cadence source attempted a tag push\n' >&2; exit 1; fi
+test "$(git --git-dir="$origin" for-each-ref --format='%(objectname) %(refname)' | LC_ALL=C sort)" = "$cadence_origin_before"
+assert_no_candidate_tag "$main" "$origin"
+printf 'malformed cadence source refused before tag publication\n'
+
 make_repo conflict
 base_commit="$(git -C "$main" rev-parse HEAD)"
 commit_candidate "$main" WO-099 v0.2.1
@@ -272,12 +276,17 @@ test ! -e "$main/node_modules"
 (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" npm ci >/dev/null)
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" manifest-from-tag v0.2.1 >"$fixture/manifest.json"
 "$node_bin" -e '
+  const assert = require("node:assert/strict");
   const fs = require("node:fs");
   const [path, tracked, leading] = process.argv.slice(1);
   const manifest = JSON.parse(fs.readFileSync(path, "utf8"));
   if (!manifest.notes.changedFiles.includes(tracked)) process.exit(1);
   if (!manifest.notes.changedFiles.includes(leading)) process.exit(1);
   if (!manifest.notes.critical.includes("Workflow authority, recovery, or publication tooling changed; inspect the operator guide and release evidence.")) process.exit(1);
+  assert.deepStrictEqual(manifest.cadence.evaluable, ["Once", "After", "Every", "Gate", "Until", "Backoff"]);
+  assert.deepStrictEqual(manifest.cadence.deferred, ["Burst", "Calendar", "Window", "While", "Sequence", "Merge", "Race", "Repeat"]);
+  process.stdout.write(`cadence manifest evaluable: ${JSON.stringify(manifest.cadence.evaluable)}\n`);
+  process.stdout.write(`cadence manifest deferred: ${JSON.stringify(manifest.cadence.deferred)}\n`);
 ' "$fixture/manifest.json" "$tracked_path" "$leading_path"
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" validate "$fixture/manifest.json" >/dev/null
 
