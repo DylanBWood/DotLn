@@ -322,7 +322,7 @@ const compatibility = (root) => {
     "control-log",
   );
   const cadenceUnion =
-    /export namespace Cadence\s*\{\s*export type T = ([^;]+);/s.exec(
+    /export namespace Cadence\s*\{\s*export type T\s*=\s*([^;]+);/s.exec(
       types,
     )?.[1];
   if (!cadenceUnion) throw new Error("cannot derive cadence kinds from source");
@@ -330,15 +330,43 @@ const compatibility = (root) => {
     .split("|")
     .map((value) => value.trim())
     .filter(Boolean);
-  const cadenceSwitch =
-    /export function evaluateCadence[\s\S]+?switch \(cadence\.kind\) \{([\s\S]+?)\n\s*\}/.exec(
+  const allKindSet = new Set(allKinds);
+  if (
+    allKinds.length === 0 ||
+    allKindSet.size !== allKinds.length ||
+    allKinds.some((kind) => !/^[A-Za-z_$][\w$]*$/.test(kind))
+  )
+    throw new Error("cannot derive cadence kinds from source");
+  const cadenceEvaluator =
+    /^export function evaluateCadence\b[\s\S]+?^}\n(?=\nexport )/m.exec(
       core,
-    )?.[1];
+    )?.[0];
+  const cadenceSwitchMatch =
+    cadenceEvaluator === undefined
+      ? undefined
+      : /^([ \t]*)switch \(cadence\.kind\) \{([\s\S]+?)^\1  default:/m.exec(
+          cadenceEvaluator,
+        );
+  const cadenceSwitch = cadenceSwitchMatch?.[2];
   if (!cadenceSwitch)
     throw new Error("cannot derive cadence evaluator cases from source");
-  const evaluable = [...cadenceSwitch.matchAll(/case "([^"]+)"/g)].map(
-    (match) => match[1],
-  );
+  const caseIndent = `${cadenceSwitchMatch[1]}  `;
+  const caseCount = [
+    ...cadenceSwitch.matchAll(new RegExp(`^${caseIndent}case\\b`, "gm")),
+  ].length;
+  const evaluable = [
+    ...cadenceSwitch.matchAll(
+      new RegExp(`^${caseIndent}case "([^"]+)":`, "gm"),
+    ),
+  ].map((match) => match[1]);
+  const evaluableSet = new Set(evaluable);
+  if (
+    evaluable.length === 0 ||
+    evaluable.length !== caseCount ||
+    evaluableSet.size !== evaluable.length ||
+    evaluable.some((kind) => !allKindSet.has(kind))
+  )
+    throw new Error("cannot derive cadence evaluator cases from source");
   return {
     schemas: {
       eventEnvelope: { min: eventEnvelope, max: eventEnvelope },
@@ -349,7 +377,7 @@ const compatibility = (root) => {
     },
     cadence: {
       evaluable,
-      deferred: allKinds.filter((kind) => !evaluable.includes(kind)),
+      deferred: allKinds.filter((kind) => !evaluableSet.has(kind)),
     },
   };
 };
