@@ -1,0 +1,24 @@
+# Local raw material and dependency/build output.
+docs/intake/
+node_modules/
+**/dist/
+**/*.tsbuildinfo
+
+# Append-only records and line-oriented/hash fixtures are not formatter input.
+**/*.jsonl
+docs/lineage/idea-ledger.md
+corpus/fixtures/
+corpus/manifests/
+
+# Settled decisions and work-order scope authorities retain reviewable bytes.
+docs/decisions/
+docs/work-orders/*.md
+!docs/work-orders/WO-006-publication-bootstrap.md
+
+# Generated projections and immutable reviewed evidence keep their original bytes.
+docs/control/current.md
+docs/discovery/environment.json
+docs/discovery/environment.md
+docs/verifications/WO-*/
+docs/final-reviews/WO-*/
+docs/releases/v*.md

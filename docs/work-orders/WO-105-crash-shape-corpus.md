@@ -10,9 +10,14 @@ MUST pin the close disposition: a version strictly below the latest published
 tag (honest no-release close) or an operator-authorized, dated retiming.
 Never an unauthorized patch between the reserved v0.2.2 (WO-005) and v0.2.3
 (WO-006) rungs. Expected class: internal tooling/evidence only.
-**Series note:** reserved adjacent WO-10x series; numbering provisional — the
+**Historical series note (superseded):** reserved adjacent WO-10x series;
+numbering provisional — the
 operator may renumber at activation. This order consolidates the former
 WO-105 (store lane) and WO-106 (skeleton lane) candidates.
+**Identity update — 2026-09-01:** the provisional renumbering option above is
+superseded for identifier identity. Retain `WO-105` as this order's stable,
+opaque reference; represent purpose and grouping in the provisional work-order
+map and future explicit metadata. This update changes no other scope.
 **Depends on:** WO-004 merged — branch from `origin/main` at or after the
 v0.2.1 close. Independent of the mainline and of the other adjacent orders.
 

@@ -54,3 +54,12 @@ notes and tooling choices within the decided constraints.
   `v0.7.0` to application release target `v0.8.0`, and the personal
   source-to-deliverable vertical moves from `v0.9.0` to `v0.10.0`. Published
   history and the substance of this decision do not change.
+- WO-006 adds Prettier 3.9.6 as an exact dev dependency and the repository-wide
+  formatter for supported, human-maintained text. The pinned configuration
+  standardizes 80-column wrapping and LF endings; explicit ignores protect raw
+  intake, append-only and hash-sensitive data, settled decision bodies,
+  work-order scope authorities, generated projections, immutable reviewed
+  evidence, dependencies, and build output. Targeted Markdown ignore comments
+  retain established heading anchors where whitespace is significant. `format`
+  writes the supported surface and `format:check` joins the evidence gate.
+  Prettier never enters the kernel's runtime dependency graph.

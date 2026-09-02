@@ -1,4 +1,7 @@
 {
   "files": [],
-  "references": [{ "path": "./packages/kernel" }, { "path": "./packages/skeleton" }]
+  "references": [
+    { "path": "./packages/kernel" },
+    { "path": "./packages/skeleton" }
+  ]
 }

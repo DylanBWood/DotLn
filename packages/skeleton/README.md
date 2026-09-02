@@ -23,15 +23,15 @@ scene. The final receipt should be:
 verified=true candidates=1
 ```
 
-The timeline should include `CommandResult`, one `DeletionAttempted` followed
-by `CommandRefused`, `VerificationCompleted`, `QueuedPulseNoOp`, and
+The timeline should include `CommandResult`, one `DeletionAttempted` followed by
+`CommandRefused`, `VerificationCompleted`, `QueuedPulseNoOp`, and
 `SchedulesCancelled`. The glyph line begins with `🐛 Repo Gardener` and ends
 with `💤 faded/cancelled`.
 
-Run the executable evidence suite with `npm test`. It covers live-versus-
-replayed decision identity, trace-tamper resistance, structural deletion
-refusal, executed scheduler cancellation, and crash/restart redispatch with
-adapter deduplication.
+Run the executable evidence suite with `npm test`. It covers
+live-versus-replayed decision identity, trace-tamper resistance, structural
+deletion refusal, executed scheduler cancellation, and crash/restart redispatch
+with adapter deduplication.
 
 The loadout shape is deliberately non-normative for v0.4.0. The fake adapter
 deduplicates by the kernel-generated command id so crash recovery can safely

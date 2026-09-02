@@ -35,8 +35,8 @@ reads "WO-002 does not pass" with an unchecked blocking checklist, and no
 `VER-003` exists — yet WO-002 was repaired and merged (`5af72a6`). This is not
 an oversight. The operator confirms the repaired tree and `VER-002` were
 reviewed by the planning model before WO-003 was cut, and that review is what
-closed it. The numbered sequence cannot show this because the review happened
-in a session, not an artifact. Recorded here so a later verifier or final
-reviewer does not re-open it: WO-003's `Depends on: WO-002 complete` is
-satisfied on that authority. The general lesson is the one in `CLAUDE.md` — a
-closure that lives only in a chat effectively did not happen, so record it.
+closed it. The numbered sequence cannot show this because the review happened in
+a session, not an artifact. Recorded here so a later verifier or final reviewer
+does not re-open it: WO-003's `Depends on: WO-002 complete` is satisfied on that
+authority. The general lesson is the one in `CLAUDE.md` — a closure that lives
+only in a chat effectively did not happen, so record it.

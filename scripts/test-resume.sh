@@ -27,6 +27,10 @@ refuse_next() {
 refuse_next
 activate_warning="$(node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md 2>&1 >/dev/null)"
 grep -q 'warning: could not create recovery checkpoint.*not a git repository' <<<"$activate_warning"
+grep -Fq 'Do not repeat this transition after it records' <<<"$activate_warning"
+grep -Fq 'one-invocation outside-sandbox approval' <<<"$activate_warning"
+grep -Fq 'never persist an allow rule' <<<"$activate_warning"
+grep -Fq 'docs/AI-HARNESS-SECURITY.md' <<<"$activate_warning"
 grep -Fq 'Latest checkpoint: unavailable for the latest transition; do not use an older checkpoint' "$fixture_repo/docs/control/current.md"
 before_active_next="$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')"
 active_next="$(node "$fixture_repo/scripts/resume.mjs" next)"
@@ -39,6 +43,9 @@ grep -Fq 'npm run resume -- next' <<<"$refused"
 if grep -Fq 'at file://' <<<"$refused"; then printf 'error: refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
 run implementation-ready
 refuse_next
+before_unfounded_fix="$(event_count)"
+if run fix 2>/dev/null; then printf 'error: repair reopened without a failure source\n' >&2; exit 1; fi
+test "$(event_count)" = "$before_unfounded_fix"
 run verify
 refuse_next
 grep -q 'VER-002.md' "$fixture_repo/docs/control/current.md"
@@ -51,6 +58,17 @@ run verification-result fail
 refuse_next
 run fix
 refuse_next
+run repair-complete
+grep -q 'Legal next actions: verify, fix' "$fixture_repo/docs/control/current.md"
+reopened_fix="$(node "$fixture_repo/scripts/resume.mjs" fix 2>/dev/null)"
+grep -q 'VER-002.md' <<<"$reopened_fix"
+grep -q 'Phase: repairing' "$fixture_repo/docs/control/current.md"
+before_repairing_verify="$(event_count)"
+if repairing_verify="$(node "$fixture_repo/scripts/resume.mjs" verify 2>&1)"; then printf 'error: verify accepted before repair-complete\n' >&2; exit 1; fi
+grep -Fq 'npm run resume -- repair-complete' <<<"$repairing_verify"
+test "$(event_count)" = "$before_repairing_verify"
+tail -n 1 "$fixture_repo/docs/control/resume.jsonl" | grep -Fq '"sourceFindingId":"VER-002"'
+tail -n 1 "$fixture_repo/docs/control/resume.jsonl" | grep -Fq '"sourceReportPath":"docs/verifications/WO-099/VER-002.md"'
 run repair-complete
 run verify
 grep -q 'VER-003.md' "$fixture_repo/docs/control/current.md"
@@ -76,7 +94,7 @@ grep -Fq 'npm run worktree -- publish WO-099 --title <title> --body-file <contai
 closed_next="$(node "$fixture_repo/scripts/resume.mjs" next)"
 grep -Fq 'between work orders' <<<"$closed_next"
 grep -Fq 'npm run worktree -- start' <<<"$closed_next"
-test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "16"
+test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "18"
 grep -q 'Phase: closed' "$fixture_repo/docs/control/current.md"
 test "$(grep -c '"verificationId":"VER-002"' "$fixture_repo/docs/control/resume.jsonl")" = "2"
 test "$(grep -c '"verificationId":"VER-003"' "$fixture_repo/docs/control/resume.jsonl")" = "2"
@@ -99,5 +117,5 @@ test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "$befor
 printf '# next\n' >"$fixture_repo/docs/work-orders/WO-100-next.md"
 run activate WO-100 docs/work-orders/WO-100-next.md
 grep -q 'Work order: WO-100' "$fixture_repo/docs/control/current.md"
-test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "17"
+test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "19"
 printf 'resume tests passed\n'

@@ -1,6 +1,14 @@
 # DotLn
 
-> **Give an agent a build, not your biography.**
+> **Stay with the idea. Let DotLn carry the work around it.**
+
+**DotLn is built to increase the chance that an operator can remain in a genuine
+psychological flow state while working with AI.** It moves the surrounding work
+from babysitting toward dependable workflow: research, capability-building,
+coordination, routine procedure, recovery, and verification happen automatically
+when authorized, predictably when routine, and helpfully when a genuinely
+material decision needs the operator. Dependability is a means; the operator
+staying with the idea, direction, and judgment is the aim.
 
 **DotLn is a local-first workbench for turning human judgment into behavior you
 can inspect, replay, and learn to trust.**
@@ -20,8 +28,8 @@ evaluator, workflow gate, typed support, or task-local instruction.
 
 In RPG terms, loading every correction into every session is like taking your
 **whole stash into every map**, or linking **every support gem to every skill**.
-You pay for mechanics that do nothing and invite interactions you never meant
-to create.
+You pay for mechanics that do nothing and invite interactions you never meant to
+create.
 
 In plain English: give each task only the rules it needs, enforce the dangerous
 ones outside the model, and preserve the evidence needed to understand what
@@ -37,8 +45,8 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
                                       replay / inspect / resume
 ```
 
-Models can rotate. Sessions can die. The organization's memory, constraints,
-and standards remain.
+Models can rotate. Sessions can die. The organization's memory, constraints, and
+standards remain.
 
 ## The smallest proof that the idea works
 
@@ -49,8 +57,8 @@ and standards remain.
 > can harden its evidence and lifecycle without pretending the planned real
 > model worker or interactive application already exists.
 
-The executable scenario gives a Repo Gardener one active mechanic:
-**Seiri / Sort / 整理**.
+The executable scenario gives a Repo Gardener one active mechanic: **Seiri /
+Sort / 整理**.
 
 ```text
 🌙 operator away
@@ -128,30 +136,30 @@ release.
 
 ## The RPG skin carries real mechanics
 
-DotLn borrows the build vocabulary of RPGs such as Path of Exile because it is
-a surprisingly good language for scoped, composable behavior—not because the
+DotLn borrows the build vocabulary of RPGs such as Path of Exile because it is a
+surprisingly good language for scoped, composable behavior—not because the
 mechanics are decorative.
 
-| RPG view | DotLn mechanic |
-|---|---|
-| Build / loadout | The exact behavior assembled for this task |
-| Active skill | Something the actor can do |
-| Support gem | A typed modifier that participates only through a valid link |
-| Reservation cost | Context, tools, attention, or resources held by a mechanic |
-| Map / zone | The repository and isolated worktree |
-| Summon | A disposable worker episode |
-| Save point | A serializable continuation |
-| Combat log | The append-only event and evidence history |
-| Guarded ability | Authority checked before an effect can occur |
-| Item tooltip | Grants, restrictions, obligations, cadence, and cancellation made inspectable |
+| RPG view         | DotLn mechanic                                                                |
+| ---------------- | ----------------------------------------------------------------------------- |
+| Build / loadout  | The exact behavior assembled for this task                                    |
+| Active skill     | Something the actor can do                                                    |
+| Support gem      | A typed modifier that participates only through a valid link                  |
+| Reservation cost | Context, tools, attention, or resources held by a mechanic                    |
+| Map / zone       | The repository and isolated worktree                                          |
+| Summon           | A disposable worker episode                                                   |
+| Save point       | A serializable continuation                                                   |
+| Combat log       | The append-only event and evidence history                                    |
+| Guarded ability  | Authority checked before an effect can occur                                  |
+| Item tooltip     | Grants, restrictions, obligations, cadence, and cancellation made inspectable |
 
 The long-term composition surface is a **Path of Building for organizations**:
 equip a pattern, inspect its exact compiled effect, compare builds, and replay
 where two variants first diverge.
 
 Only the Repo Gardener + Seiri loadout is executable today, and its loadout
-shape is deliberately provisional. The general composition system remains
-ahead on the roadmap.
+shape is deliberately provisional. The general composition system remains ahead
+on the roadmap.
 
 ## The bets underneath the game language
 
@@ -162,8 +170,8 @@ DotLn is opinionated about a few things:
 - **The core is deterministic; the edge may be strange.** Models, humans,
   browsers, and shell scripts can execute work, but they do not get to redefine
   the control logic invisibly.
-- **Hard safety should be boring.** Permissions, guards, worktrees, and
-  evidence gates carry invariants outside prompt prose.
+- **Hard safety should be boring.** Permissions, guards, worktrees, and evidence
+  gates carry invariants outside prompt prose.
 - **Evidence comes before “done.”** A persuasive completion message is not a
   test result.
 - **Implementer and verifier are different roles.** The system should make
@@ -174,9 +182,9 @@ DotLn is opinionated about a few things:
 - **The substrate is shared; the doctrine is yours.** DotLn aims to provide
   common composition, replay, authority, evidence, and inspection primitives
   without prescribing one universal organization.
-- **The operator stays in the fun loop.** Choosing patterns, shaping
-  identities, and exercising judgment remain first-class human work. The
-  machinery should carry the clerical burden around them.
+- **The operator stays in the fun loop.** Choosing patterns, shaping identities,
+  and exercising judgment remain first-class human work. The machinery should
+  carry the clerical burden around them.
 
 The scarce resource is not generation. It is the selection function: knowing
 which combination is good, which correction matters, and when doing nothing is
@@ -235,8 +243,8 @@ The [operator playbook](docs/PLAYBOOK.md) documents the complete loop.
   and decision core.
 - [`packages/skeleton/`](packages/skeleton/) — executable Repo Gardener + Seiri
   vertical.
-- [`docs/product/`](docs/product/) — durable product blueprint and
-  compatibility horizons.
+- [`docs/product/`](docs/product/) — durable product blueprint and compatibility
+  horizons.
 - [`docs/work-orders/`](docs/work-orders/) — bounded implementation authority.
 - [`docs/verifications/`](docs/verifications/) — immutable independent
   verification history.
@@ -249,9 +257,10 @@ The [operator playbook](docs/PLAYBOOK.md) documents the complete loop.
 - `docs/intake/` — local-only raw ideation, deliberately excluded from Git.
 
 If you want the idea first, read [the vision](docs/product/00-vision.md). If you
-want the machinery, start with [the domain model](docs/product/02-domain-model.md)
-and [architecture](docs/product/03-architecture.md). If you want to see
-something move, run [the walking skeleton](packages/skeleton/README.md).
+want the machinery, start with
+[the domain model](docs/product/02-domain-model.md) and
+[architecture](docs/product/03-architecture.md). If you want to see something
+move, run [the walking skeleton](packages/skeleton/README.md).
 
 ## One boundary that does not move
 
@@ -266,7 +275,7 @@ implementation only.
 <details>
 <summary><strong>Why “DotLn”?</strong></summary>
 
-“Days of the Natural Logarithm” hides *Dylan* in `DAYs-of-the-LN` and nods to
+“Days of the Natural Logarithm” hides _Dylan_ in `DAYs-of-the-LN` and nods to
 the project's interest in behavior changing over time through composed
 influences. The name is personal, mathematical, and just strange enough to fit
 the thing being built.

@@ -8,15 +8,15 @@ projections over authoritative records, not one universal log stream.
 Logging, audit, persistence, recovery, backup, disaster recovery, and privacy
 overlap but are not synonyms:
 
-| Concern | Question it answers | Primary artifact |
-|---|---|---|
-| operational logging | What is the system doing or failing to do right now? | diagnostic events, metrics, traces, health state |
-| audit | What consequential action or decision occurred, and was it legitimate? | durable, attributable audit record plus evidence links |
-| persistence | What state must survive process or session death? | canonical event/store state and artifacts |
-| recovery | How does interrupted work resume without duplicate or lost effects? | continuation, lease, command receipt, reconciliation state |
-| backup | Can retained state be restored after loss or corruption? | versioned copies plus tested restore procedure |
-| disaster recovery | How does the implementation resume after site/system-scale failure? | recovery plan, replicated essentials, recovery evidence |
-| privacy | What may be collected, used, revealed, retained, exported, or erased? | classification, purpose, access, retention, redaction, deletion policy |
+| Concern             | Question it answers                                                    | Primary artifact                                                       |
+| ------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| operational logging | What is the system doing or failing to do right now?                   | diagnostic events, metrics, traces, health state                       |
+| audit               | What consequential action or decision occurred, and was it legitimate? | durable, attributable audit record plus evidence links                 |
+| persistence         | What state must survive process or session death?                      | canonical event/store state and artifacts                              |
+| recovery            | How does interrupted work resume without duplicate or lost effects?    | continuation, lease, command receipt, reconciliation state             |
+| backup              | Can retained state be restored after loss or corruption?               | versioned copies plus tested restore procedure                         |
+| disaster recovery   | How does the implementation resume after site/system-scale failure?    | recovery plan, replicated essentials, recovery evidence                |
+| privacy             | What may be collected, used, revealed, retained, exported, or erased?  | classification, purpose, access, retention, redaction, deletion policy |
 
 The same underlying event may participate in several concerns, but each has
 different retention, access, fidelity, and presentation needs.
@@ -25,20 +25,20 @@ different retention, access, fidelity, and presentation needs.
 
 The correct audit view begins with the decision its reader must make.
 
-| Reader | Needs to determine | Useful default view |
-|---|---|---|
-| individual operator | What happened to my work and why? | plain-language episode receipt and replayable timeline |
-| affected user | What did the system use or change about me? | subject-centered activity and consent history |
-| executor / engineer | Where did execution diverge or fail? | correlated event trace, tool calls, state transitions, artifacts |
-| verifier / reviewer | Were acceptance claims independently established? | criterion-to-evidence matrix and provenance graph |
-| manager | Were duties, approvals, and handoffs followed? | workstream timeline, exceptions, decisions, unresolved risk |
-| service owner / SRE | Is the system reliable and recoverable? | health, failure/retry topology, queues, leases, recovery objectives |
-| security investigator | Was access authorized; was anything exposed or changed? | identity/authority/effect graph, access events, integrity chain |
-| privacy lead / data subject | Was data processed for an allowed purpose and retained correctly? | purpose/use/export/deletion ledger scoped to a subject or class |
-| internal auditor / compliance | Did controls operate over the selected period and population? | control-to-evidence matrix, samples, exceptions, attestations |
-| IT director | Can the implementation be governed, retained, restored, and supported? | deployment/data-flow map, control coverage, restore and DR evidence |
-| executive / board / CFO | What material exposure, loss, control failure, or trend exists? | aggregated risk and exception view with drill-through to evidence |
-| regulator / external assessor | Can a bounded claim be substantiated without revealing unrelated data? | signed/exported audit package with scope and redaction manifest |
+| Reader                        | Needs to determine                                                     | Useful default view                                                 |
+| ----------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| individual operator           | What happened to my work and why?                                      | plain-language episode receipt and replayable timeline              |
+| affected user                 | What did the system use or change about me?                            | subject-centered activity and consent history                       |
+| executor / engineer           | Where did execution diverge or fail?                                   | correlated event trace, tool calls, state transitions, artifacts    |
+| verifier / reviewer           | Were acceptance claims independently established?                      | criterion-to-evidence matrix and provenance graph                   |
+| manager                       | Were duties, approvals, and handoffs followed?                         | workstream timeline, exceptions, decisions, unresolved risk         |
+| service owner / SRE           | Is the system reliable and recoverable?                                | health, failure/retry topology, queues, leases, recovery objectives |
+| security investigator         | Was access authorized; was anything exposed or changed?                | identity/authority/effect graph, access events, integrity chain     |
+| privacy lead / data subject   | Was data processed for an allowed purpose and retained correctly?      | purpose/use/export/deletion ledger scoped to a subject or class     |
+| internal auditor / compliance | Did controls operate over the selected period and population?          | control-to-evidence matrix, samples, exceptions, attestations       |
+| IT director                   | Can the implementation be governed, retained, restored, and supported? | deployment/data-flow map, control coverage, restore and DR evidence |
+| executive / board / CFO       | What material exposure, loss, control failure, or trend exists?        | aggregated risk and exception view with drill-through to evidence   |
+| regulator / external assessor | Can a bounded claim be substantiated without revealing unrelated data? | signed/exported audit package with scope and redaction manifest     |
 
 No audience receives greater access merely because its visualization is more
 senior. Aggregate views retain drill-through lineage without exposing raw
@@ -46,11 +46,11 @@ content to unauthorized readers.
 
 ## Canonical audit record
 
-Audit should primarily reference the event store and evidence graph rather
-than copy every payload into a second truth. A candidate envelope is (note:
+Audit should primarily reference the event store and evidence graph rather than
+copy every payload into a second truth. A candidate envelope is (note:
 `occurredAt`/`recordedAt` are ISO strings here while the pinned EventEnvelope
-uses numeric log time — reconcile the two representations when this envelope
-is pinned):
+uses numeric log time — reconcile the two representations when this envelope is
+pinned):
 
 ```ts
 type AuditRecord = {
@@ -87,10 +87,10 @@ type AuditRecord = {
 };
 ```
 
-This is not a demand that every action populate every field. Required
-properties depend on action class. A help lookup does not need the record
-weight of a production deletion; a denied attempt may need more security
-detail than a successful inert query.
+This is not a demand that every action populate every field. Required properties
+depend on action class. A help lookup does not need the record weight of a
+production deletion; a denied attempt may need more security detail than a
+successful inert query.
 
 Properties that are easy to omit include:
 
@@ -103,6 +103,10 @@ Properties that are easy to omit include:
   effects;
 - immutable input/output references, versions, and hashes;
 - runtime, model, tool, and material configuration fingerprints;
+- for isolated episodes, the selected environment/profile hash and effective
+  substrate, image/rootfs or guest-kernel identity, mounts, egress,
+  capabilities, resource limits, secret-lease references, boundary denials,
+  teardown, and residual-state outcome—never secret values;
 - evidence strength, dissent, uncertainty, and verifier independence;
 - reversibility, rollback/compensation, and recovery outcome;
 - data classification, purpose, consent/legal basis where applicable;
@@ -113,15 +117,32 @@ Prompt text, chain-of-thought, credentials, and complete sensitive payloads are
 not default audit fields. Prefer typed decisions, inputs, tool/effect records,
 result summaries, and references to separately controlled artifacts.
 
+Safety-counterweight evaluation may derive a **restraint-attribution funnel**
+from correlated records without adding hidden reasoning to the audit envelope.
+The projection keeps selection disposition separate from enforcement/effect
+outcome. Selection records local-alternative choice, `NoOp` decline, authority
+request, boundary intent, or `unknown`. Outcome records guard refusal, operator
+approval denial/cancellation, harness-policy denial, attested OS-sandbox denial,
+or dispatch with its authority state recorded followed by effect observed,
+confirmed no effect, or effect unknown. An authority request and dispatch are
+nonterminal, retries do not create new opportunities, and a generic permission
+failure cannot be attributed to the OS without vendor/OS evidence. Store a
+normalized action class and opaque/redacted target reference, not a credential,
+hostname, secret-bearing command, or speculative reconstruction of
+chain-of-thought. Until the canonical schema and correlation identifier are
+pinned, this is a derived evaluation view over activation, `DecisionTrace`,
+`CommandRefused`, approval, tool-result, and adapter records. Attribute the
+counterweight as `participated`, not `caused`, absent paired evidence.
+
 ## Fidelity levels
 
-| Level | Content | Typical use |
-|---|---|---|
-| L0 receipt | outcome, scope, time, actor, evidence/record link | everyday confirmation |
-| L1 narrative | ordered explanation of major decisions and effects | operator, manager, support |
-| L2 control view | authority, approvals, policy evaluations, exceptions, evidence | audit, security, compliance |
-| L3 technical trace | state transitions, commands, tool results, retries, timings, hashes | engineering and incident response |
-| L4 governed raw | complete retained event envelopes and allowed artifacts | forensic reconstruction under restricted access |
+| Level              | Content                                                             | Typical use                                     |
+| ------------------ | ------------------------------------------------------------------- | ----------------------------------------------- |
+| L0 receipt         | outcome, scope, time, actor, evidence/record link                   | everyday confirmation                           |
+| L1 narrative       | ordered explanation of major decisions and effects                  | operator, manager, support                      |
+| L2 control view    | authority, approvals, policy evaluations, exceptions, evidence      | audit, security, compliance                     |
+| L3 technical trace | state transitions, commands, tool results, retries, timings, hashes | engineering and incident response               |
+| L4 governed raw    | complete retained event envelopes and allowed artifacts             | forensic reconstruction under restricted access |
 
 Higher fidelity is not automatically better. Each level has an audience,
 purpose, access rule, retention class, and known omissions. Every lossy view
@@ -160,27 +181,27 @@ Different questions need different geometries over the same records:
 - **signed evidence package:** selected records, artifacts, hashes, scope,
   redaction manifest, schema versions, and verification instructions.
 
-Filters include time, implementation, workstream, episode, actor, role,
-subject, action/effect, resource, policy, authority decision, evidence status,
-data class, purpose, retention class, runtime/model, result, severity, and
+Filters include time, implementation, workstream, episode, actor, role, subject,
+action/effect, resource, policy, authority decision, evidence status, data
+class, purpose, retention class, runtime/model, result, severity, and
 correlation/causation chain. Saved filters are views, never hidden policy.
 
 ## Persistence and recovery classes
 
-| Class | Examples | Recovery posture |
-|---|---|---|
-| canonical | event log, definitions, authority/policy versions, continuations | transactional append, integrity checks, tested point-in-time restore |
-| effect coordination | command receipts, idempotency keys, leases, outbox/inbox | recover before redispatch; reconcile ambiguous effects |
-| evidence | test results, findings, source hashes, approvals | immutable references, staleness propagation, retention by claim/risk |
-| artifacts | code, documents, media, exports | content-address or version; regenerate where provably possible |
-| projections | Markdown, dashboards, indexes, ratings, narratives | disposable and rebuildable from canonical sources |
-| diagnostics | verbose traces, debug logs, metrics | short-lived by default; sampled and separately access-controlled |
-| secrets | credentials, tokens, private keys | dedicated secret store; never event payload or unprotected backup |
+| Class               | Examples                                                         | Recovery posture                                                     |
+| ------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------- |
+| canonical           | event log, definitions, authority/policy versions, continuations | transactional append, integrity checks, tested point-in-time restore |
+| effect coordination | command receipts, idempotency keys, leases, outbox/inbox         | recover before redispatch; reconcile ambiguous effects               |
+| evidence            | test results, findings, source hashes, approvals                 | immutable references, staleness propagation, retention by claim/risk |
+| artifacts           | code, documents, media, exports                                  | content-address or version; regenerate where provably possible       |
+| projections         | Markdown, dashboards, indexes, ratings, narratives               | disposable and rebuildable from canonical sources                    |
+| diagnostics         | verbose traces, debug logs, metrics                              | short-lived by default; sampled and separately access-controlled     |
+| secrets             | credentials, tokens, private keys                                | dedicated secret store; never event payload or unprotected backup    |
 
 Recovery distinguishes **known-not-applied**, **known-applied**, **ambiguous**,
 and **compensated** effects. A restart replays state, reconciles outstanding
-commands, preserves the original correlation chain, and records recovery as
-new events; it never edits history to make the run look clean.
+commands, preserves the original correlation chain, and records recovery as new
+events; it never edits history to make the run look clean.
 
 ## Backup and disaster recovery choices
 
@@ -198,10 +219,10 @@ universal default:
 - documented dependency order, recovery owner, communications, and manual
   degraded mode.
 
-Every implementation declares recovery point objective, recovery time
-objective, retention, backup frequency, encryption/key ownership, residency,
-restore prerequisites, and the date/result of its last restore and disaster
-exercise. “Backups configured” is not evidence until restoration succeeds.
+Every implementation declares recovery point objective, recovery time objective,
+retention, backup frequency, encryption/key ownership, residency, restore
+prerequisites, and the date/result of its last restore and disaster exercise.
+“Backups configured” is not evidence until restoration succeeds.
 
 ## Privacy and minimization
 
@@ -224,15 +245,15 @@ default. DotLn should instead apply:
 
 Deletion and immutability require design, not slogans. A durable audit record
 may retain that a governed deletion occurred while separately deleting or
-cryptographically rendering inaccessible the sensitive payload. Hashes are
-not automatically anonymous when the input space can be guessed.
+cryptographically rendering inaccessible the sensitive payload. Hashes are not
+automatically anonymous when the input space can be guessed.
 
 ## Policy dimensions implementations can customize
 
 Each implementation can define audited action classes and required properties;
 diagnostic verbosity and sampling; access to fields, views, and exports;
-evidence sufficiency; integrity and signing; storage, residency, encryption,
-and key ownership; retention, deletion, holds, and archival; backup, RPO/RTO,
+evidence sufficiency; integrity and signing; storage, residency, encryption, and
+key ownership; retention, deletion, holds, and archival; backup, RPO/RTO,
 restore, and DR cadence; privacy purposes and subject handling; alerts,
 exceptions, attestations; and interoperability/export schemas.
 
@@ -256,6 +277,5 @@ that matter. Begin with:
    projection or export;
 5. simulate crash-after-effect ambiguity and demonstrate reconciliation;
 6. restore the canonical store from backup and compare semantic hashes;
-7. only then add organizational dashboards, regulatory mappings, replication,
-   or specialized archives demanded by an implementation.
-
+7. only then add organizational dashboards, regulatory mappings, replication, or
+   specialized archives demanded by an implementation.

@@ -23,6 +23,325 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-006 brain/hands, isolation, and foundation ideation (2026-09-01)
+
+Raw source:
+`docs/intake/notes/WO-006-brain-hands-isolation-and-foundation-2026-09-01.md`.
+
+- **Brain and hands is a familiar projection, not agent ontology** `transformed`
+  - The operator's shorthand maps a replaceable model to the brain and
+    tools/effect adapters to senses and hands. Dan McAteer's
+    [“The Evolution of the Agent Harness”](https://www.latent.space/p/attention-interface)
+    uses the broader brain-and-body metaphor: a harness supplies context,
+    tools, persistence, and boundaries around model weights. DotLn preserves the
+    approachable image while keeping model, identity, authority, tools, harness,
+    host, store, evaluator, transport, and execution environment distinct. A
+    model may propose judgment; neither intelligence nor an available hand owns
+    durable work or authorizes an effect. The essay's future predictions and
+    quantitative rhetoric are inspiration, not adopted DotLn facts.
+- **Harness, orchestration, transport, and execution environment are orthogonal**
+  `adopted`
+  - A harness is the immediate episode shell that constructs context, exposes
+    and mediates tools, manages local session state/compaction, and returns
+    structured results. Orchestration is the durable choreography across actors
+    and episodes: topology, routing, sequencing/parallelism, joins,
+    cancellation, retry, cadence, evidence gates, and recovery. Transport says
+    how a WorkOrder/result crosses a boundary. The execution environment says
+    which processes, files, network paths, credentials, devices, and resources
+    are actually visible or mutable. A vendor may bundle them, but DotLn keeps
+    their contracts and evidence separable; none can manufacture authority.
+- **The attention-interface lens names an existing human boundary** `transformed`
+  - The essay's prediction that harnesses will increasingly protect scarce
+    human attention sharpens DotLn's existing mission, six interruption
+    conditions, and decision-packet projection. The host-owned interface must
+    explain why attention is required now, the exact decision and evidence, a
+    recommendation and safe default, the cost of waiting, and what may continue.
+    It is distinct from the existing `AttentionPolicy`, which selects active
+    mechanisms. It may learn only through explicit, versioned proposals and
+    cannot infer mood, psychological flow, or silent operator preferences.
+- **LangGraph is an orchestration accommodation probe, not an adopted stack**
+  `preserved`
+  - The
+    [official JavaScript overview](https://docs.langchain.com/oss/javascript/langgraph/overview)
+    presents LangGraph as a low-level orchestration runtime for durable,
+    stateful graphs that mix deterministic and model-driven steps. A bounded
+    future fixture can test whether DotLn Programs, continuations,
+    interruptions, cancellation, persistence, and typed results lower into it
+    without moving authority or canonical event state into the framework. The
+    pure TypeScript execution remains the reference. No dependency, backend,
+    deployment, or graph schema is selected.
+- **Container and VM agent isolation is a candidate environment experiment**
+  `preserved`
+  - Separate runtime packaging, isolation substrate, permissions, orchestration,
+    harness, and evidence. A worktree protects concurrent Git provenance but is
+    not hostile-code containment. Containers, VMs, and microVMs have different
+    boundary and cost properties, yet no label proves safe mounts, egress,
+    credential handling, resource limits, teardown, correctness, or authority.
+    Start later with a synthetic deterministic worker, no network, credentials,
+    live adapters, or model call; explicit mounts and resources; negative escape
+    fixtures; typed results; and residual-state evidence. Compare the whole
+    harness inside the boundary with a brain-outside/hands-inside protocol.
+    Local capability discovery and evidence precede any provider/default choice,
+    and WO-009 is not silently expanded.
+- **Foundation quality precedes competitive feature breadth** `adopted`
+  - The operator's World of Warcraft comparison is an experiential design
+    analogy, not a factual market-causation claim: a basic low-level action felt
+    good enough to repeat because cadence, responsiveness, animation, and
+    feedback were already strong, then useful outside innovations could be
+    incorporated. DotLn's “level-10 loop” is intent → understood plan →
+    authorized progress → timely feedback → inspectable evidence. Make that
+    loop dependable and satisfying before chasing gaps. Evaluate outside ideas
+    by decomposing their observable semantics: compose current primitives when
+    exact, provide an explicit adapter/lowering when portable, or admit and
+    prove a missing primitive. Never hide a one-off feature behind a familiar
+    name.
+
+## WO-006 temporal-response and RxJS `expand()` ideation (2026-09-01)
+
+Raw source:
+`docs/intake/notes/WO-006-temporal-response-semantics-2026-09-01.md`.
+
+- **Interaction meaning includes temporal and relational structure** `adopted`
+  - Generalize the quench discussion into a candidate temporal interpretation
+    layer over both system and operator events. Relevant evidence may include
+    recurrence density, failure after correction, active objective and
+    continuation, explicit quote/reply links, stale-work mismatch, ordered mode
+    transitions, and later correction of a proposed attachment. A reply may
+    answer an earlier prompt rather than the closest turn. Immutable transport
+    reply facts, an operator-declared semantic target, and a system-inferred
+    attachment are distinct; later evidence may revise only the derived
+    projection. Ambiguous events remain unresolved unless one material
+    clarification is needed. Rule-specific counts and windows can establish
+    typed predicates, but “five times in five minutes” is illustrative rather
+    than a universal threshold. Temporal evidence may establish an observable
+    correction or heat condition; it cannot retarget the objective, widen
+    authority, authorize effects, or establish latent/unreported intent, anger,
+    engagement, cultural identity, mood, or psychological flow.
+    The operator's association with the Korean Air communication discussion in
+    _Outliers_ is preserved as an unmined research pointer, not a transferred
+    taxonomy or factual aviation claim.
+- **RxJS `expand()` is a bounded lowering hypothesis, not temporal semantics**
+  `preserved`
+  - The [official operator reference](https://rxjs.dev/api/index/function/expand)
+    describes recursive projection of source and generated values. Test it as
+    a small edge/runtime lowering experiment for bounded continuation or
+    dependency graphs and pure internal-transition unfolding while keeping
+    canonical statecharts/IR authoritative. It may not invent external mode
+    changes, replies, work, or effects. A fixture
+    must pin terminal behavior, cycles, cancellation, branching/concurrency,
+    ordering, step/depth/resource bounds, duplicate suppression, and teardown.
+    It does not itself solve windows, reply attachment, quench detection, or
+    communication interpretation, and no runtime/library decision is made here.
+
+## WO-006 Flow Steward literature ideation (2026-09-01)
+
+Raw source:
+`docs/intake/notes/WO-006-flow-steward-literature-2026-09-01.md`.
+
+- **A Flow Steward removes evidenced obstacles around operator-owned work, then
+  gets out of the way** `adopted`
+  - Preserve a candidate, workstream-scoped support role that keeps the active
+    idea and continuation source-linked, moves authorized research,
+    coordination, translation, status reconciliation, and recovery metawork off
+    the main interaction, and returns compact evidence or a material decision
+    packet. Its inspiration is Joel Spolsky's
+    [“Controlling Your Environment Makes You Happy”](https://www.joelonsoftware.com/2000/04/10/controlling-your-environment-makes-you-happy/)
+    and [“Two Stories”](https://www.joelonsoftware.com/2000/03/19/two-stories/),
+    plus Rands's
+    [“Managing Nerds”](https://randsinrepose.com/archives/managing-nerds/).
+    Transfer predictable action/result mechanics, trusted local ownership,
+    recurring-friction removal, protected creation time, and optional credible
+    help—not psychological claims, human-management authority, personality
+    taxonomies, stereotypes, surveillance, or organizational punishment. The
+    role is bypassable, revocable, and unable to own or alter the objective,
+    widen authority, remove protected gates, hide material choices, invent
+    backlog, equip its own proposals, or verify itself. Existing roles,
+    reactors/statecharts, disposable sidecars, and source-linked translation
+    are possible lowerings; no manager-like actor kind, global coordinator, or
+    resident monitor is adopted. Observable friction and the role's own cost can
+    be compared; operator flow remains an optional self-report, never a
+    telemetry claim.
+
+## WO-006 continuity-critical flow / quench ideation (2026-09-01)
+
+Raw source:
+`docs/intake/notes/WO-006-superconductor-quench-2026-09-01.md`.
+
+- **Continuity-critical flow has binary quench semantics, not a tone score**
+  `adopted`
+  - Distinguish ordinary collaborative exploration, where bounded mistakes and
+    mutual course correction are expected, from an explicitly established mode
+    in which the operator is carrying a long chain of ideas and the system must
+    protect that continuity while researching blockers and sustaining authorized
+    work. The superconductor is the familiar lens; the candidate formal state in
+    that second mode is `conducting | quenched`. Any applicable, scoped heat
+    condition—instantaneous or proved from an event sequence—can trigger the
+    transition, so satisfied conditions are ORed rather than ranked or summed.
+    Recurrence inside a rule-specific window may be evidence; it is not a
+    universal heat score. Main-thread blocking is one example, not the canonical
+    source list; the recalled count of nine was an incidental subset of the
+    broader correction corpus and pins no taxonomy or completeness promise. A
+    quench describes the operator–system interaction/workstream, not the
+    operator's mood. Expletives, capitalization, and other surface markers are
+    weak observations at most; the operator may instead be directing the
+    response posture toward focus, urgency, continuity preservation, and
+    proactive unblocking. Quench never increases authority or proves a
+    psychological state. Preserve the idea/continuation, stop compounding the
+    failure, collect evidence, and satisfy an explicit recovery contract before
+    claiming the `conducting` phase has resumed.
+  - Provenance is mixed: the current operator explanation is authoritative for
+    the intended semantics, while parts of the historical formulation may have
+    been an agent's explanation after reading `v1` transcripts. Preserve that
+    uncertainty rather than assigning single-origin authorship to every phrase.
+
+## WO-006 flow-over-babysitting mission ideation (2026-09-01)
+
+Raw source:
+`docs/intake/notes/WO-006-flow-over-babysitting-mission-2026-09-01.md`.
+
+- **Operator flow state is the mission; dependable workflow is one means**
+  `adopted`
+  - DotLn should move AI-assisted work away from babysitting—repeated attention,
+    procedural prompting, manual coordination, recovery, and frustrated context
+    switching—and toward conditions in which the operator can stay focused on
+    the idea and implementation direction. Supporting research,
+    capability-building, coordination, routine procedure, recovery, and
+    verification should occur automatically when authorized, predictably when
+    routine, and helpfully when a genuinely material decision needs the
+    operator. The mission is not merely system throughput: dependable workflow
+    should increase the chance of a psychological flow state. That state cannot
+    be guaranteed or inferred from activity telemetry, and flow never licenses
+    hidden authority, skipped evidence, perpetual action, or self-verification.
+- **“Give an agent a build, not your biography” becomes architectural shorthand**
+  `transformed`
+  - Preserve the line as the explanation for task-scoped composition and minimal
+    context, but demote it from the lead tagline. The broader mission explains
+    why that mechanism matters: keeping the operator with the idea instead of
+    making them repeatedly supervise the machinery around it.
+
+## WO-006 Team Topologies research ideation (2026-09-01)
+
+Raw source:
+`docs/intake/notes/WO-006-team-topologies-research-2026-09-01.md`.
+
+- **Mine Team Topologies for both agent-coordination patterns and counterpatterns**
+  `preserved`
+  - Preserve a near-term source-grounded research candidate, to be conducted
+    only when explicitly allocated and using an authorized copy with provenance
+    rather than recollection. Test ideas about agent coordination, work streams,
+    communication, and what should or should not transfer from human
+    organization design to disposable agent incarnations. Each useful idea must
+    be rewritten through DotLn's familiar/formal/code lenses and checked against
+    existing DotLn mechanics. No book-derived mechanic, taxonomy, citation,
+    scheduling commitment, or architecture decision is claimed before that
+    review. The older ledger title “Team Topologies + Turn the Ship Around
+    applied to agents” records the operator's association, but its body adopts
+    only the Marquet/Ladder mapping; that title is not evidence that Team
+    Topologies was reviewed or adopted.
+
+## WO-006 work-order navigation ideation (2026-09-01)
+
+Raw source:
+`docs/intake/notes/WO-006-work-order-navigation-2026-09-01.md`.
+
+- **Work-order IDs name work; evidence and policy explain what can run next**
+  `adopted`
+  - Treat every existing `WO-NNN` as an opaque, stable reference rather than a
+    sequence, priority, or family code. Preserve the completed and drafted 10x
+    identifiers without waiting for mainline numbers to “catch up.” A separate,
+    provisional planning projection should show purpose/track, lifecycle
+    evidence, hard dependencies, activation prerequisites, execution role and
+    model constraints, affected surfaces, and blockers. It must keep three
+    answers distinct: the current workflow's legal next transition, all orders
+    eligible after dependency/preflight checks, and the operator or planning
+    policy's recommended next choice. Completion also stays staged—implemented,
+    verified, final-reviewed, merged, and released/no-release are not one
+    Boolean. Pilot the view manually, then decide from use whether standardized
+    work-order metadata and a generated DAG/index deserve a bounded work order;
+    do not renumber history or pin the final schema now.
+
+## WO-006 embodied-explorer ideation (2026-09-01)
+
+Raw source:
+`docs/intake/notes/WO-006-embodied-explorer-2026-09-01.md`.
+
+- **An Embodied Explorer learns a body before it claims a skill** `adopted`
+  - Extend the behavioral-toolbox and game-AI horizon with a candidate role that
+    begins from rudimentary typed senses, bounded motor primitives, and
+    proprioceptive/contact/effort feedback in a 3D environment. Keep three
+    things distinct: the authoritative embodiment contract, the actor's
+    uncertain learned body/capability model, and its durable identity. Repeated
+    attempts may propose versioned composite skills such as balance, reach,
+    grasp, locomotion, and tool use, but capability and limitation claims require
+    independent evidence under named body, world, and controller versions.
+    Novelty seeking, adjacent-purpose probes, skill chunking, and scaffold/tool
+    building are candidate supports rather than intrinsic authority. They may
+    generate bounded experiments and inactive tool candidates; they cannot
+    rewrite the objective, widen the authority envelope, equip their own output,
+    or certify themselves. A 3D simulator is an edge adapter and proving ground,
+    not canonical DotLn ontology; real-world actuation remains a separate
+    high-trust horizon. Exact morphology, sensors, control loop, skill
+    representation, promotion gates, simulator, and first curriculum remain
+    open.
+
+## WO-006 custom rule-import ideation (2026-09-01)
+
+Raw source:
+`docs/intake/notes/WO-006-custom-rule-imports-2026-09-01.md`.
+
+- **External rule imports are previewed compatibility plans, not blind ingestion**
+  `adopted`
+  - User-owned and public rule sources should retain immutable provenance while
+    DotLn previews how each construct could map, how faithful that mapping is,
+    and which alternative implementations are available. The idea is
+    generalized from named storage technology to source-specific relational
+    stores: their schema and evaluation behavior must be discovered read-only,
+    never assumed from a generic “rules engine” label. Public industry rules can
+    seed exercises and calibration fixtures only with license, jurisdiction,
+    effective-date, official-status, and update provenance visible. Native
+    materialization, delegated evaluation, and non-executable reference are
+    distinct choices; suggestion, local creation, activation, and source
+    write-back remain separate. “Seamless” stays an evidence claim until parity,
+    divergence, refresh, rollback, data minimization, and authority effects are
+    proved. The import-plan schema, connector contract, precedence model, sync
+    policy, and calibration corpus remain open.
+
+## WO-006 expanded ideation (2026-09-01)
+
+Raw source: `docs/intake/notes/WO-006-expanded-ideation-2026-09-01.md`.
+
+- **The Malcolm Check separates available moves from justified moves**
+  `adopted`
+  - A candidate counterweight support interrupts exploration when newly noticed
+    access starts determining the plan, especially at a trust boundary absent
+    from the objective. It makes the selector compare any remote or otherwise
+    consequential move with an available local read-only route, an explicit
+    authority request, and `NoOp`. If no local route exists, that absence is
+    recorded rather than invented. Hard permission guards remain the enforcement
+    layer; the support cannot enlarge the authority envelope. The familiar
+    persona or mask, precise triggers, and compiled shape remain open design
+    questions.
+- **`ideation:` dispatches the complete durable pipeline by default** `adopted`
+  - The prefix means raw capture followed by clean-room review, rewritten
+    synthesis, warranted ledger entries, product-doc write-back, and any needed
+    work-order receipt. An explicit capture-only qualifier is the exception.
+    When the breakout interrupts active execution, the operator separately
+    controls whether that execution resumes; the existing worktree is preserved
+    either way.
+- **Restraint accounting separates selection-layer restraint from external intervention**
+  `adopted`
+  - Evaluate the Malcolm Check with observable structured records, never a
+    claim about hidden reasoning. For each recorded boundary opportunity, keep
+    selection disposition (local alternative, `NoOp`, authority request,
+    boundary intent, unknown) separate from enforcement/effect outcome (guard,
+    operator, harness, attested OS stop, or dispatch with recorded authority
+    state followed by observed effect, confirmed no effect, or unknown effect).
+    Report counts with opportunity denominators, deduplicated retries, matched
+    harness versions, and paired authorized scenarios; label the check
+    `participated` rather than `caused` without counterfactual evidence. Existing
+    decision/refusal primitives cover only part of this funnel; end-to-end
+    collection and a pinned correlation schema remain future work.
+
 ## WO-012 release-gate path handling (2026-09-01)
 
 - **Git pathname output is encoded unless the consumer requests `-z`**
