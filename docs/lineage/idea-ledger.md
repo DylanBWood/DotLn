@@ -23,6 +23,61 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-02 release-surfaces planning (operator-dispatched, after the `v0.3.0` close)
+
+Source: the operator's 2026-09-02 planning session after the `v0.3.0` release
+close, captured locally in
+`docs/intake/notes/WO-024-WO-026-release-surfaces-planning-2026-09-02.md`. The
+session nominated WO-024 through WO-026 as planner-synthesized drafts and
+refreshed the work-order map's recommended sequence. Identifiers are opaque
+stable references; nomination records the finding and a bounded route forward,
+not activation authority.
+
+- **Release notes are reviewed prose projected to where readers look; the tag
+  stays the record** `adopted`
+  - `v0.3.0` shipped with notes only inside its tag object, assembled from the
+    work order's Objective paragraph and raw commit subjects, and the
+    repository has no GitHub Release. The editorial content already exists in
+    each final review's committed PR body. The reviewer therefore writes a
+    five-section release-notes file as part of the passing package; release
+    close assembles the edition for a tag from every such file merged since
+    the previous release, keeps the annotated tag as the immutable record, and
+    publishes the same edition as a GitHub Release under the existing
+    release-close phrase (a bounded widening of that authority). No
+    per-release commit and no second release PR: WO-004's decision stands.
+    WO-024 is the bounded route.
+- **A public surface states the release of the source it is in; currency is
+  checked, not remembered** `adopted` `transformed`
+  - The root README has only ever been edited inside work-order branches
+    before the tag existed, so it can only describe the previous boundary, and
+    release close pushes no commit. This transforms the WO-007 final-review
+    stance that refreshing it after the release is ordinary follow-on
+    documentation: a delimited release block names the version the tag will
+    carry, `worktree publish` and `release close` check it against the work
+    order's target and the latest published tag, and a component's version
+    must move when its source moves. Version axes stay separate
+    (10-ir-compatibility). WO-025 is the bounded route.
+- **Work-order files are immutable addresses; open versus closed is a
+  generated view** `adopted`
+  - The operator asked whether open and closed orders should be separated.
+    Paths are cited by immutable verification and final-review reports, the
+    append-only control log, and tag manifests (106 references outside the
+    directory at `v0.3.0`), and release close reads the closed order at its
+    recorded path, so moving files would break records that cannot be edited.
+    The pilot map has now been used across three closes and its hand-written
+    evidence cells went stale at each; the 2026-09-01 navigation entry
+    deferred exactly this decision to use. Route: generate an index from
+    work-order headers, a per-order reduction of the control log, and tag
+    manifests, checked fresh by `npm test`; the map keeps only recommendation
+    and rationale. WO-026, after WO-018's consolidation.
+- **A defect that recurs at every release is fixed before the next release,
+  not after the next big rung** `preserved`
+  - A sequencing observation, not a rule: unseen notes and a stale front page
+    recur at every tagging close, so their fixes were placed directly after
+    WO-013 rather than behind the larger queued orders; deferring them costs
+    one more defective release per close. Recorded because the prior
+    recommended sequence would have shipped three more.
+
 ## WO-007 repair-window ideation — Clean Room as an active (2026-09-02)
 
 Source: operator clarification and ideation captured in the main checkout's
