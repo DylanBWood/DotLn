@@ -10,6 +10,7 @@ create_test_temp_root "$tmp_base" "$test_root_prefix"
 test_root="$test_temp_root_result"
 install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 node_bin="$(command -v node)"
+real_git="$(command -v git)"
 u202f="$(printf '\342\200\257')"
 assert_u202f() {
   "$node_bin" -e 'if (!Buffer.from(process.argv[1], "utf8").toString("hex").includes("e280af")) process.exit(1)' "$1"
@@ -38,10 +39,16 @@ make_repo() {
   git -C "$main" config user.email test@example.invalid
   git -C "$main" config user.name "DotLn Release Test"
   git -C "$main" config core.quotePath true
+  github_repo="dotln-fixture/$name"
+  github_origin="https://github.com/$github_repo.git"
+  git -C "$main" config "url.$origin.insteadOf" "$github_origin"
+  git -C "$main" remote set-url origin "$github_origin"
   git -C "$main" switch -c main >/dev/null 2>&1
   mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/releases" "$main/packages/kernel/src" "$main/packages/skeleton/dist/src" "$main/packages/skeleton/src"
-  cp "$script_dir/release.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
+  cp "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
   cp "$script_dir/../docs/releases/tag-manifest.template.json" "$main/docs/releases/"
+  printf '# Historical v0.2.0 manifest for WO-003\n' >"$main/docs/releases/v0.2.0.md"
+  printf '# Historical v0.2.0 notes for WO-003\n' >"$main/docs/releases/v0.2.0-notes.md"
   cp "$script_dir/../.gitignore" "$main/.gitignore"
   printf '%s\n' \
     '{' \
@@ -68,12 +75,31 @@ make_repo() {
   write_control_events "$main/docs/control/resume.jsonl" WO-003 docs/work-orders/WO-003-fixture.md
   git -C "$main" add .
   git -C "$main" commit -m 'fixture v0.2.0' >/dev/null
-  git -C "$main" tag -a v0.2.0 -m 'fixture baseline'
+  git -C "$main" tag -a v0.2.0 -m 'DotLn v0.2.0 — fixture baseline'
   git -C "$main" push -u origin main >/dev/null 2>&1
   git -C "$main" push origin refs/tags/v0.2.0 >/dev/null 2>&1
   bin="$fixture/bin"
   npm_log="$fixture/npm.log"
+  gh_log="$fixture/gh.log"
+  gh_state="$fixture/gh-state"
   mkdir -p "$bin"
+  printf '%s\n' \
+    '#!/bin/bash' \
+    'set -euo pipefail' \
+    "real_git='$real_git'" \
+    'if [[ "$#" -eq 6 && "$1" == "-C" && "$3" == "remote" && "$4" == "get-url" && "$5" == "--all" && "$6" == "origin" ]]; then' \
+    '  $real_git -C "$2" config --get-all remote.origin.url' \
+    '  exit 0' \
+    'fi' \
+    'if [[ "$#" -eq 7 && "$1" == "-C" && "$3" == "remote" && "$4" == "get-url" && "$5" == "--push" && "$6" == "--all" && "$7" == "origin" ]]; then' \
+    '  urls="$($real_git -C "$2" config --get-all remote.origin.pushurl || true)"' \
+    '  if [[ -z "$urls" ]]; then urls="$($real_git -C "$2" config --get-all remote.origin.url)"; fi' \
+    '  printf "%s\\n" "$urls"' \
+    '  exit 0' \
+    'fi' \
+    'if [[ "${DOTLN_FIXTURE_GIT_FAIL:-}" == "update-ref" && "${3:-}" == "update-ref" ]]; then printf "fixture update-ref failure\\n" >&2; exit 9; fi' \
+    'exec "$real_git" "$@"' >"$bin/git"
+  chmod +x "$bin/git"
   printf '%s\n' \
     '#!/usr/bin/env bash' \
     'set -euo pipefail' \
@@ -95,6 +121,42 @@ make_repo() {
     '  *) printf "unexpected npm invocation: %s\\n" "$*" >&2; exit 64 ;;' \
     'esac' >"$bin/npm"
   chmod +x "$bin/npm"
+  mkdir -p "$gh_state"
+  printf '%s\n' \
+    '#!/usr/bin/env bash' \
+    'set -euo pipefail' \
+    'printf "%s\\n" "$*" >>"$DOTLN_GH_LOG"' \
+    'if [[ -n "${GH_REPO:-}" || -n "${GH_HOST:-}" ]]; then printf "ambient GH target leaked\\n" >&2; exit 65; fi' \
+    'if [[ "$*" == "--version" ]]; then printf "gh version fixture\\n"; exit 0; fi' \
+    'if [[ "${1:-} ${2:-}" == "auth status" ]]; then' \
+    '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "auth" ]]; then printf "not authenticated\\n" >&2; exit 4; fi' \
+    '  printf "authenticated fixture\\n"; exit 0' \
+    'fi' \
+    'if [[ "${1:-}" == "release" ]]; then' \
+    '  tag="${3:-}"' \
+    '  if ! git --git-dir="$DOTLN_GH_ORIGIN" show-ref --verify --quiet "refs/tags/$tag"; then printf "release-before-tag %s\\n" "$tag" >>"$DOTLN_GH_LOG"; exit 70; fi' \
+    'fi' \
+    'if [[ "${1:-} ${2:-}" == "release view" ]]; then' \
+    '  body="$DOTLN_GH_STATE/${3}.body"' \
+    '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "view" ]]; then printf "network unavailable\\n" >&2; exit 6; fi' \
+    '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "view404" ]]; then printf "HTTP 404: Not Found\\n" >&2; exit 1; fi' \
+    '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "invalidjson" ]]; then printf "{\\n"; exit 0; fi' \
+    '  if [[ ! -f "$body" ]]; then printf "release not found\\n" >&2; exit 1; fi' \
+    '  node -e '\''const fs=require("node:fs"); process.stdout.write(JSON.stringify({body:fs.readFileSync(process.argv[1],"utf8"),name:`DotLn ${process.argv[2]}`,isDraft:false,isPrerelease:false,assets:[]}));'\'' "$body" "$tag"' \
+    '  exit 0' \
+    'fi' \
+    'if [[ "${1:-} ${2:-}" == "release create" ]]; then' \
+    '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "create" ]]; then printf "fixture create failure\\n" >&2; exit 5; fi' \
+    '  tag="$3"; shift 3; notes_file=""' \
+    '  while (( "$#" )); do if [[ "$1" == "--notes-file" ]]; then notes_file="$2"; shift 2; else shift; fi; done' \
+    '  if [[ -z "$notes_file" || ! -f "$notes_file" ]]; then printf "missing notes file\\n" >&2; exit 64; fi' \
+    '  cp "$notes_file" "$DOTLN_GH_STATE/$tag.body"' \
+    '  printf "https://example.invalid/releases/%s\\n" "$tag"' \
+    '  exit 0' \
+    'fi' \
+    'printf "unexpected gh invocation: %s\\n" "$*" >&2' \
+    'exit 64' >"$bin/gh"
+  chmod +x "$bin/gh"
 }
 
 commit_candidate() {
@@ -106,6 +168,71 @@ commit_candidate() {
   git -C "$repository" commit -m "$id candidate $version" >/dev/null
 }
 
+commit_legacy_multicommit_candidate() {
+  local repository="$1" id="$2" version="$3"
+  local authority="docs/work-orders/$id-fixture.md"
+  printf '# %s — release fixture, %s\n\n**Objective:** Deliver the visible fixture payoff for %s.\n\n**Non-goals:** No distribution.\n' "$id" "$version" "$id" >"$repository/$authority"
+  printf '%s\n' \
+    "{\"schemaVersion\":1,\"type\":\"WorkOrderActivated\",\"workOrderId\":\"$id\",\"workOrderPath\":\"$authority\"}" \
+    "{\"schemaVersion\":1,\"type\":\"ImplementationReady\",\"workOrderId\":\"$id\"}" >>"$repository/docs/control/resume.jsonl"
+  git -C "$repository" add .
+  git -C "$repository" commit -m "$id implementation part one" >/dev/null
+  printf 'second legacy implementation step\n' >"$repository/legacy-step.txt"
+  git -C "$repository" add .
+  git -C "$repository" commit -m "$id implementation part two" >/dev/null
+  mkdir -p "$repository/docs/verifications/$id" "$repository/docs/final-reviews/$id"
+  printf '# verification pass\n' >"$repository/docs/verifications/$id/VER-001.md"
+  printf '# final review pass\n' >"$repository/docs/final-reviews/$id/FINAL-001.md"
+  printf '%s\n' \
+    "{\"schemaVersion\":1,\"type\":\"VerificationRequested\",\"workOrderId\":\"$id\",\"verificationId\":\"VER-001\",\"reportPath\":\"docs/verifications/$id/VER-001.md\"}" \
+    "{\"schemaVersion\":1,\"type\":\"VerificationCompleted\",\"workOrderId\":\"$id\",\"verificationId\":\"VER-001\",\"reportPath\":\"docs/verifications/$id/VER-001.md\",\"verdict\":\"pass\"}" \
+    "{\"schemaVersion\":1,\"type\":\"FinalReviewRequested\",\"workOrderId\":\"$id\",\"finalReviewId\":\"FINAL-001\",\"reportPath\":\"docs/final-reviews/$id/FINAL-001.md\"}" \
+    "{\"schemaVersion\":1,\"type\":\"FinalReviewCompleted\",\"workOrderId\":\"$id\",\"finalReviewId\":\"FINAL-001\",\"reportPath\":\"docs/final-reviews/$id/FINAL-001.md\",\"verdict\":\"pass\"}" >>"$repository/docs/control/resume.jsonl"
+  git -C "$repository" add .
+  git -C "$repository" commit -m "$id final review pass" >/dev/null
+}
+
+commit_reviewed_candidate() {
+  local repository="$1" id="$2" version="$3"
+  local authority="docs/work-orders/$id-fixture.md"
+  local review_dir="$repository/docs/final-reviews/$id"
+  printf '# %s — reviewed release fixture, %s\n\n**Objective:** Deliver reviewed release notes for %s.\n\n**Non-goals:** Package distribution remains outside this source release.\n' "$id" "$version" "$id" >"$repository/$authority"
+  write_control_events "$repository/docs/control/resume.jsonl" "$id" "$authority"
+  mkdir -p "$review_dir"
+  printf '%s\n' \
+    '## Release overview' \
+    '' \
+    'Reviewed overview line one.' \
+    'Reviewed overview line two stays adjacent.' \
+    '' \
+    '## Read before upgrading' \
+    '' \
+    'Reviewer warning line one.' \
+    'Reviewer warning line two stays adjacent.' \
+    '' \
+    '## Substantive changes' \
+    '' \
+    '**Release operations.** Readers now receive the reviewed edition.' \
+    '' \
+    '### WO-999 is reviewer prose, not release membership' \
+    '' \
+    'This heading must not affect the release list.' \
+    '' \
+    '## Progressive polish' \
+    '' \
+    'None.' \
+    '' \
+    '## Evidence and compatibility' \
+    '' \
+    '- Reviewer evidence line.' \
+    '- Reviewer compatibility line.' >"$review_dir/RELEASE-NOTES.md"
+  printf '# final review fixture\n' >"$review_dir/FINAL-001.md"
+  printf '# reviewed PR body fixture\n' >"$review_dir/PR.md"
+  printf 'release tooling changed\n' >"$repository/scripts/release.fixture.mjs"
+  git -C "$repository" add .
+  git -C "$repository" commit -m "$id reviewed candidate $version" >/dev/null
+}
+
 assert_no_candidate_tag() {
   local repository="$1" bare="$2" tag="${3:-v0.2.1}"
   if git -C "$repository" show-ref --verify --quiet "refs/tags/$tag"; then printf 'error: refusal left local %s\n' "$tag" >&2; exit 1; fi
@@ -113,7 +240,11 @@ assert_no_candidate_tag() {
 }
 
 release_close() {
-  (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" close "$@")
+  (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$main/scripts/release.mjs" close "$@")
+}
+
+release_command() {
+  (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$main/scripts/release.mjs" "$@")
 }
 
 make_repo dirty
@@ -151,6 +282,39 @@ make_repo malformed
 commit_candidate "$main" WO-099 v0.2
 git -C "$main" push origin main >/dev/null 2>&1
 if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: malformed release version succeeded\n' >&2; exit 1; fi
+assert_no_candidate_tag "$main" "$origin"
+
+make_repo missinggh
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+mkdir -p "$fixture/no-gh-bin"
+ln -s "$bin/git" "$fixture/no-gh-bin/git"
+missing_gh_trace="$fixture/git.trace"
+if missing_gh_output="$(cd "$main" && PATH="$fixture/no-gh-bin" DOTLN_NPM_LOG="$npm_log" GIT_TRACE="$missing_gh_trace" "$node_bin" "$main/scripts/release.mjs" close WO-099 --publish 2>&1)"; then printf 'error: release accepted missing gh\n' >&2; exit 1; fi
+grep -Fq 'gh is required before tag creation' <<<"$missing_gh_output"
+if grep -Fq ' mktag' "$missing_gh_trace"; then printf 'error: missing gh reached git mktag\n' >&2; exit 1; fi
+test ! -e "$npm_log"
+assert_no_candidate_tag "$main" "$origin"
+
+make_repo unauthenticated
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+unauthenticated_trace="$fixture/git.trace"
+if unauthenticated_output="$(DOTLN_FIXTURE_GH_FAIL=auth GIT_TRACE="$unauthenticated_trace" release_close WO-099 --publish 2>&1)"; then printf 'error: release accepted unauthenticated gh\n' >&2; exit 1; fi
+grep -Fq 'gh authentication is required before tag creation' <<<"$unauthenticated_output"
+if grep -Fq ' mktag' "$unauthenticated_trace"; then printf 'error: unauthenticated gh reached git mktag\n' >&2; exit 1; fi
+test ! -e "$npm_log"
+test "$(cat "$gh_log")" = $'--version\nauth status --hostname github.com'
+assert_no_candidate_tag "$main" "$origin"
+
+make_repo splitorigin
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+git -C "$main" remote set-url --push origin https://github.com/dotln-fixture/wrong-target.git
+if split_origin_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: split fetch/push GitHub targets accepted\n' >&2; exit 1; fi
+grep -Fq 'matching GitHub HOST/OWNER/REPO fetch and push target' <<<"$split_origin_output"
+test ! -e "$npm_log"
+test ! -e "$gh_log"
 assert_no_candidate_tag "$main" "$origin"
 
 make_repo lower
@@ -214,6 +378,15 @@ if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: local-onl
 test "$(git -C "$main" rev-parse v0.2.1^{tag})" = "$local_conflict_object"
 if git --git-dir="$origin" show-ref --verify --quiet refs/tags/v0.2.1; then printf 'error: local-only conflict reached origin\n' >&2; exit 1; fi
 
+make_repo nestedtag
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+git -C "$main" tag -a v0.2.1/child -m 'nested local tag conflict'
+if nested_tag_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: nested local tag conflict accepted\n' >&2; exit 1; fi
+grep -Fq 'release tag v0.2.1 is blocked by nested tag v0.2.1/child' <<<"$nested_tag_output"
+test "$(git -C "$main" cat-file -t v0.2.1/child)" = tag
+assert_no_candidate_tag "$main" "$origin"
+
 make_repo prepare
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -223,6 +396,16 @@ grep -Fq 'npm run release -- close WO-099 --publish' <<<"$prepare_output"
 assert_no_candidate_tag "$main" "$origin"
 test "$(git -C "$main" status --porcelain)" = ""
 
+make_repo missinglocalprevious
+git -C "$main" tag -d v0.2.0 >/dev/null
+git -C "$main" config remote.origin.tagOpt --no-tags
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+missing_local_previous_output="$(release_close WO-099)"
+grep -Fq 'Prepared and validated v0.2.1' <<<"$missing_local_previous_output"
+test "$(git -C "$main" cat-file -t v0.2.0)" = tag
+assert_no_candidate_tag "$main" "$origin"
+
 make_repo pushfail
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -230,6 +413,51 @@ printf '%s\n' '#!/usr/bin/env bash' 'case "$1" in refs/tags/v0.2.1) exit 1 ;; es
 chmod +x "$origin/hooks/update"
 if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: rejected tag push succeeded\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
+if grep -q '^release ' "$gh_log"; then printf 'error: gh release ran before a successful tag push\n' >&2; exit 1; fi
+
+make_repo refrecovery
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+if ref_failure="$(DOTLN_FIXTURE_GIT_FAIL=update-ref release_close WO-099 --publish 2>&1)"; then printf 'error: local tag-ref failure reported success\n' >&2; exit 1; fi
+grep -Fq 'tag published; GitHub Release not created; rerun the same command' <<<"$ref_failure"
+test ! "$(git -C "$main" tag --list v0.2.1)"
+test "$(git --git-dir="$origin" cat-file -t v0.2.1)" = tag
+if grep -q '^release ' "$gh_log"; then printf 'error: gh release ran after failed local tag ref\n' >&2; exit 1; fi
+ref_recovery_output="$(release_close WO-099 --publish)"
+grep -Fq 'GitHub Release created' <<<"$ref_recovery_output"
+test "$(git -C "$main" cat-file -t v0.2.1)" = tag
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+
+make_repo createrecovery
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+if create_failure="$(DOTLN_FIXTURE_GH_FAIL=create release_close WO-099 --publish 2>&1)"; then printf 'error: gh release create failure reported success\n' >&2; exit 1; fi
+grep -Fq 'tag published; GitHub Release not created; rerun the same command' <<<"$create_failure"
+test "$(git -C "$main" cat-file -t v0.2.1)" = tag
+test "$(git -C "$main" rev-list -n 1 v0.2.1)" = "$(git --git-dir="$origin" rev-list -n 1 v0.2.1)"
+test ! -e "$gh_state/v0.2.1.body"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+recovery_output="$(release_close WO-099 --publish)"
+grep -Fq 'GitHub Release created' <<<"$recovery_output"
+test -f "$gh_state/v0.2.1.body"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
+release_close WO-099 --publish >/dev/null
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
+if lookup_failure="$(DOTLN_FIXTURE_GH_FAIL=view release_close WO-099 --publish 2>&1)"; then printf 'error: failed GitHub Release lookup triggered success\n' >&2; exit 1; fi
+grep -Fq 'GitHub Release state not verified and no create was attempted' <<<"$lookup_failure"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
+if ambiguous_404="$(DOTLN_FIXTURE_GH_FAIL=view404 release_close WO-099 --publish 2>&1)"; then printf 'error: ambiguous GitHub 404 triggered success\n' >&2; exit 1; fi
+grep -Fq 'GitHub Release state not verified and no create was attempted' <<<"$ambiguous_404"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
+if invalid_metadata="$(DOTLN_FIXTURE_GH_FAIL=invalidjson release_close WO-099 --publish 2>&1)"; then printf 'error: invalid GitHub Release metadata triggered success\n' >&2; exit 1; fi
+grep -Fq 'GitHub Release state not verified and no create was attempted' <<<"$invalid_metadata"
+grep -Fq 'returned invalid metadata' <<<"$invalid_metadata"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
+printf 'different first line\n' >"$gh_state/v0.2.1.body"
+if mismatch_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: mismatched GitHub Release body accepted\n' >&2; exit 1; fi
+grep -Fq 'GitHub Release body differs at line 1' <<<"$mismatch_output"
+grep -Fq 'expected "DotLn v0.2.1"' <<<"$mismatch_output"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
 
 make_repo success
 subject="$fixture/project-wo099"
@@ -256,8 +484,14 @@ test ! -e "$main/node_modules"
 # Bootstrap path: main is intentionally behind the merged PR, so invoke the
 # reviewed helper from the subject while its working directory is main. The
 # helper may remove the worktree containing its own loaded source.
-success_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$subject/scripts/release.mjs" close WO-099 --publish)"
+success_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/release.mjs" close WO-099 --publish)"
 grep -Fq 'Published annotated v0.2.1' <<<"$success_output"
+grep -Fq 'GitHub Release created' <<<"$success_output"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+grep -Eq '^release create v0\.2\.1 --repo github\.com/dotln-fixture/success --verify-tag --title DotLn v0\.2\.1 --notes-file .+/RELEASE\.md$' "$gh_log"
+grep -Fq 'npm run release -- notes v0.2.1' "$gh_state/v0.2.1.body"
+grep -Fq 'npm run release -- manifest-from-tag v0.2.1' "$gh_state/v0.2.1.body"
+if grep -Fq 'DOTLN-MANIFEST-BEGIN' "$gh_state/v0.2.1.body"; then printf 'error: GitHub Release body contains manifest JSON\n' >&2; exit 1; fi
 grep -Fq 'ci-started-without-node-modules' "$npm_log"
 grep -Fq 'test' "$npm_log"
 test ! -e "$subject"
@@ -276,6 +510,7 @@ case "$main/node_modules" in "$test_root"/*/node_modules) rm -rf -- "$main/node_
 rerun_output="$(release_close WO-099 --publish)"
 grep -Fq 'v0.2.1 is already published' <<<"$rerun_output"
 test "$(git -C "$main" rev-parse v0.2.1^{tag})" = "$published_object"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
 test ! -e "$main/node_modules"
 (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" npm ci >/dev/null)
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" manifest-from-tag v0.2.1 >"$fixture/manifest.json"
@@ -312,6 +547,115 @@ for mutation in commit application component toolchain schema evidence cadence; 
   ' "$mutated" "$mutation"
   if PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" validate "$mutated" >/dev/null 2>&1; then printf 'error: validator accepted %s mutation\n' "$mutation" >&2; exit 1; fi
 done
+
+make_repo edition
+commit_legacy_multicommit_candidate "$main" WO-023 v0.2.1
+commit_reviewed_candidate "$main" WO-024 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+edition_publish_output="$(GH_REPO=wrong/target GH_HOST=wrong.example release_close WO-024 --publish)"
+grep -Fq 'Published annotated v0.2.1' <<<"$edition_publish_output"
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+gh_lines_before_offline="$(wc -l <"$gh_log" | tr -d ' ')"
+release_command notes v0.2.1 >"$fixture/edition-one.md"
+release_command notes v0.2.1 >"$fixture/edition-two.md"
+cmp "$fixture/edition-one.md" "$fixture/edition-two.md"
+release_command manifest-from-tag v0.2.1 >"$fixture/edition-manifest.json"
+git -C "$main" cat-file -p v0.2.1 >"$fixture/edition-tag-object.txt"
+release_command list >"$fixture/release-list.txt"
+test "$(wc -l <"$gh_log" | tr -d ' ')" = "$gh_lines_before_offline"
+grep -Eq $'^v0\.2\.0\t[0-9a-f]{40}\tv0\.2\.0\tWO-003$' "$fixture/release-list.txt"
+grep -Eq $'^v0\.2\.1\t[0-9a-f]{40}\tv0\.2\.1\tWO-023,WO-024$' "$fixture/release-list.txt"
+"$node_bin" - "$fixture/edition-one.md" "$gh_state/v0.2.1.body" "$fixture/edition-manifest.json" "$fixture/edition-tag-object.txt" <<'NODE'
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const [notesPath, bodyPath, manifestPath, tagObjectPath] = process.argv.slice(2);
+const notesWithNewline = fs.readFileSync(notesPath, "utf8");
+const notes = notesWithNewline.replace(/\n$/, "");
+const body = fs.readFileSync(bodyPath, "utf8");
+const manifest = fs.readFileSync(manifestPath, "utf8").replace(/\n$/, "");
+const tagObject = fs.readFileSync(tagObjectPath, "utf8");
+const headings = [...notes.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
+assert.deepStrictEqual(headings, [
+  "Release overview",
+  "Read before upgrading",
+  "Substantive changes",
+  "Progressive polish",
+  "Evidence and compatibility",
+]);
+for (const heading of headings) {
+  const start = notes.indexOf(`## ${heading}`);
+  const nextHeading = headings[headings.indexOf(heading) + 1];
+  const end = nextHeading ? notes.indexOf(`## ${nextHeading}`, start) : notes.length;
+  const section = notes.slice(start, end);
+  assert.ok(section.indexOf("### WO-023") < section.indexOf("### WO-024"));
+}
+assert.ok(notes.includes("**Fallback: no reviewed notes for WO-023 (predates WO-024); commit subjects:**\n\n- WO-023 implementation part one\n- WO-023 implementation part two\n- WO-023 final review pass"));
+assert.ok(notes.includes("Reviewed overview line one.\nReviewed overview line two stays adjacent."));
+assert.ok(notes.includes("Reviewer warning line one.\nReviewer warning line two stays adjacent."));
+assert.ok(notes.includes("**Release operations.** Readers now receive the reviewed edition.\n\n### WO-999 is reviewer prose, not release membership\n\nThis heading must not affect the release list."));
+assert.ok(notes.includes("## Progressive polish\n\n### WO-023"));
+assert.ok(notes.includes("### WO-024 — reviewed release fixture, v0.2.1\n\nNone."));
+assert.ok(notes.includes("- Reviewer evidence line.\n- Reviewer compatibility line."));
+const readBefore = notes.slice(
+  notes.indexOf("## Read before upgrading"),
+  notes.indexOf("## Substantive changes"),
+);
+assert.ok(readBefore.indexOf("Reviewer warning line two") < readBefore.indexOf("### Derived from the diff"));
+assert.ok(readBefore.indexOf("### Derived from the diff") < readBefore.indexOf("Workflow authority, recovery, or publication tooling changed"));
+const evidence = notes.slice(notes.indexOf("## Evidence and compatibility"));
+assert.ok(evidence.indexOf("- Reviewer compatibility line.") < evidence.indexOf("### Machine-derived release evidence"));
+assert.match(evidence, /- Distribution: source-only$/);
+const pointer = "Render these notes locally with `npm run release -- notes v0.2.1`; inspect the canonical manifest with `npm run release -- manifest-from-tag v0.2.1`.\n";
+assert.equal(body, `${notes}\n\n${pointer}`);
+assert.ok(!body.includes("DOTLN-MANIFEST-BEGIN"));
+const annotation = tagObject.slice(tagObject.indexOf("\n\n") + 2);
+assert.equal(
+  annotation,
+  `${notes}\n\nDOTLN-MANIFEST-BEGIN\n${manifest}\nDOTLN-MANIFEST-END\n`,
+);
+NODE
+if grep -Eq -- '--draft|--prerelease|--generate-notes|--notes-from-tag|--discussion-category|--target|--latest|--asset' "$gh_log"; then printf 'error: GitHub Release used an unauthorized publication flag\n' >&2; exit 1; fi
+release_close WO-024 --publish >/dev/null
+test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+gh_lines_before_current_backfill="$(wc -l <"$gh_log" | tr -d ' ')"
+if current_backfill_output="$(release_command publish-notes v0.2.1 2>&1)"; then printf 'error: publish-notes accepted a reviewed-edition tag\n' >&2; exit 1; fi
+grep -Fq "at or after WO-024's release-note contract" <<<"$current_backfill_output"
+test "$(wc -l <"$gh_log" | tr -d ' ')" = "$gh_lines_before_current_backfill"
+
+git -C "$main" tag -a v0.2.2 -m 'DotLn v0.2.2-not-really'
+git -C "$main" push origin refs/tags/v0.2.2 >/dev/null 2>&1
+if release_command notes v0.2.2 >/dev/null 2>&1; then printf 'error: notes accepted a lookalike non-DotLn tag\n' >&2; exit 1; fi
+if lookalike_backfill="$(release_command publish-notes v0.2.2 2>&1)"; then printf 'error: publish-notes accepted a lookalike non-DotLn tag\n' >&2; exit 1; fi
+grep -Fq 'v0.2.2 is not a DotLn release tag' <<<"$lookalike_backfill"
+git -C "$main" tag -a v0.2.3 -m 'DotLn v0.2.3'
+git -C "$main" push origin refs/tags/v0.2.3 >/dev/null 2>&1
+if post_contract_backfill="$(release_command publish-notes v0.2.3 2>&1)"; then printf 'error: publish-notes accepted malformed post-contract notes\n' >&2; exit 1; fi
+grep -Fq "at or after WO-024's release-note contract" <<<"$post_contract_backfill"
+test "$(wc -l <"$gh_log" | tr -d ' ')" = "$gh_lines_before_current_backfill"
+
+release_command notes v0.2.0 >"$fixture/v0.2.0-human.txt"
+test "$(cat "$fixture/v0.2.0-human.txt")" = 'DotLn v0.2.0 — fixture baseline'
+publish_notes_output="$(release_command publish-notes v0.2.0)"
+grep -Fq 'GitHub Release created for historical annotated v0.2.0' <<<"$publish_notes_output"
+test "$(grep -c '^release create v0.2.0 ' "$gh_log")" = 1
+"$node_bin" - "$gh_state/v0.2.0.body" <<'NODE'
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const body = fs.readFileSync(process.argv[2], "utf8");
+assert.equal(
+  body,
+  "**Notes as generated at close; predates WO-024's release-note edition.**\n\n" +
+    "DotLn v0.2.0 — fixture baseline\n\n" +
+    "Historical records: [manifest](../../blob/main/docs/releases/v0.2.0.md) and [notes](../../blob/main/docs/releases/v0.2.0-notes.md).\n",
+);
+NODE
+release_command publish-notes v0.2.0 >/dev/null
+test "$(grep -c '^release create v0.2.0 ' "$gh_log")" = 1
+edition_sha256="$(shasum -a 256 "$fixture/edition-one.md" | awk '{print $1}')"
+printf 'assembled edition fixture sha256: %s\n' "$edition_sha256"
+printf 'release gh stub transcript (temporary paths normalized):\n'
+sed -E 's#--notes-file [^ ]+/RELEASE\.md#--notes-file <temporary-release-body>#' "$gh_log"
+printf 'release edition, GitHub projection, recovery, and historical backfill fixtures passed\n'
 
 make_repo firstrelease
 git -C "$main" tag -d v0.2.0 >/dev/null

@@ -1,8 +1,22 @@
 #!/usr/bin/env node
-import { existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
-import { basename, dirname, join, resolve, sep } from "node:path";
+import {
+  existsSync,
+  lstatSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { parseReleaseNotes, releaseNotesPathFor } from "./release-notes.mjs";
+import {
+  environmentWithoutGhRepo,
+  resolveGitHubPushTarget,
+} from "./github-repository.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const run = (cwd, ...args) => {
@@ -31,12 +45,73 @@ const ensureClean = (path) => {
   if (run(path, "status", "--porcelain") !== "")
     throw new Error(`worktree is not clean: ${path}`);
 };
-const ensureCommand = (command, guidance) => {
-  const checked = spawnSync(command, ["--version"], { encoding: "utf8" });
-  if (checked.status !== 0)
+const executeGh = (cwd, args) =>
+  spawnSync("gh", args, {
+    cwd,
+    encoding: "utf8",
+    env: environmentWithoutGhRepo(),
+  });
+const ensureGh = (path) => {
+  const repository = resolveGitHubPushTarget(path);
+  const available = executeGh(path, ["--version"]);
+  if (available.status !== 0)
     throw new Error(
-      `${command} is required before any remote mutation; ${guidance}`,
+      "gh is required before any remote mutation; install and authenticate GitHub CLI, then retry publish",
     );
+  const authenticated = executeGh(path, [
+    "auth",
+    "status",
+    "--hostname",
+    repository.host,
+  ]);
+  if (authenticated.status !== 0)
+    throw new Error(
+      "gh authentication is required before any remote mutation; authenticate GitHub CLI, then retry publish",
+    );
+  return repository;
+};
+const readTrackedTextAtHead = (root, path, displayPath) => {
+  const tree = spawnSync(
+    "git",
+    [
+      "-C",
+      root,
+      "ls-tree",
+      "-z",
+      "--format=%(objectname)",
+      "HEAD",
+      "--",
+      `:(literal)${path}`,
+    ],
+    { encoding: "utf8" },
+  );
+  if (tree.status !== 0 || !/^[0-9a-f]{40,64}\0$/.test(tree.stdout))
+    throw new Error(`${displayPath}: file is not tracked`);
+  const object = tree.stdout.slice(0, -1);
+  const blob = spawnSync("git", ["-C", root, "cat-file", "blob", object]);
+  if (blob.status !== 0)
+    throw new Error(`${displayPath}: committed file cannot be read`);
+  try {
+    return new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(
+      blob.stdout,
+    );
+  } catch {
+    throw new Error(`${displayPath}: committed file is not valid UTF-8`);
+  }
+};
+const withTemporaryBody = (body, operation) => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-pr-body-"));
+  const path = join(directory, "PR.md");
+  try {
+    writeFileSync(path, body, "utf8");
+    return operation(path);
+  } finally {
+    try {
+      rmSync(directory, { recursive: true, force: true });
+    } catch {
+      // A cleanup failure must not mask whether the remote operation ran.
+    }
+  }
 };
 const ensureNoIgnoredMaterial = (path) => {
   const disposable = (candidate) =>
@@ -160,22 +235,42 @@ const main = () => {
       throw new Error(
         "usage: worktree publish WO-NNN --title <title> --body-file <contained regular-file path>",
       );
+    const bodyRelativePath = relative(subject, bodyPath);
+    const body = readTrackedTextAtHead(subject, bodyRelativePath, bodyFile);
+    const releaseNotesPath = releaseNotesPathFor(workOrderId);
+    const releaseNotesFile = resolve(subject, releaseNotesPath);
+    if (!existsSync(releaseNotesFile))
+      throw new Error(`${releaseNotesPath}: release-notes file is missing`);
+    if (!lstatSync(releaseNotesFile).isFile())
+      throw new Error(
+        `${releaseNotesPath}: release-notes path is not a regular file`,
+      );
+    if (
+      !realpathSync(releaseNotesFile).startsWith(
+        `${realpathSync(subject)}${sep}`,
+      )
+    )
+      throw new Error(
+        `${releaseNotesPath}: release-notes file escapes its repository`,
+      );
+    parseReleaseNotes(
+      readTrackedTextAtHead(subject, releaseNotesPath, releaseNotesPath),
+      releaseNotesPath,
+    );
     const mainPackage = JSON.parse(
       readFileSync(join(mainPath, "package.json"), "utf8"),
     );
     const mainHasReleaseCommand =
       existsSync(join(mainPath, "scripts/release.mjs")) &&
       typeof mainPackage.scripts?.release === "string";
-    ensureCommand(
-      "gh",
-      "install and authenticate GitHub CLI, then retry publish",
-    );
-    run(subject, "push", "--no-follow-tags", "-u", "origin", branch);
-    const opened = spawnSync(
-      "gh",
-      [
+    const repository = ensureGh(subject);
+    const opened = withTemporaryBody(body, (committedBodyPath) => {
+      run(subject, "push", "--no-follow-tags", "-u", "origin", branch);
+      return executeGh(subject, [
         "pr",
         "create",
+        "--repo",
+        repository.selector,
         "--head",
         branch,
         "--base",
@@ -183,10 +278,9 @@ const main = () => {
         "--title",
         title,
         "--body-file",
-        bodyFile,
-      ],
-      { cwd: subject, encoding: "utf8" },
-    );
+        committedBodyPath,
+      ]);
+    });
     if (opened.status !== 0)
       throw new Error(
         `branch pushed but PR creation failed: ${(opened.stderr || opened.stdout).trim()}`,

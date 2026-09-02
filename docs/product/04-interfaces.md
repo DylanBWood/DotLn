@@ -314,9 +314,9 @@ DevEx phrases are also skill selectors. Entering `resume: verify` (or status,
 next, fix, final-review, or release-close) resolves the durable control state,
 validates the intent, and loads the smallest native role skill on demand. The UI
 previews what will load and why. Release close remains a separate guarded
-post-merge operation with narrow tag authority. Every intent remains usable
-through the CLI, so skill-capable hosts gain lower context cost rather than a
-different workflow.
+post-merge operation with narrow authority for the annotated tag and its
+matching GitHub Release. Every intent remains usable through the CLI, so
+skill-capable hosts gain lower context cost rather than a different workflow.
 
 The build inspector also exposes a **runtime lowering view**. Select Claude,
 Codex, or another discovered runtime to see how the same semantic build maps to

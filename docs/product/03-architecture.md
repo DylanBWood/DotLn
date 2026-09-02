@@ -245,10 +245,10 @@ DevEx intents such as `resume: status`, `resume: next`, `resume: verify`,
 durable control state first, then load only the reviewed role skill needed for
 that intent. The skill supplies procedure, input contract, artifact locations,
 evidence obligations, and stopping rules; it does not duplicate phase state or
-grant authority. Release close retains its separate, narrow post-merge tag
-authority. This replaces large autoloaded role explanations with on-demand,
-versioned protocol adapters while preserving a CLI path for humans and runtimes
-that cannot load skills.
+grant authority. Release close retains separate, narrow post-merge authority for
+the annotated tag and its matching GitHub Release. This replaces large
+autoloaded role explanations with on-demand, versioned protocol adapters while
+preserving a CLI path for humans and runtimes that cannot load skills.
 
 Skill delivery is incremental rather than a single rewrite: first define and
 test the shared intent-to-transition contract, then package verifier and repair

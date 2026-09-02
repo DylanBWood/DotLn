@@ -336,6 +336,32 @@ CURRENT software-engineer-toc.md: 42 linked source sections match
 PASS publication bootstrap checks
 ```
 
+## 10. Reviewed release-note projection recapture
+
+WO-024 changed already-linked architecture, interface, and execution-guide
+subtrees when it widened release-close authority to the matching GitHub Release
+and documented post-tag recovery. The shared architecture/interface subtrees
+participate in both selected source sets and the execution-guide subtree adds
+software-engineer detail, so both editions received new reviewed byte locks. The
+source-base revision and both editions' historical source selection remain
+unchanged.
+
+```console
+$ npm run publication:check -- --print-locks
+PASS index coverage: 149/149 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+LOCK everyday-ai-user-toc.md: sha256:ff04564ea8c460f2c26b25c088bc63abe37835d3a246e2a3a7b68186bfd47932
+LOCK software-engineer-toc.md: sha256:70dfd28b8248f27f49ecd5f1bafbaba262f5aa531fe767461da6cea42b1f2733
+PASS publication bootstrap checks
+
+$ npm run publication:check
+PASS index coverage: 149/149 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 27 linked source sections match
+CURRENT software-engineer-toc.md: 42 linked source sections match
+PASS publication bootstrap checks
+```
+
 ## Honest limit
 
 This is conservative byte-level stale detection over linked heading subtrees. It

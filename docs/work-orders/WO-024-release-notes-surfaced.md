@@ -1,14 +1,18 @@
-# WO-024 — Release notes surfaced: reviewed layered notes in the tag and a GitHub Release from the validated tag (version assigned at activation)
+# WO-024 — Release notes surfaced: reviewed layered notes in the tag and a GitHub Release from the validated tag, v0.3.2
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Before
-`resume -- activate`, rewrite this H1 to carry exactly one strict `vX.Y.Z`.
-Expected class: a patch strictly above the latest published tag — deliberately
-not the no-release path, because this order's own release close is the first
-real drive of the mechanism it ships. Publication and lifecycle tooling only;
-no exported runtime capability.
+**Release classification:** `v0.3.2`, a tagging patch above the latest
+published `v0.3.1` — deliberately not the no-release path, because this order's
+own release close is the first real drive of the mechanism it ships.
+Publication and lifecycle tooling only; no exported runtime capability.
+Activation on 2026-09-02 accidentally retained the planner placeholder in this
+heading and paragraph. The executor forward-corrected that preflight miss to
+the work-order map's second consecutive patch target without replaying or
+editing the append-only activation event. Publication remains subject to
+independent verification, final review, operator merge, and a fresh
+operator-authorized release close.
 **Nomination provenance:** the operator's 2026-09-02 planning session after the
 `v0.3.0` close ("we just released v0.3.0 but no release notes were
 generated"). Planner-synthesized draft: the operator's message is preserved
@@ -227,11 +231,12 @@ WO-024 branch/PR under ordinary final-review authority, with this order's own
 `RELEASE-NOTES.md` in the package. After the operator merges, a fresh
 `resume: release close` authorizes `npm run release -- close WO-024 --publish`,
 which must publish the annotated tag and, for the first time, its GitHub
-Release. Backfilling `v0.2.1`, `v0.2.2`, `v0.2.3`, and `v0.3.0` with
-`npm run release -- publish-notes vX.Y.Z` is an operator-run command from the
-main checkout, outside the sandbox (where `gh` cannot read its configuration);
-agents never run it. A deliberate decision not to backfill is recorded in
-`docs/releases/README.md`; silence is not a disposition.
+Release. Historical GitHub Release backfill is optional operator follow-up. At
+activation, the unprojected range is `v0.2.0` through `v0.3.1`; use
+`npm run release -- publish-notes vX.Y.Z` from the main checkout, outside the
+sandbox (where `gh` cannot read its configuration). Agents never run it. A
+deliberate decision not to backfill is recorded in `docs/releases/README.md`;
+silence is not a disposition.
 
 **Non-goals:** committing a per-release file under `docs/releases/` (the
 `v0.2.0` files remain the historical exception; the tag is the record and a

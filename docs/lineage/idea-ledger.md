@@ -23,6 +23,25 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-024 implementation — reviewed release projection (2026-09-02)
+
+Source: the activated WO-024 authority and its cited release/publication
+contracts. The activation placeholder was forward-corrected to the map's
+`v0.3.2` patch target without changing the append-only activation event.
+
+- **One reviewed edition, deterministic tag record, recoverable public projection** `adopted`
+  - A passing final review now supplies the same ordered five-section notes
+    artifact for release and no-release work. Release close discovers passing
+    work orders from first-parent control-log additions, preserves reviewed
+    section bytes, labels only pre-WO-024 gaps with a commit-subject fallback,
+    and appends diff-derived warnings plus manifest-derived evidence. Manifest
+    schema 1 remains sufficient because the edition is re-derived from the
+    tagged tree and compared byte for byte; no compatibility field changed.
+    After the tag push, GitHub Release creation is a recoverable projection:
+    rerun creates a missing body or refuses the first mismatch, never edits the
+    tag or Release. Local `notes` and `list` commands stay offline, while
+    historical backfill remains a separate explicit operator action.
+
 ## 2026-09-02 release-surfaces planning (operator-dispatched, after the `v0.3.0` close)
 
 Source: the operator's 2026-09-02 planning session after the `v0.3.0` release
