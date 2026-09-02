@@ -470,6 +470,16 @@ The LoadoutGraph (see domain model) is compiled per episode:
    plan + the (small) prompt fragment residue. Per-support cost is declared:
    mechanism type, prompt tokens (usually 0), runtime cost, extra episodes.
 
+Clean Room is the first explicit source-promotion active built from this shape.
+Its employer/secret boundary compiles as a locked safety guard, while linked
+supports select a source-treatment strategy and add destination or assurance
+checks. Rewrite, shape-first synthesis, and direct-draft fidelity do not
+commute, so the compiler accepts exactly one of them or an explicit ordered
+pipeline; it never treats them as an unordered bag. A destination may require
+particular assurance supports, and a missing or conflicting requirement renders
+the active inactive with the reason visible. Increased review depth can only
+narrow promotion or add evidence, never convert a blocked source into clearance.
+
 Before type-checking a historical loadout, resolve its IR, mechanic, support,
 runtime, and environment versions into a compatibility plan
 (`10-ir-compatibility.md` §Transformation graph). Availability may be

@@ -20,6 +20,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [The one-paragraph story](../product/00-vision.md#the-one-paragraph-story)                                              | everyday-ai-user, software-engineer | vision    |
 | [The core bet](../product/00-vision.md#the-core-bet)                                                                    | everyday-ai-user, software-engineer | vision    |
 | [The differentiated interface](../product/00-vision.md#the-differentiated-interface)                                    | everyday-ai-user, software-engineer | vision    |
+| [Shape-first synthesis](../product/00-vision.md#shape-first-synthesis)                                                  | everyday-ai-user, software-engineer | specified |
 | [Three horizons, one kernel](../product/00-vision.md#three-horizons-one-kernel)                                         | everyday-ai-user, software-engineer | planned   |
 | [Inspirational sources](../product/00-vision.md#inspirational-sources)                                                  | everyday-ai-user                    | vision    |
 | [What DotLn is not](../product/00-vision.md#what-dotln-is-not)                                                          | everyday-ai-user, software-engineer | specified |
@@ -70,6 +71,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | --------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
 | [Interfaces — the isomorphic views](../product/04-interfaces.md#interfaces--the-isomorphic-views)               | everyday-ai-user, software-engineer | planned |
 | [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal)                       | everyday-ai-user, software-engineer | planned |
+| [`προτείνω` — prose as a world action](../product/04-interfaces.md#προτείνω--prose-as-a-world-action)           | everyday-ai-user, software-engineer | vision  |
 | [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract) | everyday-ai-user, software-engineer | planned |
 | [RPG / Path-of-Exile view](../product/04-interfaces.md#rpg--path-of-exile-view)                                 | everyday-ai-user, software-engineer | planned |
 | [Semantic zoom](../product/04-interfaces.md#semantic-zoom)                                                      | everyday-ai-user, software-engineer | planned |
@@ -102,6 +104,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Candidate — oppositional support](../product/05-pattern-library.md#candidate--oppositional-support)                                             | software-engineer                   | vision  |
 | [Candidate — The Malcolm Check](../product/05-pattern-library.md#candidate--the-malcolm-check)                                                   | everyday-ai-user, software-engineer | vision  |
 | [Candidate — Beware of Naive Interventionism](../product/05-pattern-library.md#candidate--beware-of-naive-interventionism)                       | software-engineer                   | vision  |
+| [Clean Room — active mechanic with contextual supports](../product/05-pattern-library.md#clean-room--active-mechanic-with-contextual-supports)   | everyday-ai-user, software-engineer | vision  |
 | [Candidate — Do Nothing, active and support](../product/05-pattern-library.md#candidate--do-nothing-active-and-support)                          | everyday-ai-user, software-engineer | vision  |
 | [Active: Do Nothing](../product/05-pattern-library.md#active-do-nothing)                                                                         | software-engineer                   | vision  |
 | [Support: Do Nothing](../product/05-pattern-library.md#support-do-nothing)                                                                       | software-engineer                   | vision  |
@@ -202,3 +205,20 @@ as a current blocked verdict.
 | [Portable and regenerable sharing](../product/10-ir-compatibility.md#portable-and-regenerable-sharing)                          | everyday-ai-user, software-engineer | vision    |
 | [Behavioral toolbox and game-AI horizon](../product/10-ir-compatibility.md#behavioral-toolbox-and-game-ai-horizon)              | everyday-ai-user, software-engineer | vision    |
 | [Invariants](../product/10-ir-compatibility.md#invariants)                                                                      | software-engineer                   | specified |
+
+## 11 — `προτείνω`
+
+| Section                                                                                                                                       | Audiences                           | Status    |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
+| [`προτείνω` (proteíno) — the first-party application thesis](../product/11-proteino.md#προτείνω-proteíno--the-first-party-application-thesis) | everyday-ai-user, software-engineer | vision    |
+| [Shape before machinery](../product/11-proteino.md#shape-before-machinery)                                                                    | everyday-ai-user, software-engineer | specified |
+| [The playable loop](../product/11-proteino.md#the-playable-loop)                                                                              | everyday-ai-user, software-engineer | vision    |
+| [A world on DotLn, not a second DotLn world](../product/11-proteino.md#a-world-on-dotln-not-a-second-dotln-world)                             | everyday-ai-user, software-engineer | specified |
+| [Intervention truth](../product/11-proteino.md#intervention-truth)                                                                            | everyday-ai-user, software-engineer | specified |
+| [Ad hoc first, reusable on evidence](../product/11-proteino.md#ad-hoc-first-reusable-on-evidence)                                             | everyday-ai-user, software-engineer | specified |
+| [Books and personal styles become experiments](../product/11-proteino.md#books-and-personal-styles-become-experiments)                        | everyday-ai-user, software-engineer | vision    |
+| [Counterfactuals are the scoreboard](../product/11-proteino.md#counterfactuals-are-the-scoreboard)                                            | everyday-ai-user, software-engineer | specified |
+| [Every apparent affordance tells the truth](../product/11-proteino.md#every-apparent-affordance-tells-the-truth)                              | everyday-ai-user, software-engineer | vision    |
+| [Source shapes, not copied implementations](../product/11-proteino.md#source-shapes-not-copied-implementations)                               | everyday-ai-user, software-engineer | vision    |
+| [Candidate first evidence slice](../product/11-proteino.md#candidate-first-evidence-slice)                                                    | everyday-ai-user, software-engineer | vision    |
+| [Unresolved product choices](../product/11-proteino.md#unresolved-product-choices)                                                            | everyday-ai-user, software-engineer | vision    |

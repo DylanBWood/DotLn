@@ -124,6 +124,20 @@ Preserve its existing changes. If the operator also says to continue the work
 order, complete the breakout and its receipt, then return to the authorized
 work; otherwise wait for an explicit instruction before resuming execution.
 
+Interpret the operator's situations and analogies **shape first**, including in
+earlier intake. The intended payload is ordinarily a relationship, interaction,
+transition, contrast, feedback loop, or felt user experience; factual or
+technical identity with the reference is not required. Extract that shape, then
+lower it progressively through observable interaction, domain mechanics,
+contracts/evidence, and environment-selected technology. Do not discard a useful
+shape because the analogy is imperfect, and do not import incidental source
+details as architecture. Verify a literal detail only when it becomes
+load-bearing, otherwise retain it as operator recollection or leave it open.
+This rule does not authorize a bulk reread of intake, a rewrite of older ledger
+entries, or reopening an ADR or settled resolution. Apply it to material already
+inside the authorized ideation subject; surface a genuine new tension through
+the existing decision process.
+
 In ideation mode:
 
 1. Capture unedited material in a dated file under `docs/intake/chats/`,
@@ -133,10 +147,16 @@ In ideation mode:
    employer code, configuration, identifiers, proprietary API shapes, internal
    services, or managed-work-host details, stop and flag it. Never promote
    suspect material.
-3. Synthesis authority is part of a bare `ideation:` dispatch. Rewrite rather
-   than copy. Append each significant idea to `docs/lineage/idea-ledger.md` with
-   lifecycle status and provenance; never rewrite an older ledger entry. Only an
-   explicit capture-only instruction stops after raw intake.
+3. Synthesis authority is part of a bare `ideation:` dispatch. Rewrite ordinary
+   raw material rather than copying it. If the operator instead supplies exact
+   public-draft wording, explicitly directs it to be filed as written, and uses
+   intake only as a compaction-safe mirror, preserve that authorship and record
+   the direct-filing provenance on the committed surface. Never infer this
+   exception from polished wording or a filename, and apply the same clean-room
+   screen before filing. Append each significant idea to
+   `docs/lineage/idea-ledger.md` with lifecycle status and provenance; never
+   rewrite an older ledger entry. Only an explicit capture-only instruction
+   stops after raw intake.
 4. Promote only durable product understanding into the relevant `docs/product/`
    document, and update an ADR only through its permitted amendment mechanism.
    Preserve speculative ideas as `raw` or `preserved` instead of forcing
@@ -149,6 +169,16 @@ In ideation mode:
    coding, verification, or work-order closeout; resume only when the operator
    has explicitly asked to continue.
 
+These steps are the current manual projection of the Clean Room active described
+in `05-pattern-library.md`. Bare `ideation:` uses the repository's saved public
+destination loadout: the locked employer/secret floor, Shape-First Synthesis,
+public vocabulary, provenance, and breakout review. Explicit operator-authored
+ready-to-file text replaces the transformation strategy with Direct Draft
+Fidelity; it does not remove any guard. Additional context or assurance supports
+may deepen review and evidence, but a lighter support set never weakens the
+floor. Until the mechanic is compiled, the receipt records the effective
+strategy and any extra review support used.
+
 ### Ideation breakout receipt and verification
 
 An ideation breakout that changes committed documentation is not complete at
@@ -158,17 +188,17 @@ names the raw intake batch, ledger entries, product/decision/schema surfaces
 changed, unresolved choices, and required review.
 
 The eventual verifier and final reviewer must digest that receipt and the
-synthesized documents as part of their subject—not treat them as incidental
-notes. They verify clean-room rewriting, traceability to operator intent,
-consistency with settled decisions and canonical vocabulary, version/schema
-effects, internal cross-references, and whether speculative choices were
-accidentally presented as settled. They may propose and apply authorized,
-non-substantive handoff/documentation corrections. Any correction affecting
-code, contracts, acceptance, schema, compatibility, authority, or prior evidence
-fails final review and returns through repair plus a fresh independent numbered
-verification before another final-review attempt. They do not promote raw intake
-verbatim or expand implementation merely because the ideation describes a future
-feature.
+promoted documents as part of their subject—not treat them as incidental notes.
+They verify the selected clean-room source treatment and any direct-filing
+provenance, traceability to operator intent, consistency with settled decisions
+and canonical vocabulary, version/schema effects, internal cross-references, and
+whether speculative choices were accidentally presented as settled. They may
+propose and apply authorized, non-substantive handoff/documentation corrections.
+Any correction affecting code, contracts, acceptance, schema, compatibility,
+authority, or prior evidence fails final review and returns through repair plus
+a fresh independent numbered verification before another final-review attempt.
+They do not promote raw intake verbatim or expand implementation merely because
+the ideation describes a future feature.
 
 Any executable helper, migration, generator, backup utility, or other ad hoc
 tool created during an ideation breakout is implementation subject to the same
@@ -332,8 +362,10 @@ not a release disposition.
   executable code and tests, which progressively absorbs the prose layers above
   it (ADR-0001's strangler loop).
 - **Boundary rules** (from CLAUDE.md): nothing employer-derived enters this
-  repo; intake is read-only raw material — synthesize, never copy verbatim; flag
-  anything that smells proprietary rather than incorporating it.
+  repo. Ordinary raw ideation is synthesized; exact operator-authored public
+  draft text is filed only with explicit direction and recorded provenance. Both
+  use the locked Clean Room floor, and anything that smells proprietary is
+  flagged rather than incorporated.
 - **Projection boundary.** Internal vocabulary (gems, masks, DotLn taxonomy)
   stays out of artifacts consumed outside the system (PRs to other repos,
   generated reports for third parties).

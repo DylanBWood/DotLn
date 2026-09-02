@@ -204,8 +204,14 @@ source actor, equips a result, or widens authority.
 This is a horizon and generality test, not permission to put arbitrary pattern
 names into the executable grammar. A toolbox item becomes executable only when
 it has typed composition semantics, lifecycle and compatibility behavior,
-observable state, and evidence. Whether game AI becomes a product vertical,
-adapter, or analog-completeness suite remains open.
+observable state, and evidence. The operator has selected
+[`προτείνω`](11-proteino.md) as the prospective first-party product vertical for
+this space: an inspectable simulated community in which prose and patterns can
+participate in resident behavior and counterfactual outcomes. That choice names
+an application destination, not its engine, renderer, resident architecture,
+adapter set, schema, or release. App-local mechanisms graduate into shared IR
+only after representative evidence proves they generalize; adapters and
+analog-completeness fixtures remain independent tests of the same toolbox.
 
 ## Invariants
 

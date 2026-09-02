@@ -8,7 +8,7 @@
 **Evidence discontinuity:** Sections 1–6 preserve earlier same-day captures.
 Later authorized product write-backs refreshed both edition locks, so their
 recorded lock values are historical rather than the current stored baseline. The
-final ideation-batch recapture in §7 is the current evidence; earlier
+latest recapture at the end of this document is the current evidence; earlier
 transcripts remain visible instead of being back-filled.
 
 ## Mechanism under test
@@ -281,6 +281,60 @@ PASS publication bootstrap checks
 The exact inverse patch restored the pre-probe hash. The final normal check
 returned both editions to `CURRENT` at 134/134 coverage with no probe change in
 the delivered tree.
+
+## 8. `προτείνω` ideation recapture
+
+The shape-first synthesis rule, first-party application thesis, bounded product
+cross-links, and current audience/status classifications added fourteen indexed
+headings. The source-base revision and each edition's historical source
+selection remained unchanged; review refreshed only the current-byte locks for
+their existing linked source subtrees.
+
+```console
+$ npm run publication:check -- --print-locks
+PASS index coverage: 148/148 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+LOCK everyday-ai-user-toc.md: sha256:a76f6fe7b502527236094075ee3cc11d2ef512698a473499d30b7c8625e75aa5
+LOCK software-engineer-toc.md: sha256:305eae1ca115ecdbdf2cbe6cc6ccfd88693e93d2ad5a8047c7c871a6aa9256c1
+PASS publication bootstrap checks
+
+$ npm run publication:check
+PASS index coverage: 148/148 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 27 linked source sections match
+CURRENT software-engineer-toc.md: 42 linked source sections match
+PASS publication bootstrap checks
+```
+
+The earlier deliberate-patch captures remain the mechanism proof. This recapture
+records the reviewed baseline after the new vision material without pretending
+the two edition outlines now select the uncommitted-at-base `11-proteino.md`
+chapter directly.
+
+## 9. Clean Room composition recapture
+
+The Clean Room active/support direction added one indexed Pattern Library
+heading and changed already-linked composition, interface, and execution-guide
+subtrees. The editions' source-base revision predates the new heading, so their
+source selections do not link it directly; the audience/status index registers
+it for a future edition-selection review. The existing linked subtrees received
+new reviewed byte locks.
+
+```console
+$ npm run publication:check -- --print-locks
+PASS index coverage: 149/149 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+LOCK everyday-ai-user-toc.md: sha256:3e4131fb1f795b2185209d6507b608331e1dd3a6fdbb9efba012a63e056f72a4
+LOCK software-engineer-toc.md: sha256:4034d5836033e7e8306ff227949a87b904f6bea850271d2ed0ff26a0a58c04dd
+PASS publication bootstrap checks
+
+$ npm run publication:check
+PASS index coverage: 149/149 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 27 linked source sections match
+CURRENT software-engineer-toc.md: 42 linked source sections match
+PASS publication bootstrap checks
+```
 
 ## Honest limit
 

@@ -47,50 +47,147 @@ content to unauthorized readers.
 ## Canonical audit record
 
 Audit should primarily reference the event store and evidence graph rather than
-copy every payload into a second truth. A candidate envelope is (note:
-`occurredAt`/`recordedAt` are ISO strings here while the pinned EventEnvelope
-uses numeric log time — reconcile the two representations when this envelope is
-pinned):
+copy every payload into a second truth. The v0.3.0 audit baseline pins
+`AuditRecord` schema version 1 as a compiled reference envelope over the
+canonical event log:
 
 ```ts
-type AuditRecord = {
-  recordId: string;
-  schemaVersion: string;
-  occurredAt: string;
-  recordedAt: string;
-  actor: { actorId: string; kind: string; episodeId?: string };
-  subjectRefs: string[];
+type AuditActionClass =
+  | "work-order-dispatch"
+  | "authority-decision"
+  | "external-effect"
+  | "result"
+  | "verification"
+  | "recovery"
+  | "no-op";
+
+type NonEmptyRefs = readonly [string, ...string[]];
+
+type AuditRecordBase<C extends AuditActionClass, O extends string> = {
+  schemaVersion: 1;
+  recordId: `audit:${string}:${C}`;
+  actionClass: C;
   action: string;
-  resourceRefs: string[];
-  workstreamId?: string;
-  correlationId: string;
+  outcome: O;
+  occurredAt: number;
+  actorId: string;
+  workstreamId: string;
+  episodeId?: string;
+  eventIds: NonEmptyRefs;
+  correlationId?: string;
   causationId?: string;
-  objectiveRef?: string;
-  workOrderRef?: string;
-  authority: {
-    envelopeRef?: string;
-    decision: "allowed" | "denied" | "not-required";
-    approverRefs?: string[];
-    policyRefs: string[];
-  };
-  inputRefs: string[];
-  outputRefs: string[];
-  evidenceRefs: string[];
-  result: "succeeded" | "failed" | "partial" | "cancelled" | "unknown";
-  effect: { type: string; targetRef?: string; reversible?: boolean };
-  runtime?: { adapter: string; model?: string; version?: string };
-  dataClasses: string[];
-  purposeRefs: string[];
-  retentionClass: string;
-  integrity: { previousHash?: string; contentHash: string };
-  redactionState: "none" | "masked" | "sealed" | "removed-by-policy";
 };
+
+type AuditRecord =
+  | (AuditRecordBase<"work-order-dispatch", "emitted"> & {
+      workOrderRef: string;
+    })
+  | (AuditRecordBase<"authority-decision", "allowed"> & {
+      decision: "allowed";
+      commandId: string;
+      decisionEvidence: "authorized-command-persisted";
+    })
+  | (AuditRecordBase<"authority-decision", "denied"> & {
+      decision: "denied";
+      reason: string;
+      authorityEnvelopeRef: string;
+      association: "derived-same-episode-time-adjacency" | "refusal-event-only";
+    })
+  | (AuditRecordBase<
+      "external-effect",
+      "requested" | "observed" | "unknown"
+    > & {
+      effectState: "requested" | "observed-result" | "unknown";
+      commandId?: string;
+    })
+  | (AuditRecordBase<"result", "returned"> & {
+      resultState: "command-returned";
+      commandId: string;
+    })
+  | (AuditRecordBase<"result", "terminated"> & {
+      resultState: "episode-terminated";
+    })
+  | (AuditRecordBase<"verification", "passed" | "failed" | "unknown"> & {
+      verdict: "passed" | "failed" | "unknown";
+      subjectRef?: string;
+      association:
+        | "explicit-event-link"
+        | "derived-single-request-in-scope"
+        | "completion-event-only";
+    })
+  | (AuditRecordBase<"recovery", "redispatched"> & {
+      commandId: string;
+      originalCommandEventId: string;
+      recoveryState: "redispatched";
+    })
+  | (AuditRecordBase<"no-op", "no-op"> & {
+      reason: string;
+      evidenceEventIds: NonEmptyRefs;
+    });
 ```
 
-This is not a demand that every action populate every field. Required properties
-depend on action class. A help lookup does not need the record weight of a
-production deletion; a denied attempt may need more security detail than a
-successful inert query.
+`occurredAt` is the EventEnvelope's numeric virtual/log time. Schema version 1
+does not contain `recordedAt`: the fixture never collected an ingest time, and a
+projection must not relabel occurrence time to fill the gap. `recordId` is
+deterministic from the primary event and class. `eventIds` is non-empty and
+points back to every canonical event summarized by the record. WorkOrder,
+command, episode, authority-envelope, subject, and evidence identities remain
+references. Event payloads, candidate paths, the WorkOrder body, and output
+bodies do not enter `AuditRecord`; L4 governed raw may dereference the retained
+envelopes when its governance allows.
+
+The envelope is a discriminated union. Required properties depend on action
+class; nothing populates every candidate field:
+
+| Action class          | Canonical source in the walking skeleton                      | Additional required fields                                                                                |
+| --------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `work-order-dispatch` | `WorkOrderEmitted`                                            | `workOrderRef`; outcome `emitted` (no transport receipt is claimed)                                       |
+| `authority-decision`  | `CommandPersisted` or `CommandRefused`                        | allowed: `commandId`; denied: `reason` + `authorityEnvelopeRef`, and deliberately no invented `commandId` |
+| `external-effect`     | `CommandResult`, `DeletionAttempted`, or `SchedulesCancelled` | effect state `requested \| observed-result \| unknown`; `commandId` only when a command exists            |
+| `result`              | `CommandResult` or `EpisodeTerminated`                        | `command-returned` or `episode-terminated`; `commandId` for a command result                              |
+| `verification`        | `VerificationRequested` + `VerificationCompleted`             | verdict, association label, and `subjectRef` when the source records one                                  |
+| `recovery`            | `CommandPersisted` + `CommandRedispatched`                    | original `commandId`, original persisted-event reference, and recovery state                              |
+| `no-op`               | `QueuedPulseNoOp`                                             | reason and canonical `evidenceEventIds`; it does not carry refusal-only authority detail                  |
+
+A consequential source event that lacks a class-required canonical reference
+refuses projection instead of disappearing or producing a positive/placeholder
+record. In particular, `CommandResult` proves that a result returned, not that
+the effect succeeded, and `EpisodeTerminated` proves termination, not successful
+completion. Although the fixture event is historically named
+`DeletionAttempted`, it precedes authorization and never reaches the adapter;
+the audit stage is therefore `requested`, followed by the structural denial.
+
+The step-9 denied record may group the adjacent `DeletionAttempted`,
+`CommandRefused`, and authority `DecisionRecorded` events because they share
+episode and log time. That grouping is explicitly
+`derived-same-episode-time-adjacency`; it is not a fabricated `causationId`.
+Likewise, a persisted command proves the skeleton admitted that command but does
+not recover the allowing authority-envelope identifier, which the source never
+recorded.
+
+A verification completion uses an explicit causation/correlation event link when
+one names a request. With no explicit link, a sole preceding request in the same
+workstream and episode may be paired only as `derived-single-request-in-scope`;
+ambiguity falls back to `completion-event-only`. The association label keeps the
+inference visible.
+
+The consequential classes answer different questions for the two baseline
+audiences:
+
+| Action class          | Operator question                                          | Verifier question                                                                                   |
+| --------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `work-order-dispatch` | What bounded work was emitted for this episode?            | Which canonical event and WorkOrder reference prove emission without claiming a transport receipt?  |
+| `authority-decision`  | Was the requested action allowed or denied, and why?       | Does the decision retain its canonical command or refusal evidence without inventing either?        |
+| `external-effect`     | What outside action was requested or observed?             | Which retained events distinguish a requested effect from an observed result?                       |
+| `result`              | What outcome did the episode or command return?            | Does the result point to the originating command and canonical result event?                        |
+| `verification`        | Was the result accepted by the recorded verification step? | Which request and completion events support the verdict, and what attribution is actually recorded? |
+| `recovery`            | Which interrupted command resumed?                         | Did recovery preserve the original canonical command identity?                                      |
+| `no-op`               | Why did the system deliberately do nothing?                | Does the decline point to the event evidence that made further work inapplicable?                   |
+
+The walking-skeleton fold records only actor `repo-gardener`, including on
+verification events. The projection reports that fact; it does not upgrade it
+into evidence of verifier independence. A production deletion or denied act
+needs more detail than an inert query or `NoOp`.
 
 Properties that are easy to omit include:
 
@@ -129,10 +226,11 @@ nonterminal, retries do not create new opportunities, and a generic permission
 failure cannot be attributed to the OS without vendor/OS evidence. Store a
 normalized action class and opaque/redacted target reference, not a credential,
 hostname, secret-bearing command, or speculative reconstruction of
-chain-of-thought. Until the canonical schema and correlation identifier are
-pinned, this is a derived evaluation view over activation, `DecisionTrace`,
-`CommandRefused`, approval, tool-result, and adapter records. Attribute the
-counterweight as `participated`, not `caused`, absent paired evidence.
+chain-of-thought. Under schema version 1 this remains a derived evaluation view
+over activation, `DecisionTrace`, `CommandRefused`, approval, tool-result, and
+adapter records. Correlation and causation remain optional source-provided
+references; absent links stay unknown. Attribute the counterweight as
+`participated`, not `caused`, absent paired evidence.
 
 ## Fidelity levels
 
@@ -150,6 +248,38 @@ links to the records it summarizes and states whether deeper data exists,
 expired, was never collected, or is access-restricted.
 
 ## Audit projections and visualizations
+
+The v0.3.0 baseline implements three rebuildable folds over one retained JSONL
+log. The L0 receipt exposes outcome, scope, numeric time, recorded actor, and
+event evidence links, names its omissions, and links to the L1 causal timeline.
+The timeline orders consequential AuditRecords by explicit causation where
+present; a referenced source event precedes every AuditRecord derived from that
+event. Correlation remains an append-stable group that does not assert
+causation, and canonical append ordinal is the fallback and tie-break.
+Occurrence time is displayed but never used as the sole order because a later
+append can describe an earlier occurrence. Causal cycles are refused rather than
+silently displayed in an order that contradicts the source links. The fold also
+refuses duplicate event IDs, blank canonical identifiers/references, non-finite
+occurrence times, missing or non-JSON payloads, and unsupported envelope
+versions.
+
+One projection run chooses one scope for the whole fidelity chain: an `ep:`
+scope only when every input event carries the same episode in the same
+workstream, otherwise a `ws:` scope for one workstream, `log:mixed` for multiple
+workstreams, or `log:empty`. The discriminator prevents episode/workstream and
+sentinel collisions. This keeps every deeper link resolvable without labeling
+episode-less, cross-episode, or cross-workstream context as part of one episode;
+it also works when the log contains no consequential records. The timeline
+labels the bounded single-request verification association as derived, otherwise
+names absent links rather than inventing them, and links each record to L4
+governed raw JSON. L0 and L1 declare their audience and purpose, the
+`projections` persistence class, and that access and retention rules are not yet
+defined; their enforcement is deferred. Governed raw includes every retained
+EventEnvelope, names the verifier as this rung's audience, declares
+restricted-access intent, leaves retention undefined, and states that access
+enforcement is deferred. Every deeper link declares whether its target exists
+and its access/enforcement state. The folds do no I/O, are disposable, and
+rebuild byte-identically over replay.
 
 Different questions need different geometries over the same records:
 

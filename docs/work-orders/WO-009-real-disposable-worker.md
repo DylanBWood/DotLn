@@ -33,6 +33,11 @@ and schema-bound output. Also deliver a deterministic worktree lifecycle,
 - `dotln status` is a pure projection of the store (running episodes,
   leases/heartbeats, pending commands, recent events); it introduces no new
   state — real workers never run blind.
+- The execution-environment profile's declared mounts are the enforced sense
+  boundary; prose and possession of a codebook grant no perception outside
+  those mounts. Where Beacon support has landed, a real worker emits only a
+  self-reported Beacon claim while the host projects evidenced Beacons from
+  canonical events.
 - Verifier episodes are v0.6.0's; none here.
 
 **Constraints:** adapters and the host live outside kernel and compiler
