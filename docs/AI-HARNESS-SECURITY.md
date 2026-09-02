@@ -73,6 +73,50 @@ auto-allow.” `claude doctor` exited successfully and reported no invalid-setti
 warning; its one warning concerned Keychain writability in the diagnostic
 environment, so no unrelated Keychain setting was changed.
 
+### Portable shell-fixture evidence (2026-09-02)
+
+WO-013 removed the shell suites' absolute temporary-root choice. In a fresh
+noninteractive Claude Code 2.1.258 session, Claude Sonnet 5 at low effort ran
+the unchanged `npm test` directly from the worktree with the existing
+`acceptEdits` plus sandboxed-Bash auto-allow posture. The Bash tool reported its
+session-provided `$TMPDIR`; the command exited zero, all seven shell suites
+passed, and the compiled Node suite reported 77 tests, 77 passes, and zero
+failures. No source mirror or test-copy relocation was used, no permission
+prompt or persistent allow rule was accepted, and no unsandboxed fallback was
+enabled. Future verification no longer needs the WO-006 relocation deviation.
+
+The captured Bash result's sanitized load-bearing excerpt was:
+
+```text
+[session-provided TMPDIR]
+$ npm test
+All matched files use Prettier code style!
+fixture temp-root tests passed
+publication checker tests passed
+backup-intake tests passed
+resume tests passed
+checkpoint tests passed
+worktree tests passed
+release tests passed
+# tests 77
+# pass 77
+# fail 0
+npm test exit status: 0
+```
+
+The final evidence session issued two simple Bash calls: `printenv TMPDIR` and
+`npm test`. Both auto-executed without a prompt, the stream ended successfully,
+and no retry ran. A preliminary evidence session's pre-run listing identified
+three older `dotln-*` entries already beneath the Claude temp base; they were
+observed and left untouched. The executor also ran the unchanged command under a
+separate supplied-root-only macOS policy: direct writes to the legacy base and
+the surrounding session-temp parent were denied, writes to the supplied root
+were allowed, `npm test` exited zero, and the root's before/after `dotln-*`
+listings were both empty. An ordinary outside-all-sandboxes run under a fresh
+owned temporary base also exited zero with 77 of 77 compiled tests passing and
+empty before/after residue listings. This note updates the fixture-path evidence
+only; it does not replace the broader dated posture snapshot above.
+
 ## Claude Code
 
 ### Enable or restore the baseline

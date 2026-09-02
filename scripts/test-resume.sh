@@ -2,10 +2,14 @@
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-test_root="$(mktemp -d /private/tmp/dotln-resume-test.XXXXXX)"
+source "$script_dir/test-temp-root.sh"
+tmp_base="${TMPDIR:-/tmp}"
+tmp_base="$(resolve_test_tmp_base "$tmp_base")"
+test_root_prefix="dotln-resume-test"
+create_test_temp_root "$tmp_base" "$test_root_prefix"
+test_root="$test_temp_root_result"
+install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 fixture_repo="$test_root/repo"
-cleanup() { case "$test_root" in /private/tmp/dotln-resume-test.*) rm -rf -- "$test_root" ;; *) exit 1 ;; esac; }
-trap cleanup EXIT INT TERM
 
 mkdir -p -- "$fixture_repo/scripts" "$fixture_repo/docs/work-orders"
 cp -- "$script_dir/resume.mjs" "$fixture_repo/scripts/resume.mjs"

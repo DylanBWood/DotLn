@@ -2,11 +2,15 @@
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-test_root="$(mktemp -d /private/tmp/dotln-checkpoint-test.XXXXXX)"
+source "$script_dir/test-temp-root.sh"
+tmp_base="${TMPDIR:-/tmp}"
+tmp_base="$(resolve_test_tmp_base "$tmp_base")"
+test_root_prefix="dotln-checkpoint-test"
+create_test_temp_root "$tmp_base" "$test_root_prefix"
+test_root="$test_temp_root_result"
+install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 fixture_repo="$test_root/repo"
 saved="$test_root/saved"
-cleanup() { case "$test_root" in /private/tmp/dotln-checkpoint-test.*) rm -rf -- "$test_root" ;; *) exit 1 ;; esac; }
-trap cleanup EXIT INT TERM
 
 git init "$fixture_repo" >/dev/null
 git -C "$fixture_repo" config user.email test@example.invalid

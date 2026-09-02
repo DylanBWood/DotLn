@@ -2,21 +2,19 @@
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "$0")" && pwd -P)"
-test_root="$(mktemp -d /private/tmp/dotln-publication-test.XXXXXX)"
+source "$script_dir/test-temp-root.sh"
+tmp_base="${TMPDIR:-/tmp}"
+tmp_base="$(resolve_test_tmp_base "$tmp_base")"
+test_root_prefix="dotln-publication-test"
+create_test_temp_root "$tmp_base" "$test_root_prefix"
+test_root="$test_temp_root_result"
+install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 fixture_repo="$test_root/repo"
 node_bin="$(command -v node)"
 tick="$(printf '\140')"
 fence3="$(printf '\140\140\140')"
 fence4="$(printf '\140\140\140\140')"
 zero_lock="$(printf '%064d' 0)"
-
-cleanup() {
-  case "$test_root" in
-    /private/tmp/dotln-publication-test.*) rm -rf -- "$test_root" ;;
-    *) printf 'error: refusing unsafe publication-test cleanup target\n' >&2 ;;
-  esac
-}
-trap cleanup EXIT INT TERM
 
 mkdir -p -- "$fixture_repo/scripts" "$fixture_repo/docs/product" "$fixture_repo/docs/publication"
 cp -- "$script_dir/check-publication.mjs" "$fixture_repo/scripts/check-publication.mjs"
