@@ -2,9 +2,13 @@
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-test_root="$(mktemp -d /private/tmp/dotln-worktree-test.XXXXXX)"
-cleanup() { case "$test_root" in /private/tmp/dotln-worktree-test.*) rm -rf -- "$test_root" ;; *) exit 1 ;; esac; }
-trap cleanup EXIT INT TERM
+source "$script_dir/test-temp-root.sh"
+tmp_base="${TMPDIR:-/tmp}"
+tmp_base="$(resolve_test_tmp_base "$tmp_base")"
+test_root_prefix="dotln-worktree-test"
+create_test_temp_root "$tmp_base" "$test_root_prefix"
+test_root="$test_temp_root_result"
+install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 node_bin="$(command -v node)"
 u202f="$(printf '\342\200\257')"
 assert_u202f() {

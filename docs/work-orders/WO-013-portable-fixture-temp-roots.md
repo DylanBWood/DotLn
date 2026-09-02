@@ -1,17 +1,18 @@
-# WO-013 — Portable temporary roots for shell test fixtures (version assigned at activation)
+# WO-013 — Portable temporary roots for shell test fixtures, v0.3.1
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes). The target environment
 is a sandboxed harness that permits only its own session temporary root; the
 executor should work inside one so the acceptance evidence is first-hand.
-**Release classification:** assigned by the planner at activation. Before
-`resume -- activate`, the planner MUST rewrite this H1 to carry exactly one
-strict `vX.Y.Z` — `scripts/release.mjs` refuses any work-order heading without
-exactly one at close — and MUST pin the close disposition: a patch above
-the latest published tag (this order is a compatible test-infrastructure
-correction, the class the roadmap's §Release boundary assigns to a patch) or a
-version strictly below it (the honest no-release path). Expected class: test
-infrastructure only; no exported runtime capability.
+**Release classification:** `v0.3.1` tagging patch above the latest published
+`v0.3.0`. This is a compatible test-infrastructure correction, the class the
+roadmap's §Release boundary assigns to a patch; it adds no exported runtime
+capability. Activation on 2026-09-02 accidentally retained the planner
+placeholder in this heading and paragraph. The executor forward-corrected that
+preflight miss to the work-order map's first suggested patch target without
+replaying or editing the append-only activation event. Publication remains
+subject to independent verification, final review, operator merge, and a fresh
+operator-authorized release close.
 **Nomination provenance:** nominated by the operator during the WO-006 final
 review and created under operator direction; see
 `docs/final-reviews/WO-006/FINAL-001.md` §Follow-up work-order nominations.

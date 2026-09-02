@@ -2,18 +2,16 @@
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-test_root="$(mktemp -d /private/tmp/dotln-intake-backup-test.XXXXXX)"
+source "$script_dir/test-temp-root.sh"
+tmp_base="${TMPDIR:-/tmp}"
+tmp_base="$(resolve_test_tmp_base "$tmp_base")"
+test_root_prefix="dotln-intake-backup-test"
+create_test_temp_root "$tmp_base" "$test_root_prefix"
+test_root="$test_temp_root_result"
+install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 fixture_repo="$test_root/fixture-repo"
 output_dir="$test_root/backups"
 archive="$output_dir/fixture-repo-intake-20000101T000000Z.zip"
-
-cleanup() {
-  case "$test_root" in
-    /private/tmp/dotln-intake-backup-test.*) rm -rf -- "$test_root" ;;
-    *) printf 'error: refusing unsafe test cleanup target\n' >&2 ;;
-  esac
-}
-trap cleanup EXIT INT TERM
 
 mkdir -p -- "$fixture_repo/scripts" "$fixture_repo/docs/intake/chats" "$fixture_repo/docs/intake/notes" "$output_dir"
 cp -- "$script_dir/backup-intake.sh" "$fixture_repo/scripts/backup-intake.sh"
