@@ -10,8 +10,17 @@ details enter this repo — ever.** Only original ideation.
 
 Practical effect when you're working here:
 
-- `docs/intake/` is gitignored raw material. Read it, but never copy from it
-  verbatim into a committed file. Synthesize and rewrite.
+- `docs/intake/` is gitignored source material. Ordinary raw ideation must be
+  synthesized and rewritten, never lifted verbatim into a committed file. An
+  operator-authored public draft may retain exact wording only when the operator
+  explicitly marks it ready to file and the committed surface records that
+  direct-filing provenance; a compaction-safety capture of the same message is a
+  sibling record, not a source to mine. The clean-room screen below still
+  applies without exception.
+- This is the repository's minimum **Clean Room** loadout. Clean Room is a
+  composable active mechanic, but employer separation and secret/credential
+  exclusion are its locked floor. Supports may vary source treatment, context,
+  and review depth; none may weaken that floor.
 - If something in intake reads like it came from a work codebase (an internal
   hostname, a proprietary API shape, a pasted source file), **stop and flag it**
   rather than incorporating it.

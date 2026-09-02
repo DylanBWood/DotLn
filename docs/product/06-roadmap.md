@@ -682,16 +682,26 @@ transcript. Exit: witnessed run by a non-author.
 
 ## Post-1.0 horizons
 
-Simulation laboratory — paired counterfactuals, first-divergence search, agent
-swaps, all-clone towns, reflection-question design, time-dilation,
+[`προτείνω`](11-proteino.md) is the operator-named flagship first-party
+application horizon: a compact persistent community where long-form prose is a
+targeted, inspectable intervention; residents may ignore, resist, misinterpret,
+adopt, adapt, or relay it; and paired branches show what changed inside a
+declared simulation. It joins the executable pattern workshop to the simulation
+laboratory without promoting application content into the kernel. Calling it the
+prospective flagship records ambition, not product evidence, release priority,
+or permission to expand a current work order. A small basketball squad is a
+candidate first proof, not a selected milestone.
+
+The broader simulation catalog remains: paired counterfactuals, first-divergence
+search, agent swaps, all-clone towns, reflection-question design, time-dilation,
 recognition-beyond-identifiers, accuracy-vs-rationale decoupling, biographical
-seeding, bounded-inconsistency generation, length-scale attention aggregation
-(the full catalog lives in the ledger's chat-005 entries; this list is not
-exhaustive); an Embodied Explorer fixture that learns evidence-backed composite
-skills from bounded sensorimotor primitives in a 3D simulator; the full pattern
-shelf (Compendium skin); remaining transmog skins; physical-card importer;
-hypothesis flywheel. All are gated on the same kernel, and no simulation or
-embodiment choice may distort Horizon 1.
+seeding, bounded-inconsistency generation, and length-scale attention
+aggregation (the full catalog lives in the ledger's chat-005 entries; this list
+is not exhaustive); an Embodied Explorer fixture that learns evidence-backed
+composite skills from bounded sensorimotor primitives in a 3D simulator; the
+full pattern shelf (Compendium skin); remaining transmog skins; physical-card
+importer; hypothesis flywheel. All are gated on the same kernel, and no
+application, simulation, or embodiment choice may distort Horizon 1.
 
 Additional horizon: a lightweight offline-capable IR verifier; explicit
 application/schema/artifact/component version lineage; inspectable JIT

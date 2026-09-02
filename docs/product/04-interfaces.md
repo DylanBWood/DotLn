@@ -68,6 +68,36 @@ the GUI. Assisted proposals and compilation may carry surrounding procedure, but
 the operator chooses whether shaping that layer directly is part of their
 desired creative work.
 
+## `προτείνω` — prose as a world action
+
+The operator-named first-party application, specified in
+[`11-proteino.md`](11-proteino.md), turns the long-form input contract into a
+playable loop. The operator observes a small persistent community, selects one
+resident or a meaningful set, and writes at any useful length. Selection
+expresses intended recipients; prose supplies the intervention. The app retains
+the source and exposes its derived propositions, delivery force, recipient set,
+comparison subjects, scope, duration, uncertainty, and constraints without
+forcing every thought to match an already-published pattern. A person or group
+can receive an intervention whose subject is a relationship, activity, or event
+pattern; recipient and subject are not one field by assumption.
+
+The world view can overlay delivered, ignored, refused, misinterpreted, tried,
+adopted, adapted, abandoned, and relayed paths. Each visual mark opens the
+evidence behind it: intended and derived interpretation, participating temporary
+or reusable mechanics, resident decisions, events, evaluated outcomes, and
+branch comparison. These are inspectable derivations, not claims to read hidden
+thought. Before/after views label correlation; controlled paired runs and first
+divergence support stronger simulation-scoped claims.
+
+An activity may replace the general world controls with a purpose-built
+projection while keeping the same selection, commands, canonical state, event
+history, authority checks, and replay. An apparently usable affordance must be
+meaningfully interactive or visibly unavailable. Uncommon reactions may remain
+surprising before discovery, but afterward they are seed/version-addressed,
+replayable, and inspectable by an authorized evaluator. Exact preview timing,
+resident implementation, intervention artifact, renderer, and first scenario
+remain open.
+
 ## Plural UI hosts, one projection contract
 
 DotLn may have several simultaneous UI hosts: the complete terminal, a
@@ -129,6 +159,13 @@ the operator chose to see and touch them.
   competing branches, spell echo = bounded repeat, unleash =
   accumulate-then-burst, cast-when-damage-taken = failure-triggered reactor,
   totem/minion = delegation...).
+- **Clean Room is an active gem, not a maximum-rigor toggle.** Its locked
+  boundary facet is always visible; one linked strategy shows whether the source
+  is rewritten, shape-first synthesized, or preserved as an explicitly
+  authorized direct draft. Additional supports show destination context,
+  provenance and review depth, their evidence, and their real cost. Swapping a
+  support previews the exact handling change; the UI cannot unequip the locked
+  employer/secret floor or present extra ceremony as extra safety by itself.
 - **Item tooltip anatomy**: original term + kanji header (Seiri / Sort / 整理;
   RPG title secondary), GRANTS / RESTRICTIONS / OBLIGATION / PASSIVE (activation
   condition) / PULSE (cadence) / INTERRUPT (cancellation); a view flipper cycles

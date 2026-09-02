@@ -23,6 +23,242 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-007 repair-window ideation — Clean Room as an active (2026-09-02)
+
+Source: operator clarification and ideation captured in the main checkout's
+single-copy local intake at
+`docs/intake/notes/WO-007-expanded-ideation-2026-09-02-clean-room-active-gem.md`.
+The operator authorized direct continuation after the breakout. The source is
+personal product/process direction; the clean-room pass found no employer,
+credential, internal-service, or other stop condition.
+
+- **Clean Room is an active mechanic with contextual supports** `adopted`
+  - The stable behavior decides whether and how source material may cross into
+    a named destination. Employer separation and secret/credential exclusion
+    remain a locked admissibility floor outside the swappable layer. Exactly
+    one treatment strategy controls preservation or transformation; additional
+    supports vary destination context, provenance depth, evidence, and review
+    cost. More thorough means more checks or narrower promotion, never a weaker
+    floor or an unsupported clearance.
+- **A compaction-safety copy can preserve an operator's exact public draft**
+  `adopted` `recovered`
+  - WO-016 through WO-022 were supplied by the operator as complete public
+    drafts with direct filing instructions. Their ignored notes preserve the
+    same messages against transcript compaction; they are sibling records of
+    the operator-authored drafts, not an intake source later mined by an agent.
+    Direct Draft Fidelity preserves deliberate phrasing while recording that
+    authority. It never bypasses the hard screen and cannot be inferred from a
+    polished note or filename.
+- **Naive-intervention review applies to clean-room transformation**
+  `transformed`
+  - The existing Beware of Naive Interventionism support now has a concrete
+    composition target: after the hard boundary passes, it asks whether
+    paraphrase would destroy voice, precision, authorship, or product meaning.
+    It can recommend exact preservation, a smaller transformation, added
+    evidence, or NoOp; it cannot argue unsafe material through the boundary.
+- **The exact Clean Room support catalog and executable schema remain open**
+  `preserved`
+  - Candidate strategies are Synthesis Rewrite, Shape-First Synthesis, and
+    Direct Draft Fidelity. Candidate assurance facets cover public vocabulary,
+    provenance, attribution/license, disclosure minimization, deeper context,
+    and independent review. A later bounded order must test names, versions,
+    destination profiles, semantic-loss evidence, false-assurance behavior,
+    and whether any ordered strategy pipeline is warranted before pinning code.
+
+## 2026-09-02 entropy review (operator-dispatched)
+
+Source: the operator's 2026-09-02 ad hoc repository review, captured locally in
+`docs/intake/notes/WO-016-WO-018-entropy-review-planning-2026-09-02.md` and
+`docs/intake/notes/WO-019-effort-truth-planning-2026-09-02.md`. The session
+nominated WO-016 through WO-019 as drafts. Their identifiers are opaque stable
+references; nomination records the finding and a bounded route forward, not
+activation authority.
+
+- **The walking skeleton is a script that calls kernel functions, not yet an
+  instance of the kernel loop** `adopted` `recovered`
+  - `runScenario` sequences the demo imperatively while `replayScenario`
+    independently re-derives selected decisions by branching over event types.
+    Agreement between those two hand-maintained paths is therefore evidence,
+    not the structural live/replay identity the architecture intends. WO-016
+    is the nominated correction: one pure Reactor drives both live execution
+    and the kernel's own `replay()` without changing the 13-step scenario.
+- **Control state is data, and a disposable projection is never an API**
+  `adopted`
+  - `resume.jsonl` and its fold are canonical; `current.md` is a human
+    projection. Lifecycle peers must consume a machine-readable state surface
+    rather than parse prose, and release grammar must come from built exports
+    rather than source-text regexes. WO-018 is the bounded consolidation.
+- **Revocation becomes conditions as data** `transformed`
+  - Event-type matching remains a compatible primitive, but a semantic clause
+    such as operator return cannot be encoded honestly by decorating a type
+    string. The authority envelope may carry typed predicate references,
+    evaluated through an explicit registry; inability to evaluate a non-empty
+    condition set refuses rather than grants. WO-017 pins the exact boundary.
+- **The event-store codec has a fail-closed line contract** `adopted`
+  - A well-formed in-memory log is empty or consists only of
+    newline-terminated JSON-object lines. Partial tails, blank interior lines,
+    whitespace-only pseudo-lines, and missing final newlines are malformed
+    input to refuse, not material to count, join, or silently reinterpret.
+    WO-017 binds the contract and event-id count with tests.
+- **The corpus identity lane is an oracle; the Program lane is a golden
+  master** `adopted` `recovered`
+  - WO-101's identity expectations are checked by an independent no-BigInt
+    FNV-1a implementation and can expose kernel drift. Its committed Program
+    expectations were generated from the shipped kernel and chiefly freeze
+    that behavior; they are not an independent semantic oracle merely because
+    they live under `corpus/`. WO-018 promotes only the identity lane into the
+    root evidence chain and leaves the Program lane explicitly frozen outside
+    it.
+- **Effort truth now has a durable mechanism nominated** `adopted`
+  - WO-019 pins role-specific declaration in each work order, actor
+    attestation in completion events with an epistemic source, fail-closed
+    minimum checks, dispatch briefing, and visible within-order drift. That
+    closes the “Durable consequence, not yet built” clause of the 2026-08-31
+    effort-truth entry prospectively, without rewriting it or pretending the
+    mechanism existed historically; enforcement starts when WO-019 lands.
+- **The prose ratio remains an open quality question** `preserved`
+  - The repository's proportion of explanatory and planning prose to
+    executable mechanism remains an observed tension, not a settled threshold
+    or deletion mandate. This review allocates no automatic remedy; later
+    evidence should decide whether prose is carrying irreducible intent or
+    compensating for a missing mechanism.
+- **`replayScenario` accepts a fixture it never uses** `preserved` `recovered`
+  - The parameter suggests replay depends on the fixture although the current
+    body reconstructs nothing from it. WO-016 carries removal as a free result
+    of the reactor rewrite; it is recorded now so WO-007's blinded verifier
+    sees the observation without a pre-verification code edit.
+- **The skeleton CLI's default and `--audit` forms lack exact automated output
+  coverage** `preserved` `recovered`
+  - The audit flag is wired into `cli.ts`, but no test binds either complete
+    CLI form. WO-016 carries the missing coverage; this entry grants no
+    authority to change WO-007's ready-to-verify implementation.
+- **The walking skeleton has no negative scenario outcome** `preserved`
+  `recovered`
+  - Its sole fixture reaches `verified=true` and the verified glyph. No fixture
+    proves `verified=false` and `○ unverified`. WO-016 carries one bounded
+    negative outcome.
+- **`renderGlyphScene` sniffs event types rather than projecting folded
+  state** `preserved` `recovered`
+  - The glyph can report a status from event presence instead of the domain
+    state that those events should establish. WO-016 must either derive it
+    from folded state or state why the event-presence projection is
+    intentionally retained.
+
+## WO-007 post-ready ideation — `προτείνω` flagship shape (2026-09-02)
+
+Raw source:
+`docs/intake/notes/WO-007-expanded-ideation-2026-09-02-proteino-killer-app.md`.
+
+- **Operator analogies carry experience shapes down the abstraction ladder**
+  `adopted`
+  - This is a global interpretation directive for all earlier and future
+    operator text, not merely this batch. A situation or analogy ordinarily
+    communicates a relationship, interaction, transition, contrast, feedback
+    loop, or felt quality. Preserve that shape even when literal details are
+    imprecise; work backward from felt experience through observable loop,
+    interaction grammar, domain mechanics, contracts/evidence, and only then
+    environment-selected technology. Verify a source detail when it becomes
+    load-bearing, but do not reject the shape for analogy imperfections or turn
+    source accidents into ontology.
+- **`προτείνω` is DotLn's operator-named first-party application thesis**
+  `adopted`
+  - DotLn remains the model-agnostic platform and common kernel. `προτείνω` is
+    the prospective flagship application built on it: an explorable simulated
+    community where an operator addresses selected residents in prose and
+    studies what follows. _Flagship_ records product ambition, not evidence of
+    product-market success, roadmap priority, implementation authority, or a
+    reason to distort Horizon 1. The technical slug, first release, and
+    implementation remain open.
+- **The application owns one interaction contract across replaceable models,
+  executors, and harnesses** `adopted`
+  - The original desire for the same experience across different model products
+    resolves at the DotLn boundary rather than through imitation of each native
+    harness. The app owns input, selection, application world state, event
+    history, and projections, and exposes authority checks against the canonical
+    envelope. Models, executors, and harnesses are replaceable lowerings with
+    visible capability losses; the operator may bring them without conducting
+    the durable experience through their separate chat UIs.
+- **Hyperverbal targeted intervention is the primary playable loop** `adopted`
+  - Extend rambling-as-input into a world action: observe a resident or group,
+    select intended recipients, write at useful length, inspect the app's
+    interpretation, introduce the bounded intervention, watch acceptance,
+    refusal, non-effect, mutation, and propagation, then compare and refine.
+    Prose may separate into propositions and delivery modes without losing the
+    whole source. Suggestion, invitation, teaching, instruction, pressure,
+    manipulation, and command must not collapse into one unlabeled prompt, and
+    linguistic force never manufactures authority.
+- **Effect, non-effect, and misunderstanding need inspectable branch lineage**
+  `adopted`
+  - Preserve a trace from source through proposed interpretation, delivered
+    expression, reported or derived resident interpretation, participating
+    mechanic, decision, world event, and outcome. A no-effect path is evidence;
+    intended-versus-derived mismatch can be shown without pretending to read a
+    mind. Provenance, participation, paired simulation evidence, first
+    divergence, and branch-exclusive outcomes form distinct confidence rungs.
+    Before/after adjacency remains correlation, and even a controlled branch
+    claim is scoped to the declared simulator, versions, and randomness rather
+    than exported as real-world causation.
+- **Ephemeral interventions and reusable mechanics are separate lifecycle
+  states** `preserved`
+  - A useful one-run idea need not first map to a published PatternDefinition or
+    support. It may become an inspectable, scoped, expiring app artifact with
+    provenance, authority, event, replay, privacy, and evidence behavior; its
+    exact representation remains open. Repetition and evaluation may later
+    propose promotion to a versioned reusable mechanic, but promotion is never
+    implicit and does not silently mutate the common kernel.
+- **Books and personal styles become observable, multidimensional experiments**
+  `transformed`
+  - The shelf-to-mechanism idea gains a playable proving ground: residents and
+    groups can receive different sourced patterns, personal styles, doses,
+    delivery modes, and timings. Residents, events, groups, relationships, and
+    activities can separately be the subject placed along and compared on those
+    dimensions; a message recipient is not automatically the comparison
+    subject. A book is not automatically one start-to-end scalar; each dimension
+    and latent measure needs an operational definition, proxy, evaluator, and
+    limitation. Simulation results do not establish real-world efficacy.
+- **Dense affordances and replayable surprise define the intended world feel**
+  `adopted`
+  - The operator's Grand Theft Auto experience now supplies the previously open
+    game-inspiration shape: an apparently usable activity should become a deep,
+    purpose-built projection over the same world and event state or be visibly
+    unavailable, not decorative bait. The operator's recollection of varied
+    reactions supplies a second shape: experimental setups can reveal uncommon
+    coherent behavior, with mystery before discovery and provenance, replay,
+    and inspection afterward. These statements resolve the earlier ledger's
+    open game-source point in part; they make no historical claim about a title,
+    engine, or animation technology.
+- **A basketball squad is a candidate first evidence slice** `preserved`
+  - One compact setting could exercise individual technique, team strategy,
+    ordinary wellbeing advice, direct statistics, declared social proxies,
+    delayed outcomes, and paired branches. This is a useful coherence test, not
+    a selected milestone, universal sports model, or roadmap insertion.
+
+## WO-007 audit-record baseline (2026-09-02)
+
+Source: `docs/work-orders/WO-007-audit-record-baseline.md` and the canonical
+walking-skeleton event fixture generated by `runScenario`.
+
+- **AuditRecord v1 is a typed reference over canonical events, never a copied
+  payload store** `adopted`
+  - Pin a minimal discriminated envelope with numeric log time, recorded actor
+    and workstream scope, a non-empty set of source event IDs, optional
+    source-provided correlation/causation, and class-specific references for
+    WorkOrder dispatch, authority decisions, external effects, results,
+    verification, recovery, and `NoOp`. Denied intents retain their refusal and
+    authority-envelope references but receive no invented command ID;
+    uncollected ingest time, policy versions, runtime fingerprints, integrity,
+    redaction, and verifier independence remain explicitly unknown.
+- **Audit views form a rebuildable fidelity chain over one log** `adopted`
+  - The L0 receipt links to an L1 causal timeline, which links to L4 governed
+    raw JSON. Each lossy view names its omissions. Ordering honors explicit
+    causation and uses canonical append order as the stable tie-break rather
+    than occurrence time alone; correlation is an append-stable group, not an
+    ordering claim. The step-9 deletion/refusal grouping is labeled as
+    same-episode/time adjacency, not fabricated causation. Governed raw retains
+    complete event envelopes while declaring restricted-access intent and
+    deferred enforcement; projections remain disposable folds, not another
+    source of truth.
+
 ## WO-006 brain/hands, isolation, and foundation ideation (2026-09-01)
 
 Raw source:

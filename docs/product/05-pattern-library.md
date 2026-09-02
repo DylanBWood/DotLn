@@ -619,6 +619,63 @@ whether repeated successful interventions should lower its burden in that
 specific domain. Preserve the exact phrase as the familiar lens while the formal
 and code lenses evolve.
 
+## Clean Room — active mechanic with contextual supports
+
+**Clean Room** is an active mechanic for deciding whether and how source
+material may cross into a named destination. It is not synonymous with always
+rewriting, maximum ceremony, or the founding clean-room build in ADR-0001. Its
+observable result is a promotion disposition with provenance and evidence:
+block, ask the operator, preserve exactly, transform, or decline to promote. The
+exact record names and schema remain to be tested before they are pinned.
+
+The active has a non-swappable admissibility floor. Employer code,
+configuration, identifiers, private infrastructure details, credentials, and
+secrets cannot pass. Suspect or ambiguous material stops for operator
+disposition. This floor compiles into an external guard at the safety layer; it
+is not prompt advice and is not an optional support. No linked facet can widen
+authority, waive the floor, or relabel a blocked item as clean.
+
+Composition above that floor has two socket groups:
+
+1. Exactly one **source-treatment strategy**, or an explicit ordered pipeline
+   where a future scenario proves one is needed. Candidate strategies are
+   Synthesis Rewrite for ordinary raw ideation, Shape-First Synthesis for
+   preserving an experiential shape while lowering it, and Direct Draft Fidelity
+   for operator-authored public text that carries explicit filing authority. A
+   compaction-safety mirror records that authority but never creates it. These
+   strategies conflict by default because preservation and rewriting are
+   non-commuting transformations.
+2. Zero or more **context and assurance supports**. Initial candidates include
+   Public Destination Vocabulary, Provenance Trace, Attribution and License
+   Check, Disclosure Minimizer, Deep Context Sweep, and Independent Clean-Room
+   Witness. A destination profile may require a subset. Each declares what it
+   inspects, what evidence it emits, false-positive and false-negative limits,
+   and prompt, tool, and review cost.
+
+The repository's bare `ideation:` path has a deterministic saved build: the
+locked personal-project boundary, Shape-First Synthesis, public-destination
+vocabulary, provenance trace, and the existing breakout review. Explicit
+operator-authored ready-to-file text swaps Direct Draft Fidelity into the
+strategy socket. A higher-assurance context may add deeper provenance,
+attribution, or an independent witness; it does not change the minimum floor.
+
+**Beware of Naive Interventionism** is a natural counterweight support for this
+active. It asks what meaning, voice, contract precision, or authorship a
+proposed rewrite would damage and whether the smallest safe action is
+preservation. It can recommend a direct filing, a narrower transformation, more
+evidence, or a NoOp after the hard screen passes. It cannot use fidelity as a
+reason to pass unsafe material. This makes over-scrubbing measurable as a
+quality failure rather than treating paraphrase volume as evidence of
+cleanliness.
+
+The compiled inspector should show source class, named destination, locked
+floor, selected strategy, assurance supports, conflicts, cost, disposition, and
+evidence without exposing the protected source itself. Open questions include
+the stable support names and versions, destination-profile schema, whether
+strategy pipelines are ever justified, measurement of semantic damage and false
+assurance, and the first bounded implementation order. This section pins the
+active/support relationship, not a runtime claim.
+
 ## Candidate — Do Nothing, active and support
 
 **Do Nothing** exists in two socket positions with distinct semantics. Both

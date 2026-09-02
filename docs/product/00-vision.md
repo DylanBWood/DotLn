@@ -155,6 +155,21 @@ languages, never camouflage: every view either provably compiles to the same
 normalized program or is labeled a lossy projection with the exact mechanics one
 click away.
 
+### Shape-first synthesis
+
+The operator uses situations and analogies to communicate a desired **shape**: a
+relationship, interaction, transition, contrast, feedback loop, or felt quality.
+Literal similarity to the reference is not the acceptance test unless a specific
+literal detail becomes load-bearing. Preserve the experience first, then
+progressively lower it through observable interaction, domain mechanics,
+contracts and evidence, and finally technology selected from representative
+environment evidence. An imperfect analogy can carry a precise requirement;
+source accidents do not become ontology by resemblance.
+
+This is the standing interpretation rule for earlier and future operator
+ideation. Its fullest product expression is the first-party application thesis,
+[`προτείνω`](11-proteino.md), but it applies to the whole platform.
+
 ## Three horizons, one kernel
 
 1. **Work operating system** — workstreams, disposable workers, evidence-backed
@@ -168,6 +183,11 @@ click away.
 
 Horizon 3 must emerge from the same kernel (deterministic replay is what makes
 counterfactuals possible at all) and is not allowed to distort Horizon 1.
+[`προτείνω`](11-proteino.md) is the operator-named application destination that
+joins Horizons 2 and 3: prose-authored patterns and ad hoc interventions become
+playable inside an inspectable counterfactual community. Naming the destination
+does not move it ahead of the release ladder or make its application-local
+content kernel doctrine.
 
 ## Inspirational sources
 
@@ -185,11 +205,14 @@ mechanism whose origin is known can be mined again.
   formal systems reasoning about themselves is the kernel's purity and replay
   contract. Unmined seams are recorded in the idea ledger rather than
   pre-emptively architected here.
-- **Westworld** — two distinct borrowings. _Reveries_: feedback agents built
-  from single rules with their verbatim originating incidents, recombinable as
+- **Westworld** — three distinct shapes. _Reveries_: feedback agents built from
+  single rules with their verbatim originating incidents, recombinable as
   identity fragments. _Old configurations on modern builds_: historical
   artifacts stay runnable rather than becoming import debris, which is the
-  requirement behind `10-ir-compatibility.md`.
+  requirement behind `10-ir-compatibility.md`. _The bicameral voice_: an
+  introduced idea can alter later behavior while its acceptance, transformation,
+  resistance, or misunderstanding stays inspectable in `προτείνω`; this is an
+  interaction shape, not a claim about simulated consciousness.
 - **Iron Man / JARVIS** — the operator relationship to aim at: declare intent
   conversationally, have the machinery carry the work and keep its own records,
   and never wonder what it did. DotLn takes the posture and inverts one thing
@@ -220,6 +243,20 @@ mechanism whose origin is known can be mined again.
   catalogue of systems that worked exactly as specified and were still wrong,
   which is the failure mode an ObjectiveContract and the six-month livability
   test exist to catch.
+- **Generative Agents' small-town sandbox** — the
+  [research prototype](https://arxiv.org/abs/2304.03442) supplies a compact
+  social-world shape for `προτείνω`: residents with ongoing routines and
+  relations make propagation and delayed consequences legible without requiring
+  a geographically large world. The paper is provenance for the inspiration, not
+  an adopted resident architecture or evaluation claim.
+- **Grand Theft Auto — the operator's open-world experience.** Two shapes are
+  retained. First, an activity that appears usable should either become a deep,
+  purpose-built interaction projection over the same world or be honestly
+  unavailable; specialized controls do not need a second source of truth.
+  Second, varied reactions at scale should reward experimental setup with rare
+  discoveries that become replayable and inspectable afterward. These are
+  remembered experience and a quality bar, not a historical claim about a
+  particular release, engine, or animation technology.
 - **Christopher Nolan's films — and their productions.** Three distinct axes,
   and the third is the one that matters most here. _Story:_ nonlinear and
   multi-rate time is the recurring subject. **Memento** is close to a literal
@@ -267,18 +304,20 @@ mechanism whose origin is known can be mined again.
   feel, and feedback before feature breadth arrived, after which useful ideas
   from elsewhere could be incorporated. DotLn's equivalent is the smallest
   intent-to-evidence loop above, followed by external ideas accommodated through
-  primitives and composition. Other game inspirations remain open rather than
-  guessed at; the RPG mechanics already in use are a fraction of what the
-  operator intends to name.
+  primitives and composition. Unnamed game inspirations remain open rather than
+  guessed at; the sources now recorded are still a fraction of what the operator
+  may later name.
 
 Provenance note: Gödel, Escher, Bach, Iron Man / JARVIS, Ex Machina, Black
 Mirror, and the Nolan filmography appear nowhere in the founding intake corpus
 and were recorded on the operator's direct instruction (2026-08-31). Team
 Topologies was separately nominated by the operator on 2026-09-01 and remains
 unmined. The harness essay was reviewed and the World of Warcraft analogy was
-supplied by the operator on 2026-09-01. Westworld and the rest are traceable to
-the raw material. Do not attribute a specific claim to an unsourced influence
-without asking.
+supplied by the operator on 2026-09-01. The small-town research source, the
+third Westworld shape, and the Grand Theft Auto experience were recorded on the
+operator's direct instruction on 2026-09-02. Westworld's earlier shapes and the
+rest are traceable to the raw material. Do not attribute a specific claim to an
+unsourced influence without asking.
 
 ## What DotLn is not
 

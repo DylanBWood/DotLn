@@ -10,7 +10,8 @@ docs/AI-HARNESS-SECURITY.md
                    dated personal Claude/Codex sandbox setup and rollback guide
 docs/product/      the blueprint: vision, principles, domain model,
                    architecture, interfaces, patterns, roadmap, execution guide,
-                   publication compiler, audit/resilience map, and IR compatibility
+                   publication compiler, audit/resilience map, IR compatibility,
+                   and the προτείνω first-party application thesis
 docs/publication/  audience/status index, audience outlines, shared sample,
                    implementation overlay template, and staleness proof
 docs/planning/     evidence-backed capability inventory + provisional work-order map
@@ -42,13 +43,12 @@ shapes, and managed-host details do not belong there or anywhere else in this
 repository. If raw material contains any of those, stop and quarantine it
 outside the repository rather than reading it into the synthesis pipeline.
 
-The synthesized docs in `docs/product/` are written fresh from your ideation and
-_are_ committed. That's the scrub boundary: nothing reaches GitHub without
-passing through a rewrite first.
-
-If a piece of intake is clearly clean and worth keeping in history, synthesize
-and rewrite it into the appropriate committed document. Do not move or copy raw
-intake verbatim, and do not loosen the ignore rule.
+Ordinary raw ideation is synthesized and rewritten into committed product docs.
+An operator-authored public draft may retain exact wording only when the
+operator explicitly directs that filing and the committed surface records its
+provenance; a local compaction-safety copy of the same message does not become a
+second source. Both paths still pass the employer/credential boundary, and raw
+intake remains ignored rather than moved into Git.
 
 ## Dumping into intake
 
@@ -122,6 +122,10 @@ One line per `.claude/` or CLAUDE.md change (see execution guide):
   instruction semantics did not change.
 - 2026-09-01: CLAUDE.md — §Start here now treats `ideation:` as a full durable
   pipeline dispatch by default, with an explicit capture-only exception.
+- 2026-09-02: CLAUDE.md — clarified direct operator-authored public drafts and
+  modeled Clean Room as a composable active whose employer/secret floor cannot
+  be removed by source-treatment or assurance supports. This changes handling
+  precision, not the repository's safety boundary.
 - 2026-09-01: local Claude settings — enabled fail-closed sandboxing, pinned
   sandboxed Bash to default regular permissions, disabled unsandboxed fallback,
   and denied SSH credential reads/writes plus direct SSH/SCP/SFTP commands. This
