@@ -3,14 +3,26 @@ import { createHash } from "node:crypto";
 import {
   existsSync,
   lstatSync,
+  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
+  rmSync,
+  writeFileSync,
 } from "node:fs";
-import { release as osRelease } from "node:os";
+import { release as osRelease, tmpdir } from "node:os";
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import {
+  parseReleaseNotes,
+  releaseNoteHeadings,
+  releaseNotesPathFor,
+} from "./release-notes.mjs";
+import {
+  environmentWithoutGhRepo,
+  resolveGitHubPushTarget,
+} from "./github-repository.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const evidenceCommands = [
@@ -77,6 +89,40 @@ const runGitPathList = (cwd, args, options = {}) => {
       `git ${args.join(" ")} returned a non-NUL-terminated path list`,
     );
   return result.stdout.slice(0, -1).split("\0");
+};
+const optionalGitFile = (root, revision, path) => {
+  const result = execute("git", ["-C", root, "show", `${revision}:${path}`]);
+  if (result.status !== 0) return undefined;
+  return result.stdout;
+};
+const controlEventsAt = (root, revision) => {
+  if (!revision) return [];
+  const source = optionalGitFile(root, revision, "docs/control/resume.jsonl");
+  if (source === undefined || source.trim() === "") return [];
+  return source
+    .trimEnd()
+    .split("\n")
+    .map((line, index) => {
+      try {
+        return { raw: line, event: JSON.parse(line) };
+      } catch {
+        throw new Error(
+          `invalid control event at ${revision}:docs/control/resume.jsonl:${index + 1}`,
+        );
+      }
+    });
+};
+const addedControlEvents = (root, parent, commit) => {
+  const before = controlEventsAt(root, parent);
+  const after = controlEventsAt(root, commit);
+  if (
+    before.length > after.length ||
+    before.some(({ raw }, index) => after[index]?.raw !== raw)
+  )
+    throw new Error(
+      `control log is not append-only between ${parent ?? "the empty history"} and ${commit}`,
+    );
+  return after.slice(before.length).map(({ event }) => event);
 };
 const ensureClean = (path) => {
   const dirty = runGit(path, [
@@ -192,6 +238,10 @@ const latestVersion = (...maps) => {
   ];
   return versions.sort(compareVersions).at(-1);
 };
+const nestedTagConflict = (tag, ...maps) =>
+  maps
+    .flatMap((map) => [...map.keys()])
+    .find((name) => name.startsWith(`${tag}/`));
 const assertShape = (actual, expected, path = "$") => {
   if (Array.isArray(expected)) {
     if (!Array.isArray(actual))
@@ -426,23 +476,212 @@ const changedSubjects = (root, previousRelease) => {
 };
 const changedFiles = (root, previousRelease) => {
   const args = previousRelease
-    ? ["diff", "--name-only", "-z", `${previousRelease}..HEAD`]
+    ? ["diff", "--no-renames", "--name-only", "-z", `${previousRelease}..HEAD`]
     : ["ls-tree", "-r", "--name-only", "-z", "HEAD"];
   return runGitPathList(root, args).sort();
 };
 const reviewArtifacts = (root, workOrderId) =>
-  ["docs/verifications", "docs/final-reviews"].flatMap((parent) => {
-    const directory = join(root, parent, workOrderId);
-    if (!existsSync(directory)) return [];
-    return readdirSync(directory)
-      .filter(
-        (name) =>
-          name.endsWith(".md") &&
-          containedRegularFile(join(directory, name), directory),
-      )
-      .sort()
-      .map((name) => `${parent}/${workOrderId}/${name}`);
+  ["docs/verifications", "docs/final-reviews"].flatMap((parent) =>
+    runGitPathList(root, [
+      "ls-tree",
+      "-r",
+      "--name-only",
+      "-z",
+      "HEAD",
+      "--",
+      `${parent}/${workOrderId}`,
+    ]).filter((path) => path.endsWith(".md")),
+  );
+const firstParentCommits = (root, previousRelease, release = "HEAD") => {
+  const range = previousRelease ? `${previousRelease}..${release}` : release;
+  const output = runGit(root, [
+    "rev-list",
+    "--first-parent",
+    "--reverse",
+    range,
+  ]);
+  return output === "" ? [] : output.split("\n");
+};
+const firstParentOf = (root, commit) => {
+  const result = execute("git", ["-C", root, "rev-parse", `${commit}^1`]);
+  return result.status === 0 ? result.stdout.trim() : undefined;
+};
+const changedReleaseNotesAt = (root, parent, commit) => {
+  const paths = parent
+    ? runGitPathList(root, [
+        "diff",
+        "--no-renames",
+        "--name-only",
+        "-z",
+        parent,
+        commit,
+        "--",
+        "docs/final-reviews",
+      ])
+    : runGitPathList(root, [
+        "diff-tree",
+        "--no-renames",
+        "--root",
+        "--no-commit-id",
+        "--name-only",
+        "-z",
+        "-r",
+        commit,
+        "--",
+        "docs/final-reviews",
+      ]);
+  return paths
+    .map((path) =>
+      /^docs\/final-reviews\/(WO-\d{3})\/RELEASE-NOTES\.md$/.exec(path),
+    )
+    .filter(Boolean)
+    .map((match) => ({ id: match[1], path: match[0] }))
+    .sort((left, right) =>
+      left.path < right.path ? -1 : left.path > right.path ? 1 : 0,
+    );
+};
+const passedFinalReview = (event) =>
+  event?.type === "FinalReviewCompleted" &&
+  event.verdict === "pass" &&
+  /^WO-\d{3}$/.test(event.workOrderId ?? "");
+const notesContractWasActive = (root, revision) =>
+  controlEventsAt(root, revision).some(
+    ({ event }) => passedFinalReview(event) && event.workOrderId === "WO-024",
+  );
+const workOrderTitleAtHead = (root, workOrderId) => {
+  const activation = controlEventsAt(root, "HEAD")
+    .map(({ event }) => event)
+    .filter(
+      (event) =>
+        event.type === "WorkOrderActivated" &&
+        event.workOrderId === workOrderId,
+    )
+    .at(-1);
+  const authorityRoot = join(root, "docs/work-orders");
+  const authorityPath = activation?.workOrderPath ?? "";
+  const resolvedAuthorityPath = resolve(root, authorityPath);
+  if (
+    !activation ||
+    !resolvedAuthorityPath.startsWith(`${authorityRoot}${sep}`) ||
+    !basename(authorityPath).startsWith(`${workOrderId}-`)
+  )
+    throw new Error(
+      `cannot resolve work-order authority for release notes: ${workOrderId}`,
+    );
+  const source = optionalGitFile(root, "HEAD", authorityPath);
+  if (source === undefined)
+    throw new Error(
+      `cannot read work-order authority from HEAD for release notes: ${workOrderId}`,
+    );
+  const heading = source.split("\n", 1)[0];
+  const match = new RegExp(`^#\\s+${workOrderId}\\s+—\\s+(.+)$`).exec(heading);
+  if (!match)
+    throw new Error(`invalid work-order heading for release notes: ${heading}`);
+  return match[1];
+};
+const legacyReleaseNotes = (workOrderId, subjects) => ({
+  sections: {
+    "Release overview":
+      "Reviewed release-overview prose is unavailable for this work order.",
+    "Read before upgrading": "None.",
+    "Substantive changes": `**Fallback: no reviewed notes for ${workOrderId} (predates WO-024); commit subjects:**\n\n${
+      subjects.length > 0
+        ? subjects.map((subject) => `- ${subject}`).join("\n")
+        : "- No first-parent commit subject was found."
+    }`,
+    "Progressive polish": "None.",
+    "Evidence and compatibility":
+      "Reviewed evidence prose is unavailable because this work order predates the release-notes artifact contract.",
+  },
+});
+const releaseNoteEntries = (root, previousRelease) => {
+  const commits = firstParentCommits(root, previousRelease);
+  const records = commits.map((commit) => {
+    const parent = firstParentOf(root, commit);
+    const events = addedControlEvents(root, parent, commit);
+    return {
+      commit,
+      events,
+      completed: events
+        .filter(passedFinalReview)
+        .map((event) => event.workOrderId),
+      changedNotes: changedReleaseNotesAt(root, parent, commit),
+      subject: runGit(root, ["show", "-s", "--format=%s", commit]),
+    };
   });
+  const entries = [];
+  const byId = new Map();
+  let contractActive = notesContractWasActive(root, previousRelease);
+
+  records.forEach((record, recordIndex) => {
+    const { changedNotes, completed } = record;
+    const orderedIds = [
+      ...completed,
+      ...changedNotes
+        .map(({ id }) => id)
+        .filter((id) => !completed.includes(id)),
+    ];
+
+    for (const id of orderedIds) {
+      const activatesContract = id === "WO-024" && completed.includes(id);
+      if (activatesContract) contractActive = true;
+      let entry = byId.get(id);
+      if (!entry) {
+        entry = {
+          id,
+          title: workOrderTitleAtHead(root, id),
+          legacy: !contractActive,
+          notesChanged: false,
+          lastRelevantIndex: recordIndex,
+        };
+        byId.set(id, entry);
+        entries.push(entry);
+      }
+      if (activatesContract) entry.legacy = false;
+      if (completed.includes(id)) entry.completionIndex = recordIndex;
+      if (changedNotes.some((notes) => notes.id === id))
+        entry.notesChanged = true;
+      entry.lastRelevantIndex = recordIndex;
+    }
+  });
+
+  return entries.map((entry) => {
+    const path = releaseNotesPathFor(entry.id);
+    const activationIndex = records.findIndex(
+      ({ events }, index) =>
+        index <= entry.lastRelevantIndex &&
+        events.some(
+          (event) =>
+            event.type === "WorkOrderActivated" &&
+            event.workOrderId === entry.id,
+        ),
+    );
+    const start = activationIndex >= 0 ? activationIndex : 0;
+    const end = Math.max(
+      entry.completionIndex ?? entry.lastRelevantIndex,
+      entry.lastRelevantIndex,
+    );
+    const subjects = records
+      .slice(start, end + 1)
+      .map(({ subject }) => subject);
+    let parsed;
+    if (entry.notesChanged || !entry.legacy) {
+      const source = optionalGitFile(root, "HEAD", path);
+      if (source === undefined)
+        throw new Error(`${path}: release-notes file is missing from HEAD`);
+      parsed = parseReleaseNotes(source, path);
+    } else {
+      parsed = legacyReleaseNotes(entry.id, subjects);
+    }
+    return {
+      id: entry.id,
+      title: entry.title,
+      legacy: entry.legacy,
+      path: entry.notesChanged ? path : undefined,
+      ...parsed,
+    };
+  });
+};
 const criticalNotes = (files) => {
   const notes = [
     "Source-only release: no package, binary, container, or hosted artifact is published.",
@@ -461,7 +700,13 @@ const criticalNotes = (files) => {
     notes.push(
       "Schema or compatibility surfaces changed; inspect the manifest ranges and complete changed-file list.",
     );
-  if (files.some((path) => /^scripts\/(resume|worktree|release)\./.test(path)))
+  if (
+    files.some((path) =>
+      /^scripts\/(resume|worktree|release|release-notes|github-repository)\./.test(
+        path,
+      ),
+    )
+  )
     notes.push(
       "Workflow authority, recovery, or publication tooling changed; inspect the operator guide and release evidence.",
     );
@@ -486,6 +731,11 @@ const baseManifest = (
   const identity = gitIdentity(root);
   const compatible = compatibility(root);
   const files = changedFiles(root, previousRelease);
+  const editionEntries = releaseNoteEntries(root, previousRelease);
+  const editionWorkOrders =
+    editionEntries.length > 0
+      ? editionEntries.map(({ id }) => id)
+      : [authority.id];
   return {
     ...template,
     release: {
@@ -517,7 +767,9 @@ const baseManifest = (
       ],
       changes: changedSubjects(root, previousRelease),
       changedFiles: files,
-      reviewArtifacts: reviewArtifacts(root, authority.id),
+      reviewArtifacts: editionWorkOrders.flatMap((workOrderId) =>
+        reviewArtifacts(root, workOrderId),
+      ),
       knownLimitations: [authority.nonGoals],
     },
   };
@@ -650,28 +902,126 @@ const runEvidence = (root) => {
   });
   return evidence;
 };
-const tagMessage = (manifest) => {
-  const notes = manifest.notes;
-  const changes =
-    notes.changes.length > 0
-      ? notes.changes.map((change) => `- ${change}`).join("\n")
-      : "- No commit subjects were found after the preceding release.";
-  const reviews =
-    notes.reviewArtifacts.length > 0
-      ? notes.reviewArtifacts.map((path) => `- ${path}`).join("\n")
-      : "- No work-order review artifacts were found in the tagged commit.";
-  return `DotLn ${manifest.release.application}\n\n## Visible payoff\n\n${notes.visiblePayoff}\n\n## Critical information\n\n${notes.critical.map((item) => `- ${item}`).join("\n")}\n\n## Operator actions\n\n${notes.operatorActions.map((item) => `- ${item}`).join("\n")}\n\n## Changes\n\n${changes}\n\n## Known limitations\n\n${notes.knownLimitations.map((item) => `- ${item}`).join("\n")}\n\n## Review lineage\n\n${reviews}\n\nThe canonical JSON manifest below contains the complete changed-file list.\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest, null, 2)}\nDOTLN-MANIFEST-END\n`;
+const displayValue = (value) =>
+  value === null || value === undefined ? "none" : String(value);
+const schemaRange = (range) => {
+  if (range === null || range === undefined) return "none";
+  if (typeof range !== "object") return String(range);
+  return range.min === range.max
+    ? String(range.min)
+    : `${displayValue(range.min)}–${displayValue(range.max)}`;
 };
-const tagContents = (root, tag) => runGit(root, ["cat-file", "-p", tag]);
-const manifestFromTag = (root, tag) => {
-  const object = tagContents(root, tag);
-  const match = /DOTLN-MANIFEST-BEGIN\n([\s\S]+)\nDOTLN-MANIFEST-END/.exec(
-    object,
+const machineEvidence = (manifest) => {
+  const components = Object.entries(manifest.versions.components).sort();
+  const schemas = Object.entries(manifest.schemas);
+  const reviews = manifest.notes.reviewArtifacts;
+  return [
+    `- Source: \`${manifest.release.application}\` at \`${manifest.release.commit}\``,
+    `- Previous release: ${manifest.release.previousRelease ? `\`${manifest.release.previousRelease}\`` : "none"}`,
+    `- Application version: \`${manifest.release.application}\``,
+    `- Root workspace version: ${manifest.versions.root ? `\`${manifest.versions.root}\`` : "unversioned"}`,
+    "- Component versions:",
+    ...(components.length > 0
+      ? components.map(([name, version]) => `  - \`${name}\`: \`${version}\``)
+      : ["  - None."]),
+    "- Schema ranges:",
+    ...schemas.map(([name, range]) => `  - \`${name}\`: ${schemaRange(range)}`),
+    "- Cadence kinds:",
+    `  - Evaluable: ${manifest.cadence.evaluable.length > 0 ? manifest.cadence.evaluable.map((kind) => `\`${kind}\``).join(", ") : "none"}`,
+    `  - Deferred: ${manifest.cadence.deferred.length > 0 ? manifest.cadence.deferred.map((kind) => `\`${kind}\``).join(", ") : "none"}`,
+    "- Release evidence:",
+    ...manifest.evidence.map(
+      (row) =>
+        `  - \`${row.command}\`: exit ${row.exitCode}; output SHA-256 \`${row.outputSha256}\``,
+    ),
+    "- Review lineage:",
+    ...(reviews.length > 0
+      ? reviews.map((path) => `  - \`${path}\``)
+      : ["  - None recorded."]),
+    `- Changed files: ${manifest.notes.changedFiles.length} (complete list in the canonical manifest embedded in the annotated tag)`,
+    `- Distribution: ${manifest.release.distribution}`,
+  ].join("\n");
+};
+const releaseEdition = (root, manifest) => {
+  const entries = releaseNoteEntries(
+    root,
+    manifest.release.previousRelease ?? undefined,
   );
-  if (!match)
+  if (entries.length === 0)
+    throw new Error("release range contains no reviewed work order");
+  const lines = [`DotLn ${manifest.release.application}`];
+  for (const heading of releaseNoteHeadings) {
+    lines.push("", `## ${heading}`);
+    for (const entry of entries) {
+      lines.push(
+        "",
+        `### ${entry.id} — ${entry.title}`,
+        "",
+        entry.sections[heading],
+      );
+    }
+    if (heading === "Read before upgrading") {
+      lines.push(
+        "",
+        "### Derived from the diff",
+        "",
+        "These notices are machine-classified from the release diff and follow the reviewer-authored items above.",
+        "",
+        ...manifest.notes.critical.map((item) => `- ${item}`),
+      );
+    }
+    if (heading === "Evidence and compatibility") {
+      lines.push(
+        "",
+        "### Machine-derived release evidence",
+        "",
+        machineEvidence(manifest),
+      );
+    }
+  }
+  return lines.join("\n");
+};
+const tagMessage = (root, manifest) =>
+  `${releaseEdition(root, manifest)}\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest, null, 2)}\nDOTLN-MANIFEST-END\n`;
+const tagContents = (root, tag) => {
+  const result = execute("git", ["-C", root, "cat-file", "-p", tag]);
+  if (result.status !== 0)
+    throw new Error(failureOf(result, `cannot read tag ${tag}`));
+  return result.stdout;
+};
+const tagAnnotation = (root, tag) => {
+  const object = tagContents(root, tag);
+  const boundary = object.indexOf("\n\n");
+  if (boundary < 0) throw new Error(`${tag} is not an annotated tag object`);
+  return object.slice(boundary + 2);
+};
+const humanLayerFromTag = (root, tag) => {
+  const annotation = tagAnnotation(root, tag);
+  const marker = annotation.lastIndexOf("\n\nDOTLN-MANIFEST-BEGIN\n");
+  if (marker >= 0 && /\nDOTLN-MANIFEST-END\n?$/.test(annotation.slice(marker)))
+    return annotation.slice(0, marker);
+  return annotation.endsWith("\n") ? annotation.slice(0, -1) : annotation;
+};
+const isDotLnRelease = (humanLayer, tag) => {
+  const firstLine = humanLayer.split("\n", 1)[0];
+  return (
+    firstLine === `DotLn ${tag}` || firstLine.startsWith(`DotLn ${tag} — `)
+  );
+};
+const manifestFromTag = (root, tag) => {
+  const annotation = tagAnnotation(root, tag);
+  const beginMarker = "DOTLN-MANIFEST-BEGIN\n";
+  const endMarker = "\nDOTLN-MANIFEST-END";
+  const begin = annotation.lastIndexOf(beginMarker);
+  const end = annotation.endsWith(`${endMarker}\n`)
+    ? annotation.length - `${endMarker}\n`.length
+    : annotation.endsWith(endMarker)
+      ? annotation.length - endMarker.length
+      : -1;
+  if (begin < 0 || end < begin + beginMarker.length)
     throw new Error(`${tag} does not contain a DotLn release manifest`);
   try {
-    return JSON.parse(match[1]);
+    return JSON.parse(annotation.slice(begin + beginMarker.length, end));
   } catch {
     throw new Error(`${tag} contains invalid manifest JSON`);
   }
@@ -697,12 +1047,13 @@ const ensureExistingRelease = (root, tag, head, local, remote) => {
   if (!localTag)
     runGit(root, ["fetch", "origin", `refs/tags/${tag}:refs/tags/${tag}`]);
   const manifest = validatePublishedManifest(root, manifestFromTag(root, tag));
-  const object = tagContents(root, tag);
-  const message = object.slice(object.indexOf("\n\n") + 2);
-  if (message !== tagMessage(manifest).trimEnd())
+  const expected = tagMessage(root, manifest);
+  const actual = tagAnnotation(root, tag);
+  if (actual !== expected)
     throw new Error(
       `${tag} annotation differs from its generated manifest and notes`,
     );
+  return { manifest, humanLayer: releaseEdition(root, manifest) };
 };
 const publishedTag = (name, local, remote) => {
   const remoteTag = remote.get(name);
@@ -777,6 +1128,150 @@ const updateMainAndFinish = (root, workOrderId) => {
       `main is not synchronized with origin/main (${head} != ${originMain})`,
     );
 };
+const executeGh = (root, args) => {
+  return execute("gh", args, {
+    cwd: root,
+    env: environmentWithoutGhRepo(),
+  });
+};
+const ensureGhPreflight = (
+  root,
+  repository = resolveGitHubPushTarget(root),
+) => {
+  const available = executeGh(root, ["--version"]);
+  if (available.status !== 0)
+    throw new Error(
+      "gh is required before tag creation; install GitHub CLI and retry",
+    );
+  const authenticated = executeGh(root, [
+    "auth",
+    "status",
+    "--hostname",
+    repository.host,
+  ]);
+  if (authenticated.status !== 0)
+    throw new Error(
+      "gh authentication is required before tag creation; run gh auth login and retry",
+    );
+  return repository;
+};
+const firstDifferingLine = (expected, actual) => {
+  const expectedLines = expected.split("\n");
+  const actualLines = actual.split("\n");
+  const count = Math.max(expectedLines.length, actualLines.length);
+  for (let index = 0; index < count; index += 1) {
+    if (expectedLines[index] !== actualLines[index])
+      return {
+        number: index + 1,
+        expected: expectedLines[index],
+        actual: actualLines[index],
+      };
+  }
+  return undefined;
+};
+const withTemporaryBody = (body, operation) => {
+  const directory = mkdtempSync(join(tmpdir(), "dotln-release-body-"));
+  const path = join(directory, "RELEASE.md");
+  try {
+    writeFileSync(path, body, "utf8");
+    return operation(path);
+  } finally {
+    try {
+      rmSync(directory, { recursive: true, force: true });
+    } catch {
+      // A cleanup failure must not mask whether the remote operation ran.
+    }
+  }
+};
+const viewedGitHubRelease = (root, repository, tag) => {
+  const viewed = executeGh(root, [
+    "release",
+    "view",
+    tag,
+    "--repo",
+    repository.selector,
+    "--json",
+    "body,name,isDraft,isPrerelease,assets",
+  ]);
+  if (viewed.status !== 0) {
+    const reason = failureOf(viewed, "GitHub Release lookup failed");
+    if (/\brelease not found\b/i.test(reason)) return undefined;
+    throw new Error(
+      `tag published; GitHub Release state not verified and no create was attempted; rerun the same command: ${reason}`,
+    );
+  }
+  try {
+    const release = JSON.parse(viewed.stdout);
+    if (
+      typeof release.body !== "string" ||
+      typeof release.name !== "string" ||
+      typeof release.isDraft !== "boolean" ||
+      typeof release.isPrerelease !== "boolean" ||
+      !Array.isArray(release.assets)
+    )
+      throw new Error("release metadata has the wrong shape");
+    return release;
+  } catch (error) {
+    throw new Error(
+      `tag published; GitHub Release state not verified and no create was attempted; rerun the same command: ${tag} returned invalid metadata (${error instanceof Error ? error.message : String(error)})`,
+    );
+  }
+};
+const ensureGitHubRelease = (root, repository, tag, expectedBody) => {
+  const existing = viewedGitHubRelease(root, repository, tag);
+  if (existing !== undefined) {
+    if (
+      existing.name !== `DotLn ${tag}` ||
+      existing.isDraft ||
+      existing.isPrerelease ||
+      existing.assets.length > 0
+    )
+      throw new Error(
+        `${tag} GitHub Release metadata differs: expected title ${JSON.stringify(`DotLn ${tag}`)}, not draft, not prerelease, and no assets`,
+      );
+    const difference = firstDifferingLine(expectedBody, existing.body);
+    if (difference)
+      throw new Error(
+        `${tag} GitHub Release body differs at line ${difference.number}: expected ${JSON.stringify(difference.expected ?? "<missing>")}; observed ${JSON.stringify(difference.actual ?? "<missing>")}`,
+      );
+    return "existing";
+  }
+  let created;
+  try {
+    created = withTemporaryBody(expectedBody, (bodyPath) =>
+      executeGh(root, [
+        "release",
+        "create",
+        tag,
+        "--repo",
+        repository.selector,
+        "--verify-tag",
+        "--title",
+        `DotLn ${tag}`,
+        "--notes-file",
+        bodyPath,
+      ]),
+    );
+  } catch (error) {
+    throw new Error(
+      `tag published; GitHub Release not created; rerun the same command: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+  if (created.status !== 0)
+    throw new Error(
+      `tag published; GitHub Release not created; rerun the same command: ${failureOf(created, "gh release create failed")}`,
+    );
+  return "created";
+};
+const projectedReleaseBody = (tag, humanLayer) =>
+  `${humanLayer}\n\nRender these notes locally with \`npm run release -- notes ${tag}\`; inspect the canonical manifest with \`npm run release -- manifest-from-tag ${tag}\`.\n`;
+const backfillReleaseBody = (tag, humanLayer) => {
+  const historicalLinks =
+    tag === "v0.2.0"
+      ? "\n\nHistorical records: [manifest](../../blob/main/docs/releases/v0.2.0.md) and [notes](../../blob/main/docs/releases/v0.2.0-notes.md)."
+      : "";
+  return `**Notes as generated at close; predates WO-024's release-note edition.**\n\n${humanLayer}${historicalLinks}\n`;
+};
 const publishTag = (root, tag, commit, message, tagger) => {
   const body = `object ${commit}\ntype commit\ntag ${tag}\ntagger ${tagger}\n\n${message}`;
   const made = execute("git", ["-C", root, "mktag"], { input: body });
@@ -797,7 +1292,13 @@ const publishTag = (root, tag, commit, message, tagger) => {
     throw new Error(
       `tag push failed; no local tag ref was created: ${failureOf(pushed, "git push failed")}`,
     );
-  runGit(root, ["update-ref", `refs/tags/${tag}`, object, ""]);
+  try {
+    runGit(root, ["update-ref", `refs/tags/${tag}`, object, ""]);
+  } catch (error) {
+    throw new Error(
+      `tag published; GitHub Release not created; rerun the same command: cannot record the local tag ref (${error instanceof Error ? error.message : String(error)})`,
+    );
+  }
   return object;
 };
 const close = (workOrderId, args) => {
@@ -820,25 +1321,54 @@ const close = (workOrderId, args) => {
       `merged control state is for ${state.workOrderId ?? "none"}, not ${workOrderId}`,
     );
   const authority = workOrderAuthority(root, state);
-  const local = localTags(root);
+  let local = localTags(root);
   const remote = remoteTags(root);
   const latest = latestVersion(remote);
   const head = runGit(root, ["rev-parse", "HEAD"]);
-  const previous = latest ? publishedTag(latest, local, remote) : undefined;
+  let previous = latest ? publishedTag(latest, local, remote) : undefined;
   if (latest && compareVersions(authority.version, latest) < 0) {
     process.stdout.write(
       `${workOrderId} closes ${authority.version}, below latest release ${latest}; no release tag is due. Main is clean and between work orders.\n`,
     );
     return;
   }
+  const blockingTag = nestedTagConflict(authority.version, local, remote);
+  if (blockingTag)
+    throw new Error(
+      `release tag ${authority.version} is blocked by nested tag ${blockingTag}`,
+    );
   if (latest && compareVersions(authority.version, latest) === 0) {
-    ensureExistingRelease(root, authority.version, head, local, remote);
+    const repository = publish ? ensureGhPreflight(root) : undefined;
+    const existing = ensureExistingRelease(
+      root,
+      authority.version,
+      head,
+      local,
+      remote,
+    );
+    const projection = publish
+      ? ensureGitHubRelease(
+          root,
+          repository,
+          authority.version,
+          projectedReleaseBody(authority.version, existing.humanLayer),
+        )
+      : undefined;
     process.stdout.write(
-      `${authority.version} is already published from ${head}; main is clean and between work orders.\n`,
+      `${authority.version} is already published from ${head}${projection ? `; GitHub Release ${projection}` : ""}. Main is clean and between work orders.\n`,
     );
     return;
   }
   if (latest) {
+    if (!local.has(latest)) {
+      runGit(root, [
+        "fetch",
+        "origin",
+        `refs/tags/${latest}:refs/tags/${latest}`,
+      ]);
+      local = localTags(root);
+      previous = publishedTag(latest, local, remote);
+    }
     const ancestor = execute("git", [
       "-C",
       root,
@@ -852,6 +1382,7 @@ const close = (workOrderId, args) => {
   }
   if (local.has(authority.version) || remote.has(authority.version))
     throw new Error(`release tag already exists: ${authority.version}`);
+  const repository = publish ? ensureGhPreflight(root) : undefined;
   const tagger = publish
     ? runGit(root, ["var", "GIT_COMMITTER_IDENT"])
     : undefined;
@@ -860,17 +1391,143 @@ const close = (workOrderId, args) => {
     root,
     baseManifest(root, authority, latest, evidence),
   );
-  const message = tagMessage(manifest);
+  const humanLayer = releaseEdition(root, manifest);
+  const message = tagMessage(root, manifest);
   if (!publish) {
     process.stdout.write(
-      `Prepared and validated ${authority.version} for ${head}. To create and push only the annotated tag, run:\n  npm run release -- close ${workOrderId} --publish\n`,
+      `Prepared and validated ${authority.version} for ${head}. To create and push only the annotated tag and create its matching GitHub Release, run:\n  npm run release -- close ${workOrderId} --publish\n`,
     );
     return;
   }
   const tagObject = publishTag(root, authority.version, head, message, tagger);
+  const projection = ensureGitHubRelease(
+    root,
+    repository,
+    authority.version,
+    projectedReleaseBody(authority.version, humanLayer),
+  );
   ensureClean(root);
   process.stdout.write(
-    `Published annotated ${authority.version} (${tagObject}) for ${head}. Main is clean and between work orders.\n`,
+    `Published annotated ${authority.version} (${tagObject}) for ${head}; GitHub Release ${projection}. Main is clean and between work orders.\n`,
+  );
+};
+
+const requireLocalAnnotatedRelease = (root, tag) => {
+  if (!semver(tag)) throw new Error(`invalid release tag: ${tag ?? "missing"}`);
+  const local = localTags(root).get(tag);
+  if (!local || local.objectType !== "tag")
+    throw new Error(`local annotated release tag is unavailable: ${tag}`);
+  return local;
+};
+const renderPublishedNotes = (tag) => {
+  requireLocalAnnotatedRelease(toolRoot, tag);
+  const humanLayer = humanLayerFromTag(toolRoot, tag);
+  if (!isDotLnRelease(humanLayer, tag))
+    throw new Error(`${tag} is not a DotLn release tag`);
+  process.stdout.write(`${humanLayer}\n`);
+};
+const historicalWorkOrders = (root, tag) => {
+  if (tag !== "v0.2.0") return [];
+  const path = join(root, "docs/releases/v0.2.0.md");
+  if (!existsSync(path)) return [];
+  return [
+    ...new Set(
+      [...readFileSync(path, "utf8").matchAll(/\bWO-\d{3}\b/g)].map(
+        (match) => match[0],
+      ),
+    ),
+  ];
+};
+const releaseWorkOrdersBetween = (root, previousRelease, release) => {
+  const workOrders = [];
+  for (const commit of firstParentCommits(root, previousRelease, release)) {
+    const parent = firstParentOf(root, commit);
+    const completed = addedControlEvents(root, parent, commit)
+      .filter(passedFinalReview)
+      .map((event) => event.workOrderId);
+    const changedNotes = changedReleaseNotesAt(root, parent, commit).map(
+      ({ id }) => id,
+    );
+    for (const id of [...completed, ...changedNotes])
+      if (!workOrders.includes(id)) workOrders.push(id);
+  }
+  return workOrders;
+};
+const listPublishedReleases = () => {
+  const releases = [...localTags(toolRoot).values()]
+    .filter(({ name, objectType }) => semver(name) && objectType === "tag")
+    .sort((left, right) => compareVersions(left.name, right.name))
+    .filter((item) =>
+      isDotLnRelease(humanLayerFromTag(toolRoot, item.name), item.name),
+    );
+  const rows = releases.map((item, index) => {
+    let manifest;
+    try {
+      manifest = manifestFromTag(toolRoot, item.name);
+    } catch {
+      manifest = undefined;
+    }
+    const workOrders = releaseWorkOrdersBetween(
+      toolRoot,
+      manifest?.release?.previousRelease ?? releases[index - 1]?.name,
+      item.name,
+    );
+    if (workOrders.length === 0 && /^WO-\d{3}$/.test(manifest?.workOrder?.id))
+      workOrders.push(manifest.workOrder.id);
+    if (workOrders.length === 0)
+      workOrders.push(...historicalWorkOrders(toolRoot, item.name));
+    return {
+      tag: item.name,
+      commit: item.target,
+      application: manifest?.release?.application ?? item.name,
+      workOrders,
+    };
+  });
+  process.stdout.write("TAG\tCOMMIT\tAPPLICATION\tWORK ORDERS\n");
+  for (const row of rows)
+    process.stdout.write(
+      `${row.tag}\t${row.commit}\t${row.application}\t${row.workOrders.join(",") || "none recorded"}\n`,
+    );
+};
+const publishHistoricalNotes = (tag) => {
+  if (!semver(tag)) throw new Error(`invalid release tag: ${tag ?? "missing"}`);
+  const root = mainWorktree();
+  if (resolve(process.cwd()) !== root)
+    throw new Error(
+      `release publish-notes must run from the main control-plane checkout: ${root}`,
+    );
+  let local = localTags(root);
+  const repository = resolveGitHubPushTarget(root);
+  const remote = remoteTags(root);
+  publishedTag(tag, local, remote);
+  if (!local.has(tag)) {
+    runGit(root, ["fetch", "origin", `refs/tags/${tag}:refs/tags/${tag}`]);
+    local = localTags(root);
+  }
+  const localTag = local.get(tag);
+  const remoteTag = remote.get(tag);
+  if (
+    localTag?.objectType !== "tag" ||
+    localTag.object !== remoteTag?.object ||
+    localTag.target !== remoteTag?.target
+  )
+    throw new Error(`${tag} differs between local and origin`);
+  const humanLayer = humanLayerFromTag(root, tag);
+  if (!isDotLnRelease(humanLayer, tag))
+    throw new Error(`${tag} is not a DotLn release tag`);
+  if (notesContractWasActive(root, tag))
+    throw new Error(
+      `${tag} is at or after WO-024's release-note contract and cannot be published as historical notes; recover its GitHub Release by rerunning the matching release close with --publish`,
+    );
+  ensureGhPreflight(root, repository);
+  const projection = ensureGitHubRelease(
+    root,
+    repository,
+    tag,
+    backfillReleaseBody(tag, humanLayer),
+  );
+  process.stdout.write(
+    `GitHub Release ${projection} for historical annotated ${tag}.\n`,
   );
 };
 
@@ -897,8 +1554,24 @@ const main = () => {
     );
     return;
   }
+  if (action === "notes") {
+    const [tag] = args;
+    if (!tag || args.length !== 1)
+      throw new Error("usage: release notes vX.Y.Z");
+    return renderPublishedNotes(tag);
+  }
+  if (action === "list") {
+    if (args.length !== 0) throw new Error("usage: release list");
+    return listPublishedReleases();
+  }
+  if (action === "publish-notes") {
+    const [tag] = args;
+    if (!tag || args.length !== 1)
+      throw new Error("usage: release publish-notes vX.Y.Z");
+    return publishHistoricalNotes(tag);
+  }
   throw new Error(
-    "usage: release close WO-NNN [--publish] | release validate <manifest.json> | release manifest-from-tag vX.Y.Z",
+    "usage: release close WO-NNN [--publish] | release validate <manifest.json> | release manifest-from-tag vX.Y.Z | release notes vX.Y.Z | release list | release publish-notes vX.Y.Z",
   );
 };
 

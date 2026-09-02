@@ -159,9 +159,12 @@ It reads the original work order, complete verification sequence, diff, tests,
 ideation receipt, and all affected product/ledger/schema surfaces. It may make
 only non-substantive handoff corrections. An acceptance-relevant change fails
 the review and returns through repair plus fresh verification. On pass, this
-phrase is explicit authority to write the immutable `FINAL-NNN`, record the
-pass, commit the reviewed state, push only the WO branch, and open a mergeable
-PR. It never merges the PR; that remains yours.
+phrase is explicit authority to write the immutable `FINAL-NNN`, the reviewed PR
+body, and `RELEASE-NOTES.md` with the five required release-note sections,
+record the pass, commit the reviewed state, push only the WO branch, and open a
+mergeable PR. The notes file is written even for a no-release work order so its
+reviewed prose can ride the next tag. It never merges the PR; that remains
+yours.
 
 After the reviewed commit exists, the final reviewer invokes the bounded PR
 publisher with a committed body file inside the worktree:
@@ -170,7 +173,8 @@ publisher with a committed body file inside the worktree:
 npm run worktree -- publish WO-NNN --title '<reviewed title>' --body-file <contained-reviewed-body-path>
 ```
 
-The publisher prints the exact release-close handoff to use after you merge.
+The publisher validates the subject's committed reviewed notes before any push
+and prints the exact release-close handoff to use after you merge.
 
 `main` requires a PR through the repository's GitHub ruleset. A 404 from the
 classic `/branches/main/protection` endpoint is not evidence that the branch is
@@ -189,11 +193,14 @@ the main checkout with tag publication enabled. The command proves the PR is
 merged, fast-forwards `main`, removes the known merged worktree/branch, and then
 checks the work order's application release target. At a new boundary it runs
 `npm ci`, full release evidence, manifest/notes generation and validation, and
-pushes only the annotated tag. A strictly lower target records an honest
-no-release close; an equal target succeeds only when the existing validated tag
-names the exact commit, otherwise it refuses. Either successful path leaves
-clean `main` in the closed, between-work-orders state. WO-004 is the planned
-`v0.2.1` patch.
+pushes only the annotated tag, then creates the matching GitHub Release from the
+same reviewed human layer. A strictly lower target records an honest no-release
+close; an equal target succeeds only when the existing validated tag names the
+exact commit, otherwise it refuses. If Release creation fails after the tag
+push, leave the tag untouched and rerun the same close command: the
+equal-version path creates the missing projection or refuses a body mismatch
+without editing it. Either successful path leaves clean `main` in the closed,
+between-work-orders state. WO-004 was the first scripted `v0.2.1` patch.
 
 WO-004 has one bootstrap wrinkle: the old main checkout cannot run a package
 script that WO-004 has not merged yet. Its PR publisher prints an exact
@@ -209,6 +216,14 @@ material into surviving trusted storage, and repeat the phrase. Disposable
 `node_modules`, `dist`, `.DS_Store`, and `*.tsbuildinfo` may leave with the
 worktree. A failed release evidence gate creates no tag and must become a patch
 work order.
+
+After publication, `npm run release -- notes vX.Y.Z` renders one tag's human
+layer and `npm run release -- list` lists local release tags, commits,
+application versions, and included work orders; neither command uses the
+network. Historical GitHub Release backfill is never implicit in closeout. Run
+`npm run release -- publish-notes vX.Y.Z` only as a separate explicit operator
+action for a tag predating WO-024, or record the deliberate decision not to
+backfill.
 
 ### Repeated code → verify → fix loops
 
@@ -316,7 +331,7 @@ npm run resume -- final-review
 npm run resume -- final-review-result pass|fail
 npm run worktree -- publish WO-00N --title '<title>' --body-file <contained-reviewed-body-path>
 npm run release -- close WO-00N           # closes/prepares; creates no tag
-npm run release -- close WO-00N --publish # explicit annotated-tag authority
+npm run release -- close WO-00N --publish # explicit tag + matching GitHub Release authority
 ```
 
 Verifiers write the exact report path allocated by `verify`, then record its
@@ -330,20 +345,29 @@ The canonical operator interface is `resume: release close` after you merge the
 final-review PR. That phrase authorizes the agent to run
 `npm run release -- close WO-NNN --publish` from the main checkout. The tool
 integrates guarded worktree finish, exact-main synchronization, lockfile
-installation, evidence, manifest/notes validation, and annotated-tag
-publication. It pushes no main commit and publishes no npm, binary, container,
-or hosted artifact.
+installation, evidence, manifest/notes validation, and annotated-tag publication
+followed by creation of the matching GitHub Release from the same reviewed human
+layer. It pushes no main commit and publishes no npm, binary, container, or
+hosted artifact.
 
 The form without `--publish` is not read-only: it still performs guarded
 merged-worktree cleanup and fast-forwards local main. At a new eligible boundary
 it also installs the lockfile and runs release evidence; lower or
 already-published targets return after their own validation. The form withholds
-only tag creation/publication. If you deliberately defer an otherwise eligible
-release, require a reviewed durable reason rather than leaving publication state
-ambiguous.
+tag and GitHub Release creation/publication. If you deliberately defer an
+otherwise eligible release, require a reviewed durable reason rather than
+leaving publication state ambiguous.
 
 Forward manifests and layered notes live in the annotated tag message; the
-checked-in `v0.2.0` files remain the immutable historical exception. A rerun
-accepts the same validated remote tag as already complete, but conflicting or
-moved tags refuse. Do not backfill `v0.1.0` without a reconstructable reviewed
-commit and evidence.
+checked-in `v0.2.0` files remain the immutable historical exception. If Release
+creation fails after the tag push, rerun the same close: the equal-version path
+validates the immutable tag byte for byte, creates a missing projection, and
+refuses the first differing body line without editing an existing Release.
+Conflicting or moved tags refuse.
+
+Use `npm run release -- notes vX.Y.Z` and `npm run release -- list` for offline
+inspection. Historical projection is a separate operator action:
+`npm run release -- publish-notes vX.Y.Z` accepts only a DotLn tag predating
+WO-024 and never moves its tag or edits an existing Release. Do not backfill
+`v0.1.0` without a reconstructable reviewed commit and evidence; the operator
+must either run or deliberately decline backfill for later pre-WO-024 tags.

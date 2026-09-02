@@ -25,14 +25,14 @@ operator is deliberately not repeating themselves.
 2. Run the matching transition and follow the paths it prints — they are
    authoritative, and they are the whole briefing:
 
-   | Operator says           | You run                                                                                                                                                                                                                            | You then                                                                                                                                                                               |
-   | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | `resume: status`        | `npm run resume -- status`                                                                                                                                                                                                         | report; this is read-only and appends nothing                                                                                                                                          |
-   | `resume: next`          | `npm run resume -- next`                                                                                                                                                                                                           | in `active`, execute the emitted work-order path; in `closed`, report that the repo is between work orders and give the exact `worktree start` command                                 |
-   | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                            | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains |
-   | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                         | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                  |
-   | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                                   | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                         |
-   | `resume: release close` | from the main checkout, `npm run release -- close WO-NNN --publish` (one-time WO-004 bootstrap: pre-merge main has no `release` script, so run the exact command `worktree publish` printed — see §Workflow closeout and releases) | finish the merged worktree, update main, and either publish the validated annotated tag or record the honest no-release result                                                         |
+   | Operator says           | You run                                                                                                                                                                                                                            | You then                                                                                                                                                                                                                              |
+   | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `resume: status`        | `npm run resume -- status`                                                                                                                                                                                                         | report; this is read-only and appends nothing                                                                                                                                                                                         |
+   | `resume: next`          | `npm run resume -- next`                                                                                                                                                                                                           | in `active`, execute the emitted work-order path; in `closed`, report that the repo is between work orders and give the exact `worktree start` command                                                                                |
+   | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                            | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                |
+   | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                         | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                 |
+   | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                                   | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                        |
+   | `resume: release close` | from the main checkout, `npm run release -- close WO-NNN --publish` (one-time WO-004 bootstrap: pre-merge main has no `release` script, so run the exact command `worktree publish` printed — see §Workflow closeout and releases) | finish the merged worktree, update main, and either publish the validated annotated tag plus its matching GitHub Release or record the honest no-release result; if Release creation fails after the tag push, rerun the same command |
 
    At the dated Codex baseline, run each **state-changing** `resume` command
    with explicit outside-sandbox approval on its first invocation. Codex
@@ -85,10 +85,12 @@ activation.
 `resume: final review` and `resume: release close` carry narrowly scoped
 external-effect authority. A passing final reviewer may commit the reviewed
 state, push only its work-order branch, and open the mergeable PR; it may never
-merge it. Release close may create and push only the validated annotated tag; it
-may never push `main`, publish packages/binaries, or change repository settings.
-The operator retains PR merge authority and explicitly supplies the
-release-close phrase before tag publication.
+merge it. Release close may create and push only the validated annotated tag and
+create the matching GitHub Release as a projection of that tag's reviewed human
+layer; it may never edit a published Release, push `main`, publish
+packages/binaries, or change repository settings. The operator retains PR merge
+authority and explicitly supplies the release-close phrase before tag and
+Release publication.
 
 After recording a passing final review and committing the reviewed state, the
 reviewer uses the durable publication mechanism below with a committed,
@@ -98,8 +100,10 @@ contained PR body file:
 npm run worktree -- publish WO-NNN --title '<reviewed title>' --body-file <contained-reviewed-body-path>
 ```
 
-The helper preflights GitHub CLI before mutation, pushes only the work-order
-branch, opens the PR, and prints the exact post-merge release-close handoff.
+The helper first validates the committed five-section `RELEASE-NOTES.md` beside
+the final-review report, then preflights GitHub CLI before mutation, pushes only
+the work-order branch, opens the PR, and prints the exact post-merge
+release-close handoff.
 
 `main` is protected by a GitHub ruleset requiring a PR. The classic branch
 protection endpoint can return 404 while that ruleset is active, so its result
@@ -234,23 +238,33 @@ merge commit. The reviewed work-order branch must be contained in that history;
 any later commits already present at synchronization are included in the tagged
 source. The command runs `npm ci` before release evidence, proves the
 install/evidence leave tracked files unchanged, populates and re-validates the
-immutable manifest and layered notes, then creates and pushes only their
-annotated tag. The publish form is authorized by the operator's phrase; a raw
-run without `--publish` performs guarded closeout and validation, then prints
-the exact authorized tag command. Never tag the feature branch, tag failing
-evidence, move an existing tag, push `main`, or imply that npm/binary/hosted
-distribution occurred when the release is source-only. A failed release check
-opens a patch work order. A version strictly below the latest tag is an explicit
-no-release outcome and leaves the clean closed checkout between work orders. An
-equal version is idempotent only when the existing validated annotated tag names
-the exact current commit; a mismatch refuses.
+immutable manifest, assembles the five-section edition from reviewed notes in
+first-parent order, and creates and pushes only their annotated tag. After that
+push succeeds, it creates the matching GitHub Release from the human layer; the
+JSON manifest remains in the tag rather than being pasted into the projection.
+The publish form is authorized by the operator's phrase; a raw run without
+`--publish` performs guarded closeout and validation, then prints the exact
+authorized tag command. Never tag the feature branch, tag failing evidence, move
+an existing tag, edit a published Release, push `main`, or imply that
+npm/binary/hosted distribution occurred when the release is source-only. A
+failed release check opens a patch work order. A version strictly below the
+latest tag is an explicit no-release outcome and leaves the clean closed
+checkout between work orders. An equal version is idempotent only when the
+existing validated annotated tag names the exact current commit; a mismatch
+refuses.
 
 Both release-close forms perform guarded synchronization and cleanup before
 evaluating the release boundary: they may fast-forward local `main` and remove
 the known merged worktree and local branch. At a new eligible boundary they also
 run `npm ci` and the evidence gate; lower or already-published targets return
-after their own validation. Omitting `--publish` withholds tag creation and tag
-pushing; it is preparation, not a read-only command.
+after their own validation. Under `--publish`, GitHub CLI availability and
+authentication are checked before tag-object creation. If GitHub Release
+creation fails after the validated tag was pushed, the command exits non-zero,
+leaves that immutable tag intact, and names the recoverable state. Rerunning the
+same close command validates the equal tag byte for byte, creates the missing
+Release, or refuses at the first differing body line; it never edits the
+Release. Omitting `--publish` withholds tag and Release creation; it is
+preparation, not a read-only command.
 
 WO-004 is the one-time bootstrap because the pre-merge `main` commit does not
 yet contain `scripts/release.mjs` or the `release` package script. Its
@@ -264,6 +278,12 @@ source. After WO-004 is merged, later closeouts use the ordinary
 A deliberately deferred eligible release must retain a durable reason in the
 follow-on patch work order or another reviewed repository artifact; silence is
 not a release disposition.
+
+`npm run release -- notes vX.Y.Z` and `npm run release -- list` inspect local
+annotated release records without network access. Historical tags that predate
+the reviewed edition may receive a GitHub projection only through the separate
+operator-run `release publish-notes vX.Y.Z` command; agents test that path with
+a stub but never perform a backfill against origin.
 
 ## Discipline
 

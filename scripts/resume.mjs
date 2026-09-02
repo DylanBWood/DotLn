@@ -487,7 +487,7 @@ const main = () => {
     }
     case "release-close":
       requirePhase(state, "closed");
-      message = `After the operator merges the PR, run from the main checkout: npm run release -- close ${state.workOrderId} --publish. This is tag authority only; never push main.`;
+      message = `After the operator merges the PR, run from the main checkout: npm run release -- close ${state.workOrderId} --publish. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main.`;
       break;
     default:
       throw new Error(`unknown resume action: ${action}`);

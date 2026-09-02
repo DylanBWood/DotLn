@@ -10,6 +10,7 @@ create_test_temp_root "$tmp_base" "$test_root_prefix"
 test_root="$test_temp_root_result"
 install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 node_bin="$(command -v node)"
+real_git="$(command -v git)"
 u202f="$(printf '\342\200\257')"
 assert_u202f() {
   "$node_bin" -e 'if (!Buffer.from(process.argv[1], "utf8").toString("hex").includes("e280af")) process.exit(1)' "$1"
@@ -22,12 +23,17 @@ main="$test_root/project"
 git -C "$main" config user.email test@example.invalid
 git -C "$main" config user.name "DotLn Test"
 git -C "$main" config core.quotePath true
+github_repo="dotln-fixture/worktree"
+github_origin="https://github.com/$github_repo.git"
+git -C "$main" config "url.$test_root/origin.git.insteadOf" "$github_origin"
+git -C "$main" remote set-url origin "$github_origin"
 git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control"
-cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
+cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$main/scripts/"
 printf '# fixture\n' >"$main/docs/work-orders/WO-099-fixture.md"
 printf '{"private":true,"scripts":{}}\n' >"$main/package.json"
 cp "$script_dir/../.gitignore" "$main/.gitignore"
+printf 'EXAMPLE=tracked\n' >"$main/.env.example"
 git -C "$main" add .
 git -C "$main" commit -m initial >/dev/null
 git -C "$main" push -u origin main >/dev/null 2>&1
@@ -37,6 +43,22 @@ test ! -e "$test_root/project-wo098"
 test "$(git -C "$main" branch --list wo-098)" = ""
 
 mkdir -p "$test_root/bin"
+printf '%s\n' \
+  '#!/bin/bash' \
+  'set -euo pipefail' \
+  "real_git='$real_git'" \
+  'if [[ "$#" -eq 6 && "$1" == "-C" && "$3" == "remote" && "$4" == "get-url" && "$5" == "--all" && "$6" == "origin" ]]; then' \
+  '  $real_git -C "$2" config --get-all remote.origin.url' \
+  '  exit 0' \
+  'fi' \
+  'if [[ "$#" -eq 7 && "$1" == "-C" && "$3" == "remote" && "$4" == "get-url" && "$5" == "--push" && "$6" == "--all" && "$7" == "origin" ]]; then' \
+  '  urls="$($real_git -C "$2" config --get-all remote.origin.pushurl || true)"' \
+  '  if [[ -z "$urls" ]]; then urls="$($real_git -C "$2" config --get-all remote.origin.url)"; fi' \
+  '  printf "%s\\n" "$urls"' \
+  '  exit 0' \
+  'fi' \
+  'exec "$real_git" "$@"' >"$test_root/bin/git"
+chmod +x "$test_root/bin/git"
 printf '#!/usr/bin/env bash\nprintf invoked >"%s"\n' "$test_root/codex-invoked" >"$test_root/bin/codex"
 chmod +x "$test_root/bin/codex"
 start_output="$(PATH="$test_root/bin:$PATH" node "$main/scripts/worktree.mjs" start WO-099 docs/work-orders/WO-099-fixture.md)"
@@ -64,17 +86,127 @@ printf '#!/usr/bin/env node\n' >"$subject/scripts/release.mjs"
 git -C "$subject" add .
 git -C "$subject" commit -m complete >/dev/null
 
-git_bin="$(command -v git)"
 mkdir -p "$test_root/no-gh-bin"
-ln -s "$git_bin" "$test_root/no-gh-bin/git"
+ln -s "$test_root/bin/git" "$test_root/no-gh-bin/git"
 ln -s "$node_bin" "$test_root/no-gh-bin/node"
+notes_path="docs/final-reviews/WO-099/RELEASE-NOTES.md"
+assert_notes_refusal() {
+  local expected="$1"
+  if notes_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then
+    printf 'error: publish accepted malformed release notes (%s)\n' "$expected" >&2
+    exit 1
+  fi
+  grep -Fq "$notes_path" <<<"$notes_output"
+  grep -Fq "$expected" <<<"$notes_output"
+  if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then
+    printf 'error: branch pushed before release-notes validation (%s)\n' "$expected" >&2
+    exit 1
+  fi
+}
+set_release_notes() {
+  printf '%s' "$1" >"$subject/$notes_path"
+  git -C "$subject" add "$notes_path"
+  git -C "$subject" commit --amend --no-edit >/dev/null
+}
+
+assert_notes_refusal 'release-notes file is missing'
+bom="$(printf '\357\273\277')"
+set_release_notes "${bom}"$'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'missing required heading "## Release overview"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n'
+assert_notes_refusal 'missing required heading "## Evidence and compatibility"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Extra section\n\nExtra.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'extra level-two heading "## Extra section"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n  ## Extra visible heading\n\nExtra.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'level-two heading markers are allowed only as exact column-one section headings'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n> ## Extra quoted heading\n\nExtra.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'level-two heading markers are allowed only as exact column-one section headings'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n##\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'level-two heading markers are allowed only as exact column-one section headings'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Substantive changes\n\nDuplicate.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'duplicated required heading "## Substantive changes"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Substantive changes\n\nChange.\n\n## Read before upgrading\n\nNone.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'required headings are misordered'
+set_release_notes $'## Release overview\n\n   \n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'empty required section "## Release overview"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\n   \n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'empty required section "## Read before upgrading"'
+set_release_notes $'## Release overview\n\nOverview.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nDOTLN-MANIFEST-BEGIN\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'reserved tag marker line "DOTLN-MANIFEST-BEGIN"'
+set_release_notes $'## Release overview\n\n<!-- hidden -->\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'HTML comments are not allowed in reviewed notes'
+set_release_notes $'## Release overview\n\nOverview.\n\n<!--\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n-->'
+assert_notes_refusal 'HTML comments are not allowed in reviewed notes'
+set_release_notes $'## Release overview\n\nOverview.\n\nExtra\n-----\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'setext level-two headings are not allowed'
+set_release_notes $'## Release overview\n\nOverview.\n\n> Extra\n> -----\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'setext level-two headings are not allowed'
+set_release_notes $'## Release overview\n\nOverview.\n\n- list item\n\n    ## Extra list-continuation heading\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'level-two heading markers are allowed only as exact column-one section headings'
+set_release_notes $'## Release overview\n\nOverview.\n\n<pre>\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n</pre>\n'
+assert_notes_refusal 'raw HTML is not allowed in reviewed notes'
+set_release_notes $'## Release overview\n\nOverview.\n\n<pre\n>\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'raw HTML is not allowed in reviewed notes'
+set_release_notes $'## Release overview\n\nOverview.\n\n``` `\n## Extra visible heading\n```\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'extra level-two heading "## Extra visible heading"'
+set_release_notes $'## Release overview\n\nOverview.\n\n\t```\n## Extra visible heading\n```\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'extra level-two heading "## Extra visible heading"'
+set_release_notes $'## Release overview\n\nOverview mentioning the literal `## Example` text.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+printf 'release-notes publish validation fixtures passed\n'
+
+printf 'ignored private body\n' >"$subject/.env"
+if ignored_body_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file .env 2>&1)"; then printf 'error: publish accepted an ignored untracked PR body\n' >&2; exit 1; fi
+grep -Fq '.env: file is not tracked' <<<"$ignored_body_output"
+test -f "$subject/.env"
+rm -- "$subject/.env"
+
+printf 'ignored pathspec body\n' >"$subject/.env.*"
+if pathspec_body_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file '.env.*' 2>&1)"; then printf 'error: publish accepted an ignored pathspec-like PR body\n' >&2; exit 1; fi
+grep -Fq '.env.*: file is not tracked' <<<"$pathspec_body_output"
+test -f "$subject/.env.*"
+rm -- "$subject/.env.*"
+
 if missing_gh_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted a missing gh executable\n' >&2; exit 1; fi
 grep -Fq 'gh is required before any remote mutation' <<<"$missing_gh_output"
 if grep -Fq 'at file://' <<<"$missing_gh_output"; then printf 'error: missing-gh refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
 if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: branch pushed before gh preflight\n' >&2; exit 1; fi
 
-printf '#!/usr/bin/env bash\nprintf "https://example.invalid/pr/99\\n"\n' >"$test_root/bin/gh"
+gh_log="$test_root/gh.log"
+printf '%s\n' \
+  '#!/usr/bin/env bash' \
+  'set -euo pipefail' \
+  'printf "%s\\n" "$*" >>"$DOTLN_GH_LOG"' \
+  'if [[ -n "${GH_REPO:-}" || -n "${GH_HOST:-}" ]]; then printf "ambient GH target leaked\\n" >&2; exit 65; fi' \
+  'if [[ "$*" == "--version" ]]; then printf "gh version fixture\\n"; exit 0; fi' \
+  'if [[ "${1:-} ${2:-}" == "auth status" ]]; then' \
+  '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "auth" ]]; then printf "not authenticated\\n" >&2; exit 4; fi' \
+  '  printf "authenticated fixture\\n"; exit 0' \
+  'fi' \
+  'if [[ "${1:-} ${2:-}" == "pr create" ]]; then' \
+  '  body_file=""' \
+  '  while (( "$#" )); do if [[ "$1" == "--body-file" ]]; then body_file="$2"; shift 2; else shift; fi; done' \
+  '  cp "$body_file" "$DOTLN_GH_BODY"' \
+  '  printf "https://example.invalid/pr/99\\n"; exit 0' \
+  'fi' \
+  'printf "unexpected gh invocation: %s\\n" "$*" >&2' \
+  'exit 64' >"$test_root/bin/gh"
 chmod +x "$test_root/bin/gh"
+: >"$gh_log"
+git -C "$subject" remote set-url --push origin https://github.com/dotln-fixture/wrong-target.git
+if split_origin_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted split fetch/push GitHub targets\n' >&2; exit 1; fi
+grep -Fq 'matching GitHub HOST/OWNER/REPO fetch and push target' <<<"$split_origin_output"
+test ! -s "$gh_log"
+git -C "$subject" config --unset-all remote.origin.pushurl
+git -C "$subject" remote set-url origin http://github.com/dotln-fixture/worktree.git
+if insecure_origin_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted an insecure GitHub origin\n' >&2; exit 1; fi
+grep -Fq 'matching GitHub HOST/OWNER/REPO fetch and push target' <<<"$insecure_origin_output"
+test ! -s "$gh_log"
+git -C "$subject" remote set-url origin "$github_origin"
+if unauth_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_FIXTURE_GH_FAIL=auth node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted unauthenticated gh\n' >&2; exit 1; fi
+grep -Fq 'gh authentication is required before any remote mutation' <<<"$unauth_output"
+test "$(cat "$gh_log")" = $'--version\nauth status --hostname github.com'
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: branch pushed before gh authentication\n' >&2; exit 1; fi
+: >"$gh_log"
 mkdir -p "$test_root/outside"
 printf 'secret\n' >"$test_root/outside/secret.md"
 ln -s "$test_root/outside" "$subject/link"
@@ -83,12 +215,31 @@ rm -- "$subject/link"
 if PATH="$test_root/bin:$PATH" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file ../outside.md >/dev/null 2>&1; then printf 'error: outside PR body accepted\n' >&2; exit 1; fi
 git -C "$subject" tag -a v7.7.7 -m 'unrelated local annotated tag'
 git -C "$subject" config push.followTags true
-publish_output="$(PATH="$test_root/bin:$PATH" node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md)"
+committed_body="$test_root/committed-pr-body.md"
+committed_notes="$test_root/committed-release-notes.md"
+published_body="$test_root/published-pr-body.md"
+cp "$subject/pr-body.md" "$committed_body"
+cp "$subject/$notes_path" "$committed_notes"
+git -C "$subject" update-index --assume-unchanged pr-body.md "$notes_path"
+printf 'hidden uncommitted private body\n' >"$subject/pr-body.md"
+printf '<!-- hidden malformed notes -->\n' >"$subject/$notes_path"
+publish_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_GH_BODY="$published_body" GH_REPO=wrong/target GH_HOST=wrong.example node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md)"
+cmp "$committed_body" "$published_body"
+cp "$committed_body" "$subject/pr-body.md"
+cp "$committed_notes" "$subject/$notes_path"
+git -C "$subject" update-index --no-assume-unchanged pr-body.md "$notes_path"
 test "$(git -C "$subject" rev-parse wo-099)" = "$(git --git-dir="$test_root/origin.git" rev-parse refs/heads/wo-099)"
 remote_refs="$(git --git-dir="$test_root/origin.git" for-each-ref --format='%(refname)' | LC_ALL=C sort)"
 test "$remote_refs" = $'refs/heads/main\nrefs/heads/wo-099'
 grep -Fq "cd '$main'" <<<"$publish_output"
 grep -Fq "'$node_bin' '$subject/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"
+test "$(sed -n '1p' "$gh_log")" = '--version'
+test "$(sed -n '2p' "$gh_log")" = 'auth status --hostname github.com'
+grep -Eq '^pr create --repo github\.com/dotln-fixture/worktree --head wo-099 --base main --title :sparkles: fixture --body-file .+/PR\.md$' "$gh_log"
+test "$(wc -l <"$gh_log" | tr -d ' ')" = 3
+printf 'worktree gh stub transcript (temporary path normalized):\n'
+sed -E 's#--body-file [^ ]+/PR\.md#--body-file <committed-PR-body>#' "$gh_log"
+printf 'GitHub PR target, authentication, and committed-body fixtures passed\n'
 git -C "$subject" config --unset push.followTags
 git -C "$subject" tag -d v7.7.7 >/dev/null
 if node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null 2>&1; then printf 'error: unmerged PR cleaned up\n' >&2; exit 1; fi

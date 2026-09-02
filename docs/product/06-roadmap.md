@@ -77,6 +77,15 @@ carries the record**. A tracked manifest committed after the tag would describe
 a different commit; committing one before the tag would require guessing its own
 commit identity.
 
+Beginning with `v0.3.2`, every passing final review supplies a five-section
+reviewed notes artifact, including for no-release work orders. Release close
+assembles all notes merged since the preceding tag in first-parent order, labels
+older work orders with a time-indexed commit-subject fallback, appends
+manifest-derived evidence and compatibility, and keeps that edition in the
+annotated tag. After the validated tag push, the same human layer is projected
+as a GitHub Release; the projection never replaces the tag's immutable JSON
+record and is recovered by rerunning close rather than silently edited.
+
 Patch releases contain compatible corrections, documentation, and evidence
 improvements; minor releases add backwards-compatible application capability;
 breaking public contracts require the next major boundary even before 1.0 unless

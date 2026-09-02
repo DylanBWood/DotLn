@@ -101,8 +101,9 @@ The executable/debug actions for the first five phrases are `status`, `next`,
 The resolver rejects illegal phase transitions and prints the authoritative work
 order and verification artifact to read. `release close` is the separate guarded
 post-merge operation projected as `npm run release -- close WO-NNN --publish`;
-it carries narrow annotated-tag authority. Verifiers and reviewers record
-completion with the internal actions documented in `docs/PLAYBOOK.md`.
+it narrowly authorizes the annotated tag and its matching GitHub Release.
+Verifiers and reviewers record completion with the internal actions documented
+in `docs/PLAYBOOK.md`.
 
 ## Config log
 
