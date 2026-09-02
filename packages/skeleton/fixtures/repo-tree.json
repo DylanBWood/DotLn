@@ -1,8 +1,24 @@
 {
   "files": [
-    { "path": "README.md", "referencedBy": ["package.json"], "classification": "documentation" },
-    { "path": "src/index.ts", "referencedBy": ["package.json"], "classification": "source" },
-    { "path": "tmp/old-report.txt", "referencedBy": [], "classification": "generated-stale" },
-    { "path": "notes/keep.txt", "referencedBy": ["README.md"], "classification": "notes" }
+    {
+      "path": "README.md",
+      "referencedBy": ["package.json"],
+      "classification": "documentation"
+    },
+    {
+      "path": "src/index.ts",
+      "referencedBy": ["package.json"],
+      "classification": "source"
+    },
+    {
+      "path": "tmp/old-report.txt",
+      "referencedBy": [],
+      "classification": "generated-stale"
+    },
+    {
+      "path": "notes/keep.txt",
+      "referencedBy": ["README.md"],
+      "classification": "notes"
+    }
   ]
 }

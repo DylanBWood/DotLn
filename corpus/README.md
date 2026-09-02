@@ -3,8 +3,8 @@
 This tree holds committed, reproducible evidence material. It has two distinct
 uses:
 
-- `sanitized/` is reserved for synthesized source/incident material governed
-  by the architecture corpus policy. Raw material remains local-only under
+- `sanitized/` is reserved for synthesized source/incident material governed by
+  the architecture corpus policy. Raw material remains local-only under
   `docs/intake/` and is never copied here.
 - `fixtures/`, `harness/`, and `manifests/` hold generated executable corpora.
   These inputs are original test data, contain no intake content, and regenerate
@@ -30,4 +30,3 @@ node --test corpus/harness/wo101-*.test.mjs
 The generated layout extends `docs/product/03-architecture.md` §Corpus policy.
 That document requires a later authorized documentation pass; WO-101 has no
 authority to edit it.
-

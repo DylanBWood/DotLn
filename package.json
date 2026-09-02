@@ -6,15 +6,19 @@
   ],
   "scripts": {
     "build": "tsc -b",
-    "test": "bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-checkpoint.sh && bash scripts/test-worktree.sh && bash scripts/test-release.sh && rm -rf packages/kernel/dist packages/skeleton/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/skeleton/dist/test/*.test.js",
+    "test": "npm run format:check --silent && bash scripts/test-publication.sh && bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-checkpoint.sh && bash scripts/test-worktree.sh && bash scripts/test-release.sh && rm -rf packages/kernel/dist packages/skeleton/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/skeleton/dist/test/*.test.js",
     "skeleton": "npm run build --silent && node packages/skeleton/dist/src/cli.js",
     "backup:intake": "bash scripts/backup-intake.sh",
+    "format": "prettier --write . --ignore-unknown",
+    "format:check": "prettier --check . --ignore-unknown",
+    "publication:check": "node scripts/check-publication.mjs",
     "resume": "node scripts/resume.mjs",
     "worktree": "node scripts/worktree.mjs",
     "release": "node scripts/release.mjs"
   },
   "devDependencies": {
     "@types/node": "22.20.1",
+    "prettier": "3.9.6",
     "typescript": "5.4.5"
   }
 }

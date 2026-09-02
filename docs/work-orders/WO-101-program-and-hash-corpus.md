@@ -16,9 +16,15 @@ presenting the prerequisite as having occurred before activation; the
 append-only `WorkOrderActivated` event
 remains unchanged. The operator also authorized executor-side dependency
 provisioning for this episode.
-**Series note:** reserved adjacent WO-10x series; numbering provisional — the
+**Historical series note (superseded):** reserved adjacent WO-10x series;
+numbering provisional — the
 operator may renumber at activation. This order absorbs the durable kernel of
 the withdrawn WO-104 hash-identity candidate (see Objective lane c).
+**Identity update — 2026-09-01:** the provisional renumbering option above is
+superseded for identifier identity. Retain `WO-101` as this order's stable,
+opaque reference; represent its evidence/corpus purpose and grouping in the
+provisional work-order map and future explicit metadata. This update changes no
+other scope or completion evidence.
 **Depends on:** WO-004 merged — branch from `origin/main` at or after the
 v0.2.1 close. No dependency on WO-005..WO-011 in either direction.
 

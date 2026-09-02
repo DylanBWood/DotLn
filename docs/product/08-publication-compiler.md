@@ -1,16 +1,15 @@
 # Publication compiler — one source, many authoritative editions
 
-DotLn's repository should be able to become an authoritative resource about
-its purpose, vision, mechanics, implementation, operation, and consequences.
-That resource is not one universal manual. It is a family of versioned
-editions compiled from the same reviewed sources for different audiences and
-decisions.
+DotLn's repository should be able to become an authoritative resource about its
+purpose, vision, mechanics, implementation, operation, and consequences. That
+resource is not one universal manual. It is a family of versioned editions
+compiled from the same reviewed sources for different audiences and decisions.
 
 The book is a first-class output from the beginning, alongside ordinary
 reference documentation. A book supplies a coherent path through the ideas;
-reference docs supply precise lookup; runbooks supply action; generated API
-and schema references supply implementation truth. None becomes an
-independently maintained second source of truth.
+reference docs supply precise lookup; runbooks supply action; generated API and
+schema references supply implementation truth. None becomes an independently
+maintained second source of truth.
 
 ## Source model
 
@@ -24,16 +23,16 @@ sources:
 - discovery records for environment-qualified capability claims;
 - operator-authored examples, diagrams, glossaries, and teaching material.
 
-Gitignored intake may inspire a reviewed source but is never published or
-quoted directly. Runtime state, credentials, private configuration, event
-history, and implementation secrets are excluded unless an explicit export
-policy produces a redacted artifact.
+Gitignored intake may inspire a reviewed source but is never published or quoted
+directly. Runtime state, credentials, private configuration, event history, and
+implementation secrets are excluded unless an explicit export policy produces a
+redacted artifact.
 
 Each publishable claim should eventually carry enough metadata to select and
-verify it: stable ID, topic, audience relevance, detail level, lifecycle
-status, applicable version, source links, evidence class, sensitivity, and
-last verification. Until structured claim records exist, headings and links
-provide the bootstrap form of that graph.
+verify it: stable ID, topic, audience relevance, detail level, lifecycle status,
+applicable version, source links, evidence class, sensitivity, and last
+verification. Until structured claim records exist, headings and links provide
+the bootstrap form of that graph.
 
 ## Audience editions
 
@@ -41,25 +40,25 @@ Audience selection changes sequence, vocabulary, examples, depth, and the
 decisions emphasized. It must not change facts, limitations, permissions, or
 evidence.
 
-| Edition | Primary question | Emphasis |
-|---|---|---|
-| everyday AI user | What can I safely accomplish, and how do I know it worked? | intent, recipes, previews, consent, evidence, recovery, plain-language mechanics |
-| software engineer | How do I extend, test, integrate, and debug it? | IR, kernel, adapters, skills, schemas, events, fixtures, compatibility, local development |
-| team manager | How does this improve work without hiding judgment or removing accountability? | workstreams, roles, handoffs, decision packets, verification, coaching, adoption |
-| IT director | Can this be deployed, governed, integrated, and supported? | architecture, identity, permissions, data flow, deployment modes, audit, retention, operations |
-| VP of development | How does it change engineering-system throughput and risk? | portfolio flow, organizational design, quality system, platform strategy, rollout, leading evidence |
-| CFO / finance leader | What value, exposure, and control does it create? | cost model, scenario ranges, risk, authorization, reversibility, auditability, investment gates |
-| security / compliance | What can act, on what, under whose authority, with what record? | threat model, trust classes, secrets, provenance, policy enforcement, incident response |
-| executive or board reader | Why now, what is differentiated, and what must be true? | thesis, strategic options, evidence, failure modes, milestones, governance |
+| Edition                   | Primary question                                                               | Emphasis                                                                                            |
+| ------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| everyday AI user          | What can I safely accomplish, and how do I know it worked?                     | intent, recipes, previews, consent, evidence, recovery, plain-language mechanics                    |
+| software engineer         | How do I extend, test, integrate, and debug it?                                | IR, kernel, adapters, skills, schemas, events, fixtures, compatibility, local development           |
+| team manager              | How does this improve work without hiding judgment or removing accountability? | workstreams, roles, handoffs, decision packets, verification, coaching, adoption                    |
+| IT director               | Can this be deployed, governed, integrated, and supported?                     | architecture, identity, permissions, data flow, deployment modes, audit, retention, operations      |
+| VP of development         | How does it change engineering-system throughput and risk?                     | portfolio flow, organizational design, quality system, platform strategy, rollout, leading evidence |
+| CFO / finance leader      | What value, exposure, and control does it create?                              | cost model, scenario ranges, risk, authorization, reversibility, auditability, investment gates     |
+| security / compliance     | What can act, on what, under whose authority, with what record?                | threat model, trust classes, secrets, provenance, policy enforcement, incident response             |
+| executive or board reader | Why now, what is differentiated, and what must be true?                        | thesis, strategic options, evidence, failure modes, milestones, governance                          |
 
-These are starting profiles, not fixed personas. A field, organization, team,
-or individual implementation can add its own vocabulary, policy overlays,
-case studies, and editions without forking the publication engine.
+These are starting profiles, not fixed personas. A field, organization, team, or
+individual implementation can add its own vocabulary, policy overlays, case
+studies, and editions without forking the publication engine.
 
 ## Publication manifest
 
-An edition should be reproducible from a small manifest rather than assembled
-by a long prompt. A future manifest can specify:
+An edition should be reproducible from a small manifest rather than assembled by
+a long prompt. A future manifest can specify:
 
 ```yaml
 edition: it-director
@@ -75,10 +74,10 @@ examples: sanitized
 claimsAsOf: 2026-08-31
 ```
 
-Compilation resolves source revisions, constructs an audience-specific
-outline, renders the requested formats, attaches claim-to-source lineage, and
-runs checks. A content hash identifies the source set; an edition version
-identifies editorial structure. Updating either produces a semantic diff.
+Compilation resolves source revisions, constructs an audience-specific outline,
+renders the requested formats, attaches claim-to-source lineage, and runs
+checks. A content hash identifies the source set; an edition version identifies
+editorial structure. Updating either produces a semantic diff.
 
 ### Outline first; publication IR only as needed
 
@@ -114,8 +113,8 @@ artifacts**, not a parallel representation of the product. Runtime semantics
 continue to live in the normalized DotLn IR; implementation truth continues to
 live in versioned definitions, code, tests, decisions, and evidence. The
 publication layer adds selection, sequencing, audience, pedagogy, source
-lineage, and rendering instructions—the information the runtime IR does not
-and should not contain.
+lineage, and rendering instructions—the information the runtime IR does not and
+should not contain.
 
 Do not introduce a finer-grained `Claim` IR until the first two editions prove
 that heading- and artifact-level references cannot support reliable stale
@@ -123,10 +122,10 @@ detection or contradiction checks. An outline is allowed to be sufficient.
 
 ### Base publication and implementation overlays
 
-The DotLn repository gets a base publication plan covering the common
-substrate, founding point of view, reference implementation, and honest
-implementation status. Each concrete DotLn implementation then supplies a
-small overlay rather than rewriting that plan:
+The DotLn repository gets a base publication plan covering the common substrate,
+founding point of view, reference implementation, and honest implementation
+status. Each concrete DotLn implementation then supplies a small overlay rather
+than rewriting that plan:
 
 - implementation identity, audience extensions, and local vocabulary;
 - installed components, runtime targets, integrations, and deployment shape;
@@ -151,18 +150,18 @@ Publication follows the repository's existing separation of duties:
    them. The planning role also performs the end-of-work-order blueprint and
    lineage check.
 2. An **execution role** receives one bounded plan and renders the concrete
-   book, guide, implementation handbook, or other output. Any capable model
-   can occupy this role when explicitly assigned; the model is a replaceable
+   book, guide, implementation handbook, or other output. Any capable model can
+   occupy this role when explicitly assigned; the model is a replaceable
    executor, not part of the publication format.
 3. A **verification role** checks claim lineage, implementation-status labels,
    contradictions, omissions material to the audience, sensitive-content
    boundaries, links, and output quality. It should not merely proofread the
    prose it just produced.
 
-The planner does not write every edition in one giant context, and executors
-do not invent the outline while rendering. Work orders can be divided by
-edition, part, or chapter, with a final assembly check over navigation,
-terminology, cross-references, and shared claims.
+The planner does not write every edition in one giant context, and executors do
+not invent the outline while rendering. Work orders can be divided by edition,
+part, or chapter, with a final assembly check over navigation, terminology,
+cross-references, and shared claims.
 
 ## Authority and honesty rules
 
@@ -175,14 +174,14 @@ terminology, cross-references, and shared claims.
 3. **Audience adaptation cannot become spin.** A CFO edition may explain risk
    economically and a programmer edition mechanically, but neither may omit a
    material limitation relevant to its decision.
-4. **Numbers need provenance.** Costs, savings, performance, adoption, and
-   risk estimates state their method, range, date, and uncertainty; absent
-   evidence stays unknown.
+4. **Numbers need provenance.** Costs, savings, performance, adoption, and risk
+   estimates state their method, range, date, and uncertainty; absent evidence
+   stays unknown.
 5. **Generated prose is reviewed output.** A model may propose structure and
    wording, but publication gates validate citations, terminology, sensitive
    content, contradictions, links, examples, and version applicability.
-6. **Lossy editions identify themselves.** An executive brief or narrative
-   book links to the mechanics and evidence it compresses.
+6. **Lossy editions identify themselves.** An executive brief or narrative book
+   links to the mechanics and evidence it compresses.
 
 ## Product surface
 
@@ -196,9 +195,9 @@ The same compiler should support:
 - role-aware in-product help generated from the exact installed build;
 - agent-facing skills and runbooks derived from the same contracts.
 
-Readers can switch audience lenses without losing their current topic. A
-claim inspector shows the canonical source, implementation status, evidence,
-other editions that use it, and what the current edition omitted. This is the
+Readers can switch audience lenses without losing their current topic. A claim
+inspector shows the canonical source, implementation status, evidence, other
+editions that use it, and what the current edition omitted. This is the
 publication equivalent of DotLn's mechanics inspector.
 
 ## Release-note edition
@@ -232,9 +231,9 @@ action. Generated notes should flag uncertain classification for human review.
 Do not begin with an elaborate content-management system. The first proof is:
 
 1. tag the existing blueprint sections with a minimal audience/status index;
-2. have the planning role produce the base DotLn outline, an implementation-
-   overlay template, and two sharply different tables of contents from the
-   same sources—an everyday AI-user book and a software-engineer book;
+2. have the planning role produce the base DotLn outline, an
+   implementation-overlay template, and two sharply different tables of contents
+   from the same sources—an everyday AI-user book and a software-engineer book;
 3. render one shared concept in both voices with identical claim links;
 4. deliberately change a source claim and prove both editions become stale;
 5. add manager, IT-director, VP-development, and CFO editions only after that
