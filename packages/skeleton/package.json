@@ -1,6 +1,6 @@
 {
   "name": "@dotln/skeleton",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,6 +9,6 @@
     "start": "node dist/src/cli.js"
   },
   "dependencies": {
-    "@dotln/kernel": "0.1.0"
+    "@dotln/kernel": "0.2.0"
   }
 }

@@ -85,7 +85,9 @@ type AuditRecord =
   | (AuditRecordBase<"authority-decision", "allowed"> & {
       decision: "allowed";
       commandId: string;
-      decisionEvidence: "authorized-command-persisted";
+      decisionEvidence:
+        | "authority-trace-and-command-persisted"
+        | "authorized-command-persisted";
     })
   | (AuditRecordBase<"authority-decision", "denied"> & {
       decision: "denied";
@@ -139,15 +141,15 @@ envelopes when its governance allows.
 The envelope is a discriminated union. Required properties depend on action
 class; nothing populates every candidate field:
 
-| Action class          | Canonical source in the walking skeleton                      | Additional required fields                                                                                |
-| --------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `work-order-dispatch` | `WorkOrderEmitted`                                            | `workOrderRef`; outcome `emitted` (no transport receipt is claimed)                                       |
-| `authority-decision`  | `CommandPersisted` or `CommandRefused`                        | allowed: `commandId`; denied: `reason` + `authorityEnvelopeRef`, and deliberately no invented `commandId` |
-| `external-effect`     | `CommandResult`, `DeletionAttempted`, or `SchedulesCancelled` | effect state `requested \| observed-result \| unknown`; `commandId` only when a command exists            |
-| `result`              | `CommandResult` or `EpisodeTerminated`                        | `command-returned` or `episode-terminated`; `commandId` for a command result                              |
-| `verification`        | `VerificationRequested` + `VerificationCompleted`             | verdict, association label, and `subjectRef` when the source records one                                  |
-| `recovery`            | `CommandPersisted` + `CommandRedispatched`                    | original `commandId`, original persisted-event reference, and recovery state                              |
-| `no-op`               | `QueuedPulseNoOp`                                             | reason and canonical `evidenceEventIds`; it does not carry refusal-only authority detail                  |
+| Action class          | Canonical source in the walking skeleton                                                                       | Additional required fields                                                                                                             |
+| --------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `work-order-dispatch` | `WorkOrderEmitted`                                                                                             | `workOrderRef`; outcome `emitted` (no transport receipt is claimed)                                                                    |
+| `authority-decision`  | matching adjacent `DecisionRecorded` + `CommandPersisted`, persisted-only legacy fallback, or `CommandRefused` | allowed: `commandId` and an honest evidence label; denied: `reason` + `authorityEnvelopeRef`, and deliberately no invented `commandId` |
+| `external-effect`     | `CommandResult`, `DeletionAttempted`, or `SchedulesCancelled`                                                  | effect state `requested \| observed-result \| unknown`; `commandId` only when a command exists                                         |
+| `result`              | `CommandResult` or `EpisodeTerminated`                                                                         | `command-returned` or `episode-terminated`; `commandId` for a command result                                                           |
+| `verification`        | `VerificationRequested` + `VerificationCompleted`                                                              | verdict, association label, and `subjectRef` when the source records one                                                               |
+| `recovery`            | `CommandPersisted` + `CommandRedispatched`                                                                     | original `commandId`, original persisted-event reference, and recovery state                                                           |
+| `no-op`               | `QueuedPulseNoOp`                                                                                              | reason and canonical `evidenceEventIds`; it does not carry refusal-only authority detail                                               |
 
 A consequential source event that lacks a class-required canonical reference
 refuses projection instead of disappearing or producing a positive/placeholder
@@ -158,12 +160,24 @@ completion. Although the fixture event is historically named
 the audit stage is therefore `requested`, followed by the structural denial.
 
 The step-9 denied record may group the adjacent `DeletionAttempted`,
-`CommandRefused`, and authority `DecisionRecorded` events because they share
-episode and log time. That grouping is explicitly
-`derived-same-episode-time-adjacency`; it is not a fabricated `causationId`.
-Likewise, a persisted command proves the skeleton admitted that command but does
-not recover the allowing authority-envelope identifier, which the source never
-recorded.
+`CommandRefused`, and authority `DecisionRecorded` events only when they share
+episode and log time and the last event carries a structurally conforming
+authority-guard v1 refusal trace whose branch matches the refusal reason. That
+grouping is explicitly `derived-same-episode-time-adjacency`; it is not a
+fabricated `causationId`.
+
+For an allowed command, the canonical demo groups the immediately preceding
+`DecisionRecorded` only when both events share scope and the trace is a
+structurally conforming authority-guard v1 grant: exact
+`authorized / <persisted effect>` branch, the v1 base environment inputs with a
+nonempty authority-envelope reference and the trace event's canonical time,
+any complete semantic-revocation suffix, the matching resource suffix when the
+command consumes one, and no cadence evaluations. The record labels that pair
+`authority-trace-and-command-persisted`; older or independently constructed logs
+without such a trace retain the narrower `authorized-command-persisted`
+fallback. This validates the recorded structure; it does not authenticate an
+untrusted event source. Neither form invents the allowing authority-envelope
+identifier when the canonical source does not record it.
 
 A verification completion uses an explicit causation/correlation event link when
 one names a request. With no explicit link, a sole preceding request in the same
@@ -377,6 +391,37 @@ Deletion and immutability require design, not slogans. A durable audit record
 may retain that a governed deletion occurred while separately deleting or
 cryptographically rendering inaccessible the sensitive payload. Hashes are not
 automatically anonymous when the input space can be guessed.
+
+## Candidate — minimized incident reporting
+
+A failure-triggered active, projected into supported runtimes as an agent skill,
+can turn a crash or reproducible bug into a least-necessary incident packet. It
+starts in the governed local lane: select only the correlated diagnostic slice,
+reproduction steps, affected public component and version, outcome class, and
+public-safe environment facts; deduplicate and classify it; apply deterministic
+field selection and local redaction; then preview a manifest that says what will
+be included, omitted, transformed, and lost. Raw local logs remain separately
+controlled diagnostics with short retention by default. Credentials, resolved
+targets, private identifiers, unrelated log lines, conversation history, and
+reversible fingerprints are never issue payloads.
+
+“Automatic” means an operator policy may preauthorize submission of a narrowly
+classified packet through a GitHub Issues effect adapter. The authorization
+still names repository scope, issue operation, rate and duplicate limits,
+required evidence, expiry, and revocation; the outbox records the external
+effect. Without that envelope the active produces a local draft and receipt,
+not an issue. Target bindings and credentials resolve only inside the adapter,
+and a final payload preview remains available even when standing authority
+permits unattended submission.
+
+An issue is an intake artifact, not proof, priority, or permission to repair.
+The reporter links the local source without copying it, labels its own diagnosis
+as a claim, and cannot independently verify itself. A public receipt records the
+sanitized packet and remote issue reference only when the selected profile
+permits it. The first implementation slice should use synthetic logs with
+planted secrets and unrelated records, proving minimization, redaction,
+deduplication, draft-only refusal, and exactly one authorized submission before
+any real diagnostic source is connected.
 
 ## Candidate — model-input exposure plans
 

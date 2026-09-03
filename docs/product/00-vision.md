@@ -205,14 +205,26 @@ mechanism whose origin is known can be mined again.
   formal systems reasoning about themselves is the kernel's purity and replay
   contract. Unmined seams are recorded in the idea ledger rather than
   pre-emptively architected here.
-- **Westworld** — three distinct shapes. _Reveries_: feedback agents built from
+- **Westworld** — four distinct shapes. _Reveries_: feedback agents built from
   single rules with their verbatim originating incidents, recombinable as
   identity fragments. _Old configurations on modern builds_: historical
   artifacts stay runnable rather than becoming import debris, which is the
   requirement behind `10-ir-compatibility.md`. _The bicameral voice_: an
   introduced idea can alter later behavior while its acceptance, transformation,
   resistance, or misunderstanding stays inspectable in `προτείνω`; this is an
-  interaction shape, not a claim about simulated consciousness.
+  interaction shape, not a claim about simulated consciousness. _Exact command
+  vocabulary_: reserved source phrases can place the operator in deterministic
+  control of an interaction mode. Their wording is load-bearing rather than a
+  theme to paraphrase; `analysis:` is the first operator-supplied token, and the
+  rest of the exact lexicon remains open until supplied or source-reviewed.
+- **_Dual Survival_ and _Man, Woman, Wild_ — exact phrasebook voice.** The
+  operator's personally selected catchphrase list is the content of an optional output
+  palette, not merely inspiration for a generic rustic style. Its exact entries,
+  spelling, capitalization, constructions, and cooldown annotations are retained
+  in `05-pattern-library.md`; the separately nominated _Man, Woman, Wild_ entry
+  is exactly `this is truly desperate living`. A recorded unavailable or degraded
+  execution condition may make that entry eligible, but the line cannot excuse
+  or conceal silent model degradation.
 - **Iron Man / JARVIS** — the operator relationship to aim at: declare intent
   conversationally, have the machinery carry the work and keep its own records,
   and never wonder what it did. DotLn takes the posture and inverts one thing
@@ -328,9 +340,12 @@ unmined. The harness essay was reviewed and the World of Warcraft analogy was
 supplied by the operator on 2026-09-01. The small-town research source, the
 third Westworld shape, and the Grand Theft Auto experience were recorded on the
 operator's direct instruction on 2026-09-02. Jujutsu Kaisen was nominated from
-the operator's live viewing on 2026-09-03 and remains unmined. Westworld's
-earlier shapes and the rest are traceable to the raw material. Do not attribute
-a specific claim to an unsourced influence without asking.
+the operator's live viewing on 2026-09-03 and remains unmined. The fourth
+Westworld shape, `analysis:` token, _Dual Survival_ list, and _Man, Woman,
+Wild_ phrase were supplied directly by the operator on 2026-09-03; the list's
+exact filing was reconfirmed after an over-generalized first synthesis.
+Westworld's earlier shapes and the rest are traceable to the raw material. Do
+not attribute a specific claim to an unsourced influence without asking.
 
 ## What DotLn is not
 

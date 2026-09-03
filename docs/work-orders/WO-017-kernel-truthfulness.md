@@ -1,12 +1,17 @@
-# WO-017 — Kernel truthfulness: store codec, outbox ordering, authority guard, evidence hardening (version assigned at activation)
+# WO-017 — Kernel truthfulness: store codec, outbox ordering, authority guard, evidence hardening, v0.3.5
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Expected
-class: patch. Compatible corrections to `@dotln/kernel` behavior at boundaries
-no current test reaches, plus binding tests. Item 3e adds an optional field and
-an optional context key; pre-1.0 the planner may prefer the next minor.
+**Release classification:** `v0.3.5`, the compatible patch strictly above the
+latest published `v0.3.4` tag observed at activation. The activation helper
+retained the draft placeholder despite its required rewrite; under the
+operator's `resume: next` dispatch, the executor forward-corrected that
+unambiguous preflight miss on 2026-09-03 without editing the append-only
+activation event. The application change is a boundary correction plus binding
+evidence. The kernel component advances to `0.2.0` because item 3e adds optional
+public inputs and item 4 adds public capability data; the skeleton component
+advances to `0.3.1` for the compatible integration.
 **Nomination provenance:** the operator's 2026-09-02 entropy review; opaque
 identifier, not a priority.
 **Direct-draft provenance:** the operator supplied this complete public draft
@@ -136,6 +141,71 @@ codec contract). Mark WO-105's malformed-line lane as absorbed here in its
 draft and in the work-order map.
 
 **Non-goals:** a filesystem appender or crash-recovery protocol (WO-009);
-byte-offset truncation sweeps (WO-105's retired lane); evaluating deferred
+byte-offset truncation sweeps (retained by WO-105); evaluating deferred
 kinds; the `Cadence.Evaluable` recursive subset type (record as a candidate);
 changing the `commandId` or `eventId` schemes.
+
+## Ideation breakout receipt — 2026-09-03
+
+**Authority:** During the active implementation episode, the operator opened a
+bare `ideation:` breakout and explicitly preauthorized continuation of this work
+order while and after it was logged. The expansion authorizes the documentation
+promotion below; it does not add kernel or skeleton implementation scope to
+items 1–4.
+
+**Raw intake batch:**
+`docs/intake/notes/WO-017-expanded-ideation-2026-09-03.md` contains the four
+operator messages verbatim and a manually checked transcription of
+`docs/intake/images/dual-survival.webp`. Both paths are ignored local source
+material.
+
+**Source treatment and clean-room review:** Ordinary mechanism descriptions use
+Shape-First Synthesis. The DBZ reference remains in lineage while architecture
+receives only the synthesized contributed-capacity mechanism. The exact _Dual
+Survival_ palette, `analysis:` token and exact-fidelity rule for future
+Westworld vocabulary, and “this is truly desperate living” retain Direct Draft
+Fidelity because the operator corrected a generalized synthesis and made
+lexical fidelity the point for those sources. No employer code, configuration,
+identifier, internal service, credential, private identifier, or other
+clean-room stop condition was present. On 2026-09-03, the operator confirmed
+authorship of the _Dual Survival_ list/compilation shown in the local image and
+explicitly authorized its exact text for public filing in this repository. The
+public surface records that direct-filing provenance without publishing the
+image itself.
+
+**Promoted surfaces:**
+
+- `docs/lineage/idea-ledger.md` records four entries: minimized incident
+  reporting; exact phrasebook voice; exact Westworld command vocabulary; and
+  contributed Fable-capacity execution.
+- `docs/product/00-vision.md` records the two named phrase sources and a fourth
+  Westworld shape.
+- `docs/product/03-architecture.md` records the candidate contributed execution
+  pool.
+- `docs/product/04-interfaces.md` records exact operator command vocabulary and
+  the first supplied token, `analysis:`.
+- `docs/product/05-pattern-library.md` records the exact _Dual Survival_ palette
+  wholesale and the exact _Man, Woman, Wild_ addition.
+- `docs/product/09-audit-resilience-privacy.md` records the minimized local-log
+  to authorized-GitHub-Issue pipeline.
+- `docs/publication/audience-status-index.md` indexes the four new candidate
+  sections, and both audience-edition source locks are refreshed from their
+  changed linked subtrees.
+
+**Unresolved choices:** The rest of the source-exact Westworld command lexicon;
+phrasebook package/local-storage and attribution policy; incident packet schema,
+trigger classes, retention, and which issue classes may ever receive standing
+submission authority; contributor discovery, claim, provider-eligibility, and
+quota-accounting contracts; and the first bounded implementation orders for all
+four candidates. None is silently selected by this receipt. The operator's
+authorship and exact-publication confirmation resolves the source-treatment
+precondition for this batch; it does not resolve those product choices.
+
+**Required review:** Verification and final review must include this receipt,
+the six promoted product/lineage surfaces, and the three refreshed publication
+projections. They check exact phrase fidelity against the local transcription,
+the direct-filing provenance, clean-room and secret exclusion, separation of
+style/control from authority, external-effect and privacy boundaries,
+consistency with Principles 8 and 9, internal links and locks, and that no
+candidate was presented as implemented. The implementation evidence gate and
+independent verification required by the original work order remain unchanged.

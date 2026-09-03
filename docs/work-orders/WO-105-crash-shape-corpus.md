@@ -18,8 +18,18 @@ WO-105 (store lane) and WO-106 (skeleton lane) candidates.
 superseded for identifier identity. Retain `WO-105` as this order's stable,
 opaque reference; represent purpose and grouping in the provisional work-order
 map and future explicit metadata. This update changes no other scope.
-**Depends on:** WO-004 merged — branch from `origin/main` at or after the
-v0.2.1 close. Independent of the mainline and of the other adjacent orders.
+**Depends on:** WO-004 merged and WO-017 landed — branch from `origin/main`
+after the WO-017 close. Independent of the other adjacent orders.
+
+**Scope split — 2026-09-03:** WO-017 absorbed the physical malformed-line lane
+as a product fix with root-suite tests: partial or complete unterminated tails,
+blank or whitespace-only lines, and non-object JSON values now fail closed with
+the physical line number. This order no longer builds a parallel corpus for
+those cases. It retains every-byte truncation sweeps and valid-object semantic
+anomalies that WO-017 does not decide: CRLF classification, duplicate or
+out-of-order event IDs, deep nesting, and duplicated whole object lines. The
+remaining corpus measures the landed codec rather than preserving the buggy
+one.
 
 **Cites (read these sections):** 02-domain-model.md (Event store: append-only
 JSONL, `evt_<n>` edge-assigned at the store boundary; deterministic replay);
@@ -44,22 +54,24 @@ read-only oracles.
 spine, plus the golden traces that pin today's behavior. STORE LANE — (a)
 round-trip laws over generated logs of varied sizes:
 `decodeLog(encodeLog(events))` identity; `appendEvent` numbering across empty
-logs, trailing-newline variants, payloads containing escaped newlines;
-eventId monotonicity over long append chains. (b) Truncation sweep: for each
+and well-formed LF-terminated logs, payloads containing escaped newlines, and
+the separately classified CRLF family—no unterminated or blank-line form is an
+accepted numbering variant; eventId monotonicity over long append chains. (b)
+Truncation sweep: for each
 generated log (plus the deterministic 13-step demo log regenerated in-harness
 via the shipped scenario), cut at EVERY byte offset and classify:
 line-boundary cut ⇒ clean prefix decode exactly equal to the untruncated
 prefix; mid-line cut ⇒ loud `decodeLog` failure; the invariant is that NO cut
 yields a silent third class (a successful parse diverging from the true
-prefix). Honesty clause: for the CURRENT decodeLog (split + JSON.parse per
-line) this invariant is near-provable — no strict prefix of a minified JSON
-object parses — so the sweep's value is the persistent classified corpus and
-the malformed-family pins, not discovery; the acceptance claims are worded as
-pinning, not finding. (c) Malformed-line families: blank lines, CRLF,
-duplicated eventIds, out-of-order eventIds, deep nesting, non-object lines,
-duplicated whole lines — each classified {decodes-with-behavior-X | throws},
-and where decode succeeds, `replay`/`replayOutbox` run-twice determinism
-still holds. (d) Machine-readable results: one record per cut point/family
+prefix). Honesty clause: for the landed decode contract, this invariant is
+near-provable — no strict prefix of a minified JSON object parses — so the
+sweep's value is the persistent classified corpus and boundary pins, not
+discovery; the acceptance claims are worded as pinning, not finding. (c)
+Retained valid-object anomaly families: CRLF, duplicated eventIds, out-of-order
+eventIds, deep nesting, and duplicated whole lines — each classified
+{decodes-with-behavior-X | throws}, and where decode succeeds,
+`replay`/`replayOutbox` run-twice determinism still holds. (d) Machine-readable
+results: one record per cut point/family
 (log seed, offset, outcome class). SKELETON LANE — (e) Golden trace corpus:
 run the canonical 13-step demo at the pinned base commit and commit its full
 kernel DecisionTrace sequence, event log, and glyph-scene output as golden
@@ -69,7 +81,7 @@ raw material and a drift tripwire between now and WO-008 — WO-008's AC6
 contract is live re-execution and this corpus cannot bind it. (f)
 Crash-truncation sweep: drive `runScenario(fixture, {crashAfterPersist: true,
 recoveryLogTransform})` with transforms cutting the persisted log at every
-line boundary and byte offset, plus duplicate/reorder/blank-line families,
+line boundary and byte offset, plus retained valid-object anomaly families,
 asserting per cut: adapter effect count never exceeds one per commandId;
 pending commands are recomputed from the surviving log; live-vs-replay trace
 identity wherever the log decodes; loud failure wherever it cannot — never
@@ -149,13 +161,13 @@ model-invocation-free thereafter.
    `--write`/`--check`) with
    `corpus/fixtures/skeleton-trees/<family>/{tree.json, ground-truth.json}`
    for the capped, signature-distinct families.
-3. `corpus/fixtures/store/` — committed representative logs and
-   malformed-line family fixtures with per-fixture expected classification;
+3. `corpus/fixtures/store/` — committed representative logs and retained
+   valid-object anomaly fixtures with per-fixture expected classification;
    `corpus/fixtures/golden-traces/WO-105-demo-<commit>.json` — the canonical
    run's decision traces, event log, and glyph scene, keyed to the base
    commit with its exact regeneration command recorded inside the fixture.
 4. `corpus/harness/wo105-*.test.mjs` — round-trip laws, the
-   no-silent-divergence pin over the full store sweep, malformed-family
+   no-silent-divergence pin over the full store sweep, retained-family
    classification, decode-then-replay determinism, golden replay assertion,
    skeleton crash-sweep invariants (at-most-one effect per commandId,
    recomputed pending commands, live-vs-replay identity), and the
@@ -176,7 +188,7 @@ model-invocation-free thereafter.
    at-most-one-effect-per-commandId and recomputed-pending invariants hold
    over every skeleton cut point, or violations are quarantined numbered
    findings.
-3. Every malformed-line family has an explicit pinned classification
+3. Every retained valid-object anomaly family has an explicit pinned classification
    (decode-success cases additionally prove replay determinism), and every
    committed tree family passes its own ground-truth validator, demonstrates
    its recorded distinct behavioral signature, and regenerates byte-identical
@@ -198,6 +210,7 @@ corpus/harness/wo105-*.test.mjs`, transcript captured under
 `corpus/manifests/runs/` with counts matching the manifest.
 
 **Non-goals:** failure-matrix rows 2/4/6 (WO-009's contract);
+the physical malformed-line cases fixed and bound by WO-017;
 crash-ambiguity reconciliation machinery or any recovery repair logic
 (deferred v0.5.0 audit steps — this order classifies and pins, it does not
 reconcile); SQLite or any persistence change (ADR-0002: JSONL first); pinning

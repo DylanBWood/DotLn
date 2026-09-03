@@ -207,7 +207,7 @@ const leftColumnNames = (rows: readonly MapRow[]): ReadonlySet<string> => {
   return names;
 };
 
-// The complete export surface at the time of writing: 30 from types.d.ts, 22 from
+// The complete export surface at the time of writing: 30 from types.d.ts, 24 from
 // core.d.ts, 4 from store.d.ts. New exports extend this; none may vanish silently.
 const KNOWN_SURFACE: readonly string[] = [
   "JsonPrimitive",
@@ -242,8 +242,10 @@ const KNOWN_SURFACE: readonly string[] = [
   "OutboxState",
   "predicate",
   "CadenceResult",
+  "EVALUABLE_CADENCE_KINDS",
   "evaluateCadence",
   "ProgramStep",
+  "EVALUABLE_PROGRAM_KINDS",
   "stepProgram",
   "ProgramDecision",
   "decideProgram",
@@ -325,8 +327,8 @@ test("AC7 evidence: every export discovered from dist/src/*.d.ts appears as a RE
     "known exports were not discovered by the .d.ts scrape",
   );
   assert.ok(
-    top.size >= 56,
-    `discovered only ${top.size} top-level exports across ${files.join(", ")} — expected at least 56`,
+    top.size >= 58,
+    `discovered only ${top.size} top-level exports across ${files.join(", ")} — expected at least 58`,
   );
   const mapped = leftColumnNames(parseMapRows());
   const unmapped = [...top].filter((name) => !mapped.has(name)).sort();

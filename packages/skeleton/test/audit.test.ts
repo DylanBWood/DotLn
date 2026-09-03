@@ -77,12 +77,17 @@ test("AC1 enumerates each consequential action class with operator and verifier 
     },
     {
       actionClass: "authority-decision",
-      sourceEventTypes: ["CommandPersisted", "CommandRefused"],
+      sourceEventTypes: [
+        "DecisionRecorded",
+        "CommandPersisted",
+        "CommandRefused",
+      ],
       requiredReferences: [
         "eventIds",
         "workstreamId",
         "episodeId when present",
         "commandId when allowed",
+        "authorization trace when recorded",
         "authorityEnvelopeRef and reason when denied",
       ],
       operatorQuestion: "Was the requested action allowed or denied, and why?",
@@ -192,6 +197,11 @@ test("AC2 AuditRecord v1 keeps canonical references and no copied event payloads
       allowed.decision === "allowed",
   );
   assert.equal(allowed.commandId, expectedInspectCommandId);
+  assert.equal(
+    allowed.decisionEvidence,
+    "authority-trace-and-command-persisted",
+  );
+  assert.deepEqual(allowed.eventIds, ["evt_7", "evt_8"]);
 
   const denied = records.find(
     (record) =>
@@ -235,6 +245,282 @@ test("AC2 AuditRecord v1 keeps canonical references and no copied event payloads
   });
 });
 
+test("WO-017 audit: an adjacent matching grant trace is evidence for allowed authority, with safe fallback", () => {
+  const completeGrantTrace = {
+    reactorId: "authority-guard",
+    reactorVersion: "1",
+    branchPath: ["authorized", "repo.inspect"],
+    envInputs: [
+      "now:0",
+      "authorityEnvelope:auth_test",
+      "evidence",
+      "revocations",
+    ],
+    cadenceEvaluations: [],
+  };
+  const grant = auditEvent("evt_grant", "DecisionRecorded", {
+    trace: completeGrantTrace,
+  });
+  const persisted = auditEvent("evt_persist", "CommandPersisted", {
+    command: {
+      commandId: "cmd_inspect",
+      intent: { effect: "repo.inspect" },
+    },
+  });
+  const traced = deriveAuditRecords([grant, persisted]).find(
+    (record) => record.actionClass === "authority-decision",
+  );
+  assert.ok(
+    traced?.actionClass === "authority-decision" &&
+      traced.decision === "allowed",
+  );
+  assert.equal(
+    traced.decisionEvidence,
+    "authority-trace-and-command-persisted",
+  );
+  assert.deepEqual(traced.eventIds, ["evt_grant", "evt_persist"]);
+
+  const blankResourceGrant = auditEvent(
+    "evt_blank_resource_grant",
+    "DecisionRecorded",
+    {
+      trace: {
+        ...completeGrantTrace,
+        envInputs: [...completeGrantTrace.envInputs, "resource:"],
+      },
+    },
+  );
+  const blankResourcePersisted = auditEvent(
+    "evt_blank_resource_persist",
+    "CommandPersisted",
+    {
+      command: {
+        commandId: "cmd_blank_resource",
+        intent: { effect: "repo.inspect", resource: "" },
+      },
+    },
+  );
+  const blankResourceRecord = deriveAuditRecords([
+    blankResourceGrant,
+    blankResourcePersisted,
+  ]).find((record) => record.actionClass === "authority-decision");
+  assert.ok(
+    blankResourceRecord?.actionClass === "authority-decision" &&
+      blankResourceRecord.decision === "allowed",
+  );
+  assert.equal(
+    blankResourceRecord.decisionEvidence,
+    "authority-trace-and-command-persisted",
+  );
+  assert.deepEqual(blankResourceRecord.eventIds, [
+    "evt_blank_resource_grant",
+    "evt_blank_resource_persist",
+  ]);
+
+  const fallbackRows: ReadonlyArray<readonly Event[]> = [
+    [
+      auditEvent("evt_wrong_effect", "DecisionRecorded", {
+        trace: {
+          ...completeGrantTrace,
+          branchPath: ["authorized", "repo.write"],
+        },
+      }),
+      persisted,
+    ],
+    [
+      auditEvent(
+        "evt_cross_workstream",
+        "DecisionRecorded",
+        { trace: completeGrantTrace },
+        { workstreamId: "ws_other" },
+      ),
+      persisted,
+    ],
+    [
+      auditEvent(
+        "evt_cross_episode",
+        "DecisionRecorded",
+        { trace: completeGrantTrace },
+        { episodeId: "ep_other" },
+      ),
+      persisted,
+    ],
+    [
+      auditEvent("evt_future_version", "DecisionRecorded", {
+        trace: { ...completeGrantTrace, reactorVersion: "2" },
+      }),
+      persisted,
+    ],
+    [
+      auditEvent("evt_wrong_now", "DecisionRecorded", {
+        trace: {
+          ...completeGrantTrace,
+          envInputs: ["now:1", ...completeGrantTrace.envInputs.slice(1)],
+        },
+      }),
+      persisted,
+    ],
+    [
+      auditEvent("evt_blank_authority", "DecisionRecorded", {
+        trace: {
+          ...completeGrantTrace,
+          envInputs: [
+            "now:0",
+            "authorityEnvelope: ",
+            "evidence",
+            "revocations",
+          ],
+        },
+      }),
+      persisted,
+    ],
+    [
+      auditEvent("evt_missing_evidence", "DecisionRecorded", {
+        trace: {
+          ...completeGrantTrace,
+          envInputs: ["now:0", "authorityEnvelope:auth_test", "revocations"],
+        },
+      }),
+      persisted,
+    ],
+    [
+      auditEvent("evt_missing_inputs", "DecisionRecorded", {
+        trace: {
+          reactorId: "authority-guard",
+          reactorVersion: "1",
+          branchPath: ["authorized", "repo.inspect"],
+          cadenceEvaluations: [],
+        },
+      }),
+      persisted,
+    ],
+    [
+      auditEvent("evt_nonempty_cadence", "DecisionRecorded", {
+        trace: {
+          ...completeGrantTrace,
+          cadenceEvaluations: ["unexpected"],
+        },
+      }),
+      persisted,
+    ],
+    [
+      auditEvent("evt_noncanonical_rng", "DecisionRecorded", {
+        trace: {
+          ...completeGrantTrace,
+          envInputs: [
+            ...completeGrantTrace.envInputs,
+            "state",
+            "rngState:0x10",
+            "predicates",
+          ],
+        },
+      }),
+      persisted,
+    ],
+    [
+      auditEvent("evt_wrong_resource", "DecisionRecorded", {
+        trace: {
+          ...completeGrantTrace,
+          envInputs: [...completeGrantTrace.envInputs, "resource:B"],
+        },
+      }),
+      auditEvent("evt_persist", "CommandPersisted", {
+        command: {
+          commandId: "cmd_inspect_resource_a",
+          intent: { effect: "repo.inspect", resource: "A" },
+        },
+      }),
+    ],
+    [grant, auditEvent("evt_gap", "Unrelated", {}), persisted],
+  ];
+  for (const events of fallbackRows) {
+    const fallback = deriveAuditRecords(events).find(
+      (record) => record.actionClass === "authority-decision",
+    );
+    assert.ok(
+      fallback?.actionClass === "authority-decision" &&
+        fallback.decision === "allowed",
+    );
+    assert.equal(fallback.decisionEvidence, "authorized-command-persisted");
+    assert.deepEqual(fallback.eventIds, ["evt_persist"]);
+  }
+});
+
+test("WO-017 audit: denied records attach only a complete matching v1 refusal trace", () => {
+  const attempt = auditEvent("evt_attempt", "DeletionAttempted", {
+    effect: "repo.delete",
+  });
+  const refused = auditEvent("evt_refused", "CommandRefused", {
+    reason: "effect denied",
+    authorityEnvelopeId: "auth_test",
+  });
+  const completeRefusalTrace = {
+    reactorId: "authority-guard",
+    reactorVersion: "1",
+    branchPath: ["refused", "effect denied"],
+    envInputs: ["now", "authorityEnvelope", "evidence", "revocations"],
+    cadenceEvaluations: [],
+  };
+  const trace = auditEvent("evt_trace", "DecisionRecorded", {
+    trace: completeRefusalTrace,
+  });
+  const denied = deriveAuditRecords([attempt, refused, trace]).find(
+    (record) =>
+      record.actionClass === "authority-decision" &&
+      record.decision === "denied",
+  );
+  assert.ok(
+    denied?.actionClass === "authority-decision" &&
+      denied.decision === "denied",
+  );
+  assert.deepEqual(denied.eventIds, [
+    "evt_attempt",
+    "evt_refused",
+    "evt_trace",
+  ]);
+
+  for (const nonMatchingTrace of [
+    auditEvent("evt_future", "DecisionRecorded", {
+      trace: { ...completeRefusalTrace, reactorVersion: "2" },
+    }),
+    auditEvent("evt_wrong_reason", "DecisionRecorded", {
+      trace: {
+        ...completeRefusalTrace,
+        branchPath: ["refused", "authority expired"],
+      },
+    }),
+    auditEvent("evt_missing_env", "DecisionRecorded", {
+      trace: {
+        reactorId: "authority-guard",
+        reactorVersion: "1",
+        branchPath: ["refused", "effect denied"],
+        cadenceEvaluations: [],
+      },
+    }),
+    auditEvent("evt_nonempty_cadence", "DecisionRecorded", {
+      trace: {
+        ...completeRefusalTrace,
+        cadenceEvaluations: ["unexpected"],
+      },
+    }),
+  ]) {
+    const fallback = deriveAuditRecords([
+      attempt,
+      refused,
+      nonMatchingTrace,
+    ]).find(
+      (record) =>
+        record.actionClass === "authority-decision" &&
+        record.decision === "denied",
+    );
+    assert.ok(
+      fallback?.actionClass === "authority-decision" &&
+        fallback.decision === "denied",
+    );
+    assert.deepEqual(fallback.eventIds, ["evt_attempt", "evt_refused"]);
+  }
+});
+
 test("AC3 captures the L0 receipt, causal timeline, and governed raw JSON with fidelity links", () => {
   const events = liveEvents();
   const projections = projectAuditEvents(events);
@@ -257,7 +543,7 @@ test("AC3 captures the L0 receipt, causal timeline, and governed raw JSON with f
         recordId: "audit:evt_8:authority-decision",
         action: "repo.inspect",
         outcome: "allowed",
-        evidenceLinks: ["event:evt_8"],
+        evidenceLinks: ["event:evt_7", "event:evt_8"],
       },
       {
         recordId: "audit:evt_9:external-effect",

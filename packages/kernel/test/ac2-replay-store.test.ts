@@ -363,3 +363,95 @@ test("AC2 evidence: encodeLog ends with a newline so appendEvent after a round t
   assert.deepEqual(decoded[2]?.payload, { amount: 5 });
   assert.equal(decoded[2]?.occurredAt, 30);
 });
+
+test("WO-017 store contract: partial tail refuses decode and append at the offending line", () => {
+  const first = appendEvent("", draft("Added", 10, { amount: 1 }));
+  const partial = `${first.log}{"schemaVersion":1,"eventId":"evt_2"`;
+  assert.throws(() => decodeLog(partial), /line 2: missing final newline/);
+  assert.throws(
+    () => appendEvent(partial, draft("Added", 30, { amount: 3 })),
+    /line 2: missing final newline/,
+  );
+});
+
+test("WO-017 store contract: blank interior line refuses decode and append without shifting ids", () => {
+  const first = appendEvent("", draft("Added", 10, { amount: 1 }));
+  const third = JSON.stringify({
+    ...draft("Added", 30, { amount: 3 }),
+    eventId: "evt_3",
+  });
+  const blankInterior = `${first.log}\n${third}\n`;
+  assert.throws(
+    () => decodeLog(blankInterior),
+    /line 2: expected a JSON object/,
+  );
+  assert.throws(
+    () => appendEvent(blankInterior, draft("Added", 40, { amount: 4 })),
+    /line 2: expected a JSON object/,
+  );
+});
+
+test("WO-017 store contract: whitespace-only log refuses decode and append as line one", () => {
+  const whitespaceOnly = " \t\r\n";
+  assert.throws(
+    () => decodeLog(whitespaceOnly),
+    /line 1: expected a JSON object/,
+  );
+  assert.throws(
+    () => appendEvent(whitespaceOnly, draft("Added", 10, { amount: 1 })),
+    /line 1: expected a JSON object/,
+  );
+});
+
+test("WO-017 store contract: a complete JSON object without its final newline refuses both boundaries", () => {
+  const completeButUnterminated = JSON.stringify({
+    ...draft("Added", 10, { amount: 1 }),
+    eventId: "evt_1",
+  });
+  assert.throws(
+    () => decodeLog(completeButUnterminated),
+    /line 1: missing final newline/,
+  );
+  assert.throws(
+    () =>
+      appendEvent(completeButUnterminated, draft("Added", 20, { amount: 2 })),
+    /line 1: missing final newline/,
+  );
+});
+
+test("WO-017 store contract: every line must decode to a JSON object", () => {
+  for (const nonObject of ["null", "[]", '"event"', "42", "true"]) {
+    assert.throws(
+      () => decodeLog(`${nonObject}\n`),
+      /line 1: expected a JSON object/,
+    );
+  }
+});
+
+test("WO-017 store contract: newline-terminated invalid JSON names its physical line", () => {
+  const first = appendEvent("", draft("Added", 10, { amount: 1 }));
+  const invalid = `${first.log}{not-json}\n`;
+  assert.throws(() => decodeLog(invalid), /line 2: invalid JSON/);
+  assert.throws(
+    () => appendEvent(invalid, draft("Added", 30, { amount: 3 })),
+    /line 2: invalid JSON/,
+  );
+});
+
+test("WO-017 store contract: well-formed logs retain exact bytes and count only object lines", () => {
+  const first = appendEvent("", draft("Added", 10, { amount: 1 }));
+  const second = appendEvent(first.log, draft("Added", 20, { amount: 2 }));
+  const before = second.log;
+  const decodedBefore = decodeLog(before);
+  assert.equal(encodeLog(decodedBefore), before);
+
+  const third = appendEvent(before, draft("Added", 30, { amount: 3 }));
+  assert.equal(third.event.eventId, "evt_3");
+  assert.equal(third.log.slice(0, before.length), before);
+  assert.deepEqual(decodeLog(third.log).slice(0, 2), decodedBefore);
+  assert.equal(
+    third.log,
+    `${before}${JSON.stringify(third.event)}\n`,
+    "append changes a well-formed log only by adding the assigned object line",
+  );
+});

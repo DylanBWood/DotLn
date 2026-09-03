@@ -37,6 +37,14 @@ export interface CadenceResult {
   readonly rngState: number;
   readonly trace: string;
 }
+export const EVALUABLE_CADENCE_KINDS = [
+  "Once",
+  "After",
+  "Every",
+  "Gate",
+  "Until",
+  "Backoff",
+] as const satisfies readonly Cadence.T["kind"][];
 function draw(state: number): readonly [number, number] {
   const next = (Math.imul(state, 1664525) + 1013904223) >>> 0;
   return [next / 0x100000000, next];
@@ -108,6 +116,14 @@ export interface ProgramStep {
   readonly intents: readonly ActIntent[];
   readonly waits: readonly Program.Await[];
 }
+export const EVALUABLE_PROGRAM_KINDS = [
+  "Done",
+  "Emit",
+  "Invoke",
+  "Await",
+  "Guard",
+  "Sequence",
+] as const satisfies readonly Program.T["kind"][];
 export function stepProgram(
   program: Program.T,
   state: JsonValue,
@@ -254,6 +270,7 @@ export type AuthorizationResult =
       readonly authorized: true;
       readonly command: Command;
       readonly authority: AuthorityEnvelope;
+      readonly trace: DecisionTrace;
     }
   | {
       readonly authorized: false;
@@ -274,6 +291,20 @@ const effectMatches = (pattern: string, effect: string): boolean =>
   pattern.endsWith("*")
     ? effect.startsWith(pattern.slice(0, -1))
     : pattern === effect;
+const isClocklessKernelEnv = (
+  value: unknown,
+): value is Omit<KernelEnv, "now"> => {
+  if (value === null || Array.isArray(value) || typeof value !== "object")
+    return false;
+  const candidate = value as Partial<Omit<KernelEnv, "now">>;
+  return (
+    typeof candidate.rngState === "number" &&
+    Number.isFinite(candidate.rngState) &&
+    candidate.predicates !== null &&
+    !Array.isArray(candidate.predicates) &&
+    typeof candidate.predicates === "object"
+  );
+};
 export function authorize(
   intent: ActIntent,
   envelope: AuthorityEnvelope,
@@ -286,37 +317,117 @@ export function authorize(
     readonly intentIndex: number;
     readonly evidence: readonly string[];
     readonly revokedBy: readonly Event[];
+    readonly state?: JsonValue;
+    readonly predicateEnv?: Omit<KernelEnv, "now">;
   },
 ): AuthorizationResult {
+  const revocationConditions = envelope.revocationConditions ?? [];
+  const predicateEnvInput = isClocklessKernelEnv(context.predicateEnv)
+    ? context.predicateEnv
+    : undefined;
+  let revocationEvaluation:
+    { readonly cannotEvaluate: boolean; readonly matched: boolean } | undefined;
+  const evaluateRevocationConditions = (): {
+    readonly cannotEvaluate: boolean;
+    readonly matched: boolean;
+  } => {
+    if (revocationEvaluation !== undefined) return revocationEvaluation;
+    if (revocationConditions.length === 0)
+      return (revocationEvaluation = {
+        cannotEvaluate: false,
+        matched: false,
+      });
+    if (context.state === undefined || predicateEnvInput === undefined)
+      return (revocationEvaluation = {
+        cannotEvaluate: true,
+        matched: false,
+      });
+    try {
+      const predicateEnv: KernelEnv = {
+        ...predicateEnvInput,
+        now: context.now,
+      };
+      if (
+        revocationConditions.some(
+          (ref) =>
+            predicateEnv.predicates[ref.registryId]?.[ref.version] ===
+            undefined,
+        )
+      )
+        return (revocationEvaluation = {
+          cannotEvaluate: true,
+          matched: false,
+        });
+
+      let matched = false;
+      for (const condition of revocationConditions)
+        for (const event of context.revokedBy)
+          matched =
+            predicate(condition, context.state, predicateEnv, event) || matched;
+      return (revocationEvaluation = { cannotEvaluate: false, matched });
+    } catch {
+      return (revocationEvaluation = {
+        cannotEvaluate: true,
+        matched: false,
+      });
+    }
+  };
+
   const ownsResource =
     intent.resource === undefined ||
     Object.hasOwn(envelope.resourceLimits, intent.resource);
-  const reason =
-    typeof intent.effect !== "string"
-      ? "effect is not a string"
-      : context.now > envelope.expiresAt
-        ? "authority expired"
-        : envelope.revocationEventTypes.some((t) =>
-              context.revokedBy.some((e) => e.type === t),
-            )
-          ? "authority revoked"
-          : envelope.deniedEffects.some((pattern) =>
-                effectMatches(pattern, intent.effect),
-              )
-            ? "effect denied"
-            : !envelope.allowedEffects.some((pattern) =>
-                  effectMatches(pattern, intent.effect),
-                )
-              ? "effect not allowed"
-              : envelope.requiredEvidence.some(
-                    (e) => !context.evidence.includes(e),
-                  )
-                ? "required evidence missing"
-                : intent.resource !== undefined &&
-                    (!ownsResource ||
-                      envelope.resourceLimits[intent.resource]! <= 0)
-                  ? "resource limit exceeded"
-                  : undefined;
+  const rules: readonly {
+    readonly name: string;
+    readonly fails: () => boolean;
+  }[] = [
+    {
+      name: "effect is not a string",
+      fails: () => typeof intent.effect !== "string",
+    },
+    {
+      name: "authority expired",
+      fails: () => context.now >= envelope.expiresAt,
+    },
+    {
+      name: "cannot evaluate revocation",
+      fails: () => evaluateRevocationConditions().cannotEvaluate,
+    },
+    {
+      name: "authority revoked",
+      fails: () =>
+        envelope.revocationEventTypes.some((type) =>
+          context.revokedBy.some((event) => event.type === type),
+        ) || evaluateRevocationConditions().matched,
+    },
+    {
+      name: "effect denied",
+      fails: () =>
+        envelope.deniedEffects.some((pattern) =>
+          effectMatches(pattern, intent.effect),
+        ),
+    },
+    {
+      name: "effect not allowed",
+      fails: () =>
+        !envelope.allowedEffects.some((pattern) =>
+          effectMatches(pattern, intent.effect),
+        ),
+    },
+    {
+      name: "required evidence missing",
+      fails: () =>
+        envelope.requiredEvidence.some(
+          (evidence) => !context.evidence.includes(evidence),
+        ),
+    },
+    {
+      name: "resource limit exceeded",
+      fails: () =>
+        intent.resource !== undefined &&
+        (!ownsResource || envelope.resourceLimits[intent.resource]! <= 0),
+    },
+  ];
+  const reason = rules.find((rule) => rule.fails())?.name;
   if (reason === undefined) {
     const resourceLimits =
       intent.resource === undefined
@@ -341,6 +452,29 @@ export function authorize(
         intent,
       },
       authority: { ...envelope, resourceLimits },
+      trace: {
+        reactorId: "authority-guard",
+        reactorVersion: "1",
+        branchPath: ["authorized", intent.effect],
+        envInputs: [
+          `now:${context.now}`,
+          `authorityEnvelope:${envelope.authorityEnvelopeId}`,
+          "evidence",
+          "revocations",
+          ...(revocationConditions.length === 0
+            ? []
+            : [
+                "state",
+                `rngState:${predicateEnvInput!.rngState}`,
+                "predicates",
+                ...(predicateEnvInput!.policy === undefined ? [] : ["policy"]),
+              ]),
+          ...(intent.resource === undefined
+            ? []
+            : [`resource:${intent.resource}`]),
+        ],
+        cadenceEvaluations: [],
+      },
     };
   }
   return {
@@ -364,7 +498,27 @@ export function authorize(
       reactorId: "authority-guard",
       reactorVersion: "1",
       branchPath: ["refused", reason],
-      envInputs: ["now", "authorityEnvelope", "evidence", "revocations"],
+      envInputs: [
+        "now",
+        "authorityEnvelope",
+        "evidence",
+        "revocations",
+        ...(revocationConditions.length > 0 &&
+        revocationEvaluation !== undefined
+          ? [
+              ...(context.state === undefined ? [] : ["state"]),
+              ...(predicateEnvInput === undefined
+                ? []
+                : [
+                    `rngState:${predicateEnvInput.rngState}`,
+                    "predicates",
+                    ...(predicateEnvInput.policy === undefined
+                      ? []
+                      : ["policy"]),
+                  ]),
+            ]
+          : []),
+      ],
       cadenceEvaluations: [],
     },
   };
@@ -421,8 +575,29 @@ export const pendingCommands = (state: OutboxState): readonly Command[] =>
   Object.values(state.entries)
     .filter((entry) => entry.status === "pending")
     .map((entry) => entry.command);
-export function replayOutbox(events: readonly Event[]): OutboxState {
+export function replayOutbox(events: readonly Event[]): OutboxState;
+export function replayOutbox(
+  events: readonly Event[],
+  options: { readonly includeTraces: true },
+): {
+  readonly state: OutboxState;
+  readonly traces: readonly DecisionTrace[];
+};
+export function replayOutbox(
+  events: readonly Event[],
+  options?: { readonly includeTraces: true },
+):
+  | OutboxState
+  | {
+      readonly state: OutboxState;
+      readonly traces: readonly DecisionTrace[];
+    } {
   let state = emptyOutbox();
+  const traces: DecisionTrace[] = [];
+  const orphanResults = new Map<
+    string,
+    Array<{ readonly event: Event; readonly traceIndex: number }>
+  >();
   for (const event of events) {
     if (event.type === "CommandPersisted") {
       const payload =
@@ -442,14 +617,52 @@ export function replayOutbox(events: readonly Event[]): OutboxState {
         command !== undefined &&
         typeof command.commandId === "string" &&
         command.commandId !== ""
-      )
+      ) {
         state = persistCommand(state, command);
+        const orphaned = orphanResults.get(command.commandId);
+        if (orphaned !== undefined) {
+          orphaned.forEach(({ event: result, traceIndex }, index) => {
+            const applied = applyCommandResult(state, result);
+            state = applied.state;
+            traces[traceIndex] =
+              index === 0
+                ? {
+                    ...applied.trace,
+                    branchPath: ["result", "preceded-persist"],
+                  }
+                : applied.trace;
+          });
+          orphanResults.delete(command.commandId);
+        }
+      }
     } else if (event.type === "CommandResult") {
-      state = applyCommandResult(state, event).state;
+      const applied = applyCommandResult(state, event);
+      state = applied.state;
+      const traceIndex = traces.push(applied.trace) - 1;
+      const resultCommandId = commandIdFromResult(event);
+      if (
+        resultCommandId !== undefined &&
+        applied.trace.branchPath[1] === "unknown"
+      ) {
+        const orphaned = orphanResults.get(resultCommandId) ?? [];
+        orphaned.push({ event, traceIndex });
+        orphanResults.set(resultCommandId, orphaned);
+      }
     }
   }
-  return state;
+  return options === undefined ? state : { state, traces };
 }
+
+function commandIdFromResult(result: Event): string | undefined {
+  const commandId =
+    result.payload !== null &&
+    !Array.isArray(result.payload) &&
+    typeof result.payload === "object"
+      ? (result.payload as Readonly<Record<string, JsonValue>>)["commandId"]
+      : undefined;
+  return typeof commandId === "string" ? commandId : undefined;
+}
+
 export function applyCommandResult(
   state: OutboxState,
   result: Event,
@@ -465,12 +678,7 @@ export function applyCommandResult(
         cadenceEvaluations: [],
       },
     };
-  const command =
-    result.payload !== null &&
-    !Array.isArray(result.payload) &&
-    typeof result.payload === "object"
-      ? (result.payload as Readonly<Record<string, JsonValue>>)["commandId"]
-      : undefined;
+  const command = commandIdFromResult(result);
   if (typeof command !== "string" || !Object.hasOwn(state.entries, command))
     return {
       state,

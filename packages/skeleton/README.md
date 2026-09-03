@@ -1,9 +1,12 @@
-# `@dotln/skeleton` 0.3.0
+# `@dotln/skeleton` 0.3.1
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on
 2026-09-02 to record the audit projection module that shipped in application
 release `v0.3.0`; published manifests remain historical truth.
+The component advances to `0.3.1` in application release `v0.3.5`: the existing
+grant decision slot now records the successful authority trace, and operator
+return revokes inspection through a real predicate condition.
 
 The deterministic Repo Gardener + Seiri vertical. It compiles a provisional,
 hand-assembled loadout into a bounded `WorkOrder`, runs it against a fake
@@ -26,8 +29,8 @@ scene. The final receipt should be:
 verified=true candidates=1
 ```
 
-Add `-- --audit` to capture the v0.3.0 audit projections over that same live
-log:
+Add `-- --audit` to capture the audit projections, introduced in v0.3.0, over
+that same live log:
 
 ```sh
 npm run skeleton -- --audit
@@ -47,9 +50,10 @@ The original numbered event timeline should include `CommandResult`, one
 `🐛 Repo Gardener` and ends with `💤 faded/cancelled`.
 
 Run the executable evidence suite with `npm test`. It covers
-live-versus-replayed decision identity, trace-tamper resistance, structural
-deletion refusal, executed scheduler cancellation, and crash/restart redispatch
-with adapter deduplication. The audit tests additionally pin action-class
+live-versus-replayed decision identity, successful-grant evidence, semantic
+revocation after operator return, trace-tamper resistance, structural deletion
+refusal, executed scheduler cancellation, and crash/restart redispatch with
+adapter deduplication. The audit tests additionally pin action-class
 questions and required references, exercise all three projections, prove refusal
 visibility, causal ordering, and correlation grouping, and require
 byte-identical output over the live log, its re-encoded form, and an
