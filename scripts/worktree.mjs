@@ -12,6 +12,7 @@ import { tmpdir } from "node:os";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { assertGitHubBodyProfile } from "./github-body.mjs";
 import { parseReleaseNotes, releaseNotesPathFor } from "./release-notes.mjs";
 import {
   environmentWithoutGhRepo,
@@ -214,13 +215,23 @@ const main = () => {
     if (!item?.worktree) throw new Error(`no worktree found for ${branch}`);
     const subject = resolve(item.worktree);
     ensureClean(subject);
-    const status = spawnSync(
-      "node",
-      [join(subject, "scripts/resume.mjs"), "status"],
+    resolveGitHubPushTarget(subject);
+    const surfaces = spawnSync(
+      process.execPath,
+      [
+        join(subject, "scripts/release.mjs"),
+        "check-surfaces",
+        "--committed",
+        workOrderId,
+      ],
       { cwd: subject, encoding: "utf8" },
     );
-    if (status.status !== 0 || !status.stdout.includes("- Phase: closed"))
-      throw new Error(`${workOrderId} has not passed final review`);
+    process.stdout.write(surfaces.stdout ?? "");
+    process.stderr.write(surfaces.stderr ?? "");
+    if (surfaces.status !== 0) {
+      process.exitCode = surfaces.status ?? 1;
+      return;
+    }
     const titleAt = actionArgs.indexOf("--title");
     const bodyAt = actionArgs.indexOf("--body-file");
     const title = titleAt >= 0 ? actionArgs[titleAt + 1] : undefined;
@@ -237,6 +248,7 @@ const main = () => {
       );
     const bodyRelativePath = relative(subject, bodyPath);
     const body = readTrackedTextAtHead(subject, bodyRelativePath, bodyFile);
+    assertGitHubBodyProfile(body, bodyFile);
     const releaseNotesPath = releaseNotesPathFor(workOrderId);
     const releaseNotesFile = resolve(subject, releaseNotesPath);
     if (!existsSync(releaseNotesFile))
@@ -253,10 +265,13 @@ const main = () => {
       throw new Error(
         `${releaseNotesPath}: release-notes file escapes its repository`,
       );
-    parseReleaseNotes(
-      readTrackedTextAtHead(subject, releaseNotesPath, releaseNotesPath),
+    const releaseNotes = readTrackedTextAtHead(
+      subject,
+      releaseNotesPath,
       releaseNotesPath,
     );
+    parseReleaseNotes(releaseNotes, releaseNotesPath);
+    assertGitHubBodyProfile(releaseNotes, releaseNotesPath);
     const mainPackage = JSON.parse(
       readFileSync(join(mainPath, "package.json"), "utf8"),
     );

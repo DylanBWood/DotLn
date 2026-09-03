@@ -23,6 +23,7 @@ import {
   environmentWithoutGhRepo,
   resolveGitHubPushTarget,
 } from "./github-repository.mjs";
+import { assertGitHubBodyProfile } from "./github-body.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const evidenceCommands = [
@@ -94,6 +95,13 @@ const optionalGitFile = (root, revision, path) => {
   const result = execute("git", ["-C", root, "show", `${revision}:${path}`]);
   if (result.status !== 0) return undefined;
   return result.stdout;
+};
+const repositoryFile = (root, path, revision) => {
+  if (!revision) return readFileSync(join(root, path), "utf8");
+  const source = optionalGitFile(root, revision, path);
+  if (source === undefined)
+    throw new Error(`${path}: file is missing from ${revision}`);
+  return source;
 };
 const controlEventsAt = (root, revision) => {
   if (!revision) return [];
@@ -186,6 +194,12 @@ const semver = (value) => {
   const parts = match?.slice(1).map(Number);
   return parts?.every(Number.isSafeInteger) ? parts : undefined;
 };
+const strictVersionsIn = (source) =>
+  [
+    ...source.matchAll(
+      /(?<![A-Za-z0-9._+\-])v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?![A-Za-z0-9._+\-])/g,
+    ),
+  ].map((match) => match[0]);
 const compareVersions = (left, right) => {
   const a = semver(left);
   const b = semver(right);
@@ -262,6 +276,53 @@ const assertShape = (actual, expected, path = "$") => {
       assertShape(actual[key], expected[key], `${path}.${key}`);
   }
 };
+const controlStateFromProjection = (source) => {
+  const read = (label) =>
+    new RegExp(`^- ${label}: (.+)$`, "m").exec(source)?.[1];
+  return {
+    workOrderId: read("Work order"),
+    workOrderPath: read("Work-order path"),
+    phase: read("Phase"),
+  };
+};
+const foldControlState = (events) => {
+  const state = {
+    workOrderId: undefined,
+    workOrderPath: undefined,
+    phase: "none",
+  };
+  for (const event of events) {
+    switch (event.type) {
+      case "WorkOrderActivated":
+        Object.assign(state, {
+          workOrderId: event.workOrderId,
+          workOrderPath: event.workOrderPath,
+          phase: "active",
+        });
+        break;
+      case "ImplementationReady":
+      case "RepairCompleted":
+        state.phase = "ready-to-verify";
+        break;
+      case "VerificationRequested":
+        state.phase = "verifying";
+        break;
+      case "VerificationCompleted":
+        state.phase = event.verdict === "pass" ? "verified" : "needs-fix";
+        break;
+      case "RepairRequested":
+        state.phase = "repairing";
+        break;
+      case "FinalReviewRequested":
+        state.phase = "final-review";
+        break;
+      case "FinalReviewCompleted":
+        state.phase = event.verdict === "pass" ? "closed" : "needs-fix";
+        break;
+    }
+  }
+  return state;
+};
 const parseControlState = (root) => {
   const result = execute(
     process.execPath,
@@ -272,40 +333,34 @@ const parseControlState = (root) => {
     throw new Error(
       `cannot read control state: ${failureOf(result, "resume status failed")}`,
     );
-  const read = (label) =>
-    new RegExp(`^- ${label}: (.+)$`, "m").exec(result.stdout)?.[1];
-  return {
-    workOrderId: read("Work order"),
-    workOrderPath: read("Work-order path"),
-    phase: read("Phase"),
-  };
+  return controlStateFromProjection(result.stdout);
 };
+const parseControlStateAt = (root, revision) =>
+  foldControlState(controlEventsAt(root, revision).map(({ event }) => event));
 const paragraph = (markdown, label) => {
   const match = new RegExp(
     `\\*\\*${label}:\\*\\*\\s+([^\\n]+(?:\\n(?!\\n|\\*\\*|#)[^\\n]+)*)`,
   ).exec(markdown);
   return match?.[1].replace(/\s+/g, " ").trim();
 };
-const workOrderAuthority = (root, state) => {
-  if (!/^WO-\d{3}$/.test(state.workOrderId ?? "") || state.phase !== "closed")
+const readWorkOrderAuthority = (root, state, revision) => {
+  if (!/^WO-\d{3}$/.test(state.workOrderId ?? ""))
     throw new Error(
-      `release close requires a closed work order; observed ${state.workOrderId ?? "none"} in phase ${state.phase ?? "unknown"}`,
+      `invalid current work-order id: ${state.workOrderId ?? "none"}`,
     );
   const authorityRoot = join(root, "docs/work-orders");
   const path = resolve(root, state.workOrderPath ?? "");
   if (
     !path.startsWith(`${authorityRoot}${sep}`) ||
-    !containedRegularFile(path, authorityRoot) ||
+    (!revision && !containedRegularFile(path, authorityRoot)) ||
     !basename(path).startsWith(`${state.workOrderId}-`)
   )
     throw new Error(
-      `invalid closed work-order authority path: ${state.workOrderPath ?? "none"}`,
+      `invalid work-order authority path: ${state.workOrderPath ?? "none"}`,
     );
-  const markdown = readFileSync(path, "utf8");
+  const markdown = repositoryFile(root, state.workOrderPath, revision);
   const heading = markdown.split("\n", 1)[0];
-  const versions = [...heading.matchAll(/\bv\d+(?:\.\d+){2}\b/g)].map(
-    (match) => match[0],
-  );
+  const versions = strictVersionsIn(heading);
   if (versions.length !== 1 || !semver(versions[0]))
     throw new Error(
       `work-order heading must contain exactly one strict vX.Y.Z version: ${heading}`,
@@ -323,29 +378,247 @@ const workOrderAuthority = (root, state) => {
       "No non-goals paragraph was found in the work-order authority.",
   };
 };
-const packageVersions = (root) => {
-  const packageRoot = join(root, "packages");
-  const components = {};
-  for (const directory of readdirSync(packageRoot, { withFileTypes: true })
-    .filter((item) => item.isDirectory())
-    .map((item) => item.name)
-    .sort()) {
-    const path = join(packageRoot, directory, "package.json");
-    if (!existsSync(path)) continue;
-    const manifest = JSON.parse(readFileSync(path, "utf8"));
-    if (
-      typeof manifest.name !== "string" ||
-      typeof manifest.version !== "string"
-    )
-      throw new Error(`component package lacks name/version: ${path}`);
-    components[manifest.name] = manifest.version;
-  }
+const workOrderAuthority = (root, state, revision) => {
+  if (state.phase !== "closed")
+    throw new Error(
+      `release close requires a closed work order; observed ${state.workOrderId ?? "none"} in phase ${state.phase ?? "unknown"}`,
+    );
+  return readWorkOrderAuthority(root, state, revision);
+};
+const packageVersions = (root, revision) => {
+  const components = Object.fromEntries(
+    componentPackages(root, revision).map(({ name, version }) => [
+      name,
+      version,
+    ]),
+  );
   const rootPackage = JSON.parse(
-    readFileSync(join(root, "package.json"), "utf8"),
+    repositoryFile(root, "package.json", revision),
   );
   return {
     root: typeof rootPackage.version === "string" ? rootPackage.version : null,
     components,
+  };
+};
+const componentPackages = (root, revision) => {
+  const packageRoot = join(root, "packages");
+  const manifestPaths = revision
+    ? runGitPathList(root, [
+        "ls-tree",
+        "-r",
+        "--name-only",
+        "-z",
+        revision,
+        "--",
+        "packages",
+      ]).filter((path) => /^packages\/[^/]+\/package\.json$/.test(path))
+    : readdirSync(packageRoot, { withFileTypes: true })
+        .filter((item) => item.isDirectory())
+        .map((item) => `packages/${item.name}/package.json`)
+        .filter((path) => existsSync(join(root, path)));
+  return manifestPaths
+    .map((manifestPath) => {
+      const directory = manifestPath.split("/")[1];
+      const manifest = JSON.parse(repositoryFile(root, manifestPath, revision));
+      if (
+        typeof manifest.name !== "string" ||
+        typeof manifest.version !== "string"
+      )
+        throw new Error(
+          `component package lacks name/version: ${join(root, manifestPath)}`,
+        );
+      return {
+        directory,
+        name: manifest.name,
+        version: manifest.version,
+      };
+    })
+    .filter(Boolean)
+    .sort((left, right) => left.name.localeCompare(right.name));
+};
+
+const releaseBlockRule = (root, authority, latest, revision) => {
+  const expected =
+    !latest || compareVersions(authority.version, latest) > 0
+      ? authority.version
+      : latest;
+  const context = `(work-order target ${authority.version}; latest published ${latest ?? "none"})`;
+  const source = repositoryFile(root, "README.md", revision);
+  const lines = source.split("\n").map((line) => line.replace(/\r$/, ""));
+  const beginMarker = "<!-- DOTLN-RELEASE-BEGIN -->";
+  const endMarker = "<!-- DOTLN-RELEASE-END -->";
+  const malformedMarker = lines.findIndex(
+    (line) =>
+      /DOTLN-RELEASE-(?:BEGIN|END)/.test(line) &&
+      line !== beginMarker &&
+      line !== endMarker,
+  );
+  if (malformedMarker >= 0) {
+    return {
+      pass: false,
+      line: `FAIL release-block: observed malformed release marker at README.md:${malformedMarker + 1}; expected exact marker lines and exactly one ordered block containing exactly one strict version ${expected} ${context}`,
+    };
+  }
+  const begins = lines
+    .map((line, index) => (line === beginMarker ? index : -1))
+    .filter((index) => index >= 0);
+  const ends = lines
+    .map((line, index) => (line === endMarker ? index : -1))
+    .filter((index) => index >= 0);
+  if (begins.length !== 1 || ends.length !== 1 || begins[0] >= ends[0]) {
+    return {
+      pass: false,
+      line: `FAIL release-block: observed ${begins.length} begin marker(s), ${ends.length} end marker(s), order ${begins[0] < ends[0] ? "begin-before-end" : "invalid"}; expected exactly one ordered block containing exactly one strict version ${expected} ${context}`,
+    };
+  }
+  const block = lines.slice(begins[0] + 1, ends[0]).join("\n");
+  const versions = strictVersionsIn(block);
+  if (versions.length !== 1 || versions[0] !== expected) {
+    return {
+      pass: false,
+      line: `FAIL release-block: observed ${versions.length === 0 ? "no strict version" : versions.join(", ")}; expected exactly one ${expected} ${context}`,
+    };
+  }
+  return {
+    pass: true,
+    line: `PASS release-block: observed ${versions[0]}; expected ${expected} ${context}`,
+  };
+};
+
+const componentVersionRules = (root, latest, local, remote, revision) => {
+  const components = componentPackages(root, revision);
+  if (!latest) {
+    return components.map((component) => ({
+      pass: true,
+      line: `PASS component-version ${component.name}: observed ${component.version} with no previous release; expected no source-change bump baseline`,
+    }));
+  }
+
+  const previous = publishedTag(latest, local, remote);
+  let previousManifest;
+  let manifestError;
+  try {
+    const localTag = local.get(latest);
+    if (!localTag || localTag.objectType !== "tag")
+      throw new Error(`local annotated tag ${latest} is unavailable`);
+    previousManifest = manifestFromTag(root, latest);
+  } catch (error) {
+    manifestError = error instanceof Error ? error.message : String(error);
+  }
+
+  return components.map((component) => {
+    const diffArgs = [
+      "diff",
+      "--no-renames",
+      "--name-only",
+      "-z",
+      previous.target,
+    ];
+    if (revision) diffArgs.push(revision);
+    diffArgs.push("--", `packages/${component.directory}/src`);
+    const changed = runGitPathList(root, diffArgs).length > 0;
+    const priorVersion =
+      previousManifest?.versions?.components?.[component.name];
+    if (!changed) {
+      return {
+        pass: true,
+        line: `PASS component-version ${component.name}: src unchanged; observed ${component.version}; previous ${latest} ${typeof priorVersion === "string" ? priorVersion : "not required"}; expected no bump required`,
+      };
+    }
+    if (typeof priorVersion !== "string") {
+      if (manifestError) {
+        return {
+          pass: false,
+          line: `FAIL component-version ${component.name}: src changed; observed ${component.version}; expected a previous component version from ${latest} (${manifestError})`,
+        };
+      }
+      const priorManifestPath = `packages/${component.directory}/package.json`;
+      const priorPackageSource = optionalGitFile(
+        root,
+        previous.target,
+        priorManifestPath,
+      );
+      if (priorPackageSource !== undefined) {
+        const priorPackage = JSON.parse(priorPackageSource);
+        if (priorPackage.name === component.name) {
+          return {
+            pass: false,
+            line: `FAIL component-version ${component.name}: src changed; observed ${component.version}; expected a previous component version from ${latest} (missing manifest component entry)`,
+          };
+        }
+      }
+      return {
+        pass: true,
+        line: `PASS component-version ${component.name}: src changed; observed ${component.version}; previous ${latest} no component with this identity; expected first-version baseline`,
+      };
+    }
+    const pass = !changed || component.version !== priorVersion;
+    return {
+      pass,
+      line: `${pass ? "PASS" : "FAIL"} component-version ${component.name}: src ${changed ? "changed" : "unchanged"}; observed ${component.version}; previous ${latest} ${priorVersion}; expected ${changed ? "a different version" : "no bump required"}`,
+    };
+  });
+};
+
+const githubBodyRule = (root, state, revision) => {
+  const candidates = [
+    `docs/final-reviews/${state.workOrderId}/PR.md`,
+    releaseNotesPathFor(state.workOrderId),
+  ];
+  const bodies = candidates.flatMap((path) => {
+    if (!revision) {
+      return existsSync(join(root, path))
+        ? [{ path, source: readFileSync(join(root, path), "utf8") }]
+        : [];
+    }
+    const source = optionalGitFile(root, revision, path);
+    return source === undefined ? [] : [{ path, source }];
+  });
+  try {
+    for (const { path, source } of bodies) {
+      if (path === releaseNotesPathFor(state.workOrderId))
+        parseReleaseNotes(source, path);
+      assertGitHubBodyProfile(source, path);
+    }
+    return {
+      pass: true,
+      line: `PASS github-body-profile: observed ${bodies.length === 0 ? "no current final-review bodies yet" : bodies.map(({ path }) => path).join(", ")}; expected one physical line per prose paragraph or list-item paragraph`,
+    };
+  } catch (error) {
+    return {
+      pass: false,
+      line: `FAIL github-body-profile: observed ${error instanceof Error ? error.message : String(error)}; expected one physical line per prose paragraph or list-item paragraph`,
+    };
+  }
+};
+
+const checkSurfaces = (root, options = {}) => {
+  const revision = options.revision;
+  const state =
+    options.state ??
+    (revision ? parseControlStateAt(root, revision) : parseControlState(root));
+  const expectedWorkOrderId = options.expectedWorkOrderId;
+  if (
+    revision &&
+    (state.phase !== "closed" ||
+      (expectedWorkOrderId && state.workOrderId !== expectedWorkOrderId))
+  )
+    throw new Error(
+      `committed surface check requires closed ${expectedWorkOrderId ?? "work-order"} control state; observed ${state.workOrderId ?? "none"} in phase ${state.phase}`,
+    );
+  const authority =
+    options.authority ?? readWorkOrderAuthority(root, state, revision);
+  const local = options.local ?? localTags(root);
+  const remote = options.remote ?? remoteTags(root);
+  const latest = latestVersion(remote);
+  const rules = [
+    releaseBlockRule(root, authority, latest, revision),
+    ...componentVersionRules(root, latest, local, remote, revision),
+    githubBodyRule(root, state, revision),
+  ];
+  return {
+    passed: rules.every(({ pass }) => pass),
+    report: `${rules.map(({ line }) => line).join("\n")}\n`,
   };
 };
 const exactSchemaVersion = (source, pattern, name) => {
@@ -752,7 +1025,7 @@ const baseManifest = (
       id: authority.id,
       path: authority.path,
     },
-    versions: { ...template.versions, ...packageVersions(root) },
+    versions: { ...template.versions, ...packageVersions(root, "HEAD") },
     ...compatible,
     toolchain: {
       ...template.toolchain,
@@ -819,8 +1092,8 @@ const validateEvidence = (evidence) => {
 };
 const validateManifest = (root, manifest) => {
   validateEvidence(manifest.evidence);
-  const state = parseControlState(root);
-  const authority = workOrderAuthority(root, state);
+  const state = parseControlStateAt(root, "HEAD");
+  const authority = workOrderAuthority(root, state, "HEAD");
   const expected = baseManifest(
     root,
     authority,
@@ -854,8 +1127,8 @@ const validatePublishedManifest = (root, manifest) => {
     throw new Error(
       "published manifest contains an invalid recorded toolchain",
     );
-  const state = parseControlState(root);
-  const authority = workOrderAuthority(root, state);
+  const state = parseControlStateAt(root, "HEAD");
+  const authority = workOrderAuthority(root, state, "HEAD");
   const expected = baseManifest(
     root,
     authority,
@@ -1072,6 +1345,7 @@ const publishedTag = (name, local, remote) => {
   return remoteTag;
 };
 const updateMainAndFinish = (root, workOrderId) => {
+  let finishOutput = "";
   ensureClean(root);
   ensureNoIgnoredInfluence(root);
   if (runGit(root, ["symbolic-ref", "--short", "HEAD"]) !== "main")
@@ -1090,7 +1364,7 @@ const updateMainAndFinish = (root, workOrderId) => {
       throw new Error(
         `cannot finish merged worktree: ${failureOf(finished, "worktree finish failed")}`,
       );
-    process.stdout.write(finished.stdout);
+    finishOutput = finished.stdout;
   } else {
     runGit(root, ["fetch", "origin", "main"]);
     runGit(root, ["merge", "--ff-only", "origin/main"]);
@@ -1127,6 +1401,7 @@ const updateMainAndFinish = (root, workOrderId) => {
     throw new Error(
       `main is not synchronized with origin/main (${head} != ${originMain})`,
     );
+  return finishOutput;
 };
 const executeGh = (root, args) => {
   return execute("gh", args, {
@@ -1314,18 +1589,41 @@ const close = (workOrderId, args) => {
     throw new Error(
       `release close must run from the main control-plane checkout: ${root}`,
     );
-  updateMainAndFinish(root, workOrderId);
-  const state = parseControlState(root);
+  const finishOutput = updateMainAndFinish(root, workOrderId);
+  const state = parseControlStateAt(root, "HEAD");
   if (state.workOrderId !== workOrderId)
     throw new Error(
       `merged control state is for ${state.workOrderId ?? "none"}, not ${workOrderId}`,
     );
-  const authority = workOrderAuthority(root, state);
+  const authority = workOrderAuthority(root, state, "HEAD");
   let local = localTags(root);
   const remote = remoteTags(root);
   const latest = latestVersion(remote);
-  const head = runGit(root, ["rev-parse", "HEAD"]);
   let previous = latest ? publishedTag(latest, local, remote) : undefined;
+  if (latest && !local.has(latest)) {
+    runGit(root, [
+      "fetch",
+      "origin",
+      `refs/tags/${latest}:refs/tags/${latest}`,
+    ]);
+    local = localTags(root);
+    previous = publishedTag(latest, local, remote);
+  }
+  const surfaceCheck = checkSurfaces(root, {
+    state,
+    revision: "HEAD",
+    expectedWorkOrderId: workOrderId,
+    authority,
+    local,
+    remote,
+  });
+  process.stdout.write(surfaceCheck.report);
+  if (!surfaceCheck.passed) {
+    process.exitCode = 1;
+    return;
+  }
+  process.stdout.write(finishOutput);
+  const head = runGit(root, ["rev-parse", "HEAD"]);
   if (latest && compareVersions(authority.version, latest) < 0) {
     process.stdout.write(
       `${workOrderId} closes ${authority.version}, below latest release ${latest}; no release tag is due. Main is clean and between work orders.\n`,
@@ -1360,15 +1658,6 @@ const close = (workOrderId, args) => {
     return;
   }
   if (latest) {
-    if (!local.has(latest)) {
-      runGit(root, [
-        "fetch",
-        "origin",
-        `refs/tags/${latest}:refs/tags/${latest}`,
-      ]);
-      local = localTags(root);
-      previous = publishedTag(latest, local, remote);
-    }
     const ancestor = execute("git", [
       "-C",
       root,
@@ -1534,6 +1823,21 @@ const publishHistoricalNotes = (tag) => {
 const main = () => {
   const [action, ...args] = process.argv.slice(2);
   if (action === "close") return close(args[0], args.slice(1));
+  if (action === "check-surfaces") {
+    if (
+      args.length > 2 ||
+      (args.length > 0 && args[0] !== "--committed") ||
+      (args.length === 2 && !/^WO-\d{3}$/.test(args[1]))
+    )
+      throw new Error("usage: release check-surfaces [--committed [WO-NNN]]");
+    const result = checkSurfaces(toolRoot, {
+      revision: args.includes("--committed") ? "HEAD" : undefined,
+      expectedWorkOrderId: args[1],
+    });
+    process.stdout.write(result.report);
+    if (!result.passed) process.exitCode = 1;
+    return;
+  }
   if (action === "validate") {
     const [path] = args;
     if (!path || args.length !== 1)
@@ -1571,7 +1875,7 @@ const main = () => {
     return publishHistoricalNotes(tag);
   }
   throw new Error(
-    "usage: release close WO-NNN [--publish] | release validate <manifest.json> | release manifest-from-tag vX.Y.Z | release notes vX.Y.Z | release list | release publish-notes vX.Y.Z",
+    "usage: release check-surfaces [--committed [WO-NNN]] | release close WO-NNN [--publish] | release validate <manifest.json> | release manifest-from-tag vX.Y.Z | release notes vX.Y.Z | release list | release publish-notes vX.Y.Z",
   );
 };
 

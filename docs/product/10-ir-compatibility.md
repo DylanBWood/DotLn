@@ -57,6 +57,10 @@ tag message, so the exact commit and its compatibility record form one immutable
 Git object graph without a self-referential manifest commit.
 `docs/releases/tag-manifest.template.json` pins the field layout and the release
 validator re-derives the source-owned fields before publication.
+The component axis must move when that component's `src/` has moved since the
+preceding release, while test, documentation, and unrelated application changes
+do not imply a component bump; publish and close compare this fact with the
+preceding tag manifest.
 
 ## Transformation graph
 

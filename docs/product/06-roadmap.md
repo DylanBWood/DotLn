@@ -85,6 +85,20 @@ manifest-derived evidence and compatibility, and keeps that edition in the
 annotated tag. After the validated tag push, the same human layer is projected
 as a GitHub Release; the projection never replaces the tag's immutable JSON
 record and is recovered by rerunning close rather than silently edited.
+Current final-review PR and release-note bodies are authored as renderer-wrapped
+Markdown: one physical source line per prose paragraph or list-item paragraph,
+with semantic Markdown boundaries retained. The publisher checks the committed
+current package and transports it byte for byte; historical packages and tag
+re-derivation remain unchanged.
+
+Version ownership stays separated. Planning pins the application target in the
+active work-order H1, execution updates the delimited README source claim, and
+publish/close tooling checks both against tag truth. Execution must also move a
+component package version whenever that component's `src/` differs from the
+preceding release; the release preflight proves it from the previous tag
+manifest. Schema, artifact, transformation, and other compatibility axes move
+only under their own contract owners and are never inferred from an application
+or component bump.
 
 Patch releases contain compatible corrections, documentation, and evidence
 improvements; minor releases add backwards-compatible application capability;
@@ -703,14 +717,16 @@ candidate first proof, not a selected milestone.
 
 The broader simulation catalog remains: paired counterfactuals, first-divergence
 search, agent swaps, all-clone towns, reflection-question design, time-dilation,
-recognition-beyond-identifiers, accuracy-vs-rationale decoupling, biographical
-seeding, bounded-inconsistency generation, and length-scale attention
-aggregation (the full catalog lives in the ledger's chat-005 entries; this list
-is not exhaustive); an Embodied Explorer fixture that learns evidence-backed
-composite skills from bounded sensorimotor primitives in a 3D simulator; the
-full pattern shelf (Compendium skin); remaining transmog skins; physical-card
-importer; hypothesis flywheel. All are gated on the same kernel, and no
-application, simulation, or embodiment choice may distort Horizon 1.
+time-fidelity and observation-relative closure experiments, conservative
+future-reachability envelopes, recognition-beyond-identifiers,
+accuracy-vs-rationale decoupling, biographical seeding, bounded-inconsistency
+generation, and length-scale attention aggregation (the full founding catalog
+lives in the ledger's chat-005 entries; later operator-dispatched additions are
+recorded in newer ledger sections); an Embodied Explorer fixture that learns
+evidence-backed composite skills from bounded sensorimotor primitives in a 3D
+simulator; the full pattern shelf (Compendium skin); remaining transmog skins;
+physical-card importer; hypothesis flywheel. All are gated on the same kernel,
+and no application, simulation, or embodiment choice may distort Horizon 1.
 
 Additional horizon: a lightweight offline-capable IR verifier; explicit
 application/schema/artifact/component version lineage; inspectable JIT

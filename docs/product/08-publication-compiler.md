@@ -226,6 +226,15 @@ polish” if it affects observable semantics, saved-data interpretation,
 compatibility, authority, security/privacy, recovery, or an operator's required
 action. Generated notes should flag uncertain classification for human review.
 
+The reviewed source is also the GitHub body, so its physical layout must not
+pretend that one authoring width is every reader's viewport. From WO-025
+forward, each ordinary prose paragraph and list-item paragraph occupies one
+physical source line; headings, blank paragraph boundaries, distinct list
+items, fenced or indented code, tables, and explicit hard breaks retain their
+semantic lines. Publication validates the current committed body and preserves
+its bytes. Historical reviewed artifacts are immutable and exempt from this
+forward authoring profile.
+
 ## Bootstrap path
 
 Do not begin with an elaborate content-management system. The first proof is:

@@ -100,10 +100,13 @@ contained PR body file:
 npm run worktree -- publish WO-NNN --title '<reviewed title>' --body-file <contained-reviewed-body-path>
 ```
 
-The helper first validates the committed five-section `RELEASE-NOTES.md` beside
-the final-review report, then preflights GitHub CLI before mutation, pushes only
-the work-order branch, opens the PR, and prints the exact post-merge
-release-close handoff.
+The helper first runs the release-surface preflight and validates the committed
+five-section `RELEASE-NOTES.md` beside the final-review report. The current
+`PR.md` and notes must use one physical source line per prose paragraph or
+list-item paragraph, retaining separate lines only for semantic Markdown
+structure; the helper transports those reviewed bytes without reflowing them.
+Only then does it preflight GitHub CLI, push the work-order branch, open the PR,
+and print the exact post-merge release-close handoff.
 
 `main` is protected by a GitHub ruleset requiring a PR. The classic branch
 protection endpoint can return 404 while that ruleset is active, so its result
@@ -232,6 +235,16 @@ deletes or auto-promotes it. Known disposable ignored dependency/build outputs
 worktree. The same command then evaluates whether the completed roadmap rung is
 a release boundary.
 
+When a planner pins a tagging target above the latest published tag, updating
+the root README release block to that target is an executor deliverable, not a
+post-tag repair. After synchronization and before dependency installation,
+`release close` runs the same `check-surfaces` preflight as `worktree publish`:
+the README block must match release truth, every component whose `src/` changed
+since the preceding tag must have a different component version, and the
+current committed PR/release-note bodies must satisfy the renderer-wrapped
+profile. Failure reports observed and expected values and stops before `npm ci`,
+tag creation, or GitHub mutation.
+
 For a release boundary, the command works from the fetched `origin/main` HEAD to
 which local `main` was fast-forwarded, not a separately resolved work-order
 merge commit. The reviewed work-order branch must be contained in that history;
@@ -242,6 +255,8 @@ immutable manifest, assembles the five-section edition from reviewed notes in
 first-parent order, and creates and pushes only their annotated tag. After that
 push succeeds, it creates the matching GitHub Release from the human layer; the
 JSON manifest remains in the tag rather than being pasted into the projection.
+The current release-note prose remains byte-exact from final review through the
+tag and GitHub projection; no close-time formatter inserts a source width.
 The publish form is authorized by the operator's phrase; a raw run without
 `--publish` performs guarded closeout and validation, then prints the exact
 authorized tag command. Never tag the feature branch, tag failing evidence, move

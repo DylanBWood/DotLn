@@ -362,6 +362,34 @@ CURRENT software-engineer-toc.md: 42 linked source sections match
 PASS publication bootstrap checks
 ```
 
+## 11. Release surfaces, renderer-wrapped bodies, and temporal ideation recapture
+
+WO-025 changed already-linked release, compatibility, publication, and
+execution-guide subtrees when it assigned ownership for application/component
+version claims and made renderer-wrapped PR/release-note prose a checked
+publication contract. Those software-engineer selections moved that edition's
+lock; the everyday edition retained the value recorded in §10. The later
+temporal-counterfactual breakout added one indexed `προτείνω` candidate and a
+Post-1.0 catalog pointer, raising coverage from 149 to 150 headings without
+changing either historical edition's selected source ranges. The source-base
+revision and both editions' source selections remain unchanged.
+
+```console
+$ npm run publication:check -- --print-locks
+PASS index coverage: 150/150 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+LOCK everyday-ai-user-toc.md: sha256:ff04564ea8c460f2c26b25c088bc63abe37835d3a246e2a3a7b68186bfd47932
+LOCK software-engineer-toc.md: sha256:f1ce1362211b50dc2cdc3e4e4a52dae2726a8996cb47495c90124a8f83bd892d
+PASS publication bootstrap checks
+
+$ npm run publication:check
+PASS index coverage: 150/150 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 27 linked source sections match
+CURRENT software-engineer-toc.md: 42 linked source sections match
+PASS publication bootstrap checks
+```
+
 ## Honest limit
 
 This is conservative byte-level stale detection over linked heading subtrees. It

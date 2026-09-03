@@ -45,7 +45,7 @@ make_repo() {
   git -C "$main" remote set-url origin "$github_origin"
   git -C "$main" switch -c main >/dev/null 2>&1
   mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/releases" "$main/packages/kernel/src" "$main/packages/skeleton/dist/src" "$main/packages/skeleton/src"
-  cp "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
+  cp "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
   cp "$script_dir/../docs/releases/tag-manifest.template.json" "$main/docs/releases/"
   printf '# Historical v0.2.0 manifest for WO-003\n' >"$main/docs/releases/v0.2.0.md"
   printf '# Historical v0.2.0 notes for WO-003\n' >"$main/docs/releases/v0.2.0-notes.md"
@@ -64,6 +64,7 @@ make_repo() {
     '  "requires": true,' \
     '  "packages": { "": { "name": "release-fixture", "devDependencies": { "typescript": "5.4.5" } } }' \
     '}' >"$main/package-lock.json"
+  write_release_block "$main" v0.2.0
   printf '{"name":"@dotln/kernel","version":"0.1.0"}\n' >"$main/packages/kernel/package.json"
   printf '{"name":"@dotln/skeleton","version":"0.2.0"}\n' >"$main/packages/skeleton/package.json"
   cp "$script_dir/../packages/kernel/src/types.ts" "$main/packages/kernel/src/types.ts"
@@ -75,7 +76,13 @@ make_repo() {
   write_control_events "$main/docs/control/resume.jsonl" WO-003 docs/work-orders/WO-003-fixture.md
   git -C "$main" add .
   git -C "$main" commit -m 'fixture v0.2.0' >/dev/null
-  git -C "$main" tag -a v0.2.0 -m 'DotLn v0.2.0 — fixture baseline'
+  printf '%s\n' \
+    'DotLn v0.2.0 — fixture baseline' \
+    '' \
+    'DOTLN-MANIFEST-BEGIN' \
+    '{"versions":{"components":{"@dotln/kernel":"0.1.0","@dotln/skeleton":"0.2.0"}}}' \
+    'DOTLN-MANIFEST-END' >"$fixture/v0.2.0-tag.txt"
+  git -C "$main" tag -a v0.2.0 -F "$fixture/v0.2.0-tag.txt"
   git -C "$main" push -u origin main >/dev/null 2>&1
   git -C "$main" push origin refs/tags/v0.2.0 >/dev/null 2>&1
   bin="$fixture/bin"
@@ -159,9 +166,21 @@ make_repo() {
   chmod +x "$bin/gh"
 }
 
+write_release_block() {
+  local repository="$1" version="$2"
+  printf '%s\n' \
+    '# Fixture repository' \
+    '' \
+    '<!-- DOTLN-RELEASE-BEGIN -->' \
+    '' \
+    "This source is DotLn \`$version\`." \
+    '<!-- DOTLN-RELEASE-END -->' >"$repository/README.md"
+}
+
 commit_candidate() {
-  local repository="$1" id="$2" version="$3"
+  local repository="$1" id="$2" version="$3" surface_version="${4:-$3}"
   local authority="docs/work-orders/$id-fixture.md"
+  write_release_block "$repository" "$surface_version"
   printf '# %s — release fixture, %s\n\n**Objective:** Deliver the visible fixture payoff for %s.\n\n**Non-goals:** Package and hosted distribution remain outside this source release.\n' "$id" "$version" "$id" >"$repository/$authority"
   write_control_events "$repository/docs/control/resume.jsonl" "$id" "$authority"
   git -C "$repository" add .
@@ -171,6 +190,7 @@ commit_candidate() {
 commit_legacy_multicommit_candidate() {
   local repository="$1" id="$2" version="$3"
   local authority="docs/work-orders/$id-fixture.md"
+  write_release_block "$repository" "$version"
   printf '# %s — release fixture, %s\n\n**Objective:** Deliver the visible fixture payoff for %s.\n\n**Non-goals:** No distribution.\n' "$id" "$version" "$id" >"$repository/$authority"
   printf '%s\n' \
     "{\"schemaVersion\":1,\"type\":\"WorkOrderActivated\",\"workOrderId\":\"$id\",\"workOrderPath\":\"$authority\"}" \
@@ -196,19 +216,18 @@ commit_reviewed_candidate() {
   local repository="$1" id="$2" version="$3"
   local authority="docs/work-orders/$id-fixture.md"
   local review_dir="$repository/docs/final-reviews/$id"
+  write_release_block "$repository" "$version"
   printf '# %s — reviewed release fixture, %s\n\n**Objective:** Deliver reviewed release notes for %s.\n\n**Non-goals:** Package distribution remains outside this source release.\n' "$id" "$version" "$id" >"$repository/$authority"
   write_control_events "$repository/docs/control/resume.jsonl" "$id" "$authority"
   mkdir -p "$review_dir"
   printf '%s\n' \
     '## Release overview' \
     '' \
-    'Reviewed overview line one.' \
-    'Reviewed overview line two stays adjacent.' \
+    'Reviewed overview prose remains on one physical source line even when it is longer than eighty characters, so the reader owns viewport wrapping.' \
     '' \
     '## Read before upgrading' \
     '' \
-    'Reviewer warning line one.' \
-    'Reviewer warning line two stays adjacent.' \
+    'Reviewer warning prose remains on one physical source line even when it is longer than eighty characters, so the reader owns viewport wrapping.' \
     '' \
     '## Substantive changes' \
     '' \
@@ -246,6 +265,183 @@ release_close() {
 release_command() {
   (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$main/scripts/release.mjs" "$@")
 }
+
+assert_surface_failure() {
+  local expected="$1" output
+  shift
+  if output="$(release_command check-surfaces "$@" 2>&1)"; then
+    printf 'error: surface check accepted %s\n' "$expected" >&2
+    exit 1
+  fi
+  grep -Fq "$expected" <<<"$output"
+  if grep -Fq 'error:' <<<"$output"; then
+    printf 'error: surface report was wrapped by a caller error\n' >&2
+    exit 1
+  fi
+  surface_failure_output="$output"
+}
+
+make_repo surfaces
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+surface_pass="$(release_command check-surfaces)"
+grep -Fq 'PASS release-block: observed v0.2.1; expected v0.2.1 (work-order target v0.2.1; latest published v0.2.0)' <<<"$surface_pass"
+grep -Fq 'PASS component-version @dotln/kernel: src unchanged; observed 0.1.0; previous v0.2.0 0.1.0' <<<"$surface_pass"
+write_release_block "$main" v0.2.0
+assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1'
+write_release_block "$main" v0.2.1
+printf '\nHistorical example outside the release block: `v9.9.9`.\n' >>"$main/README.md"
+release_command check-surfaces >/dev/null
+printf '# No release block\n' >"$main/README.md"
+assert_surface_failure 'observed 0 begin marker(s), 0 end marker(s)'
+printf '%s\n' \
+  '<!-- DOTLN-RELEASE-END -->' \
+  'This source is DotLn `v0.2.1`.' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' >"$main/README.md"
+assert_surface_failure 'observed 1 begin marker(s), 1 end marker(s), order invalid'
+printf '%s\n' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  'This source is DotLn `v0.2.1`.' \
+  '<!-- DOTLN-RELEASE-END -->' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  'This source is DotLn `v0.2.1`.' \
+  '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
+assert_surface_failure 'observed 2 begin marker(s), 2 end marker(s)'
+write_release_block "$main" v0.2.1
+printf '<!-- DOTLN-RELEASE-BEGIN --> \n' >>"$main/README.md"
+assert_surface_failure 'observed malformed release marker at README.md:'
+write_release_block "$main" v0.2.1-beta
+assert_surface_failure 'observed no strict version; expected exactly one v0.2.1'
+printf '%s\n' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  'This source is DotLn `v0.2.1`, not `v9.9.9`.' \
+  '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
+assert_surface_failure 'observed v0.2.1, v9.9.9; expected exactly one v0.2.1'
+write_release_block "$main" v0.2.1
+printf '# WO-099 — malformed fixture target, v0.2.1-beta\n\n**Objective:** Reject a non-strict target.\n\n**Non-goals:** No distribution.\n' >"$main/docs/work-orders/WO-099-fixture.md"
+if malformed_authority="$(release_command check-surfaces 2>&1)"; then
+  printf 'error: surface check accepted a non-strict work-order target\n' >&2
+  exit 1
+fi
+grep -Fq 'work-order heading must contain exactly one strict vX.Y.Z version' <<<"$malformed_authority"
+
+make_repo surfaces_committed_readme
+commit_candidate "$main" WO-099 v0.2.1
+write_release_block "$main" v0.2.0
+git -C "$main" add README.md
+git -C "$main" commit --amend --no-edit >/dev/null
+git -C "$main" push origin main >/dev/null 2>&1
+git -C "$main" update-index --assume-unchanged README.md
+write_release_block "$main" v0.2.1
+release_command check-surfaces >/dev/null
+assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1' --committed
+
+make_repo surfaces_lower
+commit_candidate "$main" WO-099 v0.0.2 v0.2.0
+git -C "$main" push origin main >/dev/null 2>&1
+release_command check-surfaces >/dev/null
+write_release_block "$main" v0.0.2
+assert_surface_failure 'FAIL release-block: observed v0.0.2; expected exactly one v0.2.0 (work-order target v0.0.2; latest published v0.2.0)'
+
+make_repo surfaces_first
+git -C "$main" tag -d v0.2.0 >/dev/null
+git --git-dir="$origin" update-ref -d refs/tags/v0.2.0
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+first_surface="$(release_command check-surfaces)"
+grep -Fq 'PASS release-block: observed v0.2.1; expected v0.2.1 (work-order target v0.2.1; latest published none)' <<<"$first_surface"
+
+make_repo surfaces_component
+printf '\n// source change\n' >>"$main/packages/kernel/src/core.ts"
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+assert_surface_failure 'FAIL component-version @dotln/kernel: src changed; observed 0.1.0; previous v0.2.0 0.1.0; expected a different version'
+git -C "$main" update-index --assume-unchanged packages/kernel/package.json
+printf '{"name":"@dotln/kernel","version":"0.1.1"}\n' >"$main/packages/kernel/package.json"
+release_command check-surfaces >/dev/null
+assert_surface_failure 'FAIL component-version @dotln/kernel: src changed; observed 0.1.0; previous v0.2.0 0.1.0; expected a different version' --committed
+
+make_repo surfaces_non_source
+mkdir -p "$main/packages/kernel/test"
+printf 'test-only change\n' >"$main/packages/kernel/test/example.test.ts"
+printf '# Package documentation change\n' >"$main/packages/kernel/README.md"
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+non_source_surface="$(release_command check-surfaces)"
+grep -Fq 'PASS component-version @dotln/kernel: src unchanged; observed 0.1.0; previous v0.2.0 0.1.0' <<<"$non_source_surface"
+
+make_repo surfaces_new_component
+mkdir -p "$main/packages/new-component/src"
+printf 'export const first = true;\n' >"$main/packages/new-component/src/index.ts"
+printf '{"name":"@dotln/new-component","version":"0.1.0"}\n' >"$main/packages/new-component/package.json"
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+new_component_surface="$(release_command check-surfaces)"
+grep -Fq 'PASS component-version @dotln/new-component: src changed; observed 0.1.0; previous v0.2.0 no component with this identity; expected first-version baseline' <<<"$new_component_surface"
+printf 'release surface version and component fixtures passed\n'
+
+make_repo surfaceclose
+git clone "$origin" "$fixture/integrator" >/dev/null 2>&1
+git -C "$fixture/integrator" config user.email test@example.invalid
+git -C "$fixture/integrator" config user.name "DotLn Surface Integrator"
+git -C "$fixture/integrator" switch main >/dev/null 2>&1
+commit_candidate "$fixture/integrator" WO-099 v0.2.1
+write_release_block "$fixture/integrator" v0.2.0
+git -C "$fixture/integrator" add README.md
+git -C "$fixture/integrator" commit --amend --no-edit >/dev/null
+git -C "$fixture/integrator" push origin main >/dev/null 2>&1
+test "$(git -C "$main" rev-parse HEAD)" != "$(git --git-dir="$origin" rev-parse refs/heads/main)"
+if close_surface_output="$(release_close WO-099 --publish 2>&1)"; then
+  printf 'error: release close accepted a stale release block\n' >&2
+  exit 1
+fi
+test "$(git -C "$main" rev-parse HEAD)" = "$(git -C "$main" rev-parse origin/main)"
+test ! -e "$npm_log"
+assert_no_candidate_tag "$main" "$origin"
+assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1'
+test "$close_surface_output" = "$surface_failure_output"
+
+make_repo surfaceclose_linked
+linked_subject="$fixture/project-wo099"
+git -C "$main" worktree add "$linked_subject" -b wo-099 main >/dev/null
+commit_candidate "$linked_subject" WO-099 v0.2.1
+write_release_block "$linked_subject" v0.2.0
+git -C "$linked_subject" add README.md
+git -C "$linked_subject" commit --amend --no-edit >/dev/null
+git -C "$linked_subject" push origin HEAD:main >/dev/null 2>&1
+if linked_close_surface_output="$(release_close WO-099 --publish 2>&1)"; then
+  printf 'error: linked-worktree release close accepted a stale release block\n' >&2
+  exit 1
+fi
+test ! -d "$linked_subject"
+test ! -e "$npm_log"
+assert_no_candidate_tag "$main" "$origin"
+assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1'
+test "$linked_close_surface_output" = "$surface_failure_output"
+
+make_repo bodyclose
+commit_reviewed_candidate "$main" WO-024 v0.2.1
+"$node_bin" -e '
+  const fs = require("node:fs");
+  const path = process.argv[1];
+  const source = fs.readFileSync(path, "utf8");
+  fs.writeFileSync(path, source.replace(
+    "Reviewed overview prose remains on one physical source line even when it is longer than eighty characters, so the reader owns viewport wrapping.",
+    "Reviewed overview prose was accidentally wrapped at a fixed source column even though it is one logical\nparagraph that the reader should wrap for its own viewport.",
+  ));
+' "$main/docs/final-reviews/WO-024/RELEASE-NOTES.md"
+git -C "$main" add .
+git -C "$main" commit --amend --no-edit >/dev/null
+git -C "$main" push origin main >/dev/null 2>&1
+if body_close_output="$(release_close WO-024 --publish 2>&1)"; then
+  printf 'error: release close accepted wrapped current release notes\n' >&2
+  exit 1
+fi
+grep -Fq 'FAIL github-body-profile: observed docs/final-reviews/WO-024/RELEASE-NOTES.md: accidental GitHub prose soft wrap' <<<"$body_close_output"
+test ! -e "$npm_log"
+test ! -e "$gh_log"
+assert_no_candidate_tag "$main" "$origin"
+printf 'release close surface gates ran after sync and before npm, tag, or GitHub mutation\n'
 
 make_repo dirty
 commit_candidate "$main" WO-099 v0.2.1
@@ -318,7 +514,7 @@ test ! -e "$gh_log"
 assert_no_candidate_tag "$main" "$origin"
 
 make_repo lower
-commit_candidate "$main" WO-099 v0.0.2
+commit_candidate "$main" WO-099 v0.0.2 v0.2.0
 git -C "$main" push origin main >/dev/null 2>&1
 mkdir -p "$main/docs/intake/images"
 intake_path="docs/intake/images/Screenshot 2026-08-30 at 10.01.24${u202f}PM.jpg"
@@ -348,6 +544,7 @@ make_repo cadencefailure
   if (malformed === source) process.exit(1);
   fs.writeFileSync(path, malformed);
 ' "$main/packages/kernel/src/core.ts"
+printf '{"name":"@dotln/kernel","version":"0.1.1"}\n' >"$main/packages/kernel/package.json"
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 cadence_origin_before="$(git --git-dir="$origin" for-each-ref --format='%(objectname) %(refname)' | LC_ALL=C sort)"
@@ -590,8 +787,8 @@ for (const heading of headings) {
   assert.ok(section.indexOf("### WO-023") < section.indexOf("### WO-024"));
 }
 assert.ok(notes.includes("**Fallback: no reviewed notes for WO-023 (predates WO-024); commit subjects:**\n\n- WO-023 implementation part one\n- WO-023 implementation part two\n- WO-023 final review pass"));
-assert.ok(notes.includes("Reviewed overview line one.\nReviewed overview line two stays adjacent."));
-assert.ok(notes.includes("Reviewer warning line one.\nReviewer warning line two stays adjacent."));
+assert.ok(notes.includes("Reviewed overview prose remains on one physical source line even when it is longer than eighty characters, so the reader owns viewport wrapping."));
+assert.ok(notes.includes("Reviewer warning prose remains on one physical source line even when it is longer than eighty characters, so the reader owns viewport wrapping."));
 assert.ok(notes.includes("**Release operations.** Readers now receive the reviewed edition.\n\n### WO-999 is reviewer prose, not release membership\n\nThis heading must not affect the release list."));
 assert.ok(notes.includes("## Progressive polish\n\n### WO-023"));
 assert.ok(notes.includes("### WO-024 — reviewed release fixture, v0.2.1\n\nNone."));
@@ -600,7 +797,7 @@ const readBefore = notes.slice(
   notes.indexOf("## Read before upgrading"),
   notes.indexOf("## Substantive changes"),
 );
-assert.ok(readBefore.indexOf("Reviewer warning line two") < readBefore.indexOf("### Derived from the diff"));
+assert.ok(readBefore.indexOf("Reviewer warning prose") < readBefore.indexOf("### Derived from the diff"));
 assert.ok(readBefore.indexOf("### Derived from the diff") < readBefore.indexOf("Workflow authority, recovery, or publication tooling changed"));
 const evidence = notes.slice(notes.indexOf("## Evidence and compatibility"));
 assert.ok(evidence.indexOf("- Reviewer compatibility line.") < evidence.indexOf("### Machine-derived release evidence"));

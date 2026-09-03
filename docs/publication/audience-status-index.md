@@ -208,17 +208,18 @@ as a current blocked verdict.
 
 ## 11 — `προτείνω`
 
-| Section                                                                                                                                       | Audiences                           | Status    |
-| --------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
-| [`προτείνω` (proteíno) — the first-party application thesis](../product/11-proteino.md#προτείνω-proteíno--the-first-party-application-thesis) | everyday-ai-user, software-engineer | vision    |
-| [Shape before machinery](../product/11-proteino.md#shape-before-machinery)                                                                    | everyday-ai-user, software-engineer | specified |
-| [The playable loop](../product/11-proteino.md#the-playable-loop)                                                                              | everyday-ai-user, software-engineer | vision    |
-| [A world on DotLn, not a second DotLn world](../product/11-proteino.md#a-world-on-dotln-not-a-second-dotln-world)                             | everyday-ai-user, software-engineer | specified |
-| [Intervention truth](../product/11-proteino.md#intervention-truth)                                                                            | everyday-ai-user, software-engineer | specified |
-| [Ad hoc first, reusable on evidence](../product/11-proteino.md#ad-hoc-first-reusable-on-evidence)                                             | everyday-ai-user, software-engineer | specified |
-| [Books and personal styles become experiments](../product/11-proteino.md#books-and-personal-styles-become-experiments)                        | everyday-ai-user, software-engineer | vision    |
-| [Counterfactuals are the scoreboard](../product/11-proteino.md#counterfactuals-are-the-scoreboard)                                            | everyday-ai-user, software-engineer | specified |
-| [Every apparent affordance tells the truth](../product/11-proteino.md#every-apparent-affordance-tells-the-truth)                              | everyday-ai-user, software-engineer | vision    |
-| [Source shapes, not copied implementations](../product/11-proteino.md#source-shapes-not-copied-implementations)                               | everyday-ai-user, software-engineer | vision    |
-| [Candidate first evidence slice](../product/11-proteino.md#candidate-first-evidence-slice)                                                    | everyday-ai-user, software-engineer | vision    |
-| [Unresolved product choices](../product/11-proteino.md#unresolved-product-choices)                                                            | everyday-ai-user, software-engineer | vision    |
+| Section                                                                                                                                         | Audiences                           | Status    |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
+| [`προτείνω` (proteíno) — the first-party application thesis](../product/11-proteino.md#προτείνω-proteíno--the-first-party-application-thesis)   | everyday-ai-user, software-engineer | vision    |
+| [Shape before machinery](../product/11-proteino.md#shape-before-machinery)                                                                      | everyday-ai-user, software-engineer | specified |
+| [The playable loop](../product/11-proteino.md#the-playable-loop)                                                                                | everyday-ai-user, software-engineer | vision    |
+| [A world on DotLn, not a second DotLn world](../product/11-proteino.md#a-world-on-dotln-not-a-second-dotln-world)                               | everyday-ai-user, software-engineer | specified |
+| [Intervention truth](../product/11-proteino.md#intervention-truth)                                                                              | everyday-ai-user, software-engineer | specified |
+| [Ad hoc first, reusable on evidence](../product/11-proteino.md#ad-hoc-first-reusable-on-evidence)                                               | everyday-ai-user, software-engineer | specified |
+| [Books and personal styles become experiments](../product/11-proteino.md#books-and-personal-styles-become-experiments)                          | everyday-ai-user, software-engineer | vision    |
+| [Counterfactuals are the scoreboard](../product/11-proteino.md#counterfactuals-are-the-scoreboard)                                              | everyday-ai-user, software-engineer | specified |
+| [Candidate — time fidelity and bounded future reachability](../product/11-proteino.md#candidate--time-fidelity-and-bounded-future-reachability) | everyday-ai-user, software-engineer | vision    |
+| [Every apparent affordance tells the truth](../product/11-proteino.md#every-apparent-affordance-tells-the-truth)                                | everyday-ai-user, software-engineer | vision    |
+| [Source shapes, not copied implementations](../product/11-proteino.md#source-shapes-not-copied-implementations)                                 | everyday-ai-user, software-engineer | vision    |
+| [Candidate first evidence slice](../product/11-proteino.md#candidate-first-evidence-slice)                                                      | everyday-ai-user, software-engineer | vision    |
+| [Unresolved product choices](../product/11-proteino.md#unresolved-product-choices)                                                              | everyday-ai-user, software-engineer | vision    |

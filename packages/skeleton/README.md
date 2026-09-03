@@ -1,6 +1,9 @@
-# `@dotln/skeleton` 0.2.0
+# `@dotln/skeleton` 0.3.0
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
+Its component version was corrected forward from `0.2.0` to `0.3.0` on
+2026-09-02 to record the audit projection module that shipped in application
+release `v0.3.0`; published manifests remain historical truth.
 
 The deterministic Repo Gardener + Seiri vertical. It compiles a provisional,
 hand-assembled loadout into a bounded `WorkOrder`, runs it against a fake
