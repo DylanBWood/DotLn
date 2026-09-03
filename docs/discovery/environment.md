@@ -442,3 +442,56 @@ rg -F '<thread-id>' ~/.codex/sessions
 git status --short
 date -Iseconds
 ```
+
+## WO-019 effort readback addendum (2026-09-02)
+
+This bounded probe distinguishes a persisted effort selector from the effective
+effort of the running session. It inspected installed CLI versions and help,
+then queried only the named effort keys in the two personal settings files. No
+settings file or unrelated value entered the repository; the key probes printed
+only an effort level or `not found`. No model was invoked.
+
+| Harness | Surface | Classification | Finding |
+|---|---|---|---|
+| Claude Code 2.1.259 | installed version | observed | `claude --version` returned the named version |
+| Claude Code 2.1.259 | persisted `effortLevel` selector | not found | the named settings-key projection returned `not found` |
+| Claude Code 2.1.259 | per-session selector | documented locally | installed help lists `--effort low|medium|high|xhigh|max`; WO-004 separately observed `--effort high` on 2.1.252 |
+| Claude Code 2.1.259 | effective-session effort readback | not found | installed help exposes selection but no command or result field that reports the effective value after flags or in-session changes |
+| Codex CLI 0.152.1 | installed version | observed | `codex --version` returned the named version |
+| Codex CLI 0.152.1 | persisted `model_reasoning_effort` selector | observed | the named settings-key projection returned `xhigh`; its surrounding settings and scope were not printed |
+| Codex CLI 0.152.1 | per-session selector | not found | no dedicated `--effort` control appears in global or `exec` help; generic `--config key=value` is documented locally, but this probe did not treat a generic override as observed acceptance of that effort key |
+| Codex CLI 0.152.1 | effective-session effort readback | not found | neither global nor `exec` help exposes the running session's effective effort; persisted `xhigh` does not prove that no launch or in-session override occurred |
+
+Neither harness is therefore eligible for the `harness-readback` source label
+in the WO-019 control-log actor. Claude's observed historical selector and
+Codex's observed persisted selector can support an explicitly sourced
+self-report or operator attestation, but neither is silently promoted to
+readback. In particular, a Codex actor with no observed selector still records
+`unknown`; this machine now has an observed persisted selector, while its
+effective value remains unavailable to the harness.
+
+Sanitized transcript:
+
+```text
+claude_version=2.1.259
+claude_persisted_effort=not found
+claude_session_selector=documented locally: low|medium|high|xhigh|max
+claude_effective_effort_readback=not found
+codex_version=0.152.1
+codex_persisted_effort=xhigh
+codex_dedicated_session_selector=not found
+codex_effective_effort_readback=not found
+```
+
+Commands used:
+
+```sh
+claude --version
+claude --help
+codex --version
+codex --help
+codex exec --help
+jq -r 'if has("effortLevel") then (.effortLevel | if type == "string" then . else "non-string" end) else "not found" end' ~/.claude/settings.json
+sed -nE 's/^[[:space:]]*model_reasoning_effort[[:space:]]*=[[:space:]]*"?([a-z]+)"?.*$/\1/p' ~/.codex/config.toml
+date -Iseconds
+```

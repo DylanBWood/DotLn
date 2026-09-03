@@ -23,6 +23,277 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-019 repair-window ideation — influence response and fictional-system translation (2026-09-03)
+
+Source: the operator's live `ideation:` dispatch, preserved unedited in
+`docs/intake/notes/WO-019-expanded-ideation-2026-09-03.md`. Ordinary
+shape-first synthesis found no employer, credential, internal-service, or other
+clean-room stop condition. The scientific and fictional references remain
+operator recollections and familiar lenses; no literal physics or canon claim
+is load-bearing. The operator separately preauthorized continuation of the
+WO-019 fix after this breakout.
+
+- **Influence streams need selectable response policies, not one universal
+  aggregation rule** `adopted`
+  - A recipient's versioned policy can determine how a time-ordered stream of
+    eligible external expressions participates in a decision. The first open
+    inventory contains a semantic-band gate, where any number of lower-band
+    suggestions remains distinct from one qualifying urgent signal; cumulative
+    aggregation through a declared reducer; a bounded count- or time-window
+    fold; and an internally anchored path where outside expressions may be
+    understood but contribute no decision pressure. These are alternatives and
+    ingredients, not an exhaustive enum or claims about human psychology.
+  - Preserve source and provenance, communicative `Voice`, urgency, evidence,
+    relationship or trust, timing, admission, and policy result as separate
+    facts. Repetition does not become truth, message force does not create
+    authority, and aggregation cannot weaken a hard constraint. A trace shows
+    which inputs were admitted, ignored, combined, or decisive. This is
+    distinct from mechanism-loading `AttentionPolicy` and from collapsing
+    evidence, activation, preference, urgency, and permission into one scalar.
+- **A rule-rich fictional source can be both a pattern mine and a comprehension
+  tool** `preserved`
+  - The operator nominates _Jujutsu Kaisen_ for a later source-grounded pass
+    over abilities, prerequisites, conditions, costs and limits, interactions,
+    problem-solving strategies, and changes in effective capability. The same
+    explicit model could help a viewer understand the work by projecting rules,
+    state, dependencies, exceptions, and uncertainty instead of merely
+    summarizing plot. Canonical source claims, operator interpretation,
+    extrapolation, contradiction, and unknown remain distinguishable; no
+    series-specific noun or rule becomes kernel ontology.
+- **An analogy is a translation view over an explicit model, not a substitute
+  for it** `adopted`
+  - The operator's recollection of an in-story immortality explanation through
+    a familiar fictional evolution comparison demonstrates a nested familiar
+    lens: one fictional system can help explain another. Preserve the analogy
+    and formal rule model as synchronized but non-identical projections, mark
+    lossy or uncertain correspondences, and verify literal details only when
+    they become load-bearing. This extends the existing three-lens and
+    shape-first rules without selecting a new schema or implementation.
+
+## WO-019 execution-window ideation — memory cuts, effort experiments, and local inference (2026-09-02)
+
+Source: the operator's live `ideation:` dispatch, preserved unedited in
+`docs/intake/notes/WO-019-expanded-ideation-2026-09-02.md`. Ordinary
+shape-first synthesis found no employer, credential, internal-service, or other
+clean-room stop condition. The same dispatch explicitly authorized continuation
+of WO-019 after this breakout.
+
+- **An editable recap is a simulation-scoped memory intervention** `adopted`
+  - In the `προτείνω` candidate, the operator can assemble all, none, or a
+    selected strip of a resident's recorded life and use that derivative to
+    prime what is accessible at a declared boundary. Crops, emphasis, ordering,
+    filters, and detail substitutions retain source references and exact
+    transformation provenance. The canonical event history never changes to
+    agree with the edited memory.
+- **History, observation, accessible memory, belief, and stance stay distinct**
+  `adopted`
+  - Surrounding residents may retain full-history awareness while the selected
+    resident receives only a recap, but both are declared world rules. Whether
+    another resident knows, suspects, or misunderstands that boundary is
+    separate from how they react to it. Sympathy, revulsion, or another stance
+    emerges from resident and relationship state rather than being hard-coded by
+    knowledge alone; disclosure, consent, manipulation authority, and exit
+    conditions remain inspectable.
+- **Film-editing controls are semantic only when they alter perception**
+  `transformed`
+  - The film-strip analogy becomes an authoring view over a versioned memory
+    cut. A monochrome treatment, crop, or filter that affects behavior must name
+    the semantic transform; otherwise it is cosmetic projection. A false detail
+    is displayed as a counterfactual difference from history rather than
+    transmog, narration, or an invisible rewrite.
+- **Whole work orders are the default unit for effort-quality experiments**
+  `preserved`
+  - The operator hypothesizes that declared `xhigh` or `max` may outperform an
+    unmapped `ultracode` label for Opus and Fable verification/review without
+    subdividing an already bounded work order. The same day brought markedly
+    lower token/cap consumption on one account. Preserve both as motivation for
+    a controlled comparison, not causal evidence; quality, resource use, role,
+    model, effort, and order complexity need comparable observations before a
+    routing or decomposition rule changes.
+- **Local inference is a first-class runtime target behind capability truth**
+  `adopted`
+  - A local model can occupy the existing model slot through a discovered
+    runner/harness/environment lowering. It offers a valuable no-provider and
+    potentially no-network lane without creating a new actor kind, but local
+    compute, memory, context, latency, energy, and thermal limits remain visible.
+    A verified no-egress state and exact model artifact, quantization, runner,
+    prompt template, decoding, seed, and hardware profile precede comparison.
+    The operator requests the earliest practical adoption: the next planning
+    pass should run or nominate the smallest bounded runner/no-egress capability
+    probe and decide whether to file the calibration work order, without
+    expanding WO-019 or bypassing existing dependencies.
+- **Repeated story generation becomes controlled loadout calibration** `adopted`
+  - Begin with the same pinned story-generation case and a proposed 100-run ordinary
+    baseline, then compare baseline, role-only, active/support-mechanics-only,
+    and role-plus-mechanics cells—each a distinct compiled loadout—with
+    randomized or interleaved ordering and predeclared quality/resource
+    evaluators. The repetition count remains a hypothesis. Preserve
+    distributions, pairwise judgments, disagreement, and failures rather than
+    collapsing fluency into one score.
+- **Compiled senses make model intervention sparse and ablatable** `adopted`
+  - Static maps and file-derived signals can be authorized, versioned state
+    projections available to an actor without another model call. Deterministic
+    dispatch grammar can remove language interpretation at known intervention
+    points; only residual semantic judgment reaches a model, and each such seam
+    should be independently removable and compared with a deterministic-only
+    branch. Roles, active/support mechanics, senses, identity, environment, and
+    other loadout ingredients remain distinct graph dimensions rather than a
+    newly fixed three-axis ontology. This reinforces the existing architecture
+    and does not expand queued WO-022 beyond its declared beacon-perception
+    scope.
+- **The clean-room floor is universal; intervention restraint is phase-selective**
+  `adopted`
+  - Bare ideation always carries the locked employer/secret screen, source
+    treatment, public-destination vocabulary, and provenance, but does not
+    automatically equip Beware of Naive Interventionism. Divergent capture is
+    not a change proposal. Planning and other change-proposing phases are the
+    support's natural default; a high-consequence ideation promotion may opt in
+    explicitly. The support can narrow or decline a clean transformation after
+    the hard screen, never weaken that screen. This specializes rather than
+    erases the earlier clean-room composition entry.
+- **External interactions disclose the builder, never the private target**
+  `adopted`
+  - Public definitions may identify the generic URL-builder or adapter contract,
+    version, and operation class. Binding availability and result class stay
+    local unless a selected public profile permits their sanitized projection.
+    Resolved endpoints, tenant/workspace identifiers, route and query values,
+    credentials, and reversible target fingerprints remain in operator-owned
+    local configuration and do not enter remote model prompts, repositories,
+    portable/public artifacts, or public canonical logs. An explicitly
+    authorized local processor may consume a resolved value transiently without
+    retaining it. This answers surveillance fatigue with inspectable behavior
+    rather than an accumulating registry of where a person goes.
+- **Model-input exposure is inspectable and adjustable before invocation**
+  `adopted`
+  - A remote-model boundary should not hide behind the binary label “uses AI.”
+    Its local preflight names every planned input edge and whether it exposes
+    verbatim content, structural shape, subject/tag metadata, derived or
+    inferred material, related/adjacent context, or accidental co-travellers
+    such as tool output, screenshots, diagnostics, and conversation history.
+    The operator sees the destination class and can compare compiled choices:
+    omit or select fields, redact/derive locally, substitute synthetic data,
+    route residual judgment to a verified local model, use a deterministic
+    path, or cancel—with capability, quality, cost, and evidence consequences
+    visible and no silent remote fallback. A local model is not assumed private:
+    no-provider and no-egress claims require runner, context, storage,
+    diagnostic, and outer-boundary evidence. Exact previews and receipts stay
+    local; only profile-approved aggregate claims may enter public artifacts.
+- **A hybrid local-first model route is a candidate initial topology**
+  `preserved`
+  - Deterministic grammar handles what it can; a bounded local model can propose
+    tags, associations, redactions, and a candidate bounded WorkOrder/context
+    capsule from private free-form input; a stronger remote model can then
+    receive only the approved capsule and public-safe evidence for planning,
+    coding, or another complex episode after the existing authority gate. This is not yet a fixed routing rule, model-role assignment, or
+    claim that today's capability gap will persist. The operator's directional
+    hypothesis is that local hardware and model progress will only improve the
+    route; the durable consequence is to re-profile dated
+    model/runner/hardware combinations and permit work to migrate locally rather
+    than freezing a caste. Local semantic derivations are fallible and can
+    themselves be sensitive, so they retain uncertainty and lineage and remain
+    inspectable/bypassable. A
+    remote actor that needs more source material must request a newly previewed
+    input edge rather than acquiring adjacent context implicitly.
+- **Model disclosure routes are operator-wired graph semantics** `adopted`
+  - Data-bearing primitives, roles, and linked supports declare compatible input
+    and destination classes. The operator may wire a link group to local
+    inference, remote inference, both as explicit stages, or neither; the
+    compiler renders every boundary crossing and the capability lost when a
+    route is absent. This generalizes the privacy choice without hardcoding the
+    hybrid example as a universal pipeline. Operator choice remains bounded by
+    authority and the locked Clean Room floor, and no component acquires extra
+    disclosure authority merely because more context would help it.
+- **Privacy-chosen unavailability is a capability deficit, not invented work**
+  `adopted`
+  - When an operator withholds an external target binding, the dependent feature
+    is visibly unavailable and the product records the limitation without
+    guessing a URL or calling the absence a defect. A feature explicitly
+    declared available with a valid binding still owes ordinary correctness;
+    this distinction cannot excuse a broken adapter or a false capability claim.
+- **Edge claims remain claims; epistemic labeling replaces ambient surveillance**
+  `transformed`
+  - An external actor or test double may report an arbitrary value—including an
+    effort of `max` when the effective value was `low`—without DotLn expanding
+    collection to prove otherwise. The canonical event is true about receipt of
+    a `self-reported` claim, not omniscient about the underlying setting; a fake
+    adapter can exercise the same seam. DotLn may not fabricate the receipt,
+    mutate history, or upgrade its source label. The literal permission to
+    silently violate declared effort is not adopted because it conflicts with
+    WO-019's active authority; a corresponding lie about a required model would
+    also conflict with Principle 8. Changing either obligation would require an
+    explicit amendment or supersession, while accepting the evidence limit
+    requires none. A contract may require a stronger source; unavailable
+    evidence then produces refusal or a visible capability deficit rather than
+    surveillance or relabeling.
+- **A Snooping Footprint Reducer periodically proposes less observation**
+  `adopted`
+  - The recurring maintenance active inventories fields and sensors read,
+    adapter/builder classes, purpose, flow, retention, evidence dependencies,
+    and the capability cost of removal without opening the underlying private
+    values. It proposes deletion, coarsening, local resolution, shorter
+    retention, on-demand access, synthetic seams, or an honest deficit through
+    deduplicated `ProductSuggestion` records. It may attach an independently
+    reviewed candidate work order to a proposal packet but cannot create an
+    authoritative work order, schedule itself, or promote its own output. Its
+    “from time to time” wake-up becomes an explicit cadence plus material
+    adapter/schema-change triggers. Detailed field/sensor evidence stays local;
+    only a profile-approved sanitized suggestion or non-disclosing reference
+    crosses into a public proposal.
+- **Richer evidence is an opt-in local sink, not portable ambient telemetry**
+  `adopted`
+  - Individuals and organizations may deliberately retain values the portable
+    default omits. Pure functions wrap, minimize, and label approved data; a
+    distinct authorized adapter writes it to an operator-configured ignored
+    location under explicit scope, retention, access, and deletion policy.
+    `gitignore` prevents accidental versioning but provides no confidentiality,
+    encryption, backup, or deletion proof, so implementations must describe
+    those environment properties honestly. Neither the resolved path nor the
+    retained values enter portable artifacts.
+- **Public Git and private audit data form a two-lane promotion boundary**
+  `adopted`
+  - The personal build keeps almost all definitions, code, decisions, and
+    public-safe evidence committed, while data meant to be processed and audited
+    but not published enters an intake-like ignored local store. Pure transforms
+    derive views and Clean Room governs promotion of any sanitized result. The
+    local governed record and committed public projection answer different
+    claims; loss of the former cannot be hidden by the latter.
+- **Event shape is data in the privacy threat model** `adopted`
+  - Removing payloads still leaves types, order, counts, timing, identities,
+    correlations, gaps, and access patterns. Public projections may need to
+    omit, bucket, delay, aggregate, or replace those fields and must disclose the
+    resulting loss of replay/audit power. Raw hashes and stable opaque IDs are
+    not assumed anonymous. This candidate neither reclassifies the public resume
+    log nor adds private-lane values to it; WO-019's separate actor fields still
+    apply. Private runtime storage and projection need a later bounded design.
+- **Private-lane maintenance is offline and Git-independent** `adopted`
+  - Future tools may validate, transform, snapshot, rotate, restore, and delete
+    private records through pure cores and contained local-filesystem adapters.
+    They do not invoke Git, stage or commit data, inspect repository history as
+    the data store, open sockets, or use a network backup destination. Their
+    receipts, paths, contents, and keys remain local; public code uses synthetic
+    fixtures. A same-device copy is labeled as such rather than advertised as
+    disaster recovery, while explicitly configured removable offline media can
+    be tested as a separate failure boundary.
+- **The acting gems contribute evidence but do not self-certify isolation**
+  `adopted`
+  - Maintenance mechanics emit typed plans, transformation identities, touched
+    local-root classes, and result receipts. Those prove declared and positively
+    observed behavior. Proving that no Git or network effect occurred also needs
+    an outer deny-by-construction environment, poisoned-capability tests, and an
+    independent verifier. The linked attestations remain local when their paths
+    or contents would disclose the private lane.
+- **Composition proves participation per pipeline, including deliberate absence**
+  `adopted`
+  - A compiled link-group manifest can include an authorized `fetch`/XHR source
+    adapter while demonstrating that optional payload-audit, logging, retention,
+    and snooping supports did not participate in that data path. Required
+    data-minimized authority/command/result evidence remains. A local receipt
+    binds a specific invocation to the manifest and transformation versions;
+    the pure transform subgraph proves its declared mapping, while adapter
+    evidence proves invocation and outer confinement remains necessary to
+    exclude hidden effects. The later maintenance pipeline stays offline even
+    when acquisition did not.
+
 ## WO-025 ideation breakout — temporal fidelity and bounded future reachability (2026-09-02)
 
 Source: the operator's live `ideation:` dispatch, preserved unedited in
@@ -274,6 +545,16 @@ activation authority.
     closes the “Durable consequence, not yet built” clause of the 2026-08-31
     effort-truth entry prospectively, without rewriting it or pretending the
     mechanism existed historically; enforcement starts when WO-019 lands.
+  - Activation retained the draft release placeholder even though the branch
+    started from published `v0.3.3`; before implementation-ready the executor
+    forward-corrected WO-019 and its release-bearing surfaces to patch `v0.3.4`.
+    This records the discontinuity rather than treating the helper miss as
+    evidence that the placeholder was valid.
+  - Candidate only: a later release-manifest design may project the completion
+    actors covered by a release, including each epistemic source and the
+    work-order declaration used for comparison. It must preserve unknown/raw
+    semantics and apply the public profile's event-shape/privacy rules; WO-019
+    does not add those fields to the release manifest.
 - **The prose ratio remains an open quality question** `preserved`
   - The repository's proportion of explanatory and planning prose to
     executable mechanism remains an observed tension, not a settled threshold
@@ -870,6 +1151,7 @@ Operator corrections and ideas raised during WO-003 verification (raw: `docs/int
   - Operator disclosure during WO-003 verification: the Codex executor ran at **low** reasoning for WO-001, WO-002, and WO-003 — implementation *and* repairs — while `docs/PLAYBOOK.md` §Who does what documented it as `xhigh`. Nothing detected the drift: no doc, no script, no verification. Changed to xHigh on 2026-08-31; Opus 5 and Fable have run at ultracode + xHigh throughout. Principle 8 makes the `Model:` line law, but every work order to date reads `Model: any capable model`, which pins a model family and has no effort field at all. Effort therefore lived in exactly one place — a prose table — and that place was silently false for three work orders.
   - Corroborating signal, recorded because it is the useful part: WO-003's verification raised 77 candidate findings, refuted 62, and what survived was almost entirely *evidence* defects rather than behavior defects — tests that pass without pinning what they claim, including the one blocking defect (a crash-recovery test that stays green with the entire log-derived recovery path deleted). The refuters killed nearly every claim that the implementation was wrong. Thin-but-green evidence is the observable signature of a low-effort implementer, and it is exactly the failure this repo's evidence-gate discipline exists to catch — which it did, but only at verification time and only because the verifier mutation-tested rather than read.
   - Durable consequence, not yet built: there is no *effort truth* to match WO-001's environment truth. Candidates for a later work order — an effort field in the work-order header; the executor recording model + effort in its result envelope (`ResultEnvelope` already exists in the kernel and is currently unused); a capability-table entry per WO-005; or a dispatch-time check. Until then the PLAYBOOK note and the execution guide's amended model note carry it as prose.
+  - **Adopted prospectively by WO-019 (2026-09-02):** effort is now declared by role in the work-order header, attested with harness/model/source on completion events, checked against the declared ladder minimum, and projected with within-order drift. The control-log actor remains separate from the runtime `ResultEnvelope`; existing history is not backfilled.
 
 - **WO-002 closed by planning review, not by a numbered VER-003** `adopted` `recovered`
   - Recorded so it is not re-opened. `docs/verifications/WO-002/VER-002.md` ends "WO-002 does not pass" with an unchecked blocking checklist and no `VER-003` follows it, yet WO-002 was repaired and merged (`5af72a6`) and WO-003 declares `Depends on: WO-002 complete`. WO-003's verifier flagged this as a gap in the immutable history. The operator confirms it is not one: the planning model reviewed `VER-002` and the repaired tree before WO-003 was cut, and that review is what closed it. The dependency is satisfied on that authority.

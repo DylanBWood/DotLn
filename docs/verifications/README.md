@@ -18,6 +18,34 @@ current subject, and relevant prior reports before appending the next report.
 The final reviewer reads the original work order and the complete ordered
 verification sequence so the code → verify → fix history remains visible.
 
+For work orders governed by the effort-attestation mechanism, the verifier
+states its harness, harness version, model, effort, and epistemic source in prose
+and includes exactly one single-line machine header using the normalized actor
+shape (including `raw` only when applicable):
+
+```markdown
+**Actor attestation:** {"harness":"claude-code","harnessVersion":"<version>","model":"<model>","effort":"xhigh","source":"self-reported"}
+```
+
+The canonical serialization has no extra whitespace and orders keys as
+`harness`, `harnessVersion`, `model`, `effort`, optional `raw`, then `source`.
+For example, an unmapped label is:
+
+```markdown
+**Actor attestation:** {"harness":"codex-cli","harnessVersion":"<version>","model":"<model>","effort":"unknown","raw":"ultracode","source":"self-reported"}
+```
+
+The report necessarily exists before its `VerificationCompleted` event. The
+verifier therefore invokes `verification-result` with those same values;
+`resume` compares the machine header before append and refuses a missing,
+malformed, or differing actor without recording the verdict. A successful
+completion is the executable agreement evidence rather than a report claiming
+to inspect its own future event. Later reviewers quote the immutable header and
+event together; a quoted header must not begin at column one, because the
+completion command requires exactly one such line in the report it checks, so
+indent or blockquote it. Reports from before the 2026-09-02 forward-only migration
+legitimately have neither machine header nor control-log actor.
+
 Reports may contain bounded repair checklists, but they do not expand work-order
 scope. New authority comes only from the operator or an amended/new work order.
 

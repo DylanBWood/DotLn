@@ -19,6 +19,22 @@ import { spawnSync } from "node:child_process";
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const logPath = join(repoRoot, "docs/control/resume.jsonl");
 const currentPath = join(repoRoot, "docs/control/current.md");
+const environmentPath = join(repoRoot, "docs/discovery/environment.json");
+const effortLevels = ["low", "medium", "high", "xhigh", "max"];
+const effortDeclarations = new Set([
+  "any",
+  ...effortLevels.map((level) => `${level}+`),
+]);
+const attestedEventTypes = new Set([
+  "ImplementationReady",
+  "VerificationCompleted",
+  "RepairCompleted",
+  "FinalReviewCompleted",
+]);
+const actorFlagUsage =
+  "--harness <claude-code|codex-cli|human|other:label> --harness-version <version> --model <model> --effort <level> --source <self-reported|harness-readback|operator-attested>";
+const actorHeaderPrefix = "**Actor attestation:**";
+
 const containedRegularFile = (path, root) => {
   if (!existsSync(path) || !lstatSync(path).isFile()) return false;
   return realpathSync(path).startsWith(`${realpathSync(root)}${sep}`);
@@ -54,6 +70,9 @@ const fold = (events) => {
     latestCheckpointSha: undefined,
     latestCheckpointRef: undefined,
     checkpointUnavailable: false,
+    latestAttestation: undefined,
+    effortPairs: [],
+    effortDeclarationValidated: false,
   };
   for (const event of events) {
     switch (event.type) {
@@ -72,6 +91,9 @@ const fold = (events) => {
           latestCheckpointSha: undefined,
           latestCheckpointRef: undefined,
           checkpointUnavailable: false,
+          latestAttestation: undefined,
+          effortPairs: [],
+          effortDeclarationValidated: event.effortDeclarationValidated === true,
         });
         break;
       case "ImplementationReady":
@@ -119,6 +141,30 @@ const fold = (events) => {
             event.verdict === "fail" ? event.reportPath : undefined,
         });
         break;
+    }
+    if (
+      attestedEventTypes.has(event.type) &&
+      event.workOrderId === state.workOrderId &&
+      event.actor &&
+      typeof event.actor.harness === "string" &&
+      typeof event.actor.harnessVersion === "string" &&
+      typeof event.actor.model === "string" &&
+      typeof event.actor.effort === "string" &&
+      typeof event.actor.source === "string"
+    ) {
+      state.latestAttestation = event.actor;
+      const pair = {
+        effort: event.actor.effort,
+        raw: typeof event.actor.raw === "string" ? event.actor.raw : undefined,
+      };
+      if (
+        !state.effortPairs.some(
+          (existing) =>
+            existing.effort === pair.effort &&
+            (existing.raw ?? null) === (pair.raw ?? null),
+        )
+      )
+        state.effortPairs.push(pair);
     }
     if (
       typeof event.checkpointSha === "string" &&
@@ -211,18 +257,21 @@ const legalActions = (state) => {
     : actions;
 };
 
+const actorCommand = (action, positional = "") =>
+  `npm run resume -- ${action}${positional ? ` ${positional}` : ""} ${actorFlagUsage}`;
+
 const commandFor = (action) =>
   ({
     activate:
       "npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md",
     next: "npm run resume -- next",
-    "implementation-ready": "npm run resume -- implementation-ready",
+    "implementation-ready": actorCommand("implementation-ready"),
     verify: "npm run resume -- verify",
-    "verification-result": "npm run resume -- verification-result pass|fail",
+    "verification-result": actorCommand("verification-result", "pass|fail"),
     fix: "npm run resume -- fix",
-    "repair-complete": "npm run resume -- repair-complete",
+    "repair-complete": actorCommand("repair-complete"),
     "final-review": "npm run resume -- final-review",
-    "final-review-result": "npm run resume -- final-review-result pass|fail",
+    "final-review-result": actorCommand("final-review-result", "pass|fail"),
     "release-close": "npm run release -- close WO-NNN --publish",
   })[action] ?? `npm run resume -- ${action}`;
 
@@ -287,6 +336,315 @@ const checkpoint = (action, workOrderId) => {
 const appendTransition = (action, event) =>
   append({ ...event, ...checkpoint(action, event.workOrderId) });
 
+const workOrderDeclaration = (
+  workOrderPath,
+  { allowLegacyMissingEffort = false } = {},
+) => {
+  const expectedRoot = join(repoRoot, "docs/work-orders");
+  const authorityPath = resolve(repoRoot, workOrderPath ?? "");
+  if (
+    !workOrderPath ||
+    !authorityPath.startsWith(`${expectedRoot}${sep}`) ||
+    !containedRegularFile(authorityPath, expectedRoot)
+  )
+    throw new Error(`invalid work-order authority path: ${workOrderPath}`);
+
+  const lines = readFileSync(authorityPath, "utf8")
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/);
+  const fieldIndexes = (label) => {
+    const prefix = `**${label}:**`;
+    const pattern = new RegExp(`^\\*\\*${label}:\\*\\*(?:\\s|$)`);
+    const indexes = lines.flatMap((line, index) =>
+      pattern.test(line) ? [index] : [],
+    );
+    if (indexes.length === 0 && label === "Effort" && allowLegacyMissingEffort)
+      return undefined;
+    if (indexes.length === 0)
+      throw new Error(`work order is missing ${prefix} line: ${workOrderPath}`);
+    if (indexes.length !== 1)
+      throw new Error(
+        `work order has duplicate ${prefix} lines: ${workOrderPath}`,
+      );
+    return indexes[0];
+  };
+  const fieldAt = (label, index) => {
+    const prefix = `**${label}:**`;
+    if (!lines[index].slice(prefix.length).trim())
+      throw new Error(
+        `work order has malformed ${prefix} line: ${workOrderPath}`,
+      );
+    const paragraphLines = [];
+    for (let cursor = index; cursor < lines.length; cursor += 1) {
+      if (
+        cursor > index &&
+        (lines[cursor].trim() === "" || /^\*\*[^*]+:\*\*/.test(lines[cursor]))
+      )
+        break;
+      paragraphLines.push(lines[cursor]);
+    }
+    const paragraph = paragraphLines.join(" ").replace(/\s+/g, " ").trim();
+    return {
+      source: paragraphLines.join("\n"),
+      paragraph,
+      nextIndex: index + paragraphLines.length,
+    };
+  };
+
+  const modelIndex = fieldIndexes("Model");
+  const effortIndex = fieldIndexes("Effort");
+  const titleIndex = lines.findIndex((line) => line.trim());
+  if (titleIndex === -1 || !lines[titleIndex].startsWith("# "))
+    throw new Error(`work order has malformed header: ${workOrderPath}`);
+  const bodyBoundaries = lines.flatMap((line, index) =>
+    index > titleIndex &&
+    (/^\*\*Objective:\*\*(?:\s|$)/.test(line) || /^##(?:\s|$)/.test(line))
+      ? [index]
+      : [],
+  );
+  const headerEnd = bodyBoundaries.length
+    ? Math.min(...bodyBoundaries)
+    : lines.length;
+  if (
+    modelIndex >= headerEnd ||
+    (effortIndex !== undefined && effortIndex >= headerEnd)
+  )
+    throw new Error(
+      `work order must place **Model:** and **Effort:** in its leading metadata header: ${workOrderPath}`,
+    );
+  const model = fieldAt("Model", modelIndex);
+  if (effortIndex === undefined)
+    return {
+      modelSource: model.source,
+      effortSource:
+        "**Effort:** unavailable for this pre-WO-019 activation; executor any; verifier any; reviewer any.",
+      efforts: { executor: "any", verifier: "any", reviewer: "any" },
+    };
+  let headerCursor = model.nextIndex;
+  while (lines[headerCursor]?.trim() === "") headerCursor += 1;
+  if (effortIndex !== headerCursor)
+    throw new Error(
+      `work order must place **Effort:** immediately after **Model:** in its header: ${workOrderPath}`,
+    );
+  const effort = fieldAt("Effort", effortIndex);
+  const level = "(any|low\\+|medium\\+|high\\+|xhigh\\+|max\\+)";
+  const match = new RegExp(
+    `^\\*\\*Effort:\\*\\*\\s+executor\\s+${level}\\s*;\\s*verifier\\s+${level}\\s*;\\s*reviewer\\s+${level}(?:\\.\\s*.*|\\.)?$`,
+  ).exec(effort.paragraph);
+  if (
+    !match ||
+    !effortDeclarations.has(match[1]) ||
+    !effortDeclarations.has(match[2]) ||
+    !effortDeclarations.has(match[3])
+  )
+    throw new Error(
+      `work order has malformed **Effort:** line: ${workOrderPath}; expected executor <level+|any>; verifier <level+|any>; reviewer <level+|any>`,
+    );
+
+  return {
+    modelSource: model.source,
+    effortSource: effort.source,
+    efforts: {
+      executor: match[1],
+      verifier: match[2],
+      reviewer: match[3],
+    },
+  };
+};
+
+const actorUsage = (action, positional = "") =>
+  `usage: resume ${action}${positional ? ` ${positional}` : ""} ${actorFlagUsage}`;
+
+const effortHarnessEvidence = (harness, harnessVersion) => {
+  if (!existsSync(environmentPath)) return false;
+  try {
+    const environment = JSON.parse(readFileSync(environmentPath, "utf8"));
+    const evidence = environment.effortReadbackProbe?.harnesses?.[harness];
+    return evidence?.version?.classification === "observed" &&
+      evidence.version.value === harnessVersion
+      ? evidence
+      : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+const selectorClassifications = new Set(["observed", "documented locally"]);
+
+const hasRecordedEffortValue = (harness, harnessVersion, effort) => {
+  const evidence = effortHarnessEvidence(harness, harnessVersion);
+  if (!evidence) return false;
+  const sessionSelector = evidence.sessionEffortSelector;
+  const persistedSelector = evidence.persistedEffortSelector;
+  const effectiveReadback = evidence.effectiveEffortReadback;
+  return (
+    (selectorClassifications.has(sessionSelector?.classification) &&
+      Array.isArray(sessionSelector.values) &&
+      sessionSelector.values.includes(effort)) ||
+    (selectorClassifications.has(persistedSelector?.classification) &&
+      persistedSelector.value === effort) ||
+    (effectiveReadback?.classification === "observed" &&
+      (effectiveReadback.value === effort ||
+        (Array.isArray(effectiveReadback.values) &&
+          effectiveReadback.values.includes(effort))))
+  );
+};
+
+const hasObservedEffortReadbackValue = (harness, harnessVersion, effort) => {
+  const readback = effortHarnessEvidence(
+    harness,
+    harnessVersion,
+  )?.effectiveEffortReadback;
+  return (
+    readback?.classification === "observed" &&
+    (readback.value === effort ||
+      (Array.isArray(readback.values) && readback.values.includes(effort)))
+  );
+};
+
+const parseActor = (action, args, positional = "") => {
+  const allowedFlags = new Set([
+    "--harness",
+    "--harness-version",
+    "--model",
+    "--effort",
+    "--source",
+  ]);
+  const values = new Map();
+  for (let index = 0; index < args.length; index += 2) {
+    const flag = args[index];
+    const value = args[index + 1];
+    if (
+      !allowedFlags.has(flag) ||
+      values.has(flag) ||
+      typeof value !== "string" ||
+      !value.trim() ||
+      value.startsWith("--") ||
+      /[\u0000-\u001F\u007F-\u009F\u2028\u2029]/u.test(value)
+    )
+      throw new Error(actorUsage(action, positional));
+    values.set(flag, value);
+  }
+  if (
+    args.length !== allowedFlags.size * 2 ||
+    [...allowedFlags].some((flag) => !values.has(flag))
+  )
+    throw new Error(actorUsage(action, positional));
+
+  const harness = values.get("--harness");
+  const harnessVersion = values.get("--harness-version");
+  const model = values.get("--model");
+  const suppliedEffort = values.get("--effort");
+  const source = values.get("--source");
+  if (
+    !["claude-code", "codex-cli", "human"].includes(harness) &&
+    !/^other:[A-Za-z0-9][A-Za-z0-9._-]*$/.test(harness)
+  )
+    throw new Error(
+      `invalid --harness ${harness}; ${actorUsage(action, positional)}`,
+    );
+  if (
+    !["self-reported", "harness-readback", "operator-attested"].includes(source)
+  )
+    throw new Error(
+      `invalid --source ${source}; ${actorUsage(action, positional)}`,
+    );
+  if (
+    source === "harness-readback" &&
+    !hasObservedEffortReadbackValue(harness, harnessVersion, suppliedEffort)
+  )
+    throw new Error(
+      `harness-readback refused for ${harness} ${harnessVersion} effort ${suppliedEffort}: no matching observed effective-effort readback is recorded for that version and value; use self-reported or operator-attested`,
+    );
+
+  const recognizedEffort = effortLevels.includes(suppliedEffort);
+  const supportedEffort =
+    recognizedEffort &&
+    hasRecordedEffortValue(harness, harnessVersion, suppliedEffort);
+  if (recognizedEffort && !supportedEffort)
+    throw new Error(
+      `attested effort ${suppliedEffort} refused for ${harness} ${harnessVersion}: no matching selector or effective-readback evidence records that value; use --effort unknown or record bounded discovery evidence`,
+    );
+  const actor = {
+    harness,
+    harnessVersion,
+    model,
+    effort: recognizedEffort ? suppliedEffort : "unknown",
+  };
+  if (!recognizedEffort && suppliedEffort !== "unknown")
+    actor.raw = suppliedEffort;
+  actor.source = source;
+  return actor;
+};
+
+const renderEffort = ({ effort, raw }) =>
+  effort === "unknown" && typeof raw === "string"
+    ? `unknown (raw: ${raw})`
+    : effort;
+
+const validateEffort = (actor, role, declaration, workOrderPath) => {
+  const required = declaration.efforts[role];
+  if (required === "any") return;
+  const minimum = required.slice(0, -1);
+  if (
+    actor.effort === "unknown" ||
+    effortLevels.indexOf(actor.effort) < effortLevels.indexOf(minimum)
+  )
+    throw new Error(
+      `attested ${role} effort ${renderEffort(actor)} is below declared ${required} in ${workOrderPath}; add a dated operator amendment to that work order's **Effort:** line, then rerun`,
+    );
+};
+
+const activeWorkOrderDeclaration = (state) =>
+  workOrderDeclaration(state.workOrderPath, {
+    allowLegacyMissingEffort:
+      !state.effortDeclarationValidated && state.workOrderId !== "WO-019",
+  });
+
+const completionActor = (action, args, state, role, positional = "") => {
+  const actor = parseActor(action, args, positional);
+  const declaration = activeWorkOrderDeclaration(state);
+  validateEffort(actor, role, declaration, state.workOrderPath);
+  return actor;
+};
+
+const renderAttestation = (actor) =>
+  actor
+    ? `harness ${actor.harness}; version ${actor.harnessVersion}; model ${actor.model}; effort ${renderEffort(actor)}; source ${actor.source}`
+    : "none";
+
+const renderDrift = (pairs) =>
+  pairs.length <= 1 ? "none" : pairs.map(renderEffort).join(" -> ");
+
+const requireReportActor = (reportPath, actor, reportKind) => {
+  const lines = readFileSync(reportPath, "utf8")
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith(actorHeaderPrefix));
+  const expectedHeader = `${actorHeaderPrefix} ${JSON.stringify(actor)}`;
+  if (lines.length !== 1)
+    throw new Error(
+      `${reportKind} report must contain exactly one machine-readable actor header; expected: ${expectedHeader}`,
+    );
+
+  let reported;
+  try {
+    reported = JSON.parse(lines[0].slice(actorHeaderPrefix.length).trim());
+  } catch {
+    throw new Error(
+      `${reportKind} report has malformed actor header; expected: ${expectedHeader}`,
+    );
+  }
+  if (
+    !reported ||
+    typeof reported !== "object" ||
+    Array.isArray(reported) ||
+    lines[0] !== expectedHeader
+  )
+    throw new Error(
+      `${reportKind} report actor header does not match the completion actor; expected: ${expectedHeader}`,
+    );
+};
+
 const render = (state) => `# Current control state
 
 - Work order: ${state.workOrderId ?? "none"}
@@ -297,6 +655,8 @@ const render = (state) => `# Current control state
 - Latest verdict: ${state.latestVerdict ?? "none"}
 - Final review: ${state.finalReviewId ?? "none"}
 - Final-review path: ${state.finalReviewPath ?? "none"}
+- Latest attestation: ${renderAttestation(state.latestAttestation)}
+- Effort drift: ${renderDrift(state.effortPairs)}
 - Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : state.checkpointUnavailable ? "unavailable for the latest transition; do not use an older checkpoint" : "none"}
 - Legal next actions: ${legalActions(state).join(", ") || "none"}
 
@@ -344,22 +704,27 @@ const main = () => {
         throw new Error(
           `invalid work-order authority path for ${workOrderId}: ${workOrderPath}`,
         );
+      workOrderDeclaration(workOrderPath);
       appendTransition(action, {
         type: "WorkOrderActivated",
         workOrderId,
         workOrderPath,
+        effortDeclarationValidated: true,
       });
       message = `Activated ${workOrderId}.`;
       break;
     }
-    case "implementation-ready":
+    case "implementation-ready": {
       requirePhase(state, "active");
+      const actor = completionActor(action, args, state, "executor");
       appendTransition(action, {
         type: "ImplementationReady",
         workOrderId: state.workOrderId,
+        actor,
       });
       message = `${state.workOrderId} is ready for verification.`;
       break;
+    }
     case "verify": {
       requirePhase(state, "ready-to-verify");
       const verificationId = nextVerification(state);
@@ -375,9 +740,16 @@ const main = () => {
     }
     case "verification-result": {
       requirePhase(state, "verifying");
-      const [verdict] = args;
+      const [verdict, ...actorArgs] = args;
       if (verdict !== "pass" && verdict !== "fail")
-        throw new Error("usage: resume verification-result pass|fail");
+        throw new Error(actorUsage(action, "pass|fail"));
+      const actor = completionActor(
+        action,
+        actorArgs,
+        state,
+        "verifier",
+        "pass|fail",
+      );
       const verificationRoot = join(
         repoRoot,
         "docs/verifications",
@@ -393,12 +765,18 @@ const main = () => {
         throw new Error(
           `verification report is not a contained regular file: ${state.latestVerificationPath}`,
         );
+      requireReportActor(
+        join(repoRoot, state.latestVerificationPath),
+        actor,
+        "verification",
+      );
       appendTransition(action, {
         type: "VerificationCompleted",
         workOrderId: state.workOrderId,
         verificationId: state.latestVerificationId,
         reportPath: state.latestVerificationPath,
         verdict,
+        actor,
       });
       message = `Recorded ${state.latestVerificationId}: ${verdict}.`;
       break;
@@ -421,15 +799,18 @@ const main = () => {
       });
       message = `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.`;
       break;
-    case "repair-complete":
+    case "repair-complete": {
       requirePhase(state, "repairing");
+      const actor = completionActor(action, args, state, "executor");
       appendTransition(action, {
         type: "RepairCompleted",
         workOrderId: state.workOrderId,
         sourceVerificationId: state.latestVerificationId,
+        actor,
       });
       message = `${state.workOrderId} repair is ready for re-verification.`;
       break;
+    }
     case "final-review": {
       requirePhase(state, "verified");
       const finalReviewId = nextFinalReview(state);
@@ -446,9 +827,16 @@ const main = () => {
     }
     case "final-review-result": {
       requirePhase(state, "final-review");
-      const [verdict] = args;
+      const [verdict, ...actorArgs] = args;
       if (verdict !== "pass" && verdict !== "fail")
-        throw new Error("usage: resume final-review-result pass|fail");
+        throw new Error(actorUsage(action, "pass|fail"));
+      const actor = completionActor(
+        action,
+        actorArgs,
+        state,
+        "reviewer",
+        "pass|fail",
+      );
       const finalReviewRoot = join(
         repoRoot,
         "docs/final-reviews",
@@ -464,12 +852,18 @@ const main = () => {
         throw new Error(
           `final-review report is not a contained regular file: ${state.finalReviewPath}`,
         );
+      requireReportActor(
+        join(repoRoot, state.finalReviewPath),
+        actor,
+        "final-review",
+      );
       appendTransition(action, {
         type: "FinalReviewCompleted",
         workOrderId: state.workOrderId,
         finalReviewId: state.finalReviewId,
         reportPath: state.finalReviewPath,
         verdict,
+        actor,
       });
       message =
         verdict === "pass"
@@ -479,9 +873,13 @@ const main = () => {
     }
     case "next": {
       requirePhase(state, "active", "closed");
+      const declaration =
+        state.phase === "active"
+          ? activeWorkOrderDeclaration(state)
+          : undefined;
       message =
         state.phase === "active"
-          ? `Execute ${state.workOrderPath}. Read that authority and only its cited blueprint sections; after its evidence gate passes, run npm run resume -- implementation-ready.`
+          ? `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; after its evidence gate passes, run ${commandFor("implementation-ready")}.`
           : `Current work order ${state.workOrderId} is closed. The repository is between work orders; start a valid next work order with npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md.`;
       break;
     }

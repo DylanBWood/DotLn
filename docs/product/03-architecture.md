@@ -470,6 +470,17 @@ The LoadoutGraph (see domain model) is compiled per episode:
    plan + the (small) prompt fragment residue. Per-support cost is declared:
    mechanism type, prompt tokens (usually 0), runtime cost, extra episodes.
 
+The emitted component manifest is also a participation proof for the compiled
+chain. A data-acquisition active may legitimately include an authorized
+`fetch`/XHR adapter while showing that no audit, logging, retention, or other
+optional payload-observation support is linked to that data path. Required
+data-minimized authority, command, and result receipts remain higher-precedence
+evidence and cannot be unequipped. A local execution receipt binds one invocation
+to the compiled manifest and transformation versions. The pure transform
+subgraph proves its mapping for declared inputs; adapter evidence proves the
+effectful invocation; an outer capability boundary and independent evidence are
+still required to rule out undeclared side effects in an implementation.
+
 Clean Room is the first explicit source-promotion active built from this shape.
 Its employer/secret boundary compiles as a locked safety guard, while linked
 supports select a source-treatment strategy and add destination or assurance
@@ -505,6 +516,15 @@ small high-signal remainder—the operator's “pearls”—and proposes which
 candidates deserve implementation. The role occupant is selected by the current
 operating model; model assignment remains replaceable and is never embedded in
 the semantic record.
+
+The candidate Snooping Footprint Reducer is one recurring producer for this
+pipeline. It inventories observation and retention structurally, emits
+minimization suggestions, and may attach a reviewed but non-authoritative
+candidate work order to a proposal packet. It receives no privilege to inspect
+the private values or resolved targets it is trying to remove, and it cannot
+promote or activate its own output. Detailed footprint evidence remains in the
+private lane; only a profile-approved sanitized suggestion or non-disclosing
+local reference may enter a public proposal.
 
 Only an operator-authorized planning transition may promote a suggestion into a
 real WorkOrder. Promotion records source suggestions, selection rationale,
@@ -556,7 +576,8 @@ the active work order, current phase, immutable verification sequence, next
 legal transition, and required artifacts from durable state. Conversation-first
 `resume:` phrases map to the same command surface. Release close is a guarded
 post-merge lifecycle operation rather than a control-log transition. Internal
-completion actions record verifier, repair, and final-review outcomes. The log
+completion actions record executor readiness, verification, repair, and
+final-review outcomes. The log
 is canonical; the Markdown file is a disposable projection. One writable agent
 per worktree serializes appends in v1; concurrent control-log writers are
 deferred.
@@ -635,6 +656,51 @@ text, never the default channel for state you own in structured form.
   exactly the downstream contract/plan/evidence derived from the changed
   portion. Enterprise ticket trackers are one future adapter; GitHub Issues is
   the nearer personal one.
+- **Model input boundary**: every compiled model call can expose a local
+  `ModelInputPlan` before invocation. It identifies the destination as a
+  deterministic local processor, local model, or provider-hosted remote model
+  and classifies each direct, derived, inferred, retrieved, adjacent, and
+  accidentally co-travelling input edge. The operator can inspect the planned
+  form—verbatim content, structure, subject/tag metadata, or a named local
+  transform—and choose only compiled alternatives such as omission, field
+  selection, local redaction/derivation, synthetic replacement, verified local
+  inference, deterministic execution, or cancellation. The preview shows the
+  capability and evidence lost by each choice; it never silently routes narrowed
+  content to a remote fallback. Exact previews and invocation receipts stay in
+  the governed local lane, while public projections reveal only
+  profile-approved aggregate claims. A manifest proves declared participation,
+  not the absence of hidden effects; provider assertions and local no-egress
+  claims require separately sourced adapter and outer-boundary evidence. See
+  09-audit-resilience-privacy.md §Candidate — model-input exposure plans.
+  Exposure is a typed property of data edges on active primitives, roles, and
+  linked supports, not a global mode. The operator may wire a group to local,
+  remote, both as explicit stages, or neither; compilation intersects that
+  choice with authority and Clean Room guards and displays each crossing and
+  any resulting deficit.
+  A candidate hybrid route uses deterministic parsing first, a bounded local
+  model for fallible tags/associations and candidate WorkOrder/context-capsule
+  derivation, then a remote model for only the approved complex episode. Existing authority gates still control dispatch. Derived metadata remains
+  sensitive and provenance-bearing; a downstream request for more context
+  creates another visible input edge rather than widening disclosure silently.
+- **External target binding**: source and effect adapters expose a versioned,
+  inspectable URL-builder contract and operation class without persisting the
+  resolved target. Base URLs, tenant/workspace identifiers, route/query values,
+  and credentials resolve only inside the authorized adapter from operator-owned
+  local configuration; remote model prompts, portable/public artifacts,
+  repositories, and public canonical logs receive neither the URL nor a
+  reversible fingerprint. An explicitly authorized local processor may consume
+  the resolved value transiently without persisting it. Public definitions may
+  name the generic builder; binding availability and result class stay local
+  unless the selected public profile permits a sanitized projection. Authorized
+  local planning can inspect those local fields. A missing private binding
+  renders the dependent capability visibly unavailable—a known
+  deficit when intentionally accepted, not a target for the system to guess.
+  An optional richer-evidence lane composes a pure value-wrapper with a separate
+  authorized local-storage adapter. Only the latter performs I/O, into an
+  operator-configured ignored location with explicit scope and retention;
+  portable state records the capability and policy, never the local values or
+  resolved path. An ignored path is an anti-commit guard, not a security
+  boundary.
 - **Repo registration**: a one-time read-only archaeologist episode produces a
   typed **RepoProfile** — commands (install/build/test/lint/format), local-app
   startup, branching/PR policy, environment authority, demonstrated architecture
@@ -697,9 +763,13 @@ sources regenerate summaries, never the reverse.
 
 ## Learning loop
 
-Every episode records: loadout version, work-order identity and source revision,
-model + runtime config, inputs, tool events, artifacts, git state, evidence,
-duration, resource use, retry behavior, human rework, outcome class. The system
+Every episode records governed references or classes for its loadout version,
+work-order identity and source revision, model/runtime configuration, planned
+input edges, tool events, artifacts, Git state, evidence, duration, resource
+use, retry behavior, human rework, and outcome. Values appear only when the
+selected local/private/public policy permits their destination and retention;
+raw inputs, credentials, resolved targets, and unrelated context are excluded
+by default. The system
 learns at the _controller_ level: which topology per task class, which patterns
 activate usefully, when to stop researching, how much verification is warranted,
 which feedback units are dead/redundant/conflicting/overfit. Identity updates

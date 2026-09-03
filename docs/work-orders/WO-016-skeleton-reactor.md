@@ -2,6 +2,7 @@
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
+**Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** assigned by the planner at activation. Before
 `resume -- activate`, rewrite this H1 to carry exactly one strict `vX.Y.Z` and
 pin the close disposition. Expected class: patch. It is a compatible correction

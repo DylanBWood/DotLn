@@ -285,6 +285,18 @@ mechanism whose origin is known can be mined again.
   no terminology, category, prescription, mapping, or claim about the source's
   contents is adopted until an authorized copy is reviewed with provenance and
   the resulting hypotheses are tested against DotLn's existing mechanics.
+- **Jujutsu Kaisen — nominated, not yet mined.** The operator proposes a future
+  source-grounded pass over its rule-rich abilities, activation conditions,
+  constraints, interactions, problem-solving moves, and changes in effective
+  capability. An explicit, source-linked model could serve both as a pattern
+  mine and as a way to understand the story: prerequisites, resources,
+  transformations, counters, exceptions, and unknowns become inspectable rather
+  than being flattened into plot summary. The operator's recollection of one
+  character explaining an unfamiliar mechanism through a familiar fictional
+  evolution analogy suggests linked explanatory views, not identity between the
+  systems. No canon claim, series-specific ontology, copied dialogue, or
+  implementation is adopted until an authorized source is reviewed with
+  provenance.
 - **The Evolution of the Agent Harness — reviewed inspiration.** Dan McAteer's
   [essay](https://www.latent.space/p/attention-interface) describes the model as
   a brain and the harness as a body providing context, tools, persistence, and
@@ -315,9 +327,10 @@ Topologies was separately nominated by the operator on 2026-09-01 and remains
 unmined. The harness essay was reviewed and the World of Warcraft analogy was
 supplied by the operator on 2026-09-01. The small-town research source, the
 third Westworld shape, and the Grand Theft Auto experience were recorded on the
-operator's direct instruction on 2026-09-02. Westworld's earlier shapes and the
-rest are traceable to the raw material. Do not attribute a specific claim to an
-unsourced influence without asking.
+operator's direct instruction on 2026-09-02. Jujutsu Kaisen was nominated from
+the operator's live viewing on 2026-09-03 and remains unmined. Westworld's
+earlier shapes and the rest are traceable to the raw material. Do not attribute
+a specific claim to an unsourced influence without asking.
 
 ## What DotLn is not
 

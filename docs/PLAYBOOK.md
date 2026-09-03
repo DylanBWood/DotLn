@@ -6,12 +6,12 @@ until it's muscle memory; edit it when reality disagrees.
 
 ## Who does what
 
-| Actor                          | Use for                                                                                        | Don't use for                                                                                                      |
-| ------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **Fable 5** (planning session) | Plan and refine work orders; perform the end-of-work-order blueprint/lineage check             | Implementation or acceptance verification                                                                          |
-| **Opus 5** (1M)                | Blinded verification of Codex-built work orders                                                | Implementing or repairing the work it verifies                                                                     |
-| **Sonnet 5**                   | Bounded mechanical work: test scaffolds, renames, formatting, running fixtures, small fan-outs | Anything requiring judgment about the blueprint                                                                    |
-| **Codex** (GPT 5.6 Sol, xhigh) | Execute and repair work orders                                                                 | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
+| Actor                   | Effort source                                                                     | Use for                                                                                        | Don't use for                                                                                                      |
+| ----------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Fable 5**             | planning assignment; the work order's `reviewer` declaration when closing         | Plan and refine work orders; perform the end-of-work-order blueprint/lineage check             | Implementation or acceptance verification                                                                          |
+| **Opus 5** (1M)         | the active work order's `verifier` declaration                                    | Blinded verification of Codex-built work orders                                                | Implementing or repairing the work it verifies                                                                     |
+| **Sonnet 5**            | the active work order's declaration for the role it occupies                      | Bounded mechanical work: test scaffolds, renames, formatting, running fixtures, small fan-outs | Anything requiring judgment about the blueprint                                                                    |
+| **Codex** (GPT 5.6 Sol) | the active work order's `executor` declaration for implementation and repair work | Execute and repair work orders                                                                 | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
 
 Three standing rules:
 
@@ -20,17 +20,19 @@ Three standing rules:
 - **`Model:` line in the work order is law** (Principle 8). `Model: any` means
   route freely — including by which meter has budget left. Never silently
   downgrade mid-work-order; switch executors between work orders instead.
-- **Effort is part of the assignment, and nothing self-reports it.** The table
-  above states each actor's reasoning effort, but that is prose, not a checked
-  fact. It has already been wrong: through WO-001, WO-002 and WO-003 the Codex
-  executor actually ran at **low** while this table read `xhigh`, and no doc,
-  script, or verification detected the drift (operator disclosure and correction
-  to xHigh, 2026-08-31). The WO-003 verification's surviving findings were
-  almost entirely thin-evidence defects — tests that pass without pinning what
-  they claim — which is the signature that setting produces.
-  `Model: any capable model` pins the family, not the effort. Until an
-  executable check exists, confirm the executor's actual effort at dispatch and
-  have it record model + effort in its result.
+- **Effort is declared per role and attested per completion.** The active work
+  order's `Effort:` line—not this table—sets the executor, verifier, and reviewer
+  minimums. Each completion records harness/version, model, effort, and source in
+  the control log; a below-declared or unknown-under-minimum value appends
+  nothing, and `current.md` exposes within-order drift. Through WO-001, WO-002,
+  and WO-003 the operator later reported that the Codex executor ran at **low**
+  while this table had read `xhigh`; no mechanism detected the discrepancy until
+  that disclosure on 2026-08-31.
+  Those artifacts remain unchanged under the 2026-09-02 forward-only migration.
+  The WO-003 verifier's surviving findings were mostly thin-evidence defects,
+  which is why future attribution is executable rather than prose. An
+  unrecognized label such as historical `ultracode` is `unknown` with its raw
+  spelling preserved until discovery maps it.
 
 ## Harness safety baseline
 
@@ -88,8 +90,11 @@ here. Main checkout is the control plane — no implementation happens here.
 
 ```bash
 cd ~/Projects/DotLn
-npm run worktree -- start WO-002 docs/work-orders/WO-002-pure-kernel.md
+npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md
 ```
+
+Before `start`, confirm that the authority is committed, its H1 carries the
+planned version, and it has valid `Model:` and three-role `Effort:` lines.
 
 `start` creates and activates the isolated worktree, then prints an absolute,
 shell-quoted `cd` command and the rest of the handoff. Run those steps yourself:
@@ -336,22 +341,26 @@ launch; agents run the remaining commands after their chat dispatches:
 
 ```bash
 npm run worktree -- start WO-00N docs/work-orders/WO-00N-name.md
-npm run resume -- implementation-ready   # executor, after evidence is green
+npm run resume -- implementation-ready --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run resume -- verify                 # allocates the next immutable VER-NNN
-npm run resume -- verification-result pass|fail
+npm run resume -- verification-result pass|fail --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run resume -- fix                    # emits original WO + failing VER paths
-npm run resume -- repair-complete
+npm run resume -- repair-complete --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run resume -- final-review
-npm run resume -- final-review-result pass|fail
+npm run resume -- final-review-result pass|fail --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run worktree -- publish WO-00N --title '<title>' --body-file <contained-reviewed-body-path>
 npm run release -- close WO-00N           # closes/prepares; creates no tag
 npm run release -- close WO-00N --publish # explicit tag + matching GitHub Release authority
 ```
 
-Verifiers write the exact report path allocated by `verify`, then record its
-verdict. Repair and final-review completion actions are recorded only after
-their evidence exists. Illegal transitions refuse without appending. The JSONL
-log is canonical; `docs/control/current.md` is regenerated projection.
+Verifiers and final reviewers write the exact allocated report path and include
+one `**Actor attestation:** {<normalized actor JSON>}` line beside their prose,
+then run the completion command with matching flags. The command checks the
+header before append; this makes report/event agreement a postcondition without
+asking an immutable report to inspect its future completion event. Repair and
+final-review completion actions are recorded only after their evidence exists.
+Illegal transitions refuse without appending. The JSONL log is canonical;
+`docs/control/current.md` is regenerated projection.
 
 ## End-of-workflow release task
 

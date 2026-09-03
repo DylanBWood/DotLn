@@ -2,6 +2,7 @@
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
+**Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** assigned by the planner at activation. Expected
 class: patch. Compatible corrections to `@dotln/kernel` behavior at boundaries
 no current test reaches, plus binding tests. Item 3e adds an optional field and

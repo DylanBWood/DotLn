@@ -378,6 +378,140 @@ may retain that a governed deletion occurred while separately deleting or
 cryptographically rendering inaccessible the sensitive payload. Hashes are not
 automatically anonymous when the input space can be guessed.
 
+## Candidate — model-input exposure plans
+
+“Uses a model” is too coarse a privacy disclosure. Before a possible model
+invocation crosses its execution boundary, the compiler should be able to emit
+a **ModelInputPlan** that names the destination class—deterministic local
+processor, local model, or provider-hosted remote model—and every planned input
+edge. Each edge identifies purpose, source lineage, data class, retention class,
+and exposure form: verbatim content; structural shape such as schema, length, or
+timing; subject identity or tags; a derived summary, embedding, or inference;
+related or adjacent retrieved context; or material that could travel
+accidentally through conversation history, tool output, screenshots, errors, or
+diagnostics. The plan is local policy state. A public projection carries only
+profile-approved aggregate claims and never becomes a new inventory of private
+behavior.
+
+An operator-facing preview renders that plan before execution at the level the
+operator has authorized. It shows which boundary each edge crosses and the
+consequence of changing it. Available compiled alternatives can include omit,
+select fields, redact or pseudonymize locally, replace content with a local
+derivation or synthetic fixture, route the residual judgment to a verified
+local model, use a deterministic implementation, or cancel. Each alternative
+must show the resulting capability, quality, latency, cost, and evidence
+deficit; narrowing input never triggers a silent remote fallback. An exact
+content preview, where useful, stays on the operator's device and is itself
+governed access to sensitive data.
+
+Exposure policy composes at the data edge rather than becoming one global
+switch. An active primitive, role, or linked support can declare the input
+classes and destination classes it accepts; the operator wires a link group to
+local inference, remote inference, both as explicit stages, or neither. The
+compiler intersects those choices with hard authority and Clean Room guards and
+renders the effective flow. An unwired route becomes a visible capability
+deficit, while a two-model route shows both crossings independently. The
+operator owns the selection; a role or support cannot infer extra disclosure
+authority merely because it would improve its output.
+
+One candidate bootstrap topology is hybrid and local-first: deterministic
+parsers handle exact grammar; a bounded local model proposes tags,
+associations, redactions, and a candidate bounded WorkOrder/context capsule from
+free-form input; and a more capable remote model receives only the approved
+capsule and public-safe evidence for a planning, coding, or other complex episode. Existing authority gates still decide whether the candidate becomes dispatchable. That is a routing
+hypothesis, not a permanent capability caste or fixed role assignment. The
+operator expects local semantic capability to improve rapidly; dated
+model/runner/hardware evidence therefore reopens each route and can move more
+work local without redesigning the boundary. Local tags and associations remain
+fallible derived sensitive data, so the operator can inspect or bypass them and
+their uncertainty and source lineage survive the handoff. If the remote episode
+needs additional source content, it requests a new input edge and preview
+rather than silently widening the original disclosure.
+
+Local execution is a route, not a synonym for privacy. A local model is eligible
+for a no-provider-content claim only when discovery covers its model artifact,
+runner, prompt template, context sources, file and process access, diagnostics,
+storage, and network-egress boundary. A remote adapter likewise distinguishes
+what DotLn sent from externally asserted retention, training, or deletion
+behavior and labels the evidence and date behind those assertions. Clean Room's
+locked employer/secret floor still refuses prohibited material rather than
+offering a toggle.
+
+The compiled manifest proves declared input participation. A per-invocation
+local receipt can bind that plan to the values' classes and transformation
+versions without copying the values into a public log. Pure functions prove the
+declared local mappings; adapter evidence proves the requested invocation; an
+outer capability boundary and independent tests remain necessary to support a
+negative claim about undeclared context, logging, storage, or network effects.
+This candidate defines the inspectable privacy contract, not a claim that the
+preview or enforcement exists today.
+
+## Candidate — public Git with a local private evidence lane
+
+The personal default aims to commit nearly all durable definitions, code,
+decisions, and public-safe evidence to GitHub. Data that the operator wants
+processed, logged, or audited but not published takes an intake-shaped local
+lane: an operator-configured ignored store holds the governed source, pure
+functions derive bounded views, and a Clean Room promotion step decides whether
+any sanitized projection, fixture, or conclusion may enter Git. The effectful
+local store is separate from the pure transformation; `gitignore` is only the
+last anti-commit guard.
+
+A payload-free public log is not automatically harmless. Event types, ordering,
+cardinality, timestamps, actor and workstream identifiers, correlations, gaps,
+and access patterns can reveal the very activity a payload redacts. A public
+profile therefore classifies and may omit, bucket, delay, aggregate, or replace
+those structural fields; it must name the resulting loss of replay or audit
+power. Hashes and stable opaque identifiers are included only after a
+re-identification analysis, not as ritual anonymization.
+
+This suggests two explicitly different records rather than one log pretending
+to serve every audience: a locally governed source record at the fidelity the
+operator selected, and a lossy public projection whose omissions and purpose are
+declared. The authoritative evidence source depends on the claim: private
+replay/audit claims cite the local record, while public project-history claims
+cite committed artifacts. The public view remains a projection rather than a
+second canonical event store. If the local store is absent, expired, or lost,
+Git cannot reconstruct the private semantics and must say so. This candidate
+does not change the resume log's public classification or add private-lane
+values there; WO-019's separate actor-attestation fields still apply. A later
+design must choose the local root, envelope, encryption,
+retention/deletion, backup posture, projection profile, and non-identifying
+lineage mechanism before private runtime data is collected.
+
+Maintenance for that lane is an offline capability family, not a Git workflow:
+inspect, validate, transform, snapshot, rotate, restore, and governed deletion.
+Pure cores plan or transform bytes; narrowly authorized filesystem adapters apply
+those plans between explicit local roots and write local receipts. They never
+invoke Git, inspect Git history as a data source, stage or commit records, open a
+socket, call a remote API, or use a network backup target. Negative tests poison
+Git executables and network access while exercising round-trip restore,
+interrupted writes, path containment, retention, and deletion boundaries.
+Implementation code and synthetic fixtures can remain public while instance
+paths, contents, keys, and maintenance receipts stay local. A same-device copy
+is not disaster recovery; removable offline media can improve the failure model
+only when the operator explicitly configures and tests it.
+
+The active mechanics and supports (“gems”) that carry out a maintenance action
+emit its typed plan, transformation identity, input/output classes, touched
+local roots, and result receipt. That is first-party evidence of what they
+declared and positively observed. It does not self-prove the negative claim that
+no hidden Git or network effect occurred. That claim needs a deny-by-construction
+outer environment, poisoned-capability tests, and independent verification; the
+receipt links those attestations without copying private paths or values into the
+public lane.
+
+Do not confuse offline maintenance with acquisition. A separately authorized
+source pipeline may contain `fetch` or XHR, hand its result across the local
+boundary, and still exclude optional payload-audit, logging, retention, or
+snooping supports from that link group. Required data-minimized
+authority/command/result evidence remains. The compiled component manifest
+proves declared participation; a local execution receipt binds one data instance
+to the manifest and exact transformations. Functional purity proves only the
+pure transform subgraph's mapping, not that an effectful adapter ran or that
+untrusted code had no hidden effect. Those latter claims come from adapter
+evidence and the outer execution boundary respectively.
+
 ## Policy dimensions implementations can customize
 
 Each implementation can define audited action classes and required properties;

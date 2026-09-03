@@ -97,6 +97,39 @@ geographic size. Residents need enough independent routine, memory, relation,
 and constraint for an intervention to encounter a life already in progress; they
 do not need an enormous map or an unbounded claim of human realism.
 
+## Candidate — recap-primed resident memory
+
+One scenario makes a resident's accessible memory an editable intervention. The
+operator sees the resident's recorded life as a film strip and assembles a
+**recap cut**: every scene, no scene, or a chosen subset, with crops, emphasis,
+ordering, and explicitly authored detail changes. The cut becomes the context
+that primes the resident at a declared scene boundary. For the declared
+interval, it is the resident's complete accessible autobiographical-history
+projection—every selected scene, all scenes, or none—rather than an additive
+summary layered over otherwise accessible history. Whether procedural,
+semantic, or other non-autobiographical memory survives remains an explicit
+scenario choice. `Recap cut` is an application-level working term, not a pinned
+kernel type or a clinical claim about the fictional premise.
+
+The complete recorded history remains canonical and immutable. A cut is a
+versioned derivative that names its source events, omissions, transformations,
+target resident, activation boundary, duration, and provenance. A visual filter
+that changes later behavior must declare its semantic effect; otherwise it is a
+cosmetic preview only. Changing one remembered detail is therefore an
+inspectable counterfactual input with a visible source diff, never an edit that
+makes the event log agree with the recollection.
+
+The scenario keeps five states separate: what happened, what a resident could
+observe, what that resident can presently access as memory, what another
+resident knows or believes about the memory boundary, and that other resident's
+stance toward it. Full-history awareness for the surrounding cast is a declared
+world rule, not a consequence of an event existing in the store. Knowledge of
+the condition does not hard-code sympathy or revulsion; relationships,
+dispositions, and world state produce reactions. Paired runs can vary one cut
+or one awareness relation and locate the first divergence, while disclosure,
+consent, manipulation authority, and exit conditions remain explicit scenario
+constraints.
+
 ## Intervention truth
 
 `Intervention` is a useful app-level working term, not a pinned kernel type. Its
@@ -326,6 +359,9 @@ sports simulator, or a library of every source pattern.
 - specialized-activity composition and affordance-depth threshold;
 - how discovery coexists with mechanics inspection;
 - privacy, retention, and deletion for prose and simulated biographies;
+- resident observation, accessible-memory, belief, and stance semantics,
+  including recap transformations, activation cadence, persistence, and who may
+  author or know about them;
 - accessible equivalents for spatial, color, motion, and statistical views;
 - release placement, work-order decomposition, and evidence that the experience
   deserves the word _flagship_.

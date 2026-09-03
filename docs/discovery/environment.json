@@ -125,6 +125,27 @@
     "smoke": {"classification": "observed", "successfulAttempts": 1, "exitCode": 0, "result": {"ok": true, "transport": "codex-cli-exec"}, "invalidPreflight": {"exitCode": 1, "inferenceReached": false, "reason": "test schema used const without explicit property types and was rejected as invalid_json_schema"}, "stderr": "PATH-alias warning only"},
     "wo001Smoke": {"classification": "blocked", "attempts": 1, "exitCode": 1, "reason": "in-process app-server initialization denied", "cause": "executing session's own Codex sandbox (networkAccess false); not a machine or corporate constraint"}
   },
+  "effortReadbackProbe": {
+    "schemaVersion": 1,
+    "workOrder": "WO-019",
+    "observedAt": "2026-09-02T22:50:17-04:00",
+    "scope": "installed CLI help plus named persisted-effort key projections; no model invocation, resolved personal path, selector scope, count, or unrelated settings content retained",
+    "harnesses": {
+      "claude-code": {
+        "version": {"classification": "observed", "value": "2.1.259"},
+        "persistedEffortSelector": {"classification": "not found", "key": "effortLevel", "value": "unknown"},
+        "sessionEffortSelector": {"classification": "documented locally", "control": "--effort", "values": ["low", "medium", "high", "xhigh", "max"]},
+        "effectiveEffortReadback": {"classification": "not found", "value": "unknown", "harnessReadbackEligible": false}
+      },
+      "codex-cli": {
+        "version": {"classification": "observed", "value": "0.152.1"},
+        "persistedEffortSelector": {"classification": "observed", "key": "model_reasoning_effort", "value": "xhigh"},
+        "sessionEffortSelector": {"classification": "not found", "dedicatedControl": "--effort", "genericConfigOverride": {"classification": "documented locally", "control": "--config key=value"}},
+        "effectiveEffortReadback": {"classification": "not found", "value": "unknown", "harnessReadbackEligible": false}
+      }
+    },
+    "result": "Neither installed harness exposes an observed effective-session effort readback, so resume refuses source=harness-readback for both. A persisted selector or launch flag is selection evidence, not readback."
+  },
   "recommendations": [
     {"priority": 1, "adapter": "ClaudeCliPrintWorkOrderTransport", "basis": "observed end-to-end with explicit model and effort, project/local settings only, auto-memory disabled, no session persistence, JSON envelope, and schema-conforming structured output"},
     {"priority": 2, "adapter": "CodexCliExecWorkOrderTransport", "basis": "observed end-to-end with explicit model, ephemeral persistence, ignored user config, read-only sandbox, JSONL events, and schema-conforming final output"}

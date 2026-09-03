@@ -87,6 +87,46 @@ a popularity ranking. The constraint is a focusing aid, not a command: voluntary
 practice and curiosity remain legitimate inputs, and their reps accumulate
 learning without pretending every repetition raises production maturity.
 
+## Candidate — influence response policies
+
+How an eligible signal participates in a decision is a policy, not a fixed
+personality score. Keep that policy separate from the signal's factual support,
+the `Voice` used to express it, and the authority that bounds the eventual
+effect. The operator's quantum-mechanics viewing supplies one useful contrast
+between qualitative bands and accumulating magnitude; it does not make a
+physical claim or import physics as the implementation.
+
+The first candidate inventory contains four distinct response shapes:
+
+- **band-gated:** the highest applicable semantic band controls the response;
+  repeating a lower-band suggestion any number of times does not turn it into
+  one urgent signal;
+- **cumulative:** eligible contributions combine through a declared reducer,
+  such as a sum, weighted vote, mean, median, majority, or quorum. The
+  operator's democratic intuition is a felt shape, not a guarantee of fairness;
+  sources, weights, deduplication, abstentions, and ties remain visible;
+- **bounded-history:** only the most recent `n` inputs, a declared time window,
+  or an explicitly decayed history participates, with ordering and eviction
+  reproducible from recorded events; and
+- **self-governed:** external inputs may be received and understood while
+  contributing no decision pressure; the subject resolves from its own
+  declared state and judgment. In an agent or application lowering, this can
+  never bypass hard constraints, authority, consent, or evidence obligations.
+
+These shapes may later compose or switch by condition, and they are not assumed
+to exhaust the space. Any concrete policy must name eligible sources and signal
+classes, contribution semantics, precedence, window or decay, thresholds and
+tie behavior, and the trace explaining which inputs participated. Paired cases
+should distinguish one higher-band input from arbitrarily many lower-band
+inputs, equal totals assembled differently, an input falling out of the active
+window, and a received-but-nonparticipating external signal.
+
+This is not the existing `AttentionPolicy`, which selects mechanisms to load,
+and it is not permission for message intensity to manufacture authority. In a
+simulation it can model a resident's reception and resolution; elsewhere it is
+only a candidate reusable policy until a representative scenario demonstrates
+the required contract without pretending to measure hidden human judgment.
+
 ## Systems & quality
 
 - **Theory of Constraints**: the five focusing steps as an executable control
@@ -659,14 +699,19 @@ operator-authored ready-to-file text swaps Direct Draft Fidelity into the
 strategy socket. A higher-assurance context may add deeper provenance,
 attribution, or an independent witness; it does not change the minimum floor.
 
-**Beware of Naive Interventionism** is a natural counterweight support for this
-active. It asks what meaning, voice, contract precision, or authorship a
-proposed rewrite would damage and whether the smallest safe action is
-preservation. It can recommend a direct filing, a narrower transformation, more
-evidence, or a NoOp after the hard screen passes. It cannot use fidelity as a
-reason to pass unsafe material. This makes over-scrubbing measurable as a
-quality failure rather than treating paraphrase volume as evidence of
-cleanliness.
+**Beware of Naive Interventionism** is a compatible contextual counterweight,
+not part of the saved bare-ideation build. Divergent capture and exploration
+should not inherit a general presumption against intervention merely because
+Clean Room governs later promotion. Planning or another change-proposing phase
+is its natural default: there it asks what useful adaptation an intervention
+might damage and whether observation, a smaller probe, or NoOp is better. A
+high-consequence ideation promotion may still equip it explicitly when the
+proposal would alter an existing system. In that narrower composition it can
+also detect a rewrite that would damage meaning, voice, contract precision, or
+authorship and recommend exact preservation, a smaller transformation, more
+evidence, or NoOp after the hard screen passes. It can never use fidelity as a
+reason to pass unsafe material. This keeps the locked floor universal while
+making intervention restraint phase- and consequence-selective.
 
 The compiled inspector should show source class, named destination, locked
 floor, selected strategy, assurance supports, conflicts, cost, disposition, and
@@ -675,6 +720,96 @@ the stable support names and versions, destination-profile schema, whether
 strategy pipelines are ever justified, measurement of semantic damage and false
 assurance, and the first bounded implementation order. This section pins the
 active/support relationship, not a runtime claim.
+
+External-target privacy is one specialization of that boundary. A committed
+integration definition may identify the generic URL-builder or adapter contract,
+its version, and the class of operation it performs, while the resolved base URL,
+tenant or workspace values, route arguments, query values, and credentials stay
+in operator-owned local configuration. Remote model prompts, repositories,
+portable/public artifacts, and public canonical logs record neither the resolved
+URL nor a reversible fingerprint of it. An explicitly authorized local processor
+may consume the resolved value transiently without retaining it. Public
+definitions may record the generic builder version; binding availability and
+outcome class stay local unless a selected public profile permits their
+sanitized projection. If withholding that local binding makes a feature
+unavailable, the compiler and planner expose a known
+capability deficit rather than inventing a target or filing a product defect;
+failure of an explicitly required or advertised bound capability remains an
+ordinary defect or integration failure.
+
+## Candidate — Snooping Footprint Reducer
+
+The **Snooping Footprint Reducer** is a recurring maintenance active that looks
+for observation, collection, retention, and disclosure that no longer earn
+their cost. It wakes on an explicit low-frequency cadence, after a material
+adapter/schema change, or when a privacy incident provides bounded evidence;
+“occasionally” is an operator-facing posture, not an orphan timer.
+
+Its inventory stays structural whenever possible: which fields and sensors are
+read, which builder or adapter class resolves an external target, why each datum
+is needed, where it can flow, how long it persists, which evidence claim depends
+on it, and what capability would be lost if it disappeared. Resolved targets and
+private values remain opaque. The active may use static manifests, synthetic
+fixtures, aggregate counts, and declared retention behavior, but it cannot
+collect a second, richer telemetry stream merely to prove that the first is too
+invasive.
+
+Candidate outcomes are deletion, coarsening, shorter retention, local-only
+resolution, on-demand observation, a fake/synthetic testing seam, or an honest
+capability deficit. The active emits deduplicated `ProductSuggestion` records
+through the existing suggestion pipeline. A mature packet may include an
+independently reviewed but explicitly non-authoritative candidate work order;
+only the operator-authorized planning transition can create or activate the real
+one. The reducer never edits its own audit criteria, removes evidence required
+for a safety claim, or calls an unavailable capability a defect simply to create
+work. Its detailed inventory and evidence remain in the private lane; a public
+proposal receives only a profile-approved sanitized suggestion or a
+non-disclosing local reference.
+
+Edge assertions follow the same minimization rule. Canonical state records the
+assertion and its source, not an invented claim of omniscience: a
+`self-reported` effort can be wrong, an adapter fixture can deliberately lie,
+and neither requires surveillance to resolve. Tests prove source labeling,
+guards, and behavior under arbitrary claims. DotLn itself must not fabricate an
+event, alter immutable history, or relabel a self-report as observed. A contract
+may still require a stronger source for a consequential gate; when that evidence
+is withheld or unavailable, the honest outcomes are refusal or a visible
+capability deficit—not added surveillance and not acceptance by relabeling.
+
+Richer observation remains an opt-in local capability for an individual or
+organization that wants it. Pure wrapper functions select, minimize, label, and
+serialize approved values; a separate authorized local sink performs the file
+write. The sink targets an operator-configured ignored location and never a
+portable or Clean-Room promotion surface. Its loadout declares collection scope,
+purpose, retention, access, deletion, and evidence use. `gitignore` prevents
+accidental versioning but is not access control, encryption, backup, or proof of
+deletion, so those properties remain explicit environment responsibilities.
+Companion maintenance capabilities use pure transformation/planning cores plus
+contained local-filesystem adapters for validation, snapshots, rotation,
+restore, and deletion. They never enlist Git or a network transport; their
+instance receipts remain in the same private lane.
+
+Each action-performing active/support combination emits a typed plan and local
+receipt for its declared transforms and observed filesystem results. That
+first-party trace is useful but cannot certify its own lack of hidden effects.
+The stronger “no Git and no network” claim composes the gem evidence with an
+outer deny-by-construction profile, capability-poisoning tests, and independent
+verification.
+
+This proof is scoped to a link group, not to the whole workstream. An authorized
+acquisition group may include a `fetch`/XHR adapter and still prove from its
+compiled manifest that optional payload audit, logging, retention, and Snooping
+Footprint Reducer supports were not linked into the data path. Required
+data-minimized authority/command/result receipts cannot be removed by
+composition. A local receipt binds a particular invocation to that manifest,
+and only the pure transform portions prove their declared mappings. The offline
+constraint begins at the private-lane maintenance boundary after acquisition;
+it does not retroactively claim that the source arrived without a network.
+
+Open questions are the first footprint and local-envelope schemas, cadence and
+change triggers, protected minimum evidence, whether the active starts at
+integration edges or across all non-Clean-Room observation surfaces, and which
+local storage controls each implementation can honestly attest.
 
 ## Candidate — Do Nothing, active and support
 
