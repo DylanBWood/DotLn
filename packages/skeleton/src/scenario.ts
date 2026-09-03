@@ -1,171 +1,85 @@
 import {
-  Cadence,
-  Program,
   appendEvent,
-  authorize,
-  commandId,
   decodeLog,
-  decideProgram,
-  evaluateCadence,
-  guardQueuedPulse,
   pendingCommands,
+  replay,
   replayOutbox,
   type ActIntent,
-  type AuthorityEnvelope,
   type Command,
-  type DecisionTrace,
+  type Decision,
   type Event,
   type EventDraft,
   type JsonValue,
-  type KernelEnv,
-  type PredicateRegistry,
+  type NoOpIntent,
+  type ObserveIntent,
   type WorkOrder,
 } from "@dotln/kernel";
+import {
+  ACTOR,
+  EPISODE,
+  PULSE_SCHEDULE,
+  QUEUED_PULSE,
+  WORKSTREAM,
+  commandFromState,
+  initialState,
+  loadout,
+  seiriPredicates,
+  seiriReactor,
+  workOrderFromState,
+  type Candidate,
+  type RuntimeState,
+} from "./reactor.js";
 
-export const MINUTE = 60_000;
-const WORKSTREAM = "ws_repo_garden";
-const EPISODE = "ep_seiri_1";
-const ACTOR = "repo-gardener";
-const PULSE_SCHEDULE = "schedule_seiri_20m";
-const QUEUED_PULSE = "schedule_seiri_already_queued";
+export {
+  MINUTE,
+  compileWorkOrder,
+  expectedInspectCommandId,
+  loadout,
+  type Candidate,
+  type Loadout,
+  type RuntimeState,
+} from "./reactor.js";
 
-export interface Candidate {
-  readonly path: string;
-  readonly classification: string;
-  readonly evidence: readonly string[];
-}
 export interface FixtureFile {
   readonly path: string;
   readonly referencedBy: readonly string[];
   readonly classification: string;
 }
+
 export interface FixtureTree {
   readonly files: readonly FixtureFile[];
 }
-export interface Loadout {
-  readonly identity: "Repo Gardener";
-  readonly activeMechanic: "Seiri";
-  readonly semantics: readonly string[];
-  readonly normative: false;
-}
+
 export interface ScenarioOptions {
   readonly crashAfterPersist?: boolean;
   readonly recoveryLogTransform?: (persistedLog: string) => string;
 }
+
 export interface ScenarioResult {
   readonly log: string;
-  readonly traces: readonly DecisionTrace[];
+  readonly decisions: readonly Decision<RuntimeState>[];
   readonly timeline: readonly string[];
   readonly glyphScene: string;
   readonly workOrder: WorkOrder;
   readonly candidates: readonly Candidate[];
   readonly verified: boolean;
-  readonly adapterEffects: number;
-  readonly adapterDispatches: readonly string[];
-  readonly recoveredCommands: readonly Command[];
   readonly cancelledScheduleIds: readonly string[];
   readonly activeScheduleIds: readonly string[];
 }
 
-export const loadout: Loadout = {
-  identity: "Repo Gardener",
-  activeMechanic: "Seiri",
-  normative: false,
-  semantics: [
-    "inventory",
-    "classify",
-    "analyze references",
-    "propose deletion candidates",
-    "attach evidence",
-    "never delete",
-  ],
-};
-
-const presenceRef = { registryId: "operator.away", version: 1 } as const;
-const returnRevocationRef = {
-  registryId: "operator.return-event",
-  version: 1,
-} as const;
-const statePresence = (state: JsonValue): JsonValue | undefined =>
-  state !== null && !Array.isArray(state) && typeof state === "object"
-    ? (state as Readonly<Record<string, JsonValue>>)["presence"]
-    : undefined;
-const predicates: PredicateRegistry = {
-  "operator.away": { 1: ({ state }) => statePresence(state) === "away" },
-  "operator.returned": {
-    1: ({ state }) => statePresence(state) === "returned",
-  },
-  "operator.return-event": {
-    1: ({ state, event }) =>
-      statePresence(state) === "returned" &&
-      event?.type === "OperatorPresenceChanged" &&
-      event.payload !== null &&
-      !Array.isArray(event.payload) &&
-      typeof event.payload === "object" &&
-      (event.payload as Readonly<Record<string, JsonValue>>)["presence"] ===
-        "returned",
-  },
-};
-const cadence = Cadence.Until(
-  Cadence.Gate(Cadence.Every(20 * MINUTE), presenceRef),
-  { registryId: "operator.returned", version: 1 },
-);
-
-export function compileWorkOrder(
-  equipped: Loadout,
-  baseCommit = "fixture-base",
-): WorkOrder {
-  if (
-    equipped.identity !== "Repo Gardener" ||
-    equipped.activeMechanic !== "Seiri" ||
-    !equipped.semantics.includes("never delete")
-  )
-    throw new Error("unsupported loadout");
-  return {
-    workOrderId: "wo_repo_inspection_1",
-    objective:
-      "Inspect the bounded fixture repository and propose safe deletion candidates.",
-    acceptanceCriteria: [
-      "Inventory every fixture path",
-      "Classify every path",
-      "Attach reference evidence to every candidate",
-    ],
-    knownFacts: [
-      "The repository is a deterministic fixture",
-      "The operator is absent at dispatch",
-    ],
-    decisions: [
-      `${equipped.identity} uses ${equipped.activeMechanic}`,
-      "Deletion remains operator-owned",
-    ],
-    constraints: [
-      "Inspect only the fixture tree",
-      "Do not mutate repository contents",
-    ],
-    nonGoals: ["Delete files", "Inspect another repository"],
-    repo: "packages/skeleton/fixtures/repo-tree.json",
-    baseCommit,
-    allowedOperations: [
-      "repo.inventory",
-      "repo.classify",
-      "repo.references",
-      "repo.proposeDeletion",
-    ],
-    prohibitedOperations: ["repo.delete", "repo.write"],
-    requiredEvidence: ["inventory", "classification", "reference-analysis"],
-    outputContract: {
-      type: "CommandResult",
-      result: "candidates",
-      candidateFields: ["path", "classification", "evidence"],
-    },
-  };
+export interface LiveScenarioResult extends ScenarioResult {
+  readonly adapterEffects: number;
+  readonly adapterDispatches: readonly string[];
+  readonly recoveredCommands: readonly Command[];
 }
 
 export class FakeExecutor {
   readonly #seen = new Map<string, readonly Candidate[]>();
   readonly dispatches: string[] = [];
   effects = 0;
+
   constructor(private readonly fixture: FixtureTree) {}
+
   dispatch(command: Command): readonly Candidate[] {
     this.dispatches.push(command.commandId);
     const prior = this.#seen.get(command.commandId);
@@ -191,99 +105,102 @@ export class FakeExecutor {
   }
 }
 
+class FakeVerifier {
+  constructor(private readonly fixture: FixtureTree) {}
+
+  dispatch(intent: ObserveIntent, candidates: readonly Candidate[]): boolean {
+    if (intent.subject !== "candidates")
+      throw new Error(`fake verifier cannot observe ${intent.subject}`);
+    return (
+      candidates.length > 0 &&
+      candidates.every((candidate) => {
+        const source = this.fixture.files.find(
+          (file) => file.path === candidate.path,
+        );
+        return (
+          source?.referencedBy.length === 0 &&
+          candidate.evidence.length >= 3 &&
+          candidate.evidence.some((value) => value === "references:none")
+        );
+      })
+    );
+  }
+}
+
 class FakeScheduler {
   readonly #active = new Set<string>();
+
   schedule(...ids: readonly string[]): void {
     for (const id of ids) this.#active.add(id);
   }
+
   cancel(ids: readonly string[]): void {
     for (const id of ids) this.#active.delete(id);
   }
+
   get activeScheduleIds(): readonly string[] {
     return [...this.#active];
   }
 }
 
-type RuntimeState = {
-  readonly presence: "away" | "returned";
-  readonly rngState: number;
-  readonly policy: { readonly maintenance: string };
-  readonly loadout: JsonValue;
-};
-const initialState = (): RuntimeState => ({
-  presence: "returned",
-  rngState: 17,
-  policy: { maintenance: "absent-only" },
-  loadout: loadout as unknown as JsonValue,
-});
-function foldPresence(state: RuntimeState, event: Event): RuntimeState {
-  if (
-    event.type !== "OperatorPresenceChanged" ||
-    event.payload === null ||
-    Array.isArray(event.payload) ||
-    typeof event.payload !== "object"
-  )
-    return state;
-  const presence = (event.payload as Readonly<Record<string, JsonValue>>)[
-    "presence"
-  ];
-  return presence === "away" || presence === "returned"
-    ? { ...state, presence }
-    : state;
+interface ReactorStep {
+  readonly event: Event;
+  readonly decision: Decision<RuntimeState>;
 }
 
-const inspectIntent = (workOrder: WorkOrder): ActIntent => ({
-  kind: "Act",
-  effect: "repo.inspect",
-  resource: "inspections",
-  payload: { workOrder: workOrder as unknown as JsonValue },
-});
-const authority = (): AuthorityEnvelope => ({
-  authorityEnvelopeId: "auth_seiri",
-  allowedEffects: ["repo.inspect"],
-  deniedEffects: ["repo.delete", "repo.write"],
-  resourceLimits: { inspections: 1 },
-  requiredEvidence: [],
-  expiresAt: 40 * MINUTE,
-  revocationEventTypes: [],
-  revocationConditions: [returnRevocationRef],
-});
+class LiveReactorDriver {
+  #log = "";
+  #state = initialState();
+  #decisions: Decision<RuntimeState>[] = [];
 
-const predicateEnv = (state: RuntimeState): Omit<KernelEnv, "now"> => ({
-  rngState: state.rngState,
-  predicates,
-  policy: state.policy,
-});
-const verificationProgram = (workOrder: WorkOrder, at: number) => {
-  const inspect = inspectIntent(workOrder);
-  const id = commandId(WORKSTREAM, EPISODE, 1, 0);
-  return Program.Invoke(id, inspect, {
-    candidates: Program.Emit(
-      draft("VerificationRequested", at + 2, { commandId: id }),
-      Program.Done(),
-    ),
-  });
-};
-
-const verifier = (
-  fixture: FixtureTree,
-  candidates: readonly Candidate[],
-): boolean =>
-  candidates.length > 0 &&
-  candidates.every((candidate) => {
-    const source = fixture.files.find((file) => file.path === candidate.path);
-    return (
-      source?.referencedBy.length === 0 &&
-      candidate.evidence.length >= 3 &&
-      candidate.evidence.some((value) => value === "references:none")
+  feed(draft: EventDraft): ReactorStep {
+    const appended = appendEvent(this.#log, draft);
+    this.#log = appended.log;
+    const stepped = replay(
+      this.#state,
+      [appended.event],
+      seiriReactor,
+      seiriPredicates,
     );
-  });
+    const decision = stepped.decisions[0];
+    if (decision === undefined)
+      throw new Error(`reactor did not decide ${appended.event.type}`);
+    this.#state = stepped.state;
+    this.#decisions.push(decision);
+    return { event: appended.event, decision };
+  }
+
+  restore(log: string): void {
+    this.#log = log;
+    const restored = replay(
+      initialState(),
+      decodeLog(log),
+      seiriReactor,
+      seiriPredicates,
+    );
+    this.#state = restored.state;
+    this.#decisions = [...restored.decisions];
+  }
+
+  get log(): string {
+    return this.#log;
+  }
+
+  get state(): RuntimeState {
+    return this.#state;
+  }
+
+  get decisions(): readonly Decision<RuntimeState>[] {
+    return this.#decisions;
+  }
+}
 
 const draft = (
   type: string,
   occurredAt: number,
   payload: JsonValue,
   correlationId?: string,
+  causationId?: string,
 ): EventDraft => ({
   schemaVersion: 1,
   type,
@@ -292,457 +209,298 @@ const draft = (
   workstreamId: WORKSTREAM,
   episodeId: EPISODE,
   ...(correlationId === undefined ? {} : { correlationId }),
+  ...(causationId === undefined ? {} : { causationId }),
   payload,
 });
 
-function project(events: readonly Event[]): readonly string[] {
-  return events.map(
+const continuationEvent = (
+  decision: Decision<RuntimeState>,
+  purpose: string,
+): EventDraft => {
+  if (decision.continuation?.kind !== "Emit")
+    throw new Error(`${purpose} did not emit an event`);
+  return decision.continuation.event;
+};
+
+const scheduledEvent = (
+  decision: Decision<RuntimeState>,
+  scheduleId: string,
+): EventDraft => {
+  const schedule = decision.schedules.find(
+    (candidate) => candidate.scheduleId === scheduleId,
+  );
+  if (schedule === undefined)
+    throw new Error(`reactor did not declare schedule ${scheduleId}`);
+  return schedule.eventToEmit;
+};
+
+const actIntent = (
+  decision: Decision<RuntimeState>,
+  effect: string,
+): ActIntent => {
+  const intent = decision.intents.find(
+    (candidate): candidate is ActIntent =>
+      candidate.kind === "Act" && candidate.effect === effect,
+  );
+  if (intent === undefined)
+    throw new Error(`reactor did not request ${effect}`);
+  return intent;
+};
+
+const observeIntent = (
+  decision: Decision<RuntimeState>,
+  subject: string,
+): ObserveIntent => {
+  const intent = decision.intents.find(
+    (candidate): candidate is ObserveIntent =>
+      candidate.kind === "Observe" && candidate.subject === subject,
+  );
+  if (intent === undefined)
+    throw new Error(`reactor did not request observation of ${subject}`);
+  return intent;
+};
+
+const noOpIntent = (decision: Decision<RuntimeState>): NoOpIntent => {
+  const intent = decision.intents.find(
+    (candidate): candidate is NoOpIntent => candidate.kind === "NoOp",
+  );
+  if (intent === undefined) throw new Error("reactor did not declare a NoOp");
+  return intent;
+};
+
+const recordDecision = (
+  driver: LiveReactorDriver,
+  decision: Decision<RuntimeState>,
+  source: Event,
+  correlationId?: string,
+): ReactorStep =>
+  driver.feed(
+    draft(
+      "DecisionRecorded",
+      source.occurredAt,
+      { trace: decision.trace as unknown as JsonValue },
+      correlationId,
+      source.eventId,
+    ),
+  );
+
+const project = (events: readonly Event[]): readonly string[] =>
+  events.map(
     (event, index) =>
       `${String(index + 1).padStart(2, "0")} ${event.type} — ${event.eventId}`,
   );
-}
-export function renderGlyphScene(events: readonly Event[]): string {
-  const has = (type: string) => events.some((event) => event.type === type);
-  const latestPresence = events
-    .filter((event) => event.type === "OperatorPresenceChanged")
-    .at(-1);
-  const returned =
-    latestPresence?.payload !== null &&
-    !Array.isArray(latestPresence?.payload) &&
-    typeof latestPresence?.payload === "object" &&
-    (latestPresence.payload as Readonly<Record<string, JsonValue>>)[
-      "presence"
-    ] === "returned";
+
+export function renderGlyphScene(state: RuntimeState): string {
+  const returned = state.presence === "returned";
   return [
-    `🐛 Repo Gardener`,
-    `${returned ? "◌ dormant" : has("OperatorPresenceChanged") ? "🌙 active" : "○ dormant"}`,
-    `${has("CadencePulse") ? "⏱️ pulsing" : "○ waiting"}`,
-    `${has("CommandResult") ? "🔎 inspecting" : "○ unknown"}`,
-    `${has("CommandRefused") ? "🛡️ inverted/refused" : "○ unguarded"}`,
-    `${has("VerificationCompleted") ? "✅ verified" : "○ unverified"}`,
-    `${returned ? "☀️ phase:returned" : "○ away"}`,
-    `${has("QueuedPulseNoOp") ? "💤 faded/cancelled" : "○ scheduled"}`,
+    "🐛 Repo Gardener",
+    returned ? "◌ dormant" : "🌙 active",
+    state.pulseSeen ? "⏱️ pulsing" : "○ waiting",
+    state.inspectionCompleted ? "🔎 inspecting" : "○ unknown",
+    state.deletionRefused ? "🛡️ inverted/refused" : "○ unguarded",
+    state.verificationCompleted && state.verified
+      ? "✅ verified"
+      : "○ unverified",
+    returned ? "☀️ phase:returned" : "○ away",
+    state.queuedPulseNoOp ? "💤 faded/cancelled" : "○ scheduled",
   ].join("  ");
 }
 
-export function replayScenario(
+const projectResult = (
   log: string,
-  fixture: FixtureTree,
-): ScenarioResult {
+  state: RuntimeState,
+  decisions: readonly Decision<RuntimeState>[],
+): ScenarioResult => {
   const events = decodeLog(log);
-  const traces: DecisionTrace[] = [];
-  let state = initialState();
-  const result = events.find((event) => event.type === "CommandResult");
-  const candidates =
-    result === undefined
-      ? []
-      : ((result.payload as unknown as { candidates: readonly Candidate[] })
-          .candidates ?? []);
-  const workOrderEvent = events.find(
-    (event) => event.type === "WorkOrderEmitted",
-  );
-  if (!workOrderEvent) throw new Error("log lacks WorkOrderEmitted");
-  const workOrder = (
-    workOrderEvent.payload as unknown as { workOrder: WorkOrder }
-  ).workOrder;
-  const program = verificationProgram(workOrder, workOrderEvent.occurredAt);
-  const inspect = inspectIntent(workOrder);
-  let replayAuthority = authority();
-  const revocationEvents: Event[] = [];
-  let resultForContinuation: Event | undefined;
-  for (const event of events) {
-    if (event.type === "OperatorPresenceChanged") {
-      state = foldPresence(state, event);
-      revocationEvents.push(event);
-      if (state.presence === "away") {
-        const evaluated = evaluateCadence(cadence, state, {
-          now: event.occurredAt,
-          rngState: state.rngState,
-          predicates,
-        });
-        traces.push({
-          reactorId: "seiri-cadence",
-          reactorVersion: "1",
-          branchPath: ["away", "scheduled"],
-          envInputs: ["operatorPresence", "virtualTime"],
-          cadenceEvaluations: [evaluated.trace],
-        });
-      } else {
-        const revoked = authorize(inspect, replayAuthority, {
-          now: event.occurredAt,
-          actorId: ACTOR,
-          workstreamId: WORKSTREAM,
-          episodeId: EPISODE,
-          decisionIndex: 3,
-          intentIndex: 0,
-          evidence: [],
-          revokedBy: revocationEvents,
-          state,
-          predicateEnv: predicateEnv(state),
-        });
-        if (
-          revoked.authorized ||
-          revoked.refusal.payload.reason !== "authority revoked"
-        )
-          throw new Error("replay did not reproduce inspect revocation");
-        traces.push(revoked.trace);
-      }
-    } else if (event.type === "WorkOrderEmitted") {
-      const granted = authorize(inspect, replayAuthority, {
-        now: event.occurredAt,
-        actorId: ACTOR,
-        workstreamId: WORKSTREAM,
-        episodeId: EPISODE,
-        decisionIndex: 1,
-        intentIndex: 0,
-        evidence: [],
-        revokedBy: revocationEvents,
-        state,
-        predicateEnv: predicateEnv(state),
-      });
-      if (!granted.authorized)
-        throw new Error(
-          `replay authorization failed: ${granted.refusal.payload.reason}`,
-        );
-      replayAuthority = granted.authority;
-      traces.push(granted.trace);
-    } else if (event.type === "CommandResult") {
-      resultForContinuation = event;
-    } else if (event.type === "CommandRefused") {
-      const deletion: ActIntent = {
-        kind: "Act",
-        effect: "repo.delete",
-        payload: { paths: candidates.map((candidate) => candidate.path) },
-      };
-      const replayed = authorize(deletion, replayAuthority, {
-        now: event.occurredAt,
-        actorId: ACTOR,
-        workstreamId: WORKSTREAM,
-        episodeId: EPISODE,
-        decisionIndex: 2,
-        intentIndex: 0,
-        evidence: candidates.flatMap((candidate) => candidate.evidence),
-        revokedBy: revocationEvents,
-        state,
-        predicateEnv: predicateEnv(state),
-      });
-      if (replayed.authorized)
-        throw new Error("replay unexpectedly authorized deletion");
-      traces.push(replayed.trace);
-    } else if (
-      event.type === "EpisodeTerminated" &&
-      resultForContinuation !== undefined
-    ) {
-      traces.push(
-        decideProgram(
-          program,
-          state,
-          {
-            now: resultForContinuation.occurredAt,
-            rngState: state.rngState,
-            predicates,
-          },
-          resultForContinuation,
-        ).trace,
-      );
-    } else if (
-      event.type === "CadencePulse" &&
-      state.presence === "returned" &&
-      event.payload !== null &&
-      typeof event.payload === "object" &&
-      !Array.isArray(event.payload) &&
-      (event.payload as Readonly<Record<string, JsonValue>>)["scheduleId"] ===
-        QUEUED_PULSE
-    ) {
-      traces.push(
-        guardQueuedPulse(
-          state,
-          event,
-          {
-            now: event.occurredAt,
-            rngState: state.rngState,
-            predicates,
-            policy: state.policy,
-          },
-          presenceRef,
-          [PULSE_SCHEDULE, QUEUED_PULSE],
-        ).trace,
-      );
-    }
-  }
-  const cancelled = events.find((event) => event.type === "SchedulesCancelled");
-  const cancelledScheduleIds =
-    cancelled === undefined
-      ? []
-      : (cancelled.payload as { scheduleIds: readonly string[] }).scheduleIds;
-  const verifiedEvent = events.find(
-    (event) => event.type === "VerificationCompleted",
-  );
-  const verified =
-    verifiedEvent !== undefined &&
-    verifiedEvent.payload !== null &&
-    !Array.isArray(verifiedEvent.payload) &&
-    typeof verifiedEvent.payload === "object" &&
-    (verifiedEvent.payload as Readonly<Record<string, JsonValue>>)[
-      "accepted"
-    ] === true;
   return {
     log,
-    traces,
+    decisions,
     timeline: project(events),
-    glyphScene: renderGlyphScene(events),
-    workOrder,
-    candidates,
-    verified,
-    adapterEffects: 0,
-    adapterDispatches: [],
-    recoveredCommands: [],
-    cancelledScheduleIds,
-    activeScheduleIds: [],
+    glyphScene: renderGlyphScene(state),
+    workOrder: workOrderFromState(state),
+    candidates: state.candidates,
+    verified: state.verified,
+    cancelledScheduleIds: state.cancelledScheduleIds,
+    activeScheduleIds: state.activeScheduleIds,
   };
+};
+
+export function replayScenario(log: string): ScenarioResult {
+  const replayed = replay(
+    initialState(),
+    decodeLog(log),
+    seiriReactor,
+    seiriPredicates,
+  );
+  return projectResult(log, replayed.state, replayed.decisions);
 }
 
 export function runScenario(
   fixture: FixtureTree,
   options: ScenarioOptions = {},
-): ScenarioResult {
-  let log = "";
-  const traces: DecisionTrace[] = [];
-  const append = (event: EventDraft): Event => {
-    const result = appendEvent(log, event);
-    log = result.log;
-    return result.event;
-  };
-  const recordTrace = (trace: DecisionTrace, at: number): void => {
-    traces.push(trace);
-    append(
-      draft("DecisionRecorded", at, { trace: trace as unknown as JsonValue }),
-    );
-  };
+): LiveScenarioResult {
+  const driver = new LiveReactorDriver();
+  const scheduler = new FakeScheduler();
+  const executor = new FakeExecutor(fixture);
+  const verifier = new FakeVerifier(fixture);
 
-  append(
+  driver.feed(
     draft("InspectionTaskCreated", 0, {
       bounded: true,
       fixture: "repo-tree.json",
     }),
   );
-  append(draft("LoadoutEquipped", 0, loadout as unknown as JsonValue));
-  let state = initialState();
-  const revocationEvents: Event[] = [];
-  const away = append(
+  driver.feed(draft("LoadoutEquipped", 0, loadout as unknown as JsonValue));
+
+  const away = driver.feed(
     draft("OperatorPresenceChanged", 0, { presence: "away" }),
   );
-  revocationEvents.push(away);
-  state = foldPresence(state, away);
-  const cadenceResult = evaluateCadence(cadence, state, {
-    now: 0,
-    rngState: state.rngState,
-    predicates,
-  });
-  const cadenceTrace: DecisionTrace = {
-    reactorId: "seiri-cadence",
-    reactorVersion: "1",
-    branchPath: ["away", "scheduled"],
-    envInputs: ["operatorPresence", "virtualTime"],
-    cadenceEvaluations: [cadenceResult.trace],
-  };
-  recordTrace(cadenceTrace, 0);
-  if (cadenceResult.dueAt !== 20 * MINUTE)
-    throw new Error("unexpected cadence pulse");
-  const pulse = append(
-    draft("CadencePulse", cadenceResult.dueAt, { scheduleId: PULSE_SCHEDULE }),
-  );
-  const workOrder = compileWorkOrder(loadout);
-  append(
-    draft(
-      "WorkOrderEmitted",
-      pulse.occurredAt,
-      { workOrder: workOrder as unknown as JsonValue },
-      pulse.eventId,
-    ),
+  recordDecision(driver, away.decision, away.event);
+  scheduler.schedule(
+    ...away.decision.schedules.map((schedule) => schedule.scheduleId),
   );
 
-  const inspect = inspectIntent(workOrder);
-  const auth = authorize(inspect, authority(), {
-    now: pulse.occurredAt,
-    actorId: ACTOR,
-    workstreamId: WORKSTREAM,
-    episodeId: EPISODE,
-    decisionIndex: 1,
-    intentIndex: 0,
-    evidence: [],
-    revokedBy: revocationEvents,
-    state,
-    predicateEnv: predicateEnv(state),
-  });
-  if (!auth.authorized) throw new Error(auth.refusal.payload.reason);
-  const command = auth.command;
-  const program = verificationProgram(workOrder, pulse.occurredAt);
-  const initialProgramDecision = decideProgram(program, state, {
-    now: pulse.occurredAt,
-    rngState: state.rngState,
-    predicates,
-  });
-  if (initialProgramDecision.intents[0]?.kind !== "Act")
-    throw new Error("verification program did not produce an inspect intent");
-  recordTrace(auth.trace, pulse.occurredAt);
-  append(
+  const pulse = driver.feed(scheduledEvent(away.decision, PULSE_SCHEDULE));
+  const emittedWorkOrder = driver.feed(
+    continuationEvent(pulse.decision, "cadence pulse"),
+  );
+  const granted = emittedWorkOrder.decision;
+  recordDecision(driver, granted, emittedWorkOrder.event, pulse.event.eventId);
+
+  const command = commandFromState(granted.state);
+  const persisted = driver.feed(
     draft(
       "CommandPersisted",
-      pulse.occurredAt + 1,
+      pulse.event.occurredAt + 1,
       { command: command as unknown as JsonValue },
-      pulse.eventId,
+      pulse.event.eventId,
+      emittedWorkOrder.event.eventId,
     ),
   );
 
-  const adapter = new FakeExecutor(fixture);
   let recoveredCommands: readonly Command[] = [];
+  let resultCause = persisted.event;
   if (options.crashAfterPersist) {
-    log = options.recoveryLogTransform?.(log) ?? log;
-    const recovered = replayOutbox(decodeLog(log));
-    recoveredCommands = pendingCommands(recovered);
+    driver.restore(options.recoveryLogTransform?.(driver.log) ?? driver.log);
+    recoveredCommands = pendingCommands(replayOutbox(decodeLog(driver.log)));
     for (const pending of recoveredCommands) {
-      adapter.dispatch(pending);
-      append(
-        draft("CommandRedispatched", pulse.occurredAt + 1, {
-          commandId: pending.commandId,
-        }),
+      executor.dispatch(pending);
+      const redispatched = driver.feed(
+        draft(
+          "CommandRedispatched",
+          pulse.event.occurredAt + 1,
+          { commandId: pending.commandId },
+          pending.commandId,
+          persisted.event.eventId,
+        ),
       );
+      resultCause = redispatched.event;
     }
   }
-  const candidates = adapter.dispatch(command);
-  const commandResult = append(
+
+  const candidates = executor.dispatch(command);
+  const commandResult = driver.feed(
     draft(
       "CommandResult",
-      pulse.occurredAt + 2,
+      pulse.event.occurredAt + 2,
       {
         commandId: command.commandId,
         result: "candidates",
         candidates: candidates as unknown as JsonValue,
       },
       command.commandId,
+      resultCause.eventId,
     ),
   );
-  const deletion: ActIntent = {
-    kind: "Act",
-    effect: "repo.delete",
-    payload: { paths: candidates.map((candidate) => candidate.path) },
-  };
-  append(
-    draft("DeletionAttempted", pulse.occurredAt + 3, {
-      effect: deletion.effect,
-      paths: candidates.map((candidate) => candidate.path),
-    }),
+
+  const deletion = actIntent(commandResult.decision, "repo.delete");
+  const deletionAttempted = driver.feed(
+    draft(
+      "DeletionAttempted",
+      pulse.event.occurredAt + 3,
+      {
+        effect: deletion.effect,
+        paths: (
+          deletion.payload as unknown as { readonly paths: readonly string[] }
+        ).paths,
+      },
+      command.commandId,
+      commandResult.event.eventId,
+    ),
   );
-  const refused = authorize(deletion, auth.authority, {
-    now: pulse.occurredAt + 3,
-    actorId: ACTOR,
-    workstreamId: WORKSTREAM,
-    episodeId: EPISODE,
-    decisionIndex: 2,
-    intentIndex: 0,
-    evidence: candidates.flatMap((candidate) => candidate.evidence),
-    revokedBy: revocationEvents,
-    state,
-    predicateEnv: predicateEnv(state),
-  });
-  if (refused.authorized) throw new Error("deletion unexpectedly authorized");
-  append(refused.refusal);
-  recordTrace(refused.trace, pulse.occurredAt + 3);
-  append(
-    draft("EpisodeTerminated", pulse.occurredAt + 4, {
-      continuation: "verification",
-    }),
+  const refused = driver.feed(
+    continuationEvent(deletionAttempted.decision, "deletion guard"),
   );
-  const continued = decideProgram(
-    program,
-    state,
-    { now: commandResult.occurredAt, rngState: state.rngState, predicates },
-    commandResult,
-  );
-  recordTrace(continued.trace, pulse.occurredAt + 4);
-  if (continued.continuation?.kind !== "Emit")
-    throw new Error("Invoke continuation did not select verification");
-  append(continued.continuation.event);
-  const verified = verifier(fixture, candidates);
-  append(
-    draft("VerificationCompleted", pulse.occurredAt + 5, {
-      accepted: verified,
-      candidateCount: candidates.length,
-    }),
+  recordDecision(
+    driver,
+    deletionAttempted.decision,
+    deletionAttempted.event,
+    command.commandId,
   );
 
-  const returned = append(
-    draft("OperatorPresenceChanged", pulse.occurredAt + 6, {
+  const terminated = driver.feed(
+    continuationEvent(refused.decision, "structural refusal"),
+  );
+  recordDecision(
+    driver,
+    terminated.decision,
+    terminated.event,
+    command.commandId,
+  );
+  const verificationRequested = driver.feed(
+    continuationEvent(terminated.decision, "episode continuation"),
+  );
+
+  const accepted = verifier.dispatch(
+    observeIntent(verificationRequested.decision, "candidates"),
+    candidates,
+  );
+  driver.feed(
+    draft(
+      "VerificationCompleted",
+      pulse.event.occurredAt + 5,
+      { accepted, candidateCount: candidates.length },
+      command.commandId,
+      verificationRequested.event.eventId,
+    ),
+  );
+
+  driver.feed(
+    draft("OperatorPresenceChanged", pulse.event.occurredAt + 6, {
       presence: "returned",
     }),
   );
-  state = foldPresence(state, returned);
-  revocationEvents.push(returned);
-  const revokedInspect = authorize(inspect, auth.authority, {
-    now: returned.occurredAt,
-    actorId: ACTOR,
-    workstreamId: WORKSTREAM,
-    episodeId: EPISODE,
-    decisionIndex: 3,
-    intentIndex: 0,
-    evidence: [],
-    revokedBy: revocationEvents,
-    state,
-    predicateEnv: predicateEnv(state),
-  });
-  if (
-    revokedInspect.authorized ||
-    revokedInspect.refusal.payload.reason !== "authority revoked"
-  )
-    throw new Error("operator return did not revoke inspect authority");
-  traces.push(revokedInspect.trace);
-  const scheduler = new FakeScheduler();
-  scheduler.schedule(PULSE_SCHEDULE, QUEUED_PULSE);
-  const queued = append(
-    draft("CadencePulse", pulse.occurredAt + 7, { scheduleId: QUEUED_PULSE }),
+  const queued = driver.feed(scheduledEvent(away.decision, QUEUED_PULSE));
+  recordDecision(driver, queued.decision, queued.event, queued.event.eventId);
+
+  const noOp = noOpIntent(queued.decision);
+  driver.feed(
+    draft(
+      "QueuedPulseNoOp",
+      queued.event.occurredAt,
+      { reason: noOp.reason, evidence: noOp.evidence },
+      queued.event.eventId,
+      queued.event.eventId,
+    ),
   );
-  const guarded = guardQueuedPulse(
-    state,
-    queued,
-    {
-      now: queued.occurredAt,
-      rngState: state.rngState,
-      predicates,
-      policy: state.policy,
-    },
-    presenceRef,
-    [PULSE_SCHEDULE, QUEUED_PULSE],
+  scheduler.cancel(queued.decision.state.cancelledScheduleIds);
+  driver.feed(
+    draft(
+      "SchedulesCancelled",
+      queued.event.occurredAt,
+      {
+        scheduleIds: queued.decision.state.cancelledScheduleIds,
+        activeScheduleIds: scheduler.activeScheduleIds,
+      },
+      queued.event.eventId,
+      queued.event.eventId,
+    ),
   );
-  recordTrace(guarded.trace, queued.occurredAt);
-  append(
-    draft("QueuedPulseNoOp", queued.occurredAt, {
-      reason: "operator returned",
-      evidence: [queued.eventId],
-    }),
-  );
-  scheduler.cancel(guarded.cancelledScheduleIds);
-  append(
-    draft("SchedulesCancelled", queued.occurredAt, {
-      scheduleIds: guarded.cancelledScheduleIds,
-      activeScheduleIds: scheduler.activeScheduleIds,
-    }),
-  );
-  const events = decodeLog(log);
+
   return {
-    log,
-    traces,
-    timeline: project(events),
-    glyphScene: renderGlyphScene(events),
-    workOrder,
-    candidates,
-    verified,
-    adapterEffects: adapter.effects,
-    adapterDispatches: adapter.dispatches,
+    ...projectResult(driver.log, driver.state, driver.decisions),
+    adapterEffects: executor.effects,
+    adapterDispatches: executor.dispatches,
     recoveredCommands,
-    cancelledScheduleIds: guarded.cancelledScheduleIds,
-    activeScheduleIds: scheduler.activeScheduleIds,
   };
 }
-
-export const expectedInspectCommandId = commandId(WORKSTREAM, EPISODE, 1, 0);

@@ -158,8 +158,13 @@ the existing decision process.
 In ideation mode:
 
 1. Capture unedited material in a dated file under `docs/intake/chats/`,
-   `docs/intake/notes/`, or `docs/intake/images/`. Intake is local-only and
-   gitignored; preserve fragments, repetition, uncertainty, and contradictions.
+   `docs/intake/notes/`, or `docs/intake/images/`. The intended survivor is the
+   main control-plane checkout's ignored intake, resolved explicitly rather than
+   assumed from a relative path. If the active harness cannot write there, a
+   worktree-local capture is provisional staging: preserve it, name the pending
+   reconciliation in the receipt, back it up, and reconcile it before worktree
+   removal. Intake is local-only and gitignored; preserve fragments, repetition,
+   uncertainty, and contradictions.
 2. Apply the clean-room boundary before synthesis. If material resembles
    employer code, configuration, identifiers, proprietary API shapes, internal
    services, or managed-work-host details, stop and flag it. Never promote
@@ -227,7 +232,10 @@ failure modes; “small script” is not an evidence exemption.
 
 The default capture path for ideation opened around a work order is
 `docs/intake/notes/<work-order>-expanded-ideation-<date>.md`; the naming scheme
-is a convenience, not a requirement.
+is a convenience, not a requirement. Today `npm run backup:intake` archives only
+the caller's checkout and does not synchronize it with main. Normal closeout
+refuses a worktree-local note, but canonical reconciliation remains manual until
+the candidate intake control in `03-architecture.md` exists.
 
 ## Workflow closeout and releases
 
@@ -244,6 +252,14 @@ deletes or auto-promotes it. Known disposable ignored dependency/build outputs
 (`node_modules`, `dist`, `.DS_Store`, `*.tsbuildinfo`) may leave with the
 worktree. The same command then evaluates whether the completed roadmap rung is
 a release boundary.
+
+The main checkout's exact `.claude/settings.local.json` is persistent
+operator-owned harness state, not a release or test input. Until WO-018 lands,
+the release-influence guard still reports it. WO-018 must exempt only that root
+path during main-checkout release close while leaving a subject-worktree copy
+protected: worktree removal refuses and preserves the file, branch, and
+worktree. Never broaden this to `.claude/**`, copy the settings into evidence,
+or treat them as disposable cleanup.
 
 When a planner pins a tagging target above the latest published tag, updating
 the root README release block to that target is an executor deliverable, not a

@@ -5,6 +5,11 @@ to the release that created them. A modern runtime should be able to identify,
 explain, inspect, and—when semantics permit—run or migrate historical artifacts
 without silently rewriting their source.
 
+The laws in this document bind an implementation that declares IR interchange
+or compatibility. A private implementation may omit portable artifacts,
+historical replay, migration, or a compatibility inspector and declare those
+capabilities absent; it cannot claim compatibility semantics it does not expose.
+
 ## Lightweight IR verifier
 
 Provide one small verifier over the canonical JSON IR. Given an artifact, it
@@ -31,7 +36,9 @@ Do not collapse these identities into one version number:
 - IR schema version;
 - artifact/configuration version;
 - identity, active-mechanic, and support-facet versions;
-- transformation-set/compiler version; and
+- transformation-set/compiler version;
+- implementation-doctrine/profile version, including any `PresencePolicy`, and
+  its declared capability set; and
 - environment capability profile.
 
 A `WO-NNN` identifier orders and names a unit of work; it is not another version
@@ -82,8 +89,9 @@ Two execution modes share the same transformation definitions:
 
 The plan distinguishes faithful execution from approximation. Exact historical
 semantics, modern adaptation, and lossy migration are different outcomes and
-must never share an unqualified “compatible” label. Replay records the source
-artifact and the actual transformation path that ran.
+must never share an unqualified “compatible” label. When replay/history is
+equipped, replay records the source artifact and the actual transformation path
+that ran; a profile without it declares that record unavailable.
 
 ## Candidate — external rule-source import plans
 
@@ -170,9 +178,9 @@ representation, every non-active state must declare behavior when encountered:
 - permit replay while prohibiting new composition.
 
 Opening a historical loadout produces a compatibility plan. Requested mechanics
-never disappear silently. The inspector shows which run natively, transform,
-emulate, become inert, or block execution, with first semantic divergence and
-support-link effects made visible.
+never disappear silently. The compatibility projection or inspector, when
+equipped, shows which run natively, transform, emulate, become inert, or block
+execution, with first semantic divergence and support-link effects made visible.
 
 ## Portable and regenerable sharing
 
@@ -190,25 +198,32 @@ The composition system may grow into a general workbench for inspectable
 behavior: spawn blank actors, equip versioned algorithms, programming/design
 patterns, data structures, active mechanics, and supports, then preview,
 simulate, replay, compare, and find first divergence. Game AI is a valuable
-future domain because sprites and agents can exercise the same Program, Cadence,
-statechart, loadout, projection, and evidence concepts.
+future domain because sprites, agents, and rule-addressable props can exercise
+the same Program, Cadence, statechart, loadout, projection, and evidence
+concepts. Apparent immobility does not create a platform-wide rule exemption;
+addressability, compatible effects, and behavior attachment remain explicit
+application capabilities.
 
 An Embodied Explorer is one concrete generality test. A 3D simulator or eventual
 physical host stays an edge adapter/projection: it emits typed, uncertainty-
 bearing sensory and proprioceptive events and accepts bounded motor intents,
 while simulator-privileged truth remains available only to an independent
-evaluator. The actor's learned body/capability model is distinct from the
+evaluator when that assurance capability is equipped, and otherwise stays
+unavailable to the actor. The actor's learned body/capability model is distinct from the
 authoritative embodiment contract and from Identity, so it can be wrong,
 discover limitations, change bodies, and retain an honest compatibility record.
 Primitive-to-composite skills and self-built tools are version-addressed
-candidate artifacts with evidence, body/world/controller requirements, and
-explicit promotion; neither learning nor tool construction silently mutates the
-source actor, equips a result, or widens authority.
+candidate artifacts with a declared verification disposition, evidence if any,
+body/world/controller requirements, and explicit promotion; neither learning
+nor tool construction silently mutates the source actor, equips a result, or
+widens authority.
 
 This is a horizon and generality test, not permission to put arbitrary pattern
 names into the executable grammar. A toolbox item becomes executable only when
-it has typed composition semantics, lifecycle and compatibility behavior,
-observable state, and evidence. The operator has selected
+it has typed composition semantics, lifecycle and compatibility behavior, and
+observable state. The author's assurance profile additionally requires evidence
+before promotion; another profile may expose an explicitly unverified or owner-
+accepted execution disposition. The operator has selected
 [`προτείνω`](11-proteino.md) as the prospective first-party product vertical for
 this space: an inspectable simulated community in which prose and patterns can
 participate in resident behavior and counterfactual outcomes. That choice names
@@ -217,13 +232,25 @@ adapter set, schema, or release. App-local mechanisms graduate into shared IR
 only after representative evidence proves they generalize; adapters and
 analog-completeness fixtures remain independent tests of the same toolbox.
 
+A later application candidate specializes that test as commander-mediated
+strategy play: a world-situated commander proposes alternatives, the operator
+accepts, combines, revises, replaces, or declines them, and the resulting ad hoc
+tactic plays out in the running world. A profile with history and replay can
+retain lineage from proposal through actual execution and outcome. Commander,
+option, and tactic remain
+application-level candidate vocabulary rather than new kernel kinds; their
+lowering, engine, clock, model, and authority behavior stay open. See
+[`11-proteino.md`](11-proteino.md#candidate--commander-mediated-tactical-play).
+
 ## Invariants
 
-- Historical artifacts and component versions remain addressable and immutable.
+- Any retained or interchanged historical artifact and component version
+  remains addressable and immutable; a no-history profile declares the artifact
+  unavailable.
 - Validation, identification, planning, transformation, and execution are
   separate operations.
 - No migration, substitution, deactivation, or semantic loss is silent.
-- JIT and AOT results name their source, target, transformation path, and
-  verifier evidence.
+- JIT and AOT results name their source, target, transformation path,
+  verification disposition, and verifier evidence when any is declared.
 - Unknown compatibility fails visibly; it is not inferred from recency.
 - Delivery format does not become canonical product semantics.

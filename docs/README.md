@@ -8,6 +8,7 @@ docs/intake/       raw, local-only (gitignored) — the founding dump lives here
 docs/PLAYBOOK.md   the operator's canonical loop (models, worktrees, verify)
 docs/AI-HARNESS-SECURITY.md
                    dated personal Claude/Codex sandbox setup and rollback guide
+docs/LEGAL.md      interim license/legal posture and explicit future decision gates
 docs/product/      the blueprint: vision, principles, domain model,
                    architecture, interfaces, patterns, roadmap, execution guide,
                    publication compiler, audit/resilience map, IR compatibility,
@@ -15,7 +16,8 @@ docs/product/      the blueprint: vision, principles, domain model,
 docs/publication/  audience/status index, audience outlines, shared sample,
                    implementation overlay template, and staleness proof
 docs/planning/     evidence-backed capability inventory + provisional work-order map
-docs/lineage/      idea-ledger.md — append-only record of every founding idea
+docs/lineage/      idea-ledger.md — append-only idea history;
+                   inspirations.md — best-known public influence register
 docs/decisions/    ADRs — settled questions
 docs/work-orders/  bounded, executable next steps (feed one to any model)
 docs/verifications/ immutable numbered verifier reports, grouped by work order
@@ -58,6 +60,13 @@ intake remains ignored rather than moved into Git.
 
 No naming scheme required. Tell me when a batch has landed and I'll read it.
 
+The intended surviving location is the main control-plane checkout's ignored
+`docs/intake/`. A relative path in a work-order worktree is a different private
+directory, not another view of main. If access constraints require a provisional
+capture there, keep the worktree, back the note up, and reconcile it into main
+before removal. The current tooling protects such notes by refusing normal
+worktree cleanup but does not perform that reconciliation automatically.
+
 ## Backing up local intake
 
 From the repository root, run:
@@ -72,6 +81,12 @@ This creates a timestamped ZIP beside the project directory, for example
 permissions, and never overwrites an existing backup. The script refuses
 symbolic links in intake so a link cannot pull unrelated files into the ZIP, and
 refuses destinations inside the repository.
+
+The command archives the checkout in which it runs. It does not merge a
+worktree's intake into main, register that material for later re-mining, or
+update the ledger and product docs. Treat the adjacent ZIP as a local snapshot,
+not as external durability or semantic reconciliation; move it to a trusted
+backup location and reconcile raw bytes separately.
 
 To choose another existing or new destination directory:
 

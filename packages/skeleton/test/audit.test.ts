@@ -215,7 +215,7 @@ test("AC2 AuditRecord v1 keeps canonical references and no copied event payloads
     (record) => record.actionClass === "verification",
   );
   assert.ok(verification?.actionClass === "verification");
-  assert.equal(verification.association, "derived-single-request-in-scope");
+  assert.equal(verification.association, "explicit-event-link");
 
   const serialized = JSON.stringify(records);
   assert.doesNotMatch(serialized, /tmp\/old-report\.txt/u);
@@ -238,6 +238,8 @@ test("AC2 AuditRecord v1 keeps canonical references and no copied event payloads
     actorId: "repo-gardener",
     workstreamId: "ws_repo_garden",
     episodeId: "ep_seiri_1",
+    correlationId: expectedInspectCommandId,
+    causationId: "evt_8",
     eventIds: ["evt_8", "evt_9"],
     commandId: expectedInspectCommandId,
     originalCommandEventId: "evt_8",
@@ -701,7 +703,18 @@ test("AC3 captures the L0 receipt, causal timeline, and governed raw JSON with f
     },
     {
       correlationId: expectedInspectCommandId,
-      recordIds: ["audit:evt_9:external-effect", "audit:evt_9:result"],
+      recordIds: [
+        "audit:evt_9:external-effect",
+        "audit:evt_9:result",
+        "audit:evt_10:external-effect",
+        "audit:evt_11:authority-decision",
+        "audit:evt_13:result",
+        "audit:evt_16:verification",
+      ],
+    },
+    {
+      correlationId: "evt_18",
+      recordIds: ["audit:evt_20:no-op", "audit:evt_21:external-effect"],
     },
   ]);
   assert.ok(projections.timeline.omissions.length > 0);
@@ -1113,6 +1126,8 @@ test("AC4 step 9 refusal is explicit in the receipt and causal timeline", () => 
   assert.equal(timeline.authorityEnvelopeRef, "auth_seiri");
   assert.equal(timeline.reason, "effect denied");
   assert.equal(timeline.association, "derived-same-episode-time-adjacency");
+  assert.equal(timeline.causationId, "evt_10");
+  assert.equal(timeline.correlationId, expectedInspectCommandId);
   assert.equal(Object.hasOwn(timeline, "commandId"), false);
   assert.match(
     projections.timeline.omissions.join("\n"),
@@ -1125,7 +1140,7 @@ test("AC5 all projection bytes are identical over live, replayed, and re-encoded
   const events = decodeLog(live.log);
   const before = structuredClone(events);
   const expected = renderAuditProjections(events);
-  const replayed = replayScenario(live.log, fixture);
+  const replayed = replayScenario(live.log);
   const rerun = runScenario(fixture);
 
   assert.equal(renderAuditProjections(decodeLog(replayed.log)), expected);

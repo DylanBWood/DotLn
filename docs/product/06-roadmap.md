@@ -12,6 +12,12 @@ Claude Code plan, Codex CLI as second executor, personal GitHub);
 managed-environment constraints (enterprise gateways, centrally managed
 settings) are out of scope until such a deployment exists.
 
+This ladder builds the author's personal reference implementation while
+extracting reusable platform mechanisms from it. It is not the minimum policy
+every DotLn implementation must adopt. Each rung should increasingly label
+platform contract, personal-instance doctrine, and optional saved profile; the
+eventual physical package boundary remains evidence-selected under ADR-0006.
+
 ## Release boundary
 
 The sole `vX.Y.Z` in a current work-order heading is its planned **application
@@ -65,6 +71,19 @@ kinds, toolchain, and known limitations. A release may initially be source-only.
 Publishing npm packages, executables, containers, or hosted artifacts is a
 separate projection selected only when a consumer needs it; a Git tag must not
 imply those channels exist.
+
+Source visibility is not itself a distribution license. Before accepting an
+outside contribution, publishing any package/binary/container/data or asset
+bundle, or operating a multi-user service, the operator must pass the explicit
+[licensing and legal decision gate](../LEGAL.md): select the applicable code and
+documentation posture, protect unpublished packages, establish inbound terms,
+inventory incorporated third-party material, review privacy/data practices
+before any app or service collects, retains, or transmits another person's data,
+review service terms before offering an app or hosted service to others, and
+review commercial and brand posture before sale, licensing, fundraising,
+material marketing, or substantial investment in a DotLn or feature-brand
+name. The list in `docs/LEGAL.md` is controlling; sale is not the first trigger.
+No license is selected by this roadmap paragraph.
 
 The hand-closed `v0.2.0` manifest and notes under `docs/releases/` remain their
 immutable historical projection. For later releases, the annotated tag message
@@ -196,6 +215,36 @@ the documents, or generate dependency and eligibility views. Do not pin that
 schema or allocator before the pilot exposes its actual consumers and drift
 risks.
 
+### Candidate — unattended work-order portfolio
+
+The earlier operator-away scheduler was partly a workaround for supervising one
+prompt-bound agent and arranging recurring maintenance timers by hand. Once the
+work-order processor can close one order and select another, unattended
+autonomy should operate primarily over bounded WorkOrders rather than recreate a
+permanent prompt session.
+
+An opted-in portfolio has two candidate lanes. First are small eligible orders
+already covered by standing authority and requiring no new material decision;
+housekeeping often fits because it can reduce return-time reorientation. Second
+is a bounded set of larger-authority orders the operator explicitly
+preauthorizes before leaving. Those are options, not a promised sequence:
+“capacity permitting” is implicit unless an order is marked required, and
+dependencies, source revision, environment, budget, active window, verifier
+capacity, and the selected planning policy still participate in activation.
+
+Operator silence alone does not create the portfolio. A versioned policy says
+whether an away event or lack of new ordering activates it, which planning
+strategy ranks it, how many slots it owns, and what return, pause, expiry,
+failure, or budget event stops, resets, or replenishes it. Selection does not
+grant authority; a larger order's grant comes from its recorded
+preauthorization or standing regime. A return view distinguishes completed,
+active, skipped, blocked, and still-optional work and foregrounds material
+changes and unresolved decisions.
+
+The current one-slot resume protocol remains manual and authoritative. No
+automatic allocator, approval phrase, queue schema, or concurrency model is
+selected by this candidate.
+
 ## Capability progression policies
 
 The application ladder is one release view. Inside and across its rungs, DotLn
@@ -242,14 +291,14 @@ Also retain **eligibility/opportunity**—how often the capability could have
 activated—so a low count is interpretable. These measures must not collapse into
 one popularity score:
 
-| Signal                              | Likely question                                                                  |
-| ----------------------------------- | -------------------------------------------------------------------------------- |
-| high opportunity, low activation    | Is selection, discoverability, tagging, or policy wrong?                         |
-| high activation, low utilization    | Did we bring part of the whole stash into this map without changing the outcome? |
-| high utilization, low evidence gain | Is it repeatedly working without learning, or are outcomes unmeasured?           |
-| high utilization, poor outcomes     | Is the capability weak, mis-scoped, or blocking the system?                      |
-| low use, catastrophic consequence   | Is this a rare invariant that must remain mature despite low frequency?          |
-| rising XP, unchanged level          | Which unsatisfied promotion gate is holding it back?                             |
+| Signal                              | Likely question                                                             |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| high opportunity, low activation    | Is selection, discoverability, tagging, or policy wrong?                    |
+| high activation, low utilization    | Did we equip a gear set this map did not need without changing the outcome? |
+| high utilization, low evidence gain | Is it repeatedly working without learning, or are outcomes unmeasured?      |
+| high utilization, poor outcomes     | Is the capability weak, mis-scoped, or blocking the system?                 |
+| low use, catastrophic consequence   | Is this a rare invariant that must remain mature despite low frequency?     |
+| rising XP, unchanged level          | Which unsatisfied promotion gate is holding it back?                        |
 
 Utilization can be causal only where the fixture or counterfactual supports the
 claim; otherwise label it `participated`, not `caused`. XP can be positive,
@@ -783,8 +832,10 @@ adopt, adapt, or relay it; and paired branches show what changed inside a
 declared simulation. It joins the executable pattern workshop to the simulation
 laboratory without promoting application content into the kernel. Calling it the
 prospective flagship records ambition, not product evidence, release priority,
-or permission to expand a current work order. A small basketball squad is a
-candidate first proof, not a selected milestone.
+or permission to expand a current work order. Within the application layer it
+belongs to the intended first cohort; that sequencing signal does not move it
+ahead of the platform ladder or select a delivery date. A small basketball
+squad is a candidate first proof, not a selected milestone.
 
 The broader simulation catalog remains: paired counterfactuals, first-divergence
 search, agent swaps, all-clone towns, reflection-question design, time-dilation,
@@ -795,9 +846,12 @@ generation, and length-scale attention aggregation (the full founding catalog
 lives in the ledger's chat-005 entries; later operator-dispatched additions are
 recorded in newer ledger sections); an Embodied Explorer fixture that learns
 evidence-backed composite skills from bounded sensorimotor primitives in a 3D
-simulator; the full pattern shelf (Compendium skin); remaining transmog skins;
-physical-card importer; hypothesis flywheel. All are gated on the same kernel,
-and no application, simulation, or embodiment choice may distort Horizon 1.
+simulator; a later commander-mediated strategy sibling where commander options,
+operator riffs, issued tactics, actual execution, and outcomes remain separately
+inspectable; the full pattern shelf (Compendium skin); remaining transmog
+skins; physical-card importer; hypothesis flywheel. All are gated on the same
+kernel, and no application, simulation, or embodiment choice may distort
+Horizon 1.
 
 Additional horizon: a lightweight offline-capable IR verifier; explicit
 application/schema/artifact/component version lineage; inspectable JIT
@@ -807,6 +861,23 @@ general behavioral toolbox whose game-AI use tests whether actors, loadouts,
 Programs, Cadences, preview, simulation, and replay genuinely generalize. See
 10-ir-compatibility.md. Distribution as package, executable, cloneable repo, web
 generator, or compact share code remains an evidence-driven choice.
+
+Also unscheduled: make the platform/personal-implementation split physical and
+ship an owner-sovereign instance profile that may remove DotLn-level approvals,
+verification, retention, replay, and advisory warnings for an owner who chooses
+that tradeoff. The profile is not preconfigured by this horizon statement, and
+it cannot promise to override a model provider, harness, operating system, or
+destination outside DotLn's control. Its presence policy must be able to
+distinguish attention, work scope, effect authority, and external capability and
+exercise hold, shrink, progressive-growth, cap, return/reset, and non-ratcheting
+loop fixtures.
+
+Also unscheduled: replace worktree-local intake drift with one canonical private
+store plus capture, status, backup, and reconciliation operations. The helper
+must prove collision-safe, interruption-safe movement from a disposable
+worktree, keep raw names and bytes out of public artifacts, and distinguish
+storage reconciliation from the ideation/re-mining receipt that records
+semantic reconciliation.
 
 Two unscheduled infrastructure probes share that same gate. An orchestration
 conformance probe may lower one bounded Program through LangGraph and compare it

@@ -5,6 +5,12 @@ timeline and zero-asset glyph scene only; the complete terminal control surface,
 web/spatial console, editable equivalent views, replay UI, and build inspector
 remain planned unless a section explicitly says otherwise.
 
+These are capability contracts, not mandatory screens for every private DotLn
+implementation. When an implementation declares an editable-view, projection,
+inspection, history, or replay capability, the corresponding laws below bind
+that surface. An implementation may omit a rich inspector or UI and must then
+declare the capability absent rather than imply that the surface exists.
+
 One normalized program; an **open-ended, increasing** set of equivalent views
 (the set is extensible by design — an operator nuance, not a fixed list).
 Editable views satisfy round-trip laws: `decode(encode(x)) = normalize(x)`;
@@ -16,7 +22,8 @@ away.
 
 ## Terminal first, console equal
 
-The terminal is a complete control surface; the web console invokes the same
+This section specifies the author's reference interface profile. The terminal
+is a complete control surface; the web console invokes the same
 commands against the same state machine ("the UI is not a second implementation
 of the workflow"). **Input is welcome at any length.** Rambling is a feature,
 not a failure mode: a ten-paragraph dump of wants, warnings, references, and
@@ -35,8 +42,9 @@ supporting procedure. DotLn cannot detect or certify that psychological state,
 but interface evaluation can observe the costs that repeatedly break it—context
 restatement, avoidable interruptions, manual coordination, status polling,
 recovery ceremony, and decisions presented without enough information to act.
-Reducing those costs is a product outcome only while authority, evidence,
-privacy, and recoverability remain intact.
+Reducing those costs is a product outcome only while the authority, evidence,
+privacy, and recoverability capabilities selected by this profile remain
+intact.
 
 **Interruptions arrive only as decision packets** (conflict, current behavior,
 lettered options, recommendation + rationale, impact of waiting), and only under
@@ -52,13 +60,21 @@ behavior-consistent, and documentable as an assumption. The never-ask list:
 "should I run the unit test / start localhost / read the attachment" are already
 dictated by the loadout and state machine and must never surface (Principle 6).
 
-This host-owned interruption policy plus its projection is DotLn's candidate
+This host-owned interruption policy plus its projection is the reference
+implementation's candidate
 **attention interface**: every interruption says why attention is required now,
 the exact decision, evidence, recommendation, safe default, impact of waiting,
 and what authorized work can continue. It is not the domain model's
 mechanism-activation `AttentionPolicy`, a resident coordinator, or a model of
 the operator's psychology; corrections may propose versioned policy changes but
 never mutate interruption behavior silently.
+
+When `PresencePolicy` is equipped, its inspector uses four tracks rather than
+one autonomy score: attention priority, work-scope budget, effect authority,
+and observed external capability. It shows the source grant, recorded trigger,
+current tranche, active window, ceiling, and stop/reset/replenishment behavior.
+A work-order portfolio separately shows which orders are eligible, optional,
+selected, active, or blocked; selection never masquerades as authorization.
 
 ### Candidate — exact operator command vocabulary
 
@@ -78,10 +94,13 @@ receipt, and state transition. Unknown phrases and illegal combinations refuse
 loudly. Existing `resume:` and `ideation:` dispatches demonstrate the mechanism
 but are not aliases that dilute the Westworld lexicon. Within the operator-owned
 workflow, a command may pause automation, replace a pending conversational
-intent, or bind the next mode and actions exactly. It cannot bypass platform
-safety, the Clean Room floor, permissions, evidence gates, or external-effect
-authority. Every projection shows the exact active command and the exact phrase
-that exits it.
+intent, or bind the next mode and actions exactly. It cannot by itself bypass
+the active implementation doctrine: this repository's personal profile still
+applies its Clean Room, permission, evidence, and external-effect rules. A
+future owner-sovereign profile may define an authenticated doctrine-change or
+owner-direct command, but no activation phrase has been supplied or selected.
+Every projection shows the exact active command and the exact phrase that exits
+it.
 
 **The operator stays in the idea and judgment loop.** Hand-authoring identities,
 patterns, and agent definitions via the reviewed-markdown workflow (proposed
@@ -97,29 +116,34 @@ The operator-named first-party application, specified in
 [`11-proteino.md`](11-proteino.md), turns the long-form input contract into a
 playable loop. The operator observes a small persistent community, selects one
 resident or a meaningful set, and writes at any useful length. Selection
-expresses intended recipients; prose supplies the intervention. The app retains
-the source and exposes its derived propositions, delivery force, recipient set,
-comparison subjects, scope, duration, uncertainty, and constraints without
-forcing every thought to match an already-published pattern. A person or group
-can receive an intervention whose subject is a relationship, activity, or event
-pattern; recipient and subject are not one field by assumption.
+expresses intended recipients; prose supplies the intervention. The app holds
+the source through active interpretation and delivery, retains it according to
+the selected source/history policy, and exposes its derived propositions,
+delivery force, recipient set, comparison subjects, scope, duration,
+uncertainty, and constraints without forcing every thought to match an already-
+published pattern. A person or group can receive an intervention whose subject
+is a relationship, activity, or event pattern; recipient and subject are not one
+field by assumption.
 
-The world view can overlay delivered, ignored, refused, misinterpreted, tried,
-adopted, adapted, abandoned, and relayed paths. Each visual mark opens the
-evidence behind it: intended and derived interpretation, participating temporary
-or reusable mechanics, resident decisions, events, evaluated outcomes, and
-branch comparison. These are inspectable derivations, not claims to read hidden
+When the chosen assurance/history capabilities are equipped, the world view can
+overlay delivered, ignored, refused, misinterpreted, tried, adopted, adapted,
+abandoned, and relayed paths. Each visual mark opens the retained evidence
+behind it: intended and derived interpretation, participating temporary or
+reusable mechanics, resident decisions, events, evaluated outcomes, and branch
+comparison. These are inspectable derivations, not claims to read hidden
 thought. Before/after views label correlation; controlled paired runs and first
-divergence support stronger simulation-scoped claims.
+divergence support stronger simulation-scoped claims. A profile without those
+capabilities labels the overlays unavailable.
 
 An activity may replace the general world controls with a purpose-built
-projection while keeping the same selection, commands, canonical state, event
-history, authority checks, and replay. An apparently usable affordance must be
-meaningfully interactive or visibly unavailable. Uncommon reactions may remain
-surprising before discovery, but afterward they are seed/version-addressed,
-replayable, and inspectable by an authorized evaluator. Exact preview timing,
-resident implementation, intervention artifact, renderer, and first scenario
-remain open.
+projection while keeping the same selection, commands, canonical state, and
+every history, authority, and replay contract the chosen profile equips. An
+apparently usable affordance must be meaningfully interactive or visibly
+unavailable. When history and replay are equipped, uncommon reactions may
+remain surprising before discovery but become seed/version-addressed and
+inspectable afterward. Exact preview timing, resident implementation,
+intervention artifact, renderer, first scenario, and flagship profile remain
+open.
 
 ## Plural UI hosts, one projection contract
 
@@ -129,7 +153,8 @@ that are not known yet. A Babylon.js host is a promising candidate for the
 spatial/RPG/simulation projection, while an Angular host is the operator's
 familiar candidate for a conventional application shell. Neither is the
 canonical application. Each consumes the same normalized view models, commands,
-event history, authority checks, and semantic hashes; no UI host may grow a
+semantic hashes, and any history or authority projections the selected profile
+declares. An absent capability stays visibly unavailable; no UI host may grow a
 second workflow state machine or domain truth.
 
 Framework selection remains local to the projection and is decided when the
@@ -286,9 +311,11 @@ The review surface shows the observed problem or opportunity, provenance,
 corroborating and dissenting evidence, alternatives, risks, duplicates,
 uncertainty, proposed scope, and any candidate work-order draft. It separates
 author-supplied evidence from independent evidence still required after
-promotion. Reviewers can request changes, register, defer, reject, mark a
-duplicate, or send the candidate to operator-authorized planning; each action
-retains its reason and lineage.
+promotion by the author's proposal workflow. Another profile may expose an
+owner-accepted or unverified disposition instead. Reviewers can request changes,
+register, defer, reject, mark a duplicate, or send the candidate to
+operator-authorized planning; each action retains its reason and lineage when
+that history capability is equipped.
 
 The authority distinction must be impossible to miss: **merge proposal** means
 “keep this as a durable planning candidate,” while **promote to WorkOrder** is a
@@ -378,14 +405,15 @@ appearance only — literal semantic transmog.
 
 ## Replay
 
-Because every view is a projection of the event log, the whole interface is
-scrubbable: a timeline slider replays spawns/despawns, ghost incarnations, links
-lighting, supports arming, failures flipping glyphs, work products traveling,
-continuations as unfilled paths, the Watcher narrating at the edge. This answers
-"what is DotLn doing?" without reading transcripts — and it is the same
-machinery Horizon 3 uses for counterfactual comparison: run-orbs, each replayed
-run rendered as one scrubbable object with parameter dials, shown side by side
-to find the first divergence.
+When history and replay are equipped, every compatible view can be projected
+from the event log and the interface becomes scrubbable: a timeline slider
+replays spawns/despawns, ghost incarnations, links lighting, supports arming,
+failures flipping glyphs, work products traveling, continuations as unfilled
+paths, and the Watcher narrating at the edge. This answers "what is DotLn
+doing?" without reading transcripts and gives Horizon 3 its counterfactual
+comparison surface: run-orbs rendered side by side with parameter dials and a
+first-divergence view. An implementation without retained history does not
+offer this surface.
 
 ## Physical channel
 

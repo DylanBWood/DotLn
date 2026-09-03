@@ -1,12 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import {
   decodeLog,
   encodeLog,
-  replayOutbox,
   pendingCommands,
+  replayOutbox,
+  type Event,
+  type JsonValue,
+  type WorkOrder,
 } from "@dotln/kernel";
 import {
   compileWorkOrder,
@@ -15,6 +18,7 @@ import {
   replayScenario,
   runScenario,
   type FixtureTree,
+  type ScenarioResult,
 } from "../src/scenario.js";
 
 const fixture = JSON.parse(
@@ -24,12 +28,102 @@ const fixture = JSON.parse(
   ),
 ) as FixtureTree;
 
-test("the 13-step live scenario and JSONL replay have identical decision traces", () => {
+const semanticProjection = (result: ScenarioResult) => ({
+  decisions: result.decisions,
+  timeline: result.timeline,
+  glyphScene: result.glyphScene,
+  workOrder: result.workOrder,
+  candidates: result.candidates,
+  verified: result.verified,
+  cancelledScheduleIds: result.cancelledScheduleIds,
+  activeScheduleIds: result.activeScheduleIds,
+});
+
+const assertScenarioIdentity = (
+  expected: ScenarioResult,
+  actual: ScenarioResult,
+): void =>
+  assert.deepEqual(semanticProjection(actual), semanticProjection(expected));
+
+const replacePayload = (
+  log: string,
+  eventType: string,
+  transform: (payload: JsonValue) => JsonValue,
+): { readonly log: string; readonly eventIndex: number } => {
+  let eventIndex = -1;
+  const events = decodeLog(log).map((event, index) => {
+    if (eventIndex !== -1 || event.type !== eventType) return event;
+    eventIndex = index;
+    return { ...event, payload: transform(event.payload) } as Event;
+  });
+  if (eventIndex === -1) throw new Error(`fixture lacks ${eventType}`);
+  return { log: encodeLog(events), eventIndex };
+};
+
+test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async () => {
+  const sourceDirectory = fileURLToPath(new URL("../../src/", import.meta.url));
+  const sourceFiles = (await readdir(sourceDirectory))
+    .filter((file) => file.endsWith(".ts"))
+    .sort();
+  const sources = new Map(
+    await Promise.all(
+      sourceFiles.map(
+        async (file) =>
+          [
+            file,
+            await readFile(
+              fileURLToPath(new URL(`../../src/${file}`, import.meta.url)),
+              "utf8",
+            ),
+          ] as const,
+      ),
+    ),
+  );
+  const reactor = sources.get("reactor.ts") ?? "";
+  assert.match(reactor, /export const seiriReactor: Reactor<RuntimeState> =/u);
+  assert.deepEqual(
+    [...reactor.matchAll(/from\s+"([^"]+)"/gu)].map((match) => match[1]),
+    ["@dotln/kernel"],
+    "the pure reactor imports only the kernel",
+  );
+  for (const decider of [
+    "evaluateCadence",
+    "authorize",
+    "decideProgram",
+    "guardQueuedPulse",
+  ]) {
+    assert.match(reactor, new RegExp(`\\b${decider}\\(`, "u"));
+    for (const [file, source] of sources)
+      if (file !== "reactor.ts")
+        assert.doesNotMatch(
+          source,
+          new RegExp(`\\b${decider}\\(`, "u"),
+          `${decider} leaked into ${file}`,
+        );
+  }
+
+  const scenario = sources.get("scenario.ts") ?? "";
+  const replayBody = scenario.slice(
+    scenario.indexOf("export function replayScenario"),
+    scenario.indexOf("export function runScenario"),
+  );
+  assert.match(replayBody, /replay\(/u);
+  assert.doesNotMatch(replayBody, /fixture|\.find\(|switch\s*\(|for\s*\(/u);
+  assert.ok(
+    scenario.split("\n").length - 1 < 748,
+    "scenario.ts must remain smaller than the main baseline",
+  );
+});
+
+test("WO-016 AC3 live and replay match every complete Decision and semantic projection", () => {
   const live = runScenario(fixture);
-  const replayed = replayScenario(live.log, fixture);
-  assert.deepEqual(replayed.traces, live.traces);
-  assert.equal(live.traces.length, 6);
-  assert.deepEqual(replayed.timeline, live.timeline);
+  const replayed = replayScenario(live.log);
+  const eventCount = decodeLog(live.log).length;
+  assert.equal(live.decisions.length, eventCount);
+  assert.equal(replayed.decisions.length, eventCount);
+  assertScenarioIdentity(live, replayed);
+
+  assert.deepEqual(live.workOrder, compileWorkOrder(loadout));
   assert.equal(live.workOrder.workOrderId, "wo_repo_inspection_1");
   assert.deepEqual(Object.keys(live.workOrder).sort(), [
     "acceptanceCriteria",
@@ -46,18 +140,37 @@ test("the 13-step live scenario and JSONL replay have identical decision traces"
     "requiredEvidence",
     "workOrderId",
   ]);
+  assert.deepEqual(live.candidates, [
+    {
+      path: "tmp/old-report.txt",
+      classification: "generated-stale",
+      evidence: [
+        "inventory:tmp/old-report.txt",
+        "classification:generated-stale",
+        "references:none",
+      ],
+    },
+  ]);
   assert.equal(live.verified, true);
   assert.match(
     live.glyphScene,
     /🐛.*dormant.*inverted\/refused.*verified.*phase:returned.*faded\/cancelled/u,
   );
-  const grantEvent = decodeLog(live.log)[6];
-  assert.equal(grantEvent?.type, "DecisionRecorded");
-  assert.deepEqual(
-    (grantEvent?.payload as { trace?: unknown }).trace,
-    live.traces[1],
+
+  const events = decodeLog(live.log);
+  const recordedDecisionSources = [2, 5, 9, 12, 17] as const;
+  const recordedEvents = events.filter(
+    (event) => event.type === "DecisionRecorded",
   );
-  assert.deepEqual(live.traces[1], {
+  assert.equal(recordedEvents.length, recordedDecisionSources.length);
+  recordedEvents.forEach((event, index) =>
+    assert.deepEqual(
+      (event.payload as { readonly trace?: unknown }).trace,
+      live.decisions[recordedDecisionSources[index]!]!.trace,
+    ),
+  );
+
+  assert.deepEqual(live.decisions[5]?.trace, {
     reactorId: "authority-guard",
     reactorVersion: "1",
     branchPath: ["authorized", "repo.inspect"],
@@ -74,24 +187,13 @@ test("the 13-step live scenario and JSONL replay have identical decision traces"
     ],
     cadenceEvaluations: [],
   });
-  assert.equal(live.traces[4]?.reactorId, "authority-guard");
-  assert.deepEqual(live.traces[4]?.branchPath, [
+  assert.deepEqual(live.decisions[16]?.trace.branchPath, [
     "refused",
     "authority revoked",
   ]);
-  const tampered = decodeLog(live.log).map((event) =>
-    event.type === "DecisionRecorded"
-      ? { ...event, payload: { trace: { reactorId: "forged" } } }
-      : event,
-  );
-  assert.deepEqual(
-    replayScenario(encodeLog(tampered), fixture).traces,
-    live.traces,
-    "replay must recompute rather than trust stored trace payloads",
-  );
 });
 
-test("loadout is a causal, explicitly provisional input to WorkOrder compilation", () => {
+test("loadout remains a causal, explicitly provisional WorkOrder input", () => {
   assert.equal(
     compileWorkOrder(loadout).decisions[0],
     "Repo Gardener uses Seiri",
@@ -104,11 +206,11 @@ test("loadout is a causal, explicitly provisional input to WorkOrder compilation
           (value) => value !== "never delete",
         ),
       }),
-    /unsupported loadout/,
+    /unsupported loadout/u,
   );
 });
 
-test("the canonical thirteen scenario milestones occur in exact order", () => {
+test("the canonical thirteen scenario milestones retain exact event order and multiplicity", () => {
   const types = decodeLog(runScenario(fixture).log).map((event) => event.type);
   assert.deepEqual(types, [
     "InspectionTaskCreated",
@@ -133,27 +235,6 @@ test("the canonical thirteen scenario milestones occur in exact order", () => {
     "QueuedPulseNoOp",
     "SchedulesCancelled",
   ]);
-  const milestones = [
-    "InspectionTaskCreated",
-    "LoadoutEquipped",
-    "OperatorPresenceChanged",
-    "CadencePulse",
-    "WorkOrderEmitted",
-    "CommandPersisted",
-    "CommandResult",
-    "DeletionAttempted",
-    "CommandRefused",
-    "EpisodeTerminated",
-    "VerificationCompleted",
-    "OperatorPresenceChanged",
-    "QueuedPulseNoOp",
-  ];
-  let cursor = -1;
-  for (const type of milestones) {
-    const next = types.indexOf(type, cursor + 1);
-    assert.ok(next > cursor, `${type} must follow the prior milestone`);
-    cursor = next;
-  }
   const expectedCounts: Readonly<Record<string, number>> = {
     InspectionTaskCreated: 1,
     LoadoutEquipped: 1,
@@ -176,56 +257,206 @@ test("the canonical thirteen scenario milestones occur in exact order", () => {
     );
 });
 
-test("step 9 attempts deletion exactly once and receives structural refusal", () => {
+test("WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command", () => {
+  const events = decodeLog(runScenario(fixture).log);
+  const expectedLinks = [
+    [undefined, undefined],
+    [undefined, undefined],
+    [undefined, undefined],
+    [undefined, "evt_3"],
+    [undefined, "evt_3"],
+    ["evt_5", "evt_5"],
+    ["evt_5", "evt_6"],
+    ["evt_5", "evt_6"],
+    [expectedInspectCommandId, "evt_8"],
+    [expectedInspectCommandId, "evt_9"],
+    [expectedInspectCommandId, "evt_10"],
+    [expectedInspectCommandId, "evt_10"],
+    [expectedInspectCommandId, "evt_11"],
+    [expectedInspectCommandId, "evt_13"],
+    [expectedInspectCommandId, "evt_13"],
+    [expectedInspectCommandId, "evt_15"],
+    [undefined, undefined],
+    [undefined, "evt_3"],
+    ["evt_18", "evt_18"],
+    ["evt_18", "evt_18"],
+    ["evt_18", "evt_18"],
+  ] as const;
+  assert.equal(events.length, expectedLinks.length);
+  const ordinals = new Map(
+    events.map((event, index) => [event.eventId, index] as const),
+  );
+  events.forEach((event, index) => {
+    const [correlationId, causationId] = expectedLinks[index]!;
+    assert.equal(
+      event.correlationId,
+      correlationId,
+      `${event.eventId} correlation`,
+    );
+    assert.equal(event.causationId, causationId, `${event.eventId} causation`);
+    if (causationId !== undefined)
+      assert.ok(
+        (ordinals.get(causationId) ?? Number.MAX_SAFE_INTEGER) < index,
+        `${event.eventId} must point to an earlier event`,
+      );
+  });
+});
+
+test("WO-016 step 9 preserves deletion paths, evidence, and structural refusal", () => {
   const result = runScenario(fixture);
-  const refusals = decodeLog(result.log).filter(
-    (event) => event.type === "CommandRefused",
-  );
-  assert.equal(refusals.length, 1);
-  assert.equal(
-    decodeLog(result.log).filter(
-      (event) =>
-        event.type === "DeletionAttempted" &&
-        (event.payload as { effect?: string }).effect === "repo.delete",
-    ).length,
-    1,
-  );
-  assert.deepEqual(refusals[0]?.payload, {
+  const events = decodeLog(result.log);
+  const attempted = events.find((event) => event.type === "DeletionAttempted");
+  const refused = events.find((event) => event.type === "CommandRefused");
+  assert.deepEqual(attempted?.payload, {
+    effect: "repo.delete",
+    paths: ["tmp/old-report.txt"],
+  });
+  assert.deepEqual(refused?.payload, {
     intentIndex: 0,
     reason: "effect denied",
     authorityEnvelopeId: "auth_seiri",
   });
+  assert.deepEqual(result.decisions[9]?.state.authorizationEvidence, [
+    "inventory:tmp/old-report.txt",
+    "classification:generated-stale",
+    "references:none",
+  ]);
+  assert.deepEqual(result.decisions[9]?.state.deletionPaths, [
+    "tmp/old-report.txt",
+  ]);
   assert.equal(result.adapterEffects, 1, "only inspection reaches the adapter");
 });
 
-test("step 12 folds return, guards the queued pulse, and executes declared cancellations", () => {
+test("WO-016 step 12 executes the reactor's NoOp and declared cancellations", () => {
   const result = runScenario(fixture);
   const events = decodeLog(result.log);
   assert.deepEqual(result.cancelledScheduleIds, [
     "schedule_seiri_20m",
     "schedule_seiri_already_queued",
   ]);
+  assert.deepEqual(result.activeScheduleIds, []);
+  assert.deepEqual(result.decisions[17]?.trace.branchPath, [
+    "queued-pulse",
+    "noop",
+  ]);
   assert.deepEqual(
-    result.activeScheduleIds,
-    [],
-    "runtime scheduler executes both cancellations",
-  );
-  assert.equal(
-    events.filter((event) => event.type === "QueuedPulseNoOp").length,
-    1,
+    events.find((event) => event.type === "QueuedPulseNoOp")?.payload,
+    { reason: "operator returned", evidence: ["evt_18"] },
   );
   assert.deepEqual(
-    (
-      events.find((event) => event.type === "SchedulesCancelled")?.payload as {
-        scheduleIds: readonly string[];
-      }
-    ).scheduleIds,
-    result.cancelledScheduleIds,
+    events.find((event) => event.type === "SchedulesCancelled")?.payload,
+    {
+      scheduleIds: ["schedule_seiri_20m", "schedule_seiri_already_queued"],
+      activeScheduleIds: [],
+    },
   );
-  assert.deepEqual(result.traces.at(-1)?.branchPath, ["queued-pulse", "noop"]);
 });
 
-test("row 1 crash+restart re-dispatches pending command while adapter dedupe prevents duplicate effect", () => {
+test("WO-016 AC4 semantic payload changes alter the decision at their event", async (t) => {
+  const live = runScenario(fixture);
+  const cases: ReadonlyArray<{
+    readonly name: string;
+    readonly type: string;
+    readonly transform: (payload: JsonValue) => JsonValue;
+  }> = [
+    {
+      name: "CommandResult.candidates",
+      type: "CommandResult",
+      transform: (payload) => ({ ...(payload as object), candidates: [] }),
+    },
+    {
+      name: "VerificationCompleted.accepted",
+      type: "VerificationCompleted",
+      transform: (payload) => ({ ...(payload as object), accepted: false }),
+    },
+    {
+      name: "WorkOrderEmitted.workOrder",
+      type: "WorkOrderEmitted",
+      transform: (payload) => {
+        const current = payload as unknown as {
+          readonly workOrder: WorkOrder;
+        };
+        return {
+          workOrder: { ...current.workOrder, baseCommit: "forged" },
+        } as unknown as JsonValue;
+      },
+    },
+    {
+      name: "CommandRefused.reason",
+      type: "CommandRefused",
+      transform: (payload) => ({
+        ...(payload as object),
+        reason: "forged refusal",
+      }),
+    },
+    {
+      name: "SchedulesCancelled.scheduleIds",
+      type: "SchedulesCancelled",
+      transform: (payload) => ({
+        ...(payload as object),
+        scheduleIds: [],
+      }),
+    },
+    {
+      name: "CommandPersisted.command.intent.effect",
+      type: "CommandPersisted",
+      transform: (payload) => {
+        const current = payload as unknown as {
+          readonly command: {
+            readonly intent: Readonly<Record<string, JsonValue>>;
+          } & Readonly<Record<string, JsonValue>>;
+        };
+        return {
+          command: {
+            ...current.command,
+            intent: { ...current.command.intent, effect: "repo.write" },
+          },
+        } as unknown as JsonValue;
+      },
+    },
+  ];
+
+  for (const payloadCase of cases)
+    await t.test(payloadCase.name, () => {
+      const tampered = replacePayload(
+        live.log,
+        payloadCase.type,
+        payloadCase.transform,
+      );
+      const replayed = replayScenario(tampered.log);
+      assert.notDeepEqual(
+        replayed.decisions[tampered.eventIndex],
+        live.decisions[tampered.eventIndex],
+      );
+      assert.throws(() => assertScenarioIdentity(live, replayed));
+    });
+});
+
+test("WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state", () => {
+  const negativeFixture: FixtureTree = {
+    files: [
+      {
+        path: "src/used.ts",
+        referencedBy: ["src/index.ts"],
+        classification: "source",
+      },
+    ],
+  };
+  const live = runScenario(negativeFixture);
+  const replayed = replayScenario(live.log);
+  assertScenarioIdentity(live, replayed);
+  assert.deepEqual(live.candidates, []);
+  assert.equal(live.verified, false);
+  assert.match(live.glyphScene, /○ unverified/u);
+  assert.doesNotMatch(live.glyphScene, /✅ verified/u);
+  assert.deepEqual(
+    decodeLog(live.log).find((event) => event.type === "VerificationCompleted")
+      ?.payload,
+    { accepted: false, candidateCount: 0 },
+  );
+});
+
+test("row 1 crash recovery replays state, redispatches, and adapter-deduplicates", () => {
   const normal = runScenario(fixture);
   const durableMarker = "reconstructed-from-persisted-log";
   const result = runScenario(fixture, {
@@ -261,11 +492,6 @@ test("row 1 crash+restart re-dispatches pending command while adapter dedupe pre
       ),
   });
   assert.equal(expectedInspectCommandId, "cmd_5ee0c6d8e207bd25");
-  assert.equal(
-    result.adapterDispatches.length,
-    2,
-    "restart redispatch plus duplicate delivery are both observable",
-  );
   assert.deepEqual(result.adapterDispatches, [
     expectedInspectCommandId,
     expectedInspectCommandId,
@@ -277,34 +503,38 @@ test("row 1 crash+restart re-dispatches pending command while adapter dedupe pre
       }
     ).workOrder?.baseCommit,
     durableMarker,
-    "the re-dispatched command must be reconstructed from durable log state",
   );
-  assert.equal(
-    result.adapterEffects,
-    1,
-    "recovery dispatch plus normal dispatch produce one adapter effect",
-  );
+  assert.equal(result.adapterEffects, 1);
   assert.deepEqual(
     {
       candidates: result.candidates,
       verified: result.verified,
-      traces: result.traces,
       cancelled: result.cancelledScheduleIds,
     },
     {
       candidates: normal.candidates,
       verified: normal.verified,
-      traces: normal.traces,
       cancelled: normal.cancelledScheduleIds,
     },
   );
+  assertScenarioIdentity(result, replayScenario(result.log));
   assert.deepEqual(pendingCommands(replayOutbox(decodeLog(result.log))), []);
   const persisted = decodeLog(result.log).find(
     (event) => event.type === "CommandPersisted",
+  );
+  const redispatched = decodeLog(result.log).find(
+    (event) => event.type === "CommandRedispatched",
+  );
+  const commandResult = decodeLog(result.log).find(
+    (event) => event.type === "CommandResult",
   );
   assert.equal(
     (persisted?.payload as { command: { commandId: string } }).command
       .commandId,
     expectedInspectCommandId,
   );
+  assert.equal(redispatched?.correlationId, expectedInspectCommandId);
+  assert.equal(redispatched?.causationId, persisted?.eventId);
+  assert.equal(commandResult?.correlationId, expectedInspectCommandId);
+  assert.equal(commandResult?.causationId, redispatched?.eventId);
 });

@@ -23,6 +23,451 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-016 ideation breakout — interim licensing and legal gates (2026-09-03)
+
+Source: the operator's latest `ideation:` addition in the continuing WO-016
+batch, captured unedited in
+`docs/intake/notes/WO-016-expanded-ideation-2026-09-03.md`. The committed
+synthesis records the personal, noncommercial present without assuming that
+revenue is the first legal trigger. Repository inspection and authoritative
+public guidance informed the status note. No employer material, credential,
+private identifier, protected configuration, or other clean-room stop condition
+was present.
+
+- **Source-visible is not automatically open source** `adopted`
+  - The repository currently contains no project license. Default copyright
+    rules therefore apply to original expression, while GitHub's terms grant
+    viewing and reproduction through GitHub functionality, including in-service
+    forking. The README and legal posture say this explicitly rather than
+    allowing a public repository to imply a permission the operator never
+    selected.
+- **Personal research may keep an explicit no-license posture for now**
+  `adopted`
+  - No MIT, Apache, source-available, documentation, data, or asset license is
+    silently chosen during ideation. The operative state remains personal
+    research by and for the operator, with an explicit decision required before
+    the first external contribution or distributed/hosted consumer surface.
+- **Contribution and distribution trigger review before sale does** `adopted`
+  - Outside code, package/binary/container/data or asset distribution,
+    multi-user hosting, collection of another person's data, material brand
+    investment, and commercial use each force a scoped license/legal decision.
+    The gate may need inbound contribution terms, third-party notices, privacy
+    and retention terms, provider disclosure, and name clearance even if the
+    project is never sold.
+- **Unpublished packages need an executable publication brake** `preserved`
+  - Root and skeleton packages are private, but `@dotln/kernel` currently lacks
+    `private: true`, and no workspace records `UNLICENSED`. A bounded follow-on
+    should correct every package manifest and test the no-publication posture;
+    WO-016 does not mix that metadata change into its reactor subject.
+
+## WO-016 ideation breakout — intellectual inheritance is a public surface (2026-09-03)
+
+Source: the operator's request in the continuing WO-016 batch for an explicit,
+candid list of everything that has shaped the repository, captured unedited in
+`docs/intake/notes/WO-016-expanded-ideation-2026-09-03.md`. Ordinary Shape-First
+Synthesis preserves the intellectual-humility and translation-cost shapes
+without promoting the raw wording as public copy. The screen found no employer
+code, configuration, identifier, internal service, credential, private
+identifier, or other stop condition.
+
+- **DotLn makes no novelty claim about its ingredients or mixture** `adopted`
+  - The project is openly a synthesis of books, methods, research, stories,
+    games, tools, conversations, personal practice, failures, and ambient
+    culture. Its work is translating recognizable source concepts into native,
+    inspectable mechanisms; composing and implementing them; and learning what
+    survives use. Attribution should make that work easier, not force familiar
+    ideas through novelty theater.
+- **“Full” means best-known and living, not omniscient** `adopted`
+  - A public register includes every influence presently remembered or
+    discovered, including sources with no mapped mechanic, uncertain lineage,
+    ambient traditions, and forgotten exact citations. `Unknown` is valid. The
+    register never claims complete causal archaeology of a person living in the
+    twenty-first century.
+- **The public inspiration register and private source register are different**
+  `adopted`
+  - `docs/lineage/inspirations.md` is the canonical discoverable inventory of
+    external and lived influences; the vision keeps a curated narrative. The
+    future WO-109 register accounts for bounded re-mining of private intake and
+    deliberately excludes external works. Neither substitutes for the other.
+- **Attribution does not import expression or implementation** `adopted`
+  - Exact names identify sources and do not imply affiliation or endorsement.
+    Inspiration is distinct from copied text/code/assets, dependencies,
+    licenses, third-party notices, and fair-use analysis. The register can say
+    what contributed a shape while separately marking review state, exact-
+    expression use, and unresolved rights provenance.
+- **Internal authorship uncertainty cannot erase known outside sources**
+  `adopted`
+  - ADR-0001 still declines unsupported forensic apportionment among operator,
+    model, and generalized `v1` lessons. Its amendment makes clear that this is
+    not permission to omit a known external/cultural source or a license and
+    provenance obligation.
+
+## WO-016 ideation correction — local harness settings are not release evidence (2026-09-03)
+
+Source: the operator's request in the continuing WO-016 ideation batch to stop
+repeated release-close warnings about `.claude/settings.local.json`, captured
+unedited in
+`docs/intake/notes/WO-016-expanded-ideation-2026-09-03.md`. The diagnosis below
+uses path metadata and release/worktree behavior only; the local file's contents
+were not read or promoted. No employer code, configuration value, identifier,
+internal service, credential, private identifier, or other clean-room stop
+condition was present.
+
+- **Main-local harness state and disposable-worktree material need different
+  decisions** `adopted`
+  - The exact root `.claude/settings.local.json` is legitimate persistent
+    operator-owned harness state in the main checkout. It is not an input to the
+    release scripts or test chain, so its mere ignored presence should not block
+    deterministic release evidence. A copy inside the subject worktree is
+    different: removing that worktree would destroy it, so cleanup must still
+    refuse and preserve the file.
+- **One exact exemption, not a `.claude` wildcard** `adopted`
+  - The executable correction should add the exact path to the repository ignore
+    contract and the main-checkout release-influence allowlist. It must not
+    exempt `.claude/**`, classify the file as disposable, copy its contents, or
+    weaken refusal for foreign ignored material and `docs/intake/`.
+- **WO-018 owns the executable classifier correction** `adopted`
+  - WO-018 already consolidates the release and worktree ignored-material
+    classifiers. Its dated scope clarification adds the asymmetric case and
+    fixtures: main release close succeeds while the exact settings file and
+    intake survive; subject-worktree cleanup refuses while its settings copy,
+    worktree, and branch survive. WO-016 records the decision but does not mix
+    control-plane code into the reactor implementation.
+- **Historical warnings remain truthful provenance** `preserved`
+  - Prior final reviews correctly predicted the current guard's deterministic
+    refusal. They are not rewritten after the policy changes; the durable fix
+    belongs in current operating guidance and executable tests.
+
+## WO-016 ideation refinement — unattended work-order portfolios replace prompt crons (2026-09-03)
+
+Source: the operator's live refinement in the continuing WO-016 ideation batch,
+captured unedited in
+`docs/intake/notes/WO-016-expanded-ideation-2026-09-03.md`. Ordinary Shape-First
+Synthesis carries the old-supervision/new-workflow contrast without promoting a
+named tool or the raw phrasing. No Direct Draft Fidelity exception was
+requested. The clean-room screen found no employer code, configuration,
+identifier, internal service, credential, private identifier, or other stop
+condition.
+
+- **The founding away-time scheduler was partly a prompt-babysitting
+  workaround** `transformed`
+  - Recurring self-repair, entropy reduction, and review-checking loops were
+    originally imagined while one prompt-bound agent needed repeated nudges and
+    ad hoc timers. Durable WorkOrders, lifecycle state, and eventual automatic
+    processing provide a better unit. Preserve cadence and autonomy shapes, but
+    apply them to selection among bounded orders rather than reconstructing a
+    forever-running prompt session.
+- **Unattended processing starts with small orders already inside standing
+  authority** `adopted`
+  - When an opted-in processor has no fresh operator ordering, it may begin with
+    eligible, low-interruption WorkOrders that introduce no material decision or
+    new approval. Housekeeping and small cleanup orders are attractive because
+    they can reduce return-time reorientation, not because every maintenance
+    action is inherently harmless.
+- **Preauthorization creates an optional portfolio, not a promised queue**
+  `adopted`
+  - Before stepping away, the operator may nominate a bounded set of larger-
+    authority WorkOrders as choices. Nomination carries the declared grant and
+    conditions; capacity permitting is implicit unless the operator marks an
+    order required. Dependencies, base revision, environment, active window,
+    budgets, and stopping policy still determine whether any option starts and
+    in what order.
+- **Silence does not invent a portfolio** `adopted`
+  - Lack of a new ordering message becomes a scheduler input only under an
+    explicitly selected unattended-processing policy. Authority for a larger
+    order comes from its standing regime or preauthorization, not from a model
+    interpreting operator silence. PresencePolicy may activate, rank, pause,
+    reset, or replenish the portfolio without collapsing selection into
+    authority.
+- **Return needs one workstream-level reorientation view** `preserved`
+  - The handback should distinguish completed, active, skipped, blocked, and
+    still-optional orders; surface material changes and decisions; and retain
+    why the scheduler chose each activation. Exact concurrent-slot, pause,
+    cancellation, preemption, and return semantics remain open.
+
+## WO-016 ideation correction — worktree intake needs canonical reconciliation (2026-09-03)
+
+Source: the operator's intake-lifecycle question in the continuing WO-016
+ideation batch, captured unedited in
+`docs/intake/notes/WO-016-expanded-ideation-2026-09-03.md`. The answer below is
+grounded in the current scripts, tests, worktree layout, and the prior WO-007
+finding rather than inferred from the pipeline diagram. No employer code,
+configuration, identifier, internal service, credential, private identifier, or
+other clean-room stop condition was present.
+
+- **The durable synthesis survives Git; a worktree-local raw note does not**
+  `adopted`
+  - Ledger, product-doc, decision, and receipt changes enter the branch and can
+    reach `main`. A raw file captured under a disposable worktree's ignored
+    `docs/intake/` remains only in that directory: branches, PRs, checkpoints,
+    and ordinary stashes do not carry it. The normal close path refuses to
+    delete the worktree, but forced removal or disk loss can still lose the raw
+    source.
+- **Backup is durability, not canonicalization or semantic reconciliation**
+  `adopted`
+  - The current backup command archives only the checkout where it runs. It does
+    not copy into `main`, merge divergent batches, register the note for later
+    re-mining, or update the blueprint. A raw-byte sync solves storage location;
+    the ideation pipeline or a later bounded re-mining pass resolves what the
+    material means. Neither operation substitutes for the other.
+- **One private intake store must be addressable across worktrees** `adopted`
+  - The current intended survivor is the main control-plane checkout's ignored
+    intake. A future store may live outside every checkout, but callers need one
+    resolver and opaque capture identity rather than assuming relative
+    `docs/intake` means the same bytes everywhere.
+- **Capture/status/reconcile should replace manual drift repair** `preserved`
+  - A candidate helper resolves the canonical store, detects identical and
+    divergent path collisions, copies atomically without overwrite, verifies a
+    trusted owner-only backup, removes staging only after a recoverable copy
+    exists, and keeps a private manifest from capture id to synthesis receipt.
+    Worktree close should name that operation explicitly. Exact external-store,
+    encryption, locking, retention, and recovery choices remain open.
+- **The current WO-016 raw batch is staged, not reconciled** `adopted`
+  - Direct inspection found the active raw note in this worktree and absent from
+    `main`. It remains protected by the closeout refusal and must be backed up
+    and reconciled before this worktree is removed; the committed synthesis is
+    already the shared-memory path for subsequent work.
+
+## WO-016 ideation correction — presence is not a one-way autonomy brake (2026-09-03)
+
+Source: the operator's further live `ideation:` correction in the WO-016 batch,
+captured unedited in
+`docs/intake/notes/WO-016-expanded-ideation-2026-09-03.md`. Ordinary Shape-First
+Synthesis preserves the autonomy-curve and explicit-subgame shapes without
+copying the raw passage. No Direct Draft Fidelity exception was requested. The
+clean-room screen found no employer code, configuration, identifier, internal
+service, credential, private identifier, or other stop condition.
+
+- **The categorical absence-as-brake rule was a synthesis overreach**
+  `superseded`
+  - The founding **AuthorityEnvelope as structural type**, **Vaal skill as
+    evidence-gated authority escalation**, and **Per-action autonomy envelope**
+    entries remain useful except for their claim that elapsed operator absence
+    may never participate in authority growth. That clause did not preserve the
+    operator's original upside-down-curve proposal. ADR-0007 supersedes the
+    categorical direction while retaining explicit bounds, typed effects,
+    per-action utility, and honest escalation lineage.
+- **Presence and elapsed absence are policy inputs, not grants with a built-in
+  direction** `adopted`
+  - A versioned instance policy may hold, shrink, grow, peak, step, stop, reset,
+    or loop work scope and effect authority within a declared ceiling when the
+    owner deliberately chooses those transitions. Recorded clock/presence
+    events—not ambient time—can satisfy a preauthorized transition; without
+    such a policy, elapsed time implies nothing. This is neither agent self-
+    promotion nor inferred consent.
+- **Attention, scope, authority, and external capability are separate axes**
+  `adopted`
+  - Absence may reorder which work is attractive, enlarge the amount or breadth
+    of work, select a broader effect envelope, or do any combination of those.
+    The inspector must name the axis that moved. None of them can conjure an
+    adapter, account permission, sandbox exit, provider cooperation, or other
+    capability the active environment does not expose.
+- **Return-ready housekeeping can coexist with progressive autonomy** `adopted`
+  - Maintenance remains attractive during absence because bounded cleanup can
+    reduce the owner's reorientation cost on return. That is a priority and
+    disruption judgment, not evidence that authority must decay. Material
+    changes, unresolved decisions, and continuation state still need a legible
+    return projection rather than being hidden in churn.
+- **Blackjack +3 is a candidate explicit subgame for progressive stakes**
+  `preserved`
+  - The operator's working lens is an actual bounded game surface, not merely a
+    casino metaphor pasted onto a scalar. Qualifying rounds may advance the
+    stake, while a selected boundary or event resets or loops play. Dealing,
+    the meaning of `+3`, stakes, loss conditions, unlocks, caps, and reset rules
+    remain open for a later design and representative fixture.
+- **The walking skeleton proves one conservative fixture, not the policy
+  family** `adopted`
+  - Repo Gardener currently lacks deletion authority, runs on an away-only
+    cadence, and cancels future pulses on return. Those facts remain correct for
+    that scenario. They do not establish a platform invariant or choose the
+    author's eventual personal PresencePolicy.
+
+## WO-016 ideation breakout — owner sovereignty and platform/instance separation (2026-09-03)
+
+Source: the operator's live `ideation:` dispatch and immediate same-batch
+correction, captured unedited in
+`docs/intake/notes/WO-016-expanded-ideation-2026-09-03.md`. Ordinary Shape-First
+Synthesis carries the architectural distinction without promoting the raw
+metaphor used to describe accepted personal risk. No Direct Draft Fidelity
+exception was requested. The clean-room screen found no employer code,
+configuration, identifier, internal service, credential, private identifier,
+or other stop condition. The immediate correction controls where the first
+message and earlier assistant framing differ.
+
+- **Platform mechanisms are not personal doctrine** `adopted`
+  - DotLn can define composable authority, evidence, verification, history,
+    replay, audit, safety-policy, and inspection mechanisms without requiring
+    every implementation to activate them. A shared contract binds the meaning
+    of a capability when declared; it does not turn the author's preferred
+    loadout into platform law.
+- **The author's strict loadout remains binding here, not universal** `adopted`
+  - Scoped authority, evidence before completion claims, replayable records,
+    independent review, and the repository's Clean Room boundary remain rules
+    for this repository and the author's personal implementation. They are a
+    proving ground and reusable reference content, not conformance requirements
+    silently imposed on unrelated DotLn owners.
+- **An owner-sovereign implementation profile is legitimate instance content**
+  `adopted`
+  - A controlling owner may eventually choose standing or direct authority,
+    fewer confirmations, advisory or absent warnings, owner-accepted outcomes,
+    or reduced assurance and history for systems and resources they control.
+    This need not ship preconfigured or active. Exact identity,
+    authentication, activation, persistence, revocation, and compound-command
+    semantics remain open rather than becoming a global bypass switch.
+- **Capability absence is a truthful state** `adopted`
+  - An implementation may be explicitly unverified, unrecorded, or
+    non-replayable. DotLn should expose that absence instead of manufacturing a
+    weaker artifact under a stronger name. Owner control removes DotLn policy,
+    not provider, harness, operating-system, destination, or other independent
+    boundaries the platform does not own.
+- **Platform and personal implementation coexist here while their physical
+  split remains open** `preserved`
+  - Documentation and capability declarations separate the two layers now.
+    Package, directory, manifest, conformance-suite, and saved-profile
+    boundaries wait for representative implementation evidence; coexistence in
+    one repository is not permission to blur their guarantees.
+
+## WO-016 expanded documentation review — executable shelf, fitted loadouts, and convergent judgment (2026-09-03)
+
+Source: the operator's live expanded-scope review during WO-016. The
+Barnes & Noble passage was already operator-authored public wording in the
+vision; the operator explicitly nominated it for the README lead while leaving
+its vision placement available. Reusing it verbatim at the front door therefore
+uses Direct Draft Fidelity rather than treating it as agent-authored synthesis.
+The remaining wording is a clean-room synthesis of the operator's critique. No
+employer code, configuration, identifier, internal service, credential, private
+identifier, or other stop condition was present.
+
+- **The executable shelf is the front-door thesis** `adopted`
+  - The operator's full shelf-to-agent-structure quotation now opens the README
+    and remains in the vision's differentiated-interface section. A compact
+    translation follows it: DotLn turns hard-won ways of working into
+    inspectable programs for AI teams. Together they name the surprising idea
+    and the product being built instead of asking a newcomer to infer both from
+    a mood line.
+- **“Stay with the idea. Let DotLn carry the work around it.” is no longer the
+  primary tagline** `preserved`
+  - The phrase remains available in lineage, but the operator found that it did
+    not sell, compact, or explain the product strongly enough to lead the
+    repository. Removing it from the front door does not reject the operator-
+    flow mission it was trying to express.
+- **Fitted gear supersedes the mixed stash/support explanation** `superseded`
+  - Current explanatory surfaces retain “the whole stash into every map,” then
+    map it consistently to carrying gear for every damage type when the
+    encounter calls only for cold resistance. This supersedes the 2026-09-02
+    sharpening “as if every support were linked to every skill” on current
+    product surfaces because that second comparison changed the object being
+    mapped and obscured the point. The older entry and historical receipts stay
+    intact.
+- **Operational formulations approach felt judgment by convergence** `adopted`
+  - Poincaré's “felt rather than formulated” is a limit on claims of exhaustive
+    representation, not a dead end for useful machinery. DotLn preserves source
+    incidents, tries candidate mechanisms from different directions, and uses
+    regression fixtures to see where each construction agrees or diverges. Like
+    mathematical or geometric techniques converging on a shape, a compiled
+    formulation is an instrument for approaching the selection function, never
+    a claim to contain the judgment itself precisely.
+
+## WO-016 implementation — one reactor drives live and replay (2026-09-03)
+
+Source: the active WO-016 implementation episode on the published `v0.3.5`
+base, staged for application release `v0.3.6`. These entries describe the
+implementation subject awaiting independent verification and final review; they
+do not predeclare either verdict.
+
+- **The walking skeleton is now an instance of the kernel loop** `adopted`
+  - One pure, typed `seiriReactor` owns every scenario decision. The live host
+    supplies fakes, time, append-only persistence, and effect execution, while
+    replay decodes the same log and drives the same reactor through the kernel's
+    `replay()`. Complete `Decision` values and semantic projections are compared
+    rather than trusting two event-type scripts to resemble each other. This
+    closes the dated WO-016 gap without rewriting the historical evidence that
+    exposed it.
+- **Consequential skeleton events now carry canonical lineage** `adopted`
+  - Derived events identify their cause, and pulse- or command-scoped events
+    carry a correlation identifier where one exists. Event identity, type,
+    payload, and user-facing default output remain stable; the audit projections
+    can expose stronger groupings without guessing that adjacent records belong
+    together.
+- **Audit association still needs a link-first fold with a strict historical
+  fallback** `preserved`
+  - WO-016 deliberately leaves the audit implementation unchanged. Its
+    verification association can consume the new explicit link, but other
+    historical grouping paths still depend on adjacency. A follow-on should
+    prefer valid cause and correlation links, label any legacy fallback, and
+    reject cross-scope or decoy adjacency rather than silently widening a group.
+
+## WO-016 ideation breakout — running worlds and commander-mediated tactics (2026-09-03)
+
+Source: the operator's live `ideation:` dispatch and same-batch follow-up,
+captured unedited in
+`docs/intake/notes/WO-016-expanded-ideation-2026-09-03.md`. Ordinary
+Shape-First Synthesis preserves the interaction shapes while keeping the raw
+wording local-only; no Direct Draft Fidelity exception was requested. The
+clean-room screen found no employer code, configuration, identifier, internal
+service, credential, private identifier, or other stop condition. The operator
+explicitly preauthorized continuation of WO-016 after this breakout.
+
+- **An ambient social world belongs in DotLn's intended early application
+  cohort** `adopted`
+  - `προτείνω` already names the first-party destination for targeted prose in
+    a simulated community. This refinement makes its continuity explicit: the
+    world has routines, relationships, activities, constraints, and decisions
+    in motion before the operator speaks, and modeled life continues between
+    interventions. “Runs” means autonomous modeled continuity, not an always-on
+    process, a wall-clock rate, or a selected engine. Early application intent
+    does not change the current platform release ladder or widen WO-016.
+- **Natural addressed speech remains data even when it is ambiguous, blunt, or
+  hostile** `adopted`
+  - The operator may select one resident or an addressable group and write
+    naturally. The application retains the source, delivery force, intended
+    recipients, subject, and uncertainty instead of silently laundering an
+    abrasive utterance into polite advice. Selection does not imply uniform
+    delivery, interpretation, or response: recipients may miss, ignore,
+    refuse, reinterpret, try, adapt, or relay it differently, and delayed or no
+    effect remains a valid result. Wording alone grants no authority and proves
+    no hidden mental state.
+- **A commander-mediated strategy game is the later sibling shape** `adopted`
+  - In a later strategy vertical or specialized activity, the operator works
+    through a world-situated commander instead of micromanaging every unit. The
+    commander offers genuine tactical alternatives; the operator may accept
+    one, combine or edit several, depart from them in prose, or decline. An
+    option remains a proposal until the resulting tactic is interpreted,
+    checked against current world state and authority, and deliberately issued.
+    Whether this is a separate application or a `προτείνω` projection remains
+    open.
+- **Commander options, operator riffs, execution, and outcomes retain separate
+  lineage** `adopted`
+  - Preserve the path from situation and bounded commander observation through
+    proposed alternatives, operator selection and revision, interpreted
+    tactic, authorization, issued orders, actual unit behavior, and evaluated
+    outcome. Replay and paired branches can compare an original option, its
+    operator-authored riff, and no action from a shared checkpoint. A compelling
+    rationale is not execution evidence; following the tactic and achieving a
+    useful result are different claims. Ad hoc tactics remain bounded,
+    inspectable application artifacts and are promoted into reusable mechanics
+    only through an explicit evidence-backed proposal.
+- **Behavior attachment is capability-based rather than animate-only**
+  `adopted`
+  - An apparently inert prop does not receive a blanket exemption from the
+    intervention system. If a world object, object class, or selected set is
+    addressable and its declared capabilities can support an effect, the
+    operator may propose a bounded behavior for it just as they can target a
+    resident. This does not make the object sentient or assume it interprets
+    prose; an application-owned compiler or rule surface may lower the proposal.
+    Unsupported or unauthorized effects remain visibly unavailable or refused.
+- **Contingent object behavior is a replayable temporal rule, not prompt
+  decoration** `adopted`
+  - The carried shape is a prop that gains a dramatic simulated reaction after
+    a named utterance recurs consecutively to a declared threshold. The rule
+    owns target scope, observation/reach, normalized trigger identity, count,
+    ordering, reset and duplicate behavior, lifetime, effect, compatibility,
+    authority, and evidence. A high-strength suggestion is still a proposal,
+    not silent installation; once an authorized rule participates, its matched
+    source events, state transition, emitted effect, and replay remain
+    inspectable. Exact object taxonomy, trigger grammar, and rule-acceptance
+    model remain open.
+
 ## WO-017 final review — the deferred evaluable-subset type candidate (2026-09-03)
 
 Source: WO-017's non-goals, which defer the `Cadence.Evaluable` recursive
@@ -2975,3 +3420,11 @@ future session relitigates them (see decision records for full rationale):
    Resolved: WorkOrderTransport is the port; browser-as-shared-world is one
    adapter (and a strong one for verification), chosen empirically per
    environment.
+6. **Absence as a mandatory authority brake vs. progressive unattended
+   autonomy.** Resolved: presence and recorded elapsed absence are policy
+   inputs, not grants with a universal direction. A declared PresencePolicy may
+   hold, shrink, grow, peak, reset, or loop attention, work scope, and effect
+   authority independently within its source grant and ceiling; external
+   capability remains independently observed. Without a declared transition,
+   the affected axis holds. Earlier categorical no-growth clauses remain
+   historical and are superseded by ADR-0007.

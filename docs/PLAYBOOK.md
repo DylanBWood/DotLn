@@ -233,8 +233,19 @@ Closeout refuses rather than deleting non-disposable ignored material —
 happens, run `npm run backup:intake` in the subject worktree, reconcile the raw
 material into surviving trusted storage, and repeat the phrase. Disposable
 `node_modules`, `dist`, `.DS_Store`, and `*.tsbuildinfo` may leave with the
-worktree. A failed release evidence gate creates no tag and must become a patch
-work order.
+worktree. Backup alone does not clear the refusal or make the note visible from
+main: it only archives the checkout where it ran. Until a checked reconciliation
+helper exists, verify the destination bytes in main's canonical intake before
+removing the staged worktree copy. A failed release evidence gate creates no tag
+and must become a patch work order.
+
+The main checkout's exact `.claude/settings.local.json` is persistent local
+harness state, not release evidence. The current release guard still reports it;
+WO-018 owns the tested correction that will allow that one root path during
+main-checkout release close. This is deliberately asymmetric: a copy in the
+subject worktree remains non-disposable and must block removal so the close path
+cannot erase operator settings. Do not generalize the exception to
+`.claude/**`, and do not copy or inspect the local file as part of closeout.
 
 After publication, `npm run release -- notes vX.Y.Z` renders one tag's human
 layer and `npm run release -- list` lists local release tags, commits,
@@ -308,7 +319,8 @@ stays clean for you and the planning session.
   at `finish`. `docs/intake` is gitignored and single-copy: no commit, no
   checkpoint, and no branch contains it, so a `git clean -fdx` or a forced
   worktree removal ends it. Creates a validated, owner-only ZIP beside the
-  project; move it to the trusted backup location.
+  project; move it to the trusted backup location. This is a snapshot, not a
+  sync: separately reconcile any worktree-staged note into main's intake.
 - `git worktree list` — remove strays.
 - Skim `docs/lineage/idea-ledger.md` Session additions — anything learned this
   week that belongs there?

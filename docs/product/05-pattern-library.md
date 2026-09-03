@@ -4,6 +4,12 @@
 hand-assembled Repo Gardener + Seiri behavior; PatternDefinition compilation,
 set bonuses, and the remaining patterns are planned work.
 
+Patterns are opt-in instance content: their invariants bind only a loadout that
+equips them. This catalog describes the author's founding reference loadout,
+including its strict evidence, deletion, and operator-absence choices; the
+platform composes and inspects those mechanics but does not silently impose
+them on another owner's implementation.
+
 For the founding slice, deeply implement a small number of patterns before
 broadly implementing many. This is one selected progression policy, not a
 universal law; the roadmap defines breadth-first, depth-first, floor-raising,
@@ -43,8 +49,11 @@ skeleton's character (WO-003) and the v0.9.0 drag-equip target.
   Rungs 6–7 are the operator-absent act-then-report modes.
 - **Control = f(competence, clarity)**: the autonomy rung is computed from
   competence evidence (eval history) and mission clarity (spec quality) plus
-  risk and reversibility — never set statically, never raised by elapsed
-  absence. "Empowerment by itself is not a program."
+  risk and reversibility. This default does not infer a higher rung from
+  silence; a separately equipped owner-authored `PresencePolicy` may
+  preauthorize rung or authority changes on recorded time/presence events,
+  including progressive growth, reset, or looping within a ceiling.
+  "Empowerment by itself is not a program."
 - Talent trees: Leading Self / Leading Others / Leading the Business as
   slow-changing dispositional branches, distinct from swappable equipment.
 
@@ -107,6 +116,17 @@ filed under Direct Draft Fidelity:
 
 The first separately supplied _Man, Woman, Wild_ entry is exactly
 `this is truly desperate living`.
+
+The item-class review in the inspirations register records every entry as an
+individual word or brief expression rather than an audiovisual clip, image, or
+dialogue passage. Its current documentation-only basis is the U.S. Copyright
+Office's short-expression rule plus the operator's authority over whatever
+original selection, arrangement, and annotations the compilation contains; the
+compilation claim does not enlarge rights in preexisting material. This is not
+blanket clearance for trademark/source-identifying use, merchandising,
+generated imitation, or commercial distribution. Those uses trigger fresh
+review. The support remains a candidate and emits nothing at runtime today.
+
 A recorded unavailable-model, effort-refusal, or explicit degraded-mode event
 may make it eligible; tone cannot invent that state, and using the phrase cannot
 make silent model substitution acceptable.
@@ -245,9 +265,14 @@ when evidence accrues.
 Double Dutch (guarded opportunity window: watch → detect opening → prepare →
 bounded action window → exit before interference → resume watching) · sow/reap
 tension (~1/3 research fan-out, bounded execution, with every behavior paired to
-its opposite via PolarAxes) · the operator-absence utility curve per action
-(peak, break-even, negative — "too much reorganization in the ten minutes you
-got up for coffee").
+its opposite via PolarAxes) · presence-conditioned utility per candidate action
+(peak, break-even, negative) for ranking, kept separate from a declared work-
+scope or effect-authority schedule. A `PresencePolicy` may hold, shrink, grow,
+peak, stop, reset, or loop those axes independently. **Blackjack +3** is the
+operator's working lens for a candidate explicit progressive-stakes subgame:
+qualifying rounds may advance a stake and a declared boundary or event resets
+or loops it without ratcheting past its ceiling. Exact rules remain open under
+ADR-0007.
 
 ## Candidate — temporal interaction interpretation
 
@@ -706,19 +731,25 @@ and code lenses evolve.
 
 ## Clean Room — active mechanic with contextual supports
 
-**Clean Room** is an active mechanic for deciding whether and how source
-material may cross into a named destination. It is not synonymous with always
-rewriting, maximum ceremony, or the founding clean-room build in ADR-0001. Its
-observable result is a promotion disposition with provenance and evidence:
-block, ask the operator, preserve exactly, transform, or decline to promote. The
-exact record names and schema remain to be tested before they are pinned.
+**Clean Room** is the author's personal implementation's active mechanic for
+deciding whether and how source material may cross into a named destination. It
+is reusable instance content, not a source policy silently activated by the
+DotLn platform. It is not synonymous with always rewriting, maximum ceremony,
+or the founding clean-room build in ADR-0001. Its observable result is a
+promotion disposition with provenance and evidence: block, ask the operator,
+preserve exactly, transform, or decline to promote. The exact record names and
+schema remain to be tested before they are pinned.
 
-The active has a non-swappable admissibility floor. Employer code,
+When this active is equipped, it has a non-swappable admissibility floor.
+Employer code,
 configuration, identifiers, private infrastructure details, credentials, and
 secrets cannot pass. Suspect or ambiguous material stops for operator
 disposition. This floor compiles into an external guard at the safety layer; it
 is not prompt advice and is not an optional support. No linked facet can widen
-authority, waive the floor, or relabel a blocked item as clean.
+authority, waive the floor, or relabel a blocked item as clean. ADR-0001 and
+`AGENTS.md` require that build for this repository; ADR-0006 makes clear that an
+unrelated implementation may choose a different source policy or omit source
+promotion entirely.
 
 Composition above that floor has two socket groups:
 
@@ -755,8 +786,9 @@ proposal would alter an existing system. In that narrower composition it can
 also detect a rewrite that would damage meaning, voice, contract precision, or
 authorship and recommend exact preservation, a smaller transformation, more
 evidence, or NoOp after the hard screen passes. It can never use fidelity as a
-reason to pass unsafe material. This keeps the locked floor universal while
-making intervention restraint phase- and consequence-selective.
+reason to pass material blocked by the equipped Clean Room active. This keeps
+the locked floor universal within this mechanic and repository while making
+intervention restraint phase- and consequence-selective.
 
 The compiled inspector should show source class, named destination, locked
 floor, selected strategy, assurance supports, conflicts, cost, disposition, and
@@ -815,11 +847,14 @@ Edge assertions follow the same minimization rule. Canonical state records the
 assertion and its source, not an invented claim of omniscience: a
 `self-reported` effort can be wrong, an adapter fixture can deliberately lie,
 and neither requires surveillance to resolve. Tests prove source labeling,
-guards, and behavior under arbitrary claims. DotLn itself must not fabricate an
-event, alter immutable history, or relabel a self-report as observed. A contract
-may still require a stronger source for a consequential gate; when that evidence
-is withheld or unavailable, the honest outcomes are refusal or a visible
-capability deficit—not added surveillance and not acceptance by relabeling.
+guards, and behavior under arbitrary claims. In an implementation that declares
+canonical events, immutable history, or source labels, the corresponding DotLn
+runtime must not fabricate an event, alter that history, or relabel a
+self-report as observed. A profile that omits one of those capabilities declares
+it unavailable and cannot claim its guarantee. A contract may still require a
+stronger source for a consequential gate; when that evidence is withheld or
+unavailable, the honest outcomes are refusal or a visible capability deficit—not
+added surveillance and not acceptance by relabeling.
 
 Richer observation remains an opt-in local capability for an individual or
 organization that wants it. Pure wrapper functions select, minimize, label, and
@@ -844,10 +879,12 @@ verification.
 This proof is scoped to a link group, not to the whole workstream. An authorized
 acquisition group may include a `fetch`/XHR adapter and still prove from its
 compiled manifest that optional payload audit, logging, retention, and Snooping
-Footprint Reducer supports were not linked into the data path. Required
-data-minimized authority/command/result receipts cannot be removed by
-composition. A local receipt binds a particular invocation to that manifest,
-and only the pure transform portions prove their declared mappings. The offline
+Footprint Reducer supports were not linked into the data path. In the author's
+personal profile, required data-minimized authority/command/result receipts
+cannot be removed by composition. Another implementation may omit that profile
+and the corresponding receipt capability rather than silently claiming the same
+assurance. A local receipt binds a particular invocation to that manifest, and
+only the pure transform portions prove their declared mappings. The offline
 constraint begins at the private-lane maintenance boundary after acquisition;
 it does not retroactively claim that the source arrived without a network.
 

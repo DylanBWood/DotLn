@@ -6,6 +6,11 @@ compiler, real-worker, native verification, durable adapter persistence, and
 console layers below remain planned unless a section explicitly says otherwise.
 See the roadmap for their evidence gates.
 
+The diagram below is the author's reference topology. Platform contracts make
+its modules composable; an implementation that omits durable history, replay,
+verification, or another module declares that capability absent rather than
+silently inheriting the whole stack.
+
 ## Layer diagram
 
 ```
@@ -56,9 +61,9 @@ Never let a flavor name be the only name.
 DotLn core provides the common legos:
 
 - event, decision, Program, Cadence, continuation, and projection contracts;
-- deterministic composition, conflict precedence, replay, provenance, and
-  mechanics inspection;
+- deterministic composition and declared conflict-resolution machinery;
 - authority, evidence, audit, and adapter interfaces;
+- optional provenance, replay, and mechanics-inspection mechanisms;
 - versioning and portability rules for definitions and accumulated history.
 
 A DotLn implementation supplies the local secret sauce:
@@ -67,27 +72,83 @@ A DotLn implementation supplies the local secret sauce:
 - source and effect integrations;
 - security policy, authority envelopes, audit/retention policy, and logging
   configuration;
+- which platform mechanisms are hard, advisory, replaced, or absent, together
+  with the implementation's conflict precedence and capability claims;
 - identity, role, personality, pattern, active, support, loadout, and team
   definitions—including which versions are currently in use and in what
   combinations;
 - evaluators, exemplars, feedback units, domain vocabulary, and presentation.
+
+A platform mechanism is not active instance doctrine. Its shared contract says
+what the mechanism means when an implementation declares or equips it; it does
+not make the author's choice mandatory. The current repository must therefore
+label both layers even while their code and documentation remain colocated:
+
+| Concern           | DotLn platform supplies                                  | Author's personal implementation chooses                  | Another owner may choose                                        |
+| ----------------- | -------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------- |
+| authority         | effect vocabulary, regime interfaces, guards, inspection | scoped envelopes and explicit presence-policy transitions | standing or owner-direct pass-through authority, broader grants |
+| outcome assurance | claim classes, evidence and verifier contracts           | evidence before `done` plus independent verification      | owner-accepted or explicitly unverified execution               |
+| history           | event, retention, replay, and audit mechanisms           | append-only records and replayable decisions              | reduced/no retention and an absent replay capability            |
+| source treatment  | composable promotion-policy vocabulary                   | the locked Clean Room build used by this repository       | a different source policy or no promotion mechanic              |
+| warnings and risk | inspectable policy and capability projections            | conservative defaults and named approval boundaries       | advisory or suppressed warnings and accepted operational risk   |
+
+The third column is binding here; it is not platform conformance. The fourth is
+not implemented by this table. ADR-0006 records the boundary, ADR-0007 makes
+presence a policy input with no universal direction, and both leave the
+physical package split to representative implementation evidence.
 
 Audit and resilience remain configurable local doctrine but compile through a
 shared record vocabulary. The detailed audience, record-property, fidelity,
 visualization, persistence, recovery, backup/DR, and privacy design space is
 mapped in [`09-audit-resilience-privacy.md`](09-audit-resilience-privacy.md).
 
-The boundary is architectural: instance definitions compile through public IR
-and ports and remain visible to the build inspector. They must not require
-private branches or special cases in the kernel. Conversely, the core does not
-silently ship the author's preferred organization as universal defaults. Starter
-packs may bundle the founding patterns, but installation, activation, and
-inheritance are explicit and removable.
+The boundary is architectural: instance definitions that cross a declared
+interchange compile through public IR and ports and expose the semantics that
+contract requires. An implementation with the rich inspection capability keeps
+them visible to its build inspector; a private implementation may omit that UI.
+They must not require private branches or special cases in the kernel.
+Conversely, the core does not silently ship the author's preferred organization
+as universal defaults. Starter packs may bundle the founding patterns, but
+installation, activation, and inheritance are explicit and removable.
 
 Portability target: an implementation can export its definitions and policy
 history separately from secrets and raw protected sources, then load them on a
 compatible DotLn runtime with the same semantic hashes. Whether workstream
 events themselves move is a separate retention and sovereignty decision.
+
+### Candidate — owner-sovereign implementation profile
+
+“Owner-sovereign” is the working label, not a selected public name. An
+implementation may offer an owner-controlled profile with deliberately
+permissive DotLn policy. The owner can classify a rule as hard, advisory, or
+absent; select a strict envelope, standing grant, or owner-direct authority
+regime; remove repeat confirmations; accept unverified outcomes; and disable or
+reduce retention, audit, and replay. The profile is not required to ship
+preconfigured or active, and the author's personal implementation does not adopt
+it merely because the platform can express it.
+
+Three concerns stay separate in its eventual design. **Instance doctrine** says
+which rules participate and at what strength. **Authority regime** says what
+constitutes permission for an effect. Optional **risk acceptance** records that
+the owner saw or suppressed a warning; it is neither permission nor evidence
+that an effect was safe. A direct owner command may combine a doctrine change,
+grant, and dispatch only if the chosen implementation defines that compound
+operation explicitly rather than inferring it from forceful prose.
+
+This profile can remove DotLn's own intervention controls, not controls outside
+DotLn. A provider model may refuse an input, a harness or operating system may
+deny an effect, and a destination may impose its own policy. A capability
+projection, when the implementation exposes one, reports the observed boundary
+instead of promising absolute capability. Likewise, disabling history is a
+valid owner choice; an interface cannot offer replay unless history exists.
+
+Open choices: owner identity, authentication, recovery and transfer; single-
+versus multi-owner precedence; the resource domain the owner controls; standing
+and wildcard grants; profile activation, persistence, visibility, export, and
+revocation; whether a direct command atomically authorizes and dispatches; full
+history erasure versus a deletion marker; package governance prerequisites;
+provider/local-model selection; and the minimum declarations needed for
+interoperability. No mode, schema, wildcard, UI phrase, or release is selected.
 
 ### Package ecosystem and marketplaces
 
@@ -116,16 +177,19 @@ Package families may include:
 
 Trust classes remain separate. Data-only definitions that compile through the IR
 are not equivalent to executable adapters with network, filesystem, model, or
-credential access. Every package declares its content kind, semantic version,
-DotLn compatibility, dependencies, requested capabilities, authority effects,
-prompt/context cost, runtime cost, provenance, and verification evidence.
-Executable code receives a visibly higher installation and review burden.
+credential access. Every package offered through this interoperability surface
+declares its content kind, semantic version, DotLn compatibility, dependencies,
+requested capabilities, authority effects, prompt/context cost, runtime cost,
+provenance, verification disposition, and evidence if any. Executable code
+receives a visibly higher installation and review burden in the author's
+assurance profile.
 
 Distribution never implies activation. The flow is **discover → inspect →
 resolve dependencies → preview compiled effects and requested permissions →
 install pinned version → explicitly equip/activate in scope**. Updates create
-new versions and a semantic diff; replay retains the exact historical version.
-Revocation prevents future activation without rewriting past events.
+new versions and a semantic diff. When replay/history is equipped, it retains
+the exact historical version. Revocation prevents future activation without
+rewriting any retained past events.
 
 #### Community builds and sandbox promotion
 
@@ -150,8 +214,8 @@ share file/link/code
 Preview is useful without installation. It renders the build graph, semantic
 hash, provenance, compatibility, inactive/missing capabilities, transitive
 dependencies, conflicts, composition-order exceptions, authority effects,
-context/runtime cost, verification evidence, and the exact compiled diff against
-a selected local build.
+context/runtime cost, verification disposition and evidence if any, and the
+exact compiled diff against a selected local build.
 
 Mix-and-match is structural: drag, link, substitute, disable, or fork
 components, then re-run tag compatibility, commutativity, precedence, budget,
@@ -232,12 +296,12 @@ worker does not receive team negotiation skills; a read-only watcher does not
 receive mutation procedures; a verifier does not inherit the maker's narrative.
 
 This is the skills-layer version of "a build, not a biography." Loading every
-available coordination skill into every agent would send each one into every map
-carrying the whole stash—as if every support were linked to every skill. In
-plain language, irrelevant context would consume attention and widen the
-interaction surface before the task began. Skills activate by tags, state,
-relationship, and capability; their context cost is visible; expiry and removal
-follow the episode lifecycle.
+available coordination skill into every agent would send each one into every
+map carrying the whole stash — as if it needed gear for every damage type when
+the episode called only for cold resistance. In plain language, irrelevant
+context would consume attention and widen the interaction surface before the
+task began. Skills activate by tags, state, relationship, and capability; their
+context cost is visible; expiry and removal follow the episode lifecycle.
 
 The repository's operator workflow should converge on the same model. Stable
 DevEx intents such as `resume: status`, `resume: next`, `resume: verify`,
@@ -290,13 +354,13 @@ the **senses and hands**; the harness is the larger **body** that presents
 context and tools and manages a model episode. Canonically, DotLn keeps these
 responsibilities separate:
 
-| Layer                      | Responsibility                                                                                                                                                                                     | Boundary                                                                                    |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| model                      | supplies inference, judgment, or generation inside an episode                                                                                                                                      | owns no durable identity, workflow state, authority, or evidence                            |
-| harness                    | constructs immediate context; exposes and mediates tools, local memory/compaction, session lifecycle, permissions, and structured I/O                                                              | does not own the cross-episode workstream or make tool availability into authority          |
-| orchestration / DotLn host | compiles WorkOrders and loadouts; selects actors, topology, runtime, transport, and environment; owns routing, joins, cancellation, retries, cadence, leases, outbox, evidence gates, and recovery | may lower choices into model- or harness-native mechanisms but cannot manufacture authority |
-| `WorkOrderTransport`       | carries an order to an actor and returns its result envelope                                                                                                                                       | says how dispatch crosses a boundary, not where execution occurs or what it may affect      |
-| execution environment      | supplies the observable process, filesystem, network, secret, device, resource, and teardown boundary                                                                                              | containment is neither task authority nor proof that a result is correct                    |
+| Layer                      | Responsibility                                                                                                                                                                                                     | Boundary                                                                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| model                      | supplies inference, judgment, or generation inside an episode                                                                                                                                                      | owns no durable identity, workflow state, authority, or evidence                                                                    |
+| harness                    | constructs immediate context; exposes and mediates tools, local memory/compaction, session lifecycle, permissions, and structured I/O                                                                              | does not own the cross-episode workstream or make tool availability into authority                                                  |
+| orchestration / DotLn host | compiles WorkOrders and loadouts; selects actors, topology, runtime, transport, and environment; owns routing and any equipped joins, cancellation, retries, cadence, leases, outbox, evidence gates, and recovery | may lower choices into model- or harness-native mechanisms but cannot manufacture capability or authority under the selected regime |
+| `WorkOrderTransport`       | carries an order to an actor and returns its result envelope                                                                                                                                                       | says how dispatch crosses a boundary, not where execution occurs or what it may affect                                              |
+| execution environment      | supplies the observable process, filesystem, network, secret, device, resource, and teardown boundary                                                                                                              | containment is neither task authority nor proof that a result is correct                                                            |
 
 The essay-derived word **harness** is therefore deliberately narrower here than
 “everything outside the weights.” A runtime vendor may bundle several rows in
@@ -331,7 +395,7 @@ artifacts together and names which semantics remain at the DotLn host.
 Other runtimes receive their own catalogs and lowerings. Semantic equivalence is
 judged at the normalized DotLn contract and observable decision/event level, not
 by requiring identical native features. When a runtime cannot realize a
-mechanism, compilation reports the missing capability, selects an explicitly
+declared mechanism, compilation reports the missing capability, selects an explicitly
 approved adapter or weaker labeled projection, or rejects the build. It never
 silently moves a hard rule into prompt prose.
 
@@ -341,9 +405,10 @@ stateful graphs that may mix deterministic and model-driven steps. It is the
 first named **accommodation probe**, not a selected DotLn dependency or a
 replacement ontology. A future fixture may compare a pure TypeScript reference
 execution with a LangGraph lowering for continuation, persistence, interruption,
-cancellation, replay, and typed results. DotLn's normalized Program, event log,
-authority envelope, semantic hash, and evidence gates remain authoritative;
-vendor checkpoint or graph state does not silently become canonical state.
+cancellation, replay, and typed results. The normalized Program and every
+history, authority, semantic-hash, and evidence contract declared by the
+fixture remain authoritative; vendor checkpoint or graph state does not
+silently become canonical state.
 
 This creates a marketplace layer for **runtime recipes**: reusable, tested ways
 to implement a DotLn mechanic with a particular runtime's native primitives.
@@ -379,11 +444,12 @@ skill, Codex skill, human runbook, CLI help page, and sparse agent-facing screen
 may be different projections of one contract. Their semantic hashes and
 conformance fixtures should agree.
 
-Skills may improve discoverability and ergonomics but cannot enforce a hard rule
-by themselves. Permissions, guards, validation, persistence, and replay remain
-below the skill layer. An agent without a convenience skill can still
-participate through the protocol; an agent with a persuasive skill gains no
-authority beyond its envelope.
+Skills may improve discoverability and ergonomics but cannot enforce a declared
+hard rule by themselves. Equipped permissions, guards, validation,
+persistence, and replay mechanisms remain below the skill layer. An agent
+without a convenience skill can still participate through the protocol; an
+agent with a persuasive skill gains no authority beyond the implementation's
+selected regime.
 
 The marketplace's useful quality signals are evidence-bound: compatibility
 tests, reproducible fixtures, observed activation history, false-activation
@@ -396,10 +462,11 @@ allowlist, fork any definition, or prohibit remote packages entirely.
 workstream, maintenance cycle — communicating through events. Never one
 statechart containing every actor, timer, and tab.
 
-**The host:** a minimal local control-plane process owns the kernel loop, the
-store, the outbox, lease expiry, cadence firing, and worker spawning — it is
-what stays alive across model-session death, rate limits, crashes, and network
-loss. No interactive session is ever the thing keeping work alive.
+**The reference host:** the author's minimal local control-plane process owns
+the kernel loop and its equipped store, outbox, lease expiry, cadence firing,
+and worker spawning. It stays alive across model-session death, rate limits,
+crashes, and network loss. An implementation that omits persistence does not
+claim this recovery behavior.
 
 ## Candidate — isolated execution environments
 
@@ -427,8 +494,10 @@ hostile-process security boundary. Docker's own
 distinguishes containers that share the host kernel from VMs with their own
 guest kernel. Either can still expose dangerous mounts, egress, credentials,
 resources, or control sockets, so its label alone proves nothing. Isolation
-never widens an authority envelope and an isolated worker never certifies its
-own output.
+never widens an authority envelope. In the author's assurance profile, an
+isolated worker's output remains self-reported until an independent verifier
+accepts it; another profile may accept it only under an explicit unverified or
+owner-accepted disposition.
 
 The first future probe is intentionally inert: a synthetic repository,
 deterministic executor, no credentials, no live adapters, no network, explicit
@@ -473,7 +542,10 @@ redux/rxjs applied to agents, and it must satisfy the analog completeness test:
 
 ## Composition system
 
-The LoadoutGraph (see domain model) is compiled per episode:
+The first personal implementation's LoadoutGraph (see domain model) is compiled
+per episode. The platform exposes declared precedence and conflict checking; the
+nine-level ordering below is this implementation's profile, not a hidden kernel
+constant:
 
 1. Resolve identity + role + applied patterns + environment → active tension
    (PolarAxes) and phenotype.
@@ -494,23 +566,28 @@ The LoadoutGraph (see domain model) is compiled per episode:
 The emitted component manifest is also a participation proof for the compiled
 chain. A data-acquisition active may legitimately include an authorized
 `fetch`/XHR adapter while showing that no audit, logging, retention, or other
-optional payload-observation support is linked to that data path. Required
-data-minimized authority, command, and result receipts remain higher-precedence
-evidence and cannot be unequipped. A local execution receipt binds one invocation
-to the compiled manifest and transformation versions. The pure transform
-subgraph proves its mapping for declared inputs; adapter evidence proves the
-effectful invocation; an outer capability boundary and independent evidence are
-still required to rule out undeclared side effects in an implementation.
+optional payload-observation support is linked to that data path. In the
+personal profile, required data-minimized authority, command, and result receipts
+remain higher-precedence evidence and cannot be unequipped. Another
+implementation may omit that assurance capability rather than inheriting it; its
+manifest then cannot claim the corresponding receipt or replay behavior. A local
+execution receipt binds one invocation to the compiled manifest and
+transformation versions. The pure transform subgraph proves its mapping for
+declared inputs; adapter evidence proves the effectful invocation; an outer
+capability boundary and independent evidence are still required to rule out
+undeclared side effects when an implementation makes that negative claim.
 
-Clean Room is the first explicit source-promotion active built from this shape.
-Its employer/secret boundary compiles as a locked safety guard, while linked
+The author's Clean Room is the first explicit source-promotion active built from
+this shape. Its employer/secret boundary compiles as a locked safety guard
+inside that mechanic and is mandatory for this repository, while linked
 supports select a source-treatment strategy and add destination or assurance
 checks. Rewrite, shape-first synthesis, and direct-draft fidelity do not
-commute, so the compiler accepts exactly one of them or an explicit ordered
-pipeline; it never treats them as an unordered bag. A destination may require
-particular assurance supports, and a missing or conflicting requirement renders
-the active inactive with the reason visible. Increased review depth can only
-narrow promotion or add evidence, never convert a blocked source into clearance.
+commute, so this implementation's compiler accepts exactly one of them or an
+explicit ordered pipeline; it never treats them as an unordered bag. A
+destination may require particular assurance supports, and a missing or
+conflicting requirement renders the active inactive with the reason visible.
+Increased review depth can only narrow promotion or add evidence within this
+profile, never convert a blocked source into clearance.
 
 Before type-checking a historical loadout, resolve its IR, mechanic, support,
 runtime, and environment versions into a compatibility plan
@@ -695,12 +772,13 @@ text, never the default channel for state you own in structured form.
   09-audit-resilience-privacy.md §Candidate — model-input exposure plans.
   Exposure is a typed property of data edges on active primitives, roles, and
   linked supports, not a global mode. The operator may wire a group to local,
-  remote, both as explicit stages, or neither; compilation intersects that
-  choice with authority and Clean Room guards and displays each crossing and
-  any resulting deficit.
+  remote, both as explicit stages, or neither; the personal implementation's
+  compiler intersects that choice with its equipped authority and source-
+  treatment guards and displays each crossing and any resulting deficit.
   A candidate hybrid route uses deterministic parsing first, a bounded local
   model for fallible tags/associations and candidate WorkOrder/context-capsule
-  derivation, then a remote model for only the approved complex episode. Existing authority gates still control dispatch. Derived metadata remains
+  derivation, then a remote model for only the approved complex episode. Any
+  equipped authority gates still control dispatch. Derived metadata remains
   sensitive and provenance-bearing; a downstream request for more context
   creates another visible input edge rather than widening disclosure silently.
 - **External target binding**: source and effect adapters expose a versioned,
@@ -730,9 +808,12 @@ text, never the default channel for state you own in structured form.
   architecture, never in the model's training-set fashion.
 - `WorkOrderTransport`: see domain model. The fake deterministic executor is a
   first-class adapter and ships first.
-- `VerificationAdapter`: claim-typed evidence (visual claim → rendered-image
-  check; network claim → trace; state claim → DOM/store read), recorded into the
-  workstream's AcceptanceEvidenceMatrix. **Baseline first (Live Witness)**:
+- `VerificationAdapter`: when equipped, claim-typed evidence (visual claim →
+  rendered-image check; network claim → trace; state claim → DOM/store read),
+  recorded into the workstream's AcceptanceEvidenceMatrix. The author's
+  assurance profile requires this port and the rules that follow; another
+  profile may instead expose an explicit self-reported, owner-accepted, or
+  unverified disposition. **Baseline first (Live Witness)**:
   before any change, an episode runs the current base branch and reproduces the
   defect (or walks adjacent behavior for a new story), preserving baseline
   evidence; honest non-reproduction is recorded as an environment limitation,
@@ -740,12 +821,12 @@ text, never the default channel for state you own in structured form.
   failing regression evidence → repair, vs. understand → define observable
   behavior → tests/mocks → implement). Evidence is typed: mocked-client proof
   (labeled synthetic fixtures, AC-mapped) never counts as live-integration
-  proof. Verifier episodes are **blinded** from the implementer's narrative; the
-  implementer never certifies its own work. Verification ("does it work?") and
-  review ("is this the right implementation to maintain and ship?") are
-  **separate independent episodes** — the reviewer reports findings, may not
-  silently rewrite the branch, and its minor suggestions never auto-expand
-  scope.
+  proof. In that assurance profile, verifier episodes are **blinded** from the
+  implementer's narrative; the implementer never certifies its own work.
+  Verification ("does it work?") and review ("is this the right implementation
+  to maintain and ship?") are **separate independent episodes** — the reviewer
+  reports findings, may not silently rewrite the branch, and its minor
+  suggestions never auto-expand scope.
 - `DeliveryAdapter`: PR/patch/report generation _from artifacts, not narrative_
   — the deliverable body is generated from the StoryContract, the actual diff,
   the completed AcceptanceEvidenceMatrix, and evidence refs. "Deliverable-ready"
@@ -762,39 +843,107 @@ text, never the default channel for state you own in structured form.
 
 ## Operator-presence policy
 
-Presence changes the resource mix, never safety — safety is a lexicographic
-precondition (ObjectiveContract ordering), and the lists below rank attention
-among already-safe actions. Present: foreground intent > support > bounded
-maintenance > exploration. Absent: safety > finish bounded work > entropy
-reduction (the 5S organism) > proposals > research > NoOp when expected value
-goes negative. Each candidate action has its own U(a,t) = Benefit − Risk −
-Disruption − OpportunityCost; the sow/reap ratio (~1/3 research, bounded
-execution windows, Double Dutch entry/exit) paces the cycle. Unattended work is
-reversible, evidenced, and independently verified.
+Presence and elapsed time are versioned policy inputs, not a fixed monotone
+restriction. A declared `PresencePolicy` may independently transform attention
+priority, work-scope budget, or effect authority from recorded events; external
+capability is observed, never created. No declaration means hold, not automatic
+growth or decay. Every transition names its source grant, event predicate,
+stage, active window, ceiling, and stop/reset/replenishment behavior.
+
+The current Repo Gardener fixture is deliberately narrow: while the operator is
+away it ranks a bounded Seiri inspection, retains a no-deletion envelope, and
+cancels future pulses on return. That proves one guard and return race. It does
+not select a universal platform direction or the author's eventual personal
+profile.
+
+### Candidate — progressive absence authority and return readiness
+
+The author's candidate profile keeps foreground intent first while present and
+favors bounded housekeeping during absence because low-disruption cleanup can
+reduce return-time reorientation. Per-action
+`U(a,t) = Benefit − Risk − Disruption − OpportunityCost`, the sow/reap ratio,
+and Double Dutch windows can rank eligible work without silently granting it.
+
+Separately, the owner may preauthorize a progressive scope and effect-authority
+schedule that grows by recorded stage, peaks within a declared ceiling, and
+stops, resets, or loops on selected events. **Blackjack +3** is the working lens
+for a candidate explicit progressive-stakes subgame rather than a decorative
+metaphor; its deal, `+3`, stake, loss, unlock, cap, and reset rules remain open.
+The inspector must show attention, work scope, effect authority, and external
+capability as four tracks, including the current tranche and grant source.
+
+Representative fixtures must distinguish a ranking-only change, a larger work
+budget with unchanged effect set, a staged authority grant, a return/reset
+race, a loop that replenishes without ratcheting past its cap, and an authorized
+high-impact effect whose adapter remains unavailable or externally denied.
+
+At work-order scale, the same policy may activate an opted-in unattended
+portfolio. Small eligible orders inside standing authority can rank first;
+larger orders enter only through explicit preauthorization and remain optional
+when capacity permits. The portfolio policy, not silence, defines activation,
+slot count, ordering, stop, pause, return, and replenishment behavior. Selecting
+an order is still distinct from authorizing its effects.
 
 ## Corpus policy
 
 `docs/intake/` (gitignored) holds raw material; committed docs are synthesized.
 Structure for growth: `corpus/sanitized/` (git-eligible), `corpus/fixtures/`
 (minimized regression cases), `corpus/manifests/` (hashes, provenance,
-retention), local-only raw layer. Transcript-handling policies are explicit and
-inspectable per episode: verbatim-local / encrypted / scrubbed / summary /
-expiring / excluded-from-learning. Verbatim-with-scrubbing is the default —
-sources regenerate summaries, never the reverse.
+retention), local-only raw layer. When corpus retention is equipped,
+transcript-handling policies are explicit and inspectable per episode:
+verbatim-local / encrypted / scrubbed / summary / expiring /
+excluded-from-learning. Verbatim-with-scrubbing is the author's
+personal-profile default—sources regenerate summaries, never the reverse. A
+different implementation may omit retained source and declare lineage or
+regeneration unavailable.
+
+For the current repository workflow, the main control-plane checkout's ignored
+`docs/intake/` is the intended surviving raw source. A relative capture made
+inside a work-order worktree exists only there: Git, checkpoints, stashes, and
+the PR do not carry it. `npm run backup:intake` archives only the checkout where
+it runs and provides a local snapshot, not reconciliation or later
+discoverability. Until a helper exists, such a staged note must be backed up and
+manually reconciled into the main intake before its worktree can be removed;
+normal closeout refuses rather than deleting it.
+
+Storage reconciliation and semantic reconciliation are different. Moving raw
+bytes into the surviving store does not update the ledger or blueprint. The
+`ideation:` pipeline and its receipt record that interpretation; a later raw
+addition opens a new ideation or re-mining pass rather than silently mutating a
+prior conclusion.
+
+### Candidate — canonical private intake reconciliation
+
+A small intake control should resolve one canonical private store independent
+of the caller's worktree and expose capture, path, status, backup, and reconcile
+operations. The initial store can be the main checkout's ignored intake; a
+configured external store may later replace it without changing committed
+source references.
+
+Reconciliation needs a repository lock, NUL-safe enumeration, path and symlink
+checks, private byte hashes, atomic no-overwrite copying, identical-file
+deduplication, hard refusal on divergent path collisions, verified owner-only
+backup in a trusted configured destination, and source removal only after a
+recoverable canonical copy exists. Interrupted runs must always leave at least
+one complete source. A private manifest maps opaque capture ids to canonical
+bytes and synthesis receipts without printing raw content or filenames into
+public control artifacts. Worktree close should name this operation explicitly;
+a local ZIP by itself is not proof of reconciliation.
 
 ## Learning loop
 
-Every episode records governed references or classes for its loadout version,
-work-order identity and source revision, model/runtime configuration, planned
-input edges, tool events, artifacts, Git state, evidence, duration, resource
-use, retry behavior, human rework, and outcome. Values appear only when the
-selected local/private/public policy permits their destination and retention;
-raw inputs, credentials, resolved targets, and unrelated context are excluded
-by default. The system
-learns at the _controller_ level: which topology per task class, which patterns
+In the author's assurance profile, every episode records governed references or
+classes for its loadout version, work-order identity and source revision,
+model/runtime configuration, planned input edges, tool events, artifacts, Git
+state, evidence, duration, resource use, retry behavior, human rework, and
+outcome. Values appear only when the selected local/private/public policy
+permits their destination and retention; raw inputs, credentials, resolved
+targets, and unrelated context are excluded by default. An implementation that
+omits this history also omits history-dependent learning and replay claims. In
+this history-equipped profile, the controller learns which topology per task class, which patterns
 activate usefully, when to stop researching, how much verification is warranted,
-which feedback units are dead/redundant/conflicting/overfit. Identity updates
-are versioned proposals gated by replay/sandbox evaluation. Two flywheel modes:
+which feedback units are dead/redundant/conflicting/overfit. In this profile,
+identity updates are versioned proposals gated by replay/sandbox evaluation. Two flywheel modes:
 retrospective grading, and the predict-then-score variant (register hypotheses,
 watch which come true, at what timescale). Surfacing is exception-driven: once a
 rule is reliable, conforming events stop deserving operator attention; watchers
