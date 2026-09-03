@@ -69,3 +69,15 @@ any line outside a fenced code block that begins with whitespace plus `##` is
 refused; put heading-syntax examples in fenced code rather than indented code.
 The tag-manifest marker lines are reserved and may not appear in notes.
 `worktree publish` validates the committed file before any branch push.
+
+Beginning with WO-025, the committed `PR.md` and `RELEASE-NOTES.md` are also
+renderer-wrapped GitHub bodies. Author each ordinary prose paragraph and each
+list-item paragraph on one physical source line, even when it exceeds the
+repository's code `printWidth`; the reader's renderer owns visual wrapping.
+Use physical newlines for semantic structure such as headings, blank paragraph
+boundaries, distinct list items, fenced or indented code, tables, and explicit
+Markdown hard breaks. The template placeholders above describe logical blocks,
+not an 80-column source width. Publication checks the committed bytes and then
+transports them unchanged. This removes a repository-imposed source width; it
+does not change GitHub's own page width. The rule is forward-only: historical
+PRs, review reports, and release-note artifacts remain byte-identical.

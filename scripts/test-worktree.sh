@@ -28,10 +28,18 @@ github_origin="https://github.com/$github_repo.git"
 git -C "$main" config "url.$test_root/origin.git.insteadOf" "$github_origin"
 git -C "$main" remote set-url origin "$github_origin"
 git -C "$main" switch -c main >/dev/null 2>&1
-mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control"
-cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$main/scripts/"
-printf '# fixture\n' >"$main/docs/work-orders/WO-099-fixture.md"
+mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/packages/kernel"
+cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$main/scripts/"
+printf '# WO-099 — worktree fixture, v0.2.1\n\n**Objective:** Exercise publication.\n\n**Non-goals:** No release.\n' >"$main/docs/work-orders/WO-099-fixture.md"
+printf '%s\n' \
+  '# Fixture repository' \
+  '' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  '' \
+  'This source is DotLn `v0.2.1`.' \
+  '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
 printf '{"private":true,"scripts":{}}\n' >"$main/package.json"
+printf '{"name":"@dotln/kernel","version":"0.1.0"}\n' >"$main/packages/kernel/package.json"
 cp "$script_dir/../.gitignore" "$main/.gitignore"
 printf 'EXAMPLE=tracked\n' >"$main/.env.example"
 git -C "$main" add .
@@ -71,6 +79,28 @@ grep -Fq 'resume: next' <<<"$start_output"
 test ! -e "$test_root/codex-invoked"
 if node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null 2>&1; then printf 'error: unfinished worktree merged\n' >&2; exit 1; fi
 
+git -C "$subject" add docs/control
+git -C "$subject" commit -m 'active control fixture' >/dev/null
+cp "$subject/docs/control/resume.jsonl" "$test_root/committed-active-resume.jsonl"
+cp "$subject/docs/control/current.md" "$test_root/committed-active-current.md"
+git -C "$subject" update-index --assume-unchanged docs/control/resume.jsonl docs/control/current.md
+printf '%s\n' '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-099","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-099/FINAL-001.md","verdict":"pass"}' >>"$subject/docs/control/resume.jsonl"
+printf '%s\n' \
+  '# Current control state' \
+  '' \
+  '- Work order: WO-099' \
+  '- Work-order path: docs/work-orders/WO-099-fixture.md' \
+  '- Phase: closed' >"$subject/docs/control/current.md"
+if hidden_control_output="$(PATH="$test_root/bin:$PATH" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file missing.md 2>&1)"; then
+  printf 'error: hidden working control state bypassed the committed phase gate\n' >&2
+  exit 1
+fi
+grep -Fq 'committed surface check requires closed WO-099 control state; observed WO-099 in phase active' <<<"$hidden_control_output"
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: hidden working control state reached the remote\n' >&2; exit 1; fi
+cp "$test_root/committed-active-resume.jsonl" "$subject/docs/control/resume.jsonl"
+cp "$test_root/committed-active-current.md" "$subject/docs/control/current.md"
+git -C "$subject" update-index --no-assume-unchanged docs/control/resume.jsonl docs/control/current.md
+
 node "$subject/scripts/resume.mjs" implementation-ready >/dev/null
 node "$subject/scripts/resume.mjs" verify >/dev/null
 mkdir -p "$subject/docs/verifications/WO-099"
@@ -81,8 +111,7 @@ mkdir -p "$subject/docs/final-reviews/WO-099"
 printf '# final pass\n' >"$subject/docs/final-reviews/WO-099/FINAL-001.md"
 node "$subject/scripts/resume.mjs" final-review-result pass >/dev/null
 printf 'done\n' >"$subject/result.txt"
-printf 'PR body\n' >"$subject/pr-body.md"
-printf '#!/usr/bin/env node\n' >"$subject/scripts/release.mjs"
+printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
 git -C "$subject" add .
 git -C "$subject" commit -m complete >/dev/null
 
@@ -108,6 +137,33 @@ set_release_notes() {
   git -C "$subject" add "$notes_path"
   git -C "$subject" commit --amend --no-edit >/dev/null
 }
+
+printf '%s\n' \
+  '# Fixture repository' \
+  '' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  '' \
+  'This source is DotLn `v0.2.0`.' \
+  '<!-- DOTLN-RELEASE-END -->' >"$subject/README.md"
+git -C "$subject" add README.md
+git -C "$subject" commit --amend --no-edit >/dev/null
+if surface_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then
+  printf 'error: publish accepted a stale release block\n' >&2
+  exit 1
+fi
+grep -Fq 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1' <<<"$surface_output"
+if grep -Fq 'error:' <<<"$surface_output"; then printf 'error: worktree wrapped the surface report\n' >&2; exit 1; fi
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: branch pushed before surface validation\n' >&2; exit 1; fi
+printf '%s\n' \
+  '# Fixture repository' \
+  '' \
+  '<!-- DOTLN-RELEASE-BEGIN -->' \
+  '' \
+  'This source is DotLn `v0.2.1`.' \
+  '<!-- DOTLN-RELEASE-END -->' >"$subject/README.md"
+git -C "$subject" add README.md
+git -C "$subject" commit --amend --no-edit >/dev/null
+printf 'worktree surface refusal preserved the checker report and mutated no remote\n'
 
 assert_notes_refusal 'release-notes file is missing'
 bom="$(printf '\357\273\277')"
@@ -152,7 +208,26 @@ assert_notes_refusal 'extra level-two heading "## Extra visible heading"'
 set_release_notes $'## Release overview\n\nOverview.\n\n\t```\n## Extra visible heading\n```\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
 assert_notes_refusal 'extra level-two heading "## Extra visible heading"'
 set_release_notes $'## Release overview\n\nOverview mentioning the literal `## Example` text.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+set_release_notes $'## Release overview\n\nThis release overview was accidentally wrapped at a fixed source column even though it is one logical\nparagraph that the reader should wrap for its own viewport.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nChange.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
+assert_notes_refusal 'accidental GitHub prose soft wrap'
+set_release_notes $'## Release overview\n\nThis release overview stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\n- This substantive list-item paragraph also stays on one physical source line beyond eighty characters for a viewport-fluid GitHub body.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nEvidence.\n'
 printf 'release-notes publish validation fixtures passed\n'
+
+printf '%s\n' \
+  'This reviewed PR body was accidentally wrapped at a fixed source column even though it is one logical' \
+  'paragraph that the reader should wrap for its own viewport.' >"$subject/pr-body.md"
+git -C "$subject" add pr-body.md
+git -C "$subject" commit --amend --no-edit >/dev/null
+if wrapped_pr_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then
+  printf 'error: publish accepted a wrapped PR body\n' >&2
+  exit 1
+fi
+grep -Fq 'pr-body.md: accidental GitHub prose soft wrap between lines 1 and 2' <<<"$wrapped_pr_output"
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: wrapped PR body reached remote\n' >&2; exit 1; fi
+printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
+git -C "$subject" add pr-body.md
+git -C "$subject" commit --amend --no-edit >/dev/null
+printf 'GitHub body profile refused wrapped PR and release-note prose before publication\n'
 
 printf 'ignored private body\n' >"$subject/.env"
 if ignored_body_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file .env 2>&1)"; then printf 'error: publish accepted an ignored untracked PR body\n' >&2; exit 1; fi

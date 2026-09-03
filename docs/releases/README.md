@@ -13,6 +13,12 @@ populates it only from the merged repository, installed toolchain, control
 state, and observed evidence. The same implementation re-derives those fields
 before publication; `npm run release -- validate <manifest.json>` exposes that
 validator for inspection and mutation tests.
+`npm run release -- check-surfaces` is the non-mutating working-tree preview for
+the release-bearing README block, component versions, and current final-review
+GitHub bodies when those bodies exist. It consults origin's annotated tag refs,
+so it is read-only but not offline. Publish and close run the same rules against
+the committed snapshot and report each observed and expected value without
+creating a tag, Release, package, or commit.
 `npm run release -- manifest-from-tag vX.Y.Z` extracts the JSON projection.
 
 The annotation's human layer is a five-section edition assembled in first-parent
@@ -22,6 +28,13 @@ artifact became mandatory receive an explicit legacy fallback with their commit
 subjects; later missing or malformed notes are refused before publication. The
 machine-derived evidence and compatibility block is last, while the canonical
 JSON block remains unchanged below the manifest markers.
+
+From WO-025 forward, current PR and release-note prose uses one physical source
+line per paragraph or list-item paragraph so GitHub can apply its own wrapping.
+Semantic Markdown boundaries stay on their own lines, and publication transports
+the reviewed bytes exactly instead of reflowing them. The preflight applies this
+profile only to the current committed final-review package; historical packages
+and tag re-derivation are grandfathered unchanged.
 
 Two commands inspect published records locally and do not use the network:
 

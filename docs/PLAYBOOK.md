@@ -111,6 +111,11 @@ projection; that is a present workflow choice, not a permanent ban on later
 governed worker launching. Everything the executor needs is in the repo. Don't
 paste context or explain the work order again.
 
+When planning assigns a tagging version above the latest published tag, the
+work order must make updating the root README release block part of execution.
+The planner pins the target; the executor makes the public source claim true;
+the publisher and release close check it against tag truth.
+
 **3. Verify (Opus 5, fresh session, blinded).** New session — not the
 implementer's, no implementer narrative. Feed it: the WO + the diff.
 
@@ -166,6 +171,12 @@ mergeable PR. The notes file is written even for a no-release work order so its
 reviewed prose can ride the next tag. It never merges the PR; that remains
 yours.
 
+Author the committed PR body and release notes as renderer-wrapped GitHub prose:
+one physical source line per paragraph or list-item paragraph, with separate
+lines retained for actual Markdown structure. Do not hand-wrap them to the
+repository's code width; GitHub decides how the unchanged reviewed bytes wrap
+inside its own page layout.
+
 After the reviewed commit exists, the final reviewer invokes the bounded PR
 publisher with a committed body file inside the worktree:
 
@@ -173,8 +184,9 @@ publisher with a committed body file inside the worktree:
 npm run worktree -- publish WO-NNN --title '<reviewed title>' --body-file <contained-reviewed-body-path>
 ```
 
-The publisher validates the subject's committed reviewed notes before any push
-and prints the exact release-close handoff to use after you merge.
+The publisher runs the release-surface preflight, validates the subject's
+committed reviewed notes and GitHub-body profile, and only then may push. It
+prints the exact release-close handoff to use after you merge.
 
 `main` requires a PR through the repository's GitHub ruleset. A 404 from the
 classic `/branches/main/protection` endpoint is not evidence that the branch is
@@ -191,13 +203,15 @@ resume: release close
 That phrase is explicit authority for the agent to run the guarded close from
 the main checkout with tag publication enabled. The command proves the PR is
 merged, fast-forwards `main`, removes the known merged worktree/branch, and then
-checks the work order's application release target. At a new boundary it runs
-`npm ci`, full release evidence, manifest/notes generation and validation, and
-pushes only the annotated tag, then creates the matching GitHub Release from the
-same reviewed human layer. A strictly lower target records an honest no-release
-close; an equal target succeeds only when the existing validated tag names the
-exact commit, otherwise it refuses. If Release creation fails after the tag
-push, leave the tag untouched and rerun the same close command: the
+checks the work order's application release target. Before dependency install,
+the same release-surface preflight checks the README claim, source-triggered
+component versions, and current committed GitHub bodies. At a new boundary it
+runs `npm ci`, full release evidence, manifest/notes generation and validation,
+and pushes only the annotated tag, then creates the matching GitHub Release from
+the same reviewed human layer. A strictly lower target records an honest
+no-release close; an equal target succeeds only when the existing validated tag
+names the exact commit, otherwise it refuses. If Release creation fails after
+the tag push, leave the tag untouched and rerun the same close command: the
 equal-version path creates the missing projection or refuses a body mismatch
 without editing it. Either successful path leaves clean `main` in the closed,
 between-work-orders state. WO-004 was the first scripted `v0.2.1` patch.

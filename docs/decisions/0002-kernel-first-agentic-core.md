@@ -63,3 +63,10 @@ notes and tooling choices within the decided constraints.
   retain established heading anchors where whitespace is significant. `format`
   writes the supported surface and `format:check` joins the evidence gate.
   Prettier never enters the kernel's runtime dependency graph.
+- 2026-09-02, WO-025 supersedes only the prose-width part of that formatting
+  choice. `printWidth: 80` remains the code-formatting preference, while
+  Markdown uses `proseWrap: "preserve"` so the formatter does not turn a source
+  width into a reader viewport. New PR and release-note bodies use one physical
+  line per prose paragraph or list-item paragraph, retain semantic Markdown
+  boundaries, and are checked before publication. Existing immutable review
+  artifacts and public history are not reformatted.

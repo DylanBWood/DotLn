@@ -56,11 +56,12 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 ## What runs today
 
-The published boundary at the start of WO-007 is `v0.2.3`. Its executable heart
-is the **walking skeleton** first shipped in `v0.2.0`: a deterministic kernel
-with zero runtime dependencies, a fake executor, a separate fake verifier, and
-terminal projections. No model is in the loop yet. That is the point. It proves
-the kernel's shape is real before anything unpredictable is plugged into it.
+<!-- DOTLN-RELEASE-BEGIN -->
+
+This source is DotLn `v0.3.3`. Its executable heart is a deterministic walking skeleton with zero runtime dependencies, a fake executor, a separate fake verifier, terminal projections, and three audit views over the same event log. No model is in the loop yet. That is the point: the source proves the kernel's shape before anything unpredictable is plugged into it. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
+<!-- DOTLN-RELEASE-END -->
+
+The walking skeleton first shipped in application release `v0.2.0`.
 
 The scenario gives a **Repo Gardener** one active mechanic, **Seiri / Sort
 / 整理**, the first S of 5S:
@@ -95,9 +96,9 @@ currently asserts; a planned reactor rewrite closes the remaining structural gap
 between the separately maintained live and replay paths. `npm test` runs the
 configured root evidence suite: kernel, skeleton, publication freshness, intake
 backup, resume control, recovery checkpoints, real-Git worktree lifecycle, and
-guarded release close; frozen corpus lanes remain separate. Evidence was
-recorded with Node 22 on macOS; the shell suites use macOS utilities and fail
-loudly elsewhere. See the [release index](docs/releases/README.md),
+guarded release close, including the GitHub-body profile; frozen corpus lanes
+remain separate. Evidence was recorded with Node 22 on macOS; the shell suites
+use macOS utilities and fail loudly elsewhere. See the [release index](docs/releases/README.md),
 [v0.2.0 notes](docs/releases/v0.2.0-notes.md), and
 [v0.2.0 compatibility manifest](docs/releases/v0.2.0.md).
 
@@ -127,10 +128,9 @@ Not yet built, and not claimed:
 - the complete independently verified source-to-deliverable pipeline.
 
 Scheduled capabilities are roadmap rungs with exit criteria; the rest remain
-explicit horizons rather than promises with invented dates. The next rung after
-`v0.2.3` is audit projections over the same log: a receipt, a causal timeline,
-and governed raw, each naming exactly what it omits. This checkout contains that
-rung under review; it is not part of the published boundary named above.
+explicit horizons rather than promises with invented dates. The audit
+projections over the same log are a receipt, a causal timeline, and governed
+raw, each naming exactly what it omits.
 
 ## The bets
 

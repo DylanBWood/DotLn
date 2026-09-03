@@ -23,6 +23,90 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-025 ideation breakout — temporal fidelity and bounded future reachability (2026-09-02)
+
+Source: the operator's live `ideation:` dispatch, preserved unedited in
+`docs/intake/notes/WO-025-temporal-counterfactuals-2026-09-02.md`. The personal
+game/calculator recollections and public technical concepts contained no
+clean-room stop condition. Shape-first synthesis used Lamport's
+[event-ordering account](https://www.microsoft.com/en-us/research/publication/time-clocks-ordering-events-distributed-system/),
+[Klosowski et al.'s k-DOP paper](https://doi.org/10.1109/2945.675649),
+and Fujimoto's
+[parallel discrete-event simulation survey](https://doi.org/10.1145/76738.76741)
+as orientation, not as imported architecture.
+
+- **Simulation time is independent of execution throughput** `transformed`
+  - The frame-rate anecdote carries a durable distinction: how quickly a host
+    folds events must not determine how much modeled time passes. Recorded
+    replay may execute faster than wall time while preserving its event order,
+    declared timestamps, and elapsed-time semantics; that acceleration does not
+    mean causality moved faster inside the modeled world.
+- **The event is a recorded granule, not a physical quantum** `transformed`
+  - An event is the smallest individually addressable immutable
+    observation/input envelope in DotLn's present log. Its granularity is chosen
+    by the domain model; it does not establish the shortest interval, a
+    universal maximum causal hop, or a fact about physics. Causal membership
+    requires an explicit or honestly derived relation. Same-time and independent
+    events also mean log order, modeled time, and causal dependence must remain
+    distinguishable.
+- **Counterfactual closure is relative to a declared observation boundary**
+  `transformed`
+  - A branch can be exact only relative to a named checkpoint, horizon,
+    observable/evaluator set, world and component versions, randomness policy,
+    and treatment of exogenous input. A closed-world simulation substitutes a
+    declared model for relevant state and senses; a live coupled world cannot
+    fabricate observations that have not arrived. This reframes the proposed
+    need to model all relevant state and sensory input as sufficient closure for
+    the claims being evaluated rather than a promise to reproduce all reality.
+- **A causal propagation bound may be a world rule, not a kernel-wide clock**
+  `preserved`
+  - Some live mechanics may need real-time pacing, a cap on speculation beyond
+    observed facts, or an explicit deadline/miss policy so overload never
+    silently compresses outside time. Recorded replay and closed virtual worlds
+    need not share that pace. Whether any domain needs a minimum causal delay
+    that supplies lower-bound lookahead for safe advancement,
+    one-event-at-a-time propagation, conservative waiting, speculative rollback,
+    or another rule remains open.
+- **k-DOP-inspired future envelopes are a broad-phase research hypothesis**
+  `preserved`
+  - Project a reachable-future set onto a small fixed family of meaningful axes
+    and retain a conservative envelope `E` containing the modeled reachable
+    set. A target/query set `T` can be pruned only when `T ∩ E = ∅`; overlap
+    means merely “not ruled out” and still requires exact evaluation. The useful
+    shape is fast one-sided exclusion without false-negative pruning, not
+    instant enumeration or knowledge of every future. Hybrid, discrete, and
+    non-convex behavior may require an abstract reachability representation
+    rather than a literal geometric k-DOP.
+
+## WO-025 implementation and operator-expanded presentation scope (2026-09-02)
+
+Source: the activated WO-025 authority, the operator's live report that the
+fixed-width PR and release-template prose rendered poorly on a 4K ultrawide,
+and the cited release, compatibility, publication, and final-review contracts.
+The live report contained no clean-room stop condition and was synthesized
+directly into this receipt; no ignored intake source was mined.
+
+- **Release-bearing source claims and component versions are checked at both
+  publication boundaries** `adopted`
+  - The active H1 was forward-corrected to the unambiguous next patch,
+    `v0.3.3`. A delimited README block names the release of its source, and one
+    non-mutating checker compares that claim with the H1 and latest published
+    annotated tag before PR publication and again after close synchronization.
+    The same checker compares each component's `src/` with the preceding tag
+    and requires its package version to move when its source moved. The skeleton
+    receives the dated `0.3.0` correction and derives its banner from its own
+    manifest; the unchanged kernel remains `0.1.0`.
+- **Public review prose is renderer-wrapped, not authored for an 80-column
+  display** `adopted` `transformed`
+  - The common cause was a formatter configured to reflow Markdown at the code
+    width plus the same convention copied manually into formatter-exempt review
+    artifacts. Markdown formatting now preserves authorial line breaks, while
+    code retains its 80-column preference. New PR and release-note bodies use
+    one physical line per prose paragraph or list-item paragraph, preserve
+    semantic Markdown boundaries, and are checked on committed bytes before a
+    remote mutation. Exact-byte transport remains the contract. Earlier PRs,
+    immutable review packages, tags, and GitHub Releases are not rewritten.
+
 ## WO-024 implementation — reviewed release projection (2026-09-02)
 
 Source: the activated WO-024 authority and its cited release/publication

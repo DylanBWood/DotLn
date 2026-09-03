@@ -189,6 +189,80 @@ is not just a chart row: it is a replayable neighboring reality whose common
 history, intervention point, first divergence, and accumulating differences are
 visually obvious.
 
+## Candidate — time fidelity and bounded future reachability
+
+The frame-rate failure in a simple game carries a useful invariant for this
+world: modeled progress must follow declared world time and event semantics,
+not the speed at which the host happens to fold the log. Keep these temporal
+coordinates and milestones separate:
+
+- **world or virtual time:** when modeled events occur and how durations,
+  cadence, deadlines, and motion evolve inside a branch;
+- **engine wall time:** how quickly the current machine can compute, persist,
+  and project those transitions;
+- **observation-availability time:** when an external fact becomes observable
+  to a live boundary; and
+- **record/ingest milestone and append order:** when that fact is admitted and
+  where its envelope enters the canonical log. Authority and other prerequisites
+  separately govern when the system may act on it.
+
+These are candidate reasoning distinctions, not pinned fields. The current
+EventEnvelope exposes numeric virtual/log `occurredAt` and does not yet record
+ingest time.
+
+A recorded replay can run faster than real time because its exogenous inputs
+are already present; it must preserve the recorded order and temporal semantics,
+not idle between entries. A closed virtual simulation can also run faster or
+slower when every input relevant to its declared claims is modeled or supplied.
+A live coupled world is different: it cannot advance as though an unobserved
+outside fact were known unless a versioned model explicitly substitutes for
+that fact. If computation falls behind, a future live contract should expose
+lag, degrade, wait, or refuse according to a declared miss policy rather than
+silently compress outside time. This does not yet select a universal real-time
+rate or claim that general-purpose hardware can meet one without misses.
+
+Counterfactual closure is therefore relative, not total. An exact-within-model
+claim names a checkpoint, horizon, observation/evaluator boundary, world and
+component versions, randomness policy, and treatment of exogenous input. The
+event is DotLn's smallest individually recorded immutable observation/input
+envelope, but that is a representation choice—not proof that an event is a
+physical time quantum, that all events take equal time, or that append order
+alone is causal order. Causal membership requires an explicit or honestly
+derived relation; the Reactor/Decision supplies the state transition.
+[Lamport's happened-before relation](https://www.microsoft.com/en-us/research/publication/time-clocks-ordering-events-distributed-system/)
+is the useful caution: causal order can be partial even when a log supplies a
+total replay order.
+
+The operator's k-DOP analogy suggests a broad phase for counterfactual search.
+A [k-discrete orientation polytope](https://doi.org/10.1109/2945.675649) bounds
+geometry along a fixed family of directions; an analogous reachability envelope
+`E` could conservatively contain modeled futures projected onto a small set of
+versioned axes such as time, authority, budget, irreversible effects, and
+resource or deadline constraints. A target/query set `T` is safely prunable
+only when `T ∩ E = ∅`. Overlap means only “not ruled out,” not possible or
+reachable, and still needs exact branch evaluation. The envelope must prefer
+false-positive survivors over false-negative pruning, especially for protected
+and rare-tail outcomes. This preserves the shape without selecting Euclidean
+geometry: a hybrid or discrete future space may call for an abstract domain,
+constraint solver, or another reachability representation instead of a literal
+k-DOP.
+
+Research remains open on:
+
+- fixed, variable, and event-driven world-time semantics by mechanic;
+- which live boundaries, if any, need real-time pacing or a cap on prediction
+  beyond observed input, whether a minimum causal delay supplies lower-bound
+  lookahead for safe advancement, and what happens when a deadline is missed;
+- event granularity, simultaneous/independent events, and the relation between
+  causal order and replay order;
+- the smallest sufficient observation boundary for each evaluator claim;
+- conservative waiting versus bounded speculation and rollback; and
+- the envelope axes, soundness proof, refinement strategy, and adversarial
+  fixtures needed before any future-pruning mechanism is trusted.
+
+This is a future research direction. It changes no kernel clock, event schema,
+simulation engine, or roadmap rung.
+
 ## Every apparent affordance tells the truth
 
 The open-world quality bar is **affordance integrity**. If an activity appears

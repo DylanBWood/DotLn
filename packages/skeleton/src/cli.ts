@@ -7,9 +7,19 @@ import { runScenario, type FixtureTree } from "./scenario.js";
 const fixturePath = fileURLToPath(
   new URL("../../fixtures/repo-tree.json", import.meta.url),
 );
+const packagePath = fileURLToPath(
+  new URL("../../package.json", import.meta.url),
+);
+const packageManifest = JSON.parse(await readFile(packagePath, "utf8")) as {
+  version?: unknown;
+};
+if (typeof packageManifest.version !== "string")
+  throw new Error(`skeleton package version is missing: ${packagePath}`);
 const fixture = JSON.parse(await readFile(fixturePath, "utf8")) as FixtureTree;
 const result = runScenario(fixture);
-console.log("@dotln/skeleton v0.2.0 — Repo Gardener + Seiri");
+console.log(
+  `@dotln/skeleton v${packageManifest.version} — Repo Gardener + Seiri`,
+);
 console.log(result.timeline.join("\n"));
 console.log("\n" + result.glyphScene);
 if (process.argv.includes("--audit"))
