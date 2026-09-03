@@ -23,6 +23,122 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-03 primitives-and-data planning (operator-dispatched, after the `v0.3.4` close)
+
+Source: the operator's 2026-09-03 planning dispatch after the `v0.3.4` release
+close, preserved locally as a compaction-safety capture in
+`docs/intake/notes/WO-027-WO-028-primitives-and-data-planning-2026-09-03.md`.
+The session was asked to run like the entropy review, to equip Beware of Naive
+Interventionism and Do Nothing, and to check the recent ledger entries for
+primitives to add, data to start or stop storing, and metrics that improve only
+if a change lands now. It nominated WO-027 and WO-028 as planner-synthesized
+drafts, refreshed the work-order map, and repaired the publication index.
+Identifiers are opaque stable references; nomination records a finding and a
+bounded route, not activation authority. The clean-room screen found no
+employer, credential, internal-service, or other stop condition.
+
+- **A planning pass equips Beware of Naive Interventionism and Do Nothing, and
+  records a NoOp with its reversal condition for every candidate it declines**
+  `adopted`
+  - This applies the 2026-09-02 entry that made intervention restraint
+    phase-selective: bare ideation carries only the Clean Room floor, while a
+    change-proposing phase equips the counterweight by default. Each candidate
+    below states act or do nothing, the evidence, and what would make action
+    useful, in the `NoOpIntent` shape from the domain model. Recording the
+    declined candidates is the point: a later pass can see what was weighed
+    instead of weighing it again.
+- **No primitive changes are needed now; one optional field on one public
+  surface is the only store-it-now-or-lose-it item** `adopted`
+  - The recent entries — influence response policies, memory cuts, temporal
+    fidelity, local inference, the private evidence lane, model-input exposure,
+    and effort-quality experiments — all lower onto primitives that already
+    exist (`EventEnvelope`, `Comparison`, `AuthorityEnvelope`, `WorkOrder`,
+    Active and Support mechanics, `NoOpIntent`) or onto application-level
+    candidates already recorded in 11-proteino and 09. Nothing stored today
+    should stop being stored: the public control log carries harness, model,
+    effort, and source by deliberate choice and no private-lane value. The one
+    gap is below.
+- **Control events record no time; every phase duration the repository has
+  lived through exists only as local checkpoint-ref commit dates** `adopted`
+  `recovered`
+  - Measured at `v0.3.4`: 98 events, 12 work orders, no time-bearing field.
+    83 events name a local `refs/dotln/checkpoint/...` commit whose committer
+    date is the only record of when the transition happened; those refs are
+    never pushed, so a fresh clone holds none of it, and 15 events have no
+    recoverable time at all. Three queued consumers need the field: the
+    operator's effort-quality comparison (elapsed time is the cheapest
+    dimension of the resource vector), WO-021's beacon mtime, and WO-026's
+    index. WO-028 is the bounded route: an optional `recordedAt` at append
+    that the fold never reads, an elapsed projection, and a one-time labeled
+    recovery of historical times as a dated observation, never a backfill of
+    the log. It follows WO-018 so the consolidated library is edited once; the
+    local refs preserve the history until then, on this machine only.
+- **The local-inference probe is nominated; the calibration order is
+  deliberately not filed** `adopted`
+  - The roadmap's standing instruction to the next planning pass is
+    discharged by WO-027. A read-only existence check found LM Studio installed
+    and Ollama, llama.cpp, and MLX absent, on an M3 Max with 48 GB. The
+    calibration order (a 100-run baseline with role, mechanics, and combined
+    cells) waits for the probe's decision packet: filing it before
+    determinism, cost, and egress are observed would be the naive intervention
+    the roadmap itself warns against.
+- **A runner's inventory command can be a process launch** `adopted`
+  `recovered`
+  - The planner ran the LM Studio CLI's listing commands as read-only
+    discovery. The CLI woke the desktop app, which the operator watched open
+    and crash, and the listing timed out. Recorded as an incident for the
+    feedback corpus WO-011 compiles from: classify a discovery command by its
+    side effect before running it on the operator's machine, and let a
+    discovery order's authority text name the commands that launch processes.
+    WO-027 carries that rule and treats the crash as its first observation.
+- **The publication index went stale on `main` and nothing gated it**
+  `adopted` `recovered`
+  - At `v0.3.4`, `publication:check` fails: five candidate headings written
+    back during the WO-019 ideation breakouts have no audience/status row and
+    both edition locks are stale. The staleness mechanism worked; the gate did
+    not run, because `npm test` does not yet exercise `check-publication.mjs`
+    against the real repository (WO-018 criterion 6). This pass repairs the
+    index and locks as bounded adjacent cleanup with a recapture, since its
+    own roadmap edit re-stales them; WO-018 remains the durable gate.
+- **Declined candidates, each with its reversal condition** `preserved`
+  - A recipient-side influence response policy primitive (semantic-band gate,
+    cumulative reducer, windowed fold, internally anchored): NoOp. It is
+    `προτείνω` material with no input stream to fold today; useful when the
+    first evidence slice or a second influence-bearing input source exists.
+  - A typed, ablatable model intervention point (predicate, bounded input,
+    output schema, budget, downstream event): NoOp. No model call crosses a
+    boundary DotLn controls until WO-009, and the existing Active mechanic,
+    `AuthorityEnvelope`, and `WorkOrder` already carry the shape.
+  - The private evidence lane, its offline maintenance tools, and the Snooping
+    Footprint Reducer: NoOp. There is no private datum to govern and no
+    runtime sensor to inventory; useful when the operator names the first
+    record they want processed but not published, or when WO-009 gives DotLn
+    its first model input and output to minimize.
+  - Machine-readable finding counts, token, cost, or attention fields in
+    reports and completion events: NoOp. The effort-quality comparison must
+    predeclare its evaluators first; measurement follows the declared
+    experiment, and resource telemetry is a private-lane candidate.
+  - A release-manifest projection of completion actors and times: NoOp.
+    WO-026's index derives both from the control log, so a manifest field has
+    no consumer yet.
+  - A `runtime.local-inference` row in the pinned capability table: NoOp on
+    the table itself; WO-027 proposes the row inside its discovery doc.
+  - A forward-only lint against absolute home paths in new reports (they
+    appear in immutable WO-007 and WO-015 reports, as WO-007 VER-002 noted):
+    NoOp. The author's identity is already public through authorship; useful
+    as a rung once the Snooping Footprint Reducer or WO-026's check chain
+    exists.
+  - Pushing the local checkpoint refs to preserve timing: NoOp. It is a
+    disclosure decision about work-in-progress trees, and WO-028's recovery
+    removes the need.
+- **WO-023's pull-forward trigger has arguably fired** `preserved`
+  - The map allowed pulling the compiled reviewer forward "if the compiled
+    reviewer is wanted in service sooner." Three manual review or planning
+    sessions have run since its nomination, each without a blinded refutation
+    pass. The recommended sequence keeps WO-023 after the beacons; the
+    operator may pull it to directly after WO-016 if a fourth session is
+    wanted before WO-021 closes.
+
 ## WO-019 repair-window ideation — influence response and fictional-system translation (2026-09-03)
 
 Source: the operator's live `ideation:` dispatch, preserved unedited in

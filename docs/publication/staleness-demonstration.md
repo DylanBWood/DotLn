@@ -390,6 +390,38 @@ CURRENT software-engineer-toc.md: 42 linked source sections match
 PASS publication bootstrap checks
 ```
 
+## 12. Post-`v0.3.4` planning recapture
+
+The WO-019 ideation breakouts wrote five candidate headings into the Pattern
+Library, the audit/privacy map, and the `προτείνω` thesis without registering
+them, and the WO-019 close did not run this check because `npm test` does not
+yet exercise it against the real repository (WO-018 criterion 6). At `v0.3.4`
+the check therefore failed with five missing index rows and two stale locks.
+The 2026-09-03 planning pass registered the five headings, added the roadmap's
+dated discharge note for the local-inference probe (outside every linked
+edition subtree, so the locks below equal the values the check printed before
+that edit), and refreshed the two current-byte locks. The source-base revision
+and each edition's source selection remain unchanged.
+
+```console
+$ npm run publication:check -- --print-locks
+PASS index coverage: 155/155 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+LOCK everyday-ai-user-toc.md: sha256:d674b1ff5d8b8e8caaf5a1dd882e0556488ad816afb90404afaaa95e2fdaa39c
+LOCK software-engineer-toc.md: sha256:ff47850eeebbb4308429babdbcbaea76543dfee1a19faffc3c7a426f72ddc626
+PASS publication bootstrap checks
+
+$ npm run publication:check
+PASS index coverage: 155/155 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 27 linked source sections match
+CURRENT software-engineer-toc.md: 42 linked source sections match
+PASS publication bootstrap checks
+```
+
+The deliberate-patch captures above remain the mechanism proof; this recapture
+records the repaired baseline and the gate gap that let it go stale.
+
 ## Honest limit
 
 This is conservative byte-level stale detection over linked heading subtrees. It
