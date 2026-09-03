@@ -58,7 +58,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source is DotLn `v0.3.3`. Its executable heart is a deterministic walking skeleton with zero runtime dependencies, a fake executor, a separate fake verifier, terminal projections, and three audit views over the same event log. No model is in the loop yet. That is the point: the source proves the kernel's shape before anything unpredictable is plugged into it. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
+This source is DotLn `v0.3.4`. Its executable heart is a deterministic walking skeleton with zero runtime dependencies, a fake executor, a separate fake verifier, terminal projections, and three audit views over the same event log. No model is in the loop yet. That is the point: the source proves the kernel's shape before anything unpredictable is plugged into it. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.

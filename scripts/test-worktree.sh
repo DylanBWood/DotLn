@@ -28,9 +28,11 @@ github_origin="https://github.com/$github_repo.git"
 git -C "$main" config "url.$test_root/origin.git.insteadOf" "$github_origin"
 git -C "$main" remote set-url origin "$github_origin"
 git -C "$main" switch -c main >/dev/null 2>&1
-mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/packages/kernel"
+mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/discovery" "$main/packages/kernel"
 cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$main/scripts/"
-printf '# WO-099 — worktree fixture, v0.2.1\n\n**Objective:** Exercise publication.\n\n**Non-goals:** No release.\n' >"$main/docs/work-orders/WO-099-fixture.md"
+printf '# WO-099 — worktree fixture, v0.2.1\n\n**Model:** fixture-model.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Objective:** Exercise publication.\n\n**Non-goals:** No release.\n' >"$main/docs/work-orders/WO-099-fixture.md"
+printf '%s\n' \
+  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"version":{"classification":"observed","value":"fixture"},"persistedEffortSelector":{"classification":"observed","value":"xhigh"}},"claude-code":{"version":{"classification":"observed","value":"fixture"},"sessionEffortSelector":{"classification":"documented locally","values":["xhigh"]}}}}}' >"$main/docs/discovery/environment.json"
 printf '%s\n' \
   '# Fixture repository' \
   '' \
@@ -101,15 +103,36 @@ cp "$test_root/committed-active-resume.jsonl" "$subject/docs/control/resume.json
 cp "$test_root/committed-active-current.md" "$subject/docs/control/current.md"
 git -C "$subject" update-index --no-assume-unchanged docs/control/resume.jsonl docs/control/current.md
 
-node "$subject/scripts/resume.mjs" implementation-ready >/dev/null
+node "$subject/scripts/resume.mjs" implementation-ready \
+  --harness codex-cli \
+  --harness-version fixture \
+  --model fixture-model \
+  --effort xhigh \
+  --source self-reported >/dev/null
 node "$subject/scripts/resume.mjs" verify >/dev/null
 mkdir -p "$subject/docs/verifications/WO-099"
-printf '# verification pass\n' >"$subject/docs/verifications/WO-099/VER-001.md"
-node "$subject/scripts/resume.mjs" verification-result pass >/dev/null
+printf '%s\n' \
+  '# verification pass' \
+  '' \
+  '**Actor attestation:** {"harness":"claude-code","harnessVersion":"fixture","model":"fixture-model","effort":"xhigh","source":"self-reported"}' >"$subject/docs/verifications/WO-099/VER-001.md"
+node "$subject/scripts/resume.mjs" verification-result pass \
+  --harness claude-code \
+  --harness-version fixture \
+  --model fixture-model \
+  --effort xhigh \
+  --source self-reported >/dev/null
 node "$subject/scripts/resume.mjs" final-review >/dev/null
 mkdir -p "$subject/docs/final-reviews/WO-099"
-printf '# final pass\n' >"$subject/docs/final-reviews/WO-099/FINAL-001.md"
-node "$subject/scripts/resume.mjs" final-review-result pass >/dev/null
+printf '%s\n' \
+  '# final pass' \
+  '' \
+  '**Actor attestation:** {"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"}' >"$subject/docs/final-reviews/WO-099/FINAL-001.md"
+node "$subject/scripts/resume.mjs" final-review-result pass \
+  --harness human \
+  --harness-version not-applicable \
+  --model human \
+  --effort unknown \
+  --source operator-attested >/dev/null
 printf 'done\n' >"$subject/result.txt"
 printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
 git -C "$subject" add .

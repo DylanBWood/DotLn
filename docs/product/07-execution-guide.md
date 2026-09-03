@@ -49,11 +49,21 @@ operator is deliberately not repeating themselves.
    behavior, verification, and rollback.
 
 3. Record your outcome when your evidence exists, not before:
-   `npm run resume -- implementation-ready` (executor: the deliverable is built
-   and its work-order evidence is green, so it is ready to verify),
-   `npm run resume -- verification-result pass|fail`,
-   `npm run resume -- repair-complete`, or
-   `npm run resume -- final-review-result pass|fail`. **A repair episode is not
+   `npm run resume -- implementation-ready <actor-flags>` (executor: the
+   deliverable is built and its work-order evidence is green, so it is ready to
+   verify), `npm run resume -- verification-result pass|fail <actor-flags>`,
+   `npm run resume -- repair-complete <actor-flags>`, or
+   `npm run resume -- final-review-result pass|fail <actor-flags>`. The required
+   suffix is
+   `--harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>`;
+   use the exact usage printed by a refusal and never infer a value the harness
+   did not expose. Before `verification-result` or `final-review-result`, put
+   exactly one `**Actor attestation:** {<normalized actor JSON>}` line in the
+   allocated report beside the human-readable actor prose. The completion
+   command refuses if that header is absent, malformed, or differs from its
+   flags; an unrecognized supplied effort appears in the JSON as `unknown` plus
+   `raw`. This pre-append check resolves the report/event ordering without
+   editing immutable evidence afterward. **A repair episode is not
    finished until `repair-complete` is recorded** — otherwise the next session
    resumes into the wrong phase. The remaining action,
    `npm run resume -- activate WO-NNN docs/work-orders/<file>.md`, opens a work
@@ -417,15 +427,50 @@ a stub but never perform a backfill against origin.
 
 ## Model-specific notes
 
-- Required model/effort in a work order is a hard constraint (Principle 8) — if
-  you are not it, stop and say so; never silently proceed as a substitute. Every
-  work order carries a `Model:` line; `Model: any` means any capable model. An
-  absent line is a defect in the work order — flag it, don't guess. Note the
-  gap: the `Model:` line pins a model family and has no effort field, and no
-  executable check compares the configured effort to the documented one. State
-  the model **and effort** you actually ran at in your result, so evidence is
-  attributable to the configuration that produced it. This is not hypothetical —
-  see the effort-drift note in `docs/PLAYBOOK.md` §Who does what.
+- A required model is a hard constraint under Principle 8, and declared effort
+  is a hard constraint under the active work order and WO-019 mechanism. If you
+  do not meet either, stop and say so; never silently proceed as a substitute. Every
+  newly activated work order carries both a `Model:` line and an `Effort:` line
+  declaring `executor`, `verifier`, and `reviewer` as `any` or a minimum on
+  `low < medium < high < xhigh < max`. `Model: any` means any capable model;
+  effort remains independently constrained. The leading metadata region
+  contains exactly one of each field, with the complete Effort field following
+  Model apart from blank lines; duplicate, body-buried, reordered, missing, or
+  malformed declarations refuse. `resume -- next` repeats both complete source
+  fields in the dispatch briefing.
+- The four completion events carry an `actor` attestation: harness and version,
+  model, effort, and epistemic source. Recognized ladder values remain exact; an
+  unrecognized label is stored as `effort: unknown` plus its verbatim `raw`
+  value. A recognized claim is accepted only when bounded discovery records
+  that value for the exact harness/version through a versioned selector or
+  readback; otherwise the actor must attest `unknown`. `unknown` satisfies only
+  a role declared `any`. A below-minimum transition appends nothing and can
+  proceed only after a dated operator amendment to the work order—not an
+  override flag. `harness-readback` is valid only where
+  `docs/discovery/environment.json` records an observed effective session
+  readback for that exact harness/version; a persisted setting or accepted
+  launch selector alone is not readback. `self-reported` deliberately records a claim rather than
+  surveilling the session to prove it: the declared-effort gate compares that
+  claim, and the source label states the evidence limit. This does not authorize
+  silent degradation; it prevents an unobserved value from masquerading as
+  observed fact. Echo the attested values in the session result, but the log is
+  the durable record and `current.md` projects the latest value and within-order
+  drift.
+- Actor flag values are one-line data. Control characters and Unicode line
+  separators refuse rather than entering the Markdown projection. Use
+  `not-applicable` when a field is structurally absent, and `unknown` when a
+  value exists but cannot be known. The conventional unassisted-human tuple is
+  harness `human`, harness version `not-applicable`, model `human`, effort
+  `unknown`, and source `operator-attested`.
+- **Migration note (2026-09-02):** effort enforcement is forward-only from
+  WO-019. Historical work-order headers, completion events, and report prose are
+  not backfilled or invalidated. New activations carry
+  `effortDeclarationValidated: true`; a still-active pre-WO-019 event without it
+  can finish against a visibly synthesized `any` declaration if Effort is
+  absent, while WO-019 and every marked activation remain strict. In particular, WO-001 through WO-003 retain the
+  disclosed low-versus-documented-xhigh drift, and historical free-form labels
+  remain what their reports said rather than being rewritten into the new
+  ladder. See `docs/PLAYBOOK.md` §Who does what.
 - Behavioral guidance rots across model generations; that is why it lives here
   as typed mechanisms and docs instead of prompts. If an instruction here fights
   your model's defaults (e.g., built-in verification), flag it in your result

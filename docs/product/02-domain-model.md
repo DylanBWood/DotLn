@@ -89,6 +89,27 @@ namespaces; the bare term stays canonical in prose.
 | **WorkOrderTransport** | The dispatch port: `dispatch(order) → CommandReceipt`. Adapters: cli-print, cli-exec, background-session, subagent, workflow, sdk, browser-driven, human, fake — `cli-print` and `cli-exec` are the same one-shot bounded CLI mechanism as surfaced by Claude Code and Codex CLI respectively. Chosen empirically per environment (Principle 15).                                                |
 | **Result envelope**    | The deliberately tiny structured return (`workOrderId, episodeId, status, resultId, summary, requiresHuman`) — "task" in prose always means a bounded unit of work realized as a WorkOrder; everything else stays in the store, referenced by id. The main thread receives only envelopes.                                                                                                       |
 
+The resume control log pins an actor attestation on each completion event as
+`{ harness, harnessVersion, model, effort, raw?, source }`. `effort` is one of
+`low | medium | high | xhigh | max | unknown`; `raw` preserves an unrecognized
+label when present; and `source` is `self-reported | harness-readback |
+operator-attested`. This record is control-plane evidence and does not enlarge
+the Result envelope. A self-report proves only that the control log received a
+claim attributed to that actor, not independent authorship or the unobserved
+effective setting; the source label prevents that claim from being laundered
+into readback. It is a candidate payload component for runtime episode events
+when WO-009 implements them, not a claim that those events exist today.
+Recognized effort values require value-specific selector or
+effective-readback evidence for the same harness version; a harness without it
+must attest `unknown`. Actor values are single-line. `not-applicable` denotes a structurally absent harness/model field,
+while `unknown` denotes an existing value that is unavailable. The conventional
+unassisted-human record is `{ harness: "human", harnessVersion:
+"not-applicable", model: "human", effort: "unknown", source:
+"operator-attested" }`.
+New activation events also carry `effortDeclarationValidated: true`. Its absence
+marks pre-migration history rather than false, and does not weaken WO-019's own
+strict declaration boundary.
+
 ## Identity and composition
 
 | Term                              | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |

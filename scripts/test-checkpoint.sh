@@ -15,10 +15,16 @@ saved="$test_root/saved"
 git init "$fixture_repo" >/dev/null
 git -C "$fixture_repo" config user.email test@example.invalid
 git -C "$fixture_repo" config user.name "DotLn Test"
-mkdir -p "$fixture_repo/scripts" "$fixture_repo/docs/work-orders"
+mkdir -p "$fixture_repo/scripts" "$fixture_repo/docs/work-orders" "$fixture_repo/docs/discovery"
 cp -- "$script_dir/resume.mjs" "$fixture_repo/scripts/resume.mjs"
 cp -- "$script_dir/../.gitignore" "$fixture_repo/.gitignore"
-printf '# fixture\n' >"$fixture_repo/docs/work-orders/WO-099-fixture.md"
+printf '%s\n' \
+  '# fixture' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor any; verifier any; reviewer any.' >"$fixture_repo/docs/work-orders/WO-099-fixture.md"
+printf '%s\n' \
+  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"version":{"classification":"observed","value":"fixture"},"persistedEffortSelector":{"classification":"observed","value":"xhigh"}}}}}' >"$fixture_repo/docs/discovery/environment.json"
 git -C "$fixture_repo" add .
 git -C "$fixture_repo" commit -m initial >/dev/null
 
@@ -38,7 +44,12 @@ cp -- "$fixture_repo/docs/control/resume.jsonl" "$saved/resume.jsonl"
 git -C "$fixture_repo" rev-parse HEAD >"$saved/head.before"
 git -C "$fixture_repo" status --porcelain >"$saved/status.before"
 head_before="$(tr -d '\n' <"$saved/head.before")"
-node "$fixture_repo/scripts/resume.mjs" implementation-ready >/dev/null
+node "$fixture_repo/scripts/resume.mjs" implementation-ready \
+  --harness codex-cli \
+  --harness-version fixture \
+  --model fixture-model \
+  --effort xhigh \
+  --source self-reported >/dev/null
 git -C "$fixture_repo" rev-parse HEAD >"$saved/head.after"
 git -C "$fixture_repo" status --porcelain >"$saved/status.after"
 cmp "$saved/head.before" "$saved/head.after"
@@ -71,10 +82,16 @@ test -f "$fixture_repo/docs/intake/notes/raw.md"
 test -f "$fixture_repo/.env"
 
 stale_repo="$test_root/stale-repo"
-mkdir -p "$stale_repo/scripts" "$stale_repo/docs/work-orders" "$test_root/failing-git"
+mkdir -p "$stale_repo/scripts" "$stale_repo/docs/work-orders" "$stale_repo/docs/discovery" "$test_root/failing-git"
 cp -- "$script_dir/resume.mjs" "$stale_repo/scripts/resume.mjs"
 cp -- "$script_dir/../.gitignore" "$stale_repo/.gitignore"
-printf '# fixture\n' >"$stale_repo/docs/work-orders/WO-098-fixture.md"
+printf '%s\n' \
+  '# fixture' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor any; verifier any; reviewer any.' >"$stale_repo/docs/work-orders/WO-098-fixture.md"
+printf '%s\n' \
+  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"version":{"classification":"observed","value":"fixture"},"persistedEffortSelector":{"classification":"observed","value":"xhigh"}}}}}' >"$stale_repo/docs/discovery/environment.json"
 git init "$stale_repo" >/dev/null
 git -C "$stale_repo" config user.email test@example.invalid
 git -C "$stale_repo" config user.name "DotLn Test"
@@ -86,7 +103,12 @@ test -n "$prior_checkpoint"
 printf '#!/usr/bin/env bash\nexit 73\n' >"$test_root/failing-git/git"
 chmod +x "$test_root/failing-git/git"
 node_bin="$(command -v node)"
-checkpoint_warning="$(PATH="$test_root/failing-git" "$node_bin" "$stale_repo/scripts/resume.mjs" implementation-ready 2>&1 >/dev/null)"
+checkpoint_warning="$(PATH="$test_root/failing-git" "$node_bin" "$stale_repo/scripts/resume.mjs" implementation-ready \
+  --harness codex-cli \
+  --harness-version fixture \
+  --model fixture-model \
+  --effort xhigh \
+  --source self-reported 2>&1 >/dev/null)"
 grep -Fq 'warning: could not create recovery checkpoint for implementation-ready' <<<"$checkpoint_warning"
 grep -Fq 'Do not repeat this transition after it records' <<<"$checkpoint_warning"
 grep -Fq 'one-invocation outside-sandbox approval' <<<"$checkpoint_warning"

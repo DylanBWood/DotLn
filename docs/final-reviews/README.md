@@ -19,6 +19,25 @@ verification evidence makes the final review fail: repair then returns through a
 fresh numbered independent `VER-NNN` before another `FINAL-NNN`. The final
 reviewer never implements an acceptance-relevant fix and approves it itself.
 
+For work orders governed by the effort-attestation mechanism, the reviewer
+states its harness, harness version, model, effort, and epistemic source in prose
+and includes the same single-line `**Actor attestation:** {<normalized actor
+JSON>}` header required of verification reports. Before passing, it lists every
+executor-role completion actor (`ImplementationReady` and all
+`RepairCompleted`; there is no executor or repair report), each completed
+verifier's report header beside its control actor, and its own intended completion actor;
+checks each completed value against the declared role minimum; and confirms the
+projection reports within-order drift. `final-review-result` compares the
+reviewer's machine header with its flags before append and refuses any mismatch,
+so the completed package—immutable report plus `FinalReviewCompleted` event—can
+confirm the reviewer pair without asking the report to inspect a future event.
+A missing or below-declaration actor requires failure and repair; reports
+completed before WO-019's 2026-09-02 migration are not backfilled. Because
+that check requires exactly one line beginning at column one with
+`**Actor attestation:**`, every header the reviewer quotes from a verification
+report must be indented, blockquoted, or placed in a table cell; only the
+reviewer's own header starts at column one.
+
 A passing report includes the final evidence summary, remaining deviations/open
 questions, proposed PR title and body, and confirmation that the branch is ready
 for operator review. After committing the reviewed state, the authorized publish

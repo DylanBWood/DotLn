@@ -461,6 +461,58 @@ remain comparable. This is the concrete code-efficiency projection of the
 graded-counterfactual-build idea in the lineage ledger, not permission to
 optimize output volume or weaken the contract.
 
+For reasoning-effort experiments, a complete work order is the default unit for
+verification and final review: it is already the bounded unit whose evidence and
+judgment must cohere. Compare declared settings such as `xhigh` and `max` over
+representative orders before splitting those roles into smaller fragments merely
+to create more samples. An unmapped label remains a raw `unknown`, and a lower
+token or account-cap observation is motivation for a controlled comparison—not
+evidence that effort, model quality, or work-order size caused it.
+
+A local-inference calibration is a candidate profiling order after a bounded
+capability probe identifies an available runner. Start from one pinned story
+prompt and a proposed repeated baseline, then compare baseline, role-only,
+active/support-mechanics-only, and role-plus-mechanics cells with interleaved or
+randomized run order. Each cell is a distinct compiled loadout. Pin model
+artifact and version, quantization, prompt template, decoding parameters,
+context and stop rules, seed policy, runner, hardware, and verified
+network-egress state. Predeclare coherence, instruction-following, diversity,
+role behavior, mechanic participation, and resource evaluators; report
+distributions and evaluator disagreement. The operator's proposed 100 baseline
+runs are a starting hypothesis, not a universal sample-size rule. Offline
+execution removes provider connectivity and API-meter constraints, not local
+compute, memory, context, latency, storage, energy, or thermal constraints.
+
+The operator wants local inference at the earliest practical point. The next
+planning pass should therefore run or nominate the smallest bounded runner and
+no-egress capability probe, then decide whether to file the calibration order;
+this priority does not expand WO-019 or silently reorder already authorized
+dependencies.
+
+That probe should leave room for a hybrid local-first cell: deterministic
+parsing, then local tagging/association and candidate WorkOrder/context-capsule
+derivation, followed by a remote planning or coding episode that receives only
+the approved capsule and public-safe evidence after ordinary dispatch authority. Compare it with deterministic-only, local-only, and
+direct-remote paths for disclosure surface as well as episode/output quality and
+cost.
+Treat local derived metadata as sensitive and fallible, and count any later
+remote request for more context as a new, visible disclosure decision.
+Do not freeze the first result into permanent local/remote roles: repeat the
+profile when a material model, runner, quantization, or hardware change occurs,
+and allow the same typed intervention point to migrate local as evidence
+supports it. The operator expects the local semantic frontier to improve; the
+experiment still records regressions and constraints instead of defining them
+away.
+
+Every proposed model intervention point in that experiment is typed and
+ablatable: activation predicate, bounded input, output schema, budget, and
+downstream event are compared with a deterministic-only branch. Static maps and
+other senses should be compiled into authorized, versioned state projections
+where possible; an LLM receives only the residual interpretation that actually
+requires inference. This uses the existing model/harness/runtime boundary and
+does not create a second actor kind, a new roadmap rung, or an expansion of
+WO-009 or WO-022.
+
 The capability table can add `efficiencyLevel`, `baseline`, `resourceVector`,
 `protectedOutcomes`, `frontierAlternatives`, and `nextExperiment`. Efficiency XP
 comes from trustworthy measurements and successful or informative experiments;
