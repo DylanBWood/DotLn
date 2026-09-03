@@ -489,6 +489,13 @@ no-egress capability probe, then decide whether to file the calibration order;
 this priority does not expand WO-019 or silently reorder already authorized
 dependencies.
 
+Discharged 2026-09-03: the planning pass after the `v0.3.4` close ran a
+read-only existence check (LM Studio installed; Ollama, llama.cpp, and MLX
+absent) and nominated WO-027 as the bounded probe. The calibration order is
+deliberately unfiled until WO-027's decision packet names its disposition;
+filing it before determinism, cost, and egress are observed would be the naive
+intervention this section warns against.
+
 That probe should leave room for a hybrid local-first cell: deterministic
 parsing, then local tagging/association and candidate WorkOrder/context-capsule
 derivation, followed by a remote planning or coding episode that receives only

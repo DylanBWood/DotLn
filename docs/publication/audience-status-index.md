@@ -94,6 +94,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [SMART & exploration contracts](../product/05-pattern-library.md#smart--exploration-contracts)                                                   | everyday-ai-user, software-engineer | planned |
 | [Communication — mitigated speech](../product/05-pattern-library.md#communication--mitigated-speech)                                             | everyday-ai-user, software-engineer | planned |
 | [Decision policies — Algorithms to Live By](../product/05-pattern-library.md#decision-policies--algorithms-to-live-by)                           | everyday-ai-user, software-engineer | planned |
+| [Candidate — influence response policies](../product/05-pattern-library.md#candidate--influence-response-policies)                               | everyday-ai-user, software-engineer | vision  |
 | [Systems & quality](../product/05-pattern-library.md#systems--quality)                                                                           | everyday-ai-user, software-engineer | planned |
 | [Party topology — commedia dell'arte (the masks)](../product/05-pattern-library.md#party-topology--commedia-dellarte-the-masks)                  | everyday-ai-user, software-engineer | planned |
 | [The Eye Dr Test — pairwise preference](../product/05-pattern-library.md#the-eye-dr-test--pairwise-preference)                                   | everyday-ai-user, software-engineer | planned |
@@ -105,6 +106,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Candidate — The Malcolm Check](../product/05-pattern-library.md#candidate--the-malcolm-check)                                                   | everyday-ai-user, software-engineer | vision  |
 | [Candidate — Beware of Naive Interventionism](../product/05-pattern-library.md#candidate--beware-of-naive-interventionism)                       | software-engineer                   | vision  |
 | [Clean Room — active mechanic with contextual supports](../product/05-pattern-library.md#clean-room--active-mechanic-with-contextual-supports)   | everyday-ai-user, software-engineer | vision  |
+| [Candidate — Snooping Footprint Reducer](../product/05-pattern-library.md#candidate--snooping-footprint-reducer)                                 | everyday-ai-user, software-engineer | vision  |
 | [Candidate — Do Nothing, active and support](../product/05-pattern-library.md#candidate--do-nothing-active-and-support)                          | everyday-ai-user, software-engineer | vision  |
 | [Active: Do Nothing](../product/05-pattern-library.md#active-do-nothing)                                                                         | software-engineer                   | vision  |
 | [Support: Do Nothing](../product/05-pattern-library.md#support-do-nothing)                                                                       | software-engineer                   | vision  |
@@ -179,18 +181,20 @@ as a current blocked verdict.
 
 ## 09 — Audit, records, resilience, and privacy
 
-| Section                                                                                                                                      | Audiences                           | Status    |
-| -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
-| [Audit, records, resilience, and privacy](../product/09-audit-resilience-privacy.md#audit-records-resilience-and-privacy)                    | everyday-ai-user, software-engineer | vision    |
-| [Audit audiences and decisions](../product/09-audit-resilience-privacy.md#audit-audiences-and-decisions)                                     | everyday-ai-user, software-engineer | specified |
-| [Canonical audit record](../product/09-audit-resilience-privacy.md#canonical-audit-record)                                                   | software-engineer                   | planned   |
-| [Fidelity levels](../product/09-audit-resilience-privacy.md#fidelity-levels)                                                                 | everyday-ai-user, software-engineer | specified |
-| [Audit projections and visualizations](../product/09-audit-resilience-privacy.md#audit-projections-and-visualizations)                       | everyday-ai-user, software-engineer | specified |
-| [Persistence and recovery classes](../product/09-audit-resilience-privacy.md#persistence-and-recovery-classes)                               | everyday-ai-user, software-engineer | specified |
-| [Backup and disaster recovery choices](../product/09-audit-resilience-privacy.md#backup-and-disaster-recovery-choices)                       | everyday-ai-user, software-engineer | specified |
-| [Privacy and minimization](../product/09-audit-resilience-privacy.md#privacy-and-minimization)                                               | everyday-ai-user, software-engineer | specified |
-| [Policy dimensions implementations can customize](../product/09-audit-resilience-privacy.md#policy-dimensions-implementations-can-customize) | software-engineer                   | specified |
-| [Bootstrap sequence](../product/09-audit-resilience-privacy.md#bootstrap-sequence)                                                           | software-engineer                   | planned   |
+| Section                                                                                                                                                         | Audiences                           | Status    |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
+| [Audit, records, resilience, and privacy](../product/09-audit-resilience-privacy.md#audit-records-resilience-and-privacy)                                       | everyday-ai-user, software-engineer | vision    |
+| [Audit audiences and decisions](../product/09-audit-resilience-privacy.md#audit-audiences-and-decisions)                                                        | everyday-ai-user, software-engineer | specified |
+| [Canonical audit record](../product/09-audit-resilience-privacy.md#canonical-audit-record)                                                                      | software-engineer                   | planned   |
+| [Fidelity levels](../product/09-audit-resilience-privacy.md#fidelity-levels)                                                                                    | everyday-ai-user, software-engineer | specified |
+| [Audit projections and visualizations](../product/09-audit-resilience-privacy.md#audit-projections-and-visualizations)                                          | everyday-ai-user, software-engineer | specified |
+| [Persistence and recovery classes](../product/09-audit-resilience-privacy.md#persistence-and-recovery-classes)                                                  | everyday-ai-user, software-engineer | specified |
+| [Backup and disaster recovery choices](../product/09-audit-resilience-privacy.md#backup-and-disaster-recovery-choices)                                          | everyday-ai-user, software-engineer | specified |
+| [Privacy and minimization](../product/09-audit-resilience-privacy.md#privacy-and-minimization)                                                                  | everyday-ai-user, software-engineer | specified |
+| [Candidate — model-input exposure plans](../product/09-audit-resilience-privacy.md#candidate--model-input-exposure-plans)                                       | everyday-ai-user, software-engineer | vision    |
+| [Candidate — public Git with a local private evidence lane](../product/09-audit-resilience-privacy.md#candidate--public-git-with-a-local-private-evidence-lane) | software-engineer                   | vision    |
+| [Policy dimensions implementations can customize](../product/09-audit-resilience-privacy.md#policy-dimensions-implementations-can-customize)                    | software-engineer                   | specified |
+| [Bootstrap sequence](../product/09-audit-resilience-privacy.md#bootstrap-sequence)                                                                              | software-engineer                   | planned   |
 
 ## 10 — IR compatibility
 
@@ -214,6 +218,7 @@ as a current blocked verdict.
 | [Shape before machinery](../product/11-proteino.md#shape-before-machinery)                                                                      | everyday-ai-user, software-engineer | specified |
 | [The playable loop](../product/11-proteino.md#the-playable-loop)                                                                                | everyday-ai-user, software-engineer | vision    |
 | [A world on DotLn, not a second DotLn world](../product/11-proteino.md#a-world-on-dotln-not-a-second-dotln-world)                               | everyday-ai-user, software-engineer | specified |
+| [Candidate — recap-primed resident memory](../product/11-proteino.md#candidate--recap-primed-resident-memory)                                   | everyday-ai-user, software-engineer | vision    |
 | [Intervention truth](../product/11-proteino.md#intervention-truth)                                                                              | everyday-ai-user, software-engineer | specified |
 | [Ad hoc first, reusable on evidence](../product/11-proteino.md#ad-hoc-first-reusable-on-evidence)                                               | everyday-ai-user, software-engineer | specified |
 | [Books and personal styles become experiments](../product/11-proteino.md#books-and-personal-styles-become-experiments)                          | everyday-ai-user, software-engineer | vision    |
