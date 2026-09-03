@@ -38,3 +38,16 @@ no employer code, configuration, or identifiers may enter (see CLAUDE.md).
 No inherited-context ledger for external rules is needed (nothing external is
 inherited). The idea ledger carries the lineage instead. If a work deployment
 ever exists, it gets its own ADR and its own bootstrap route.
+
+## Amendments
+
+### 2026-09-03 — external inspiration and rights provenance remain required
+
+Decision 4 rejects forensic apportionment among predecessor ideas, model
+elaboration, and operator judgment when the evidence cannot support it. It does
+not excuse omission of a known book, method, paper, film, game, conversation,
+technical tradition, or other external influence. Nor does it waive license,
+quotation, dependency, copied-material, or source-status obligations. The
+public [Sources and inspirations register](../lineage/inspirations.md) records
+the best-known intellectual inheritance; exact internal co-authorship may
+remain `unknown` without turning external provenance into `unknown` by default.

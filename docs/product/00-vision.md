@@ -3,10 +3,13 @@
 **DotLn** ("Days of the Natural Logarithm" — the name hides _Dylan_ in
 DAYs-of-the-LN, and doubles as a technical pun: behavior evolving over time
 through additive log-odds composition of influences) is a **local-first,
-model-agnostic compiler and runtime for human judgment**.
+model-agnostic compiler and runtime for human judgment**. It gives an
+implementation a common language for turning a person, team, organization, or
+field's values, craftsmanship, organizational patterns, and accumulated
+corrections into executable behavior.
 
-It turns a person, team, organization, or field's values, craftsmanship,
-organizational patterns, and accumulated corrections into:
+The author's first personal implementation, developed in this same repository,
+chooses to compile that material into:
 
 - deterministic control logic (pure reactors, statecharts, function tables),
 - bounded work orders,
@@ -19,6 +22,10 @@ the machinery — not the operator's attention — carries the rules.
 
 ## Mission — increase the chance of operator flow
 
+This is the mission of the author's personal implementation and a motivating
+use of the platform, not a compulsory objective or operating policy for every
+DotLn owner.
+
 AI-assisted work commonly falls into a babysitting mode: the operator repeatedly
 restates context, supplies procedural guidance, coordinates tools and workers,
 checks unsupported completion claims, recovers stalled work, and spends active
@@ -27,7 +34,8 @@ unbounded improvisation or confidence without evidence. It is a sustained
 creative flow in which the operator can keep the idea and implementation
 direction in mind while the surrounding work behaves dependably.
 
-DotLn's mission is to improve the conditions for that **operator flow state**.
+The reference implementation's mission is to improve the conditions for that
+**operator flow state**.
 Supporting research, capability-building, coordination, routine procedure,
 recovery, and verification should happen automatically when authorized,
 predictably when routine, and helpfully when a genuinely material decision needs
@@ -35,21 +43,22 @@ the operator. Product and research investment should favor capabilities that
 remove recurring supervision and avoidable context switches without exporting
 their cost into correctness, authority, evidence, privacy, or recoverability.
 
-The product cannot promise or infer a person's psychological state. It can
+The implementation cannot promise or infer a person's psychological state. It can
 reduce interruption, repetition, manual ceremony, and rediscovery; preserve
 intent and working context across handoffs; package necessary interruptions as
-decision-ready inputs; and make recovery unsurprising. Flow never authorizes
-hidden scope expansion, skipped verification, perpetual action, or
-self-certification. “Give an agent a build, not your biography” remains useful
-architectural shorthand for one mechanism serving this larger mission.
+decision-ready inputs; and make recovery unsurprising. Under its selected
+profile, flow does not silently authorize scope expansion, skipped verification,
+perpetual action, or self-certification. “Give an agent a build, not your
+biography” remains useful architectural shorthand for one mechanism serving
+this larger mission.
 
 ## Common substrate, local doctrine
 
 DotLn distributes the same **legos**, not the same finished organization. Its
-product is the level playing field: a common event grammar, deterministic
-kernel, composition rules, authority boundaries, provenance, replay, inspection,
-and interchangeable execution ports. The secret sauce belongs to each DotLn
-implementation.
+product is the level playing field: a common event and program grammar,
+deterministic composition, capability declarations, interchangeable execution
+ports, and optional mechanisms for authority, evidence, provenance, replay,
+audit, and inspection. The secret sauce belongs to each DotLn implementation.
 
 An individual, team, organization, or entire field can define its own:
 
@@ -57,6 +66,8 @@ An individual, team, organization, or entire field can define its own:
 - integrations, input sources, effect adapters, and projections;
 - security boundaries, authority policy, audit requirements, retention, and
   logging posture;
+- which authority, evidence, verification, replay, audit, and safety mechanisms
+  are required, optional, replaced, or absent;
 - identities, roles, personalities, masks, active mechanics, supports, and valid
   combinations;
 - evidence standards, evaluators, exemplars, feedback units, and learned
@@ -65,24 +76,26 @@ An individual, team, organization, or entire field can define its own:
 
 These definitions are inspectable, versioned, portable instance content—not
 forks hidden in kernel code. Two implementations may use the same DotLn runtime
-and share no doctrine beyond the rules required for safe composition and
-interoperability.
+and share no operating doctrine. When they exchange an artifact or claim a
+capability, shared contracts make the declared semantics comparable; those
+contracts do not force either implementation to activate the capability.
 
-The founding patterns in this repo are the author's first implementation and an
-executable proving ground. They are valuable starter content and examples, not a
-privileged canon. A clean installation must be able to replace or omit them
-while retaining the same expressive power, evidence model, and mechanics
-inspector. DotLn succeeds when it makes sophisticated organizational programming
-available to everyone without pretending everyone should build the same
-organization.
+The founding patterns and strict guardrails in this repo are the author's first
+implementation and an executable proving ground. They are valuable starter
+content and examples, not a privileged canon. Another owner may replace or omit
+them, choose a deliberately permissive profile, and decline capabilities such
+as verification or replay rather than inheriting the author's doctrine. DotLn
+succeeds when it makes sophisticated organizational programming available to
+everyone without pretending everyone should build the same organization.
 
 That boundary naturally permits an ecosystem: people can publish and exchange
 roles, identities, patterns, supports, workstream templates, evaluators,
 adapters, projections, and complete starter configurations. A marketplace is
 distribution infrastructure, not the differentiated thesis. DotLn's claim is
-that every acquired component remains typed, inspectable, permission-bounded,
-version-pinned, and reducible to the same visible mechanics as a locally
-authored one.
+that every acquired component can declare its type, requested capabilities,
+authority effects, compatibility, and version in the same visible vocabulary as
+a locally authored one; the receiving implementation decides what it will
+activate.
 
 The repository also compiles outward as an authoritative learning and decision
 resource. The same reviewed purpose, mechanics, implementation, decisions, and
@@ -98,14 +111,16 @@ A predecessor system (not present in this repo) proved the concept and then
 collapsed under its own success: roughly 140 accumulated feedback rules loaded
 as prose pushed fresh sessions toward 400–500k tokens of always-on context,
 where rules fired wrongly or vanished when needed most. In the project's RPG
-vocabulary, it brought the **whole stash into every map**, as if every support
-were linked to every skill. In plain language, irrelevant rules consumed
-attention and created unintended interactions before the task began. DotLn's
-answer is not fewer rules but _compiled_ rules: each correction becomes a typed
-mechanism (a permission, a guard, a reactor, an evaluator, a transformer, a
-workflow gate) attached only where relevant. A session gets **a build, not a
-biography** — one active behavior, a handful of linked supports, a tiny
-immutable safety layer, and the exact task state.
+vocabulary, it brought the **whole stash into every map** — as if a character
+carried gear for every damage type when the encounter called only for cold
+resistance. In plain language, irrelevant rules consumed attention and created
+unintended interactions before the task began. The author's implementation
+answers with _compiled_ rules: each correction becomes a typed mechanism (a
+permission, a guard, a reactor, an evaluator, a transformer, a workflow gate)
+attached only where relevant. A session in that profile gets **a build, not a
+biography** — one active behavior, a handful of linked supports, its selected
+safety layer, and the exact task state. The platform supplies the compiler and
+mechanism contracts without prescribing that loadout.
 
 ## The core bet
 
@@ -116,22 +131,29 @@ immutable safety layer, and the exact task state.
 
 Generation is cheap and getting cheaper; the scarce asset is the **selection
 function** — the operator's sense of what is good, currently exercised one
-correction at a time. DotLn's bet is that this judgment can be progressively
-formulated: captured verbatim as incidents, compiled into typed mechanisms,
-verified by regression fixtures, and retired from prose. **The model changes;
-the organization survives.** Claude, Codex, a human, a shell script, and a
-future model are interchangeable occupants of the same actor slot.
+correction at a time. DotLn's bet is not that this delicate judgment can be
+exhaustively formulated. It is that useful operational approximations can be
+progressively arrived at: source incidents preserve what was felt, candidate
+mechanisms approach it from different directions, and regression fixtures show
+where each construction agrees or diverges. As mathematical or geometric
+techniques can converge on a shape without becoming the shape itself, the
+formulation is an instrument for approaching the operator's selection function,
+not a claim to contain it precisely. **The model changes; the organization
+survives.** Claude, Codex, a human, a shell script, and a future model are
+interchangeable occupants of the same actor slot.
 
-That bet needs an excellent foundation before it needs a long feature list. The
-smallest useful loop—declare intent, see what the system understood, observe
-authorized progress, receive timely feedback, and inspect evidence—should
-already feel responsive, legible, and worth repeating. Competitive gap-filling
-does not excuse a weak loop. When another system introduces a useful idea, DotLn
-first asks whether the exact behavior can be accommodated by existing
-primitives, compositions, ports, and runtime lowerings. If not, the difference
-becomes evidence for one missing primitive or boundary, not permission to bolt
-on an opaque special case. Integration and semantic accommodation are preferred
-to imitation; both must preserve authority, replay, and evidence.
+That bet needs an excellent foundation before it needs a long feature list. In
+the reference implementation, the smallest useful loop—declare intent, see what
+the system understood, observe authorized progress, receive timely feedback,
+and inspect evidence—should already feel responsive, legible, and worth
+repeating. Competitive gap-filling does not excuse a weak loop. When another
+system introduces a useful idea, DotLn first asks whether the exact behavior can
+be accommodated by existing primitives, compositions, ports, and runtime
+lowerings. If not, the difference becomes evidence for one missing primitive or
+boundary, not permission to bolt on an opaque special case. Integration and
+semantic accommodation are preferred to imitation; both preserve every
+capability contract the receiving implementation declares and expose any
+omitted or lossy capability.
 
 ## The differentiated interface
 
@@ -191,20 +213,27 @@ content kernel doctrine.
 
 ## Inspirational sources
 
-Named here because the mechanisms below kept surviving synthesis while their
-sources kept getting dropped. Attribution is part of the design record: a
-mechanism whose origin is known can be mined again.
+DotLn makes no claim that its component ideas—or even their combination—are
+novel. It is a product of what the operator has studied, practiced, watched,
+played, discussed, built, broken, and absorbed from ordinary life. Naming that
+inheritance is part of the design record: a mechanism whose origin is known can
+be mined again instead of being laboriously rediscovered under native jargon.
+
+This section is the curated account of the most load-bearing relationships. The
+[living Sources and inspirations register](../lineage/inspirations.md) is the
+best-known full inventory, including uncertain, ambient, personal, and not-yet-
+mapped influences. Neither surface claims exhaustive causal archaeology.
 
 - **Gödel, Escher, Bach** — prime material, and still the least deliberately
   mined. Its organizing ideas are already load-bearing here under other names:
   isomorphism is the "isomorphically equivalent representations" behind every
   projection in `04-interfaces.md`; strange loops and tangled hierarchies
-  describe what this system structurally _is_ — an event log that replays the
-  system that produced it, a feedback compiler whose rules govern the reviewer
-  who wrote them, an identity version that evaluates its own successor; and
-  formal systems reasoning about themselves is the kernel's purity and replay
-  contract. Unmined seams are recorded in the idea ledger rather than
-  pre-emptively architected here.
+  describe what the author's retained-history reference implementation
+  structurally _is_ — an event log that replays the system that produced it, a
+  feedback compiler whose rules govern the reviewer who wrote them, an identity
+  version that evaluates its own successor; and formal systems reasoning about
+  themselves is that profile's kernel/replay contract. Unmined seams are
+  recorded in the idea ledger rather than pre-emptively architected here.
 - **Westworld** — four distinct shapes. _Reveries_: feedback agents built from
   single rules with their verbatim originating incidents, recombinable as
   identity fragments. _Old configurations on modern builds_: historical
@@ -229,9 +258,11 @@ mechanism whose origin is known can be mined again.
   conversationally, have the machinery carry the work and keep its own records,
   and never wonder what it did. DotLn takes the posture and inverts one thing
   deliberately. Fiction's assistant is trusted because it is charming and never
-  wrong; this one has to earn it every time with replayable evidence, and
-  operator absence never enlarges its authority. The films also supply this
-  project's counterweight, in Stark's line to JARVIS before flying an untested
+  wrong; the author's assurance-equipped profile has to earn trust with
+  replayable evidence. Presence-conditioned authority follows an explicit owner
+  policy and may grow, shrink, reset, or loop; charm and elapsed silence invent
+  neither evidence nor a grant. The films also supply this project's
+  counterweight, in Stark's line to JARVIS before flying an untested
   suit: _"sometimes you gotta run before you can walk."_ It sits on the same
   pole as §Discipline's "driving the car while you're still building it" in the
   execution guide — one licensing the unfinished flight, the other keeping you
@@ -272,7 +303,7 @@ mechanism whose origin is known can be mined again.
 - **Christopher Nolan's films — and their productions.** Three distinct axes,
   and the third is the one that matters most here. _Story:_ nonlinear and
   multi-rate time is the recurring subject. **Memento** is close to a literal
-  statement of this system's execution model — a protagonist with no session
+  statement of the author's external-memory execution profile — a protagonist with no session
   memory who stays coherent only through durable external artifacts he has
   disciplined himself to trust, and who is demonstrably corruptible through
   those artifacts. That is the disposable executor, the event log as the only
@@ -346,6 +377,9 @@ Wild_ phrase were supplied directly by the operator on 2026-09-03; the list's
 exact filing was reconfirmed after an over-generalized first synthesis.
 Westworld's earlier shapes and the rest are traceable to the raw material. Do
 not attribute a specific claim to an unsourced influence without asking.
+Names identify sources; they do not imply affiliation, endorsement, copied
+implementation, or permission to reproduce source expression. See the
+[legal and licensing posture](../LEGAL.md).
 
 ## What DotLn is not
 
@@ -356,11 +390,15 @@ not attribute a specific claim to an unsourced influence without asking.
 - Not dependent on a public marketplace. Local files, private catalogs,
   organization-internal registries, and offline or air-gapped installations
   remain complete authoring and distribution paths.
-- Not an autonomous company. Operator absence never enlarges authority.
-- Not a metrics theater: no invented numbers, no activity-as-progress. Evidence
-  precedes "done"; utilization is explicitly not the objective.
-- Not finished when it works for its author: v1.0 means a person who has never
-  read these docs can declare a bounded intent and receive a verifiable result.
+- Not one prescribed autonomy curve. Presence and recorded time are policy
+  inputs; an explicit owner policy may hold, shrink, grow, peak, reset, or loop
+  scope and authority within its declared ceiling.
+- In the reference implementation, not a metrics theater: no invented numbers,
+  no activity-as-progress, evidence precedes "done," and utilization is not the
+  objective. A profile that omits verification says so instead.
+- The reference implementation is not finished when it works for its author:
+  v1.0 means a person who has never read these docs can declare a bounded intent
+  and receive a verifiable result.
 
 Two standing acceptance questions for every design decision: **the six-month
 livability test** — would the operator still enjoy living with this system six

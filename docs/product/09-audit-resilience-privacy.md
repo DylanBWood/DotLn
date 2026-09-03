@@ -1,6 +1,12 @@
 # Audit, records, resilience, and privacy
 
-DotLn should answer **who or what did what, why, under whose authority, using
+This document is the assurance design space and current strict profile for the
+author's personal implementation. DotLn supplies the mechanisms and capability
+vocabulary; ADR-0006 permits another implementation to reduce or omit audit,
+retention, evidence, replay, and recovery rather than inherit this doctrine.
+
+When this assurance profile is enabled, it should answer **who or what did what,
+why, under whose authority, using
 which inputs, with what result, and how we know** before it optimizes dashboards
 or operational telemetry. Audit is therefore a family of evidence-backed
 projections over authoritative records, not one universal log stream.
@@ -363,15 +369,17 @@ universal default:
 - documented dependency order, recovery owner, communications, and manual
   degraded mode.
 
-Every implementation declares recovery point objective, recovery time objective,
-retention, backup frequency, encryption/key ownership, residency, restore
-prerequisites, and the date/result of its last restore and disaster exercise.
-“Backups configured” is not evidence until restoration succeeds.
+Every implementation claiming a recovery capability declares recovery point
+objective, recovery time objective, retention, backup frequency,
+encryption/key ownership, residency, restore prerequisites, and the date/result
+of its last restore and disaster exercise. An owner may instead declare that
+recovery is absent. “Backups configured” is not evidence until restoration
+succeeds.
 
 ## Privacy and minimization
 
 Auditability can conflict with privacy if “record everything” becomes the
-default. DotLn should instead apply:
+default. This assurance profile should instead apply:
 
 - purpose limitation and collection minimization by event/action class;
 - separation of metadata from sensitive content;
@@ -453,8 +461,8 @@ Exposure policy composes at the data edge rather than becoming one global
 switch. An active primitive, role, or linked support can declare the input
 classes and destination classes it accepts; the operator wires a link group to
 local inference, remote inference, both as explicit stages, or neither. The
-compiler intersects those choices with hard authority and Clean Room guards and
-renders the effective flow. An unwired route becomes a visible capability
+personal compiler intersects those choices with its equipped authority and
+source-treatment guards and renders the effective flow. An unwired route becomes a visible capability
 deficit, while a two-model route shows both crossings independently. The
 operator owns the selection; a role or support cannot infer extra disclosure
 authority merely because it would improve its output.
@@ -463,7 +471,9 @@ One candidate bootstrap topology is hybrid and local-first: deterministic
 parsers handle exact grammar; a bounded local model proposes tags,
 associations, redactions, and a candidate bounded WorkOrder/context capsule from
 free-form input; and a more capable remote model receives only the approved
-capsule and public-safe evidence for a planning, coding, or other complex episode. Existing authority gates still decide whether the candidate becomes dispatchable. That is a routing
+capsule and public-safe evidence for a planning, coding, or other complex
+episode. Any equipped authority gates still decide whether the candidate
+becomes dispatchable. That is a routing
 hypothesis, not a permanent capability caste or fixed role assignment. The
 operator expects local semantic capability to improve rapidly; dated
 model/runner/hardware evidence therefore reopens each route and can move more
@@ -478,9 +488,10 @@ for a no-provider-content claim only when discovery covers its model artifact,
 runner, prompt template, context sources, file and process access, diagnostics,
 storage, and network-egress boundary. A remote adapter likewise distinguishes
 what DotLn sent from externally asserted retention, training, or deletion
-behavior and labels the evidence and date behind those assertions. Clean Room's
-locked employer/secret floor still refuses prohibited material rather than
-offering a toggle.
+behavior and labels the evidence and date behind those assertions. In this
+repository's personal profile, the equipped Clean Room active and its locked
+employer/secret floor still refuse prohibited material rather than offering a
+toggle.
 
 The compiled manifest proves declared input participation. A per-invocation
 local receipt can bind that plan to the values' classes and transformation
@@ -549,13 +560,14 @@ public lane.
 Do not confuse offline maintenance with acquisition. A separately authorized
 source pipeline may contain `fetch` or XHR, hand its result across the local
 boundary, and still exclude optional payload-audit, logging, retention, or
-snooping supports from that link group. Required data-minimized
-authority/command/result evidence remains. The compiled component manifest
-proves declared participation; a local execution receipt binds one data instance
-to the manifest and exact transformations. Functional purity proves only the
-pure transform subgraph's mapping, not that an effectful adapter ran or that
-untrusted code had no hidden effect. Those latter claims come from adapter
-evidence and the outer execution boundary respectively.
+snooping supports from that link group. The personal implementation's required
+data-minimized authority/command/result evidence remains; another implementation
+may omit the assurance profile and declare those records unavailable. The
+compiled component manifest proves declared participation; a local execution
+receipt binds one data instance to the manifest and exact transformations.
+Functional purity proves only the pure transform subgraph's mapping, not that an
+effectful adapter ran or that untrusted code had no hidden effect. Those latter
+claims come from adapter evidence and the outer execution boundary respectively.
 
 ## Policy dimensions implementations can customize
 
@@ -568,7 +580,17 @@ exceptions, attestations; and interoperability/export schemas.
 
 These are local doctrine compiled through shared DotLn contracts. A personal
 implementation and a regulated organization receive the same legos without
-pretending they need the same control burden.
+pretending they need the same control burden. An owner-directed implementation
+may also mark a capability absent: no audit, no retained evidence, no replay, or
+no recovery. The implementation declares that distinction in compatibility
+metadata when it exposes a DotLn interchange boundary; the platform contract
+does not reinstall the omitted policy.
+
+When this audit capability is combined with `PresencePolicy`, its record names
+the source grant, triggering event, changed axis, prior and current tranche,
+ceiling, and stop/reset/replenishment state. An implementation that omits audit
+does not manufacture that history; its current policy declaration can still be
+machine-readable without claiming a replay of past transitions.
 
 ## Bootstrap sequence
 

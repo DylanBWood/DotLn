@@ -1,9 +1,10 @@
 # προτείνω (proteíno) — the first-party application thesis
 
-**Status:** operator-named product destination and post-1.0 horizon. This is the
-intended shape of a flagship first-party DotLn application, not a claim that it
-is already compelling in use, a release allocation, an implementation plan, or
-permission to distort the earlier platform rungs.
+**Status:** operator-named product destination, post-1.0 horizon, and member of
+the intended first application cohort. This is the intended shape of a flagship
+first-party DotLn application, not a claim that it is already compelling in
+use, a release allocation, an implementation plan, or permission to distort the
+earlier platform rungs.
 
 DotLn is the platform. **προτείνω** is the place where its ideas become
 playable: an explorable simulated community whose residents continue living
@@ -11,11 +12,19 @@ while an operator observes them, addresses a chosen resident or group in prose,
 and sees what changes, what does not, and why the application believes the
 intervention participated.
 
-The app owns that experience. Its editor, selection model, world state,
-authority checks, history, and projections remain stable when a model, executor,
-or harness changes. An operator may bring different model, executor, and harness
-configurations to DotLn without having to converse through each native UI or
-accept a different authoring grammar for each one.
+The intended world is active before and between interventions: modeled
+routines, relationships, and consequences advance under a declared world-time
+and run policy instead of waiting for a fresh operator prompt. This continuity
+does not yet select always-on hosting, wall-clock pace, pause behavior,
+background persistence, or a simulation engine.
+
+The app owns that experience. Its editor, selection model, world state, selected
+authority regime, declared history/assurance capabilities, and projections
+remain stable when a model, executor, or harness changes. A profile may omit
+history, replay, or verification; the corresponding app surface is then absent
+rather than simulated. An operator may bring different model, executor, and
+harness configurations to DotLn without having to converse through each native
+UI or accept a different authoring grammar for each one.
 
 ## Shape before machinery
 
@@ -30,8 +39,8 @@ works down the abstraction ladder:
 2. **observable loop** — what the operator does and what comes back;
 3. **interaction grammar** — selections, inputs, previews, views, and controls;
 4. **domain mechanics** — state, events, scopes, lifecycles, and evaluation;
-5. **contracts and evidence** — authority, provenance, replay, uncertainty, and
-   failure behavior;
+5. **declared contracts** — selected authority, provenance, uncertainty,
+   failure behavior, and any equipped evidence or replay capability;
 6. **technical lowering** — ports, storage, runtimes, renderers, and models
    selected from representative environment evidence.
 
@@ -55,27 +64,32 @@ The smallest complete experience is:
    that all of them hear, accept, or understand the same thing. The addressed
    recipients remain distinct from the subject being shaped or compared, which
    may be a resident, group, relationship, activity, or event pattern.
-3. **Write.** Use a generous free-text field. Length and digression are useful
-   intent data, not input errors. The application retains the source and may
-   separate propositions, examples, desired outcomes, timing, and delivery
-   styles without erasing the whole.
+3. **Write.** Use a generous free-text field. Length, digression, ambiguity,
+   casual phrasing, and abrasive delivery are useful intent data, not input
+   errors. The application keeps the source at least long enough to inspect the
+   active intervention and may retain it under the selected history policy. It
+   can separate propositions, examples, desired outcomes, timing, and delivery
+   styles without silently polite-washing the whole.
 4. **Inspect the intervention.** See what the application believes is being
    proposed, to whom, with what communicative force, scope, duration,
    uncertainty, and constraints. The exact balance between advance preview and
-   uninterrupted experimental play remains a design choice, but the compiled
-   interpretation must be recoverable.
+   uninterrupted experimental play remains a design choice. The interpretation
+   is inspectable before use; it remains recoverable afterward only when the
+   selected history capability retains it.
 5. **Introduce it.** Float an idea, suggest, invite, teach, instruct, pressure,
-   manipulate, or command only where both authority and the scenario's declared
-   consent, disclosure, and safety constraints permit. A forceful sentence does
-   not manufacture authority or consent.
+   manipulate, or command through the profile's selected authority regime and
+   the scenario rules it has chosen. Communicative force, technical permission,
+   modeled consent, and disclosure remain distinct dimensions even when an owner
+   deliberately configures permissive behavior.
 6. **Watch life continue.** Recipients may ignore, refuse, misinterpret,
    provisionally try, adopt, adapt, abandon, or relay some or all of it. Effects
    can arrive later and through other residents rather than as an immediate
    scripted response.
-7. **Trace and compare.** Follow the path from source text through observable
-   interpretation and decisions to world events and evaluated outcomes. Compare
-   a retained baseline or paired branch, find the first divergence, and inspect
-   what occurred only in this branch.
+7. **Trace and compare when equipped.** A retained-history profile follows the
+   path from source text through observable interpretation and decisions to
+   world events and evaluated outcomes. It can compare a baseline or paired
+   branch, find the first divergence, and inspect what occurred only here. A
+   no-history profile makes this step unavailable.
 8. **Refine.** Reword, retarget, change delivery, alter a supporting pattern, or
    preserve a useful temporary intervention as a candidate reusable mechanic.
 
@@ -85,12 +99,13 @@ downstream consequences are part of the playable state.
 
 ## A world on DotLn, not a second DotLn world
 
-The simulated community is application-owned content projected over recorded
-state and events. It is distinct from the browser-as-shared-world architecture,
-where the canonical event store is the durable coordination truth. A resident is
-likewise not automatically a DotLn `Actor`, an `Identity`, a model session, or
-one model call. Those lowerings remain open until a representative slice shows
-which distinctions the app needs.
+The simulated community is application-owned content projected over live world
+state and events, retained according to the selected profile. It is distinct
+from the browser-as-shared-world architecture, where the author's reference
+event store is durable coordination truth. A resident is likewise not
+automatically a DotLn `Actor`, an `Identity`, a model session, or one model call.
+Those lowerings remain open until a representative slice shows which
+distinctions the app needs.
 
 The first world can be modest. Density of meaningful state matters more than
 geographic size. Residents need enough independent routine, memory, relation,
@@ -99,8 +114,10 @@ do not need an enormous map or an unbounded claim of human realism.
 
 ## Candidate — recap-primed resident memory
 
-One scenario makes a resident's accessible memory an editable intervention. The
-operator sees the resident's recorded life as a film strip and assembles a
+This scenario requires a profile with retained, accessible world history; a
+no-history profile declares it unavailable. It makes a resident's accessible
+memory an editable intervention. The operator sees the resident's recorded life
+as a film strip and assembles a
 **recap cut**: every scene, no scene, or a chosen subset, with crops, emphasis,
 ordering, and explicitly authored detail changes. The cut becomes the context
 that primes the resident at a declared scene boundary. For the declared
@@ -111,13 +128,14 @@ semantic, or other non-autobiographical memory survives remains an explicit
 scenario choice. `Recap cut` is an application-level working term, not a pinned
 kernel type or a clinical claim about the fictional premise.
 
-The complete recorded history remains canonical and immutable. A cut is a
-versioned derivative that names its source events, omissions, transformations,
-target resident, activation boundary, duration, and provenance. A visual filter
-that changes later behavior must declare its semantic effect; otherwise it is a
-cosmetic preview only. Changing one remembered detail is therefore an
-inspectable counterfactual input with a visible source diff, never an edit that
-makes the event log agree with the recollection.
+Within that history-equipped scenario, the complete recorded history remains
+canonical and immutable. A cut is a versioned derivative that names its source
+events, omissions, transformations, target resident, activation boundary,
+duration, and provenance. A visual filter that changes later behavior must
+declare its semantic effect; otherwise it is a cosmetic preview only. Changing
+one remembered detail is therefore an inspectable counterfactual input with a
+visible source diff, never an edit that makes the event log agree with the
+recollection.
 
 The scenario keeps five states separate: what happened, what a resident could
 observe, what that resident can presently access as memory, what another
@@ -153,21 +171,28 @@ a resident's inner thought. The application shows the evidence and derivation
 behind colors, tags, or influence overlays, with equivalent accessible detail
 rather than relying on color alone.
 
-Communicative force and authority remain orthogonal. Existing `Voice` concepts
-can describe how an expression is framed; an `AuthorityEnvelope` determines what
-effects may occur. Coercive or manipulative scenarios also need explicit
-dimensions such as pressure, disclosure, resident awareness, consent, and exit
-conditions rather than disappearing inside a generic prompt. Which such modes
-the first experience permits is unresolved.
+Under the author's current personal profile, communicative force and authority
+remain orthogonal. Existing `Voice` concepts describe how an expression is
+framed; its strict `AuthorityEnvelope` determines what effects may occur. An
+owner-directed implementation may instead define a direct operator command or
+standing grant as authority and may permit scenarios this profile refuses. The
+platform supplies the distinction and inspection vocabulary; it does not impose
+the author's scenario policy. Coercive or manipulative scenarios can still model
+pressure, disclosure, resident awareness, consent, and exit as explicit world
+dimensions rather than losing them inside a generic prompt, even when the owner
+chooses permissive rules. Which profile and modes the first experience ships is
+unresolved.
 
 ## Ad hoc first, reusable on evidence
 
 Not every useful utterance must already map to a published pattern, active, or
-support. A one-run idea may compile into a bounded, inspectable, expiring
-artifact whose exact type is still open. It still needs source provenance,
-declared targets and scope, authority checks, versioned dependencies, event
-history, replay behavior, privacy treatment, and an honest account of what is
-unknown.
+support. In the author's current profile, a one-run idea may compile into a
+bounded, inspectable, expiring artifact whose exact type is still open, with
+source provenance, declared targets and scope, authority checks, versioned
+dependencies, event history, replay behavior, privacy treatment, and an honest
+account of what is unknown. Another implementation may choose broader or
+non-expiring behavior and omit assurance or history capabilities; those are
+instance-doctrine choices rather than kernel prohibitions.
 
 Repeated use or strong evaluation may produce a **promotion proposal** into a
 versioned pattern or support. Promotion is never silent: the operator can
@@ -175,6 +200,37 @@ compare the temporary behavior with the candidate reusable definition, see what
 was generalized or omitted, and accept, revise, or leave it ephemeral. This
 makes just-in-time prose a source of mechanics without forcing the common kernel
 to contain every passing thought.
+
+## Candidate — commander-mediated tactical play
+
+A later strategy sibling or purpose-built activity applies the same interaction
+grammar to command. The world is already advancing when the operator consults a
+world-situated commander. The commander offers materially different tactical
+alternatives from its bounded view of the situation; those alternatives can
+carry assumptions, tradeoffs, uncertainty, and a validity horizon without
+pretending the commander sees evaluator-only world truth.
+
+The menu is not a closed authoring grammar. The operator may accept an option
+unchanged, combine or edit alternatives, riff on one in prose, propose a new
+course, or decline to act. The application retains the original options and
+shows the operator-authored delta and its interpreted tactic before execution.
+No option acts merely because the commander suggested it: feasibility, scenario
+rules, and the selected authority regime govern whether orders may be issued.
+
+Once issued, the tactic enters the running world. A debrief distinguishes what
+was proposed, what the operator changed, what was authorized, what units
+acknowledged or actually did, and what outcomes followed. When replay is
+equipped, paired branches can compare the commander's original option, the riff,
+and no action from a shared checkpoint. A persuasive rationale is not execution
+or success, and execution fidelity is distinct from outcome quality.
+
+Under the author's current profile, an ad hoc tactic follows the same bounded,
+inspectable, expiring-artifact lifecycle as an intervention. Reuse requires an
+explicit promotion proposal backed by representative evidence; one successful
+battle does not silently add a tactic to the common kernel or pattern shelf.
+Another profile may choose a different lifecycle. Whether this loop is a
+separate application, a `προτείνω` mode, or a specialized in-world activity
+remains unresolved.
 
 ## Books and personal styles become experiments
 
@@ -198,7 +254,8 @@ does not establish that the source works on real people.
 ## Counterfactuals are the scoreboard
 
 Before/after observations are approachable and worth showing, but temporal
-adjacency is not causation. προτείνω uses a visible evidence ladder:
+adjacency is not causation. When counterfactual/history assurance is equipped,
+προτείνω uses a visible evidence ladder:
 
 - **provenance:** the intervention and later event coexist in one trace;
 - **participation:** an inspectable decision or mechanism cites the
@@ -210,6 +267,9 @@ adjacency is not causation. προτείνω uses a visible evidence ladder:
 - **branch-exclusive outcome:** an event occurred in one declared simulation
   branch and not its paired branch.
 
+A profile without that capability labels paired comparison and first divergence
+unavailable rather than implying that an ordinary before/after view proves them.
+
 Even the strongest rung is a claim about these runs, not a fact about an
 unobserved real world. Different seeds and nondeterministic model behavior need
 replication or uncertainty, not an animation that implies certainty. Direct
@@ -217,10 +277,10 @@ observations such as attempts, scores, travel, time, or injuries remain distinct
 from constructed measures such as trust, teamwork, or camaraderie; every latent
 measure names its proxy, evaluator, and limitations.
 
-The user should nevertheless feel the branch they helped make. A road not taken
-is not just a chart row: it is a replayable neighboring reality whose common
-history, intervention point, first divergence, and accumulating differences are
-visually obvious.
+When the capability is equipped, the user should nevertheless feel the branch
+they helped make. A road not taken is not just a chart row: it is a replayable
+neighboring reality whose common history, intervention point, first divergence,
+and accumulating differences are visually obvious.
 
 ## Candidate — time fidelity and bounded future reachability
 
@@ -296,6 +356,39 @@ Research remains open on:
 This is a future research direction. It changes no kernel clock, event schema,
 simulation engine, or roadmap rung.
 
+## Candidate — behavior is not animate-only
+
+The intervention surface has no blanket category that exempts apparently inert
+props. If a world object, object class, or deliberately selected set is
+addressable and its declared capabilities can support an effect, the operator
+can propose bounded behavior for it. “Static” may describe its current motion or
+rendering; it is not an ontology-level ban on receiving rules. An object that
+cannot support the requested behavior remains selectable only if the interface
+can explain the incompatibility or refusal honestly.
+
+This does not anthropomorphize every prop. A resident may receive and interpret
+an expression; a non-cognitive object may instead receive an application-compiled
+candidate rule. The source prose and delivery strength remain visible, but a
+strong suggestion is not automatic installation. Compatibility, scenario
+policy, and authority determine whether the rule can be equipped, while its
+target and lifecycle stay explicit.
+
+One illustrative shape is a prop whose simulated reaction activates after a
+particular utterance has been observed consecutively a declared number of times.
+That is a temporal stream rule, not a magic prompt. It must define which source
+events count, what makes two observations equivalent, whose speech is in reach,
+whether intervening or duplicate events reset or preserve the run, which clock
+and ordering apply, how long the rule lives, and what effect the object can
+emit. When replay is equipped, it reconstructs the same matches, state
+transition, and effect; paired branches can show the world with and without the
+rule.
+
+The exact object taxonomy, addressability boundary, behavior compiler, trigger
+grammar, acceptance/equip flow, conflict semantics, and permitted effect catalog
+remain open. This candidate reuses the rule-scoped temporal predicates in
+[`05-pattern-library.md`](05-pattern-library.md#candidate--temporal-interaction-interpretation)
+without promoting a prop, trigger, or effect into the common kernel.
+
 ## Every apparent affordance tells the truth
 
 The open-world quality bar is **affordance integrity**. If an activity appears
@@ -303,16 +396,16 @@ usable, it either supports meaningful interaction or is visibly unavailable;
 decorative promises are not passed off as depth. Entering a rich activity may
 switch to a purpose-built controller and projection—a basketball drill, a
 conversation, a vehicle, a game inside the world—while preserving the same
-selection, commands, canonical world state, event history, authority, and
-replay. A specialized interface is a first-class view, not a second state
-machine or an unrelated minigame pasted over the scene.
+selection, commands, canonical world state, selected authority regime, and any
+equipped history/replay contracts. A specialized interface is a first-class
+view, not a second state machine or an unrelated minigame pasted over the scene.
 
 The world should also reward experimental setup. Different combinations of
 residents, histories, locations, timing, and interventions can produce uncommon
-but coherent reactions. Discovery may remain mysterious before it happens;
-afterward, an authorized operator can replay and inspect it. **Mystery before,
-provenance after** keeps surprise without making rare behavior an unverifiable
-magic trick.
+but coherent reactions. Discovery may remain mysterious before it happens. In
+a retained-history profile, an authorized operator can replay and inspect it
+afterward. **Mystery before, provenance after** names that equipped experience;
+a no-history profile does not claim it.
 
 ## Source shapes, not copied implementations
 
@@ -321,7 +414,7 @@ literal details architectural dependencies:
 
 | Reference                                                                 | Shape carried into προτείνω                                                                                                                                                                                    |
 | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Real-time strategy selection                                              | Choose a meaningful set of residents, then act on that set through language rather than unit-by-unit micromanagement.                                                                                          |
+| Real-time strategy command                                                | Choose a meaningful force, work through a world-situated commander, and accept, combine, revise, or replace proposed tactics through language rather than unit-by-unit micromanagement.                        |
 | [Generative Agents' small-town sandbox](https://arxiv.org/abs/2304.03442) | A compact community can make ongoing routines and social propagation legible without requiring a huge world.                                                                                                   |
 | _Westworld_'s bicameral-voice image                                       | An introduced idea can become behaviorally consequential, and the operator should be able to inspect where it was accepted, transformed, resisted, or confused. This is not a claim of resident consciousness. |
 | Books and personal practice                                               | Familiar real-world distinctions become live, comparable behavioral experiments instead of static advice.                                                                                                      |
@@ -348,15 +441,26 @@ sports simulator, or a library of every source pattern.
 
 - canonical technical slug and transliteration;
 - first world, resident model, population, and persistence boundary;
+- run, pause, pacing, catch-up, and background-persistence semantics;
 - operator role inside or outside the world;
+- implementation-doctrine profile, including whether an owner-sovereign profile
+  ships, how it is activated, and which assurance/history capabilities it omits;
 - recipient selection, comparison-subject, and intervention grammar, including
   when interpretation preview appears;
+- whether proposition content and delivery tone are modeled independently;
 - permitted influence modes and their consent, disclosure, and safety rules;
 - representation, expiry, and promotion of temporary mechanisms;
 - model, seed, replication, and nondeterminism policy;
 - causal-confidence language and interpretation-diff semantics;
 - outcome definitions and independent evaluators;
 - specialized-activity composition and affordance-depth threshold;
+- object-instance, object-class, and selected-set addressability; capability
+  discovery; non-cognitive rule delivery and equip semantics; trigger identity,
+  reach, count, order, reset, duplicate, conflict, lifetime, and effect rules;
+- whether commander-mediated play is a separate application, a mode, or a
+  specialized activity; commander observation and autonomy; option, merge,
+  free-form revision, staleness, group-control, tactic-lifetime, and debrief
+  semantics;
 - how discovery coexists with mechanics inspection;
 - privacy, retention, and deletion for prose and simulated biographies;
 - resident observation, accessible-memory, belief, and stance semantics,

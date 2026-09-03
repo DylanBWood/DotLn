@@ -1,13 +1,28 @@
 # DotLn
 
-> **Stay with the idea. Let DotLn carry the work around it.**
+> "I will take the entire Business, Leadership, and Personal Development shelf
+> at Barnes & Noble and just map them to different agent / subagent
+> communication structures... at once anyone who has read those books is an
+> expert in some feature of the app — and it turns all those books into
+> programming books overnight."
+
+**DotLn turns hard-won ways of working into inspectable programs for AI
+teams.**
 
 DotLn is a local-first, model-agnostic **compiler and runtime for human
-judgment**. You bring the taste, the standards, and the corrections you have
-already paid for once. DotLn compiles each one into the smallest mechanism that
-can carry it, hands every task only the rules it needs, enforces the dangerous
-ones outside the model, and keeps a replayable record of what happened. Models
-rotate. Sessions die. The judgment survives.
+judgment**. This repository develops the reusable platform and the author's
+opinionated personal implementation together. In that implementation, you bring
+the taste, standards, and corrections you have already paid for once; DotLn
+compiles each into the smallest mechanism that can carry it, hands every task
+only the rules it needs, enforces its chosen hard rules outside the model, and
+keeps a replayable record of what happened. Models rotate. Sessions die. The
+judgment survives.
+
+Those guardrails are an implementation loadout, not commandments baked into the
+platform. Another owner may choose stricter doctrine, different doctrine, or a
+deliberately permissive profile with no verification or replay capability. DotLn
+supplies composable mechanisms and makes the selected capabilities visible; the
+owner decides which organization to build.
 
 It is early, small, and deliberately honest about which of those sentences are
 running code and which are still a promise. The first proof already walks. The
@@ -23,10 +38,13 @@ The usual fix is a bigger prompt. A predecessor system, not present in this
 repo, proved the concept and then collapsed under its own success: roughly 140
 hard-won rules loaded as prose, hundreds of thousands of tokens of always-on
 context, rules firing wrongly or vanishing when they mattered most. In this
-project's vocabulary it brought **the whole stash into every map**, as if every
-support gem were linked to every skill.
+project's vocabulary it brought **the whole stash into every map** — as if a
+character carried gear for every damage type when the map called only for cold
+resistance.
 
-DotLn's answer is not fewer rules. It is **compiled** rules:
+The author's reference implementation answers with **compiled** rules; the
+platform makes these mechanisms composable rather than requiring every owner to
+equip the same set:
 
 - do not delete what you cannot prove is dead → a structural guard, not a plea;
 - show evidence before claiming success → a gate the model cannot talk past;
@@ -34,15 +52,18 @@ DotLn's answer is not fewer rules. It is **compiled** rules:
   transcript;
 - ask only when the decision is genuinely material → an interruption policy with
   six named conditions;
-- let absence reduce authority, never enlarge it → a presence rule the product
-  specifies and the current skeleton exercises when the operator returns.
+- make presence-conditioned changes explicit → a preauthorized policy may hold,
+  shrink, grow, peak, reset, or loop scope and authority while naming which axis
+  changed; the current skeleton exercises one conservative return rule.
 
-A session gets **a build, not a biography**: one active behavior, a handful of
-linked supports, a tiny immutable safety layer, and the exact task state. The
-mission underneath is operator flow. Not a promise about anyone's psychology,
-which no software can make, but a steady removal of the interruptions,
-repetition, ceremony, and rediscovery that break it, without exporting the cost
-into correctness, authority, evidence, or privacy.
+In that profile, a session gets **a build, not a biography**: one active
+behavior, a handful of linked supports, the profile's small safety layer, and
+the exact task state. The mission underneath is operator flow. Not a promise
+about anyone's psychology, which no software can make, but a steady removal of
+the interruptions, repetition, ceremony, and rediscovery that break it without
+violating the capabilities and boundaries that implementation selected.
+
+The reference loop is:
 
 ```text
 intent → task-scoped build → bounded WorkOrder → disposable executor
@@ -58,7 +79,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source is DotLn `v0.3.5`. Its executable heart is a deterministic walking skeleton with zero runtime dependencies, a fake executor, a separate fake verifier, terminal projections, and three audit views over the same event log. No model is in the loop yet. That is the point: the source proves the kernel's shape before anything unpredictable is plugged into it. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
+This source is DotLn `v0.3.6`. Its executable heart is a deterministic walking skeleton whose live host and replay now use one pure reactor, with canonical causal links, zero runtime dependencies, a fake executor, a separate fake verifier, terminal projections, and three audit views over the same event log. No model is in the loop yet. That is the point: the source proves the kernel's shape before anything unpredictable is plugged into it. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
@@ -91,14 +112,15 @@ that is a pure projection of that same log, and a receipt:
 verified=true candidates=1
 ```
 
-The test suite replays that log and binds the trace and timeline identity it
-currently asserts; a planned reactor rewrite closes the remaining structural gap
-between the separately maintained live and replay paths. `npm test` runs the
-configured root evidence suite: kernel, skeleton, publication freshness, intake
-backup, resume control, recovery checkpoints, real-Git worktree lifecycle, and
-guarded release close, including the GitHub-body profile; frozen corpus lanes
-remain separate. Evidence was recorded with Node 22 on macOS; the shell suites
-use macOS utilities and fail loudly elsewhere. See the [release index](docs/releases/README.md),
+The test suite feeds that log through the same pure reactor used by the live
+host and compares complete decisions and semantic projections, including a
+negative verifier outcome. `npm test` runs the configured root evidence suite:
+kernel, skeleton, publication freshness, intake backup, resume control,
+recovery checkpoints, real-Git worktree lifecycle, and guarded release close,
+including the GitHub-body profile; frozen corpus lanes remain separate.
+Evidence was recorded with Node 22 on macOS; the shell suites use macOS
+utilities and fail loudly elsewhere. See the
+[release index](docs/releases/README.md),
 [v0.2.0 notes](docs/releases/v0.2.0-notes.md), and
 [v0.2.0 compatibility manifest](docs/releases/v0.2.0.md).
 
@@ -134,19 +156,20 @@ raw, each naming exactly what it omits.
 
 ## The bets
 
-- **A session is an incarnation, not a memory.** Durable state lives in
-  artifacts and the event log. The workflow remembers the worker; the worker
-  never needs to remember the workflow.
+- **A session is an incarnation, not a memory.** In the reference workflow,
+  durable state lives in artifacts and the event log. The workflow remembers
+  the worker; the worker never needs to remember the workflow.
 - **Deterministic core, strange edge.** Models, humans, browsers, and shell
   scripts execute work. None of them get to redefine the control logic
   invisibly.
-- **Hard safety is boring.** Permissions, guards, worktrees, and evidence gates
-  carry invariants outside prompt prose. Prose is the ninth and last mechanism
-  choice.
-- **Evidence precedes "done."** A persuasive completion message is not a test
-  result.
-- **Implementer and verifier are different roles,** and the system makes
-  self-certification structurally awkward.
+- **This implementation's hard safety is boring.** Permissions, guards,
+  worktrees, and evidence gates carry its chosen invariants outside prompt
+  prose. Prose is the ninth and last mechanism choice in that loadout.
+- **In this implementation, evidence precedes "done."** A persuasive completion
+  message is not a test result.
+- **Its implementer and verifier are different roles,** making
+  self-certification structurally awkward. Another profile may label an outcome
+  owner-accepted or unverified instead.
 - **Doing nothing is a decision.** `NoOp` is a first-class intent with a reason,
   evidence, a re-check cadence, and the condition that would make action useful.
 - **Every metaphor reveals its mechanics.** RPG, business card, statechart,
@@ -225,11 +248,14 @@ before-and-after. Candidate first world: a basketball squad. See
   deletion, the kernel does not ask it nicely to stop. It records
   `CommandRefused`, and code that depended on the denied effect quietly
   succeeding will not get it.
-- **Absence shrinks authority.** Most automation gets bolder the longer you are
-  gone. DotLn specifies prolonged absence as a degradation toward read-only work
-  and `NoOp`; the current skeleton proves the narrower return/cancellation
-  behavior. The utility curve captures "too much reorganization in the ten
-  minutes you got up for coffee."
+- **Presence is policy, not a one-way brake.** An owner may preauthorize
+  time-conditioned shrinkage or growth, including progressive stakes and a
+  reset or loop. The author's candidate profile favors bounded housekeeping so
+  the changes remain easy to understand on return; the current skeleton proves
+  only one conservative return/cancellation branch. Availability of a powerful
+  adapter remains separate from permission to use it. At work-order scale, an
+  opted-in unattended portfolio can run small already-authorized orders first,
+  then treat larger preauthorized orders as capacity-permitting options.
 - **Index cards are a planned frontend.** They worked once; a physical-card
   importer is specified to map them to the IR. The ambient end state is a
   magnetic LED whiteboard, and its digital form is a living index card that can
@@ -245,11 +271,11 @@ before-and-after. Candidate first world: a basketball squad. See
   dormant, blur is stale, a vertical flip is failed, a horizontal mirror is the
   semantic opposite, and inversion is an adversarial stance. You equip
   "Evidence-Bound," never "blue glow."
-- **Memento is the execution model.** A protagonist with no session memory who
-  stays coherent only through durable external artifacts he has disciplined
-  himself to trust. Inception is nested episodes on different time bases. Ex
-  Machina is why implementer and verifier are separated by structure rather than
-  by habit.
+- **Memento is the reference execution profile.** A protagonist with no session
+  memory who stays coherent only through durable external artifacts he has
+  disciplined himself to trust. Inception is nested episodes on different time
+  bases. Ex Machina is why the author's assurance profile separates implementer
+  and verifier by structure rather than by habit.
 - **The 12 Days of Christmas rule.** A replacement singer joining on day four
   needs the current verse, tempo, and score, not a recording of every prior
   performance. That is why fresh task-scoped sessions are normal here.
@@ -261,6 +287,31 @@ before-and-after. Candidate first world: a basketball squad. See
 - **There is a candidate mechanic whose whole job is to argue for leaving things
   alone.** "Beware of naive interventionism" asks what compensating function the
   current mess might be serving before anyone is allowed to clean it.
+
+## Sources, license, and legal posture
+
+DotLn makes no claim that its pieces—or even this mixture of them—are novel. The
+[Sources and inspirations register](docs/lineage/inspirations.md) is the living
+best-known account of the books, methods, papers, stories, games, tools,
+conversations, failures, personal practice, and ambient culture that shaped it.
+An influence can be named before it has a clean DotLn mapping; `unknown`,
+`source forgotten`, and `ambient` are better than laundering inheritance into a
+claim of invention. Names identify sources and imply no affiliation or
+endorsement. Attribution alone grants no permission to copy protected expression
+or code.
+
+This repository currently grants **no project license**. Public source is not
+the same as open source; GitHub's service terms still permit viewing and
+reproduction through GitHub functionality, including in-service forking. No
+permanent license has been chosen because this remains personal research, but
+that ambiguity must end at the first canonical decision gate: outside
+contributions; package, executable, container, dataset, model, or asset
+distribution; a hosted or multi-user service; collection of another person's
+account data, prompts, logs, telemetry, or other personal information; sale,
+licensing, fundraising, or material marketing; or substantial investment in a
+DotLn or feature-brand name. The observed state, options,
+package-publication gap, and controlling checklist are in
+[Legal and licensing posture](docs/LEGAL.md).
 
 ## The repo runs on itself
 
@@ -322,7 +373,10 @@ explicit: typed mechanisms are meant to progressively absorb the prose. The
   history.
 - [`docs/control/`](docs/control/) — the append-only resume log and its
   generated projection.
-- [`docs/lineage/`](docs/lineage/) — the idea ledger.
+- [`docs/lineage/`](docs/lineage/) — the idea ledger and public sources and
+  inspirations register.
+- [`docs/LEGAL.md`](docs/LEGAL.md) — current no-license posture and the gates
+  that force an explicit choice.
 - [`docs/decisions/`](docs/decisions/) — settled questions. Do not relitigate
   them.
 - [`docs/releases/`](docs/releases/) — release evidence and the tag-manifest
@@ -345,8 +399,11 @@ move, run [the skeleton](packages/skeleton/README.md).
 This is a personal clean-room project. Employer code, configuration,
 identifiers, internal services, and proprietary implementation details do not
 belong here and never will. Raw ideation stays local until it has been
-deliberately synthesized and rewritten. Everything public is original product
-reasoning and implementation.
+deliberately processed under the repository's promotion policy: ordinary
+material is synthesized and rewritten, while explicitly authorized operator
+drafts or reviewed source references may retain exact text with provenance.
+Public material is clean-room-reviewed product reasoning and implementation;
+attributed retained expression is identified rather than claimed as original.
 
 ## Why "DotLn"?
 

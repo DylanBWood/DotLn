@@ -120,3 +120,38 @@ is data, and a projection is never parsed as an API).
 (WO-009); Linux portability of `stat -f`; a `recover` action; rewriting the
 shell suites beyond the named lines; a `program` field in the manifest (record
 as a candidate); touching `docs/verifications/` or `docs/final-reviews/`.
+
+## Scope clarification — local harness settings (2026-09-03)
+
+The operator's WO-016 ideation identified one persistent false-positive in
+release close: the main checkout's exact `.claude/settings.local.json` is
+ignored operator-owned harness state, yet `release.mjs` rejects it before
+classifying release evidence. Repository scripts and tests do not read that
+file. Its contents were not inspected during the diagnosis.
+
+This clarification is part of WO-018's required classifier consolidation:
+
+1. Add the exact root `.claude/settings.local.json` to the repository ignore
+   contract and permit only that path in the main-checkout release-influence
+   guard. Do not permit `.claude/**`.
+2. Keep release influence and destructive cleanup as separate policy
+   questions over shared path-classification primitives. A
+   subject-worktree-local `.claude/settings.local.json` is non-disposable;
+   `finish` and release cleanup must refuse while preserving the file,
+   worktree, and branch.
+3. Extend the release fixture to prove a no-release close succeeds while the
+   main checkout's settings file and `docs/intake/` both survive. Retain the
+   foreign ignored-file refusal unchanged.
+4. Extend the worktree fixture to prove a subject settings copy blocks removal
+   and survives. Retain the intake-protection fixture, including the
+   `docs/intake/dist/**` precedence case from criterion 2.
+5. Update `docs/PLAYBOOK.md`, `07-execution-guide.md`, and
+   `docs/AI-HARNESS-SECURITY.md` with this asymmetric treatment. Do not rewrite
+   historical final reviews that correctly described the guard before this
+   change.
+
+For criterion 1 above, the original phrase “the two allowlists are reconciled
+to one each” means one named implementation of each policy with common parsing
+and containment rules. It does not authorize using the release-influence
+allowlist as the disposable-worktree list. This clarification adds no right to
+copy, display, normalize, replace, or interpret personal harness settings.
