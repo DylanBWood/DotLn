@@ -69,6 +69,51 @@ strictly separate from actual authority (a Command voice cannot create
 authority; a safety warning must never ship as a Hint — especially when the
 operator is absent and no one is there to decode hints).
 
+### Candidate — exact phrasebook voice support
+
+An optional support asks output prose to use entries from an operator-selected,
+versioned phrasebook: exact words, phrases, sentence constructions, spellings,
+capitalization, and annotations are content, not hints to paraphrase. The
+support may attach scopes, triggers, weights, cooldowns, and do-not-use contexts
+without rewriting the entries themselves. It is best-effort when lowered into
+model instructions and deterministic only when an explicit output transform
+runs; the trace says which mechanism actually participated. Phrasebook style
+never changes `Voice`, facts, authority, or evidence, and a private or
+source-derived palette retains its provenance and destination rules.
+
+The operator directed this _Dual Survival_ palette to be retained wholesale
+from the local image, then corrected an attempted generalized synthesis because
+the exact wording is the mechanic. On 2026-09-03, the operator confirmed
+authorship of the list/compilation shown in that image and explicitly authorized
+its exact text for public filing in this repository. The block is therefore
+filed under Direct Draft Fidelity:
+
+```text
+1) Mentioning of Cody's bare feet (cooldown of 3 minutes)
+2) "In a survival situation/In this situation"
+3) "Old Man's Beard"
+4) "Not out of the woods yet"
+5) "Mechanical Injury"
+6) "Calories"
+7) "Hypothermia"
+8) "Cordage"
+9) "Resources"
+10) "Brother"
+11) "Hydration"
+12) "Even death"
+13) "Disinfect" CD
+** I trust Dave, Orienteer, Brother, Surface Area, "Something called -obvious reference-", Partner not being comfortable with a decision, Recon, Survival Basics, Don't go after things that can go after you, Microclimate, Classic -something non Classic-, Smolder, Disinfect, Contrast, "not in kansas anymore" **
+```
+
+The first separately supplied _Man, Woman, Wild_ entry is exactly
+`this is truly desperate living`.
+A recorded unavailable-model, effort-refusal, or explicit degraded-mode event
+may make it eligible; tone cannot invent that state, and using the phrase cannot
+make silent model substitution acceptable.
+The Westworld control lexicon follows the same fidelity rule but is a distinct
+operator-command surface: only `analysis:` has been supplied so far, and no
+agent may fill the open slots with paraphrases or remembered dialogue.
+
 ## Decision policies — Algorithms to Live By
 
 Optimal Stopping (bounded search termination; the blackjack-bounded-loss shape)

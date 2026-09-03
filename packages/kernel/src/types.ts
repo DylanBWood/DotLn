@@ -394,6 +394,7 @@ export interface AuthorityEnvelope {
   readonly requiredEvidence: readonly string[];
   readonly expiresAt: number;
   readonly revocationEventTypes: readonly string[];
+  readonly revocationConditions?: readonly PredicateRef[];
 }
 export interface Command {
   readonly commandId: string;

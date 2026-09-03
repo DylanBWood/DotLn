@@ -7,6 +7,8 @@ import type {
   AuthorizationResult,
   EventEnvelope,
   JsonValue,
+  KernelEnv,
+  PredicateRegistry,
 } from "../src/index.js";
 
 const event = <P extends JsonValue = Record<string, never>>(
@@ -329,4 +331,367 @@ test("AC6 evidence: authorized command carries recomputed commandId and mirrors 
     commandId("ws", "ep", 3, 0),
     commandId("ws", undefined, 3, 0),
   );
+});
+
+test("WO-017 authority expiry: expiresAt is the first excluded instant", () => {
+  assert.equal(
+    authorize(act(), authority({ expiresAt: 10 }), authContext({ now: 9 }))
+      .authorized,
+    true,
+  );
+  assert.equal(
+    refusalReason(
+      authorize(act(), authority({ expiresAt: 10 }), authContext({ now: 10 })),
+    ),
+    "authority expired",
+  );
+});
+
+test("WO-017 authority precedence: every adjacent named rule is first-failing", () => {
+  const revoked = event("rv", "Revoked", 0);
+  const rows: readonly {
+    readonly earlier: string;
+    readonly result: AuthorizationResult;
+  }[] = [
+    {
+      earlier: "effect is not a string",
+      result: authorize(
+        forged(null),
+        authority({ expiresAt: 1 }),
+        authContext({ now: 1 }),
+      ),
+    },
+    {
+      earlier: "authority expired",
+      result: authorize(
+        act(),
+        authority({
+          expiresAt: 1,
+          revocationConditions: [{ registryId: "missing", version: 1 }],
+        }),
+        authContext({ now: 1 }),
+      ),
+    },
+    {
+      earlier: "cannot evaluate revocation",
+      result: authorize(
+        act(),
+        authority({
+          revocationEventTypes: ["Revoked"],
+          revocationConditions: [{ registryId: "missing", version: 1 }],
+        }),
+        authContext({ revokedBy: [revoked] }),
+      ),
+    },
+    {
+      earlier: "authority revoked",
+      result: authorize(
+        act(),
+        authority({
+          deniedEffects: ["write"],
+          revocationEventTypes: ["Revoked"],
+        }),
+        authContext({ revokedBy: [revoked] }),
+      ),
+    },
+    {
+      earlier: "effect denied",
+      result: authorize(
+        act(),
+        authority({ allowedEffects: [], deniedEffects: ["write"] }),
+        authContext(),
+      ),
+    },
+    {
+      earlier: "effect not allowed",
+      result: authorize(
+        act(),
+        authority({ allowedEffects: [], requiredEvidence: ["proof"] }),
+        authContext(),
+      ),
+    },
+    {
+      earlier: "required evidence missing",
+      result: authorize(
+        act("write", "cpu"),
+        authority({
+          resourceLimits: { cpu: 0 },
+          requiredEvidence: ["proof"],
+        }),
+        authContext(),
+      ),
+    },
+  ];
+  assert.deepEqual(
+    rows.map(({ earlier, result }) => ({
+      earlier,
+      actual: refusalReason(result),
+    })),
+    rows.map(({ earlier }) => ({ earlier, actual: earlier })),
+  );
+});
+
+test("WO-017 semantic revocation: every condition sees every event, state, and the authorization clock", () => {
+  const calls: string[] = [];
+  const semanticPredicates: PredicateRegistry = {
+    never: {
+      1: ({ event }) => {
+        calls.push(`never:${event?.eventId ?? "none"}`);
+        return false;
+      },
+    },
+    returned: {
+      2: ({ state, event: candidate, env }, params) => {
+        calls.push(`returned:${candidate?.eventId ?? "none"}`);
+        assert.deepEqual(state, { presence: "returned", gate: true });
+        assert.equal(env.now, 50);
+        assert.equal(env.rngState, 23);
+        assert.deepEqual(env.policy, { mode: "bounded" });
+        assert.deepEqual(params, { expected: "returned" });
+        return (
+          candidate?.type === "OperatorPresenceChanged" &&
+          (candidate.payload as { presence?: string }).presence === "returned"
+        );
+      },
+    },
+  };
+  const suppliedEnv: KernelEnv = {
+    now: -999,
+    rngState: 23,
+    predicates: semanticPredicates,
+    policy: { mode: "bounded" },
+  };
+  const result = authorize(
+    act(),
+    authority({
+      revocationConditions: [
+        { registryId: "never", version: 1 },
+        {
+          registryId: "returned",
+          version: 2,
+          params: { expected: "returned" },
+        },
+      ],
+    }),
+    authContext({
+      now: 50,
+      state: { presence: "returned", gate: true },
+      predicateEnv: suppliedEnv,
+      revokedBy: [
+        event("returned", "OperatorPresenceChanged", 900, {
+          presence: "returned",
+        }),
+        event("unrelated", "Unrelated", 400),
+      ],
+    }),
+  );
+  assert.equal(refusalReason(result), "authority revoked");
+  assert.deepEqual(calls, [
+    "never:returned",
+    "never:unrelated",
+    "returned:returned",
+    "returned:unrelated",
+  ]);
+  assert.deepEqual(requireRefused(result).trace.envInputs, [
+    "now",
+    "authorityEnvelope",
+    "evidence",
+    "revocations",
+    "state",
+    "rngState:23",
+    "predicates",
+    "policy",
+  ]);
+
+  const allFalse = authorize(
+    act(),
+    authority({
+      revocationConditions: [{ registryId: "never", version: 1 }],
+    }),
+    authContext({
+      now: 50,
+      state: { presence: "returned", gate: true },
+      predicateEnv: suppliedEnv,
+      revokedBy: [
+        event("false-one", "Unrelated", 1),
+        event("false-two", "StillUnrelated", 2),
+      ],
+    }),
+  );
+  assert.equal(allFalse.authorized, true);
+
+  const deniedAfterEvaluation = requireRefused(
+    authorize(
+      act(),
+      authority({
+        deniedEffects: ["write"],
+        revocationConditions: [{ registryId: "never", version: 1 }],
+      }),
+      authContext({
+        now: 50,
+        state: { presence: "returned", gate: true },
+        predicateEnv: suppliedEnv,
+        revokedBy: [event("false-three", "Unrelated", 3)],
+      }),
+    ),
+  );
+  assert.equal(deniedAfterEvaluation.refusal.payload.reason, "effect denied");
+  assert.deepEqual(deniedAfterEvaluation.trace.envInputs, [
+    "now",
+    "authorityEnvelope",
+    "evidence",
+    "revocations",
+    "state",
+    "rngState:23",
+    "predicates",
+    "policy",
+  ]);
+});
+
+test("WO-017 semantic revocation: missing inputs, unknown refs, and predicate errors refuse rather than throw or authorize", () => {
+  const knownPredicates: PredicateRegistry = {
+    safe: { 1: () => false },
+    throws: {
+      1: () => {
+        throw new Error("predicate failure");
+      },
+    },
+  };
+  const condition = { registryId: "safe", version: 1 } as const;
+  const complete = {
+    state: {},
+    predicateEnv: { rngState: 4, predicates: knownPredicates },
+    revokedBy: [event("candidate", "Anything", 0)],
+  } as const;
+  const results = [
+    authorize(
+      act(),
+      authority({ revocationConditions: [condition] }),
+      authContext({ predicateEnv: complete.predicateEnv }),
+    ),
+    authorize(
+      act(),
+      authority({ revocationConditions: [condition] }),
+      authContext({ state: complete.state }),
+    ),
+    authorize(
+      act(),
+      authority({
+        revocationConditions: [{ registryId: "unknown", version: 7 }],
+      }),
+      authContext(complete),
+    ),
+    authorize(
+      act(),
+      authority({
+        revocationConditions: [{ registryId: "unknown", version: 7 }],
+      }),
+      authContext({
+        state: complete.state,
+        predicateEnv: complete.predicateEnv,
+        revokedBy: [],
+      }),
+    ),
+    authorize(
+      act(),
+      authority({
+        revocationConditions: [{ registryId: "throws", version: 1 }],
+      }),
+      authContext(complete),
+    ),
+    authorize(
+      act(),
+      authority({ revocationConditions: [condition] }),
+      authContext({
+        state: complete.state,
+        predicateEnv: { rngState: 0 } as unknown as NonNullable<
+          AuthContext["predicateEnv"]
+        >,
+        revokedBy: complete.revokedBy,
+      }),
+    ),
+    authorize(
+      act(),
+      authority({ revocationConditions: [condition] }),
+      authContext({
+        state: complete.state,
+        predicateEnv: {
+          predicates: knownPredicates,
+        } as unknown as NonNullable<AuthContext["predicateEnv"]>,
+        revokedBy: complete.revokedBy,
+      }),
+    ),
+  ];
+  assert.deepEqual(
+    results.map(refusalReason),
+    Array.from({ length: results.length }, () => "cannot evaluate revocation"),
+  );
+});
+
+test("WO-017 semantic revocation: a prior match cannot mask a later predicate error", () => {
+  const registry: PredicateRegistry = {
+    matches: { 1: () => true },
+    throws: {
+      1: () => {
+        throw new Error("late predicate failure");
+      },
+    },
+  };
+  const result = authorize(
+    act(),
+    authority({
+      revocationConditions: [
+        { registryId: "matches", version: 1 },
+        { registryId: "throws", version: 1 },
+      ],
+    }),
+    authContext({
+      state: {},
+      predicateEnv: { rngState: 0, predicates: registry },
+      revokedBy: [event("candidate", "Anything", 0)],
+    }),
+  );
+  assert.equal(refusalReason(result), "cannot evaluate revocation");
+});
+
+test("WO-017 granted trace names effect, canonical time, condition inputs, and consumed resource", () => {
+  const predicateRegistry: PredicateRegistry = {
+    returned: { 1: () => false },
+  };
+  const granted = requireAuthorized(
+    authorize(
+      act("write", "cpu"),
+      authority({
+        resourceLimits: { cpu: 2 },
+        revocationConditions: [{ registryId: "returned", version: 1 }],
+      }),
+      authContext({
+        now: 41,
+        state: { presence: "away" },
+        predicateEnv: {
+          rngState: 8,
+          predicates: predicateRegistry,
+          policy: { mode: "test" },
+        },
+      }),
+    ),
+  );
+  assert.deepEqual(granted.trace, {
+    reactorId: "authority-guard",
+    reactorVersion: "1",
+    branchPath: ["authorized", "write"],
+    envInputs: [
+      "now:41",
+      "authorityEnvelope:auth",
+      "evidence",
+      "revocations",
+      "state",
+      "rngState:8",
+      "predicates",
+      "policy",
+      "resource:cpu",
+    ],
+    cadenceEvaluations: [],
+  });
+  assert.deepEqual(granted.authority.resourceLimits, { cpu: 1 });
 });

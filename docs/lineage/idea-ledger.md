@@ -23,6 +23,89 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-017 final review — the deferred evaluable-subset type candidate (2026-09-03)
+
+Source: WO-017's non-goals, which defer the `Cadence.Evaluable` recursive
+subset type and direct that it be recorded as a candidate, and VER-001 finding
+F1, which observed that the exported kind lists are shallow by shape. Recorded
+by the final reviewer as the handoff correction the verifier asked for; no
+implementation, contract, acceptance, or evidence surface changed.
+
+- **A recursive evaluable subset type for Cadence and Program remains a
+  candidate** `preserved`
+  - `EVALUABLE_CADENCE_KINDS` and `EVALUABLE_PROGRAM_KINDS` are exact by root
+    kind and shallow by shape: `Gate(Burst(2, 1), ref)` and
+    `Sequence([All([])])` throw `is deferred` even though `Gate` and `Sequence`
+    are listed. A `Cadence.Evaluable` and `Program.Evaluable` recursive subset
+    type, with a matching runtime predicate, would let a consumer such as
+    WO-018's release manifest state evaluability over whole trees rather than
+    root kinds. Until a bounded order pins it, the kernel README carries the
+    caveat and the exported lists remain root-kind data only.
+
+## WO-017 ideation breakout — exact lexicons and contributed capacity (2026-09-03)
+
+Source: the operator's live `ideation:` dispatch and correction, preserved
+unedited in
+`docs/intake/notes/WO-017-expanded-ideation-2026-09-03.md`, plus the local
+`docs/intake/images/dual-survival.webp`. Ordinary shape-first synthesis applies
+to the crash-reporting and contributed-capacity mechanisms, including the DBZ
+reference. Direct Draft Fidelity is requested only for the manually checked
+_Dual Survival_ transcription, the separately supplied _Man, Woman, Wild_
+phrase, and the Westworld command vocabulary because the operator explicitly
+corrected an attempted generalization and made exact wording their filing
+requirement. On 2026-09-03, the operator confirmed authorship of the _Dual
+Survival_ list/compilation shown in the local image and explicitly authorized
+its exact text for public filing in this repository. The clean-room screen found
+no employer, credential, internal-service, private identifier, or other stop
+condition. The operator preauthorized continuation of WO-017 after and during
+this breakout; the work-order receipt keeps the documentation expansion
+separate from its implementation authority.
+
+- **A crash or bug reporter minimizes locally before projecting an Issue**
+  `transformed`
+  - The desired capability may appear as a failure-triggered active and a
+    runtime-native agent skill. It selects the smallest correlated slice from
+    governed local diagnostics, adds reproduction and public-safe version facts,
+    deterministically redacts and previews the packet, then either creates a
+    local draft or—under a narrow, expiring, revocable external-effect
+    envelope—submits exactly one deduplicated GitHub Issue. Raw logs,
+    credentials, resolved targets, unrelated lines, conversation history, and
+    private identifiers do not cross. The Issue is an intake projection, not
+    canonical truth, priority, repair authority, or independent verification.
+- **The _Dual Survival_ list is an exact output palette, not generic survival
+  flavor** `adopted`
+  - The exact list, including words, phrases, sentence constructions,
+    capitalization, punctuation, and cooldown annotations, is filed wholesale
+    in `05-pattern-library.md` from the operator-supplied local image. A
+    phrasebook support tries to use those literal entries while leaving factual
+    content, evidence, authority, and the separate mitigated-speech `Voice`
+    unchanged. Private/source-derived palettes retain provenance and destination
+    policy. The first _Man, Woman, Wild_ addition is exactly
+    `this is truly desperate living`; a recorded unavailable or explicitly
+    degraded state may make it eligible, but it never licenses silent model
+    substitution.
+- **Westworld contributes an exact operator command lexicon** `adopted`
+  - The fourth recorded Westworld shape is deterministic control through
+    source-exact command phrases. `analysis:` is the first and only token
+    supplied in this batch. It requests an operator-visible analysis artifact or
+    analysis-only episode, not private model chain-of-thought. The remaining
+    slots stay empty until the operator supplies or source-reviews exact text;
+    remembered approximations and paraphrases do not compile. Commands may
+    pause or bind application workflow, but never bypass safety, Clean Room,
+    permissions, evidence gates, or external-effect authority.
+- **Community members can contribute their own excess Fable capacity through
+  local WorkOrders and pull requests** `transformed`
+  - The DBZ reference remains as a lineage cue: a Goku/Spirit Bomb-style call
+    for contributed energy, paired with regenerating Dragon Balls as the image
+    for renewable capacity. Mechanically, DotLn offers an already-reviewed,
+    model-specific bounded WorkOrder; a participant uses their own local harness
+    and provider relationship, transfers no account or credential, and returns
+    a patch, typed result, evidence, and actor attestation in a PR. The result
+    remains untrusted and independently verified. Available quota can lower the
+    cost of eligible work but cannot invent tasks, manufacture priority, or
+    outrun operator review bandwidth; provider eligibility is rechecked as
+    environment truth.
+
 ## WO-027 bounded local-inference probe (2026-09-03)
 
 Source: WO-027's public work-order authority, public vendor documentation, and

@@ -1,4 +1,4 @@
-# `@dotln/kernel` v0.1.0
+# `@dotln/kernel` v0.2.0
 
 The deterministic, framework-free DotLn core. Kernel functions perform no I/O
 and consult no ambient clock or randomness. Import the public API from
@@ -12,10 +12,10 @@ and consult no ambient clock or randomness. Import the public API from
 | `Event`, `EventDraft`, `Comparison`, `EventEnvelope`, `EventPattern`                                                   | Event, edge-assigned event identity, Comparison event, EventEnvelope, Await matching                     |
 | `Reactor`, `KernelEnv`, `PredicateRegistry`                                                                            | Reactor; environment as log projection; conditions-as-data registry                                      |
 | `Decision`, `DecisionTrace`                                                                                            | Decision, DecisionTrace                                                                                  |
-| `Schedule`, `Cadence`, `CadenceResult`, `evaluateCadence` and all 14 constructors                                      | Schedule, Cadence temporal-algebra AST and virtual-time evaluation                                       |
+| `Schedule`, `Cadence`, `CadenceResult`, `EVALUABLE_CADENCE_KINDS`, `evaluateCadence` and all 14 constructors           | Schedule, Cadence temporal-algebra AST and virtual-time evaluation                                       |
 | `Intent`, `ActIntent`, `WaitIntent`, `ObserveIntent`, `NoOpIntent`                                                     | Intent (`Act \| Wait \| Observe \| NoOp`)                                                                |
 | `Command`, `CommandReceipt`, `commandId`, `stableHash`                                                                 | Command, CommandReceipt, deterministic outbox identity                                                   |
-| `Program`, `ProgramStep`, `ProgramDecision`, `stepProgram`, `decideProgram`                                            | Program grammar, residual Decision continuation, and its v0.1 evaluation subset                          |
+| `Program`, `ProgramStep`, `ProgramDecision`, `EVALUABLE_PROGRAM_KINDS`, `stepProgram`, `decideProgram`                 | Program grammar, residual Decision continuation, and its v0.1 evaluation subset                          |
 | `serializeContinuation`, `deserializeContinuation`                                                                     | Continuation                                                                                             |
 | `PredicateRef`, `Predicate`, `predicate`                                                                               | Conditions as data: the versioned predicate registry consulted by Cadence and Program guards             |
 | `AuthorityEnvelope`, `authorize`, `AuthorizationResult`, `Refusal`                                                     | AuthorityEnvelope and structural command-authorization guard                                             |
@@ -29,7 +29,12 @@ Cadence exports types for `Once`, `After`, `Every`, `Burst`, `Calendar`,
 `Backoff`. Evaluation is intentionally limited to `Once`, `After`, `Every`,
 `Until`, `Gate`, and `Backoff`. Program exports all grammar nodes; evaluation is
 intentionally limited to `Done`, `Emit`, `Invoke`, `Await`, `Sequence`, and
-`Guard`.
+`Guard`. The two `EVALUABLE_*_KINDS` exports are the machine-readable source for
+those exact subsets; kinds outside them fail loudly as deferred. Both lists are
+exact by root kind and shallow by shape: a listed combinator such as `Gate` or
+`Sequence` still throws `is deferred` when it wraps an unlisted child, so a
+consumer must not read membership as a promise about nested trees. A recursive
+evaluable subset type is recorded as a candidate in the idea ledger.
 
 Run `npm test` at the repository root for the acceptance and failure-injection
 suite.

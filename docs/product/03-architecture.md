@@ -256,6 +256,27 @@ skills, then final-review and lifecycle skills, and finally measure startup
 context saved, invocation accuracy, and parity with the CLI. Until those work
 orders land, the current resume resolver and durable docs remain authoritative.
 
+#### Candidate — contributed execution pool
+
+A person may contribute otherwise-unused model capacity without lending an
+account or moving credentials into DotLn. The candidate would offer a bounded,
+model-specific WorkOrder from an already reviewed eligible queue; the
+participant claims it, runs it locally through their own harness and provider
+relationship, and returns the patch, typed result, evidence, and actor
+attestation through a pull request. The contribution remains untrusted input:
+source-revision guards, path and authority limits, automated checks, independent
+verification, and operator merge authority apply exactly as they do to local
+work. Provider eligibility and terms are environment truth to recheck, never an
+assumption encoded by the pool.
+
+Capacity is a scoped, expiring resource signal, not a reason to invent work or
+manufacture priority. A replenishing allowance can make an already-useful task
+cheaper; unused capacity is preferable to output that outruns review or evidence
+integration.
+Canonical WorkOrders and external pull requests use destination vocabulary,
+transfer no provider access, and never claim that several subscriptions form
+one shared account or authority envelope.
+
 #### Runtime primitive catalogs
 
 An agent runtime is not merely a text-completion endpoint. Claude, Codex, and
@@ -613,14 +634,14 @@ changes.
 - **Failure-injection matrix (canonical here; roadmap and work orders cite
   it).** Expected outcomes are part of the spec:
 
-  | #   | Injection                                     | Expected outcome                                                                                                                           | Required by |
-  | --- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-  | 1   | Crash after command persist, before dispatch  | Restart finds the pending command via replay and re-dispatches; no duplicate effects (adapter dedups by commandId)                         | v0.1.0      |
-  | 2   | Crash after effect, before result persist     | Command remains pending; recovery re-queries or re-dispatches idempotently; never double-applies                                           | v0.5.0      |
-  | 3   | Duplicate result event                        | Second delivery ignored deterministically (commandId); state unchanged; trace records the dedup                                            | v0.1.0      |
-  | 4   | Result after authority expiry                 | Event is persisted (it happened); reactor decides quarantine/NoOp with trace naming the expired envelope; payload causes no state mutation | v0.5.0      |
-  | 5   | Operator-return racing a queued cadence pulse | The already-queued pulse is processed, but its guard re-evaluates presence and decides NoOp-with-trace; future pulses cancel               | v0.1.0      |
-  | 6   | Interruption mid-episode (network loss, kill) | Lease expires; continuation + work order recoverable; a fresh episode resumes or a recovery episode inspects                               | v0.5.0      |
+  | #   | Injection                                     | Expected outcome                                                                                                                                                                                                                                                                          | Required by |
+  | --- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+  | 1   | Crash after command persist, before dispatch  | Restart finds the pending command via replay and re-dispatches; no duplicate effects (adapter dedups by commandId). If a reordered log presents its result before its persist, replay retains the orphan result and completes on persist with `result / preceded-persist`, never pending. | v0.1.0      |
+  | 2   | Crash after effect, before result persist     | Command remains pending; recovery re-queries or re-dispatches idempotently; never double-applies                                                                                                                                                                                          | v0.5.0      |
+  | 3   | Duplicate result event                        | Second delivery ignored deterministically (commandId); state unchanged; trace records the dedup                                                                                                                                                                                           | v0.1.0      |
+  | 4   | Result after authority expiry                 | Event is persisted (it happened); reactor decides quarantine/NoOp with trace naming the expired envelope; payload causes no state mutation                                                                                                                                                | v0.5.0      |
+  | 5   | Operator-return racing a queued cadence pulse | The already-queued pulse is processed, but its guard re-evaluates presence and decides NoOp-with-trace; future pulses cancel                                                                                                                                                              | v0.1.0      |
+  | 6   | Interruption mid-episode (network loss, kill) | Lease expires; continuation + work order recoverable; a fresh episode resumes or a recovery episode inspects                                                                                                                                                                              | v0.5.0      |
 
   Without these, "offline-capable" is a slogan.
 

@@ -28,6 +28,7 @@ test("the 13-step live scenario and JSONL replay have identical decision traces"
   const live = runScenario(fixture);
   const replayed = replayScenario(live.log, fixture);
   assert.deepEqual(replayed.traces, live.traces);
+  assert.equal(live.traces.length, 6);
   assert.deepEqual(replayed.timeline, live.timeline);
   assert.equal(live.workOrder.workOrderId, "wo_repo_inspection_1");
   assert.deepEqual(Object.keys(live.workOrder).sort(), [
@@ -50,6 +51,34 @@ test("the 13-step live scenario and JSONL replay have identical decision traces"
     live.glyphScene,
     /🐛.*dormant.*inverted\/refused.*verified.*phase:returned.*faded\/cancelled/u,
   );
+  const grantEvent = decodeLog(live.log)[6];
+  assert.equal(grantEvent?.type, "DecisionRecorded");
+  assert.deepEqual(
+    (grantEvent?.payload as { trace?: unknown }).trace,
+    live.traces[1],
+  );
+  assert.deepEqual(live.traces[1], {
+    reactorId: "authority-guard",
+    reactorVersion: "1",
+    branchPath: ["authorized", "repo.inspect"],
+    envInputs: [
+      "now:1200000",
+      "authorityEnvelope:auth_seiri",
+      "evidence",
+      "revocations",
+      "state",
+      "rngState:17",
+      "predicates",
+      "policy",
+      "resource:inspections",
+    ],
+    cadenceEvaluations: [],
+  });
+  assert.equal(live.traces[4]?.reactorId, "authority-guard");
+  assert.deepEqual(live.traces[4]?.branchPath, [
+    "refused",
+    "authority revoked",
+  ]);
   const tampered = decodeLog(live.log).map((event) =>
     event.type === "DecisionRecorded"
       ? { ...event, payload: { trace: { reactorId: "forged" } } }
@@ -81,6 +110,29 @@ test("loadout is a causal, explicitly provisional input to WorkOrder compilation
 
 test("the canonical thirteen scenario milestones occur in exact order", () => {
   const types = decodeLog(runScenario(fixture).log).map((event) => event.type);
+  assert.deepEqual(types, [
+    "InspectionTaskCreated",
+    "LoadoutEquipped",
+    "OperatorPresenceChanged",
+    "DecisionRecorded",
+    "CadencePulse",
+    "WorkOrderEmitted",
+    "DecisionRecorded",
+    "CommandPersisted",
+    "CommandResult",
+    "DeletionAttempted",
+    "CommandRefused",
+    "DecisionRecorded",
+    "EpisodeTerminated",
+    "DecisionRecorded",
+    "VerificationRequested",
+    "VerificationCompleted",
+    "OperatorPresenceChanged",
+    "CadencePulse",
+    "DecisionRecorded",
+    "QueuedPulseNoOp",
+    "SchedulesCancelled",
+  ]);
   const milestones = [
     "InspectionTaskCreated",
     "LoadoutEquipped",

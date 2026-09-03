@@ -36,12 +36,17 @@ export const consequentialActionClasses: readonly ConsequentialActionClass[] = [
   },
   {
     actionClass: "authority-decision",
-    sourceEventTypes: ["CommandPersisted", "CommandRefused"],
+    sourceEventTypes: [
+      "DecisionRecorded",
+      "CommandPersisted",
+      "CommandRefused",
+    ],
     requiredReferences: [
       "eventIds",
       "workstreamId",
       "episodeId when present",
       "commandId when allowed",
+      "authorization trace when recorded",
       "authorityEnvelopeRef and reason when denied",
     ],
     operatorQuestion: "Was the requested action allowed or denied, and why?",
@@ -149,7 +154,9 @@ export type AuthorityDecisionAuditRecord =
   | (AuditRecordBase<"authority-decision", "allowed"> & {
       readonly decision: "allowed";
       readonly commandId: string;
-      readonly decisionEvidence: "authorized-command-persisted";
+      readonly decisionEvidence:
+        | "authority-trace-and-command-persisted"
+        | "authorized-command-persisted";
     })
   | (AuditRecordBase<"authority-decision", "denied"> & {
       readonly decision: "denied";
@@ -276,6 +283,7 @@ const stringArrayField = (
 interface PersistedCommandRef {
   readonly commandId: string;
   readonly effect: string;
+  readonly resource?: string;
 }
 
 const persistedCommandRef = (event: Event): PersistedCommandRef | undefined => {
@@ -284,8 +292,15 @@ const persistedCommandRef = (event: Event): PersistedCommandRef | undefined => {
   const intent = asObject(command?.["intent"]);
   const commandId = command?.["commandId"];
   const effect = intent?.["effect"];
-  return isNonBlankString(commandId) && isNonBlankString(effect)
-    ? { commandId, effect }
+  const resource = intent?.["resource"];
+  return isNonBlankString(commandId) &&
+    isNonBlankString(effect) &&
+    (resource === undefined || typeof resource === "string")
+    ? {
+        commandId,
+        effect,
+        ...(resource === undefined ? {} : { resource }),
+      }
     : undefined;
 };
 
@@ -333,6 +348,102 @@ const sameEpisodeAndTime = (left: Event, right: Event): boolean =>
   left.episodeId !== undefined &&
   left.episodeId === right.episodeId &&
   left.occurredAt === right.occurredAt;
+
+const semanticAuthorityInputsAreComplete = (
+  inputs: readonly string[],
+): boolean => {
+  if (inputs.length === 0) return true;
+  const rngState = inputs[1]?.slice("rngState:".length);
+  return (
+    inputs.length >= 3 &&
+    inputs.length <= 4 &&
+    inputs[0] === "state" &&
+    inputs[1]?.startsWith("rngState:") === true &&
+    rngState !== undefined &&
+    rngState.trim() !== "" &&
+    Number.isFinite(Number(rngState)) &&
+    String(Number(rngState)) === rngState &&
+    inputs[2] === "predicates" &&
+    (inputs.length === 3 || inputs[3] === "policy")
+  );
+};
+
+const isAuthorizedDecisionTrace = (
+  candidate: Event | undefined,
+  persisted: Event,
+  command: PersistedCommandRef,
+): candidate is Event => {
+  if (
+    candidate === undefined ||
+    candidate.type !== "DecisionRecorded" ||
+    candidate.workstreamId !== persisted.workstreamId ||
+    candidate.episodeId !== persisted.episodeId
+  )
+    return false;
+  const trace = asObject(asObject(candidate.payload)?.["trace"]);
+  const branchPath = stringArrayField(trace, "branchPath");
+  const envInputs = stringArrayField(trace, "envInputs");
+  const cadenceEvaluations = asObject(trace)?.["cadenceEvaluations"];
+  const authorityInput = envInputs?.[1];
+  if (
+    envInputs === undefined ||
+    envInputs[0] !== `now:${candidate.occurredAt}` ||
+    authorityInput?.startsWith("authorityEnvelope:") !== true ||
+    authorityInput.slice("authorityEnvelope:".length).trim() === "" ||
+    envInputs[2] !== "evidence" ||
+    envInputs[3] !== "revocations"
+  )
+    return false;
+
+  const suffix = [...envInputs.slice(4)];
+  if (command.resource === undefined) {
+    if (suffix.some((input) => input.startsWith("resource:"))) return false;
+  } else if (suffix.pop() !== `resource:${command.resource}`) {
+    return false;
+  }
+  return (
+    stringField(trace, "reactorId") === "authority-guard" &&
+    stringField(trace, "reactorVersion") === "1" &&
+    branchPath?.length === 2 &&
+    branchPath[0] === "authorized" &&
+    branchPath[1] === command.effect &&
+    semanticAuthorityInputsAreComplete(suffix) &&
+    Array.isArray(cadenceEvaluations) &&
+    cadenceEvaluations.length === 0
+  );
+};
+
+const isRefusedDecisionTrace = (
+  candidate: Event | undefined,
+  refused: Event,
+  reason: string,
+): candidate is Event => {
+  if (
+    candidate === undefined ||
+    candidate.type !== "DecisionRecorded" ||
+    !sameEpisodeAndTime(candidate, refused)
+  )
+    return false;
+  const trace = asObject(asObject(candidate.payload)?.["trace"]);
+  const branchPath = stringArrayField(trace, "branchPath");
+  const envInputs = stringArrayField(trace, "envInputs");
+  const cadenceEvaluations = asObject(trace)?.["cadenceEvaluations"];
+  return (
+    stringField(trace, "reactorId") === "authority-guard" &&
+    stringField(trace, "reactorVersion") === "1" &&
+    branchPath?.length === 2 &&
+    branchPath[0] === "refused" &&
+    branchPath[1] === reason &&
+    envInputs !== undefined &&
+    envInputs[0] === "now" &&
+    envInputs[1] === "authorityEnvelope" &&
+    envInputs[2] === "evidence" &&
+    envInputs[3] === "revocations" &&
+    semanticAuthorityInputsAreComplete(envInputs.slice(4)) &&
+    Array.isArray(cadenceEvaluations) &&
+    cadenceEvaluations.length === 0
+  );
+};
 
 const invalidAuditSource = (event: Event, detail: string): never => {
   throw new Error(
@@ -454,11 +565,29 @@ export function deriveAuditRecords(
       const command =
         persisted ??
         invalidAuditSource(event, "missing commandId or intent.effect");
+      const authorityTrace = isAuthorizedDecisionTrace(
+        events[index - 1],
+        event,
+        command,
+      )
+        ? events[index - 1]
+        : undefined;
       records.push({
-        ...baseRecord(event, "authority-decision", command.effect, "allowed"),
+        ...baseRecord(
+          event,
+          "authority-decision",
+          command.effect,
+          "allowed",
+          authorityTrace === undefined
+            ? [event.eventId]
+            : eventIds([authorityTrace, event]),
+        ),
         decision: "allowed",
         commandId: command.commandId,
-        decisionEvidence: "authorized-command-persisted",
+        decisionEvidence:
+          authorityTrace === undefined
+            ? "authorized-command-persisted"
+            : "authority-trace-and-command-persisted",
       });
       continue;
     }
@@ -516,14 +645,9 @@ export function deriveAuditRecords(
         sameEpisodeAndTime(prior, event)
           ? prior
           : undefined;
-      const authorityTrace =
-        trace !== undefined &&
-        trace.type === "DecisionRecorded" &&
-        sameEpisodeAndTime(trace, event) &&
-        stringField(asObject(trace.payload)?.["trace"], "reactorId") ===
-          "authority-guard"
-          ? trace
-          : undefined;
+      const authorityTrace = isRefusedDecisionTrace(trace, event, reason)
+        ? trace
+        : undefined;
       const sources = [
         ...(attempt === undefined ? [] : [attempt]),
         event,

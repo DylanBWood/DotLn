@@ -60,6 +60,29 @@ mechanism-activation `AttentionPolicy`, a resident coordinator, or a model of
 the operator's psychology; corrections may propose versioned policy changes but
 never mutate interruption behavior silently.
 
+### Candidate — exact operator command vocabulary
+
+The fourth Westworld-derived shape is a reserved vocabulary whose exact phrases
+put the operator in deterministic control of an interaction mode. The wording
+is part of the command identity, not flavor text to paraphrase. The first
+operator-supplied token is exactly `analysis:`. It requests an inspectable,
+evidence-backed analysis artifact or analysis-only episode; it does not promise
+disclosure of a model's private chain-of-thought. The remaining Westworld
+phrases stay as explicit empty slots until the operator supplies them or an
+authorized source pass records their exact text—remembered approximations do not
+compile.
+
+Each exact phrase maps to a typed intent with declared legal source states,
+role, scope (message, episode, or workstream), expiry or exit, precedence,
+receipt, and state transition. Unknown phrases and illegal combinations refuse
+loudly. Existing `resume:` and `ideation:` dispatches demonstrate the mechanism
+but are not aliases that dilute the Westworld lexicon. Within the operator-owned
+workflow, a command may pause automation, replace a pending conversational
+intent, or bind the next mode and actions exactly. It cannot bypass platform
+safety, the Clean Room floor, permissions, evidence gates, or external-effect
+authority. Every projection shows the exact active command and the exact phrase
+that exits it.
+
 **The operator stays in the idea and judgment loop.** Hand-authoring identities,
 patterns, and agent definitions via the reviewed-markdown workflow (proposed
 changes as one syntax-highlighted document to read and shape) is a first-class

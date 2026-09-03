@@ -135,6 +135,43 @@ test("AC5 row 1 evidence: a completed command is never re-dispatched — replay 
   assert.deepEqual(pendingCommands(recovered), []);
 });
 
+test("WO-017 outbox ordering: a result before persist completes with a preceded-persist trace", () => {
+  const events = [
+    event("result-first", "CommandResult", 1, {
+      commandId: CMD,
+      result: "ok",
+    }),
+    event("persist-second", "CommandPersisted", 2, {
+      command: command as unknown as JsonValue,
+    }),
+  ];
+  const detailed = replayOutbox(events, { includeTraces: true });
+  assert.deepEqual(detailed.state, {
+    entries: {
+      [CMD]: {
+        command,
+        status: "completed",
+        resultEventId: "result-first",
+      },
+    },
+  });
+  assert.deepEqual(pendingCommands(detailed.state), []);
+  assert.deepEqual(detailed.traces, [
+    {
+      reactorId: "outbox",
+      reactorVersion: "1",
+      branchPath: ["result", "preceded-persist"],
+      envInputs: ["commandId"],
+      cadenceEvaluations: [],
+    },
+  ]);
+  assert.deepEqual(
+    replayOutbox(events),
+    detailed.state,
+    "legacy one-argument replay returns the same corrected OutboxState",
+  );
+});
+
 test("AC5 row 1 evidence: persistCommand on an existing completed entry does not reset it to pending", () => {
   const completed: OutboxState = {
     entries: {
@@ -365,7 +402,7 @@ test("B4 regression: episode and workstream commandId namespaces cannot collide,
   );
 });
 
-test("B4 regression: null and malformed payloads replay without crashing and persist nothing", () => {
+test("B4 regression: null payloads, non-object commands, and malformed commandIds replay without persisting", () => {
   const replayed = replayOutbox([
     event("n-1", "CommandPersisted", 1, null),
     event("n-2", "CommandResult", 2, null),

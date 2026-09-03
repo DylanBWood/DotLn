@@ -17,6 +17,7 @@ import {
   type Event,
   type EventDraft,
   type JsonValue,
+  type KernelEnv,
   type PredicateRegistry,
   type WorkOrder,
 } from "@dotln/kernel";
@@ -81,6 +82,10 @@ export const loadout: Loadout = {
 };
 
 const presenceRef = { registryId: "operator.away", version: 1 } as const;
+const returnRevocationRef = {
+  registryId: "operator.return-event",
+  version: 1,
+} as const;
 const statePresence = (state: JsonValue): JsonValue | undefined =>
   state !== null && !Array.isArray(state) && typeof state === "object"
     ? (state as Readonly<Record<string, JsonValue>>)["presence"]
@@ -89,6 +94,16 @@ const predicates: PredicateRegistry = {
   "operator.away": { 1: ({ state }) => statePresence(state) === "away" },
   "operator.returned": {
     1: ({ state }) => statePresence(state) === "returned",
+  },
+  "operator.return-event": {
+    1: ({ state, event }) =>
+      statePresence(state) === "returned" &&
+      event?.type === "OperatorPresenceChanged" &&
+      event.payload !== null &&
+      !Array.isArray(event.payload) &&
+      typeof event.payload === "object" &&
+      (event.payload as Readonly<Record<string, JsonValue>>)["presence"] ===
+        "returned",
   },
 };
 const cadence = Cadence.Until(
@@ -230,7 +245,14 @@ const authority = (): AuthorityEnvelope => ({
   resourceLimits: { inspections: 1 },
   requiredEvidence: [],
   expiresAt: 40 * MINUTE,
-  revocationEventTypes: ["OperatorPresenceChanged:return"],
+  revocationEventTypes: [],
+  revocationConditions: [returnRevocationRef],
+});
+
+const predicateEnv = (state: RuntimeState): Omit<KernelEnv, "now"> => ({
+  rngState: state.rngState,
+  predicates,
+  policy: state.policy,
 });
 const verificationProgram = (workOrder: WorkOrder, at: number) => {
   const inspect = inspectIntent(workOrder);
@@ -324,10 +346,14 @@ export function replayScenario(
     workOrderEvent.payload as unknown as { workOrder: WorkOrder }
   ).workOrder;
   const program = verificationProgram(workOrder, workOrderEvent.occurredAt);
+  const inspect = inspectIntent(workOrder);
+  let replayAuthority = authority();
+  const revocationEvents: Event[] = [];
   let resultForContinuation: Event | undefined;
   for (const event of events) {
     if (event.type === "OperatorPresenceChanged") {
       state = foldPresence(state, event);
+      revocationEvents.push(event);
       if (state.presence === "away") {
         const evaluated = evaluateCadence(cadence, state, {
           now: event.occurredAt,
@@ -341,15 +367,45 @@ export function replayScenario(
           envInputs: ["operatorPresence", "virtualTime"],
           cadenceEvaluations: [evaluated.trace],
         });
+      } else {
+        const revoked = authorize(inspect, replayAuthority, {
+          now: event.occurredAt,
+          actorId: ACTOR,
+          workstreamId: WORKSTREAM,
+          episodeId: EPISODE,
+          decisionIndex: 3,
+          intentIndex: 0,
+          evidence: [],
+          revokedBy: revocationEvents,
+          state,
+          predicateEnv: predicateEnv(state),
+        });
+        if (
+          revoked.authorized ||
+          revoked.refusal.payload.reason !== "authority revoked"
+        )
+          throw new Error("replay did not reproduce inspect revocation");
+        traces.push(revoked.trace);
       }
     } else if (event.type === "WorkOrderEmitted") {
-      traces.push(
-        decideProgram(program, state, {
-          now: event.occurredAt,
-          rngState: state.rngState,
-          predicates,
-        }).trace,
-      );
+      const granted = authorize(inspect, replayAuthority, {
+        now: event.occurredAt,
+        actorId: ACTOR,
+        workstreamId: WORKSTREAM,
+        episodeId: EPISODE,
+        decisionIndex: 1,
+        intentIndex: 0,
+        evidence: [],
+        revokedBy: revocationEvents,
+        state,
+        predicateEnv: predicateEnv(state),
+      });
+      if (!granted.authorized)
+        throw new Error(
+          `replay authorization failed: ${granted.refusal.payload.reason}`,
+        );
+      replayAuthority = granted.authority;
+      traces.push(granted.trace);
     } else if (event.type === "CommandResult") {
       resultForContinuation = event;
     } else if (event.type === "CommandRefused") {
@@ -358,7 +414,7 @@ export function replayScenario(
         effect: "repo.delete",
         payload: { paths: candidates.map((candidate) => candidate.path) },
       };
-      const replayed = authorize(deletion, authority(), {
+      const replayed = authorize(deletion, replayAuthority, {
         now: event.occurredAt,
         actorId: ACTOR,
         workstreamId: WORKSTREAM,
@@ -366,7 +422,9 @@ export function replayScenario(
         decisionIndex: 2,
         intentIndex: 0,
         evidence: candidates.flatMap((candidate) => candidate.evidence),
-        revokedBy: [],
+        revokedBy: revocationEvents,
+        state,
+        predicateEnv: predicateEnv(state),
       });
       if (replayed.authorized)
         throw new Error("replay unexpectedly authorized deletion");
@@ -470,10 +528,12 @@ export function runScenario(
   );
   append(draft("LoadoutEquipped", 0, loadout as unknown as JsonValue));
   let state = initialState();
-  state = foldPresence(
-    state,
-    append(draft("OperatorPresenceChanged", 0, { presence: "away" })),
+  const revocationEvents: Event[] = [];
+  const away = append(
+    draft("OperatorPresenceChanged", 0, { presence: "away" }),
   );
+  revocationEvents.push(away);
+  state = foldPresence(state, away);
   const cadenceResult = evaluateCadence(cadence, state, {
     now: 0,
     rngState: state.rngState,
@@ -511,7 +571,9 @@ export function runScenario(
     decisionIndex: 1,
     intentIndex: 0,
     evidence: [],
-    revokedBy: [],
+    revokedBy: revocationEvents,
+    state,
+    predicateEnv: predicateEnv(state),
   });
   if (!auth.authorized) throw new Error(auth.refusal.payload.reason);
   const command = auth.command;
@@ -521,7 +583,9 @@ export function runScenario(
     rngState: state.rngState,
     predicates,
   });
-  recordTrace(initialProgramDecision.trace, pulse.occurredAt);
+  if (initialProgramDecision.intents[0]?.kind !== "Act")
+    throw new Error("verification program did not produce an inspect intent");
+  recordTrace(auth.trace, pulse.occurredAt);
   append(
     draft(
       "CommandPersisted",
@@ -578,7 +642,9 @@ export function runScenario(
     decisionIndex: 2,
     intentIndex: 0,
     evidence: candidates.flatMap((candidate) => candidate.evidence),
-    revokedBy: [],
+    revokedBy: revocationEvents,
+    state,
+    predicateEnv: predicateEnv(state),
   });
   if (refused.authorized) throw new Error("deletion unexpectedly authorized");
   append(refused.refusal);
@@ -606,14 +672,31 @@ export function runScenario(
     }),
   );
 
-  state = foldPresence(
-    state,
-    append(
-      draft("OperatorPresenceChanged", pulse.occurredAt + 6, {
-        presence: "returned",
-      }),
-    ),
+  const returned = append(
+    draft("OperatorPresenceChanged", pulse.occurredAt + 6, {
+      presence: "returned",
+    }),
   );
+  state = foldPresence(state, returned);
+  revocationEvents.push(returned);
+  const revokedInspect = authorize(inspect, auth.authority, {
+    now: returned.occurredAt,
+    actorId: ACTOR,
+    workstreamId: WORKSTREAM,
+    episodeId: EPISODE,
+    decisionIndex: 3,
+    intentIndex: 0,
+    evidence: [],
+    revokedBy: revocationEvents,
+    state,
+    predicateEnv: predicateEnv(state),
+  });
+  if (
+    revokedInspect.authorized ||
+    revokedInspect.refusal.payload.reason !== "authority revoked"
+  )
+    throw new Error("operator return did not revoke inspect authority");
+  traces.push(revokedInspect.trace);
   const scheduler = new FakeScheduler();
   scheduler.schedule(PULSE_SCHEDULE, QUEUED_PULSE);
   const queued = append(

@@ -53,6 +53,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Package ecosystem and marketplaces](../product/03-architecture.md#package-ecosystem-and-marketplaces)                                   | everyday-ai-user, software-engineer | planned   |
 | [Community builds and sandbox promotion](../product/03-architecture.md#community-builds-and-sandbox-promotion)                           | everyday-ai-user, software-engineer | planned   |
 | [Agent enablement skills](../product/03-architecture.md#agent-enablement-skills)                                                         | everyday-ai-user, software-engineer | planned   |
+| [Candidate — contributed execution pool](../product/03-architecture.md#candidate--contributed-execution-pool)                            | everyday-ai-user, software-engineer | vision    |
 | [Runtime primitive catalogs](../product/03-architecture.md#runtime-primitive-catalogs)                                                   | software-engineer                   | planned   |
 | [Candidate — isolated execution environments](../product/03-architecture.md#candidate--isolated-execution-environments)                  | everyday-ai-user, software-engineer | vision    |
 | [The agentic communication core](../product/03-architecture.md#the-agentic-communication-core)                                           | software-engineer                   | planned   |
@@ -67,22 +68,23 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 
 ## 04 — Interfaces
 
-| Section                                                                                                         | Audiences                           | Status  |
-| --------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
-| [Interfaces — the isomorphic views](../product/04-interfaces.md#interfaces--the-isomorphic-views)               | everyday-ai-user, software-engineer | planned |
-| [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal)                       | everyday-ai-user, software-engineer | planned |
-| [`προτείνω` — prose as a world action](../product/04-interfaces.md#προτείνω--prose-as-a-world-action)           | everyday-ai-user, software-engineer | vision  |
-| [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract) | everyday-ai-user, software-engineer | planned |
-| [RPG / Path-of-Exile view](../product/04-interfaces.md#rpg--path-of-exile-view)                                 | everyday-ai-user, software-engineer | planned |
-| [Semantic zoom](../product/04-interfaces.md#semantic-zoom)                                                      | everyday-ai-user, software-engineer | planned |
-| [Community build workshop](../product/04-interfaces.md#community-build-workshop)                                | everyday-ai-user, software-engineer | planned |
-| [External rule-source mapping preview](../product/04-interfaces.md#external-rule-source-mapping-preview)        | everyday-ai-user, software-engineer | vision  |
-| [Suggestion and proposal review](../product/04-interfaces.md#suggestion-and-proposal-review)                    | everyday-ai-user, software-engineer | planned |
-| [Agent projection (the sparse twin)](../product/04-interfaces.md#agent-projection-the-sparse-twin)              | everyday-ai-user, software-engineer | planned |
-| [Glyph system (visual prototype zero)](../product/04-interfaces.md#glyph-system-visual-prototype-zero)          | everyday-ai-user, software-engineer | planned |
-| [Transmog](../product/04-interfaces.md#transmog)                                                                | everyday-ai-user, software-engineer | planned |
-| [Replay](../product/04-interfaces.md#replay)                                                                    | everyday-ai-user, software-engineer | planned |
-| [Physical channel](../product/04-interfaces.md#physical-channel)                                                | everyday-ai-user, software-engineer | planned |
+| Section                                                                                                                   | Audiences                           | Status  |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
+| [Interfaces — the isomorphic views](../product/04-interfaces.md#interfaces--the-isomorphic-views)                         | everyday-ai-user, software-engineer | planned |
+| [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal)                                 | everyday-ai-user, software-engineer | planned |
+| [Candidate — exact operator command vocabulary](../product/04-interfaces.md#candidate--exact-operator-command-vocabulary) | everyday-ai-user, software-engineer | vision  |
+| [`προτείνω` — prose as a world action](../product/04-interfaces.md#προτείνω--prose-as-a-world-action)                     | everyday-ai-user, software-engineer | vision  |
+| [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract)           | everyday-ai-user, software-engineer | planned |
+| [RPG / Path-of-Exile view](../product/04-interfaces.md#rpg--path-of-exile-view)                                           | everyday-ai-user, software-engineer | planned |
+| [Semantic zoom](../product/04-interfaces.md#semantic-zoom)                                                                | everyday-ai-user, software-engineer | planned |
+| [Community build workshop](../product/04-interfaces.md#community-build-workshop)                                          | everyday-ai-user, software-engineer | planned |
+| [External rule-source mapping preview](../product/04-interfaces.md#external-rule-source-mapping-preview)                  | everyday-ai-user, software-engineer | vision  |
+| [Suggestion and proposal review](../product/04-interfaces.md#suggestion-and-proposal-review)                              | everyday-ai-user, software-engineer | planned |
+| [Agent projection (the sparse twin)](../product/04-interfaces.md#agent-projection-the-sparse-twin)                        | everyday-ai-user, software-engineer | planned |
+| [Glyph system (visual prototype zero)](../product/04-interfaces.md#glyph-system-visual-prototype-zero)                    | everyday-ai-user, software-engineer | planned |
+| [Transmog](../product/04-interfaces.md#transmog)                                                                          | everyday-ai-user, software-engineer | planned |
+| [Replay](../product/04-interfaces.md#replay)                                                                              | everyday-ai-user, software-engineer | planned |
+| [Physical channel](../product/04-interfaces.md#physical-channel)                                                          | everyday-ai-user, software-engineer | planned |
 
 ## 05 — Pattern library
 
@@ -93,6 +95,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Leadership & autonomy — Marquet](../product/05-pattern-library.md#leadership--autonomy--marquet)                                                | everyday-ai-user, software-engineer | planned |
 | [SMART & exploration contracts](../product/05-pattern-library.md#smart--exploration-contracts)                                                   | everyday-ai-user, software-engineer | planned |
 | [Communication — mitigated speech](../product/05-pattern-library.md#communication--mitigated-speech)                                             | everyday-ai-user, software-engineer | planned |
+| [Candidate — exact phrasebook voice support](../product/05-pattern-library.md#candidate--exact-phrasebook-voice-support)                         | everyday-ai-user, software-engineer | vision  |
 | [Decision policies — Algorithms to Live By](../product/05-pattern-library.md#decision-policies--algorithms-to-live-by)                           | everyday-ai-user, software-engineer | planned |
 | [Candidate — influence response policies](../product/05-pattern-library.md#candidate--influence-response-policies)                               | everyday-ai-user, software-engineer | vision  |
 | [Systems & quality](../product/05-pattern-library.md#systems--quality)                                                                           | everyday-ai-user, software-engineer | planned |
@@ -191,6 +194,7 @@ as a current blocked verdict.
 | [Persistence and recovery classes](../product/09-audit-resilience-privacy.md#persistence-and-recovery-classes)                                                  | everyday-ai-user, software-engineer | specified |
 | [Backup and disaster recovery choices](../product/09-audit-resilience-privacy.md#backup-and-disaster-recovery-choices)                                          | everyday-ai-user, software-engineer | specified |
 | [Privacy and minimization](../product/09-audit-resilience-privacy.md#privacy-and-minimization)                                                                  | everyday-ai-user, software-engineer | specified |
+| [Candidate — minimized incident reporting](../product/09-audit-resilience-privacy.md#candidate--minimized-incident-reporting)                                   | everyday-ai-user, software-engineer | vision    |
 | [Candidate — model-input exposure plans](../product/09-audit-resilience-privacy.md#candidate--model-input-exposure-plans)                                       | everyday-ai-user, software-engineer | vision    |
 | [Candidate — public Git with a local private evidence lane](../product/09-audit-resilience-privacy.md#candidate--public-git-with-a-local-private-evidence-lane) | software-engineer                   | vision    |
 | [Policy dimensions implementations can customize](../product/09-audit-resilience-privacy.md#policy-dimensions-implementations-can-customize)                    | software-engineer                   | specified |
