@@ -1,0 +1,462 @@
+{
+  "schemaVersion": "0.1.0",
+  "workOrder": "WO-027",
+  "observedAt": "2026-09-03T03:11:07-04:00",
+  "scope": "personal machine; one LM Studio service launch; no download, install, upgrade, config-value read, or benchmark loop",
+  "labels": [
+    "observed",
+    "documented locally",
+    "documented officially",
+    "untested",
+    "blocked",
+    "not found",
+    "ambiguous"
+  ],
+  "executor": {
+    "harness": "codex-cli",
+    "harnessVersion": "0.152.1",
+    "model": "gpt-5.6-sol",
+    "effort": "xhigh",
+    "source": "self-reported"
+  },
+  "checklist": [
+    { "id": 1, "name": "runner inventory", "classification": "observed" },
+    {
+      "id": 2,
+      "name": "hardware and thermal envelope",
+      "classification": "blocked"
+    },
+    { "id": 3, "name": "pinned artifact", "classification": "observed" },
+    { "id": 4, "name": "bounded launch shape", "classification": "blocked" },
+    { "id": 5, "name": "determinism", "classification": "blocked" },
+    { "id": 6, "name": "no-egress evidence", "classification": "blocked" },
+    {
+      "id": 7,
+      "name": "capability row proposal",
+      "classification": "observed"
+    },
+    { "id": 8, "name": "decision packet", "classification": "observed" }
+  ],
+  "runnerInventory": {
+    "classification": "observed",
+    "lmStudio": {
+      "classification": "observed",
+      "installed": true,
+      "applicationVersion": "0.4.13+1",
+      "cliCommit": "0b2a176",
+      "cliArchitecture": "arm64",
+      "surfaces": ["GUI application", "CLI", "local HTTP server"],
+      "headlessOrServerMode": {
+        "classification": "documented officially",
+        "value": true
+      },
+      "processLaunchRule": {
+        "classification": "observed",
+        "value": "when no service answers, every lms invocation wakes a detached service; desktop wake adds --run-as-service"
+      },
+      "launchCount": 1,
+      "launchResult": "blocked",
+      "crash": {
+        "classification": "observed",
+        "reproduced": true,
+        "capturedAt": "2026-09-03T03:00:32-04:00",
+        "parentProcess": "lms",
+        "exception": "EXC_BREAKPOINT",
+        "signal": "SIGTRAP",
+        "termination": "Trace/BPT trap: 5",
+        "reportPathClass": "user DiagnosticReports / LM Studio timestamped IPS",
+        "priorMatchingClassCount": 2
+      },
+      "crashCausality": {
+        "classification": "ambiguous",
+        "value": "the repeated exception class does not distinguish a runner defect from interaction with boundary conditions under which loopback also failed"
+      },
+      "survivingProcessesAfterCleanup": 0,
+      "packagedBackends": {
+        "classification": "observed",
+        "llamaCppLatestDirectoryVersion": "2.31.2",
+        "mlxLatestDirectoryVersion": "1.11.0",
+        "note": "application components, not separately evaluated runner installations"
+      }
+    },
+    "ollama": {
+      "classification": "not found",
+      "installed": false,
+      "version": "not-applicable",
+      "headlessOrServerMode": {
+        "classification": "documented officially",
+        "value": true
+      },
+      "launched": false
+    },
+    "llamaCpp": {
+      "classification": "not found",
+      "installedStandalone": false,
+      "version": "not-applicable",
+      "headlessOrServerMode": {
+        "classification": "documented officially",
+        "value": true
+      },
+      "launched": false
+    },
+    "mlxLm": {
+      "classification": "not found",
+      "installedStandalone": false,
+      "version": "not-applicable",
+      "headlessOrServerMode": {
+        "classification": "documented officially",
+        "value": true
+      },
+      "launched": false
+    }
+  },
+  "hardware": {
+    "classification": "blocked",
+    "chipFamily": {
+      "classification": "observed",
+      "value": "Apple M3 Max",
+      "source": "system_profiler"
+    },
+    "unifiedMemory": { "classification": "documented locally", "valueGiB": 48 },
+    "cores": {
+      "classification": "observed",
+      "total": 16,
+      "source": "system_profiler"
+    },
+    "runnerReportedHardware": {
+      "classification": "blocked",
+      "reason": "runner crashed before readiness"
+    },
+    "thermalReading": {
+      "classification": "blocked",
+      "reason": "pmset returned no thermal, performance, or CPU-power status"
+    }
+  },
+  "pinnedArtifact": {
+    "classification": "observed",
+    "alreadyOnDisk": true,
+    "downloadedByWorkOrder": false,
+    "publisher": "lmstudio-community",
+    "repository": "dolphin-2.8-mistral-7b-v02-GGUF",
+    "fileName": "dolphin-2.8-mistral-7b-v02-Q8_0.gguf",
+    "pathClass": "LM Studio model root / publisher / repository / file",
+    "format": "GGUF v3",
+    "architecture": "llama",
+    "parameterCount": "7B",
+    "quantization": { "bits": 8, "name": "Q8_0" },
+    "byteSize": 7695875136,
+    "sha256": "49d60b64563d5e4e78211eb3dfb1af75c3c89d1158f141bc0bf38ec5eac30fbb",
+    "license": {
+      "classification": "documented officially",
+      "name": "Apache-2.0",
+      "source": "https://huggingface.co/lmstudio-community/dolphin-2.8-mistral-7b-v02-GGUF"
+    },
+    "promptTemplate": {
+      "classification": "observed",
+      "type": "ChatML Jinja",
+      "value": "{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{% for message in messages %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}",
+      "bos": "<s>",
+      "eos": "<|im_end|>"
+    },
+    "artifactContextLength": 32768,
+    "probeContextLength": { "classification": "untested", "tokens": 4096 }
+  },
+  "launch": {
+    "classification": "blocked",
+    "exactCommand": "sandbox-exec -f <scratch>/no-external-network.sb ~/.lmstudio/bin/lms server start --port 12345 --bind 127.0.0.1",
+    "lmsInvocationCount": 1,
+    "operatorPresent": true,
+    "exitCode": 1,
+    "outputExcerpt": [
+      "Waking up LM Studio service...",
+      "Error: Timed out waiting for LM Studio daemon to start.",
+      "Error: Failed to start or connect to local LM Studio API server."
+    ],
+    "readinessPolls": 120,
+    "readinessIntervalMilliseconds": 500,
+    "apiReady": false,
+    "modelLoadRequests": 0,
+    "generationRequests": 0,
+    "metrics": {
+      "classification": "blocked",
+      "n": 0,
+      "modelLoadSeconds": null,
+      "firstTokenLatencySeconds": null,
+      "tokensPerSecond": null,
+      "costPerGeneration": null,
+      "benchmarkClaim": false
+    },
+    "preparedRequest": {
+      "classification": "untested",
+      "system": "Output only the requested story. Do not explain.",
+      "user": "Write exactly two sentences, each no more than twelve words, about a lighthouse keeper finding a brass key at dawn.",
+      "temperature": 0,
+      "topP": 1,
+      "seed": 424242,
+      "maxOutputTokens": 80,
+      "stream": false,
+      "stop": ["<|im_end|>"]
+    }
+  },
+  "determinism": {
+    "classification": "blocked",
+    "requiredSamples": 3,
+    "completedSamples": 0,
+    "byteIdentical": null,
+    "seedPolicy": {
+      "classification": "blocked",
+      "value": "unknown; runner never accepted or echoed a request"
+    },
+    "reason": "the sole runner service launch crashed before model load or generation"
+  },
+  "egressEvidence": {
+    "classification": "blocked",
+    "outerBoundary": {
+      "classification": "documented locally",
+      "source": "executing harness sandbox declaration",
+      "networkPolicy": "network-disabled",
+      "environmentKeyNamesObserved": [
+        "CODEX_SANDBOX",
+        "CODEX_SANDBOX_NETWORK_DISABLED"
+      ],
+      "environmentValuesRead": false
+    },
+    "launchBoundary": {
+      "classification": "observed",
+      "mechanism": "macOS sandbox-exec nested within the executing harness network-disabled boundary; static inspection shows lms passes its environment to the directly spawned service",
+      "profileSha256": "e95491ddeda717a3bb8b37f4413d93619e79fc39ea21b5ae667badeb855f742d",
+      "safeProfileClauses": [
+        "(version 1)",
+        "(allow default)",
+        "(deny network-outbound (require-all (remote ip) (require-not (remote ip \"localhost:*\"))))"
+      ],
+      "externalProbe": {
+        "classification": "ambiguous",
+        "destination": "1.1.1.1:443",
+        "curlExitCode": 7,
+        "responseBody": false,
+        "observedResult": "connection failed after 0 ms under the combined boundaries",
+        "denyingLayer": "ambiguous"
+      },
+      "boundaryDenialReport": {
+        "classification": "not found",
+        "value": "sandbox-exec emitted no diagnostic; stderr contained only curl's failed-connect message"
+      },
+      "localhostProbeAfterLaunch": {
+        "classification": "observed",
+        "listenerVerified": true,
+        "curlExitCode": 7,
+        "result": "connection failed under v1"
+      }
+    },
+    "correctedBoundary": {
+      "classification": "observed",
+      "usedForRunner": false,
+      "profileSha256": "b61210f848c24197b79ceb22e455bd688008bf77abd7e415908e5fdbacfb5d75",
+      "safeProfileClauses": [
+        "(version 1)",
+        "(allow default)",
+        "(deny network-outbound)",
+        "(allow network-outbound (remote ip \"localhost:*\"))"
+      ],
+      "localhostProbe": {
+        "listener": "127.0.0.1:12349",
+        "listenerVerified": true,
+        "httpStatus": 200,
+        "curlExitCode": 0
+      },
+      "externalProbe": {
+        "classification": "ambiguous",
+        "destination": "1.1.1.1:443",
+        "curlExitCode": 7,
+        "responseBody": false,
+        "observedResult": "connection failed after 0 ms under the combined boundaries",
+        "denyingLayer": "ambiguous",
+        "boundaryDenialReport": {
+          "classification": "not found",
+          "value": "sandbox-exec emitted no diagnostic; stderr contained only curl's failed-connect message"
+        }
+      },
+      "localhostABConclusion": {
+        "classification": "observed",
+        "value": "v1 failed and v3 succeeded against separately verified loopback listeners under the same combined environment"
+      },
+      "deprecation": {
+        "classification": "documented locally",
+        "value": "sandbox-exec is deprecated"
+      }
+    },
+    "settings": {
+      "officialConnectivityStatement": {
+        "classification": "documented officially",
+        "source": "https://lmstudio.ai/docs/app/offline",
+        "value": "downloaded-model inference and local serving need no connectivity; search, downloads, runtime downloads, and update checks do"
+      },
+      "keyNameInspection": {
+        "classification": "observed",
+        "valuesRead": false,
+        "matchedCategories": ["update", "download", "JIT", "credential"],
+        "noMatchingKeyNames": [
+          "telemetry",
+          "analytics",
+          "privacy",
+          "offline",
+          "diagnostic"
+        ]
+      },
+      "effectiveValues": {
+        "classification": "ambiguous",
+        "value": "not read under work-order authority"
+      }
+    },
+    "processSocketSnapshot": {
+      "classification": "blocked",
+      "duringGeneration": false,
+      "observedSockets": [],
+      "reason": "generation never began; the runner had exited before the post-launch process snapshot"
+    },
+    "survivingRunnerSocketObservation": {
+      "classification": "observed",
+      "runnerProcessCount": 0,
+      "claim": "no runner survived to expose a socket at the post-launch instant"
+    },
+    "claimLimit": "Proves that both external test connections failed under their combined boundaries and that v1 failed while v3 succeeded against verified loopback listeners. It does not identify the layer that prevented external access, prove v3's egress rule independently, or establish a successful no-provider-content generation, general absence of network effects, telemetry behavior, filesystem confinement, or unbounded GUI behavior."
+  },
+  "capabilityRowProposal": {
+    "classification": "observed",
+    "capabilityRef": "runtime.local-inference",
+    "currentLevel": "0 — latent",
+    "targetLevel": "1 — demonstrable",
+    "efficiencyLevel": "E0 — unknown",
+    "baselineRef": "WO-027 blocked LM Studio 0.4.13+1 launch; n=0 verified outcomes",
+    "evidence": [
+      "installed runner shape",
+      "pinned artifact digest",
+      "reproduced crash",
+      "observed v1-to-v3 loopback behavior without the runner"
+    ],
+    "blockingGate": "no end-to-end completion, determinism triple, during-generation socket snapshot, or attributable non-local-egress evidence during a runner run",
+    "nextExperiment": "after the named defer condition, run one service lifetime under a boundary with independently attributable loopback and egress behavior and issue the fixed three-request smoke",
+    "capabilityTableEdited": false,
+    "capabilityTableGitObject": "02d8937c4d8b5396e4595dbb72ebf00245ef8935"
+  },
+  "decisionPacket": {
+    "classification": "observed",
+    "disposition": "defer under a named condition",
+    "reason": "the installed runner crashes on service wake and yielded no model load, completion, determinism, cost, or during-generation socket evidence",
+    "evidenceRefs": [
+      "launch transcript",
+      "2026-09-03T03:00:32-04:00 crash diagnostic",
+      "n=0 generation",
+      "v1 failed against a verified loopback listener",
+      "v3 succeeded against a verified loopback listener",
+      "external test connections failed with ambiguous denying layer"
+    ],
+    "namedCondition": "an installed LM Studio service shape no longer crashes, or another headless runner is installed, and it completes the fixed three-request smoke under a boundary that permits local control while denying non-local egress",
+    "reevaluationCadence": "on runner install or operator-chosen LM Studio upgrade/fix; otherwise quarterly",
+    "reversalCondition": "file calibration only after observed load time, first-token latency, throughput, three byte-comparable outputs, and a during-generation socket snapshot under a boundary with independently attributable egress behavior",
+    "estimatedHundredRunCost": {
+      "classification": "blocked",
+      "value": null,
+      "reason": "no verified resource/outcome sample"
+    },
+    "calibrationEvaluatorsIfReversed": [
+      "coherence",
+      "instruction-following",
+      "diversity",
+      "role behavior",
+      "mechanic participation",
+      "resource vector"
+    ],
+    "hybridLocalFirstCell": "preserved until a calibration order exists"
+  },
+  "containment": {
+    "classification": "observed",
+    "preProbeStatus": [
+      " M docs/control/current.md",
+      " M docs/control/resume.jsonl",
+      " M docs/work-orders/WO-027-local-inference-probe.md"
+    ],
+    "postProbeStatus": [
+      " M docs/control/current.md",
+      " M docs/control/resume.jsonl",
+      " M docs/work-orders/WO-027-local-inference-probe.md"
+    ],
+    "pairIdentical": true,
+    "probeTrackedChanges": [],
+    "scratchPathClass": "OS temporary root / dotln-wo027-probe.<random>",
+    "scratchContents": [
+      "boundary profiles and validation output",
+      "sanitized process and port observations",
+      "single lms launch transcript",
+      "prepared but unsent load and generation requests",
+      "disposable exact-tree test mirror linked to a pre-existing locked dependency tree"
+    ],
+    "runnerResidue": {
+      "classification": "observed",
+      "pathClass": "runner internal application-data root / service PID lock",
+      "contentShape": "decimal PID",
+      "referencedProcessAlive": false,
+      "disposition": "left unchanged"
+    },
+    "downloadedArtifacts": [],
+    "forbiddenSurfaceChanges": []
+  },
+  "verification": {
+    "classification": "observed",
+    "dependencyInstallPerformed": false,
+    "worktreeAttempt": {
+      "classification": "blocked",
+      "value": "all formatter and script fixtures passed; TypeScript stopped because this worktree had no installed @types/node"
+    },
+    "temporaryExactTreeMirror": {
+      "classification": "observed",
+      "dependencySource": "pre-existing lockfile-resolved dependency tree in the sibling main worktree",
+      "npmTestPassed": true,
+      "compiledTestCount": 78,
+      "failedTestCount": 0
+    },
+    "diffCheckPassed": true,
+    "jsonParsed": true,
+    "labelsMatchEnvironmentJson": true,
+    "capabilityTableMatchesMain": true
+  },
+  "sources": [
+    {
+      "classification": "documented officially",
+      "url": "https://lmstudio.ai/docs/cli/serve/server-start"
+    },
+    {
+      "classification": "documented officially",
+      "url": "https://lmstudio.ai/docs/app/basics/lmstudio-vs-llmster-vs-lms"
+    },
+    {
+      "classification": "documented officially",
+      "url": "https://lmstudio.ai/docs/app/advanced/prompt-template"
+    },
+    {
+      "classification": "documented officially",
+      "url": "https://lmstudio.ai/docs/app/offline"
+    },
+    {
+      "classification": "documented officially",
+      "url": "https://beta.lmstudio.ai/docs/developer/openai-compat/chat-completions"
+    },
+    {
+      "classification": "documented officially",
+      "url": "https://huggingface.co/lmstudio-community/dolphin-2.8-mistral-7b-v02-GGUF"
+    },
+    {
+      "classification": "documented officially",
+      "url": "https://docs.ollama.com/cli"
+    },
+    {
+      "classification": "documented officially",
+      "url": "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md"
+    },
+    {
+      "classification": "documented officially",
+      "url": "https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/SERVER.md"
+    }
+  ]
+}

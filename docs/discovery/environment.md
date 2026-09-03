@@ -156,6 +156,12 @@ review pass:
    integration gate now claim exactly what the evidence supports; the Codex
    smoke row is unchanged — its denial by the sandbox was directly observed.
 
+WO-027 added a separately scoped local-inference observation on 2026-09-03;
+it does not rewrite this historical machine audit. The
+[local-inference packet](local-inference.md) records the installed runner,
+pinned artifact, one blocked service launch, bounded no-egress evidence, and
+the deferred calibration decision with the same evidence-label vocabulary.
+
 Gaps identified in the same pass and deliberately **not** closed here, so a
 later work order can scope them:
 

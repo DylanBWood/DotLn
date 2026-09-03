@@ -1,0 +1,28 @@
+## Release overview
+
+Local inference now has pinned capability truth instead of an assumption. A bounded probe recorded which runner is installed on the operator's machine, which model artifact is pinned by byte size and digest, what the single permitted service launch did, what the no-egress evidence proves and does not prove, and a dated decision that defers the local-inference calibration experiment under a named condition. Every claim carries one label from the environment-discovery vocabulary, and unknown is recorded as unknown. Audience: the planner deciding whether to file the calibration order, readers of the proposed `runtime.local-inference` capability row, and whoever runs the next probe. This is discovery evidence only, classified `v0.3.3` on the honest no-release path below the published `v0.3.4`; no exported runtime capability changes, and these notes ride the next release tag that contains the work.
+
+## Read before upgrading
+
+- **Nothing to upgrade.** No code, script, dependency, schema, or configuration changes; `packages/`, `scripts/`, `package.json`, and the lockfile are byte-identical to the previous release.
+- **Every `lms` invocation is a process launch.** On a connection miss the LM Studio CLI wakes the desktop service and passes `--run-as-service`; `lms ls`, `lms ps`, and `lms status` are not read-only inventory commands. On this machine at LM Studio `0.4.13+1` that wake crashed three times on 2026-09-03. Treat each invocation as a launch that may open a desktop window.
+- **A harness sandbox is not automatically a no-egress boundary.** The Claude Code sandboxed-Bash boundary permitted outbound HTTPS in the verifier's and reviewer's sessions. Prove a boundary's egress behavior first-hand before relying on a socket snapshot taken inside it.
+- **The capability table is unchanged.** The `runtime.local-inference` row is a proposal inside the discovery packet; the pinned table refreshes as its own reviewed act.
+
+## Substantive changes
+
+- **Discovery.** `docs/discovery/local-inference.md` and `local-inference.json` (schema `0.1.0`) record the eight-item probe: LM Studio `0.4.13+1` observed and Ollama, standalone llama.cpp, and MLX LM not found; coarse hardware (Apple M3 Max, 16 cores, 48 GB) with runner-reported and thermal readings blocked; an existing 7B Q8_0 GGUF pinned by size, SHA-256, license, embedded ChatML template, and context length, with the fixed decoding request recorded as untested; the sole `lms server start` launch blocked at exit 1 with the operating-system crash report as the runner's diagnostic and `n=0` for every latency, throughput, cost, and determinism sample; a no-egress record naming the outer boundary, the nested profile, the method, the empty socket set, and the limit of the claim; the proposed capability row at maturity 0 and efficiency E0; and the decision packet.
+- **Decision.** The calibration order is deferred under a named condition: an installed runner service no longer crashes on wake, or another headless runner is installed, and it completes the fixed three-request smoke under a boundary that permits local control while denying non-local egress, with deterministic-output and during-generation socket evidence. Reevaluation is event-driven on a runner install or operator-chosen fix, otherwise quarterly. The hybrid local-first cell remains preserved until a calibration order exists.
+- **Roadmap and environment discovery.** The counterfactual-profiling section carries the dated discharge note with the probe's outcome and the disposition; the environment audit's corrections section points to the packet without rewriting the historical audit.
+- **Lineage and planning.** The ledger records three adopted items (pinned capability truth, the deferred calibration, and the corrected profile's loopback result as next-probe evidence rather than retroactive egress evidence) and one preserved item (the hybrid cell); the work-order map records the order's state and disposition.
+
+## Progressive polish
+
+- The `docs/` map line for `docs/discovery/` now names the labeled audit outputs and the local-inference packet.
+
+## Evidence and compatibility
+
+- Source: the reviewed `wo-027` branch merged into `main` above `v0.3.4`, with no tag of its own; the exact commit appears in the next annotated tag that contains it.
+- Verification: `docs/verifications/WO-027/VER-001.md` (pass; all seven criteria first-hand, sixteen claims re-observed, the intake overlap screen run) and `docs/final-reviews/WO-027/FINAL-001.md` (pass; evidence re-established first-hand including the artifact re-hash, the crash-report fields, the profile digests, the vendor URLs, and two full `npm test` runs in a byte-identical mirror).
+- Compatibility: control-log schema 1, the tag-manifest schema, kernel schemas, and all package versions (`@dotln/kernel` `0.1.0`, `@dotln/skeleton` `0.3.0`) are unchanged; no dependency was added; `npm test` reports 78 of 78 node tests and every shell suite green; `git diff --check` is clean; the pinned capability table is byte-identical to `main`.
+- Known limitations: zero model loads and zero generations, so no latency, throughput, cost, or determinism value exists; the crash's cause is ambiguous between a runner defect and the nested sandbox profile, and eighteen helper aborts preceded the main-process report; the layer that denied the external test connections is unidentified; the corrected profile was tested without the runner; the corrected profile's digest covers bytes the packet does not print; the runner modified its own application data on wake beyond the disclosed PID lock; `sandbox-exec` is deprecated and is a dated probe boundary, not a product mechanism.

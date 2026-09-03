@@ -23,8 +23,8 @@ docs/final-reviews/ immutable numbered closeout reports and PR handoffs
 docs/control/       append-only resume log and generated current-state projection
 docs/releases/     historical v0.2.0 records + forward tag-manifest template;
                    later immutable manifests/notes live in annotated tags
-docs/discovery/    machine-audit outputs and runtime target maps (WO-001 and
-                   later discovery passes)
+docs/discovery/    labeled machine-audit outputs, runtime target maps, and the
+                   bounded local-inference capability packet
 ```
 
 Pipeline status: founding intake ingested and synthesized (2026-08-30). The
