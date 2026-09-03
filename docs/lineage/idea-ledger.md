@@ -23,6 +23,41 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-027 bounded local-inference probe (2026-09-03)
+
+Source: WO-027's public work-order authority, public vendor documentation, and
+sanitized observations of the personal machine. No intake material was
+promoted, no model artifact was downloaded, and the clean-room screen found no
+employer, credential, internal-service, or other stop condition.
+
+- **Local inference now has pinned capability truth, not a claimed runtime
+  integration** `adopted`
+  - The probe observed LM Studio `0.4.13+1`, pinned an existing 7B Q8_0 GGUF by
+    byte size and SHA-256, and proposed `runtime.local-inference` at maturity
+    level 0 / E0. The sole permitted service launch crashed before readiness,
+    so there were zero load or generation outcomes and the pinned capability
+    table did not change.
+- **The calibration order is deferred under a named condition** `adopted`
+  - Filing a 100-run calibration with no verified completion would be Naive
+    Interventionism. Reconsider after an available runner completes the fixed
+    three-request smoke under a boundary that permits localhost while denying
+    non-local egress, including deterministic-output and during-generation
+    socket evidence. Reevaluate on a runner install or operator-chosen fix, and
+    otherwise quarterly.
+- **The corrected profile's loopback result is evidence for the next probe,
+  not retroactive egress evidence about the failed runner launch** `adopted`
+  - The actual launch profile failed against a verified loopback listener. A
+    later disposable self-test reached loopback under a corrected profile, but
+    external requests in both tests ran under combined boundaries and emitted
+    no boundary diagnostic, so the denying layer remains ambiguous. LM Studio
+    was not relaunched; crash causality and runner behavior under the corrected
+    profile remain ambiguous too.
+- **The hybrid local-first calibration cell remains available** `preserved`
+  - Deterministic parsing followed by local derivation and an approved remote
+    capsule is still a candidate alongside deterministic-only, local-only, and
+    direct-remote cells. It is not scheduled until the named condition makes a
+    calibration order evidence-bearing.
+
 ## 2026-09-03 primitives-and-data planning (operator-dispatched, after the `v0.3.4` close)
 
 Source: the operator's 2026-09-03 planning dispatch after the `v0.3.4` release

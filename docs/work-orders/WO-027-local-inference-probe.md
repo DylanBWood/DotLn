@@ -1,12 +1,16 @@
-# WO-027 — Local inference probe: runner inventory, pinned artifact, no-egress evidence, and the calibration decision (version assigned at activation)
+# WO-027 — Local inference probe: runner inventory, pinned artifact, no-egress evidence, and the calibration decision, v0.3.3
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Expected
-class: the honest no-release path (a version strictly below the latest
-published tag). Discovery evidence only; no exported runtime capability and no
-change under `packages/` or `scripts/`.
+**Release classification:** `v0.3.3`, the honest no-release path strictly below
+the latest published `v0.3.4` tag. Discovery evidence only; no exported runtime
+capability and no change under `packages/` or `scripts/`. Activation on
+2026-09-03 accidentally retained the planner placeholder in this heading and
+paragraph. The executor forward-corrected that preflight miss under explicit
+operator authority without replaying or editing the append-only activation
+event. Closeout remains subject to independent verification, final review,
+operator merge, and the separately authorized release-close transition.
 **Nomination provenance:** the ledger's 2026-09-02 entry "Local inference is a
 first-class runtime target behind capability truth" and 06-roadmap.md
 §Counterfactual profiling work orders, which instructed the next planning pass
@@ -69,10 +73,14 @@ never inherit):**
   `lms` invocation as a process launch and records that crash as its first
   observation instead of repeating it blind.
 
-**Authority:** read-only inspection plus writes under `docs/discovery/` and
-this order's own ignored scratch root. Exactly one runner launch per runner
-shape and one bounded smoke generation per launched runner, performed only with
-the operator present because the runner may open a desktop window. A
+**Authority:** read-only inspection plus writes under `docs/discovery/`, this
+order's own scratch root outside the repository, and the exact roadmap,
+environment, documentation-map, ledger, planning-map, and work-order write-back
+surfaces named below. The operator confirmed this explicit write-back list as
+authority on 2026-09-03 while correcting the activation preflight miss. Exactly
+one runner launch per runner shape and one bounded smoke generation per launched
+runner, performed only with the operator present because the runner may open a
+desktop window. A
 model-artifact download is permitted only when the operator authorizes the
 exact artifact (publisher, file, quantization, byte size, digest) before the
 fetch; record that authorization in the discovery doc. No package installation

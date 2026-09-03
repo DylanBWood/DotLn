@@ -496,6 +496,18 @@ deliberately unfiled until WO-027's decision packet names its disposition;
 filing it before determinism, cost, and egress are observed would be the naive
 intervention this section warns against.
 
+WO-027 completed that bounded probe on 2026-09-03 and chose **defer under a
+named condition**. It pinned an existing 7B Q8_0 GGUF without downloading,
+reproduced the installed LM Studio service-wake crash on its sole permitted
+launch, and therefore recorded `n=0` load and generation outcomes. External
+connections failed under the combined outer and nested boundaries, but no
+boundary diagnostic identified the denying layer. A later profile did permit a
+verified loopback request and was not used to relaunch the runner. The
+calibration order remains unfiled until an available runner completes the fixed
+three-request smoke under a boundary with independently attributable egress
+behavior, including deterministic-output and during-generation socket
+evidence. See the [dated discovery packet](../discovery/local-inference.md).
+
 That probe should leave room for a hybrid local-first cell: deterministic
 parsing, then local tagging/association and candidate WorkOrder/context-capsule
 derivation, followed by a remote planning or coding episode that receives only
