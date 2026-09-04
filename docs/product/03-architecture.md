@@ -639,6 +639,41 @@ declared inputs; adapter evidence proves the effectful invocation; an outer
 capability boundary and independent evidence are still required to rule out
 undeclared side effects when an implementation makes that negative claim.
 
+### Candidate — pinned artifact identity
+
+The author's personal implementation should close the smallest missing half of
+that receipt before its first out-of-process worker. A successful equip records
+a `payloadVersion: 2` equip shape and schema-v1 artifact identity in the
+append-only log: the compiler contract and package versions, the existing
+whole-program semantic hash, and separate, domain-labeled definition hashes
+correlated by each participating manifest entry's `(componentKind,
+componentId, version)` tuple. Later decisions that consume a recompiled program
+compare against the pin and either reference it in their durable trace or fail
+closed with a typed refusal. Historical payloads without the discriminator
+remain replayable and visibly `unavailable`. Before extending such a log, the
+host appends an idempotent `ArtifactIdentityEnforcementStarted` boundary; past
+that boundary an unavailable state refuses program consumption until a v2
+re-equip. A compiler diagnostic becomes evidence rather than an exception
+escaping replay.
+
+The two identities answer different questions. `semanticHash` remains equality
+of normalized compiled behavior. A component definition hash identifies the
+normalized source definition that participated and stays outside that semantic
+preimage, so otherwise inert source metadata does not silently become runtime
+semantics. Both may use the existing FNV-1a implementation with independent
+cross-check vectors, but neither is a signature, a uniqueness guarantee, an
+authenticity proof, or protection against a writer who can replace both source
+and pin.
+
+This is an optional platform mechanism equipped by the author's profile, not a
+checkpoint every DotLn core must impose. Per-effect or per-pulse component
+submission, membership proofs, Merkle structures, and signing wait for a real
+submitter and trust boundary: the first out-of-process worker can echo the
+whole-program pin, while a non-author build or external principal would supply
+the evidence needed to decide whether key ownership is worth its cost. WO-029
+owns the bounded pin-and-compare slice; it must not claim those deferred
+assurances.
+
 The author's Clean Room is the first explicit source-promotion active built from
 this shape. Its employer/secret boundary compiles as a locked safety guard
 inside that mechanic and is mandatory for this repository, while linked
@@ -676,6 +711,24 @@ small high-signal remainder—the operator's “pearls”—and proposes which
 candidates deserve implementation. The role occupant is selected by the current
 operating model; model assignment remains replaceable and is never embedded in
 the semantic record.
+
+### First live Entropy Reducer use
+
+WO-023 ran the first compiled Entropy Reducer as a read-only implementation
+review over a frozen scratch subject. The pinned Fable reviewer returned seven
+findings and one non-authoritative proposal payload; a fresh blinded Fable
+episode received only finding IDs and reproduction commands or inspection
+steps, and all seven findings survived. The implementation repaired them before
+requesting independent lifecycle verification. The tracked repository and
+control status were byte-identical across both episodes, and the only scratch
+delta was ignored build output from the review episode.
+
+The proposal payload was retained in the run receipt but not filed: review and
+refutation had no proposal-promotion authority. WO-029 reached
+`docs/work-orders/` only because the operator separately opened ideation and
+explicitly authorized a direct draft during WO-023. That direct-to-work-order
+path is a recorded bootstrap exception, not reviewer self-promotion and not the
+normal proposal pipeline.
 
 The candidate Snooping Footprint Reducer is one recurring producer for this
 pipeline. It inventories observation and retention structurally, emits
@@ -776,11 +829,11 @@ changes.
   | #   | Injection                                     | Expected outcome                                                                                                                                                                                                                                                                          | Required by |
   | --- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
   | 1   | Crash after command persist, before dispatch  | Restart finds the pending command via replay and re-dispatches; no duplicate effects (adapter dedups by commandId). If a reordered log presents its result before its persist, replay retains the orphan result and completes on persist with `result / preceded-persist`, never pending. | v0.1.0      |
-  | 2   | Crash after effect, before result persist     | Command remains pending; recovery re-queries or re-dispatches idempotently; never double-applies                                                                                                                                                                                          | v0.5.0      |
+  | 2   | Crash after effect, before result persist     | Command remains pending; recovery re-queries or re-dispatches idempotently; never double-applies                                                                                                                                                                                          | WO-009      |
   | 3   | Duplicate result event                        | Second delivery ignored deterministically (commandId); state unchanged; trace records the dedup                                                                                                                                                                                           | v0.1.0      |
-  | 4   | Result after authority expiry                 | Event is persisted (it happened); reactor decides quarantine/NoOp with trace naming the expired envelope; payload causes no state mutation                                                                                                                                                | v0.5.0      |
+  | 4   | Result after authority expiry                 | Event is persisted (it happened); reactor decides quarantine/NoOp with trace naming the expired envelope; payload causes no state mutation                                                                                                                                                | WO-009      |
   | 5   | Operator-return racing a queued cadence pulse | The already-queued pulse is processed, but its guard re-evaluates presence and decides NoOp-with-trace; future pulses cancel                                                                                                                                                              | v0.1.0      |
-  | 6   | Interruption mid-episode (network loss, kill) | Lease expires; continuation + work order recoverable; a fresh episode resumes or a recovery episode inspects                                                                                                                                                                              | v0.5.0      |
+  | 6   | Interruption mid-episode (network loss, kill) | Lease expires; continuation + work order recoverable; a fresh episode resumes or a recovery episode inspects                                                                                                                                                                              | WO-009      |
 
   Without these, "offline-capable" is a slogan.
 
@@ -790,7 +843,7 @@ changes.
   Decision _declares_ the NoOp-with-trace and the future schedule ids to cancel.
   Like every kernel Decision it performs nothing: queue ownership, event-sourced
   presence (`OperatorPresenceChanged` folded into state), and executed
-  cancellation belong to the scheduler runtime that arrives at v0.5.0 with rows
+  cancellation belong to the scheduler runtime that arrives with WO-009 and rows
   2/4/6.
 
 **Perception cost hierarchy** (distinct from Principle 6's evidence-strength
@@ -843,6 +896,23 @@ text, never the default channel for state you own in structured form.
   equipped authority gates still control dispatch. Derived metadata remains
   sensitive and provenance-bearing; a downstream request for more context
   creates another visible input edge rather than widening disclosure silently.
+  **Candidate — source-addressed context projections.** A future transport may
+  lower a WorkOrder into a neutral, pure `ContextProjectionPlan` over an
+  explicit ordered section plan, already-loaded source bytes, the compiled
+  role/loadout/authority, a runtime profile, and a declared budget. Its output
+  names required, selected, and omitted references; exact byte/word counts;
+  source and transform versions; capability lost by omission; and visible
+  expansion handles. The objective, acceptance criteria, applicable settled
+  decisions, constraints, non-goals, authority, required evidence, and output
+  contract fail closed when they cannot fit; no hidden retrieval,
+  summarizer, or tokenizer is smuggled into the word _pure_. The effectful host
+  resolves files and records the exact bytes sent. A table of contents is the
+  cheap source index for this selector, not a substitute for the selection and
+  receipt boundary. Stable blocks may later be materialized while task-specific
+  expansion stays on demand; JIT/AOT remains compatibility vocabulary. No new
+  work order is warranted before a real WorkOrderTransport supplies context
+  limits, serialization/tokenizer evidence, and a measured selective-reading
+  failure or cost.
 - **External target binding**: source and effect adapters expose a versioned,
   inspectable URL-builder contract and operation class without persisting the
   resolved target. Base URLs, tenant/workspace identifiers, route/query values,

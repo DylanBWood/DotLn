@@ -268,9 +268,11 @@ emitted in `CompiledProgramV1.effectiveClaims`. A target beginning
 `authority.` names the remaining effect id and accepts only `allow` or `deny`;
 the winner rewrites the emitted AuthorityEnvelope and corresponding WorkOrder
 operation lists so trace and runtime authorization cannot disagree. This
-bounded compiler accepts exact effect/operation names only; wildcard patterns
-remain typed but reject as unsupported until precedence can preserve safe
-exceptions through them.
+bounded compiler also accepts direct terminal prefix globs only when no linked
+`authority.*` claim participates. Participating wildcard claim targets and
+mixed wildcard/participating-authority-claim graphs reject until precedence can
+preserve safe exceptions through broader patterns; unequipped catalog
+definitions remain inert.
 
 The remaining graph nodes are also explicit data. `AmbientEffectV1` carries an
 id/version/name, scope, reservation-cost record, and emissions.

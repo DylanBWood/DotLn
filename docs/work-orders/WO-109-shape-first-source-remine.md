@@ -43,9 +43,10 @@ material with the additions below), §Discipline, and §Model-specific notes;
 11-proteino.md §Shape before machinery; `CLAUDE.md` §Clean-room boundary,
 including the terms that must not re-enter;
 `docs/lineage/idea-ledger.md` §Resolutions of known tensions and the "Scrub
-001" entry as scrub precedent; 06-roadmap.md v0.7.0 (WO-011's ten units are
-fixed), v0.9.0, and §Capability progression policies ("Do Nothing remains a
-valid result").
+001" entry as scrub precedent; 06-roadmap.md §Application version pending —
+Feedback compiler (WO-011's ten units are fixed), §Application version pending
+— Pattern workshop, and §Capability progression policies ("Do Nothing remains
+a valid result").
 
 **Objective:** Establish re-mining as a durable, bounded practice and finish
 its first pilot draw. A draw revisits a declared subset of raw chats, notes, and
@@ -170,8 +171,9 @@ census and a continuation and does not claim its coverage criteria.
    proposal for the decision process, never a rewrite.
 4. **Routing:** for each rule-bearing finding, one line naming the cheapest
    sufficient rung of the 02 §Feedback mechanism hierarchy, the plausible
-   rejected rung, and the consumer (WO-008 compiler, v0.9.0 pattern workshop,
-   `προτείνω`, or prose-only guidance). At most three findings in the pilot
+   rejected rung, and the consumer (WO-008 compiler, the
+   application-version-pending pattern-workshop rung, `προτείνω`, or prose-only
+   guidance). At most three findings in the pilot
    receive a full candidate record (source stratum, carried shape, chosen and
    rejected mechanic kinds, scope, activation and expiry, authority effect,
    observable success and failure, evidence needed, lowering losses, promotion

@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.4.0
+# `@dotln/skeleton` 0.5.0
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on
@@ -17,6 +17,13 @@ supports emit the bounded WorkOrder, permission guard, evidence schema,
 absent-only cadence/statechart guard, and verifier episode with declared cost.
 The component remains `0.4.0` for application release `v0.4.1`; only its exact
 `@dotln/kernel` dependency advances to `0.2.1`, and no skeleton source changes.
+Component `0.5.0` is staged for application release `v0.5.0`: the host compiles
+the Entropy Reducer identity, planning-reviewer role, Shine active, Standardize
+link, seven additional supports, tracked/control-plane-read-only wildcard
+authority with bounded scratch and intake-capture writes, once cadence, typed
+manual Program, output/refutation validators, and generated residue. The
+review is operator-mediated because kernel `Program.All` remains deferred; no
+model transport was added.
 
 The deterministic Repo Gardener + Seiri vertical. It compiles a typed
 `LoadoutGraph` into a bounded `WorkOrder` and related runtime mechanisms, runs
@@ -88,6 +95,10 @@ and require byte-identical output over the live log, its re-encoded form, and
 an independently re-run scenario log.
 
 The v1 graph, support, link, normalization, and semantic-hash shapes are pinned
-in `@dotln/compiler`; compile semantics remain intentionally bounded to Seiri.
+in `@dotln/compiler`. Compile semantics remain deliberately bounded, but now
+cover both Seiri and the claim-free terminal prefix globs used by the Entropy
+Reducer; participating wildcard claim targets and mixed
+wildcard/participating-authority-claim graphs still refuse, while unequipped
+catalog definitions remain inert.
 The fake adapter deduplicates by the kernel-generated command id so crash
 recovery can safely re-dispatch pending outbox commands.

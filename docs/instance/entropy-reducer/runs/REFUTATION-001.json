@@ -1,0 +1,688 @@
+{
+  "schemaVersion": 1,
+  "kind": "EntropyReducerRefutationRun",
+  "phase": "fresh blinded refutation",
+  "episodeId": "ep_entropy_refutation_20260904_001",
+  "sourceReviewEpisodeId": "ep_entropy_reducer_20260904_001",
+  "startedAt": "2026-09-04T17:23:36.370Z",
+  "endedAt": "2026-09-04T17:36:03.000Z",
+  "actorAttestation": {
+    "harness": "claude-code",
+    "harnessVersion": "2.1.260 (Claude Code)",
+    "model": "claude-fable-5-1",
+    "effort": "max",
+    "source": "command-line-readback-and-invocation",
+    "restricted": true,
+    "safeMode": true,
+    "sessionPersistence": false,
+    "promptSuggestions": false,
+    "schemaSha256": "40366d48c686145ca63af1b1825de1dd6d895af24711a793e8d158722bb45319"
+  },
+  "blinding": {
+    "included": ["findingId", "measured command", "inspection steps"],
+    "excluded": [
+      "observed",
+      "expected",
+      "severity",
+      "surface",
+      "first-review evidenceRefs",
+      "proposals",
+      "result summary"
+    ],
+    "subjects": {
+      "measured": [
+        {
+          "findingId": "ER-001",
+          "command": "grep -n -E \"v0\\.(5|7|9)\\.0|scenario\\.ts\" docs/work-orders/WO-105-crash-shape-corpus.md docs/work-orders/WO-109-shape-first-source-remine.md docs/work-orders/WO-023-compile-entropy-reducer.md"
+        }
+      ],
+      "inspection": [
+        {
+          "findingId": "ER-002",
+          "steps": [
+            "Run: grep -n -E \"Sustain|residue as (a )?projection|compiled loadout\" docs/lineage/idea-ledger.md and confirm no WO-023 adoption entry exists among the new sections at lines 26-152",
+            "Run: grep -n -E \"Entropy Reducer|WO-023|bootstrap exception|first live use\" docs/product/03-architecture.md and observe no matches",
+            "Compare both results with the five write-back items listed at docs/work-orders/WO-023-compile-entropy-reducer.md:202-209"
+          ]
+        },
+        {
+          "findingId": "ER-003",
+          "steps": [
+            "Open docs/publication/audience-status-index.md and compare the status column of lines 151, 152 and 153",
+            "Open docs/control/current.md lines 17-24 and confirm WO-023 is active with no verification or final review recorded",
+            "Run: git ls-files docs/instance and compare the two listed files with the description at docs/README.md:30-31"
+          ]
+        },
+        {
+          "findingId": "ER-004",
+          "steps": [
+            "Read validateLensFileScope at packages/skeleton/src/loadouts/entropy-reducer.ts:1111-1128",
+            "Trace the string 'docs//intake/' through each condition: split('/') yields ['docs','','intake',''], no segment is '.' or '..', the string is neither 'docs/intake' nor prefixed by 'docs/intake/', so no OutputValidationError is thrown",
+            "Confirm the AC4 negative cases at packages/skeleton/test/entropy-reducer.test.ts:560-570 do not include a repeated-separator or case variant",
+            "Optional after npm run build, where the harness permits inline node: node --input-type=module -e \"import { validateLensBrief, entropyReducerLensBriefs } from './packages/skeleton/dist/src/loadouts/entropy-reducer.js'; console.log(validateLensBrief({ ...entropyReducerLensBriefs[0], files: ['docs//intake/'] }).files);\" prints the scope instead of throwing"
+          ]
+        },
+        {
+          "findingId": "ER-005",
+          "steps": [
+            "Open packages/skeleton/src/loadouts/entropy-reducer.ts:472-491 and note maxWordCountExclusive at line 488 alongside standard keywords",
+            "Open lines 1598-1602 and confirm the 200-word rule exists only in validateResultEnvelope",
+            "Compare the regex at line 437 with the regex at line 1452",
+            "Search packages/skeleton/test for any assertion that reads reviewerOutputContract.required or .properties and compares them to validator behavior; none exists"
+          ]
+        },
+        {
+          "findingId": "ER-006",
+          "steps": [
+            "Read docs/product/04-interfaces.md:66-71 and note that every executable field of the compiled program participates in the hash",
+            "Read packages/compiler/src/compile.ts:809-810 and packages/compiler/src/normalize.ts:174 to confirm repo, baseCommit and expiresAt are in the normalized program",
+            "Read packages/skeleton/src/loadouts/entropy-reducer.ts:911-919 and :1014-1027 to confirm expiresAt equals episodeEndsAt and that the returned artifact omits the compile options",
+            "Confirm the episode's dispatch record states repo and base commit but no episodeEndsAt or dispatchedAt"
+          ]
+        },
+        {
+          "findingId": "ER-007",
+          "steps": [
+            "Read renderEntropyReducerResidue at packages/skeleton/src/loadouts/entropy-reducer.ts:2008-2059 and list which graph fields appear in the output: identity name/id/version, role name/id/version, active name, masks, supports",
+            "Confirm identity.dispositions and identity.invariants (799-814), role.obligations (830-834) and the active's semantics (868-872) do not appear",
+            "Confirm the paragraphs at lines 2041, 2043, 2045 and 2056 are literals rather than data-derived text",
+            "Confirm packages/skeleton/test/entropy-reducer-artifacts.test.ts:73-160 mutates only supportFacets"
+          ]
+        }
+      ]
+    }
+  },
+  "selection": {
+    "measuredDenominator": 1,
+    "measuredStatus": "selected",
+    "inspectionDenominator": 6,
+    "inspectionStatus": "all",
+    "inspectionSampleSize": 6,
+    "selectionRule": "every measured finding and every by-inspection finding",
+    "measuredSubjects": [
+      {
+        "findingId": "ER-001",
+        "command": "grep -n -E \"v0\\.(5|7|9)\\.0|scenario\\.ts\" docs/work-orders/WO-105-crash-shape-corpus.md docs/work-orders/WO-109-shape-first-source-remine.md docs/work-orders/WO-023-compile-entropy-reducer.md"
+      }
+    ],
+    "inspectionSubjects": [
+      {
+        "findingId": "ER-002",
+        "steps": [
+          "Run: grep -n -E \"Sustain|residue as (a )?projection|compiled loadout\" docs/lineage/idea-ledger.md and confirm no WO-023 adoption entry exists among the new sections at lines 26-152",
+          "Run: grep -n -E \"Entropy Reducer|WO-023|bootstrap exception|first live use\" docs/product/03-architecture.md and observe no matches",
+          "Compare both results with the five write-back items listed at docs/work-orders/WO-023-compile-entropy-reducer.md:202-209"
+        ]
+      },
+      {
+        "findingId": "ER-003",
+        "steps": [
+          "Open docs/publication/audience-status-index.md and compare the status column of lines 151, 152 and 153",
+          "Open docs/control/current.md lines 17-24 and confirm WO-023 is active with no verification or final review recorded",
+          "Run: git ls-files docs/instance and compare the two listed files with the description at docs/README.md:30-31"
+        ]
+      },
+      {
+        "findingId": "ER-004",
+        "steps": [
+          "Read validateLensFileScope at packages/skeleton/src/loadouts/entropy-reducer.ts:1111-1128",
+          "Trace the string 'docs//intake/' through each condition: split('/') yields ['docs','','intake',''], no segment is '.' or '..', the string is neither 'docs/intake' nor prefixed by 'docs/intake/', so no OutputValidationError is thrown",
+          "Confirm the AC4 negative cases at packages/skeleton/test/entropy-reducer.test.ts:560-570 do not include a repeated-separator or case variant",
+          "Optional after npm run build, where the harness permits inline node: node --input-type=module -e \"import { validateLensBrief, entropyReducerLensBriefs } from './packages/skeleton/dist/src/loadouts/entropy-reducer.js'; console.log(validateLensBrief({ ...entropyReducerLensBriefs[0], files: ['docs//intake/'] }).files);\" prints the scope instead of throwing"
+        ]
+      },
+      {
+        "findingId": "ER-005",
+        "steps": [
+          "Open packages/skeleton/src/loadouts/entropy-reducer.ts:472-491 and note maxWordCountExclusive at line 488 alongside standard keywords",
+          "Open lines 1598-1602 and confirm the 200-word rule exists only in validateResultEnvelope",
+          "Compare the regex at line 437 with the regex at line 1452",
+          "Search packages/skeleton/test for any assertion that reads reviewerOutputContract.required or .properties and compares them to validator behavior; none exists"
+        ]
+      },
+      {
+        "findingId": "ER-006",
+        "steps": [
+          "Read docs/product/04-interfaces.md:66-71 and note that every executable field of the compiled program participates in the hash",
+          "Read packages/compiler/src/compile.ts:809-810 and packages/compiler/src/normalize.ts:174 to confirm repo, baseCommit and expiresAt are in the normalized program",
+          "Read packages/skeleton/src/loadouts/entropy-reducer.ts:911-919 and :1014-1027 to confirm expiresAt equals episodeEndsAt and that the returned artifact omits the compile options",
+          "Confirm the episode's dispatch record states repo and base commit but no episodeEndsAt or dispatchedAt"
+        ]
+      },
+      {
+        "findingId": "ER-007",
+        "steps": [
+          "Read renderEntropyReducerResidue at packages/skeleton/src/loadouts/entropy-reducer.ts:2008-2059 and list which graph fields appear in the output: identity name/id/version, role name/id/version, active name, masks, supports",
+          "Confirm identity.dispositions and identity.invariants (799-814), role.obligations (830-834) and the active's semantics (868-872) do not appear",
+          "Confirm the paragraphs at lines 2041, 2043, 2045 and 2056 are literals rather than data-derived text",
+          "Confirm packages/skeleton/test/entropy-reducer-artifacts.test.ts:73-160 mutates only supportFacets"
+        ]
+      }
+    ],
+    "selectedFindingIds": [
+      "ER-001",
+      "ER-002",
+      "ER-003",
+      "ER-004",
+      "ER-005",
+      "ER-006",
+      "ER-007"
+    ]
+  },
+  "harnessResult": {
+    "processStatus": 0,
+    "terminalReason": "completed",
+    "subtype": "success",
+    "isError": false,
+    "turns": 54,
+    "durationMs": 745923,
+    "durationApiMs": 746127,
+    "totalCostUsd": 6.2211255,
+    "usage": {
+      "input_tokens": 258,
+      "cache_creation_input_tokens": 141715,
+      "cache_read_input_tokens": 507898,
+      "output_tokens": 65091,
+      "output_tokens_details": {
+        "thinking_tokens": 47745
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 141715,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 32,
+          "output_tokens": 13360,
+          "cache_read_input_tokens": 135730,
+          "cache_creation_input_tokens": 5985,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5985
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 2621,
+        "outputTokens": 20,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.002721,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-fable-5-1": {
+        "inputTokens": 258,
+        "outputTokens": 65091,
+        "cacheReadInputTokens": 507898,
+        "cacheCreationInputTokens": 141715,
+        "webSearchRequests": 0,
+        "costUSD": 6.2184045,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 47745,
+        "canonicalModel": "claude-fable-5-1",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "internalHelperDisclosure": "The harness reported 20 output tokens from claude-haiku-4-5 in addition to the pinned Fable actor; the returned refutation content and actor attestation are Fable, and no substitution is claimed.",
+    "permissionDenials": [
+      {
+        "toolName": "Bash",
+        "description": "Run ER-002 greps and ER-003 ls-files"
+      },
+      {
+        "toolName": "Bash",
+        "description": "Build TypeScript packages into ignored dist output"
+      }
+    ],
+    "webRequests": 0
+  },
+  "rawOutput": {
+    "schemaVersion": 1,
+    "attempts": [
+      {
+        "findingId": "ER-001",
+        "result": "survived",
+        "reason": "Reproduced from the command alone. WO-105:38/40/216 still say failure-matrix rows and audit steps are reserved for WO-009 at v0.5.0, and WO-109:46-47/173 cite roadmap sections v0.7.0 and v0.9.0. At base e3e639f the roadmap carried headings 'v0.5.0 — Real disposable worker → WO-009', 'v0.7.0 — Feedback compiler v1 → WO-011' and 'v0.9.0 — Pattern workshop v1', so those cites were valid; the staged WO-023 retiming (06-roadmap.md:67-84; ledger 26-43) assigns v0.5.0 to WO-023 and leaves WO-009, WO-011 and the pattern workshop 'unassigned until activation' under 'Application version pending' headings, while the staged diff touches neither WO-105 nor WO-109. Two tracked orders therefore contradict the retimed roadmap. The scenario.ts citations resolve (scenario.ts:35,37 re-export compileWorkOrder/loadout from reactor.ts:113,77; ScenarioOptions/replayScenario/runScenario at 53/329/339), so the mismatch is confined to the version cross-references.",
+        "evidenceRefs": [
+          "command output: docs/work-orders/WO-105-crash-shape-corpus.md:38,40,51,216",
+          "command output: docs/work-orders/WO-109-shape-first-source-remine.md:46-47,173",
+          "command output: docs/work-orders/WO-023-compile-entropy-reducer.md:1,8,42",
+          "git show e3e639f:docs/product/06-roadmap.md headings at 728 (v0.5.0 → WO-009), 779 (v0.7.0 → WO-011), 809 (v0.9.0 pattern workshop)",
+          "docs/product/06-roadmap.md:67-84 (2026-09-04 retiming table) and current headings :753,765,784",
+          "docs/lineage/idea-ledger.md:26-43",
+          "git diff --cached --stat -- WO-105 WO-109: no changes",
+          "packages/skeleton/src/scenario.ts:35,37,53,329,339; packages/skeleton/src/reactor.ts:77,113"
+        ]
+      },
+      {
+        "findingId": "ER-002",
+        "result": "survived",
+        "reason": "Reproduced. The ledger grep for Sustain / residue as projection / compiled loadout hits only pre-existing lines 1126, 2848, 3402 and 3611; the three new WO-023 sections at lines 26-128 record the v0.5.0 retiming, the claim-free wildcard lowering and the pinned-artifact breakout, not the required entry 'adopted: reviewer as compiled loadout; residue as projection; preserved: the Sustain cadence'. 03-architecture.md returns zero matches for Entropy Reducer, WO-023, bootstrap exception or first live use (case-insensitive 'entropy' also zero), so §Agent-originated product suggestions at line 697 records neither the first live use nor the bootstrap exception. Of the five write-backs at WO-023:202-209, items 1 (05-pattern-library.md:45), 2 (PLAYBOOK.md:12) and 4 (docs/README.md:30-31) are present; items 3 and 5 are absent from the frozen subject even though AC3/AC7 place the review baseline after implementation.",
+        "evidenceRefs": [
+          "rg -n 'Sustain|residue as (a )?projection|compiled loadout' docs/lineage/idea-ledger.md → 1126, 2848, 3402, 3611",
+          "docs/lineage/idea-ledger.md:26-128 (sections: activation retiming, wildcard lowering, pinned artifact identity)",
+          "rg -n 'Entropy Reducer|WO-023|bootstrap exception|first live use' docs/product/03-architecture.md → no matches; rg -i 'entropy' → no matches",
+          "docs/product/03-architecture.md:238 (§Agent enablement skills), :697 (§Agent-originated product suggestions)",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:149-154,202-209",
+          "docs/product/05-pattern-library.md:45; docs/PLAYBOOK.md:12; docs/README.md:30-31"
+        ]
+      },
+      {
+        "findingId": "ER-003",
+        "result": "survived",
+        "reason": "Reproduced. Index rows 151-153 read planned / planned / implemented: published v0.3.0 and v0.4.0 (tags v0.3.3 through v0.4.1 exist) remain 'planned' while the active v0.5.0 → WO-023 row is 'implemented'; at base the v0.5.0 row was WO-009 'planned', so the subject raised only its own row. docs/control/current.md is 16 lines (the step's 17-24 do not exist) but lines 3-11 confirm WO-023 active with latest verification none and final review none, and the roadmap's v0.5.0 exit (753-762) requires a refutation report and attestation that are not tracked. git ls-files docs/instance lists only RESIDUE.md and REFUTATION-PLAN.md, yet docs/README.md:30-31, absent at base, states the directory 'currently' holds the residue, refutation plan and run evidence. check-publication.mjs validates only the status vocabulary, so nothing executable catches the overstatement.",
+        "evidenceRefs": [
+          "docs/publication/audience-status-index.md:3-11 (legend), :151-153",
+          "git show e3e639f:docs/publication/audience-status-index.md:149-151 (v0.5.0 row = WO-009, planned)",
+          "git tag --list 'v0.*' → v0.3.3, v0.3.4, v0.3.5, v0.3.6, v0.4.0, v0.4.1",
+          "docs/control/current.md:3-11 (16-line file)",
+          "git ls-files docs/instance → docs/instance/entropy-reducer/REFUTATION-PLAN.md, docs/instance/entropy-reducer/RESIDUE.md",
+          "docs/README.md:30-31; git show e3e639f:docs/README.md contains no docs/instance line",
+          "scripts/check-publication.mjs:18-23,281-282",
+          "docs/product/06-roadmap.md:753-762"
+        ]
+      },
+      {
+        "findingId": "ER-004",
+        "result": "survived",
+        "reason": "Reproduced and measured. The trace at entropy-reducer.ts:1111-1128 holds: 'docs//intake/' splits to ['docs','','intake',''], contains no '.' or '..' segment, is neither 'docs/intake' nor prefixed by 'docs/intake/', so no OutputValidationError is thrown. Against the fresh build (dist newer than source; both entropy-reducer suites pass 16/16), validateLensBrief returned files ['docs//intake/'] and ['Docs/intake/'] while rejecting docs/intake/, docs/./intake/, docs/intake/../intake/ and docs/intake//. The AC4 negatives at test 560-566 cover only docs/, docs/intake/, ./docs/intake/, ../outside/ and /absolute/, with no repeated-separator or case variant. Both accepted spellings resolve to the ignored intake tree on POSIX or default case-insensitive macOS filesystems, so the guard labelled 'intake-bearing scope' does not enforce the compiled constraint 'never inspect docs/intake/**' that WO-023 presents as an envelope rather than a sentence.",
+        "evidenceRefs": [
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:1111-1128,1130-1139",
+          "packages/skeleton/test/entropy-reducer.test.ts:552-570",
+          "node --input-type=module probe on packages/skeleton/dist/src/loadouts/entropy-reducer.js: validateLensBrief({...entropyReducerLensBriefs[0], files:['docs//intake/']}).files → [\"docs//intake/\"]; ['Docs/intake/'] → accepted; docs/intake/, docs/./intake/, docs/intake/../intake/, docs/intake// → rejected",
+          "stat mtimes: dist entropy-reducer.js 1788540568 > src 1788539021; node --test packages/skeleton/dist/test/entropy-reducer*.test.js → 16 pass, 0 fail",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:895 (compiled constraint); docs/work-orders/WO-023-compile-entropy-reducer.md:53-58"
+        ]
+      },
+      {
+        "findingId": "ER-005",
+        "result": "survived",
+        "reason": "Reproduced and measured. entropy-reducer.ts:488 declares summary as { type, minLength, maxWordCountExclusive: 200 }; that keyword is not JSON Schema, and the 200-word rule exists only in validateResultEnvelope (1598-1602) via countWords. The suggestionId pattern is duplicated verbatim at 437 (schema string) and 1452 (validator regex). The only test that reads reviewerOutputContract (test 586-601) asserts top-level key names and the presence of 'properties'; no test references .required or checks the contract against validator behavior. The two already diverge: the schema's risks items carry no minLength but the validator rejects risks:[''] ('must be an array of non-empty strings'); the schema's reproduction oneOf admits a measured finding with inspection steps that the validator rejects ('a measured finding requires command reproduction'); proposedPath is any non-empty string in the schema but must equal docs/proposals/<id>/ in code. The outputContract embedded in the compiled WorkOrder (entropy-reducer.ts:909; compile.ts:817) therefore does not describe what the typed-output validator enforces, although WO-023:55-58 and 128-130 present both as products of one compile step.",
+        "evidenceRefs": [
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:472-491 (488), :1598-1602, :437 vs :1452, :460-465, :311-336, :1326-1331, :1528-1531",
+          "packages/skeleton/test/entropy-reducer.test.ts:585-621; rg '\\.required' packages/skeleton/test → no matches; rg 'reviewerOutputContract' packages/skeleton/test → only :23 and :586",
+          "node probe: risks schema {\"type\":\"array\",\"items\":{\"type\":\"string\"}}; summary schema {\"type\":\"string\",\"minLength\":1,\"maxWordCountExclusive\":200}; proposedPath schema {\"type\":\"string\",\"minLength\":1}; validator rejected risks:[''] and measured+inspection reproduction",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:909; packages/compiler/src/compile.ts:817",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:55-58,116-122,128-130"
+        ]
+      },
+      {
+        "findingId": "ER-006",
+        "result": "survived",
+        "reason": "Reproduced, with one scope note. 04-interfaces.md:70-71 makes every executable field hash-relevant; compile.ts:809-810 and normalize.ts:174 keep repo, baseCommit and expiresAt in the normalized program; entropy-reducer.ts:917 sets expiresAt = episodeEndsAt, and CompiledReviewerWorkOrder (1014-1027) exposes none of repo, baseCommit, episodeId, dispatchedAt or episodeEndsAt as fields (they survive only nested in workOrder.repo/baseCommit, authorityEnvelope.expiresAt and cadence.at). Measured against the build with repo = this clone and base e3e639f: hash fnv1a64:5653ad8c53429aac changes when episodeEndsAt, the repo path or baseCommit changes and is unchanged for dispatchedAt or episodeId. The only dispatch record available is this episode's own text, which states repository and base commit but no episodeEndsAt or dispatchedAt; the review episode's record is not tracked, resume.jsonl:129 records only activation, and REFUTATION-PLAN.md:3 lists harness version, model, effort and evidence source as receipt fields. The compiled order's identity, the 'compile output' the evidence gate names for AC5, therefore cannot be recomputed or checked from what the dispatch records.",
+        "evidenceRefs": [
+          "docs/product/04-interfaces.md:66-71",
+          "packages/compiler/src/compile.ts:801-818 (809-810); packages/compiler/src/normalize.ts:164-183 (174)",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:911-919, :973-980, :1014-1027, :1173-1223",
+          "node probe: base hash fnv1a64:5653ad8c53429aac; episodeEndsAt 11000→12000 → fnv1a64:9adb8ff86ed6275b; repo path → fnv1a64:fc3a07d3bfe53c36; baseCommit → fnv1a64:da3d3339206e63e3; dispatchedAt / episodeId → SAME; top-level keys compiledProgram,semanticHash,workOrder,authorityEnvelope,program,cadence,masks,reviewerRequirement,executionBoundary,lensBriefs,lensBriefSchema,residue",
+          "this episode's dispatch text: 'Repository: /private/tmp/dotln-wo023-review.39AMcD/repo', 'Base commit: e3e639fea0c7566e9aa9418dc231bea6b36f4dd7', no episodeEndsAt or dispatchedAt",
+          "rg 'dispatchedAt|episodeEndsAt|baseCommit|base commit' over docs/instance, docs/control, WO-023, README.md, docs/README.md, packages/skeleton/README.md, docs/PLAYBOOK.md → no matches; docs/control/resume.jsonl:129 (WorkOrderActivated only); docs/instance/entropy-reducer/REFUTATION-PLAN.md:3",
+          "packages/skeleton/test/entropy-reducer.test.ts:42-49,229-230; docs/work-orders/WO-023-compile-entropy-reducer.md:176-180,197-200"
+        ]
+      },
+      {
+        "findingId": "ER-007",
+        "result": "survived",
+        "reason": "Reproduced and measured. renderEntropyReducerResidue (2008-2059) projects identity name/id/version, role name/id/version and the active's name (2039), the mask table (2024-2027, 2049) and one paragraph per linked support (2028-2033, 2053). identity.dispositions and invariants (799-814), role.obligations (830-834), the active's semantics (868-872) and its workOrder constraints (893-899) never enter the output; lines 2041, 2043, 2045 and 2056 are string literals that paraphrase those definitions (settled decisions, clean-room floor, read-only boundary, intake exclusion) and restate the shape-first and constraint-first fragments. Against the build, replacing identity invariants and dispositions, role obligations, active semantics or workOrder constraints left the residue byte-identical; only identity.name propagated. The AC3 test at artifacts.test.ts:73-160 mutates supportFacets only. The tracked RESIDUE.md:5-11,56 therefore carries hand-authored stance prose that no identity, role or active definition change can move, which contradicts WO-023:59-62 and 131-137 (definitions authoritative; residue emitted from the definitions; prompt edits refused) for everything except the eight supports.",
+        "evidenceRefs": [
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:2008-2059 (2024-2027, 2028-2033, 2039, 2041, 2043, 2045, 2049, 2053, 2056)",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:795-824, :826-840, :861-872, :893-899",
+          "packages/skeleton/test/entropy-reducer-artifacts.test.ts:73-160",
+          "node probe: residue UNCHANGED after replacing identity.invariants+dispositions, role.obligations, activeMechanics[0].semantics, activeMechanics[0].workOrder.constraints; CHANGED only for identity.name",
+          "docs/instance/entropy-reducer/RESIDUE.md:5-11,56",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:59-62,65-80,131-137,158-159,168-172"
+        ]
+      }
+    ]
+  },
+  "report": {
+    "schemaVersion": 1,
+    "selection": {
+      "measuredDenominator": 1,
+      "measuredStatus": "selected",
+      "inspectionDenominator": 6,
+      "inspectionStatus": "all",
+      "inspectionSampleSize": 6,
+      "selectionRule": "every measured finding and every by-inspection finding",
+      "measuredSubjects": [
+        {
+          "findingId": "ER-001",
+          "command": "grep -n -E \"v0\\.(5|7|9)\\.0|scenario\\.ts\" docs/work-orders/WO-105-crash-shape-corpus.md docs/work-orders/WO-109-shape-first-source-remine.md docs/work-orders/WO-023-compile-entropy-reducer.md"
+        }
+      ],
+      "inspectionSubjects": [
+        {
+          "findingId": "ER-002",
+          "steps": [
+            "Run: grep -n -E \"Sustain|residue as (a )?projection|compiled loadout\" docs/lineage/idea-ledger.md and confirm no WO-023 adoption entry exists among the new sections at lines 26-152",
+            "Run: grep -n -E \"Entropy Reducer|WO-023|bootstrap exception|first live use\" docs/product/03-architecture.md and observe no matches",
+            "Compare both results with the five write-back items listed at docs/work-orders/WO-023-compile-entropy-reducer.md:202-209"
+          ]
+        },
+        {
+          "findingId": "ER-003",
+          "steps": [
+            "Open docs/publication/audience-status-index.md and compare the status column of lines 151, 152 and 153",
+            "Open docs/control/current.md lines 17-24 and confirm WO-023 is active with no verification or final review recorded",
+            "Run: git ls-files docs/instance and compare the two listed files with the description at docs/README.md:30-31"
+          ]
+        },
+        {
+          "findingId": "ER-004",
+          "steps": [
+            "Read validateLensFileScope at packages/skeleton/src/loadouts/entropy-reducer.ts:1111-1128",
+            "Trace the string 'docs//intake/' through each condition: split('/') yields ['docs','','intake',''], no segment is '.' or '..', the string is neither 'docs/intake' nor prefixed by 'docs/intake/', so no OutputValidationError is thrown",
+            "Confirm the AC4 negative cases at packages/skeleton/test/entropy-reducer.test.ts:560-570 do not include a repeated-separator or case variant",
+            "Optional after npm run build, where the harness permits inline node: node --input-type=module -e \"import { validateLensBrief, entropyReducerLensBriefs } from './packages/skeleton/dist/src/loadouts/entropy-reducer.js'; console.log(validateLensBrief({ ...entropyReducerLensBriefs[0], files: ['docs//intake/'] }).files);\" prints the scope instead of throwing"
+          ]
+        },
+        {
+          "findingId": "ER-005",
+          "steps": [
+            "Open packages/skeleton/src/loadouts/entropy-reducer.ts:472-491 and note maxWordCountExclusive at line 488 alongside standard keywords",
+            "Open lines 1598-1602 and confirm the 200-word rule exists only in validateResultEnvelope",
+            "Compare the regex at line 437 with the regex at line 1452",
+            "Search packages/skeleton/test for any assertion that reads reviewerOutputContract.required or .properties and compares them to validator behavior; none exists"
+          ]
+        },
+        {
+          "findingId": "ER-006",
+          "steps": [
+            "Read docs/product/04-interfaces.md:66-71 and note that every executable field of the compiled program participates in the hash",
+            "Read packages/compiler/src/compile.ts:809-810 and packages/compiler/src/normalize.ts:174 to confirm repo, baseCommit and expiresAt are in the normalized program",
+            "Read packages/skeleton/src/loadouts/entropy-reducer.ts:911-919 and :1014-1027 to confirm expiresAt equals episodeEndsAt and that the returned artifact omits the compile options",
+            "Confirm the episode's dispatch record states repo and base commit but no episodeEndsAt or dispatchedAt"
+          ]
+        },
+        {
+          "findingId": "ER-007",
+          "steps": [
+            "Read renderEntropyReducerResidue at packages/skeleton/src/loadouts/entropy-reducer.ts:2008-2059 and list which graph fields appear in the output: identity name/id/version, role name/id/version, active name, masks, supports",
+            "Confirm identity.dispositions and identity.invariants (799-814), role.obligations (830-834) and the active's semantics (868-872) do not appear",
+            "Confirm the paragraphs at lines 2041, 2043, 2045 and 2056 are literals rather than data-derived text",
+            "Confirm packages/skeleton/test/entropy-reducer-artifacts.test.ts:73-160 mutates only supportFacets"
+          ]
+        }
+      ],
+      "selectedFindingIds": [
+        "ER-001",
+        "ER-002",
+        "ER-003",
+        "ER-004",
+        "ER-005",
+        "ER-006",
+        "ER-007"
+      ]
+    },
+    "attempts": [
+      {
+        "findingId": "ER-001",
+        "result": "survived",
+        "reason": "Reproduced from the command alone. WO-105:38/40/216 still say failure-matrix rows and audit steps are reserved for WO-009 at v0.5.0, and WO-109:46-47/173 cite roadmap sections v0.7.0 and v0.9.0. At base e3e639f the roadmap carried headings 'v0.5.0 — Real disposable worker → WO-009', 'v0.7.0 — Feedback compiler v1 → WO-011' and 'v0.9.0 — Pattern workshop v1', so those cites were valid; the staged WO-023 retiming (06-roadmap.md:67-84; ledger 26-43) assigns v0.5.0 to WO-023 and leaves WO-009, WO-011 and the pattern workshop 'unassigned until activation' under 'Application version pending' headings, while the staged diff touches neither WO-105 nor WO-109. Two tracked orders therefore contradict the retimed roadmap. The scenario.ts citations resolve (scenario.ts:35,37 re-export compileWorkOrder/loadout from reactor.ts:113,77; ScenarioOptions/replayScenario/runScenario at 53/329/339), so the mismatch is confined to the version cross-references.",
+        "evidenceRefs": [
+          "command output: docs/work-orders/WO-105-crash-shape-corpus.md:38,40,51,216",
+          "command output: docs/work-orders/WO-109-shape-first-source-remine.md:46-47,173",
+          "command output: docs/work-orders/WO-023-compile-entropy-reducer.md:1,8,42",
+          "git show e3e639f:docs/product/06-roadmap.md headings at 728 (v0.5.0 → WO-009), 779 (v0.7.0 → WO-011), 809 (v0.9.0 pattern workshop)",
+          "docs/product/06-roadmap.md:67-84 (2026-09-04 retiming table) and current headings :753,765,784",
+          "docs/lineage/idea-ledger.md:26-43",
+          "git diff --cached --stat -- WO-105 WO-109: no changes",
+          "packages/skeleton/src/scenario.ts:35,37,53,329,339; packages/skeleton/src/reactor.ts:77,113"
+        ],
+        "evidenceLabel": "measured",
+        "severity": "minor",
+        "surface": "docs/work-orders",
+        "reproduction": {
+          "kind": "command",
+          "command": "grep -n -E \"v0\\.(5|7|9)\\.0|scenario\\.ts\" docs/work-orders/WO-105-crash-shape-corpus.md docs/work-orders/WO-109-shape-first-source-remine.md docs/work-orders/WO-023-compile-entropy-reducer.md"
+        }
+      },
+      {
+        "findingId": "ER-002",
+        "result": "survived",
+        "reason": "Reproduced. The ledger grep for Sustain / residue as projection / compiled loadout hits only pre-existing lines 1126, 2848, 3402 and 3611; the three new WO-023 sections at lines 26-128 record the v0.5.0 retiming, the claim-free wildcard lowering and the pinned-artifact breakout, not the required entry 'adopted: reviewer as compiled loadout; residue as projection; preserved: the Sustain cadence'. 03-architecture.md returns zero matches for Entropy Reducer, WO-023, bootstrap exception or first live use (case-insensitive 'entropy' also zero), so §Agent-originated product suggestions at line 697 records neither the first live use nor the bootstrap exception. Of the five write-backs at WO-023:202-209, items 1 (05-pattern-library.md:45), 2 (PLAYBOOK.md:12) and 4 (docs/README.md:30-31) are present; items 3 and 5 are absent from the frozen subject even though AC3/AC7 place the review baseline after implementation.",
+        "evidenceRefs": [
+          "rg -n 'Sustain|residue as (a )?projection|compiled loadout' docs/lineage/idea-ledger.md → 1126, 2848, 3402, 3611",
+          "docs/lineage/idea-ledger.md:26-128 (sections: activation retiming, wildcard lowering, pinned artifact identity)",
+          "rg -n 'Entropy Reducer|WO-023|bootstrap exception|first live use' docs/product/03-architecture.md → no matches; rg -i 'entropy' → no matches",
+          "docs/product/03-architecture.md:238 (§Agent enablement skills), :697 (§Agent-originated product suggestions)",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:149-154,202-209",
+          "docs/product/05-pattern-library.md:45; docs/PLAYBOOK.md:12; docs/README.md:30-31"
+        ],
+        "evidenceLabel": "by inspection",
+        "severity": "major",
+        "surface": "docs/lineage/idea-ledger.md; docs/product/03-architecture.md",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Run: grep -n -E \"Sustain|residue as (a )?projection|compiled loadout\" docs/lineage/idea-ledger.md and confirm no WO-023 adoption entry exists among the new sections at lines 26-152",
+            "Run: grep -n -E \"Entropy Reducer|WO-023|bootstrap exception|first live use\" docs/product/03-architecture.md and observe no matches",
+            "Compare both results with the five write-back items listed at docs/work-orders/WO-023-compile-entropy-reducer.md:202-209"
+          ]
+        }
+      },
+      {
+        "findingId": "ER-003",
+        "result": "survived",
+        "reason": "Reproduced. Index rows 151-153 read planned / planned / implemented: published v0.3.0 and v0.4.0 (tags v0.3.3 through v0.4.1 exist) remain 'planned' while the active v0.5.0 → WO-023 row is 'implemented'; at base the v0.5.0 row was WO-009 'planned', so the subject raised only its own row. docs/control/current.md is 16 lines (the step's 17-24 do not exist) but lines 3-11 confirm WO-023 active with latest verification none and final review none, and the roadmap's v0.5.0 exit (753-762) requires a refutation report and attestation that are not tracked. git ls-files docs/instance lists only RESIDUE.md and REFUTATION-PLAN.md, yet docs/README.md:30-31, absent at base, states the directory 'currently' holds the residue, refutation plan and run evidence. check-publication.mjs validates only the status vocabulary, so nothing executable catches the overstatement.",
+        "evidenceRefs": [
+          "docs/publication/audience-status-index.md:3-11 (legend), :151-153",
+          "git show e3e639f:docs/publication/audience-status-index.md:149-151 (v0.5.0 row = WO-009, planned)",
+          "git tag --list 'v0.*' → v0.3.3, v0.3.4, v0.3.5, v0.3.6, v0.4.0, v0.4.1",
+          "docs/control/current.md:3-11 (16-line file)",
+          "git ls-files docs/instance → docs/instance/entropy-reducer/REFUTATION-PLAN.md, docs/instance/entropy-reducer/RESIDUE.md",
+          "docs/README.md:30-31; git show e3e639f:docs/README.md contains no docs/instance line",
+          "scripts/check-publication.mjs:18-23,281-282",
+          "docs/product/06-roadmap.md:753-762"
+        ],
+        "evidenceLabel": "by inspection",
+        "severity": "minor",
+        "surface": "docs/publication/audience-status-index.md; docs/README.md",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Open docs/publication/audience-status-index.md and compare the status column of lines 151, 152 and 153",
+            "Open docs/control/current.md lines 17-24 and confirm WO-023 is active with no verification or final review recorded",
+            "Run: git ls-files docs/instance and compare the two listed files with the description at docs/README.md:30-31"
+          ]
+        }
+      },
+      {
+        "findingId": "ER-004",
+        "result": "survived",
+        "reason": "Reproduced and measured. The trace at entropy-reducer.ts:1111-1128 holds: 'docs//intake/' splits to ['docs','','intake',''], contains no '.' or '..' segment, is neither 'docs/intake' nor prefixed by 'docs/intake/', so no OutputValidationError is thrown. Against the fresh build (dist newer than source; both entropy-reducer suites pass 16/16), validateLensBrief returned files ['docs//intake/'] and ['Docs/intake/'] while rejecting docs/intake/, docs/./intake/, docs/intake/../intake/ and docs/intake//. The AC4 negatives at test 560-566 cover only docs/, docs/intake/, ./docs/intake/, ../outside/ and /absolute/, with no repeated-separator or case variant. Both accepted spellings resolve to the ignored intake tree on POSIX or default case-insensitive macOS filesystems, so the guard labelled 'intake-bearing scope' does not enforce the compiled constraint 'never inspect docs/intake/**' that WO-023 presents as an envelope rather than a sentence.",
+        "evidenceRefs": [
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:1111-1128,1130-1139",
+          "packages/skeleton/test/entropy-reducer.test.ts:552-570",
+          "node --input-type=module probe on packages/skeleton/dist/src/loadouts/entropy-reducer.js: validateLensBrief({...entropyReducerLensBriefs[0], files:['docs//intake/']}).files → [\"docs//intake/\"]; ['Docs/intake/'] → accepted; docs/intake/, docs/./intake/, docs/intake/../intake/, docs/intake// → rejected",
+          "stat mtimes: dist entropy-reducer.js 1788540568 > src 1788539021; node --test packages/skeleton/dist/test/entropy-reducer*.test.js → 16 pass, 0 fail",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:895 (compiled constraint); docs/work-orders/WO-023-compile-entropy-reducer.md:53-58"
+        ],
+        "evidenceLabel": "by inspection",
+        "severity": "minor",
+        "surface": "packages/skeleton/src/loadouts/entropy-reducer.ts",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Read validateLensFileScope at packages/skeleton/src/loadouts/entropy-reducer.ts:1111-1128",
+            "Trace the string 'docs//intake/' through each condition: split('/') yields ['docs','','intake',''], no segment is '.' or '..', the string is neither 'docs/intake' nor prefixed by 'docs/intake/', so no OutputValidationError is thrown",
+            "Confirm the AC4 negative cases at packages/skeleton/test/entropy-reducer.test.ts:560-570 do not include a repeated-separator or case variant",
+            "Optional after npm run build, where the harness permits inline node: node --input-type=module -e \"import { validateLensBrief, entropyReducerLensBriefs } from './packages/skeleton/dist/src/loadouts/entropy-reducer.js'; console.log(validateLensBrief({ ...entropyReducerLensBriefs[0], files: ['docs//intake/'] }).files);\" prints the scope instead of throwing"
+          ]
+        }
+      },
+      {
+        "findingId": "ER-005",
+        "result": "survived",
+        "reason": "Reproduced and measured. entropy-reducer.ts:488 declares summary as { type, minLength, maxWordCountExclusive: 200 }; that keyword is not JSON Schema, and the 200-word rule exists only in validateResultEnvelope (1598-1602) via countWords. The suggestionId pattern is duplicated verbatim at 437 (schema string) and 1452 (validator regex). The only test that reads reviewerOutputContract (test 586-601) asserts top-level key names and the presence of 'properties'; no test references .required or checks the contract against validator behavior. The two already diverge: the schema's risks items carry no minLength but the validator rejects risks:[''] ('must be an array of non-empty strings'); the schema's reproduction oneOf admits a measured finding with inspection steps that the validator rejects ('a measured finding requires command reproduction'); proposedPath is any non-empty string in the schema but must equal docs/proposals/<id>/ in code. The outputContract embedded in the compiled WorkOrder (entropy-reducer.ts:909; compile.ts:817) therefore does not describe what the typed-output validator enforces, although WO-023:55-58 and 128-130 present both as products of one compile step.",
+        "evidenceRefs": [
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:472-491 (488), :1598-1602, :437 vs :1452, :460-465, :311-336, :1326-1331, :1528-1531",
+          "packages/skeleton/test/entropy-reducer.test.ts:585-621; rg '\\.required' packages/skeleton/test → no matches; rg 'reviewerOutputContract' packages/skeleton/test → only :23 and :586",
+          "node probe: risks schema {\"type\":\"array\",\"items\":{\"type\":\"string\"}}; summary schema {\"type\":\"string\",\"minLength\":1,\"maxWordCountExclusive\":200}; proposedPath schema {\"type\":\"string\",\"minLength\":1}; validator rejected risks:[''] and measured+inspection reproduction",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:909; packages/compiler/src/compile.ts:817",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:55-58,116-122,128-130"
+        ],
+        "evidenceLabel": "by inspection",
+        "severity": "minor",
+        "surface": "packages/skeleton/src/loadouts/entropy-reducer.ts",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Open packages/skeleton/src/loadouts/entropy-reducer.ts:472-491 and note maxWordCountExclusive at line 488 alongside standard keywords",
+            "Open lines 1598-1602 and confirm the 200-word rule exists only in validateResultEnvelope",
+            "Compare the regex at line 437 with the regex at line 1452",
+            "Search packages/skeleton/test for any assertion that reads reviewerOutputContract.required or .properties and compares them to validator behavior; none exists"
+          ]
+        }
+      },
+      {
+        "findingId": "ER-006",
+        "result": "survived",
+        "reason": "Reproduced, with one scope note. 04-interfaces.md:70-71 makes every executable field hash-relevant; compile.ts:809-810 and normalize.ts:174 keep repo, baseCommit and expiresAt in the normalized program; entropy-reducer.ts:917 sets expiresAt = episodeEndsAt, and CompiledReviewerWorkOrder (1014-1027) exposes none of repo, baseCommit, episodeId, dispatchedAt or episodeEndsAt as fields (they survive only nested in workOrder.repo/baseCommit, authorityEnvelope.expiresAt and cadence.at). Measured against the build with repo = this clone and base e3e639f: hash fnv1a64:5653ad8c53429aac changes when episodeEndsAt, the repo path or baseCommit changes and is unchanged for dispatchedAt or episodeId. The only dispatch record available is this episode's own text, which states repository and base commit but no episodeEndsAt or dispatchedAt; the review episode's record is not tracked, resume.jsonl:129 records only activation, and REFUTATION-PLAN.md:3 lists harness version, model, effort and evidence source as receipt fields. The compiled order's identity, the 'compile output' the evidence gate names for AC5, therefore cannot be recomputed or checked from what the dispatch records.",
+        "evidenceRefs": [
+          "docs/product/04-interfaces.md:66-71",
+          "packages/compiler/src/compile.ts:801-818 (809-810); packages/compiler/src/normalize.ts:164-183 (174)",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:911-919, :973-980, :1014-1027, :1173-1223",
+          "node probe: base hash fnv1a64:5653ad8c53429aac; episodeEndsAt 11000→12000 → fnv1a64:9adb8ff86ed6275b; repo path → fnv1a64:fc3a07d3bfe53c36; baseCommit → fnv1a64:da3d3339206e63e3; dispatchedAt / episodeId → SAME; top-level keys compiledProgram,semanticHash,workOrder,authorityEnvelope,program,cadence,masks,reviewerRequirement,executionBoundary,lensBriefs,lensBriefSchema,residue",
+          "this episode's dispatch text: 'Repository: /private/tmp/dotln-wo023-review.39AMcD/repo', 'Base commit: e3e639fea0c7566e9aa9418dc231bea6b36f4dd7', no episodeEndsAt or dispatchedAt",
+          "rg 'dispatchedAt|episodeEndsAt|baseCommit|base commit' over docs/instance, docs/control, WO-023, README.md, docs/README.md, packages/skeleton/README.md, docs/PLAYBOOK.md → no matches; docs/control/resume.jsonl:129 (WorkOrderActivated only); docs/instance/entropy-reducer/REFUTATION-PLAN.md:3",
+          "packages/skeleton/test/entropy-reducer.test.ts:42-49,229-230; docs/work-orders/WO-023-compile-entropy-reducer.md:176-180,197-200"
+        ],
+        "evidenceLabel": "by inspection",
+        "severity": "minor",
+        "surface": "packages/skeleton/src/loadouts/entropy-reducer.ts; WO-023 evidence gate",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Read docs/product/04-interfaces.md:66-71 and note that every executable field of the compiled program participates in the hash",
+            "Read packages/compiler/src/compile.ts:809-810 and packages/compiler/src/normalize.ts:174 to confirm repo, baseCommit and expiresAt are in the normalized program",
+            "Read packages/skeleton/src/loadouts/entropy-reducer.ts:911-919 and :1014-1027 to confirm expiresAt equals episodeEndsAt and that the returned artifact omits the compile options",
+            "Confirm the episode's dispatch record states repo and base commit but no episodeEndsAt or dispatchedAt"
+          ]
+        }
+      },
+      {
+        "findingId": "ER-007",
+        "result": "survived",
+        "reason": "Reproduced and measured. renderEntropyReducerResidue (2008-2059) projects identity name/id/version, role name/id/version and the active's name (2039), the mask table (2024-2027, 2049) and one paragraph per linked support (2028-2033, 2053). identity.dispositions and invariants (799-814), role.obligations (830-834), the active's semantics (868-872) and its workOrder constraints (893-899) never enter the output; lines 2041, 2043, 2045 and 2056 are string literals that paraphrase those definitions (settled decisions, clean-room floor, read-only boundary, intake exclusion) and restate the shape-first and constraint-first fragments. Against the build, replacing identity invariants and dispositions, role obligations, active semantics or workOrder constraints left the residue byte-identical; only identity.name propagated. The AC3 test at artifacts.test.ts:73-160 mutates supportFacets only. The tracked RESIDUE.md:5-11,56 therefore carries hand-authored stance prose that no identity, role or active definition change can move, which contradicts WO-023:59-62 and 131-137 (definitions authoritative; residue emitted from the definitions; prompt edits refused) for everything except the eight supports.",
+        "evidenceRefs": [
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:2008-2059 (2024-2027, 2028-2033, 2039, 2041, 2043, 2045, 2049, 2053, 2056)",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:795-824, :826-840, :861-872, :893-899",
+          "packages/skeleton/test/entropy-reducer-artifacts.test.ts:73-160",
+          "node probe: residue UNCHANGED after replacing identity.invariants+dispositions, role.obligations, activeMechanics[0].semantics, activeMechanics[0].workOrder.constraints; CHANGED only for identity.name",
+          "docs/instance/entropy-reducer/RESIDUE.md:5-11,56",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:59-62,65-80,131-137,158-159,168-172"
+        ],
+        "evidenceLabel": "by inspection",
+        "severity": "minor",
+        "surface": "packages/skeleton/src/loadouts/entropy-reducer.ts; docs/instance/entropy-reducer/RESIDUE.md",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Read renderEntropyReducerResidue at packages/skeleton/src/loadouts/entropy-reducer.ts:2008-2059 and list which graph fields appear in the output: identity name/id/version, role name/id/version, active name, masks, supports",
+            "Confirm identity.dispositions and identity.invariants (799-814), role.obligations (830-834) and the active's semantics (868-872) do not appear",
+            "Confirm the paragraphs at lines 2041, 2043, 2045 and 2056 are literals rather than data-derived text",
+            "Confirm packages/skeleton/test/entropy-reducer-artifacts.test.ts:73-160 mutates only supportFacets"
+          ]
+        }
+      }
+    ],
+    "promotedFindingIds": [
+      "ER-002",
+      "ER-003",
+      "ER-001",
+      "ER-004",
+      "ER-005",
+      "ER-006",
+      "ER-007"
+    ],
+    "refutedFindingIds": [],
+    "blockedFindingIds": [],
+    "unselectedFindingIds": []
+  },
+  "validation": {
+    "transportSchema": "passed",
+    "hostRuntimeValidator": "passed",
+    "reportBuilder": "passed"
+  },
+  "confinement": {
+    "subject": {
+      "sourceStatusBeforeSha256": "de15bb954ca020ce93446c544e4359d4f14a5e05ebd5599f81784d6ba3244ad0",
+      "sourceStatusAfterSha256": "de15bb954ca020ce93446c544e4359d4f14a5e05ebd5599f81784d6ba3244ad0",
+      "sourceStatusByteIdentical": true,
+      "scratchStatusBeforeSha256": "cd6c27e346cbb461adcb61a227ade3c2dc6f421e8de08213913157a8c318b8a5",
+      "scratchStatusAfterSha256": "cd6c27e346cbb461adcb61a227ade3c2dc6f421e8de08213913157a8c318b8a5",
+      "scratchStatusByteIdentical": true
+    },
+    "scratchInventory": {
+      "beforeCount": 331,
+      "afterCount": 331,
+      "beforeSha256": "eec15915d262153c97f716821445a6a2f5d4a9238ecdd4e726f12ef665cddf40",
+      "afterSha256": "eec15915d262153c97f716821445a6a2f5d4a9238ecdd4e726f12ef665cddf40",
+      "deltaCount": 0,
+      "deltaPaths": []
+    },
+    "intakeInventory": {
+      "method": "metadata-only; intake contents were not read or hashed",
+      "publicPathProjection": "Absolute local roots are replaced by <main-checkout> aliases; the local run record retains exact paths.",
+      "before": [
+        {
+          "path": "<main-checkout>/docs/intake/notes/WO-023-expanded-ideation-2026-09-04.md",
+          "exists": true,
+          "size": 7776,
+          "mtimeMs": 1788534990221.2185,
+          "mode": 420
+        },
+        {
+          "path": "<main-checkout-parent>/DotLn-intake-20260904T151630Z.zip",
+          "exists": true,
+          "size": 33710032,
+          "mtimeMs": 1788534991030.7668,
+          "mode": 384
+        }
+      ],
+      "after": [
+        {
+          "path": "<main-checkout>/docs/intake/notes/WO-023-expanded-ideation-2026-09-04.md",
+          "exists": true,
+          "size": 7776,
+          "mtimeMs": 1788534990221.2185,
+          "mode": 420
+        },
+        {
+          "path": "<main-checkout-parent>/DotLn-intake-20260904T151630Z.zip",
+          "exists": true,
+          "size": 33710032,
+          "mtimeMs": 1788534991030.7668,
+          "mode": 384
+        }
+      ],
+      "byteMetadataIdentical": true
+    }
+  },
+  "disposition": {
+    "survivedCount": 7,
+    "refutedCount": 0,
+    "blockedCount": 0,
+    "unselectedCount": 0,
+    "nextStep": "Repair every survived finding before implementation-ready."
+  }
+}

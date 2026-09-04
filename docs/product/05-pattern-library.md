@@ -1,8 +1,11 @@
 # Founding pattern library
 
-**Status:** target pattern catalog. The current walking skeleton executes one
-hand-assembled Repo Gardener + Seiri behavior; PatternDefinition compilation,
-set bonuses, and the remaining patterns are planned work.
+**Status:** target pattern catalog. The current walking skeleton executes the
+compiled Repo Gardener + Seiri behavior. The skeleton host also compiles the
+Entropy Reducer instance below into a WorkOrder, authority envelope, typed
+manual Program, validators, and generated residue; `Program.All`, automated
+review transport, PatternDefinition compilation, set bonuses, and the remaining
+patterns are planned work.
 
 Patterns are opt-in instance content: their invariants bind only a loadout that
 equips them. This catalog describes the author's founding reference loadout,
@@ -37,7 +40,18 @@ referees."
 patient, evidence-bound, propose-don't-destroy; invariants — no deletion
 authority at base rank, every candidate carries evidence, active only while the
 operator is absent, stops on return, re-evaluates on a pulse. It is the walking
-skeleton's character (WO-003) and the v0.9.0 drag-equip target.
+skeleton's character (WO-003) and the pattern-workshop drag-equip target.
+
+**Entropy Reducer** is the second founding identity. It carries Seisō / Shine as
+the active review mechanic and links Seiketsu / Standardize so recurring review
+findings route to a proposed test, lint, guard, or script rather than recurring
+prompt cost. Its planning-reviewer role performs a whole-repository census,
+labels measured versus inspection evidence, emits non-authoritative product
+suggestions, and never implements or verifies its own proposals. WO-023 compiles
+the identity, role, eight supports, tracked/control-plane-read-only authority
+with bounded scratch and intake-capture writes, one-shot cadence, manual
+Program, output guard, and generated residue; Sustain remains a candidate until
+an observed cadence justifies it.
 
 ## Leadership & autonomy — Marquet
 

@@ -56,8 +56,11 @@ plan, prompt residue, per-support costs, resources, ambient declarations,
 explicit pipelines, effective claims, component manifest, inspection data, and
 conflict trace. Winning `authority.<effect>` claims are applied to the emitted
 AuthorityEnvelope and WorkOrder operation lists rather than existing only as
-trace prose. Compiler v1 rejects wildcard authority patterns rather than let a
-broader losing pattern silently override an exact winner.
+trace prose. Compiler v1 accepts direct terminal prefix globs only in a
+claim-free authority composition. A participating wildcard claim target or any
+direct wildcard combined with a participating `authority.*` claim rejects
+rather than let a broader pattern silently override an exact winner;
+unequipped catalog definitions remain inert.
 It never includes source-view formatting or a view name.
 
 `semanticHash(normalize(compile(view)))` is the literal string `fnv1a64:` plus

@@ -1,14 +1,16 @@
-# WO-009 — Real disposable worker, v0.5.0
+# WO-009 — Real disposable worker (application version assigned at activation)
 
 **Model:** any capable model.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** `v0.5.0` minor — adds real worker transports and
-their scheduler/runtime lifecycle without breaking the deterministic fakes.
+**Release classification:** minor, with the application version assigned at
+activation under the roadmap's 2026-09-04 retiming. Adds real worker transports
+and their scheduler/runtime lifecycle without breaking the deterministic fakes.
 **Depends on:** WO-008 complete (build order per ADR-0002 §1); WO-004's
 observed transport evidence (the adapter choice must not rest on
 documented-only rows).
 
-**Cites (read these sections):** 06-roadmap.md v0.5.0; 03-architecture.md
+**Cites (read these sections):** 06-roadmap.md §Application version pending —
+Real disposable worker; 03-architecture.md
 §Session lifecycle & resilience (canonical matrix rows 2, 4, 6; the outbox
 protocol; leases and heartbeats), §Platform and instance boundary ("The
 host"), §Ports `WorkOrderTransport`;
@@ -39,7 +41,7 @@ and schema-bound output. Also deliver a deterministic worktree lifecycle,
   those mounts. Where Beacon support has landed, a real worker emits only a
   self-reported Beacon claim while the host projects evidenced Beacons from
   canonical events.
-- Verifier episodes are v0.6.0's; none here.
+- Verifier episodes belong to WO-010; none here.
 
 **Constraints:** adapters and the host live outside kernel and compiler
 (node:fs / child_process permitted there only); kernel and compiler stay
@@ -78,7 +80,7 @@ into 03-architecture.md §Ports and the WorkOrderTransport row of
 2/4/6 test output captured; the killed-worker recovery witnessed and
 recorded; every criterion mapped to a named test or witnessed run.
 
-**Non-goals:** verification episodes (v0.6.0); feedback units (v0.7.0); web
+**Non-goals:** verification episodes (WO-010); feedback units (WO-011); web
 console; SQLite migration unless the outbox demands transactionality (then an
 ADR-0002 §4 amendment first); background/workflow/MCP transports; model
 benchmarking.

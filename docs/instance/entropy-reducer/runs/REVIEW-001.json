@@ -1,0 +1,620 @@
+{
+  "schemaVersion": 1,
+  "kind": "EntropyReducerReviewRun",
+  "phase": "pre-repair implementation review",
+  "episodeId": "ep_entropy_reducer_20260904_001",
+  "startedAt": "2026-09-04T16:39:29.650Z",
+  "endedAt": "2026-09-04T16:56:29.823Z",
+  "subject": {
+    "baseCommit": "e3e639fea0c7566e9aa9418dc231bea6b36f4dd7",
+    "scratchRepository": "/private/tmp/dotln-wo023-review.39AMcD/repo",
+    "compileInputs": {
+      "repo": "/private/tmp/dotln-wo023-review.39AMcD/repo",
+      "baseCommit": "e3e639fea0c7566e9aa9418dc231bea6b36f4dd7",
+      "episodeId": "ep_entropy_reducer_20260904_001",
+      "dispatchedAt": 1788539400000,
+      "episodeEndsAt": 1788546600000
+    },
+    "sourceStatusBeforeSha256": "de15bb954ca020ce93446c544e4359d4f14a5e05ebd5599f81784d6ba3244ad0",
+    "sourceStatusAfterSha256": "de15bb954ca020ce93446c544e4359d4f14a5e05ebd5599f81784d6ba3244ad0",
+    "sourceStatusByteIdentical": true,
+    "scratchStatusBeforeSha256": "cd6c27e346cbb461adcb61a227ade3c2dc6f421e8de08213913157a8c318b8a5",
+    "scratchStatusAfterSha256": "cd6c27e346cbb461adcb61a227ade3c2dc6f421e8de08213913157a8c318b8a5",
+    "scratchStatusByteIdentical": true
+  },
+  "actorAttestation": {
+    "harness": "claude-code",
+    "harnessVersion": "2.1.260 (Claude Code)",
+    "model": "claude-fable-5-1",
+    "effort": "max",
+    "source": "command-line-readback-and-invocation",
+    "restricted": true,
+    "safeMode": true,
+    "sessionPersistence": false,
+    "schemaSha256": "4e72f0a55d02c946806b4b019ce84b6f8ca4f97fb8e610df654a52b64031d82b",
+    "schemaAdaptation": "transport schema omits maxWordCountExclusive; host runtime validator enforces it after return"
+  },
+  "compilation": {
+    "semanticHash": "fnv1a64:b81d0609ee2e9fed",
+    "compiledProgramRef": "docs/instance/entropy-reducer/runs/REVIEW-001-COMPILED-PROGRAM.json",
+    "compilerContractVersion": "1",
+    "workOrderId": "wo_entropy_review_1",
+    "authorityEnvelopeId": "auth_entropy_reducer",
+    "cadence": {
+      "kind": "Once",
+      "at": 1788539400000
+    },
+    "reviewerRequirement": {
+      "harness": "claude-code",
+      "model": "claude-fable-5-1",
+      "displayModel": "Claude Fable 5.1",
+      "effort": "max",
+      "substitutionPolicy": "different-reviewer-and-must-be-attested"
+    },
+    "executionBoundary": {
+      "mode": "operator-mediated-manual",
+      "deferredProgramKind": "All",
+      "commandIds": "symbolic-manual-plan",
+      "resultBinding": "host-validator",
+      "resourceEnforcement": "authorize-each-operation-and-thread-envelope"
+    }
+  },
+  "transportPreflight": {
+    "outcome": "refused-before-model",
+    "startedAt": "2026-09-04T16:37:12.039Z",
+    "endedAt": "2026-09-04T16:37:12.457Z",
+    "schemaSha256": "9b83533a4799b08a50124b08654d332e392d5871c988620e87da39a7d295372c",
+    "stderr": "Error: --json-schema is not a valid JSON Schema: strict mode: unknown keyword: \"maxWordCountExclusive\"\n",
+    "correction": "Removed only the non-standard maxWordCountExclusive transport keyword; the host validator retained the fewer-than-200-words rule."
+  },
+  "harnessResult": {
+    "processStatus": 0,
+    "terminalReason": "completed",
+    "subtype": "success",
+    "isError": false,
+    "turns": 98,
+    "durationMs": 1019575,
+    "durationApiMs": 1019307,
+    "totalCostUsd": 10.517388250000002,
+    "usage": {
+      "input_tokens": 546,
+      "cache_creation_input_tokens": 292624,
+      "cache_read_input_tokens": 2257249,
+      "output_tokens": 81786,
+      "output_tokens_details": {
+        "thinking_tokens": 56736
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 292624,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 32,
+          "output_tokens": 14881,
+          "cache_read_input_tokens": 287218,
+          "cache_creation_input_tokens": 5406,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 5406
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "modelUsage": {
+      "claude-haiku-4-5-20251001": {
+        "inputTokens": 5751,
+        "outputTokens": 17,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.005836,
+        "contextWindow": 200000,
+        "maxOutputTokens": 32000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-haiku-4-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      },
+      "claude-fable-5-1": {
+        "inputTokens": 546,
+        "outputTokens": 81786,
+        "cacheReadInputTokens": 2257249,
+        "cacheCreationInputTokens": 292624,
+        "webSearchRequests": 0,
+        "costUSD": 10.51155225,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 56736,
+        "canonicalModel": "claude-fable-5-1",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    },
+    "internalHelperDisclosure": "The harness reported 17 output tokens from claude-haiku-4-5 in addition to the pinned Fable actor; the returned reviewer content and actor attestation are Fable, and no substitution is claimed.",
+    "permissionDenials": [
+      {
+        "toolName": "Bash",
+        "description": "Census tracked files by top-level directory, list intake placeholders, check status and whitespace"
+      },
+      {
+        "toolName": "Bash",
+        "description": "Run whitespace check on the staged diff"
+      },
+      {
+        "toolName": "Bash",
+        "description": "Build all packages and run the kernel, compiler, and skeleton test suites"
+      },
+      {
+        "toolName": "Bash",
+        "description": "Build all workspace packages with TypeScript"
+      },
+      {
+        "toolName": "Bash",
+        "description": "Run the repository formatter in check-only mode"
+      },
+      {
+        "toolName": "Bash",
+        "description": "Probe which compile inputs change the reviewer's semantic hash"
+      },
+      {
+        "toolName": "Bash",
+        "description": "Probe whether the lens-brief scope validator refuses intake-equivalent paths"
+      }
+    ],
+    "webRequests": 0
+  },
+  "reviewerOutput": {
+    "schemaVersion": 1,
+    "findings": [
+      {
+        "findingId": "ER-001",
+        "criterion": "Work-order Cites resolve to existing roadmap headings and module exports (07-execution-guide read order: cited sections only; 06-roadmap 2026-09-04 retiming note claims every affected surface moved together)",
+        "severity": "minor",
+        "evidenceLabel": "measured",
+        "observed": "After the 2026-09-04 retiming renamed the WO-009/010/011 roadmap headings to 'Application version pending' (06-roadmap.md:765, :784, :816, :846), two open drafts still cite the old version-named headings: WO-105 lines 38, 40 and 216 cite 'WO-009 at v0.5.0' and 'v0.5.0 timing' although v0.5.0 is now WO-023 (06-roadmap.md:753); WO-109 lines 46-47 and 173 cite '06-roadmap.md v0.7.0' and 'v0.9.0'. The active order WO-023 line 42 cites `loadout` and `compileWorkOrder` in packages/skeleton/src/scenario.ts, but scenario.ts exports neither; they live in packages/skeleton/src/reactor.ts:77 and :113 since the WO-016 refactor.",
+        "expected": "The retiming sweep updates every open draft that cites a renamed heading, as it did for WO-009, WO-010 and WO-011, and the activated order's Cites name the module that actually exports the cited symbols. Closed historical orders are exempt under the time-indexing rule.",
+        "reproduction": {
+          "kind": "command",
+          "command": "grep -n -E \"v0\\.(5|7|9)\\.0|scenario\\.ts\" docs/work-orders/WO-105-crash-shape-corpus.md docs/work-orders/WO-109-shape-first-source-remine.md docs/work-orders/WO-023-compile-entropy-reducer.md"
+        },
+        "evidenceRefs": [
+          "docs/work-orders/WO-105-crash-shape-corpus.md:38",
+          "docs/work-orders/WO-105-crash-shape-corpus.md:40",
+          "docs/work-orders/WO-105-crash-shape-corpus.md:216",
+          "docs/work-orders/WO-109-shape-first-source-remine.md:46-47",
+          "docs/work-orders/WO-109-shape-first-source-remine.md:173",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:42",
+          "packages/skeleton/src/reactor.ts:77",
+          "packages/skeleton/src/reactor.ts:113",
+          "docs/product/06-roadmap.md:67-84",
+          "docs/product/06-roadmap.md:765",
+          "docs/product/06-roadmap.md:816",
+          "docs/product/06-roadmap.md:846"
+        ],
+        "surface": "docs/work-orders",
+        "altitude": 6,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "lint",
+          "rationale": "This is the second dated forward retiming in five days (06-roadmap.md §2026-08-31 and §2026-09-04); each required a manual sweep of every citing surface, this one missed two open drafts, and the WO-016 module refactor separately stranded the active order's own cite. A resolver that checks open work-order Cites against current product headings and named exports would catch both classes without operator sweeps."
+        }
+      },
+      {
+        "findingId": "ER-002",
+        "criterion": "WO-023 Write-back duty (docs/work-orders/WO-023-compile-entropy-reducer.md:202-209): a ledger entry adopting the reviewer as a compiled loadout and the residue as a projection while preserving the Sustain cadence, and 03 §Agent-originated product suggestions recording the first live use and the bootstrap exception",
+        "severity": "major",
+        "evidenceLabel": "by inspection",
+        "observed": "The staged ledger adds three sections at docs/lineage/idea-ledger.md:26-152 (v0.5.0 retiming, claim-free wildcard lowering, WO-029 breakout) but none adopts the reviewer-as-compiled-loadout or residue-as-projection ideas or preserves the Sustain cadence; the only other Entropy Reducer mentions are the 2026-09-04 gardening note at line 213 and the founding corpus at line 3611. docs/product/03-architecture.md §Agent-originated product suggestions (lines 697-762) is untouched by the diff and contains no reference to the Entropy Reducer, WO-023, a live use, or the direct-to-work-orders bootstrap exception. The other three write-backs (05 §5S, PLAYBOOK row, docs/README map) are present.",
+        "expected": "Both write-backs exist before implementation-ready is recorded. The 03 sentence about the first live use may legitimately land after this episode, but the bootstrap-exception record and the ledger adoption entry do not depend on the run and belong in the implementation diff.",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Run: grep -n -E \"Sustain|residue as (a )?projection|compiled loadout\" docs/lineage/idea-ledger.md and confirm no WO-023 adoption entry exists among the new sections at lines 26-152",
+            "Run: grep -n -E \"Entropy Reducer|WO-023|bootstrap exception|first live use\" docs/product/03-architecture.md and observe no matches",
+            "Compare both results with the five write-back items listed at docs/work-orders/WO-023-compile-entropy-reducer.md:202-209"
+          ]
+        },
+        "evidenceRefs": [
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:202-209",
+          "docs/lineage/idea-ledger.md:26-152",
+          "docs/lineage/idea-ledger.md:213",
+          "docs/product/03-architecture.md:697-762"
+        ],
+        "surface": "docs/lineage/idea-ledger.md; docs/product/03-architecture.md",
+        "altitude": 6,
+        "standardization": {
+          "kind": "one-off"
+        }
+      },
+      {
+        "findingId": "ER-003",
+        "criterion": "Publication surfaces classify each material claim with the least mature honest status (docs/publication/audience-status-index.md:3-11) and the docs map names artifacts that exist",
+        "severity": "minor",
+        "evidenceLabel": "by inspection",
+        "observed": "docs/publication/audience-status-index.md:153 marks 'v0.5.0 — Compiled Entropy Reducer → WO-023' as implemented while the order is active with no verification or final review (docs/control/current.md:19-24), whereas the released and verified v0.3.0 and v0.4.0 rungs at lines 151-152 still read planned. docs/README.md:30-31 states docs/instance currently holds the residue, refutation plan, and run evidence, but the index tracks only RESIDUE.md and REFUTATION-PLAN.md under docs/instance.",
+        "expected": "An unverified active rung carries at most planned (or the index's own least-mature rule), released rungs carry implemented or verified, and the docs map names only tracked artifacts or states that run evidence is pending.",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Open docs/publication/audience-status-index.md and compare the status column of lines 151, 152 and 153",
+            "Open docs/control/current.md lines 17-24 and confirm WO-023 is active with no verification or final review recorded",
+            "Run: git ls-files docs/instance and compare the two listed files with the description at docs/README.md:30-31"
+          ]
+        },
+        "evidenceRefs": [
+          "docs/publication/audience-status-index.md:151-153",
+          "docs/publication/audience-status-index.md:3-11",
+          "docs/control/current.md:17-24",
+          "docs/README.md:30-31",
+          "scripts/check-publication.mjs:18-26"
+        ],
+        "surface": "docs/publication/audience-status-index.md; docs/README.md",
+        "altitude": 6,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "lint",
+          "rationale": "Three roadmap-rung rows are now wrong in opposite directions, so the status column drifts in both directions across orders. scripts/check-publication.mjs already parses the index and validates the status vocabulary (lines 18-26); binding rung rows to the control log (no implemented or verified without a passing verification) would remove the manual judgment that produced this drift."
+        }
+      },
+      {
+        "findingId": "ER-004",
+        "criterion": "AC4 lens-brief validation and the compiled constraint 'never inspect docs/intake/** during a review episode' (WO-023 constraints; docs/instance/entropy-reducer/RESIDUE.md:9)",
+        "severity": "minor",
+        "evidenceLabel": "by inspection",
+        "observed": "validateLensFileScope at packages/skeleton/src/loadouts/entropy-reducer.ts:1111-1128 rejects only literal forms ('docs', 'docs/', '.', './', absolute, backslash, '.' or '..' segments, 'docs/intake', 'docs/intake/' prefix). The scope 'docs//intake/' splits to ['docs','','intake',''], matches no rejection branch, and is accepted although it resolves to docs/intake/ on POSIX; on the case-insensitive default macOS filesystem 'Docs/Intake/' is likewise accepted. The AC4 test at packages/skeleton/test/entropy-reducer.test.ts:560-570 probes only 'docs/', 'docs/intake/', './docs/intake/', '../outside/' and '/absolute/'.",
+        "expected": "The scope is normalized before the intake check (collapse repeated separators, strip leading './', compare case-insensitively or against git ls-files paths) so no spelling of the ignored intake root passes, and the AC4 test includes the double-separator and case variants as negative controls.",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Read validateLensFileScope at packages/skeleton/src/loadouts/entropy-reducer.ts:1111-1128",
+            "Trace the string 'docs//intake/' through each condition: split('/') yields ['docs','','intake',''], no segment is '.' or '..', the string is neither 'docs/intake' nor prefixed by 'docs/intake/', so no OutputValidationError is thrown",
+            "Confirm the AC4 negative cases at packages/skeleton/test/entropy-reducer.test.ts:560-570 do not include a repeated-separator or case variant",
+            "Optional after npm run build, where the harness permits inline node: node --input-type=module -e \"import { validateLensBrief, entropyReducerLensBriefs } from './packages/skeleton/dist/src/loadouts/entropy-reducer.js'; console.log(validateLensBrief({ ...entropyReducerLensBriefs[0], files: ['docs//intake/'] }).files);\" prints the scope instead of throwing"
+          ]
+        },
+        "evidenceRefs": [
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:1111-1128",
+          "packages/skeleton/test/entropy-reducer.test.ts:560-570",
+          "docs/instance/entropy-reducer/RESIDUE.md:9",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:176-179"
+        ],
+        "surface": "packages/skeleton/src/loadouts/entropy-reducer.ts",
+        "altitude": 5,
+        "standardization": {
+          "kind": "one-off"
+        }
+      },
+      {
+        "findingId": "ER-005",
+        "criterion": "AC5: the typed output contract enforces a result-envelope summary under 200 words; Sparse Receipt emits that contract as an evidence-schema (docs/instance/entropy-reducer/RESIDUE.md:52)",
+        "severity": "minor",
+        "evidenceLabel": "by inspection",
+        "observed": "reviewerOutputContract at packages/skeleton/src/loadouts/entropy-reducer.ts:488 expresses the limit with maxWordCountExclusive: 200, a keyword no JSON Schema draft defines, so any standard validator ignores it, including the harness --json-schema path recorded as observed in docs/discovery/environment.json:52 and named for the WO-009 transport at docs/product/06-roadmap.md:772. The limit is enforced only by the hand validator at line 1599. The suggestionId regex is duplicated verbatim in the schema (line 437) and the validator (line 1452), and no test compares the schema's required/properties lists with the validator's allowed-field lists; the AC5 test at packages/skeleton/test/entropy-reducer.test.ts:585-621 exercises the validator alone.",
+        "expected": "The emitted contract expresses only constraints a schema consumer can enforce, with the word limit documented as a host-side rule outside the schema (or expressed as a schema-enforceable maxLength), and one parity test guards each schema/validator pair against drift.",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Open packages/skeleton/src/loadouts/entropy-reducer.ts:472-491 and note maxWordCountExclusive at line 488 alongside standard keywords",
+            "Open lines 1598-1602 and confirm the 200-word rule exists only in validateResultEnvelope",
+            "Compare the regex at line 437 with the regex at line 1452",
+            "Search packages/skeleton/test for any assertion that reads reviewerOutputContract.required or .properties and compares them to validator behavior; none exists"
+          ]
+        },
+        "evidenceRefs": [
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:488",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:1599",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:437",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:1452",
+          "packages/skeleton/test/entropy-reducer.test.ts:585-621",
+          "docs/discovery/environment.json:52",
+          "docs/product/06-roadmap.md:772"
+        ],
+        "surface": "packages/skeleton/src/loadouts/entropy-reducer.ts",
+        "altitude": 8,
+        "standardization": {
+          "kind": "recurring",
+          "rung": "test",
+          "rationale": "Three schema objects (findingSchema, lensBriefSchema, reviewerOutputContract) are each mirrored by a hand validator in the same module; the duplicated regex and the schema-only keyword are two drift points already present, and WO-009 will hand the same contract to a transport validator. A dependency-free parity test over required and properties keys prevents silent divergence."
+        }
+      },
+      {
+        "findingId": "ER-006",
+        "criterion": "AC5 and the evidence gate: one recorded review episode runs from the compiled order, and the compile output is evidence a verifier can reproduce",
+        "severity": "minor",
+        "evidenceLabel": "by inspection",
+        "observed": "The dispatch for this episode cites the compiled semantic hash fnv1a64:b81d0609ee2e9fed together with the repo path and base commit but not the episode expiry. The hash preimage is the entire normalized compiled program (docs/product/04-interfaces.md:66-71), which includes the WorkOrder repo and baseCommit taken from the environment (packages/compiler/src/compile.ts:809-810) and the envelope expiresAt (packages/compiler/src/normalize.ts:174) set from episodeEndsAt (packages/skeleton/src/loadouts/entropy-reducer.ts:917). CompiledReviewerWorkOrder (lines 1014-1027) does not carry its compile inputs, so a verifier holding the record cannot recompute the cited hash.",
+        "expected": "The run record names every compile input beside the hash (repo, baseCommit, dispatchedAt, episodeEndsAt), or the compiled reviewer artifact carries those inputs, so the recorded hash is independently reproducible. WO-029's pin design should state the same environment inputs explicitly, since a moved worktree path alone changes the pin.",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Read docs/product/04-interfaces.md:66-71 and note that every executable field of the compiled program participates in the hash",
+            "Read packages/compiler/src/compile.ts:809-810 and packages/compiler/src/normalize.ts:174 to confirm repo, baseCommit and expiresAt are in the normalized program",
+            "Read packages/skeleton/src/loadouts/entropy-reducer.ts:911-919 and :1014-1027 to confirm expiresAt equals episodeEndsAt and that the returned artifact omits the compile options",
+            "Confirm the episode's dispatch record states repo and base commit but no episodeEndsAt or dispatchedAt"
+          ]
+        },
+        "evidenceRefs": [
+          "docs/product/04-interfaces.md:66-71",
+          "packages/compiler/src/compile.ts:809-810",
+          "packages/compiler/src/normalize.ts:174",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:917",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:1014-1027",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:176-180",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:197-200"
+        ],
+        "surface": "packages/skeleton/src/loadouts/entropy-reducer.ts; WO-023 evidence gate",
+        "altitude": 6,
+        "standardization": {
+          "kind": "one-off"
+        }
+      },
+      {
+        "findingId": "ER-007",
+        "criterion": "WO-023 'What compiles where' (docs/work-orders/WO-023-compile-entropy-reducer.md:53-62): only stance and reading order remain as residue and that residue is emitted by the compile step from the definitions, so editing a definition changes the prompt",
+        "severity": "minor",
+        "evidenceLabel": "by inspection",
+        "observed": "renderEntropyReducerResidue emits the reading-order, clean-room, execution-boundary and output paragraphs as string literals at packages/skeleton/src/loadouts/entropy-reducer.ts:2041, 2043, 2045 and 2056. Identity dispositions and invariants (lines 799-814), role obligations (830-834) and active semantics (868-872) are never rendered, so editing any of them leaves docs/instance/entropy-reducer/RESIDUE.md byte-identical; the AC3 mutation test at packages/skeleton/test/entropy-reducer-artifacts.test.ts:73-160 perturbs supports only. The literal clean-room paragraph also states that probes and intake capture 'remain confined to their compiled roots' while no compiled datum names a root; the envelope carries only effect patterns and counts (lines 911-920).",
+        "expected": "Stance prose derives from identity, role and active fields (or those fields are dropped as inert data), the AC3 mutation test covers them, and the residue claims only what the compiled artifact actually contains.",
+        "reproduction": {
+          "kind": "inspection",
+          "steps": [
+            "Read renderEntropyReducerResidue at packages/skeleton/src/loadouts/entropy-reducer.ts:2008-2059 and list which graph fields appear in the output: identity name/id/version, role name/id/version, active name, masks, supports",
+            "Confirm identity.dispositions and identity.invariants (799-814), role.obligations (830-834) and the active's semantics (868-872) do not appear",
+            "Confirm the paragraphs at lines 2041, 2043, 2045 and 2056 are literals rather than data-derived text",
+            "Confirm packages/skeleton/test/entropy-reducer-artifacts.test.ts:73-160 mutates only supportFacets"
+          ]
+        },
+        "evidenceRefs": [
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:2039-2056",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:799-814",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:830-834",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:868-872",
+          "packages/skeleton/src/loadouts/entropy-reducer.ts:911-920",
+          "packages/skeleton/test/entropy-reducer-artifacts.test.ts:73-160",
+          "docs/instance/entropy-reducer/RESIDUE.md:7-11",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:53-62"
+        ],
+        "surface": "packages/skeleton/src/loadouts/entropy-reducer.ts; docs/instance/entropy-reducer/RESIDUE.md",
+        "altitude": 6,
+        "standardization": {
+          "kind": "one-off"
+        }
+      }
+    ],
+    "proposalPackets": [
+      {
+        "schemaVersion": 1,
+        "kind": "ProductSuggestionPacket",
+        "proposedPath": "docs/proposals/reference-and-status-integrity-lint/",
+        "sourceEpisodeId": "ep_entropy_reducer_20260904_001",
+        "provenance": [
+          "episode:ep_entropy_reducer_20260904_001",
+          "finding:ER-001",
+          "finding:ER-003",
+          "docs/product/06-roadmap.md:67-84"
+        ],
+        "corroboratingEvidenceRefs": [
+          "docs/work-orders/WO-105-crash-shape-corpus.md:38",
+          "docs/work-orders/WO-109-shape-first-source-remine.md:46-47",
+          "docs/work-orders/WO-023-compile-entropy-reducer.md:42",
+          "docs/publication/audience-status-index.md:151-153",
+          "docs/README.md:30-31",
+          "scripts/check-publication.mjs:18-26"
+        ],
+        "dissentingEvidenceRefs": [
+          "docs/product/06-roadmap.md:67-84 (the retiming note scopes itself to unpublished targets and did update WO-009, WO-010 and WO-011 correctly)",
+          "docs/product/07-execution-guide.md:384-415 (time-indexing exempts closed historical orders, so a resolver must not flag them)"
+        ],
+        "suggestion": {
+          "suggestionId": "reference-and-status-integrity-lint",
+          "submittedBy": "entropy-reducer@1",
+          "problemOrOpportunity": "Dated retimings and module refactors strand cross-references and status rows. Two forward retimings in five days each required a manual sweep across roadmap headings, index anchors, work-order titles and cites, ADR amendments and the map; this one left version-named cites in two open drafts, left the active order citing a module that no longer exports the named symbols, and marked an unverified rung implemented while released rungs still read planned.",
+          "scope": "Extend scripts/check-publication.mjs or add a sibling script that (a) resolves every open work order's Cites against current product headings and named package exports and (b) refuses implemented or verified index rows for roadmap rungs whose work order has no passing verification in docs/control/resume.jsonl. Forward-only: closed historical orders are exempt and nothing is backfilled.",
+          "evidenceRefs": [
+            "finding:ER-001",
+            "finding:ER-003",
+            "docs/work-orders/WO-105-crash-shape-corpus.md:38",
+            "docs/work-orders/WO-109-shape-first-source-remine.md:46-47",
+            "docs/work-orders/WO-023-compile-entropy-reducer.md:42",
+            "docs/publication/audience-status-index.md:151-153",
+            "docs/product/06-roadmap.md:67-84"
+          ],
+          "affectedUsers": [
+            "planner (Fable 5) performing retimings and activations",
+            "executors and verifiers reading cited sections cold",
+            "final reviewers checking publication surfaces"
+          ],
+          "affectedSystems": [
+            "scripts/check-publication.mjs",
+            "docs/publication/audience-status-index.md",
+            "docs/work-orders",
+            "docs/planning/work-order-map.md",
+            "docs/control/resume.jsonl"
+          ],
+          "expectedValue": "Removes a recurring manual sweep from every retiming and refactor, and stops stale cites or premature status from reaching verification, where they cost independent-review bandwidth (the current binding constraint per Principle 9).",
+          "altitude": 8,
+          "uncertainty": "Work-order Cites are free prose; a resolver needs a conservative pattern for heading and module references and may require a small cite convention before it can run strictly. The false-positive rate on existing drafts is unmeasured.",
+          "risks": [
+            "A strict lint that blocks publication for prose it cannot parse",
+            "False positives on closed historical orders unless they are exempted by control-log state",
+            "Encouraging cite rewrites that obscure the time-indexed history of an order"
+          ],
+          "alternatives": [
+            "Keep manual sweeps but add a checklist of citing surfaces to each dated retiming note",
+            "Let WO-026's generated work-order index carry rung status derived from control evidence and leave cites unchecked",
+            "Do nothing until the next retiming and measure how many cites it strands"
+          ],
+          "duplicationHints": [
+            "WO-026 generated work-order index over control evidence",
+            "scripts/check-publication.mjs existing link, lock and status-vocabulary checks",
+            "docs/product/07-execution-guide.md Time-index the standard"
+          ],
+          "urgencyRationale": "Not urgent. Schedule before the next forward retiming or alongside WO-026 activation; the evidenced constraint is operator review bandwidth, and this reduces review noise rather than adding capability."
+        }
+      }
+    ],
+    "resultEnvelope": {
+      "workOrderId": "wo_entropy_review_1",
+      "episodeId": "ep_entropy_reducer_20260904_001",
+      "status": "completed",
+      "resultId": "res_entropy_reducer_20260904_001",
+      "summary": "Read-only review of the WO-023 staged subject at base e3e639f. Measured: 170 of 170 kernel, compiler and skeleton tests pass, 8 of 8 WO-101 corpus tests pass, formatter and whitespace checks are clean, and tracked status is byte-identical after the build with only ignored dist output created. The compiled loadout, claim-free prefix-glob lowering, residue regeneration, lens-brief ceiling and refutation selection match the order and its cited doctrine; no settled decision is reopened. WO-029 is useful before WO-009, honest that it is unnecessary today, keeps FNV non-cryptographic, and states its v1 to v2 payload migration precisely. Seven findings: one major (two of five write-back duties absent: the adoption ledger entry and the 03 product-suggestions record) and six minor (stale cites after the retiming and the WO-016 refactor, index status ahead of evidence, a lens-scope validator bypass via a doubled separator, a non-standard schema keyword, an unreproducible dispatch hash, residue stance as renderer literals). One proposal packet: a reference-and-status integrity lint. The harness denied inline node probes, so two findings are by inspection with exact steps. Operator disposition is required.",
+      "requiresHuman": true
+    },
+    "cleanRoom": {
+      "status": "passed",
+      "stopConditionsFound": false,
+      "evidenceRefs": [
+        "census: git ls-files enumerated 256 tracked paths (156 docs, 47 packages, 24 corpus, 19 scripts, 10 root); every file opened was named by the Git index",
+        "docs/intake contains only three tracked .gitkeep placeholders and none was opened; .git, .claude settings, remotes and external sources were not inspected",
+        "no employer code, configuration, identifier, internal service, credential, or private identifier was encountered in the staged subject or the build and test output",
+        "all probes ran inside the scratch clone; build output landed only in ignored packages/*/dist paths and git status shows no tracked change"
+      ]
+    }
+  },
+  "validation": {
+    "transportSchema": "passed after the disclosed adaptation",
+    "hostRuntimeValidator": "passed",
+    "reportEmitPreparation": "passed"
+  },
+  "confinement": {
+    "scratchInventory": {
+      "excludedFromManifest": [".git/**", "**/node_modules/**"],
+      "beforeCount": 256,
+      "afterCount": 331,
+      "beforeSha256": "c3c301803b764d79872c86d42eeec9920b5c555bf7460168ed238102ff02ab4a",
+      "afterSha256": "eec15915d262153c97f716821445a6a2f5d4a9238ecdd4e726f12ef665cddf40",
+      "deltaCount": 75,
+      "deltaPaths": [
+        "packages/compiler/dist/src/compile.d.ts",
+        "packages/compiler/dist/src/compile.js",
+        "packages/compiler/dist/src/index.d.ts",
+        "packages/compiler/dist/src/index.js",
+        "packages/compiler/dist/src/normalize.d.ts",
+        "packages/compiler/dist/src/normalize.js",
+        "packages/compiler/dist/src/render.d.ts",
+        "packages/compiler/dist/src/render.js",
+        "packages/compiler/dist/src/seiri.d.ts",
+        "packages/compiler/dist/src/seiri.js",
+        "packages/compiler/dist/src/types.d.ts",
+        "packages/compiler/dist/src/types.js",
+        "packages/compiler/dist/src/views.d.ts",
+        "packages/compiler/dist/src/views.js",
+        "packages/compiler/dist/test/compiler.test.d.ts",
+        "packages/compiler/dist/test/compiler.test.js",
+        "packages/compiler/dist/test/public-api.test.d.ts",
+        "packages/compiler/dist/test/public-api.test.js",
+        "packages/compiler/dist/test/purity.test.d.ts",
+        "packages/compiler/dist/test/purity.test.js",
+        "packages/compiler/dist/test/tooltip.test.d.ts",
+        "packages/compiler/dist/test/tooltip.test.js",
+        "packages/compiler/dist/test/views.test.d.ts",
+        "packages/compiler/dist/test/views.test.js",
+        "packages/compiler/dist/tsconfig.tsbuildinfo",
+        "packages/kernel/dist/src/core.d.ts",
+        "packages/kernel/dist/src/core.js",
+        "packages/kernel/dist/src/index.d.ts",
+        "packages/kernel/dist/src/index.js",
+        "packages/kernel/dist/src/store.d.ts",
+        "packages/kernel/dist/src/store.js",
+        "packages/kernel/dist/src/types.d.ts",
+        "packages/kernel/dist/src/types.js",
+        "packages/kernel/dist/test/ac1-purity.test.d.ts",
+        "packages/kernel/dist/test/ac1-purity.test.js",
+        "packages/kernel/dist/test/ac2-replay-store.test.d.ts",
+        "packages/kernel/dist/test/ac2-replay-store.test.js",
+        "packages/kernel/dist/test/ac3-cadence.test.d.ts",
+        "packages/kernel/dist/test/ac3-cadence.test.js",
+        "packages/kernel/dist/test/ac4-continuations.test.d.ts",
+        "packages/kernel/dist/test/ac4-continuations.test.js",
+        "packages/kernel/dist/test/ac5-failure-rows.test.d.ts",
+        "packages/kernel/dist/test/ac5-failure-rows.test.js",
+        "packages/kernel/dist/test/ac6-authorization.test.d.ts",
+        "packages/kernel/dist/test/ac6-authorization.test.js",
+        "packages/kernel/dist/test/ac7-readme-map.test.d.ts",
+        "packages/kernel/dist/test/ac7-readme-map.test.js",
+        "packages/kernel/dist/test/kernel.test.d.ts",
+        "packages/kernel/dist/test/kernel.test.js",
+        "packages/kernel/dist/test/public-api.test.d.ts",
+        "packages/kernel/dist/test/public-api.test.js",
+        "packages/kernel/dist/test/wo017-evaluable-kinds.test.d.ts",
+        "packages/kernel/dist/test/wo017-evaluable-kinds.test.js",
+        "packages/kernel/dist/tsconfig.tsbuildinfo",
+        "packages/skeleton/dist/src/audit.d.ts",
+        "packages/skeleton/dist/src/audit.js",
+        "packages/skeleton/dist/src/cli.d.ts",
+        "packages/skeleton/dist/src/cli.js",
+        "packages/skeleton/dist/src/loadouts/entropy-reducer.d.ts",
+        "packages/skeleton/dist/src/loadouts/entropy-reducer.js",
+        "packages/skeleton/dist/src/reactor.d.ts",
+        "packages/skeleton/dist/src/reactor.js",
+        "packages/skeleton/dist/src/scenario.d.ts",
+        "packages/skeleton/dist/src/scenario.js",
+        "packages/skeleton/dist/test/audit.test.d.ts",
+        "packages/skeleton/dist/test/audit.test.js",
+        "packages/skeleton/dist/test/cli.test.d.ts",
+        "packages/skeleton/dist/test/cli.test.js",
+        "packages/skeleton/dist/test/entropy-reducer-artifacts.test.d.ts",
+        "packages/skeleton/dist/test/entropy-reducer-artifacts.test.js",
+        "packages/skeleton/dist/test/entropy-reducer.test.d.ts",
+        "packages/skeleton/dist/test/entropy-reducer.test.js",
+        "packages/skeleton/dist/test/scenario.test.d.ts",
+        "packages/skeleton/dist/test/scenario.test.js",
+        "packages/skeleton/dist/tsconfig.tsbuildinfo"
+      ],
+      "disposition": "All 75 deltas are ignored packages/*/dist build output."
+    },
+    "intakeInventory": {
+      "method": "metadata-only; intake contents were not read or hashed",
+      "publicPathProjection": "Absolute local roots are replaced by <main-checkout> aliases; the local run record retains exact paths.",
+      "before": [
+        {
+          "path": "<main-checkout>/docs/intake/notes/WO-023-expanded-ideation-2026-09-04.md",
+          "exists": true,
+          "size": 7776,
+          "mtimeMs": 1788534990221.2185,
+          "mode": 420
+        },
+        {
+          "path": "<main-checkout-parent>/DotLn-intake-20260904T151630Z.zip",
+          "exists": true,
+          "size": 33710032,
+          "mtimeMs": 1788534991030.7668,
+          "mode": 384
+        }
+      ],
+      "after": [
+        {
+          "path": "<main-checkout>/docs/intake/notes/WO-023-expanded-ideation-2026-09-04.md",
+          "exists": true,
+          "size": 7776,
+          "mtimeMs": 1788534990221.2185,
+          "mode": 420
+        },
+        {
+          "path": "<main-checkout-parent>/DotLn-intake-20260904T151630Z.zip",
+          "exists": true,
+          "size": 33710032,
+          "mtimeMs": 1788534991030.7668,
+          "mode": 384
+        }
+      ],
+      "byteMetadataIdentical": true
+    }
+  },
+  "disposition": {
+    "findingCount": 7,
+    "proposalPacketCount": 1,
+    "proposalFiling": "not authorized and not filed",
+    "nextStep": "Fresh blinded refutation before repair."
+  }
+}

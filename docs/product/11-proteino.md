@@ -1,10 +1,18 @@
-# προτείνω (proteíno) — the first-party application thesis
+# προτείνω (protíno) — the first-party application thesis
 
 **Status:** operator-named product destination, post-1.0 horizon, and member of
 the intended first application cohort. This is the intended shape of a flagship
 first-party DotLn application, not a claim that it is already compelling in
 use, a release allocation, an implementation plan, or permission to distort the
 earlier platform rungs.
+
+**Modern Greek Verb:** προτείνω (protíno). Here `protíno` is a Latin
+pronunciation guide; the Greek form is first-person singular (“I suggest” or “I
+propose”) and serves as the dictionary headword for “to suggest” or “to
+propose.” The related noun `πρόταση` means “suggestion” or “proposal”; the
+product name uses the verb. The existing
+`11-proteino.md` filename is a historical documentation path, not the canonical
+Latin display form or a settled technical slug.
 
 DotLn is the platform. **προτείνω** is the place where its ideas become
 playable: an explorable simulated community whose residents continue living
@@ -439,7 +447,7 @@ sports simulator, or a library of every source pattern.
 
 ## Unresolved product choices
 
-- canonical technical slug and transliteration;
+- canonical technical slug (the pronunciation guide is `protíno`);
 - first world, resident model, population, and persistence boundary;
 - run, pause, pacing, catch-up, and background-persistence semantics;
 - operator role inside or outside the world;

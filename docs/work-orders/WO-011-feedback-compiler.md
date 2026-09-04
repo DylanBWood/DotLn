@@ -1,14 +1,16 @@
-# WO-011 — Feedback compiler v1 (ten units), v0.7.0
+# WO-011 — Feedback compiler v1 (ten units; application version assigned at activation)
 
 **Model:** any capable model.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** `v0.7.0` minor — adds backwards-compatible
+**Release classification:** minor, with the application version assigned at
+activation under the roadmap's 2026-09-04 retiming. Adds backwards-compatible
 FeedbackUnit compilation and the first bounded self-hosted path.
 **Depends on:** WO-010 complete; WO-004's startup-context accounting (the
 baseline for the measured-reduction exit criterion); WO-009's transports (the
 self-hosted step).
 
-**Cites (read these sections):** 06-roadmap.md v0.7.0 (the ten units are
+**Cites (read these sections):** 06-roadmap.md §Application version pending —
+Feedback compiler v1 (the ten units are
 enumerated there — that list is this order's whole inventory);
 02-domain-model.md §Feedback (FeedbackUnit, Mechanism hierarchy, Gem
 maturity, Semantic correction events); 01-principles.md Principles 5 and 7;
@@ -60,5 +62,6 @@ the context-reduction measurement; the witnessed self-hosted run; every
 criterion mapped to a named test or witnessed run.
 
 **Non-goals:** the full pattern shelf; more than ten units; console surfaces
-(v0.8.0); autonomy-rung computation and set bonuses (v0.9.0); replacing the
+(the projections-and-console rung); autonomy-rung computation and set bonuses
+(the pattern-workshop rung); replacing the
 operator playbook wholesale.

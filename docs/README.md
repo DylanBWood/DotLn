@@ -27,6 +27,8 @@ docs/releases/     historical v0.2.0 records + forward tag-manifest template;
                    later immutable manifests/notes live in annotated tags
 docs/discovery/    labeled machine-audit outputs, runtime target maps, and the
                    bounded local-inference capability packet
+docs/instance/     generated and reviewed instance projections; currently the
+                   Entropy Reducer residue, refutation plan, and run evidence
 ```
 
 Pipeline status: founding intake ingested and synthesized (2026-08-30). The
