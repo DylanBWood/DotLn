@@ -1,6 +1,7 @@
 # WO-010 — Independent verification, v0.6.0
 
 **Model:** any capable model.
+**Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** `v0.6.0` minor — adds backwards-compatible
 verifier episodes, findings, repair continuation, and evidence staleness.
 **Depends on:** WO-009 complete.

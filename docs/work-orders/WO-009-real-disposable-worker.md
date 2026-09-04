@@ -1,6 +1,7 @@
 # WO-009 — Real disposable worker, v0.5.0
 
 **Model:** any capable model.
+**Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** `v0.5.0` minor — adds real worker transports and
 their scheduler/runtime lifecycle without breaking the deterministic fakes.
 **Depends on:** WO-008 complete (build order per ADR-0002 §1); WO-004's

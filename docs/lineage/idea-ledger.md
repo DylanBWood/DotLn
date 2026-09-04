@@ -23,6 +23,88 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-04 gardening planning pass (operator-dispatched, after the `v0.4.0` close)
+
+Source: the operator's 2026-09-04 dispatch for a quick planning and
+repo-gardening session run as the entropy reducer with Beware of Naive
+Interventionism equipped, preserved locally as a compaction-safety capture in
+`docs/intake/notes/2026-09-04-gardening-planning-dispatch.md`. The session was
+asked to declare Effort where drafts still lacked it, assess the product docs and
+ledger for missing, stale, or misordered work orders, and watch for refactoring
+and organization needs. It filed no new work order. Identifiers are opaque
+stable references; a recommendation records a finding and a bounded route, not
+activation authority. The clean-room screen found no employer, credential,
+internal-service, or other stop condition.
+
+- **Every remaining draft declares Effort before activation, at one uniform
+  floor** `adopted`
+  - WO-009, WO-010, WO-011, WO-014, WO-102, WO-103, WO-105, WO-107, and WO-108
+    gained `executor xhigh+; verifier xhigh+; reviewer any` directly after their
+    Model field; no other wording changed. The floor matches every declaration
+    written or accepted since WO-016. On this machine it changes nothing
+    practical for the Codex-targeted corpus track: discovery records only a
+    persisted `xhigh` selector for Codex CLI 0.153.0, so a Codex actor can
+    attest `xhigh` or `unknown` and nothing between, while `any` would have
+    admitted `unknown`. WO-109's `high+` carve-out for mechanical side routines
+    remains the model for an exception, granted per order through the dated
+    amendment path rather than by a lower default; WO-107 is the order most
+    likely to want it, since the roadmap intends profiling orders to be
+    executable by a low-cost model.
+- **WO-023's pull-forward trigger fired; it now follows WO-018 directly**
+  `adopted`
+  - The 2026-09-03 pass recorded the condition (a fourth manual review or
+    planning session before WO-021 closes); this session is that fourth. WO-008's
+    close also discharged the other waiting reason, since the reviewer now
+    compiles against the real `@dotln/compiler` instead of a second
+    hand-assembled loadout. The map's recommended sequence is WO-018 → WO-023 →
+    WO-028 → WO-026 → WO-020 → WO-021 → WO-009 → WO-022 → WO-010 → WO-011.
+    Activation must retarget WO-023's compile step from its pre-WO-008
+    `compile*` fallback to the landed compiler, and whichever minor lands first
+    takes `v0.5.0`, which makes the pinned WO-009 through WO-011 targets subject
+    to the roadmap's dated retiming note; that consequence already followed from
+    the previous sequence.
+- **The tree at `v0.4.0` is healthy, and WO-018 remains the only refactor due**
+  `adopted`
+  - `npm test` is green at `9293d50` (154 node tests plus every shell suite) and
+    leaves tracked files unchanged; there are no stray worktrees or branches,
+    and the 109 local checkpoint refs remain the only record of historical
+    transition times until WO-028. The duplicated script helpers WO-018
+    enumerated are still present in the same counts, so its observed-problem
+    list is current. The kernel's `stableHash` and the compiler's `fnv1a64` are
+    one FNV-1a 64 algorithm implemented twice because the compiler deliberately
+    depends on nothing; both are pinned by tests (the WO-101 vectors and the
+    compiler hash suite), so the duplication is watched rather than a defect.
+    The main checkout's `.claude/settings.local.json` is ignored by a
+    machine-local Git exclude rather than the repository's `.gitignore`, which
+    is exactly the gap WO-018's scope clarification closes.
+- **Declined candidates, each with its reversal condition** `preserved`
+  - Filing the claim-layer authority floor (WO-008 VER-001 F2) as a work order:
+    NoOp. FINAL-001 nominated it for the rung at which graphs stop being
+    author-trusted; WO-022 and WO-023 compile author-trusted graphs. Reverse at
+    the first saved build or non-author graph.
+  - Filing the audit link-first fold: NoOp. The demo log carries canonical links
+    since WO-016, but no shipped projection groups wrongly today. Reverse at
+    WO-020 activation preflight if beacon groupings need it, or on a fixture
+    showing a wrong adjacency grouping.
+  - Filing the canonical private intake reconciliation helper: NoOp. Three
+    closes have met the manual reconciliation step, but the private-store
+    choices are open and the helper would want WO-018's `scripts/lib/`. Reverse
+    after WO-018 lands or at the next close refused for worktree intake.
+  - Marking `@dotln/kernel` `private: true` in this pass: NoOp. The ledger's
+    2026-09-03 gap is still open, but a manifest change with a
+    publication-refusal test is implementation that needs verification. Reverse
+    by naming it as a bounded boy-scout item in the next order that edits
+    package manifests, or in the licensing gate.
+  - Cleaning the stale "reserved `v0.2.2`/`v0.2.3`" sentences in the corpus
+    drafts and runbook: NoOp. They are harmless history and the activation-time
+    H1 rewrite touches the same paragraph. Reverse at each activation.
+  - Promoting the capability table's compiler row from staged to verified
+    `1 — demonstrable`: NoOp. The reviewer left it staged; the end-of-order
+    check owns promotion. Reverse at WO-026 or the next capability-table pass.
+  - Retiming the pinned WO-009 through WO-011 versions now: NoOp. It requires
+    explicit operator authorization and a dated migration note. Reverse when
+    WO-023 or WO-020 activates as `v0.5.0`.
+
 ## WO-008 implementation — composition compiler v1 (2026-09-03)
 
 Source: the active WO-008 implementation episode on the published `v0.3.6`

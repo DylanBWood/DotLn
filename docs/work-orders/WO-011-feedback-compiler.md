@@ -1,6 +1,7 @@
 # WO-011 — Feedback compiler v1 (ten units), v0.7.0
 
 **Model:** any capable model.
+**Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** `v0.7.0` minor — adds backwards-compatible
 FeedbackUnit compilation and the first bounded self-hosted path.
 **Depends on:** WO-010 complete; WO-004's startup-context accounting (the

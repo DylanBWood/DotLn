@@ -3,6 +3,7 @@
 **Model:** Codex (any capable tier); any capable model may substitute. State the
 model and effort actually run in the result (07-execution-guide.md
 §Model-specific notes).
+**Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** assigned by the planner at activation. Before
 `resume -- activate`, the planner MUST rewrite this H1 to carry exactly one
 strict `vX.Y.Z` — `scripts/release.mjs` refuses any work-order heading without
