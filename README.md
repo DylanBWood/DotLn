@@ -79,7 +79,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source is DotLn `v0.5.0`. The deterministic walking skeleton still runs the compiled Repo Gardener + Seiri scenario, and a second founding identity now compiles as instance content: the Entropy Reducer carries Shine linked to Standardize plus seven bounded supports, tracked/control-plane-read-only authority with bounded scratch and intake-capture writes, one-shot cadence, typed manual Program, output/refutation validators, and one generated residue. The pure compiler now lowers direct terminal prefix globs only in claim-free authority compositions; participating wildcard claim targets and direct wildcards mixed with participating authority claims still refuse, while unequipped catalog definitions remain inert. WO-023 records one operator-mediated Claude Fable 5.1 `max` review and a fresh blinded refutation as evidence, not as runtime transport: `Program.All` remains deferred and the executable scenario's executor and verifier remain deterministic fakes. The semantic hash remains a non-cryptographic equality key. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
+This source is DotLn `v0.5.1`. Control transitions now record their host append time, status exposes the latest completed phase durations, and a read-only recovery command labels historical times from local checkpoint refs. The deterministic walking skeleton still runs the compiled Repo Gardener + Seiri scenario, and a second founding identity now compiles as instance content: the Entropy Reducer carries Shine linked to Standardize plus seven bounded supports, tracked/control-plane-read-only authority with bounded scratch and intake-capture writes, one-shot cadence, typed manual Program, output/refutation validators, and one generated residue. The pure compiler now lowers direct terminal prefix globs only in claim-free authority compositions; participating wildcard claim targets and direct wildcards mixed with participating authority claims still refuse, while unequipped catalog definitions remain inert. WO-023 records one operator-mediated Claude Fable 5.1 `max` review and a fresh blinded refutation as evidence, not as runtime transport: `Program.All` remains deferred and the executable scenario's executor and verifier remain deterministic fakes. The semantic hash remains a non-cryptographic equality key. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
@@ -281,9 +281,12 @@ before-and-after. Candidate first world: a basketball squad. See
   disciplined himself to trust. Inception is nested episodes on different time
   bases. Ex Machina is why the author's assurance profile separates implementer
   and verifier by structure rather than by habit.
-- **The 12 Days of Christmas rule.** A replacement singer joining on day four
-  needs the current verse, tempo, and score, not a recording of every prior
-  performance. That is why fresh task-scoped sessions are normal here.
+- **The Twelve Days of Christmas context analogy.** Each later verse carries
+  the earlier material with it. Starting a fresh session with an enormous
+  inherited context is like beginning the song on day five: the first verse
+  you sing is already long. DotLn aims to preserve durable history while
+  loading only the context needed for the present task, so past success does
+  not become an ever-growing admission cost to new work.
 - **Nothing in the blueprint is allowed to disappear.** The idea ledger is
   append-only, holds every significant founding idea from eleven chats, four
   notes files, and forty-six images, and superseding an entry requires naming

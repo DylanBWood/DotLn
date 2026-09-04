@@ -134,7 +134,8 @@
       "claude-code": {
         "versions": [
           {"classification": "observed", "value": "2.1.259"},
-          {"classification": "observed", "value": "2.1.260"}
+          {"classification": "observed", "value": "2.1.260"},
+          {"classification": "observed", "value": "2.1.261", "observedAt": "2026-09-04T16:49:38-04:00"}
         ],
         "persistedEffortSelector": {"classification": "not found", "key": "effortLevel", "value": "unknown"},
         "sessionEffortSelector": {"classification": "documented locally", "control": "--effort", "values": ["low", "medium", "high", "xhigh", "max"]},
@@ -156,7 +157,7 @@
           {"classification": "observed", "value": "0.153.0"},
           {"classification": "observed", "value": "0.153.2", "observedAt": "2026-09-04T14:13:12-04:00"}
         ],
-        "persistedEffortSelector": {"classification": "observed", "key": "model_reasoning_effort", "value": "xhigh"},
+        "persistedEffortSelector": {"classification": "observed", "key": "model_reasoning_effort", "value": "max", "observedAt": "2026-09-04T19:56:47Z", "harnessVersion": "0.153.2", "previousObservation": {"classification": "observed", "value": "xhigh", "workOrder": "WO-019"}, "scope": "named persisted key only; operator selects GPT-6 Astra/max for Codex steps; not effective-session readback"},
         "sessionEffortSelector": {"classification": "not found", "dedicatedControl": "--effort", "genericConfigOverride": {"classification": "documented locally", "control": "--config key=value"}},
         "effectiveEffortReadback": {"classification": "not found", "value": "unknown", "harnessReadbackEligible": false}
       }

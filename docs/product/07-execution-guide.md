@@ -29,12 +29,17 @@ operator is deliberately not repeating themselves.
    warns that the projection disagrees with the fold, trust the returned fold,
    report the mismatch, and let the next legal state-changing command refresh
    the projection; never repair it by hand.
+   Timing is projection data: `recordedAt` is the latest event's append time or
+   `null`; `elapsed` maps each phase's latest completed attempt to signed
+   milliseconds or `"unknown"` when an endpoint predates the migration.
+   Durations never affect legality and do not use recovered checkpoint times.
 2. Run the matching transition and follow the paths it prints — they are
    authoritative, and they are the whole briefing:
 
    | Operator says           | You run                                                                                                                                                                                                                    | You then                                                                                                                                                                                                                                                                 |
    | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
    | `resume: status`        | `npm run resume -- status` (or `npm run resume --silent -- status --json` for a machine consumer)                                                                                                                          | report; both forms are read-only, append nothing, and do not rewrite a stale Markdown projection                                                                                                                                                                         |
+   | `resume: times`         | `npm run resume --silent -- times`                                                                                                                                                                                         | report the read-only JSON observation in append order, its three source labels and count of local refs read; refuse missing/mismatched required refs; append nothing and leave the projection unchanged                                                                  |
    | `resume: next`          | `npm run resume -- next`                                                                                                                                                                                                   | in `active`, execute the emitted work-order path; in `closed`, report that the repo is between work orders and give the exact `worktree start` command                                                                                                                   |
    | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                    | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                                                   |
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
@@ -44,7 +49,7 @@ operator is deliberately not repeating themselves.
    At the dated Codex baseline, run each **state-changing** `resume` command
    with explicit outside-sandbox approval on its first invocation. Codex
    workspace-write protects the resolved Git directory, while each transition's
-   recovery checkpoint writes a Git object and ref there. `status` is read-only;
+   recovery checkpoint writes a Git object and ref there. `status` and `times` are read-only;
    `next` appends no event and creates no checkpoint but refreshes the workspace
    projection. Neither needs Git escalation. Never run a transition sandboxed
    and then repeat it: the transition records even when its optional checkpoint
@@ -351,6 +356,12 @@ a stub but never perform a backfill against origin.
   adjacent cleanup only under the bounded boy-scout policy (unambiguous, low
   risk, covered by the same verification, doesn't obscure the diff) — otherwise
   file a candidate task.
+- **Release assignment is opt-out (operator default, 2026-09-04).** Prepare
+  the classified next release and update its source claim unless the operator
+  specifies no release. Complete a missing activation target under
+  `06-roadmap.md` §Release boundary and record the base/classification; do not
+  repeatedly ask for routine release assignment. Retiming an existing target
+  and publishing still follow their separate authority rules.
 - **Evidence gates over prose.** Completion claims require the work order's
   evidence: passing tests you ran, output you captured, behavior you witnessed.
   Read your own diff before reporting. Never infer completion.
@@ -462,6 +473,13 @@ a stub but never perform a backfill against origin.
 
 ## Model-specific notes
 
+- **Operator default (2026-09-04):** Codex steps use GPT-6 Astra at `max`
+  unless the operator specifies otherwise. This is an operator-attested
+  selection; record the actual exposed harness/version and do not call it
+  effective-session readback. Preserve the active work order's minimums and
+  explicitly handle a conflicting required actor instead of silently
+  substituting. Other harnesses and the Entropy Reducer's compiled Fable
+  assignment retain their own declarations.
 - A required model is a hard constraint under Principle 8, and declared effort
   is a hard constraint under the active work order and WO-019 mechanism. If you
   do not meet either, stop and say so; never silently proceed as a substitute. Every
@@ -517,6 +535,19 @@ a stub but never perform a backfill against origin.
   disclosed low-versus-documented-xhigh drift, and historical free-form labels
   remain what their reports said rather than being rewritten into the new
   ladder. See `docs/PLAYBOOK.md` §Who does what.
+- **Control-time migration (2026-09-04, WO-028):** every new transition
+  records host UTC `recordedAt` at append; it is optional under schema version
+  `1`, and old events are never rewritten. Timing cannot order events or grant
+  a legal action. Status reports the latest completed attempt per phase with
+  signed milliseconds, `unknown` for missing endpoints, and no recovered-time
+  substitution. `resume times` labels each event `recordedAt`,
+  `recovered-from-local-checkpoint-ref`, or `unknown`; a required missing or
+  mismatched local ref refuses. The dated
+  `docs/discovery/control-event-times-2026-09-04.json` observation preserves
+  120 second-precision committer times and 15 unknowns from the activation log;
+  its refs remain unpushed. This public profile deliberately publishes timing,
+  while stricter profiles can omit it or declare coarser public observations.
+  No token, cost, or attention telemetry is authorized by this field.
 - Behavioral guidance rots across model generations; that is why it lives here
   as typed mechanisms and docs instead of prompts. If an instruction here fights
   your model's defaults (e.g., built-in verification), flag it in your result

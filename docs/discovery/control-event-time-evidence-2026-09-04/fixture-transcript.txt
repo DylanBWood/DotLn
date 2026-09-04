@@ -1,0 +1,7 @@
+time append: 10 events, all 8 types, valid host times and non-decreasing order in one process; invalid append preserved bytes
+time projection: mixed={"implementation":"unknown","verification":4000,"repair":3000,"finalReview":5000}; latest attempts, in-flight phases, activation reset, absent and backwards times checked
+time validation: 15 malformed values refuse with ordinal and preserve log/projection; valid leap day accepted
+time-blind current.md cmp: absent passed
+time-blind current.md cmp: reordered passed
+time-blind current.md cmp: backwards passed
+time recovery: {"recordedAt":1,"recovered-from-local-checkpoint-ref":1,"unknown":1}, 1 ref read; byte-identical rerun, unchanged log/projection/refs, missing and mismatched refs refused

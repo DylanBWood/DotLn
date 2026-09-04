@@ -23,6 +23,95 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-028 implementation — control append time and labeled recovery (2026-09-04)
+
+Source: WO-028's control-time authority, its activation log, and executable
+fixture evidence in `docs/discovery/control-event-time-evidence-2026-09-04/`.
+The implementation consumes the consolidated control parser and Git runner;
+no intake source or employer-derived material entered this change.
+
+- **Control append time is recorded evidence, not lifecycle authority** `adopted`
+  - Every new transition records canonical millisecond UTC `recordedAt` under
+    optional schema-v1 compatibility. Invalid present values refuse; valid
+    absence, field order, and backwards times cannot change phase, legal
+    actions, or recovery advertisement. A separate projection reports the
+    latest completed attempt of each phase with signed milliseconds or
+    unknown endpoints; it neither sums attempts nor treats waiting as effort.
+- **Historical time recovery preserves its source and precision** `adopted` `recovered`
+  - The read-only `times` command and dated observation distinguish recorded
+    append time, local-checkpoint committer time, and unknown. At activation,
+    120 of 135 events had recoverable times from 120 named refs; the remaining
+    15 stayed unknown. The 122 local checkpoint refs were byte-identical before
+    and after the implementation evidence run. Recovery never edits the log,
+    substitutes into phase timing, or pushes checkpoint objects. The public
+    timing choice is explicit; token, cost, attention, and other private-lane
+    telemetry remain outside this work.
+
+## WO-028 expanded ideation — cumulative context, success under growth, and Entropy Reducer use (2026-09-04)
+
+Source: the operator's three ideation subjects and preceding model/release
+steering, captured unedited in main's local-only
+`docs/intake/notes/WO-028-expanded-ideation-2026-09-04.md`. The canonical file
+matches its validated owner-only backup `DotLn-intake-20260904T195218Z.zip`;
+the provisional worktree copy was removed after byte comparison. Ordinary
+Shape-First Synthesis rewrites the meaning for public docs. No employer code,
+configuration, identifier, service detail, credential, private identifier, or
+other clean-room stop condition was found. The operator explicitly authorized
+returning to WO-028 after the complete pipeline and stopping at readiness for
+independent verification.
+
+- **The cumulative-song analogy concerns inherited startup cost** `transformed`
+  - This supersedes the earlier **12-Days-of-Christmas restart framing** entry's
+    replacement-performer/current-score interpretation, which remains unchanged
+    as history. Each later verse already contains earlier material; a fresh
+    session admitted with a large inherited context starts with the burden of a
+    later verse before doing new work. The public README, Principle 4, and
+    inspirations register now preserve that relation. Source retention and
+    task-context admission remain different budgets; no lyrics are needed in
+    the public synthesis.
+- **A successful decision can create its own later failure mode** `preserved`
+  - A candidate review asks how the property producing today's benefit scales
+    into tomorrow's burden, which scenario and observation would reveal the
+    crossover, and whether to prevent, experiment, watch, or accept it. This is
+    distinct from the six-month with/without livability comparison and works
+    beside Theory of Constraints and Beware of Naive Interventionism. Growing
+    evidence/context, event-fold cost, workflow handoffs, and change fan-out are
+    hypotheses, not an indictment of current architecture or a license to
+    reopen settled tradeoffs. Keep the review inside the existing decision
+    rather than adding compulsory ceremony to every edit.
+- **Routine observation need not imply an optimization campaign** `preserved`
+  - A candidate bounded system baseline can show size, processing latency,
+    context admission, workflow flow, and dependency fan-out over comparable
+    conditions while no intervention is underway. Its source, missingness,
+    outcome denominator, collection cost, retention, and privacy boundary must
+    be explicit. Daily is a possible cadence, not a newly installed scheduler.
+    Use neutral system language publicly; the operator's personal routine is
+    the source shape, not a body judgment. Feed selected trends or exceptions
+    to models, never another unbounded raw stream that recreates the problem.
+- **The shipped Entropy Reducer needs an honest operator entry point** `adopted`
+  - `docs/instance/entropy-reducer/README.md` now provides a manual Fable 5.1/max
+    dispatch, frozen-subject requirements, existing compile/validation APIs,
+    fresh blinded refutation, and the stop at operator disposition. It neither
+    launches a review here nor invents a resume command, transport, scheduler,
+    or self-promotion authority. Its generated residue and immutable first-run
+    receipts remain unchanged.
+- **Compiled Shape-First still has a literal-first ordering mismatch** `preserved`
+  - Inspection of the v0.5.0 support and generated residue found literal
+    weaknesses/fixes requested before extracting the useful relation. The new
+    guide supplies the operator's explicit shape-first correction at dispatch.
+    A bounded follow-on must correct the typed support, regenerate its output,
+    and verify the changed contract; no hand edit pretends it has already
+    shipped. The corrected song analogy does not depend on performing that
+    later implementation now.
+- **Routine workflow defaults should not require repeated opt-in** `adopted`
+  - The operator selected GPT-6 Astra/max for Codex steps going forward; bounded
+    local discovery observed the `max` persisted selector for Codex CLI 0.153.2,
+    with no effective-session-readback claim or settings mutation. The operator
+    also authorized assigning/updating normal release targets by default,
+    opting out explicitly when desired. WO-028 takes the next compatible patch,
+    v0.5.1 above v0.5.0. Existing retiming, independent verification, merge, and
+    publication authorities remain separate.
+
 ## WO-023 expanded ideation — context projections and `προτείνω` naming (2026-09-04)
 
 Source: two operator ideation messages during the active WO-023 implementation,

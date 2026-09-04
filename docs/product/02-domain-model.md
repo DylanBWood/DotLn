@@ -119,6 +119,9 @@ unassisted-human record is `{ harness: "human", harnessVersion:
 New activation events also carry `effortDeclarationValidated: true`. Its absence
 marks pre-migration history rather than false, and does not weaken WO-019's own
 strict declaration boundary.
+From WO-028, optional control-event `recordedAt` records the host's UTC append
+time, independently of kernel `occurredAt`; append order alone determines
+lifecycle state, and historical absence remains valid under schema version 1.
 
 ## Identity and composition
 

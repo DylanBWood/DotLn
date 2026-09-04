@@ -1,11 +1,14 @@
-# WO-028 — Control-event time: `recordedAt` on every appended control event, an elapsed-phase projection, and labeled recovery of historical times from local checkpoint refs (version assigned at activation)
+# WO-028 — Control-event time: `recordedAt` on every appended control event, an elapsed-phase projection, and labeled recovery of historical times from local checkpoint refs, v0.5.1
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Expected
-class: patch. It adds one optional field to a public evidence surface and a
-read-only projection; no exported runtime capability.
+**Release classification:** `v0.5.1` patch above published `v0.5.0`, assigned
+with explicit operator authority on 2026-09-04 after activation omitted the
+target. It adds one optional field to a public evidence surface and a
+read-only projection; no exported runtime capability. The operator also made
+release assignment/update the default unless explicitly opted out; publication
+still requires its existing lifecycle dispatch.
 **Nomination provenance:** the 2026-09-03 planning pass, which measured the
 control log while checking the recent ledger entries for store-or-not-store
 consequences. Planner-synthesized draft; the operator's planning messages are
@@ -181,3 +184,132 @@ time anywhere.
    machine only.
 4. WO-021 consumes `recordedAt` for the control-plane beacon; that is a note
    in the map, not an edit to WO-021's operator-authored draft.
+
+## Operator-authorized ideation breakout receipt — 2026-09-04
+
+**Authority and return:** During `resume: next`, the operator opened three
+ideation subjects: correct the cumulative-song/context analogy; consider how
+successful choices can create future failure and how routine observation could
+expose the trend; and explain use of the shipped Entropy Reducer. The operator
+explicitly authorized completing the full intake pipeline, returning to this
+implementation, and stopping when ready for independent verification. Earlier
+steering selected GPT-6 Astra/max for Codex steps and normal release assignment
+by default; this order is now the v0.5.1 patch above published v0.5.0.
+
+**Intake and source treatment:** The complete unedited messages are in main's
+canonical ignored `docs/intake/notes/WO-028-expanded-ideation-2026-09-04.md`.
+Worktree staging, canonical bytes, and the entry in the validated
+`DotLn-intake-20260904T195218Z.zip` backup were compared byte for byte; the
+archive is mode 0600 and the redundant worktree capture was removed only after
+that proof. No reconciliation remains pending. This is ordinary Shape-First
+Synthesis, not direct filing of a public draft. The clean-room screen found no
+employer code/configuration/identifier, internal service, credential, private
+identifier, or other stop condition.
+
+**Promoted surfaces:** README, Principle 4, and `docs/lineage/inspirations.md`
+correct the cumulative startup burden; the new idea-ledger section names the
+older incorrect entry it supersedes without rewriting it. Vision, the pattern
+library's candidate success-under-growth support, and the roadmap's candidate
+bounded baseline preserve the proposed review and observation shapes.
+`docs/instance/entropy-reducer/README.md`, the pattern library, architecture,
+playbook, and docs map document the existing manual entry point. The roadmap,
+execution guide, playbook, and bounded environment observation record the
+operator's workflow defaults. The planning map retains the still-unallocated
+compiled Shape-First correction. Publication index and source locks accompany
+these product edits.
+
+**Boundaries and unresolved choices:** The current compiled Shape-First
+support's literal-first wording conflicts with the corrected operator intent;
+the guide states an explicit dispatch correction, while a future code change
+must regenerate and test the typed support. No old ledger, ADR, generated
+residue, or review receipt was rewritten. Measurement cadence, thresholds,
+retention, privacy lane, first consumer, and whether the post-decision check
+becomes an equipped mechanic remain candidates. No scheduler, performance
+collector, review launcher, fresh Entropy Reducer episode, dependency, kernel
+schema, or additional lifecycle gate is implemented by this breakout. The
+existing control-event-time implementation was preserved during it.
+
+**Required review:** The verifier and final reviewer must inspect these
+surfaces and this receipt alongside the timestamp implementation. Verify
+source fidelity and the corrected analogy, retention of historical lineage,
+candidate/current distinctions, the neutral public observation language,
+consistency with settled tradeoffs and current Entropy Reducer contracts,
+version/publication surfaces, privacy limits, and links. No ad hoc executable
+helper was added for the ideation; the usage guide refers to existing compiled
+APIs and the existing intake backup mechanism was used.
+
+## Implementation evidence receipt — 2026-09-04
+
+**Executor:** Codex CLI `0.153.2`, `gpt-6-astra`, `max`,
+`operator-attested`. The operator selected the model and effort for Codex
+steps; bounded discovery observed only the named persisted effort selector,
+not effective-session readback. The base is `27e344b`, published `v0.5.0`;
+this compatible change prepares `v0.5.1`. This is executor evidence, not an
+independent verification or final-review verdict.
+
+**Implementation:** `scripts/resume.mjs` stamps/validates append time and
+validates optional historical values with their ordinal. Its lifecycle fold
+still derives exactly the same non-temporal state. The separate
+`scripts/lib/control-time.mjs` projection uses append order and reports the
+latest completed attempt per phase; retries do not sum and signed negative
+differences remain visible. `statusProjection(events)` is now the common
+structured projection for CLI, worktree, and release readers. Both sibling
+scripts retain JSON control consumption and contain no `current.md` parse.
+The schema remains `1`, there are no new transitions or dependencies, and
+package source/version/lockfile bytes are unchanged.
+
+**Executable evidence:** `npm test` passed all script suites, all 173 package
+tests, and the separate eight-test WO-101 corpus, with zero failures or skips.
+Publication checks report 175/175 indexed product headings and current locks
+for 27 everyday-user and 42 software-engineer source sections. The new
+[fixture transcript](../discovery/control-event-time-evidence-2026-09-04/fixture-transcript.txt)
+records all eight event types in one process, malformed append/fold refusal,
+mixed unknown/numeric timing, retry/reset behavior, and successful masked
+`current.md` comparisons for absent, reordered, and backwards timestamps.
+Checkpoint fixtures cover all three time labels, missing/mismatched/foreign
+and non-commit refs, no partial output, unchanged log/projection/refs, and
+recorded times when Git or checkpoint creation is unavailable. Existing
+checkpoint assertions are unchanged; the new cases are appended.
+
+**Historical observation:**
+[`control-event-times-2026-09-04.json`](../discovery/control-event-times-2026-09-04.json)
+is byte-identical to `npm run resume --silent -- times` over the activation
+log: 135 events, zero `recordedAt`, 120
+`recovered-from-local-checkpoint-ref`, 15 `unknown`, and 120 refs read. Every
+recovered time was independently compared with `git show -s --format=%ct`
+against the event's recorded checkpoint SHA, using separate UTC conversion.
+The observation SHA-256 is
+`6fea01da8e80db4a83967a0a138b6b1ac6d6e9aef0e139df7a0518cebdf1b51e`.
+After later transitions, reproduce against the first 135 events rather than
+pretending the dated observation includes them. Those original JSONL bytes
+have SHA-256
+`f58fb9fdfaf7b716d2bfd79ad965f33be651f80d087c27383ad7cfc4952dfc18`
+and remained unchanged through the evidence run. WO-028's activation predates
+the new field, so its implementation duration remains honestly unknown.
+
+**Ref preservation:** The actual `git for-each-ref --format='%(refname) %(objectname)' refs/dotln/` captures
+[before](../discovery/control-event-time-evidence-2026-09-04/refs.before.txt)
+and [after tests](../discovery/control-event-time-evidence-2026-09-04/refs.after-tests.txt)
+are byte-identical: 122 refs, SHA-256
+`b633771fe846588cb2b78503788a30400d78154c58437bfb3755a21ebf81c024`.
+No ref was pushed, moved, or deleted. The readiness transition may mint its
+own next local recovery ref through the existing checkpoint helper.
+
+**Size and remaining work:** top-level `scripts/*.mjs` total 4,395 lines
+against 4,378 on `main`, a delta of +17; the new shared time library is 135
+additional lines under `scripts/lib/`. Formatting and `git diff --check`
+passed. The operator-authorized ideation and missing-target assignment above
+are the scope additions. The compiled Shape-First correction and proposed
+observation mechanics remain explicitly unallocated. The self-referential
+resume helper was exercised through isolated fixtures and independent Git
+date/ref observations before it records this implementation's readiness.
+Independent verification must digest both the implementation and breakout
+receipt; this executor stops at `ready-to-verify`.
+
+**Readiness recorded:** `ImplementationReady` appended as event 136 with
+`recordedAt` and the actor above. The first 135 event bytes and branch HEAD
+remain unchanged. The
+[post-readiness ref capture](../discovery/control-event-time-evidence-2026-09-04/refs.after-readiness.txt)
+preserves all 122 prior refs and adds only
+`refs/dotln/checkpoint/WO-028/2`. The folded phase is `ready-to-verify`, its
+sole legal next action is `verify`, and no verification report was allocated.
