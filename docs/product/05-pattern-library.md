@@ -260,6 +260,107 @@ Status: operator hypothesis with strong external precedent, adopted in
 non-forcing form — comparisons recordable from v0.1.0, tournament machinery only
 when evidence accrues.
 
+## Candidate — Additional Opinion
+
+**Additional Opinion** is a candidate support that keeps an eligible action
+available long enough to dispatch another bounded episode over one frozen
+subject. The operator-facing **Second Opinion** preset permits exactly one
+additional episode—two total—while the generalized support permits a finite
+batch selected by count, concurrency, deadline, cost, and marginal-value stop
+rules. The first implementation should be the two-opinion preset. It caps batch
+width, prohibits recursive opinion-of-opinion fan-out, and does not add a
+universal self-loop to every state.
+
+“Same move again” means the same declared comparison input, not the same event-
+store state or command. Every subject snapshot binds the mode, WorkOrder id plus
+its exact content hash/revision, base commit and tree, acceptance criteria, input
+evidence, loadout, and environment contract. A verification or critique subject
+additionally pins the exact candidate diff or artifact hash. An implementation-
+variant subject pins only the shared request and base; each result records its
+own produced artifact ref and hash, so competing outputs do not masquerade as
+one subject artifact.
+Each intentional repeat receives a new episode and command identity under one
+batch correlation id; otherwise outbox deduplication would correctly erase it
+as a duplicate delivery. The log continues forward while the comparison input
+remains fixed. A stale or mismatched snapshot cannot join the batch.
+
+The support distinguishes five modes instead of laundering all plurality into
+“independence”:
+
+- a **replicate** repeats the same actor/model/loadout in a fresh episode to
+  measure stability and variance;
+- a **panel** deliberately varies actors, models, loadouts, or perspectives
+  while keeping the subject fixed;
+- a **critique** may see an earlier result and is therefore dependent by design;
+- an **implementation variant** produces a competing artifact from the same
+  base; and
+- a **verification opinion** evaluates the same exact candidate with
+  claim-typed evidence.
+
+Visibility is declared. Blind panel members do not see the implementer's
+narrative or one another; a review of another review is labeled critique rather
+than independent evidence. Repeating one model is useful experimental data but
+does not manufacture independent votes.
+
+Collection is lossless: eligibility and hard guards run first; result envelopes
+are normalized; exact and structural duplicates form clusters that retain every
+contributor, multiplicity, and evidence reference; an agreement/conflict graph
+keeps unique dissent visible; an optional synthesis summarizes without replacing
+raw results; and a separately authorized adjudicator chooses, rejects, or marks
+the conflict unresolved. An unresolved outcome routes to `fix`; it does not
+remain in collection or reopen the cohort. Semantic deduplication is itself a
+fallible judgment unless a deterministic fingerprint proves equality. Volume
+never creates authority or truth, and one evidenced blocking finding survives a
+larger number of passes. The adjudicator's preference and uncertainty policy
+composes with [influence response policies](#candidate--influence-response-policies)
+rather than creating a parallel precedence system.
+
+An opinion batch has an explicit seal. After sealing, no late result is silently
+admitted and the adjudicator cannot loop back into that batch; a late result is
+recorded as late or quarantined. Verification adjudication exits only toward
+`fix` or `final review`. Implementation adjudication selects one whole produced
+artifact, materializes a verification SubjectSnapshot for that exact result, and
+sends it to the existing independent-verification gate, or rejects/routes it to
+repair. Combining pieces creates another new candidate and snapshot whose prior
+evidence is stale. Direct final review is legal only when the exact selected
+artifact already carries all required independent verification. A later repair
+may open a new batch over its new snapshot, never reopen the sealed one.
+
+The operator's intake proposed the same two exits—`fix` or `final review`—for
+every adjudication. That uniform rule is preserved as the target but adopted now
+only for the recommended verification-only pilot. Applying it to raw
+implementation variants would skip the settled independent-verification gate,
+so the implementation extension remains deferred unless it adds the required
+`verify` route or otherwise resolves that assurance conflict explicitly. This is
+a documented transformation, not a silent reinterpretation of the proposal.
+
+Mutating variants require separate branches and worktrees from the same pinned
+base, with one writable agent per worktree. Read-only evaluators can address one
+immutable Git object, but build tools and report writers often mutate their
+checkout, so separate snapshots remain the safe default. A single host-owned
+recorder serializes canonical events; workers return typed envelopes rather than
+concurrently editing the log or one shared report. Selecting a whole candidate
+is the smallest merge surface. Patch synthesis belongs to a new, explicitly
+authorized integration episode and requires fresh evidence.
+
+This support can feed the Eye Dr Test only below hard constraints. Pairwise
+comparisons may measure operator preference and scoped outcomes such as elapsed
+time, cost, unique accepted findings, later repair, and final acceptance. Each
+observation records task class, order/randomization, actor/model/harness and
+versions, effort and source, loadout, snapshot, visibility mode, resource use,
+and outcome. Ratings remain replaceable projections; correlated runs, unequal
+task difficulty, verbosity, and selection order are confounders rather than
+model quality.
+
+Open choices include the exact snapshot and result schemas; which states are
+eligible; sequential versus parallel collection; timeout, quorum, cancellation,
+and partial-batch policy; deterministic versus judgment-based deduplication;
+adjudicator identity and authority; retention and cleanup of losing worktrees;
+and the evidence threshold for stopping. `Program.All` plus Invoke/Await and an
+explicit join is the likely collect-all lowering; `Race` is not, because a fast
+result must not erase minority findings. Current resume control does not
+implement this candidate.
+
 ## Rhythm patterns
 
 Double Dutch (guarded opportunity window: watch → detect opening → prepare →

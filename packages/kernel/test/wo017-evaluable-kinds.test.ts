@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  CADENCE_KINDS,
   Cadence,
   EVALUABLE_CADENCE_KINDS,
   EVALUABLE_PROGRAM_KINDS,
@@ -47,6 +48,22 @@ const emitted: EventDraft = {
 };
 
 test("WO-017 evaluable-kind data: every listed Cadence and Program kind evaluates, every unlisted kind throws is deferred", () => {
+  assert.deepEqual(CADENCE_KINDS, [
+    "Once",
+    "After",
+    "Every",
+    "Burst",
+    "Calendar",
+    "Window",
+    "While",
+    "Until",
+    "Gate",
+    "Sequence",
+    "Merge",
+    "Race",
+    "Repeat",
+    "Backoff",
+  ]);
   assert.deepEqual(EVALUABLE_CADENCE_KINDS, [
     "Once",
     "After",
@@ -81,6 +98,16 @@ test("WO-017 evaluable-kind data: every listed Cadence and Program kind evaluate
     Cadence.Backoff(1, 2, 8, 0, 0),
   ];
   const evaluableCadences = new Set<string>(EVALUABLE_CADENCE_KINDS);
+  assert.deepEqual(
+    Object.keys(Cadence),
+    CADENCE_KINDS,
+    "the runtime constructors must cover the complete type-checked kind list",
+  );
+  assert.deepEqual(
+    cadences.map(({ kind }) => kind),
+    CADENCE_KINDS,
+    "the constructor fixture must cover the complete type-checked kind list",
+  );
   for (const cadence of cadences) {
     if (evaluableCadences.has(cadence.kind))
       assert.doesNotThrow(() => evaluateCadence(cadence, {}, env()));

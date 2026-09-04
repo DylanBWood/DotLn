@@ -169,11 +169,11 @@ not override `permissions.defaultMode`:
 
 This exact root `.claude/settings.local.json` is persistent operator-owned
 harness state. It is not read by the repository's release scripts or test
-chain, so WO-018 will allow its presence during main-checkout release close
-without copying or inspecting it. That exception is not a cleanup rule: a copy
-inside a disposable worktree remains protected and must block removal. Do not
-broaden the allowance to `.claude/**` or infer that moving the file immediately
-before close changes settings already loaded by the current harness session.
+chain, so main-checkout release close allows its presence without copying or
+inspecting it. That exception is not a cleanup rule: a copy inside a disposable
+worktree remains protected and must block removal. No other `.claude/**` path is
+allowed, and moving the file immediately before close does not change settings
+already loaded by the current harness session.
 
 `autoAllowBashIfSandboxed: true` is the explicit parallel-work tradeoff recorded
 by ADR-0004. It removes ordinary per-command review only for Bash that remains

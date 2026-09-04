@@ -12,7 +12,20 @@ second release PR.
 populates it only from the merged repository, installed toolchain, control
 state, and observed evidence. The same implementation re-derives those fields
 before publication; `npm run release -- validate <manifest.json>` exposes that
-validator for inspection and mutation tests.
+validator for inspection and mutation tests. Because the validator derives
+cadence compatibility from the built `@dotln/kernel` exports, run
+`npm run build` or the evidence gate before validating on a fresh checkout.
+After evidence builds the kernel, cadence compatibility comes from the built
+`@dotln/kernel` exports: the type-exhaustive `CADENCE_KINDS` constant supplies
+the complete list, `EVALUABLE_CADENCE_KINDS` supplies the evaluable subset, and
+the runtime `Cadence` constructors must match the complete list in both
+directions and return their named discriminants. The deferred list is their set
+difference. Missing, duplicate, extra, or inconsistent built exports refuse
+before tag creation. The control-log schema range likewise uses the
+constant exported by `scripts/resume.mjs`; release code does not scrape either
+value from source text. Committed release state is folded from the tagged
+`resume.jsonl` bytes through that same control implementation, while live
+lifecycle consumers use structured `resume status --json` output.
 `npm run release -- check-surfaces` is the non-mutating working-tree preview for
 the release-bearing README block, component versions, and current final-review
 GitHub bodies when those bodies exist. It consults origin's annotated tag refs,
@@ -49,17 +62,25 @@ human layer is visible on the
 [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases); its body
 links back to both local commands rather than duplicating the JSON manifest.
 
-`npm run release -- close WO-NNN` performs guarded closeout and preparation: it
-may fast-forward local `main` and remove the known merged worktree and local
-branch. At a new eligible boundary it also installs exact dependencies and runs
-release evidence, but without `--publish` it creates no tag. Lower and
+`release close WO-NNN` performs guarded closeout and preparation. On the first
+post-merge invocation, use the absolute subject-helper command emitted by
+`worktree publish` or `resume release-close`; it runs with main as the working
+checkout and uses the reviewed subject release and worktree helpers through the
+pre-fast-forward cleanup boundary. After the subject is removed, recoverable
+reruns use `npm run release -- close WO-NNN` from updated main. Either form may
+fast-forward local `main` and remove the known merged worktree and local branch.
+At a new eligible boundary it also installs exact dependencies and runs release
+evidence, but without `--publish` it creates no tag. Lower and
 already-published targets return after their own validation. Adding `--publish`
 is explicit authority to create and push only the validated annotated tag and,
 after that push succeeds, create its matching GitHub Release. A post-tag Release
 failure is recoverable: rerun the same command, which validates the immutable
 tag and creates the missing projection or refuses the first differing body line
-without editing it. Neither form pushes a `main` commit, publishes a package, or
-implies binary, container, or hosted distribution.
+without editing it. Whether disposable built-kernel output is absent or already
+present, that retry reproduces the release evidence first so tagged
+compatibility data is checked against a fresh build rather than trusted ignored
+bytes. Neither form pushes a `main` commit, publishes a package, or implies
+binary, container, or hosted distribution.
 
 `npm run release -- publish-notes vX.Y.Z` is the separate operator-run backfill
 for an annotated tag that predates WO-024. It uses that tag's existing human

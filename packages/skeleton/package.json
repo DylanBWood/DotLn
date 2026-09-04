@@ -10,6 +10,6 @@
   },
   "dependencies": {
     "@dotln/compiler": "0.1.0",
-    "@dotln/kernel": "0.2.0"
+    "@dotln/kernel": "0.2.1"
   }
 }

@@ -59,6 +59,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Runtime primitive catalogs](../product/03-architecture.md#runtime-primitive-catalogs)                                                                        | software-engineer                   | planned   |
 | [Candidate — isolated execution environments](../product/03-architecture.md#candidate--isolated-execution-environments)                                       | everyday-ai-user, software-engineer | vision    |
 | [The agentic communication core](../product/03-architecture.md#the-agentic-communication-core)                                                                | software-engineer                   | planned   |
+| [Candidate — opinion cohorts and sealed adjudication](../product/03-architecture.md#candidate--opinion-cohorts-and-sealed-adjudication)                       | everyday-ai-user, software-engineer | vision    |
 | [Composition system](../product/03-architecture.md#composition-system)                                                                                        | software-engineer                   | planned   |
 | [Agent-originated product suggestions](../product/03-architecture.md#agent-originated-product-suggestions)                                                    | everyday-ai-user, software-engineer | planned   |
 | [Channel-plural intake, PR-backed registration](../product/03-architecture.md#channel-plural-intake-pr-backed-registration)                                   | software-engineer                   | planned   |
@@ -106,6 +107,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Systems & quality](../product/05-pattern-library.md#systems--quality)                                                                           | everyday-ai-user, software-engineer | planned |
 | [Party topology — commedia dell'arte (the masks)](../product/05-pattern-library.md#party-topology--commedia-dellarte-the-masks)                  | everyday-ai-user, software-engineer | planned |
 | [The Eye Dr Test — pairwise preference](../product/05-pattern-library.md#the-eye-dr-test--pairwise-preference)                                   | everyday-ai-user, software-engineer | planned |
+| [Candidate — Additional Opinion](../product/05-pattern-library.md#candidate--additional-opinion)                                                 | everyday-ai-user, software-engineer | vision  |
 | [Rhythm patterns](../product/05-pattern-library.md#rhythm-patterns)                                                                              | everyday-ai-user, software-engineer | planned |
 | [Candidate — temporal interaction interpretation](../product/05-pattern-library.md#candidate--temporal-interaction-interpretation)               | everyday-ai-user, software-engineer | vision  |
 | [Candidate — continuity-critical flow and binary quench](../product/05-pattern-library.md#candidate--continuity-critical-flow-and-binary-quench) | everyday-ai-user, software-engineer | vision  |

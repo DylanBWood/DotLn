@@ -16,6 +16,26 @@ assert_u202f() {
   "$node_bin" -e 'if (!Buffer.from(process.argv[1], "utf8").toString("hex").includes("e280af")) process.exit(1)' "$1"
 }
 test "$("$node_bin" -e 'process.stdout.write(Buffer.from(process.argv[1], "utf8").toString("hex"))' "$u202f")" = e280af
+if grep -Fq 'current.md' "$script_dir/release.mjs"; then
+  printf 'error: release lifecycle parses the Markdown control projection\n' >&2
+  exit 1
+fi
+invalid_json_path="$test_root/invalid-package.json"
+printf '{\n' >"$invalid_json_path"
+if invalid_json_output="$("$node_bin" --input-type=module -e '
+  import { pathToFileURL } from "node:url";
+  const helpers = await import(pathToFileURL(process.argv[1]).href);
+  try {
+    helpers.readJsonFile(process.argv[2]);
+  } catch (error) {
+    process.stderr.write(`${error.message}\n`);
+    process.exit(1);
+  }
+' "$script_dir/lib/paths.mjs" "$invalid_json_path" 2>&1)"; then
+  printf 'error: malformed JSON helper fixture succeeded\n' >&2
+  exit 1
+fi
+grep -Fq "invalid JSON in $invalid_json_path" <<<"$invalid_json_output"
 
 write_control_events() {
   local path="$1" id="$2" authority="$3"
@@ -44,8 +64,9 @@ make_repo() {
   git -C "$main" config "url.$origin.insteadOf" "$github_origin"
   git -C "$main" remote set-url origin "$github_origin"
   git -C "$main" switch -c main >/dev/null 2>&1
-  mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/releases" "$main/packages/kernel/src" "$main/packages/skeleton/dist/src" "$main/packages/skeleton/src"
+  mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/releases" "$main/packages/kernel/src" "$main/packages/kernel/test-fixtures" "$main/packages/skeleton/dist/src" "$main/packages/skeleton/src"
   cp "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
+  cp -R "$script_dir/lib" "$main/scripts/lib"
   cp "$script_dir/../docs/releases/tag-manifest.template.json" "$main/docs/releases/"
   printf '# Historical v0.2.0 manifest for WO-003\n' >"$main/docs/releases/v0.2.0.md"
   printf '# Historical v0.2.0 notes for WO-003\n' >"$main/docs/releases/v0.2.0-notes.md"
@@ -65,10 +86,36 @@ make_repo() {
     '  "packages": { "": { "name": "release-fixture", "devDependencies": { "typescript": "5.4.5" } } }' \
     '}' >"$main/package-lock.json"
   write_release_block "$main" v0.2.0
-  printf '{"name":"@dotln/kernel","version":"0.1.0"}\n' >"$main/packages/kernel/package.json"
+  printf '{"name":"@dotln/kernel","version":"0.1.0","type":"module"}\n' >"$main/packages/kernel/package.json"
   printf '{"name":"@dotln/skeleton","version":"0.2.0"}\n' >"$main/packages/skeleton/package.json"
   cp "$script_dir/../packages/kernel/src/types.ts" "$main/packages/kernel/src/types.ts"
   cp "$script_dir/../packages/kernel/src/core.ts" "$main/packages/kernel/src/core.ts"
+  printf '%s\n' \
+    'const kinds = ["Once", "After", "Every", "Burst", "Calendar", "Window", "While", "Until", "Gate", "Sequence", "Merge", "Race", "Repeat", "Backoff"];' \
+    'export const Cadence = Object.fromEntries(kinds.map((name) => [name, () => ({ kind: name })]));' \
+    'export const CADENCE_KINDS = kinds;' \
+    'export const EVALUABLE_CADENCE_KINDS = ["Once", "After", "Every", "Gate", "Until", "Backoff"];' >"$main/packages/kernel/test-fixtures/runtime-valid.mjs"
+  printf '%s\n' \
+    'const kinds = ["Once", "After", "Every", "Burst", "Calendar", "Window", "While", "Until", "Gate", "Sequence", "Merge", "Race", "Repeat", "Backoff"];' \
+    'export const Cadence = Object.fromEntries(kinds.map((name) => [name, () => ({ kind: name })]));' \
+    'export const CADENCE_KINDS = kinds;' >"$main/packages/kernel/test-fixtures/runtime-missing.mjs"
+  printf '%s\n' \
+    'const kinds = ["Once", "After", "Every", "Burst", "Calendar", "Window", "While", "Until", "Gate", "Sequence", "Merge", "Race", "Repeat", "Backoff"];' \
+    'const constructors = kinds.filter((name) => name !== "Burst");' \
+    'export const Cadence = Object.fromEntries(constructors.map((name) => [name, () => ({ kind: name })]));' \
+    'export const CADENCE_KINDS = kinds;' \
+    'export const EVALUABLE_CADENCE_KINDS = ["Once", "After", "Every", "Gate", "Until", "Backoff"];' >"$main/packages/kernel/test-fixtures/runtime-union-only.mjs"
+  printf '%s\n' \
+    'const kinds = ["Once", "After", "Every", "Burst", "Calendar", "Window", "While", "Until", "Gate", "Sequence", "Merge", "Race", "Repeat", "Backoff"];' \
+    'const constructors = [...kinds, "ConstructorOnly"];' \
+    'export const Cadence = Object.fromEntries(constructors.map((name) => [name, () => ({ kind: name })]));' \
+    'export const CADENCE_KINDS = kinds;' \
+    'export const EVALUABLE_CADENCE_KINDS = ["Once", "After", "Every", "Gate", "Until", "Backoff"];' >"$main/packages/kernel/test-fixtures/runtime-constructor-only.mjs"
+  printf '%s\n' \
+    'const kinds = ["Once", "After", "Every", "Burst", "Calendar", "Window", "While", "Until", "Gate", "Sequence", "Merge", "Race", "Repeat", "Backoff"];' \
+    'export const Cadence = Object.fromEntries(kinds.map((name) => [name, () => ({ kind: name })]));' \
+    'export const CADENCE_KINDS = kinds;' \
+    'export const EVALUABLE_CADENCE_KINDS = ["Once", "Missing"];' >"$main/packages/kernel/test-fixtures/runtime-inconsistent-evaluable.mjs"
   printf '%s\n' \
     'if (process.env.DOTLN_FIXTURE_NPM_FAIL === "skeleton") process.exit(9);' \
     'process.stdout.write("fixture skeleton passed\\n");' >"$main/packages/skeleton/dist/src/cli.js"
@@ -124,6 +171,15 @@ make_repo() {
     '  test)' \
     '    printf "test\\n" >>"$DOTLN_NPM_LOG"' \
     '    if [[ "${DOTLN_FIXTURE_NPM_FAIL:-}" == "test" ]]; then exit 8; fi' \
+    '    mkdir -p packages/kernel/dist/src' \
+    '    case "${DOTLN_FIXTURE_KERNEL:-valid}" in' \
+    '      missing) cp packages/kernel/test-fixtures/runtime-missing.mjs packages/kernel/dist/src/index.js ;;' \
+    '      union-only) cp packages/kernel/test-fixtures/runtime-union-only.mjs packages/kernel/dist/src/index.js ;;' \
+    '      constructor-only) cp packages/kernel/test-fixtures/runtime-constructor-only.mjs packages/kernel/dist/src/index.js ;;' \
+    '      inconsistent-evaluable) cp packages/kernel/test-fixtures/runtime-inconsistent-evaluable.mjs packages/kernel/dist/src/index.js ;;' \
+    '      valid) cp packages/kernel/test-fixtures/runtime-valid.mjs packages/kernel/dist/src/index.js ;;' \
+    '      *) printf "unexpected kernel fixture: %s\\n" "$DOTLN_FIXTURE_KERNEL" >&2; exit 65 ;;' \
+    '    esac' \
     '    printf "fixture npm test passed\\n" ;;' \
     '  *) printf "unexpected npm invocation: %s\\n" "$*" >&2; exit 64 ;;' \
     'esac' >"$bin/npm"
@@ -458,6 +514,18 @@ test "$ignored_output" = "error: main checkout contains ignored material that ca
 test -f "$main/$foreign_path"
 assert_no_candidate_tag "$main" "$origin"
 
+make_repo settings_scope
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+mkdir -p "$main/.claude"
+printf '/.claude/other.local.json\n' >>"$main/.git/info/exclude"
+printf 'other ignored harness state\n' >"$main/.claude/other.local.json"
+if settings_scope_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: broadened .claude release exception succeeded\n' >&2; exit 1; fi
+test "$settings_scope_output" = 'error: main checkout contains ignored material that can contaminate release evidence: .claude/other.local.json'
+test -f "$main/.claude/other.local.json"
+assert_no_candidate_tag "$main" "$origin"
+printf 'release influence permits only the exact root harness-settings path\n'
+
 make_repo nonmain
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -487,6 +555,7 @@ mkdir -p "$fixture/no-gh-bin"
 ln -s "$bin/git" "$fixture/no-gh-bin/git"
 missing_gh_trace="$fixture/git.trace"
 if missing_gh_output="$(cd "$main" && PATH="$fixture/no-gh-bin" DOTLN_NPM_LOG="$npm_log" GIT_TRACE="$missing_gh_trace" "$node_bin" "$main/scripts/release.mjs" close WO-099 --publish 2>&1)"; then printf 'error: release accepted missing gh\n' >&2; exit 1; fi
+test -s "$missing_gh_trace"
 grep -Fq 'gh is required before tag creation' <<<"$missing_gh_output"
 if grep -Fq ' mktag' "$missing_gh_trace"; then printf 'error: missing gh reached git mktag\n' >&2; exit 1; fi
 test ! -e "$npm_log"
@@ -497,6 +566,7 @@ commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 unauthenticated_trace="$fixture/git.trace"
 if unauthenticated_output="$(DOTLN_FIXTURE_GH_FAIL=auth GIT_TRACE="$unauthenticated_trace" release_close WO-099 --publish 2>&1)"; then printf 'error: release accepted unauthenticated gh\n' >&2; exit 1; fi
+test -s "$unauthenticated_trace"
 grep -Fq 'gh authentication is required before tag creation' <<<"$unauthenticated_output"
 if grep -Fq ' mktag' "$unauthenticated_trace"; then printf 'error: unauthenticated gh reached git mktag\n' >&2; exit 1; fi
 test ! -e "$npm_log"
@@ -520,11 +590,14 @@ mkdir -p "$main/docs/intake/images"
 intake_path="docs/intake/images/Screenshot 2026-08-30 at 10.01.24${u202f}PM.jpg"
 assert_u202f "$intake_path"
 printf 'surviving raw fixture\n' >"$main/$intake_path"
+mkdir -p "$main/.claude"
+printf 'surviving operator settings fixture\n' >"$main/.claude/settings.local.json"
 lower_output="$(release_close WO-099 --publish)"
 grep -Fq 'below latest release v0.2.0' <<<"$lower_output"
 test ! -e "$npm_log"
 test "$(git -C "$main" status --porcelain)" = ""
 test -f "$main/$intake_path"
+test -f "$main/.claude/settings.local.json"
 assert_no_candidate_tag "$main" "$origin" v0.0.2
 
 make_repo failures
@@ -535,27 +608,35 @@ assert_no_candidate_tag "$main" "$origin"
 if DOTLN_FIXTURE_NPM_FAIL=test release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: evidence failure published\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
 
-make_repo cadencefailure
-"$node_bin" -e '
-  const fs = require("node:fs");
-  const path = process.argv[1];
-  const source = fs.readFileSync(path, "utf8");
-  const malformed = source.replace("\n    default:\n", "\n");
-  if (malformed === source) process.exit(1);
-  fs.writeFileSync(path, malformed);
-' "$main/packages/kernel/src/core.ts"
-printf '{"name":"@dotln/kernel","version":"0.1.1"}\n' >"$main/packages/kernel/package.json"
+make_repo cadence_missing
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
-cadence_origin_before="$(git --git-dir="$origin" for-each-ref --format='%(objectname) %(refname)' | LC_ALL=C sort)"
-cadence_trace="$fixture/git.trace"
-if cadence_failure="$(GIT_TRACE="$cadence_trace" release_close WO-099 --publish 2>&1)"; then printf 'error: malformed cadence source published\n' >&2; exit 1; fi
-grep -Fq 'cannot derive cadence evaluator cases from source' <<<"$cadence_failure"
-if grep -Fq ' mktag' "$cadence_trace"; then printf 'error: malformed cadence source reached git mktag\n' >&2; exit 1; fi
-if grep -Fq ':refs/tags/v0.2.1' "$cadence_trace"; then printf 'error: malformed cadence source attempted a tag push\n' >&2; exit 1; fi
-test "$(git --git-dir="$origin" for-each-ref --format='%(objectname) %(refname)' | LC_ALL=C sort)" = "$cadence_origin_before"
+cadence_missing_origin_before="$(git --git-dir="$origin" for-each-ref --format='%(objectname) %(refname)' | LC_ALL=C sort)"
+cadence_missing_trace="$fixture/git.trace"
+if cadence_missing_failure="$(DOTLN_FIXTURE_KERNEL=missing GIT_TRACE="$cadence_missing_trace" release_close WO-099 --publish 2>&1)"; then printf 'error: missing built kernel constants published\n' >&2; exit 1; fi
+test -s "$cadence_missing_trace"
+grep -Fq 'built kernel cadence constants are missing' <<<"$cadence_missing_failure"
+if grep -Fq ' mktag' "$cadence_missing_trace"; then printf 'error: missing built kernel constants reached git mktag\n' >&2; exit 1; fi
+if grep -Fq ':refs/tags/v0.2.1' "$cadence_missing_trace"; then printf 'error: missing built kernel constants attempted a tag push\n' >&2; exit 1; fi
+test "$(git --git-dir="$origin" for-each-ref --format='%(objectname) %(refname)' | LC_ALL=C sort)" = "$cadence_missing_origin_before"
 assert_no_candidate_tag "$main" "$origin"
-printf 'malformed cadence source refused before tag publication\n'
+printf 'missing built kernel cadence constants refused before tag publication\n'
+
+make_repo cadence_inconsistent
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+cadence_inconsistent_origin_before="$(git --git-dir="$origin" for-each-ref --format='%(objectname) %(refname)' | LC_ALL=C sort)"
+for cadence_fixture in union-only constructor-only inconsistent-evaluable; do
+  cadence_inconsistent_trace="$fixture/git-$cadence_fixture.trace"
+  if cadence_inconsistent_failure="$(DOTLN_FIXTURE_KERNEL="$cadence_fixture" GIT_TRACE="$cadence_inconsistent_trace" release_close WO-099 --publish 2>&1)"; then printf 'error: inconsistent built kernel constants published (%s)\n' "$cadence_fixture" >&2; exit 1; fi
+  test -s "$cadence_inconsistent_trace"
+  grep -Fq 'built kernel cadence constants are inconsistent with the Cadence type union' <<<"$cadence_inconsistent_failure"
+  if grep -Fq ' mktag' "$cadence_inconsistent_trace"; then printf 'error: inconsistent built kernel constants reached git mktag (%s)\n' "$cadence_fixture" >&2; exit 1; fi
+  if grep -Fq ':refs/tags/v0.2.1' "$cadence_inconsistent_trace"; then printf 'error: inconsistent built kernel constants attempted a tag push (%s)\n' "$cadence_fixture" >&2; exit 1; fi
+  test "$(git --git-dir="$origin" for-each-ref --format='%(objectname) %(refname)' | LC_ALL=C sort)" = "$cadence_inconsistent_origin_before"
+  assert_no_candidate_tag "$main" "$origin"
+done
+printf 'inconsistent built kernel cadence constants refused before tag publication\n'
 
 make_repo conflict
 base_commit="$(git -C "$main" rev-parse HEAD)"
@@ -620,8 +701,13 @@ grep -Fq 'tag published; GitHub Release not created; rerun the same command' <<<
 test ! "$(git -C "$main" tag --list v0.2.1)"
 test "$(git --git-dir="$origin" cat-file -t v0.2.1)" = tag
 if grep -q '^release ' "$gh_log"; then printf 'error: gh release ran after failed local tag ref\n' >&2; exit 1; fi
+printf '%s\n' 'throw new Error("ignored stale artifact executed");' >"$main/packages/kernel/dist/src/index.js"
+ref_recovery_tests_before="$(grep -c '^test$' "$npm_log")"
 ref_recovery_output="$(release_close WO-099 --publish)"
 grep -Fq 'GitHub Release created' <<<"$ref_recovery_output"
+test -f "$main/packages/kernel/dist/src/index.js"
+test "$(grep -c '^test$' "$npm_log")" = "$((ref_recovery_tests_before + 1))"
+if grep -Fq 'ignored stale artifact executed' "$main/packages/kernel/dist/src/index.js"; then printf 'error: equal-tag recovery trusted stale ignored build output\n' >&2; exit 1; fi
 test "$(git -C "$main" cat-file -t v0.2.1)" = tag
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
 
@@ -634,8 +720,10 @@ test "$(git -C "$main" cat-file -t v0.2.1)" = tag
 test "$(git -C "$main" rev-list -n 1 v0.2.1)" = "$(git --git-dir="$origin" rev-list -n 1 v0.2.1)"
 test ! -e "$gh_state/v0.2.1.body"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+create_recovery_tests_before="$(grep -c '^test$' "$npm_log")"
 recovery_output="$(release_close WO-099 --publish)"
 grep -Fq 'GitHub Release created' <<<"$recovery_output"
+test "$(grep -c '^test$' "$npm_log")" = "$((create_recovery_tests_before + 1))"
 test -f "$gh_state/v0.2.1.body"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
 release_close WO-099 --publish >/dev/null
@@ -656,7 +744,73 @@ grep -Fq 'GitHub Release body differs at line 1' <<<"$mismatch_output"
 grep -Fq 'expected "DotLn v0.2.1"' <<<"$mismatch_output"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
 
+make_repo stale_helpers
+stale_release_marker="$fixture/stale-release.marker"
+stale_worktree_marker="$fixture/stale-worktree.marker"
+printf '%s\n' \
+  'import { writeFileSync } from "node:fs";' \
+  'writeFileSync(process.env.DOTLN_STALE_RELEASE_MARKER, "stale main release helper executed\n");' \
+  'throw new Error("stale main release helper executed");' >"$main/scripts/release.mjs"
+printf '%s\n' \
+  'import { writeFileSync } from "node:fs";' \
+  'writeFileSync(process.env.DOTLN_STALE_WORKTREE_MARKER, "stale main worktree helper executed\n");' \
+  'throw new Error("stale main worktree helper executed");' >"$main/scripts/worktree.mjs"
+git -C "$main" add scripts/release.mjs scripts/worktree.mjs
+git -C "$main" commit -m 'fixture stale main lifecycle helpers' >/dev/null
+git -C "$main" push origin main >/dev/null 2>&1
+stale_subject="$fixture/project-wo099"
+git -C "$main" worktree add "$stale_subject" -b wo-099 >/dev/null
+cp "$script_dir/release.mjs" "$script_dir/worktree.mjs" "$stale_subject/scripts/"
+commit_candidate "$stale_subject" WO-099 v0.2.1
+git -C "$stale_subject" push -u origin wo-099 >/dev/null 2>&1
+git clone "$origin" "$fixture/integrator" >/dev/null 2>&1
+git -C "$fixture/integrator" config user.email test@example.invalid
+git -C "$fixture/integrator" config user.name "DotLn Stale-Helper Integrator"
+git -C "$fixture/integrator" switch main >/dev/null 2>&1
+git -C "$fixture/integrator" merge --ff-only origin/wo-099 >/dev/null
+git -C "$fixture/integrator" push origin main >/dev/null 2>&1
+mkdir -p "$main/.claude" "$stale_subject/docs/intake/dist"
+printf 'persistent operator settings\n' >"$main/.claude/settings.local.json"
+printf 'protected staged intake\n' >"$stale_subject/docs/intake/dist/x.md"
+if stale_intake_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_STALE_RELEASE_MARKER="$stale_release_marker" DOTLN_STALE_WORKTREE_MARKER="$stale_worktree_marker" "$node_bin" "$stale_subject/scripts/release.mjs" close WO-099 2>&1)"; then
+  printf 'error: reviewed close deleted protected intake while main helpers were stale\n' >&2
+  exit 1
+fi
+grep -Fq 'docs/intake/dist/x.md' <<<"$stale_intake_output"
+test -f "$main/.claude/settings.local.json"
+test -f "$stale_subject/docs/intake/dist/x.md"
+test -d "$stale_subject"
+test -n "$(git -C "$main" branch --list wo-099)"
+test ! -e "$stale_release_marker"
+test ! -e "$stale_worktree_marker"
+rm -- "$stale_subject/docs/intake/dist/x.md"
+rmdir -- "$stale_subject/docs/intake/dist" "$stale_subject/docs/intake"
+stale_close_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_STALE_RELEASE_MARKER="$stale_release_marker" DOTLN_STALE_WORKTREE_MARKER="$stale_worktree_marker" "$node_bin" "$stale_subject/scripts/release.mjs" close WO-099)"
+grep -Fq 'Prepared and validated v0.2.1' <<<"$stale_close_output"
+test -f "$main/.claude/settings.local.json"
+test ! -e "$stale_subject"
+test "$(git -C "$main" branch --list wo-099)" = ""
+test "$(git -C "$main" rev-parse HEAD)" = "$(git -C "$main" rev-parse origin/main)"
+test ! -e "$stale_release_marker"
+test ! -e "$stale_worktree_marker"
+assert_no_candidate_tag "$main" "$origin"
+printf 'reviewed subject helpers guarded their own pre-fast-forward close and cleanup\n'
+
 make_repo success
+"$node_bin" -e '
+  const fs = require("node:fs");
+  const path = process.argv[1];
+  const source = fs.readFileSync(path, "utf8");
+  const changed = source.replace(
+    "export const CONTROL_LOG_SCHEMA_VERSION = 1;",
+    "export const CONTROL_LOG_SCHEMA_VERSION = 7;",
+  );
+  if (changed === source) process.exit(1);
+  fs.writeFileSync(path, changed);
+' "$main/scripts/resume.mjs"
+git -C "$main" add scripts/resume.mjs
+git -C "$main" commit -m 'fixture distinct control schema export' >/dev/null
+git -C "$main" push origin main >/dev/null 2>&1
 subject="$fixture/project-wo099"
 git -C "$main" worktree add "$subject" -b wo-099 >/dev/null
 tracked_path="scripts/release.${u202f}fixture.mjs"
@@ -704,26 +858,47 @@ remote_tags="$(git --git-dir="$origin" for-each-ref --format='%(refname)' refs/t
 test "$remote_tags" = $'refs/tags/v0.2.0\nrefs/tags/v0.2.1'
 published_object="$(git -C "$main" rev-parse v0.2.1^{tag})"
 case "$main/node_modules" in "$test_root"/*/node_modules) rm -rf -- "$main/node_modules" ;; *) exit 1 ;; esac
+rerun_ci_before="$(grep -c '^ci$' "$npm_log")"
+rerun_tests_before="$(grep -c '^test$' "$npm_log")"
 rerun_output="$(release_close WO-099 --publish)"
 grep -Fq 'v0.2.1 is already published' <<<"$rerun_output"
 test "$(git -C "$main" rev-parse v0.2.1^{tag})" = "$published_object"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
-test ! -e "$main/node_modules"
-(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" npm ci >/dev/null)
+test "$(grep -c '^ci$' "$npm_log")" = "$((rerun_ci_before + 1))"
+test "$(grep -c '^test$' "$npm_log")" = "$((rerun_tests_before + 1))"
+test -d "$main/node_modules"
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" manifest-from-tag v0.2.1 >"$fixture/manifest.json"
-"$node_bin" -e '
-  const assert = require("node:assert/strict");
-  const fs = require("node:fs");
-  const [path, tracked, leading] = process.argv.slice(1);
+"$node_bin" --input-type=module -e '
+  import assert from "node:assert/strict";
+  import fs from "node:fs";
+  import { pathToFileURL } from "node:url";
+  const [path, tracked, leading, kernelPath, resumePath] = process.argv.slice(1);
   const manifest = JSON.parse(fs.readFileSync(path, "utf8"));
+  const kernel = await import(pathToFileURL(kernelPath).href);
+  const resume = await import(pathToFileURL(resumePath).href);
+  const expectedKinds = ["Once", "After", "Every", "Burst", "Calendar", "Window", "While", "Until", "Gate", "Sequence", "Merge", "Race", "Repeat", "Backoff"];
+  assert.deepStrictEqual(kernel.CADENCE_KINDS, expectedKinds);
+  assert.deepStrictEqual(Object.keys(kernel.Cadence), expectedKinds);
+  for (const [name, factory] of Object.entries(kernel.Cadence)) {
+    assert.equal(factory().kind, name);
+  }
+  const allKinds = [...kernel.CADENCE_KINDS];
+  const evaluable = [...kernel.EVALUABLE_CADENCE_KINDS];
+  const evaluableSet = new Set(evaluable);
+  const deferred = allKinds.filter((kind) => !evaluableSet.has(kind));
   if (!manifest.notes.changedFiles.includes(tracked)) process.exit(1);
   if (!manifest.notes.changedFiles.includes(leading)) process.exit(1);
   if (!manifest.notes.critical.includes("Workflow authority, recovery, or publication tooling changed; inspect the operator guide and release evidence.")) process.exit(1);
-  assert.deepStrictEqual(manifest.cadence.evaluable, ["Once", "After", "Every", "Gate", "Until", "Backoff"]);
-  assert.deepStrictEqual(manifest.cadence.deferred, ["Burst", "Calendar", "Window", "While", "Sequence", "Merge", "Race", "Repeat"]);
+  assert.deepStrictEqual(manifest.cadence.evaluable, evaluable);
+  assert.deepStrictEqual(manifest.cadence.deferred, deferred);
+  assert.deepStrictEqual(manifest.schemas.controlLog, {
+    min: resume.CONTROL_LOG_SCHEMA_VERSION,
+    max: resume.CONTROL_LOG_SCHEMA_VERSION,
+  });
+  assert.equal(resume.CONTROL_LOG_SCHEMA_VERSION, 7);
   process.stdout.write(`cadence manifest evaluable: ${JSON.stringify(manifest.cadence.evaluable)}\n`);
   process.stdout.write(`cadence manifest deferred: ${JSON.stringify(manifest.cadence.deferred)}\n`);
-' "$fixture/manifest.json" "$tracked_path" "$leading_path"
+' "$fixture/manifest.json" "$tracked_path" "$leading_path" "$main/packages/kernel/dist/src/index.js" "$main/scripts/resume.mjs"
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" validate "$fixture/manifest.json" >/dev/null
 
 for mutation in commit application component toolchain schema evidence cadence; do

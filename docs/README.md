@@ -99,8 +99,9 @@ move it only to a backup location you trust.
 
 ## Resuming the control loop
 
-Fresh sessions read `docs/control/current.md` and the canonical JSONL behind it.
-The normal operator interface is:
+Fresh sessions resolve the canonical `docs/control/resume.jsonl` through
+`npm run resume --silent -- status --json`; `docs/control/current.md` is the matching
+human projection, never a script API. The normal operator interface is:
 
 ```text
 resume: status
@@ -115,8 +116,12 @@ The executable/debug actions for the first five phrases are `status`, `next`,
 `fix`, `verify`, and `final-review`, invoked as `npm run resume -- <action>`.
 The resolver rejects illegal phase transitions and prints the authoritative work
 order and verification artifact to read. `release close` is the separate guarded
-post-merge operation projected as `npm run release -- close WO-NNN --publish`;
-it narrowly authorizes the annotated tag and its matching GitHub Release.
+post-merge operation. For the first close after merge, use the publisher's exact
+absolute command so the reviewed subject-worktree `release.mjs` performs the
+main-checkout sync and cleanup; once that helper removes the worktree, a
+recoverable rerun uses `npm run release -- close WO-NNN --publish` from updated
+main. The action narrowly authorizes the annotated tag and its matching GitHub
+Release.
 Verifiers and reviewers record completion with the internal actions documented
 in `docs/PLAYBOOK.md`.
 

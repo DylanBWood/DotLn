@@ -1,20 +1,23 @@
 #!/usr/bin/env node
 import {
   existsSync,
-  lstatSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
   readdirSync,
-  realpathSync,
   renameSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { basename, dirname, join, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
-import { spawnSync } from "node:child_process";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { mainWorktree, runGit } from "./lib/git.mjs";
+import {
+  containedRegularFile,
+  readJsonFile,
+  workOrderAuthorityPath,
+} from "./lib/paths.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const logPath = join(repoRoot, "docs/control/resume.jsonl");
@@ -34,28 +37,27 @@ const attestedEventTypes = new Set([
 const actorFlagUsage =
   "--harness <claude-code|codex-cli|human|other:label> --harness-version <version> --model <model> --effort <level> --source <self-reported|harness-readback|operator-attested>";
 const actorHeaderPrefix = "**Actor attestation:**";
+const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
 
-const containedRegularFile = (path, root) => {
-  if (!existsSync(path) || !lstatSync(path).isFile()) return false;
-  return realpathSync(path).startsWith(`${realpathSync(root)}${sep}`);
-};
+export const CONTROL_LOG_SCHEMA_VERSION = 1;
+
+export const parseControlEvents = (source) =>
+  source
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((line, index) => {
+      try {
+        return JSON.parse(line);
+      } catch {
+        throw new Error(`invalid control event at line ${index + 1}`);
+      }
+    });
 
 const readEvents = () =>
-  existsSync(logPath)
-    ? readFileSync(logPath, "utf8")
-        .trim()
-        .split("\n")
-        .filter(Boolean)
-        .map((line, index) => {
-          try {
-            return JSON.parse(line);
-          } catch {
-            throw new Error(`invalid control event at line ${index + 1}`);
-          }
-        })
-    : [];
+  existsSync(logPath) ? parseControlEvents(readFileSync(logPath, "utf8")) : [];
 
-const fold = (events) => {
+export const fold = (events) => {
   const state = {
     workOrderId: undefined,
     workOrderPath: undefined,
@@ -74,8 +76,8 @@ const fold = (events) => {
     effortPairs: [],
     effortDeclarationValidated: false,
   };
-  for (const event of events) {
-    switch (event.type) {
+  for (const [index, event] of events.entries()) {
+    switch (event?.type) {
       case "WorkOrderActivated":
         Object.assign(state, {
           workOrderId: event.workOrderId,
@@ -141,6 +143,10 @@ const fold = (events) => {
             event.verdict === "fail" ? event.reportPath : undefined,
         });
         break;
+      default:
+        throw new Error(
+          `unknown control event type at line ${index + 1}: ${event?.type ?? "missing"}`,
+        );
     }
     if (
       attestedEventTypes.has(event.type) &&
@@ -188,7 +194,7 @@ const fold = (events) => {
 
 const append = (event) => {
   mkdirSync(dirname(logPath), { recursive: true });
-  const record = { schemaVersion: 1, ...event };
+  const record = { schemaVersion: CONTROL_LOG_SCHEMA_VERSION, ...event };
   writeFileSync(logPath, `${JSON.stringify(record)}\n`, {
     flag: "a",
     mode: 0o644,
@@ -284,27 +290,15 @@ const checkpoint = (action, workOrderId) => {
   };
   if (!/^WO-\d{3}$/.test(workOrderId ?? ""))
     return warn(`work order id is unavailable (${workOrderId ?? "none"})`);
-  const runGit = (args, env = process.env) => {
-    const result = spawnSync("git", ["-C", repoRoot, ...args], {
-      encoding: "utf8",
-      env,
-    });
-    if (result.status !== 0)
-      throw new Error(
-        (
-          result.stderr ||
-          result.stdout ||
-          result.error?.message ||
-          `git ${args.join(" ")} failed`
-        ).trim(),
-      );
-    return result.stdout.trim();
-  };
   try {
-    if (runGit(["rev-parse", "--is-inside-work-tree"]) !== "true")
+    if (runGit(repoRoot, ["rev-parse", "--is-inside-work-tree"]) !== "true")
       return warn(`${repoRoot} is not a git work tree`);
     const prefix = `refs/dotln/checkpoint/${workOrderId}/`;
-    const used = runGit(["for-each-ref", "--format=%(refname)", prefix])
+    const used = runGit(repoRoot, [
+      "for-each-ref",
+      "--format=%(refname)",
+      prefix,
+    ])
       .split("\n")
       .filter(Boolean)
       .map((ref) => Number(ref.slice(prefix.length)))
@@ -314,17 +308,21 @@ const checkpoint = (action, workOrderId) => {
     try {
       const indexPath = join(temporaryRoot, "index");
       const checkpointEnv = { ...process.env, GIT_INDEX_FILE: indexPath };
-      runGit(["add", "-A"], checkpointEnv);
-      const tree = runGit(["write-tree"], checkpointEnv);
-      const checkpointSha = runGit([
-        "commit-tree",
-        tree,
-        "-p",
-        "HEAD",
-        "-m",
-        `dotln checkpoint: ${action} ${workOrderId}`,
-      ]);
-      runGit(["update-ref", checkpointRef, checkpointSha]);
+      runGit(repoRoot, ["add", "-A"], { env: checkpointEnv });
+      const tree = runGit(repoRoot, ["write-tree"], { env: checkpointEnv });
+      const checkpointSha = runGit(
+        repoRoot,
+        [
+          "commit-tree",
+          tree,
+          "-p",
+          "HEAD",
+          "-m",
+          `dotln checkpoint: ${action} ${workOrderId}`,
+        ],
+        { env: checkpointEnv },
+      );
+      runGit(repoRoot, ["update-ref", checkpointRef, checkpointSha]);
       return { checkpointSha, checkpointRef };
     } finally {
       rmSync(temporaryRoot, { recursive: true, force: true });
@@ -338,16 +336,13 @@ const appendTransition = (action, event) =>
 
 const workOrderDeclaration = (
   workOrderPath,
-  { allowLegacyMissingEffort = false } = {},
+  { allowLegacyMissingEffort = false, workOrderId } = {},
 ) => {
-  const expectedRoot = join(repoRoot, "docs/work-orders");
-  const authorityPath = resolve(repoRoot, workOrderPath ?? "");
-  if (
-    !workOrderPath ||
-    !authorityPath.startsWith(`${expectedRoot}${sep}`) ||
-    !containedRegularFile(authorityPath, expectedRoot)
-  )
-    throw new Error(`invalid work-order authority path: ${workOrderPath}`);
+  const authorityPath = workOrderAuthorityPath(
+    repoRoot,
+    workOrderId,
+    workOrderPath,
+  );
 
   const lines = readFileSync(authorityPath, "utf8")
     .replace(/^\uFEFF/, "")
@@ -455,18 +450,39 @@ const workOrderDeclaration = (
 const actorUsage = (action, positional = "") =>
   `usage: resume ${action}${positional ? ` ${positional}` : ""} ${actorFlagUsage}`;
 
-const effortHarnessEvidence = (harness, harnessVersion) => {
-  if (!existsSync(environmentPath)) return false;
+const harnessEvidence = (harness) => {
+  if (!existsSync(environmentPath)) return undefined;
   try {
-    const environment = JSON.parse(readFileSync(environmentPath, "utf8"));
-    const evidence = environment.effortReadbackProbe?.harnesses?.[harness];
-    return evidence?.version?.classification === "observed" &&
-      evidence.version.value === harnessVersion
-      ? evidence
-      : undefined;
+    return readJsonFile(environmentPath).effortReadbackProbe?.harnesses?.[
+      harness
+    ];
   } catch {
     return undefined;
   }
+};
+
+const recordedHarnessVersions = (harness) => {
+  const evidence = harnessEvidence(harness);
+  if (!Array.isArray(evidence?.versions)) return [];
+  return evidence.versions
+    .filter(
+      (version) =>
+        version?.classification === "observed" &&
+        typeof version.value === "string",
+    )
+    .map((version) => version.value);
+};
+
+const effortHarnessEvidence = (harness, harnessVersion) => {
+  const evidence = harnessEvidence(harness);
+  return recordedHarnessVersions(harness).includes(harnessVersion)
+    ? evidence
+    : undefined;
+};
+
+const recordedVersionsMessage = (harness) => {
+  const versions = recordedHarnessVersions(harness);
+  return `recorded observed versions: ${versions.length > 0 ? versions.join(", ") : "none"}`;
 };
 
 const selectorClassifications = new Set(["observed", "documented locally"]);
@@ -554,7 +570,7 @@ const parseActor = (action, args, positional = "") => {
     !hasObservedEffortReadbackValue(harness, harnessVersion, suppliedEffort)
   )
     throw new Error(
-      `harness-readback refused for ${harness} ${harnessVersion} effort ${suppliedEffort}: no matching observed effective-effort readback is recorded for that version and value; use self-reported or operator-attested`,
+      `harness-readback refused for ${harness} ${harnessVersion} effort ${suppliedEffort}: no matching observed effective-effort readback is recorded for that version and value (${recordedVersionsMessage(harness)}); use self-reported or operator-attested${sessionLabelHint(harness, suppliedEffort)}`,
     );
 
   const recognizedEffort = effortLevels.includes(suppliedEffort);
@@ -563,7 +579,7 @@ const parseActor = (action, args, positional = "") => {
     hasRecordedEffortValue(harness, harnessVersion, suppliedEffort);
   if (recognizedEffort && !supportedEffort)
     throw new Error(
-      `attested effort ${suppliedEffort} refused for ${harness} ${harnessVersion}: no matching selector or effective-readback evidence records that value; use --effort unknown or record bounded discovery evidence`,
+      `attested effort ${suppliedEffort} refused for ${harness} ${harnessVersion}: no matching selector or effective-readback evidence records that value (${recordedVersionsMessage(harness)}); use --effort unknown or record bounded discovery evidence`,
     );
   const actor = {
     harness,
@@ -582,6 +598,20 @@ const renderEffort = ({ effort, raw }) =>
     ? `unknown (raw: ${raw})`
     : effort;
 
+const sessionLabelHint = (harness, raw) => {
+  const notes = harnessEvidence(harness)?.sessionLabelNotes;
+  const labelNote =
+    notes && typeof notes === "object" && Object.hasOwn(notes, raw)
+      ? notes[raw]
+      : undefined;
+  return labelNote?.classification === "operator-attested" &&
+    effortLevels.includes(labelNote.reasoningEffort) &&
+    labelNote.attestationSource === "operator-attested" &&
+    labelNote.automaticConversion === false
+    ? `; see docs/discovery/environment.json effortReadbackProbe.harnesses.${harness}.sessionLabelNotes.${raw}; resume does not convert session labels, so supply --effort ${labelNote.reasoningEffort} --source ${labelNote.attestationSource} only when that recorded attestation applies`
+    : "";
+};
+
 const validateEffort = (actor, role, declaration, workOrderPath) => {
   const required = declaration.efforts[role];
   if (required === "any") return;
@@ -589,14 +619,20 @@ const validateEffort = (actor, role, declaration, workOrderPath) => {
   if (
     actor.effort === "unknown" ||
     effortLevels.indexOf(actor.effort) < effortLevels.indexOf(minimum)
-  )
+  ) {
+    const labelHint =
+      actor.effort === "unknown" && typeof actor.raw === "string"
+        ? sessionLabelHint(actor.harness, actor.raw)
+        : "";
     throw new Error(
-      `attested ${role} effort ${renderEffort(actor)} is below declared ${required} in ${workOrderPath}; add a dated operator amendment to that work order's **Effort:** line, then rerun`,
+      `attested ${role} effort ${renderEffort(actor)} is below declared ${required} in ${workOrderPath}${labelHint}; add a dated operator amendment to that work order's **Effort:** line, then rerun`,
     );
+  }
 };
 
 const activeWorkOrderDeclaration = (state) =>
   workOrderDeclaration(state.workOrderPath, {
+    workOrderId: state.workOrderId,
     allowLegacyMissingEffort:
       !state.effortDeclarationValidated && state.workOrderId !== "WO-019",
   });
@@ -663,6 +699,45 @@ const render = (state) => `# Current control state
 Generated from the append-only \`docs/control/resume.jsonl\`; do not edit this projection manually.
 `;
 
+export const statusProjection = (state) => ({
+  workOrder: state.workOrderId ?? null,
+  workOrderPath: state.workOrderPath ?? null,
+  phase: state.phase,
+  latestVerification: state.latestVerificationId ?? null,
+  verificationPath: state.latestVerificationPath ?? null,
+  latestVerdict: state.latestVerdict ?? null,
+  finalReview: state.finalReviewId ?? null,
+  finalReviewPath: state.finalReviewPath ?? null,
+  latestAttestation: state.latestAttestation ?? null,
+  effortDrift: state.effortPairs.map(({ effort, raw }) => ({
+    effort,
+    ...(raw === undefined ? {} : { raw }),
+  })),
+  latestCheckpoint: state.latestCheckpointRef
+    ? {
+        sha: state.latestCheckpointSha,
+        ref: state.latestCheckpointRef,
+        restoreCommand: `git checkout ${state.latestCheckpointRef} -- .`,
+      }
+    : state.checkpointUnavailable
+      ? { unavailable: true }
+      : null,
+  legalNextActions: legalActions(state),
+});
+
+const warnIfProjectionDisagrees = (state) => {
+  let current;
+  try {
+    current = readFileSync(currentPath, "utf8");
+  } catch {
+    current = undefined;
+  }
+  if (current !== render(state))
+    process.stderr.write(
+      "warning: docs/control/current.md disagrees with the canonical fold of docs/control/resume.jsonl; status is read-only and did not rewrite the projection\n",
+    );
+};
+
 const project = (state) => {
   mkdirSync(dirname(currentPath), { recursive: true });
   const temporary = `${currentPath}.tmp`;
@@ -684,9 +759,16 @@ const main = () => {
   let message;
 
   switch (action) {
-    case "status":
-      message = render(state);
+    case "status": {
+      if (args.length > 1 || (args.length === 1 && args[0] !== "--json"))
+        throw new Error("usage: resume status [--json]");
+      warnIfProjectionDisagrees(state);
+      message =
+        args[0] === "--json"
+          ? JSON.stringify(statusProjection(state), null, 2)
+          : render(state);
       break;
+    }
     case "activate": {
       requirePhase(state, "none", "closed");
       const [workOrderId, workOrderPath] = args;
@@ -694,17 +776,7 @@ const main = () => {
         throw new Error(
           "usage: resume activate WO-NNN docs/work-orders/<file>.md",
         );
-      const expectedRoot = join(repoRoot, "docs/work-orders");
-      const authorityPath = resolve(repoRoot, workOrderPath);
-      if (
-        !authorityPath.startsWith(`${expectedRoot}${sep}`) ||
-        !containedRegularFile(authorityPath, expectedRoot) ||
-        !basename(authorityPath).startsWith(`${workOrderId}-`)
-      )
-        throw new Error(
-          `invalid work-order authority path for ${workOrderId}: ${workOrderPath}`,
-        );
-      workOrderDeclaration(workOrderPath);
+      workOrderDeclaration(workOrderPath, { workOrderId });
       appendTransition(action, {
         type: "WorkOrderActivated",
         workOrderId,
@@ -883,24 +955,38 @@ const main = () => {
           : `Current work order ${state.workOrderId} is closed. The repository is between work orders; start a valid next work order with npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md.`;
       break;
     }
-    case "release-close":
+    case "release-close": {
       requirePhase(state, "closed");
-      message = `After the operator merges the PR, run from the main checkout: npm run release -- close ${state.workOrderId} --publish. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main.`;
+      let mainPath = repoRoot;
+      try {
+        mainPath = mainWorktree(repoRoot);
+      } catch {
+        // A non-Git fixture can still exercise the command projection.
+      }
+      message = `After the operator merges the PR, run the reviewed helper with main as its working checkout: cd ${shellQuote(mainPath)} && ${shellQuote(process.execPath)} ${shellQuote(join(repoRoot, "scripts/release.mjs"))} close ${state.workOrderId} --publish. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main.`;
       break;
+    }
     default:
       throw new Error(`unknown resume action: ${action}`);
   }
 
-  state = fold(readEvents());
-  if (action !== "status") project(state);
+  if (action !== "status") {
+    state = fold(readEvents());
+    project(state);
+  }
   process.stdout.write(`${message}\n`);
 };
 
-try {
-  main();
-} catch (error) {
-  process.stderr.write(
-    `error: ${error instanceof Error ? error.message : String(error)}\n`,
-  );
-  process.exitCode = 1;
+if (
+  process.argv[1] &&
+  pathToFileURL(resolve(process.argv[1])).href === import.meta.url
+) {
+  try {
+    main();
+  } catch (error) {
+    process.stderr.write(
+      `error: ${error instanceof Error ? error.message : String(error)}\n`,
+    );
+    process.exitCode = 1;
+  }
 }

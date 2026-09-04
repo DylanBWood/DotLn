@@ -418,6 +418,35 @@ post-merge operation with narrow authority for the annotated tag and its
 matching GitHub Release. Every intent remains usable through the CLI, so
 skill-capable hosts gain lower context cost rather than a different workflow.
 
+When the candidate Additional Opinion support is equipped, the interface can
+offer **another opinion** beside the stage's ordinary forward action while its
+cohort remains open and within bounds. The status projection shows the frozen
+subject, mode and visibility, completed/running/failed/cancelled counts, cap and
+stop condition, duplicate clusters, unique dissent, seal state, and
+adjudication route, with drill-down links to every immutable result. It does not
+display a literal unchanged state: the lifecycle phase may remain collecting,
+but the event history and episode identities advance on every request.
+
+`Second Opinion` is the compact two-result preset. The broader affordance says
+how many additional results remain, not an ambiguous recursion “depth”; the
+initial design prohibits opinions recursively spawning opinions. Once sealed,
+the action disappears and late results cannot reopen it. A verification
+adjudication exposes only `fix` or `final review`; an implementation
+adjudication exposes the selected candidate's required `verify` route or a
+repair/reimplementation route. Hard-constraint failures appear before any Eye
+Dr comparison, and minority findings remain visible beside the compact packet.
+The first verification-only pilot therefore realizes the operator's proposed
+two-exit rule. The implementation affordance remains future analysis because a
+uniform `fix`/`final review` exit would otherwise skip independent verification.
+
+Whether an equipped cohort reuses `resume: verify` / `resume: next` or adds an
+explicit `resume: another opinion` intent is unresolved. The current commands
+retain their existing linear meanings until a versioned control-schema change
+lands; merely documenting this candidate does not make a repeated command
+legal. The implementation-variant view must also show one branch/worktree per
+writer, the common base, the separate integration branch, and whether selection
+or synthesis created a new subject requiring fresh evidence.
+
 The build inspector also exposes a **runtime lowering view**. Select Claude,
 Codex, or another discovered runtime to see how the same semantic build maps to
 native agents, skills, hooks, permissions, tools, schemas, sessions, and host
