@@ -144,6 +144,17 @@ manifest. Schema, artifact, transformation, and other compatibility axes move
 only under their own contract owners and are never inferred from an application
 or component bump.
 
+**Operator default (2026-09-04):** assign and update a release target as part of
+ordinary work-order preparation unless the operator explicitly opts out. A
+compatible control-plane, documentation, or evidence improvement takes the next
+patch above the latest published release; new capability and breaking changes
+follow the classification rules below. An activated order whose target was
+omitted is completed under this default, with the classification and base
+recorded, rather than asking the operator to opt in again. An already pinned
+target still follows the retiming rule. This authorizes preparing the version
+surfaces, not publishing a tag, Release, package, or branch without its existing
+dispatch. WO-028 applies the default as `v0.5.1` above published `v0.5.0`.
+
 Patch releases contain compatible corrections, documentation, and evidence
 improvements; minor releases add backwards-compatible application capability;
 breaking public contracts require the next major boundary even before 1.0 unless
@@ -502,6 +513,39 @@ substitution; fewer handoffs and retries; smaller evidence with equal strength;
 incremental computation; better stop conditions; archival/tiering; and reduced
 operator cognitive load. Efficiency improvements retain before/after evidence
 and note which resource moved elsewhere.
+
+### Candidate — bounded system baseline
+
+Routine observation can reveal an accumulating burden before it becomes the
+current constraint. The useful shape is a small, repeatable baseline check and
+a trend, even when no optimization is underway. Public reporting uses neutral
+system measures such as size, latency, waiting, and maintenance cost.
+Daily observation is one possible owner-selected cadence; this candidate
+installs no job and adds no always-on collection to WO-028.
+
+Select only measurements that answer a declared question:
+
+| Question                                          | Candidate evidence                                                                                                                                     | Interpretation boundary                                                                            |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| Is history crowding out new work?                 | Retained event/log bytes alongside the source bytes actually admitted to a task; exact tokens only when an observed tokenizer/transport supplies them. | Storage size and context consumption differ; do not load the log into an LLM merely to measure it. |
+| Is deterministic processing becoming slow?        | Fold duration over a pinned event set with host, cold/warm state, method, and repeated observations.                                                   | Event count alone is not a latency measurement; compare equivalent claims and conditions.          |
+| Is workflow overhead delaying useful outcomes?    | Work-order elapsed time, completed phase attempts, retries, and handoffs beside verified outcome and complexity references.                            | Wall time includes waiting and interruptions; it is not model effort or operator attention.        |
+| Is one change spreading across too many surfaces? | Number of authoritative edits versus regenerated projections and repair work for comparable changes.                                                   | More links can improve traceability; counts do not establish waste.                                |
+
+Reuse existing structured evidence and deterministic summaries, retain detailed
+measurements in the appropriate privacy lane, and expose a small bounded view
+with sources, missingness, comparison window, and the collector's own cost.
+Retention, aggregation, review frequency, and a stop budget apply to the
+observer too. An LLM should receive a selected trend or an actionable exception,
+not every daily raw sample. Public timing in WO-028 does not authorize public
+token, cost, attention, or behavioral telemetry.
+
+The Entropy Reducer can inspect these receipts when a separately authorized
+review needs them. Thresholds, minimum sample sizes, trend/noise handling,
+cadence, private storage, and the first consumer remain open. Act when evidence
+supports the current constraint or a material impending failure; otherwise
+retain an explicit accept/observe/defer decision. No universal performance
+target, new event schema, scheduler, or architecture change is selected here.
 
 ### Counterfactual profiling work orders
 

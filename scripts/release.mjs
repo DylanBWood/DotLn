@@ -37,11 +37,7 @@ import {
   readJsonFile,
   workOrderAuthorityPath,
 } from "./lib/paths.mjs";
-import {
-  CONTROL_LOG_SCHEMA_VERSION,
-  fold as foldControlEvents,
-  statusProjection,
-} from "./resume.mjs";
+import { CONTROL_LOG_SCHEMA_VERSION, statusProjection } from "./resume.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const evidenceCommands = [
@@ -277,11 +273,7 @@ const parseControlState = (root) => {
 };
 const parseControlStateAt = (root, revision) =>
   controlState(
-    statusProjection(
-      foldControlEvents(
-        controlEventsAt(root, revision).map(({ event }) => event),
-      ),
-    ),
+    statusProjection(controlEventsAt(root, revision).map(({ event }) => event)),
     `${revision}:docs/control/resume.jsonl`,
   );
 const paragraph = (markdown, label) => {

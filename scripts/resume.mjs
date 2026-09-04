@@ -14,6 +14,11 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { mainWorktree, runGit } from "./lib/git.mjs";
 import {
+  controlTimeProjection,
+  recoverControlTimes,
+  validateRecordedAt,
+} from "./lib/control-time.mjs";
+import {
   containedRegularFile,
   readJsonFile,
   workOrderAuthorityPath,
@@ -77,6 +82,7 @@ export const fold = (events) => {
     effortDeclarationValidated: false,
   };
   for (const [index, event] of events.entries()) {
+    validateRecordedAt(event, `at line ${index + 1}`);
     switch (event?.type) {
       case "WorkOrderActivated":
         Object.assign(state, {
@@ -193,8 +199,13 @@ export const fold = (events) => {
 };
 
 const append = (event) => {
+  const record = {
+    schemaVersion: CONTROL_LOG_SCHEMA_VERSION,
+    recordedAt: new Date().toISOString(),
+    ...event,
+  };
+  validateRecordedAt(record, "at append");
   mkdirSync(dirname(logPath), { recursive: true });
-  const record = { schemaVersion: CONTROL_LOG_SCHEMA_VERSION, ...event };
   writeFileSync(logPath, `${JSON.stringify(record)}\n`, {
     flag: "a",
     mode: 0o644,
@@ -681,7 +692,15 @@ const requireReportActor = (reportPath, actor, reportKind) => {
     );
 };
 
-const render = (state) => `# Current control state
+const renderElapsed = (elapsed) =>
+  Object.entries(elapsed)
+    .map(
+      ([phase, value]) =>
+        `- Elapsed ${phase}: ${value === "unknown" ? value : `${value} ms`}\n`,
+    )
+    .join("");
+
+const render = (state, timing) => `# Current control state
 
 - Work order: ${state.workOrderId ?? "none"}
 - Work-order path: ${state.workOrderPath ?? "none"}
@@ -693,55 +712,60 @@ const render = (state) => `# Current control state
 - Final-review path: ${state.finalReviewPath ?? "none"}
 - Latest attestation: ${renderAttestation(state.latestAttestation)}
 - Effort drift: ${renderDrift(state.effortPairs)}
-- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : state.checkpointUnavailable ? "unavailable for the latest transition; do not use an older checkpoint" : "none"}
+- Latest recordedAt: ${timing.recordedAt ?? "unknown"}
+${renderElapsed(timing.elapsed)}- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : state.checkpointUnavailable ? "unavailable for the latest transition; do not use an older checkpoint" : "none"}
 - Legal next actions: ${legalActions(state).join(", ") || "none"}
 
 Generated from the append-only \`docs/control/resume.jsonl\`; do not edit this projection manually.
 `;
 
-export const statusProjection = (state) => ({
-  workOrder: state.workOrderId ?? null,
-  workOrderPath: state.workOrderPath ?? null,
-  phase: state.phase,
-  latestVerification: state.latestVerificationId ?? null,
-  verificationPath: state.latestVerificationPath ?? null,
-  latestVerdict: state.latestVerdict ?? null,
-  finalReview: state.finalReviewId ?? null,
-  finalReviewPath: state.finalReviewPath ?? null,
-  latestAttestation: state.latestAttestation ?? null,
-  effortDrift: state.effortPairs.map(({ effort, raw }) => ({
-    effort,
-    ...(raw === undefined ? {} : { raw }),
-  })),
-  latestCheckpoint: state.latestCheckpointRef
-    ? {
-        sha: state.latestCheckpointSha,
-        ref: state.latestCheckpointRef,
-        restoreCommand: `git checkout ${state.latestCheckpointRef} -- .`,
-      }
-    : state.checkpointUnavailable
-      ? { unavailable: true }
-      : null,
-  legalNextActions: legalActions(state),
-});
+export const statusProjection = (events) => {
+  const state = fold(events);
+  return {
+    workOrder: state.workOrderId ?? null,
+    workOrderPath: state.workOrderPath ?? null,
+    phase: state.phase,
+    latestVerification: state.latestVerificationId ?? null,
+    verificationPath: state.latestVerificationPath ?? null,
+    latestVerdict: state.latestVerdict ?? null,
+    finalReview: state.finalReviewId ?? null,
+    finalReviewPath: state.finalReviewPath ?? null,
+    latestAttestation: state.latestAttestation ?? null,
+    effortDrift: state.effortPairs.map(({ effort, raw }) => ({
+      effort,
+      ...(raw === undefined ? {} : { raw }),
+    })),
+    ...controlTimeProjection(events),
+    latestCheckpoint: state.latestCheckpointRef
+      ? {
+          sha: state.latestCheckpointSha,
+          ref: state.latestCheckpointRef,
+          restoreCommand: `git checkout ${state.latestCheckpointRef} -- .`,
+        }
+      : state.checkpointUnavailable
+        ? { unavailable: true }
+        : null,
+    legalNextActions: legalActions(state),
+  };
+};
 
-const warnIfProjectionDisagrees = (state) => {
+const warnIfProjectionDisagrees = (state, timing) => {
   let current;
   try {
     current = readFileSync(currentPath, "utf8");
   } catch {
     current = undefined;
   }
-  if (current !== render(state))
+  if (current !== render(state, timing))
     process.stderr.write(
       "warning: docs/control/current.md disagrees with the canonical fold of docs/control/resume.jsonl; status is read-only and did not rewrite the projection\n",
     );
 };
 
-const project = (state) => {
+const project = (state, timing) => {
   mkdirSync(dirname(currentPath), { recursive: true });
   const temporary = `${currentPath}.tmp`;
-  writeFileSync(temporary, render(state));
+  writeFileSync(temporary, render(state, timing));
   renameSync(temporary, currentPath);
 };
 
@@ -753,22 +777,28 @@ const requirePhase = (state, ...phases) => {
   );
 };
 
-const main = () => {
-  const [action = "status", ...args] = process.argv.slice(2);
-  let state = fold(readEvents());
+export const main = (argv = process.argv.slice(2)) => {
+  const [action = "status", ...args] = argv;
+  let events = readEvents();
+  let state = fold(events);
   let message;
 
   switch (action) {
     case "status": {
       if (args.length > 1 || (args.length === 1 && args[0] !== "--json"))
         throw new Error("usage: resume status [--json]");
-      warnIfProjectionDisagrees(state);
+      const timing = controlTimeProjection(events);
+      warnIfProjectionDisagrees(state, timing);
       message =
         args[0] === "--json"
-          ? JSON.stringify(statusProjection(state), null, 2)
-          : render(state);
+          ? JSON.stringify(statusProjection(events), null, 2)
+          : render(state, timing);
       break;
     }
+    case "times":
+      if (args.length) throw new Error("usage: resume times");
+      message = recoverControlTimes(repoRoot, events);
+      break;
     case "activate": {
       requirePhase(state, "none", "closed");
       const [workOrderId, workOrderPath] = args;
@@ -970,9 +1000,10 @@ const main = () => {
       throw new Error(`unknown resume action: ${action}`);
   }
 
-  if (action !== "status") {
-    state = fold(readEvents());
-    project(state);
+  if (action !== "status" && action !== "times") {
+    events = readEvents();
+    state = fold(events);
+    project(state, controlTimeProjection(events));
   }
   process.stdout.write(`${message}\n`);
 };

@@ -12,7 +12,7 @@ until it's muscle memory; edit it when reality disagrees.
 | **Entropy Reducer** (Fable 5.1) | compiled WO-023 actor requirement; Claude Code records exact harness version, model, `max` effort, and source | Whole-repository entropy review, reproducible findings, and non-authoritative ProductSuggestion packet payloads | Implementing, filing, promoting, or verifying its own suggestions; changing tracked/control/remote/settings state  |
 | **Opus 5** (1M)                 | the active work order's `verifier` declaration                                                                | Blinded verification of Codex-built work orders                                                                 | Implementing or repairing the work it verifies                                                                     |
 | **Sonnet 5**                    | the active work order's declaration for the role it occupies                                                  | Bounded mechanical work: test scaffolds, renames, formatting, running fixtures, small fan-outs                  | Anything requiring judgment about the blueprint                                                                    |
-| **Codex** (GPT 5.6 Sol)         | the active work order's `executor` declaration for implementation and repair work                             | Execute and repair work orders                                                                                  | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
+| **Codex** (GPT-6 Astra)         | operator-selected `max` default for Codex steps from 2026-09-04; retain the work order's declared minimums    | Execute and repair work orders                                                                                  | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
 
 Three standing rules:
 
@@ -41,6 +41,13 @@ Three standing rules:
   session label automatically: when that attestation applies, the actor still
   supplies `--effort xhigh --source operator-attested` explicitly.
 
+The operator's 2026-09-04 default is GPT-6 Astra with `max` effort for all Codex
+steps unless explicitly changed. Record that selection as operator-attested
+when no effective-session readback exists; do not relabel a persisted selector
+as readback or silently replace another loadout's required actor. The
+[Entropy Reducer guide](instance/entropy-reducer/README.md) supplies its separate
+manual Fable 5.1/max dispatch and the fresh refutation step.
+
 ## Harness safety baseline
 
 Before dispatching from a personal machine, verify the dated Claude Code and
@@ -59,7 +66,7 @@ At the 2026-09-01 Codex baseline, `.git` and a linked worktree's resolved Git
 directory remain protected even under `workspace-write`. A Codex session must
 therefore request outside-sandbox approval on the **first invocation** of every
 state-changing `npm run resume -- ...` command so its recovery checkpoint can be
-created. `status` is read-only; `next` appends no event and creates no
+created. `status` and `times` are read-only; `next` appends no event and creates no
 checkpoint but does refresh the workspace projection. `status --json` exposes
 the same control fields for lifecycle scripts; both status forms are read-only
 and warn without rewriting if the Markdown projection is stale. Do not run a transition
@@ -129,6 +136,12 @@ When planning assigns a tagging version above the latest published tag, the
 work order must make updating the root README release block part of execution.
 The planner pins the target; the executor makes the public source claim true;
 the publisher and release close check it against tag truth.
+
+From the operator's 2026-09-04 instruction, normal release assignment and source
+updates happen by default; specify a no-release disposition to opt out. A
+missing activation target is completed using the roadmap's classification and
+latest published base. This saves repeated opt-in questions while preserving
+the explicit final-review and release-close dispatches for external effects.
 
 **3. Verify (Opus 5, fresh session, blinded).** New session — not the
 implementer's, no implementer narrative. Feed it: the WO + the diff.
@@ -353,6 +366,7 @@ fresh session, use one operator phrase:
 
 ```text
 resume: status
+resume: times
 resume: fix
 resume: verify
 resume: final review
@@ -371,6 +385,17 @@ between-work-orders state and gives the start syntax. `release close` is a
 guarded lifecycle command rather than a control-log transition, so successful
 closeout does not dirty `main` with transient release state.
 
+From WO-028, status also shows the latest event's `recordedAt` and `elapsed`
+milliseconds for the latest completed attempt of each phase. Missing endpoints
+produce `unknown`; retries replace the last completed value when they finish,
+and backwards clock values remain signed. These are wall-clock spans, including
+waiting, not time spent actively working. `resume: times` produces the
+read-only JSON observation with `recordedAt`,
+`recovered-from-local-checkpoint-ref`, and `unknown` source labels and a count
+of local refs read. It refuses a needed missing or mismatched ref, never edits
+history or the projection, and never publishes checkpoint refs. Recovered
+committer dates have second precision and are not substituted into status.
+
 The raw command surface remains available for debugging. In the normal loop, the
 operator-owned shell steps are worktree start, the printed `cd`, and the Codex
 launch; agents run the remaining commands after their chat dispatches:
@@ -378,6 +403,7 @@ launch; agents run the remaining commands after their chat dispatches:
 ```bash
 npm run worktree -- start WO-00N docs/work-orders/WO-00N-name.md
 npm run resume --silent -- status --json # read-only machine projection
+npm run resume --silent -- times         # read-only labeled time observation
 npm run resume -- implementation-ready --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run resume -- verify                 # allocates the next immutable VER-NNN
 npm run resume -- verification-result pass|fail --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>

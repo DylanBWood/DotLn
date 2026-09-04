@@ -59,6 +59,8 @@ const expected = [
   "effortDrift",
   "latestCheckpoint",
   "legalNextActions",
+  "recordedAt",
+  "elapsed",
 ].sort();
 const observed = Object.keys(status).sort();
 if (JSON.stringify(observed) !== JSON.stringify(expected)) {
@@ -77,8 +79,11 @@ assert_status_json() {
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const [actualPath, expectedSource] = process.argv.slice(2);
+const { recordedAt, elapsed, ...actual } = JSON.parse(fs.readFileSync(actualPath, "utf8"));
+assert.equal(typeof recordedAt, "string");
+assert.equal(typeof elapsed, "object");
 assert.deepStrictEqual(
-  JSON.parse(fs.readFileSync(actualPath, "utf8")),
+  actual,
   JSON.parse(expectedSource),
 );
 NODE
@@ -405,7 +410,9 @@ grep -Fq 'warning: docs/control/current.md disagrees with the canonical fold' "$
 node - "$test_root/status-drift.json" <<'NODE'
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
-const status = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const { recordedAt, elapsed, ...status } = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(typeof recordedAt, "string");
+assert.deepStrictEqual(Object.keys(elapsed).sort(), ["finalReview", "implementation", "repair", "verification"]);
 assert.deepStrictEqual(status, {
   workOrder: "WO-099",
   workOrderPath: "docs/work-orders/WO-099-fixture.md",
@@ -529,5 +536,152 @@ grep -Fq 'invalid control event at line 2' <<<"$malformed_output"
 if grep -Fq 'at file://' <<<"$malformed_output"; then printf 'error: malformed-event refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
 cmp "$test_root/invalid-current.before" "$invalid_events_repo/docs/control/current.md"
 cmp "$test_root/malformed-log.before" "$invalid_events_repo/docs/control/resume.jsonl"
+
+time_repo="$test_root/time-repo"
+mkdir -p "$time_repo/scripts" "$time_repo/docs/work-orders"
+cp -- "$script_dir/resume.mjs" "$time_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$time_repo/scripts/lib"
+printf '%s\n' '# time fixture' '' '**Model:** any.' '**Effort:** executor any; verifier any; reviewer any.' >"$time_repo/docs/work-orders/WO-087-time.md"
+node --input-type=module - "$time_repo" "$test_root" <<'NODE'
+import assert from "node:assert/strict";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, evidence] = process.argv.slice(2);
+const { main, fold, statusProjection } = await import(pathToFileURL(join(root, "scripts/resume.mjs")));
+const log = join(root, "docs/control/resume.jsonl");
+const current = join(root, "docs/control/current.md");
+const readEvents = () => readFileSync(log, "utf8").trim().split("\n").map(JSON.parse);
+const writeEvents = (events) => writeFileSync(log, events.map(JSON.stringify).join("\n") + "\n");
+const actor = { harness: "human", harnessVersion: "not-applicable", model: "human", effort: "unknown", source: "operator-attested" };
+const actorArgs = ["--harness", "human", "--harness-version", "not-applicable", "--model", "human", "--effort", "unknown", "--source", "operator-attested"];
+const stdout = process.stdout.write;
+const stderr = process.stderr.write;
+const call = (args) => {
+  let output = "";
+  process.stdout.write = (chunk) => { output += chunk; return true; };
+  process.stderr.write = () => true; // This deliberately non-Git fixture cannot checkpoint.
+  try { main(args); } finally { process.stdout.write = stdout; process.stderr.write = stderr; }
+  return output;
+};
+const report = (kind, number) => {
+  const directory = join(root, "docs", kind === "VER" ? "verifications" : "final-reviews", "WO-087");
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(join(directory, `${kind}-${number}.md`), `# fixture\n\n**Actor attestation:** ${JSON.stringify(actor)}\n`);
+};
+
+// Every event kind is appended by the actual command dispatcher in one process.
+const beforeSequence = Date.now();
+call(["activate", "WO-087", "docs/work-orders/WO-087-time.md"]);
+const beforeBadClock = [readFileSync(log), readFileSync(current)];
+const RealDate = Date;
+globalThis.Date = class extends RealDate {
+  constructor(...args) { super(...args); this.fromClock = args.length === 0; }
+  toISOString() { return this.fromClock ? "invalid-host-time" : super.toISOString(); }
+};
+try {
+  assert.throws(() => call(["implementation-ready", ...actorArgs]), /invalid recordedAt at append/);
+} finally { globalThis.Date = RealDate; }
+assert.deepEqual([readFileSync(log), readFileSync(current)], beforeBadClock);
+call(["implementation-ready", ...actorArgs]);
+call(["verify"]);
+report("VER", "001");
+call(["verification-result", "fail", ...actorArgs]);
+call(["fix"]);
+call(["repair-complete", ...actorArgs]);
+call(["verify"]);
+report("VER", "002");
+call(["verification-result", "pass", ...actorArgs]);
+call(["final-review"]);
+report("FINAL", "001");
+call(["final-review-result", "pass", ...actorArgs]);
+const afterSequence = Date.now();
+const appended = readEvents();
+assert.deepEqual([...new Set(appended.map((event) => event.type))].sort(), [
+  "WorkOrderActivated", "ImplementationReady", "VerificationRequested", "VerificationCompleted",
+  "RepairRequested", "RepairCompleted", "FinalReviewRequested", "FinalReviewCompleted",
+].sort());
+appended.forEach((event, index) => {
+  assert.match(event.recordedAt, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+  assert.equal(new Date(event.recordedAt).toISOString(), event.recordedAt);
+  assert.equal(event.schemaVersion, 1);
+  const time = Date.parse(event.recordedAt);
+  assert.ok(time >= beforeSequence && time <= afterSequence);
+  if (index) assert.ok(time >= Date.parse(appended[index - 1].recordedAt));
+});
+console.log(`time append: ${appended.length} events, all 8 types, valid host times and non-decreasing order in one process; invalid append preserved bytes`);
+
+const seconds = [0, 1, 2, 4, 6, 9, 11, 15, 16, 21];
+const baseline = appended.map((event, index) => ({
+  ...event,
+  recordedAt: new Date(Date.UTC(2026, 8, 4) + seconds[index] * 1000).toISOString(),
+  checkpointRef: `refs/dotln/checkpoint/WO-087/${index + 1}`,
+  checkpointSha: String(index + 1).padStart(40, "0"),
+}));
+const expectedState = fold(baseline);
+const expectedElapsed = { implementation: 1000, verification: 4000, repair: 3000, finalReview: 5000 };
+assert.deepEqual(statusProjection(baseline).elapsed, expectedElapsed);
+const withoutTimes = baseline.map(({ recordedAt, ...event }) => event);
+const reversedTimes = baseline.map((event, index) => ({ ...event, recordedAt: baseline.at(-index - 1).recordedAt }));
+const variants = {
+  baseline,
+  absent: withoutTimes,
+  reordered: baseline.map((event) => Object.fromEntries(Object.entries(event).reverse())),
+  backwards: reversedTimes,
+};
+for (const [name, events] of Object.entries(variants)) {
+  assert.deepEqual(fold(events), expectedState, name);
+  writeEvents(events);
+  const before = readFileSync(log);
+  call(["next"]); // Regenerate current.md through the legal projection path.
+  assert.deepEqual(readFileSync(log), before);
+  const rendered = readFileSync(current, "utf8");
+  const masked = rendered.split("\n").filter((line) => !/^- (Latest recordedAt:|Elapsed )/.test(line)).join("\n");
+  writeFileSync(join(evidence, `time-${name}.masked`), masked);
+  const status = JSON.parse(call(["status", "--json"]));
+  assert.equal(status.phase, "closed");
+  assert.deepEqual(status.legalNextActions, ["release-close", "next", "activate"]);
+  assert.equal(status.latestCheckpoint.ref, "refs/dotln/checkpoint/WO-087/10");
+  assert.equal(status.recordedAt, events.at(-1).recordedAt ?? null);
+  assert.ok(rendered.includes(`- Latest recordedAt: ${status.recordedAt ?? "unknown"}\n`));
+}
+assert.deepEqual(statusProjection(withoutTimes).elapsed, { implementation: "unknown", verification: "unknown", repair: "unknown", finalReview: "unknown" });
+assert.deepEqual(statusProjection(reversedTimes).elapsed, { implementation: -5000, verification: -2000, repair: -3000, finalReview: -1000 });
+const mixed = baseline.map((event, index) => index === 0 ? withoutTimes[index] : event);
+writeEvents(mixed);
+call(["next"]);
+const mixedStatus = JSON.parse(call(["status", "--json"]));
+assert.deepEqual(mixedStatus.elapsed, { ...expectedElapsed, implementation: "unknown" });
+assert.ok(readFileSync(current, "utf8").includes("- Elapsed implementation: unknown\n"));
+assert.ok(readFileSync(current, "utf8").includes("- Elapsed verification: 4000 ms\n"));
+assert.deepEqual(statusProjection(baseline.slice(0, 7)).elapsed, { implementation: 1000, verification: 2000, repair: 3000 }, "in-flight retry retains the latest completed attempt");
+const legacyRetry = baseline.map((event, index) => index === 6 ? withoutTimes[index] : event);
+assert.equal(statusProjection(legacyRetry).elapsed.verification, "unknown", "unknown latest attempt must not borrow an older duration");
+assert.deepEqual(statusProjection([...baseline, { type: "WorkOrderActivated", workOrderId: "WO-086", recordedAt: baseline[0].recordedAt }]).elapsed, {});
+assert.deepEqual(statusProjection([]).elapsed, {});
+assert.equal(statusProjection([]).recordedAt, null);
+console.log(`time projection: mixed=${JSON.stringify(mixedStatus.elapsed)}; latest attempts, in-flight phases, activation reset, absent and backwards times checked`);
+
+const invalid = [null, 0, {}, [], "", "2026-09-04", "2026-09-04T00:00:00Z", "2026-09-04T00:00:00.000+00:00", "2026-09-04T00:00:00.0000Z", "2026-09-04T24:00:00.000Z", "2026-02-30T00:00:00.000Z", "2026-02-29T00:00:00.000Z", "2026-13-04T00:00:00.000Z", "2026-09-04T00:00:60.000Z", "2026-09-04T00:00:00.000Z\n"];
+for (const recordedAt of invalid) {
+  const events = baseline.map((event, index) => index === 1 ? { ...event, recordedAt } : event);
+  assert.throws(() => fold(events), /invalid recordedAt at line 2/);
+  writeEvents(events);
+  const before = [readFileSync(log), readFileSync(current)];
+  for (const args of [["status"], ["status", "--json"], ["next"], ["times"]])
+    assert.throws(() => call(args), /invalid recordedAt at line 2/);
+  assert.deepEqual([readFileSync(log), readFileSync(current)], before);
+}
+assert.doesNotThrow(() => fold([{ ...baseline[0], recordedAt: "2024-02-29T23:59:59.999Z" }]));
+writeEvents(mixed);
+const beforeTimes = [readFileSync(log), readFileSync(current)];
+assert.throws(() => call(["times", "--json"]), /usage: resume times/);
+assert.deepEqual([readFileSync(log), readFileSync(current)], beforeTimes);
+console.log(`time validation: ${invalid.length} malformed values refuse with ordinal and preserve log/projection; valid leap day accepted`);
+NODE
+for variant in absent reordered backwards; do
+  cmp "$test_root/time-baseline.masked" "$test_root/time-$variant.masked"
+  printf 'time-blind current.md cmp: %s passed\n' "$variant"
+done
 
 printf 'resume tests passed\n'

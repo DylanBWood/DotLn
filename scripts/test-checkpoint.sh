@@ -120,4 +120,95 @@ grep -Fq 'Latest checkpoint: unavailable for the latest transition; do not use a
 if grep -Fq "$prior_checkpoint" "$stale_repo/docs/control/current.md"; then printf 'error: stale checkpoint remained advertised\n' >&2; exit 1; fi
 grep -Fq '"checkpointUnavailable":true' "$stale_repo/docs/control/resume.jsonl"
 
+# Time recovery reads the named commit ref, never its tree or a neighboring event.
+time_blob_sha="$(printf 'fixture time blob\n' | git -C "$fixture_repo" hash-object -w --stdin)"
+git -C "$fixture_repo" update-ref refs/dotln/checkpoint/WO-099/9988 "$time_blob_sha"
+git -C "$fixture_repo" for-each-ref --format='%(refname) %(objectname)' refs/dotln/ >"$saved/times.refs.before"
+node - "$fixture_repo" <<'NODE'
+const fs = require("node:fs");
+const path = require("node:path");
+const root = process.argv[2];
+const log = path.join(root, "docs/control/resume.jsonl");
+const activation = JSON.parse(fs.readFileSync(log, "utf8").trim().split("\n")[0]);
+if (!activation.recordedAt || !activation.checkpointRef) throw new Error("activation omitted recordedAt or checkpoint");
+const events = [
+  { ...activation, recordedAt: "2026-09-04T12:34:56.789Z", checkpointRef: "refs/dotln/checkpoint/WO-099/9999", checkpointSha: "missing-but-not-needed" },
+  { schemaVersion: 1, type: "ImplementationReady", workOrderId: "WO-099", checkpointRef: activation.checkpointRef, checkpointSha: activation.checkpointSha },
+  { schemaVersion: 1, type: "VerificationRequested", workOrderId: "WO-099" },
+];
+fs.writeFileSync(log, events.map(JSON.stringify).join("\n") + "\n");
+NODE
+cp -- "$fixture_repo/docs/control/resume.jsonl" "$saved/times.log.before"
+cp -- "$fixture_repo/docs/control/current.md" "$saved/times.current.before"
+node "$fixture_repo/scripts/resume.mjs" times >"$saved/times.json"
+node "$fixture_repo/scripts/resume.mjs" times >"$saved/times.again.json"
+cmp "$saved/times.json" "$saved/times.again.json"
+cmp "$saved/times.log.before" "$fixture_repo/docs/control/resume.jsonl"
+cmp "$saved/times.current.before" "$fixture_repo/docs/control/current.md"
+git -C "$fixture_repo" for-each-ref --format='%(refname) %(objectname)' refs/dotln/ >"$saved/times.refs.after"
+cmp "$saved/times.refs.before" "$saved/times.refs.after"
+node - "$fixture_repo" "$saved/times.json" "$saved/times.log.before" <<'NODE'
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const { execFileSync, spawnSync } = require("node:child_process");
+const [root, outputPath, originalPath] = process.argv.slice(2);
+const source = fs.readFileSync(outputPath, "utf8");
+const output = JSON.parse(source);
+const original = fs.readFileSync(originalPath, "utf8");
+const events = original.trim().split("\n").map(JSON.parse);
+const expectedSeconds = Number(execFileSync("git", ["-C", root, "show", "-s", "--format=%ct", events[1].checkpointSha], { encoding: "utf8" }).trim());
+assert.equal(output.eventCount, 3);
+assert.equal(output.localRefsRead, 1);
+assert.deepEqual(output.counts, { recordedAt: 1, "recovered-from-local-checkpoint-ref": 1, unknown: 1 });
+assert.match(output.checkpointRefs, /remain unpushed/);
+assert.match(output.recoveredPrecision, /second precision/);
+assert.equal(source.split("\n").filter((line) => line.startsWith('    {"ordinal":')).length, 3);
+assert.deepEqual(output.events, [
+  { ordinal: 1, workOrder: "WO-099", type: "WorkOrderActivated", time: "2026-09-04T12:34:56.789Z", source: "recordedAt" },
+  { ordinal: 2, workOrder: "WO-099", type: "ImplementationReady", time: new Date(expectedSeconds * 1000).toISOString(), source: "recovered-from-local-checkpoint-ref" },
+  { ordinal: 3, workOrder: "WO-099", type: "VerificationRequested", time: "unknown", source: "unknown" },
+]);
+const log = path.join(root, "docs/control/resume.jsonl");
+const current = path.join(root, "docs/control/current.md");
+const projectionBefore = fs.readFileSync(current);
+for (const [change, refusal] of [
+  [{ checkpointRef: "refs/dotln/checkpoint/WO-099/9999" }, /missing local checkpoint ref at line 2/],
+  [{ checkpointSha: "0".repeat(40) }, /checkpoint SHA mismatch at line 2/],
+  [{ checkpointRef: "HEAD" }, /invalid checkpoint ref at line 2/],
+  [{ checkpointRef: "refs/dotln/checkpoint/WO-098/1" }, /invalid checkpoint ref at line 2/],
+  [{ checkpointRef: "refs/dotln/checkpoint/WO-099/9988" }, /invalid checkpoint commit at line 2/],
+]) {
+  const changed = events.map((event, index) => index === 1 ? { ...event, ...change } : event);
+  const bytes = changed.map(JSON.stringify).join("\n") + "\n";
+  fs.writeFileSync(log, bytes);
+  const result = spawnSync(process.execPath, [path.join(root, "scripts/resume.mjs"), "times"], { encoding: "utf8" });
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, refusal);
+  assert.equal(result.stdout, "", "refusal must not emit a plausible partial observation");
+  assert.equal(fs.readFileSync(log, "utf8"), bytes);
+  assert.deepEqual(fs.readFileSync(current), projectionBefore);
+}
+fs.writeFileSync(log, original);
+console.log(`time recovery: ${JSON.stringify(output.counts)}, 1 ref read; byte-identical rerun, unchanged log/projection/refs, missing and mismatched refs refused`);
+NODE
+git -C "$fixture_repo" for-each-ref --format='%(refname) %(objectname)' refs/dotln/ >"$saved/times.refs.final"
+cmp "$saved/times.refs.before" "$saved/times.refs.final"
+
+# New events retain their host timestamp even when checkpoint creation fails.
+node - "$stale_repo/docs/control/resume.jsonl" <<'NODE'
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
+assert.equal(events.at(-1).checkpointUnavailable, true);
+for (const event of events) assert.equal(new Date(event.recordedAt).toISOString(), event.recordedAt);
+NODE
+PATH="$test_root/failing-git" "$node_bin" "$stale_repo/scripts/resume.mjs" times >"$saved/times.no-git.json"
+node - "$saved/times.no-git.json" <<'NODE'
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const output = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.equal(output.localRefsRead, 0);
+assert.equal(output.counts.recordedAt, 2);
+NODE
 printf 'checkpoint tests passed\n'

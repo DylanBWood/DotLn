@@ -714,6 +714,14 @@ the semantic record.
 
 ### First live Entropy Reducer use
 
+The current [operator guide](../instance/entropy-reducer/README.md) dispatches
+this compiled loadout through a separate Fable 5.1 `max` session. It names
+subject freezing, per-operation authority, new receipt IDs, output validation,
+blinded refutation, and operator disposition as manual host duties. No resume
+action or automatic launcher is implied. The 2026-09-04 analogy correction is
+an explicit dispatch instruction pending a versioned correction to the typed
+Shape-First support; the shipped residue and old run remain historical truth.
+
 WO-023 ran the first compiled Entropy Reducer as a read-only implementation
 review over a frozen scratch subject. The pinned Fable reviewer returned seven
 findings and one non-authoritative proposal payload; a fresh blinded Fable
@@ -794,6 +802,45 @@ final-review outcomes. The log
 is canonical; the Markdown file is a disposable projection. One writable agent
 per worktree serializes appends in v1; concurrent control-log writers are
 deferred.
+
+**Control-time migration (2026-09-04, WO-028):** new control events carry
+optional `recordedAt`, the host wall-clock time at append in UTC with
+millisecond precision and a trailing `Z`. It is the record/ingest milestone,
+not kernel `EventEnvelope.occurredAt`. Schema version remains `1`; historical
+absence is valid. A malformed present timestamp refuses before log append and
+at fold with its ordinal. Lifecycle legality and checkpoint advertisement use
+append order alone, including when valid timestamps run backwards.
+
+`status --json` exposes the latest event's `recordedAt` (`null` if absent) and
+`elapsed`: the latest completed attempt of each phase in the current order,
+keyed by `implementation`, `verification`, `repair`, and `finalReview`.
+Endpoints are activation/readiness, verification request/completion, repair
+request/completion, and final-review request/completion. A value is the signed
+endpoint difference in milliseconds, or `"unknown"` if either endpoint lacks
+time. A retry retains the preceding completed value until it completes; a new
+activation clears the entries. These are not summed attempts, live timers, or
+measurements of model work or operator attention. Negative values expose clock
+regression rather than repairing it. `current.md` renders the same values and
+uses `unknown` for an absent latest timestamp.
+
+`npm run resume --silent -- times` emits a read-only JSON observation, one line
+per event in append order, labeled `recordedAt`,
+`recovered-from-local-checkpoint-ref`, or `unknown`. Only an event's named
+local checkpoint commit may recover its missing time; a missing ref, wrong
+scope/type, or recorded-SHA mismatch refuses without partial output. Recovered
+committer dates have second precision even though normalized UTC displays
+`.000`. Recovery does not feed phase durations or rewrite the canonical log.
+The dated [activation observation](../discovery/control-event-times-2026-09-04.json)
+contains 135 events: 120 recovered from 120 local refs, 15 unknown, and none
+with a recorded append time. Those refs remain unpushed; the observation keeps
+their time evidence portable without publishing their checkpoint objects.
+
+This repository deliberately publishes timing in its public control profile,
+as it already publishes commit dates. The optional field lets a stricter
+profile omit timing or derive a bucketed/delayed public observation with that
+loss of fidelity disclosed; emitted values must still satisfy the timestamp
+contract. This migration adds no token, cost, attention, or other private-lane
+telemetry and does not backfill old events.
 
 The operator surface also needs an always-legible runtime projection: remaining
 context budget, active and completed delegated episodes, current phase, blocked

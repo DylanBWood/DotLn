@@ -28,7 +28,8 @@ docs/releases/     historical v0.2.0 records + forward tag-manifest template;
 docs/discovery/    labeled machine-audit outputs, runtime target maps, and the
                    bounded local-inference capability packet
 docs/instance/     generated and reviewed instance projections; currently the
-                   Entropy Reducer residue, refutation plan, and run evidence
+                   Entropy Reducer operator guide, residue, refutation plan,
+                   and run evidence
 ```
 
 Pipeline status: founding intake ingested and synthesized (2026-08-30). The
@@ -107,6 +108,7 @@ human projection, never a script API. The normal operator interface is:
 
 ```text
 resume: status
+resume: times
 resume: next
 resume: fix
 resume: verify
@@ -114,8 +116,11 @@ resume: final review
 resume: release close
 ```
 
-The executable/debug actions for the first five phrases are `status`, `next`,
+The corresponding executable/debug actions are `status`, `times`, `next`,
 `fix`, `verify`, and `final-review`, invoked as `npm run resume -- <action>`.
+`status --json` includes append-time and completed-phase timing; `times`
+emits the separate read-only observation with recorded, recovered, and unknown
+source labels, without backfilling the log or changing the projection.
 The resolver rejects illegal phase transitions and prints the authoritative work
 order and verification artifact to read. `release close` is the separate guarded
 post-merge operation. For the first close after merge, use the publisher's exact

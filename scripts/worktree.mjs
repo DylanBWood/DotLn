@@ -31,11 +31,7 @@ import {
   containedRegularFile,
   workOrderAuthorityPath,
 } from "./lib/paths.mjs";
-import {
-  fold as foldControlEvents,
-  parseControlEvents,
-  statusProjection,
-} from "./resume.mjs";
+import { parseControlEvents, statusProjection } from "./resume.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
@@ -270,12 +266,10 @@ const main = () => {
     ensureClean(subject);
     ensureNoIgnoredMaterial(subject);
     const control = statusProjection(
-      foldControlEvents(
-        parseControlEvents(
-          runGit(subject, ["show", "HEAD:docs/control/resume.jsonl"], {
-            trim: false,
-          }),
-        ),
+      parseControlEvents(
+        runGit(subject, ["show", "HEAD:docs/control/resume.jsonl"], {
+          trim: false,
+        }),
       ),
     );
     if (control?.phase !== "closed" || control.workOrder !== workOrderId)

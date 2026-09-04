@@ -28,9 +28,11 @@ implementation doctrine; **repository governance** governs building this repo;
    the workflow.
 4. **Fresh task-scoped sessions are normal.** _Personal profile._ The disposal unit is one coherent
    task or phase — not one turn. Orientation comes from a compiled WorkOrder
-   plus the environment, never from a handcrafted giant prompt. (The 12 Days of
-   Christmas rule: a replacement singer joining at day four needs the current
-   verse, tempo, and score — not the transcript of every prior performance.)
+   plus the environment, never from a handcrafted giant prompt. The Twelve
+   Days of Christmas analogy names cumulative replay cost: a session starting
+   with a huge inherited context is like beginning the song on day five,
+   already carrying the earlier verses' material before it can do new work.
+   Durable history and the context admitted to this task are separate budgets.
 5. **Configured hard constraints live outside the model.** _Personal profile._ In this personal
    implementation, permissions, hooks, worktree isolation, gated affordances,
    and deterministic checks enforce the constraints its owner chose to make

@@ -19,6 +19,7 @@ docs/work-orders/*.md
 docs/control/current.md
 docs/discovery/environment.json
 docs/discovery/environment.md
+docs/discovery/control-event-times-*.json
 docs/verifications/WO-*/
 docs/final-reviews/WO-*/
 docs/releases/v*.md

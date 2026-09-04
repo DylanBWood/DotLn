@@ -53,6 +53,14 @@ with bounded scratch and intake-capture writes, one-shot cadence, manual
 Program, output guard, and generated residue; Sustain remains a candidate until
 an observed cadence justifies it.
 
+The current operator entry point is the
+[manual review guide](../instance/entropy-reducer/README.md): a separate
+Fable 5.1 `max` review, validated output, and a fresh blinded refutation before
+operator disposition. The guide distinguishes compiled data from the manual
+host duties and records the pending correction to the compiled Shape-First
+wording. The generated residue and historical review receipts are not edited
+to make that future correction appear shipped.
+
 ## Leadership & autonomy — Marquet
 
 - **Ladder of Leadership**, 7 rungs, each a _paired speech act_ (worker/leader):
@@ -165,6 +173,46 @@ signals feed Theory of Constraints; none is a substitute for observed outcome or
 a popularity ranking. The constraint is a focusing aid, not a command: voluntary
 practice and curiosity remain legitimate inputs, and their reps accumulate
 learning without pretending every repetition raises production maturity.
+
+## Candidate — success under growth
+
+A solution can become a liability because it succeeds at its original job.
+More retained evidence can increase startup context and storage; more events
+can increase fold latency; stronger process can accumulate handoffs and waiting;
+and useful cross-references can increase the number of surfaces every change
+must update. These are scenarios to test, not findings that the current system
+has already failed or reasons to discard deliberate tradeoffs.
+
+This candidate support follows a material decision inside the existing review.
+It asks which useful property grows, how that growth could undermine the
+outcome it serves, what would reveal the crossover, and what a bounded response
+would be. It complements the six-month livability test's with/without
+comparison and Beware of Naive Interventionism's action/inaction comparison.
+It does not claim the selected solution was globally optimal, reopen an ADR,
+or create a new mandatory handoff after each small edit.
+
+A proportionate decision note can name:
+
+- the present benefit, scenario assumptions, and accumulating quantity;
+- a plausible failure path, the affected user outcome, and an independently
+  observable signal that could distinguish it from harmless growth;
+- existing safeguards and consciously accepted costs, with links to the
+  decisions that own them;
+- a disposition: a cheap prevention now, a bounded experiment, observation
+  with a revisit condition, or deliberate acceptance; and
+- the cost and failure modes of the review or monitoring mechanism itself.
+
+Examples of possible responses include narrower context selection, derived
+indexes or replay checkpoints, incremental folds, generated references, and
+fewer redundant workflow exchanges. None is selected by this analogy. Preserve
+replay and evidence obligations, measure the current constraint, and avoid
+moving cost into privacy loss, stale projections, weaker verification, or a
+monitor that needs its own full review every day.
+
+The [bounded system baseline](06-roadmap.md#candidate--bounded-system-baseline)
+is a candidate observation support for this review and 5S Sustain. A trend can
+justify looking more closely; it does not automatically authorize intervention.
+Runtime composition, triggers, thresholds, and cadence remain unimplemented.
 
 ## Candidate — influence response policies
 

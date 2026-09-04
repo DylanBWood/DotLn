@@ -404,3 +404,14 @@ Two standing acceptance questions for every design decision: **the six-month
 livability test** — would the operator still enjoy living with this system six
 months in? — and **point of view before efficiency** — commit to exploration
 until a perspective exists; only then make it fast.
+
+The operator's 2026-09-04 ideation adds a complementary candidate question:
+could the very property that makes this solution successful eventually make
+it costly or unusable as adoption, history, and dependencies accumulate? The
+six-month test asks about lived experience with and without the choice; this
+question asks how its success could create its own failure mode. Preserve
+known tradeoffs and use evidence to decide whether to act now, monitor, or
+defer until a constraint appears. The proposed
+[success-under-growth review](05-pattern-library.md#candidate--success-under-growth)
+and [bounded system baseline](06-roadmap.md#candidate--bounded-system-baseline)
+must themselves cost less than the burden they expose.
