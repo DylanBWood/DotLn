@@ -15,6 +15,8 @@ Component `0.4.0` is staged for application release `v0.4.0`: the reactor now
 consumes the pure composition compiler's normalized Seiri program. Five linked
 supports emit the bounded WorkOrder, permission guard, evidence schema,
 absent-only cadence/statechart guard, and verifier episode with declared cost.
+The component remains `0.4.0` for application release `v0.4.1`; only its exact
+`@dotln/kernel` dependency advances to `0.2.1`, and no skeleton source changes.
 
 The deterministic Repo Gardener + Seiri vertical. It compiles a typed
 `LoadoutGraph` into a bounded `WorkOrder` and related runtime mechanisms, runs

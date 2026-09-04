@@ -30,9 +30,14 @@ git -C "$main" remote set-url origin "$github_origin"
 git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/discovery" "$main/packages/kernel"
 cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$main/scripts/"
+cp -R "$script_dir/lib" "$main/scripts/lib"
+if grep -Fq 'current.md' "$main/scripts/worktree.mjs"; then
+  printf 'error: worktree lifecycle parses the Markdown control projection\n' >&2
+  exit 1
+fi
 printf '# WO-099 — worktree fixture, v0.2.1\n\n**Model:** fixture-model.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Objective:** Exercise publication.\n\n**Non-goals:** No release.\n' >"$main/docs/work-orders/WO-099-fixture.md"
 printf '%s\n' \
-  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"version":{"classification":"observed","value":"fixture"},"persistedEffortSelector":{"classification":"observed","value":"xhigh"}},"claude-code":{"version":{"classification":"observed","value":"fixture"},"sessionEffortSelector":{"classification":"documented locally","values":["xhigh"]}}}}}' >"$main/docs/discovery/environment.json"
+  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"versions":[{"classification":"observed","value":"fixture"}],"persistedEffortSelector":{"classification":"observed","value":"xhigh"}},"claude-code":{"versions":[{"classification":"observed","value":"fixture"}],"sessionEffortSelector":{"classification":"documented locally","values":["xhigh"]}}}}}' >"$main/docs/discovery/environment.json"
 printf '%s\n' \
   '# Fixture repository' \
   '' \
@@ -40,13 +45,16 @@ printf '%s\n' \
   '' \
   'This source is DotLn `v0.2.1`.' \
   '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
-printf '{"private":true,"scripts":{}}\n' >"$main/package.json"
+printf '{"private":true,"scripts":{"release":"node scripts/release.mjs"}}\n' >"$main/package.json"
 printf '{"name":"@dotln/kernel","version":"0.1.0"}\n' >"$main/packages/kernel/package.json"
 cp "$script_dir/../.gitignore" "$main/.gitignore"
 printf 'EXAMPLE=tracked\n' >"$main/.env.example"
 git -C "$main" add .
 git -C "$main" commit -m initial >/dev/null
 git -C "$main" push -u origin main >/dev/null 2>&1
+finish_worktree() {
+  (cd "$main" && node "$main/scripts/worktree.mjs" finish "$@")
+}
 
 if node "$main/scripts/worktree.mjs" start XX-098 docs/work-orders/WO-099-fixture.md >/dev/null 2>&1; then printf 'error: invalid id accepted\n' >&2; exit 1; fi
 test ! -e "$test_root/project-wo098"
@@ -79,7 +87,9 @@ grep -Fq "cd '$subject'" <<<"$start_output"
 grep -Fq '  codex' <<<"$start_output"
 grep -Fq 'resume: next' <<<"$start_output"
 test ! -e "$test_root/codex-invoked"
-if node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null 2>&1; then printf 'error: unfinished worktree merged\n' >&2; exit 1; fi
+if wrong_root_output="$(node "$main/scripts/worktree.mjs" finish WO-099 2>&1)"; then printf 'error: finish accepted a foreign invocation root\n' >&2; exit 1; fi
+grep -Fq "run finish from the main control-plane checkout: $main" <<<"$wrong_root_output"
+if finish_worktree WO-099 >/dev/null 2>&1; then printf 'error: unfinished worktree merged\n' >&2; exit 1; fi
 
 git -C "$subject" add docs/control
 git -C "$subject" commit -m 'active control fixture' >/dev/null
@@ -331,6 +341,10 @@ remote_refs="$(git --git-dir="$test_root/origin.git" for-each-ref --format='%(re
 test "$remote_refs" = $'refs/heads/main\nrefs/heads/wo-099'
 grep -Fq "cd '$main'" <<<"$publish_output"
 grep -Fq "'$node_bin' '$subject/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"
+if grep -Fq 'npm run release -- close WO-099 --publish' <<<"$publish_output"; then
+  printf 'error: publish handed release close to the stale main helper\n' >&2
+  exit 1
+fi
 test "$(sed -n '1p' "$gh_log")" = '--version'
 test "$(sed -n '2p' "$gh_log")" = 'auth status --hostname github.com'
 grep -Eq '^pr create --repo github\.com/dotln-fixture/worktree --head wo-099 --base main --title :sparkles: fixture --body-file .+/PR\.md$' "$gh_log"
@@ -340,14 +354,14 @@ sed -E 's#--body-file [^ ]+/PR\.md#--body-file <committed-PR-body>#' "$gh_log"
 printf 'GitHub PR target, authentication, and committed-body fixtures passed\n'
 git -C "$subject" config --unset push.followTags
 git -C "$subject" tag -d v7.7.7 >/dev/null
-if node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null 2>&1; then printf 'error: unmerged PR cleaned up\n' >&2; exit 1; fi
+if finish_worktree WO-099 >/dev/null 2>&1; then printf 'error: unmerged PR cleaned up\n' >&2; exit 1; fi
 
 git -C "$main" fetch origin wo-099 >/dev/null 2>&1
 git -C "$main" merge --ff-only origin/wo-099 >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 printf 'SECRET=fixture-only\n' >"$subject/.env"
 printf 'disposable build state\n' >"$subject/tsconfig.tsbuildinfo"
-if finish_output="$(node "$main/scripts/worktree.mjs" finish WO-099 2>&1)"; then printf 'error: ignored secret was deleted\n' >&2; exit 1; fi
+if finish_output="$(finish_worktree WO-099 2>&1)"; then printf 'error: ignored secret was deleted\n' >&2; exit 1; fi
 grep -Fq '.env' <<<"$finish_output"
 grep -Fq 'npm run backup:intake' <<<"$finish_output"
 if grep -Fq 'SECRET=fixture-only' <<<"$finish_output"; then printf 'error: ignored-file content leaked in refusal\n' >&2; exit 1; fi
@@ -360,30 +374,134 @@ mkdir -p "$subject/docs/intake"
 intake_path="docs/intake/raw${u202f}note.md"
 assert_u202f "$intake_path"
 printf 'raw local note\n' >"$subject/$intake_path"
-if intake_output="$(node "$main/scripts/worktree.mjs" finish WO-099 2>&1)"; then printf 'error: ignored material was deleted\n' >&2; exit 1; fi
+if intake_output="$(finish_worktree WO-099 2>&1)"; then printf 'error: ignored material was deleted\n' >&2; exit 1; fi
 test "$intake_output" = "error: worktree contains ignored material and will not be removed: $intake_path (run npm run backup:intake or move it, then retry)"
 test -f "$subject/$intake_path"
 test -d "$subject"
 test -n "$(git -C "$main" branch --list wo-099)"
 rm -- "$subject/$intake_path"
 rmdir -- "$subject/docs/intake"
+mkdir -p "$subject/docs/intake/dist" "$subject/docs/intake/node_modules"
+printf 'protected intake distribution note\n' >"$subject/docs/intake/dist/x.md"
+printf 'protected intake dependency note\n' >"$subject/docs/intake/node_modules/y"
+if intake_build_output="$(finish_worktree WO-099 2>&1)"; then
+  printf 'error: intake build-shaped paths were deleted\n' >&2
+  exit 1
+fi
+grep -Fq 'docs/intake/dist/x.md' <<<"$intake_build_output"
+test -f "$subject/docs/intake/dist/x.md"
+test -f "$subject/docs/intake/node_modules/y"
+test -d "$subject"
+test -n "$(git -C "$main" branch --list wo-099)"
+rm -- "$subject/docs/intake/dist/x.md"
+rmdir -- "$subject/docs/intake/dist"
+if intake_node_output="$(finish_worktree WO-099 2>&1)"; then
+  printf 'error: intake node_modules path was deleted\n' >&2
+  exit 1
+fi
+grep -Fq 'docs/intake/node_modules/y' <<<"$intake_node_output"
+test -f "$subject/docs/intake/node_modules/y"
+rm -- "$subject/docs/intake/node_modules/y"
+rmdir -- "$subject/docs/intake/node_modules" "$subject/docs/intake"
+mkdir -p "$subject/.claude"
+printf 'subject-only settings fixture\n' >"$subject/.claude/settings.local.json"
+if settings_output="$(finish_worktree WO-099 2>&1)"; then
+  printf 'error: subject harness settings were deleted\n' >&2
+  exit 1
+fi
+grep -Fq '.claude/settings.local.json' <<<"$settings_output"
+test -f "$subject/.claude/settings.local.json"
+test -d "$subject"
+test -n "$(git -C "$main" branch --list wo-099)"
+rm -- "$subject/.claude/settings.local.json"
+rmdir -- "$subject/.claude"
+mkdir -p "$subject/assets/dist"
+printf 'kept asset\n' >"$subject/assets/dist/keep"
+if asset_dist_output="$(finish_worktree WO-099 2>&1)"; then
+  printf 'error: nested asset dist directory was treated as disposable\n' >&2
+  exit 1
+fi
+grep -Fq 'assets/dist/keep' <<<"$asset_dist_output"
+test -f "$subject/assets/dist/keep"
+rm -- "$subject/assets/dist/keep"
+rmdir -- "$subject/assets/dist" "$subject/assets"
+mkdir -p "$subject/vendor/node_modules"
+printf 'kept vendor material\n' >"$subject/vendor/node_modules/keep"
+if vendor_modules_output="$(finish_worktree WO-099 2>&1)"; then
+  printf 'error: nested vendor node_modules directory was treated as disposable\n' >&2
+  exit 1
+fi
+grep -Fq 'vendor/node_modules/keep' <<<"$vendor_modules_output"
+test -f "$subject/vendor/node_modules/keep"
+rm -- "$subject/vendor/node_modules/keep"
+rmdir -- "$subject/vendor/node_modules" "$subject/vendor"
 node_module_path="node_modules/fixture${u202f}/file"
 dist_path="dist/generated${u202f}/file"
+package_node_module_path="packages/kernel/node_modules/fixture/file"
+package_dist_path="packages/kernel/dist/generated/file"
 ds_store_path="assets${u202f}/.DS_Store"
 tsbuildinfo_path="compiler${u202f}.tsbuildinfo"
 assert_u202f "$node_module_path"
 assert_u202f "$dist_path"
 assert_u202f "$ds_store_path"
 assert_u202f "$tsbuildinfo_path"
-mkdir -p "$subject/$(dirname "$node_module_path")" "$subject/$(dirname "$dist_path")" "$subject/$(dirname "$ds_store_path")"
+mkdir -p "$subject/$(dirname "$node_module_path")" "$subject/$(dirname "$dist_path")" "$subject/$(dirname "$package_node_module_path")" "$subject/$(dirname "$package_dist_path")" "$subject/$(dirname "$ds_store_path")"
 printf 'disposable\n' >"$subject/$node_module_path"
 printf 'generated\n' >"$subject/$dist_path"
+printf 'disposable package dependency\n' >"$subject/$package_node_module_path"
+printf 'generated package output\n' >"$subject/$package_dist_path"
 printf 'finder metadata\n' >"$subject/$ds_store_path"
 printf 'disposable build state\n' >"$subject/$tsbuildinfo_path"
 git -C "$subject" branch --unset-upstream
-node "$main/scripts/worktree.mjs" finish WO-099 >/dev/null
+finish_worktree WO-099 >/dev/null
 test ! -e "$subject"
 test "$(git -C "$main" branch --list wo-099)" = ""
 test -f "$main/result.txt"
 test "$(git -C "$main" status --porcelain)" = ""
+
+hidden_subject="$test_root/project-wo098"
+git -C "$main" worktree add "$hidden_subject" -b wo-098 >/dev/null
+printf '%s\n' \
+  '# WO-098 — committed-state finish fixture, v0.2.1' \
+  '' \
+  '**Model:** fixture-model.' \
+  '**Effort:** executor any; verifier any; reviewer any.' \
+  '' \
+  '**Objective:** Keep destructive finish bound to committed control.' >"$hidden_subject/docs/work-orders/WO-098-fixture.md"
+printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-098","workOrderPath":"docs/work-orders/WO-098-fixture.md"}' >>"$hidden_subject/docs/control/resume.jsonl"
+printf '%s\n' \
+  '# Current control state' \
+  '' \
+  '- Work order: WO-098' \
+  '- Work-order path: docs/work-orders/WO-098-fixture.md' \
+  '- Phase: active' >"$hidden_subject/docs/control/current.md"
+git -C "$hidden_subject" add .
+git -C "$hidden_subject" commit -m 'active committed finish fixture' >/dev/null
+git -C "$hidden_subject" push -u origin wo-098 >/dev/null 2>&1
+git -C "$main" fetch origin wo-098 >/dev/null 2>&1
+git -C "$main" merge --ff-only origin/wo-098 >/dev/null
+git -C "$main" push origin main >/dev/null 2>&1
+cp "$hidden_subject/docs/control/resume.jsonl" "$test_root/committed-active-finish-resume.jsonl"
+cp "$hidden_subject/docs/control/current.md" "$test_root/committed-active-finish-current.md"
+git -C "$hidden_subject" update-index --assume-unchanged docs/control/resume.jsonl docs/control/current.md
+printf '%s\n' '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-098","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-098/FINAL-001.md","verdict":"pass"}' >>"$hidden_subject/docs/control/resume.jsonl"
+printf '%s\n' \
+  '# Current control state' \
+  '' \
+  '- Work order: WO-098' \
+  '- Work-order path: docs/work-orders/WO-098-fixture.md' \
+  '- Phase: closed' >"$hidden_subject/docs/control/current.md"
+if hidden_finish_output="$(finish_worktree WO-098 2>&1)"; then
+  printf 'error: hidden live control state bypassed destructive finish gate\n' >&2
+  exit 1
+fi
+grep -Fq 'WO-098 has not passed final review and closed' <<<"$hidden_finish_output"
+test -d "$hidden_subject"
+test -n "$(git -C "$main" branch --list wo-098)"
+test -f "$hidden_subject/docs/control/resume.jsonl"
+cp "$test_root/committed-active-finish-resume.jsonl" "$hidden_subject/docs/control/resume.jsonl"
+cp "$test_root/committed-active-finish-current.md" "$hidden_subject/docs/control/current.md"
+git -C "$hidden_subject" update-index --no-assume-unchanged docs/control/resume.jsonl docs/control/current.md
+test "$(git -C "$hidden_subject" status --porcelain)" = ""
+printf 'destructive finish used committed control state and preserved the hidden-live fixture\n'
 printf 'worktree tests passed\n'

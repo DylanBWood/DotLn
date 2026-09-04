@@ -23,6 +23,86 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-018 ideation breakout — additional opinions and adjudication (2026-09-04)
+
+Source: the operator's `ideation:` message during WO-018, captured verbatim in
+local-only `docs/intake/notes/WO-018-expanded-ideation-2026-09-04.md`, then
+rewritten through Shape-First Synthesis. The capture was byte-verified in the
+main checkout's canonical intake and placed in a validated owner-only backup;
+the worktree staging duplicate was removed only afterward. The clean-room
+screen found no employer code, configuration, identifier, internal service,
+credential, private identifier, or other stop condition. The operator
+preauthorized resuming only the active `resume: next` implementation step after
+this breakout.
+
+- **Second Opinion is the bounded preset; Additional Opinion is the general
+  candidate support** `transformed`
+  - The small form permits exactly one extra episode, for two results total.
+    The generalized form permits a finite cohort bounded by count,
+    concurrency, deadline, cost, and a marginal-value stop rule. These are
+    width bounds; recursive opinions on opinions remain prohibited in the
+    recommended first slice. Neither behavior exists in resume control v1.
+- **Repeat the immutable subject, not the lifecycle transition** `transformed`
+  - An eligible episode-producing stage can keep “another opinion” available
+    while a cohort is open. Every run receives new command, episode, result,
+    and actor-attestation identities over the same pinned WorkOrder content
+    hash/revision, base, criteria/input evidence, loadout, and environment
+    contract. Verification pins one exact candidate; implementation variants
+    instead record a distinct produced artifact on each result. The event log
+    advances. Activation, authority, destructive effects, completion,
+    publication, release close, and adjudication are not generic self-loops.
+- **A sealed adjudication is a lossless, one-way barrier with a proposed uniform
+  two-exit rule** `preserved`
+  - Validation, hard gates, normalization, provenance-preserving duplicate
+    clusters, agreement/conflict relations, optional synthesis, and a separate
+    adjudicator form an ordered pipeline. Sealing fixes the admitted result set;
+    late results retain a disposition but cannot reopen it. The operator proposed
+    that every adjudication route only to fix or final review. Volume never
+    overrules a supported blocking finding.
+- **The first slice applies the two-exit rule to verification; implementation
+  routing remains transformed and deferred** `transformed`
+  - A verification adjudication routes only to fix or final review, including an
+    unresolved outcome through fix. A raw implementation candidate cannot route
+    to final review without violating the settled independent-verification gate;
+    it must first select an artifact for verification or go to fix. The uniform
+    rule remains preserved as a proposal, while implementation plurality waits
+    for an explicit resolution rather than silently weakening assurance.
+- **Implementation variants and verification opinions need different
+  isolation** `transformed`
+  - Every mutating candidate gets a sibling branch/worktree from one frozen
+    base, with one writer per worktree and a separate single-writer integration
+    branch. Selecting a whole candidate is the smallest first mechanism;
+    combining patches creates a new subject and requires fresh evidence.
+    Verification opinions inspect the same immutable candidate in fresh,
+    preferably blinded contexts; a later actor that sees an earlier result is a
+    critique, not an independent opinion. One host serializes canonical events.
+- **Opinion cohorts can produce Eye Dr evidence, not automatic model
+  rankings** `preserved`
+  - Same-model repeats measure variance; diverse panels measure a different
+    relation. Pairwise preferences happen only after hard constraints pass and
+    record model/checkpoint, effort, harness/version, workflow mode, input and
+    loadout revision, visibility, order, task class, time/cost, unique accepted
+    findings, downstream rework, and operator judgment where observable.
+    Acceptance rate alone rewards leniency, correlated runs are not independent,
+    and ratings remain replaceable projections.
+
+## WO-018 implementation — control-plane consolidation (2026-09-04)
+
+Source: the active WO-018 implementation on the published `v0.4.0` base. This
+entry records the work order's explicit manifest non-goal without duplicating
+the 2026-09-02 adopted decision that control state is data and a disposable
+projection is never an API.
+
+- **A `program` compatibility field in the release manifest remains a
+  candidate** `preserved`
+  - Cadence compatibility can now be derived from bounded built-kernel exports,
+    but a flat `program` field would overstate what the current runtime proves
+    about recursive Program evaluability and continuation behavior. Add no such
+    field merely by analogy. Reverse this deferral when the kernel exposes a
+    reviewed Program compatibility contract or a concrete release consumer
+    needs one, then require built-export derivation and a publication-blocking
+    negative fixture before adoption.
+
 ## 2026-09-04 gardening planning pass (operator-dispatched, after the `v0.4.0` close)
 
 Source: the operator's 2026-09-04 dispatch for a quick planning and

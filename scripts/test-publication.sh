@@ -18,6 +18,7 @@ zero_lock="$(printf '%064d' 0)"
 
 mkdir -p -- "$fixture_repo/scripts" "$fixture_repo/docs/product" "$fixture_repo/docs/publication"
 cp -- "$script_dir/check-publication.mjs" "$fixture_repo/scripts/check-publication.mjs"
+cp -R -- "$script_dir/lib" "$fixture_repo/scripts/lib"
 
 {
   printf '%s\n' '# Fixture' ''
@@ -109,11 +110,18 @@ write_edition() {
 write_edition "$fixture_repo/docs/publication/everyday-ai-user-toc.md"
 write_edition "$fixture_repo/docs/publication/software-engineer-toc.md"
 
+expected_lock="$(
+  {
+    printf '%s\0' '00-fixture.md#fixture'
+    command cat "$fixture_repo/docs/product/00-fixture.md"
+    printf '\0'
+  } | shasum -a 256 | awk '{print $1}'
+)"
 lock_output="$("$node_bin" "$fixture_repo/scripts/check-publication.mjs" --print-locks)"
 everyday_lock="$(printf '%s\n' "$lock_output" | sed -n 's/^LOCK everyday-ai-user-toc.md: sha256://p')"
 engineer_lock="$(printf '%s\n' "$lock_output" | sed -n 's/^LOCK software-engineer-toc.md: sha256://p')"
-test "$(printf '%s' "$everyday_lock" | wc -c | tr -d ' ')" = 64
-test "$(printf '%s' "$engineer_lock" | wc -c | tr -d ' ')" = 64
+test "$everyday_lock" = "$expected_lock"
+test "$engineer_lock" = "$expected_lock"
 
 replace_lock() {
   "$node_bin" -e '
@@ -123,8 +131,8 @@ replace_lock() {
     fs.writeFileSync(path, fs.readFileSync(path, "utf8").replace(/0{64}/, lock));
   ' "$1" "$2"
 }
-replace_lock "$fixture_repo/docs/publication/everyday-ai-user-toc.md" "$everyday_lock"
-replace_lock "$fixture_repo/docs/publication/software-engineer-toc.md" "$engineer_lock"
+replace_lock "$fixture_repo/docs/publication/everyday-ai-user-toc.md" "$expected_lock"
+replace_lock "$fixture_repo/docs/publication/software-engineer-toc.md" "$expected_lock"
 
 run_checker() {
   "$node_bin" "$fixture_repo/scripts/check-publication.mjs" "$@"

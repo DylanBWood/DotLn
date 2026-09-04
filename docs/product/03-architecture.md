@@ -540,6 +540,68 @@ redux/rxjs applied to agents, and it must satisfy the analog completeness test:
   (that's how model harnesses fan out internally) but never canonical state —
   the append-only log is (lost-update and ordering hazards otherwise).
 
+### Candidate — opinion cohorts and sealed adjudication
+
+The Additional Opinion candidate is an inner controller around an
+episode-producing stage, not a literal replay of that stage's outer lifecycle
+transition. While a cohort is open, the controller may dispatch another peer
+episode against one immutable subject snapshot or seal the cohort and continue.
+Activation, authority grants, completion recording, destructive effects,
+publication and release close, and adjudication itself are ineligible: repeating
+those edges could duplicate effects or manufacture authority. Compatibility
+requires a frozen comparable subject, a typed result, finite resource and stop
+bounds, and a declared adjudication route.
+
+The likely lowering is Invoke/Await under a collect-all `Program.All`-shaped
+join, with timeout and partial-result policy explicit in the continuation.
+`Program.All` is grammar-only and deferred in the current kernel; this candidate
+cannot claim executable cohort joins until a later runtime implements and tests
+that semantics. `Program.Race` is wrong when a fast result must not erase
+minority findings.
+Every intentional repeat receives a new command and episode id under one cohort
+correlation id, so command-delivery deduplication remains intact. Failed,
+cancelled, timed-out, duplicate, invalid, stale, and late results each retain a
+disposition; none becomes a negative vote or silently disappears. A cohort seal
+freezes the admitted input ids. An adjudicator retry may be idempotent over that
+sealed input set, but cannot reopen collection.
+
+The reduction path is ordered because its operations do not generally commute:
+validate subject/schema/integrity → apply hard constraints and evidence gates →
+normalize and fingerprint → cluster duplicates without dropping provenance →
+construct agreement and conflict relations → optionally synthesize →
+adjudicate. The reducer emits a compact decision packet plus references to every
+input, exclusion, duplicate cluster, and unresolved dissent. Filter and quorum
+decide eligibility or when to stop collecting, never what is true. Adjudication
+is a separate role and authority; it cannot turn repeated support into wider
+scope or let a majority overrule a supported blocking finding.
+
+For verification, a sealed adjudication has only the existing `fix` or `final
+review` downstream routes. For implementation alternatives, the cohort snapshot
+pins the shared request and base while each result pins its own produced
+artifact. Adjudication selects one artifact, materializes a verification
+snapshot for that exact result, and sends it to the independent-verification
+gate, or rejects/routes the work for repair; it cannot skip verification.
+Combining candidate patches creates a new artifact and verification subject and
+therefore stales prior candidate evidence. A post-fix cohort gets a new identity
+and snapshot rather than reopening the sealed cohort.
+
+Each mutating implementation alternative starts from the same pinned base in a
+different branch and worktree, with one writable agent per worktree. The
+work-order branch remains the single integration/control branch. A separately
+authorized integrator selects or constructs the canonical candidate, then
+re-runs evidence on it. Read-only evaluators may address the same immutable Git
+object, but separate snapshots are the safe default when builds, tools, or
+report creation write locally. Workers never merge their local control logs; a
+single host-owned recorder serializes typed result envelopes into canonical
+state. This is required until the event store has transactional multi-writer
+support, and remains a useful ownership boundary afterward.
+
+Current resume control v1 implements none of these cohort events or legal
+actions. A later schema must represent the cohort policy, frozen subject,
+opinion ids and attempts, actor attestations and visibility mode, pending and
+completed counts, seal, adjudication packet, and downstream route; every strict
+reader must migrate together because unknown events deliberately fail closed.
+
 ## Composition system
 
 The first personal implementation's LoadoutGraph (see domain model) is compiled

@@ -17,6 +17,7 @@ git -C "$fixture_repo" config user.email test@example.invalid
 git -C "$fixture_repo" config user.name "DotLn Test"
 mkdir -p "$fixture_repo/scripts" "$fixture_repo/docs/work-orders" "$fixture_repo/docs/discovery"
 cp -- "$script_dir/resume.mjs" "$fixture_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$fixture_repo/scripts/lib"
 cp -- "$script_dir/../.gitignore" "$fixture_repo/.gitignore"
 printf '%s\n' \
   '# fixture' \
@@ -24,7 +25,7 @@ printf '%s\n' \
   '**Model:** fixture-model.' \
   '**Effort:** executor any; verifier any; reviewer any.' >"$fixture_repo/docs/work-orders/WO-099-fixture.md"
 printf '%s\n' \
-  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"version":{"classification":"observed","value":"fixture"},"persistedEffortSelector":{"classification":"observed","value":"xhigh"}}}}}' >"$fixture_repo/docs/discovery/environment.json"
+  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"versions":[{"classification":"observed","value":"fixture"}],"persistedEffortSelector":{"classification":"observed","value":"xhigh"}}}}}' >"$fixture_repo/docs/discovery/environment.json"
 git -C "$fixture_repo" add .
 git -C "$fixture_repo" commit -m initial >/dev/null
 
@@ -84,6 +85,7 @@ test -f "$fixture_repo/.env"
 stale_repo="$test_root/stale-repo"
 mkdir -p "$stale_repo/scripts" "$stale_repo/docs/work-orders" "$stale_repo/docs/discovery" "$test_root/failing-git"
 cp -- "$script_dir/resume.mjs" "$stale_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$stale_repo/scripts/lib"
 cp -- "$script_dir/../.gitignore" "$stale_repo/.gitignore"
 printf '%s\n' \
   '# fixture' \
@@ -91,7 +93,7 @@ printf '%s\n' \
   '**Model:** fixture-model.' \
   '**Effort:** executor any; verifier any; reviewer any.' >"$stale_repo/docs/work-orders/WO-098-fixture.md"
 printf '%s\n' \
-  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"version":{"classification":"observed","value":"fixture"},"persistedEffortSelector":{"classification":"observed","value":"xhigh"}}}}}' >"$stale_repo/docs/discovery/environment.json"
+  '{"effortReadbackProbe":{"harnesses":{"codex-cli":{"versions":[{"classification":"observed","value":"fixture"}],"persistedEffortSelector":{"classification":"observed","value":"xhigh"}}}}}' >"$stale_repo/docs/discovery/environment.json"
 git init "$stale_repo" >/dev/null
 git -C "$stale_repo" config user.email test@example.invalid
 git -C "$stale_repo" config user.name "DotLn Test"

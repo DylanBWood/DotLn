@@ -2,17 +2,15 @@
 import { createHash } from "node:crypto";
 import {
   existsSync,
-  lstatSync,
   mkdtempSync,
   readFileSync,
   readdirSync,
-  realpathSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
 import { release as osRelease, tmpdir } from "node:os";
-import { basename, dirname, join, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 import {
   parseReleaseNotes,
@@ -24,6 +22,26 @@ import {
   resolveGitHubPushTarget,
 } from "./github-repository.mjs";
 import { assertGitHubBodyProfile } from "./github-body.mjs";
+import {
+  ensureClean,
+  failureOf,
+  mainWorktree as findMainWorktree,
+  parseWorktrees,
+  removeMergedBranch,
+  runGit,
+  runGitPathList,
+} from "./lib/git.mjs";
+import {
+  classifyIgnoredMaterial,
+  parseJson,
+  readJsonFile,
+  workOrderAuthorityPath,
+} from "./lib/paths.mjs";
+import {
+  CONTROL_LOG_SCHEMA_VERSION,
+  fold as foldControlEvents,
+  statusProjection,
+} from "./resume.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const evidenceCommands = [
@@ -72,25 +90,6 @@ const execute = (command, args, options = {}) =>
     ...options,
   });
 const outputOf = (result) => `${result.stdout ?? ""}${result.stderr ?? ""}`;
-const failureOf = (result, fallback) =>
-  (result.stderr || result.stdout || result.error?.message || fallback).trim();
-const runGit = (cwd, args, options = {}) => {
-  const result = execute("git", ["-C", cwd, ...args], options);
-  if (result.status !== 0)
-    throw new Error(failureOf(result, `git ${args.join(" ")} failed`));
-  return result.stdout.trim();
-};
-const runGitPathList = (cwd, args, options = {}) => {
-  const result = execute("git", ["-C", cwd, ...args], options);
-  if (result.status !== 0)
-    throw new Error(failureOf(result, `git ${args.join(" ")} failed`));
-  if (result.stdout === "") return [];
-  if (!result.stdout.endsWith("\0"))
-    throw new Error(
-      `git ${args.join(" ")} returned a non-NUL-terminated path list`,
-    );
-  return result.stdout.slice(0, -1).split("\0");
-};
 const optionalGitFile = (root, revision, path) => {
   const result = execute("git", ["-C", root, "show", `${revision}:${path}`]);
   if (result.status !== 0) return undefined;
@@ -112,7 +111,13 @@ const controlEventsAt = (root, revision) => {
     .split("\n")
     .map((line, index) => {
       try {
-        return { raw: line, event: JSON.parse(line) };
+        return {
+          raw: line,
+          event: parseJson(
+            line,
+            `${revision}:docs/control/resume.jsonl:${index + 1}`,
+          ),
+        };
       } catch {
         throw new Error(
           `invalid control event at ${revision}:docs/control/resume.jsonl:${index + 1}`,
@@ -132,62 +137,20 @@ const addedControlEvents = (root, parent, commit) => {
     );
   return after.slice(before.length).map(({ event }) => event);
 };
-const ensureClean = (path) => {
-  const dirty = runGit(path, [
-    "status",
-    "--porcelain",
-    "--untracked-files=all",
-  ]);
-  if (dirty !== "")
-    throw new Error(
-      `working tree is not clean: ${path} (${dirty.split("\n")[0]})`,
-    );
-};
 const ensureNoIgnoredInfluence = (path) => {
-  const allowed = (candidate) =>
-    candidate.startsWith("docs/intake/") ||
-    candidate
-      .split("/")
-      .some((segment) => segment === "node_modules" || segment === "dist") ||
-    basename(candidate) === ".DS_Store" ||
-    candidate.endsWith(".tsbuildinfo");
   const ignored = runGitPathList(path, [
     "ls-files",
     "-z",
     "--others",
     "--ignored",
     "--exclude-standard",
-  ]).filter((candidate) => !allowed(candidate));
+  ]).filter(
+    (candidate) => !classifyIgnoredMaterial(candidate).releaseEvidenceAllowed,
+  );
   if (ignored.length > 0)
     throw new Error(
       `main checkout contains ignored material that can contaminate release evidence: ${ignored[0]}`,
     );
-};
-const containedRegularFile = (path, root) =>
-  existsSync(path) &&
-  lstatSync(path).isFile() &&
-  realpathSync(path).startsWith(`${realpathSync(root)}${sep}`);
-const parseWorktrees = (root) =>
-  runGit(root, ["worktree", "list", "--porcelain"])
-    .split("\n\n")
-    .filter(Boolean)
-    .map((record) =>
-      Object.fromEntries(
-        record.split("\n").map((line) => {
-          const at = line.indexOf(" ");
-          return at < 0
-            ? [line, true]
-            : [line.slice(0, at), line.slice(at + 1)];
-        }),
-      ),
-    );
-const mainWorktree = () => {
-  const main = parseWorktrees(toolRoot).find(
-    (item) => item.branch === "refs/heads/main",
-  );
-  if (!main?.worktree)
-    throw new Error("no main-branch control-plane worktree found");
-  return resolve(main.worktree);
 };
 const semver = (value) => {
   const match = /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(value);
@@ -276,67 +239,51 @@ const assertShape = (actual, expected, path = "$") => {
       assertShape(actual[key], expected[key], `${path}.${key}`);
   }
 };
-const controlStateFromProjection = (source) => {
-  const read = (label) =>
-    new RegExp(`^- ${label}: (.+)$`, "m").exec(source)?.[1];
+const controlState = (projection, source) => {
+  if (
+    !projection ||
+    typeof projection !== "object" ||
+    Array.isArray(projection) ||
+    typeof projection.phase !== "string" ||
+    !(
+      projection.workOrder === null || typeof projection.workOrder === "string"
+    ) ||
+    !(
+      projection.workOrderPath === null ||
+      typeof projection.workOrderPath === "string"
+    )
+  )
+    throw new Error(`cannot read control state: invalid ${source}`);
   return {
-    workOrderId: read("Work order"),
-    workOrderPath: read("Work-order path"),
-    phase: read("Phase"),
+    workOrderId: projection.workOrder ?? undefined,
+    workOrderPath: projection.workOrderPath ?? undefined,
+    phase: projection.phase,
   };
-};
-const foldControlState = (events) => {
-  const state = {
-    workOrderId: undefined,
-    workOrderPath: undefined,
-    phase: "none",
-  };
-  for (const event of events) {
-    switch (event.type) {
-      case "WorkOrderActivated":
-        Object.assign(state, {
-          workOrderId: event.workOrderId,
-          workOrderPath: event.workOrderPath,
-          phase: "active",
-        });
-        break;
-      case "ImplementationReady":
-      case "RepairCompleted":
-        state.phase = "ready-to-verify";
-        break;
-      case "VerificationRequested":
-        state.phase = "verifying";
-        break;
-      case "VerificationCompleted":
-        state.phase = event.verdict === "pass" ? "verified" : "needs-fix";
-        break;
-      case "RepairRequested":
-        state.phase = "repairing";
-        break;
-      case "FinalReviewRequested":
-        state.phase = "final-review";
-        break;
-      case "FinalReviewCompleted":
-        state.phase = event.verdict === "pass" ? "closed" : "needs-fix";
-        break;
-    }
-  }
-  return state;
 };
 const parseControlState = (root) => {
   const result = execute(
     process.execPath,
-    [join(root, "scripts/resume.mjs"), "status"],
+    [join(root, "scripts/resume.mjs"), "status", "--json"],
     { cwd: root },
   );
   if (result.status !== 0)
     throw new Error(
       `cannot read control state: ${failureOf(result, "resume status failed")}`,
     );
-  return controlStateFromProjection(result.stdout);
+  return controlState(
+    parseJson(result.stdout, "resume status --json output"),
+    "resume status --json output",
+  );
 };
 const parseControlStateAt = (root, revision) =>
-  foldControlState(controlEventsAt(root, revision).map(({ event }) => event));
+  controlState(
+    statusProjection(
+      foldControlEvents(
+        controlEventsAt(root, revision).map(({ event }) => event),
+      ),
+    ),
+    `${revision}:docs/control/resume.jsonl`,
+  );
 const paragraph = (markdown, label) => {
   const match = new RegExp(
     `\\*\\*${label}:\\*\\*\\s+([^\\n]+(?:\\n(?!\\n|\\*\\*|#)[^\\n]+)*)`,
@@ -348,16 +295,9 @@ const readWorkOrderAuthority = (root, state, revision) => {
     throw new Error(
       `invalid current work-order id: ${state.workOrderId ?? "none"}`,
     );
-  const authorityRoot = join(root, "docs/work-orders");
-  const path = resolve(root, state.workOrderPath ?? "");
-  if (
-    !path.startsWith(`${authorityRoot}${sep}`) ||
-    (!revision && !containedRegularFile(path, authorityRoot)) ||
-    !basename(path).startsWith(`${state.workOrderId}-`)
-  )
-    throw new Error(
-      `invalid work-order authority path: ${state.workOrderPath ?? "none"}`,
-    );
+  workOrderAuthorityPath(root, state.workOrderId, state.workOrderPath, {
+    requireFile: !revision,
+  });
   const markdown = repositoryFile(root, state.workOrderPath, revision);
   const heading = markdown.split("\n", 1)[0];
   const versions = strictVersionsIn(heading);
@@ -392,8 +332,9 @@ const packageVersions = (root, revision) => {
       version,
     ]),
   );
-  const rootPackage = JSON.parse(
+  const rootPackage = parseJson(
     repositoryFile(root, "package.json", revision),
+    revision ? `${revision}:package.json` : join(root, "package.json"),
   );
   return {
     root: typeof rootPackage.version === "string" ? rootPackage.version : null,
@@ -419,7 +360,10 @@ const componentPackages = (root, revision) => {
   return manifestPaths
     .map((manifestPath) => {
       const directory = manifestPath.split("/")[1];
-      const manifest = JSON.parse(repositoryFile(root, manifestPath, revision));
+      const manifest = parseJson(
+        repositoryFile(root, manifestPath, revision),
+        revision ? `${revision}:${manifestPath}` : join(root, manifestPath),
+      );
       if (
         typeof manifest.name !== "string" ||
         typeof manifest.version !== "string"
@@ -539,7 +483,10 @@ const componentVersionRules = (root, latest, local, remote, revision) => {
         priorManifestPath,
       );
       if (priorPackageSource !== undefined) {
-        const priorPackage = JSON.parse(priorPackageSource);
+        const priorPackage = parseJson(
+          priorPackageSource,
+          `${latest}:${priorManifestPath}`,
+        );
         if (priorPackage.name === component.name) {
           return {
             pass: false,
@@ -627,81 +574,106 @@ const exactSchemaVersion = (source, pattern, name) => {
     throw new Error(`cannot derive ${name} schema version from source`);
   return Number(match[1]);
 };
+const builtKernelCadence = (root) => {
+  const moduleUrl = pathToFileURL(
+    join(root, "packages/kernel/dist/src/index.js"),
+  ).href;
+  const probe = `
+    const kernel = await import(${JSON.stringify(moduleUrl)});
+    const constructors = Object.entries(kernel.Cadence ?? {}).map(
+      ([name, factory]) => ({
+        name,
+        kind: typeof factory === "function" ? factory()?.kind : null,
+      }),
+    );
+    process.stdout.write(JSON.stringify({
+      cadencePresent: kernel.Cadence !== undefined,
+      constructors,
+      all: kernel.CADENCE_KINDS ?? null,
+      evaluable: kernel.EVALUABLE_CADENCE_KINDS ?? null,
+    }));
+  `;
+  const result = execute(
+    process.execPath,
+    ["--input-type=module", "--eval", probe],
+    { cwd: root },
+  );
+  if (result.status !== 0)
+    throw new Error(
+      `cannot load built kernel cadence exports: ${failureOf(result, "kernel import failed")}`,
+    );
+  const projection = parseJson(
+    result.stdout,
+    "built @dotln/kernel cadence exports",
+  );
+  if (
+    projection?.cadencePresent !== true ||
+    !Array.isArray(projection.constructors) ||
+    !Array.isArray(projection.all) ||
+    !Array.isArray(projection.evaluable)
+  )
+    throw new Error("built kernel cadence constants are missing");
+  const allKinds = [...projection.all];
+  const evaluable = [...projection.evaluable];
+  const constructorKinds = projection.constructors.map(
+    (constructor) => constructor?.name,
+  );
+  const allKindSet = new Set(allKinds);
+  const evaluableSet = new Set(evaluable);
+  const constructorKindSet = new Set(constructorKinds);
+  if (
+    allKinds.length === 0 ||
+    allKindSet.size !== allKinds.length ||
+    allKinds.some(
+      (kind) => typeof kind !== "string" || !/^[A-Za-z_$][\w$]*$/.test(kind),
+    ) ||
+    constructorKindSet.size !== projection.constructors.length ||
+    constructorKindSet.size !== allKindSet.size ||
+    allKinds.some((kind) => !constructorKindSet.has(kind)) ||
+    projection.constructors.some(
+      (constructor) =>
+        !constructor ||
+        typeof constructor !== "object" ||
+        typeof constructor.name !== "string" ||
+        !/^[A-Za-z_$][\w$]*$/.test(constructor.name) ||
+        constructor.kind !== constructor.name ||
+        !allKindSet.has(constructor.name),
+    ) ||
+    evaluable.length === 0 ||
+    evaluableSet.size !== evaluable.length ||
+    evaluable.some((kind) => typeof kind !== "string" || !allKindSet.has(kind))
+  )
+    throw new Error(
+      "built kernel cadence constants are inconsistent with the Cadence type union",
+    );
+  return {
+    evaluable,
+    deferred: allKinds.filter((kind) => !evaluableSet.has(kind)),
+  };
+};
 const compatibility = (root) => {
   const types = readFileSync(
     join(root, "packages/kernel/src/types.ts"),
     "utf8",
   );
-  const control = readFileSync(join(root, "scripts/resume.mjs"), "utf8");
-  const core = readFileSync(join(root, "packages/kernel/src/core.ts"), "utf8");
   const eventEnvelope = exactSchemaVersion(
     types,
     /export interface EventEnvelope[^\{]*\{\s*readonly schemaVersion:\s*(\d+)/s,
     "event-envelope",
   );
-  const controlLog = exactSchemaVersion(
-    control,
-    /const record = \{ schemaVersion:\s*(\d+), \.\.\.event \}/,
-    "control-log",
-  );
-  const cadenceUnion =
-    /export namespace Cadence\s*\{\s*export type T\s*=\s*([^;]+);/s.exec(
-      types,
-    )?.[1];
-  if (!cadenceUnion) throw new Error("cannot derive cadence kinds from source");
-  const allKinds = cadenceUnion
-    .split("|")
-    .map((value) => value.trim())
-    .filter(Boolean);
-  const allKindSet = new Set(allKinds);
-  if (
-    allKinds.length === 0 ||
-    allKindSet.size !== allKinds.length ||
-    allKinds.some((kind) => !/^[A-Za-z_$][\w$]*$/.test(kind))
-  )
-    throw new Error("cannot derive cadence kinds from source");
-  const cadenceEvaluator =
-    /^export function evaluateCadence\b[\s\S]+?^}\n(?=\nexport )/m.exec(
-      core,
-    )?.[0];
-  const cadenceSwitchMatch =
-    cadenceEvaluator === undefined
-      ? undefined
-      : /^([ \t]*)switch \(cadence\.kind\) \{([\s\S]+?)^\1  default:/m.exec(
-          cadenceEvaluator,
-        );
-  const cadenceSwitch = cadenceSwitchMatch?.[2];
-  if (!cadenceSwitch)
-    throw new Error("cannot derive cadence evaluator cases from source");
-  const caseIndent = `${cadenceSwitchMatch[1]}  `;
-  const caseCount = [
-    ...cadenceSwitch.matchAll(new RegExp(`^${caseIndent}case\\b`, "gm")),
-  ].length;
-  const evaluable = [
-    ...cadenceSwitch.matchAll(
-      new RegExp(`^${caseIndent}case "([^"]+)":`, "gm"),
-    ),
-  ].map((match) => match[1]);
-  const evaluableSet = new Set(evaluable);
-  if (
-    evaluable.length === 0 ||
-    evaluable.length !== caseCount ||
-    evaluableSet.size !== evaluable.length ||
-    evaluable.some((kind) => !allKindSet.has(kind))
-  )
-    throw new Error("cannot derive cadence evaluator cases from source");
+  const cadence = builtKernelCadence(root);
   return {
     schemas: {
       eventEnvelope: { min: eventEnvelope, max: eventEnvelope },
-      controlLog: { min: controlLog, max: controlLog },
+      controlLog: {
+        min: CONTROL_LOG_SCHEMA_VERSION,
+        max: CONTROL_LOG_SCHEMA_VERSION,
+      },
       ir: null,
       artifactConfiguration: null,
       transformationSet: null,
     },
-    cadence: {
-      evaluable,
-      deferred: allKinds.filter((kind) => !evaluableSet.has(kind)),
-    },
+    cadence,
   };
 };
 const versionOutput = (command, args, cwd, label) => {
@@ -719,9 +691,7 @@ const toolchain = (root) => {
     root,
     "TypeScript version",
   ).replace(/^Version\s+/, "");
-  const lock = JSON.parse(
-    readFileSync(join(root, "package-lock.json"), "utf8"),
-  );
+  const lock = readJsonFile(join(root, "package-lock.json"));
   const lockedTypescript =
     lock.packages?.["node_modules/typescript"]?.version ??
     lock.packages?.[""]?.devDependencies?.typescript;
@@ -830,17 +800,17 @@ const workOrderTitleAtHead = (root, workOrderId) => {
         event.workOrderId === workOrderId,
     )
     .at(-1);
-  const authorityRoot = join(root, "docs/work-orders");
   const authorityPath = activation?.workOrderPath ?? "";
-  const resolvedAuthorityPath = resolve(root, authorityPath);
-  if (
-    !activation ||
-    !resolvedAuthorityPath.startsWith(`${authorityRoot}${sep}`) ||
-    !basename(authorityPath).startsWith(`${workOrderId}-`)
-  )
+  try {
+    if (!activation) throw new Error("activation is missing");
+    workOrderAuthorityPath(root, workOrderId, authorityPath, {
+      requireFile: false,
+    });
+  } catch {
     throw new Error(
       `cannot resolve work-order authority for release notes: ${workOrderId}`,
     );
+  }
   const source = optionalGitFile(root, "HEAD", authorityPath);
   if (source === undefined)
     throw new Error(
@@ -997,7 +967,7 @@ const baseManifest = (
   recordedToolchain,
 ) => {
   const templatePath = join(root, "docs/releases/tag-manifest.template.json");
-  const template = JSON.parse(readFileSync(templatePath, "utf8"));
+  const template = readJsonFile(templatePath);
   if (template.schemaVersion !== 1)
     throw new Error(`unsupported release manifest template: ${templatePath}`);
   assertShape(template, templateShape);
@@ -1110,9 +1080,7 @@ const validateManifest = (root, manifest) => {
 const validatePublishedManifest = (root, manifest) => {
   validateEvidence(manifest.evidence);
   const recorded = manifest.toolchain;
-  const lock = JSON.parse(
-    readFileSync(join(root, "package-lock.json"), "utf8"),
-  );
+  const lock = readJsonFile(join(root, "package-lock.json"));
   const lockedTypescript =
     lock.packages?.["node_modules/typescript"]?.version ??
     lock.packages?.[""]?.devDependencies?.typescript;
@@ -1294,7 +1262,10 @@ const manifestFromTag = (root, tag) => {
   if (begin < 0 || end < begin + beginMarker.length)
     throw new Error(`${tag} does not contain a DotLn release manifest`);
   try {
-    return JSON.parse(annotation.slice(begin + beginMarker.length, end));
+    return parseJson(
+      annotation.slice(begin + beginMarker.length, end),
+      `${tag} release manifest`,
+    );
   } catch {
     throw new Error(`${tag} contains invalid manifest JSON`);
   }
@@ -1357,7 +1328,7 @@ const updateMainAndFinish = (root, workOrderId) => {
   if (subject?.worktree) {
     const finished = execute(
       process.execPath,
-      [join(root, "scripts/worktree.mjs"), "finish", workOrderId],
+      [join(toolRoot, "scripts/worktree.mjs"), "finish", workOrderId],
       { cwd: root },
     );
     if (finished.status !== 0)
@@ -1382,16 +1353,7 @@ const updateMainAndFinish = (root, workOrderId) => {
         throw new Error(
           `${branch} exists locally but is not merged into origin/main`,
         );
-      const upstream = execute("git", [
-        "-C",
-        root,
-        "rev-parse",
-        "--verify",
-        `${branch}@{upstream}`,
-      ]);
-      if (upstream.status === 0)
-        runGit(root, ["branch", "--unset-upstream", branch]);
-      runGit(root, ["branch", "-d", branch]);
+      removeMergedBranch(root, branch);
     }
   }
   ensureClean(root);
@@ -1476,7 +1438,7 @@ const viewedGitHubRelease = (root, repository, tag) => {
     );
   }
   try {
-    const release = JSON.parse(viewed.stdout);
+    const release = parseJson(viewed.stdout, `${tag} GitHub Release metadata`);
     if (
       typeof release.body !== "string" ||
       typeof release.name !== "string" ||
@@ -1584,7 +1546,7 @@ const close = (workOrderId, args) => {
   )
     throw new Error("usage: release close WO-NNN [--publish]");
   const publish = args.includes("--publish");
-  const root = mainWorktree();
+  const root = findMainWorktree(toolRoot);
   if (resolve(process.cwd()) !== root)
     throw new Error(
       `release close must run from the main control-plane checkout: ${root}`,
@@ -1637,6 +1599,7 @@ const close = (workOrderId, args) => {
     );
   if (latest && compareVersions(authority.version, latest) === 0) {
     const repository = publish ? ensureGhPreflight(root) : undefined;
+    runEvidence(root);
     const existing = ensureExistingRelease(
       root,
       authority.version,
@@ -1780,7 +1743,7 @@ const listPublishedReleases = () => {
 };
 const publishHistoricalNotes = (tag) => {
   if (!semver(tag)) throw new Error(`invalid release tag: ${tag ?? "missing"}`);
-  const root = mainWorktree();
+  const root = findMainWorktree(toolRoot);
   if (resolve(process.cwd()) !== root)
     throw new Error(
       `release publish-notes must run from the main control-plane checkout: ${root}`,
@@ -1842,10 +1805,7 @@ const main = () => {
     const [path] = args;
     if (!path || args.length !== 1)
       throw new Error("usage: release validate <manifest.json>");
-    validateManifest(
-      toolRoot,
-      JSON.parse(readFileSync(resolve(process.cwd(), path), "utf8")),
-    );
+    validateManifest(toolRoot, readJsonFile(resolve(process.cwd(), path)));
     process.stdout.write(`Validated ${path}.\n`);
     return;
   }

@@ -32,7 +32,13 @@ Three standing rules:
   The WO-003 verifier's surviving findings were mostly thin-evidence defects,
   which is why future attribution is executable rather than prose. An
   unrecognized label such as historical `ultracode` is `unknown` with its raw
-  spelling preserved until discovery maps it.
+  spelling preserved. Discovery keeps each harness's observed `versions` in
+  oldest-to-newest order; any listed version remains valid, a new observation
+  appends rather than replaces, and a refusal lists the versions on record. The
+  documented Claude Code `ultracode` note records the operator-attested meaning
+  “dynamic workflows plus `xhigh` reasoning effort.” It never converts the
+  session label automatically: when that attestation applies, the actor still
+  supplies `--effort xhigh --source operator-attested` explicitly.
 
 ## Harness safety baseline
 
@@ -53,7 +59,9 @@ directory remain protected even under `workspace-write`. A Codex session must
 therefore request outside-sandbox approval on the **first invocation** of every
 state-changing `npm run resume -- ...` command so its recovery checkpoint can be
 created. `status` is read-only; `next` appends no event and creates no
-checkpoint but does refresh the workspace projection. Do not run a transition
+checkpoint but does refresh the workspace projection. `status --json` exposes
+the same control fields for lifecycle scripts; both status forms are read-only
+and warn without rewriting if the Markdown projection is stale. Do not run a transition
 sandboxed and then retry it: the transition records even when the optional
 checkpoint does not. The approval unsandboxes the whole project-controlled `npm`
 process, so first inspect the exact command, `package.json` mapping, and current
@@ -218,34 +226,45 @@ no-release close; an equal target succeeds only when the existing validated tag
 names the exact commit, otherwise it refuses. If Release creation fails after
 the tag push, leave the tag untouched and rerun the same close command: the
 equal-version path creates the missing projection or refuses a body mismatch
-without editing it. Either successful path leaves clean `main` in the closed,
-between-work-orders state. WO-004 was the first scripted `v0.2.1` patch.
+without editing it. The retry always reproduces release evidence before
+validating the tagged compatibility fields, even when ignored built output
+already exists, so stale or untrusted disposable bytes are replaced before the
+compatibility import.
+Either successful path leaves clean `main` in the closed, between-work-orders
+state. WO-004 was the first scripted `v0.2.1` patch.
 
-WO-004 has one bootstrap wrinkle: the old main checkout cannot run a package
-script that WO-004 has not merged yet. Its PR publisher prints an exact
-`cd <main>` plus `node <WO-004-worktree>/scripts/release.mjs ...` handoff. Use
-that printed command after merging and after entering `resume: release close`;
-the helper updates main before removing its own source worktree. Later work
-orders use the ordinary main-checkout package command.
+For the first close attempt while the subject worktree still exists, use the
+exact `cd <main>` plus `node <subject-worktree>/scripts/release.mjs ...` command
+printed by `worktree publish` or projected by `resume release-close`. The loaded
+subject release helper delegates cleanup to its sibling subject worktree helper,
+then updates main before removing its own source. This keeps a lifecycle-policy
+change in the just-merged work order from being bypassed by stale pre-fast-
+forward helpers in main. WO-004 first required this shape because main had no
+release command at all, but the reviewed-helper rule applies to every close.
+After the subject has already been removed, a recoverable rerun uses the updated
+main checkout's ordinary `npm run release -- close WO-NNN --publish` command.
 
 Closeout refuses rather than deleting non-disposable ignored material —
 `docs/intake` notes, `.env`, or anything else hidden by `.gitignore`. If that
 happens, run `npm run backup:intake` in the subject worktree, reconcile the raw
 material into surviving trusted storage, and repeat the phrase. Disposable
-`node_modules`, `dist`, `.DS_Store`, and `*.tsbuildinfo` may leave with the
-worktree. Backup alone does not clear the refusal or make the note visible from
-main: it only archives the checkout where it ran. Until a checked reconciliation
-helper exists, verify the destination bytes in main's canonical intake before
-removing the staged worktree copy. A failed release evidence gate creates no tag
-and must become a patch work order.
+outputs may leave only from root `node_modules/` or `dist/`, from
+`packages/<name>/node_modules/` or `packages/<name>/dist/`, by a `.DS_Store`
+basename, or by a `.tsbuildinfo` suffix. A matching directory segment elsewhere
+is protected, and `docs/intake/**` protection wins even when its descendants are
+named `dist` or `node_modules`. Backup alone does not clear the refusal or make
+the note visible from main: it only archives the checkout where it ran. Until a
+checked reconciliation helper exists, verify the destination bytes in main's
+canonical intake before removing the staged worktree copy. A failed release
+evidence gate creates no tag and must become a patch work order.
 
 The main checkout's exact `.claude/settings.local.json` is persistent local
-harness state, not release evidence. The current release guard still reports it;
-WO-018 owns the tested correction that will allow that one root path during
-main-checkout release close. This is deliberately asymmetric: a copy in the
-subject worktree remains non-disposable and must block removal so the close path
-cannot erase operator settings. Do not generalize the exception to
-`.claude/**`, and do not copy or inspect the local file as part of closeout.
+harness state, not release evidence. Main-checkout release close permits that
+one root path, protected `docs/intake/**`, and the anchored disposable outputs
+above. This is deliberately asymmetric: a copy in the subject worktree remains
+non-disposable and must block removal so the close path cannot erase operator
+settings. Do not generalize the exception to `.claude/**`, and do not copy or
+inspect the local file as part of closeout.
 
 After publication, `npm run release -- notes vX.Y.Z` renders one tag's human
 layer and `npm run release -- list` lists local release tags, commits,
@@ -340,8 +359,12 @@ resume: release close
 resume: next
 ```
 
-The agent reads `docs/control/current.md`, runs the matching transition, and
-follows the emitted authoritative paths. `status` is read-only. `next` means
+The agent first runs `npm run resume --silent -- status --json`, then runs the matching
+transition and follows the emitted authoritative paths. The JSON and human
+status forms expose the same control fields, are read-only, append nothing, and
+do not rewrite `docs/control/current.md`. If that human projection disagrees
+with the canonical log fold, status warns and still returns the folded state;
+lifecycle scripts consume JSON and never parse the Markdown. `next` means
 “execute the active order” in phase `active`; in phase `closed` it reports the
 between-work-orders state and gives the start syntax. `release close` is a
 guarded lifecycle command rather than a control-log transition, so successful
@@ -353,6 +376,7 @@ launch; agents run the remaining commands after their chat dispatches:
 
 ```bash
 npm run worktree -- start WO-00N docs/work-orders/WO-00N-name.md
+npm run resume --silent -- status --json # read-only machine projection
 npm run resume -- implementation-ready --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run resume -- verify                 # allocates the next immutable VER-NNN
 npm run resume -- verification-result pass|fail --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
@@ -361,8 +385,9 @@ npm run resume -- repair-complete --harness <harness> --harness-version <version
 npm run resume -- final-review
 npm run resume -- final-review-result pass|fail --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run worktree -- publish WO-00N --title '<title>' --body-file <contained-reviewed-body-path>
-npm run release -- close WO-00N           # closes/prepares; creates no tag
-npm run release -- close WO-00N --publish # explicit tag + matching GitHub Release authority
+cd <main> && node <subject>/scripts/release.mjs close WO-00N           # first close: reviewed helpers, no tag
+cd <main> && node <subject>/scripts/release.mjs close WO-00N --publish # first close: explicit tag + Release authority
+npm run release -- close WO-00N --publish                              # recoverable rerun after subject removal
 ```
 
 Verifiers and final reviewers write the exact allocated report path and include
@@ -372,18 +397,21 @@ header before append; this makes report/event agreement a postcondition without
 asking an immutable report to inspect its future completion event. Repair and
 final-review completion actions are recorded only after their evidence exists.
 Illegal transitions refuse without appending. The JSONL log is canonical;
-`docs/control/current.md` is regenerated projection.
+`status --json` is the machine interface, and `docs/control/current.md` is a
+disposable human projection.
 
 ## End-of-workflow release task
 
 The canonical operator interface is `resume: release close` after you merge the
-final-review PR. That phrase authorizes the agent to run
-`npm run release -- close WO-NNN --publish` from the main checkout. The tool
+final-review PR. That phrase authorizes the agent to run the exact reviewed-
+subject helper command projected by `resume release-close` or printed by
+`worktree publish`, with the main checkout as its working directory. The tool
 integrates guarded worktree finish, exact-main synchronization, lockfile
 installation, evidence, manifest/notes validation, and annotated-tag publication
 followed by creation of the matching GitHub Release from the same reviewed human
-layer. It pushes no main commit and publishes no npm, binary, container, or
-hosted artifact.
+layer. Once the subject has been removed, an interrupted close reruns through
+the updated main package command. Neither path pushes a main commit or publishes
+an npm package, binary, container, or hosted artifact.
 
 The form without `--publish` is not read-only: it still performs guarded
 merged-worktree cleanup and fast-forwards local main. At a new eligible boundary

@@ -764,6 +764,17 @@ those signals, with explicit unknown states otherwise. Exact release placement
 waits on evidence from WO-009 and WO-010 rather than expanding those orders by
 implication.
 
+The recommended first Additional Opinion pilot also waits on WO-009 and WO-010:
+two total blinded verification episodes over one immutable candidate, followed
+by a sealed independent adjudication that routes only to fix or final review.
+It must preserve dissent and every input result, label same-model reruns as
+replicates, and prove that a supported blocking finding cannot be outvoted. Only
+after that evidence model works should a later order attempt mutating
+implementation variants, which require one writer/worktree per candidate, a
+single integration branch, and fresh verification for any synthesized result.
+This recommendation has no version, work-order identity, or activation
+authority and does not expand WO-009, WO-010, or the current resume protocol.
+
 <!-- prettier-ignore -->
 ## v0.7.0 — Feedback compiler v1 (ten units)  → WO-011
 

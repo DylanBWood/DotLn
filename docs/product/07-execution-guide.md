@@ -18,21 +18,28 @@ The operator's entire instruction to you may be a single phrase of the form
 do not ask which work order: the durable control state answers both, and the
 operator is deliberately not repeating themselves.
 
-1. Read `docs/control/current.md`. It names the active work order and its
-   authoritative path, the current phase, the latest verification artifact and
-   verdict, and the legal next actions. It is a generated projection of the
-   append-only `docs/control/resume.jsonl`; never edit it by hand.
+1. Run `npm run resume --silent -- status --json`. The JSON names the active work order
+   and its authoritative path, the current phase, latest verification artifact
+   and verdict, final review, latest actor attestation, effort drift, latest
+   checkpoint, and legal next actions. Both `status` forms fold the canonical
+   append-only `docs/control/resume.jsonl`; both are read-only and neither
+   appends an event nor rewrites `docs/control/current.md`. The Markdown file is
+   a disposable human projection, never an API: lifecycle peers consume the
+   JSON status, while an operator may read the Markdown. If either status form
+   warns that the projection disagrees with the fold, trust the returned fold,
+   report the mismatch, and let the next legal state-changing command refresh
+   the projection; never repair it by hand.
 2. Run the matching transition and follow the paths it prints — they are
    authoritative, and they are the whole briefing:
 
-   | Operator says           | You run                                                                                                                                                                                                                            | You then                                                                                                                                                                                                                              |
-   | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | `resume: status`        | `npm run resume -- status`                                                                                                                                                                                                         | report; this is read-only and appends nothing                                                                                                                                                                                         |
-   | `resume: next`          | `npm run resume -- next`                                                                                                                                                                                                           | in `active`, execute the emitted work-order path; in `closed`, report that the repo is between work orders and give the exact `worktree start` command                                                                                |
-   | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                            | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                |
-   | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                         | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                 |
-   | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                                   | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                        |
-   | `resume: release close` | from the main checkout, `npm run release -- close WO-NNN --publish` (one-time WO-004 bootstrap: pre-merge main has no `release` script, so run the exact command `worktree publish` printed — see §Workflow closeout and releases) | finish the merged worktree, update main, and either publish the validated annotated tag plus its matching GitHub Release or record the honest no-release result; if Release creation fails after the tag push, rerun the same command |
+   | Operator says           | You run                                                                                                                                                                                                                    | You then                                                                                                                                                                                                                                                                 |
+   | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+   | `resume: status`        | `npm run resume -- status` (or `npm run resume --silent -- status --json` for a machine consumer)                                                                                                                          | report; both forms are read-only, append nothing, and do not rewrite a stale Markdown projection                                                                                                                                                                         |
+   | `resume: next`          | `npm run resume -- next`                                                                                                                                                                                                   | in `active`, execute the emitted work-order path; in `closed`, report that the repo is between work orders and give the exact `worktree start` command                                                                                                                   |
+   | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                    | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                                                   |
+   | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
+   | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
+   | `resume: release close` | run the exact `cd <main> && node <subject>/scripts/release.mjs close WO-NNN --publish` command projected by `resume release-close` or printed by `worktree publish`; after the subject is already removed, use main's copy | finish the merged worktree with the reviewed subject helpers, update main, and either publish the validated annotated tag plus its matching GitHub Release or record the honest no-release result; if Release creation fails after the tag push, rerun from updated main |
 
    At the dated Codex baseline, run each **state-changing** `resume` command
    with explicit outside-sandbox approval on its first invocation. Codex
@@ -249,17 +256,22 @@ surviving main intake as appropriate; the helper separately refuses removal
 while any non-disposable ignored file exists — protected intake material, a
 stray `.env`, any other ignored path — naming the offending file, and never
 deletes or auto-promotes it. Known disposable ignored dependency/build outputs
-(`node_modules`, `dist`, `.DS_Store`, `*.tsbuildinfo`) may leave with the
-worktree. The same command then evaluates whether the completed roadmap rung is
-a release boundary.
+may leave with the worktree only at the anchored root `node_modules/` or
+`dist/` paths, at `packages/<name>/node_modules/` or
+`packages/<name>/dist/`, by a `.DS_Store` basename, or by a
+`.tsbuildinfo` suffix. A matching segment elsewhere is not disposable, and the
+`docs/intake/**` protection takes precedence over every build-shaped name. The
+same command then evaluates whether the completed roadmap rung is a release
+boundary.
 
 The main checkout's exact `.claude/settings.local.json` is persistent
-operator-owned harness state, not a release or test input. Until WO-018 lands,
-the release-influence guard still reports it. WO-018 must exempt only that root
-path during main-checkout release close while leaving a subject-worktree copy
-protected: worktree removal refuses and preserves the file, branch, and
-worktree. Never broaden this to `.claude/**`, copy the settings into evidence,
-or treat them as disposable cleanup.
+operator-owned harness state, not a release or test input. The main-checkout
+release-influence guard permits only that exact root path, protected
+`docs/intake/**`, and the anchored disposable outputs above. This is not a
+cleanup allowance: a subject-worktree copy of the settings file is
+non-disposable, so worktree removal refuses and preserves the file, branch, and
+worktree. Never broaden this to `.claude/**`, copy or inspect the settings as
+evidence, or treat them as disposable cleanup.
 
 When a planner pins a tagging target above the latest published tag, updating
 the root README release block to that target is an executor deliverable, not a
@@ -304,17 +316,24 @@ creation fails after the validated tag was pushed, the command exits non-zero,
 leaves that immutable tag intact, and names the recoverable state. Rerunning the
 same close command validates the equal tag byte for byte, creates the missing
 Release, or refuses at the first differing body line; it never edits the
-Release. Omitting `--publish` withholds tag and Release creation; it is
-preparation, not a read-only command.
+Release. Every equal-tag retry reproduces release evidence before re-deriving
+compatibility, so ignored built output is never trusted merely because it
+already exists.
+Omitting `--publish` withholds tag and Release creation; it is preparation, not
+a read-only command.
 
-WO-004 is the one-time bootstrap because the pre-merge `main` commit does not
-yet contain `scripts/release.mjs` or the `release` package script. Its
-`worktree publish` output therefore prints an exact command that runs the
-reviewed helper from the still-present WO-004 worktree while the shell's working
-directory is the main checkout. That helper first fast-forwards main to the
-merged PR, then may safely remove the worktree containing its already loaded
-source. After WO-004 is merged, later closeouts use the ordinary
-`npm run release -- close WO-NNN --publish` command from main.
+The first post-merge close always runs the reviewed helper from the still-
+present subject worktree while the shell's working directory is the main
+checkout. `worktree publish` and `resume release-close` print that exact
+absolute command. The loaded subject `release.mjs` delegates cleanup to its
+sibling subject `worktree.mjs`, so a policy change in the just-merged work order
+cannot be bypassed by stale pre-fast-forward main helpers. The helper validates
+and fast-forwards main before safely removing its own source worktree. If a
+recoverable failure happens after that removal—such as GitHub Release creation
+after a successful tag push—the updated main copy owns reruns through ordinary
+`npm run release -- close WO-NNN --publish`. WO-004 first needed the shape
+because pre-merge main had no release helper; the reviewed-helper rule applies
+to every later close as well.
 
 A deliberately deferred eligible release must retain a durable reason in the
 follow-on patch work order or another reviewed repository artifact; silence is
@@ -458,11 +477,15 @@ a stub but never perform a backfill against origin.
   model, effort, and epistemic source. Recognized ladder values remain exact; an
   unrecognized label is stored as `effort: unknown` plus its verbatim `raw`
   value. A recognized claim is accepted only when bounded discovery records
-  that value for the exact harness/version through a versioned selector or
-  readback; otherwise the actor must attest `unknown`. `unknown` satisfies only
-  a role declared `any`. A below-minimum transition appends nothing and can
-  proceed only after a dated operator amendment to the work order—not an
-  override flag. `harness-readback` is valid only where
+  that value for a harness version listed as observed through a versioned
+  selector or readback; otherwise the actor must attest `unknown`. Each
+  harness's `versions` array is observation history in oldest-to-newest order,
+  with the newest entry last. Any listed observed version remains valid; append
+  a newly observed version rather than replacing an earlier one. Refusals name
+  the observed versions on record so an upgrade gap is visible before a report
+  is filed. `unknown` satisfies only a role declared `any`. A below-minimum
+  transition appends nothing and can proceed only after a dated operator
+  amendment to the work order—not an override flag. `harness-readback` is valid only where
   `docs/discovery/environment.json` records an observed effective session
   readback for that exact harness/version; a persisted setting or accepted
   launch selector alone is not readback. `self-reported` deliberately records a claim rather than
@@ -472,6 +495,13 @@ a stub but never perform a backfill against origin.
   observed fact. Echo the attested values in the session result, but the log is
   the durable record and `current.md` projects the latest value and within-order
   drift.
+- A session label can describe more than reasoning effort. The documented
+  Claude Code `ultracode` note means dynamic workflows plus `xhigh` reasoning;
+  only the latter occupies the effort ladder. When that dated operator
+  attestation applies, the actor still supplies both `--effort xhigh` and
+  `--source operator-attested`. `resume` points an unrecognized `ultracode` claim to the
+  note but never converts it automatically, and no other unknown label inherits
+  the mapping.
 - Actor flag values are one-line data. Control characters and Unicode line
   separators refuse rather than entering the Markdown projection. Use
   `not-applicable` when a field is structurally absent, and `unknown` when a

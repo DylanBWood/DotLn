@@ -37,6 +37,26 @@ export interface CadenceResult {
   readonly rngState: number;
   readonly trace: string;
 }
+const defineCadenceKinds = <const Kinds extends readonly Cadence.T["kind"][]>(
+  kinds: Kinds &
+    ([Cadence.T["kind"]] extends [Kinds[number]] ? unknown : never),
+): Kinds => kinds;
+export const CADENCE_KINDS = defineCadenceKinds([
+  "Once",
+  "After",
+  "Every",
+  "Burst",
+  "Calendar",
+  "Window",
+  "While",
+  "Until",
+  "Gate",
+  "Sequence",
+  "Merge",
+  "Race",
+  "Repeat",
+  "Backoff",
+] as const);
 export const EVALUABLE_CADENCE_KINDS = [
   "Once",
   "After",

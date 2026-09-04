@@ -12,3 +12,6 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Exact operator-owned Claude Code settings; no other .claude path is allowed.
+/.claude/settings.local.json

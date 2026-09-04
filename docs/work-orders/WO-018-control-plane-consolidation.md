@@ -1,11 +1,17 @@
-# WO-018 — Control-plane consolidation: shared helpers, machine-readable state, manifest from the built kernel (version assigned at activation)
+# WO-018 — Control-plane consolidation: shared helpers, machine-readable state, manifest from the built kernel, v0.4.1
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Expected
-class: patch. Tooling and evidence corrections; no exported runtime
-capability.
+**Release classification:** `v0.4.1`, the compatible patch strictly above the
+published `v0.4.0` observed at activation. The activation helper retained the
+draft placeholder; under the operator's `resume: next` dispatch, the executor
+forward-corrected that mechanical preflight miss on 2026-09-04 without editing
+the append-only activation event. The application change remains tooling and
+evidence correction. `@dotln/kernel` advances from `0.2.0` to `0.2.1` for the
+additive, type-exhaustive `CADENCE_KINDS` compatibility-data export required by
+criterion 5; `@dotln/skeleton` source and version remain `0.4.0`, while its exact
+kernel dependency advances to `0.2.1`.
 **Nomination provenance:** the operator's 2026-09-02 entropy review, including
 an independent read of `scripts/`; opaque identifier.
 **Direct-draft provenance:** the operator supplied this complete public draft
@@ -205,3 +211,140 @@ review. Evidence: `docs/verifications/WO-008/VER-001.md` §Attestation gate and
 
 The write-back duty extends to 07-execution-guide.md §Model-specific notes and
 `docs/PLAYBOOK.md` §Who does what for the versions list and the label note.
+
+## Additional Opinion ideation breakout receipt — 2026-09-04
+
+**Authority:** During the active `resume: next` implementation episode, the
+operator opened a bare `ideation:` breakout to consider repeatable
+implementation and verification opinions, model/effort experiments, and a
+sealed reduction/adjudication stage. The operator preauthorized returning to
+this implementation step after the breakout. That authority does not request or
+authorize verification, final review, publication, or release close.
+
+**Raw intake and reconciliation:** The unedited message is stored at
+`docs/intake/notes/WO-018-expanded-ideation-2026-09-04.md` in the main control-
+plane checkout's canonical ignored intake. It was first staged under this
+worktree, copied without byte changes to main, compared byte-for-byte, and
+included in a validated owner-only backup. The redundant worktree staging copy
+was removed only after those checks, so closeout has no single-copy intake to
+discard.
+
+**Source treatment and clean-room review:** Ordinary Shape-First Synthesis
+promoted the relationship—bounded peer episodes over one frozen subject,
+followed by lossless consolidation and a one-way adjudication barrier—rather
+than copying the operator's exploratory wording. Public model and workflow
+labels were treated as examples, not selected providers or inferred capability
+facts. The screen found no employer code, configuration, identifier,
+proprietary API shape, internal service, managed-host detail, credential,
+private identifier, or other stop condition.
+
+**Promoted surfaces:** `docs/product/05-pattern-library.md` holds the candidate
+Additional Opinion support and the two-result Second Opinion preset;
+`02-domain-model.md` records the candidate subject/cohort/adjudication terms;
+`03-architecture.md` records fan-out, sealed reduction, single-writer control,
+and worktree/integration topology; `04-interfaces.md` records the prospective
+operator affordance without changing current resume commands;
+`06-roadmap.md` recommends a verification-only pilot after WO-009 and WO-010;
+`09-audit-resilience-privacy.md` records evidence, minimization, and experiment
+provenance; `docs/planning/work-order-map.md` preserves the unallocated
+candidate; and the newest idea-ledger section records the transformation.
+
+**Settled boundaries and scope:** This candidate does not reopen ADR-0001's
+closed founding architecture tournament. It preserves independent verification,
+one writable agent per worktree, statechart/Program ownership of control flow,
+hard constraints above preference, actual model/effort attestation, and
+disagreement as retained data. WO-018 still changes no lifecycle phase,
+transition, event schema, legal resume action, package runtime behavior, or
+acceptance criterion for this idea. No implementation of opinion cohorts is
+authorized here.
+
+**Unresolved choices:** verification-only pilot versus a generic first
+implementation; repeated stage command versus an explicit `another opinion`
+intent; exact snapshot/result/cohort schemas; sequential versus parallel
+transport; count, concurrency, quorum, deadline, cost, cancellation, and stop
+rules; blinding and diversity requirements; deterministic versus judgment-based
+deduplication; adjudicator identity, tie, and inconclusive policy; whole-
+candidate selection versus a separately authorized synthesis episode; losing-
+worktree retention and cleanup; private versus public performance telemetry;
+and whether final review later becomes eligible. Implementation adjudication
+cannot route directly to final review without independent evidence for the exact
+selected artifact; changing that would require an explicit assurance-policy
+decision.
+
+**Required review:** WO-018 verification and final review must digest this
+receipt and every promoted surface. They check source treatment and canonical
+intake reconciliation; fidelity to the operator's repeat-or-proceed and
+sealed-adjudication shapes; the distinction between Second Opinion and the
+general finite cohort; explicit treatment of same-model replicates,
+implementation variants, verification panels, and critiques; worktree and
+single-writer safety; lossless duplicate/dissent handling; Eye Dr precedence
+and confounders; consistency with the settled boundaries above; publication
+locks and links; and that a future candidate never appears as current resume
+behavior or hidden WO-018 implementation scope.
+
+## Implementation evidence receipt — 2026-09-04
+
+**Executor attestation:** Codex CLI `0.153.0`, `gpt-5.6-sol`, `xhigh`,
+`self-reported`. The implementation started from `162cd12f`, the governed
+post-`v0.4.0` mainline base. This is executor evidence only; no independent
+verification or final-review result is claimed.
+
+**Implementation subject and policy choices:** `scripts/lib/git.mjs` now owns
+the single Git runner, NUL path-list reader, failure formatter, strict
+cleanliness guard, worktree parser/main resolver, and merged-branch removal;
+`scripts/lib/paths.mjs` owns contained-file, named-JSON, work-order-authority,
+and ignored-path classification. The unified cleanliness policy is the stricter
+`git status --porcelain --untracked-files=all`: lifecycle mutation must not hide
+an untracked file merely because an older caller used Git's default summary.
+One classifier supplies shared path parsing and precedence, but exposes two
+deliberately different answers. Destructive cleanup permits only anchored build
+outputs/metadata and never anything under `docs/intake/` or local harness
+settings; release evidence additionally tolerates canonical intake and the exact
+root `.claude/settings.local.json` because neither is an evidence input. This
+keeps common mechanics without conflating preservation with evidentiary
+influence.
+
+`resume status --json` projects the canonical fold with exact stable fields;
+both status forms are read-only and warn when the Markdown projection drifts.
+Worktree and release consumers use structured state or the committed JSONL at
+`HEAD`, never `current.md`, and the fold rejects an unknown event with its
+ordinal. `finish` checks committed closed state before destructive cleanup. The
+first post-merge close runs the reviewed subject helpers against main, including
+when pre-fast-forward main contains stale lifecycle code. Every equal-tag
+recovery reproduces evidence before it validates and projects the immutable tag,
+replacing ignored built-kernel output whether that output is absent, stale, or
+otherwise untrusted.
+
+`@dotln/kernel` `0.2.1` exports the type-exhaustive `CADENCE_KINDS` tuple in
+addition to the existing evaluable-kind data. Release compatibility imports the
+built module, requires the complete tuple, runtime constructor names and factory
+discriminants to agree bidirectionally, requires evaluable kinds to be a unique
+nonempty subset, and derives deferred kinds by difference. The control schema
+comes from the exported `CONTROL_LOG_SCHEMA_VERSION`. No source-text cadence or
+resume-literal parser remains. `@dotln/skeleton` source and version stay at
+`0.4.0`; only its exact local kernel dependency advances to `0.2.1`.
+
+**Acceptance evidence:** The exact status-projection tests cover active, drift,
+and closed shapes; unknown-event, listed-old-version, unknown-version, and
+`ultracode` guidance plus malformed and prototype-label fixtures cover control
+refusal. Worktree fixtures cover
+canonical intake precedence (including `dist` and `node_modules` beneath it),
+the exact settings asymmetry, unrelated nested build-shaped paths, allowed
+disposables, a foreign invocation root, stale helpers, and assume-unchanged live
+control bytes. Release fixtures cover missing/all-only/constructor-only/unknown-
+evaluable cadence data with nonempty Git traces and unchanged refs, a schema
+export changed from `1` to `7`, the exact settings exception and sibling
+negative, stale-main cleanup, and recovery that replaces stale ignored built
+kernel output before importing it.
+The real repository publication lane and exact eight-test WO-101 identity corpus
+now run inside root `npm test`; the Program corpus remains frozen and outside
+that chain.
+
+The final executor gate reports 154 package tests passed with zero failures and
+the separate identity corpus reports 8/8. The real publication check reports
+169/169 product headings indexed, 27 everyday-user and 42 software-engineer
+linked sections current. The network-enabled release-surface check observes
+application `v0.4.1` above published `v0.4.0`, changed kernel `0.2.1`, unchanged
+compiler `0.1.0`, unchanged skeleton `0.4.0`, and no current final-review body.
+Formatting and `git diff --check` pass. Top-level `scripts/*.mjs` total 4,378
+lines versus 4,387 on `main`, a reduction of 9 lines despite the added guards.

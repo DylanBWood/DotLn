@@ -132,13 +132,29 @@
     "scope": "installed CLI help plus named persisted-effort key projections; no model invocation, resolved personal path, selector scope, count, or unrelated settings content retained",
     "harnesses": {
       "claude-code": {
-        "version": {"classification": "observed", "value": "2.1.260"},
+        "versions": [
+          {"classification": "observed", "value": "2.1.259"},
+          {"classification": "observed", "value": "2.1.260"}
+        ],
         "persistedEffortSelector": {"classification": "not found", "key": "effortLevel", "value": "unknown"},
         "sessionEffortSelector": {"classification": "documented locally", "control": "--effort", "values": ["low", "medium", "high", "xhigh", "max"]},
+        "sessionLabelNotes": {
+          "ultracode": {
+            "classification": "operator-attested",
+            "attestedAt": "2026-09-03",
+            "meaning": "dynamic workflows plus xhigh reasoning effort",
+            "reasoningEffort": "xhigh",
+            "attestationSource": "operator-attested",
+            "automaticConversion": false
+          }
+        },
         "effectiveEffortReadback": {"classification": "not found", "value": "unknown", "harnessReadbackEligible": false}
       },
       "codex-cli": {
-        "version": {"classification": "observed", "value": "0.153.0"},
+        "versions": [
+          {"classification": "observed", "value": "0.152.1"},
+          {"classification": "observed", "value": "0.153.0"}
+        ],
         "persistedEffortSelector": {"classification": "observed", "key": "model_reasoning_effort", "value": "xhigh"},
         "sessionEffortSelector": {"classification": "not found", "dedicatedControl": "--effort", "genericConfigOverride": {"classification": "documented locally", "control": "--config key=value"}},
         "effectiveEffortReadback": {"classification": "not found", "value": "unknown", "harnessReadbackEligible": false}

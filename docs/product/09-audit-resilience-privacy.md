@@ -220,6 +220,11 @@ Properties that are easy to omit include:
   effects;
 - immutable input/output references, versions, and hashes;
 - runtime, model, tool, and material configuration fingerprints;
+- for an opinion cohort, the frozen subject and input-bundle hashes, cohort and
+  opinion identities, replicate/panel/critique/variant/verification mode,
+  visibility and blinding, configured diversity and resource bounds, each
+  result disposition, the sealed admitted set, duplicate/conflict/dissent
+  links, and adjudication route;
 - for isolated episodes, the selected environment/profile hash and effective
   substrate, image/rootfs or guest-kernel identity, mounts, egress,
   capabilities, resource limits, secret-lease references, boundary denials,
@@ -233,6 +238,17 @@ Properties that are easy to omit include:
 Prompt text, chain-of-thought, credentials, and complete sensitive payloads are
 not default audit fields. Prefer typed decisions, inputs, tool/effect records,
 result summaries, and references to separately controlled artifacts.
+
+An opinion cohort does not make hidden reasoning more auditable by multiplying
+it. Preserve immutable typed outputs and evidence references, including every
+duplicate contributor and minority finding, while applying the same minimization
+and destination rules to each episode. Same-model repeats are labeled
+replicates, not independent judges. A timeout, cancellation, or unavailable
+model is an execution disposition rather than a vote. Public model-comparison
+projections must not leak prompts, private source material, local paths, or
+provider/account identifiers; governed-private observations may retain the
+minimum configuration fingerprints needed to separate model, effort, harness,
+workflow mode, order, and environment effects.
 
 Safety-counterweight evaluation may derive a **restraint-attribution funnel**
 from correlated records without adding hidden reasoning to the audit envelope.

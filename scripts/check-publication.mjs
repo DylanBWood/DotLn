@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { runGit } from "./lib/git.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const productDirectory = path.join(root, "docs/product");
@@ -364,10 +364,8 @@ function sourceAtRevision(revision, file) {
   if (!revisionCache.has(key)) {
     revisionCache.set(
       key,
-      execFileSync("git", ["show", `${revision}:docs/product/${file}`], {
-        cwd: root,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "pipe"],
+      runGit(root, ["show", `${revision}:docs/product/${file}`], {
+        trim: false,
       }),
     );
   }
