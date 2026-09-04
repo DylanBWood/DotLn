@@ -79,7 +79,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source is DotLn `v0.3.6`. Its executable heart is a deterministic walking skeleton whose live host and replay now use one pure reactor, with canonical causal links, zero runtime dependencies, a fake executor, a separate fake verifier, terminal projections, and three audit views over the same event log. No model is in the loop yet. That is the point: the source proves the kernel's shape before anything unpredictable is plugged into it. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
+This source is DotLn `v0.4.0`. Its executable heart is a deterministic walking skeleton whose live host and replay use one pure reactor, now fed by a zero-runtime-dependency composition compiler. Five linked Seiri supports lower to a bounded WorkOrder, permission guard, evidence schema, absent-only cadence/statechart guard, and verifier episode; code DSL, function-table, and statechart-JSON views produce one semantic hash and one inspectable RPG tooltip. The executor and verifier remain deterministic fakes, and no model is in the loop yet. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
@@ -112,10 +112,14 @@ that is a pure projection of that same log, and a receipt:
 verified=true candidates=1
 ```
 
+Run `npm run skeleton -- --compiled-diff` to add the three-view semantic-hash
+receipt and the exact Seiri item tooltip, including every support's declared
+mechanism, prompt-token, runtime, and episode cost.
+
 The test suite feeds that log through the same pure reactor used by the live
 host and compares complete decisions and semantic projections, including a
 negative verifier outcome. `npm test` runs the configured root evidence suite:
-kernel, skeleton, publication freshness, intake backup, resume control,
+kernel, compiler, skeleton, publication freshness, intake backup, resume control,
 recovery checkpoints, real-Git worktree lifecycle, and guarded release close,
 including the GitHub-body profile; frozen corpus lanes remain separate.
 Evidence was recorded with Node 22 on macOS; the shell suites use macOS
@@ -143,7 +147,7 @@ Proven:
 Not yet built, and not claimed:
 
 - real Claude, Codex, human, or shell worker adapters;
-- the general loadout and support composition compiler;
+- composition semantics beyond the bounded Seiri v1 subset;
 - saved community builds or compatibility migration;
 - a web, spatial, or drag-and-drop console;
 - SQLite persistence, hosted operation, or a published package;
@@ -214,8 +218,9 @@ render in whichever view you prefer.
 
 The long-term surface is a **Path of Building for organizations**: equip a
 pattern, see its exact compiled diff, compare builds, and replay to the first
-event where two variants diverge. Today only the Repo Gardener + Seiri loadout
-is executable, and its shape is deliberately provisional.
+event where two variants diverge. Today the Repo Gardener + Seiri loadout is
+executable through the pinned v1 graph; other active mechanics, saved builds,
+and interactive editing remain deferred.
 
 ## Three horizons, one kernel
 

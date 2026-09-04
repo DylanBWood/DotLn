@@ -20,6 +20,56 @@ and seed produce the same decision. Views that can't satisfy this (narrative,
 animation) are _labeled_ lossy projections with a mechanics inspector one click
 away.
 
+### Editable-view v1 normalization and semantic hash
+
+WO-008 ships exactly three editable representations: the typed code DSL, a
+function table, and statechart JSON. Each is a complete representation of the
+same `LoadoutGraphV1`, not a pointer to a separately authoritative graph. The
+code DSL wraps a typed definition; the function table carries one keyed row per
+graph node; statechart JSON separates identity/role/resources from the equipped
+state without changing ownership of those values. Type names carrying a `V1`
+suffix in this section follow the editorial convention of 02-domain-model.md
+§LoadoutGraph v1 payload contract; `@dotln/compiler` exports them unsuffixed.
+
+For each view, `encode` first applies that view's `normalize` and writes
+canonical JSON; `decode` validates the view discriminator and schema version,
+reconstructs the graph, and normalizes it. Therefore the executable law is
+`decode(encode(x)) = normalize(x)`. Normalization recursively orders object keys
+and canonicalizes set-like collections: component catalogs by component id,
+links by link id, link groups by group id, function-table rows by row kind and
+key, behavior tags, required capabilities, conflict ids, and component
+references. It removes duplicate members only from collections declared
+set-like. WorkOrder prose lists retain their declared order. Most importantly,
+`ExplicitPipelineV1.orderedSupportFacetIds` retains both order and multiplicity;
+normalization never turns a pipeline back into an unordered link set. Compile
+applies order-sensitive support transforms in that declared order, including
+repeated support ids; ordinary link order remains semantically inert.
+Every numeric value must be finite JSON data; normalization maps negative zero
+to zero, while a non-finite value is rejected before encoding or compilation.
+
+`compile(view, environment)` reconstructs and normalizes `LoadoutGraphV1`, runs
+the four composition steps, and returns either typed diagnostics or a normalized
+`CompiledProgramV1`. The explicit environment contributes capability truth,
+repository, and base commit. The successful program contains phenotype,
+WorkOrder, AuthorityEnvelope, cadences, guards, schemas, hooks, verification
+plan, prompt residue, per-support costs, resources, ambient declarations,
+explicit pipelines, effective claims, component manifest, inspection data, and
+conflict trace. Winning `authority.<effect>` claims are applied to the emitted
+AuthorityEnvelope and WorkOrder operation lists rather than existing only as
+trace prose. Compiler v1 rejects wildcard authority patterns rather than let a
+broader losing pattern silently override an exact winner.
+It never includes source-view formatting or a view name.
+
+`semanticHash(normalize(compile(view)))` is the literal string `fnv1a64:` plus
+the 16-digit lowercase FNV-1a-64 digest of the UTF-8 canonical-JSON bytes of the
+entire normalized `CompiledProgramV1`. The digest is a deterministic semantic
+equality key, not a cryptographic integrity or authenticity proof. Diagnostics
+are not hashable programs. Any executable or declared-cost field in the compiled
+program participates; whitespace, object insertion order, and set-like source
+ordering do not. The Seiri fixture's code DSL, function table, and statechart
+JSON all currently produce `fnv1a64:9ca8d0229c6bd8db`, while a changed objective
+or an unequipped support produces a different program and digest.
+
 ## Terminal first, console equal
 
 This section specifies the author's reference interface profile. The terminal

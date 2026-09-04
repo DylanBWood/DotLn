@@ -1,0 +1,180 @@
+[
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["InspectionTaskCreated", "task-opened"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["LoadoutEquipped", "equipped"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-cadence",
+    "reactorVersion": "1",
+    "branchPath": ["away", "scheduled"],
+    "envInputs": ["operatorPresence", "virtualTime"],
+    "cadenceEvaluations": ["Every:1200000"]
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["DecisionRecorded", "observed"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["CadencePulse", "work-order-ready"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "authority-guard",
+    "reactorVersion": "1",
+    "branchPath": ["authorized", "repo.inspect"],
+    "envInputs": [
+      "now:1200000",
+      "authorityEnvelope:auth_seiri",
+      "evidence",
+      "revocations",
+      "state",
+      "rngState:17",
+      "predicates",
+      "policy",
+      "resource:inspections"
+    ],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["DecisionRecorded", "observed"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["CommandPersisted", "command-durable"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["CommandResult", "deletion-proposed"],
+    "envInputs": ["event.payload.candidates"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "authority-guard",
+    "reactorVersion": "1",
+    "branchPath": ["refused", "effect denied"],
+    "envInputs": [
+      "now",
+      "authorityEnvelope",
+      "evidence",
+      "revocations",
+      "state",
+      "rngState:17",
+      "predicates",
+      "policy"
+    ],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["CommandRefused", "episode-terminating"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["DecisionRecorded", "observed"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "program",
+    "reactorVersion": "1",
+    "branchPath": ["Invoke", "Emit"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["DecisionRecorded", "observed"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["VerificationRequested", "verification-dispatched"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["VerificationCompleted", "verification-folded"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "authority-guard",
+    "reactorVersion": "1",
+    "branchPath": ["refused", "authority revoked"],
+    "envInputs": [
+      "now",
+      "authorityEnvelope",
+      "evidence",
+      "revocations",
+      "state",
+      "rngState:17",
+      "predicates",
+      "policy"
+    ],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "presence-guard",
+    "reactorVersion": "1",
+    "branchPath": ["queued-pulse", "noop"],
+    "envInputs": ["operatorPresence"],
+    "cadenceEvaluations": [
+      "cancel:schedule_seiri_20m",
+      "cancel:schedule_seiri_already_queued"
+    ]
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["DecisionRecorded", "observed"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["QueuedPulseNoOp", "no-op-folded"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  },
+  {
+    "reactorId": "seiri-reactor",
+    "reactorVersion": "1",
+    "branchPath": ["SchedulesCancelled", "cancellation-folded"],
+    "envInputs": ["event"],
+    "cadenceEvaluations": []
+  }
+]

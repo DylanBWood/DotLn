@@ -172,3 +172,56 @@ names separate hardening candidates there); adopting Stryker or any mutation
 framework (dependency rule); interpreting the matrix into capability-level
 claims (WO-005's lane, via admissible evidence links); root test-script
 wiring; docs/product or ledger write-backs.
+
+## Scope extension — `packages/compiler` (2026-09-03)
+
+**Provenance:** operator-directed during WO-008's final review. Evidence:
+`docs/verifications/WO-008/VER-001.md` findings F3–F7, re-drilled in
+`docs/final-reviews/WO-008/FINAL-001.md` §Mutation re-drill.
+
+WO-008 adds the pure `@dotln/compiler` workspace (`packages/compiler/`, 4,210
+TypeScript lines, 30 tests) and its suite now runs inside `npm test`. This
+order's target set therefore grows from kernel + skeleton to kernel + compiler
++ skeleton: the site enumeration covers `packages/compiler/src`, the per-mutant
+run includes `packages/compiler/dist/test/*.test.js`, and the manifest, matrix,
+and findings name compiler files like any other. The scratch build context must
+include `packages/compiler` and its workspace link.
+
+**Known survivors to seed the matrix.** Eight single-site mutations survive the
+complete 73-test compiler + skeleton suite with every test green, first in
+VER-001 and again in FINAL-001. Each is a planted known-survivable case for the
+self-test and an expected row in the kill matrix. Five disable shipped
+rejections and three break documented contract properties:
+
+| #   | Site (delivered tree)                                            | Mutation                                            | What it undermines                                                          |
+| --- | ---------------------------------------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------------- |
+| 1   | `packages/compiler/src/compile.ts`, `tagCompatible` in the link check | force the tag compatibility test true          | the tag half of the step-2 link type-check (`SUPPORT INACTIVE`)             |
+| 2   | `compile.ts`, `AMBIGUOUS SUPPORT CONFLICT` branch in `resolveClaims` | never take the tie branch                       | equal-precedence rejection                                                  |
+| 3   | `compile.ts`, `ACTIVE INACTIVE` diagnostic                       | treat the active's missing capabilities as none     | active-mechanic capability check                                            |
+| 4   | `compile.ts`, `duplicateDiagnostics`                             | never record a duplicate id                         | duplicate-component-id rejection                                            |
+| 5   | `compile.ts`, container socket-budget check                      | raise the budget comparison out of reach            | socket-budget overflow rejection                                            |
+| 6   | `packages/compiler/src/normalize.ts`, `normalizePipeline`        | deduplicate `orderedSupportFacetIds`                | documented pipeline multiplicity retention (04-interfaces.md)               |
+| 7   | `normalize.ts`, `normalizeIdentity`                              | drop `updateLaws`                                   | the round-trip law's ability to detect content loss                         |
+| 8   | `compile.ts`, `supportCosts` emission                            | hardcode `promptTokens: 0`                          | AC4 prompt-token cost emission; every fixture declares zero                 |
+
+Controls in the same drill died widely: inverting the precedence comparator
+failed 12 tests, a constant hash 8, removing canonical key sorting 5, dropping
+the INTERRUPT tooltip section 3. One skeleton observation belongs in the matrix
+as a thinness marker rather than a survivor: a reactor mutation that changes the
+compiled WorkOrder objective reaching the kernel is killed by exactly one
+assertion (`WO-008 AC6 the running scenario consumes the compiled Seiri
+loadout`), so the compiled WorkOrder content has a single point of detection.
+
+**Operators to add.** The survivors are guard neutering and collection
+deduplication, which the original operator list does not name. Add
+type-preserving condition neutering (a guard condition replaced by one that
+still type-checks and is never true) and set-wrapping of an ordered array as
+enumerated operators.
+
+**Base.** Branch from `origin/main` at or after the `v0.4.0` close so
+`packages/compiler` is in the kill matrix's base commit; the map's earlier
+"after WO-016 and WO-017" recommendation becomes "after WO-008".
+
+Nothing else in this order changes: survivors remain findings, never fixes; no
+test is added to any shipped suite; no dependency enters; the path-discipline
+clause and the exempt lifecycle artifacts are unchanged.

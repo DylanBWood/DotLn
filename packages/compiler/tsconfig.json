@@ -4,6 +4,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "strict": true,
+    "declaration": true,
     "composite": true,
     "rootDir": ".",
     "outDir": "dist",
@@ -11,6 +12,5 @@
     "exactOptionalPropertyTypes": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"],
-  "references": [{ "path": "../compiler" }, { "path": "../kernel" }]
+  "include": ["src/**/*.ts", "test/**/*.ts"]
 }
