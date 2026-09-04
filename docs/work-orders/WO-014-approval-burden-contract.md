@@ -7,6 +7,7 @@ for every session that produces evidence (07-execution-guide.md
 §Model-specific notes). Harness authority stays with the operator: this order
 authorizes no change to personal settings, and any setting change it finds
 necessary returns to the operator as a decision packet.
+**Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** assigned by the planner at activation. Before
 `resume -- activate`, the planner MUST rewrite this H1 to carry exactly one
 strict `vX.Y.Z` and pin the close disposition (a patch above the latest
