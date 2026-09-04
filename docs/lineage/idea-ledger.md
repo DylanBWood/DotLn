@@ -23,6 +23,59 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-008 implementation — composition compiler v1 (2026-09-03)
+
+Source: the active WO-008 implementation episode on the published `v0.3.6`
+base, staged for application release `v0.4.0`. These entries lower previously
+adopted composition ideas into the bounded Seiri compiler subject awaiting
+independent verification and final review; they do not predeclare either
+verdict.
+
+- **LoadoutGraph v1 is now a pinned graph contract** `adopted`
+  - The first executable schema carries versioned identity, role, containers,
+    active mechanics, support definitions, links, link groups, explicit
+    pipelines, ambient declarations, a resource model, and PolarAxis inputs.
+    Definitions form a catalog; a support participates only through a link.
+    Compiler v1 deliberately lowers one active mechanic while the broader type
+    surface remains available without pretending its deferred semantics run.
+- **Inactive supports return repairs, not hope** `adopted`
+  - Link checking resolves references, tag compatibility, and explicit
+    environment capabilities before lowering. A missing capability produces a
+    structured `SUPPORT INACTIVE` diagnosis naming the active, support, group,
+    exact missing capability, and concrete provide-or-unequip corrections. No
+    requested support is silently discarded.
+- **Precedence resolves claims; only pipelines order transforms** `adopted`
+  - Conflicting soft claims emit the effective winner and record every
+    overridden claim through the declared nine levels; authority-target winners
+    also govern the runtime envelope and WorkOrder operation lists. Wildcard
+    authority patterns reject at this compiler rung rather than masking an
+    exact winner. Two incompatible hard claims reject.
+    Ordinary support order is normalized away; a non-commuting pair rejects
+    unless a separate `ExplicitPipeline` names its order, which governs
+    transforms and whose sequence normalization preserves exactly. Compiler v1
+    rejects multiple participating link groups instead of inventing a
+    cross-group order.
+- **Semantic equality is canonical compiled-program equality** `adopted`
+  - Code DSL, function-table, and statechart-JSON codecs reconstruct one graph
+    and satisfy `decode(encode(x)) = normalize(x)`. The semantic key is the
+    `fnv1a64:` digest of the UTF-8 canonical JSON for the entire normalized
+    compiled program. It is explicitly non-cryptographic and excludes
+    source-view formatting while including executable semantics and declared
+    costs. Finite JSON numbers are required and negative zero normalizes to
+    zero, closing the JSON encode/decode edge.
+- **Seiri's five links now compile to heterogeneous mechanisms** `adopted`
+  - Bounded scope becomes WorkOrder structure, read-only behavior becomes a
+    permission guard, evidence capture becomes a schema, absent-only behavior
+    becomes cadence plus statechart guard, and independent checking becomes a
+    verifier episode. Each support reports mechanism, prompt tokens, runtime
+    units, and extra episodes. The skeleton consumes those compiled values and
+    retains the complete historical 21-decision trace sequence.
+- **The item tooltip is an executable diff projection** `adopted`
+  - The default presentation keeps `Seiri / Sort / 整理` primary and renders
+    GRANTS, RESTRICTIONS, OBLIGATION, PASSIVE, PULSE, INTERRUPT, true support
+    cost, and before/after semantic hashes. Equipping and unequipping compare two
+    compiled programs; the tooltip is not a separately authored card.
+
 ## WO-016 ideation breakout — interim licensing and legal gates (2026-09-03)
 
 Source: the operator's latest `ideation:` addition in the continuing WO-016

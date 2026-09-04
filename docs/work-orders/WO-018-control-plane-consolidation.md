@@ -155,3 +155,53 @@ to one each” means one named implementation of each policy with common parsing
 and containment rules. It does not authorize using the release-influence
 allowlist as the disposable-worktree list. This clarification adds no right to
 copy, display, normalize, replace, or interpret personal harness settings.
+
+## Operator amendment — harness-version attestation slot (2026-09-03)
+
+**Provenance:** the operator directed this amendment during WO-008's final
+review. Evidence: `docs/verifications/WO-008/VER-001.md` §Attestation gate and
+§Control-plane limitation this exposes; the one-line
+`docs/discovery/environment.json` edit in the WO-008 change set.
+
+**Observed problem (dated 2026-09-03):**
+
+- `docs/discovery/environment.json` holds exactly one observed `version` per
+  harness under `effortReadbackProbe.harnesses`, and `effortHarnessEvidence()`
+  in `scripts/resume.mjs` accepts an actor's `--harness-version` only when it
+  equals that single value. Every Claude Code upgrade therefore silently
+  invalidates all effort attestation for that harness until discovery is re-run,
+  and the failure surfaces only at the next `verification-result` or
+  `final-review-result`, after the report exists. WO-008 hit it the same day the
+  probe was recorded: the probe observed `2.1.259` at 14:12, the verifier ran
+  `2.1.260`, every attestation was refused regardless of `--source`, and the
+  operator replaced the datum by hand, which retired the `2.1.259` observation
+  instead of adding to it.
+- The Claude Code session label `ultracode` is not an effort value and
+  normalizes to `unknown`, which cannot satisfy any `xhigh+` role. **Recorded
+  mapping:** the operator attested on 2026-09-03 that `ultracode` means dynamic
+  workflows plus `xhigh` reasoning effort, two axes of which only the second is
+  what the effort ladder measures. A Claude Code session labelled `ultracode`
+  therefore attests `--effort xhigh --source operator-attested` unless the
+  harness exposes an observed readback. This is a recorded operator attestation,
+  not a harness observation, and it does not license treating any other
+  unrecognized label as a recognized value.
+
+**Deliverables and acceptance criteria added (all required):**
+
+9. `effortReadbackProbe.harnesses.<harness>.version` becomes an observed
+   `versions` list (each entry classified, the newest last); the matcher in
+   `resume.mjs` accepts any listed observed version; recording a newly observed
+   version appends to the list rather than replacing it; and the attestation
+   refusal names the versions on record. Tests: a listed older version still
+   attests; an unlisted version still refuses with the recorded versions in the
+   message; the existing WO-004 file shape and `--source harness-readback`
+   refusal behave as before.
+10. The `ultracode` mapping above is recorded in `docs/discovery/environment.json`
+    as a documented session-label note beside the `claude-code` entry, and the
+    effort refusal for an unrecognized label points the actor at that note.
+    `resume` never converts a label into an effort value on its own; the actor
+    still supplies `--effort xhigh --source operator-attested`, and the WO-019
+    rule that an unrecognized label is stored as `unknown` plus `raw` stands.
+
+The write-back duty extends to 07-execution-guide.md §Model-specific notes and
+`docs/PLAYBOOK.md` §Who does what for the versions list and the label note.

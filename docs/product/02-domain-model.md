@@ -131,6 +131,156 @@ strict declaration boundary.
 | **IR artifact**                   | Immutable, version-addressed configuration or behavioral definition carrying artifact kind, schema identity, provenance, and semantic hash. Application/runtime, schema, artifact, component, compiler/transformation-set, and environment-profile versions are separate axes; see 10-ir-compatibility.md.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Compatibility plan**            | Inspectable path from a source artifact and component set to a target runtime/environment. Each step names its transformation and whether execution is native, exact, adapted, lossy, emulated, inert, blocked, or unverified. The same definitions support JIT compatibility and AOT migration; neither silently overwrites the source.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
+### LoadoutGraph v1 payload contract
+
+WO-008 pins the first serializable graph shape. Names ending in `Id` are stable
+references within one graph; component definitions carry their own numeric
+`version`. The `V1` suffix on the type names in this section is an editorial
+marker for the `schemaVersion: 1` payload, not a delivered identifier:
+`@dotln/compiler` exports the same shapes unsuffixed (`LoadoutGraph`,
+`Container`, `Link`, `LinkGroup`, `ExplicitPipeline`, `SupportFacet`,
+`SupportEmission`, `CompiledProgram`), and every field named here matches that
+export. The complete payload is:
+
+```ts
+type LoadoutGraphV1 = {
+  schemaVersion: 1;
+  loadoutId: string;
+  identity: IdentityV1;
+  role: RoleV1;
+  containers: readonly ContainerV1[];
+  activeMechanics: readonly ActiveMechanicV1[];
+  supportFacets: readonly SupportFacetV1[];
+  links: readonly LinkV1[];
+  linkGroups: readonly LinkGroupV1[];
+  explicitPipelines: readonly ExplicitPipelineV1[];
+  ambientEffects: readonly AmbientEffectV1[];
+  resourceModel: ResourceModelV1;
+  polarAxes: readonly PolarAxisV1[];
+};
+
+type ContainerV1 = {
+  containerId: string;
+  version: number;
+  name: string;
+  kind: "equipment" | "workspace" | "actor" | "custom";
+  socketBudget: number;
+  activeMechanicIds: readonly string[];
+  supportFacetIds: readonly string[];
+};
+
+type LinkV1 = {
+  linkId: string;
+  linkGroupId: string;
+  activeMechanicId: string;
+  supportFacetId: string;
+};
+
+type LinkGroupV1 = {
+  linkGroupId: string;
+  containerId: string;
+  linkIds: readonly string[];
+};
+
+type ExplicitPipelineV1 = {
+  pipelineId: string;
+  linkGroupId: string;
+  orderedSupportFacetIds: readonly string[];
+};
+```
+
+Links select scope and remain unordered. When a link group declares an explicit
+pipeline, its `orderedSupportFacetIds` govern order-sensitive
+`semanticsModified` transforms; a repeated id applies that transform again.
+Linked commutative supports omitted from the pipeline apply afterward in
+canonical support-id order. A non-commuting pair without a pipeline that names
+both supports is rejected. Compiler v1 permits at most one explicit pipeline in
+the participating link group, so pipeline identifiers never become an implicit
+second ordering channel.
+
+`IdentityV1` carries `identityId`, `version`, `name`, `dispositions`,
+`invariants`, `updateLaws`, and `lineage`. `RoleV1` carries `roleId`, `version`,
+`name`, `obligations`, `permissions`, `objectives`, and ordered `{ key, value }`
+policy deltas. An `ActiveMechanicV1` carries `activeMechanicId`, `version`,
+`name`, behavior `tags`, `requiredCapabilities`, base `semantics`, a complete
+WorkOrder seed (all WorkOrder fields except environment-supplied `repo` and
+`baseCommit`), an `AuthorityEnvelope`, and the six item-tooltip collections
+under its canonical term, translation, kanji, and secondary RPG title.
+
+The support payload is exact at this boundary:
+
+```ts
+type SupportFacetV1 = {
+  supportFacetId: string;
+  version: number;
+  name: string;
+  supportedTags: readonly BehaviorTag[];
+  requiredCapabilities: readonly string[];
+  semanticsAdded: readonly string[];
+  semanticsModified: readonly { from: string; to: string }[];
+  authorityChanges: readonly string[];
+  evidenceRequirements: readonly string[];
+  resourceMultiplier: number;
+  conflictsWith: readonly string[];
+  preservesDeterminism: boolean;
+  commutativity: "commutative" | "requires-pipeline";
+  emissions: readonly SupportEmissionV1[];
+  claims: readonly {
+    claimId: string;
+    target: string;
+    value: JsonValue;
+    layer: PrecedenceLayer;
+    hard: boolean;
+  }[];
+  cost: {
+    mechanismType: SupportEmissionV1["kind"];
+    promptTokens: number;
+    runtimeCost: { quantity: number; unit: string };
+    extraEpisodes: number;
+  };
+  inspection: Partial<{
+    grants: readonly string[];
+    restrictions: readonly string[];
+    obligations: readonly string[];
+    passive: readonly string[];
+    pulse: readonly string[];
+    interrupt: readonly string[];
+  }>;
+};
+```
+
+`SupportEmissionV1` is a closed discriminated union for this compiler version:
+`work-order`, `permission-guard`, `evidence-schema`, `cadence`,
+`statechart-gate`, `verifier-episode`, `hook`, or `prompt-fragment`. Each
+emission carries an `emissionId` and its mechanism-specific data. Claims use the
+declared nine-level `PrecedenceLayer` from the composition architecture; they
+do not smuggle execution order into a link. The winner for each target is
+emitted in `CompiledProgramV1.effectiveClaims`. A target beginning
+`authority.` names the remaining effect id and accepts only `allow` or `deny`;
+the winner rewrites the emitted AuthorityEnvelope and corresponding WorkOrder
+operation lists so trace and runtime authorization cannot disagree. This
+bounded compiler accepts exact effect/operation names only; wildcard patterns
+remain typed but reject as unsupported until precedence can preserve safe
+exceptions through them.
+
+The remaining graph nodes are also explicit data. `AmbientEffectV1` carries an
+id/version/name, scope, reservation-cost record, and emissions.
+`ResourceModelV1` carries id/version, named capacities, and reservations shaped
+as `{ reservationId, resource, quantity, sourceId }`. `PolarAxisV1` carries its
+id/version, two poles, relation, baseline odds, and `{ sourceId,
+oddsMultiplier }` factors. The v1 compiler preserves PolarAxis data in the
+phenotype but does not evaluate it because the Seiri program does not consume
+an axis.
+
+Definitions in `supportFacets` form the available catalog; a support is equipped
+only through a `LinkV1`. Link and link-group arrays are unordered scope data.
+Only `ExplicitPipelineV1.orderedSupportFacetIds` carries transform order, and it
+is required when linked transforms do not commute. Compiler v1 lowers exactly
+one active mechanic, at most one participating link group, and at most one
+explicit pipeline in that group; the broader graph types do not claim
+multi-active, multi-group, multi-pipeline, or ambient-effect execution before a
+consuming rung proves it.
+
 ## Feedback
 
 | Term                           | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |

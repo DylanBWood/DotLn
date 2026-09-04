@@ -132,7 +132,7 @@
     "scope": "installed CLI help plus named persisted-effort key projections; no model invocation, resolved personal path, selector scope, count, or unrelated settings content retained",
     "harnesses": {
       "claude-code": {
-        "version": {"classification": "observed", "value": "2.1.259"},
+        "version": {"classification": "observed", "value": "2.1.260"},
         "persistedEffortSelector": {"classification": "not found", "key": "effortLevel", "value": "unknown"},
         "sessionEffortSelector": {"classification": "documented locally", "control": "--effort", "values": ["low", "medium", "high", "xhigh", "max"]},
         "effectiveEffortReadback": {"classification": "not found", "value": "unknown", "harnessReadbackEligible": false}

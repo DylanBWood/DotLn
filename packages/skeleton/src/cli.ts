@@ -1,6 +1,16 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { decodeLog } from "@dotln/kernel";
+import {
+  compileEditableView,
+  renderCompiledDiff,
+  renderViewHashes,
+  seiriCodeDslView,
+  seiriEnvironment,
+  seiriFunctionTableView,
+  seiriStatechartJsonView,
+  type EditableView,
+} from "@dotln/compiler";
 import { renderAuditProjections } from "./audit.js";
 import { runScenario, type FixtureTree } from "./scenario.js";
 
@@ -24,6 +34,36 @@ console.log(result.timeline.join("\n"));
 console.log("\n" + result.glyphScene);
 if (process.argv.includes("--audit"))
   console.log("\n" + renderAuditProjections(decodeLog(result.log)));
+if (process.argv.includes("--compiled-diff")) {
+  const views: readonly Readonly<{
+    name: string;
+    source: EditableView;
+  }>[] = [
+    { name: "code-dsl", source: seiriCodeDslView },
+    { name: "function-table", source: seiriFunctionTableView },
+    { name: "statechart-json", source: seiriStatechartJsonView },
+  ];
+  const compilations = views.map(({ name, source }) => {
+    const compilation = compileEditableView(source, seiriEnvironment());
+    if (!compilation.ok)
+      throw new Error(
+        `${name}: ${compilation.diagnostics.map((entry) => entry.message).join("; ")}`,
+      );
+    return { name, compilation };
+  });
+  console.log(
+    "\n" +
+      renderViewHashes(
+        compilations.map(({ name, compilation }) => ({
+          view: name,
+          semanticHash: compilation.semanticHash,
+        })),
+      ),
+  );
+  console.log(
+    "\n" + renderCompiledDiff(undefined, compilations[0]!.compilation.program),
+  );
+}
 console.log(
   `\nverified=${result.verified} candidates=${result.candidates.length}`,
 );

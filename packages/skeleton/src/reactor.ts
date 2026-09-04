@@ -18,13 +18,23 @@ import {
   type Reactor,
   type WorkOrder,
 } from "@dotln/kernel";
+import {
+  SEIRI_MINUTE,
+  SEIRI_PULSE_SCHEDULE,
+  SEIRI_QUEUED_PULSE,
+  compileLoadout,
+  seiriEnvironment,
+  seiriLoadout,
+  type CompiledProgram,
+  type LoadoutGraph,
+} from "@dotln/compiler";
 
-export const MINUTE = 60_000;
+export const MINUTE = SEIRI_MINUTE;
 export const WORKSTREAM = "ws_repo_garden";
 export const EPISODE = "ep_seiri_1";
 export const ACTOR = "repo-gardener";
-export const PULSE_SCHEDULE = "schedule_seiri_20m";
-export const QUEUED_PULSE = "schedule_seiri_already_queued";
+export const PULSE_SCHEDULE = SEIRI_PULSE_SCHEDULE;
+export const QUEUED_PULSE = SEIRI_QUEUED_PULSE;
 
 export type Candidate = Readonly<{
   path: string;
@@ -32,12 +42,7 @@ export type Candidate = Readonly<{
   evidence: readonly string[];
 }>;
 
-export type Loadout = Readonly<{
-  identity: "Repo Gardener";
-  activeMechanic: "Seiri";
-  semantics: readonly string[];
-  normative: false;
-}>;
+export type Loadout = LoadoutGraph;
 
 type RuntimePolicy = Readonly<{ maintenance: string }>;
 
@@ -69,26 +74,7 @@ export type RuntimeState = Readonly<{
   redispatchedCommandIds: readonly string[];
 }>;
 
-export const loadout: Loadout = {
-  identity: "Repo Gardener",
-  activeMechanic: "Seiri",
-  normative: false,
-  semantics: [
-    "inventory",
-    "classify",
-    "analyze references",
-    "propose deletion candidates",
-    "attach evidence",
-    "never delete",
-  ],
-};
-
-const presenceRef = { registryId: "operator.away", version: 1 } as const;
-const returnedRef = { registryId: "operator.returned", version: 1 } as const;
-const returnRevocationRef = {
-  registryId: "operator.return-event",
-  version: 1,
-} as const;
+export const loadout: Loadout = seiriLoadout;
 
 const statePresence = (state: JsonValue): JsonValue | undefined =>
   state !== null && !Array.isArray(state) && typeof state === "object"
@@ -112,71 +98,27 @@ export const seiriPredicates: PredicateRegistry = {
   },
 };
 
-const cadence = Cadence.Until(
-  Cadence.Gate(Cadence.Every(20 * MINUTE), presenceRef),
-  returnedRef,
-);
+export function compileLoadoutProgram(
+  equipped: Loadout,
+  baseCommit = "fixture-base",
+): CompiledProgram {
+  const result = compileLoadout(equipped, seiriEnvironment(baseCommit));
+  if (!result.ok)
+    throw new Error(
+      result.diagnostics.map((entry) => entry.message).join("\n"),
+    );
+  return result.program;
+}
 
 export function compileWorkOrder(
   equipped: Loadout,
   baseCommit = "fixture-base",
 ): WorkOrder {
-  if (
-    equipped.identity !== "Repo Gardener" ||
-    equipped.activeMechanic !== "Seiri" ||
-    !equipped.semantics.includes("never delete")
-  )
-    throw new Error("unsupported loadout");
-  return {
-    workOrderId: "wo_repo_inspection_1",
-    objective:
-      "Inspect the bounded fixture repository and propose safe deletion candidates.",
-    acceptanceCriteria: [
-      "Inventory every fixture path",
-      "Classify every path",
-      "Attach reference evidence to every candidate",
-    ],
-    knownFacts: [
-      "The repository is a deterministic fixture",
-      "The operator is absent at dispatch",
-    ],
-    decisions: [
-      `${equipped.identity} uses ${equipped.activeMechanic}`,
-      "Deletion remains operator-owned",
-    ],
-    constraints: [
-      "Inspect only the fixture tree",
-      "Do not mutate repository contents",
-    ],
-    nonGoals: ["Delete files", "Inspect another repository"],
-    repo: "packages/skeleton/fixtures/repo-tree.json",
-    baseCommit,
-    allowedOperations: [
-      "repo.inventory",
-      "repo.classify",
-      "repo.references",
-      "repo.proposeDeletion",
-    ],
-    prohibitedOperations: ["repo.delete", "repo.write"],
-    requiredEvidence: ["inventory", "classification", "reference-analysis"],
-    outputContract: {
-      type: "CommandResult",
-      result: "candidates",
-      candidateFields: ["path", "classification", "evidence"],
-    },
-  };
+  return compileLoadoutProgram(equipped, baseCommit).workOrder;
 }
 
-const authority = (): AuthorityEnvelope => ({
-  authorityEnvelopeId: "auth_seiri",
-  allowedEffects: ["repo.inspect"],
-  deniedEffects: ["repo.delete", "repo.write"],
-  resourceLimits: { inspections: 1 },
-  requiredEvidence: [],
-  expiresAt: 40 * MINUTE,
-  revocationEventTypes: [],
-  revocationConditions: [returnRevocationRef],
-});
+const authority = (): AuthorityEnvelope =>
+  compileLoadoutProgram(loadout).authorityEnvelope;
 
 export const initialState = (): RuntimeState => ({
   presence: "returned",
@@ -248,6 +190,15 @@ const loadoutFromValue = (value: JsonValue): Loadout => {
   return value as unknown as Loadout;
 };
 
+const compiledFromState = (state: RuntimeState): CompiledProgram =>
+  compileLoadoutProgram(loadoutFromValue(state.loadout));
+
+const cadenceFromCompiled = (compiled: CompiledProgram) => {
+  const value = compiled.cadences[0];
+  if (value === undefined) throw new Error("compiled loadout lacks cadence");
+  return value;
+};
+
 const authorityFromState = (state: RuntimeState): AuthorityEnvelope =>
   state.authority as unknown as AuthorityEnvelope;
 
@@ -282,11 +233,15 @@ const inspectIntent = (workOrder: WorkOrder): ActIntent => ({
   payload: { workOrder: workOrder as unknown as JsonValue },
 });
 
-const verificationProgram = (workOrder: WorkOrder, at: number): Program.T => {
+const verificationProgram = (
+  workOrder: WorkOrder,
+  at: number,
+  verificationSubject: string,
+): Program.T => {
   const inspect = inspectIntent(workOrder);
   const id = commandId(WORKSTREAM, EPISODE, 1, 0);
   return Program.Invoke(id, inspect, {
-    candidates: Program.Emit(
+    [verificationSubject]: Program.Emit(
       draft("VerificationRequested", at + 2, { commandId: id }),
       Program.Done(),
     ),
@@ -368,37 +323,39 @@ const presenceDecision = (
     ],
   };
   if (presence === "away") {
+    const compiledCadence = cadenceFromCompiled(compiledFromState(nextState));
+    const cadence = compiledCadence.cadence as Cadence.T;
     const evaluated = evaluateCadence(cadence, nextState, env, event);
     if (evaluated.dueAt === null)
       throw new Error("away cadence did not produce a pulse");
     const schedules = [
       {
-        scheduleId: PULSE_SCHEDULE,
+        scheduleId: compiledCadence.scheduleId,
         cadence,
         eventToEmit: draft(
           "CadencePulse",
           evaluated.dueAt,
           {
-            scheduleId: PULSE_SCHEDULE,
+            scheduleId: compiledCadence.scheduleId,
           },
           undefined,
           event.eventId,
         ),
-        cancelOn: [returnedRef],
+        cancelOn: compiledCadence.cancelOn,
       },
       {
-        scheduleId: QUEUED_PULSE,
-        cadence: Cadence.Once(evaluated.dueAt + 7),
+        scheduleId: compiledCadence.queuedScheduleId,
+        cadence: Cadence.Once(evaluated.dueAt + compiledCadence.queuedDelayMs),
         eventToEmit: draft(
           "CadencePulse",
-          evaluated.dueAt + 7,
+          evaluated.dueAt + compiledCadence.queuedDelayMs,
           {
-            scheduleId: QUEUED_PULSE,
+            scheduleId: compiledCadence.queuedScheduleId,
           },
           undefined,
           event.eventId,
         ),
-        cancelOn: [returnedRef],
+        cancelOn: compiledCadence.cancelOn,
       },
     ] as const;
     return {
@@ -455,7 +412,9 @@ const pulseDecision = (
   env: KernelEnv,
 ): Decision<RuntimeState> => {
   const scheduleId = stringField(event.payload, "scheduleId");
-  if (scheduleId === PULSE_SCHEDULE) {
+  const compiled = compiledFromState(state);
+  const compiledCadence = cadenceFromCompiled(compiled);
+  if (scheduleId === compiledCadence.scheduleId) {
     const workOrder = compileWorkOrder(loadoutFromValue(state.loadout));
     return {
       ...observed(
@@ -479,12 +438,15 @@ const pulseDecision = (
       ),
     };
   }
-  if (scheduleId !== QUEUED_PULSE)
+  if (scheduleId !== compiledCadence.queuedScheduleId)
     return observed(state, event, "unknown-schedule");
 
-  const guarded = guardQueuedPulse(state, event, env, presenceRef, [
-    PULSE_SCHEDULE,
-    QUEUED_PULSE,
+  const activationCondition = compiled.statechartGuards[0]?.activationCondition;
+  if (activationCondition === undefined)
+    throw new Error("compiled loadout lacks an activation guard");
+  const guarded = guardQueuedPulse(state, event, env, activationCondition, [
+    compiledCadence.scheduleId,
+    compiledCadence.queuedScheduleId,
   ]);
   return {
     state: {
@@ -505,7 +467,16 @@ const workOrderDecision = (
   const workOrder = workOrderFromValue(
     asObject(event.payload)?.["workOrder"] ?? null,
   );
-  const program = verificationProgram(workOrder, event.occurredAt);
+  const verification = compiledFromState(state).verificationPlan.find(
+    (episode) => episode.required,
+  );
+  if (verification === undefined)
+    throw new Error("compiled loadout lacks a required verification episode");
+  const program = verificationProgram(
+    workOrder,
+    event.occurredAt,
+    verification.subject,
+  );
   const programDecision = decideProgram(program, state, env);
   const continuation = requiredContinuation(programDecision);
   const inspect = programDecision.intents[0];
@@ -616,8 +587,19 @@ export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
   switch (event.type) {
     case "InspectionTaskCreated":
       return observed(state, event, "task-opened");
-    case "LoadoutEquipped":
-      return observed({ ...state, loadout: event.payload }, event, "equipped");
+    case "LoadoutEquipped": {
+      const equipped = loadoutFromValue(event.payload);
+      const compiled = compileLoadoutProgram(equipped);
+      return observed(
+        {
+          ...state,
+          loadout: event.payload,
+          authority: compiled.authorityEnvelope as unknown as JsonValue,
+        },
+        event,
+        "equipped",
+      );
+    }
     case "OperatorPresenceChanged":
       return presenceDecision(state, event, env);
     case "CadencePulse":

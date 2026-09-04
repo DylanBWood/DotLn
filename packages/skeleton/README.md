@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.3.2
+# `@dotln/skeleton` 0.4.0
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on
@@ -11,12 +11,16 @@ Component `0.3.2` is staged for application release `v0.3.6`: the live host and
 JSONL replay now drive one pure `seiriReactor`, the full `Decision` sequence and
 semantic projections match, and derived skeleton events carry canonical cause
 and pulse-or-command correlation links.
+Component `0.4.0` is staged for application release `v0.4.0`: the reactor now
+consumes the pure composition compiler's normalized Seiri program. Five linked
+supports emit the bounded WorkOrder, permission guard, evidence schema,
+absent-only cadence/statechart guard, and verifier episode with declared cost.
 
-The deterministic Repo Gardener + Seiri vertical. It compiles a provisional,
-hand-assembled loadout into a bounded `WorkOrder`, runs it against a fake
-fixture-repository executor, structurally refuses deletion, independently
-verifies candidates, handles operator return, and renders text plus glyph
-projections from the JSONL event log.
+The deterministic Repo Gardener + Seiri vertical. It compiles a typed
+`LoadoutGraph` into a bounded `WorkOrder` and related runtime mechanisms, runs
+them against a fake fixture-repository executor, structurally refuses deletion,
+independently verifies candidates, handles operator return, and renders text
+plus glyph projections from the JSONL event log.
 
 `scenario.ts` owns the nondeterministic edge: fixture executor, verifier,
 scheduler, append loop, and effect execution. Every appended event is stepped
@@ -32,7 +36,7 @@ npm install
 npm run skeleton
 ```
 
-The command builds both workspace packages, runs the deterministic scenario,
+The command builds all three workspace packages, runs the deterministic scenario,
 then prints its numbered JSONL-derived event timeline and a one-line glyph
 scene. The final receipt should be:
 
@@ -60,6 +64,11 @@ association still uses its labeled adjacency fallback; replacing that final
 heuristic with the canonical cause is nominated as follow-on work. The audit
 fold itself remains unchanged in this release.
 
+Add `-- --compiled-diff` to print the three equivalent-view hashes and the
+compiled RPG item tooltip. It names the exact grants, restrictions, obligation,
+passive activation, pulse, interrupt, and per-support cost. The flag is additive
+and composes deterministically with `--audit`.
+
 The original numbered event timeline should include `CommandResult`, one
 `DeletionAttempted` followed by `CommandRefused`, `VerificationCompleted`,
 `QueuedPulseNoOp`, and `SchedulesCancelled`. The glyph line begins with
@@ -76,6 +85,7 @@ prove refusal visibility, canonical causal ordering, and correlation grouping,
 and require byte-identical output over the live log, its re-encoded form, and
 an independently re-run scenario log.
 
-The loadout shape is deliberately non-normative for v0.4.0. The fake adapter
-deduplicates by the kernel-generated command id so crash recovery can safely
-re-dispatch pending outbox commands.
+The v1 graph, support, link, normalization, and semantic-hash shapes are pinned
+in `@dotln/compiler`; compile semantics remain intentionally bounded to Seiri.
+The fake adapter deduplicates by the kernel-generated command id so crash
+recovery can safely re-dispatch pending outbox commands.

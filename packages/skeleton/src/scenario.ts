@@ -17,8 +17,6 @@ import {
 import {
   ACTOR,
   EPISODE,
-  PULSE_SCHEDULE,
-  QUEUED_PULSE,
   WORKSTREAM,
   commandFromState,
   initialState,
@@ -27,11 +25,13 @@ import {
   seiriReactor,
   workOrderFromState,
   type Candidate,
+  type Loadout,
   type RuntimeState,
 } from "./reactor.js";
 
 export {
   MINUTE,
+  compileLoadoutProgram,
   compileWorkOrder,
   expectedInspectCommandId,
   loadout,
@@ -53,6 +53,7 @@ export interface FixtureTree {
 export interface ScenarioOptions {
   readonly crashAfterPersist?: boolean;
   readonly recoveryLogTransform?: (persistedLog: string) => string;
+  readonly equippedLoadout?: Loadout;
 }
 
 export interface ScenarioResult {
@@ -350,7 +351,13 @@ export function runScenario(
       fixture: "repo-tree.json",
     }),
   );
-  driver.feed(draft("LoadoutEquipped", 0, loadout as unknown as JsonValue));
+  driver.feed(
+    draft(
+      "LoadoutEquipped",
+      0,
+      (options.equippedLoadout ?? loadout) as unknown as JsonValue,
+    ),
+  );
 
   const away = driver.feed(
     draft("OperatorPresenceChanged", 0, { presence: "away" }),
@@ -359,8 +366,12 @@ export function runScenario(
   scheduler.schedule(
     ...away.decision.schedules.map((schedule) => schedule.scheduleId),
   );
+  const primaryScheduleId = away.decision.schedules[0]?.scheduleId;
+  const queuedScheduleId = away.decision.schedules[1]?.scheduleId;
+  if (primaryScheduleId === undefined || queuedScheduleId === undefined)
+    throw new Error("reactor did not emit the compiled Seiri schedules");
 
-  const pulse = driver.feed(scheduledEvent(away.decision, PULSE_SCHEDULE));
+  const pulse = driver.feed(scheduledEvent(away.decision, primaryScheduleId));
   const emittedWorkOrder = driver.feed(
     continuationEvent(pulse.decision, "cadence pulse"),
   );
@@ -470,7 +481,7 @@ export function runScenario(
       presence: "returned",
     }),
   );
-  const queued = driver.feed(scheduledEvent(away.decision, QUEUED_PULSE));
+  const queued = driver.feed(scheduledEvent(away.decision, queuedScheduleId));
   recordDecision(driver, queued.decision, queued.event, queued.event.eventId);
 
   const noOp = noOpIntent(queued.decision);
