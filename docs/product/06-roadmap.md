@@ -64,6 +64,31 @@ documentation-publication loop without extending the exported application
 runtime. If execution expands one of those scopes into public runtime
 capability, its release target must be reclassified before implementation.
 
+### 2026-09-04 forward retiming — WO-023 occupies v0.5.0
+
+The operator's `resume: next` activation placed WO-023 on published `v0.4.1`
+and assigned it `v0.5.0`, satisfying the earlier recorded reversal condition
+for another forward retiming. This note supersedes only the still-unpublished
+targets at and above the former `v0.5.0`; published tags and the accepted build
+order do not move.
+
+| Work order / milestone            | Superseded target | Current application release target |
+| --------------------------------- | ----------------: | ---------------------------------: |
+| WO-023 — compiled Entropy Reducer |        unassigned |                           `v0.5.0` |
+| WO-029 — pinned artifact identity |        unassigned |        unassigned until activation |
+| WO-009 — real disposable worker   |          `v0.5.0` |        unassigned until activation |
+| WO-010 — independent verification |          `v0.6.0` |        unassigned until activation |
+| WO-011 — feedback compiler        |          `v0.7.0` |        unassigned until activation |
+| projections and console           |          `v0.8.0` |        unassigned until activation |
+| pattern workshop                  |          `v0.9.0` |        unassigned until activation |
+| source-to-deliverable vertical    |         `v0.10.0` |        unassigned until activation |
+
+Filing WO-029 assigns neither a version nor a queue position. The recommended
+dependency placement remains immediately before WO-009, whenever the active
+slot reaches that worker boundary. Each unassigned rung receives a compatible
+version and synchronized work-order heading only through its own explicit
+activation; no arithmetic shift is inferred here.
+
 The manifest records the Git commit, application release, package/component
 versions, supported schema and artifact ranges, transformation-set version (or
 explicitly `none`), evidence commands/results, evaluable and deferred cadence
@@ -620,8 +645,8 @@ arrives on contact at later rungs (the domain model holds the target shape).
 Exit criteria: rows 1, 3, 5 of the canonical failure-injection matrix
 (03-architecture) pass at the kernel boundary. For row 5 the kernel declares
 cancellation and NoOp; the walking skeleton proves those declarations in its
-fake scheduler, while durable scheduler ownership for real workers arrives at
-v0.5.0. Same event log ⇒ same controller transitions, provably. Visible proof:
+fake scheduler, while durable scheduler ownership for real workers arrives with
+WO-009. Same event log ⇒ same controller transitions, provably. Visible proof:
 the evidence suite inspects the structured replay decisions and `DecisionTrace`;
 the first human-readable CLI projection arrives with `v0.2.0`. Deferred:
 remaining grammar/matrix rows, every UI, every real adapter, the pattern
@@ -648,7 +673,7 @@ the log). Deferred: real model calls, interactive web UI.
 Close the gaps WO-001 deliberately deferred: both candidate transport launch
 shapes exercised for real from an unsandboxed authenticated session, MCP as a
 capability row, full startup-context accounting, effective settings loading, the
-user-level `model` key. Exit: the v0.5.0 transport recommendation re-stated over
+user-level `model` key. Exit: the WO-009 transport recommendation re-stated over
 `observed` rows (or honestly re-labeled with cause), and `environment.json` row
 parity including the Codex feature-surface row. The operator-authorized
 expansion also makes the worktree, review, repair, and release-close lifecycle
@@ -709,7 +734,7 @@ demo log: consequential-action enumeration with the question each record
 answers, a minimal pinned AuditRecord envelope referencing the event store
 (never a second truth), and three pure-fold projections — L0 receipt, causal
 timeline, governed raw JSON. This anchors 09's bootstrap on the ladder; steps
-4–7 wait for v0.5.0's machinery. Exit: identical projection output over live and
+4–7 wait for WO-009's machinery. Exit: identical projection output over live and
 replayed logs, with step 9's structural refusal visible in the receipt.
 
 <!-- prettier-ignore -->
@@ -725,7 +750,19 @@ compiled-diff preview renders as an **RPG item tooltip** (GRANTS / RESTRICTIONS
 / OBLIGATION / PASSIVE / PULSE / INTERRUPT), not only CLI text.
 
 <!-- prettier-ignore -->
-## v0.5.0 — Real disposable worker  → WO-009
+## v0.5.0 — Compiled Entropy Reducer  → WO-023
+
+One author-trusted instance loadout compiles the Entropy Reducer identity,
+planning-reviewer role, Shine active, Standardize plus seven other supports,
+bounded authority, typed output and refutation guards, and generated residue.
+The operator-mediated run invokes Claude Fable 5.1 at `max`, then gives only
+selected command/inspection subjects to a fresh blinded refuter. Exit: the
+compiled artifact, refusal fixtures, byte-regenerated residue, typed review,
+refutation report, model/effort attestation, and unchanged tracked-status pair
+all agree. `Program.All` remains deferred and no runtime transport is added.
+
+<!-- prettier-ignore -->
+## Application version pending — Real disposable worker  → WO-009
 
 WorkOrderTransport adapters chosen from discovery through WO-004's observed
 evidence — expected: Claude CLI print-mode with the canonical launch shape
@@ -744,7 +781,7 @@ recent events) so real workers never run blind. **No silent model substitution**
 — unavailable model ⇒ queue or fail closed.
 
 <!-- prettier-ignore -->
-## v0.6.0 — Independent verification  → WO-010
+## Application version pending — Independent verification  → WO-010
 
 Blinded verifier episodes; claim-typed evidence mapping; typed
 VerificationFinding → focused repair continuation in a fresh episode;
@@ -776,7 +813,7 @@ This recommendation has no version, work-order identity, or activation
 authority and does not expand WO-009, WO-010, or the current resume protocol.
 
 <!-- prettier-ignore -->
-## v0.7.0 — Feedback compiler v1 (ten units)  → WO-011
+## Application version pending — Feedback compiler v1 (ten units)  → WO-011
 
 Ten representative FeedbackUnits authored from the corpus (this repo's ledger,
 not any external rule stack): anti-oscillation; correctness-over-sycophancy; the
@@ -791,7 +828,7 @@ first self-hosted step** — one DotLn work order for this repo itself is
 compiled, dispatched, executed, and verified by DotLn (ADR-0001's strangler
 experiment gets its vehicle).
 
-## v0.8.0 — Projections & console
+## Application version pending — Projections & console
 
 Web console (UI framework and repository boundary decided _here_ by ADR with
 representative evidence; Angular and its operator-fluent baseline are the
@@ -806,7 +843,7 @@ Terminal remains a complete control surface. Exit: the v0.2.0 demo watched
 entirely from the console, then re-watched via replay; every animated element
 opens its mechanics inspector.
 
-## v0.9.0 — Pattern workshop v1
+## Application version pending — Pattern workshop v1
 
 5S equipment set with compiled set bonuses; Marquet ladder as the operator-agent
 protocol (autonomy rung computed, not set); mitigated-speech voice selector;
@@ -814,7 +851,7 @@ drag-and-drop equip with exact compiled diff preview. Exit: dragging Seiri onto
 Repo Gardener in the console produces the same semantic hash as authoring the
 equivalent link group in code.
 
-## v0.10.0 — Source-to-deliverable vertical
+## Application version pending — Source-to-deliverable vertical
 
 Prove the ports with a personal-flavor vertical: GitHub Issue → SourceBundle →
 StoryContract → RepoProfile + ImpactMap → **Live Witness baseline** (reproduce

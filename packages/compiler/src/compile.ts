@@ -468,6 +468,11 @@ const graphDiagnostics = (
   const linkedSupportIds = new Set(
     graph.links.map((link) => link.supportFacetId),
   );
+  const linkedAuthorityClaims = graph.supportFacets
+    .filter((support) => linkedSupportIds.has(support.supportFacetId))
+    .flatMap((support) =>
+      support.claims.filter((claim) => claim.target.startsWith("authority.")),
+    );
   for (const support of graph.supportFacets)
     for (const claim of support.claims) {
       if (!(COMPOSITION_PRECEDENCE as readonly string[]).includes(claim.layer))
@@ -505,11 +510,11 @@ const graphDiagnostics = (
       ...active.authorityEnvelope.allowedEffects,
       ...active.authorityEnvelope.deniedEffects,
     ])
-      if (pattern.endsWith("*"))
+      if (pattern.endsWith("*") && linkedAuthorityClaims.length > 0)
         diagnostics.push(
           diagnostic(
             "SEMANTICS UNSUPPORTED",
-            `SEMANTICS UNSUPPORTED: compiler v1 requires exact authority and operation patterns; active "${active.activeMechanicId}" declares wildcard "${pattern}".`,
+            `SEMANTICS UNSUPPORTED: compiler v1 cannot combine wildcard authority or operation pattern "${pattern}" from active "${active.activeMechanicId}" with linked authority claims; remove the wildcard or the claims.`,
           ),
         );
   for (const support of graph.supportFacets.filter((candidate) =>
@@ -522,11 +527,11 @@ const graphDiagnostics = (
         ...emission.allowedEffects,
         ...emission.deniedEffects,
       ])
-        if (pattern.endsWith("*"))
+        if (pattern.endsWith("*") && linkedAuthorityClaims.length > 0)
           diagnostics.push(
             diagnostic(
               "SEMANTICS UNSUPPORTED",
-              `SEMANTICS UNSUPPORTED: compiler v1 requires exact authority and operation patterns; support "${support.supportFacetId}" declares wildcard "${pattern}".`,
+              `SEMANTICS UNSUPPORTED: compiler v1 cannot combine wildcard authority or operation pattern "${pattern}" from support "${support.supportFacetId}" with linked authority claims; remove the wildcard or the claims.`,
             ),
           );
   if (graph.activeMechanics.length !== 1)

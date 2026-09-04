@@ -35,9 +35,10 @@ one.
 **Cites (read these sections):** 02-domain-model.md (Event store: append-only
 JSONL, `evt_<n>` edge-assigned at the store boundary; deterministic replay);
 03-architecture.md failure-injection matrix (rows 1/3 shipped; rows 2/4/6
-reserved for WO-009 at v0.5.0) and §Corpus policy (layout being extended —
+reserved for WO-009 at its activation-assigned application version) and
+§Corpus policy (layout being extended —
 see Corpus-layout note); 09-audit-resilience-privacy.md §Bootstrap sequence
-step 5 (crash-after-effect ambiguity simulation), whose v0.5.0 timing comes
+step 5 (crash-after-effect ambiguity simulation), whose WO-009 timing comes
 from the failure-injection matrix and WO-007's explicit deferral of bootstrap
 steps 4–7 — cite those two for the deferral fence, not step 5 alone;
 docs/work-orders/WO-003-walking-skeleton.md (the 13-step scenario contract,
@@ -213,7 +214,7 @@ corpus/harness/wo105-*.test.mjs`, transcript captured under
 **Non-goals:** failure-matrix rows 2/4/6 (WO-009's contract);
 the physical malformed-line cases fixed and bound by WO-017;
 crash-ambiguity reconciliation machinery or any recovery repair logic
-(deferred v0.5.0 audit steps — this order classifies and pins, it does not
+(deferred WO-009 audit steps — this order classifies and pins, it does not
 reconcile); SQLite or any persistence change (ADR-0002: JSONL first); pinning
 the non-normative loadout object or any Seiri evidence/claim-type/
 proposal-packet schema (WO-008/WO-010 territory and preserved-open); binding

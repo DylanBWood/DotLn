@@ -153,7 +153,8 @@
       "codex-cli": {
         "versions": [
           {"classification": "observed", "value": "0.152.1"},
-          {"classification": "observed", "value": "0.153.0"}
+          {"classification": "observed", "value": "0.153.0"},
+          {"classification": "observed", "value": "0.153.2", "observedAt": "2026-09-04T14:13:12-04:00"}
         ],
         "persistedEffortSelector": {"classification": "observed", "key": "model_reasoning_effort", "value": "xhigh"},
         "sessionEffortSelector": {"classification": "not found", "dedicatedControl": "--effort", "genericConfigOverride": {"classification": "documented locally", "control": "--config key=value"}},

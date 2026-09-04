@@ -1,4 +1,4 @@
-# `@dotln/compiler` v0.1.0
+# `@dotln/compiler` v0.2.0
 
 The pure DotLn composition compiler. It has zero runtime dependencies and no
 I/O: callers pass a `LoadoutGraph` plus an explicit environment and receive a
@@ -13,7 +13,7 @@ The public type surface covers the full graph boundary: `Identity`, `Role`,
 and `AuthorityEnvelope`. Executable lowering is deliberately narrower: one
 active mechanic, at most one participating link group, at most one explicit
 pipeline in that group, and the emissions exercised by the Repo Gardener +
-Seiri scenario.
+Seiri scenario and the Entropy Reducer review loadout.
 
 `compileLoadout` performs the four composition steps in order:
 
@@ -31,9 +31,12 @@ An incompatible support returns `SUPPORT INACTIVE`, the exact missing
 capability or tag family, and concrete structured corrections. It is never
 silently dropped.
 
-Compiler v1 accepts exact authority and operation names. It rejects wildcard
-patterns because the kernel's broad deny matching cannot yet represent a safe
-exact-effect exception chosen by precedence.
+Compiler v1 accepts exact authority and operation names plus direct terminal
+prefix globs such as `repo.read*` when the participating graph has no
+`authority.*` claims. Participating wildcard claim targets and any graph that
+combines a direct wildcard with a participating authority claim reject, because
+the kernel's broad matching cannot represent a safe exact-effect exception
+chosen by precedence; unequipped catalog definitions remain inert.
 
 ## Views and semantic identity
 

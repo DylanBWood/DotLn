@@ -293,7 +293,7 @@ test("WO-008 AC3 the winning authority claim governs the emitted runtime envelop
   assert.ok(!program.workOrder.prohibitedOperations.includes("repo.delete"));
 });
 
-test("WO-008 AC3 compiler v1 rejects wildcard authority patterns it cannot safely override", () => {
+test("WO-023 compiler v1 accepts claim-free prefix wildcards and still rejects wildcard precedence", () => {
   const wildcard = {
     ...seiriSupports.repositoryScope,
     supportFacetId: "support.wildcard",
@@ -303,24 +303,62 @@ test("WO-008 AC3 compiler v1 rejects wildcard authority patterns it cannot safel
       {
         kind: "permission-guard",
         emissionId: "support.wildcard.permission",
-        allowedOperations: [],
+        allowedOperations: ["probe.run:scratch*"],
         prohibitedOperations: ["repo.*"],
-        allowedEffects: [],
+        allowedEffects: ["probe.run:scratch*"],
         deniedEffects: ["repo.*"],
       },
     ],
   } as const satisfies SupportFacet;
   const graph = graphWithSupports([wildcard]);
   const result = compileLoadout(graph, seiriEnvironment());
-  assert.equal(result.ok, false);
-  if (result.ok) assert.fail("wildcard authority unexpectedly compiled");
+  assert.equal(result.ok, true);
+  if (!result.ok) assert.fail("claim-free wildcard authority did not compile");
+  assert.ok(result.program.workOrder.prohibitedOperations.includes("repo.*"));
   assert.ok(
-    result.diagnostics.some(
-      (entry) =>
-        entry.code === "SEMANTICS UNSUPPORTED" &&
-        entry.message.includes('declares wildcard "repo.*"'),
+    result.program.workOrder.allowedOperations.includes("probe.run:scratch*"),
+  );
+  assert.ok(result.program.authorityEnvelope.deniedEffects.includes("repo.*"));
+  assert.ok(
+    result.program.authorityEnvelope.allowedEffects.includes(
+      "probe.run:scratch*",
     ),
   );
+
+  const activeWildcardGraph: LoadoutGraph = {
+    ...graphWithSupports([]),
+    activeMechanics: graphWithSupports([]).activeMechanics.map((active) => ({
+      ...active,
+      workOrder: {
+        ...active.workOrder,
+        allowedOperations: ["repo.read*"],
+        prohibitedOperations: ["repo.write*", "git.mutate*"],
+      },
+      authorityEnvelope: {
+        ...active.authorityEnvelope,
+        allowedEffects: ["repo.read*"],
+        deniedEffects: ["repo.write*", "git.mutate*"],
+      },
+    })),
+  };
+  const activeResult = compileLoadout(activeWildcardGraph, seiriEnvironment());
+  assert.equal(activeResult.ok, true);
+  if (!activeResult.ok)
+    assert.fail("claim-free active wildcards did not compile");
+  assert.deepEqual(activeResult.program.workOrder.allowedOperations, [
+    "repo.read*",
+  ]);
+  assert.deepEqual(activeResult.program.workOrder.prohibitedOperations, [
+    "repo.write*",
+    "git.mutate*",
+  ]);
+  assert.deepEqual(activeResult.program.authorityEnvelope.allowedEffects, [
+    "repo.read*",
+  ]);
+  assert.deepEqual(activeResult.program.authorityEnvelope.deniedEffects, [
+    "repo.write*",
+    "git.mutate*",
+  ]);
   assert.equal(
     compileLoadout(withLinkedSupports(graph, []), seiriEnvironment()).ok,
     true,
@@ -361,6 +399,58 @@ test("WO-008 AC3 compiler v1 rejects wildcard authority patterns it cannot safel
     ).ok,
     true,
     "an unequipped wildcard claim cannot affect the program",
+  );
+
+  const exactClaim = {
+    ...claimSupport("support.exact-claim", "hard-permissions", "allow"),
+    claims: [
+      {
+        claimId: "support.exact-claim.claim",
+        target: "authority.repo.inspect",
+        value: "allow",
+        layer: "hard-permissions",
+        hard: false,
+      },
+    ],
+  } as const satisfies SupportFacet;
+  const mixedResult = compileLoadout(
+    graphWithSupports([wildcard, exactClaim]),
+    seiriEnvironment(),
+  );
+  assert.equal(mixedResult.ok, false);
+  if (mixedResult.ok)
+    assert.fail("wildcard plus authority precedence unexpectedly compiled");
+  assert.ok(
+    mixedResult.diagnostics.some(
+      (entry) =>
+        entry.code === "SEMANTICS UNSUPPORTED" &&
+        entry.message.includes(
+          'cannot combine wildcard authority or operation pattern "repo.*"',
+        ),
+    ),
+  );
+
+  const activeMixedResult = compileLoadout(
+    {
+      ...activeWildcardGraph,
+      containers: graphWithSupports([exactClaim]).containers,
+      supportFacets: [exactClaim],
+      links: graphWithSupports([exactClaim]).links,
+      linkGroups: graphWithSupports([exactClaim]).linkGroups,
+    },
+    seiriEnvironment(),
+  );
+  assert.equal(activeMixedResult.ok, false);
+  if (activeMixedResult.ok)
+    assert.fail("active wildcard plus authority claim unexpectedly compiled");
+  assert.ok(
+    activeMixedResult.diagnostics.some(
+      (entry) =>
+        entry.code === "SEMANTICS UNSUPPORTED" &&
+        entry.message.includes(
+          'wildcard authority or operation pattern "repo.read*" from active',
+        ),
+    ),
   );
 });
 

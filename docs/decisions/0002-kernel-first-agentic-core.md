@@ -17,13 +17,14 @@ to handle that."
    skeleton → composition compiler → real workers → verification → feedback
    compiler → projections → pattern workshop (see roadmap).
 2. **Work-shaped verticals are ports**: `SourceAdapter`, `WorkOrderTransport`,
-   `VerificationAdapter`, `DeliveryAdapter`. The ticket→PR promise is proven at
-   v0.9.0 with a personal-flavor adapter (GitHub Issues); an enterprise-tracker adapter
-   remains a future optional plug-in.
+   `VerificationAdapter`, `DeliveryAdapter`. The source-to-deliverable rung
+   proves the ticket→PR promise with a personal-flavor adapter (GitHub Issues);
+   an enterprise-tracker adapter remains a future optional plug-in.
 3. **Language/runtime:** TypeScript everywhere; the kernel and compiler have
    zero runtime dependencies and no I/O (pure functions + data; dev-only
    build/test tooling is recorded in Amendments below). Node is
-   the adapter runtime. UI framework is deliberately undecided until v0.7.0
+   the adapter runtime. UI framework is deliberately undecided until the
+   projections-and-console rung
    (default recommendation: Angular, operator fluency; the kernel must not
    care).
 4. **Persistence progression:** append-only JSONL first; SQLite when
@@ -54,6 +55,13 @@ notes and tooling choices within the decided constraints.
   `v0.7.0` to application release target `v0.8.0`, and the personal
   source-to-deliverable vertical moves from `v0.9.0` to `v0.10.0`. Published
   history and the substance of this decision do not change.
+- 2026-09-04 roadmap retiming: the operator activated WO-023 at `v0.5.0`, so
+  the unpublished application targets formerly assigned to WO-009 and later
+  rungs are unassigned until their own activations. WO-023 inserts compiled
+  instance content without changing the accepted build order among the runtime
+  rungs; WO-029 is a separately filed candidate recommended immediately before
+  WO-009, not an activated insertion. Published history, package/schema axes,
+  and every substantive constraint in this decision remain unchanged.
 - WO-006 adds Prettier 3.9.6 as an exact dev dependency and the repository-wide
   formatter for supported, human-maintained text. The pinned configuration
   standardizes 80-column wrapping and LF endings; explicit ignores protect raw

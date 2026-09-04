@@ -117,6 +117,19 @@ row on 2026-09-03; the level stays 1 — demonstrable.
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `compiler.seiri-v1` | The dependency-free [`@dotln/compiler`](../../packages/compiler/README.md) now exports the full graph type boundary and bounded Seiri lowering. [Compiler tests](../../packages/compiler/test/compiler.test.ts) pin capability diagnostics, all adjacent precedence levels, hard conflicts, explicit pipelines, and heterogeneous costs; the [purity test](../../packages/compiler/test/purity.test.ts) pins determinism, input immutability, I/O-free source, and zero runtime dependencies. [View tests](../../packages/compiler/test/views.test.ts) exercise all three codecs, round-trip laws, semantic mutations, and equip changes. The [tooltip test](../../packages/compiler/test/tooltip.test.ts) pins the literal RPG diff and three equal hashes; the [skeleton scenario](../../packages/skeleton/test/scenario.test.ts) consumes compiled runtime data and compares all 21 traces with the frozen WO-003 oracle. | The prior absence of a package, normalized IR, link checker, semantic hash, and compiled diff is closed in the staged subject. Execution remains intentionally bounded to one Seiri active, deterministic fakes, and three views; multi-active lowering, saved builds, compatibility migration, other patterns, and interactive editing remain absent. | Stage **1 — demonstrable** pending independent verification. Do not promote to dependable or infer support for the typed-but-deferred surfaces. |
 
+## WO-023 dated reassessment (2026-09-04)
+
+WO-008's VER-001 and FINAL-001 closed the earlier staged-review qualifier and
+established the compiler row at **1 — demonstrable** within its bounded Seiri
+scope. The active WO-023 implementation now exercises a second identity and
+adds direct terminal prefix-glob lowering only for claim-free authority
+compositions. Compiler and skeleton fixtures reject participating wildcard
+claims and wildcard-plus-participating-claim graphs, retain unequipped catalog
+definitions as inert, and prove anchored deny-before-allow runtime matching.
+This is staged evidence pending WO-023's independent verification; it broadens
+the demonstrable fixture set but does not justify level 2, multi-active
+lowering, saved builds, or any typed-but-deferred surface.
+
 ## Reading the table
 
 - A level-2 claim means only that the declared scope has automated checks and

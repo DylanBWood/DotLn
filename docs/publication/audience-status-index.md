@@ -46,30 +46,32 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 
 ## 03 — Architecture
 
-| Section                                                                                                                                                       | Audiences                           | Status    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
-| [Architecture](../product/03-architecture.md#architecture)                                                                                                    | everyday-ai-user, software-engineer | planned   |
-| [Layer diagram](../product/03-architecture.md#layer-diagram)                                                                                                  | software-engineer                   | planned   |
-| [Platform and instance boundary](../product/03-architecture.md#platform-and-instance-boundary)                                                                | everyday-ai-user, software-engineer | specified |
-| [Candidate — owner-sovereign implementation profile](../product/03-architecture.md#candidate--owner-sovereign-implementation-profile)                         | everyday-ai-user, software-engineer | vision    |
-| [Package ecosystem and marketplaces](../product/03-architecture.md#package-ecosystem-and-marketplaces)                                                        | everyday-ai-user, software-engineer | planned   |
-| [Community builds and sandbox promotion](../product/03-architecture.md#community-builds-and-sandbox-promotion)                                                | everyday-ai-user, software-engineer | planned   |
-| [Agent enablement skills](../product/03-architecture.md#agent-enablement-skills)                                                                              | everyday-ai-user, software-engineer | planned   |
-| [Candidate — contributed execution pool](../product/03-architecture.md#candidate--contributed-execution-pool)                                                 | everyday-ai-user, software-engineer | vision    |
-| [Runtime primitive catalogs](../product/03-architecture.md#runtime-primitive-catalogs)                                                                        | software-engineer                   | planned   |
-| [Candidate — isolated execution environments](../product/03-architecture.md#candidate--isolated-execution-environments)                                       | everyday-ai-user, software-engineer | vision    |
-| [The agentic communication core](../product/03-architecture.md#the-agentic-communication-core)                                                                | software-engineer                   | planned   |
-| [Candidate — opinion cohorts and sealed adjudication](../product/03-architecture.md#candidate--opinion-cohorts-and-sealed-adjudication)                       | everyday-ai-user, software-engineer | vision    |
-| [Composition system](../product/03-architecture.md#composition-system)                                                                                        | software-engineer                   | planned   |
-| [Agent-originated product suggestions](../product/03-architecture.md#agent-originated-product-suggestions)                                                    | everyday-ai-user, software-engineer | planned   |
-| [Channel-plural intake, PR-backed registration](../product/03-architecture.md#channel-plural-intake-pr-backed-registration)                                   | software-engineer                   | planned   |
-| [Session lifecycle & resilience](../product/03-architecture.md#session-lifecycle--resilience)                                                                 | everyday-ai-user, software-engineer | planned   |
-| [Ports (what keeps work-flavored verticals pluggable)](../product/03-architecture.md#ports-what-keeps-work-flavored-verticals-pluggable)                      | software-engineer                   | planned   |
-| [Operator-presence policy](../product/03-architecture.md#operator-presence-policy)                                                                            | everyday-ai-user, software-engineer | specified |
-| [Candidate — progressive absence authority and return readiness](../product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness) | everyday-ai-user, software-engineer | vision    |
-| [Corpus policy](../product/03-architecture.md#corpus-policy)                                                                                                  | everyday-ai-user, software-engineer | specified |
-| [Candidate — canonical private intake reconciliation](../product/03-architecture.md#candidate--canonical-private-intake-reconciliation)                       | everyday-ai-user, software-engineer | vision    |
-| [Learning loop](../product/03-architecture.md#learning-loop)                                                                                                  | everyday-ai-user, software-engineer | planned   |
+| Section                                                                                                                                                       | Audiences                           | Status      |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- |
+| [Architecture](../product/03-architecture.md#architecture)                                                                                                    | everyday-ai-user, software-engineer | planned     |
+| [Layer diagram](../product/03-architecture.md#layer-diagram)                                                                                                  | software-engineer                   | planned     |
+| [Platform and instance boundary](../product/03-architecture.md#platform-and-instance-boundary)                                                                | everyday-ai-user, software-engineer | specified   |
+| [Candidate — owner-sovereign implementation profile](../product/03-architecture.md#candidate--owner-sovereign-implementation-profile)                         | everyday-ai-user, software-engineer | vision      |
+| [Package ecosystem and marketplaces](../product/03-architecture.md#package-ecosystem-and-marketplaces)                                                        | everyday-ai-user, software-engineer | planned     |
+| [Community builds and sandbox promotion](../product/03-architecture.md#community-builds-and-sandbox-promotion)                                                | everyday-ai-user, software-engineer | planned     |
+| [Agent enablement skills](../product/03-architecture.md#agent-enablement-skills)                                                                              | everyday-ai-user, software-engineer | planned     |
+| [Candidate — contributed execution pool](../product/03-architecture.md#candidate--contributed-execution-pool)                                                 | everyday-ai-user, software-engineer | vision      |
+| [Runtime primitive catalogs](../product/03-architecture.md#runtime-primitive-catalogs)                                                                        | software-engineer                   | planned     |
+| [Candidate — isolated execution environments](../product/03-architecture.md#candidate--isolated-execution-environments)                                       | everyday-ai-user, software-engineer | vision      |
+| [The agentic communication core](../product/03-architecture.md#the-agentic-communication-core)                                                                | software-engineer                   | planned     |
+| [Candidate — opinion cohorts and sealed adjudication](../product/03-architecture.md#candidate--opinion-cohorts-and-sealed-adjudication)                       | everyday-ai-user, software-engineer | vision      |
+| [Composition system](../product/03-architecture.md#composition-system)                                                                                        | software-engineer                   | planned     |
+| [Candidate — pinned artifact identity](../product/03-architecture.md#candidate--pinned-artifact-identity)                                                     | everyday-ai-user, software-engineer | vision      |
+| [Agent-originated product suggestions](../product/03-architecture.md#agent-originated-product-suggestions)                                                    | everyday-ai-user, software-engineer | planned     |
+| [First live Entropy Reducer use](../product/03-architecture.md#first-live-entropy-reducer-use)                                                                | everyday-ai-user, software-engineer | implemented |
+| [Channel-plural intake, PR-backed registration](../product/03-architecture.md#channel-plural-intake-pr-backed-registration)                                   | software-engineer                   | planned     |
+| [Session lifecycle & resilience](../product/03-architecture.md#session-lifecycle--resilience)                                                                 | everyday-ai-user, software-engineer | planned     |
+| [Ports (what keeps work-flavored verticals pluggable)](../product/03-architecture.md#ports-what-keeps-work-flavored-verticals-pluggable)                      | software-engineer                   | planned     |
+| [Operator-presence policy](../product/03-architecture.md#operator-presence-policy)                                                                            | everyday-ai-user, software-engineer | specified   |
+| [Candidate — progressive absence authority and return readiness](../product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness) | everyday-ai-user, software-engineer | vision      |
+| [Corpus policy](../product/03-architecture.md#corpus-policy)                                                                                                  | everyday-ai-user, software-engineer | specified   |
+| [Candidate — canonical private intake reconciliation](../product/03-architecture.md#candidate--canonical-private-intake-reconciliation)                       | everyday-ai-user, software-engineer | vision      |
+| [Learning loop](../product/03-architecture.md#learning-loop)                                                                                                  | everyday-ai-user, software-engineer | planned     |
 
 ## 04 — Interfaces
 
@@ -132,6 +134,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Roadmap — application release ladder](../product/06-roadmap.md#roadmap--application-release-ladder)                                                                                    | everyday-ai-user, software-engineer | planned     |
 | [Release boundary](../product/06-roadmap.md#release-boundary)                                                                                                                           | software-engineer                   | specified   |
 | [2026-08-31 forward retiming](../product/06-roadmap.md#2026-08-31-forward-retiming)                                                                                                     | software-engineer                   | implemented |
+| [2026-09-04 forward retiming — WO-023 occupies v0.5.0](../product/06-roadmap.md#2026-09-04-forward-retiming--wo-023-occupies-v050)                                                      | software-engineer                   | implemented |
 | [Work-order navigation and identity (candidate)](../product/06-roadmap.md#work-order-navigation-and-identity-candidate)                                                                 | everyday-ai-user, software-engineer | planned     |
 | [Candidate — unattended work-order portfolio](../product/06-roadmap.md#candidate--unattended-work-order-portfolio)                                                                      | everyday-ai-user, software-engineer | vision      |
 | [Capability progression policies](../product/06-roadmap.md#capability-progression-policies)                                                                                             | everyday-ai-user, software-engineer | specified   |
@@ -146,14 +149,15 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [v0.2.1 — Environment truth addendum and lifecycle corrections → WO-004 + WO-012](../product/06-roadmap.md#v021--environment-truth-addendum-and-lifecycle-corrections---wo-004--wo-012) | software-engineer                   | verified    |
 | [v0.2.2 — Capability table v1 → WO-005](../product/06-roadmap.md#v022--capability-table-v1---wo-005)                                                                                    | everyday-ai-user, software-engineer | verified    |
 | [v0.2.3 — Publication bootstrap → WO-006](../product/06-roadmap.md#v023--publication-bootstrap---wo-006)                                                                                | everyday-ai-user, software-engineer | implemented |
-| [v0.3.0 — Audit-record baseline (three projections) → WO-007](../product/06-roadmap.md#v030--audit-record-baseline-three-projections---wo-007)                                          | everyday-ai-user, software-engineer | planned     |
-| [v0.4.0 — Composition compiler v1 → WO-008](../product/06-roadmap.md#v040--composition-compiler-v1---wo-008)                                                                            | everyday-ai-user, software-engineer | planned     |
-| [v0.5.0 — Real disposable worker → WO-009](../product/06-roadmap.md#v050--real-disposable-worker---wo-009)                                                                              | everyday-ai-user, software-engineer | planned     |
-| [v0.6.0 — Independent verification → WO-010](../product/06-roadmap.md#v060--independent-verification---wo-010)                                                                          | everyday-ai-user, software-engineer | planned     |
-| [v0.7.0 — Feedback compiler v1 (ten units) → WO-011](../product/06-roadmap.md#v070--feedback-compiler-v1-ten-units---wo-011)                                                            | software-engineer                   | planned     |
-| [v0.8.0 — Projections & console](../product/06-roadmap.md#v080--projections--console)                                                                                                   | everyday-ai-user, software-engineer | planned     |
-| [v0.9.0 — Pattern workshop v1](../product/06-roadmap.md#v090--pattern-workshop-v1)                                                                                                      | everyday-ai-user, software-engineer | planned     |
-| [v0.10.0 — Source-to-deliverable vertical](../product/06-roadmap.md#v0100--source-to-deliverable-vertical)                                                                              | everyday-ai-user, software-engineer | planned     |
+| [v0.3.0 — Audit-record baseline (three projections) → WO-007](../product/06-roadmap.md#v030--audit-record-baseline-three-projections---wo-007)                                          | everyday-ai-user, software-engineer | verified    |
+| [v0.4.0 — Composition compiler v1 → WO-008](../product/06-roadmap.md#v040--composition-compiler-v1---wo-008)                                                                            | everyday-ai-user, software-engineer | verified    |
+| [v0.5.0 — Compiled Entropy Reducer → WO-023](../product/06-roadmap.md#v050--compiled-entropy-reducer---wo-023)                                                                          | everyday-ai-user, software-engineer | planned     |
+| [Application version pending — Real disposable worker → WO-009](../product/06-roadmap.md#application-version-pending--real-disposable-worker---wo-009)                                  | everyday-ai-user, software-engineer | planned     |
+| [Application version pending — Independent verification → WO-010](../product/06-roadmap.md#application-version-pending--independent-verification---wo-010)                              | everyday-ai-user, software-engineer | planned     |
+| [Application version pending — Feedback compiler v1 (ten units) → WO-011](../product/06-roadmap.md#application-version-pending--feedback-compiler-v1-ten-units---wo-011)                | software-engineer                   | planned     |
+| [Application version pending — Projections & console](../product/06-roadmap.md#application-version-pending--projections--console)                                                       | everyday-ai-user, software-engineer | planned     |
+| [Application version pending — Pattern workshop v1](../product/06-roadmap.md#application-version-pending--pattern-workshop-v1)                                                          | everyday-ai-user, software-engineer | planned     |
+| [Application version pending — Source-to-deliverable vertical](../product/06-roadmap.md#application-version-pending--source-to-deliverable-vertical)                                    | everyday-ai-user, software-engineer | planned     |
 | [v1.0.0 — Teammate-ready](../product/06-roadmap.md#v100--teammate-ready)                                                                                                                | everyday-ai-user, software-engineer | planned     |
 | [Post-1.0 horizons](../product/06-roadmap.md#post-10-horizons)                                                                                                                          | everyday-ai-user, software-engineer | vision      |
 
@@ -226,7 +230,7 @@ as a current blocked verdict.
 
 | Section                                                                                                                                         | Audiences                           | Status    |
 | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
-| [`προτείνω` (proteíno) — the first-party application thesis](../product/11-proteino.md#προτείνω-proteíno--the-first-party-application-thesis)   | everyday-ai-user, software-engineer | vision    |
+| [`προτείνω` (protíno) — the first-party application thesis](../product/11-proteino.md#προτείνω-protíno--the-first-party-application-thesis)     | everyday-ai-user, software-engineer | vision    |
 | [Shape before machinery](../product/11-proteino.md#shape-before-machinery)                                                                      | everyday-ai-user, software-engineer | specified |
 | [The playable loop](../product/11-proteino.md#the-playable-loop)                                                                                | everyday-ai-user, software-engineer | vision    |
 | [A world on DotLn, not a second DotLn world](../product/11-proteino.md#a-world-on-dotln-not-a-second-dotln-world)                               | everyday-ai-user, software-engineer | specified |

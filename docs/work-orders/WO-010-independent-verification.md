@@ -1,12 +1,14 @@
-# WO-010 — Independent verification, v0.6.0
+# WO-010 — Independent verification (application version assigned at activation)
 
 **Model:** any capable model.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** `v0.6.0` minor — adds backwards-compatible
+**Release classification:** minor, with the application version assigned at
+activation under the roadmap's 2026-09-04 retiming. Adds backwards-compatible
 verifier episodes, findings, repair continuation, and evidence staleness.
 **Depends on:** WO-009 complete.
 
-**Cites (read these sections):** 06-roadmap.md v0.6.0; 03-architecture.md
+**Cites (read these sections):** 06-roadmap.md §Application version pending —
+Independent verification; 03-architecture.md
 §Ports `VerificationAdapter` (blinding, claim-typed evidence, Live Witness,
 verification-vs-review separation); 02-domain-model.md (VerificationFinding,
 AcceptanceEvidenceMatrix, Evaluation, Verification radius); 01-principles.md
@@ -25,7 +27,7 @@ episode; substantive repair marking affected evidence stale.
   criteria, the diff, and repo access — never the implementer's narrative,
   transcript, or result prose.
 - Verification only; independent code review as a separate episode type is
-  v0.10.0's pairing.
+  the source-to-deliverable rung's pairing.
 
 **Constraints:** verifier episodes dispatch through the WO-009 transports
 (fake transport for the deterministic suite); the matrix is a projection over
@@ -56,7 +58,8 @@ duty applies.
 finding → repair continuation → re-verification) with event-log excerpts;
 every criterion mapped to a named test or witnessed run.
 
-**Non-goals:** independent code-review episodes (v0.10.0); CI classification
-and post-PR loops (v0.10.0); the feedback compiler (v0.7.0); rating
+**Non-goals:** independent code-review episodes and post-PR loops (the
+source-to-deliverable rung); CI classification (that same rung); the feedback
+compiler (WO-011); rating
 projections over verifier agreement (the Comparison fold stays deferred); web
 console.

@@ -23,6 +23,200 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-023 expanded ideation — context projections and `προτείνω` naming (2026-09-04)
+
+Source: two operator ideation messages during the active WO-023 implementation,
+captured verbatim in the main checkout's local-only
+`docs/intake/notes/WO-023-expanded-ideation-2026-09-04-02.md`. Its SHA-256 is
+`165d095de7cfc0bf27d83f72c697e06bfad492a281d7cb74462abf24f979bc86`.
+The canonical capture is present in the validated owner-only backup
+`DotLn-intake-20260904T173830Z.zip` (SHA-256
+`20ccea0ae5b7340a4a4b286e25f765be09ad902b75569fc6e98ea31a5376542d`);
+no `/private/tmp` staging copy remains. The clean-room screen found no employer
+code, configuration, identifier, internal service, credential, private
+identifier, or other stop condition.
+
+- **Task-specific LLM context is a lossy projection with an explicit receipt,
+  not another semantic view** `transformed`
+  - Existing WorkOrders, selective blueprint citations, prompt fragments,
+    sparse agent projections, publication source references, and model-input
+    plans already carry most of the doctrine. The missing executable boundary
+    is a neutral pure `ContextProjectionPlan`: given explicit source bytes,
+    section references, compiled role/loadout/authority, runtime profile, and
+    budget, return required, selected, and omitted references, exact costs,
+    source/transform versions, capability losses, and visible expansion
+    handles. The host performs reads and records the sent bytes. This projection
+    must not join the compiler's lossless editable-view union or claim semantic
+    equivalence to the full source.
+- **A table of contents is the first selector index, not the whole context
+  boundary** `transformed`
+  - Today, reading only the WorkOrder's cited sections is sufficient and avoids
+    duplicate summaries. A future selector starts required-first and refuses
+    when the objective, acceptance criteria, applicable settled decisions,
+    constraints, non-goals, authority, required evidence, and output contract
+    cannot fit. It does not silently truncate, infer relevance with an
+    undeclared model, or disguise a tokenizer as a pure function. Stable blocks
+    may be materialized and task-specific context expanded on demand; JIT/AOT
+    remains compatibility and migration vocabulary.
+- **Do not file a context-projection work order before its first consumer**
+  `preserved`
+  - WO-009's real WorkOrderTransport is the earliest plausible consumer. A
+    separate order or bounded follow-on becomes warranted only when an actual
+    transport supplies exact serialization, tokenizer/context-limit, omission,
+    and outcome evidence and demonstrates selective-reading failure or cost.
+    A universal context optimizer now would be naive interventionism: it would
+    optimize a proxy without a runtime call, duplicate truth, and risk silently
+    widening privacy or authority.
+- **The application name uses the Modern Greek verb `προτείνω (protíno)`**
+  `adopted`
+  - The product name uses the first-person singular verb form “I suggest” or “I
+    propose,” which serves as the dictionary headword for “to suggest” or “to
+    propose”; the related noun `πρόταση` means a suggestion or proposal and is
+    not the product name. The displayed pronunciation guide is now `protíno`.
+    The existing `11-proteino.md` path remains a historical
+    documentation path so prior evidence links do not move; it is neither the
+    canonical Latin display form nor a settled technical slug.
+
+## WO-023 implementation — first compiled Entropy Reducer episode (2026-09-04)
+
+Source: review episode `ep_entropy_reducer_20260904_001` and fresh blinded
+refutation episode `ep_entropy_refutation_20260904_001`, preserved under
+`docs/instance/entropy-reducer/runs/`. Both attest Claude Code 2.1.260,
+`claude-fable-5-1`, and `max`; the harness-reported tiny internal Haiku helper
+usage is disclosed rather than treated as a substitution. Source and scratch
+Git status were byte-identical before and after each episode. The review created
+only 75 ignored `packages/*/dist` files in scratch; refutation created none.
+
+- **Entropy Reducer is now a compiled loadout with a live review receipt**
+  `adopted`
+  - Its first run used the compiled WorkOrder, authority, one-shot cadence,
+    four bounded lenses, output validator, and generated residue against a
+    frozen WO-023 subject. The reviewer produced seven findings and one proposal
+    payload. A fresh Contra-Auguste episode saw only each finding ID and its
+    reproduction command or inspection steps; all seven survived. The
+    implementation repaired every survived finding before requesting ordinary
+    independent lifecycle verification.
+- **The readable reviewer brief is a generated projection, not a second source
+  of truth** `adopted`
+  - Identity dispositions and invariants, role obligations, active semantics
+    and constraints, masks, and every linked support now participate in residue
+    generation. Mutation and byte-regeneration tests refuse hand-edited drift.
+    The dispatch host—not the authority-envelope prose—owns filesystem-root
+    confinement.
+- **Sustain remains a candidate cadence** `preserved`
+  - This episode establishes an explicitly dispatched one-shot review. It does
+    not establish that recurrence improves outcomes, so Shitsuke/Sustain is not
+    equipped until observed cadence evidence justifies it.
+- **Review output did not manufacture implementation authority** `adopted`
+  - The proposal payload remains only in the receipt and was not filed. WO-029
+    was drafted through the operator's separately authorized ideation breakout,
+    a recorded direct-to-work-order bootstrap exception rather than reviewer
+    self-promotion.
+
+## WO-023 activation — v0.5.0 forward retiming (2026-09-04)
+
+Source: the operator's `resume: next` dispatch activated WO-023 on published
+`v0.4.1` with `v0.5.0` pinned in the active work-order authority. The earlier
+planning pass had already recorded this activation as the reversal condition
+for retiming the unpublished WO-009-and-later ladder.
+
+- **WO-023 owns application release `v0.5.0`; later unpublished targets return
+  to activation-time assignment** `adopted`
+  - The roadmap now carries the dated migration note and a WO-023 rung. Former
+    `v0.5.0` through `v0.10.0` targets are retained as superseded planning
+    history, while WO-009, WO-010, WO-011, projections, pattern workshop, and
+    the source-to-deliverable vertical are unassigned until each explicit
+    activation. The accepted kernel-first build order and every published tag
+    remain unchanged; no arithmetic version shift is inferred.
+  - WO-029's filing assigns no release and no queue position. Its recommendation
+    is immediately before WO-009 so that worker can consume the receipt if the
+    operator still chooses the order then.
+
+## WO-023 implementation — claim-free prefix wildcard lowering (2026-09-04)
+
+Source: the active WO-023 definition requires bounded effect families such as
+`repo.read*` and `repo.write*`, while the landed compiler typed those patterns
+but rejected every one. The kernel already evaluates a terminal `*` as an
+anchored prefix and checks denies before allows. Retargeting WO-023 to the real
+compiler therefore exposed a contract gap rather than authorizing a universal
+grant.
+
+- **Direct terminal prefix globs compile only without participating authority
+  claims** `adopted`
+  - This entry extends **Precedence resolves claims; only pipelines order
+    transforms**. Exact patterns keep their existing behavior. A direct
+    wildcard in an active WorkOrder, active AuthorityEnvelope, or linked
+    permission emission may lower only when no linked `authority.*` claim
+    participates. Participating wildcard claim targets still reject, and adding
+    any participating authority claim to a graph containing a direct wildcard
+    rejects the whole graph; unequipped catalog definitions remain inert. The
+    bounded case needs no precedence exception; the mixed case remains
+    unsupported rather than guessing.
+  - Compiler fixtures cover active and support-origin grants and denials, the
+    inert unequipped case, wildcard-claim refusal, mixed exact-claim refusal,
+    and the compiler and Entropy Reducer fixtures cover anchored family matching
+    plus deny-before-allow behavior in the kernel.
+    This is a compatible compiler capability used by the Entropy Reducer, not
+    an owner-sovereign mode or a claim that `*` by itself is a safe profile.
+
+## WO-023 ideation breakout — pinned artifact identity (2026-09-04)
+
+Source: the operator's ideation message during the active WO-023 implementation
+episode, including an ad hoc Fable planning report, captured verbatim in the
+main checkout's local-only
+`docs/intake/notes/WO-023-expanded-ideation-2026-09-04.md` and rewritten through
+Shape-First Synthesis. The canonical capture is byte-verified in an owner-only
+backup; no worktree-local duplicate remains. The clean-room screen found no
+employer code, configuration, identifier, internal service, credential, private
+identifier, or other stop condition. The operator explicitly expanded WO-023
+to file WO-029 during this implementation session and authorized returning to
+the active implementation afterward.
+
+- **Pin compiled identity at equip and compare it when behavior consumes the
+  program** `adopted`
+  - The compiler already emits a semantic equality key and a component manifest,
+    while the skeleton logs only the graph and discards the key. WO-029 is the
+    bounded missing execution-receipt slice: record compiler contract and
+    package versions plus compiled identity in the equip event, hold them with
+    authority, and turn a later disagreement or compile diagnostic into a
+    durable, inert refusal.
+    The new equip payload is explicitly v2. Legacy payloads replay only on the
+    historical side of a logged, idempotent enforcement boundary; after that
+    boundary they must re-equip with a valid pin before originating new
+    program-consuming decisions. This preserves compatibility without creating
+    an unpinned forward-execution bypass.
+    This is useful before the first external worker and closes adopted receipt
+    doctrine. It is not necessary to make today's trusted in-process graph run,
+    and no loadout-drift incident is claimed.
+- **Semantic identity and component-definition identity answer different
+  questions** `transformed`
+  - The operator's “unique value” shape becomes two explicitly non-cryptographic
+    equality records. The existing `semanticHash` remains a key for normalized
+    compiled behavior. Separate domain-labeled definition hashes identify the
+    active, linked, and ambient definitions named by the participation manifest
+    without entering the semantic-hash preimage. This preserves the settled
+    meaning of semantic equality while making a same-id/version definition edit
+    attributable. WO-101's independent FNV path supplies a distinct oracle; it
+    is evidence, not a permanent veto on future hash design.
+- **A universal core verifier, per-pulse membership checks, and signatures wait
+  for a real trust boundary** `preserved`
+  - Supports do not execute or submit identities today, and a reused schedule id
+    cannot reveal which equip issued it without stamping the event. Per-effect
+    or per-pulse submission and Merkle membership therefore wait for a concrete
+    submitter. Signing waits for a non-author graph, external principal, or
+    distribution boundary with an actual key owner and rotation problem. Until
+    then, adding keys would verify one principal's value with the same
+    principal's machinery and export cost without increasing assurance.
+- **Pinned artifact identity is personal-profile doctrine over an optional
+  platform mechanism** `adopted`
+  - ADR-0006 rules out making the check an unavoidable law of every DotLn loop.
+    The author's profile may fail closed on drift; another implementation may
+    omit the receipt and expose that absence honestly. WO-029 is filed with a
+    recommendation to run immediately before WO-009, after WO-023 supplies its
+    second fixture; filing does not prioritize it. The first out-of-process
+    worker is the natural whole-program-pin consumer. Its expected minor
+    classification and exact version remain activation-time decisions.
+
 ## WO-018 ideation breakout — additional opinions and adjudication (2026-09-04)
 
 Source: the operator's `ideation:` message during WO-018, captured verbatim in
