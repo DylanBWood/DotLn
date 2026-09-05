@@ -163,6 +163,45 @@ not invent the outline while rendering. Work orders can be divided by edition,
 part, or chapter, with a final assembly check over navigation, terminology,
 cross-references, and shared claims.
 
+## Freshness and ownership
+
+Current documentation is part of the delivered behavior. A reader returning
+during downtime should be able to tell what works in this source revision,
+what is staged for review, and what remains a proposal without reconstructing
+several conversations. A source change is not finished merely because its
+code passes while its explanation still describes the previous behavior.
+
+The implementation executor owns the same-pass update of affected product
+facts, examples, naming, capability claims, and entry points. It follows the
+change's references to the relevant README, runbook, planning view, and
+publication source links; it does not reread or rewrite the entire corpus on
+every order. Its existing outcome or breakout receipt names those surfaces,
+their evidence, and any remaining stale derivative. A source hash detects
+changed bytes; refreshing that hash alone does not establish factual agreement.
+
+Independent verification checks that documentation against the implemented
+behavior and the work order, including status labels, executable examples,
+links, and the reading task the surface serves. Final review performs the
+closing cross-document and publication consistency check, assembles the
+reviewed release explanation, and confirms the appropriate generated refreshes.
+It is the last check, not the first owner of missing implementation facts.
+Substantive corrections still return through repair and independent verification.
+
+A dedicated publication order is useful for book assembly, a new audience
+edition, broad editorial repair, or a demonstrated systemic freshness gap.
+It does not become a mandatory extra lifecycle phase or a queue in which
+incorrect current facts wait for a later writer. Fact maintenance belongs to
+the change that makes the fact different; editorial depth can be separately
+scheduled. Mechanical generation and stale checks should progressively absorb
+repeated maintenance wherever the source is deterministic.
+
+The current bootstrap checks heading coverage and selected edition source
+locks, not every factual claim in the repository. The work-order generator
+checks its recorded inputs, not the truth of human planning judgment. These
+limits remain visible. A future affected-claim check needs a bounded consumer
+and evidence that the existing checks plus human review miss a material
+dependency; no universal documentation engine is implied by this ownership rule.
+
 ## Authority and honesty rules
 
 1. **Authoritative means traceable, not confident-sounding.** Every material

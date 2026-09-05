@@ -11,6 +11,11 @@ import {
   seiriStatechartJsonView,
   type EditableView,
 } from "@dotln/compiler";
+import {
+  createBeaconWriter,
+  renderConstellation,
+  sweepBeacons,
+} from "./beacon-fs.js";
 import { renderAuditProjections } from "./audit.js";
 import { runScenario, type FixtureTree } from "./scenario.js";
 
@@ -26,7 +31,31 @@ const packageManifest = JSON.parse(await readFile(packagePath, "utf8")) as {
 if (typeof packageManifest.version !== "string")
   throw new Error(`skeleton package version is missing: ${packagePath}`);
 const fixture = JSON.parse(await readFile(fixturePath, "utf8")) as FixtureTree;
-const result = runScenario(fixture);
+const beaconFlags = process.argv.slice(2).filter((arg) => arg === "--beacons");
+const beaconIndex = process.argv.indexOf("--beacons");
+const beaconDirectory =
+  beaconIndex === -1 ? undefined : process.argv[beaconIndex + 1];
+if (
+  beaconFlags.length > 1 ||
+  (beaconIndex !== -1 && (!beaconDirectory || beaconDirectory.startsWith("--")))
+)
+  throw new Error("usage: --beacons <directory> (exactly once)");
+const writer =
+  beaconDirectory === undefined
+    ? undefined
+    : createBeaconWriter(
+        beaconDirectory,
+        fileURLToPath(new URL("../../../../", import.meta.url)),
+      );
+const result = runScenario(
+  fixture,
+  writer === undefined
+    ? {}
+    : {
+        onEvents: writer.project,
+        onExecutorClaim: writer.claim,
+      },
+);
 console.log(
   `@dotln/skeleton v${packageManifest.version} — Repo Gardener + Seiri`,
 );
@@ -64,6 +93,8 @@ if (process.argv.includes("--compiled-diff")) {
     "\n" + renderCompiledDiff(undefined, compilations[0]!.compilation.program),
   );
 }
+if (writer !== undefined)
+  console.log("\n" + renderConstellation(sweepBeacons(writer.directory)));
 console.log(
   `\nverified=${result.verified} candidates=${result.candidates.length}`,
 );

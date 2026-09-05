@@ -1,0 +1,106 @@
+{
+  "scope": "synthetic temporary directory on checkout volume; inside Codex sandbox",
+  "versions": {
+    "macOS": "15.6",
+    "python": "3.11.7",
+    "node": "v22.2.0",
+    "npm": "10.8.0",
+    "codex": "codex-cli 0.153.2"
+  },
+  "observations": {
+    "filesystem": {
+      "command_exit": 1
+    },
+    "rename_and_utimes": {
+      "size_before": 23,
+      "size_after": 23,
+      "mtime_ns_requested": 1234567000,
+      "mtime_ns_before": 1234567000,
+      "mtime_ns_after": 1234567000
+    },
+    "sparse": {
+      "size": 65536,
+      "blocks": 0
+    },
+    "read_denied": {
+      "read": {
+        "error": "EACCES"
+      },
+      "stat_size": 23
+    },
+    "search_only": {
+      "listing": {
+        "error": "EACCES"
+      },
+      "known_stat": {
+        "result": 1
+      }
+    },
+    "names": {
+      "bytes_255": {
+        "result": 1
+      },
+      "bytes_256": {
+        "error": "ENAMETOOLONG"
+      }
+    },
+    "case_insensitive": true,
+    "symlink_1023": {
+      "result": {
+        "readlink_bytes": 1023,
+        "lstat_size": 1023
+      }
+    },
+    "symlink_1024": {
+      "error": "ENAMETOOLONG"
+    },
+    "xattr": {
+      "result": {
+        "read_bytes": 65536,
+        "ls_exposes_name_and_size": true
+      }
+    },
+    "node_utimes": [
+      {
+        "ms": 0,
+        "directNs": "0",
+        "centeredNs": "0"
+      },
+      {
+        "ms": 1,
+        "directNs": "1000000",
+        "centeredNs": "1000000"
+      },
+      {
+        "ms": 1234,
+        "directNs": "1234000000",
+        "centeredNs": "1234000000"
+      },
+      {
+        "ms": 1200000,
+        "directNs": "1200000000000",
+        "centeredNs": "1200000000000"
+      },
+      {
+        "ms": 1200001,
+        "directNs": "1200000999000",
+        "centeredNs": "1200001000000"
+      },
+      {
+        "ms": 1200002,
+        "directNs": "1200001999000",
+        "centeredNs": "1200002000000"
+      },
+      {
+        "ms": 1200003,
+        "directNs": "1200002999000",
+        "centeredNs": "1200003000000"
+      },
+      {
+        "ms": 1200005,
+        "directNs": "1200005000000",
+        "centeredNs": "1200005000000"
+      }
+    ]
+  }
+}

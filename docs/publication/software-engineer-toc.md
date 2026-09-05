@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:0d215055efc9547924ce71658fe0e1dbb256f6619618a320a3cbd21066e56088`
+`sha256:26b4d45b8209158b3b81a08a30167c6cce0a4adaf3a954b8d6ec9e2f327c183a`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -38,7 +38,8 @@ implementation-deep, lossy projection of the same
      [Lightweight IR verifier](../product/10-ir-compatibility.md#lightweight-ir-verifier),
      [Separate version axes](../product/10-ir-compatibility.md#separate-version-axes)
 5. **Transformation lineage and compatibility planning**
-   - source preservation, native/adapted/lossy paths, availability matrices
+   - source preservation, native/adapted/lossy paths, availability matrices,
+     and optional computed or cached compatibility views
    - sources:
      [Transformation graph](../product/10-ir-compatibility.md#transformation-graph),
      [Release-scoped mechanic availability](../product/10-ir-compatibility.md#release-scoped-mechanic-availability)
@@ -82,13 +83,15 @@ implementation-deep, lossy projection of the same
 ## Module 5 — Project one state without forking semantics
 
 11. **Round-trip views, semantic hashes, and lossy inspectors**
-    - editable equivalence versus narrative projection
+    - the Actor UI direction and proposed UIFA name, editable equivalence, and narrative projection
     - sources:
       [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract),
       [Agent projection](../product/04-interfaces.md#agent-projection-the-sparse-twin)
 12. **Replay, glyphs, and physical channels**
-    - deterministic replay surfaces, visual encoding, and analog-complete views
+    - deterministic replay surfaces, exact Beacon codewords, atomic metadata
+      publication, claim provenance, visual encoding, and analog-complete views
     - sources:
+      [Memory and observation](../product/02-domain-model.md#memory-and-observation),
       [Glyph system](../product/04-interfaces.md#glyph-system-visual-prototype-zero),
       [Replay](../product/04-interfaces.md#replay),
       [Physical channel](../product/04-interfaces.md#physical-channel)
@@ -112,15 +115,18 @@ implementation-deep, lossy projection of the same
 
 15. **Evidence gates and workflow control**
     - dispatch, immutable verification, checkpoints, review, and release
-      boundaries
+      boundaries; executor-owned factual documentation and independent checks;
+      planned per-order workflows, concurrent progress, and release attribution
     - sources:
       [Operator resume phrases](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched),
+      [Documentation freshness and ownership](../product/07-execution-guide.md#execution-guide--for-any-model-session-working-in-this-repo),
       [Discipline](../product/07-execution-guide.md#discipline)
 16. **Traceable publication projections**
     - source selection, audience invariants, status vocabulary, and stale
-      detection
+      detection, including the limits of hash-based freshness
     - sources:
       [Source model](../product/08-publication-compiler.md#source-model),
+      [Freshness and ownership](../product/08-publication-compiler.md#publication-compiler--one-source-many-authoritative-editions),
       [Authority and honesty rules](../product/08-publication-compiler.md#authority-and-honesty-rules),
       [Bootstrap path](../product/08-publication-compiler.md#bootstrap-path)
 17. **Implemented baseline versus target architecture**

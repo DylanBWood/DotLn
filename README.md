@@ -79,7 +79,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source is DotLn `v0.5.2`. A generated [work-order index](docs/work-orders/README.md) now presents open, active, closed, and historical orders from shared control and local release evidence. Its checked tag snapshot keeps release evidence reproducible, while the human planning map retains recommendations and preflight. The deterministic walking skeleton still runs the compiled Repo Gardener + Seiri scenario, and a second founding identity now compiles as instance content: the Entropy Reducer carries Shine linked to Standardize plus seven bounded supports, tracked/control-plane-read-only authority with bounded scratch and intake-capture writes, one-shot cadence, typed manual Program, output/refutation validators, and one generated residue. The pure compiler now lowers direct terminal prefix globs only in claim-free authority compositions; participating wildcard claim targets and direct wildcards mixed with participating authority claims still refuse, while unequipped catalog definitions remain inert. WO-023 records one operator-mediated Claude Fable 5.1 `max` review and a fresh blinded refutation as evidence, not as runtime transport: `Program.All` remains deferred and the executable scenario's executor and verifier remain deterministic fakes. The semantic hash remains a non-cryptographic equality key. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
+This source is DotLn `v0.6.0`. Optional Beacon output now encodes the latest consequential episode state in exact file size and event-derived mtime, with the matching L0 receipt inside. A separate fake-executor claim exposes its self-reported provenance; the constellation reads metadata alone. The default scenario output changes only its package-version banner. The generated [work-order index](docs/work-orders/README.md) leads with the operator's proposed sequence and control-derived progress, with complete evidence below; current Protíno content lives at its corrected path. The walking skeleton still runs the compiled Repo Gardener + Seiri scenario. Its executor and verifier remain deterministic fakes. The Entropy Reducer's compiler and operator-mediated review evidence remain available; model transport, `Program.All`, and Beacon control-plane dogfood are deferred. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
@@ -115,6 +115,19 @@ verified=true candidates=1
 Run `npm run skeleton -- --compiled-diff` to add the three-view semantic-hash
 receipt and the exact Seiri item tooltip, including every support's declared
 mechanism, prompt-token, runtime, and episode cost.
+
+Add `npm run skeleton -- --beacons .beacons` to write the demo's two Beacon
+files into the explicitly selected, gitignored directory. The constellation
+shows an earlier self-reported `verification/passed` claim beside the host's
+latest evidenced `external-effect/observed` state (schedule cancellation),
+sorted by exact byte size. Dates are 1970-relative because the demo uses virtual
+time. Omitting the flag creates no beacon files. The path must be gitignored
+when inside this repository and cannot be under `docs/intake`.
+
+Size intentionally reveals the codebook fields; denying file-content reads
+still leaves metadata visible. Provenance is a channel label, not writer
+authentication or authority. See the [codebook and usage](packages/skeleton/README.md#beacon-metadata-projection)
+and the [fresh host probe](docs/discovery/beacon-probe-2026-09-04.md).
 
 The test suite feeds that log through the same pure reactor used by the live
 host and compares complete decisions and semantic projections, including a
@@ -245,7 +258,7 @@ words participated. Residents may ignore, misread, adopt, or relay what you
 said, and the scoreboard is a paired counterfactual branch rather than a
 before-and-after. Candidate first world: a basketball squad. See
 [the roadmap](docs/product/06-roadmap.md) and
-[προτείνω](docs/product/11-proteino.md).
+[προτείνω](docs/product/11-protino.md).
 
 ## Things you would not expect to find in here
 

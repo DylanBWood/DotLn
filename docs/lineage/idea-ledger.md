@@ -23,6 +23,272 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-020 name sound associations — 2026-09-04
+
+Source: operator naming follow-up in local-only
+`docs/intake/notes/WO-020-name-sound-associations-2026-09-04.md`, SHA-256
+`e475a96fdf0bb88859d41f50d88bfd82194cdd68737a5df88330711af1386e7e`. Clean Room found no stop condition;
+Shape-First Synthesis retains intended sound associations rather than requiring
+literal linguistic identity across the referenced names.
+
+- **Give UIFA a memorable rhyme and retain DotLn's software-name echo** `preserved`
+  - Products 00/04 describe UIFA's proposed “wee-fuh” pronunciation by its rhyme
+    with FIFA. Product 00 also records the operator's .NET/Kotlin sound
+    association for DotLn. The earlier name origin and Actor UI concept remain
+    intact. This is naming context, with no implementation or schema effect.
+
+## WO-020 pronounceable interface name — 2026-09-04
+
+Source: operator naming proposal in local-only
+`docs/intake/notes/WO-020-uifa-name-2026-09-04.md`, SHA-256
+`40dfb74a51a13d27c7d173ca239576a5df7db7ccdf06ce68337b45599f5b9534`. Clean Room found no stop condition;
+Shape-First Synthesis applies with no direct-filing exception.
+
+- **Propose UIFA, pronounced “wee-fuh,” for User Interfaces for Actors** `preserved`
+  - The follow-up asks for a name people can say. Products 00/04 and audience
+    routes preserve UIFA as the proposed spoken name for the Actor UI direction.
+    The earlier AUI abbreviation remains historical naming context. This is a
+    naming proposal, not a separate application, Actor schema, or implemented
+    interface. The existing product and interface contracts retain their scope.
+
+## WO-020 Actor UI direction — 2026-09-04
+
+Source: operator terminology ideation in local-only
+`docs/intake/notes/WO-020-actor-ui-2026-09-04.md`, SHA-256
+`cf730baee6a0fa818c994285d7dc4956515bc20766a10db9d9452c075be5805d`. Clean Room found no stop condition;
+Shape-First Synthesis applies with no direct-filing exception.
+
+- **Name the future interface Actor UI (AUI)** `adopted`
+  - Products 00/04 use Actor UI for the target interface direction, grounded in
+    the existing Actor definition that includes people, model sessions, scripts,
+    browser workers, and test runners. Roles, work, state, and evidence can be
+    projected through the existing interface contracts, with interactions bound
+    to capability and authority. Agent-specific views remain useful within the
+    wider actor model. This is a terminology/product-direction clarification;
+    the complete AUI is planned and no schema or screen is implemented here.
+
+## WO-020 constraint-aware track admission — 2026-09-04
+
+Source: operator constraint analogy in local-only
+`docs/intake/notes/WO-020-constraint-track-admission-2026-09-04.md`, SHA-256
+`a3cf1e580b54ba734cc145f7065345198c7c719422c974382d92bc5a94709222`.
+Clean Room and Shape-First Synthesis carry the relationship described by the
+operator; no quotation, detailed claim about the referenced book, or external
+control algorithm is imported.
+
+- **Govern track admission and activity by the limiting step** `preserved`
+  - Open tracks, admitted orders, active steps, and completed throughput answer
+    different questions. Products 03/06 and the Fable handoff preserve an
+    observation/admission policy that can limit or safely pause upstream work
+    when it would only accumulate before a constraint. Scope limits and reserves,
+    retain pause reasons/state/resumption conditions, and account for unknown
+    observations, moved constraints, fairness, and starvation. A bounded trial
+    should throttle implementation when verification is constrained, then resume
+    when capacity returns. The operator's utilization/activation distinction is
+    a product objective; sensors, algorithm, thresholds, and implementation order
+    remain planning choices. No automatic track control is implemented here.
+
+## WO-020 tenant-scoped planning tracks — 2026-09-04
+
+Source: operator follow-up in local-only
+`docs/intake/notes/WO-020-multi-tenant-tracks-2026-09-04.md`, SHA-256
+`eb87d89c71fb6e7141965e7405835756cf2e65415f254f15a3059470c3548eeb`.
+Clean Room found no stop condition; Shape-First Synthesis carries coordinated
+planning across scoped tracks, with no direct-filing exception.
+
+- **Carry dependency and ordering plans across tenant-scoped tracks** `preserved`
+  - Extend the concurrent-workflow candidate so each track carries required
+    prerequisites and recommended order, and scheduling accounts for cross-track
+    dependencies, shared conflicts, current capacity, and changing readiness.
+    Products 06/12 and the Fable handoff preserve the distinction between
+    required dependencies and recommendations. Tenant ownership, track grouping,
+    visibility, authority, shared reserves, and schema representation remain
+    explicit planning choices. Fixtures should expose cycles, stalled tracks,
+    changed bases, and cross-track attribution. No multi-tenant runtime or
+    automatic timing guarantee is claimed by the current implementation.
+
+## WO-020 concurrent workflows, compatibility, and contribution tracks — 2026-09-04
+
+Source: five operator follow-ups, preserved exactly in local-only
+`docs/intake/notes/WO-020-concurrent-workflows-compatibility-2026-09-04.md`,
+SHA-256 `b6e011c3635b1c91ccbfc8b7b620bcdef0b1551e4ba0d2ec76bb75b6eda2c788`.
+Clean Room and Shape-First Synthesis retain the workflow, view, and attribution
+relationships. A generic tracker analogy contributes no vendor terminology or
+implementation details to the public model. These are ordinary ideation
+messages, not direct-file public drafts.
+
+- **Generalize concurrent control to zero to many orders with differing steps** `preserved`
+  - Refine the earlier paired-ladder trial: two lanes are an initial capacity
+    choice, and the example role sequence is not a global phase barrier.
+    Orders have independent, declared workflows and can occupy different steps.
+    Product 06 and the planning handoff ask Fable to define the enabling control
+    change and bounded implementation orders, including rules that derive lane
+    assignments from dependencies, conflicts, actor availability, and capacity.
+    The current helper still has a single-current-order fold; this is planned
+    behavior, not a concurrency claim about WO-020.
+- **Choose compatibility per affected surface; derived views are an available technique** `adopted`
+  - The operator delegates the tradeoff to planner/implementer judgment within
+    scope. Product 10 clarifies that direct support, migration, adaptation, or
+    an explicit unsupported boundary can each be appropriate. Existing
+    acceptance and immutable evidence contracts retain their force. An optional
+    computed or cached view maps preserved source entities to a target schema
+    through named transformations, with fidelity, cache identity/invalidation,
+    and unsupported reverse writes visible. No storage engine is selected.
+- **Independent contributions share a progress view and attributable release history** `preserved`
+  - Products 06/12 and the Fable handoff add public contribution tracks as a
+    consumer of the concurrent model. The shared view covers known order state,
+    blockers, evidence, and freshness; release views connect included reviewed
+    changes to their orders. Completion, integration, and publication retain
+    distinct evidence. Contribution/group/sub-task mapping and generalized
+    release membership require planning; the existing generated index and
+    immutable release records are the starting point. The reached application
+    description now correctly identifies WO-026's index as delivered.
+
+## WO-020 budget windows and paired ladders — 2026-09-04
+
+Source: exploratory operator ideation preserved in local-only
+`docs/intake/notes/WO-020-budget-window-parallel-ladders-2026-09-04.md`,
+SHA-256 `7ab2e947106494d0738a35b2c90c86a9f7b3efb5ac5d00d91d2744026bd85978`.
+Clean Room and Shape-First Synthesis carry the scheduling/attention objective;
+provider limits and extra resets are separately labeled observations, not
+architectural constants or employer-derived design.
+
+- **Concentrate useful work early to create an uninterrupted period away** `adopted`
+  - Clarify the operator's implementation preference: consuming an allowance
+    early can be useful when it completes valuable work and releases attention.
+    This refines the resource-pressure candidate's objective; it does not
+    select a universal conservation policy or reward waste. Actual resets and
+    confirmed extra capacity are event inputs, not expected free replenishment.
+- **Compare one work-order ladder with two bounded phase batches** `preserved`
+  - A concrete planning artifact splits the current seven-order horizon into
+    perception and execution ladders, preserving dependency/preference distinctions.
+    Candidate paired waves are WO-021/WO-029 and, after WO-009, WO-022/WO-010;
+    WO-011 follows its required verification transport/evidence. The operator's
+    proposed roles are Codex implementation, fresh Opus 5 verification, and fresh
+    Fable final review per order. No models are launched or globally reassigned.
+    Current one-order control semantics, overlapping integration surfaces,
+    serialized release targets, shared provider capacity, and review reserves
+    remain visible. Product 03/06, the human map, and the playbook carry the
+    clarification and a prerequisite synthetic closeout experiment. Feasibility,
+    productivity, extra usable capacity, and attention benefit remain unproven.
+
+## WO-020 resource environment — 2026-09-04
+
+Source: operator environmental-effect ideation, preserved in local-only
+`docs/intake/notes/WO-020-resource-environment-2026-09-04.md` (SHA-256
+`0dbd04032d7a7d23ead6421c3bf04ecac5f9c7b77a15912021d483793772f63d`).
+Clean Room and Shape-First Synthesis carry the relationship between surrounding
+conditions and an activity's initiation/persistence; no source-domain physics
+becomes an architectural requirement.
+
+- **Budget pressure can make routine activity harder to initiate and sustain** `preserved`
+  - Product 03 preserves a candidate environmental modifier over scoped
+    consumption, reservations, and replenishment. It separates base resource
+    cost, an effective admission modifier or threshold, and remaining capacity.
+    Start and continued/repeated activation have explicit decision boundaries;
+    essential work uses the reserve selected by the profile. Product 02 links
+    the idea to ResourceModel and mechanism-activation AttentionPolicy without
+    claiming dynamic metering or ambient execution. Product 06 separates a
+    scheduling response from an actual efficiency improvement. Curves, units,
+    thresholds, observation policy, reset/hysteresis, starvation handling, and
+    a consuming work order remain open. No schema, primitive, authority change,
+    cost measurement, or implementation result is inferred from the analogy.
+
+## WO-020 automation direction — 2026-09-04
+
+Source: a new operator ideation message plus two brief wording corrections,
+preserved separately in local-only
+`docs/intake/notes/WO-020-automation-direction-2026-09-04.md` (SHA-256
+`6b605ca1166e5837bfa194150ba2f33f97dd6bc06b6a51e4968683fe71ae8642`).
+Clean Room and Shape-First Synthesis carry only the operator's general automation
+preference into this personal implementation. No employer implementation,
+configuration, identifier, or internal-service detail is a source. The wording
+corrections add no separate product decision or direct-filing exception.
+
+- **Progressively remove recurring procedure through executable mechanisms** `adopted`
+  - Repeated manual sequences, derived views, and predictable handoffs are
+    opportunities for bounded automation. Use existing commands first, then
+    move the smallest useful increment into deterministic code where inputs
+    determine the answer. Preserve a clear judgment step and test the effects
+    and failures. Product 03's agentic core and 07's execution discipline now
+    state this direction. It reinforces the existing composition and authority
+    model, with no new primitive, mandatory phase, or blanket scope grant.
+
+## WO-020 Beacon synthesis — 2026-09-04
+
+Source: the distinct operator analogy in local-only
+`2026-09-02-beacon-ideation-operator.md`, synthesized under Clean Room and
+Shape-First Synthesis. The already filed WO-020/WO-021 public drafts retain
+their direct-filing provenance; their sibling planning captures are preservation
+records, not material mined for this synthesis. See WO-020's stage-1 receipt.
+
+- **Exact metadata as a cheap observation channel** `adopted`
+  - Beacon size discloses a published finite codeword; mtime discloses its
+    derivation time. The host fold remains evidence-derived and rebuildable.
+    Separate claims expose what an emitter says without turning it into truth.
+    Product 02/03/04/09 pin the domain, sparse view, and M0 disclosure boundary.
+- **Composition inferred from an emitted signal** `transformed`
+  - Carry exact decoding, cheap observation, provenance, and visible age from
+    the analogy; discard source-domain objects and physical mechanisms. v1
+    uses one file per episode/emitter and a bounded codebook, not an ontology
+    of the analogy or a claim that class order is event chronology.
+- **Composite observation and alternative physical channels** `preserved`
+  - WO-021 is the nominated next slice for control-plane dogfood, authorized
+    sweep events, staleness, and group codes. Sparse logical size, symlink
+    targets, names, and xattrs remain measured alternatives; only dense file
+    size is selected here. Usefulness still requires the separate proposed
+    operator comparison, not just the technical acceptance tests.
+
+## WO-020 ideation — current docs, Protíno paths, beacon value, and a readable sequence (2026-09-04)
+
+Source: the operator's four-part `ideation:` message during WO-020 orientation,
+captured verbatim as
+`docs/intake/notes/WO-020-doc-freshness-protino-beacon-payoff-navigation-2026-09-04.md`
+(SHA-256 `114e9d9827a9511078239d911d5340f97e421360a7b1a723eee2203221f71cb3`).
+The work-order breakout receipt records capture reconciliation, backup, and
+evidence. Clean Room uses Shape-First Synthesis: the new public prose is
+rewritten from operator intent; this batch invokes no Direct Draft Fidelity
+exception. The screen found no employer material, credential, private
+identifier, or internal-service detail.
+
+- **The change that makes a fact different owns its documentation update** `adopted`
+  - Clarify the existing same-pass duty: the implementation executor updates
+    affected product facts and reader entry points, the independent verifier
+    checks them against behavior, and final review closes the consistency
+    pass. A separate publication order can assemble an edition or repair broad
+    editorial debt; ordinary factual updates do not wait for it. Current
+    heading/source-lock checks are useful but do not prove semantic freshness
+    across the whole corpus. No new lifecycle phase or universal claim engine
+    is selected.
+- **Protíno's current documentation uses the `protino` spelling** `adopted`
+  - Supersede only the working-path retention choice in the earlier entry
+    “The application name uses the Modern Greek verb `προτείνω (protíno)`.”
+    The display name remains `protíno`; ASCII `protino` is accepted. Current
+    content moves to `11-protino.md` with mutable inbound links updated. The
+    previous path keeps section pointers so frozen citations still resolve;
+    it no longer holds an independent current document. No package, domain,
+    account, or published historical artifact is renamed.
+- **Technical feasibility, operator usefulness, and interest need different evidence** `preserved`
+  - WO-020 can prove the local Beacon mechanism; WO-021 can expose it in the
+    real control-plane workflow. Neither establishes the whole DotLn or
+    Protíno thesis. Preserve a bounded post-WO-021 comparison with existing
+    status views over normal, refused, stale, absent, and conflicting-claim
+    cases, with an operator response and a retain/simplify/defer recommendation.
+    This is a proposed learning checkpoint, not an added release gate or a
+    claimed trial. The wider work loop and playable application need their
+    own evidence.
+- **The work-order README should replace the operator's editor checklist** `transformed`
+  - Render the operator's ordered seven-item horizon before detailed evidence:
+    WO-020, WO-021, WO-029, WO-009, WO-022, WO-010, WO-011. Its single editable
+    source is a marked block in the existing human map; the generator supplies
+    control-derived progress, short labels, reference links, and one-column
+    per-order details. Check marks mean passing final review, with merge and
+    release separately evidenced. Preserve explicit recommendation versus
+    conservative dependency-reference observation; do not infer ordering from
+    IDs or promote every prose reference to a hard dependency. This supersedes
+    the wide-table presentation, not WO-026's evidence or stable-address
+    contracts. Executable changes and tests remain independent-review subject.
+
 ## WO-026 implementation — evidence index and stable addresses (2026-09-04)
 
 Source: WO-026, the map at activation base `68b1ab2`, the canonical control log,

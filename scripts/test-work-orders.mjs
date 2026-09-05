@@ -21,6 +21,7 @@ import {
 import {
   checkIndex,
   parseHeader,
+  parseSequence,
   readIndex,
   renderIndex,
 } from "./work-orders.mjs";
@@ -37,6 +38,9 @@ const write = (repo, path, content) => {
   mkdirSync(dirname(join(repo, path)), { recursive: true });
   writeFileSync(join(repo, path), content);
 };
+const planningPath = "docs/planning/work-order-map.md";
+const sequenceSource = (items = []) =>
+  `# Plan\n\n<!-- dotln-work-order-sequence:start -->\n${items.map(([id, label]) => `- ${id} — ${label}`).join("\n")}\n<!-- dotln-work-order-sequence:end -->\n`;
 const makeRepo = (name) => {
   const repo = join(root, name);
   mkdirSync(repo);
@@ -54,6 +58,7 @@ const makeRepo = (name) => {
     recursive: true,
   });
   write(repo, "docs/control/resume.jsonl", "");
+  write(repo, planningPath, sequenceSource());
   mkdirSync(join(repo, "docs/work-orders"));
   return repo;
 };
@@ -167,6 +172,15 @@ const specs = [
 for (const args of specs) write(repo, authorityPath(args[0]), header(...args));
 write(
   repo,
+  planningPath,
+  sequenceSource([
+    ["WO-035", "Later dependency"],
+    ["WO-030", "Completed fixture"],
+    ["WO-034", "Current fixture"],
+  ]),
+);
+write(
+  repo,
   authorityPath("WO-038"),
   header("WO-038", "unassigned").replace("**Depends on:** nothing\n", ""),
 );
@@ -222,25 +236,56 @@ check(
 );
 
 check(
-  "complete columns, exactly one row per file, sorted sections, safe Markdown and deterministic bytes",
+  "plain-text checklist first, complete details once per file, sorted sections, safe Markdown and deterministic bytes",
   () => {
     cli(repo, ["index"]);
     const first = readFileSync(indexFile, "utf8");
     cli(repo, ["index"]);
     assert.equal(first, readFileSync(indexFile, "utf8"));
-    const lines = first.split("\n").filter((line) => line.startsWith("| WO-"));
-    assert.equal(lines.length, specs.length);
-    assert.equal(
-      new Set(lines.map((line) => line.split(" | ")[0])).size,
-      specs.length,
+    assert.doesNotMatch(first, /^\|/m, "the reader view has no wide tables");
+    const front = first.split("## Other open work")[0];
+    assert.match(front, /\*\*Now:\*\* \[WO-034\].*— active/);
+    assert.deepEqual(
+      [...front.matchAll(/^- \[[ x]\] \[(WO-\d{3})\]/gm)].map(
+        (match) => match[1],
+      ),
+      ["WO-035", "WO-030", "WO-034"],
+      "preserve the operator's order rather than sorting or scheduling it",
     );
-    for (const line of lines) assert.equal(line.split(" | ").length, 11);
+    assert.match(front, /^- \[x\] \[WO-030\].*final-reviewed/m);
+    assert.match(front, /^- \[ \] \[WO-034\].*active/m);
+    assert.match(front, /^- \[ \] \[WO-035\].*queued/m);
+    assert.doesNotMatch(front, /dotln-work-order-tags|Model:|Effort:/);
+    for (const [id] of specs)
+      assert.ok(
+        first.includes(`[${id}]: ${id}-fixture.md\n`),
+        "reference links retain authority destinations",
+      );
+    const lines = first
+      .split("\n")
+      .filter((line) => /^### WO-\d{3}$/.test(line));
+    assert.equal(lines.length, specs.length);
+    assert.equal(new Set(lines).size, specs.length);
     for (const section of first.split(/^## /m).slice(1)) {
-      const ids = [...section.matchAll(/^\| (WO-\d{3}) \|/gm)].map(
+      const ids = [...section.matchAll(/^### (WO-\d{3})$/gm)].map(
         (match) => match[1],
       );
       assert.deepEqual(ids, [...ids].sort());
     }
+    for (const detail of first.split(/^### WO-\d{3}$/m).slice(1))
+      for (const field of [
+        "State",
+        "Application target",
+        "Dependency reference check (conservative)",
+        "References",
+        "Verification",
+        "Final review",
+        "Release",
+        "Model",
+        "Effort",
+        "Authority",
+      ])
+        assert.ok(detail.includes(`- ${field}:`), field);
     assert.match(first, /model &#124; &lt;script&gt; &#91;link&#93;/);
     assert.match(
       first,
@@ -252,7 +297,7 @@ check(
 );
 
 check(
-  "check is read-only; deleting a committed row or editing a cell names the first differing line",
+  "check is read-only; deleting a detail or editing evidence names the first differing line",
   () => {
     const original = readFileSync(indexFile, "utf8");
     const log = readFileSync(join(repo, "docs/control/resume.jsonl"), "utf8");
@@ -260,15 +305,18 @@ check(
     cli(repo, ["index", "--check"]);
     assert.equal(runGit(repo, ["status", "--porcelain"]), "");
     const lines = original.split("\n");
-    const at = lines.findIndex((line) => line.startsWith("| WO-035 |"));
-    for (const changed of [
-      lines.filter((_, index) => index !== at).join("\n"),
-      original.replace("blocked on WO-034", "dependency-ready"),
+    const at = lines.findIndex((line) => line === "### WO-035");
+    const dependencyAt = lines.findIndex((line) =>
+      line.includes("blocked on WO-034"),
+    );
+    for (const [changed, changedAt] of [
+      [lines.filter((_, index) => index !== at).join("\n"), at],
+      [original.replace("blocked on WO-034", "dependency-ready"), dependencyAt],
     ]) {
       writeFileSync(indexFile, changed);
       assert.match(
         cli(repo, ["index", "--check"], false),
-        new RegExp(`stale at line ${at + 1}\\b`),
+        new RegExp(`stale at line ${changedAt + 1}\\b`),
       );
       assert.equal(readFileSync(indexFile, "utf8"), changed);
     }
@@ -280,6 +328,82 @@ check(
     assert.equal(runGit(repo, ["show-ref"]), refs);
     assert.equal(existsSync(`${indexFile}.tmp`), false);
     assert.throws(() => checkIndex("a\n", "a\nextra\n"), /line 2/);
+  },
+);
+
+check(
+  "sequence edits stale the generated view; malformed, missing, duplicate and unknown recommendations refuse without mutation",
+  () => {
+    const plan = readFileSync(join(repo, planningPath), "utf8");
+    const original = readFileSync(indexFile, "utf8");
+    const control = readFileSync(
+      join(repo, "docs/control/resume.jsonl"),
+      "utf8",
+    );
+    const refs = runGit(repo, ["show-ref"]);
+    write(
+      repo,
+      planningPath,
+      sequenceSource([
+        ["WO-034", "First now"],
+        ["WO-030", "Then completed"],
+      ]),
+    );
+    assert.match(cli(repo, ["index", "--check"], false), /stale at line/);
+    cli(repo, ["index"]);
+    const changed = readFileSync(indexFile, "utf8");
+    assert.ok(changed.indexOf("First now") < changed.indexOf("Then completed"));
+    assert.match(changed, /- \[x\] \[WO-030\]/);
+    for (const [bad, expected] of [
+      ["# Unmarked plan\n", /expected one marked proposed sequence/],
+      [
+        sequenceSource() + sequenceSource(),
+        /expected one marked proposed sequence/,
+      ],
+      [
+        sequenceSource().replace("sequence:start", "sequence:end"),
+        /expected one marked proposed sequence/,
+      ],
+      [
+        sequenceSource([
+          ["WO-030", "One"],
+          ["WO-030", "Again"],
+        ]),
+        /duplicate proposed order WO-030/,
+      ],
+      [
+        sequenceSource([["WO-999", "Unknown"]]),
+        /unknown proposed order WO-999/,
+      ],
+      [sequenceSource([["WO-030", ""]]), /expected '- WO-NNN — short label'/],
+      [
+        sequenceSource().replace(
+          "sequence:start -->\n",
+          "sequence:start -->\nnot an entry\n",
+        ),
+        /expected '- WO-NNN — short label'/,
+      ],
+    ]) {
+      write(repo, planningPath, bad);
+      assert.match(cli(repo, ["index"], false), expected);
+      assert.equal(readFileSync(indexFile, "utf8"), changed);
+    }
+    unlinkSync(join(repo, planningPath));
+    assert.match(cli(repo, ["index"], false), /contained regular file/);
+    const outside = join(root, "external-plan.md");
+    writeFileSync(outside, sequenceSource());
+    symlinkSync(outside, join(repo, planningPath));
+    assert.match(cli(repo, ["index"], false), /contained regular file/);
+    unlinkSync(join(repo, planningPath));
+    write(repo, planningPath, plan);
+    cli(repo, ["index"]);
+    assert.equal(readFileSync(indexFile, "utf8"), original);
+    assert.equal(
+      readFileSync(join(repo, "docs/control/resume.jsonl"), "utf8"),
+      control,
+    );
+    assert.equal(runGit(repo, ["show-ref"]), refs);
+    assert.deepEqual(parseSequence(sequenceSource()), []);
   },
 );
 
@@ -359,6 +483,10 @@ check(
     assert.match(cli(repo, ["index", "--check"], false), /stale at line/);
     assert.equal(rows().get("WO-034").phase, "needs-fix");
     assert.equal(rows().get("WO-034").finalReviewVerdict, "fail");
+    assert.match(
+      renderIndex(readIndex(repo)),
+      /^- \[ \] \[WO-034\].*needs-fix/m,
+    );
     cycle.push({ type: "RepairRequested", workOrderId: "WO-034" });
     cycle.push({ type: "RepairCompleted", workOrderId: "WO-034" });
     cycle.push({
@@ -388,6 +516,22 @@ check(
     const projected = foldWorkOrders(cycle);
     assert.deepEqual(projected.current, fold(cycle));
     assert.equal(projected.orders.get("WO-030").state.phase, "closed");
+    cycle.push({
+      type: "FinalReviewCompleted",
+      workOrderId: "WO-034",
+      finalReviewId: "FINAL-002",
+      reportPath: "docs/final-reviews/WO-034/FINAL-002.md",
+      verdict: "pass",
+    });
+    writeLog(repo, cycle);
+    assert.match(
+      renderIndex(readIndex(repo)),
+      /^- \[x\] \[WO-034\].*final-reviewed/m,
+    );
+    assert.match(
+      renderIndex(readIndex(repo)),
+      /\*\*Now:\*\* between work orders/,
+    );
     writeLog(repo, events);
   },
 );

@@ -10,6 +10,14 @@ or compatibility. A private implementation may omit portable artifacts,
 historical replay, migration, or a compatibility inspector and declare those
 capabilities absent; it cannot claim compatibility semantics it does not expose.
 
+The operator delegates compatibility choices to the planner and implementer
+within the affected work's scope. Evaluate each surface's users, retained data,
+semantic fidelity, maintenance cost, and evidence; select native support,
+adaptation, migration, or a declared unsupported boundary as appropriate.
+Backward compatibility is not a universal requirement to add an implementation.
+An existing acceptance contract or immutable evidence obligation still governs
+until changed through its established decision process.
+
 ## Lightweight IR verifier
 
 Provide one small verifier over the canonical JSON IR. Given an artifact, it
@@ -86,6 +94,16 @@ Two execution modes share the same transformation definitions:
 - **AOT migration:** materialize a new artifact in the target representation,
   linked to its source and complete transformation path. Migration never
   overwrites the source.
+
+A compatibility view may expose historical entities through a current schema
+without replacing their source. It can compute a declared mapping on demand or
+cache/materialize the derived representation, following the same transformation
+definitions and fidelity labels. Cache identity includes the source revision,
+source/target schema and mapping versions, and any environment or capability
+input that changes semantics; changed inputs require recomputation or an
+explicit stale result. Unknown or lossy fields remain visible. Read adaptation
+does not imply a safe reverse write. This preserves the operator's relational-
+view analogy as an optional technique, with no SQL engine or cache selected.
 
 The plan distinguishes faithful execution from approximation. Exact historical
 semantics, modern adaptation, and lossy migration are different outcomes and
@@ -224,7 +242,7 @@ it has typed composition semantics, lifecycle and compatibility behavior, and
 observable state. The author's assurance profile additionally requires evidence
 before promotion; another profile may expose an explicitly unverified or owner-
 accepted execution disposition. The operator has selected
-[`προτείνω`](11-proteino.md) as the prospective first-party product vertical for
+[`προτείνω`](11-protino.md) as the prospective first-party product vertical for
 this space: an inspectable simulated community in which prose and patterns can
 participate in resident behavior and counterfactual outcomes. That choice names
 an application destination, not its engine, renderer, resident architecture,
@@ -240,7 +258,7 @@ retain lineage from proposal through actual execution and outcome. Commander,
 option, and tactic remain
 application-level candidate vocabulary rather than new kernel kinds; their
 lowering, engine, clock, model, and authority behavior stay open. See
-[`11-proteino.md`](11-proteino.md#candidate--commander-mediated-tactical-play).
+[`11-protino.md`](11-protino.md#candidate--commander-mediated-tactical-play).
 
 ## Invariants
 

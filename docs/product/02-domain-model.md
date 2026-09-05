@@ -286,6 +286,13 @@ oddsMultiplier }` factors. The v1 compiler preserves PolarAxis data in the
 phenotype but does not evaluate it because the Seiri program does not consume
 an axis.
 
+A proposed [resource-pressure environment](03-architecture.md#candidate--resource-pressure-as-an-environmental-modifier)
+would feed recorded budget consumption, reservations, and replenishment into
+activation policy. A base task cost, a pressure-dependent admission modifier,
+and remaining capacity are separate values. The current `ResourceModelV1`
+declares capacities and reservations; it does not implement that dynamic policy,
+resource metering, or ambient-effect execution.
+
 Definitions in `supportFacets` form the available catalog; a support is equipped
 only through a `LinkV1`. Link and link-group arrays are unordered scope data.
 Only `ExplicitPipelineV1.orderedSupportFacetIds` carries transform order, and it
@@ -319,6 +326,76 @@ consuming rung proves it.
 | **Watcher**             | A read-only perspective: `narrative = project(EventLog, Perspective)`. Multiple watchers (architecture, quality, security, operator-intent) produce different narratives from the same events; none becomes canonical truth.                                                                                                                                                                                                                                                                                          |
 | **Lineage**             | Connected history of identity versions, episodes, outcomes, adaptations. "You are the sum of a connected lineage of agent variations and actions."                                                                                                                                                                                                                                                                                                                                                                    |
 | **Verification radius** | Pure function of (anomaly, dependency graph, confidence profile) → recheck scope: local / neighborhood / subsystem / full.                                                                                                                                                                                                                                                                                                                                                                                            |
+| **Beacon**              | Rebuildable metadata projection or explicitly labeled emitter claim, addressed by a fixed non-state identifier. Size is a codeword; mtime is derivation/claim time; padded JSON holds the complete projection or claim record. Neither provenance label nor checksum authenticates the writer.                                                                                                                                                                                                                        |
+| **BeaconCodebook**      | Versioned finite fields, ranks, radices, framing, and exact decoder. Unknown versions never inherit a known version's meaning. v1 is specified below; it is independent of application, package, and event-schema versions.                                                                                                                                                                                                                                                                                           |
+| **BeaconObserved**      | Planned observation event containing an authorized sweep's decoded observations and observation time. WO-020 performs an edge-only sweep; event emission, authorization, and replayed staleness enter through WO-021.                                                                                                                                                                                                                                                                                                 |
+
+### Beacon codebook v1
+
+The following JSON is normative data, mirrored and equality-tested against the
+pure skeleton codebook. Rows are class rank, followed by outcome ranks; unused
+outcome slots are malformed. Refusal `3` means at least three. The two reserved
+future-version tags are recognizable framing codewords, not v1 states.
+
+```json
+{
+  "version": 1,
+  "base": 8192,
+  "stride": 64,
+  "checkMultiplier": 17,
+  "checkOffset": 11,
+  "versionRadix": 4,
+  "outcomeRadix": 3,
+  "refusalRadix": 4,
+  "provenances": ["host-projected", "self-reported"],
+  "classes": [
+    ["work-order-dispatch", ["emitted"]],
+    ["authority-decision", ["allowed", "denied"]],
+    ["recovery", ["redispatched"]],
+    ["result", ["returned", "terminated"]],
+    ["verification", ["unknown", "failed", "passed"]],
+    ["no-op", ["no-op"]],
+    ["external-effect", ["requested", "unknown", "observed"]]
+  ]
+}
+```
+
+With class rank `a`, outcome rank `o`, refusal count `r`, provenance rank `p`,
+and version `v`, `code = ((((a * 3 + o) * 4 + r) * 2 + p) * 4 + v)`;
+`size = 8192 + code * 64 + ((code * 17 + 11) % 64)`. All arithmetic is integer
+arithmetic. There are 104 v1 states; the largest code is 669 and its file is
+51,064 bytes, densely padded. Decode checks framing before meaning: unsafe,
+negative, fractional, below-base, or failed-check sizes are `malformed`;
+version zero is reserved and malformed. Framed versions 2 and 3 return only
+`unknown-codebook` and their version, without interpreting their higher digits.
+This permits a future codebook to extend its field space. For version 1,
+`code >= 672` and unassigned outcome slots are malformed. A future framed size
+is a codeword for the acceptance test's framing exception, never a v1 round trip.
+
+The declared class order groups dispatch, authority, recovery, result,
+verification, no-op, and effects (including terminal cleanup). Classes can
+recur; numerical order does not establish chronology. In the demo the latest
+host receipt is `schedule.cancel`, `external-effect / observed`, after the
+queued no-op. It sorts after the executor's earlier `verification / passed`
+claim. No synthetic terminal receipt is added to the audit trail.
+
+`BeaconProjectionRecord` contains `recordType: "beacon-projection"`,
+`codebookVersion: 1`, `provenance: "host-projected"`, `refusalCount`, and
+`receipt: L0ReceiptEntry`. The pure fold takes the existing audit/L0 projection
+in append order, keeps the last receipt for each `(workstreamId, episodeId)`,
+and counts its `authority-decision / denied` records, capped at three. Event
+clock regression does not reorder the fold. A scope without an episode or
+without a consequential receipt has no host beacon yet. The receipt is not
+rewritten, and audit projections are unchanged.
+
+`BeaconClaimRecord` instead contains `recordType: "beacon-claim"`,
+`codebookVersion: 1`, `provenance: "self-reported"`, `scope` (workstream and
+episode), `actor`, `claimedAt`, `actionClass`, `outcome`, and `refusalCount`.
+The claim is not an L0 receipt. One pure record encoder derives codeword size,
+UTF-8 JSON padded only with trailing newlines, and mtime from the receipt's
+`time` or claim's `claimedAt`. Oversized JSON or an unrepresentable timestamp
+refuses before filesystem mutation; changing the size to fit content would
+change the state and is forbidden.
 
 ## Formal grounding
 

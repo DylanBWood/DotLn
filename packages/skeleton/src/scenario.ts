@@ -1,3 +1,4 @@
+import type { BeaconClaimRecord } from "./beacon.js";
 import {
   appendEvent,
   decodeLog,
@@ -54,6 +55,8 @@ export interface ScenarioOptions {
   readonly crashAfterPersist?: boolean;
   readonly recoveryLogTransform?: (persistedLog: string) => string;
   readonly equippedLoadout?: Loadout;
+  readonly onEvents?: (events: readonly Event[]) => void;
+  readonly onExecutorClaim?: (claim: BeaconClaimRecord) => void;
 }
 
 export interface ScenarioResult {
@@ -79,12 +82,26 @@ export class FakeExecutor {
   readonly dispatches: string[] = [];
   effects = 0;
 
-  constructor(private readonly fixture: FixtureTree) {}
+  constructor(
+    private readonly fixture: FixtureTree,
+    private readonly emitClaim?: (claim: BeaconClaimRecord) => void,
+  ) {}
 
-  dispatch(command: Command): readonly Candidate[] {
+  dispatch(command: Command, claimedAt = 0): readonly Candidate[] {
     this.dispatches.push(command.commandId);
     const prior = this.#seen.get(command.commandId);
     if (prior) return prior;
+    this.emitClaim?.({
+      recordType: "beacon-claim",
+      codebookVersion: 1,
+      provenance: "self-reported",
+      actor: "fake-executor",
+      scope: { workstreamId: WORKSTREAM, episodeId: EPISODE },
+      claimedAt,
+      actionClass: "verification",
+      outcome: "passed",
+      refusalCount: 0,
+    });
     this.effects += 1;
     const candidates = this.fixture.files
       .filter(
@@ -154,6 +171,8 @@ class LiveReactorDriver {
   #state = initialState();
   #decisions: Decision<RuntimeState>[] = [];
 
+  constructor(private readonly onEvents?: (events: readonly Event[]) => void) {}
+
   feed(draft: EventDraft): ReactorStep {
     const appended = appendEvent(this.#log, draft);
     this.#log = appended.log;
@@ -168,6 +187,7 @@ class LiveReactorDriver {
       throw new Error(`reactor did not decide ${appended.event.type}`);
     this.#state = stepped.state;
     this.#decisions.push(decision);
+    this.onEvents?.(decodeLog(this.#log));
     return { event: appended.event, decision };
   }
 
@@ -181,6 +201,7 @@ class LiveReactorDriver {
     );
     this.#state = restored.state;
     this.#decisions = [...restored.decisions];
+    this.onEvents?.(decodeLog(this.#log));
   }
 
   get log(): string {
@@ -340,9 +361,9 @@ export function runScenario(
   fixture: FixtureTree,
   options: ScenarioOptions = {},
 ): LiveScenarioResult {
-  const driver = new LiveReactorDriver();
+  const driver = new LiveReactorDriver(options.onEvents);
   const scheduler = new FakeScheduler();
-  const executor = new FakeExecutor(fixture);
+  const executor = new FakeExecutor(fixture, options.onExecutorClaim);
   const verifier = new FakeVerifier(fixture);
 
   driver.feed(
@@ -395,7 +416,7 @@ export function runScenario(
     driver.restore(options.recoveryLogTransform?.(driver.log) ?? driver.log);
     recoveredCommands = pendingCommands(replayOutbox(decodeLog(driver.log)));
     for (const pending of recoveredCommands) {
-      executor.dispatch(pending);
+      executor.dispatch(pending, persisted.event.occurredAt);
       const redispatched = driver.feed(
         draft(
           "CommandRedispatched",
@@ -409,7 +430,7 @@ export function runScenario(
     }
   }
 
-  const candidates = executor.dispatch(command);
+  const candidates = executor.dispatch(command, persisted.event.occurredAt);
   const commandResult = driver.feed(
     draft(
       "CommandResult",

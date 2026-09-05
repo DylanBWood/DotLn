@@ -272,6 +272,7 @@ references; absent links stay unknown. Attribute the counterweight as
 
 | Level              | Content                                                             | Typical use                                     |
 | ------------------ | ------------------------------------------------------------------- | ----------------------------------------------- |
+| M0 beacon          | exact codebook fields, address, existence, derivation/claim mtime   | cheap episode sweep for operator or agent       |
 | L0 receipt         | outcome, scope, time, actor, evidence/record link                   | everyday confirmation                           |
 | L1 narrative       | ordered explanation of major decisions and effects                  | operator, manager, support                      |
 | L2 control view    | authority, approvals, policy evaluations, exceptions, evidence      | audit, security, compliance                     |
@@ -282,6 +283,17 @@ Higher fidelity is not automatically better. Each level has an audience,
 purpose, access rule, retention class, and known omissions. Every lossy view
 links to the records it summarizes and states whether deeper data exists,
 expired, was never collected, or is access-restricted.
+
+**M0 access and omissions:** directory listing plus metadata lookup is enough;
+search access to a known path can suffice without listing. M0 intentionally
+omits action details, actor identity, exact refusal counts above three, scope
+text, evidence links, authority reasons, and full receipt content. Its fixed
+address can lead to the file's L0 projection record under separate content-read
+permissions; a claim file leads only to a claim. Retention is disposable and
+rebuildable from retained canonical events for host projections; edge-only
+claims are not replayed. The provenance bit labels the emitter channel, not
+cryptographic authenticity. Metadata alone cannot establish authorization,
+verification independence, or liveness.
 
 ## Audit projections and visualizations
 
@@ -410,6 +422,14 @@ default. This assurance profile should instead apply:
   removed content;
 - access-to-audit itself being audited;
 - aggregate reporting with disclosure controls where needed.
+
+Beacon disclosure is intentional: byte size reveals every codebook field;
+existence and mtime reveal activity and recency even when content reads are
+denied. A fixed opaque address leaks correlation and may be guessable from a
+small identity space. Content permissions do not make this metadata secret.
+No status or version goes in the filename. Enforce the chosen directory/access
+boundary before exposing the path; no secrecy or authenticity is inferred from
+padding, the unkeyed check residue, or an opaque name.
 
 Deletion and immutability require design, not slogans. A durable audit record
 may retain that a governed deletion occurred while separately deleting or
