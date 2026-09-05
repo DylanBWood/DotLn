@@ -78,3 +78,20 @@ notes and tooling choices within the decided constraints.
   line per prose paragraph or list-item paragraph, retain semantic Markdown
   boundaries, and are checked before publication. Existing immutable review
   artifacts and public history are not reformatted.
+- 2026-09-05 dependency posture (planning pass): the runtime dependency count
+  is zero and stays the default. Prefer, in order: Node built-ins; self-written
+  code with tests (the FNV-1a and canonical-JSON implementations are the
+  precedent); an exactly pinned dev-only dependency with a note here; a runtime
+  dependency only with a decision-record note naming its consumer. Vendoring a
+  third party's minified CDN build is declined: it is unreviewable bytes plus a
+  third-party inventory duty under `docs/LEGAL.md`. A small unminified
+  single-file utility may be vendored with its license text and recorded
+  upstream version when that is clearer than the dependency. ESLint is not
+  adopted: strict `tsc` per package, Prettier, and the executable evidence
+  suites are the gate, and a lint rule is added only as a self-written check
+  when a repeated defect motivates it. Editor parity: TypeScript 6 and 7 stop
+  including `@types/node` implicitly, so each package `tsconfig.json` should
+  declare `types: ["node"]` (reproduced 2026-09-05 with TypeScript 7.0.2
+  native; the pinned 5.4.5 accepts the same field). That one-line change is
+  implementation and lands through a work order's evidence, not through this
+  amendment.

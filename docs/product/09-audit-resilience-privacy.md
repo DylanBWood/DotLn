@@ -571,6 +571,18 @@ design must choose the local root, envelope, encryption,
 retention/deletion, backup posture, projection profile, and non-identifying
 lineage mechanism before private runtime data is collected.
 
+**Candidate — opt-in opaque actor account label (2026-09-05).** The operator
+may run one harness under more than one provider account and wants to compare
+their usage windows without publishing account identities. The shape is one
+opaque label in the public actor attestation (for example `a1`), supplied only
+when the operator opts in, and an ignored local file mapping each label to
+whatever the operator uses to recognize the account, which no tool reads. The
+public log never carries an email address, account identifier, or plan name;
+the label is stable inside the repository and meaningless outside it; a
+missing label is `not-applicable`, never inferred. The re-identification rule
+above applies before a public profile adopts the field: two labels disclose
+that two accounts exist. WO-031 is the bounded route.
+
 Maintenance for that lane is an offline capability family, not a Git workflow:
 inspect, validate, transform, snapshot, rotate, restore, and governed deletion.
 Pure cores plan or transform bytes; narrowly authorized filesystem adapters apply

@@ -156,7 +156,9 @@ surfaces, not publishing a tag, Release, package, or branch without its existing
 dispatch. WO-028 applies the default as `v0.5.1` above published `v0.5.0`.
 WO-026 applies it as `v0.5.2` above published `v0.5.1`.
 WO-020 assigns the next minor, `v0.6.0`, above published `v0.5.2`, with skeleton
-component `0.6.0` and unchanged kernel/compiler versions.
+component `0.6.0` and unchanged kernel/compiler versions. WO-030 assigns the
+next minor, `v0.7.0`, above published `v0.6.0` (2026-09-05 planning pass); the
+other horizon orders stay unassigned until their own activations.
 
 Patch releases contain compatible corrections, documentation, and evidence
 improvements; minor releases add backwards-compatible application capability;
@@ -779,6 +781,17 @@ where possible; an LLM receives only the residual interpretation that actually
 requires inference. This uses the existing model/harness/runtime boundary and
 does not create a second actor kind, a new roadmap rung, or an expansion of
 WO-009 or WO-022.
+
+**Declared cost is the prior; observed cost is the measurement (2026-09-05).**
+The compiler already prints each support's declared mechanism and cost — prompt
+tokens, runtime operations, episodes — in the compiled tooltip and diff. Those
+are static claims about the program, useful for choosing between builds before
+anything runs. The profiling harness supplies the observed vector under
+declared conditions. The operator's loop is data → experiment → analysis →
+change or report → repeat; declared and observed cost are its two columns, and
+a build whose observed cost diverges from its declared cost is a finding, not a
+rounding error. WO-107 is the route to the first observed column; this note
+adds no telemetry field.
 
 The capability table can add `efficiencyLevel`, `baseline`, `resourceVector`,
 `protectedOutcomes`, `frontierAlternatives`, and `nextExperiment`. Efficiency XP

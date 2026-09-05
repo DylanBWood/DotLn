@@ -69,7 +69,9 @@ only the blueprint sections it cites. Settled questions live in
 `docs/decisions/` and the Resolutions section of `docs/lineage/idea-ledger.md` —
 do not relitigate them. An `ideation:` prefix dispatches the complete capture →
 clean-room synthesis → ledger → product-doc pipeline unless it explicitly says
-capture-only; see the execution guide's §Operator-opened ideation mode. Nothing
+capture-only; see the execution guide's §Operator-opened ideation mode. A
+`planning:` prefix, or an explicit planning-session instruction, dispatches the
+doc-only planning pass in the same guide's §Operator-opened planning pass. Nothing
 in a work-order worktree is committed until final review, and `docs/intake` is
 gitignored single-copy — never run a destructive git command (`reset --hard`,
 `checkout .`, `clean`) in one without a checkpoint commit first. Keep this file

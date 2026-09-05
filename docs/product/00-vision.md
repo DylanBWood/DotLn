@@ -27,6 +27,8 @@ The eventual Actor UI direction has the proposed spoken name **UIFA**
 participating people and software actors, their work, and its evidence. The
 [interface contracts](04-interfaces.md) ground that target in the existing
 Actor model and equivalent projections. The complete interface remains planned.
+The five human roles the author's implementation expects around that interface
+are named in [UIFA roles](13-uifa-roles.md).
 
 ## Mission — increase the chance of operator flow
 
@@ -395,6 +397,12 @@ implementation, or permission to reproduce source expression. See the
 
 ## What DotLn is not
 
+- Not an agent, an agent harness, or an agent-orchestration layer, as its
+  identity. DotLn is an **agentic platform**: the shared substrate on which
+  people and software actors hold work, authority, and evidence. It contains an
+  orchestration layer and hosts harnesses as observed environments
+  ([runtime primitive catalogs](03-architecture.md#runtime-primitive-catalogs)),
+  but neither of those is what it is.
 - Not a prompt library, and not a wrapper that makes one vendor's model nicer.
 - Not a prescribed catalog of ideal agents, roles, personalities, workflows, or
   organizational doctrine. Bundled patterns are examples and optional starting

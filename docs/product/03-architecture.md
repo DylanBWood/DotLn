@@ -366,6 +366,22 @@ The essay-derived word **harness** is therefore deliberately narrower here than
 “everything outside the weights.” A runtime vendor may bundle several rows in
 one product; the build inspector and evidence model still separate them.
 
+**Candidate — presentation surfaces of one provider model (2026-09-05).** The
+same weights reach an actor through several bodies: a terminal harness, an IDE
+extension, a desktop application, a raw API call, or a local runner. Each is a
+different set of catalog rows: system context and tool set, permission and
+sandbox model, context construction and compaction, session persistence,
+effort and version readback, structured output, the accounting regime
+(subscription window versus metered tokens), and what the operator can observe
+while it runs. DotLn records the surface actually used as an environment fact
+(discovery and the actor attestation) and treats claimed differences in
+quality, throughput, accuracy, or cost as hypotheses for the counterfactual
+profiling lane, never as assumptions. A raw API episode offers exact context
+control and per-token accounting at the price of the harness's built-in tools,
+sandboxing, and flat-rate window; an IDE or desktop surface adds interaction
+affordances a transport cannot script. WO-009's two CLI transports are the
+first comparable cells; no surface is preferred here.
+
 A Claude-oriented catalog may expose native forms for agent definitions,
 subagents, skills, hooks, permissions, tool/MCP connections, commands,
 workflows, worktrees, background execution, session lifecycle, structured
