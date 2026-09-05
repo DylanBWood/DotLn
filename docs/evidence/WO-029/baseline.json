@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "961601a17174c14ac69afa24dbd62ca5432ad7e7",
+  "applicationVersion": "0.8.0",
+  "compilerPackageVersion": "0.2.0",
+  "frozenOracleSha256": "ec53d1c841de5486cf656694228c83f67e8549993d0ac63c187d10728707a173",
+  "fixtures": [
+    {
+      "name": "seiri",
+      "environment": {
+        "environmentId": "skeleton.fixture",
+        "version": 1,
+        "capabilities": ["fixture-repository"],
+        "repo": "packages/skeleton/fixtures/repo-tree.json",
+        "baseCommit": "fixture-base"
+      },
+      "semanticHash": "fnv1a64:9ca8d0229c6bd8db"
+    },
+    {
+      "name": "entropy-reducer",
+      "environment": {
+        "environmentId": "entropy-reducer.manual-review",
+        "version": 1,
+        "capabilities": [],
+        "repo": "/fixture/repository",
+        "baseCommit": "fixture-base"
+      },
+      "episodeEndsAt": 11000,
+      "semanticHash": "fnv1a64:c5ddbca75f1c4cee"
+    }
+  ]
+}

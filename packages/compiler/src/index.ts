@@ -4,3 +4,4 @@ export * from "./views.js";
 export * from "./compile.js";
 export * from "./render.js";
 export * from "./seiri.js";
+export * from "./artifact-identity.js";

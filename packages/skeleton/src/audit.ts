@@ -1,4 +1,9 @@
 import { decodeLog, type Event, type JsonValue } from "@dotln/kernel";
+import {
+  projectArtifactIdentities,
+  withoutArtifactIdentityInputs,
+  type ArtifactIdentityProjection,
+} from "./artifact-audit.js";
 
 export const AUDIT_RECORD_SCHEMA_VERSION = 1 as const;
 export const AUDIT_PROJECTION_SCHEMA_VERSION = 1 as const;
@@ -163,7 +168,9 @@ export type AuthorityDecisionAuditRecord =
       readonly reason: string;
       readonly authorityEnvelopeRef: string;
       readonly association:
-        "derived-same-episode-time-adjacency" | "refusal-event-only";
+        | "explicit-event-link"
+        | "derived-same-episode-time-adjacency"
+        | "refusal-event-only";
     });
 
 export interface ExternalEffectAuditRecord extends AuditRecordBase<
@@ -395,7 +402,9 @@ const isAuthorizedDecisionTrace = (
   )
     return false;
 
-  const suffix = [...envInputs.slice(4)];
+  const unpinned = withoutArtifactIdentityInputs(envInputs);
+  if (unpinned === undefined) return false;
+  const suffix = [...unpinned.slice(4)];
   if (command.resource === undefined) {
     if (suffix.some((input) => input.startsWith("resource:"))) return false;
   } else if (suffix.pop() !== `resource:${command.resource}`) {
@@ -428,6 +437,10 @@ const isRefusedDecisionTrace = (
   const branchPath = stringArrayField(trace, "branchPath");
   const envInputs = stringArrayField(trace, "envInputs");
   const cadenceEvaluations = asObject(trace)?.["cadenceEvaluations"];
+  const unpinned =
+    envInputs === undefined
+      ? undefined
+      : withoutArtifactIdentityInputs(envInputs);
   return (
     stringField(trace, "reactorId") === "authority-guard" &&
     stringField(trace, "reactorVersion") === "1" &&
@@ -439,7 +452,8 @@ const isRefusedDecisionTrace = (
     envInputs[1] === "authorityEnvelope" &&
     envInputs[2] === "evidence" &&
     envInputs[3] === "revocations" &&
-    semanticAuthorityInputsAreComplete(envInputs.slice(4)) &&
+    unpinned !== undefined &&
+    semanticAuthorityInputsAreComplete(unpinned.slice(4)) &&
     Array.isArray(cadenceEvaluations) &&
     cadenceEvaluations.length === 0
   );
@@ -638,13 +652,33 @@ export function deriveAuditRecords(
         stringField(event.payload, "authorityEnvelopeId") ??
         invalidAuditSource(event, "missing refusal authority reference");
       const prior = events[index - 1];
-      const trace = events[index + 1];
+      const linkedAttempt =
+        event.causationId === undefined
+          ? undefined
+          : events
+              .slice(0, index)
+              .find(
+                (candidate) =>
+                  candidate.eventId === event.causationId &&
+                  candidate.type === "DeletionAttempted" &&
+                  sameEpisodeAndTime(candidate, event),
+              );
+      const linkedTrace =
+        linkedAttempt === undefined
+          ? undefined
+          : events.find(
+              (candidate) =>
+                candidate.causationId === linkedAttempt.eventId &&
+                isRefusedDecisionTrace(candidate, event, reason),
+            );
+      const trace = linkedTrace ?? events[index + 1];
       const attempt =
-        prior !== undefined &&
+        linkedAttempt ??
+        (prior !== undefined &&
         prior.type === "DeletionAttempted" &&
         sameEpisodeAndTime(prior, event)
           ? prior
-          : undefined;
+          : undefined);
       const authorityTrace = isRefusedDecisionTrace(trace, event, reason)
         ? trace
         : undefined;
@@ -669,7 +703,9 @@ export function deriveAuditRecords(
         association:
           attempt === undefined
             ? "refusal-event-only"
-            : "derived-same-episode-time-adjacency",
+            : linkedAttempt === undefined
+              ? "derived-same-episode-time-adjacency"
+              : "explicit-event-link",
       });
       continue;
     }
@@ -869,6 +905,7 @@ export interface L0ReceiptProjection {
     readonly enforcement: "deferred";
   };
   readonly receipts: readonly L0ReceiptEntry[];
+  readonly artifactIdentity: ArtifactIdentityProjection;
 }
 
 const authoritySummary = (record: AuditRecord): L0ReceiptEntry["authority"] => {
@@ -885,6 +922,7 @@ const authoritySummary = (record: AuditRecord): L0ReceiptEntry["authority"] => {
 export function projectL0Receipt(
   records: readonly AuditRecord[],
   scopeOverride?: string,
+  events: readonly Event[] = [],
 ): L0ReceiptProjection {
   const scope = scopeOverride ?? projectionScope(records);
   const timelineRef = projectionRef(scope, "causal-timeline");
@@ -893,6 +931,7 @@ export function projectL0Receipt(
     projection: "l0-receipt",
     fidelity: "L0",
     projectionRef: projectionRef(scope, "l0-receipt"),
+    artifactIdentity: projectArtifactIdentities(events),
     governance: {
       audience: ["operator"],
       purpose: "everyday-confirmation",
@@ -906,7 +945,7 @@ export function projectL0Receipt(
       "correlation and causation detail",
       "class-specific timeline detail including association labels, evidence reasons, and verification subjects",
       "non-consequential context events",
-      "policy, runtime, integrity, redaction, and recorded-at data not collected by the fixture",
+      "policy, runtime fingerprints, cryptographic integrity/authenticity, redaction, and recorded-at data not collected by the fixture",
       "verifier independence not established by the recorded actor identity",
     ],
     deeperProjection: {
@@ -1125,7 +1164,7 @@ export function projectCausalTimeline(
       "raw event payload bodies",
       "context events without a consequential AuditRecord",
       "links absent from source events are not invented",
-      "the deletion-attempt/refusal association is derived from same-episode, same-time adjacency, not canonical causation",
+      "an unlinked deletion-attempt/refusal association uses same-episode, same-time adjacency, not canonical causation; explicit source links are labeled separately",
       "a verification request association without an explicit event link is labeled as a single-request-in-scope derivation",
       "policy, runtime, integrity, redaction, and recorded-at data not collected by the fixture",
     ],
@@ -1164,6 +1203,7 @@ export interface GovernedRawProjection {
     readonly unavailable: readonly string[];
   };
   readonly events: readonly Event[];
+  readonly artifactIdentity: ArtifactIdentityProjection;
 }
 
 export function projectGovernedRaw(
@@ -1177,6 +1217,7 @@ export function projectGovernedRaw(
     projection: "governed-raw-json",
     fidelity: "L4",
     projectionRef: projectionRef(scope, "governed-raw-json"),
+    artifactIdentity: projectArtifactIdentities(events),
     governance: {
       audience: ["verifier"],
       intendedAccess: "restricted",
@@ -1190,7 +1231,7 @@ export function projectGovernedRaw(
       eventFieldOmissions: [],
       unavailable: [
         "separately controlled artifacts are not present in this fixture",
-        "recorded-at time, policy versions, runtime fingerprints, integrity hashes, and redaction state were never collected",
+        "recorded-at time, policy versions, runtime fingerprints, cryptographic integrity hashes, authenticity, and redaction state were never collected",
       ],
     },
     events: [...events],
@@ -1207,7 +1248,7 @@ export function projectAuditEvents(events: readonly Event[]): AuditProjections {
   const records = deriveAuditRecords(events);
   const scope = projectionScope(records, events);
   return {
-    receipt: projectL0Receipt(records, scope),
+    receipt: projectL0Receipt(records, scope, events),
     timeline: projectCausalTimeline(records, events, scope),
     governedRaw: projectGovernedRaw(events, scope),
   };

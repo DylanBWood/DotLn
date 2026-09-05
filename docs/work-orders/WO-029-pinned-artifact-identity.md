@@ -1,11 +1,18 @@
-# WO-029 — Pinned artifact identity: bind an equipped compilation to its consuming decisions (version assigned at activation)
+# WO-029 — Pinned artifact identity: bind an equipped compilation to its consuming decisions, v0.9.0
 
 **Model:** any capable model.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Expected
-class: minor. It adds a compiler identity record and a fail-closed runtime
+**Release classification:** `v0.9.0`, minor, from the local published `v0.8.0`
+base (`961601a`). It adds a compiler identity record and a fail-closed runtime
 receipt to the author's personal implementation; it does not change the hash
 algorithm or claim cryptographic authenticity.
+**Activation completion — 2026-09-05:** activation omitted the release target.
+The executor completes it under the standing opt-out release default in
+07-execution-guide.md, without rewriting the activation event. Compiler package
+`0.3.0` and skeleton package `0.8.0` advance for their source changes; kernel
+`0.2.1`, event-envelope schema `1`, and compiled-program contract `1` remain
+separate axes. Publication still requires the final-review/release-close
+dispatches.
 **Nomination provenance:** the operator's 2026-09-04 WO-023 ideation breakout
 about static compiled identity and runtime membership checks, followed by an ad
 hoc Fable planning response and an independent repository audit. The unedited

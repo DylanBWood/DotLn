@@ -505,11 +505,31 @@ export interface CompiledProgram {
   readonly trace: CompileTrace;
 }
 
+export interface ComponentDefinitionIdentityV1 {
+  readonly componentKind: ComponentManifestEntry["componentKind"];
+  readonly componentId: string;
+  readonly version: number;
+  readonly hashScheme: "dotln-component-definition-fnv1a64-v1";
+  readonly definitionHash: string;
+}
+
+/** A compilation receipt, deliberately outside the semanticHash preimage. */
+export interface ArtifactIdentityV1 {
+  readonly schemaVersion: 1;
+  readonly compilerContractVersion: string;
+  readonly compilerPackageVersion: string;
+  readonly semanticHash: string;
+  readonly compilationEnvironment: CompilationEnvironment;
+  readonly authorityExpiresAt: number;
+  readonly componentDefinitions: readonly ComponentDefinitionIdentityV1[];
+}
+
 export type CompileResult =
   | Readonly<{
       ok: true;
       program: CompiledProgram;
       semanticHash: string;
+      artifactIdentity: ArtifactIdentityV1;
       diagnostics: readonly [];
     }>
   | Readonly<{

@@ -201,7 +201,7 @@ test("AC2 AuditRecord v1 keeps canonical references and no copied event payloads
     allowed.decisionEvidence,
     "authority-trace-and-command-persisted",
   );
-  assert.deepEqual(allowed.eventIds, ["evt_7", "evt_8"]);
+  assert.deepEqual(allowed.eventIds, ["evt_10", "evt_11"]);
 
   const denied = records.find(
     (record) =>
@@ -230,7 +230,7 @@ test("AC2 AuditRecord v1 keeps canonical references and no copied event payloads
   );
   assert.deepEqual(recovery, {
     schemaVersion: 1,
-    recordId: "audit:evt_9:recovery",
+    recordId: "audit:evt_14:recovery",
     actionClass: "recovery",
     action: "command.redispatch",
     outcome: "redispatched",
@@ -239,10 +239,10 @@ test("AC2 AuditRecord v1 keeps canonical references and no copied event payloads
     workstreamId: "ws_repo_garden",
     episodeId: "ep_seiri_1",
     correlationId: expectedInspectCommandId,
-    causationId: "evt_8",
-    eventIds: ["evt_8", "evt_9"],
+    causationId: "evt_12",
+    eventIds: ["evt_11", "evt_14"],
     commandId: expectedInspectCommandId,
-    originalCommandEventId: "evt_8",
+    originalCommandEventId: "evt_11",
     recoveryState: "redispatched",
   });
 });
@@ -536,64 +536,64 @@ test("AC3 captures the L0 receipt, causal timeline, and governed raw JSON with f
     })),
     [
       {
-        recordId: "audit:evt_6:work-order-dispatch",
+        recordId: "audit:evt_9:work-order-dispatch",
         action: "work-order.emit",
         outcome: "emitted",
-        evidenceLinks: ["event:evt_6"],
-      },
-      {
-        recordId: "audit:evt_8:authority-decision",
-        action: "repo.inspect",
-        outcome: "allowed",
-        evidenceLinks: ["event:evt_7", "event:evt_8"],
-      },
-      {
-        recordId: "audit:evt_9:external-effect",
-        action: "repo.inspect",
-        outcome: "observed",
-        evidenceLinks: ["event:evt_8", "event:evt_9"],
-      },
-      {
-        recordId: "audit:evt_9:result",
-        action: "command.result",
-        outcome: "returned",
         evidenceLinks: ["event:evt_9"],
       },
       {
-        recordId: "audit:evt_10:external-effect",
+        recordId: "audit:evt_11:authority-decision",
+        action: "repo.inspect",
+        outcome: "allowed",
+        evidenceLinks: ["event:evt_10", "event:evt_11"],
+      },
+      {
+        recordId: "audit:evt_12:external-effect",
+        action: "repo.inspect",
+        outcome: "observed",
+        evidenceLinks: ["event:evt_11", "event:evt_12"],
+      },
+      {
+        recordId: "audit:evt_12:result",
+        action: "command.result",
+        outcome: "returned",
+        evidenceLinks: ["event:evt_12"],
+      },
+      {
+        recordId: "audit:evt_14:external-effect",
         action: "repo.delete",
         outcome: "requested",
-        evidenceLinks: ["event:evt_10"],
+        evidenceLinks: ["event:evt_14"],
       },
       {
-        recordId: "audit:evt_11:authority-decision",
+        recordId: "audit:evt_16:authority-decision",
         action: "repo.delete",
         outcome: "denied",
-        evidenceLinks: ["event:evt_10", "event:evt_11", "event:evt_12"],
+        evidenceLinks: ["event:evt_14", "event:evt_16", "event:evt_15"],
       },
       {
-        recordId: "audit:evt_13:result",
+        recordId: "audit:evt_18:result",
         action: "episode.terminate",
         outcome: "terminated",
-        evidenceLinks: ["event:evt_13"],
+        evidenceLinks: ["event:evt_18"],
       },
       {
-        recordId: "audit:evt_16:verification",
+        recordId: "audit:evt_22:verification",
         action: "verification.complete",
         outcome: "passed",
-        evidenceLinks: ["event:evt_15", "event:evt_16"],
+        evidenceLinks: ["event:evt_20", "event:evt_22"],
       },
       {
-        recordId: "audit:evt_20:no-op",
+        recordId: "audit:evt_27:no-op",
         action: "cadence.no-op",
         outcome: "no-op",
-        evidenceLinks: ["event:evt_20"],
+        evidenceLinks: ["event:evt_27"],
       },
       {
-        recordId: "audit:evt_21:external-effect",
+        recordId: "audit:evt_28:external-effect",
         action: "schedule.cancel",
         outcome: "observed",
-        evidenceLinks: ["event:evt_21"],
+        evidenceLinks: ["event:evt_28"],
       },
     ],
   );
@@ -633,54 +633,54 @@ test("AC3 captures the L0 receipt, causal timeline, and governed raw JSON with f
     })),
     [
       {
-        recordId: "audit:evt_6:work-order-dispatch",
+        recordId: "audit:evt_9:work-order-dispatch",
         timelineOrdinal: 1,
-        appendOrdinal: 6,
-      },
-      {
-        recordId: "audit:evt_8:authority-decision",
-        timelineOrdinal: 2,
-        appendOrdinal: 8,
-      },
-      {
-        recordId: "audit:evt_9:external-effect",
-        timelineOrdinal: 3,
         appendOrdinal: 9,
-      },
-      {
-        recordId: "audit:evt_9:result",
-        timelineOrdinal: 4,
-        appendOrdinal: 9,
-      },
-      {
-        recordId: "audit:evt_10:external-effect",
-        timelineOrdinal: 5,
-        appendOrdinal: 10,
       },
       {
         recordId: "audit:evt_11:authority-decision",
-        timelineOrdinal: 6,
+        timelineOrdinal: 2,
+        appendOrdinal: 11,
+      },
+      {
+        recordId: "audit:evt_12:external-effect",
+        timelineOrdinal: 3,
         appendOrdinal: 12,
       },
       {
-        recordId: "audit:evt_13:result",
-        timelineOrdinal: 7,
-        appendOrdinal: 13,
+        recordId: "audit:evt_12:result",
+        timelineOrdinal: 4,
+        appendOrdinal: 12,
       },
       {
-        recordId: "audit:evt_16:verification",
-        timelineOrdinal: 8,
+        recordId: "audit:evt_14:external-effect",
+        timelineOrdinal: 5,
+        appendOrdinal: 14,
+      },
+      {
+        recordId: "audit:evt_16:authority-decision",
+        timelineOrdinal: 6,
         appendOrdinal: 16,
       },
       {
-        recordId: "audit:evt_20:no-op",
-        timelineOrdinal: 9,
-        appendOrdinal: 20,
+        recordId: "audit:evt_18:result",
+        timelineOrdinal: 7,
+        appendOrdinal: 18,
       },
       {
-        recordId: "audit:evt_21:external-effect",
+        recordId: "audit:evt_22:verification",
+        timelineOrdinal: 8,
+        appendOrdinal: 22,
+      },
+      {
+        recordId: "audit:evt_27:no-op",
+        timelineOrdinal: 9,
+        appendOrdinal: 27,
+      },
+      {
+        recordId: "audit:evt_28:external-effect",
         timelineOrdinal: 10,
-        appendOrdinal: 21,
+        appendOrdinal: 28,
       },
     ],
   );
@@ -695,26 +695,26 @@ test("AC3 captures the L0 receipt, causal timeline, and governed raw JSON with f
   });
   assert.deepEqual(projections.timeline.correlationGroups, [
     {
-      correlationId: "evt_5",
+      correlationId: "evt_7",
       recordIds: [
-        "audit:evt_6:work-order-dispatch",
-        "audit:evt_8:authority-decision",
+        "audit:evt_9:work-order-dispatch",
+        "audit:evt_11:authority-decision",
       ],
     },
     {
       correlationId: expectedInspectCommandId,
       recordIds: [
-        "audit:evt_9:external-effect",
-        "audit:evt_9:result",
-        "audit:evt_10:external-effect",
-        "audit:evt_11:authority-decision",
-        "audit:evt_13:result",
-        "audit:evt_16:verification",
+        "audit:evt_12:external-effect",
+        "audit:evt_12:result",
+        "audit:evt_14:external-effect",
+        "audit:evt_16:authority-decision",
+        "audit:evt_18:result",
+        "audit:evt_22:verification",
       ],
     },
     {
-      correlationId: "evt_18",
-      recordIds: ["audit:evt_20:no-op", "audit:evt_21:external-effect"],
+      correlationId: "evt_25",
+      recordIds: ["audit:evt_27:no-op", "audit:evt_28:external-effect"],
     },
   ]);
   assert.ok(projections.timeline.omissions.length > 0);
@@ -1109,9 +1109,9 @@ test("AC4 step 9 refusal is explicit in the receipt and causal timeline", () => 
     reason: "effect denied",
   });
   assert.deepEqual(receipt?.evidenceLinks, [
-    "event:evt_10",
-    "event:evt_11",
-    "event:evt_12",
+    "event:evt_14",
+    "event:evt_16",
+    "event:evt_15",
   ]);
 
   const timeline = projections.timeline.entries.find(
@@ -1125,8 +1125,8 @@ test("AC4 step 9 refusal is explicit in the receipt and causal timeline", () => 
   assert.equal(timeline.action, "repo.delete");
   assert.equal(timeline.authorityEnvelopeRef, "auth_seiri");
   assert.equal(timeline.reason, "effect denied");
-  assert.equal(timeline.association, "derived-same-episode-time-adjacency");
-  assert.equal(timeline.causationId, "evt_10");
+  assert.equal(timeline.association, "explicit-event-link");
+  assert.equal(timeline.causationId, "evt_14");
   assert.equal(timeline.correlationId, expectedInspectCommandId);
   assert.equal(Object.hasOwn(timeline, "commandId"), false);
   assert.match(

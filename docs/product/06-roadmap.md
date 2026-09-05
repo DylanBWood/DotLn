@@ -89,6 +89,8 @@ slot reaches that worker boundary. Each unassigned rung receives a compatible
 version and synchronized work-order heading only through its own explicit
 activation; no arithmetic shift is inferred here.
 
+**WO-029 activation completion (2026-09-05):** its control activation omitted a target. The executor completes the standing opt-out release assignment at `v0.9.0`, a minor addition above published `v0.8.0` (`961601a`). Compiler package `0.3.0` and skeleton package `0.8.0` move independently; the kernel and existing semantic-hash preimage do not. The earlier table remains a dated retiming record, and WO-009 still receives its own release assignment at activation. This source prepares the pin/compare receipt; independent verification, final review, merge, and release publication remain separate lifecycle evidence.
+
 The manifest records the Git commit, application release, package/component
 versions, supported schema and artifact ranges, transformation-set version (or
 explicitly `none`), evidence commands/results, evaluable and deferred cadence

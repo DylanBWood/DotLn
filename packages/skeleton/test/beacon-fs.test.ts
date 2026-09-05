@@ -342,7 +342,7 @@ test("WO-020 sweep labels future codebooks, malformed sizes and non-regular entr
   );
 });
 
-test("WO-020 AC6 CLI is opt-in, exact apart from version, and prints terminal host state last", (t) => {
+test("WO-020/WO-029 CLI pins the new timeline, remains opt-in, and prints terminal host state last", (t) => {
   const root = temporary(t);
   const run = (...args: string[]) =>
     spawnSync(process.execPath, [cliPath, ...args], {
@@ -350,7 +350,7 @@ test("WO-020 AC6 CLI is opt-in, exact apart from version, and prints terminal ho
       encoding: "utf8",
     });
   const baseline = readFileSync(
-    new URL("../../fixtures/wo020-base-cli.txt", import.meta.url),
+    new URL("../../fixtures/wo029-cli.txt", import.meta.url),
     "utf8",
   );
   const manifest = JSON.parse(
@@ -362,7 +362,7 @@ test("WO-020 AC6 CLI is opt-in, exact apart from version, and prints terminal ho
   assert.equal(
     plain.stdout,
     baseline.replace(
-      /^@dotln\/skeleton v0\.5\.0/,
+      /^@dotln\/skeleton v0\.8\.0/,
       `@dotln/skeleton v${manifest.version}`,
     ),
   );

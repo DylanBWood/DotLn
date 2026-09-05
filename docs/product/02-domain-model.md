@@ -306,6 +306,36 @@ explicit pipeline in that group; the broader graph types do not claim
 multi-active, multi-group, multi-pipeline, or ambient-effect execution before a
 consuming rung proves it.
 
+### Artifact identity v1
+
+WO-029 adds the exported `ArtifactIdentityV1` beside `CompiledProgram`, never inside its semantic-hash preimage. Successful compilation returns:
+
+```ts
+interface ArtifactIdentityV1 {
+  readonly schemaVersion: 1;
+  readonly compilerContractVersion: string;
+  readonly compilerPackageVersion: string;
+  readonly semanticHash: string;
+  readonly compilationEnvironment: CompilationEnvironment;
+  readonly authorityExpiresAt: number;
+  readonly componentDefinitions: readonly ComponentDefinitionIdentityV1[];
+}
+interface ComponentDefinitionIdentityV1 {
+  readonly componentKind:
+    "active-mechanic" | "support-facet" | "ambient-effect";
+  readonly componentId: string;
+  readonly version: number;
+  readonly hashScheme: "dotln-component-definition-fnv1a64-v1";
+  readonly definitionHash: string;
+}
+```
+
+The component tuples match the participating manifest exactly. Each digest identifies the matching normalized source definition, including otherwise un-emitted metadata; group and mechanism projections remain manifest fields. The exact public preimage and domain are pinned in [04](04-interfaces.md#editable-view-v1-normalization-and-semantic-hash). `compilationEnvironment` retains `environmentId`, numeric `version`, capability list, `repo`, and `baseCommit`; expiry is also retained explicitly and in the raw graph. These are equality receipts, not unique, cryptographic, or authenticated identities.
+
+The personal host records `LoadoutEquipped` under EventEnvelope schema 1 with `{ payloadVersion: 2, graph, artifactIdentity }`. Only absence of `payloadVersion` identifies legacy-v1 payloads; any other unsupported value refuses. The reactor recomputes before accepting the pin and authority. Later compiled consumers record `artifactIdentity.semanticHash:<hash>`, `artifactIdentity.compilerContractVersion:<version>`, `artifactIdentity.compilerPackageVersion:<version>`, and `artifactIdentity.equippedEventId:<eventId>` in `DecisionTrace.envInputs`. Compilation diagnostics and drift produce typed inert events and a decision receipt.
+
+`ArtifactIdentityEnforcementStarted` has `{ payloadVersion: 1 }` and marks the logged transition to new execution. Before it, historical raw equips replay with identity unavailable. After it, unavailable identity refuses until v2 re-equip; authority is absent before any valid equip. The boundary is idempotent. New factories cannot mint legacy equips, and recovery checks the pin before redispatch. This is the author's selected assurance profile, not a required platform capability for every owner.
+
 ## Feedback
 
 | Term                           | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |

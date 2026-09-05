@@ -1,0 +1,9 @@
+Command: npm run release -- check-surfaces
+Observed: 2026-09-05
+Exit status: 0
+
+PASS release-block: observed v0.9.0; expected v0.9.0 (work-order target v0.9.0; latest published v0.8.0)
+PASS component-version @dotln/compiler: src changed; observed 0.3.0; previous v0.8.0 0.2.0; expected a different version
+PASS component-version @dotln/kernel: src unchanged; observed 0.2.1; previous v0.8.0 0.2.1; expected no bump required
+PASS component-version @dotln/skeleton: src changed; observed 0.8.0; previous v0.8.0 0.7.0; expected a different version
+PASS github-body-profile: observed no current final-review bodies yet; expected one physical line per prose paragraph or list-item paragraph

@@ -21,6 +21,10 @@ docs/discovery/environment.json
 docs/discovery/environment.md
 docs/discovery/control-event-times-*.json
 docs/evidence/WO-030/legacy-times.json
+# Generated WO-029 receipts; evidence:artifact --check owns their exact bytes.
+docs/evidence/WO-029/audit.json
+docs/evidence/WO-029/negative-transcripts.json
+docs/evidence/WO-029/semantic-hash-inventory.json
 docs/verifications/WO-*/
 docs/final-reviews/WO-*/
 docs/releases/v*.md
