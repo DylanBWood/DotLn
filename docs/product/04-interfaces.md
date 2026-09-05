@@ -5,6 +5,18 @@ timeline and zero-asset glyph scene only; the complete terminal control surface,
 web/spatial console, editable equivalent views, replay UI, and build inspector
 remain planned unless a section explicitly says otherwise.
 
+The future interface direction is **Actor UI**. Its proposed spoken name is
+**UIFA**, pronounced **“wee-fuh”** to rhyme with **FIFA**, expanded as
+**User Interfaces for Actors**.
+It organizes work around
+the domain's Actors: people, model sessions, scripts, browser workers, and test
+runners, with their roles, current work, state, and evidence. Actor capability
+and authority determine the available interactions; the existing terminal,
+console, editable-view, and projection contracts provide its surfaces. This
+names the target interface direction and introduces no new Actor primitive or
+implemented screen. Agent-specific views remain projections of the relevant
+actors within that broader interface.
+
 These are capability contracts, not mandatory screens for every private DotLn
 implementation. When an implementation declares an editable-view, projection,
 inspection, history, or replay capability, the corresponding laws below bind
@@ -177,7 +189,7 @@ desired creative work.
 ## `προτείνω` — prose as a world action
 
 The operator-named first-party application, specified in
-[`11-proteino.md`](11-proteino.md), turns the long-form input contract into a
+[`11-protino.md`](11-protino.md), turns the long-form input contract into a
 playable loop. The operator observes a small persistent community, selects one
 resident or a meaningful set, and writes at any useful length. Selection
 expresses intended recipients; prose supplies the intervention. The app holds
@@ -388,6 +400,15 @@ persuasive discussion nor a green proposal PR may activate work by itself.
 
 ## Agent projection (the sparse twin)
 
+The **Beacon constellation** is the sparse twin's metadata row: fixed opaque
+address, exact byte size, decoded consequential class and outcome, refusal count
+(`3` means three or more), provenance, version, and derivation mtime. Sort by
+size, then address. This groups the declared lifecycle categories; it is not a
+timeline or a test of liveness. Show `malformed` and `unknown-codebook` without
+guessing a state. A self-reported claim stays beside the host projection even
+when they disagree. Receipt reads are a separate, higher-fidelity operation.
+WO-020's CLI uses virtual event/claim time, so its dates are 1970-relative.
+
 Every state the human views richly also renders as a deliberately **sparse,
 machine-facing projection**: one current assignment, one context capsule, a few
 statechart-gated actions, one result form — token-budgeted by design, whether
@@ -470,6 +491,13 @@ the semantic obligation it serves. Missing, substituted, and lossy mappings are
 visually explicit and participate in compatibility checks.
 
 ## Glyph system (visual prototype zero)
+
+Beacon renderings follow the same grammar: when a declared observation policy
+marks a projection stale, blur it; retained historical projections become
+near-transparent. Age and claim provenance must also be readable as text.
+WO-020 exposes mtime but sets no staleness threshold and adds no visual UI;
+authorized sweep events, cadence-based staleness, and composites belong to
+WO-021. A file's existence alone never means its emitter is alive.
 
 The operator's own emoji + Tailwind experiment is the seed: one base glyph +
 composable CSS treatments = a zero-asset parametric icon system, and a visual

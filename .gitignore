@@ -15,3 +15,6 @@ dist/
 
 # Exact operator-owned Claude Code settings; no other .claude path is allowed.
 /.claude/settings.local.json
+
+# Explicit, rebuildable skeleton beacon output.
+/.beacons/

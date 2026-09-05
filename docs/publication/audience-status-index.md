@@ -42,6 +42,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [LoadoutGraph v1 payload contract](../product/02-domain-model.md#loadoutgraph-v1-payload-contract)           | software-engineer                   | implemented |
 | [Feedback](../product/02-domain-model.md#feedback)                                                           | everyday-ai-user, software-engineer | specified   |
 | [Memory and observation](../product/02-domain-model.md#memory-and-observation)                               | everyday-ai-user, software-engineer | specified   |
+| [Beacon codebook v1](../product/02-domain-model.md#beacon-codebook-v1)                                       | everyday-ai-user, software-engineer | implemented |
 | [Formal grounding](../product/02-domain-model.md#formal-grounding)                                           | software-engineer                   | specified   |
 
 ## 03 — Architecture
@@ -61,6 +62,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [The agentic communication core](../product/03-architecture.md#the-agentic-communication-core)                                                                | software-engineer                   | planned     |
 | [Candidate — opinion cohorts and sealed adjudication](../product/03-architecture.md#candidate--opinion-cohorts-and-sealed-adjudication)                       | everyday-ai-user, software-engineer | vision      |
 | [Composition system](../product/03-architecture.md#composition-system)                                                                                        | software-engineer                   | planned     |
+| [Candidate — resource pressure as an environmental modifier](../product/03-architecture.md#candidate--resource-pressure-as-an-environmental-modifier)         | everyday-ai-user, software-engineer | planned     |
 | [Candidate — pinned artifact identity](../product/03-architecture.md#candidate--pinned-artifact-identity)                                                     | everyday-ai-user, software-engineer | vision      |
 | [Agent-originated product suggestions](../product/03-architecture.md#agent-originated-product-suggestions)                                                    | everyday-ai-user, software-engineer | planned     |
 | [First live Entropy Reducer use](../product/03-architecture.md#first-live-entropy-reducer-use)                                                                | everyday-ai-user, software-engineer | implemented |
@@ -137,8 +139,10 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Release boundary](../product/06-roadmap.md#release-boundary)                                                                                                                           | software-engineer                   | specified   |
 | [2026-08-31 forward retiming](../product/06-roadmap.md#2026-08-31-forward-retiming)                                                                                                     | software-engineer                   | implemented |
 | [2026-09-04 forward retiming — WO-023 occupies v0.5.0](../product/06-roadmap.md#2026-09-04-forward-retiming--wo-023-occupies-v050)                                                      | software-engineer                   | implemented |
+| [Candidate — beacon usefulness checkpoint](../product/06-roadmap.md#candidate--beacon-usefulness-checkpoint)                                                                            | everyday-ai-user, software-engineer | planned     |
 | [Work-order navigation and identity (candidate)](../product/06-roadmap.md#work-order-navigation-and-identity-candidate)                                                                 | everyday-ai-user, software-engineer | planned     |
 | [Candidate — unattended work-order portfolio](../product/06-roadmap.md#candidate--unattended-work-order-portfolio)                                                                      | everyday-ai-user, software-engineer | vision      |
+| [Candidate — budget-window work-order ladders](../product/06-roadmap.md#candidate--budget-window-work-order-ladders)                                                                    | everyday-ai-user, software-engineer | planned     |
 | [Capability progression policies](../product/06-roadmap.md#capability-progression-policies)                                                                                             | everyday-ai-user, software-engineer | specified   |
 | [Activation, utilization, and XP](../product/06-roadmap.md#activation-utilization-and-xp)                                                                                               | software-engineer                   | specified   |
 | [Reps, curiosity, and voluntary craft](../product/06-roadmap.md#reps-curiosity-and-voluntary-craft)                                                                                     | everyday-ai-user, software-engineer | specified   |
@@ -170,16 +174,17 @@ as a current blocked verdict.
 
 ## 07 — Execution guide
 
-| Section                                                                                                                                                      | Audiences         | Status      |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- | ----------- |
-| [Execution guide — for any model session working in this repo](../product/07-execution-guide.md#execution-guide--for-any-model-session-working-in-this-repo) | software-engineer | implemented |
-| [Read order for a cold start](../product/07-execution-guide.md#read-order-for-a-cold-start)                                                                  | software-engineer | implemented |
-| [Operator resume phrases — how you get dispatched](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched)                         | software-engineer | verified    |
-| [Operator-opened ideation mode](../product/07-execution-guide.md#operator-opened-ideation-mode)                                                              | software-engineer | specified   |
-| [Ideation breakout receipt and verification](../product/07-execution-guide.md#ideation-breakout-receipt-and-verification)                                    | software-engineer | specified   |
-| [Workflow closeout and releases](../product/07-execution-guide.md#workflow-closeout-and-releases)                                                            | software-engineer | verified    |
-| [Discipline](../product/07-execution-guide.md#discipline)                                                                                                    | software-engineer | specified   |
-| [Model-specific notes](../product/07-execution-guide.md#model-specific-notes)                                                                                | software-engineer | specified   |
+| Section                                                                                                                                                      | Audiences                           | Status      |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- | ----------- |
+| [Execution guide — for any model session working in this repo](../product/07-execution-guide.md#execution-guide--for-any-model-session-working-in-this-repo) | software-engineer                   | implemented |
+| [Read order for a cold start](../product/07-execution-guide.md#read-order-for-a-cold-start)                                                                  | software-engineer                   | implemented |
+| [Operator resume phrases — how you get dispatched](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched)                         | software-engineer                   | verified    |
+| [Operator-opened ideation mode](../product/07-execution-guide.md#operator-opened-ideation-mode)                                                              | software-engineer                   | specified   |
+| [Ideation breakout receipt and verification](../product/07-execution-guide.md#ideation-breakout-receipt-and-verification)                                    | software-engineer                   | specified   |
+| [Workflow closeout and releases](../product/07-execution-guide.md#workflow-closeout-and-releases)                                                            | software-engineer                   | verified    |
+| [Documentation freshness and ownership](../product/07-execution-guide.md#documentation-freshness-and-ownership)                                              | everyday-ai-user, software-engineer | specified   |
+| [Discipline](../product/07-execution-guide.md#discipline)                                                                                                    | software-engineer                   | specified   |
+| [Model-specific notes](../product/07-execution-guide.md#model-specific-notes)                                                                                | software-engineer                   | specified   |
 
 ## 08 — Publication compiler
 
@@ -192,6 +197,7 @@ as a current blocked verdict.
 | [Outline first; publication IR only as needed](../product/08-publication-compiler.md#outline-first-publication-ir-only-as-needed)                                    | software-engineer                   | specified |
 | [Base publication and implementation overlays](../product/08-publication-compiler.md#base-publication-and-implementation-overlays)                                   | software-engineer                   | specified |
 | [Planning, rendering, and checking roles](../product/08-publication-compiler.md#planning-rendering-and-checking-roles)                                               | software-engineer                   | specified |
+| [Freshness and ownership](../product/08-publication-compiler.md#freshness-and-ownership)                                                                             | everyday-ai-user, software-engineer | specified |
 | [Authority and honesty rules](../product/08-publication-compiler.md#authority-and-honesty-rules)                                                                     | everyday-ai-user, software-engineer | specified |
 | [Product surface](../product/08-publication-compiler.md#product-surface)                                                                                             | everyday-ai-user, software-engineer | vision    |
 | [Release-note edition](../product/08-publication-compiler.md#release-note-edition)                                                                                   | everyday-ai-user, software-engineer | verified  |
@@ -231,24 +237,24 @@ as a current blocked verdict.
 
 ## 11 — `προτείνω`
 
-| Section                                                                                                                                         | Audiences                           | Status    |
-| ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
-| [`προτείνω` (protíno) — the first-party application thesis](../product/11-proteino.md#προτείνω-protíno--the-first-party-application-thesis)     | everyday-ai-user, software-engineer | vision    |
-| [Shape before machinery](../product/11-proteino.md#shape-before-machinery)                                                                      | everyday-ai-user, software-engineer | specified |
-| [The playable loop](../product/11-proteino.md#the-playable-loop)                                                                                | everyday-ai-user, software-engineer | vision    |
-| [A world on DotLn, not a second DotLn world](../product/11-proteino.md#a-world-on-dotln-not-a-second-dotln-world)                               | everyday-ai-user, software-engineer | specified |
-| [Candidate — recap-primed resident memory](../product/11-proteino.md#candidate--recap-primed-resident-memory)                                   | everyday-ai-user, software-engineer | vision    |
-| [Intervention truth](../product/11-proteino.md#intervention-truth)                                                                              | everyday-ai-user, software-engineer | specified |
-| [Ad hoc first, reusable on evidence](../product/11-proteino.md#ad-hoc-first-reusable-on-evidence)                                               | everyday-ai-user, software-engineer | specified |
-| [Candidate — commander-mediated tactical play](../product/11-proteino.md#candidate--commander-mediated-tactical-play)                           | everyday-ai-user, software-engineer | vision    |
-| [Books and personal styles become experiments](../product/11-proteino.md#books-and-personal-styles-become-experiments)                          | everyday-ai-user, software-engineer | vision    |
-| [Counterfactuals are the scoreboard](../product/11-proteino.md#counterfactuals-are-the-scoreboard)                                              | everyday-ai-user, software-engineer | specified |
-| [Candidate — time fidelity and bounded future reachability](../product/11-proteino.md#candidate--time-fidelity-and-bounded-future-reachability) | everyday-ai-user, software-engineer | vision    |
-| [Candidate — behavior is not animate-only](../product/11-proteino.md#candidate--behavior-is-not-animate-only)                                   | everyday-ai-user, software-engineer | vision    |
-| [Every apparent affordance tells the truth](../product/11-proteino.md#every-apparent-affordance-tells-the-truth)                                | everyday-ai-user, software-engineer | vision    |
-| [Source shapes, not copied implementations](../product/11-proteino.md#source-shapes-not-copied-implementations)                                 | everyday-ai-user, software-engineer | vision    |
-| [Candidate first evidence slice](../product/11-proteino.md#candidate-first-evidence-slice)                                                      | everyday-ai-user, software-engineer | vision    |
-| [Unresolved product choices](../product/11-proteino.md#unresolved-product-choices)                                                              | everyday-ai-user, software-engineer | vision    |
+| Section                                                                                                                                        | Audiences                           | Status    |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
+| [`προτείνω` (protíno) — the first-party application thesis](../product/11-protino.md#προτείνω-protíno--the-first-party-application-thesis)     | everyday-ai-user, software-engineer | vision    |
+| [Shape before machinery](../product/11-protino.md#shape-before-machinery)                                                                      | everyday-ai-user, software-engineer | specified |
+| [The playable loop](../product/11-protino.md#the-playable-loop)                                                                                | everyday-ai-user, software-engineer | vision    |
+| [A world on DotLn, not a second DotLn world](../product/11-protino.md#a-world-on-dotln-not-a-second-dotln-world)                               | everyday-ai-user, software-engineer | specified |
+| [Candidate — recap-primed resident memory](../product/11-protino.md#candidate--recap-primed-resident-memory)                                   | everyday-ai-user, software-engineer | vision    |
+| [Intervention truth](../product/11-protino.md#intervention-truth)                                                                              | everyday-ai-user, software-engineer | specified |
+| [Ad hoc first, reusable on evidence](../product/11-protino.md#ad-hoc-first-reusable-on-evidence)                                               | everyday-ai-user, software-engineer | specified |
+| [Candidate — commander-mediated tactical play](../product/11-protino.md#candidate--commander-mediated-tactical-play)                           | everyday-ai-user, software-engineer | vision    |
+| [Books and personal styles become experiments](../product/11-protino.md#books-and-personal-styles-become-experiments)                          | everyday-ai-user, software-engineer | vision    |
+| [Counterfactuals are the scoreboard](../product/11-protino.md#counterfactuals-are-the-scoreboard)                                              | everyday-ai-user, software-engineer | specified |
+| [Candidate — time fidelity and bounded future reachability](../product/11-protino.md#candidate--time-fidelity-and-bounded-future-reachability) | everyday-ai-user, software-engineer | vision    |
+| [Candidate — behavior is not animate-only](../product/11-protino.md#candidate--behavior-is-not-animate-only)                                   | everyday-ai-user, software-engineer | vision    |
+| [Every apparent affordance tells the truth](../product/11-protino.md#every-apparent-affordance-tells-the-truth)                                | everyday-ai-user, software-engineer | vision    |
+| [Source shapes, not copied implementations](../product/11-protino.md#source-shapes-not-copied-implementations)                                 | everyday-ai-user, software-engineer | vision    |
+| [Candidate first evidence slice](../product/11-protino.md#candidate-first-evidence-slice)                                                      | everyday-ai-user, software-engineer | vision    |
+| [Unresolved product choices](../product/11-protino.md#unresolved-product-choices)                                                              | everyday-ai-user, software-engineer | vision    |
 
 ## 12 — Workstream application
 
@@ -261,3 +267,24 @@ as a current blocked verdict.
 | [One workstream across repositories](../product/12-workstream-application.md#one-workstream-across-repositories)                                    | everyday-ai-user, software-engineer | vision |
 | [What exists and what must be proved](../product/12-workstream-application.md#what-exists-and-what-must-be-proved)                                  | everyday-ai-user, software-engineer | vision |
 | [Open product choices](../product/12-workstream-application.md#open-product-choices)                                                                | everyday-ai-user, software-engineer | vision |
+
+## Historical Protíno path — compatibility pointers
+
+| Section                                                                                                                                         | Audiences                           | Status     |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ---------- |
+| [`προτείνω` (protíno) — the first-party application thesis](../product/11-proteino.md#προτείνω-protíno--the-first-party-application-thesis)     | everyday-ai-user, software-engineer | deprecated |
+| [Shape before machinery](../product/11-proteino.md#shape-before-machinery)                                                                      | everyday-ai-user, software-engineer | deprecated |
+| [The playable loop](../product/11-proteino.md#the-playable-loop)                                                                                | everyday-ai-user, software-engineer | deprecated |
+| [A world on DotLn, not a second DotLn world](../product/11-proteino.md#a-world-on-dotln-not-a-second-dotln-world)                               | everyday-ai-user, software-engineer | deprecated |
+| [Candidate — recap-primed resident memory](../product/11-proteino.md#candidate--recap-primed-resident-memory)                                   | everyday-ai-user, software-engineer | deprecated |
+| [Intervention truth](../product/11-proteino.md#intervention-truth)                                                                              | everyday-ai-user, software-engineer | deprecated |
+| [Ad hoc first, reusable on evidence](../product/11-proteino.md#ad-hoc-first-reusable-on-evidence)                                               | everyday-ai-user, software-engineer | deprecated |
+| [Candidate — commander-mediated tactical play](../product/11-proteino.md#candidate--commander-mediated-tactical-play)                           | everyday-ai-user, software-engineer | deprecated |
+| [Books and personal styles become experiments](../product/11-proteino.md#books-and-personal-styles-become-experiments)                          | everyday-ai-user, software-engineer | deprecated |
+| [Counterfactuals are the scoreboard](../product/11-proteino.md#counterfactuals-are-the-scoreboard)                                              | everyday-ai-user, software-engineer | deprecated |
+| [Candidate — time fidelity and bounded future reachability](../product/11-proteino.md#candidate--time-fidelity-and-bounded-future-reachability) | everyday-ai-user, software-engineer | deprecated |
+| [Candidate — behavior is not animate-only](../product/11-proteino.md#candidate--behavior-is-not-animate-only)                                   | everyday-ai-user, software-engineer | deprecated |
+| [Every apparent affordance tells the truth](../product/11-proteino.md#every-apparent-affordance-tells-the-truth)                                | everyday-ai-user, software-engineer | deprecated |
+| [Source shapes, not copied implementations](../product/11-proteino.md#source-shapes-not-copied-implementations)                                 | everyday-ai-user, software-engineer | deprecated |
+| [Candidate first evidence slice](../product/11-proteino.md#candidate-first-evidence-slice)                                                      | everyday-ai-user, software-engineer | deprecated |
+| [Unresolved product choices](../product/11-proteino.md#unresolved-product-choices)                                                              | everyday-ai-user, software-engineer | deprecated |

@@ -107,10 +107,10 @@ activation.
 
 WO-026's generated index observes current headers and control evidence with a
 recorded snapshot of local annotated release tag objects. Run
-`npm run work-orders -- index` before the executor's evidence gate and again
+`npm run work-orders -- index` after executor dispatch, before its evidence gate, and again
 after `implementation-ready`; verification and final-review actors refresh
 after dispatch and after recording their result. `npm test` includes
-`index --check`: it refuses stale cells or a missing/changed recorded tag,
+`index --check`: it refuses a stale projection or a missing/changed recorded tag,
 while reporting additional local release tags as newer evidence. Explicit
 regeneration includes those tags. No lifecycle transition regenerates the
 index; its final refresh is later than the transition's immutable checkpoint.
@@ -361,6 +361,33 @@ the reviewed edition may receive a GitHub projection only through the separate
 operator-run `release publish-notes vX.Y.Z` command; agents test that path with
 a stub but never perform a backfill against origin.
 
+## Documentation freshness and ownership
+
+The executor owns current factual documentation for its change. Before declaring
+implementation ready, update affected blueprint facts and their reader entry
+points in the same pass: examples, names and paths, component/source claims,
+capability limitations, runbook instructions, planning recommendations, and
+publication links where the change reaches them. Use the diff and inbound
+references to bound the check. Record the affected surfaces and evidence in the
+existing work-order outcome or breakout receipt; do not create a new ceremony
+or rewrite unrelated historical artifacts.
+
+The verifier checks those claims and runnable examples against the subject and
+acceptance evidence. Final review checks their consistency across the resulting
+documentation and publication package. It may make only the already permitted
+non-substantive corrections; material mismatches return through repair and new
+verification. A dedicated publication order may improve an edition or repair
+broader editorial debt, but ordinary fact updates do not wait for that order.
+See [publication ownership](08-publication-compiler.md#freshness-and-ownership).
+
+Refresh generated evidence at the dispatch/result points already named above.
+The work-order README's proposed sequence comes from the marked block in the
+human planning map; completion marks come from the control fold. Change the
+recommendation at its source and regenerate rather than editing checkboxes.
+The local source worktree can describe staged work while main still describes
+the last merged source. Label that distinction instead of making either view
+claim evidence or releases it does not have.
+
 ## Discipline
 
 - **Work only from the current work order.** No opportunistic scope expansion;
@@ -373,6 +400,15 @@ a stub but never perform a backfill against origin.
   `06-roadmap.md` §Release boundary and record the base/classification; do not
   repeatedly ask for routine release assignment. Retiming an existing target
   and publishing still follow their separate authority rules.
+- **Automate recurring procedure (operator direction, 2026-09-04).** Prefer
+  an existing executable helper for a mechanical step. When authorized work
+  exposes a recurring manual sequence, projection, or handoff, move the smallest
+  useful increment into a command, generator, fold, or guard and check its
+  normal and consequential failure paths. Keep judgment at the point that
+  needs it. Work beyond the current authorized scope becomes a bounded
+  candidate through the existing nomination process. Judge the result by the
+  repeated work and coordination it removes; a new checklist or approval ritual
+  is not an automation outcome. Apply the existing scope and authority rules.
 - **Evidence gates over prose.** Completion claims require the work order's
   evidence: passing tests you ran, output you captured, behavior you witnessed.
   Read your own diff before reporting. Never infer completion.

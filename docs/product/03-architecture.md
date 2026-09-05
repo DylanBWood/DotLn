@@ -536,9 +536,29 @@ redux/rxjs applied to agents, and it must satisfy the analog completeness test:
   forbidden-by-prose — a page (or CLI) simply doesn't render a disabled Claim
   button. The browser is one strong rendering of this shared world; the shared
   world itself is the event store.
+- **Beacon**: the cheapest rendering of that shared world is an exact metadata
+  codeword. One host-projected file per evidenced episode exposes its latest
+  consequential action class, outcome, capped refusal count, provenance, and
+  codebook version through byte size. Its mtime is the derivation event's time;
+  opening it yields the matching L0 receipt inside the fold's projection record.
+  An executor may emit a separate, explicitly self-reported claim before a
+  result exists. Neither file becomes canonical state, authority, or proof of
+  the claim. A metadata sweep is cheaper than reading receipts; a versioned
+  codebook makes its limited disclosure exact (02 §Beacon codebook v1).
 - **Bootstrap transport**: shared files in the repo are an acceptable first bus
   (that's how model harnesses fan out internally) but never canonical state —
   the append-only log is (lost-update and ordering hazards otherwise).
+
+The author's implementation has a standing **automation direction**: progressively
+turn recurring procedure into executable mechanisms. A repeated sequence,
+manual projection, or predictable handoff is evidence of work the system can
+carry. Start from its actual inputs, trigger, permitted effects, and observable
+result; use a deterministic command, fold, generator, or guard wherever those
+facts determine the answer. A model participates where interpretation or judgment
+is needed. Each increment retains its scope, authorization, failure behavior,
+and evidence, and should remove recurring operator coordination. This is an
+implementation preference within the existing composition model; it adds no
+resident coordinator, automatic scope expansion, or new core primitive.
 
 ### Candidate — opinion cohorts and sealed adjudication
 
@@ -638,6 +658,70 @@ transformation versions. The pure transform subgraph proves its mapping for
 declared inputs; adapter evidence proves the effectful invocation; an outer
 capability boundary and independent evidence are still required to rule out
 undeclared side effects when an implementation makes that negative claim.
+
+### Candidate — resource pressure as an environmental modifier
+
+The operator's environmental analogy contributes a relationship: surrounding
+conditions can make an activity harder to initiate and harder to sustain. For
+this implementation, pressure in a shared resource budget could progressively
+raise the activation requirement for routine work. This is a proposed resource
+and activation policy, not a physical simulation or an implemented scheduler.
+
+Keep three quantities visible: the task's base resource cost, the environment's
+current activation modifier or threshold, and the capacity still available
+within a named budget scope and window. Recorded consumption and outstanding
+reservations determine pressure; all-time usage alone must not permanently
+strangle a renewable budget. A pressure multiplier could raise a task's
+effective admission cost, or a policy could demand stronger priority/evidence
+before admitting it. These are alternatives to compare, not two mandatory
+penalties, and a policy score must never be reported as actual resource spend.
+
+| Condition                             | Candidate behavior                                                                                                                     | Evidence retained                                               |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Ample unreserved capacity             | Admit eligible routine work at its ordinary threshold.                                                                                 | Base cost, budget scope, current inputs, and decision.          |
+| Increasing pressure                   | Require a stronger trigger, lengthen cadence, coalesce work, or select an already authorized cheaper mechanism with the same contract. | The modifier, deferred or selected work, and reason.            |
+| Low remaining routine capacity        | Decline new routine activation and re-evaluate continued/repeated activation at a declared boundary.                                   | An explicit deferred/NoOp disposition and resumption condition. |
+| Essential completion or recovery work | Use its declared reserve and priority under the equipped profile.                                                                      | Reserve accounting and the actual completion/refusal evidence.  |
+
+This can compose `ResourceModel` with mechanism-activation `AttentionPolicy`
+and statechart/cadence guards. Resource observations enter the canonical log;
+`env` projects them for replay. An equipped `AmbientEffect` may contribute a
+modifier or reservation, but ambient-effect execution is still deferred by the
+current compiler. Environmental input, a cost-bearing equipped effect, and the
+policy that consumes them are separate responsibilities. Permission remains a
+separate gate; pressure does not authorize an effect or silently lower a required
+model or assurance level. The personal profile's protected verification budget
+still applies. Other owners select their own declared reserve policy.
+
+The operator's follow-up selects a different objective from uniform thrift:
+use available allowance on useful deliverables early, then leave a clear period
+for other activities. The environmental modifier need not stretch routine work
+across the whole window. It may prioritize the selected batch and its completion
+reserve, then suppress discretionary activation. Confirmed temporary capacity
+or a reset is a new input; a possible future promotion is not replenishment
+already in the budget. This refinement leaves the exact pressure policy open.
+
+The concurrent-track planning candidate adds a flow constraint: available
+capacity need not be activated when its output would only accumulate ahead of
+a slower required step. An observation/admission policy can distinguish open
+tracks, admitted orders, active steps, and completed throughput, then limit
+upstream admission or pause at a declared safe boundary. The
+[planning handoff](../planning/budget-window-work-order-ladders.md#fable-planning-handoff)
+must select the first queue/capacity observations, scoped limits, reserve and
+fairness treatment, and evidenced pause/resume conditions. The operator's
+constraint analogy supplies this relationship; it selects no control algorithm
+or new runtime primitive.
+
+The start/continue distinction carries the analogy's persistence aspect:
+passing admission once does not grant unlimited repeated activation. A future
+policy needs explicit replenishment/reset, observation age and missing-data
+handling, and resistance to threshold oscillation and indefinite starvation.
+No exact curve, units, threshold, sample cadence, runtime event schema, or
+implementation target is selected here. The smallest useful experiment compares
+fixed admission with one pressure policy over a recorded consumption and
+replenishment sequence, including a reserved completion path; it must show
+replay identity and less wasted routine work without moving the cost into
+missed obligations. Beacon v1 gains no field or behavior from this candidate.
 
 ### Candidate — pinned artifact identity
 

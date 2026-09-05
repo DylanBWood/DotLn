@@ -1,6 +1,6 @@
 # Work-order map — human planning judgment
 
-**Planning revision:** 2026-09-04, WO-026. The generated
+**Planning revision:** 2026-09-04, WO-020 ideation. The generated
 [work-order index](../work-orders/README.md) now owns header observations,
 control evidence, dependency-token status, and local release attribution. This
 map retains recommendations, rationale, tracks, and human activation preflight.
@@ -20,11 +20,30 @@ require mainline work to count upward to reach it.
 
 ## Recommendation and rationale
 
-The retained 2026-09-04 preference for the next part of the sequence is
-**WO-026 → WO-020 → WO-021 → WO-029 → WO-009 → WO-022 → WO-010 → WO-011**.
+The operator restated this sequence during WO-020. This marked list is its
+single editable source; the work-order README renders it with evidence-derived
+progress marks. Keep the plain one-item-per-line form usable in a text editor.
+Closed entries remain here until the operator changes the planning horizon;
+the generator marks them rather than asking the operator to cross them off.
+
+<!-- dotln-work-order-sequence:start -->
+
+- WO-020 — Beacon codebook
+- WO-021 — Control-plane beacons
+- WO-029 — Pinned artifact identity
+- WO-009 — Real disposable worker
+- WO-022 — Senses
+- WO-010 — Independent verification
+- WO-011 — Feedback compiler
+
+<!-- dotln-work-order-sequence:end -->
+
 Revalidate each selection against its authority, the index, and current
 preflight facts; this is a human recommendation, not a scheduler or an
-activation. WO-026 is the current work-order subject for this planning revision.
+activation. WO-026 has passing final-review and local release evidence; WO-020
+passed independent verification and final review at this revision and awaits
+operator merge. The README derives those facts anew instead of relying on this
+dated planning sentence.
 
 The planning reasons remain: the index reduces repeated evidence gardening;
 the beacons make state and staleness legible before the external worker;
@@ -37,8 +56,24 @@ without introducing attention or resource telemetry.
 Version assignment is the operator's opt-out default. Complete an unassigned
 activation target using the roadmap classification, observed release base, and
 matching source claim. Published tags and already pinned targets keep their
-separate immutability/retiming rules. WO-026 prepares the compatible v0.5.2 patch
+separate immutability/retiming rules. WO-026 prepared the compatible v0.5.2 patch
 above v0.5.1; the candidate application journey does not allocate a runtime rung.
+
+After WO-021, the [proposed beacon usefulness checkpoint](beacon-usefulness-checkpoint.md)
+compares the new projection with existing status views before recommending
+further investment. The technical orders do not by themselves prove the wider
+DotLn or Protíno product thesis. This observation adds no release gate or
+automatic change to the sequence above.
+
+An alternative [budget-window ladder plan](budget-window-work-order-ladders.md)
+now preserves the operator's proposed two-lane experiment. The normal sequence
+above remains current. The alternative pairs WO-021/WO-029, joins at WO-009,
+and then considers WO-022/WO-010 before WO-011. The
+[Fable planning handoff](budget-window-work-order-ladders.md#fable-planning-handoff)
+defines the enabling subject: zero to many concurrent orders, potentially
+different steps per order, and lane derivation from dependencies and capacity.
+Compatibility choices, integration overlap, and required evidence remain
+planning work; this candidate is not a second live status checklist.
 
 WO-014 remains a floating option when approval friction is the constraint.
 For adjacent evidence/corpus work, retain **WO-108 as the first candidate**:
@@ -54,6 +89,12 @@ Its bytes are preserved under WO-026's file-freeze rule; there is no path or
 identity migration.
 
 ## Preserved unallocated candidates
+
+- Plan the [concurrent-workflow control change](budget-window-work-order-ladders.md#fable-planning-handoff),
+  with independent per-order steps and attributable history, then prove serial
+  integration/release closeout on synthetic branches before the paired trial.
+  Derive lane assignment from eligible work and capacity; do not pin the model
+  to two orders or a shared phase clock.
 
 - Correct the compiled Entropy Reducer's Shape-First wording and regenerate its
   residue under a bounded follow-on. The current manual usage guide records the
@@ -187,7 +228,7 @@ second completion ledger.
 | [WO-017](../work-orders/WO-017-kernel-truthfulness.md)         | kernel correctness/evidence — store codec, outbox ordering, authority guard, evidence hardening                | satisfied — `v0.3.5` assigned; operator merge and release close completed                                                                                                                                     | pure-kernel boundary repairer                                                   | built-kernel probes and deterministic mutation drills                                                   | kernel store/core/tests/README, skeleton envelope, domain and architecture docs                                                                                                        |
 | [WO-018](../work-orders/WO-018-control-plane-consolidation.md) | control-plane/tooling — shared helpers, machine state, built-kernel manifest                                   | satisfied — activated from published `v0.4.0`; `v0.4.1` and `@dotln/kernel` `0.2.1` assigned; landed WO-013 shell-fixture and WO-024/WO-025 release-script changes consumed                                   | control-plane refactorer/evidence engineer                                      | shell fixtures plus real-repository publication/corpus checks                                           | script libraries, lifecycle/release/publication suites, guide/playbook/release/corpus docs                                                                                             |
 | [WO-019](../work-orders/WO-019-effort-truth.md)                | process/control evidence — declared and attested effort truth                                                  | satisfied — active branch contained published `v0.3.3`; bounded readback probe completed without importing personal settings; merge and release close completed                                               | control-plane/process implementer, then verifier and reviewer                   | attested harness/model/effort/source                                                                    | resume script/tests, discovery, guide/playbook/domain/evidence docs                                                                                                                    |
-| [WO-020](../work-orders/WO-020-beacon-codebook.md)             | skeleton projection/CLI — metadata-only episode Beacons and exact disclosure codebook                          | active slot must close; assign version and close disposition; confirm the main intake retains the original analogy, later planning turns, and distinct capture index; re-observe host metadata behavior       | beacon projection/codebook implementer plus bounded environment probe           | deterministic pure/filesystem fixtures on a re-observed host                                            | skeleton beacon pure/filesystem modules, CLI/tests, discovery, product/README/capability table                                                                                         |
+| [WO-020](../work-orders/WO-020-beacon-codebook.md)             | skeleton projection/CLI — metadata-only episode Beacons and exact disclosure codebook                          | satisfied — activated from published `v0.5.2`; `v0.6.0` assigned under the release-assignment default; intake sources and host metadata re-observed in the stage receipts; see the index for evidence         | beacon projection/codebook implementer plus bounded environment probe           | deterministic pure/filesystem fixtures on a re-observed host                                            | skeleton beacon pure/filesystem modules, CLI/tests, discovery, product/README/capability table                                                                                         |
 | [WO-021](../work-orders/WO-021-control-plane-beacons.md)       | control-plane dogfood/projection — authorized beacon sweeps, staleness, audiences, group composites            | active slot must close; assign version and close disposition; activate from a governed base containing all dependencies                                                                                       | control-plane/beacon integrator                                                 | deterministic resume/worktree and metadata fixtures                                                     | resume/worktree scripts, codebook v2, Observe guard choice, audience directories, skeleton, classifier                                                                                 |
 | [WO-022](../work-orders/WO-022-senses.md)                      | composition/runtime capability — Senses as compiled, authorized, mounted perception                            | active slot must close; assign version and close disposition; consume bounded v2; re-observe sparse/numeric/filesystem limits; arrange a non-repository key; prove v3 representable                           | composition/perception-capability implementer                                   | deterministic compiler/path/keyed-residue/authorization fixtures                                        | perception supports/fixtures, sparse-twin affordance, host path/provenance residue, bounded guard, docs/tests                                                                          |
 | [WO-023](../work-orders/WO-023-compile-entropy-reducer.md)     | instance content — compile the Entropy Reducer reviewer and generated dispatch residue                         | historical compiled-instance scope; consult current evidence in the index                                                                                                                                     | instance-content/compiler implementer, then human review and blinded refutation | compiled reviewer Claude Fable 5.1 at max with attestation                                              | compiler wildcard contract; skeleton loadout/compiler boundary; instance residue and run evidence; tests; pattern/playbook/architecture/ledger docs                                    |

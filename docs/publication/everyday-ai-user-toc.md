@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:2c594edc31830dbae46d62993a37fb95c6fa4686342f565cdb7a38e4f2aecb04`
+`sha256:45c68f631ee5d37dbe4094e73d691482254a3164f077dbd0cbba685f866dc906`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -45,12 +45,14 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
 ## Part III — Keep work alive across handoffs
 
 5. **A workstream remembers even when a session ends**
-   - durable objectives, fresh task-scoped sessions, and continuation
+   - durable objectives, fresh task-scoped sessions, continuation, and proposed
+     independent contribution tracks
    - sources:
      [Actors and episodes](../product/02-domain-model.md#actors-and-episodes-the-edge),
      [Session lifecycle and resilience](../product/03-architecture.md#session-lifecycle--resilience)
 6. **Steer the same work from more than one view**
-   - terminal, console, semantic zoom, and labeled lossy projections
+   - the planned Actor UI, proposed name UIFA, terminal, console, semantic zoom, and labeled
+     lossy projections
    - sources:
      [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract),
      [Semantic zoom](../product/04-interfaces.md#semantic-zoom)
@@ -63,9 +65,11 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
      [Principles](../product/01-principles.md#principles-design-axioms),
      [Authority and honesty rules](../product/08-publication-compiler.md#authority-and-honesty-rules)
 8. **Who acted, why, and under what authority**
-   - human receipt, privacy boundary, and recovery questions
+   - human receipt, cheap Beacon observations, claims beside evidence,
+     metadata disclosure, and recovery questions
    - sources:
      [Audit audiences and decisions](../product/09-audit-resilience-privacy.md#audit-audiences-and-decisions),
+     [Fidelity levels](../product/09-audit-resilience-privacy.md#fidelity-levels),
      [Privacy and minimization](../product/09-audit-resilience-privacy.md#privacy-and-minimization)
 
 ## Part V — Recover, learn, and stay in control
@@ -83,15 +87,21 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
 ## Part VI — Separate today from the destination
 
 11. **What the reference build actually supports**
-    - the implemented baseline, evidence strength, and known gaps
+    - the implemented baseline, evidence strength, known gaps, and a readable
+      proposed work sequence with progress derived from evidence; candidate
+      concurrent workflows, early completion batches, and release traceability
     - sources:
       [v0.2.2 — Capability table v1](../product/06-roadmap.md#v022--capability-table-v1---wo-005),
+      [Work-order navigation](../product/06-roadmap.md#roadmap--application-release-ladder),
+      [Freshness and ownership](../product/08-publication-compiler.md#publication-compiler--one-source-many-authoritative-editions),
       [Architecture](../product/03-architecture.md#architecture),
       [Interfaces](../product/04-interfaces.md#interfaces--the-isomorphic-views)
 12. **Where it can go without locking your work in**
-    - horizons, portability, and regeneration with explicit compatibility
+    - horizons, portability, regeneration with explicit compatibility, and
+      why technical proofs still need an operator's usefulness judgment
     - sources:
       [Three horizons, one kernel](../product/00-vision.md#three-horizons-one-kernel),
+      [Proposed beacon usefulness checkpoint](../product/06-roadmap.md#roadmap--application-release-ladder),
       [Portable and regenerable sharing](../product/10-ir-compatibility.md#portable-and-regenerable-sharing)
 
 ## Reader aids

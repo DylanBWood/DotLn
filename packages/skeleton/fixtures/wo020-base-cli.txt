@@ -1,0 +1,26 @@
+@dotln/skeleton v0.5.0 — Repo Gardener + Seiri
+01 InspectionTaskCreated — evt_1
+02 LoadoutEquipped — evt_2
+03 OperatorPresenceChanged — evt_3
+04 DecisionRecorded — evt_4
+05 CadencePulse — evt_5
+06 WorkOrderEmitted — evt_6
+07 DecisionRecorded — evt_7
+08 CommandPersisted — evt_8
+09 CommandResult — evt_9
+10 DeletionAttempted — evt_10
+11 CommandRefused — evt_11
+12 DecisionRecorded — evt_12
+13 EpisodeTerminated — evt_13
+14 DecisionRecorded — evt_14
+15 VerificationRequested — evt_15
+16 VerificationCompleted — evt_16
+17 OperatorPresenceChanged — evt_17
+18 CadencePulse — evt_18
+19 DecisionRecorded — evt_19
+20 QueuedPulseNoOp — evt_20
+21 SchedulesCancelled — evt_21
+
+🐛 Repo Gardener  ◌ dormant  ⏱️ pulsing  🔎 inspecting  🛡️ inverted/refused  ✅ verified  ☀️ phase:returned  💤 faded/cancelled
+
+verified=true candidates=1

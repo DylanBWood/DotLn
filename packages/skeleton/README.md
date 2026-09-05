@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.5.0
+# `@dotln/skeleton` 0.6.0
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on
@@ -7,23 +7,28 @@ release `v0.3.0`; published manifests remain historical truth.
 The component advances to `0.3.1` in application release `v0.3.5`: the existing
 grant decision slot now records the successful authority trace, and operator
 return revokes inspection through a real predicate condition.
-Component `0.3.2` is staged for application release `v0.3.6`: the live host and
+Component `0.3.2` shipped in application release `v0.3.6`: the live host and
 JSONL replay now drive one pure `seiriReactor`, the full `Decision` sequence and
 semantic projections match, and derived skeleton events carry canonical cause
 and pulse-or-command correlation links.
-Component `0.4.0` is staged for application release `v0.4.0`: the reactor now
+Component `0.4.0` shipped in application release `v0.4.0`: the reactor now
 consumes the pure composition compiler's normalized Seiri program. Five linked
 supports emit the bounded WorkOrder, permission guard, evidence schema,
 absent-only cadence/statechart guard, and verifier episode with declared cost.
 The component remains `0.4.0` for application release `v0.4.1`; only its exact
 `@dotln/kernel` dependency advances to `0.2.1`, and no skeleton source changes.
-Component `0.5.0` is staged for application release `v0.5.0`: the host compiles
+Component `0.5.0` shipped in application release `v0.5.0`: the host compiles
 the Entropy Reducer identity, planning-reviewer role, Shine active, Standardize
 link, seven additional supports, tracked/control-plane-read-only wildcard
 authority with bounded scratch and intake-capture writes, once cadence, typed
 manual Program, output/refutation validators, and generated residue. The
 review is operator-mediated because kernel `Program.All` remains deferred; no
 model transport was added.
+
+Component `0.6.0` is staged for application release `v0.6.0`: the optional
+Beacon edge emits exact metadata projections and a separately labeled fake
+executor claim. Kernel, compiler, reactor, and audit projection code are
+unchanged; the default stdout changes only the package-version banner.
 
 The deterministic Repo Gardener + Seiri vertical. It compiles a typed
 `LoadoutGraph` into a bounded `WorkOrder` and related runtime mechanisms, runs
@@ -102,3 +107,67 @@ wildcard/participating-authority-claim graphs still refuse, while unequipped
 catalog definitions remain inert.
 The fake adapter deduplicates by the kernel-generated command id so crash
 recovery can safely re-dispatch pending outbox commands.
+
+## Beacon metadata projection
+
+```sh
+npm run skeleton -- --beacons .beacons
+```
+
+`--beacons <directory>` is explicit and composes with `--audit` and
+`--compiled-diff`. Without it, the CLI creates no files. Inside this repository
+the destination must already be gitignored (`/.beacons/` is supplied); paths
+under `docs/intake`, including aliases through symlinks, refuse. A directory
+outside the repository is also accepted. Writers replace only their stable
+addresses and do not purge unrelated or historical files in a reused directory.
+
+Each host file holds the latest matching L0 receipt inside a
+`BeaconProjectionRecord`, with the episode's cumulative refusal count capped at
+three. One pure encoder derives its UTF-8 JSON, trailing-newline padding,
+codeword byte size, and event-time mtime. A fixed SHA-256 producer/scope address
+contains no status/version spelling and is not an anonymity or authentication
+guarantee. Before `CommandResult` exists, the fake executor writes its own
+`BeaconClaimRecord` claiming `verification/passed`. That claim has a distinct
+address and does not update the host projection or canonical log.
+
+The reader performs directory enumeration and non-following metadata lookups
+only. It never opens beacon content; unreadable or garbage content at the same
+size decodes identically. Links and other non-regular entries are malformed.
+The constellation groups the declared lifecycle categories by size, then
+address. Classes can recur, so size order is not chronology. The demo's two
+rows are:
+
+| Bytes | Virtual mtime (UTC)      | Class/outcome            | Refusals | Provenance     |
+| ----- | ------------------------ | ------------------------ | -------- | -------------- |
+| 37216 | 1970-01-01T00:20:00.001Z | verification/passed      | 0        | self-reported  |
+| 49764 | 1970-01-01T00:20:00.007Z | external-effect/observed | 1        | host-projected |
+
+The host's last receipt is the existing `schedule.cancel` observation after the
+queued no-op. No artificial terminal event is added. Dates are 1970-relative
+because both events and the fake claim use virtual milliseconds. `3+` in a
+listing means at least three refusals. Malformed sizes and reserved future
+codebooks are labeled without guessing state.
+
+The [normative v1 data](../../docs/product/02-domain-model.md#beacon-codebook-v1)
+assigns 104 states, all at most 51,064 bytes, without sparse files. Oversized
+records and unrepresentable times refuse before publication. The edge stages
+each complete file in a private sibling directory, verifies exact size and
+mtime, and atomically renames it to its stable address; staging is removed on
+normal completion/failure. This is per-file atomicity, not an all-directory
+snapshot or crash-durable storage. The canonical log rebuilds host projections;
+edge-only claims are outside live/replay identity.
+
+The [probe record](../../docs/discovery/beacon-probe-2026-09-04.md) includes a
+Node timestamp-conversion correction and measured permissions, sparse logical
+size, names, links, and xattrs. The suite exhausts every integer through twice
+the largest v1 codeword, compares live/replay files with `cmp`, observes denied
+content reads, proves claim isolation before results, and watches concurrent
+atomic replacements. Metadata intentionally discloses codebook fields,
+existence, correlation, and recency; content permissions do not hide it.
+
+[WO-021](../../docs/work-orders/WO-021-control-plane-beacons.md) is the nominated
+next increment for control-plane output, cross-worktree sweeps, authorized
+`BeaconObserved` events, staleness, and group composites. Real-worker liveness
+remains with WO-009. Neither milestone alone proves the concept useful; the
+[proposed operator comparison](../../docs/planning/beacon-usefulness-checkpoint.md)
+remains a separate evidence step.

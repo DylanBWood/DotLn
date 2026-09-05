@@ -108,9 +108,13 @@ uses the recorded tag-object snapshot so a new release tag does not break that
 release's own checks; it reports newer local release tags and refuses missing or
 changed recorded ones. Refresh after lifecycle dispatch/result transitions and
 before evidence runs, including after executor readiness and final review.
-The control helpers do not update it automatically. The index is a text
-observation, so preflight still interprets recommended, independent, and reverse
-references in dependency paragraphs.
+The control helpers do not update it automatically. The executor refreshes it
+on dispatch as well as at its evidence/result boundaries. The README leads
+with the operator's proposed sequence from the marked block in the human map;
+checkboxes follow passing final review in the control log. No separate editor
+checklist is needed. Merge and release remain separately evidenced. The index
+is a text observation, so preflight still interprets recommended, independent,
+and reverse references in dependency paragraphs.
 
 **2. Implement (Codex, fresh session, own worktree).**
 
@@ -152,6 +156,14 @@ updates happen by default; specify a no-release disposition to opt out. A
 missing activation target is completed using the roadmap's classification and
 latest published base. This saves repeated opt-in questions while preserving
 the explicit final-review and release-close dispatches for external effects.
+
+The executor also updates the current factual documentation reached by the
+change: product contracts, reader entry points, examples, names, limitations,
+runbook and publication references. The existing outcome or ideation receipt
+names the affected surfaces and checks. Verification checks those claims;
+final review closes the consistency pass. Separate publication work is for
+edition assembly or broader editorial debt, not for postponing factual updates.
+See [documentation ownership](product/07-execution-guide.md#documentation-freshness-and-ownership).
 
 **3. Verify (Opus 5, fresh session, blinded).** New session — not the
 implementer's, no implementer narrative. Feed it: the WO + the diff.
@@ -317,9 +329,15 @@ order.”
 
 ## Concurrency
 
-One writable agent per worktree, always (global rule). Two work orders in
-parallel = two worktrees, two sessions, zero shared files. The main checkout
-stays clean for you and the planning session.
+One writable agent per worktree, always (global rule). Parallel implementation
+requires separate worktrees and sessions. Each checkout's current resume helper
+tracks one active order; two branches still overlap in control history,
+generated projections, and release claims when they integrate. Worktree
+isolation does not prove concurrent closeout. Keep main integration serialized.
+The planned control change supports zero to many concurrent orders, potentially
+with different workflow steps, and must prove attribution and integration;
+see the [candidate ladders and observed limit](planning/budget-window-work-order-ladders.md#feasibility-and-integration-gate).
+The main checkout stays clean for the operator and planning session.
 
 ## When things break
 

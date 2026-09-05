@@ -8,6 +8,8 @@ implementation a common language for turning a person, team, organization, or
 field's values, craftsmanship, organizational patterns, and accumulated
 corrections into executable behavior.
 
+The operator also associates DotLn's spoken sound with .NET and Kotlin.
+
 The author's first personal implementation, developed in this same repository,
 chooses to compile that material into:
 
@@ -19,6 +21,12 @@ chooses to compile that material into:
 so that the operator can shape the idea and implementation direction, declare
 intent at a high level, and improve the **meta-process** when they choose, while
 the machinery — not the operator's attention — carries the rules.
+
+The eventual Actor UI direction has the proposed spoken name **UIFA**
+(**User Interfaces for Actors**, pronounced **“wee-fuh”** to rhyme with **FIFA**): a shared view of
+participating people and software actors, their work, and its evidence. The
+[interface contracts](04-interfaces.md) ground that target in the existing
+Actor model and equivalent projections. The complete interface remains planned.
 
 ## Mission — increase the chance of operator flow
 
@@ -190,7 +198,7 @@ source accidents do not become ontology by resemblance.
 
 This is the standing interpretation rule for earlier and future operator
 ideation. Its fullest product expression is the first-party application thesis,
-[`προτείνω`](11-proteino.md), but it applies to the whole platform.
+[`προτείνω`](11-protino.md), but it applies to the whole platform.
 
 ## Three horizons, one kernel
 
@@ -209,7 +217,7 @@ The [workstream application candidate](12-workstream-application.md) develops
 Horizon 1 through concrete end-user journeys and gradual workflow replacement,
 including one outcome spanning multiple repositories. It leaves deployment and
 application identity open and does not allocate another release rung.
-[`προτείνω`](11-proteino.md) is the operator-named application destination that
+[`προτείνω`](11-protino.md) is the operator-named application destination that
 joins Horizons 2 and 3: prose-authored patterns and ad hoc interventions become
 playable inside an inspectable counterfactual community. Naming the destination
 does not move it ahead of the release ladder or make its application-local

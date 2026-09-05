@@ -155,6 +155,8 @@ target still follows the retiming rule. This authorizes preparing the version
 surfaces, not publishing a tag, Release, package, or branch without its existing
 dispatch. WO-028 applies the default as `v0.5.1` above published `v0.5.0`.
 WO-026 applies it as `v0.5.2` above published `v0.5.1`.
+WO-020 assigns the next minor, `v0.6.0`, above published `v0.5.2`, with skeleton
+component `0.6.0` and unchanged kernel/compiler versions.
 
 Patch releases contain compatible corrections, documentation, and evidence
 improvements; minor releases add backwards-compatible application capability;
@@ -273,6 +275,44 @@ transitions before running evidence; lifecycle helpers do not regenerate the
 index. Standardized front matter, a separate registry, a scheduler, and automatic
 recommendation remain unselected candidates.
 
+**2026-09-04 usability correction (WO-020 ideation):** the operator's reading
+task is to follow a proposed sequence and see progress, including in a plain
+text editor. The README therefore leads with a short checklist sourced from
+one marked recommendation block in the human map. It derives its check marks
+from passing final review, labels the active phase, and puts full per-order
+evidence below the first screen. The checked state is not proof of merge or
+publication. Detailed dependency-token observations retain their conservative
+label; the generator must not turn prose references into false hard blockers
+or silently reorder the operator's recommendation. A missing or malformed
+sequence block, duplicate IDs, or IDs without an authority refuse. An explicitly
+empty block means no proposed sequence. No work-order ID, authority path, or
+historical evidence moves.
+
+### Candidate — beacon usefulness checkpoint
+
+WO-020's exact decoding, replay, metadata-only reading, and atomic emission
+can establish the local mechanism. WO-021's lifecycle integration, audiences,
+staleness, and group projection can establish a usable control-plane example.
+Neither demonstrates that all of DotLn is viable or that Protíno's simulated
+world is compelling. Technical feasibility, practical usefulness, and felt
+interest are different questions with different evidence.
+
+The [bounded comparison plan](../planning/beacon-usefulness-checkpoint.md)
+nominates an operator trial after WO-021: answer the same work-state questions
+with existing status projections and with Beacons, using normal, refused,
+stale, absent, and conflicting-claim cases. Observe correctness and navigation
+burden; record any measured cost with its method, and leave subjective value
+to the operator's witnessed response. Retain, simplify, or defer further
+investment based on that comparison. A passing codec test is not evidence of
+delight, and an elaborate encoding is not justified merely by being possible.
+
+This is a proposed product-learning checkpoint, not a newly imposed release
+gate, a runtime telemetry requirement, or an expansion of WO-020/WO-021's
+technical acceptance criteria. Real worker behavior arrives in WO-009,
+independent real verification in WO-010, feedback in WO-011; a representative
+end-to-end trial is still needed to judge the work-system thesis. Protíno
+needs its own playable evidence slice at its separately selected horizon.
+
 ### Candidate — unattended work-order portfolio
 
 The earlier operator-away scheduler was partly a workaround for supervising one
@@ -302,6 +342,66 @@ changes and unresolved decisions.
 The current one-slot resume protocol remains manual and authoritative. No
 automatic allocator, approval phrase, queue schema, or concurrency model is
 selected by this candidate.
+
+### Candidate — budget-window work-order ladders
+
+The operator prefers concentrating useful work early in available usage windows
+so the remaining period can be spent on other activities. Preserve a control
+state machine supporting **zero to many concurrent work orders, each with its
+own declared workflow steps**. A single ladder and a two-ladder batch are trial
+capacity settings. Orders may occupy different phases and advance independently;
+steps and legal transitions remain governed by each order's pinned workflow
+and evidence contract. The initial role preference is Codex implementation,
+fresh Opus 5 verification, and fresh Fable final review, with one writer per
+worktree and model/effort assignment per order.
+
+The [concrete candidate plan](../planning/budget-window-work-order-ladders.md)
+splits the existing horizon into Beacons/Senses and Artifact Identity/Runtime:
+after WO-020, pair WO-021 with WO-029, run WO-009 at the join, then consider
+WO-022 with WO-010 before WO-011. It preserves hard dependencies and marks
+planning preferences separately. It also records an executable one-order
+control-fold limitation: the follow-on must change lifecycle state and test
+event attribution, integration, and release-target handling. A
+[Fable planning handoff](../planning/budget-window-work-order-ladders.md#fable-planning-handoff)
+asks for bounded enabling work orders and rules that derive lanes from
+dependencies, conflicts, available actors, and capacity. The planner chooses
+compatibility per affected surface, including a versioned computed/cached
+mapping when useful under product 10's declared compatibility laws.
+No automatic allocator or concurrency schema is implemented by this proposal.
+
+Public contributions can use the same independent tracks. A shared projection
+should show every known order's current declared step, blocker, evidence, and
+freshness; a release view should identify the reviewed changes included in each
+published release and lead back to the corresponding orders. Completion,
+integration, and publication are separately evidenced facts. The current
+generated index and immutable release manifests provide a foundation; the
+concurrent model and contribution-to-order mapping remain planning work.
+
+Extend declared dependencies and recommended order to tenant-scoped tracks.
+The scheduling view combines per-track plans with cross-track prerequisites,
+shared conflicts, and capacity; readiness changes when their evidence or base
+changes. The planner must define tenant/track ownership, scoped visibility and
+authority, and the treatment of shared reserves and blocked work. A track
+boundary cannot erase another track's prerequisite or advance its lifecycle.
+The meaning of tenant and the storage/schema representation remain open.
+
+The operator also wants an observation and admission policy that distinguishes
+open tracks, admitted orders, active steps, and useful completed throughput.
+When a downstream step is the constraint, limit or pause upstream production
+at a declared safe boundary instead of growing waiting work. Recorded queue,
+age, completion, capacity, and reserve observations inform per-step/track/global
+limits and explicit resumption conditions. The resource-pressure candidate
+provides a composition point; the first monitor, thresholds, freshness policy,
+fairness, and moving-constraint behavior are planning choices. A bounded trial
+should show a constrained verification step throttling implementation and
+resuming it when capacity returns. No automatic monitor or pause exists yet.
+
+Measure completed reviewed work, integration repair, total elapsed time,
+operator involvement, and uninterrupted time away. Runtime policy consumes
+observed allowance, window, model availability, and reserve inputs. The earlier
+resource-pressure candidate can prioritize an early completion batch instead
+of universally conserving routine work. Trial feasibility and benefit remain
+open; no new order is activated or added to the default sequence.
 
 ## Capability progression policies
 
@@ -535,6 +635,14 @@ substitution; fewer handoffs and retries; smaller evidence with equal strength;
 incremental computation; better stop conditions; archival/tiering; and reduced
 operator cognitive load. Efficiency improvements retain before/after evidence
 and note which resource moved elsewhere.
+
+The [resource-pressure environment candidate](03-architecture.md#candidate--resource-pressure-as-an-environmental-modifier)
+explores spending less on routine activation as scoped budget pressure rises.
+Raising an admission threshold is a scheduling choice; improving efficiency
+means reducing actual resources per comparable useful outcome. A candidate trial
+must measure both deferred work and completed obligations, including declared
+reserves, before claiming a benefit. It has no assigned work order or shipped
+runtime behavior.
 
 ### Candidate — bounded system baseline
 
@@ -939,7 +1047,7 @@ transcript. Exit: witnessed run by a non-author.
 
 ## Post-1.0 horizons
 
-[`προτείνω`](11-proteino.md) is the operator-named flagship first-party
+[`προτείνω`](11-protino.md) is the operator-named flagship first-party
 application horizon: a compact persistent community where long-form prose is a
 targeted, inspectable intervention; residents may ignore, resist, misinterpret,
 adopt, adapt, or relay it; and paired branches show what changed inside a

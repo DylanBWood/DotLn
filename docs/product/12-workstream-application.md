@@ -134,11 +134,25 @@ change to a shared dependency identifies which workstream claims need renewed
 evidence; it does not indiscriminately restart all work. Unrelated authorized
 work may continue when one repository is blocked.
 
+Public contributions are another candidate consumer of these independent
+tracks. A contribution may be scoped into one or more work orders; the shared
+view retains each order's workflow, current step, blockers, and evidence, and
+links published releases to the changes they actually contain. The
+[concurrent-workflow planning handoff](../planning/budget-window-work-order-ladders.md#fable-planning-handoff)
+must define the grouping and release mapping. This adds a collaboration
+scenario to the existing workstream model, with no new identity primitive.
+The operator also proposes tenant-scoped tracks whose plans retain required
+dependencies and recommended order across track boundaries. Tenant ownership,
+visibility, capacity sharing, and the mapping to workstreams/contributions are
+planning choices; this scenario does not equate a tenant with a model session
+or grant cross-tenant authority through a shared status view.
+
 ## What exists and what must be proved
 
 The repository currently demonstrates a pure kernel, composition compiler,
 deterministic skeleton, and its own file-based work-order/control loop. The
-generated work-order index planned in WO-026 improves navigation of that loop.
+generated work-order index delivered by WO-026 improves navigation of that loop
+with recorded lifecycle and release evidence.
 It does not implement an end-user portfolio, repository coordinator, or live
 external execution service.
 
