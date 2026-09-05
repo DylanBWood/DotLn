@@ -31,7 +31,8 @@ import {
   containedRegularFile,
   workOrderAuthorityPath,
 } from "./lib/paths.mjs";
-import { parseControlEvents, statusProjection } from "./resume.mjs";
+import { statusProjection } from "./resume.mjs";
+import { readControl } from "./lib/control-store.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
@@ -265,13 +266,7 @@ const main = () => {
     ensureClean(mainPath);
     ensureClean(subject);
     ensureNoIgnoredMaterial(subject);
-    const control = statusProjection(
-      parseControlEvents(
-        runGit(subject, ["show", "HEAD:docs/control/resume.jsonl"], {
-          trim: false,
-        }),
-      ),
-    );
+    const control = statusProjection(readControl(subject, "HEAD"), workOrderId);
     if (control?.phase !== "closed" || control.workOrder !== workOrderId)
       throw new Error(`${workOrderId} has not passed final review and closed`);
     runGit(mainPath, ["fetch", "origin", "main"]);
@@ -288,6 +283,12 @@ const main = () => {
       throw new Error(
         `${branch} is not merged into origin/main; merge the PR first`,
       );
+    const integrated = statusProjection(
+      readControl(mainPath, "origin/main"),
+      workOrderId,
+    );
+    if (integrated.phase !== "closed")
+      throw new Error(`${workOrderId} is not closed in merged control state`);
     runGit(mainPath, ["worktree", "remove", subject]);
     removeMergedBranch(mainPath, branch);
     process.stdout.write(

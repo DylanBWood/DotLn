@@ -212,8 +212,8 @@ for readers who need the full trace.
 
 ## Work-order navigation and identity (candidate)
 
-The current control projection answers one narrow question: given the single
-active work-order slot and its phase, which lifecycle transitions are legal now?
+The current control projection answers one narrow question: given a selected
+work order and its independently folded phase, which lifecycle transitions are legal now?
 It does not answer which backlog order should be activated after close. The
 release ladder, hard dependency graph, adjacent evidence/corpus work, and
 operator preference are distinct planning inputs and must not be collapsed into
@@ -221,7 +221,7 @@ the next integer.
 
 Keep three answers visible:
 
-1. **Workflow legal next:** the transition allowed for the active slot, such as
+1. **Workflow legal next:** the transition allowed for the selected order, such as
    verify, repair, or final review.
 2. **Eligible now:** every candidate whose hard dependencies, activation
    prerequisites, authority, environment, and exclusive-resource constraints are
@@ -255,7 +255,7 @@ addressed by the [generated work-order index](../work-orders/README.md).
 Work-order files retain their paths as durable addresses. The index observes
 their headers, reduces every order through the shared control fold, and
 attributes release inclusion from local annotated manifests, with the explicit
-pre-manifest v0.2.0 record. It distinguishes the active slot, open orders,
+pre-manifest v0.2.0 record. It distinguishes all in-flight orders, open drafts,
 control-closed orders, and time-indexed history. Closed means the applicable
 passing final review, not independent proof of merge or remote publication.
 
@@ -289,6 +289,54 @@ or silently reorder the operator's recommendation. A missing or malformed
 sequence block, duplicate IDs, or IDs without an authority refuse. An explicitly
 empty block means no proposed sequence. No work-order ID, authority path, or
 historical evidence moves.
+
+### Candidate — whole or split work orders under one umbrella
+
+**2026-09-05 operator ideation:** offer a split assessment for any work order.
+Keep its outcome, scope, and acceptance criteria visible under one umbrella,
+while proposing smaller, independently reviewable increments. The purpose is to
+let one body of work produce several useful PRs without losing its shared
+intent or evidence trail. A split is optional: an already atomic order may be
+best left whole, and an arbitrary partition should not be recommended merely
+to reach a requested number of children.
+
+Before execution, the whole order and a proposed child plan are alternative
+routes. Both can be available to choose; their execution is mutually exclusive.
+Starting the whole route excludes its alternative children. Starting the first
+child selects the split route and permanently excludes execution of that
+original whole-order route, including after a child fails or is abandoned. The
+parent remains addressable as the umbrella; its aggregate status must not claim
+that the original whole-order implementation ran. Planning or previewing a split
+alone does not select it.
+
+Hierarchy and execution order answer different questions. Children may be
+serial, parallel, or a mixture, according to explicit dependencies, shared
+surfaces and resources, available actors, and capacity. For example, two
+independent increments can proceed together and a third can wait for both.
+Each child retains its own workflow and evidence; the umbrella maps its
+acceptance criteria to those increments and exposes uncovered work. Child
+review, integration, release, and completion of the umbrella remain separately
+evidenced. A family of orders does not make all its work safe to run at once.
+This extends the [budget-window ladders](#candidate--budget-window-work-order-ladders)
+and the [UIFA showrunner's](13-uifa-roles.md#uifa-showrunner) planning view.
+
+A useful suggestion explains the proposed acceptance boundaries, dependency
+edges, expected review size, integration risks, and why the split helps. It may
+recommend keeping the order intact, or a different number of increments.
+Suggestions stay non-authoritative until selected under the applicable dispatch
+policy. Smaller increments do not require changing this repository's current
+commit or PR convention as part of the ideation.
+
+Parent and child relationships belong in explicit metadata. A suffixed child
+label is a possible display affordance; it does not replace the existing opaque
+`WO-NNN` identity contract, renumber historical orders, or establish priority.
+Planning still needs to define the exact route-selection event and its atomic
+exclusion across worktrees, active/completed-order split requests, nested or
+revised decompositions, failure/abandonment handling, aggregate closure, and
+release attribution. Existing evidence remains immutable through those choices.
+No child-ID grammar, lifecycle event, split command, scheduler, or automatic
+suggestion mechanism is implemented by this candidate; WO-030's concurrent
+control state is a foundation, not an implementation of splitting.
 
 ### Candidate — beacon usefulness checkpoint
 
@@ -361,9 +409,11 @@ The [concrete candidate plan](../planning/budget-window-work-order-ladders.md)
 splits the existing horizon into Beacons/Senses and Artifact Identity/Runtime:
 after WO-020, pair WO-021 with WO-029, run WO-009 at the join, then consider
 WO-022 with WO-010 before WO-011. It preserves hard dependencies and marks
-planning preferences separately. It also records an executable one-order
-control-fold limitation: the follow-on must change lifecycle state and test
-event attribution, integration, and release-target handling. A
+planning preferences separately. Its original executable one-order
+control-fold limitation is superseded by WO-030's per-order segments and real-Git
+integration fixture. That bounded slice preserves attribution and release
+readers; different workflow definitions and a measured paired wave remain
+future evidence. A
 [Fable planning handoff](../planning/budget-window-work-order-ladders.md#fable-planning-handoff)
 asks for bounded enabling work orders and rules that derive lanes from
 dependencies, conflicts, available actors, and capacity. The planner chooses
@@ -377,7 +427,8 @@ freshness; a release view should identify the reviewed changes included in each
 published release and lead back to the corresponding orders. Completion,
 integration, and publication are separately evidenced facts. The current
 generated index and immutable release manifests provide a foundation; the
-concurrent model and contribution-to-order mapping remain planning work.
+per-order control model is implemented in WO-030's source, while
+contribution-to-order mapping remains planning work.
 
 Extend declared dependencies and recommended order to tenant-scoped tracks.
 The scheduling view combines per-track plans with cross-track prerequisites,

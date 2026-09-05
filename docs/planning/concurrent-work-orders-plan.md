@@ -11,6 +11,13 @@ no activation authority and changes no immutable evidence. The
 [marked sequence](work-order-map.md#recommendation-and-rationale) is the
 editable recommendation; this plan explains it.
 
+**Implementation update (2026-09-05, WO-030 source):** the first slice is
+implemented with the existing lifecycle contract, direct legacy support, and
+per-segment release/index proofs. The [executor evidence](../evidence/WO-030/README.md)
+contains the baseline comparisons and real-Git integration transcript. It is
+pending independent verification and final review. All later slices and the
+first measured paired wave retain their own evidence requirements.
+
 ## What was found
 
 The executable observation in the ladders document still holds at `v0.6.0`:

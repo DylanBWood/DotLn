@@ -99,6 +99,10 @@ Episode or Result envelope:
 | **OpinionCohort**      | A finite set of result envelopes over one SubjectSnapshot, correlated by a cohort id and governed by mode (`replicate`, `panel`, `critique`, `implementation-variant`, or `verification`), visibility/blinding, minimum completion, maximum total and concurrency, aggregate resource ceiling, deadline, cancellation, and stop policy. Each opinion retains a unique command, episode, result, actor attestation, and disposition; a mutating result also retains its produced artifact ref and hash.                                                                                     |
 | **AdjudicationPacket** | A sealed, lossless projection over a cohort: admitted and excluded result refs with reasons, exact/structural duplicate clusters, agreement and conflict relations, hard-gate outcomes, unresolved dissent, optional synthesis, and the separately authorized adjudicator's route. It never replaces raw results, treats volume as authority, or permits a late result to mutate the sealed input set. Selecting or combining implementation artifacts materializes a new verification SubjectSnapshot and carries no inherited verification evidence.                                     |
 
+From WO-030, each order owns one append-only control segment (or its unchanged
+legacy-log location), and the shared fold keeps lifecycle legality and evidence
+independent while selection chooses which order to inspect.
+
 The resume control log pins an actor attestation on each completion event as
 `{ harness, harnessVersion, model, effort, raw?, source }`. `effort` is one of
 `low | medium | high | xhigh | max | unknown`; `raw` preserves an unrecognized

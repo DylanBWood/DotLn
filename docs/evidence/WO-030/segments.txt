@@ -1,0 +1,8 @@
+PASS synthetic interleaving: WO-901 ready-to-verify; WO-902 active
+PASS activation owns storage: legacy appends remain legacy; new orders never span segments
+PASS corrupt segments: path and ordinal reported; all 13 commands preserve every control byte
+PASS per-segment byte-prefix proof: sibling additions pass; deletions and equivalent-JSON rewrites refuse
+PASS named-order reactivation retains its segment while a sibling is open; active reactivation refuses
+PASS legacy comparison: 153 events, unchanged bytes and v0.6.0 per-order states
+PASS legacy times: byte-identical observation, 120 named local refs, original global ordinals and source labels
+resume tests passed

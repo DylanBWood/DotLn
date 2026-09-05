@@ -9,7 +9,8 @@ import {
 } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { fold, foldWorkOrders, parseControlEvents } from "./lib/control.mjs";
+import { LEGACY_CONTROL_PATH } from "./lib/control.mjs";
+import { readControl } from "./lib/control-store.mjs";
 import { runGit, runGitPathList } from "./lib/git.mjs";
 import {
   containedRegularFile,
@@ -26,7 +27,6 @@ import {
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const indexPath = "docs/work-orders/README.md";
-const logPath = "docs/control/resume.jsonl";
 const planningPath = "docs/planning/work-order-map.md";
 const snapshotPrefix = "<!-- dotln-work-order-tags: ";
 const historicalIds = new Set(["WO-001", "WO-002"]);
@@ -120,25 +120,6 @@ export const parseSequence = (markdown) => {
     });
 };
 
-const taggedControl = (root, tag) => {
-  const revision = `refs/tags/${tag}`;
-  const paths = runGitPathList(root, [
-    "ls-tree",
-    "-r",
-    "--name-only",
-    "-z",
-    revision,
-    "--",
-    logPath,
-  ]);
-  if (!paths.includes(logPath)) return undefined;
-  const events = parseControlEvents(
-    runGit(root, ["show", `${revision}:${logPath}`]),
-  );
-  fold(events); // Use the canonical vocabulary for tagged logs too.
-  return events;
-};
-
 export const readIndex = (root, releases = localReleaseRecords(root)) => {
   if (
     !realpathSync(join(root, "docs/work-orders")).startsWith(
@@ -148,61 +129,79 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
     throw new Error(
       "docs/work-orders: directory must remain inside the repository",
     );
-  const events = parseControlEvents(readContained(root, logPath));
-  const { current, orders } = foldWorkOrders(events);
+  const control = readControl(root);
+  const { orders, locations } = control;
+  const tagLogs = new Map(
+    releases.map(({ name }) => [name, readControl(root, `refs/tags/${name}`)]),
+  );
+  releases = releases.map((release) => {
+    const controlSegments = [...tagLogs.get(release.name).sources.keys()];
+    if (
+      release.controlSegments !== undefined &&
+      JSON.stringify(release.controlSegments) !==
+        JSON.stringify(controlSegments)
+    )
+      throw new Error(
+        `${release.name}: recorded control segment snapshot differs from tagged source`,
+      );
+    return { ...release, controlSegments };
+  });
   const closed = new Set(
     [...orders]
       .filter(([, row]) => row.state.phase === "closed")
       .map(([id]) => id),
   );
-  const tagLogs = new Map();
   const commitLogs = new Map();
-  const prefixMatches = (prior, length = prior.length) =>
-    prior
-      .slice(0, length)
-      .every(
-        (event, index) =>
-          JSON.stringify(event) === JSON.stringify(events[index]),
-      );
-  const closeTime = ({ closeOrdinal, closeRecordedAt }) => {
+  const prefixMatches = (prior) =>
+    [...prior.sources].every(([path, source]) =>
+      control.sources.get(path)?.startsWith(source),
+    );
+  const closeTime = ({ closeOrdinal, closeRecordedAt }, segment) => {
     if (closeRecordedAt) return Date.parse(closeRecordedAt);
-    // Legacy close events have no append time. Their first committed prefix is
-    // an explicitly weaker, second-precision observation, not a recovered event.
+    // Legacy close times remain weaker first-commit observations. Ordinals
+    // index their own segment; sibling merges cannot shift them.
     const commits = runGit(root, [
       "rev-list",
       "--reverse",
       "HEAD",
       "--",
-      logPath,
+      segment,
     ])
       .split("\n")
       .filter(Boolean);
     for (const commit of commits) {
       if (!commitLogs.has(commit))
-        commitLogs.set(
-          commit,
-          parseControlEvents(runGit(root, ["show", `${commit}:${logPath}`])),
-        );
+        commitLogs.set(commit, readControl(root, commit));
       const prior = commitLogs.get(commit);
-      if (prior.length >= closeOrdinal && prefixMatches(prior, closeOrdinal))
+      const events = prior.eventSegments.get(segment) ?? [];
+      const prefix = prior.sources
+        .get(segment)
+        ?.split("\n")
+        .slice(0, closeOrdinal)
+        .join("\n");
+      if (
+        events.length >= closeOrdinal &&
+        control.sources.get(segment)?.startsWith(prefix)
+      )
         return (
           Number(runGit(root, ["show", "-s", "--format=%ct", commit])) * 1000
         );
     }
     return undefined;
   };
-  const beforeClose = (evidence) => {
+  const beforeClose = (evidence, id) => {
     if (releases.length === 0) return undefined;
-    const cutoff = closeTime(evidence);
+    const segment = locations.get(id);
+    const cutoff = closeTime(evidence, segment);
     return releases
       .filter(({ name, taggedAt }) => {
         if (cutoff === undefined || taggedAt === undefined || taggedAt > cutoff)
           return false;
-        if (!tagLogs.has(name)) tagLogs.set(name, taggedControl(root, name));
         const prior = tagLogs.get(name);
         return (
-          prior !== undefined &&
-          prior.length < evidence.closeOrdinal &&
+          (segment !== LEGACY_CONTROL_PATH || prior.sources.has(segment)) &&
+          (prior.eventSegments.get(segment)?.length ?? 0) <
+            evidence.closeOrdinal &&
           prefixMatches(prior)
         );
       })
@@ -224,7 +223,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         throw new Error(`${id}: control authority path differs from ${path}`);
       const state = evidence?.state;
       const historical = !state && historicalIds.has(id);
-      const active = id === current.workOrderId && current.phase !== "closed";
+      const active = state && state.phase !== "closed";
       const phase =
         state?.phase ?? (historical ? "historical (time-indexed)" : "draft");
       const section = active
@@ -250,7 +249,7 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         ? `${release.name} (${release.historical ? "historical record" : release.manifest.workOrder.id === id ? "manifest workOrder.id" : "manifest changedFiles"})`
         : "none recorded";
       if (phase === "closed" && !release) {
-        const prior = beforeClose(evidence);
+        const prior = beforeClose(evidence, id);
         disposition =
           prior &&
           semver(header.version) &&
@@ -304,12 +303,12 @@ const report = (id, verdict, path) =>
 
 export const renderIndex = ({ rows, releases, sequence }) => {
   const byId = new Map(rows.map((row) => [row.id, row]));
-  const active = rows.find((row) => row.section === "Active");
+  const active = rows.filter((row) => row.section === "Active");
   const lines = [
     "# Work orders",
     "",
-    active
-      ? `**Now:** [${active.id}] — ${cell(active.phase)}.`
+    active.length
+      ? `**Now:** ${active.map((row) => `[${row.id}] — ${cell(row.phase)}`).join("; ")}.`
       : "**Now:** between work orders.",
     "",
     "## Proposed order",
@@ -334,7 +333,7 @@ export const renderIndex = ({ rows, releases, sequence }) => {
     "",
     "Order and short labels come from [the planning map](../planning/work-order-map.md#recommendation-and-rationale).",
     "Checks mean passing final review; release evidence and its limits are below.",
-    "The sequence is a recommendation. For the active slot's legal action, use `npm run resume -- status`.",
+    "The sequence is a recommendation. For the selected order's legal action, use `npm run resume -- status`.",
     "",
     "This file is generated by `npm run work-orders -- index`; actors refresh it at dispatch and outcome.",
     "Edit the map's marked sequence to change the plan; do not cross off entries here.",
@@ -393,10 +392,10 @@ const renderSources = (releases) => {
     "",
     "- **Header observation:** each authority's H1, sole strict application version, Model, Effort, and Depends on paragraph. Unknown or malformed metadata is attributed by the Authority link; it is never guessed.",
     "- **Proposed sequence:** the marked block in the human planning map, in operator-selected order. Missing/malformed blocks, duplicate IDs, and IDs without an authority refuse. This is not a scheduler or proof of dependency eligibility.",
-    "- **Control evidence:** the shared fold of `docs/control/resume.jsonl`, reduced per work order in append order. Closed means a passing final review; it does not independently prove merge or publication. Report verdicts come from events, not inferred report contents.",
+    "- **Control evidence:** the shared fold of legacy `docs/control/resume.jsonl` plus `docs/control/orders/WO-NNN.jsonl`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. Report verdicts come from events, not inferred report contents.",
     "- **Local release evidence:** the earliest numeric annotated DotLn tag whose manifest names the order or a changed final-review path. The manifest-free v0.2.0 exception uses `docs/releases/v0.2.0.md`. Other tags are not release evidence. Remote publication is not checked.",
     "- **Derived dependency status:** all distinct WO-NNN tokens in Depends on are compared with the control-closed set. This conservative text view includes recommended or independent references in that paragraph; human preflight interprets their meaning. An absent field is unknown; a present field with no WO tokens has no computed blocker.",
-    "- **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.",
+    "- **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose per-segment tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.",
     "- **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.",
     "",
     `Local annotated release tags used: ${releases.map(({ name }) => `\`${name}\``).join(", ") || "none"}.`,
@@ -407,7 +406,7 @@ const renderSources = (releases) => {
     "",
   ];
   lines.push(
-    `${snapshotPrefix}${JSON.stringify(releases.map(({ name, object }) => ({ name, object })))} -->`,
+    `${snapshotPrefix}${JSON.stringify(releases.map(({ name, object, controlSegments }) => ({ name, object, controlSegments })))} -->`,
     "",
   );
   return lines;
@@ -433,7 +432,17 @@ export const readTagSnapshot = (source) => {
         typeof tag !== "object" ||
         !semver(tag.name) ||
         !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(tag.object) ||
-        Object.keys(tag).sort().join(",") !== "name,object",
+        !["name,object", "controlSegments,name,object"].includes(
+          Object.keys(tag).sort().join(","),
+        ) ||
+        (tag.controlSegments !== undefined &&
+          (!Array.isArray(tag.controlSegments) ||
+            tag.controlSegments.some(
+              (path) =>
+                path !== LEGACY_CONTROL_PATH &&
+                !/^docs\/control\/orders\/WO-\d{3}\.jsonl$/.test(path),
+            ) ||
+            new Set(tag.controlSegments).size !== tag.controlSegments.length)),
     ) ||
     new Set(snapshot.map(({ name }) => name)).size !== snapshot.length
   )

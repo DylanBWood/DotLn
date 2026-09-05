@@ -59,7 +59,7 @@ export const controlTimeProjection = (events) => {
 
 // Only named local commit refs may supply missing times. No object payload,
 // author identity, remote, nearest-neighbor estimate, or current clock is read.
-export const recoverControlTimes = (root, events) => {
+export const recoverControlTimes = (root, events, locations = []) => {
   const refs = new Map();
   const counts = {
     recordedAt: 0,
@@ -67,6 +67,10 @@ export const recoverControlTimes = (root, events) => {
     unknown: 0,
   };
   const observations = events.map((event, index) => {
+    const location = locations[index];
+    const at = location
+      ? `in ${location.segment} at ordinal ${location.ordinal}`
+      : `at line ${index + 1}`;
     let time = event.recordedAt ?? "unknown";
     let source = event.recordedAt === undefined ? "unknown" : "recordedAt";
     if (source === "unknown" && event.checkpointRef !== undefined) {
@@ -76,7 +80,7 @@ export const recoverControlTimes = (root, events) => {
         !/^refs\/dotln\/checkpoint\/WO-\d{3}\/[1-9]\d*$/.test(ref) ||
         ref.split("/")[3] !== event.workOrderId
       )
-        throw new Error(`invalid checkpoint ref at line ${index + 1}`);
+        throw new Error(`invalid checkpoint ref ${at}`);
       if (!refs.has(ref)) {
         const row = runGit(root, [
           "for-each-ref",
@@ -85,15 +89,10 @@ export const recoverControlTimes = (root, events) => {
         ])
           .split("\n")
           .find((line) => line.startsWith(`${ref} `));
-        if (!row)
-          throw new Error(
-            `missing local checkpoint ref at line ${index + 1}: ${ref}`,
-          );
+        if (!row) throw new Error(`missing local checkpoint ref ${at}: ${ref}`);
         const [, type, sha, seconds] = row.split(" ");
         if (type !== "commit" || !/^-?\d+$/.test(seconds ?? ""))
-          throw new Error(
-            `invalid checkpoint commit at line ${index + 1}: ${ref}`,
-          );
+          throw new Error(`invalid checkpoint commit ${at}: ${ref}`);
         refs.set(ref, {
           sha,
           time: new Date(Number(seconds) * 1000).toISOString(),
@@ -104,17 +103,18 @@ export const recoverControlTimes = (root, events) => {
         event.checkpointSha !== undefined &&
         event.checkpointSha !== recovered.sha
       )
-        throw new Error(`checkpoint SHA mismatch at line ${index + 1}: ${ref}`);
+        throw new Error(`checkpoint SHA mismatch ${at}: ${ref}`);
       time = recovered.time;
       source = "recovered-from-local-checkpoint-ref";
     }
     counts[source] += 1;
     return {
-      ordinal: index + 1,
+      ordinal: location?.ordinal ?? index + 1,
       workOrder: event.workOrderId,
       type: event.type,
       time,
       source,
+      ...(location ? { segment: location.segment } : {}),
     };
   });
   const metadata = JSON.stringify(

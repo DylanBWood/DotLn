@@ -21,27 +21,31 @@ export const parseControlEvents = (source) =>
       }
     });
 
+const emptyState = () => ({
+  workOrderId: undefined,
+  workOrderPath: undefined,
+  phase: "none",
+  latestVerificationId: undefined,
+  latestVerificationPath: undefined,
+  latestVerdict: undefined,
+  finalReviewId: undefined,
+  finalReviewPath: undefined,
+  failureSourceId: undefined,
+  failureSourcePath: undefined,
+  latestCheckpointSha: undefined,
+  latestCheckpointRef: undefined,
+  checkpointUnavailable: false,
+  latestAttestation: undefined,
+  effortPairs: [],
+  effortDeclarationValidated: false,
+});
+
 const scanControl = (events, visit) => {
-  const state = {
-    workOrderId: undefined,
-    workOrderPath: undefined,
-    phase: "none",
-    latestVerificationId: undefined,
-    latestVerificationPath: undefined,
-    latestVerdict: undefined,
-    finalReviewId: undefined,
-    finalReviewPath: undefined,
-    failureSourceId: undefined,
-    failureSourcePath: undefined,
-    latestCheckpointSha: undefined,
-    latestCheckpointRef: undefined,
-    checkpointUnavailable: false,
-    latestAttestation: undefined,
-    effortPairs: [],
-    effortDeclarationValidated: false,
-  };
+  const states = new Map();
+  let state = emptyState();
   for (const [index, event] of events.entries()) {
     validateRecordedAt(event, `at line ${index + 1}`);
+    state = states.get(event?.workOrderId) ?? emptyState();
     switch (event?.type) {
       case "WorkOrderActivated":
         Object.assign(state, {
@@ -153,6 +157,7 @@ const scanControl = (events, visit) => {
         checkpointUnavailable: true,
       });
     }
+    states.set(event.workOrderId, state);
     visit?.(state, event, index + 1);
   }
   return state;
@@ -160,7 +165,7 @@ const scanControl = (events, visit) => {
 
 export const fold = (events) => scanControl(events);
 
-// Project every order through the same event switch, retaining global ordinals.
+// Project every order through the same event switch, retaining source ordinals.
 // The observer adds index evidence; it cannot change lifecycle behavior.
 export const foldWorkOrders = (events) => {
   const orders = new Map();
@@ -182,4 +187,49 @@ export const foldWorkOrders = (events) => {
     });
   });
   return { current, orders };
+};
+
+export const LEGACY_CONTROL_PATH = "docs/control/resume.jsonl";
+export const CONTROL_ORDERS_PATH = "docs/control/orders";
+export const orderSegmentPath = (id) => `${CONTROL_ORDERS_PATH}/${id}.jsonl`;
+
+// Direct support for the old log: no event moves and its ordinals stay global.
+// New segments have local ordinals. The layout is storage, not event schema.
+export const foldSegments = (legacy, segments = new Map()) => {
+  const at = (path, events) => {
+    try {
+      return foldWorkOrders(events);
+    } catch (error) {
+      throw new Error(`${path}: ${error.message}`);
+    }
+  };
+  const { current: legacyState, orders } = at(LEGACY_CONTROL_PATH, legacy);
+  const locations = new Map(
+    [...orders.keys()].map((id) => [id, LEGACY_CONTROL_PATH]),
+  );
+  for (const [path, events] of [...segments].sort(([a], [b]) =>
+    a.localeCompare(b),
+  )) {
+    const id = /^docs\/control\/orders\/(WO-\d{3})\.jsonl$/.exec(path)?.[1];
+    if (!id)
+      throw new Error(`${path}: invalid control segment name at ordinal 1`);
+    if (events.length === 0)
+      throw new Error(`${path}: missing activation at ordinal 1`);
+    for (const [index, event] of events.entries()) {
+      if (event?.workOrderId !== id)
+        throw new Error(
+          `${path}: foreign workOrderId at ordinal ${index + 1}; expected ${id}`,
+        );
+      if (index === 0 && event.type !== "WorkOrderActivated")
+        throw new Error(`${path}: expected activation at ordinal 1`);
+    }
+    if (locations.has(id))
+      throw new Error(
+        `${path}: ${id} already belongs to ${locations.get(id)} at ordinal 1`,
+      );
+    const folded = at(path, events);
+    orders.set(id, folded.orders.get(id));
+    locations.set(id, path);
+  }
+  return { legacy: legacyState, orders, locations };
 };

@@ -1049,4 +1049,6 @@ PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mj
 ' "$fixture/first-release-manifest.json" "$first_release_path"
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" validate "$fixture/first-release-manifest.json" >/dev/null
 
+make_repo concurrent
+PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$script_dir/test-concurrent-control.mjs" "$fixture"
 printf 'release tests passed\n'

@@ -24,7 +24,8 @@ docs/decisions/    ADRs — settled questions
 docs/work-orders/  stable scope addresses + generated README evidence index
 docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
-docs/control/       append-only resume log and generated current-state projection
+docs/control/       legacy resume log, per-order segments, and generated overview
+docs/evidence/      bounded executor comparisons and fixture transcripts
 docs/releases/     historical v0.2.0 records + forward tag-manifest template;
                    later immutable manifests/notes live in annotated tags
 docs/discovery/    labeled machine-audit outputs, runtime target maps, and the
@@ -105,7 +106,7 @@ move it only to a backup location you trust.
 
 ## Resuming the control loop
 
-Fresh sessions resolve the canonical `docs/control/resume.jsonl` through
+Fresh sessions resolve the canonical legacy log and per-order segments through
 `npm run resume --silent -- status --json`; `docs/control/current.md` is the matching
 human projection, never a script API. The normal operator interface is:
 

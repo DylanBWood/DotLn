@@ -210,3 +210,128 @@ keeps the single lifecycle contract).
 4. WO-030 runs before WO-021 and before the first paired wave; if the operator
    prefers Beacons first, the map's reversal condition applies and this
    order's scope is unchanged.
+
+## Executor outcome — 2026-09-05
+
+Implemented the bounded concurrent-control slice. New activations own one
+segment; legacy activations, including this order, retain their original file.
+The shared fold isolates every order's lifecycle and evidence. Branch/flag
+selection preserves the selected-order JSON contract and adds `orders[]`;
+current Markdown lists all known in-flight orders and the latest closed order.
+Worktree finish, release close, release-note attribution, and the generated
+index read committed segments and prove append-only prefixes per file.
+
+**Actor:** Codex CLI `0.153.2` (observed); `gpt-6-astra`, effort `max`, source
+`operator-attested` under the execution guide's dated Codex default. This is not
+an effective-session readback claim.
+
+**Evidence:** `npm test` passed: formatting, publication and index freshness,
+all lifecycle/backup/temp-root shell suites, the real-Git concurrency fixture,
+187 kernel/compiler/skeleton tests, and 8 ID corpus tests. `git diff --check`
+passed. [Executor evidence](../evidence/WO-030/README.md) contains the acceptance
+mapping, committed v0.6.0 fold comparison for the unchanged 153-event activation
+prefix, byte-identical legacy timing observation, fixture transcripts and Git
+log, and line counts for every `scripts/*.mjs` and `scripts/lib/*.mjs` against
+main. Total script lines: 6,001 → 7,227 (+1,226), including 851 added test lines.
+The fixture proves named-order finish/release while another order is open and
+separate release attribution, including a third branch created before the
+first merge. Its remote and npm/GitHub operations are isolated test fixtures;
+the root test gate ran the actual pinned build.
+
+**Write-backs:** product 02/03/06/07/10, operator playbook, docs entry point,
+ladders/concurrency plans, planning map, capability table, ledger, generated
+work-order index, and affected publication status/locks. The root README source
+claim is `v0.7.0` above published `v0.6.0`; no component `src/` changed, so
+component versions stay unchanged. The authorized boy-scout change adds
+`"types": ["node"]` to all three package tsconfigs; the pinned TypeScript 5.4.5
+build passed. No new dependency.
+
+**Clarifications and limits:** storage ownership persists through legal
+reactivation, so an identity never spans files. Status observes segments in its
+checkout/revision rather than polling unmerged siblings. The latest closed
+display uses the subject branch or Git integration order, never timestamps.
+There was no existing control-plane capability row, so a dated demonstrable
+row was added without changing historical assessments. No scope expansion or
+unresolved implementation question; a measured paired wave and the named
+future workflow/admission/dispatch slices remain deferred. The lifecycle tools
+used for this work are also deliverables; baseline comparisons and independent
+fixture assertions provide evidence beyond their successful self-use.
+
+Independent verification and final review remain outstanding. No work-order
+branch commit, production push, PR, tag, release, or deployment was performed.
+
+## Ideation breakout receipt — 2026-09-05
+
+**Authority and source treatment:** the operator opened two `ideation:` entries
+while WO-030's implementation evidence was green and before its
+`implementation-ready` transition: optional decomposition of any work order
+under one umbrella with mutually exclusive execution routes, and UIFA human
+responsibility for security, authentication/authorization, logs, and
+traceability. This explicitly authorizes the full documentation breakout under
+07 §Operator-opened ideation mode. Shape-First Synthesis uses the saved public
+Clean Room loadout; this was ordinary raw ideation, not a ready-to-file draft.
+The clean-room screen found no employer code/configuration/identifiers,
+credentials, internal services, or other stop condition. The synthesis retains
+the desired interaction and omits incidental workplace comparison. No extra
+review support was equipped.
+
+**Raw intake and preservation:**
+`docs/intake/notes/WO-030-expanded-ideation-2026-09-05.md`, SHA-256
+`858b8458926d8bed33db88c1e2b8f5156413e9f00a7f33ad2e20af10b0462255`.
+The main control-plane checkout was explicitly resolved from Git's worktree
+inventory. After a one-invocation filesystem approval, the provisional capture
+was moved without overwrite to that checkout's ignored intake. Its hash matches
+the capture and backup, its mode is `0600`, it is untracked, and no worktree-local
+duplicate remains. The existing backup helper produced and archive-tested
+`DotLn-wo030-intake-20260905T053955Z.zip` outside the repository (four files,
+including the three intake placeholders). Reconciliation is complete; preserve
+the canonical capture and backup independently of worktree removal.
+
+**Durable surfaces:**
+
+- [Ledger](../lineage/idea-ledger.md#2026-09-05-wo-030-work-order-splitting-and-uifa-assurance-ideation):
+  new preserved entries for alternative whole/child routes, useful split
+  suggestions including no split, and UIFA security/identity/evidence judgment.
+  Earlier entries retain their bytes.
+- [Product 06](../product/06-roadmap.md#candidate--whole-or-split-work-orders-under-one-umbrella):
+  candidate umbrella and route-exclusion behavior, serial/parallel/mixed
+  dependency plans, acceptance coverage, and unchanged opaque identity contract.
+- [Product 13](../product/13-uifa-roles.md#candidate--security-identity-logs-and-traceability-responsibilities):
+  candidate responsibilities and assistance, with role grouping/names open;
+  showrunner cross-reference. [Product 09](../product/09-audit-resilience-privacy.md)
+  connects this to its existing concern and privacy boundaries.
+- Publication audience/status rows and affected edition source locks are part
+  of the same write-back. Both new sections remain `vision` candidates.
+
+**Open choices and effects:** split suggestions and route selection are future
+behavior; no command or child-ID syntax is adopted. Planning must still resolve
+active/historical orders, atomic route choice across worktrees, nesting and
+revision, failure handling, aggregate closure, and release attribution. A child
+failure cannot quietly reopen the original whole route. One versus several
+UIFA hats, their names, and responsibility overlaps remain open. The proposed
+one-hat or two-hat groupings are synthesis options, not operator decisions.
+No ADR, schema, runtime, dependency, setting, or release target changes from this
+breakout. No reusable helper was created; capture and documentation edits used
+ordinary file operations and the existing backup/publication tools.
+
+**Required review:** the independent verifier and final reviewer must read this
+receipt and the promoted sections. Check source-treatment fidelity, the permanent
+whole-route exclusion after a child starts, stable historical identities,
+acceptance/evidence coverage, and the separation of hierarchy from scheduling.
+Check the five adopted UIFA names against the speculative additions; preserve
+authentication/authorization/log/audit distinctions and the ADR-0006
+platform/instance boundary. Verify links, candidate status, publication
+freshness, ignored capture/backup/reconciliation, and preservation of the
+pre-breakout implementation and passing evidence. This doc-only expansion is
+not authority to implement either candidate. The earlier `resume: next`
+dispatch remains the authority for finishing WO-030's implementation handoff;
+the ideation did not cancel it. This receipt and its checks are complete before
+recording `implementation-ready`, with the candidates included in review scope.
+
+**Executor checks:** full-repository formatting, publication coverage (222/222
+product headings), both edition source locks, generated work-order index
+freshness, and `git diff --check` passed after the write-back. The canonical
+capture and archive member match the recorded SHA-256; ignored/untracked status,
+file mode, and absence of staging were checked. WO-030's earlier full `npm test`
+pass remains the implementation evidence; this breakout changed documentation
+only. Independent verification and final review remain outstanding.

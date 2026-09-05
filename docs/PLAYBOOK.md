@@ -349,15 +349,26 @@ order.”
 
 ## Concurrency
 
-One writable agent per worktree, always (global rule). Parallel implementation
-requires separate worktrees and sessions. Each checkout's current resume helper
-tracks one active order; two branches still overlap in control history,
-generated projections, and release claims when they integrate. Worktree
-isolation does not prove concurrent closeout. Keep main integration serialized.
-The planned control change supports zero to many concurrent orders, potentially
-with different workflow steps, and must prove attribution and integration;
-see the [candidate ladders and observed limit](planning/budget-window-work-order-ladders.md#feasibility-and-integration-gate).
-The main checkout stays clean for the operator and planning session.
+One writable agent per worktree, always. WO-030 adds independent control
+segments for parallel implementation, while main integration stays serialized.
+The control view lists the orders known in its checkout; it does not poll
+unmerged sibling worktrees or infer worker liveness. Each order keeps the same
+implementation → verification → final-review contract.
+
+For a paired wave:
+
+1. Recheck the [lane rules](planning/concurrent-work-orders-plan.md#lane-rules-the-showrunner-can-apply-by-hand), dependencies, write surfaces, actor capacity, and each release target. Start each authorized order from clean main with `npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md`, then use a separate session in each emitted worktree.
+2. Use the ordinary resume phrases there; the `wo-NNN` branch selects the order. On main, use `npm run resume -- status` for the overview and `npm run resume --silent -- status --json --work-order WO-NNN` for a selected order. Explicit selection overrides a worktree's branch too.
+3. Integrate reviewed PRs one at a time. Keep both histories byte-exact if shared generated projections conflict. Regenerate those projections with `npm run resume -- next --work-order <closed-order-id>` and `npm run work-orders -- index`; the former can refresh from any known closed order and reports the remaining in-flight orders. Never union-merge, rewrite, or move control events.
+4. Bring the integrated base into the remaining lane and rerun its evidence. A substantive integration change requires repair and fresh independent verification before final review; an old report cannot certify a changed combined subject. Release-target changes retain their dated operator-authority rule.
+5. After each authorized merge, use that order's printed release-close handoff. Finish and release select the named order from committed control, so a sibling can remain open. Only an empty in-flight set means between work orders.
+
+The [feasibility fixture](../scripts/test-concurrent-control.mjs) exercises two
+independent lifecycles, serial integration and release attribution, plus a
+third branch created before the first merge. The first actual paired wave still
+needs its own measured outcome; lane generation, admission control, and
+per-order workflow variation remain deferred. Main stays clean for the
+operator and planning session.
 
 ## When things break
 
@@ -389,7 +400,7 @@ The main checkout stays clean for the operator and planning session.
   review. Never `git checkout .`, `git restore .`, `git reset --hard`, or
   `git clean -fd` here without a current recoverable copy — those can destroy
   the deliverable, every `VER-NNN` written so far, and
-  `docs/control/resume.jsonl`. Never `git clean -fdx`/`-fdX` at all: it also
+  the order's control segment. Never `git clean -fdx`/`-fdX` at all: it also
   deletes gitignored `docs/intake`, which is single-copy and in no commit. The
   stash includes untracked files, not ignored intake or `.env`; back those up
   separately.
@@ -409,7 +420,7 @@ The main checkout stays clean for the operator and planning session.
 
 ## Resume command surface
 
-The append-only control log replaces the per-work-order copy/paste ledger. In a
+The append-only control segments replace the per-work-order copy/paste ledger. In a
 fresh session, use one operator phrase:
 
 ```text
@@ -422,14 +433,16 @@ resume: release close
 resume: next
 ```
 
-The agent first runs `npm run resume --silent -- status --json`, then runs the matching
+The agent first runs `npm run resume --silent -- status --json`, adding
+`--work-order WO-NNN` where the selection rules above require it, then runs the matching
 transition and follows the emitted authoritative paths. The JSON and human
 status forms expose the same control fields, are read-only, append nothing, and
 do not rewrite `docs/control/current.md`. If that human projection disagrees
 with the canonical log fold, status warns and still returns the folded state;
 lifecycle scripts consume JSON and never parse the Markdown. `next` means
 “execute the active order” in phase `active`; in phase `closed` it reports the
-between-work-orders state and gives the start syntax. `release close` is a
+other in-flight orders, or the between-work-orders state and start syntax
+when none remain. `release close` is a
 guarded lifecycle command rather than a control-log transition, so successful
 closeout does not dirty `main` with transient release state.
 

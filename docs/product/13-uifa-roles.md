@@ -67,7 +67,10 @@ release contained, and what the next legal action is. Today that is the
 [generated work-order index](../work-orders/README.md), the
 [planning map](../planning/work-order-map.md), the control status, and the
 release records. The concurrent-workflow plan, control-plane beacons, and a
-shared status view are this role's next tooling.
+shared status view are this role's next tooling. The candidate
+[whole-or-split planning view](06-roadmap.md#candidate--whole-or-split-work-orders-under-one-umbrella)
+adds smaller reviewable increments under one outcome, with dependencies deciding
+which children can proceed together.
 
 Why _showrunner_: the title already means one person who holds the creative
 architecture of a season and runs its production schedule, and who is judged by
@@ -105,6 +108,48 @@ machinery: the control plane and its resume phrases, the composition compiler,
 generators and projections, evidence gates, release close, and the tests that
 make each of those fail loudly. The role's measure is the repeated work and
 coordination it removes, not the amount of machinery it adds.
+
+## Candidate — security, identity, logs, and traceability responsibilities
+
+**2026-09-05 operator ideation:** extend the human-role vocabulary to cover
+security, authentication and authorization, operational logs, and traceability.
+These responsibilities need an accountable human perspective and useful
+assistance. Whether they become one additional role, several hats, or explicit
+responsibilities within existing roles remains open; the five confirmed names
+above remain the adopted set.
+
+| Concern          | Human judgment                                                                                                       | Assistance to develop                                                                                   |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Security         | Which resources and boundaries need protection, and which failure scenarios matter in this implementation?           | Boundary and exposure views, proposed control changes, and adversarial scenarios tied to their evidence |
+| Authentication   | Which actor or principal is making this claim, and what establishes that identity?                                   | Identity provenance and an honest distinction between claimed and established identity                  |
+| Authorization    | Which effects may that actor perform on which resources, under which grant and conditions?                           | Effective authority previews and explanations of allowed or refused actions                             |
+| Operational logs | What is happening or failing now, and where should investigation begin?                                              | Correlated diagnostics, useful filters, and visible gaps or stale observations                          |
+| Traceability     | How does this request connect to a decision, its authority, the resulting effects, and the evidence for the outcome? | Navigable provenance across orders, episodes, artifacts, verification, and releases                     |
+
+This builds on the distinctions in
+[audit, records, resilience, and privacy](09-audit-resilience-privacy.md).
+Operational diagnostics do not by themselves establish authorization or prove an
+acceptance claim. Traceability should reference authoritative records and expose
+missing links, with access, retention, and disclosure governed by the chosen
+privacy profile. A role title does not grant access to every record or confer
+effect authority. These remain implementation-selected responsibilities under
+the platform/instance distinction, with this repository's existing boundaries
+still in force.
+
+Ahead-of-time assistance could prepare identity and authority maps, evidence
+coverage views, and reusable scenarios; assistance in the moment could explain a
+refusal, trace an effect, or identify missing evidence. The engineer composes
+the relevant behavior, the tester probes its scenarios, devops builds the
+mechanisms, and the showrunner carries findings into work and release decisions.
+The added human perspective owns the questions and judgments rather than
+absorbing all those jobs.
+
+One assurance hat or a boundary/identity hat paired with a logs/traceability hat
+are possible groupings from this synthesis, not selected titles. Names,
+responsibility boundaries, overlap with existing hats, and representative
+day-to-day scenarios need further ideation. This proposal adds no Actor
+primitive, permission grant, mandatory approval step, or implementation work
+order.
 
 ## Humans stay in the loop
 
