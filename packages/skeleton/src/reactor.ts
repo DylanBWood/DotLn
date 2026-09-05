@@ -98,6 +98,8 @@ export type RuntimeState = Readonly<{
   redispatchedCommandIds: readonly string[];
   beaconObservations: readonly JudgedBeacon[];
   beaconSweep: JsonValue;
+  workerEpisodeId: string | null;
+  workerLeaseExpired: boolean;
 }>;
 
 export const loadout: Loadout = seiriLoadout;
@@ -176,6 +178,8 @@ export const initialState = (): RuntimeState => ({
   redispatchedCommandIds: [],
   beaconObservations: [],
   beaconSweep: null,
+  workerEpisodeId: null,
+  workerLeaseExpired: false,
 });
 
 const asObject = (
@@ -320,6 +324,58 @@ const observed = (
     cadenceEvaluations: [],
   },
 });
+
+const workerNoOp = (
+  state: RuntimeState,
+  event: Event,
+  reason: string,
+): Decision<RuntimeState> => ({
+  ...observed(state, event, reason),
+  intents: [
+    {
+      kind: "NoOp",
+      reason,
+      evidence: [event.eventId],
+      reevaluation: Cadence.Once(event.occurredAt),
+      usefulWhen: { registryId: "operator.away", version: 1 },
+    },
+  ],
+  trace: {
+    reactorId: "worker-result-guard",
+    reactorVersion: "1",
+    branchPath: [event.type, "quarantine", reason],
+    envInputs: [
+      `now:${event.occurredAt}`,
+      `authorityEnvelope:${stringField(state.authority, "authorityEnvelopeId") ?? "unavailable"}`,
+    ],
+    cadenceEvaluations: [],
+  },
+});
+
+const workerResultGuard = (
+  state: RuntimeState,
+  event: Event,
+  env: KernelEnv,
+): Decision<RuntimeState> | undefined => {
+  if (asObject(event.payload)?.["workerResultVersion"] !== 1)
+    return workerNoOp(state, event, "invalid worker receipt");
+  if (
+    stringField(event.payload, "commandId") !==
+    stringField(state.pendingCommand, "commandId")
+  )
+    return workerNoOp(state, event, "unknown command");
+  if (state.commandResult !== null) return observed(state, event, "dedup");
+  if (env.now >= authorityFromState(state).expiresAt)
+    return workerNoOp(state, event, "authority expired");
+  if (
+    stringField(event.payload, "workerEpisodeId") !== state.workerEpisodeId ||
+    state.workerLeaseExpired
+  )
+    return workerNoOp(state, event, "stale worker lease");
+  if (state.presence !== "away")
+    return workerNoOp(state, event, "operator returned");
+  return undefined;
+};
 
 const pinnedIdentity = (state: RuntimeState): ArtifactIdentityV1 | null =>
   isArtifactIdentityV1(state.artifactIdentity) ? state.artifactIdentity : null;
@@ -1017,7 +1073,34 @@ const react = (
           "ArtifactIdentityInvalid",
           "recovery request does not name the stored command",
         );
+      if (
+        asObject(event.payload)?.["workerDispatchVersion"] === 1 &&
+        (env.now >= authorityFromState(state).expiresAt ||
+          state.presence !== "away")
+      )
+        return workerNoOp(
+          state,
+          event,
+          env.now >= authorityFromState(state).expiresAt
+            ? "authority expired"
+            : "operator returned",
+        );
       return observed(state, event, "redispatch-ready");
+    case "WorkerAttemptStarted":
+      return observed(
+        {
+          ...state,
+          workerEpisodeId:
+            stringField(event.payload, "workerEpisodeId") ?? null,
+          workerLeaseExpired: false,
+        },
+        event,
+      );
+    case "WorkerLeaseExpired":
+      return stringField(event.payload, "workerEpisodeId") ===
+        state.workerEpisodeId
+        ? observed({ ...state, workerLeaseExpired: true }, event)
+        : observed(state, event, "stale-lease");
     case "CommandPersisted": {
       const command = asObject(event.payload)?.["command"] ?? null;
       const effect =
@@ -1050,9 +1133,18 @@ const react = (
         "command-redispatched",
       );
     }
+    case "WorkerResultObserved":
+      return (
+        workerResultGuard(state, event, env) ??
+        observed(state, event, "worker-result-admissible")
+      );
     case "CommandResult": {
       if (event.workstreamId === "ws_beacon_control")
         return observed(state, event, "beacon-sweep-returned");
+      if (asObject(event.payload)?.["workerResultVersion"] === 1) {
+        const refusal = workerResultGuard(state, event, env);
+        if (refusal) return refusal;
+      }
       const candidates = candidatesField(event.payload);
       const deletion: ActIntent = {
         kind: "Act",
@@ -1201,6 +1293,7 @@ export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
       "CadencePulse",
       "WorkOrderEmitted",
       "CommandResult",
+      "WorkerResultObserved",
       "DeletionAttempted",
       "CommandRefused",
       "EpisodeTerminated",

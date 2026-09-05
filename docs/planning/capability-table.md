@@ -160,6 +160,27 @@ review; measurements do not promote general efficiency or operator usefulness.
 | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `projection.control-beacon` — lifecycle v2, metadata constellation, authorized recorded sweep, age glyphs, twelve-member phase-group family | **1 — demonstrable**, staged pending independent review | 2 — dependable within this bounded control workflow | [Execution receipt and measurements](../evidence/WO-021/README.md), [pure/replay tests](../../packages/skeleton/test/control-beacon.test.ts), [agent CLI](../../packages/skeleton/test/control-beacon-cli.test.ts), [three-worktree fixture](../../scripts/test-control-beacons.mjs) | WO-009 supplies real-worker leases and claims; WO-022 supplies mounted senses and its separate keyed consistency contract; operator comparison remains open. | Review every transition, audience boundary, no-read refusal, replay, and allocation bound. Same-user adversaries and privileged scan visibility are outside this boundary. Warm-cache index wins preclude a blanket read-performance claim. |
 
+## WO-009 dated reassessment (2026-09-05)
+
+The pinned inventory above remains historical. WO-009 stages two real bounded
+inspection transports, a durable JSONL host and a read-only status projection
+above published `v0.9.0`. [Executor evidence](../evidence/WO-009/README.md)
+links authenticated CLI invocations, forced termination/recovery and deterministic
+failure tests. Independent verification and final review are still required;
+this does not establish a general real-workflow or dependable promotion.
+
+| Capability and scope                                                                                                 | Current assessment           | Evidence and remaining gate                                                                                                                                                                                                                |
+| -------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `transport.disposable-inspection` — Claude print and Codex exec over a host-read synthetic inventory                 | **1 — demonstrable**, staged | Both actual hosts return schema-bound envelopes with exact launch selections; fake peers prove no substitution and malformed-output refusal. General mounts/writes, provider identity readback and real verification remain outside scope. |
+| `runtime.inspection-recovery` — single-writer JSONL host, immutable result receipt, lease fencing, detached worktree | **1 — demonstrable**, staged | Rows 2/4/6, late result/heartbeat fencing, real kill/recovery, replay and safe cleanup pass. Broader transactional effects and a durable background scheduler need separate evidence.                                                      |
+| `projection.worker-status` — canonical runtime event fold and CLI                                                    | **1 — demonstrable**, staged | Both live runs expose in-flight state from another read-only process; status neither creates a store nor invents expiry from the wall clock. Worker claims do not promote Beacon liveness.                                                 |
+
+The original kernel, authority and store/replay level-2 scopes retain their
+earlier evidence boundaries. This fixture integration alone does not satisfy
+every dimension of their level-3 targets. Efficiency and operator usefulness
+remain **E0 — unknown**; process counts and envelope sizes are not a comparative
+resource-per-verified-outcome baseline.
+
 ## Reading the table
 
 - A level-2 claim means only that the declared scope has automated checks and

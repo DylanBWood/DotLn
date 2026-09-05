@@ -131,7 +131,7 @@ test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async ()
   const scenario = sources.get("scenario.ts") ?? "";
   const replayBody = scenario.slice(
     scenario.indexOf("export function replayScenario"),
-    scenario.indexOf("export function runScenario"),
+    scenario.indexOf("export function startScenario"),
   );
   assert.match(replayBody, /replay\(/u);
   assert.doesNotMatch(replayBody, /fixture|\.find\(|switch\s*\(|for\s*\(/u);

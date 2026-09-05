@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:f6dc85547c9e9abc4b74edacf119f40c76004122c70bff7dd87526a3342cd9a6`
+`sha256:62023da9d5bbfb98f53fc24b4401edc8e298be7ace8dc97676be03387b1d2890`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -58,7 +58,8 @@ implementation-deep, lossy projection of the same
      [Composition system](../product/03-architecture.md#composition-system)
 8. **Ports, runtime catalogs, and execution boundaries**
    - executor, store, clock, authority, tracker, repository, target lowering,
-     and attested isolation profiles
+     and isolation profiles; version-gated CLI inspection transports, explicit
+     launch claims and the authenticated broker boundary
    - sources:
      [Runtime primitive catalogs](../product/03-architecture.md#runtime-primitive-catalogs),
      [Architecture](../product/03-architecture.md#architecture),
@@ -67,8 +68,9 @@ implementation-deep, lossy projection of the same
 ## Module 4 — Make lifecycle failure explicit
 
 9. **Disposable sessions, continuations, and cadence races**
-   - claim/heartbeat/complete transitions, restart shape, idempotency, NoOp
-     trace
+   - host heartbeat/lease fencing, result admission and pending-command
+     recovery, idempotent inspection, read-only status and NoOp traces;
+     worker claims remain separate from host liveness
    - sources:
      [Session lifecycle and resilience](../product/03-architecture.md#session-lifecycle--resilience),
      [Operator-presence policy](../product/03-architecture.md#operator-presence-policy)
@@ -131,7 +133,7 @@ implementation-deep, lossy projection of the same
       [Bootstrap path](../product/08-publication-compiler.md#bootstrap-path)
 17. **Implemented baseline versus target architecture**
     - current evidence, next gates, deferred surfaces, and compatibility
-      promises
+      promises; the real fixture executor retains the deterministic fake verifier
     - sources:
       [v0.2.2 — Capability table v1](../product/06-roadmap.md#v022--capability-table-v1---wo-005),
       [Architecture](../product/03-architecture.md#architecture),

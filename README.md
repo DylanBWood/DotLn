@@ -84,7 +84,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source is DotLn `v0.9.0`. The personal runtime pins each equipped compilation, records its semantic hash and compiler versions in consuming decisions, and refuses drift or compile diagnostics before effects. Separate component-definition hashes identify the participating source definitions without changing the existing whole-program hash. Historical logs retain their old replay behavior; extending one requires a logged enforcement boundary and a v2 re-equip. The walking skeleton still uses deterministic fake executor and verifier adapters. Real model transport and `Program.All` remain deferred. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
+This source prepares DotLn `v0.10.0`. The personal runtime pins equipped compilations and refuses drift before effects. An opt-in demo now runs one bounded fixture inspection through Claude Code or Codex CLI, persists its result and lease state, and recovers interrupted work. `dotln status` reads that store during execution. The default demo and the verifier remain deterministic fakes; general write-capable workers, real verifier episodes, and `Program.All` remain deferred. See the [worker runbook](packages/skeleton/README.md#disposable-workers) and [WO-009 evidence](docs/evidence/WO-009/README.md). Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.

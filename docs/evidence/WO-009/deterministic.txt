@@ -1,0 +1,186 @@
+TAP version 13
+# Subtest: WO-016 AC1 one typed reactor owns every skeleton kernel decider
+ok 1 - WO-016 AC1 one typed reactor owns every skeleton kernel decider
+  ---
+  duration_ms: 5.746667
+  ...
+# Subtest: WO-016 AC3 live and replay match every complete Decision and semantic projection
+ok 2 - WO-016 AC3 live and replay match every complete Decision and semantic projection
+  ---
+  duration_ms: 37.727958
+  ...
+# Subtest: WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+ok 3 - WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+  ---
+  duration_ms: 2.094208
+  ...
+# Subtest: WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+ok 4 - WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+  ---
+  duration_ms: 11.902375
+  ...
+# Subtest: WO-008 AC2 an unequipped support changes the live reactor program
+ok 5 - WO-008 AC2 an unequipped support changes the live reactor program
+  ---
+  duration_ms: 22.1965
+  ...
+# Subtest: WO-008 AC2 the running reactor consumes compiled cadence identifiers
+ok 6 - WO-008 AC2 the running reactor consumes compiled cadence identifiers
+  ---
+  duration_ms: 11.001209
+  ...
+# Subtest: WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+ok 7 - WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+  ---
+  duration_ms: 0.86125
+  ...
+# Subtest: the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+ok 8 - the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+  ---
+  duration_ms: 11.479167
+  ...
+# Subtest: WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+ok 9 - WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+  ---
+  duration_ms: 11.818833
+  ...
+# Subtest: WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+ok 10 - WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+  ---
+  duration_ms: 11.45425
+  ...
+# Subtest: WO-016 step 12 executes the reactor's NoOp and declared cancellations
+ok 11 - WO-016 step 12 executes the reactor's NoOp and declared cancellations
+  ---
+  duration_ms: 11.117459
+  ...
+# Subtest: WO-016 AC4 semantic payload changes alter the decision at their event
+    # Subtest: CommandResult.candidates
+    ok 1 - CommandResult.candidates
+      ---
+      duration_ms: 28.239375
+      ...
+    # Subtest: VerificationCompleted.accepted
+    ok 2 - VerificationCompleted.accepted
+      ---
+      duration_ms: 27.42325
+      ...
+    # Subtest: WorkOrderEmitted.workOrder
+    ok 3 - WorkOrderEmitted.workOrder
+      ---
+      duration_ms: 22.388417
+      ...
+    # Subtest: CommandRefused.reason
+    ok 4 - CommandRefused.reason
+      ---
+      duration_ms: 22.472667
+      ...
+    # Subtest: SchedulesCancelled.scheduleIds
+    ok 5 - SchedulesCancelled.scheduleIds
+      ---
+      duration_ms: 23.571542
+      ...
+    # Subtest: CommandPersisted.command.intent.effect
+    ok 6 - CommandPersisted.command.intent.effect
+      ---
+      duration_ms: 23.05675
+      ...
+    1..6
+ok 12 - WO-016 AC4 semantic payload changes alter the decision at their event
+  ---
+  duration_ms: 158.292875
+  ...
+# Subtest: WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+ok 13 - WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+  ---
+  duration_ms: 22.606
+  ...
+# Subtest: row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+ok 14 - row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+  ---
+  duration_ms: 36.447666
+  ...
+# Subtest: WO-009 AC6 canonical launch shapes pin model, settings, memory, persistence, mounts and honest effort
+ok 15 - WO-009 AC6 canonical launch shapes pin model, settings, memory, persistence, mounts and honest effort
+  ---
+  duration_ms: 12.250666
+  ...
+# Subtest: WO-009 AC3 deterministic real-Git create, verified cwd/base, collision and dirty cleanup refusal
+ok 16 - WO-009 AC3 deterministic real-Git create, verified cwd/base, collision and dirty cleanup refusal
+  ---
+  duration_ms: 1571.242
+  ...
+# Subtest: WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+ok 17 - WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+  ---
+  duration_ms: 2699.660875
+  ...
+# Subtest: WO-009 row 2 crash after effect before result persist re-queries the durable receipt without double application
+ok 18 - WO-009 row 2 crash after effect before result persist re-queries the durable receipt without double application
+  ---
+  duration_ms: 1323.365708
+  ...
+# Subtest: WO-009 row 4 a result after authority expiry is persisted and quarantined without candidate state mutation
+ok 19 - WO-009 row 4 a result after authority expiry is persisted and quarantined without candidate state mutation
+  ---
+  duration_ms: 146.235834
+  ...
+# Subtest: WO-009 row 6 SIGKILL leaves a recoverable command and continuation; lease expiry admits a fresh episode
+ok 20 - WO-009 row 6 SIGKILL leaves a recoverable command and continuation; lease expiry admits a fresh episode
+  ---
+  duration_ms: 1249.280791
+  ...
+# Subtest: WO-009 AC5 missing models fail closed in both directions and both transports; diagnostics stay private
+ok 21 - WO-009 AC5 missing models fail closed in both directions and both transports; diagnostics stay private
+  ---
+  duration_ms: 1946.750292
+  ...
+# Subtest: WO-009 invalid correlation, malformed output and success-shaped nonzero exits never complete commands
+ok 22 - WO-009 invalid correlation, malformed output and success-shaped nonzero exits never complete commands
+  ---
+  duration_ms: 2999.115959
+  ...
+# Subtest: WO-009 store rejects concurrent hosts and torn logs without truncation; status creates no missing store
+ok 23 - WO-009 store rejects concurrent hosts and torn logs without truncation; status creates no missing store
+  ---
+  duration_ms: 111.541125
+  ...
+# Subtest: WO-009 incomplete envelopes retain partial evidence without applying candidates or forcing human input
+ok 24 - WO-009 incomplete envelopes retain partial evidence without applying candidates or forcing human input
+  ---
+  duration_ms: 1080.810334
+  ...
+# Subtest: WO-009 stale episode observations cannot close pending commands; duplicate admitted results are inert
+ok 25 - WO-009 stale episode observations cannot close pending commands; duplicate admitted results are inert
+  ---
+  duration_ms: 92.237084
+  ...
+# Subtest: WO-009 a legacy or drifted equip cannot reach a real transport
+ok 26 - WO-009 a legacy or drifted equip cannot reach a real transport
+  ---
+  duration_ms: 59.764917
+  ...
+# Subtest: WO-009 missed leases fence delayed heartbeats and results while authority remains valid
+ok 27 - WO-009 missed leases fence delayed heartbeats and results while authority remains valid
+  ---
+  duration_ms: 2027.563625
+  ...
+# Subtest: WO-009 recovery from a durable result prefix closes the episode and runs the demo suffix once
+ok 28 - WO-009 recovery from a durable result prefix closes the episode and runs the demo suffix once
+  ---
+  duration_ms: 1385.839875
+  ...
+# Subtest: WO-009 concurrent dead-host reclaimers admit only one writer and abandoned guards refuse
+ok 29 - WO-009 concurrent dead-host reclaimers admit only one writer and abandoned guards refuse
+  ---
+  duration_ms: 102.139459
+  ...
+1..29
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16881.963375

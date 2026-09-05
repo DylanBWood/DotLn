@@ -169,7 +169,7 @@ class FakeScheduler {
   }
 }
 
-interface ReactorStep {
+export interface ReactorStep {
   readonly event: Event;
   readonly decision: Decision<RuntimeState>;
 }
@@ -179,7 +179,10 @@ export class LiveReactorDriver {
   #state = initialState();
   #decisions: Decision<RuntimeState>[] = [];
 
-  constructor(private readonly onEvents?: (events: readonly Event[]) => void) {}
+  constructor(
+    private readonly onEvents?: (events: readonly Event[]) => void,
+    private readonly persistEvent?: (event: Event) => void,
+  ) {}
 
   feed(draft: EventDraft): ReactorStep {
     if (draft.type === "ArtifactIdentityEnforcementStarted")
@@ -270,6 +273,7 @@ export class LiveReactorDriver {
 
   private append(draft: EventDraft): ReactorStep {
     const appended = appendEvent(this.#log, draft);
+    this.persistEvent?.(appended.event);
     this.#log = appended.log;
     const stepped = replay(
       this.#state,
@@ -429,6 +433,8 @@ const projectResult = (
   };
 };
 
+export { projectResult as projectScenario };
+
 export function replayScenario(log: string): ScenarioResult {
   const replayed = replay(
     initialState(),
@@ -439,28 +445,22 @@ export function replayScenario(log: string): ScenarioResult {
   return projectResult(log, replayed.state, replayed.decisions);
 }
 
-export function runScenario(
-  fixture: FixtureTree,
-  options: ScenarioOptions = {},
-): LiveScenarioResult {
-  const driver = new LiveReactorDriver(options.onEvents);
-  const scheduler = new FakeScheduler();
-  const executor = new FakeExecutor(fixture, options.onExecutorClaim);
-  const verifier = new FakeVerifier(fixture);
-
+export function startScenario(
+  driver: LiveReactorDriver,
+  equipped: Loadout = loadout,
+  environment: CompilationEnvironment = seiriEnvironment(),
+  startAt = 0,
+) {
   driver.feed(
-    draft("InspectionTaskCreated", 0, {
+    draft("InspectionTaskCreated", startAt, {
       bounded: true,
       fixture: "repo-tree.json",
     }),
   );
-  driver.equip(options.equippedLoadout ?? loadout);
+  driver.equip(equipped, environment, startAt);
 
   const away = driver.feed(
-    draft("OperatorPresenceChanged", 0, { presence: "away" }),
-  );
-  scheduler.schedule(
-    ...away.decision.schedules.map((schedule) => schedule.scheduleId),
+    draft("OperatorPresenceChanged", startAt, { presence: "away" }),
   );
   const primaryScheduleId = away.decision.schedules[0]?.scheduleId;
   const queuedScheduleId = away.decision.schedules[1]?.scheduleId;
@@ -483,6 +483,40 @@ export function runScenario(
       emittedWorkOrder.event.eventId,
     ),
   );
+  return { away, pulse, persisted, command, queuedScheduleId };
+}
+
+export type ScenarioOpening = ReturnType<typeof startScenario>;
+
+export function restoreScenarioOpening(
+  driver: LiveReactorDriver,
+): ScenarioOpening {
+  const events = decodeLog(driver.log);
+  const step = (type: string): ReactorStep => {
+    const index = events.findIndex((event) => event.type === type);
+    if (index < 0) throw new Error(`incomplete scenario opening: ${type}`);
+    return { event: events[index]!, decision: driver.decisions[index]! };
+  };
+  const away = step("OperatorPresenceChanged");
+  const queuedScheduleId = away.decision.schedules[1]?.scheduleId;
+  if (!queuedScheduleId) throw new Error("missing queued scenario schedule");
+  return {
+    away,
+    pulse: step("CadencePulse"),
+    persisted: step("CommandPersisted"),
+    command: commandFromState(step("CommandPersisted").decision.state),
+    queuedScheduleId,
+  };
+}
+
+export function runScenario(
+  fixture: FixtureTree,
+  options: ScenarioOptions = {},
+): LiveScenarioResult {
+  const driver = new LiveReactorDriver(options.onEvents);
+  const executor = new FakeExecutor(fixture, options.onExecutorClaim);
+  const opening = startScenario(driver, options.equippedLoadout ?? loadout);
+  const { command, pulse, persisted } = opening;
 
   let recoveredCommands: readonly Command[] = [];
   let resultCause = persisted.event;
@@ -556,11 +590,48 @@ export function runScenario(
     ),
   );
 
+  return {
+    ...finishScenario(driver, fixture, opening, commandResult),
+    adapterEffects: executor.effects,
+    adapterDispatches: executor.dispatches,
+    recoveredCommands,
+  };
+}
+
+/** The same fake verifier, refusal and scheduler finish both demo transports. */
+export function finishScenario(
+  driver: LiveReactorDriver,
+  fixture: FixtureTree,
+  opening: ScenarioOpening,
+  commandResult: ReactorStep,
+  now?: () => number,
+): ScenarioResult {
+  const { away, pulse, command, queuedScheduleId } = opening;
+  const candidates = commandResult.decision.state.candidates;
+  const verifier = new FakeVerifier(fixture);
+  const scheduler = new FakeScheduler();
+  scheduler.schedule(
+    ...away.decision.schedules.map((schedule) => schedule.scheduleId),
+  );
+  const at = (offset: number) => now?.() ?? pulse.event.occurredAt + offset;
+  // A restarted host may have persisted part of this suffix. Reuse its exact
+  // event and Decision, including original causes, rather than replaying effects.
+  const feedOnce = (event: EventDraft): ReactorStep => {
+    const events = decodeLog(driver.log);
+    const index = events.findIndex(
+      (source) =>
+        source.type === event.type && source.causationId === event.causationId,
+    );
+    return index < 0
+      ? driver.feed(event)
+      : { event: events[index]!, decision: driver.decisions[index]! };
+  };
+
   const deletion = actIntent(commandResult.decision, "repo.delete");
-  const deletionAttempted = driver.feed(
+  const deletionAttempted = feedOnce(
     draft(
       "DeletionAttempted",
-      pulse.event.occurredAt + 3,
+      at(3),
       {
         effect: deletion.effect,
         paths: (
@@ -571,14 +642,14 @@ export function runScenario(
       commandResult.event.eventId,
     ),
   );
-  const refused = driver.feed(
+  const refused = feedOnce(
     continuationEvent(deletionAttempted.decision, "deletion guard"),
   );
 
-  const terminated = driver.feed(
+  const terminated = feedOnce(
     continuationEvent(refused.decision, "structural refusal"),
   );
-  const verificationRequested = driver.feed(
+  const verificationRequested = feedOnce(
     continuationEvent(terminated.decision, "episode continuation"),
   );
 
@@ -586,25 +657,41 @@ export function runScenario(
     observeIntent(verificationRequested.decision, "candidates"),
     candidates,
   );
-  driver.feed(
+  feedOnce(
     draft(
       "VerificationCompleted",
-      pulse.event.occurredAt + 5,
+      at(5),
       { accepted, candidateCount: candidates.length },
       command.commandId,
       verificationRequested.event.eventId,
     ),
   );
 
-  driver.feed(
-    draft("OperatorPresenceChanged", pulse.event.occurredAt + 6, {
-      presence: "returned",
-    }),
+  // The initial away event shares this type and has no cause; match the return
+  // payload separately to preserve the historical default event bytes.
+  if (driver.state.presence !== "returned")
+    driver.feed(
+      draft("OperatorPresenceChanged", at(6), {
+        presence: "returned",
+      }),
+    );
+  const queuedDraft = scheduledEvent(away.decision, queuedScheduleId);
+  const priorQueued = decodeLog(driver.log).findIndex(
+    (event) =>
+      event.type === "CadencePulse" &&
+      (event.payload as { scheduleId?: string }).scheduleId ===
+        queuedScheduleId,
   );
-  const queued = driver.feed(scheduledEvent(away.decision, queuedScheduleId));
+  const queued =
+    priorQueued < 0
+      ? driver.feed(queuedDraft)
+      : {
+          event: decodeLog(driver.log)[priorQueued]!,
+          decision: driver.decisions[priorQueued]!,
+        };
 
   const noOp = noOpIntent(queued.decision);
-  driver.feed(
+  feedOnce(
     draft(
       "QueuedPulseNoOp",
       queued.event.occurredAt,
@@ -614,7 +701,7 @@ export function runScenario(
     ),
   );
   scheduler.cancel(queued.decision.state.cancelledScheduleIds);
-  driver.feed(
+  feedOnce(
     draft(
       "SchedulesCancelled",
       queued.event.occurredAt,
@@ -627,10 +714,5 @@ export function runScenario(
     ),
   );
 
-  return {
-    ...projectResult(driver.log, driver.state, driver.decisions),
-    adapterEffects: executor.effects,
-    adapterDispatches: executor.dispatches,
-    recoveredCommands,
-  };
+  return projectResult(driver.log, driver.state, driver.decisions);
 }

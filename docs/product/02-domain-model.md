@@ -81,14 +81,35 @@ namespaces; the bare term stays canonical in prose.
 
 ## Actors and episodes (the edge)
 
-| Term                   | Meaning                                                                                                                                                                                                                                                                                                                                                                                          |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Actor**              | Anything that can receive commands and emit events: a model session, a human, a script, a browser worker, a test runner. Interchangeable per Principle 1.                                                                                                                                                                                                                                        |
-| **Episode**            | One bounded incarnation of an actor: receives one WorkOrder, operates in one repo/worktree, emits a typed result + evidence refs, terminates. Continue-vs-replace is policy: replace on role change, repeated failed approaches, twice-corrected misunderstanding, context full of irrelevant logs, or when canonical state outdates the conversation.                                           |
-| **WorkOrder**          | Compiled context capsule: objective, acceptance criteria, known facts, decisions, constraints, non-goals, repo + base commit, allowed/prohibited operations, required evidence, output contract. Compiled from authoritative state — never handcrafted.                                                                                                                                          |
-| **ProductSuggestion**  | Non-authoritative request for a possible product or maintenance change, submitted by a human or agent with observed problem/opportunity, scope, evidence refs, affected users/systems, expected value, uncertainty, risks, alternatives, duplication hints, and urgency rationale. It may be clustered, rejected, deferred, or promoted, but cannot authorize work or masquerade as a WorkOrder. |
-| **WorkOrderTransport** | The dispatch port: `dispatch(order) → CommandReceipt`. Adapters: cli-print, cli-exec, background-session, subagent, workflow, sdk, browser-driven, human, fake — `cli-print` and `cli-exec` are the same one-shot bounded CLI mechanism as surfaced by Claude Code and Codex CLI respectively. Chosen empirically per environment (Principle 15).                                                |
-| **Result envelope**    | The deliberately tiny structured return (`workOrderId, episodeId, status, resultId, summary, requiresHuman`) — "task" in prose always means a bounded unit of work realized as a WorkOrder; everything else stays in the store, referenced by id. The main thread receives only envelopes.                                                                                                       |
+| Term                   | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Actor**              | Anything that can receive commands and emit events: a model session, a human, a script, a browser worker, a test runner. Interchangeable per Principle 1.                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **Episode**            | One bounded incarnation of an actor: receives one WorkOrder, operates in one repo/worktree, emits a typed result + evidence refs, terminates. Continue-vs-replace is policy: replace on role change, repeated failed approaches, twice-corrected misunderstanding, context full of irrelevant logs, or when canonical state outdates the conversation.                                                                                                                                                                                                                                                       |
+| **WorkOrder**          | Compiled context capsule: objective, acceptance criteria, known facts, decisions, constraints, non-goals, repo + base commit, allowed/prohibited operations, required evidence, output contract. Compiled from authoritative state — never handcrafted.                                                                                                                                                                                                                                                                                                                                                      |
+| **ProductSuggestion**  | Non-authoritative request for a possible product or maintenance change, submitted by a human or agent with observed problem/opportunity, scope, evidence refs, affected users/systems, expected value, uncertainty, risks, alternatives, duplication hints, and urgency rationale. It may be clustered, rejected, deferred, or promoted, but cannot authorize work or masquerade as a WorkOrder.                                                                                                                                                                                                             |
+| **WorkOrderTransport** | The dispatch port. The bounded Node contract is `dispatch(request, now) → { receipt, completed, alive, kill }`: separate promises for a `CommandReceipt` and validated result, with host-only process handles. The request contains the persisted command, compiled WorkOrder and pinned environment, model/effort, physical episode and declared read mount. `ClaudeCliPrintWorkOrderTransport` and `CodexCliExecWorkOrderTransport` implement the disposable inspection profile; the deterministic fake remains first-class. Broader transports remain planned. See 03 §Ports for canonical launch shapes. |
+| **Result envelope**    | The deliberately tiny structured return (`workOrderId, episodeId, status, resultId, summary, requiresHuman`). Inspection status is `completed`, `blocked`, or `failed`; completion is a worker self-report, and `requiresHuman` independently records whether an operator decision is needed. The host retains typed results and evidence in its store and returns only this envelope to the dispatching session.                                                                                                                                                                                            |
+
+In prose, a “task” remains a bounded unit realized as a WorkOrder. Planned
+background-session, subagent, workflow, SDK, browser-driven and human transport
+adapters remain empirically selected per environment (Principle 15).
+
+The WO-009 runtime records each physical incarnation as `WorkerAttemptStarted`,
+followed by acceptance, host-observed heartbeats, and completion, interruption,
+lease expiry, or quarantine. The WorkOrder, continuation and stable command
+survive a physical episode. A 1,000 ms heartbeat renews a 5,000 ms lease only
+while it is still valid; each invocation has a 180,000 ms deadline. Stored
+timestamps and explicit expiry events drive the read-only `dotln status`
+projection. A lifecycle Beacon or a worker claim is not heartbeat evidence.
+
+`WorkerResultObserved` records a completed result before the shared reactor
+checks its pinned compilation, authority, presence and worker lease. Only an
+admitted observation becomes `CommandResult` and closes the outbox entry.
+Quarantined observations and incomplete envelopes preserve the pending command;
+partial typed evidence remains available without becoming accepted candidates.
+Recovery may query an immutable completed-result receipt in a fresh episode,
+retaining the original producing episode id. The profile permits only a
+host-read synthetic inventory and no model tools or repository writes.
 
 Candidate plurality adds three related records without changing the meaning of
 Episode or Result envelope:
@@ -111,8 +132,10 @@ operator-attested`. This record is control-plane evidence and does not enlarge
 the Result envelope. A self-report proves only that the control log received a
 claim attributed to that actor, not independent authorship or the unobserved
 effective setting; the source label prevents that claim from being laundered
-into readback. It is a candidate payload component for runtime episode events
-when WO-009 implements them, not a claim that those events exist today.
+into readback. WO-009's runtime attempt event separately records transport,
+harness version, selected model and effort with `selectionSource: host-launch`;
+`effectiveModel` and `effectiveEffort` remain `unknown`. Those host launch
+claims do not expand the control actor attestation or the Result envelope.
 Recognized effort values require value-specific selector or
 effective-readback evidence for the same harness version; a harness without it
 must attest `unknown`. Actor values are single-line. `not-applicable` denotes a structurally absent harness/model field,

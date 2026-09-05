@@ -21,3 +21,6 @@ dist/
 
 # Rebuildable host control projections and local audience capabilities.
 /.control-beacons/
+
+# Local worker event stores, synthetic demo repositories and result receipts.
+/.runtime/

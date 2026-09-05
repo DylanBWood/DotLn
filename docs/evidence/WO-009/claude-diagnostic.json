@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "kind": "authenticated-live-models",
+  "observedAt": "2026-09-05T20:33:56.450Z",
+  "runs": [
+    {
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.261",
+      "model": "claude-sonnet-5",
+      "effort": "high",
+      "failure": {
+        "code": "invalid-result",
+        "detail": "blocked-result-contract"
+      },
+      "inFlight": {
+        "running": 1,
+        "pending": 1,
+        "phase": "running",
+        "lastHeartbeatAt": 1788640437345,
+        "leaseExpiresAt": 1788640442345,
+        "statusReadOnly": true
+      }
+    }
+  ]
+}
