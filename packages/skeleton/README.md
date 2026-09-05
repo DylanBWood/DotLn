@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.6.0
+# `@dotln/skeleton` 0.7.0
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on
@@ -29,6 +29,12 @@ Component `0.6.0` is staged for application release `v0.6.0`: the optional
 Beacon edge emits exact metadata projections and a separately labeled fake
 executor claim. Kernel, compiler, reactor, and audit projection code are
 unchanged; the default stdout changes only the package-version banner.
+
+Component `0.7.0` is staged for application release `v0.8.0`: lifecycle v2
+Beacons, bounded phase-group files, guarded recorded sweeps, and replayed age
+glyphs join the existing edge. Kernel/compiler source and dependencies remain
+unchanged. The ordinary fake scenario still changes stdout only at its version
+banner; Beacon glyphs appear only when observation events are present.
 
 The deterministic Repo Gardener + Seiri vertical. It compiles a typed
 `LoadoutGraph` into a bounded `WorkOrder` and related runtime mechanisms, runs
@@ -165,9 +171,51 @@ content reads, proves claim isolation before results, and watches concurrent
 atomic replacements. Metadata intentionally discloses codebook fields,
 existence, correlation, and recency; content permissions do not hide it.
 
-[WO-021](../../docs/work-orders/WO-021-control-plane-beacons.md) is the nominated
-next increment for control-plane output, cross-worktree sweeps, authorized
-`BeaconObserved` events, staleness, and group composites. Real-worker liveness
-remains with WO-009. Neither milestone alone proves the concept useful; the
+Real-worker liveness remains with WO-009. Neither Beacon milestone alone proves
+the concept useful; the
 [proposed operator comparison](../../docs/planning/beacon-usefulness-checkpoint.md)
 remains a separate evidence step.
+
+## Control-plane Beacons
+
+Every appended resume transition writes a dense v2 projection inside ignored
+`.control-beacons/public/` and `verifier/`, with canonical transition mtime.
+The verifier whitelist excludes claims and narrative. Optional session-specific
+restricted projections are provisioned by the host; only the matching
+capability-bearing `resume next` briefing discloses their separate random path.
+Projection failure warns without undoing or repeating a recorded transition.
+
+```sh
+npm run worktree -- constellation
+```
+
+This read-only command prints lifecycle-ordered metadata from all worktrees,
+then a group row. It reads no Beacon content and appends no event. Groups sum
+at most twelve host-projected members; a missing/mismatched cache is labeled
+as a group derived from this sweep. Individual v2 supports 288 states with a
+maximum 81,833 dense logical bytes. The independent group family can reach
+192,763,452,654 logical bytes with zero observed data blocks; emission verifies
+at most one filesystem block. Dense hosts refuse groups beyond the freshly
+reproduced logical ceiling. Never copy or open a huge sparse group as content.
+
+```sh
+npm run worktree -- constellation --agent <host-request.json> --log docs/observations/<name>.jsonl
+```
+
+After a current build, this form consumes an explicit host envelope and records
+the Observe request through the pure reactor. The existing guard checks the
+`observe.beacons.public` or `.verifier` effect before any Beacon metadata read.
+Refusal yields no perception; allowance persists the command, one
+`BeaconObserved`, then its result. Replay uses captured metadata and event time
+to derive fresh/stale/absent/skew labels and the same glyph scene. The default
+`Cadence.After` threshold is 20 minutes; a host request declares its own value.
+See the [request/runbook contract](../../docs/product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched)
+and [normative data](../../docs/product/02-domain-model.md#beacon-codebook-v2--control-state).
+
+The [evidence receipt](../../docs/evidence/WO-021/README.md) includes exhaustive
+codebooks, permission/replay fixtures, bounded storage and read comparisons.
+On the measured warm-cache full-status workload, a single JSON index stayed
+faster than individual metadata sweeps with one, two, and four readers. This
+does not measure a writer, a production workload, or operator usefulness.
+Payload-free scans remain visible to sufficiently privileged OS monitoring;
+same-user filesystem access and provenance spoofing are outside this boundary.

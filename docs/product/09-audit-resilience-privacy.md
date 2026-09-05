@@ -436,6 +436,28 @@ No status or version goes in the filename. Enforce the chosen directory/access
 boundary before exposing the path; no secrecy or authenticity is inferred from
 padding, the unkeyed check residue, or an opaque name.
 
+WO-021 separates public, verifier, and restricted projections. The verifier
+writer accepts only host-folded lifecycle fields, and public/shared logs never
+include the random restricted directory or its separate session capability.
+Only the authorized order's `resume next` briefing discloses that path.
+Directories use mode 0700 and session records mode 0600. These permissions and
+unguessable names do not isolate mutually untrusted agents running as the same
+OS user: an agent with that user's filesystem privileges can enumerate or
+alter the files. Host provenance is still unauthenticated. Enforced mount/path
+sense boundaries and the separate keyed consistency proposal remain WO-022.
+
+Payload-free observation does not imply an invisible scan. The operating
+system still services directory/status calls, and a sufficiently privileged
+monitor can observe them. macOS explicitly exposes a file-status notification
+in [Endpoint Security](https://developer.apple.com/documentation/endpointsecurity/es_event_type_notify_stat);
+receiving the system event feed requires its
+[monitoring entitlement](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.endpoint-security.client).
+This is documentation-backed observability, not a monitoring experiment on the
+operator's machine. A cached local snapshot or shared host observer can reduce
+repeated source accesses; those are preserved design options with no scan
+secrecy guarantee. Stronger privacy needs a declared adversary and OS-enforced
+isolation; encrypting content would still leave Beacon state encoded in size.
+
 Deletion and immutability require design, not slogans. A durable audit record
 may retain that a governed deletion occurred while separately deleting or
 cryptographically rendering inaccessible the sensitive payload. Hashes are not

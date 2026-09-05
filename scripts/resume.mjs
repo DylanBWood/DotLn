@@ -14,6 +14,10 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { mainWorktree, runGit } from "./lib/git.mjs";
 import {
+  projectControlBeacon,
+  restrictedBeaconBriefing,
+} from "./lib/beacons.mjs";
+import {
   controlTimeProjection,
   recoverControlTimes,
   validateRecordedAt,
@@ -213,10 +217,19 @@ const appendTransition = (action, event) => {
   const segment =
     control.locations.get(event.workOrderId) ??
     orderSegmentPath(event.workOrderId);
-  return append(
+  const recorded = append(
     { ...event, ...checkpoint(action, event.workOrderId) },
     segment,
   );
+  try {
+    const state = readControl(repoRoot).orders.get(event.workOrderId).state;
+    projectControlBeacon(repoRoot, state, recorded.recordedAt);
+  } catch {
+    process.stderr.write(
+      "warning: host beacon projection unavailable; transition recorded, do not retry the transition\n",
+    );
+  }
+  return recorded;
 };
 
 const workOrderDeclaration = (
@@ -931,13 +944,25 @@ export const main = (argv = process.argv.slice(2)) => {
     }
     case "next": {
       requirePhase(state, "active", "closed");
+      let restricted = "";
+      if (args.length) {
+        if (
+          state.phase !== "active" ||
+          args.length !== 2 ||
+          args[0] !== "--beacon-session"
+        )
+          throw new Error(
+            "usage: resume next [--beacon-session <host-issued capability>] (active only)",
+          );
+        restricted = `\n${restrictedBeaconBriefing(repoRoot, state.workOrderId, args[1])}`;
+      }
       const declaration =
         state.phase === "active"
           ? activeWorkOrderDeclaration(state)
           : undefined;
       message =
         state.phase === "active"
-          ? `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; after its evidence gate passes, run ${commandFor("implementation-ready")}.`
+          ? `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; after its evidence gate passes, run ${commandFor("implementation-ready")}.${restricted}`
           : `Current work order ${state.workOrderId} is closed. ${openOrders(control).length ? `Other in-flight orders: ${openOrders(control).join(", ")}; inspect one with npm run resume -- status --work-order WO-NNN.` : "The repository is between work orders; start a valid next work order with npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md."}`;
       break;
     }

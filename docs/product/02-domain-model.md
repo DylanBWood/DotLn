@@ -332,7 +332,7 @@ consuming rung proves it.
 | **Verification radius** | Pure function of (anomaly, dependency graph, confidence profile) → recheck scope: local / neighborhood / subsystem / full.                                                                                                                                                                                                                                                                                                                                                                                            |
 | **Beacon**              | Rebuildable metadata projection or explicitly labeled emitter claim, addressed by a fixed non-state identifier. Size is a codeword; mtime is derivation/claim time; padded JSON holds the complete projection or claim record. Neither provenance label nor checksum authenticates the writer.                                                                                                                                                                                                                        |
 | **BeaconCodebook**      | Versioned finite fields, ranks, radices, framing, and exact decoder. Unknown versions never inherit a known version's meaning. v1 is specified below; it is independent of application, package, and event-schema versions.                                                                                                                                                                                                                                                                                           |
-| **BeaconObserved**      | Planned observation event containing an authorized sweep's decoded observations and observation time. WO-020 performs an edge-only sweep; event emission, authorization, and replayed staleness enter through WO-021.                                                                                                                                                                                                                                                                                                 |
+| **BeaconObserved**      | Authorized perception event containing decoded metadata observations and the host's sweep time. WO-021 persists the guarded command before reading, then records one observation event; replay derives the same age labels from that event. Beacon state never supplies authority.                                                                                                                                                                                                                                    |
 
 ### Beacon codebook v1
 
@@ -400,6 +400,125 @@ UTF-8 JSON padded only with trailing newlines, and mtime from the receipt's
 `time` or claim's `claimedAt`. Oversized JSON or an unrepresentable timestamp
 refuses before filesystem mutation; changing the size to fit content would
 change the state and is forbidden.
+
+### Beacon codebook v2 — control state
+
+WO-021 adds the following normative data, equality-tested against the pure
+codebook. Array positions are ranks; the v1 episode codebook retains its meaning.
+
+```json
+{
+  "version": 2,
+  "phases": [
+    "active",
+    "ready-to-verify",
+    "verifying",
+    "needs-fix",
+    "repairing",
+    "verified",
+    "final-review",
+    "closed"
+  ],
+  "verdicts": ["unknown", "fail", "pass"],
+  "efforts": ["unknown", "low", "medium", "high", "xhigh", "max"],
+  "provenances": ["host-projected", "self-reported"],
+  "phaseRadix": 8,
+  "verdictRadix": 3,
+  "effortRadix": 6,
+  "provenanceRadix": 2,
+  "versionRadix": 4
+}
+```
+
+For phase `h`, latest verdict `v`, latest attested actor effort `e`, and
+provenance `p`, `code = (((h * 3 + v) * 6 + e) * 2 + p) * 4 + 2`.
+The v1 framing formula wraps that code unchanged. There are 288 states;
+`MAX_V2_CODE = 1150`, `MAX_V2_LOGICAL_BYTES = 81833`. Arithmetic uses `bigint`.
+The edge rejects an inexact Node size or one beyond its fresh bounded storage
+probe before creating a file. Individual v2 files remain densely padded;
+allocated data is bounded by the logical size rounded up to one filesystem
+block (81,920 bytes at the observed 4,096-byte block size).
+
+`ControlProjectionRecord` is a whitelist: `recordType:
+"control-beacon-projection"`, `codebookVersion: 2`, `workOrderId`, `phase`,
+`latestVerdict`, `effort`, `provenance: "host-projected"`, and canonical UTC
+`recordedAt`. The latest folded attestation supplies effort, including
+`unknown`; no actor is invented for an unattested transition. Padded JSON
+contains only those fields; mtime is the appended transition's `recordedAt`.
+The generic v1 writer cannot write into the reserved control tree. A
+provenance label still does not authenticate arbitrary filesystem bytes.
+
+**Preserved design option (2026-09-05 operator follow-up):** a decoded state
+can select a richer entry in a locally held, versioned function table. That
+indirection needs no additional Beacon bits when existing states are the keys.
+An explicit function-ID field would instead need a newly bounded/versioned
+codebook. Readers must share the table identity and meaning; selecting an entry
+does not grant permission to execute it. No function-dispatch runtime or
+performance benefit is claimed by WO-021's status-sweep measurements.
+
+### Beacon group codebook v1 — phase counts
+
+The phase-group family is separate from individual Beacon versions. Its
+directory and dedicated decoder select the family; the individual reader
+continues to return `unknown-codebook` for framed tag 3. Individual v3 remains
+available to WO-022. This normative data is equality-tested too:
+
+```json
+{
+  "family": "phase-group",
+  "version": 1,
+  "framingVersion": 3,
+  "maxMembers": 12,
+  "radix": 13,
+  "versionRadix": 4
+}
+```
+
+In v2 phase order, count `c[i]` contributes `c[i] * 13 ** i`.
+`code = 4 * sum(c[i] * 13 ** i) + 3`, then the ordinary framing formula
+produces size. Every digit is an integer in `0..12` and the total is at most 12. There are 125,970 valid vectors, exhaustively collision/round-trip tested.
+`MAX_GROUP_CODE = 3011928819`, `MAX_GROUP_LOGICAL_BYTES = 192763452654`.
+Only decoded host-projected v2 observations enter the sum; verdict, effort,
+claims, absent files, and malformed/unknown codewords contribute nothing.
+Counts describe the swept metadata, including old observations; they do not
+prove liveness or a simultaneous snapshot of every member.
+
+The group file has no content payload. The fresh local probe observed the
+maximum logical size with zero allocated data blocks. Sparse emission permits
+at most one filesystem block. The theoretical dense bound is the maximum
+logical size rounded up to a block: 192,763,453,440 bytes for 4,096-byte blocks.
+A host without observed sparse support has only the reproduced 81,833-byte
+logical ceiling: small groups are densely padded, larger groups refuse before
+allocation. No hundreds-of-gigabytes dense probe is attempted. See the
+[storage evidence](../evidence/WO-021/README.md).
+
+### Beacon perception and age
+
+An agent submits `Observe { subject: "control-beacons" }` with an explicit
+host-supplied envelope, audience, evidence/revocations, and `staleAfterMs`.
+The reactor lowers it to an `Act` effect `observe.beacons.public` or
+`observe.beacons.verifier`, charging one `beaconSweeps` unit through the existing
+authorization guard. This keeps the kernel byte-identical and gives the
+consequential read the same deny, expiry, revocation, evidence, and resource
+checks as other effects. The intent and codebook never manufacture a grant.
+
+The edge appends `BeaconSweepRequested`, then either `CommandRefused` with
+zero Beacon reads, or `CommandPersisted` before the first Beacon read,
+exactly one `BeaconObserved`, and `CommandResult`. The observation contains
+`commandId`, `sweptAt`, and observations with opaque `address`, decimal `size`,
+`mtimeMs`, exact decimal `mtimeNs` when available, and the decoded result.
+The event's `occurredAt` equals `sweptAt`; replay uses that recorded `env.now`.
+Missing files retain null metadata and `absent`. Only the observations in the
+event are replayed; replay never scans the current filesystem.
+
+Default `staleAfterMs` is 1,200,000 (20 minutes). For a valid decoded Beacon,
+`mtime > sweptAt` is `clock-skew`; age greater than or equal to the declared
+threshold is `stale`; otherwise it is `fresh`. The reactor records the
+`Cadence.After` evaluation in its trace. Nanoseconds are retained for the
+comparison; the millisecond cadence origin rounds upward to avoid declaring
+a sub-millisecond observation stale early. Malformed and unknown codewords
+stay flagged. Text glyphs render stale as blurred, missing as absent, and
+skew as flagged. Observation age never changes a grant or lifecycle legality.
 
 ## Formal grounding
 

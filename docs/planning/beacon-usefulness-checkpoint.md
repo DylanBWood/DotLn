@@ -1,7 +1,8 @@
 # Proposed beacon usefulness checkpoint after WO-021
 
 **Status:** candidate comparison plan from the operator's 2026-09-04 WO-020
-ideation. No trial has run. This is not an added acceptance criterion, release
+ideation. No operator comparison trial has run. WO-021's 2026-09-05 technical
+scan measurements are linked below. This is not an added acceptance criterion, release
 gate, automated preference judgment, or change to the current work-order order.
 
 WO-020 tests whether exact metadata encoding works. WO-021 puts the projection
@@ -53,3 +54,21 @@ For the wider work-system thesis, repeat the value question over one coherent
 real worker → independent verification → feedback loop as those rungs land.
 For Protíno, use its separately planned playable slice rather than extrapolating
 from file metadata.
+
+## WO-021 technical measurements (2026-09-05)
+
+The [evidence receipt](../evidence/WO-021/README.md) records sequential reads at
+3/12/100/1,000 individual signals and 1,000 total full-status requests per case
+with at most four reader threads. Each representation returns equal
+observations. The JSON index stayed faster as readers increased; the experiment
+contains no simultaneous writer, cold-cache workload, or operator comparison.
+Small group counts are measured separately because they disclose fewer fields.
+This evidence answers the operator's execution-time scale questions without
+substituting throughput for usefulness or inferring their reaction.
+
+Preserve two later comparisons: direct/state-selected versioned function-table
+lookups, and local caches or a shared authorized observer. Measure the same
+query and its freshness requirement in each representation. A 1,000-member
+individual sweep does not establish the group codebook beyond its twelve-member
+bound. The privacy question has a separate answer: metadata reads can be
+observed by privileged OS monitoring (09 §Privacy and minimization).

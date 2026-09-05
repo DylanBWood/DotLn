@@ -127,6 +127,44 @@ while reporting additional local release tags as newer evidence. Explicit
 regeneration includes those tags. No lifecycle transition regenerates the
 index; its final refresh is later than the transition's immutable checkpoint.
 
+For a read-only view of live worktree projections, run
+`npm run worktree -- constellation`. It enumerates `git worktree list`, reads
+only Beacon directory/status metadata, and prints phase-ordered individuals
+plus counts for at most twelve host-projected members. It appends nothing and
+does not repair missing projections. Each state-changing resume append emits
+the selected order's v2 Beacon; `status`, `times`, and `next` do not. A warning
+about optional Beacon emission leaves the transition recorded: inspect status
+and fix the projection problem before continuing; never repeat the transition
+to obtain a Beacon. `.control-beacons/` is a rebuildable checkout-local cache.
+
+An agent sweep that becomes replayable perception uses the current skeleton
+build and an explicit host-provided request:
+
+```sh
+npm run build
+npm run worktree -- constellation --agent <host-request.json> --log docs/observations/<name>.jsonl
+```
+
+The request contains `intent: { kind: "Observe", subject: "control-beacons" }`,
+`audience` (`public` or `verifier`), `staleAfterMs`, `authority`, `evidence`, and
+`revokedBy`. The host envelope must grant the matching
+`observe.beacons.<audience>` effect and one `beaconSweeps` resource unit, with
+valid expiry/evidence/revocations. Treat the request file as host input; a
+worker cannot create its own authority by supplying JSON. Refusal records
+`CommandRefused` and no observation. An allowed call persists the command
+before scanning, then exactly one `BeaconObserved` and a result. The append-only
+log is contained under `docs/observations/` and created mode 0600; it is
+deliberate evidence, not a disposable cache. Default age policy is 20 minutes;
+the recorded request may explicitly choose another threshold.
+
+Optional restricted projection provisioning is a trusted host API,
+`issueBeaconSession(root, workOrderId)`, returning a separate random capability.
+Only `npm run resume -- next --beacon-session <capability>` for that selected
+order reveals the restricted directory. Provision before the next transition
+if the session needs its projection emitted. Keep capabilities out of shared
+logs and public status; same-user process arguments/filesystem access are not
+isolated by this mechanism. See 09 §Privacy and minimization for that boundary.
+
 `resume: final review` and `resume: release close` carry narrowly scoped
 external-effect authority. A passing final reviewer may commit the reviewed
 state, push only its work-order branch, and open the mergeable PR; it may never
@@ -333,7 +371,7 @@ stray `.env`, any other ignored path — naming the offending file, and never
 deletes or auto-promotes it. Known disposable ignored dependency/build outputs
 may leave with the worktree only at the anchored root `node_modules/` or
 `dist/` paths, at `packages/<name>/node_modules/` or
-`packages/<name>/dist/`, by a `.DS_Store` basename, or by a
+`packages/<name>/dist/`, the anchored root `.control-beacons/`, by a `.DS_Store` basename, or by a
 `.tsbuildinfo` suffix. A matching segment elsewhere is not disposable, and the
 `docs/intake/**` protection takes precedence over every build-shaped name. The
 same command then evaluates whether the completed roadmap rung is a release

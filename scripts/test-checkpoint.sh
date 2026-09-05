@@ -18,6 +18,7 @@ git -C "$fixture_repo" config user.name "DotLn Test"
 mkdir -p "$fixture_repo/scripts" "$fixture_repo/docs/work-orders" "$fixture_repo/docs/discovery"
 cp -- "$script_dir/resume.mjs" "$fixture_repo/scripts/resume.mjs"
 cp -R -- "$script_dir/lib" "$fixture_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo"
 cp -- "$script_dir/../.gitignore" "$fixture_repo/.gitignore"
 printf '%s\n' \
   '# fixture' \
@@ -86,6 +87,7 @@ stale_repo="$test_root/stale-repo"
 mkdir -p "$stale_repo/scripts" "$stale_repo/docs/work-orders" "$stale_repo/docs/discovery" "$test_root/failing-git"
 cp -- "$script_dir/resume.mjs" "$stale_repo/scripts/resume.mjs"
 cp -R -- "$script_dir/lib" "$stale_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$stale_repo"
 cp -- "$script_dir/../.gitignore" "$stale_repo/.gitignore"
 printf '%s\n' \
   '# fixture' \

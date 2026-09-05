@@ -16,6 +16,7 @@ u2028="$(printf '\342\200\250')"
 mkdir -p -- "$fixture_repo/scripts" "$fixture_repo/docs/work-orders" "$fixture_repo/docs/discovery"
 cp -- "$script_dir/resume.mjs" "$fixture_repo/scripts/resume.mjs"
 cp -R -- "$script_dir/lib" "$fixture_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo"
 printf '%s\n' \
   '# fixture' \
   '' \
@@ -32,18 +33,24 @@ printf '%s\n' \
 mkdir -p "$fixture_repo/docs/verifications/WO-099" "$fixture_repo/docs/final-reviews/WO-099"
 printf '# existing verification\n' >"$fixture_repo/docs/verifications/WO-099/VER-001.md"
 printf '# existing final review\n' >"$fixture_repo/docs/final-reviews/WO-099/FINAL-001.md"
+git init "$fixture_repo" >/dev/null 2>&1
+cp -- "$script_dir/../.gitignore" "$fixture_repo/.gitignore"
 status_sequence=0
 assert_status_read_only() {
   status_sequence=$((status_sequence + 1))
   local current_before="$test_root/current-$status_sequence.before"
   local log_before="$test_root/log-$status_sequence.before"
   local json_path="$test_root/status-$status_sequence.json"
+  node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo" snapshot >"$test_root/beacons-before-status"
   cp -- "$fixture_repo/docs/control/current.md" "$current_before"
   cp -- "$active_log" "$log_before"
   node "$fixture_repo/scripts/resume.mjs" status >/dev/null
   node "$fixture_repo/scripts/resume.mjs" status --json >"$json_path"
   cmp "$current_before" "$fixture_repo/docs/control/current.md"
   cmp "$log_before" "$active_log"
+  node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo" snapshot >"$test_root/beacons-after-status"
+  cmp "$test_root/beacons-before-status" "$test_root/beacons-after-status"
+  node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo" assert "$json_path"
   node - "$json_path" <<'NODE'
 const fs = require("node:fs");
 const status = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
@@ -150,14 +157,17 @@ activate_warning="$(node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs
 assert_status_read_only
 assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"]}'
 tail -n 1 "$active_log" | grep -Fq '"effortDeclarationValidated":true'
-grep -q 'warning: could not create recovery checkpoint.*not a git repository' <<<"$activate_warning"
+grep -q 'warning: could not create recovery checkpoint.*not a valid object name HEAD' <<<"$activate_warning"
 grep -Fq 'Do not repeat this transition after it records' <<<"$activate_warning"
 grep -Fq 'one-invocation outside-sandbox approval' <<<"$activate_warning"
 grep -Fq 'never persist an allow rule' <<<"$activate_warning"
 grep -Fq 'docs/AI-HARNESS-SECURITY.md' <<<"$activate_warning"
 grep -Fq 'Latest checkpoint: unavailable for the latest transition; do not use an older checkpoint' "$fixture_repo/docs/control/current.md"
 before_active_next="$(wc -l <"$active_log" | tr -d ' ')"
+node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo" snapshot >"$test_root/beacons-before-next"
 active_next="$(node "$fixture_repo/scripts/resume.mjs" next)"
+node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo" snapshot >"$test_root/beacons-after-next"
+cmp "$test_root/beacons-before-next" "$test_root/beacons-after-next"
 grep -Fq 'docs/work-orders/WO-099-fixture.md' <<<"$active_next"
 grep -Fq '**Model:** fixture-model with a multiline' <<<"$active_next"
 grep -Fq 'declaration preserved in dispatch.' <<<"$active_next"
@@ -474,6 +484,7 @@ legacy_repo="$test_root/legacy-active"
 mkdir -p "$legacy_repo/scripts" "$legacy_repo/docs/work-orders" "$legacy_repo/docs/control"
 cp -- "$script_dir/resume.mjs" "$legacy_repo/scripts/resume.mjs"
 cp -R -- "$script_dir/lib" "$legacy_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$legacy_repo"
 printf '%s\n' \
   '# legacy active fixture' \
   '' \
@@ -496,6 +507,7 @@ boundary_repo="$test_root/wo019-boundary"
 mkdir -p "$boundary_repo/scripts" "$boundary_repo/docs/work-orders" "$boundary_repo/docs/control"
 cp -- "$script_dir/resume.mjs" "$boundary_repo/scripts/resume.mjs"
 cp -R -- "$script_dir/lib" "$boundary_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$boundary_repo"
 printf '%s\n' \
   '# WO-019 boundary fixture' \
   '' \
@@ -514,6 +526,7 @@ invalid_events_repo="$test_root/invalid-events"
 mkdir -p "$invalid_events_repo/scripts" "$invalid_events_repo/docs/control"
 cp -- "$script_dir/resume.mjs" "$invalid_events_repo/scripts/resume.mjs"
 cp -R -- "$script_dir/lib" "$invalid_events_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$invalid_events_repo"
 printf 'projection sentinel\n' >"$invalid_events_repo/docs/control/current.md"
 printf '%s\n' \
   '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-088","workOrderPath":"docs/work-orders/WO-088-fixture.md"}' \
@@ -545,6 +558,7 @@ time_repo="$test_root/time-repo"
 mkdir -p "$time_repo/scripts" "$time_repo/docs/work-orders"
 cp -- "$script_dir/resume.mjs" "$time_repo/scripts/resume.mjs"
 cp -R -- "$script_dir/lib" "$time_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$time_repo"
 printf '%s\n' '# time fixture' '' '**Model:** any.' '**Effort:** executor any; verifier any; reviewer any.' >"$time_repo/docs/work-orders/WO-087-time.md"
 node --input-type=module - "$time_repo" "$test_root" <<'NODE'
 import assert from "node:assert/strict";
@@ -689,4 +703,5 @@ for variant in absent reordered backwards; do
 done
 
 node "$script_dir/test-control-segments.mjs" "$test_root"
+printf 'beacons: every lifecycle transition matches phase/verdict/effort/time; status and next preserve inode/ctime/size/mtime\n'
 printf 'resume tests passed\n'

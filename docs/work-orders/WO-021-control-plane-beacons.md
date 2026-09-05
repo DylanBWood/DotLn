@@ -1,9 +1,12 @@
-# WO-021 — Beacons for the control plane: dogfood, sweep events, staleness, group composites (version assigned at activation)
+# WO-021 — Beacons for the control plane: dogfood, sweep events, staleness, group composites (v0.8.0)
 
 **Model:** any capable model.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Expected
-class: minor.
+**Release classification:** minor. Activation completion, 2026-09-05:
+`v0.8.0` is the next minor above observed annotated release `v0.7.0`
+(`aca01dd826a950475cae7e6f587eb8d85713029b`), using the operator's opt-out
+version-assignment default. Skeleton source advances its component from
+`0.6.0` to `0.7.0`; kernel/compiler component axes are unchanged.
 **Nomination provenance:** nominated by WO-020's write-back duty from the
 operator's 2026-09-02 beacon ideation.
 **Direct-draft provenance:** the operator supplied this complete public draft
@@ -149,3 +152,54 @@ sparse-file lowering (observed).
 **Non-goals:** leases and heartbeats for real workers (WO-009); network or
 cross-machine beacons; xattr and symlink lowerings; a web view; beacons as
 inputs to authority; changing any lifecycle transition's legality.
+
+## Implementation receipt (2026-09-05)
+
+The [executor evidence](../evidence/WO-021/README.md) records the implementation,
+test transcripts, storage bounds, and reproducible read comparisons. The
+selected guard form is `observe.beacons.<audience>` lowered through the existing
+Act authorization function; kernel and compiler source remain unchanged. Four
+strictly TypeScript-checked `.mjs` source leaves share the original edge with
+dependency-free bootstrap tooling, documented in ADR-0002's tooling amendment.
+
+Individual v2 has 288 states, maximum code 1150 and 81,833 dense logical bytes.
+The separate group-v1 phase family exhausts 125,970 vectors for at most twelve
+members; the largest logical codeword is 192,763,452,654 bytes and used zero
+allocated data blocks on the fresh local probe. A non-sparse host only permits
+sizes through its reproduced ceiling; unsupported groups refuse before
+allocation. Group framing tag 3 is selected by its dedicated directory/decoder,
+and does not implement the individual v3 contract reserved for WO-022.
+
+The lifecycle helper emits after append and warns without reversing a recorded
+transition on projection failure. Host-only verifier fields, separate random
+restricted-session capability/path, exact timestamp age, metadata-only
+constellation, no-read authorization refusal, one allowed observation, complete
+Decision replay, twelve actual member files, and anchored cleanup are exercised.
+Same-user filesystem adversaries and privileged scan visibility are documented
+limits, not claimed protections.
+
+The operator additionally requested actual scale and concurrent-read evidence
+during execution. The bounded scripts compare identical status payloads with
+3/12/100/1,000 individual records and 1,000 total requests per case using at most
+four reader threads. A single JSON index stayed faster through the tested
+reader counts; group phase counts are a distinct smaller query. No concurrent
+writer, 1,000-process load, production, token-saving, or operator-usefulness
+claim is made. The operator's function-table and scan-privacy follow-ups are
+synthesized in the ledger and products 02/09; cached/shared observers and
+versioned state-selected functions are preserved options, with no added runtime
+dispatch feature or change to acceptance. No intake capture or direct-filing
+exception was used for those execution questions.
+
+Write-back covers products 02/03/04/06/07/09/10, the playbook, capability row,
+planning map/checkpoint, WO-009/WO-022 inputs, ledger, release source/component
+claims, and publication coverage/locks. Independent verification must read this
+receipt, the linked execution evidence, and those bounded compatibility/privacy
+choices; it allocates its own numbered report through the ordinary resume flow.
+
+**Executor gate:** `npm test` passed all shell/integration gates, 196 package
+tests, and eight included corpus tests, with no Node-test failures or skips.
+`git diff --check` passed; kernel/compiler source is unchanged and there is no
+new dependency. Actor selection is the repository's operator-attested default:
+Codex CLI `0.153.2`, `gpt-6-astra`, effort `max`; this is not effective-session
+readback. Readiness is recorded through the normal lifecycle command after
+these checks, with independent verification and final review still outstanding.

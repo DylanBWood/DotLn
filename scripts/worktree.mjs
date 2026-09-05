@@ -33,6 +33,7 @@ import {
 } from "./lib/paths.mjs";
 import { statusProjection } from "./resume.mjs";
 import { readControl } from "./lib/control-store.mjs";
+import { constellation } from "./lib/beacons.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
@@ -117,9 +118,32 @@ const ensureNoIgnoredMaterial = (path) => {
       `worktree contains ignored material and will not be removed: ${ignored[0]} (run npm run backup:intake or move it, then retry)`,
     );
 };
-const main = () => {
+const main = async () => {
   const [action, workOrderId, ...actionArgs] = process.argv.slice(2);
   const repoRoot = action === "finish" ? resolve(process.cwd()) : toolRoot;
+  if (action === "constellation") {
+    if (!workOrderId && !actionArgs.length)
+      process.stdout.write(`${constellation(repoRoot)}\n`);
+    else {
+      if (
+        workOrderId !== "--agent" ||
+        actionArgs.length !== 3 ||
+        actionArgs[1] !== "--log"
+      )
+        throw new Error(
+          "usage: worktree constellation [--agent <host-request.json> --log docs/observations/<name>.jsonl]",
+        );
+      const { agentConstellation } = await import("./lib/beacon-observe.mjs");
+      const result = await agentConstellation(
+        repoRoot,
+        actionArgs[0],
+        actionArgs[2],
+      );
+      process.stdout.write(`${result.text}\n`);
+      if (!result.authorized) process.exitCode = 1;
+    }
+    return;
+  }
   const mainPath = mainWorktree(toolRoot);
 
   const workOrderPath = actionArgs[0];
@@ -302,7 +326,7 @@ const main = () => {
 };
 
 try {
-  main();
+  await main();
 } catch (error) {
   process.stderr.write(
     `error: ${error instanceof Error ? error.message : String(error)}\n`,

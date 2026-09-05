@@ -355,6 +355,15 @@ The control view lists the orders known in its checkout; it does not poll
 unmerged sibling worktrees or infer worker liveness. Each order keeps the same
 implementation → verification → final-review contract.
 
+Use `npm run worktree -- constellation` to observe current Beacon metadata
+across the worktree set without appending events; use the documented `--agent`
+form when perception must be authorized and replayed. Individual v2 phase,
+verdict, effort, and age are projections; they never authorize a transition.
+The group count is bounded to twelve members. Each worktree writes only its
+own ignored `.control-beacons/` cache, which may leave with a safely closed
+worktree; the anchored `docs/intake/**` protection is unchanged. A stale or
+absent Beacon is a reason to inspect canonical state, not proof of a dead worker.
+
 For a paired wave:
 
 1. Recheck the [lane rules](planning/concurrent-work-orders-plan.md#lane-rules-the-showrunner-can-apply-by-hand), dependencies, write surfaces, actor capacity, and each release target. Start each authorized order from clean main with `npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md`, then use a separate session in each emitted worktree.

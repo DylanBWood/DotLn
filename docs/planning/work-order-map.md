@@ -76,6 +76,15 @@ matching source claim. Published tags and already pinned targets keep their
 separate immutability/retiming rules. WO-026 prepared the compatible v0.5.2 patch
 above v0.5.1; the candidate application journey does not allocate a runtime rung.
 
+**WO-021 activation completion (2026-09-05):** this worktree starts from
+published `v0.7.0`, which contains WO-030. WO-021's expected minor classification
+therefore assigns `v0.8.0`; skeleton source advances independently to component
+`0.7.0`. The dated merge-pending statements above describe the planning revision,
+not this activation. This does not change the recommended sequence or claim that
+the paired trial or operator usefulness comparison has occurred. The 2026-09-05
+WO-021 source passed independent verification and final review at this
+revision and awaits operator merge; the sequence above is unchanged.
+
 After WO-021, the [proposed beacon usefulness checkpoint](beacon-usefulness-checkpoint.md)
 compares the new projection with existing status views before recommending
 further investment. The technical orders do not by themselves prove the wider

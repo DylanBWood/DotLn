@@ -19,6 +19,7 @@ zero_lock="$(printf '%064d' 0)"
 mkdir -p -- "$fixture_repo/scripts" "$fixture_repo/docs/product" "$fixture_repo/docs/publication"
 cp -- "$script_dir/check-publication.mjs" "$fixture_repo/scripts/check-publication.mjs"
 cp -R -- "$script_dir/lib" "$fixture_repo/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$fixture_repo"
 
 {
   printf '%s\n' '# Fixture' ''

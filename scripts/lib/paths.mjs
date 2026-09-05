@@ -60,6 +60,7 @@ export const classifyIgnoredMaterial = (candidate) => {
   const disposable =
     !intake &&
     (anchoredBuildOutput(candidate) ||
+      /^(?:\.control-beacons)(?:\/|$)/.test(candidate) ||
       basename(candidate) === ".DS_Store" ||
       candidate.endsWith(".tsbuildinfo"));
   return {

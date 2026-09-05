@@ -33,17 +33,20 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 
 ## 02 — Domain model
 
-| Section                                                                                                      | Audiences                           | Status      |
-| ------------------------------------------------------------------------------------------------------------ | ----------------------------------- | ----------- |
-| [Domain model](../product/02-domain-model.md#domain-model)                                                   | software-engineer                   | specified   |
-| [Events and decisions (the kernel loop)](../product/02-domain-model.md#events-and-decisions-the-kernel-loop) | everyday-ai-user, software-engineer | implemented |
-| [Actors and episodes (the edge)](../product/02-domain-model.md#actors-and-episodes-the-edge)                 | everyday-ai-user, software-engineer | specified   |
-| [Identity and composition](../product/02-domain-model.md#identity-and-composition)                           | everyday-ai-user, software-engineer | specified   |
-| [LoadoutGraph v1 payload contract](../product/02-domain-model.md#loadoutgraph-v1-payload-contract)           | software-engineer                   | implemented |
-| [Feedback](../product/02-domain-model.md#feedback)                                                           | everyday-ai-user, software-engineer | specified   |
-| [Memory and observation](../product/02-domain-model.md#memory-and-observation)                               | everyday-ai-user, software-engineer | specified   |
-| [Beacon codebook v1](../product/02-domain-model.md#beacon-codebook-v1)                                       | everyday-ai-user, software-engineer | implemented |
-| [Formal grounding](../product/02-domain-model.md#formal-grounding)                                           | software-engineer                   | specified   |
+| Section                                                                                                         | Audiences                           | Status      |
+| --------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- |
+| [Domain model](../product/02-domain-model.md#domain-model)                                                      | software-engineer                   | specified   |
+| [Events and decisions (the kernel loop)](../product/02-domain-model.md#events-and-decisions-the-kernel-loop)    | everyday-ai-user, software-engineer | implemented |
+| [Actors and episodes (the edge)](../product/02-domain-model.md#actors-and-episodes-the-edge)                    | everyday-ai-user, software-engineer | specified   |
+| [Identity and composition](../product/02-domain-model.md#identity-and-composition)                              | everyday-ai-user, software-engineer | specified   |
+| [LoadoutGraph v1 payload contract](../product/02-domain-model.md#loadoutgraph-v1-payload-contract)              | software-engineer                   | implemented |
+| [Feedback](../product/02-domain-model.md#feedback)                                                              | everyday-ai-user, software-engineer | specified   |
+| [Memory and observation](../product/02-domain-model.md#memory-and-observation)                                  | everyday-ai-user, software-engineer | specified   |
+| [Beacon codebook v1](../product/02-domain-model.md#beacon-codebook-v1)                                          | everyday-ai-user, software-engineer | implemented |
+| [Beacon codebook v2 — control state](../product/02-domain-model.md#beacon-codebook-v2--control-state)           | everyday-ai-user, software-engineer | implemented |
+| [Beacon group codebook v1 — phase counts](../product/02-domain-model.md#beacon-group-codebook-v1--phase-counts) | everyday-ai-user, software-engineer | implemented |
+| [Beacon perception and age](../product/02-domain-model.md#beacon-perception-and-age)                            | everyday-ai-user, software-engineer | implemented |
+| [Formal grounding](../product/02-domain-model.md#formal-grounding)                                              | software-engineer                   | specified   |
 
 ## 03 — Architecture
 

@@ -23,11 +23,18 @@ import {
   SEIRI_PULSE_SCHEDULE,
   SEIRI_QUEUED_PULSE,
   compileLoadout,
+  canonicalStringify,
   seiriEnvironment,
   seiriLoadout,
   type CompiledProgram,
   type LoadoutGraph,
 } from "@dotln/compiler";
+import { beaconAge, decodeSignalSize } from "./control-codebook.mjs";
+import type {
+  BeaconSweepRequest,
+  JudgedBeacon,
+  SignalObservation,
+} from "./control-beacon.js";
 
 export const MINUTE = SEIRI_MINUTE;
 export const WORKSTREAM = "ws_repo_garden";
@@ -72,6 +79,8 @@ export type RuntimeState = Readonly<{
   cancelledScheduleIds: readonly string[];
   activeScheduleIds: readonly string[];
   redispatchedCommandIds: readonly string[];
+  beaconObservations: readonly JudgedBeacon[];
+  beaconSweep: JsonValue;
 }>;
 
 export const loadout: Loadout = seiriLoadout;
@@ -146,6 +155,8 @@ export const initialState = (): RuntimeState => ({
   cancelledScheduleIds: [],
   activeScheduleIds: [],
   redispatchedCommandIds: [],
+  beaconObservations: [],
+  beaconSweep: null,
 });
 
 const asObject = (
@@ -583,8 +594,133 @@ const episodeDecision = (
   };
 };
 
+const beaconSweepDecision = (
+  state: RuntimeState,
+  event: Event,
+  env: KernelEnv,
+): Decision<RuntimeState> => {
+  const request = event.payload as unknown as BeaconSweepRequest & {
+    decisionIndex: number;
+  };
+  if (
+    request.intent?.kind !== "Observe" ||
+    request.intent.subject !== "control-beacons" ||
+    !["public", "verifier"].includes(request.audience) ||
+    !Number.isSafeInteger(request.staleAfterMs) ||
+    request.staleAfterMs < 0 ||
+    !Number.isSafeInteger(request.decisionIndex) ||
+    request.decisionIndex < 0
+  )
+    throw new Error("invalid Beacon sweep request");
+  const effect: ActIntent = {
+    kind: "Act",
+    effect: `observe.beacons.${request.audience}`,
+    resource: "beaconSweeps",
+    payload: { subject: request.intent.subject, audience: request.audience },
+  };
+  // Observation values are deliberately absent from this authority context.
+  const authorization = authorize(effect, request.authority, {
+    now: env.now,
+    actorId: event.actorId,
+    workstreamId: event.workstreamId,
+    ...(event.episodeId ? { episodeId: event.episodeId } : {}),
+    decisionIndex: request.decisionIndex,
+    intentIndex: 0,
+    evidence: request.evidence,
+    revokedBy: request.revokedBy,
+    state: { presence: state.presence, policy: state.policy },
+    predicateEnv: predicateEnv(env),
+  });
+  return {
+    state: {
+      ...state,
+      beaconSweep: {
+        requestEventId: event.eventId,
+        staleAfterMs: request.staleAfterMs,
+        authorization: authorization as unknown as JsonValue,
+      },
+    },
+    intents: authorization.authorized ? [request.intent] : [],
+    schedules: [],
+    trace: authorization.trace,
+  };
+};
+
+const beaconObservedDecision = (
+  state: RuntimeState,
+  event: Event,
+  env: KernelEnv,
+): Decision<RuntimeState> => {
+  const payload = event.payload as unknown as {
+    sweptAt: number;
+    observations: readonly SignalObservation[];
+    commandId: string;
+  };
+  const sweep = state.beaconSweep as unknown as {
+    staleAfterMs: number;
+    authorization: { authorized: boolean; command?: Command };
+  } | null;
+  if (
+    !sweep?.authorization.authorized ||
+    payload.commandId !== sweep.authorization.command?.commandId ||
+    payload.sweptAt !== event.occurredAt ||
+    payload.sweptAt !== env.now ||
+    !Array.isArray(payload.observations)
+  )
+    throw new Error("BeaconObserved lacks its authorized sweep or event time");
+  const cadenceEvaluations: string[] = [];
+  const observations = payload.observations.map((observation): JudgedBeacon => {
+    // Persist decoded perception, but bind it to the captured size on replay.
+    const decoded =
+      observation.size === null
+        ? { status: "absent" }
+        : decodeSignalSize(BigInt(observation.size));
+    if (canonicalStringify(decoded) !== canonicalStringify(observation.decoded))
+      throw new Error(
+        "BeaconObserved decoded fields differ from captured metadata",
+      );
+    let age = beaconAge(observation, env.now, sweep.staleAfterMs);
+    if (age === "fresh" || age === "stale") {
+      // The kernel clock is integer milliseconds: round the captured origin up
+      // so a sub-ms remainder cannot fire the After cadence prematurely.
+      const origin =
+        observation.mtimeNs == null
+          ? observation.mtimeMs!
+          : Number((BigInt(observation.mtimeNs) + 999999n) / 1000000n);
+      const evaluated = evaluateCadence(
+        Cadence.After(sweep.staleAfterMs),
+        state,
+        { ...env, now: origin },
+        event,
+      );
+      cadenceEvaluations.push(evaluated.trace);
+      age =
+        evaluated.dueAt !== null && env.now >= evaluated.dueAt
+          ? "stale"
+          : "fresh";
+    }
+    return { ...observation, age };
+  });
+  return {
+    state: { ...state, beaconObservations: observations },
+    intents: [],
+    schedules: [],
+    trace: {
+      reactorId: "beacon-observer",
+      reactorVersion: "1",
+      branchPath: ["BeaconObserved", ...observations.map(({ age }) => age)],
+      envInputs: ["event.payload.observations", "event.occurredAt"],
+      cadenceEvaluations,
+    },
+  };
+};
+
 export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
   switch (event.type) {
+    case "BeaconSweepRequested":
+      return beaconSweepDecision(state, event, env);
+    case "BeaconObserved":
+      return beaconObservedDecision(state, event, env);
     case "InspectionTaskCreated":
       return observed(state, event, "task-opened");
     case "LoadoutEquipped": {
@@ -612,6 +748,8 @@ export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
         command === null
           ? undefined
           : stringField(asObject(command)?.["intent"] ?? null, "effect");
+      if (effect?.startsWith("observe.beacons."))
+        return observed(state, event, "beacon-sweep-durable");
       return observed(
         {
           ...state,
@@ -637,6 +775,8 @@ export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
       );
     }
     case "CommandResult": {
+      if (event.workstreamId === "ws_beacon_control")
+        return observed(state, event, "beacon-sweep-returned");
       const candidates = candidatesField(event.payload);
       const deletion: ActIntent = {
         kind: "Act",
@@ -665,6 +805,8 @@ export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
     case "DeletionAttempted":
       return deletionDecision(state, event, env);
     case "CommandRefused":
+      if (event.workstreamId === "ws_beacon_control")
+        return observed(state, event, "beacon-sweep-refused");
       return {
         ...observed(
           {

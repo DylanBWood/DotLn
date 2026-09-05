@@ -6,7 +6,7 @@
 
 - [x] [WO-020] — Beacon codebook · **final-reviewed**
 - [x] [WO-030] — Concurrent control state · **final-reviewed**
-- [ ] [WO-021] — Control-plane beacons · **queued**
+- [x] [WO-021] — Control-plane beacons · **final-reviewed**
 - [ ] [WO-029] — Pinned artifact identity · **queued**
 - [ ] [WO-009] — Real disposable worker · **queued**
 - [ ] [WO-031] — Actor usage projection · **queued**
@@ -100,29 +100,14 @@ None.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-014-approval-burden-contract.md](WO-014-approval-burden-contract.md)
 
-### WO-021
-
-[WO-021 — Beacons for the control plane: dogfood, sweep events, staleness, group composites (version assigned at activation)](WO-021-control-plane-beacons.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-009.
-- References: WO-009: not control-closed; WO-018: satisfied (closed); WO-019: satisfied (closed); WO-020: satisfied (closed).
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model.
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Authority: [docs/work-orders/WO-021-control-plane-beacons.md](WO-021-control-plane-beacons.md)
-
 ### WO-022
 
 [WO-022 — Senses: perception as a compiled, authorized, mounted capability (version assigned at activation)](WO-022-senses.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-009, WO-021.
-- References: WO-008: satisfied (closed); WO-009: not control-closed; WO-021: not control-closed.
+- Dependency reference check (conservative): blocked on WO-009.
+- References: WO-008: satisfied (closed); WO-009: not control-closed; WO-021: satisfied (closed).
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -462,6 +447,21 @@ None.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-020-beacon-codebook.md](WO-020-beacon-codebook.md)
 
+### WO-021
+
+[WO-021 — Beacons for the control plane: dogfood, sweep events, staleness, group composites (v0.8.0)](WO-021-control-plane-beacons.md)
+
+- State: closed.
+- Application target: v0.8.0.
+- Dependency reference check (conservative): blocked on WO-009.
+- References: WO-009: not control-closed; WO-018: satisfied (closed); WO-019: satisfied (closed); WO-020: satisfied (closed).
+- Verification: [VER-001](../../docs/verifications/WO-021/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-021/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model.
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-021-control-plane-beacons.md](WO-021-control-plane-beacons.md)
+
 ### WO-023
 
 [WO-023 — Compile the Entropy Reducer: identity, role, loadout, envelope, Program, and generated residue, v0.5.0](WO-023-compile-entropy-reducer.md)
@@ -543,8 +543,8 @@ None.
 
 - State: closed.
 - Application target: v0.5.1.
-- Dependency reference check (conservative): blocked on WO-021.
-- References: WO-018: satisfied (closed); WO-019: satisfied (closed); WO-021: not control-closed; WO-026: satisfied (closed).
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-018: satisfied (closed); WO-019: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed).
 - Verification: [VER-001](../../docs/verifications/WO-028/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-028/FINAL-001.md) (pass).
 - Release: v0.5.1 (manifest workOrder.id).
@@ -562,7 +562,7 @@ None.
 - References: WO-018: satisfied (closed); WO-026: satisfied (closed); WO-028: satisfied (closed).
 - Verification: [VER-001](../../docs/verifications/WO-030/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-030/FINAL-001.md) (pass).
-- Release: unreleased.
+- Release: v0.7.0 (manifest workOrder.id).
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-030-concurrent-control-state.md](WO-030-concurrent-control-state.md)
@@ -624,13 +624,13 @@ None.
 - **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose per-segment tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.
 - **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.
 
-Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`.
+Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`, `v0.7.0`.
 
 Tag observation is explicitly refreshed by `index`. Check requires every recorded tag object to remain available and unchanged; newer local release tags are reported as newer evidence, without invalidating this snapshot. This avoids making a committed source release fail its own tests immediately after tagging. Header/control changes still require regeneration after lifecycle transitions.
 
 See [the human planning map](../planning/work-order-map.md) for recommendation, rationale, tracks, and activation preflight. Dependency-ready does not grant activation or effect authority.
 
-<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20","controlSegments":["docs/control/resume.jsonl"]}] -->
+<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.7.0","object":"064d304f0a49d3ba397173420e815b44807934d8","controlSegments":["docs/control/resume.jsonl"]}] -->
 
 [WO-001]: WO-001-environment-truth.md
 [WO-002]: WO-002-pure-kernel.md

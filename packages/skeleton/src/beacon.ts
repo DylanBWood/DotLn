@@ -5,27 +5,12 @@ import {
   type L0ReceiptEntry,
 } from "./audit.js";
 
-// Normative data: docs/product/02-domain-model.md, Beacon codebook v1.
-export const BEACON_CODEBOOK = {
-  version: 1,
-  base: 8192,
-  stride: 64,
-  checkMultiplier: 17,
-  checkOffset: 11,
-  versionRadix: 4,
-  outcomeRadix: 3,
-  refusalRadix: 4,
-  provenances: ["host-projected", "self-reported"],
-  classes: [
-    ["work-order-dispatch", ["emitted"]],
-    ["authority-decision", ["allowed", "denied"]],
-    ["recovery", ["redispatched"]],
-    ["result", ["returned", "terminated"]],
-    ["verification", ["unknown", "failed", "passed"]],
-    ["no-op", ["no-op"]],
-    ["external-effect", ["requested", "unknown", "observed"]],
-  ],
-} as const;
+import { BEACON_CODEBOOK, encodeBeaconState } from "./beacon-codebook.mjs";
+export {
+  BEACON_CODEBOOK,
+  encodeBeaconState,
+  decodeBeaconSize,
+} from "./beacon-codebook.mjs";
 
 export type BeaconProvenance = (typeof BEACON_CODEBOOK.provenances)[number];
 
@@ -63,79 +48,6 @@ export type BeaconDecode =
   | { readonly status: "decoded"; readonly state: BeaconState }
   | { readonly status: "unknown-codebook"; readonly codebookVersion: number }
   | { readonly status: "malformed" };
-
-const book = BEACON_CODEBOOK;
-const V1_FRAME_CODE_LIMIT =
-  book.classes.length *
-  book.outcomeRadix *
-  book.refusalRadix *
-  book.provenances.length *
-  book.versionRadix;
-
-const framedSize = (code: bigint): bigint =>
-  BigInt(book.base) +
-  code * BigInt(book.stride) +
-  ((code * BigInt(book.checkMultiplier) + BigInt(book.checkOffset)) %
-    BigInt(book.stride));
-
-export function encodeBeaconState(state: BeaconState): number {
-  const action = book.classes.findIndex(([name]) => name === state.actionClass);
-  const outcomes: readonly string[] = book.classes[action]?.[1] ?? [];
-  const outcome = outcomes.indexOf(state.outcome);
-  const provenance = book.provenances.indexOf(state.provenance);
-  if (
-    state.codebookVersion !== book.version ||
-    action < 0 ||
-    outcome < 0 ||
-    provenance < 0 ||
-    !Number.isInteger(state.refusalCount) ||
-    state.refusalCount < 0 ||
-    state.refusalCount >= book.refusalRadix
-  )
-    throw new Error("invalid beacon v1 fields");
-  const code =
-    (((action * book.outcomeRadix + outcome) * book.refusalRadix +
-      state.refusalCount) *
-      book.provenances.length +
-      provenance) *
-      book.versionRadix +
-    state.codebookVersion;
-  return Number(framedSize(BigInt(code)));
-}
-
-export function decodeBeaconSize(size: number | bigint): BeaconDecode {
-  const malformed = { status: "malformed" } as const;
-  if (typeof size === "number" && !Number.isSafeInteger(size)) return malformed;
-  const bytes = BigInt(size);
-  if (bytes < BigInt(book.base)) return malformed;
-  const code = (bytes - BigInt(book.base)) / BigInt(book.stride);
-  if (framedSize(code) !== bytes) return malformed;
-  const version = Number(code % BigInt(book.versionRadix));
-  if (version === 0) return malformed;
-  if (version !== book.version)
-    return { status: "unknown-codebook", codebookVersion: version };
-  if (code >= BigInt(V1_FRAME_CODE_LIMIT)) return malformed;
-  let fields = Number(code / BigInt(book.versionRadix));
-  const provenance = book.provenances[fields % book.provenances.length]!;
-  fields = Math.floor(fields / book.provenances.length);
-  const refusalCount = fields % book.refusalRadix;
-  fields = Math.floor(fields / book.refusalRadix);
-  const outcomeRank = fields % book.outcomeRadix;
-  const [actionClass, outcomes] =
-    book.classes[Math.floor(fields / book.outcomeRadix)]!;
-  const outcome = outcomes[outcomeRank];
-  if (outcome === undefined) return malformed;
-  return {
-    status: "decoded",
-    state: {
-      codebookVersion: 1,
-      actionClass,
-      outcome,
-      refusalCount,
-      provenance,
-    },
-  };
-}
 
 export function deriveBeaconProjections(
   events: readonly Event[],
