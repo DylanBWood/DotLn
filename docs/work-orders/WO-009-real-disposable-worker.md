@@ -1,15 +1,23 @@
-# WO-009 — Real disposable worker (application version assigned at activation)
+# WO-009 — Real disposable worker, v0.10.0
 
 **Model:** any capable model.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** minor, with the application version assigned at
-activation under the roadmap's 2026-09-04 retiming. Adds real worker transports
+**Release classification:** `v0.10.0`, minor, above the published `v0.9.0`
+base (`002593f`) under the roadmap's 2026-09-04 retiming. Adds real worker transports
 and their scheduler/runtime lifecycle without breaking the deterministic fakes.
+**Activation completion — 2026-09-05:** the activation omitted its target. The
+executor completes the standing opt-out release assignment at `v0.10.0`;
+skeleton advances independently from `0.8.0` to `0.9.0`, compiler remains
+`0.3.0`, and kernel remains `0.2.1`. Publication requires its separate dispatch.
+The landed WO-016 shared reactor and WO-029 v2 equip/pinned whole-program
+receipt are the execution base. The adapter consumes the exact pinned
+compilation environment and the existing recovery comparison; no deferred
+component-membership gate or worker-authored identity attestation is added.
 **Depends on:** WO-008 complete (build order per ADR-0002 §1); WO-004's
 observed transport evidence (the adapter choice must not rest on
 documented-only rows).
 
-**Cites (read these sections):** 06-roadmap.md §Application version pending —
+**Cites (read these sections):** 06-roadmap.md §v0.10.0 —
 Real disposable worker; 03-architecture.md
 §Session lifecycle & resilience (canonical matrix rows 2, 4, 6; the outbox
 protocol; leases and heartbeats), §Platform and instance boundary ("The
@@ -44,7 +52,10 @@ and schema-bound output. Also deliver a deterministic worktree lifecycle,
   WO-021 now supplies separate host-only verifier projections and the recorded
   `Cadence.After` age contract (20-minute default, explicit per-sweep override;
   stale/absent/clock-skew never changes authority). A real worker's heartbeat
-  interval and lease expiry must be declared here when implemented; do not
+  interval and lease expiry are **1,000 ms** and **5,000 ms** respectively.
+  A host heartbeat records an observed live child process, not model progress;
+  an expired lease fences late results and preserves the WorkOrder, continuation,
+  and pending outbox entry. The worker deadline is **180,000 ms**. Do not
   infer worker liveness from a lifecycle Beacon or refresh its host mtime from
   an unsupported worker claim.
 - Verifier episodes belong to WO-010; none here.

@@ -1,10 +1,6 @@
 # Architecture
 
-**Status:** target architecture. The `v0.2.0` baseline implements the pure
-kernel, JSONL-backed deterministic fake walking skeleton, and its projections;
-compiler, real-worker, native verification, durable adapter persistence, and
-console layers below remain planned unless a section explicitly says otherwise.
-See the roadmap for their evidence gates.
+**Status:** implemented slices within a target architecture. This source prepares `v0.10.0`: the pure kernel and compiler, pinned composition, deterministic walking skeleton, audit/Beacon projections, and a durable host for bounded real CLI inspection episodes. Native verification, general write-capable workers, and the console remain planned unless a section explicitly says otherwise. See the roadmap and work-order evidence for each boundary.
 
 The diagram below is the author's reference topology. Platform contracts make
 its modules composable; an implementation that omits durable history, replay,
@@ -1034,6 +1030,13 @@ changes.
   pending command → restart replays to identical state.
 - Leases + heartbeats for long workers; a vanished worker can never destroy a
   workstream.
+
+**Disposable inspection host (WO-009):** `WorkerStore` appends/fsyncs each canonical event before the shared `LiveReactorDriver` advances, under one exclusive host lock. A dead host can be replaced; a live host refuses a second writer. A short exclusive acquisition guard serializes dead-owner recovery; an abandoned guard or truncated JSONL refuses for inspection without repair or truncation. Completed, validated inspection results are separately published as immutable receipts keyed by command and bound to the complete stable request (including the equipped identity, exact environment, fixture, model and mounts). A crash after that publication but before `CommandResult` leaves the outbox pending; a recovery episode queries the receipt. A crash after `CommandResult` recovers episode completion and the remaining demo suffix without redispatch. Inspection itself is read-only and idempotent, so the earlier crash window may safely repeat inspection. This is not an exactly-once protocol for arbitrary external writes.
+
+`WorkerAttemptStarted`, `CommandReceipt`, `WorkerHeartbeat`, `WorkerInterrupted`, `WorkerLeaseExpired`, `WorkerCompleted`, and `WorkerResultQuarantined` make runtime status replayable. The host checks its child process every 1,000 ms; the lease lasts 5,000 ms after the latest recorded check, and each invocation has a 180,000 ms deadline. A delayed check cannot renew an expired lease. A process check proves process existence, not model progress or a network response. Expiry preserves the command, WorkOrder and continuation; fresh attempts receive distinct episode ids and keep the stable command id. `WorkerResultObserved` persists the typed completed-result observation before the shared reactor admits or quarantines it. An expired authority, operator return, or expired/superseded lease yields a traced NoOp without candidate mutation or outbox acknowledgement. Only an admitted observation becomes `CommandResult`, using the same admission time. Incomplete envelopes retain partial evidence and a pending command without poisoning the success cache. Duplicate marked results do not change candidate state. Historical fake-result semantics remain unchanged.
+
+`dotln status --store <directory> [--json]` projects only the stored episodes, lease/heartbeat timestamps, pending commands and eight recent event headers. It appends nothing, consults no live clock, and creates no missing store. The default skeleton demo remains synchronous and deterministic; the opt-in real demo shares its opening and completion code, including the fake verifier, structural deletion refusal, and queued-pulse cancellation. A lifecycle Beacon and a worker's self-report never refresh a host heartbeat.
+
 - **Failure-injection matrix (canonical here; roadmap and work orders cite
   it).** Expected outcomes are part of the spec:
 
@@ -1149,8 +1152,12 @@ text, never the default channel for state you own in structured form.
   patterns. All later commands come from the profile. The **repo-native rule**:
   convention authority resides in the target codebase's demonstrated
   architecture, never in the model's training-set fashion.
-- `WorkOrderTransport`: see domain model. The fake deterministic executor is a
-  first-class adapter and ships first.
+- `WorkOrderTransport`: the deterministic fake remains first-class. The two real Node adapters are `ClaudeCliPrintWorkOrderTransport` and `CodexCliExecWorkOrderTransport`. `dispatch(request, now)` returns separate promises for a `CommandReceipt` and validated `WorkerResult`, plus host-only process-liveness and kill handles. The request carries the compiled WorkOrder, authorized persisted command, pinned artifact/environment, selected model/effort, physical episode and declared read mount. The host checks the existing compiled recovery decision before either adapter runs. The typed result and evidence stay in the store; only its six-field envelope reaches the dispatching session.
+
+  The current personal profile is `fixture-inspection-v1`: one detached, clean, verified Git worktree, one host-read inventory projection, no repository writes, and no model tool access. Cleanup checks root, common Git directory, exact base, detached state and all dirty/untracked/ignored files; it never force-removes a worktree. Broader mounts or write effects refuse. The CLI broker still needs its own authentication and runtime files; this profile constrains model perception/tools, not a hostile same-user broker process. General Senses/environment provisioning remains WO-022.
+
+  Claude's canonical shape uses `--print --model <required> --effort <declared> --output-format json --json-schema <schema> --no-session-persistence --setting-sources project,local --settings '{"autoMemoryEnabled":false}' --tools "" --disable-slash-commands --safe-mode --strict-mcp-config --mcp-config '{"mcpServers":{}}' --no-chrome --max-budget-usd 1.00`. Safe mode suppresses ambient customization; authentication remains CLI-owned. Codex uses `exec --ephemeral --ignore-user-config --strict-config --model <required> --json --output-schema <schema> --cd <worktree>` and observed named permissions admitting only minimal runtime reads plus the read-only workspace mount, with command network access disabled. Per-invocation overrides disable memories, project instruction loading, MCP, apps, plugins, browser/computer tools, shell/image tools and delegation. Neither adapter supplies a fallback model. Unsupported runtime versions, unavailable models, invalid outputs and unsupported profiles fail closed. Codex effort remains `unknown` because the bounded installed-host probe found no dedicated selector; a generic config override is not silently promoted to observed effort selection. Both model and effort are recorded as host launch claims, with effective readback `unknown`.
+
 - `VerificationAdapter`: when equipped, claim-typed evidence (visual claim →
   rendered-image check; network claim → trace; state claim → DOM/store read),
   recorded into the workstream's AcceptanceEvidenceMatrix. The author's

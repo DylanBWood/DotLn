@@ -1,8 +1,11 @@
 {
   "name": "@dotln/skeleton",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "type": "module",
+  "bin": {
+    "dotln": "dist/src/dotln.js"
+  },
   "scripts": {
     "build": "tsc -b",
     "test": "tsc -b --force && node --test dist/test/*.test.js",

@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:cdea9de986d0f8e20dc1136e9021d1a2a5bb8b5c8638307911972b290c292388`
+`sha256:12bd6e672cf66a2786a339b9eb1c183d984a34410ada66f795978dc5c649131c`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -45,8 +45,9 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
 ## Part III — Keep work alive across handoffs
 
 5. **A workstream remembers even when a session ends**
-   - durable objectives, fresh task-scoped sessions, continuation, and proposed
-     independent contribution tracks
+   - durable objectives, fresh task-scoped sessions and continuation; staged
+     fixture-inspection workers with visible status and interruption recovery;
+     proposed independent contribution tracks
    - sources:
      [Actors and episodes](../product/02-domain-model.md#actors-and-episodes-the-edge),
      [Session lifecycle and resilience](../product/03-architecture.md#session-lifecycle--resilience)
@@ -87,7 +88,8 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
 ## Part VI — Separate today from the destination
 
 11. **What the reference build actually supports**
-    - the implemented baseline, evidence strength, known gaps, and a readable
+    - the implemented baseline, bounded real inspection workers with a fake
+      verifier, evidence strength, known gaps, and a readable
       proposed work sequence with progress derived from evidence; candidate
       concurrent workflows, early completion batches, and release traceability
     - sources:

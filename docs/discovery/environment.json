@@ -169,6 +169,26 @@
     {"priority": 1, "adapter": "ClaudeCliPrintWorkOrderTransport", "basis": "observed end-to-end with explicit model and effort, project/local settings only, auto-memory disabled, no session persistence, JSON envelope, and schema-conforming structured output"},
     {"priority": 2, "adapter": "CodexCliExecWorkOrderTransport", "basis": "observed end-to-end with explicit model, ephemeral persistence, ignored user config, read-only sandbox, JSONL events, and schema-conforming final output"}
   ],
+  "wo009DisposableWorkerProbe": {
+    "schemaVersion": 1,
+    "observedAt": "2026-09-05",
+    "workOrder": "WO-009",
+    "scope": "installed versions/help, synthetic mount denial probe, authenticated schema-bound fixture inspection; no settings contents or account mutation",
+    "evidence": ["docs/evidence/WO-009/host-probe.json", "docs/evidence/WO-009/live.json"],
+    "claude": {
+      "version": {"classification": "observed", "value": "2.1.261"},
+      "launch": {"classification": "observed", "model": "claude-sonnet-5", "effort": "high", "settingsSources": "project,local", "autoMemoryEnabled": false, "noSessionPersistence": true, "schemaOutput": true, "modelTools": "none", "budgetCapUsd": 1},
+      "killLeaseRecovery": {"classification": "observed", "freshEpisode": true, "pendingWorkRetained": true}
+    },
+    "codex": {
+      "version": {"classification": "observed", "value": "0.153.4"},
+      "launch": {"classification": "observed", "model": "gpt-6-astra", "effort": "unknown", "ignoredUserConfig": true, "ephemeral": true, "schemaOutput": true, "memoryUse": false, "memoryGeneration": false, "modelTools": "none"},
+      "dedicatedEffortSelector": {"classification": "not found", "value": "unknown", "note": "generic config override was not tested as an effort selector; the host ignores the persisted user setting"},
+      "senseBoundary": {"classification": "observed", "profile": "dotln-worker", "mountedRead": "pass", "unmountedSiblingRead": "denied", "mountedWrite": "denied", "commandNetworkEnabled": false}
+    },
+    "shared": {"selectionSource": "host-launch", "effectiveModel": "unknown", "effectiveEffort": "unknown", "liveStatusReadOnly": true, "replayIdentical": true, "worktreeCleaned": true, "rawTranscriptRetainedInEvidence": false},
+    "limits": ["accepted launch controls are not effective-session readback or a fresh session-file audit", "missing-model failures are synthetic adapter tests, not provider identity attestation", "one host-read synthetic inventory with no model tools; CLI broker authentication remains outside model perception", "verifier and other scenario actors remain fake"]
+  },
   "nonGoalsPerformed": [],
   "knownGaps": [
     "Claude debug output establishes referenced and skipped settings paths but not per-key winning-source attribution; that remains ambiguous",

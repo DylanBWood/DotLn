@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.8.0
+# `@dotln/skeleton` 0.9.0
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on
@@ -37,6 +37,11 @@ unchanged. The ordinary fake scenario still changes stdout only at its version
 banner; Beacon glyphs appear only when observation events are present.
 
 Component `0.8.0` is staged for application release `v0.9.0`: equip payload v2 pins a separate compiler artifact identity, all compiled consumers share a fail-closed comparison, and L0/governed-raw views project the receipt. The event envelope and compiled-program contract remain version 1; the compiler package advances separately to `0.3.0`. The new default timeline is pinned in `fixtures/wo029-cli.txt`; the WO-003 trace oracle and WO-020 CLI fixture remain historical artifacts.
+
+Component `0.9.0` is staged for application release `v0.10.0`, above published
+`v0.9.0`: two real disposable CLI transports share the deterministic demo's
+executor seam, backed by a durable JSONL host, explicit leases, safe worktree
+recovery and read-only status. Compiler `0.3.0` and kernel `0.2.1` are unchanged.
 
 The deterministic Repo Gardener + Seiri vertical. It compiles a typed
 `LoadoutGraph` into a bounded `WorkOrder` and related runtime mechanisms, runs
@@ -119,6 +124,71 @@ catalog definitions remain inert.
 The fake adapter deduplicates by the kernel-generated command id so crash
 recovery can safely re-dispatch pending outbox commands.
 
+## Disposable workers
+
+The opt-in demo replaces only the fixture executor with one real CLI episode.
+The inventory is synthetic and mounted as a host-read projection; models have
+no tools and cannot write the repository. The verifier and other demo actors
+remain deterministic fakes. A completed worker envelope is a self-report;
+the fake verifier still checks the candidate and deletion remains refused.
+
+Use an authenticated runner that permits child CLI execution. The observed
+versions are Claude Code `2.1.261` and Codex CLI `0.153.4`; other versions refuse
+until their canonical profile is re-probed. Each store pins its first model,
+effort and transport. An unavailable model fails closed and leaves its command
+pending. The following stores live under the gitignored `/.runtime/` root:
+
+```sh
+DOTLN_LIVE_WORKERS=1 npm run dotln --silent -- demo --store .runtime/claude --transport claude-cli-print --model claude-sonnet-5 --effort high --beacons
+DOTLN_LIVE_WORKERS=1 npm run dotln --silent -- demo --store .runtime/codex --transport codex-cli-exec --model gpt-6-astra --effort unknown --beacons
+```
+
+Successful stdout is one six-field JSON envelope. Raw harness output is bounded
+in private temporary capture and discarded. Typed results, receipts and canonical
+events stay in the store; optional Beacons are projections plus a separately
+labeled worker claim. CLI-owned authentication never enters the prompt or log.
+Codex ignores user configuration and has no observed dedicated effort selector,
+so this transport requires `unknown` even if the operator's own session has a
+persisted effort setting. Launch claims are distinct from effective readback.
+
+During a run, use a second terminal:
+
+```sh
+npm run dotln --silent -- status --store .runtime/claude
+npm run dotln --silent -- status --store .runtime/claude --json
+```
+
+Status folds events only: episode phases, host heartbeat/lease timestamps,
+pending commands and eight recent event headers. It neither checks the live
+clock nor appends expiry events. The host checks process existence every second,
+expires a missed five-second lease, and enforces a three-minute invocation
+deadline. Process existence does not prove model progress.
+
+After interruption, rerun the exact demo command once the lease has expired.
+The host keeps the compiled WorkOrder, continuation, pending command and clean
+detached worktree. Recovery either starts a new physical episode or queries the
+durable completed-result receipt; it never silently changes the selected model.
+A completed demo can be queried again without dispatch. Cleanup refuses dirty,
+untracked or ignored files, changed bases, aliases and foreign worktrees. Torn
+logs, invalid locks and an abandoned `host-lock-recovery` guard require inspection;
+the command does not erase them. This is an idempotent read-only inspection
+protocol, not a transaction mechanism for external writes.
+
+The always-run suite launches synthetic subprocess peers and real Git worktrees;
+it needs no authentication or model access. The separate live gate and bounded
+capability probe are reproducible commands:
+
+```sh
+npm run probe:workers -- --sandbox
+DOTLN_LIVE_WORKERS=1 npm run test:workers:live -- --claude-model claude-sonnet-5 --codex-model gpt-6-astra --evidence .runtime/live-evidence.json --kill-first
+```
+
+Create `.runtime` before using the live gate's evidence path if no demo has done
+so. The gate forces one Claude termination, witnesses status from another CLI,
+recovers a fresh episode, then runs Codex. See the
+[acceptance evidence](../../docs/evidence/WO-009/README.md) for observed envelopes,
+failure rows, launch controls and the boundary of this implementation.
+
 ## Beacon metadata projection
 
 ```sh
@@ -176,7 +246,8 @@ content reads, proves claim isolation before results, and watches concurrent
 atomic replacements. Metadata intentionally discloses codebook fields,
 existence, correlation, and recency; content permissions do not hide it.
 
-Real-worker liveness remains with WO-009. Neither Beacon milestone alone proves
+WO-009's real-worker liveness comes from host process checks and recorded leases;
+its optional worker Beacon remains a separately labeled self-report. Neither Beacon milestone alone proves
 the concept useful; the
 [proposed operator comparison](../../docs/planning/beacon-usefulness-checkpoint.md)
 remains a separate evidence step.

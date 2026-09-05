@@ -91,6 +91,8 @@ activation; no arithmetic shift is inferred here.
 
 **WO-029 activation completion (2026-09-05):** its control activation omitted a target. The executor completes the standing opt-out release assignment at `v0.9.0`, a minor addition above published `v0.8.0` (`961601a`). Compiler package `0.3.0` and skeleton package `0.8.0` move independently; the kernel and existing semantic-hash preimage do not. The earlier table remains a dated retiming record, and WO-009 still receives its own release assignment at activation. This source prepares the pin/compare receipt; independent verification, final review, merge, and release publication remain separate lifecycle evidence.
 
+**WO-009 activation completion (2026-09-05):** its omitted target is assigned `v0.10.0`, a minor addition above published `v0.9.0` (`002593f`). Skeleton source advances to component `0.9.0`; compiler `0.3.0`, kernel `0.2.1`, and the event/compiled-program schema axes remain unchanged. The earlier retiming table is historical. The source worktree prepares disposable fixture-inspection workers and their durable host; independent verification and publication remain separate lifecycle evidence.
+
 The manifest records the Git commit, application release, package/component
 versions, supported schema and artifact ranges, transformation-set version (or
 explicitly `none`), evidence commands/results, evaluable and deferred cadence
@@ -1012,7 +1014,7 @@ refutation report, model/effort attestation, and unchanged tracked-status pair
 all agree. `Program.All` remains deferred and no runtime transport is added.
 
 <!-- prettier-ignore -->
-## Application version pending — Real disposable worker  → WO-009
+## v0.10.0 — Real disposable worker  → WO-009
 
 WorkOrderTransport adapters chosen from discovery through WO-004's observed
 evidence — expected: Claude CLI print-mode with the canonical launch shape
@@ -1029,6 +1031,17 @@ grows by only the envelope; a killed worker leaves a recoverable pending command
 projection of the store (running episodes, leases/heartbeats, pending commands,
 recent events) so real workers never run blind. **No silent model substitution**
 — unavailable model ⇒ queue or fail closed.
+
+**Implementation receipt (2026-09-05):** the staged source implements this exit
+for one synthetic inventory inspection. Both actual CLI transports pass the
+shared demo, read-only in-flight status, replay and worktree cleanup; Claude
+also passes forced termination and recovery. Deterministic subprocess tests
+cover rows 2/4/6 and both directions of unavailable-model refusal. Host process
+checks use a 1,000 ms heartbeat, 5,000 ms lease and 180,000 ms deadline; the
+verifier and remaining actors stay fake. See the [executor evidence](../evidence/WO-009/README.md)
+and [runbook](../../packages/skeleton/README.md#disposable-workers). General
+worker profiles and real verifier episodes remain separate work; independent
+verification and publication have not been inferred from executor tests.
 
 <!-- prettier-ignore -->
 ## Application version pending — Independent verification  → WO-010

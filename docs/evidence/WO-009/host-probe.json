@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "codex": {
+    "version": "0.153.4",
+    "effort": "unknown",
+    "flags": [
+      "--ephemeral",
+      "--ignore-user-config",
+      "--output-schema",
+      "--json",
+      "--model",
+      "--strict-config"
+    ],
+    "senseBoundary": {
+      "mountedRead": "pass",
+      "unmountedRead": "denied",
+      "mountedWrite": "denied"
+    }
+  },
+  "claude": {
+    "version": "2.1.261",
+    "effort": "high",
+    "flags": [
+      "--print",
+      "--model",
+      "--effort",
+      "--output-format",
+      "--json-schema",
+      "--no-session-persistence",
+      "--setting-sources",
+      "--settings",
+      "--tools",
+      "--safe-mode",
+      "--strict-mcp-config"
+    ]
+  }
+}

@@ -51,6 +51,14 @@ Do not collapse these identities into one version number:
 
 WO-029 adds a separate artifact-identity schema axis (`ArtifactIdentityV1.schemaVersion: 1`) and definition-hash scheme (`dotln-component-definition-fnv1a64-v1`). Equip payload version `2` is independent of EventEnvelope schema `1`. The identity distinguishes the unchanged compiled-program contract (`compilerVersion: "1"`, recorded as `compilerContractVersion`) from executing compiler package `0.3.0`; neither changes merely because the staged application is `v0.9.0` or skeleton component is `0.8.0`. Historical raw equips remain replayable but receive no pin retroactively. Runtime compatibility for a new consuming decision requires agreement with the recorded pin or explicit re-equip. This receipt does not add a new release-manifest schema field or silently fill the existing unimplemented IR/artifact/transformation ranges.
 
+WO-009 prepares application `v0.10.0` and skeleton `0.9.0` above published
+`v0.9.0`. Its `fixture-inspection-v1` profile and marked worker result/dispatch
+payload version `1` are host protocol axes. EventEnvelope schema `1`, v2 equip,
+artifact identity schema `1`, compiled-program contract `1`, compiler package
+`0.3.0` and kernel package `0.2.1` remain unchanged. Runtime version gates pin
+the observed Claude/Codex launch controls and refuse unknown versions until a
+new probe; they do not migrate historical logs or authorize model substitution.
+
 A `WO-NNN` identifier orders and names a unit of work; it is not another version
 axis. The SemVer in a current work-order heading is its planned application
 release target. While unpublished, it may be retimed only by explicit operator

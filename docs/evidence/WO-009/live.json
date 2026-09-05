@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "kind": "authenticated-live-models",
+  "observedAt": "2026-09-05T22:17:10.956Z",
+  "runs": [
+    {
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.261",
+      "model": "claude-sonnet-5",
+      "effort": "high",
+      "effectiveModel": "unknown",
+      "effectiveEffort": "unknown",
+      "envelope": {
+        "workOrderId": "wo_repo_inspection_1",
+        "episodeId": "ep_seiri_1_worker_2",
+        "status": "completed",
+        "resultId": "result_cmd_5ee0c6d8e207bd25",
+        "summary": "Inspected supplied inventory (no tool access available to independently verify against disk). One generated-stale file with no references identified as a safe deletion candidate.",
+        "requiresHuman": true
+      },
+      "inFlight": {
+        "running": 1,
+        "pending": 1,
+        "phase": "running",
+        "lastHeartbeatAt": 1788646638215,
+        "leaseExpiresAt": 1788646643215,
+        "statusReadOnly": true
+      },
+      "killedWorkerRecovered": true,
+      "heartbeatCount": 16,
+      "compactEnvelopeBytes": 346,
+      "candidateCount": 1,
+      "fakeVerifierAccepted": true,
+      "replayIdentical": true,
+      "worktreeCleaned": true,
+      "rawTranscriptRetainedInEvidence": false
+    },
+    {
+      "transport": "codex-cli-exec",
+      "harnessVersion": "0.153.4",
+      "model": "gpt-6-astra",
+      "effort": "unknown",
+      "effectiveModel": "unknown",
+      "effectiveEffort": "unknown",
+      "envelope": {
+        "workOrderId": "wo_repo_inspection_1",
+        "episodeId": "ep_seiri_1_worker_1",
+        "resultId": "result_cmd_5ee0c6d8e207bd25",
+        "status": "completed",
+        "summary": "Inspected and classified all four supplied inventory paths and reviewed their references. Proposed one unreferenced generated-stale file for operator-owned deletion.",
+        "requiresHuman": false
+      },
+      "inFlight": {
+        "running": 1,
+        "pending": 1,
+        "phase": "running",
+        "lastHeartbeatAt": 1788646654704,
+        "leaseExpiresAt": 1788646659704,
+        "statusReadOnly": true
+      },
+      "killedWorkerRecovered": false,
+      "heartbeatCount": 9,
+      "compactEnvelopeBytes": 334,
+      "candidateCount": 1,
+      "fakeVerifierAccepted": true,
+      "replayIdentical": true,
+      "worktreeCleaned": true,
+      "rawTranscriptRetainedInEvidence": false
+    }
+  ]
+}

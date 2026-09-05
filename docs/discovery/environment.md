@@ -506,3 +506,36 @@ date -Iseconds
 ## WO-029 harness-version observation (2026-09-05)
 
 `codex --version` returned `codex-cli 0.153.4`. A bounded read of only the top-level `model_reasoning_effort` key returned `max`; nested profile settings were not treated as the top-level selection. The observation was appended to the version history in `environment.json`, retaining earlier observations. This supports the standing operator-attested GPT-6 Astra/max selection and is not effective-session readback. No settings were changed and no model invocation was made by the probe.
+
+## WO-009 disposable-worker addendum (2026-09-05)
+
+This addendum leaves the WO-001/004/019 observations intact. The implementation
+re-probed installed help/version, a synthetic Codex permission boundary, and
+both actual CLI transports. The [sanitized probe](../evidence/WO-009/host-probe.json)
+and [final live receipt](../evidence/WO-009/live.json) contain no settings
+contents, provider session ids, personal paths or raw model transcripts.
+
+| Surface | Classification | Current finding |
+| --- | --- | --- |
+| Claude Code `2.1.261` | observed | `--print`, explicit `claude-sonnet-5` and `--effort high`, project/local settings, `autoMemoryEnabled:false`, no session persistence and schema output accepted in a real fixture inspection. Safe mode, empty tool/MCP surfaces and disabled slash commands bound model perception to supplied inventory. |
+| Codex CLI `0.153.4` | observed | `exec`, explicit `gpt-6-astra`, ephemeral invocation, ignored user config, strict config and schema output accepted. Named read permissions, disabled memory/instructions/MCP/apps/plugins/model tools constrain this fixture profile. |
+| Codex dedicated effort selector | not found | Installed `exec --help` still exposes none. Generic config overrides were not treated as observed effort selection. The worker records `unknown` because it ignores the user's persisted selector; the dispatching executor's separately attested `max` is not inherited. |
+| Codex named filesystem profile | observed | Synthetic mounted read succeeds, an unmounted sibling read is denied, and a mounted write is denied. The command network permission is disabled. |
+| Process lifecycle and status | observed | Both real runs expose one running episode and one pending command through a separate read-only status process. Claude is killed, retains its command, expires its lease, and completes in physical episode 2. Both final logs replay identically and clean up their detached worktree. |
+| Effective model/effort and provider substitution | unknown | Accepted launch flags are recorded as `host-launch` claims; neither final result proves effective readback. Synthetic missing-model tests prove the adapters make one exact selection and never supply fallback. |
+
+The current [canonical launch implementation](../../packages/skeleton/src/worker-transport.ts)
+is version-gated to these observations. Installed help supplied the local
+selector facts. The official [Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference)
+documented named filesystem permissions, memory controls and feature overrides;
+the synthetic sandbox probe and real invocations establish the narrower observed
+claims above. The CLI broker retains authentication/runtime access, while the
+model receives only the host-read inventory and no tools. This is not a claim
+that the entire same-user broker is confined, or that general Senses is built.
+
+Reproduce with `npm run probe:workers -- --sandbox` and the runbook's gated
+`npm run test:workers:live` command on an authenticated nonsandboxed runner.
+No account configuration was changed. Session persistence controls were
+accepted at these versions; no fresh session-file search was performed.
+Earlier live failures and the final repair are disclosed in the
+[executor evidence](../evidence/WO-009/README.md).

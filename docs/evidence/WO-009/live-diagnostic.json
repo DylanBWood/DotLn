@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "kind": "authenticated-live-models",
+  "observedAt": "2026-09-05T20:30:38.601Z",
+  "runs": [
+    {
+      "transport": "claude-cli-print",
+      "harnessVersion": "2.1.261",
+      "model": "claude-sonnet-5",
+      "effort": "high",
+      "failure": {
+        "code": "transport-failed",
+        "detail": "unavailable"
+      },
+      "inFlight": {
+        "running": 1,
+        "pending": 1,
+        "phase": "running",
+        "lastHeartbeatAt": 1788640239392,
+        "leaseExpiresAt": 1788640244392,
+        "statusReadOnly": true
+      }
+    },
+    {
+      "transport": "codex-cli-exec",
+      "harnessVersion": "0.153.4",
+      "model": "gpt-6-astra",
+      "effort": "unknown",
+      "effectiveModel": "unknown",
+      "effectiveEffort": "unknown",
+      "envelope": {
+        "workOrderId": "wo_repo_inspection_1",
+        "episodeId": "ep_seiri_1_worker_1",
+        "resultId": "result_cmd_5ee0c6d8e207bd25",
+        "status": "completed",
+        "summary": "Inspected all four supplied inventory paths, classifications, and references. One generated-stale file has no references and qualifies for proposed deletion. No files changed. Completion is self-reported, not verification; deletion remains operator-owned.",
+        "requiresHuman": false
+      },
+      "inFlight": {
+        "running": 1,
+        "pending": 1,
+        "phase": "running",
+        "lastHeartbeatAt": 1788640250911,
+        "leaseExpiresAt": 1788640255911,
+        "statusReadOnly": true
+      },
+      "killedWorkerRecovered": false,
+      "heartbeatCount": 11,
+      "compactEnvelopeBytes": 424,
+      "candidateCount": 1,
+      "fakeVerifierAccepted": true,
+      "replayIdentical": true,
+      "worktreeCleaned": true,
+      "rawTranscriptRetainedInEvidence": false
+    }
+  ]
+}
