@@ -84,7 +84,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source is DotLn `v0.8.0`. Resume transitions now emit rebuildable Beacon metadata for each work order. `npm run worktree -- constellation` reads across worktrees and shows phase, verdict, effort, age, and a bounded group count; authorized agent sweeps record perception for replay. Independent control histories and serial integration preserve each order's evidence and release attribution. The walking skeleton still runs the compiled Repo Gardener + Seiri scenario with deterministic fake executor and verifier. Real model transport and `Program.All` remain deferred. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
+This source is DotLn `v0.9.0`. The personal runtime pins each equipped compilation, records its semantic hash and compiler versions in consuming decisions, and refuses drift or compile diagnostics before effects. Separate component-definition hashes identify the participating source definitions without changing the existing whole-program hash. Historical logs retain their old replay behavior; extending one requires a logged enforcement boundary and a v2 re-equip. The walking skeleton still uses deterministic fake executor and verifier adapters. Real model transport and `Program.All` remain deferred. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.

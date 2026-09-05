@@ -104,7 +104,10 @@ type AuditRecord =
       decision: "denied";
       reason: string;
       authorityEnvelopeRef: string;
-      association: "derived-same-episode-time-adjacency" | "refusal-event-only";
+      association:
+        | "explicit-event-link"
+        | "derived-same-episode-time-adjacency"
+        | "refusal-event-only";
     })
   | (AuditRecordBase<
       "external-effect",
@@ -170,12 +173,7 @@ completion. Although the fixture event is historically named
 `DeletionAttempted`, it precedes authorization and never reaches the adapter;
 the audit stage is therefore `requested`, followed by the structural denial.
 
-The step-9 denied record may group the adjacent `DeletionAttempted`,
-`CommandRefused`, and authority `DecisionRecorded` events only when they share
-episode and log time and the last event carries a structurally conforming
-authority-guard v1 refusal trace whose branch matches the refusal reason. That
-grouping is explicitly `derived-same-episode-time-adjacency`; it is not a
-fabricated `causationId`.
+The denied record prefers `CommandRefused.causationId` naming an earlier `DeletionAttempted` in the same episode and log time, plus the matching authority `DecisionRecorded` whose causation names that attempt. It labels this `explicit-event-link`; the decision may precede the refusal event in the new host append loop. Without that link, adjacent attempt/refusal/trace events may still group as `derived-same-episode-time-adjacency`. Both paths require a structurally conforming authority-guard v1 refusal trace matching the reason; neither invents a canonical cause.
 
 For an allowed command, the canonical demo groups the immediately preceding
 `DecisionRecorded` only when both events share scope and the trace is a
@@ -272,6 +270,14 @@ over activation, `DecisionTrace`, `CommandRefused`, approval, tool-result, and
 adapter records. Correlation and causation remain optional source-provided
 references; absent links stay unknown. Attribute the counterweight as
 `participated`, not `caused`, absent paired evidence.
+
+### Deterministic artifact receipts
+
+WO-029's personal host adds `artifactIdentity` beside the existing action receipts in the L0 and governed-raw projections. It derives records directly from `LoadoutEquipped`, scoped `DecisionRecorded` comparisons, and the typed refusal events. A valid equip claim is `matched` only when its recorded equip decision has the exact pinned hash, compiler contract/package versions, and equip-event reference; without that comparison it is `unverified`. Historical raw equips are `unavailable`. Refusals are `refused`, including unavailable identity, malformed identity, drift, compile diagnostics, and unknown schedules. Every record links the canonical events that support it. A host-side failed equip has no successful equip event or identity to invent.
+
+L0 retains the semantic hash, both compiler axes, participating definition count, drift axes, diagnostic codes, reason, and event links. Governed raw retains the complete equip identity, graph, exact compilation environment and expiry, definition records, and diagnostic details in their original event payloads. `ArtifactIdentityEnforcementStarted` makes the forward-only boundary visible in that same log. Successful consumers append the four `artifactIdentity.*` trace inputs specified in [02](02-domain-model.md#artifact-identity-v1); the authority projection accepts exactly this suffix after the existing v1 authority grammar. A recovery dispatch is checked and receipted before the adapter runs.
+
+The explicit datum is **deterministic content equality**, including whether recorded recomputation matched the equip pin. It is not cryptographic integrity, collision resistance, authenticity, or proof that an effectful adapter had no hidden effects. Those data remain unavailable and outer-confinement evidence remains separate. A writer able to replace graph and pin together can pass this check. Exact environment values and definition hashes can also disclose source identity, so the public synthetic fixtures do not authorize publishing a private instance's raw receipt. The existing runtime Beacon v1 action codebook does not encode these separate artifact receipts; its refusal counter continues to count authority-decision denials only.
 
 ## Fidelity levels
 

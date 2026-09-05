@@ -739,10 +739,10 @@ replenishment sequence, including a reserved completion path; it must show
 replay identity and less wasted routine work without moving the cost into
 missed obligations. Beacon v1 gains no field or behavior from this candidate.
 
-### Candidate — pinned artifact identity
+### Pinned artifact identity
 
-The author's personal implementation should close the smallest missing half of
-that receipt before its first out-of-process worker. A successful equip records
+The WO-029 source staged for `v0.9.0` closes the smallest missing half of
+that receipt before the first out-of-process worker. A successful equip records
 a `payloadVersion: 2` equip shape and schema-v1 artifact identity in the
 append-only log: the compiler contract and package versions, the existing
 whole-program semantic hash, and separate, domain-labeled definition hashes
@@ -755,6 +755,10 @@ host appends an idempotent `ArtifactIdentityEnforcementStarted` boundary; past
 that boundary an unavailable state refuses program consumption until a v2
 re-equip. A compiler diagnostic becomes evidence rather than an exception
 escaping replay.
+
+The compiler returns `ArtifactIdentityV1` separately from `CompiledProgram`; the raw equip graph plus exact compilation environment and authority expiry reproduce its whole-program key. The host factory mints only v2 payloads. One `withEquippedArtifact` helper owns subsequent comparisons, including stored authority, continuations, verification, and a `CommandRedispatchRequested` recovery decision before adapter execution. No authority exists before equip. The host records each consuming trace and any refusal continuation in the same append loop; an incomplete/refused replay may truthfully have no emitted WorkOrder. Explicit source links now associate the structural-refusal trace despite the added receipt events, with an adjacency fallback for historical unlinked sources.
+
+The cutover does not promise path-independent whole-program identity. Compiler v1 includes repository path and base commit in the WorkOrder and authority expiry in the program; relocation requires explicit re-equip. Definition hashes remain definition-scoped. An unknown schedule id gets durable `UnknownScheduleRefused` evidence after cutover; a reused id from an earlier equip still needs a future issuance stamp. Beacon sweep requests use their independent host-supplied authority and do not consume this loadout's compiled program.
 
 The two identities answer different questions. `semanticHash` remains equality
 of normalized compiled behavior. A component definition hash identifies the
@@ -771,7 +775,7 @@ submission, membership proofs, Merkle structures, and signing wait for a real
 submitter and trust boundary: the first out-of-process worker can echo the
 whole-program pin, while a non-author build or external principal would supply
 the evidence needed to decide whether key ownership is worth its cost. WO-029
-owns the bounded pin-and-compare slice; it must not claim those deferred
+implements the bounded pin-and-compare slice; it does not claim those deferred
 assurances.
 
 The author's Clean Room is the first explicit source-promotion active built from

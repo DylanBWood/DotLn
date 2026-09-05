@@ -26,9 +26,21 @@ import {
   canonicalStringify,
   seiriEnvironment,
   seiriLoadout,
+  type ArtifactIdentityV1,
+  type CompileDiagnostic,
   type CompiledProgram,
   type LoadoutGraph,
 } from "@dotln/compiler";
+import {
+  artifactIdentityDrift,
+  artifactIdentityInputs,
+  artifactRefusalPayload,
+  compileArtifact,
+  isArtifactIdentityV1,
+  isArtifactRefusalType,
+  type ArtifactDriftField,
+  type ArtifactRefusalType,
+} from "./artifact-identity.js";
 import { beaconAge, decodeSignalSize } from "./control-codebook.mjs";
 import type {
   BeaconSweepRequest,
@@ -58,6 +70,11 @@ export type RuntimeState = Readonly<{
   rngState: number;
   policy: RuntimePolicy;
   loadout: JsonValue;
+  artifactIdentity: JsonValue;
+  compilationEnvironment: JsonValue;
+  equippedEventId: string | null;
+  identityEnforcementEventId: string | null;
+  artifactIdentityBlocked: boolean;
   workOrder: JsonValue;
   candidates: readonly Candidate[];
   verified: boolean;
@@ -126,14 +143,16 @@ export function compileWorkOrder(
   return compileLoadoutProgram(equipped, baseCommit).workOrder;
 }
 
-const authority = (): AuthorityEnvelope =>
-  compileLoadoutProgram(loadout).authorityEnvelope;
-
 export const initialState = (): RuntimeState => ({
   presence: "returned",
   rngState: 17,
   policy: { maintenance: "absent-only" },
   loadout: null,
+  artifactIdentity: null,
+  compilationEnvironment: null,
+  equippedEventId: null,
+  identityEnforcementEventId: null,
+  artifactIdentityBlocked: false,
   workOrder: null,
   candidates: [],
   verified: false,
@@ -142,7 +161,7 @@ export const initialState = (): RuntimeState => ({
   inspectionCompleted: false,
   deletionRefused: false,
   queuedPulseNoOp: false,
-  authority: authority() as unknown as JsonValue,
+  authority: null,
   revocationEvents: [],
   program: null,
   commandResult: null,
@@ -195,14 +214,6 @@ const workOrderFromValue = (value: JsonValue): WorkOrder => {
   if (value === null) throw new Error("runtime state lacks WorkOrder");
   return value as unknown as WorkOrder;
 };
-
-const loadoutFromValue = (value: JsonValue): Loadout => {
-  if (value === null) throw new Error("runtime state lacks equipped loadout");
-  return value as unknown as Loadout;
-};
-
-const compiledFromState = (state: RuntimeState): CompiledProgram =>
-  compileLoadoutProgram(loadoutFromValue(state.loadout));
 
 const cadenceFromCompiled = (compiled: CompiledProgram) => {
   const value = compiled.cadences[0];
@@ -310,6 +321,253 @@ const observed = (
   },
 });
 
+const pinnedIdentity = (state: RuntimeState): ArtifactIdentityV1 | null =>
+  isArtifactIdentityV1(state.artifactIdentity) ? state.artifactIdentity : null;
+
+const withIdentityTrace = (
+  decision: Decision<RuntimeState>,
+  identity: ArtifactIdentityV1 | null,
+  equippedEventId: string | null,
+): Decision<RuntimeState> =>
+  identity === null || equippedEventId === null
+    ? decision
+    : {
+        ...decision,
+        trace: {
+          ...decision.trace,
+          envInputs: [
+            ...new Set([
+              ...decision.trace.envInputs,
+              ...artifactIdentityInputs(identity, equippedEventId),
+            ]),
+          ],
+        },
+      };
+
+const artifactRefused = (
+  state: RuntimeState,
+  event: Event,
+  type: ArtifactRefusalType,
+  reason: string,
+  options: Readonly<{
+    pinned?: ArtifactIdentityV1 | null;
+    observed?: ArtifactIdentityV1 | null;
+    diagnostics?: readonly CompileDiagnostic[];
+    drift?: readonly ArtifactDriftField[];
+  }> = {},
+): Decision<RuntimeState> => {
+  const pin = options.pinned ?? pinnedIdentity(state);
+  return {
+    state:
+      type === "UnknownScheduleRefused"
+        ? state
+        : {
+            ...state,
+            artifactIdentityBlocked: true,
+            authority: null,
+            pendingCommand: null,
+            program: null,
+            activeScheduleIds: [],
+          },
+    intents: [],
+    schedules: [],
+    continuation: Program.Emit(
+      {
+        schemaVersion: 1,
+        type,
+        occurredAt: event.occurredAt,
+        actorId: event.actorId,
+        workstreamId: event.workstreamId,
+        ...(event.episodeId === undefined
+          ? {}
+          : { episodeId: event.episodeId }),
+        ...(event.correlationId === undefined
+          ? {}
+          : { correlationId: event.correlationId }),
+        causationId: event.eventId,
+        payload: artifactRefusalPayload(
+          reason,
+          event.eventId,
+          state.equippedEventId,
+          pin,
+          options.observed ?? null,
+          options.diagnostics ?? [],
+          options.drift ?? [],
+        ) as unknown as JsonValue,
+      },
+      Program.Done(),
+    ),
+    trace: {
+      reactorId: "artifact-identity",
+      reactorVersion: "1",
+      branchPath: [event.type, "refused", type, reason],
+      envInputs: [
+        "event",
+        "equipped-artifact",
+        "logged-enforcement-boundary",
+        ...(pin === null || state.equippedEventId === null
+          ? []
+          : artifactIdentityInputs(pin, state.equippedEventId)),
+      ],
+      cadenceEvaluations: [],
+    },
+  };
+};
+
+const equipDecision = (
+  state: RuntimeState,
+  event: Event,
+): Decision<RuntimeState> => {
+  const payload = asObject(event.payload);
+  const legacy =
+    payload === undefined || !Object.hasOwn(payload, "payloadVersion");
+  if (
+    legacy &&
+    (state.identityEnforcementEventId !== null || state.artifactIdentityBlocked)
+  )
+    return artifactRefused(
+      state,
+      event,
+      "ArtifactIdentityUnavailable",
+      "legacy equip after enforcement boundary",
+    );
+  if (
+    !legacy &&
+    (payload?.["payloadVersion"] !== 2 ||
+      Object.keys(payload).sort().join(",") !==
+        "artifactIdentity,graph,payloadVersion" ||
+      !isArtifactIdentityV1(payload["artifactIdentity"]))
+  )
+    return artifactRefused(
+      state,
+      event,
+      "ArtifactIdentityInvalid",
+      "invalid v2 equip payload",
+    );
+  const pin = legacy
+    ? null
+    : (payload!["artifactIdentity"] as unknown as ArtifactIdentityV1);
+  const graph = legacy ? event.payload : payload!["graph"]!;
+  const environment =
+    pin === null ? seiriEnvironment() : pin.compilationEnvironment;
+  const compiled = compileArtifact(graph, environment);
+  if (!compiled.ok)
+    return artifactRefused(
+      state,
+      event,
+      "ArtifactCompilationRefused",
+      "compile diagnostics",
+      {
+        pinned: pin,
+        diagnostics: compiled.diagnostics,
+      },
+    );
+  const drift =
+    pin === null ? [] : artifactIdentityDrift(pin, compiled.artifactIdentity);
+  if (drift.length > 0)
+    return artifactRefused(
+      state,
+      event,
+      "ArtifactIdentityDrift",
+      "equipped artifact differs from compilation",
+      {
+        pinned: pin,
+        observed: compiled.artifactIdentity,
+        drift,
+      },
+    );
+  return withIdentityTrace(
+    observed(
+      {
+        ...state,
+        loadout: graph,
+        artifactIdentity: pin as unknown as JsonValue,
+        compilationEnvironment: environment as unknown as JsonValue,
+        equippedEventId: event.eventId,
+        artifactIdentityBlocked: false,
+        authority: compiled.program.authorityEnvelope as unknown as JsonValue,
+        ...(legacy
+          ? {}
+          : {
+              workOrder: null,
+              pendingCommand: null,
+              program: null,
+              activeScheduleIds: [],
+            }),
+      },
+      event,
+      "equipped",
+    ),
+    pin,
+    event.eventId,
+  );
+};
+
+/** Every compiled consumer, including stored authority/continuations, enters here. */
+const withEquippedArtifact = (
+  state: RuntimeState,
+  event: Event,
+  consume: (compiled: CompiledProgram) => Decision<RuntimeState>,
+): Decision<RuntimeState> => {
+  const pin = pinnedIdentity(state);
+  if (state.artifactIdentity !== null && pin === null)
+    return artifactRefused(
+      state,
+      event,
+      "ArtifactIdentityInvalid",
+      "invalid stored artifact identity",
+    );
+  if (pin !== null && state.equippedEventId === null)
+    return artifactRefused(
+      state,
+      event,
+      "ArtifactIdentityInvalid",
+      "pinned artifact has no equip event reference",
+    );
+  if (
+    state.loadout === null ||
+    state.artifactIdentityBlocked ||
+    (state.identityEnforcementEventId !== null && pin === null)
+  )
+    return artifactRefused(
+      state,
+      event,
+      "ArtifactIdentityUnavailable",
+      state.loadout === null
+        ? "no valid equip"
+        : "explicit v2 re-equip required",
+    );
+  const compiled = compileArtifact(state.loadout, state.compilationEnvironment);
+  if (!compiled.ok)
+    return artifactRefused(
+      state,
+      event,
+      "ArtifactCompilationRefused",
+      "compile diagnostics",
+      {
+        diagnostics: compiled.diagnostics,
+      },
+    );
+  const drift =
+    pin === null ? [] : artifactIdentityDrift(pin, compiled.artifactIdentity);
+  if (drift.length > 0)
+    return artifactRefused(
+      state,
+      event,
+      "ArtifactIdentityDrift",
+      "pinned artifact differs from compilation",
+      {
+        observed: compiled.artifactIdentity,
+        drift,
+      },
+    );
+  return withIdentityTrace(
+    consume(compiled.program),
+    pin,
+    state.equippedEventId,
+  );
+};
+
 const predicateEnv = (env: KernelEnv): Omit<KernelEnv, "now"> => ({
   rngState: env.rngState,
   predicates: env.predicates,
@@ -320,6 +578,7 @@ const presenceDecision = (
   state: RuntimeState,
   event: Event,
   env: KernelEnv,
+  compiled: CompiledProgram,
 ): Decision<RuntimeState> => {
   const presence = stringField(event.payload, "presence");
   if (presence !== "away" && presence !== "returned")
@@ -334,7 +593,7 @@ const presenceDecision = (
     ],
   };
   if (presence === "away") {
-    const compiledCadence = cadenceFromCompiled(compiledFromState(nextState));
+    const compiledCadence = cadenceFromCompiled(compiled);
     const cadence = compiledCadence.cadence as Cadence.T;
     const evaluated = evaluateCadence(cadence, nextState, env, event);
     if (evaluated.dueAt === null)
@@ -421,12 +680,12 @@ const pulseDecision = (
   state: RuntimeState,
   event: Event,
   env: KernelEnv,
+  compiled: CompiledProgram,
 ): Decision<RuntimeState> => {
   const scheduleId = stringField(event.payload, "scheduleId");
-  const compiled = compiledFromState(state);
   const compiledCadence = cadenceFromCompiled(compiled);
   if (scheduleId === compiledCadence.scheduleId) {
-    const workOrder = compileWorkOrder(loadoutFromValue(state.loadout));
+    const workOrder = compiled.workOrder;
     return {
       ...observed(
         {
@@ -449,8 +708,19 @@ const pulseDecision = (
       ),
     };
   }
-  if (scheduleId !== compiledCadence.queuedScheduleId)
-    return observed(state, event, "unknown-schedule");
+  if (scheduleId !== compiledCadence.queuedScheduleId) {
+    if (
+      state.identityEnforcementEventId === null &&
+      state.artifactIdentity === null
+    )
+      return observed(state, event, "unknown-schedule");
+    return artifactRefused(
+      state,
+      event,
+      "UnknownScheduleRefused",
+      `unknown schedule: ${scheduleId ?? "unavailable"}`,
+    );
+  }
 
   const activationCondition = compiled.statechartGuards[0]?.activationCondition;
   if (activationCondition === undefined)
@@ -474,11 +744,12 @@ const workOrderDecision = (
   state: RuntimeState,
   event: Event,
   env: KernelEnv,
+  compiled: CompiledProgram,
 ): Decision<RuntimeState> => {
   const workOrder = workOrderFromValue(
     asObject(event.payload)?.["workOrder"] ?? null,
   );
-  const verification = compiledFromState(state).verificationPlan.find(
+  const verification = compiled.verificationPlan.find(
     (episode) => episode.required,
   );
   if (verification === undefined)
@@ -715,7 +986,12 @@ const beaconObservedDecision = (
   };
 };
 
-export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
+const react = (
+  state: RuntimeState,
+  event: Event,
+  env: KernelEnv,
+  compiled?: CompiledProgram,
+): Decision<RuntimeState> => {
   switch (event.type) {
     case "BeaconSweepRequested":
       return beaconSweepDecision(state, event, env);
@@ -723,25 +999,25 @@ export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
       return beaconObservedDecision(state, event, env);
     case "InspectionTaskCreated":
       return observed(state, event, "task-opened");
-    case "LoadoutEquipped": {
-      const equipped = loadoutFromValue(event.payload);
-      const compiled = compileLoadoutProgram(equipped);
-      return observed(
-        {
-          ...state,
-          loadout: event.payload,
-          authority: compiled.authorityEnvelope as unknown as JsonValue,
-        },
-        event,
-        "equipped",
-      );
-    }
     case "OperatorPresenceChanged":
-      return presenceDecision(state, event, env);
+      return presenceDecision(state, event, env, compiled!);
     case "CadencePulse":
-      return pulseDecision(state, event, env);
+      return pulseDecision(state, event, env, compiled!);
     case "WorkOrderEmitted":
-      return workOrderDecision(state, event, env);
+      return workOrderDecision(state, event, env, compiled!);
+    case "CommandRedispatchRequested":
+      if (
+        stringField(event.payload, "commandId") === undefined ||
+        stringField(event.payload, "commandId") !==
+          stringField(state.pendingCommand, "commandId")
+      )
+        return artifactRefused(
+          state,
+          event,
+          "ArtifactIdentityInvalid",
+          "recovery request does not name the stored command",
+        );
+      return observed(state, event, "redispatch-ready");
     case "CommandPersisted": {
       const command = asObject(event.payload)?.["command"] ?? null;
       const effect =
@@ -873,6 +1149,69 @@ export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
     default:
       return observed(state, event);
   }
+};
+
+export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
+  if (event.type === "ArtifactIdentityEnforcementStarted") {
+    if (canonicalStringify(event.payload) !== '{"payloadVersion":1}')
+      return artifactRefused(
+        state,
+        event,
+        "ArtifactIdentityInvalid",
+        "invalid enforcement boundary",
+      );
+    if (state.identityEnforcementEventId !== null)
+      return observed(state, event, "already-enforced");
+    return observed(
+      {
+        ...state,
+        identityEnforcementEventId: event.eventId,
+        ...(pinnedIdentity(state) === null
+          ? { authority: null, pendingCommand: null, program: null }
+          : {}),
+      },
+      event,
+      "enforcement-started",
+    );
+  }
+  if (event.type === "LoadoutEquipped") return equipDecision(state, event);
+  if (isArtifactRefusalType(event.type))
+    return observed(
+      event.type === "UnknownScheduleRefused"
+        ? state
+        : {
+            ...state,
+            artifactIdentityBlocked: true,
+            authority: null,
+            pendingCommand: null,
+            program: null,
+            activeScheduleIds: [],
+          },
+      event,
+      "refusal-recorded",
+    );
+  // Beacon authority is supplied by its explicit host request, not this loadout.
+  const beaconResult =
+    event.workstreamId === "ws_beacon_control" &&
+    (event.type === "CommandResult" || event.type === "CommandRefused");
+  const consumesProgram =
+    !beaconResult &&
+    [
+      "OperatorPresenceChanged",
+      "CadencePulse",
+      "WorkOrderEmitted",
+      "CommandResult",
+      "DeletionAttempted",
+      "CommandRefused",
+      "EpisodeTerminated",
+      "VerificationRequested",
+      "CommandRedispatchRequested",
+    ].includes(event.type);
+  return consumesProgram
+    ? withEquippedArtifact(state, event, (compiled) =>
+        react(state, event, env, compiled),
+      )
+    : react(state, event, env);
 };
 
 export const expectedInspectCommandId = commandId(WORKSTREAM, EPISODE, 1, 0);

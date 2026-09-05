@@ -1,0 +1,139 @@
+{
+  "seiri": {
+    "schemaVersion": 1,
+    "compilerContractVersion": "1",
+    "compilerPackageVersion": "0.3.0",
+    "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+    "compilationEnvironment": {
+      "baseCommit": "fixture-base",
+      "capabilities": ["fixture-repository"],
+      "environmentId": "skeleton.fixture",
+      "repo": "packages/skeleton/fixtures/repo-tree.json",
+      "version": 1
+    },
+    "authorityExpiresAt": 2400000,
+    "componentDefinitions": [
+      {
+        "componentKind": "active-mechanic",
+        "componentId": "seiri",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:a1dc633c08fe612a"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "seiri.absence-cadence",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "seiri.evidence-capture",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "seiri.independent-verification",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:0e7f7f2049db9807"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "seiri.read-only",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:e91545e6fad79347"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "seiri.repo-scope",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:d7bd95978a68a675"
+      }
+    ]
+  },
+  "entropy-reducer": {
+    "schemaVersion": 1,
+    "compilerContractVersion": "1",
+    "compilerPackageVersion": "0.3.0",
+    "semanticHash": "fnv1a64:c5ddbca75f1c4cee",
+    "compilationEnvironment": {
+      "baseCommit": "fixture-base",
+      "capabilities": [],
+      "environmentId": "entropy-reducer.manual-review",
+      "repo": "/fixture/repository",
+      "version": 1
+    },
+    "authorityExpiresAt": 11000,
+    "componentDefinitions": [
+      {
+        "componentKind": "active-mechanic",
+        "componentId": "seiso-shine",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:7672ecc90c8b284d"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "entropy-reducer.altitude-tag",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:cd3508ce0930ca56"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "entropy-reducer.constraint-first-ordering",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:4051bfb163f7c80b"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "entropy-reducer.fan-out-lens",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:2b916efb51a9814b"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "entropy-reducer.mutation-drill",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:6d139f1febcdc06e"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "entropy-reducer.seiketsu-standardize",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:7dfc8ab2de161f25"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "entropy-reducer.shape-first",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:392c026e031eb2aa"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "entropy-reducer.sparse-receipt",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:4743123ee141a1d7"
+      },
+      {
+        "componentKind": "support-facet",
+        "componentId": "entropy-reducer.verify-first",
+        "version": 1,
+        "hashScheme": "dotln-component-definition-fnv1a64-v1",
+        "definitionHash": "fnv1a64:99c5da639f3bf63e"
+      }
+    ]
+  }
+}

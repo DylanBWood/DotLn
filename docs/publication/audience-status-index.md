@@ -40,6 +40,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Actors and episodes (the edge)](../product/02-domain-model.md#actors-and-episodes-the-edge)                    | everyday-ai-user, software-engineer | specified   |
 | [Identity and composition](../product/02-domain-model.md#identity-and-composition)                              | everyday-ai-user, software-engineer | specified   |
 | [LoadoutGraph v1 payload contract](../product/02-domain-model.md#loadoutgraph-v1-payload-contract)              | software-engineer                   | implemented |
+| [Artifact identity v1](../product/02-domain-model.md#artifact-identity-v1)                                      | software-engineer                   | implemented |
 | [Feedback](../product/02-domain-model.md#feedback)                                                              | everyday-ai-user, software-engineer | specified   |
 | [Memory and observation](../product/02-domain-model.md#memory-and-observation)                                  | everyday-ai-user, software-engineer | specified   |
 | [Beacon codebook v1](../product/02-domain-model.md#beacon-codebook-v1)                                          | everyday-ai-user, software-engineer | implemented |
@@ -66,7 +67,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Candidate — opinion cohorts and sealed adjudication](../product/03-architecture.md#candidate--opinion-cohorts-and-sealed-adjudication)                       | everyday-ai-user, software-engineer | vision      |
 | [Composition system](../product/03-architecture.md#composition-system)                                                                                        | software-engineer                   | planned     |
 | [Candidate — resource pressure as an environmental modifier](../product/03-architecture.md#candidate--resource-pressure-as-an-environmental-modifier)         | everyday-ai-user, software-engineer | planned     |
-| [Candidate — pinned artifact identity](../product/03-architecture.md#candidate--pinned-artifact-identity)                                                     | everyday-ai-user, software-engineer | vision      |
+| [Pinned artifact identity](../product/03-architecture.md#pinned-artifact-identity)                                                                            | everyday-ai-user, software-engineer | implemented |
 | [Agent-originated product suggestions](../product/03-architecture.md#agent-originated-product-suggestions)                                                    | everyday-ai-user, software-engineer | planned     |
 | [First live Entropy Reducer use](../product/03-architecture.md#first-live-entropy-reducer-use)                                                                | everyday-ai-user, software-engineer | implemented |
 | [Channel-plural intake, PR-backed registration](../product/03-architecture.md#channel-plural-intake-pr-backed-registration)                                   | software-engineer                   | planned     |
@@ -211,21 +212,22 @@ as a current blocked verdict.
 
 ## 09 — Audit, records, resilience, and privacy
 
-| Section                                                                                                                                                         | Audiences                           | Status    |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
-| [Audit, records, resilience, and privacy](../product/09-audit-resilience-privacy.md#audit-records-resilience-and-privacy)                                       | everyday-ai-user, software-engineer | vision    |
-| [Audit audiences and decisions](../product/09-audit-resilience-privacy.md#audit-audiences-and-decisions)                                                        | everyday-ai-user, software-engineer | specified |
-| [Canonical audit record](../product/09-audit-resilience-privacy.md#canonical-audit-record)                                                                      | software-engineer                   | planned   |
-| [Fidelity levels](../product/09-audit-resilience-privacy.md#fidelity-levels)                                                                                    | everyday-ai-user, software-engineer | specified |
-| [Audit projections and visualizations](../product/09-audit-resilience-privacy.md#audit-projections-and-visualizations)                                          | everyday-ai-user, software-engineer | specified |
-| [Persistence and recovery classes](../product/09-audit-resilience-privacy.md#persistence-and-recovery-classes)                                                  | everyday-ai-user, software-engineer | specified |
-| [Backup and disaster recovery choices](../product/09-audit-resilience-privacy.md#backup-and-disaster-recovery-choices)                                          | everyday-ai-user, software-engineer | specified |
-| [Privacy and minimization](../product/09-audit-resilience-privacy.md#privacy-and-minimization)                                                                  | everyday-ai-user, software-engineer | specified |
-| [Candidate — minimized incident reporting](../product/09-audit-resilience-privacy.md#candidate--minimized-incident-reporting)                                   | everyday-ai-user, software-engineer | vision    |
-| [Candidate — model-input exposure plans](../product/09-audit-resilience-privacy.md#candidate--model-input-exposure-plans)                                       | everyday-ai-user, software-engineer | vision    |
-| [Candidate — public Git with a local private evidence lane](../product/09-audit-resilience-privacy.md#candidate--public-git-with-a-local-private-evidence-lane) | software-engineer                   | vision    |
-| [Policy dimensions implementations can customize](../product/09-audit-resilience-privacy.md#policy-dimensions-implementations-can-customize)                    | software-engineer                   | specified |
-| [Bootstrap sequence](../product/09-audit-resilience-privacy.md#bootstrap-sequence)                                                                              | software-engineer                   | planned   |
+| Section                                                                                                                                                         | Audiences                           | Status      |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- |
+| [Audit, records, resilience, and privacy](../product/09-audit-resilience-privacy.md#audit-records-resilience-and-privacy)                                       | everyday-ai-user, software-engineer | vision      |
+| [Audit audiences and decisions](../product/09-audit-resilience-privacy.md#audit-audiences-and-decisions)                                                        | everyday-ai-user, software-engineer | specified   |
+| [Canonical audit record](../product/09-audit-resilience-privacy.md#canonical-audit-record)                                                                      | software-engineer                   | planned     |
+| [Deterministic artifact receipts](../product/09-audit-resilience-privacy.md#deterministic-artifact-receipts)                                                    | everyday-ai-user, software-engineer | implemented |
+| [Fidelity levels](../product/09-audit-resilience-privacy.md#fidelity-levels)                                                                                    | everyday-ai-user, software-engineer | specified   |
+| [Audit projections and visualizations](../product/09-audit-resilience-privacy.md#audit-projections-and-visualizations)                                          | everyday-ai-user, software-engineer | specified   |
+| [Persistence and recovery classes](../product/09-audit-resilience-privacy.md#persistence-and-recovery-classes)                                                  | everyday-ai-user, software-engineer | specified   |
+| [Backup and disaster recovery choices](../product/09-audit-resilience-privacy.md#backup-and-disaster-recovery-choices)                                          | everyday-ai-user, software-engineer | specified   |
+| [Privacy and minimization](../product/09-audit-resilience-privacy.md#privacy-and-minimization)                                                                  | everyday-ai-user, software-engineer | specified   |
+| [Candidate — minimized incident reporting](../product/09-audit-resilience-privacy.md#candidate--minimized-incident-reporting)                                   | everyday-ai-user, software-engineer | vision      |
+| [Candidate — model-input exposure plans](../product/09-audit-resilience-privacy.md#candidate--model-input-exposure-plans)                                       | everyday-ai-user, software-engineer | vision      |
+| [Candidate — public Git with a local private evidence lane](../product/09-audit-resilience-privacy.md#candidate--public-git-with-a-local-private-evidence-lane) | software-engineer                   | vision      |
+| [Policy dimensions implementations can customize](../product/09-audit-resilience-privacy.md#policy-dimensions-implementations-can-customize)                    | software-engineer                   | specified   |
+| [Bootstrap sequence](../product/09-audit-resilience-privacy.md#bootstrap-sequence)                                                                              | software-engineer                   | planned     |
 
 ## 10 — IR compatibility
 

@@ -85,6 +85,10 @@ ordering do not. The Seiri fixture's code DSL, function table, and statechart
 JSON all currently produce `fnv1a64:9ca8d0229c6bd8db`, while a changed objective
 or an unequipped support produces a different program and digest.
 
+WO-029 leaves those semantic bytes unchanged and returns a separate `ArtifactIdentityV1`. Its component-definition scheme is `dotln-component-definition-fnv1a64-v1`. The exact preimage is UTF-8 `canonicalStringify({ domain: "dotln:component-definition:v1", componentKind, definition })`, with `definition` selected from `normalizeLoadoutGraph(source)` by the manifest's exact `(componentKind, componentId, version)` tuple. The digest uses the same FNV-1a-64 recurrence and `fnv1a64:` representation; domain and kind separate it from whole-program identity. A normalized ambient definition named `Quiet 雪`, with id `quiet`, version `1`, scope `episode`, reservation `{ attention: 1 }`, and no emissions pins `fnv1a64:3a5e415be9582bed`. The compiler test states the full canonical string and checks it with WO-101's independent no-BigInt oracle.
+
+The receipt also retains the compiler contract version, executing compiler package version, exact compilation environment, and authority expiry. None enters the old compiled-program preimage by virtue of this new record. Non-emitted source names can change only their definition hash; meaningful compiled-body edits change the whole-program hash as before. The Entropy Reducer fixture at `/fixture/repository`, base `fixture-base`, and expiry `11000` remains `fnv1a64:c5ddbca75f1c4cee`. Moving either fixture to another repository path changes the environment-sensitive whole-program key and requires v2 re-equip, while component-definition hashes remain unchanged.
+
 ## Terminal first, console equal
 
 This section specifies the author's reference interface profile. The terminal

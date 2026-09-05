@@ -501,3 +501,8 @@ jq -r 'if has("effortLevel") then (.effortLevel | if type == "string" then . els
 sed -nE 's/^[[:space:]]*model_reasoning_effort[[:space:]]*=[[:space:]]*"?([a-z]+)"?.*$/\1/p' ~/.codex/config.toml
 date -Iseconds
 ```
+
+
+## WO-029 harness-version observation (2026-09-05)
+
+`codex --version` returned `codex-cli 0.153.4`. A bounded read of only the top-level `model_reasoning_effort` key returned `max`; nested profile settings were not treated as the top-level selection. The observation was appended to the version history in `environment.json`, retaining earlier observations. This supports the standing operator-attested GPT-6 Astra/max selection and is not effective-session readback. No settings were changed and no model invocation was made by the probe.

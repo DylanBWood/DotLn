@@ -1,5 +1,12 @@
 import type { BeaconClaimRecord } from "./beacon.js";
 import { renderBeaconGlyphs } from "./control-beacon.js";
+import { seiriEnvironment, type CompilationEnvironment } from "@dotln/compiler";
+import {
+  artifactRefusalPayload,
+  createLoadoutEquippedPayload,
+  isArtifactIdentityV1,
+  isArtifactRefusalType,
+} from "./artifact-identity.js";
 import {
   appendEvent,
   decodeLog,
@@ -65,7 +72,7 @@ export interface ScenarioResult {
   readonly decisions: readonly Decision<RuntimeState>[];
   readonly timeline: readonly string[];
   readonly glyphScene: string;
-  readonly workOrder: WorkOrder;
+  readonly workOrder: WorkOrder | null;
   readonly candidates: readonly Candidate[];
   readonly verified: boolean;
   readonly cancelledScheduleIds: readonly string[];
@@ -167,7 +174,7 @@ interface ReactorStep {
   readonly decision: Decision<RuntimeState>;
 }
 
-class LiveReactorDriver {
+export class LiveReactorDriver {
   #log = "";
   #state = initialState();
   #decisions: Decision<RuntimeState>[] = [];
@@ -175,6 +182,93 @@ class LiveReactorDriver {
   constructor(private readonly onEvents?: (events: readonly Event[]) => void) {}
 
   feed(draft: EventDraft): ReactorStep {
+    if (draft.type === "ArtifactIdentityEnforcementStarted")
+      throw new Error(
+        "the enforcement boundary is host-owned; use ensureIdentityEnforcement",
+      );
+    if (
+      draft.type === "LoadoutEquipped" &&
+      (draft.payload === null ||
+        typeof draft.payload !== "object" ||
+        Array.isArray(draft.payload) ||
+        (draft.payload as Readonly<Record<string, JsonValue>>)[
+          "payloadVersion"
+        ] !== 2)
+    )
+      throw new Error(
+        "new LoadoutEquipped input requires payloadVersion: 2; use equip",
+      );
+    this.ensureIdentityEnforcement(draft.occurredAt);
+    const step = this.append(draft);
+    const decision = step.decision;
+    const consuming = decision.trace.envInputs.some((input) =>
+      input.startsWith("artifactIdentity.semanticHash:"),
+    );
+    if (
+      consuming ||
+      decision.trace.reactorId === "artifact-identity" ||
+      isArtifactRefusalType(step.event.type)
+    )
+      this.append({
+        schemaVersion: 1,
+        type: "DecisionRecorded",
+        occurredAt: step.event.occurredAt,
+        actorId: step.event.actorId,
+        workstreamId: step.event.workstreamId,
+        ...(step.event.episodeId === undefined
+          ? {}
+          : { episodeId: step.event.episodeId }),
+        ...(step.event.correlationId === undefined
+          ? {}
+          : { correlationId: step.event.correlationId }),
+        causationId: step.event.eventId,
+        payload: { trace: decision.trace as unknown as JsonValue },
+      });
+    if (
+      decision.continuation?.kind === "Emit" &&
+      isArtifactRefusalType(decision.continuation.event.type)
+    )
+      this.append(decision.continuation.event);
+    return step;
+  }
+
+  /** Exactly once per canonical log, before accepting any new external input. */
+  ensureIdentityEnforcement(at: number): void {
+    if (this.#state.identityEnforcementEventId !== null) return;
+    this.append(
+      draft("ArtifactIdentityEnforcementStarted", at, { payloadVersion: 1 }),
+    );
+  }
+
+  equip(
+    graph: Loadout,
+    environment: CompilationEnvironment = seiriEnvironment(),
+    at = 0,
+  ): ReactorStep {
+    const result = createLoadoutEquippedPayload(graph, environment);
+    return result.ok
+      ? this.feed(
+          draft("LoadoutEquipped", at, result.payload as unknown as JsonValue),
+        )
+      : this.feed(
+          draft(
+            "ArtifactCompilationRefused",
+            at,
+            artifactRefusalPayload(
+              "equip compilation failed",
+              null,
+              this.#state.equippedEventId,
+              isArtifactIdentityV1(this.#state.artifactIdentity)
+                ? this.#state.artifactIdentity
+                : null,
+              null,
+              result.diagnostics,
+            ) as unknown as JsonValue,
+          ),
+        );
+  }
+
+  private append(draft: EventDraft): ReactorStep {
     const appended = appendEvent(this.#log, draft);
     this.#log = appended.log;
     const stepped = replay(
@@ -291,22 +385,6 @@ const noOpIntent = (decision: Decision<RuntimeState>): NoOpIntent => {
   return intent;
 };
 
-const recordDecision = (
-  driver: LiveReactorDriver,
-  decision: Decision<RuntimeState>,
-  source: Event,
-  correlationId?: string,
-): ReactorStep =>
-  driver.feed(
-    draft(
-      "DecisionRecorded",
-      source.occurredAt,
-      { trace: decision.trace as unknown as JsonValue },
-      correlationId,
-      source.eventId,
-    ),
-  );
-
 const project = (events: readonly Event[]): readonly string[] =>
   events.map(
     (event, index) =>
@@ -343,7 +421,7 @@ const projectResult = (
     decisions,
     timeline: project(events),
     glyphScene: renderGlyphScene(state),
-    workOrder: workOrderFromState(state),
+    workOrder: state.workOrder === null ? null : workOrderFromState(state),
     candidates: state.candidates,
     verified: state.verified,
     cancelledScheduleIds: state.cancelledScheduleIds,
@@ -376,18 +454,11 @@ export function runScenario(
       fixture: "repo-tree.json",
     }),
   );
-  driver.feed(
-    draft(
-      "LoadoutEquipped",
-      0,
-      (options.equippedLoadout ?? loadout) as unknown as JsonValue,
-    ),
-  );
+  driver.equip(options.equippedLoadout ?? loadout);
 
   const away = driver.feed(
     draft("OperatorPresenceChanged", 0, { presence: "away" }),
   );
-  recordDecision(driver, away.decision, away.event);
   scheduler.schedule(
     ...away.decision.schedules.map((schedule) => schedule.scheduleId),
   );
@@ -401,7 +472,6 @@ export function runScenario(
     continuationEvent(pulse.decision, "cadence pulse"),
   );
   const granted = emittedWorkOrder.decision;
-  recordDecision(driver, granted, emittedWorkOrder.event, pulse.event.eventId);
 
   const command = commandFromState(granted.state);
   const persisted = driver.feed(
@@ -419,7 +489,44 @@ export function runScenario(
   if (options.crashAfterPersist) {
     driver.restore(options.recoveryLogTransform?.(driver.log) ?? driver.log);
     recoveredCommands = pendingCommands(replayOutbox(decodeLog(driver.log)));
+    if (recoveredCommands.length === 0)
+      return {
+        ...projectResult(driver.log, driver.state, driver.decisions),
+        adapterEffects: executor.effects,
+        adapterDispatches: executor.dispatches,
+        recoveredCommands,
+      };
     for (const pending of recoveredCommands) {
+      const persistedSource = decodeLog(driver.log).find((source) => {
+        const payload = source.payload as {
+          readonly command?: { readonly commandId?: string };
+        } | null;
+        return (
+          source.type === "CommandPersisted" &&
+          payload?.command?.commandId === pending.commandId
+        );
+      });
+      if (persistedSource === undefined)
+        throw new Error("pending command lacks its canonical persist event");
+      const recovery = driver.feed(
+        draft(
+          "CommandRedispatchRequested",
+          persisted.event.occurredAt,
+          { commandId: pending.commandId },
+          pending.commandId,
+          persistedSource.eventId,
+        ),
+      );
+      if (
+        recovery.decision.continuation?.kind === "Emit" &&
+        isArtifactRefusalType(recovery.decision.continuation.event.type)
+      )
+        return {
+          ...projectResult(driver.log, driver.state, driver.decisions),
+          adapterEffects: executor.effects,
+          adapterDispatches: executor.dispatches,
+          recoveredCommands,
+        };
       executor.dispatch(pending, persisted.event.occurredAt);
       const redispatched = driver.feed(
         draft(
@@ -427,7 +534,7 @@ export function runScenario(
           pulse.event.occurredAt + 1,
           { commandId: pending.commandId },
           pending.commandId,
-          persisted.event.eventId,
+          recovery.event.eventId,
         ),
       );
       resultCause = redispatched.event;
@@ -467,21 +574,9 @@ export function runScenario(
   const refused = driver.feed(
     continuationEvent(deletionAttempted.decision, "deletion guard"),
   );
-  recordDecision(
-    driver,
-    deletionAttempted.decision,
-    deletionAttempted.event,
-    command.commandId,
-  );
 
   const terminated = driver.feed(
     continuationEvent(refused.decision, "structural refusal"),
-  );
-  recordDecision(
-    driver,
-    terminated.decision,
-    terminated.event,
-    command.commandId,
   );
   const verificationRequested = driver.feed(
     continuationEvent(terminated.decision, "episode continuation"),
@@ -507,7 +602,6 @@ export function runScenario(
     }),
   );
   const queued = driver.feed(scheduledEvent(away.decision, queuedScheduleId));
-  recordDecision(driver, queued.decision, queued.event, queued.event.eventId);
 
   const noOp = noOpIntent(queued.decision);
   driver.feed(

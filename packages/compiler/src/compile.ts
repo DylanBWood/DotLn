@@ -5,6 +5,7 @@ import {
   semanticHash,
 } from "./normalize.js";
 import { loadoutFromEditableView } from "./views.js";
+import { deriveArtifactIdentity } from "./artifact-identity.js";
 import {
   COMPOSITION_PRECEDENCE,
   type ActiveMechanic,
@@ -1013,10 +1014,12 @@ export const compileLoadout = (
     claimResult.resolutions,
     claimResult.effectiveClaims,
   );
+  const hash = semanticHash(program);
   return {
     ok: true,
     program,
-    semanticHash: semanticHash(program),
+    semanticHash: hash,
+    artifactIdentity: deriveArtifactIdentity(graph, program, environment, hash),
     diagnostics: [],
   };
 };

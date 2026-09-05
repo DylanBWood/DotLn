@@ -155,9 +155,10 @@
         "versions": [
           {"classification": "observed", "value": "0.152.1"},
           {"classification": "observed", "value": "0.153.0"},
-          {"classification": "observed", "value": "0.153.2", "observedAt": "2026-09-04T14:13:12-04:00"}
+          {"classification": "observed", "value": "0.153.2", "observedAt": "2026-09-04T14:13:12-04:00"},
+          {"classification": "observed", "value": "0.153.4", "observedAt": "2026-09-05T18:14:17Z", "workOrder": "WO-029"}
         ],
-        "persistedEffortSelector": {"classification": "observed", "key": "model_reasoning_effort", "value": "max", "observedAt": "2026-09-04T19:56:47Z", "harnessVersion": "0.153.2", "previousObservation": {"classification": "observed", "value": "xhigh", "workOrder": "WO-019"}, "scope": "named persisted key only; operator selects GPT-6 Astra/max for Codex steps; not effective-session readback"},
+        "persistedEffortSelector": {"classification": "observed", "key": "model_reasoning_effort", "value": "max", "observedAt": "2026-09-05T18:14:17Z", "harnessVersion": "0.153.4", "previousObservation": {"classification": "observed", "key": "model_reasoning_effort", "value": "max", "observedAt": "2026-09-04T19:56:47Z", "harnessVersion": "0.153.2", "previousObservation": {"classification": "observed", "value": "xhigh", "workOrder": "WO-019"}, "scope": "named persisted key only; operator selects GPT-6 Astra/max for Codex steps; not effective-session readback"}, "scope": "named top-level persisted key only; operator selects GPT-6 Astra/max; no effective-session readback"},
         "sessionEffortSelector": {"classification": "not found", "dedicatedControl": "--effort", "genericConfigOverride": {"classification": "documented locally", "control": "--config key=value"}},
         "effectiveEffortReadback": {"classification": "not found", "value": "unknown", "harnessReadbackEligible": false}
       }

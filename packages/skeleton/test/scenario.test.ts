@@ -41,6 +41,12 @@ const wo003DecisionTraces = JSON.parse(
     "utf8",
   ),
 ) as readonly DecisionTrace[];
+const legacyEvents = decodeLog(
+  await readFile(
+    new URL("../../fixtures/wo029-legacy-scenario.jsonl", import.meta.url),
+    "utf8",
+  ),
+);
 
 const semanticProjection = (result: ScenarioResult) => ({
   decisions: result.decisions,
@@ -100,10 +106,11 @@ test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async ()
     [
       "@dotln/kernel",
       "@dotln/compiler",
+      "./artifact-identity.js",
       "./control-codebook.mjs",
       "./control-beacon.js",
     ],
-    "the reactor imports the kernel, pure compiler and pure Beacon projections",
+    "the reactor imports only the kernel, pure compiler, identity checks and pure Beacon projections",
   );
   for (const decider of [
     "evaluateCadence",
@@ -143,6 +150,7 @@ test("WO-016 AC3 live and replay match every complete Decision and semantic proj
   assertScenarioIdentity(live, replayed);
 
   assert.deepEqual(live.workOrder, compileWorkOrder(loadout));
+  assert.ok(live.workOrder);
   assert.equal(live.workOrder.workOrderId, "wo_repo_inspection_1");
   assert.deepEqual(Object.keys(live.workOrder).sort(), [
     "acceptanceCriteria",
@@ -177,7 +185,9 @@ test("WO-016 AC3 live and replay match every complete Decision and semantic proj
   );
 
   const events = decodeLog(live.log);
-  const recordedDecisionSources = [2, 5, 9, 12, 17] as const;
+  const recordedDecisionSources = [
+    2, 4, 6, 8, 11, 13, 15, 17, 19, 22, 24,
+  ] as const;
   const recordedEvents = events.filter(
     (event) => event.type === "DecisionRecorded",
   );
@@ -189,24 +199,32 @@ test("WO-016 AC3 live and replay match every complete Decision and semantic proj
     ),
   );
 
-  assert.deepEqual(live.decisions[5]?.trace, {
-    reactorId: "authority-guard",
-    reactorVersion: "1",
-    branchPath: ["authorized", "repo.inspect"],
-    envInputs: [
-      "now:1200000",
-      "authorityEnvelope:auth_seiri",
-      "evidence",
-      "revocations",
-      "state",
-      "rngState:17",
-      "predicates",
-      "policy",
-      "resource:inspections",
-    ],
-    cadenceEvaluations: [],
-  });
-  assert.deepEqual(live.decisions[16]?.trace.branchPath, [
+  assert.deepEqual(
+    {
+      ...live.decisions[8]?.trace,
+      envInputs: live.decisions[8]?.trace.envInputs.filter(
+        (input) => !input.startsWith("artifactIdentity."),
+      ),
+    },
+    {
+      reactorId: "authority-guard",
+      reactorVersion: "1",
+      branchPath: ["authorized", "repo.inspect"],
+      envInputs: [
+        "now:1200000",
+        "authorityEnvelope:auth_seiri",
+        "evidence",
+        "revocations",
+        "state",
+        "rngState:17",
+        "predicates",
+        "policy",
+        "resource:inspections",
+      ],
+      cadenceEvaluations: [],
+    },
+  );
+  assert.deepEqual(live.decisions[22]?.trace.branchPath, [
     "refused",
     "authority revoked",
   ]);
@@ -235,12 +253,30 @@ test("WO-008 AC6 the running scenario consumes the compiled Seiri loadout", () =
   );
 });
 
-test("WO-008 AC6 compiled Seiri matches the frozen WO-003 decision traces exactly", () => {
+test("WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics", () => {
   const result = runScenario(fixture);
+  const events = decodeLog(result.log);
   assert.deepEqual(
-    result.decisions.map((decision) => decision.trace),
-    wo003DecisionTraces,
+    result.decisions
+      .filter(
+        (_, index) =>
+          !["ArtifactIdentityEnforcementStarted", "DecisionRecorded"].includes(
+            events[index]!.type,
+          ),
+      )
+      .map((decision) => ({
+        ...decision.trace,
+        envInputs: decision.trace.envInputs.filter(
+          (input) => !input.startsWith("artifactIdentity."),
+        ),
+      })),
+    wo003DecisionTraces.filter(
+      (_, index) => legacyEvents[index]!.type !== "DecisionRecorded",
+    ),
   );
+  for (const [index, source] of events.entries())
+    if (source.type === "DecisionRecorded")
+      assert.deepEqual(result.decisions[index]!.trace, wo003DecisionTraces[3]);
 });
 
 test("WO-008 AC2 an unequipped support changes the live reactor program", () => {
@@ -253,6 +289,8 @@ test("WO-008 AC2 an unequipped support changes the live reactor program", () => 
   const equipped = runScenario(fixture);
   const unequipped = runScenario(fixture, { equippedLoadout: withoutScope });
   assert.notDeepEqual(unequipped.decisions, equipped.decisions);
+  assert.ok(equipped.workOrder);
+  assert.ok(unequipped.workOrder);
   assert.deepEqual(unequipped.workOrder.constraints, [
     "Do not mutate repository contents",
   ]);
@@ -382,32 +420,41 @@ test("WO-008 AC3 the precedence winner authorizes the emitted runtime effect", (
   assert.ok(!compiled.workOrder.prohibitedOperations.includes("repo.delete"));
 });
 
-test("the canonical thirteen scenario milestones retain exact event order and multiplicity", () => {
+test("the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta", () => {
   const types = decodeLog(runScenario(fixture).log).map((event) => event.type);
   assert.deepEqual(types, [
+    "ArtifactIdentityEnforcementStarted",
     "InspectionTaskCreated",
     "LoadoutEquipped",
+    "DecisionRecorded",
     "OperatorPresenceChanged",
     "DecisionRecorded",
     "CadencePulse",
+    "DecisionRecorded",
     "WorkOrderEmitted",
     "DecisionRecorded",
     "CommandPersisted",
     "CommandResult",
+    "DecisionRecorded",
     "DeletionAttempted",
+    "DecisionRecorded",
     "CommandRefused",
     "DecisionRecorded",
     "EpisodeTerminated",
     "DecisionRecorded",
     "VerificationRequested",
+    "DecisionRecorded",
     "VerificationCompleted",
     "OperatorPresenceChanged",
+    "DecisionRecorded",
     "CadencePulse",
     "DecisionRecorded",
     "QueuedPulseNoOp",
     "SchedulesCancelled",
   ]);
   const expectedCounts: Readonly<Record<string, number>> = {
+    ArtifactIdentityEnforcementStarted: 1,
+    DecisionRecorded: 11,
     InspectionTaskCreated: 1,
     LoadoutEquipped: 1,
     OperatorPresenceChanged: 2,
@@ -436,23 +483,30 @@ test("WO-016 AC6 every derived event names an earlier canonical cause and its pu
     [undefined, undefined],
     [undefined, undefined],
     [undefined, "evt_3"],
-    [undefined, "evt_3"],
-    ["evt_5", "evt_5"],
-    ["evt_5", "evt_6"],
-    ["evt_5", "evt_6"],
-    [expectedInspectCommandId, "evt_8"],
-    [expectedInspectCommandId, "evt_9"],
-    [expectedInspectCommandId, "evt_10"],
-    [expectedInspectCommandId, "evt_10"],
-    [expectedInspectCommandId, "evt_11"],
-    [expectedInspectCommandId, "evt_13"],
-    [expectedInspectCommandId, "evt_13"],
-    [expectedInspectCommandId, "evt_15"],
     [undefined, undefined],
-    [undefined, "evt_3"],
-    ["evt_18", "evt_18"],
-    ["evt_18", "evt_18"],
-    ["evt_18", "evt_18"],
+    [undefined, "evt_5"],
+    [undefined, "evt_5"],
+    [undefined, "evt_7"],
+    ["evt_7", "evt_7"],
+    ["evt_7", "evt_9"],
+    ["evt_7", "evt_9"],
+    [expectedInspectCommandId, "evt_11"],
+    [expectedInspectCommandId, "evt_12"],
+    [expectedInspectCommandId, "evt_12"],
+    [expectedInspectCommandId, "evt_14"],
+    [expectedInspectCommandId, "evt_14"],
+    [expectedInspectCommandId, "evt_16"],
+    [expectedInspectCommandId, "evt_16"],
+    [expectedInspectCommandId, "evt_18"],
+    [expectedInspectCommandId, "evt_18"],
+    [expectedInspectCommandId, "evt_20"],
+    [expectedInspectCommandId, "evt_20"],
+    [undefined, undefined],
+    [undefined, "evt_23"],
+    [undefined, "evt_5"],
+    [undefined, "evt_25"],
+    ["evt_25", "evt_25"],
+    ["evt_25", "evt_25"],
   ] as const;
   assert.equal(events.length, expectedLinks.length);
   const ordinals = new Map(
@@ -488,12 +542,12 @@ test("WO-016 step 9 preserves deletion paths, evidence, and structural refusal",
     reason: "effect denied",
     authorityEnvelopeId: "auth_seiri",
   });
-  assert.deepEqual(result.decisions[9]?.state.authorizationEvidence, [
+  assert.deepEqual(result.decisions[13]?.state.authorizationEvidence, [
     "inventory:tmp/old-report.txt",
     "classification:generated-stale",
     "references:none",
   ]);
-  assert.deepEqual(result.decisions[9]?.state.deletionPaths, [
+  assert.deepEqual(result.decisions[13]?.state.deletionPaths, [
     "tmp/old-report.txt",
   ]);
   assert.equal(result.adapterEffects, 1, "only inspection reaches the adapter");
@@ -507,13 +561,13 @@ test("WO-016 step 12 executes the reactor's NoOp and declared cancellations", ()
     "schedule_seiri_already_queued",
   ]);
   assert.deepEqual(result.activeScheduleIds, []);
-  assert.deepEqual(result.decisions[17]?.trace.branchPath, [
+  assert.deepEqual(result.decisions[24]?.trace.branchPath, [
     "queued-pulse",
     "noop",
   ]);
   assert.deepEqual(
     events.find((event) => event.type === "QueuedPulseNoOp")?.payload,
-    { reason: "operator returned", evidence: ["evt_18"] },
+    { reason: "operator returned", evidence: ["evt_25"] },
   );
   assert.deepEqual(
     events.find((event) => event.type === "SchedulesCancelled")?.payload,
@@ -697,6 +751,9 @@ test("row 1 crash recovery replays state, redispatches, and adapter-deduplicates
   const redispatched = decodeLog(result.log).find(
     (event) => event.type === "CommandRedispatched",
   );
+  const requested = decodeLog(result.log).find(
+    (event) => event.type === "CommandRedispatchRequested",
+  );
   const commandResult = decodeLog(result.log).find(
     (event) => event.type === "CommandResult",
   );
@@ -706,7 +763,8 @@ test("row 1 crash recovery replays state, redispatches, and adapter-deduplicates
     expectedInspectCommandId,
   );
   assert.equal(redispatched?.correlationId, expectedInspectCommandId);
-  assert.equal(redispatched?.causationId, persisted?.eventId);
+  assert.equal(requested?.causationId, persisted?.eventId);
+  assert.equal(redispatched?.causationId, requested?.eventId);
   assert.equal(commandResult?.correlationId, expectedInspectCommandId);
   assert.equal(commandResult?.causationId, redispatched?.eventId);
 });

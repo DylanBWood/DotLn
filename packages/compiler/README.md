@@ -1,8 +1,8 @@
-# `@dotln/compiler` v0.2.0
+# `@dotln/compiler` v0.3.0
 
 The pure DotLn composition compiler. It has zero runtime dependencies and no
 I/O: callers pass a `LoadoutGraph` plus an explicit environment and receive a
-compiled program or inspectable diagnostics. The skeleton CLI is the current
+compiled program plus a separate `ArtifactIdentityV1`, or inspectable diagnostics. The skeleton CLI is the current
 host adapter that prints its projections.
 
 ## What v1 compiles
@@ -52,6 +52,18 @@ For the shipped Seiri fixture all three views compile to:
 ```text
 fnv1a64:9ca8d0229c6bd8db
 ```
+
+## Artifact identity v1
+
+Successful `compileLoadout` and `compileEditableView` results also carry `artifactIdentity`: schema version `1`, `compilerContractVersion` (the program's unchanged `compilerVersion: "1"`), `compilerPackageVersion: "0.3.0"`, `semanticHash`, the exact `compilationEnvironment`, `authorityExpiresAt`, and `componentDefinitions`. The package version is a pure source constant tested against `package.json`; compilation performs no manifest I/O.
+
+Each definition record contains only `(componentKind, componentId, version)`, `hashScheme: "dotln-component-definition-fnv1a64-v1"`, and `definitionHash`. Its tuples equal the participating component manifest exactly: active mechanics, linked supports, and declared ambient effects. Unlinked catalog entries do not acquire a participation receipt. Link groups and mechanism types remain manifest projections.
+
+The exact definition-hash preimage is the UTF-8 canonical JSON of `{ domain: "dotln:component-definition:v1", componentKind, definition }`, where `definition` is the matching node of `normalizeLoadoutGraph(source)`. Object keys sort lexically; declared set-like collections normalize as before; ordered prose and pipelines retain their meaning. The output is `fnv1a64:` followed by 16 lowercase hex digits. The fixed Unicode ambient vector in `test/artifact-identity.test.ts` hashes to `fnv1a64:3a5e415be9582bed`; every fixture entry is cross-checked through WO-101's independent no-BigInt FNV implementation.
+
+This record sits outside `CompiledProgram`, so neither new provenance metadata nor the compiler package version silently changes the semantic-hash preimage. A support-name edit changes its definition identity while leaving compiled semantics alone. The pinned Entropy Reducer fixture, at `/fixture/repository`, base `fixture-base`, and authority expiry `11000`, retains `fnv1a64:c5ddbca75f1c4cee`. Repository and base commit enter the compiled WorkOrder; authority expiry comes from the raw active definition. Moving a graph to another repository path changes its whole-program hash but not its definition hashes and requires an explicit new equip receipt.
+
+Both hashes are deterministic equality keys. They are not collision-resistant identifiers, integrity proofs, signatures, or authenticity guarantees. The skeleton's comparison policy is the author's personal profile, not mandatory platform doctrine.
 
 Run `npm run skeleton -- --compiled-diff` from the repository root for the
 three-view equality receipt and the exact RPG item tooltip. Run

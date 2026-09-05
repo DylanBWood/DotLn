@@ -389,7 +389,7 @@ export const normalizeCompiledProgram = (
   // preserving WorkOrder prose order and explicit pipeline order.
   JSON.parse(canonicalStringify(value)) as CompiledProgram;
 
-const fnv1a64 = (value: string): string => {
+export const fnv1a64 = (value: string): string => {
   let hash = 0xcbf29ce484222325n;
   for (const byte of new TextEncoder().encode(value))
     hash = ((hash ^ BigInt(byte)) * 0x100000001b3n) & 0xffffffffffffffffn;
