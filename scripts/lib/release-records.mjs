@@ -166,7 +166,16 @@ export const localReleaseRecords = (root, snapshot) => {
       throw new Error(
         "v0.2.0 requires docs/releases/v0.2.0.md historical attribution",
       );
-    return { ...tag, manifest, workOrders, historical };
+    const controlSegments = snapshot?.find(
+      ({ name }) => name === tag.name,
+    )?.controlSegments;
+    return {
+      ...tag,
+      manifest,
+      workOrders,
+      historical,
+      ...(controlSegments === undefined ? {} : { controlSegments }),
+    };
   });
   if (snapshot && records.length !== snapshot.length)
     throw new Error("recorded tag snapshot contains a non-release tag");

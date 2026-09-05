@@ -140,6 +140,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Release boundary](../product/06-roadmap.md#release-boundary)                                                                                                                           | software-engineer                   | specified   |
 | [2026-08-31 forward retiming](../product/06-roadmap.md#2026-08-31-forward-retiming)                                                                                                     | software-engineer                   | implemented |
 | [2026-09-04 forward retiming — WO-023 occupies v0.5.0](../product/06-roadmap.md#2026-09-04-forward-retiming--wo-023-occupies-v050)                                                      | software-engineer                   | implemented |
+| [Candidate — whole or split work orders under one umbrella](../product/06-roadmap.md#candidate--whole-or-split-work-orders-under-one-umbrella)                                          | everyday-ai-user, software-engineer | vision      |
 | [Candidate — beacon usefulness checkpoint](../product/06-roadmap.md#candidate--beacon-usefulness-checkpoint)                                                                            | everyday-ai-user, software-engineer | planned     |
 | [Work-order navigation and identity (candidate)](../product/06-roadmap.md#work-order-navigation-and-identity-candidate)                                                                 | everyday-ai-user, software-engineer | planned     |
 | [Candidate — unattended work-order portfolio](../product/06-roadmap.md#candidate--unattended-work-order-portfolio)                                                                      | everyday-ai-user, software-engineer | vision      |
@@ -272,21 +273,22 @@ as a current blocked verdict.
 
 ## 13 — UIFA roles
 
-| Section                                                                                                                                         | Audiences                           | Status    |
-| ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
-| [UIFA roles — five human roles around an agentic platform](../product/13-uifa-roles.md#uifa-roles--five-human-roles-around-an-agentic-platform) | everyday-ai-user, software-engineer | specified |
-| [Why name the humans](../product/13-uifa-roles.md#why-name-the-humans)                                                                          | everyday-ai-user, software-engineer | vision    |
-| [The five roles](../product/13-uifa-roles.md#the-five-roles)                                                                                    | everyday-ai-user, software-engineer | specified |
-| [UIFA product lead](../product/13-uifa-roles.md#uifa-product-lead)                                                                              | everyday-ai-user, software-engineer | specified |
-| [UIFA showrunner](../product/13-uifa-roles.md#uifa-showrunner)                                                                                  | everyday-ai-user, software-engineer | specified |
-| [UIFA engineer](../product/13-uifa-roles.md#uifa-engineer)                                                                                      | everyday-ai-user, software-engineer | specified |
-| [UIFA tester](../product/13-uifa-roles.md#uifa-tester)                                                                                          | everyday-ai-user, software-engineer | specified |
-| [UIFA devops](../product/13-uifa-roles.md#uifa-devops)                                                                                          | everyday-ai-user, software-engineer | specified |
-| [Humans stay in the loop](../product/13-uifa-roles.md#humans-stay-in-the-loop)                                                                  | everyday-ai-user, software-engineer | vision    |
-| [One person, several hats](../product/13-uifa-roles.md#one-person-several-hats)                                                                 | everyday-ai-user, software-engineer | specified |
-| [The same five roles in other domains](../product/13-uifa-roles.md#the-same-five-roles-in-other-domains)                                        | everyday-ai-user, software-engineer | vision    |
-| [Assistance the platform owes each role](../product/13-uifa-roles.md#assistance-the-platform-owes-each-role)                                    | everyday-ai-user, software-engineer | planned   |
-| [What this does not decide](../product/13-uifa-roles.md#what-this-does-not-decide)                                                              | everyday-ai-user, software-engineer | specified |
+| Section                                                                                                                                                                    | Audiences                           | Status    |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
+| [UIFA roles — five human roles around an agentic platform](../product/13-uifa-roles.md#uifa-roles--five-human-roles-around-an-agentic-platform)                            | everyday-ai-user, software-engineer | specified |
+| [Why name the humans](../product/13-uifa-roles.md#why-name-the-humans)                                                                                                     | everyday-ai-user, software-engineer | vision    |
+| [The five roles](../product/13-uifa-roles.md#the-five-roles)                                                                                                               | everyday-ai-user, software-engineer | specified |
+| [UIFA product lead](../product/13-uifa-roles.md#uifa-product-lead)                                                                                                         | everyday-ai-user, software-engineer | specified |
+| [UIFA showrunner](../product/13-uifa-roles.md#uifa-showrunner)                                                                                                             | everyday-ai-user, software-engineer | specified |
+| [UIFA engineer](../product/13-uifa-roles.md#uifa-engineer)                                                                                                                 | everyday-ai-user, software-engineer | specified |
+| [UIFA tester](../product/13-uifa-roles.md#uifa-tester)                                                                                                                     | everyday-ai-user, software-engineer | specified |
+| [UIFA devops](../product/13-uifa-roles.md#uifa-devops)                                                                                                                     | everyday-ai-user, software-engineer | specified |
+| [Candidate — security, identity, logs, and traceability responsibilities](../product/13-uifa-roles.md#candidate--security-identity-logs-and-traceability-responsibilities) | everyday-ai-user, software-engineer | vision    |
+| [Humans stay in the loop](../product/13-uifa-roles.md#humans-stay-in-the-loop)                                                                                             | everyday-ai-user, software-engineer | vision    |
+| [One person, several hats](../product/13-uifa-roles.md#one-person-several-hats)                                                                                            | everyday-ai-user, software-engineer | specified |
+| [The same five roles in other domains](../product/13-uifa-roles.md#the-same-five-roles-in-other-domains)                                                                   | everyday-ai-user, software-engineer | vision    |
+| [Assistance the platform owes each role](../product/13-uifa-roles.md#assistance-the-platform-owes-each-role)                                                               | everyday-ai-user, software-engineer | planned   |
+| [What this does not decide](../product/13-uifa-roles.md#what-this-does-not-decide)                                                                                         | everyday-ai-user, software-engineer | specified |
 
 ## Historical Protíno path — compatibility pointers
 

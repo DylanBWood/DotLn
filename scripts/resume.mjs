@@ -28,7 +28,18 @@ import {
   CONTROL_LOG_SCHEMA_VERSION,
   fold,
   parseControlEvents,
+  LEGACY_CONTROL_PATH,
+  orderSegmentPath,
 } from "./lib/control.mjs";
+import {
+  readControl,
+  controlFromSources,
+  eventsForOrder,
+  branchWorkOrder,
+  latestClosedOrder,
+  openOrders,
+  selectWorkOrder,
+} from "./lib/control-store.mjs";
 // Keep the WO-018 import surface stable for lifecycle peers.
 export {
   CONTROL_LOG_SCHEMA_VERSION,
@@ -37,7 +48,6 @@ export {
 } from "./lib/control.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const logPath = join(repoRoot, "docs/control/resume.jsonl");
 const currentPath = join(repoRoot, "docs/control/current.md");
 const environmentPath = join(repoRoot, "docs/discovery/environment.json");
 const effortLevels = ["low", "medium", "high", "xhigh", "max"];
@@ -51,9 +61,10 @@ const actorHeaderPrefix = "**Actor attestation:**";
 const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
 
 const readEvents = () =>
-  existsSync(logPath) ? parseControlEvents(readFileSync(logPath, "utf8")) : [];
+  [...readControl(repoRoot).eventSegments.values()].flat();
 
-const append = (event) => {
+const append = (event, segment) => {
+  const logPath = join(repoRoot, segment);
   const record = {
     schemaVersion: CONTROL_LOG_SCHEMA_VERSION,
     recordedAt: new Date().toISOString(),
@@ -197,8 +208,16 @@ const checkpoint = (action, workOrderId) => {
     return warn(error instanceof Error ? error.message : String(error));
   }
 };
-const appendTransition = (action, event) =>
-  append({ ...event, ...checkpoint(action, event.workOrderId) });
+const appendTransition = (action, event) => {
+  const control = readControl(repoRoot);
+  const segment =
+    control.locations.get(event.workOrderId) ??
+    orderSegmentPath(event.workOrderId);
+  return append(
+    { ...event, ...checkpoint(action, event.workOrderId) },
+    segment,
+  );
+};
 
 const workOrderDeclaration = (
   workOrderPath,
@@ -555,9 +574,10 @@ const renderElapsed = (elapsed) =>
     )
     .join("");
 
-const render = (state, timing) => `# Current control state
-
-- Work order: ${state.workOrderId ?? "none"}
+const renderOrder = (
+  state,
+  timing,
+) => `- Work order: ${state.workOrderId ?? "none"}
 - Work-order path: ${state.workOrderPath ?? "none"}
 - Phase: ${state.phase}
 - Latest verification: ${state.latestVerificationId ?? "none"}
@@ -570,12 +590,9 @@ const render = (state, timing) => `# Current control state
 - Latest recordedAt: ${timing.recordedAt ?? "unknown"}
 ${renderElapsed(timing.elapsed)}- Latest checkpoint: ${state.latestCheckpointRef ? `${state.latestCheckpointSha} (restore: \`git checkout ${state.latestCheckpointRef} -- .\`)` : state.checkpointUnavailable ? "unavailable for the latest transition; do not use an older checkpoint" : "none"}
 - Legal next actions: ${legalActions(state).join(", ") || "none"}
-
-Generated from the append-only \`docs/control/resume.jsonl\`; do not edit this projection manually.
 `;
 
-export const statusProjection = (events) => {
-  const state = fold(events);
+const projectOrder = (state, events) => {
   return {
     workOrder: state.workOrderId ?? null,
     workOrderPath: state.workOrderPath ?? null,
@@ -604,24 +621,75 @@ export const statusProjection = (events) => {
   };
 };
 
-const warnIfProjectionDisagrees = (state, timing) => {
+export const statusProjection = (input, workOrder) => {
+  const control = Array.isArray(input)
+    ? controlFromSources(
+        new Map([[LEGACY_CONTROL_PATH, input.map(JSON.stringify).join("\n")]]),
+      )
+    : input;
+  const id = selectWorkOrder(control, {
+    workOrder,
+    latestClosed:
+      control.eventSegments.size === 1 && control.legacy.phase === "closed"
+        ? control.legacy.workOrderId
+        : undefined,
+  });
+  const state = control.orders.get(id)?.state ?? fold([]);
+  return {
+    ...projectOrder(state, eventsForOrder(control, id)),
+    orders: [...control.orders].map(([order, row]) => ({
+      workOrder: order,
+      phase: row.state.phase,
+      latestVerdict: row.state.latestVerdict ?? null,
+      ...controlTimeProjection(eventsForOrder(control, order)),
+    })),
+  };
+};
+
+const render = (control, latestClosed) => {
+  const ids = [...openOrders(control), ...(latestClosed ? [latestClosed] : [])];
+  const bodies = ids.length
+    ? ids.map(
+        (id) =>
+          `## ${id}\n\n${renderOrder(control.orders.get(id).state, controlTimeProjection(eventsForOrder(control, id)))}`,
+      )
+    : [renderOrder(fold([]), controlTimeProjection([]))];
+  return `# Current control state\n\n${bodies.join("\n")}\nGenerated from the append-only \`docs/control/resume.jsonl\` and \`docs/control/orders/WO-NNN.jsonl\` segments; do not edit this projection manually.\n`;
+};
+
+const warnIfProjectionDisagrees = (rendered) => {
   let current;
   try {
     current = readFileSync(currentPath, "utf8");
   } catch {
     current = undefined;
   }
-  if (current !== render(state, timing))
+  if (current !== rendered)
     process.stderr.write(
-      "warning: docs/control/current.md disagrees with the canonical fold of docs/control/resume.jsonl; status is read-only and did not rewrite the projection\n",
+      "warning: docs/control/current.md disagrees with the canonical fold of control segments; status is read-only and did not rewrite the projection\n",
     );
 };
 
-const project = (state, timing) => {
+const project = (rendered) => {
   mkdirSync(dirname(currentPath), { recursive: true });
   const temporary = `${currentPath}.tmp`;
-  writeFileSync(temporary, render(state, timing));
+  writeFileSync(temporary, rendered);
   renameSync(temporary, currentPath);
+};
+
+const selectionArgs = (args) => {
+  const remaining = [];
+  let workOrder;
+  for (let index = 0; index < args.length; index += 1) {
+    if (args[index] !== "--work-order") {
+      remaining.push(args[index]);
+      continue;
+    }
+    if (workOrder !== undefined || !/^WO-\d{3}$/.test(args[index + 1] ?? ""))
+      throw new Error("usage: --work-order WO-NNN (exactly once)");
+    workOrder = args[++index];
+  }
+  return { args: remaining, workOrder };
 };
 
 const requirePhase = (state, ...phases) => {
@@ -633,26 +701,59 @@ const requirePhase = (state, ...phases) => {
 };
 
 export const main = (argv = process.argv.slice(2)) => {
-  const [action = "status", ...args] = argv;
-  let events = readEvents();
-  let state = fold(events);
+  const [action = "status", ...rawArgs] = argv;
+  const { args, workOrder } = selectionArgs(rawArgs);
+  let control = readControl(repoRoot);
+  const branch = branchWorkOrder(repoRoot);
+  let latestClosed = latestClosedOrder(control, repoRoot, "HEAD", branch);
+  if (action === "activate" && workOrder && args[0] !== workOrder)
+    throw new Error("activation id must match --work-order");
+  if (action === "activate" && branch && !workOrder && args[0] !== branch)
+    throw new Error(
+      `activation binds ${branch}; use --work-order ${args[0]} to override`,
+    );
+  const selected =
+    action === "times"
+      ? undefined
+      : selectWorkOrder(control, {
+          workOrder: action === "activate" ? args[0] : workOrder,
+          branch,
+          latestClosed,
+          allowNew: action === "activate",
+          allowAmbiguous: action === "status" && !args.includes("--json"),
+        });
+  let state = control.orders.get(selected)?.state ?? fold([]);
   let message;
 
   switch (action) {
     case "status": {
       if (args.length > 1 || (args.length === 1 && args[0] !== "--json"))
         throw new Error("usage: resume status [--json]");
-      const timing = controlTimeProjection(events);
-      warnIfProjectionDisagrees(state, timing);
+      const rendered = render(control, latestClosed);
+      warnIfProjectionDisagrees(rendered);
       message =
         args[0] === "--json"
-          ? JSON.stringify(statusProjection(events), null, 2)
-          : render(state, timing);
+          ? JSON.stringify(statusProjection(control, selected), null, 2)
+          : rendered;
       break;
     }
     case "times":
-      if (args.length) throw new Error("usage: resume times");
-      message = recoverControlTimes(repoRoot, events);
+      if (args.length || workOrder) throw new Error("usage: resume times");
+      {
+        const events = [];
+        const locations = [];
+        for (const [segment, entries] of control.eventSegments) {
+          for (const [index, event] of entries.entries()) {
+            events.push(event);
+            locations.push(
+              segment === LEGACY_CONTROL_PATH
+                ? undefined
+                : { segment, ordinal: index + 1 },
+            );
+          }
+        }
+        message = recoverControlTimes(repoRoot, events, locations);
+      }
       break;
     case "activate": {
       requirePhase(state, "none", "closed");
@@ -837,7 +938,7 @@ export const main = (argv = process.argv.slice(2)) => {
       message =
         state.phase === "active"
           ? `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; after its evidence gate passes, run ${commandFor("implementation-ready")}.`
-          : `Current work order ${state.workOrderId} is closed. The repository is between work orders; start a valid next work order with npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md.`;
+          : `Current work order ${state.workOrderId} is closed. ${openOrders(control).length ? `Other in-flight orders: ${openOrders(control).join(", ")}; inspect one with npm run resume -- status --work-order WO-NNN.` : "The repository is between work orders; start a valid next work order with npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md."}`;
       break;
     }
     case "release-close": {
@@ -856,9 +957,14 @@ export const main = (argv = process.argv.slice(2)) => {
   }
 
   if (action !== "status" && action !== "times") {
-    events = readEvents();
-    state = fold(events);
-    project(state, controlTimeProjection(events));
+    control = readControl(repoRoot);
+    latestClosed = latestClosedOrder(
+      control,
+      repoRoot,
+      "HEAD",
+      branch ?? selected,
+    );
+    project(render(control, latestClosed));
   }
   process.stdout.write(`${message}\n`);
 };

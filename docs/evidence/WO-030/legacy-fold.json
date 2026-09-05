@@ -1,0 +1,626 @@
+{
+  "base": "v0.6.0",
+  "eventCount": 153,
+  "current": {
+    "workOrderId": "WO-030",
+    "workOrderPath": "docs/work-orders/WO-030-concurrent-control-state.md",
+    "phase": "active",
+    "latestCheckpointSha": "f77e9fdebbbd96aa4ed89979222daba2fcceac01",
+    "latestCheckpointRef": "refs/dotln/checkpoint/WO-030/1",
+    "checkpointUnavailable": false,
+    "effortPairs": [],
+    "effortDeclarationValidated": true
+  },
+  "orders": [
+    [
+      "WO-003",
+      {
+        "state": {
+          "workOrderId": "WO-003",
+          "workOrderPath": "docs/work-orders/WO-003-walking-skeleton.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-002",
+          "latestVerificationPath": "docs/verifications/WO-003/VER-002.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-003/FINAL-001.md",
+          "latestCheckpointSha": "026d51d35edc2feda13e4ec6db41e65c326b5942",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-003/5",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 10
+      }
+    ],
+    [
+      "WO-004",
+      {
+        "state": {
+          "workOrderId": "WO-004",
+          "workOrderPath": "docs/work-orders/WO-004-environment-truth-addendum.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-002",
+          "latestVerificationPath": "docs/verifications/WO-004/VER-002.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-004/FINAL-001.md",
+          "latestCheckpointSha": "2a27cbf50b6518a3cbc497cda3837c7ef5ed533c",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-004/10",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 20
+      }
+    ],
+    [
+      "WO-012",
+      {
+        "state": {
+          "workOrderId": "WO-012",
+          "workOrderPath": "docs/work-orders/WO-012-release-gate-path-quoting.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-012/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-012/FINAL-001.md",
+          "latestCheckpointSha": "58b40569e9c9a6759afcee3a3562f901e7f386d0",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-012/3",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 26
+      }
+    ],
+    [
+      "WO-101",
+      {
+        "state": {
+          "workOrderId": "WO-101",
+          "workOrderPath": "docs/work-orders/WO-101-program-and-hash-corpus.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-101/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-101/FINAL-001.md",
+          "latestCheckpointSha": "9a51e6d036501b1e461499f41d6c4513d97a3d68",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-101/3",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 32
+      }
+    ],
+    [
+      "WO-005",
+      {
+        "state": {
+          "workOrderId": "WO-005",
+          "workOrderPath": "docs/work-orders/WO-005-capability-table.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-005/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-005/FINAL-001.md",
+          "latestCheckpointSha": "752b5f5777a6e99b4cfbc0f0f1809eb187501b45",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-005/5",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 38
+      }
+    ],
+    [
+      "WO-006",
+      {
+        "state": {
+          "workOrderId": "WO-006",
+          "workOrderPath": "docs/work-orders/WO-006-publication-bootstrap.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-003",
+          "latestVerificationPath": "docs/verifications/WO-006/VER-003.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-006/FINAL-001.md",
+          "latestCheckpointSha": "64c280eb58232b278f8b1e3ce83a5d1d6fd934d2",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-006/15",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 54
+      }
+    ],
+    [
+      "WO-015",
+      {
+        "state": {
+          "workOrderId": "WO-015",
+          "workOrderPath": "docs/work-orders/WO-015-release-cadence-parser.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-015/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-015/FINAL-001.md",
+          "latestCheckpointSha": "4ee2b020730b136d27a6f70799479613041ce330",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-015/6",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 60
+      }
+    ],
+    [
+      "WO-007",
+      {
+        "state": {
+          "workOrderId": "WO-007",
+          "workOrderPath": "docs/work-orders/WO-007-audit-record-baseline.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-002",
+          "latestVerificationPath": "docs/verifications/WO-007/VER-002.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-007/FINAL-001.md",
+          "latestCheckpointSha": "e71080ddeca3b5270c8cae6c8bd0e2ad54c52e1b",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-007/10",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 70
+      }
+    ],
+    [
+      "WO-013",
+      {
+        "state": {
+          "workOrderId": "WO-013",
+          "workOrderPath": "docs/work-orders/WO-013-portable-fixture-temp-roots.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-013/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-013/FINAL-001.md",
+          "latestCheckpointSha": "0f48fae1b5c2a0809741981359510f96f0c256a4",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-013/6",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 76
+      }
+    ],
+    [
+      "WO-024",
+      {
+        "state": {
+          "workOrderId": "WO-024",
+          "workOrderPath": "docs/work-orders/WO-024-release-notes-surfaced.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-024/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-024/FINAL-001.md",
+          "latestCheckpointSha": "84039c1b5f10b7ccaf1a4437a917f0f7a3c4bc18",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-024/6",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 82
+      }
+    ],
+    [
+      "WO-025",
+      {
+        "state": {
+          "workOrderId": "WO-025",
+          "workOrderPath": "docs/work-orders/WO-025-version-bearing-surfaces.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-025/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-025/FINAL-001.md",
+          "latestCheckpointSha": "ca96afcf469683ec2c8e711fc0796fa74daddc85",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-025/6",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 88
+      }
+    ],
+    [
+      "WO-019",
+      {
+        "state": {
+          "workOrderId": "WO-019",
+          "workOrderPath": "docs/work-orders/WO-019-effort-truth.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-002",
+          "latestVerificationPath": "docs/verifications/WO-019/VER-002.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-019/FINAL-001.md",
+          "latestCheckpointSha": "2a0f31df1b7b135f668dc8d137acfeaa3c05d798",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-019/10",
+          "checkpointUnavailable": false,
+          "latestAttestation": {
+            "harness": "claude-code",
+            "harnessVersion": "2.1.259",
+            "model": "claude-fable-5-1",
+            "effort": "max",
+            "source": "self-reported"
+          },
+          "effortPairs": [
+            {
+              "effort": "xhigh"
+            },
+            {
+              "effort": "max"
+            }
+          ],
+          "effortDeclarationValidated": false
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 98
+      }
+    ],
+    [
+      "WO-027",
+      {
+        "state": {
+          "workOrderId": "WO-027",
+          "workOrderPath": "docs/work-orders/WO-027-local-inference-probe.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-027/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-027/FINAL-001.md",
+          "latestCheckpointSha": "51ac68d2e970c430fa8616f466fb4410ff732e54",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-027/6",
+          "checkpointUnavailable": false,
+          "latestAttestation": {
+            "harness": "claude-code",
+            "harnessVersion": "2.1.259",
+            "model": "claude-fable-5-1",
+            "effort": "max",
+            "source": "self-reported"
+          },
+          "effortPairs": [
+            {
+              "effort": "xhigh"
+            },
+            {
+              "effort": "max"
+            }
+          ],
+          "effortDeclarationValidated": true
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 104
+      }
+    ],
+    [
+      "WO-017",
+      {
+        "state": {
+          "workOrderId": "WO-017",
+          "workOrderPath": "docs/work-orders/WO-017-kernel-truthfulness.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-017/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-017/FINAL-001.md",
+          "latestCheckpointSha": "19120dc34f788956b8366d5b5446b3e11d6b6ae9",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-017/6",
+          "checkpointUnavailable": false,
+          "latestAttestation": {
+            "harness": "claude-code",
+            "harnessVersion": "2.1.259",
+            "model": "claude-fable-5-1",
+            "effort": "max",
+            "source": "self-reported"
+          },
+          "effortPairs": [
+            {
+              "effort": "xhigh"
+            },
+            {
+              "effort": "max"
+            }
+          ],
+          "effortDeclarationValidated": true
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 110
+      }
+    ],
+    [
+      "WO-016",
+      {
+        "state": {
+          "workOrderId": "WO-016",
+          "workOrderPath": "docs/work-orders/WO-016-skeleton-reactor.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-016/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-016/FINAL-001.md",
+          "latestCheckpointSha": "8cc526b21f894e3a13f44fc1534c3e253fa6eb1c",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-016/6",
+          "checkpointUnavailable": false,
+          "latestAttestation": {
+            "harness": "claude-code",
+            "harnessVersion": "2.1.259",
+            "model": "claude-fable-5-1",
+            "effort": "max",
+            "source": "self-reported"
+          },
+          "effortPairs": [
+            {
+              "effort": "xhigh"
+            },
+            {
+              "effort": "max"
+            }
+          ],
+          "effortDeclarationValidated": true
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 116
+      }
+    ],
+    [
+      "WO-008",
+      {
+        "state": {
+          "workOrderId": "WO-008",
+          "workOrderPath": "docs/work-orders/WO-008-composition-compiler.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-008/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-008/FINAL-001.md",
+          "latestCheckpointSha": "b0663a790ad2a2d284fc9d6e440c40a2e484202e",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-008/6",
+          "checkpointUnavailable": false,
+          "latestAttestation": {
+            "harness": "claude-code",
+            "harnessVersion": "2.1.260",
+            "model": "claude-fable-5-1",
+            "effort": "max",
+            "source": "self-reported"
+          },
+          "effortPairs": [
+            {
+              "effort": "xhigh"
+            },
+            {
+              "effort": "max"
+            }
+          ],
+          "effortDeclarationValidated": true
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 122
+      }
+    ],
+    [
+      "WO-018",
+      {
+        "state": {
+          "workOrderId": "WO-018",
+          "workOrderPath": "docs/work-orders/WO-018-control-plane-consolidation.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-018/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-018/FINAL-001.md",
+          "latestCheckpointSha": "d47480df4dc66bc40ec49bc974a22a58ff9aad86",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-018/6",
+          "checkpointUnavailable": false,
+          "latestAttestation": {
+            "harness": "claude-code",
+            "harnessVersion": "2.1.260",
+            "model": "claude-fable-5-1",
+            "effort": "xhigh",
+            "source": "operator-attested"
+          },
+          "effortPairs": [
+            {
+              "effort": "xhigh"
+            }
+          ],
+          "effortDeclarationValidated": true
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 128
+      }
+    ],
+    [
+      "WO-023",
+      {
+        "state": {
+          "workOrderId": "WO-023",
+          "workOrderPath": "docs/work-orders/WO-023-compile-entropy-reducer.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-023/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-023/FINAL-001.md",
+          "latestCheckpointSha": "0bae20b10b870b927ac739773234466979d8b9e7",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-023/6",
+          "checkpointUnavailable": false,
+          "latestAttestation": {
+            "harness": "claude-code",
+            "harnessVersion": "2.1.260",
+            "model": "claude-fable-5-1",
+            "effort": "max",
+            "source": "self-reported"
+          },
+          "effortPairs": [
+            {
+              "effort": "xhigh"
+            },
+            {
+              "effort": "max"
+            }
+          ],
+          "effortDeclarationValidated": true
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 134
+      }
+    ],
+    [
+      "WO-028",
+      {
+        "state": {
+          "workOrderId": "WO-028",
+          "workOrderPath": "docs/work-orders/WO-028-control-event-time.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-028/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-028/FINAL-001.md",
+          "latestCheckpointSha": "12e5764a11a5d09e0d940fed010a8456d8d19dd7",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-028/6",
+          "checkpointUnavailable": false,
+          "latestAttestation": {
+            "harness": "claude-code",
+            "harnessVersion": "2.1.261",
+            "model": "claude-fable-5-1",
+            "effort": "max",
+            "source": "self-reported"
+          },
+          "effortPairs": [
+            {
+              "effort": "max"
+            }
+          ],
+          "effortDeclarationValidated": true
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 140,
+        "closeRecordedAt": "2026-09-04T21:22:21.995Z"
+      }
+    ],
+    [
+      "WO-026",
+      {
+        "state": {
+          "workOrderId": "WO-026",
+          "workOrderPath": "docs/work-orders/WO-026-work-order-index.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-026/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-026/FINAL-001.md",
+          "latestCheckpointSha": "d2bdfdc8d4a1c98771148dc1fc1bd65d69ac0c7d",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-026/6",
+          "checkpointUnavailable": false,
+          "latestAttestation": {
+            "harness": "claude-code",
+            "harnessVersion": "2.1.261",
+            "model": "claude-fable-5-1",
+            "effort": "max",
+            "source": "self-reported"
+          },
+          "effortPairs": [
+            {
+              "effort": "max"
+            }
+          ],
+          "effortDeclarationValidated": true
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 146,
+        "closeRecordedAt": "2026-09-05T00:27:23.191Z"
+      }
+    ],
+    [
+      "WO-020",
+      {
+        "state": {
+          "workOrderId": "WO-020",
+          "workOrderPath": "docs/work-orders/WO-020-beacon-codebook.md",
+          "phase": "closed",
+          "latestVerificationId": "VER-001",
+          "latestVerificationPath": "docs/verifications/WO-020/VER-001.md",
+          "latestVerdict": "pass",
+          "finalReviewId": "FINAL-001",
+          "finalReviewPath": "docs/final-reviews/WO-020/FINAL-001.md",
+          "latestCheckpointSha": "bc4c69af70187cff9c14c60cef0be8cbfe381934",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-020/6",
+          "checkpointUnavailable": false,
+          "latestAttestation": {
+            "harness": "claude-code",
+            "harnessVersion": "2.1.261",
+            "model": "claude-fable-5-1",
+            "effort": "max",
+            "source": "self-reported"
+          },
+          "effortPairs": [
+            {
+              "effort": "max"
+            }
+          ],
+          "effortDeclarationValidated": true
+        },
+        "finalReviewVerdict": "pass",
+        "closeOrdinal": 152,
+        "closeRecordedAt": "2026-09-05T03:44:27.739Z"
+      }
+    ],
+    [
+      "WO-030",
+      {
+        "state": {
+          "workOrderId": "WO-030",
+          "workOrderPath": "docs/work-orders/WO-030-concurrent-control-state.md",
+          "phase": "active",
+          "latestCheckpointSha": "f77e9fdebbbd96aa4ed89979222daba2fcceac01",
+          "latestCheckpointRef": "refs/dotln/checkpoint/WO-030/1",
+          "checkpointUnavailable": false,
+          "effortPairs": [],
+          "effortDeclarationValidated": true
+        }
+      }
+    ]
+  ],
+  "sourceSha256": "2b4c93745cf263937d7f9af4eebf54db2897464d8cb02c62c41be3fe36295e19",
+  "foldImplementationSha256": "4254c61a6fd282d836d8ab704718716ff5ad89a39a2dd9395690d368d8221a84"
+}

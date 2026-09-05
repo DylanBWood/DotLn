@@ -38,6 +38,15 @@ import {
   workOrderAuthorityPath,
 } from "./lib/paths.mjs";
 import { CONTROL_LOG_SCHEMA_VERSION, statusProjection } from "./resume.mjs";
+import {
+  readControl,
+  controlFromSources,
+  addedSegmentEvents,
+  latestClosedOrder,
+  openOrders,
+  branchWorkOrder,
+  selectWorkOrder,
+} from "./lib/control-store.mjs";
 
 import {
   compareVersions,
@@ -113,39 +122,17 @@ const repositoryFile = (root, path, revision) => {
 };
 const controlEventsAt = (root, revision) => {
   if (!revision) return [];
-  const source = optionalGitFile(root, revision, "docs/control/resume.jsonl");
-  if (source === undefined || source.trim() === "") return [];
-  return source
-    .trimEnd()
-    .split("\n")
-    .map((line, index) => {
-      try {
-        return {
-          raw: line,
-          event: parseJson(
-            line,
-            `${revision}:docs/control/resume.jsonl:${index + 1}`,
-          ),
-        };
-      } catch {
-        throw new Error(
-          `invalid control event at ${revision}:docs/control/resume.jsonl:${index + 1}`,
-        );
-      }
-    });
+  const control = readControl(root, revision);
+  return [...control.eventSegments].flatMap(([segment, events]) =>
+    events.map((event, index) => ({ event, segment, ordinal: index + 1 })),
+  );
 };
-const addedControlEvents = (root, parent, commit) => {
-  const before = controlEventsAt(root, parent);
-  const after = controlEventsAt(root, commit);
-  if (
-    before.length > after.length ||
-    before.some(({ raw }, index) => after[index]?.raw !== raw)
-  )
-    throw new Error(
-      `control log is not append-only between ${parent ?? "the empty history"} and ${commit}`,
-    );
-  return after.slice(before.length).map(({ event }) => event);
-};
+const addedControlEvents = (root, parent, commit) =>
+  addedSegmentEvents(
+    parent ? readControl(root, parent) : controlFromSources(new Map()),
+    readControl(root, commit),
+    `${parent ?? "the empty history"} and ${commit}`,
+  );
 const ensureNoIgnoredInfluence = (path) => {
   const ignored = runGitPathList(path, [
     "ls-files",
@@ -231,10 +218,15 @@ const controlState = (projection, source) => {
     phase: projection.phase,
   };
 };
-const parseControlState = (root) => {
+const parseControlState = (root, workOrderId) => {
   const result = execute(
     process.execPath,
-    [join(root, "scripts/resume.mjs"), "status", "--json"],
+    [
+      join(root, "scripts/resume.mjs"),
+      "status",
+      "--json",
+      ...(workOrderId ? ["--work-order", workOrderId] : []),
+    ],
     { cwd: root },
   );
   if (result.status !== 0)
@@ -246,11 +238,18 @@ const parseControlState = (root) => {
     "resume status --json output",
   );
 };
-const parseControlStateAt = (root, revision) =>
-  controlState(
-    statusProjection(controlEventsAt(root, revision).map(({ event }) => event)),
-    `${revision}:docs/control/resume.jsonl`,
+const parseControlStateAt = (root, revision, workOrderId) => {
+  const control = readControl(root, revision);
+  const selected = selectWorkOrder(control, {
+    workOrder: workOrderId,
+    branch: branchWorkOrder(root),
+    latestClosed: latestClosedOrder(control, root, revision),
+  });
+  return controlState(
+    statusProjection(control, selected),
+    `${revision}:control segments`,
   );
+};
 const paragraph = (markdown, label) => {
   const match = new RegExp(
     `\\*\\*${label}:\\*\\*\\s+([^\\n]+(?:\\n(?!\\n|\\*\\*|#)[^\\n]+)*)`,
@@ -510,7 +509,9 @@ const checkSurfaces = (root, options = {}) => {
   const revision = options.revision;
   const state =
     options.state ??
-    (revision ? parseControlStateAt(root, revision) : parseControlState(root));
+    (revision
+      ? parseControlStateAt(root, revision, options.expectedWorkOrderId)
+      : parseControlState(root, options.expectedWorkOrderId));
   const expectedWorkOrderId = options.expectedWorkOrderId;
   if (
     revision &&
@@ -1029,7 +1030,7 @@ const validateEvidence = (evidence) => {
 };
 const validateManifest = (root, manifest) => {
   validateEvidence(manifest.evidence);
-  const state = parseControlStateAt(root, "HEAD");
+  const state = parseControlStateAt(root, "HEAD", manifest.workOrder?.id);
   const authority = workOrderAuthority(root, state, "HEAD");
   const expected = baseManifest(
     root,
@@ -1062,7 +1063,7 @@ const validatePublishedManifest = (root, manifest) => {
     throw new Error(
       "published manifest contains an invalid recorded toolchain",
     );
-  const state = parseControlStateAt(root, "HEAD");
+  const state = parseControlStateAt(root, "HEAD", manifest.workOrder?.id);
   const authority = workOrderAuthority(root, state, "HEAD");
   const expected = baseManifest(
     root,
@@ -1473,7 +1474,7 @@ const close = (workOrderId, args) => {
       `release close must run from the main control-plane checkout: ${root}`,
     );
   const finishOutput = updateMainAndFinish(root, workOrderId);
-  const state = parseControlStateAt(root, "HEAD");
+  const state = parseControlStateAt(root, "HEAD", workOrderId);
   if (state.workOrderId !== workOrderId)
     throw new Error(
       `merged control state is for ${state.workOrderId ?? "none"}, not ${workOrderId}`,
@@ -1507,9 +1508,13 @@ const close = (workOrderId, args) => {
   }
   process.stdout.write(finishOutput);
   const head = runGit(root, ["rev-parse", "HEAD"]);
+  const remaining = openOrders(readControl(root, "HEAD"));
+  const mainStatus = remaining.length
+    ? `Main is clean; in-flight orders: ${remaining.join(", ")}.`
+    : "Main is clean and between work orders.";
   if (latest && compareVersions(authority.version, latest) < 0) {
     process.stdout.write(
-      `${workOrderId} closes ${authority.version}, below latest release ${latest}; no release tag is due. Main is clean and between work orders.\n`,
+      `${workOrderId} closes ${authority.version}, below latest release ${latest}; no release tag is due. ${mainStatus}\n`,
     );
     return;
   }
@@ -1537,7 +1542,7 @@ const close = (workOrderId, args) => {
         )
       : undefined;
     process.stdout.write(
-      `${authority.version} is already published from ${head}${projection ? `; GitHub Release ${projection}` : ""}. Main is clean and between work orders.\n`,
+      `${authority.version} is already published from ${head}${projection ? `; GitHub Release ${projection}` : ""}. ${mainStatus}\n`,
     );
     return;
   }
@@ -1581,7 +1586,7 @@ const close = (workOrderId, args) => {
   );
   ensureClean(root);
   process.stdout.write(
-    `Published annotated ${authority.version} (${tagObject}) for ${head}; GitHub Release ${projection}. Main is clean and between work orders.\n`,
+    `Published annotated ${authority.version} (${tagObject}) for ${head}; GitHub Release ${projection}. ${mainStatus}\n`,
   );
 };
 

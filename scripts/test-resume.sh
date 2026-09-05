@@ -10,6 +10,7 @@ create_test_temp_root "$tmp_base" "$test_root_prefix"
 test_root="$test_temp_root_result"
 install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 fixture_repo="$test_root/repo"
+active_log="$fixture_repo/docs/control/orders/WO-099.jsonl"
 u2028="$(printf '\342\200\250')"
 
 mkdir -p -- "$fixture_repo/scripts" "$fixture_repo/docs/work-orders" "$fixture_repo/docs/discovery"
@@ -38,11 +39,11 @@ assert_status_read_only() {
   local log_before="$test_root/log-$status_sequence.before"
   local json_path="$test_root/status-$status_sequence.json"
   cp -- "$fixture_repo/docs/control/current.md" "$current_before"
-  cp -- "$fixture_repo/docs/control/resume.jsonl" "$log_before"
+  cp -- "$active_log" "$log_before"
   node "$fixture_repo/scripts/resume.mjs" status >/dev/null
   node "$fixture_repo/scripts/resume.mjs" status --json >"$json_path"
   cmp "$current_before" "$fixture_repo/docs/control/current.md"
-  cmp "$log_before" "$fixture_repo/docs/control/resume.jsonl"
+  cmp "$log_before" "$active_log"
   node - "$json_path" <<'NODE'
 const fs = require("node:fs");
 const status = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
@@ -61,6 +62,7 @@ const expected = [
   "legalNextActions",
   "recordedAt",
   "elapsed",
+  "orders",
 ].sort();
 const observed = Object.keys(status).sort();
 if (JSON.stringify(observed) !== JSON.stringify(expected)) {
@@ -79,7 +81,7 @@ assert_status_json() {
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const [actualPath, expectedSource] = process.argv.slice(2);
-const { recordedAt, elapsed, ...actual } = JSON.parse(fs.readFileSync(actualPath, "utf8"));
+const { recordedAt, elapsed, orders, ...actual } = JSON.parse(fs.readFileSync(actualPath, "utf8"));
 assert.equal(typeof recordedAt, "string");
 assert.equal(typeof elapsed, "object");
 assert.deepStrictEqual(
@@ -103,7 +105,7 @@ run_with_actor() {
     --source self-reported >/dev/null 2>/dev/null || return
   assert_status_read_only
 }
-event_count() { if [[ -f "$fixture_repo/docs/control/resume.jsonl" ]]; then wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' '; else printf '0\n'; fi; }
+event_count() { if [[ -f "$active_log" ]]; then wc -l <"$active_log" | tr -d ' '; else printf '0\n'; fi; }
 assert_refusal() {
   local expected="$1" before output
   shift
@@ -147,14 +149,14 @@ assert_refusal 'duplicate **Effort:** lines' activate WO-091 docs/work-orders/WO
 activate_warning="$(node "$fixture_repo/scripts/resume.mjs" activate WO-099 docs/work-orders/WO-099-fixture.md 2>&1 >/dev/null)"
 assert_status_read_only
 assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"active","latestVerification":null,"verificationPath":null,"latestVerdict":null,"finalReview":null,"finalReviewPath":null,"latestAttestation":null,"effortDrift":[],"latestCheckpoint":{"unavailable":true},"legalNextActions":["next","implementation-ready"]}'
-tail -n 1 "$fixture_repo/docs/control/resume.jsonl" | grep -Fq '"effortDeclarationValidated":true'
+tail -n 1 "$active_log" | grep -Fq '"effortDeclarationValidated":true'
 grep -q 'warning: could not create recovery checkpoint.*not a git repository' <<<"$activate_warning"
 grep -Fq 'Do not repeat this transition after it records' <<<"$activate_warning"
 grep -Fq 'one-invocation outside-sandbox approval' <<<"$activate_warning"
 grep -Fq 'never persist an allow rule' <<<"$activate_warning"
 grep -Fq 'docs/AI-HARNESS-SECURITY.md' <<<"$activate_warning"
 grep -Fq 'Latest checkpoint: unavailable for the latest transition; do not use an older checkpoint' "$fixture_repo/docs/control/current.md"
-before_active_next="$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')"
+before_active_next="$(wc -l <"$active_log" | tr -d ' ')"
 active_next="$(node "$fixture_repo/scripts/resume.mjs" next)"
 grep -Fq 'docs/work-orders/WO-099-fixture.md' <<<"$active_next"
 grep -Fq '**Model:** fixture-model with a multiline' <<<"$active_next"
@@ -162,7 +164,7 @@ grep -Fq 'declaration preserved in dispatch.' <<<"$active_next"
 grep -Fq '**Effort:** executor high+; verifier any; reviewer any. The multiline' <<<"$active_next"
 grep -Fq 'effort source is preserved too.' <<<"$active_next"
 grep -Fq 'npm run resume -- implementation-ready --harness' <<<"$active_next"
-test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "$before_active_next"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_active_next"
 grep -q 'Legal next actions: next, implementation-ready' "$fixture_repo/docs/control/current.md"
 if refused="$(node "$fixture_repo/scripts/resume.mjs" verify 2>&1)"; then printf 'error: illegal active verification accepted\n' >&2; exit 1; fi
 grep -Fq 'npm run resume -- next' <<<"$refused"
@@ -227,7 +229,7 @@ node "$fixture_repo/scripts/resume.mjs" implementation-ready \
   --effort xhigh \
   --source harness-readback >/dev/null 2>/dev/null
 assert_status_read_only
-node - "$fixture_repo/docs/control/resume.jsonl" <<'NODE'
+node - "$active_log" <<'NODE'
 const fs = require("node:fs");
 const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
 const actor = events.at(-1).actor;
@@ -243,9 +245,9 @@ test "$(event_count)" = "$before_unfounded_fix"
 run verify
 refuse_next
 grep -q 'VER-002.md' "$fixture_repo/docs/control/current.md"
-before_invalid="$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')"
+before_invalid="$(wc -l <"$active_log" | tr -d ' ')"
 if run final-review 2>/dev/null; then printf 'error: illegal transition accepted\n' >&2; exit 1; fi
-test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "$before_invalid"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_invalid"
 assert_refusal 'verification report is not a contained regular file' verification-result fail \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort ultracode --source self-reported
 printf '# fail\n' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
@@ -290,7 +292,7 @@ printf '%s\n' \
 assert_refusal 'verification report actor header does not match the completion actor' verification-result fail \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort xhigh --source self-reported
 run_with_actor verification-result ultracode fail
-node - "$fixture_repo/docs/control/resume.jsonl" <<'NODE'
+node - "$active_log" <<'NODE'
 const fs = require("node:fs");
 const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
 const actor = events.at(-1).actor;
@@ -319,8 +321,8 @@ before_repairing_verify="$(event_count)"
 if repairing_verify="$(node "$fixture_repo/scripts/resume.mjs" verify 2>&1)"; then printf 'error: verify accepted before repair-complete\n' >&2; exit 1; fi
 grep -Fq 'npm run resume -- repair-complete' <<<"$repairing_verify"
 test "$(event_count)" = "$before_repairing_verify"
-tail -n 1 "$fixture_repo/docs/control/resume.jsonl" | grep -Fq '"sourceFindingId":"VER-002"'
-tail -n 1 "$fixture_repo/docs/control/resume.jsonl" | grep -Fq '"sourceReportPath":"docs/verifications/WO-099/VER-002.md"'
+tail -n 1 "$active_log" | grep -Fq '"sourceFindingId":"VER-002"'
+tail -n 1 "$active_log" | grep -Fq '"sourceReportPath":"docs/verifications/WO-099/VER-002.md"'
 run_with_actor repair-complete xhigh
 run verify
 grep -q 'VER-003.md' "$fixture_repo/docs/control/current.md"
@@ -379,7 +381,7 @@ assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-0
 grep -Fq 'npm run worktree -- publish WO-099 --title <title> --body-file <contained-reviewed-body-path>' <<<"$final_pass_output"
 grep -Fq 'Latest attestation: harness human; version not-applicable; model human; effort unknown; source operator-attested' "$fixture_repo/docs/control/current.md"
 if grep -Fq 'raw: unknown' "$fixture_repo/docs/control/current.md"; then printf 'error: canonical unknown was duplicated as a raw label\n' >&2; exit 1; fi
-node - "$fixture_repo/docs/control/resume.jsonl" <<'NODE'
+node - "$active_log" <<'NODE'
 const fs = require("node:fs");
 const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
 const completionTypes = new Set(["ImplementationReady", "VerificationCompleted", "RepairCompleted", "FinalReviewCompleted"]);
@@ -390,12 +392,12 @@ NODE
 closed_next="$(node "$fixture_repo/scripts/resume.mjs" next)"
 grep -Fq 'between work orders' <<<"$closed_next"
 grep -Fq 'npm run worktree -- start' <<<"$closed_next"
-test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "18"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "18"
 grep -q 'Phase: closed' "$fixture_repo/docs/control/current.md"
-test "$(grep -c '"verificationId":"VER-002"' "$fixture_repo/docs/control/resume.jsonl")" = "2"
-test "$(grep -c '"verificationId":"VER-003"' "$fixture_repo/docs/control/resume.jsonl")" = "2"
+test "$(grep -c '"verificationId":"VER-002"' "$active_log")" = "2"
+test "$(grep -c '"verificationId":"VER-003"' "$active_log")" = "2"
 cp -- "$fixture_repo/docs/control/current.md" "$test_root/current.closed"
-cp -- "$fixture_repo/docs/control/resume.jsonl" "$test_root/log.closed"
+cp -- "$active_log" "$test_root/log.closed"
 printf '\nmanual projection drift\n' >>"$fixture_repo/docs/control/current.md"
 cp -- "$fixture_repo/docs/control/current.md" "$test_root/current.drifted"
 node "$fixture_repo/scripts/resume.mjs" status \
@@ -410,7 +412,7 @@ grep -Fq 'warning: docs/control/current.md disagrees with the canonical fold' "$
 node - "$test_root/status-drift.json" <<'NODE'
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
-const { recordedAt, elapsed, ...status } = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const { recordedAt, elapsed, orders, ...status } = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
 assert.equal(typeof recordedAt, "string");
 assert.deepStrictEqual(Object.keys(elapsed).sort(), ["finalReview", "implementation", "repair", "verification"]);
 assert.deepStrictEqual(status, {
@@ -435,34 +437,36 @@ assert.deepStrictEqual(status, {
 });
 NODE
 cmp "$test_root/current.drifted" "$fixture_repo/docs/control/current.md"
-cmp "$test_root/log.closed" "$fixture_repo/docs/control/resume.jsonl"
+cmp "$test_root/log.closed" "$active_log"
 cp -- "$test_root/current.closed" "$fixture_repo/docs/control/current.md"
 cp -- "$fixture_repo/docs/control/current.md" "$test_root/current-before-bad-status"
-cp -- "$fixture_repo/docs/control/resume.jsonl" "$test_root/log-before-bad-status"
+cp -- "$active_log" "$test_root/log-before-bad-status"
 assert_refusal 'usage: resume status [--json]' status --json --json
 assert_refusal 'usage: resume status [--json]' status --wat
 cmp "$test_root/current-before-bad-status" "$fixture_repo/docs/control/current.md"
-cmp "$test_root/log-before-bad-status" "$fixture_repo/docs/control/resume.jsonl"
-before_release_close="$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')"
+cmp "$test_root/log-before-bad-status" "$active_log"
+before_release_close="$(wc -l <"$active_log" | tr -d ' ')"
 release_close_output="$(node "$fixture_repo/scripts/resume.mjs" release-close)"
 grep -Fq 'run the reviewed helper with main as its working checkout' <<<"$release_close_output"
 grep -Fq "'$fixture_repo/scripts/release.mjs' close WO-099 --publish" <<<"$release_close_output"
 grep -Fq 'never push main' <<<"$release_close_output"
-test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "$before_release_close"
-before_bad_activate="$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_release_close"
+before_bad_activate="$(wc -l <"$active_log" | tr -d ' ')"
 if run activate WO-100 docs/work-orders/WO-100-next.md 2>/dev/null; then printf 'error: nonexistent work order activated\n' >&2; exit 1; fi
-test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "$before_bad_activate"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_bad_activate"
 mkdir -p "$test_root/outside"
 printf '%s\n' '# outside' '' '**Model:** fixture-model.' '**Effort:** executor any; verifier any; reviewer any.' >"$test_root/outside/WO-101-outside.md"
 ln -s "$test_root/outside" "$fixture_repo/docs/work-orders/link"
 if run activate WO-101 docs/work-orders/link/WO-101-outside.md 2>/dev/null; then printf 'error: symlinked work order activated\n' >&2; exit 1; fi
-test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "$before_bad_activate"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_bad_activate"
 printf '%s\n' '# next' '' '**Model:** fixture-model.' '**Effort:** executor any; verifier any; reviewer any.' >"$fixture_repo/docs/work-orders/WO-100-next.md"
+active_log="$fixture_repo/docs/control/orders/WO-100.jsonl"
 run activate WO-100 docs/work-orders/WO-100-next.md
 grep -q 'Work order: WO-100' "$fixture_repo/docs/control/current.md"
 grep -q 'Latest attestation: none' "$fixture_repo/docs/control/current.md"
 grep -q 'Effort drift: none' "$fixture_repo/docs/control/current.md"
-test "$(wc -l <"$fixture_repo/docs/control/resume.jsonl" | tr -d ' ')" = "19"
+test "$(wc -l <"$active_log" | tr -d ' ')" = "1"
+test "$(wc -l <"$fixture_repo/docs/control/orders/WO-099.jsonl" | tr -d ' ')" = "18"
 printf '%s\n' '# next' '' '**Model:** fixture-model.' >"$fixture_repo/docs/work-orders/WO-100-next.md"
 assert_refusal 'missing **Effort:** line' next
 
@@ -549,7 +553,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 const [root, evidence] = process.argv.slice(2);
 const { main, fold, statusProjection } = await import(pathToFileURL(join(root, "scripts/resume.mjs")));
-const log = join(root, "docs/control/resume.jsonl");
+const log = join(root, "docs/control/orders/WO-087.jsonl");
 const current = join(root, "docs/control/current.md");
 const readEvents = () => readFileSync(log, "utf8").trim().split("\n").map(JSON.parse);
 const writeEvents = (events) => writeFileSync(log, events.map(JSON.stringify).join("\n") + "\n");
@@ -684,4 +688,5 @@ for variant in absent reordered backwards; do
   printf 'time-blind current.md cmp: %s passed\n' "$variant"
 done
 
+node "$script_dir/test-control-segments.mjs" "$test_root"
 printf 'resume tests passed\n'

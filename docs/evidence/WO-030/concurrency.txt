@@ -1,0 +1,38 @@
+PASS independent real worktrees: WO-901 ready-to-verify; WO-902 verifying; sibling segment/projection byte-identical after WO-901 transition
+Resolved generated projection conflicts for wo-902: docs/control/current.md
+PASS serial partial integration preserves complete per-order states; main overview lists both; ambiguous/unknown selection refuses without mutation
+Resolved generated projection conflicts for wo-901: docs/control/current.md, docs/work-orders/README.md
+PASS worktree finish and no-publish release close select merged WO-901 while WO-902 is open; validated release then published only to fixture origin/gh stub
+Resolved generated projection conflicts for wo-903: docs/control/current.md
+PASS old-base third branch retains its segment; every first-parent append-only proof passes; index attributes WO-901 to v0.2.1 and WO-902 to v0.2.2
+Concurrent integration fixture Git log:
+*   2c8c28b (HEAD -> main, tag: v0.2.2, origin/main) Integrate wo-902
+|\
+| * 6420898 WO-902 final review pass
+| *   bd22b10 Integrate main
+| |\
+| |/
+|/|
+* |   f2c11ed Integrate wo-903
+|\ \
+| * | 4ad2806 (wo-903) WO-903 independent progress
+* | |   38c79fd (tag: v0.2.1) Integrate wo-901
+|\ \ \
+| * | | 21256f9 WO-901 final review pass
+* | | |   2bc8599 Integrate wo-902
+|\ \ \ \
+| | |_|/
+| |/| |
+| * | | f1b056c WO-902 independent progress
+| | |/
+| |/|
+* | |   1846d46 Integrate wo-901
+|\ \ \
+| |/ /
+|/| /
+| |/
+| * 2c16d6a WO-901 independent progress
+|/
+* 95b4a9d Concurrent fixture authorities
+* 6ae752a (tag: v0.2.0) fixture v0.2.0
+release tests passed

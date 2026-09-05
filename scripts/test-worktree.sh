@@ -82,7 +82,7 @@ chmod +x "$test_root/bin/codex"
 start_output="$(PATH="$test_root/bin:$PATH" node "$main/scripts/worktree.mjs" start WO-099 docs/work-orders/WO-099-fixture.md)"
 subject="$test_root/project-wo099"
 test -d "$subject"
-grep -q '"workOrderId":"WO-099"' "$subject/docs/control/resume.jsonl"
+grep -q '"workOrderId":"WO-099"' "$subject/docs/control/orders/WO-099.jsonl"
 grep -Fq "cd '$subject'" <<<"$start_output"
 grep -Fq '  codex' <<<"$start_output"
 grep -Fq 'resume: next' <<<"$start_output"
@@ -93,10 +93,10 @@ if finish_worktree WO-099 >/dev/null 2>&1; then printf 'error: unfinished worktr
 
 git -C "$subject" add docs/control
 git -C "$subject" commit -m 'active control fixture' >/dev/null
-cp "$subject/docs/control/resume.jsonl" "$test_root/committed-active-resume.jsonl"
+cp "$subject/docs/control/orders/WO-099.jsonl" "$test_root/committed-active-resume.jsonl"
 cp "$subject/docs/control/current.md" "$test_root/committed-active-current.md"
-git -C "$subject" update-index --assume-unchanged docs/control/resume.jsonl docs/control/current.md
-printf '%s\n' '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-099","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-099/FINAL-001.md","verdict":"pass"}' >>"$subject/docs/control/resume.jsonl"
+git -C "$subject" update-index --assume-unchanged docs/control/orders/WO-099.jsonl docs/control/current.md
+printf '%s\n' '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-099","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-099/FINAL-001.md","verdict":"pass"}' >>"$subject/docs/control/orders/WO-099.jsonl"
 printf '%s\n' \
   '# Current control state' \
   '' \
@@ -109,9 +109,9 @@ if hidden_control_output="$(PATH="$test_root/bin:$PATH" "$node_bin" "$subject/sc
 fi
 grep -Fq 'committed surface check requires closed WO-099 control state; observed WO-099 in phase active' <<<"$hidden_control_output"
 if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: hidden working control state reached the remote\n' >&2; exit 1; fi
-cp "$test_root/committed-active-resume.jsonl" "$subject/docs/control/resume.jsonl"
+cp "$test_root/committed-active-resume.jsonl" "$subject/docs/control/orders/WO-099.jsonl"
 cp "$test_root/committed-active-current.md" "$subject/docs/control/current.md"
-git -C "$subject" update-index --no-assume-unchanged docs/control/resume.jsonl docs/control/current.md
+git -C "$subject" update-index --no-assume-unchanged docs/control/orders/WO-099.jsonl docs/control/current.md
 
 node "$subject/scripts/resume.mjs" implementation-ready \
   --harness codex-cli \
@@ -504,4 +504,23 @@ cp "$test_root/committed-active-finish-current.md" "$hidden_subject/docs/control
 git -C "$hidden_subject" update-index --no-assume-unchanged docs/control/resume.jsonl docs/control/current.md
 test "$(git -C "$hidden_subject" status --porcelain)" = ""
 printf 'destructive finish used committed control state and preserved the hidden-live fixture\n'
+# A closed subject cannot be removed if its integrated order was reopened.
+reopened_subject="$test_root/project-wo097"
+git -C "$main" worktree add "$reopened_subject" -b wo-097 >/dev/null
+printf '# WO-097 — reopened integration fixture, v0.2.1\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n' >"$reopened_subject/docs/work-orders/WO-097-fixture.md"
+node "$reopened_subject/scripts/resume.mjs" activate WO-097 docs/work-orders/WO-097-fixture.md >/dev/null
+printf '%s\n' '{"schemaVersion":1,"type":"FinalReviewCompleted","workOrderId":"WO-097","finalReviewId":"FINAL-001","reportPath":"docs/final-reviews/WO-097/FINAL-001.md","verdict":"pass"}' >>"$reopened_subject/docs/control/orders/WO-097.jsonl"
+node "$reopened_subject/scripts/resume.mjs" next >/dev/null
+git -C "$reopened_subject" add .
+git -C "$reopened_subject" commit -m 'closed subject integration fixture' >/dev/null
+git -C "$main" merge --ff-only wo-097 >/dev/null
+node "$main/scripts/resume.mjs" activate WO-097 docs/work-orders/WO-097-fixture.md >/dev/null
+git -C "$main" add .
+git -C "$main" commit -m 'reopened integrated order' >/dev/null
+git -C "$main" push origin main >/dev/null 2>&1
+if reopened_output="$(finish_worktree WO-097 2>&1)"; then printf 'error: reopened merged order was removed\n' >&2; exit 1; fi
+grep -Fq 'WO-097 is not closed in merged control state' <<<"$reopened_output"
+test -d "$reopened_subject"
+test -n "$(git -C "$main" branch --list wo-097)"
+printf 'finish refused reopened merged order and preserved its closed subject\n'
 printf 'worktree tests passed\n'

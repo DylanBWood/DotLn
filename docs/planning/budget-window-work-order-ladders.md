@@ -124,7 +124,7 @@ dependencies, eligible work, available actors, and capacity.
 
 ## Feasibility and integration gate
 
-The repository's current helper dispatches one active order per checkout.
+**Observed at `v0.6.0`:** the helper dispatched one active order per checkout.
 Separate worktrees isolate writable files, but both branches still change
 `docs/control/resume.jsonl`, generated projections, common docs, and release
 claims. Wave 1 also overlaps skeleton integration surfaces; wave 3 meets at
@@ -134,9 +134,9 @@ rechecked against the activated authorities.
 An executable, in-memory observation of `scripts/lib/control.mjs` used the
 synthetic sequence “activate WO-901; activate WO-902; implementation ready for
 WO-901.” The fold returned WO-902 in `ready-to-verify`. This is evidence of the
-current fold's one-order assumption, not a valid lifecycle sequence or a
+then-current fold's one-order assumption, not a valid lifecycle sequence or a
 production event. Interleaving branch logs is therefore not a concurrency
-protocol. The live CLI separately refuses activation unless its current phase
+protocol. The CLI at that base separately refused activation unless its current phase
 is `none` or `closed`.
 
 The follow-on must change the control model to represent independent orders
@@ -146,8 +146,17 @@ release-target assignment; and revalidate a remaining branch against the newly
 merged base. Substantive integration changes require fresh verification; a
 passing report on the old base cannot certify a changed combined subject.
 Tested integration is part of the new model's evidence, not a substitute for
-the requested concurrent lifecycle support. This follow-on is unallocated and
-adds no gate to WO-020's current implementation.
+the requested concurrent lifecycle support.
+
+**Discharged for the control slice, 2026-09-05 (WO-030 source):** per-order
+segments and legality now retain both synthetic states, and the real-Git
+[concurrency fixture](../../scripts/test-concurrent-control.mjs) proves
+independent progress, serial merges, named-order finish/release while a sibling
+is open, and release attribution. A third branch created before the first merge
+keeps its byte-prefix proof. The [executor evidence](../evidence/WO-030/README.md)
+is staged for independent verification and final review; it does not claim a
+merged release or a measured paired production wave. The lane rules remain
+manual, and workflow variation and admission control remain deferred.
 
 ## Fable planning handoff
 

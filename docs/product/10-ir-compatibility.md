@@ -57,6 +57,11 @@ impact carried into independent review. Once published, the annotated
 application tag is immutable. Neither operation changes package, schema,
 artifact, identity, or transformation versions by implication.
 
+WO-030's control segment layout is a storage axis: event schema `1`, legacy
+ordinals, and actor records retain direct support without a transformation or
+rewrite. Per-order selection adds an `orders[]` view while preserving existing
+selected-order JSON fields.
+
 A release manifest records the schema ranges, component versions, and
 transformation set supported by an application release. This permits the
 verifier to answer “this artifact corresponds to the v0.4.3 era” without

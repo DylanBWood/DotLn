@@ -22,7 +22,8 @@ operator is deliberately not repeating themselves.
    and its authoritative path, the current phase, latest verification artifact
    and verdict, final review, latest actor attestation, effort drift, latest
    checkpoint, and legal next actions. Both `status` forms fold the canonical
-   append-only `docs/control/resume.jsonl`; both are read-only and neither
+   append-only legacy `docs/control/resume.jsonl` and per-order
+   `docs/control/orders/WO-NNN.jsonl` segments; both are read-only and neither
    appends an event nor rewrites `docs/control/current.md`. The Markdown file is
    a disposable human projection, never an API: lifecycle peers consume the
    JSON status, while an operator may read the Markdown. If either status form
@@ -33,6 +34,15 @@ operator is deliberately not repeating themselves.
    `null`; `elapsed` maps each phase's latest completed attempt to signed
    milliseconds or `"unknown"` when an endpoint predates the migration.
    Durations never affect legality and do not use recovered checkpoint times.
+   In a `wo-NNN` worktree, the branch selects its order. Append
+   `--work-order WO-NNN` to override it or to select on main. Without a branch
+   selection, one open order selects itself; when several are open, bare human
+   `status` lists them, while `status --json` and transitions require the flag.
+   Unknown IDs refuse and list the open orders. The JSON keeps the existing
+   selected-order fields and adds `orders[]` with each known order's phase,
+   latest verdict, append time, and elapsed phases. Status observes segments in
+   this checkout, not unmerged changes in sibling worktrees. The Markdown
+   projection lists all non-closed orders followed by the latest closed one.
 2. Run the matching transition and follow the paths it prints — they are
    authoritative, and they are the whole briefing:
 
@@ -40,7 +50,7 @@ operator is deliberately not repeating themselves.
    | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
    | `resume: status`        | `npm run resume -- status` (or `npm run resume --silent -- status --json` for a machine consumer)                                                                                                                          | report; both forms are read-only, append nothing, and do not rewrite a stale Markdown projection                                                                                                                                                                         |
    | `resume: times`         | `npm run resume --silent -- times`                                                                                                                                                                                         | report the read-only JSON observation in append order, its three source labels and count of local refs read; refuse missing/mismatched required refs; append nothing and leave the projection unchanged                                                                  |
-   | `resume: next`          | `npm run resume -- next`                                                                                                                                                                                                   | in `active`, execute the emitted work-order path; in `closed`, report that the repo is between work orders and give the exact `worktree start` command                                                                                                                   |
+   | `resume: next`          | `npm run resume -- next`                                                                                                                                                                                                   | in `active`, execute the emitted work-order path; in `closed`, name other in-flight orders; only when none remain, report between work orders and give the exact `worktree start` command                                                                                |
    | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                    | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                                                   |
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
@@ -94,7 +104,7 @@ operator is deliberately not repeating themselves.
    understanding of the phase is wrong. Run the corrective command named in the
    refusal rather than forcing or working around it.
 
-`resume: next` answers the current slot's lifecycle question; it does not select
+`resume: next` answers the selected order's lifecycle question; it does not select
 a backlog order when the repository is between work orders. For evidence state,
 read the [generated work-order index](../work-orders/README.md); for recommendation,
 rationale, tracks, and human preflight, read
@@ -106,7 +116,9 @@ against the authoritative work order and current control evidence before
 activation.
 
 WO-026's generated index observes current headers and control evidence with a
-recorded snapshot of local annotated release tag objects. Run
+recorded snapshot of local annotated release tag objects and the control
+segments contained in each tagged revision. Prefix checks are per segment; a
+sibling merge cannot shift another order's close ordinal. Run
 `npm run work-orders -- index` after executor dispatch, before its evidence gate, and again
 after `implementation-ready`; verification and final-review actors refresh
 after dispatch and after recording their result. `npm test` includes
@@ -364,8 +376,9 @@ authorized tag command. Never tag the feature branch, tag failing evidence, move
 an existing tag, edit a published Release, push `main`, or imply that
 npm/binary/hosted distribution occurred when the release is source-only. A
 failed release check opens a patch work order. A version strictly below the
-latest tag is an explicit no-release outcome and leaves the clean closed
-checkout between work orders. An equal version is idempotent only when the
+latest tag is an explicit no-release outcome. The named order stays closed;
+other in-flight orders remain visible, and the checkout is between work orders
+only when none remain. An equal version is idempotent only when the
 existing validated annotated tag names the exact current commit; a mismatch
 refuses.
 
@@ -462,7 +475,7 @@ claim evidence or releases it does not have.
 - **Recovery point before destruction.** Never run `git checkout .`,
   `git restore .`, `git reset --hard`, `git clean` (any flags), or
   `git stash drop` in a work-order worktree. Until final review, the
-  deliverable, every `VER-NNN`, and `docs/control/resume.jsonl` are typically
+  deliverable, every `VER-NNN`, and the order's control segment are typically
   uncommitted, and `docs/intake` is gitignored single-copy raw material that is
   in no commit at all. Valid control transitions create the only
   pre-final-review checkpoint commits as local `refs/dotln/checkpoint/...` refs;

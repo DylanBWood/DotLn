@@ -684,5 +684,94 @@ check(
   },
 );
 
+check(
+  "segments retain close attribution, every open row, and tagged source inventories",
+  () => {
+    const segmented = makeRepo("segment-attribution");
+    for (const [id, version] of [
+      ["WO-030", "v1.0.0"],
+      ["WO-031", "v0.5.0"],
+      ["WO-032", "v1.1.0"],
+      ["WO-033", "v1.2.0"],
+    ])
+      write(segmented, authorityPath(id), header(id, version));
+    writeLog(segmented, completed("WO-030"));
+    commit(segmented, "legacy closed baseline");
+    tag(segmented, "v1.0.0", "WO-030");
+    const segment = (id, events) =>
+      write(
+        segmented,
+        `docs/control/orders/${id}.jsonl`,
+        events.map(JSON.stringify).join("\n") + "\n",
+      );
+    segment(
+      "WO-031",
+      completed("WO-031").map((event) => ({
+        ...event,
+        recordedAt: "2020-01-03T00:00:00.000Z",
+      })),
+    );
+    segment("WO-032", [activation("WO-032")]);
+    segment("WO-033", [activation("WO-033")]);
+    commit(segmented, "independent closed and open orders");
+    const observed = readIndex(segmented);
+    assert.match(
+      observed.rows.find((row) => row.id === "WO-031").disposition,
+      /no-release close/,
+    );
+    assert.deepEqual(
+      observed.rows
+        .filter((row) => row.section === "Active")
+        .map((row) => row.id),
+      ["WO-032", "WO-033"],
+    );
+    assert.match(
+      renderIndex(observed),
+      /\*\*Now:\*\* \[WO-032\] — active; \[WO-033\] — active/,
+    );
+    assert.deepEqual(observed.releases[0].controlSegments, [
+      "docs/control/resume.jsonl",
+    ]);
+    const original = readFileSync(
+      join(segmented, "docs/control/resume.jsonl"),
+      "utf8",
+    );
+    write(
+      segmented,
+      "docs/control/resume.jsonl",
+      original.replace('"schemaVersion":1', '"schemaVersion": 1'),
+    );
+    assert.equal(
+      readIndex(segmented).rows.find((row) => row.id === "WO-031").disposition,
+      "unreleased",
+      "even equivalent JSON cannot forge a byte-prefix proof",
+    );
+    write(segmented, "docs/control/resume.jsonl", original);
+    tag(segmented, "v1.0.1", "WO-031");
+    const tagged = readIndex(segmented);
+    assert.match(
+      tagged.rows.find((row) => row.id === "WO-031").disposition,
+      /^v1.0.1 /,
+    );
+    assert.deepEqual(tagged.releases.at(-1).controlSegments, [
+      "docs/control/resume.jsonl",
+      "docs/control/orders/WO-031.jsonl",
+      "docs/control/orders/WO-032.jsonl",
+      "docs/control/orders/WO-033.jsonl",
+    ]);
+    assert.throws(
+      () =>
+        readIndex(
+          segmented,
+          tagged.releases.map((release) => ({
+            ...release,
+            controlSegments: [],
+          })),
+        ),
+      /recorded control segment snapshot differs/,
+    );
+  },
+);
+
 cli(repo, ["index", "--check"]);
 process.stdout.write("PASS work-order index fixtures\n");

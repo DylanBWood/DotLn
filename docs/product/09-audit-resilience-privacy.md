@@ -27,6 +27,11 @@ overlap but are not synonyms:
 The same underlying event may participate in several concerns, but each has
 different retention, access, fidelity, and presentation needs.
 
+The 2026-09-05 [UIFA responsibility candidate](13-uifa-roles.md#candidate--security-identity-logs-and-traceability-responsibilities)
+asks which human hat or hats own security, identity and authority judgment,
+operational investigation, and end-to-end traceability. It reuses these concern
+boundaries; role count and names remain open, and a title conveys no extra access.
+
 ## Audit audiences and decisions
 
 The correct audit view begins with the decision its reader must make.

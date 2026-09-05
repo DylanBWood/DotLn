@@ -889,19 +889,45 @@ execution authority.
 
 ## Session lifecycle & resilience
 
-Resume control v1 uses an append-only JSONL control log
-(`docs/control/resume.jsonl`) plus a generated human projection
-(`docs/control/current.md`). A small deterministic resolver exposes the stable
-intents status, next, fix, verify, final review, and release close; it resolves
-the active work order, current phase, immutable verification sequence, next
-legal transition, and required artifacts from durable state. Conversation-first
-`resume:` phrases map to the same command surface. Release close is a guarded
-post-merge lifecycle operation rather than a control-log transition. Internal
-completion actions record executor readiness, verification, repair, and
-final-review outcomes. The log
-is canonical; the Markdown file is a disposable projection. One writable agent
-per worktree serializes appends in v1; concurrent control-log writers are
-deferred.
+Resume control uses independent append-only JSONL histories and a generated
+human projection (`docs/control/current.md`). New activations create
+`docs/control/orders/WO-NNN.jsonl`; later transitions stay in the file that
+owns that order's activation. The historical `docs/control/resume.jsonl` is
+read first with its original global ordinals. An order already activated there,
+including WO-030, finishes there; no event is moved or rewritten. Reopening a
+closed identity retains its original file too. A new segment's filename must
+match its activation and every event's `workOrderId`; mismatches or an order
+split across files refuse before any transition appends.
+
+`foldSegments` retains one state per order plus the legacy fold. Each order
+uses the existing lifecycle phase table; activating or advancing another order
+cannot reset its phase, actor, failure source, report sequence, or checkpoint.
+The resolver exposes status, next, fix, verify, final review, and release close,
+with the same conversation-first `resume:` phrases. A `wo-NNN` branch selects
+`WO-NNN`; `--work-order WO-NNN` overrides it. Without a branch selection, one
+open order selects itself, while multiple open orders require the flag for
+JSON status or a transition. Bare human status lists them. Unknown selections
+refuse and name the open orders. Selection is navigation, not lifecycle state.
+
+`status --json` preserves its selected-order fields and adds `orders[]`, with
+`workOrder`, `phase`, `latestVerdict`, `recordedAt`, and `elapsed` per known
+order. `current.md` lists every non-closed order, then the latest closed one.
+The closed-order display uses the subject branch when it has just closed,
+otherwise Git integration order, with segment display order breaking ties in
+one commit; timestamps never order segments. Views describe the segments
+available in that checkout or committed revision, not live observations of
+unmerged sibling worktrees. The histories are canonical; Markdown is disposable.
+
+**Segment-layout migration (2026-09-05, WO-030):** this supersedes the v1
+statement that concurrent control-log writers were deferred. One writable agent
+per worktree still serializes appends within a worktree; distinct work orders
+can now progress in separate worktrees and integrate serially. Legacy JSONL and
+event schema `1` receive direct support, without a migration event or rewrite.
+The segment layout is a storage axis, not an event schema field. Release and
+index readers prove byte prefixes per segment, and the index's annotated-tag
+snapshot names each tag's control segments. Committed worktree finish and
+release close select the named order even when another order remains open.
+Release close is a guarded post-merge operation, not a control transition.
 
 **Control-time migration (2026-09-04, WO-028):** new control events carry
 optional `recordedAt`, the host wall-clock time at append in UTC with
@@ -914,6 +940,7 @@ append order alone, including when valid timestamps run backwards.
 `status --json` exposes the latest event's `recordedAt` (`null` if absent) and
 `elapsed`: the latest completed attempt of each phase in the current order,
 keyed by `implementation`, `verification`, `repair`, and `finalReview`.
+The same timing projection is applied independently to each entry of `orders[]`.
 Endpoints are activation/readiness, verification request/completion, repair
 request/completion, and final-review request/completion. A value is the signed
 endpoint difference in milliseconds, or `"unknown"` if either endpoint lacks
@@ -924,7 +951,10 @@ regression rather than repairing it. `current.md` renders the same values and
 uses `unknown` for an absent latest timestamp.
 
 `npm run resume --silent -- times` emits a read-only JSON observation, one line
-per event in append order, labeled `recordedAt`,
+per event in source append order, legacy first and then segments in filename
+order. New events include a `segment` path and an ordinal local to that file;
+legacy event rows and a legacy-only observation remain byte-identical. Rows
+are labeled `recordedAt`,
 `recovered-from-local-checkpoint-ref`, or `unknown`. Only an event's named
 local checkpoint commit may recover its missing time; a missing ref, wrong
 scope/type, or recorded-SHA mismatch refuses without partial output. Recovered

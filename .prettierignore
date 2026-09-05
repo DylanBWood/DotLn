@@ -20,6 +20,7 @@ docs/control/current.md
 docs/discovery/environment.json
 docs/discovery/environment.md
 docs/discovery/control-event-times-*.json
+docs/evidence/WO-030/legacy-times.json
 docs/verifications/WO-*/
 docs/final-reviews/WO-*/
 docs/releases/v*.md

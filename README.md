@@ -84,7 +84,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source is DotLn `v0.6.0`. Optional Beacon output now encodes the latest consequential episode state in exact file size and event-derived mtime, with the matching L0 receipt inside. A separate fake-executor claim exposes its self-reported provenance; the constellation reads metadata alone. The default scenario output changes only its package-version banner. The generated [work-order index](docs/work-orders/README.md) leads with the operator's proposed sequence and control-derived progress, with complete evidence below; current Protíno content lives at its corrected path. The walking skeleton still runs the compiled Repo Gardener + Seiri scenario. Its executor and verifier remain deterministic fakes. The Entropy Reducer's compiler and operator-mediated review evidence remain available; model transport, `Program.All`, and Beacon control-plane dogfood are deferred. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
+This source is DotLn `v0.7.0`. Several work orders can progress independently in separate worktrees, each with its own append-only control history. Resume selects the order from its branch or an explicit flag, status shows every known order, and serial integration preserves each order's evidence and release attribution. Historical control events remain in place. The walking skeleton still runs the compiled Repo Gardener + Seiri scenario with deterministic fake executor and verifier; optional Beacon files encode episode state in metadata. Real model transport, `Program.All`, and Beacon control-plane dogfood remain deferred. Read published records on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or render one locally with `npm run release -- notes <tag>`.
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
@@ -160,7 +160,9 @@ Proven:
   adapter's effect;
 - operator return cancels future work and turns a queued pulse into a traced
   `NoOp`;
-- friendly glyphs can stay honest projections of real event state.
+- friendly glyphs can stay honest projections of real event state;
+- separate work-order control segments preserve attribution through concurrent
+  progress, serial Git integration, and fixture releases.
 
 Not yet built, and not claimed:
 

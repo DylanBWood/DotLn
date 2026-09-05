@@ -23,6 +23,68 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-05 WO-030 work-order splitting and UIFA assurance ideation
+
+**Provenance:** the operator's two `ideation:` entries during WO-030 execution,
+captured unedited in local-only
+`docs/intake/notes/WO-030-expanded-ideation-2026-09-05.md`, SHA-256
+`858b8458926d8bed33db88c1e2b8f5156413e9f00a7f33ad2e20af10b0462255`.
+Shape-First Synthesis under the saved public Clean Room loadout; no direct-filing
+exception or employer-derived implementation. The clean-room screen found no
+stop condition. The work-order receipt records preservation and review.
+
+- **One outcome, alternative whole or child routes** `preserved`
+  - Any order can be considered for decomposition into smaller reviewable
+    increments under one umbrella. Whole and split plans may both be available
+    before execution, but starting one route excludes the other. Starting the
+    first child permanently prevents executing the original whole route; the
+    parent survives as the addressable outcome and evidence rollup.
+  - Product 06 records this future behavior. Stable opaque identities and
+    historical evidence remain intact; suffix labels do not select a new ID
+    grammar. The exact selection transition, active/historical-order treatment,
+    nesting, and aggregate lifecycle remain planning choices.
+- **Suggest useful boundaries, including no split** `preserved`
+  - A proposal should expose acceptance coverage, dependency edges, integration
+    risk, and expected review size. An atomic order can stay intact. Serial,
+    parallel, and mixed child plans are possible when dependencies and shared
+    resources permit; hierarchy alone says nothing about concurrency. Smaller
+    increments serve the same outcome without requiring a new commit policy.
+- **UIFA responsibility for security, identity, and observable evidence**
+  `preserved`
+  - Product 13 adds the operator's requested human perspective on security,
+    authentication, authorization, logs, and traceability. Product 09 connects
+    it to the existing audit/privacy distinctions. Names and one-versus-several
+    hats remain open; the five confirmed roles and domain `Role` stay intact.
+  - One assurance hat or separate boundary/identity and logs/traceability hats
+    are synthesis options only. Claims of identity, effect authority, current
+    diagnostics, and outcome evidence answer different questions; no title
+    creates permission or mandates a new approval layer.
+
+## 2026-09-05 WO-030 concurrent-control implementation
+
+**Provenance:** operator `resume: next` dispatched the activated WO-030;
+implementation derives from that authority and the concurrent work-orders plan,
+without new intake or employer-derived material.
+
+- **Order identity owns history; selection only chooses a view** `adopted`
+  - New orders use one JSONL segment each. Existing legacy activations finish
+    where they began; reopening the same identity keeps that ownership. The
+    shared event switch retains each order's state, evidence, actor, failure
+    source, and checkpoint independently. Every order keeps the existing phase
+    contract; there is no workflow-schema extension.
+- **Compatibility without historical migration** `adopted`
+  - The 153-event activation prefix has a captured v0.6.0 fold comparison and
+    byte-identical timing observation. Storage changes without moving event
+    schema 1, legacy ordinals, or source bytes. New timing rows name their
+    segment; clocks never sequence independent histories.
+- **Integrate histories serially and regenerate the views** `adopted`
+  - Real-Git fixtures retain independent states through serial merges, close
+    one order while another remains open, and attribute distinct fixture
+    releases. A third old-base branch preserves its segment and prefix proof.
+    Tag snapshots name their contained segments. Shared projections describe
+    the current checkout, not live unmerged sibling state. Independent review
+    and a measured paired wave remain separate obligations.
+
 ## 2026-09-05 UIFA-roles planning pass (operator-dispatched, after the `v0.6.0` close)
 
 Source: the operator's 2026-09-05 dispatch for a deliberately larger planning
