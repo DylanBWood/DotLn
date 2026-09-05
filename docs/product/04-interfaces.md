@@ -186,6 +186,33 @@ the GUI. Assisted proposals and compilation may carry surrounding procedure, but
 the operator chooses whether shaping that layer directly is part of their
 desired creative work.
 
+### Candidate — multi-dimensional authorship assistance
+
+The operator's open question for the [UIFA roles](13-uifa-roles.md) is what
+authoring feels like when it is done well: what completion or “intellisense”
+means in three or four dimensions, and how a person and the platform become
+more than the sum of the parts without the person leaving flow. The candidate
+answer is that completion proposes along several axes at once, and every
+proposal arrives as a compiled diff rather than a silent mutation:
+
+- **Structure** — which supports fit this socket, which links are valid, which
+  combination the compiler would refuse and why.
+- **Time** — what fires next under this cadence, which phase the composition is
+  in, what a temporal structure looks like on the marble/Morse track.
+- **Consequence** — the declared cost a support adds, the authority delta, the
+  evidence obligations it creates; the compiled tooltip's `COST` and
+  `RESTRICTIONS` lines are the existing prototype of this axis.
+- **History** — what earlier compositions did at this point, the first event
+  where two variants diverged, the ledger entry that preserved the idea.
+
+Assistance is both ahead of time (compiled guards, generated projections,
+reviewed patterns, corpora) and in the moment (next legal action, compiled
+consequence, first divergence). The person keeps authorship: hand-written
+sources remain first-class, preview and sandbox modes are unmistakable, and an
+accepted proposal is an ordinary reviewed change. This candidate selects no
+editor, host, or model call; the projection contracts in this document are its
+surfaces, and the pattern workshop rung is its first delivery point.
+
 ## `προτείνω` — prose as a world action
 
 The operator-named first-party application, specified in

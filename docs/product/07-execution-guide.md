@@ -260,6 +260,53 @@ the caller's checkout and does not synchronize it with main. Normal closeout
 refuses a worktree-local note, but canonical reconciliation remains manual until
 the candidate intake control in `03-architecture.md` exists.
 
+## Operator-opened planning pass
+
+A message prefixed `planning:`, or an explicit instruction to run a planning
+session, dispatches a planning pass. It is the step the playbook calls “Plan
+(Fable, main checkout)” made explicit, and it is distinct from the other two
+things an operator might reach for: the Entropy Reducer is a compiled review
+loadout dispatched separately against a frozen subject, which returns findings
+and non-authoritative suggestions, goes through blinded refutation, and stops at
+operator disposition without planning or fixing; the Repo Gardener is the
+walking skeleton's founding identity, not a session. A planning pass may
+consume an Entropy Reducer's surviving findings as input.
+
+Preconditions and inputs:
+
+1. Run on the clean main checkout. Between work orders is the normal case; an
+   active order is context, never a scope fence, exactly as in ideation mode.
+2. Read `npm run resume --silent -- status --json`, the
+   [generated index](../work-orders/README.md), the
+   [human map](../planning/work-order-map.md), the candidate documents under
+   `docs/planning/`, the newest ledger sections, and every roadmap sentence
+   addressed to “the next planning pass”; open the headers of every open work
+   order the map names.
+3. Equip Beware of Naive Interventionism and Do Nothing: every candidate the
+   pass declines is recorded as a NoOp with its evidence and reversal
+   condition, in the `NoOpIntent` shape, so a later pass sees what was weighed.
+4. `ideation:` entries in the same dispatch run the complete ideation pipeline
+   first; their synthesis is planning input.
+
+Standard artifacts, all doc-only:
+
+- a compaction-safety capture of the dispatch in ignored intake;
+- one dated ledger section for the pass (and one for any ideation batch);
+- the map's planning revision: the marked sequence block, rationale, adjacent
+  track, preflight, candidates, catalog rows, and provenance;
+- zero or more planner-synthesized work-order drafts, each with `Model:` and
+  three-role `Effort:` lines, provenance, a dated observed gap, acceptance
+  criteria, evidence, non-goals, and operator-review assumptions;
+- product-doc write-back for durable understanding, with the publication
+  index and edition locks repaired in the same pass;
+- `npm run work-orders -- index` regenerated and `npm test` green.
+
+A planning pass never activates, implements, tags, publishes, merges, edits
+immutable evidence, or relitigates a settled decision. A code or configuration
+change it identifies becomes a work order or a named boy-scout item for the
+next activation. Its output lands through the ordinary pull request from a
+planning branch, since `main` requires one; the `:memo:` title rule applies.
+
 ## Workflow closeout and releases
 
 Final review prepares and publishes a clean PR; the operator retains merge

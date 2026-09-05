@@ -69,6 +69,12 @@ Actual model/version/effort and availability remain per-dispatch attestations.
 
 ## Two ladders — proposed alternative after WO-020
 
+**2026-09-05 update:** the planning pass discharged the handoff below into the
+[concurrent work-orders plan](concurrent-work-orders-plan.md) and filed WO-030
+as wave 0. The waves now read WO-030 → WO-021 ∥ WO-029 → WO-009 ∥ WO-031 →
+WO-022 ∥ WO-010 → WO-011; the table and lane sketch below are the earlier
+shape, retained as the trial's origin.
+
 Finish, independently verify, final-review, and merge WO-020 before this trial.
 The table preserves the current preference to put Beacons and pinned identity
 before the real worker, and the worker's mount profile before Senses.
@@ -144,6 +150,11 @@ the requested concurrent lifecycle support. This follow-on is unallocated and
 adds no gate to WO-020's current implementation.
 
 ## Fable planning handoff
+
+**Discharged 2026-09-05** by the planning pass; the answers, the first slice
+(WO-030), the hand lane rules, and the unfiled later slices are in the
+[concurrent work-orders plan](concurrent-work-orders-plan.md). The request is
+retained below for the record.
 
 Use a Fable planning session to turn this candidate into bounded work orders.
 The higher order planning task produces the enabling control/workflow plan and

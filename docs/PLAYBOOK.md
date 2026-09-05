@@ -41,6 +41,11 @@ Three standing rules:
   session label automatically: when that attestation applies, the actor still
   supplies `--effort xhigh --source operator-attested` explicitly.
 
+The human roles around this table are the five
+[UIFA roles](product/13-uifa-roles.md). The operator currently wears UIFA devops
+and UIFA showrunner; the planning step is the showrunner's, whichever model
+assists it.
+
 The operator's 2026-09-04 default is GPT-6 Astra with `max` effort for all Codex
 steps unless explicitly changed. Record that selection as operator-attested
 when no effective-session readback exists; do not relabel a persisted selector
@@ -91,6 +96,21 @@ continue after the breakout. A committed expansion needs explicit authority; the
 receipt names that authority, raw batch, affected ledger/product/decision/
 schema surfaces, unresolved choices, and required review. Existing worktree
 changes remain intact throughout.
+
+## Planning pass
+
+Prefix a message with `planning:` (or ask for a planning session) on the clean
+main checkout to run the pass described in
+[07 §Operator-opened planning pass](product/07-execution-guide.md#operator-opened-planning-pass).
+It reads status, the generated index, the human map, the candidate plans, and
+the newest ledger sections; equips Beware of Naive Interventionism and Do
+Nothing; and returns doc-only artifacts: a ledger section, a map revision, any
+planner-synthesized drafts, product write-back with the publication index and
+locks repaired, a regenerated index, and green `npm test`. It never activates,
+implements, or publishes. It is not the Entropy Reducer, which is a separate
+review dispatch with a frozen subject and a blinded refutation step, and not
+the Repo Gardener, which is the skeleton's demo identity. Land the result as a
+`:memo:` pull request from a planning branch.
 
 ## The loop, per work order
 

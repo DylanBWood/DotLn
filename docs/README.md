@@ -13,7 +13,8 @@ docs/product/      the blueprint: vision, principles, domain model,
                    architecture, interfaces, patterns, roadmap, execution guide,
                    publication compiler, audit/resilience map, IR compatibility,
                    the προτείνω first-party application thesis,
-                   and the candidate end-user workstream application
+                   the candidate end-user workstream application,
+                   and the five UIFA human roles
 docs/publication/  audience/status index, audience outlines, shared sample,
                    implementation overlay template, and staleness proof
 docs/planning/     capability inventory + human recommendation/preflight map
@@ -38,7 +39,8 @@ blueprint is the plan; execution normally proceeds work order by work order. An
 `ideation:` prefix dispatches the full intake → clean-room synthesis → ledger →
 product-doc pipeline unless it explicitly says capture-only. Fresh sessions
 follow `docs/product/07-execution-guide.md` §Operator-opened ideation mode
-without requiring the operator to restate those stages.
+without requiring the operator to restate those stages. A `planning:` prefix
+dispatches the doc-only planning pass described in the same guide.
 
 ## Why intake is gitignored
 
@@ -178,3 +180,6 @@ One line per `.claude/` or CLAUDE.md change (see execution guide):
   fresh unoverridden Claude process then confirmed the full posture and an
   `accept edits on` startup indicator; `claude doctor` found no invalid-setting
   warning.
+- 2026-09-05: CLAUDE.md — §Start here names the `planning:` prefix, resolved by
+  the execution guide's new §Operator-opened planning pass. Documentation of an
+  existing procedure; no safety boundary moves.

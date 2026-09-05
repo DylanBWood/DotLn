@@ -77,25 +77,26 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 
 ## 04 — Interfaces
 
-| Section                                                                                                                          | Audiences                           | Status      |
-| -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- |
-| [Interfaces — the isomorphic views](../product/04-interfaces.md#interfaces--the-isomorphic-views)                                | everyday-ai-user, software-engineer | planned     |
-| [Editable-view v1 normalization and semantic hash](../product/04-interfaces.md#editable-view-v1-normalization-and-semantic-hash) | software-engineer                   | implemented |
-| [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal)                                        | everyday-ai-user, software-engineer | planned     |
-| [Candidate — workstream application](../product/04-interfaces.md#candidate--workstream-application)                              | everyday-ai-user, software-engineer | vision      |
-| [Candidate — exact operator command vocabulary](../product/04-interfaces.md#candidate--exact-operator-command-vocabulary)        | everyday-ai-user, software-engineer | vision      |
-| [`προτείνω` — prose as a world action](../product/04-interfaces.md#προτείνω--prose-as-a-world-action)                            | everyday-ai-user, software-engineer | vision      |
-| [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract)                  | everyday-ai-user, software-engineer | planned     |
-| [RPG / Path-of-Exile view](../product/04-interfaces.md#rpg--path-of-exile-view)                                                  | everyday-ai-user, software-engineer | planned     |
-| [Semantic zoom](../product/04-interfaces.md#semantic-zoom)                                                                       | everyday-ai-user, software-engineer | planned     |
-| [Community build workshop](../product/04-interfaces.md#community-build-workshop)                                                 | everyday-ai-user, software-engineer | planned     |
-| [External rule-source mapping preview](../product/04-interfaces.md#external-rule-source-mapping-preview)                         | everyday-ai-user, software-engineer | vision      |
-| [Suggestion and proposal review](../product/04-interfaces.md#suggestion-and-proposal-review)                                     | everyday-ai-user, software-engineer | planned     |
-| [Agent projection (the sparse twin)](../product/04-interfaces.md#agent-projection-the-sparse-twin)                               | everyday-ai-user, software-engineer | planned     |
-| [Glyph system (visual prototype zero)](../product/04-interfaces.md#glyph-system-visual-prototype-zero)                           | everyday-ai-user, software-engineer | planned     |
-| [Transmog](../product/04-interfaces.md#transmog)                                                                                 | everyday-ai-user, software-engineer | planned     |
-| [Replay](../product/04-interfaces.md#replay)                                                                                     | everyday-ai-user, software-engineer | planned     |
-| [Physical channel](../product/04-interfaces.md#physical-channel)                                                                 | everyday-ai-user, software-engineer | planned     |
+| Section                                                                                                                               | Audiences                           | Status      |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- |
+| [Interfaces — the isomorphic views](../product/04-interfaces.md#interfaces--the-isomorphic-views)                                     | everyday-ai-user, software-engineer | planned     |
+| [Editable-view v1 normalization and semantic hash](../product/04-interfaces.md#editable-view-v1-normalization-and-semantic-hash)      | software-engineer                   | implemented |
+| [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal)                                             | everyday-ai-user, software-engineer | planned     |
+| [Candidate — workstream application](../product/04-interfaces.md#candidate--workstream-application)                                   | everyday-ai-user, software-engineer | vision      |
+| [Candidate — exact operator command vocabulary](../product/04-interfaces.md#candidate--exact-operator-command-vocabulary)             | everyday-ai-user, software-engineer | vision      |
+| [Candidate — multi-dimensional authorship assistance](../product/04-interfaces.md#candidate--multi-dimensional-authorship-assistance) | everyday-ai-user, software-engineer | vision      |
+| [`προτείνω` — prose as a world action](../product/04-interfaces.md#προτείνω--prose-as-a-world-action)                                 | everyday-ai-user, software-engineer | vision      |
+| [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract)                       | everyday-ai-user, software-engineer | planned     |
+| [RPG / Path-of-Exile view](../product/04-interfaces.md#rpg--path-of-exile-view)                                                       | everyday-ai-user, software-engineer | planned     |
+| [Semantic zoom](../product/04-interfaces.md#semantic-zoom)                                                                            | everyday-ai-user, software-engineer | planned     |
+| [Community build workshop](../product/04-interfaces.md#community-build-workshop)                                                      | everyday-ai-user, software-engineer | planned     |
+| [External rule-source mapping preview](../product/04-interfaces.md#external-rule-source-mapping-preview)                              | everyday-ai-user, software-engineer | vision      |
+| [Suggestion and proposal review](../product/04-interfaces.md#suggestion-and-proposal-review)                                          | everyday-ai-user, software-engineer | planned     |
+| [Agent projection (the sparse twin)](../product/04-interfaces.md#agent-projection-the-sparse-twin)                                    | everyday-ai-user, software-engineer | planned     |
+| [Glyph system (visual prototype zero)](../product/04-interfaces.md#glyph-system-visual-prototype-zero)                                | everyday-ai-user, software-engineer | planned     |
+| [Transmog](../product/04-interfaces.md#transmog)                                                                                      | everyday-ai-user, software-engineer | planned     |
+| [Replay](../product/04-interfaces.md#replay)                                                                                          | everyday-ai-user, software-engineer | planned     |
+| [Physical channel](../product/04-interfaces.md#physical-channel)                                                                      | everyday-ai-user, software-engineer | planned     |
 
 ## 05 — Pattern library
 
@@ -181,6 +182,7 @@ as a current blocked verdict.
 | [Operator resume phrases — how you get dispatched](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched)                         | software-engineer                   | verified    |
 | [Operator-opened ideation mode](../product/07-execution-guide.md#operator-opened-ideation-mode)                                                              | software-engineer                   | specified   |
 | [Ideation breakout receipt and verification](../product/07-execution-guide.md#ideation-breakout-receipt-and-verification)                                    | software-engineer                   | specified   |
+| [Operator-opened planning pass](../product/07-execution-guide.md#operator-opened-planning-pass)                                                              | software-engineer                   | specified   |
 | [Workflow closeout and releases](../product/07-execution-guide.md#workflow-closeout-and-releases)                                                            | software-engineer                   | verified    |
 | [Documentation freshness and ownership](../product/07-execution-guide.md#documentation-freshness-and-ownership)                                              | everyday-ai-user, software-engineer | specified   |
 | [Discipline](../product/07-execution-guide.md#discipline)                                                                                                    | software-engineer                   | specified   |
@@ -267,6 +269,24 @@ as a current blocked verdict.
 | [One workstream across repositories](../product/12-workstream-application.md#one-workstream-across-repositories)                                    | everyday-ai-user, software-engineer | vision |
 | [What exists and what must be proved](../product/12-workstream-application.md#what-exists-and-what-must-be-proved)                                  | everyday-ai-user, software-engineer | vision |
 | [Open product choices](../product/12-workstream-application.md#open-product-choices)                                                                | everyday-ai-user, software-engineer | vision |
+
+## 13 — UIFA roles
+
+| Section                                                                                                                                         | Audiences                           | Status    |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | --------- |
+| [UIFA roles — five human roles around an agentic platform](../product/13-uifa-roles.md#uifa-roles--five-human-roles-around-an-agentic-platform) | everyday-ai-user, software-engineer | specified |
+| [Why name the humans](../product/13-uifa-roles.md#why-name-the-humans)                                                                          | everyday-ai-user, software-engineer | vision    |
+| [The five roles](../product/13-uifa-roles.md#the-five-roles)                                                                                    | everyday-ai-user, software-engineer | specified |
+| [UIFA product lead](../product/13-uifa-roles.md#uifa-product-lead)                                                                              | everyday-ai-user, software-engineer | specified |
+| [UIFA showrunner](../product/13-uifa-roles.md#uifa-showrunner)                                                                                  | everyday-ai-user, software-engineer | specified |
+| [UIFA engineer](../product/13-uifa-roles.md#uifa-engineer)                                                                                      | everyday-ai-user, software-engineer | specified |
+| [UIFA tester](../product/13-uifa-roles.md#uifa-tester)                                                                                          | everyday-ai-user, software-engineer | specified |
+| [UIFA devops](../product/13-uifa-roles.md#uifa-devops)                                                                                          | everyday-ai-user, software-engineer | specified |
+| [Humans stay in the loop](../product/13-uifa-roles.md#humans-stay-in-the-loop)                                                                  | everyday-ai-user, software-engineer | vision    |
+| [One person, several hats](../product/13-uifa-roles.md#one-person-several-hats)                                                                 | everyday-ai-user, software-engineer | specified |
+| [The same five roles in other domains](../product/13-uifa-roles.md#the-same-five-roles-in-other-domains)                                        | everyday-ai-user, software-engineer | vision    |
+| [Assistance the platform owes each role](../product/13-uifa-roles.md#assistance-the-platform-owes-each-role)                                    | everyday-ai-user, software-engineer | planned   |
+| [What this does not decide](../product/13-uifa-roles.md#what-this-does-not-decide)                                                              | everyday-ai-user, software-engineer | specified |
 
 ## Historical Protíno path — compatibility pointers
 

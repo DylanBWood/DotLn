@@ -5,9 +5,11 @@
 ## Proposed order
 
 - [x] [WO-020] — Beacon codebook · **final-reviewed**
+- [ ] [WO-030] — Concurrent control state · **queued**
 - [ ] [WO-021] — Control-plane beacons · **queued**
 - [ ] [WO-029] — Pinned artifact identity · **queued**
 - [ ] [WO-009] — Real disposable worker · **queued**
+- [ ] [WO-031] — Actor usage projection · **queued**
 - [ ] [WO-022] — Senses · **queued**
 - [ ] [WO-010] — Independent verification · **queued**
 - [ ] [WO-011] — Feedback compiler · **queued**
@@ -142,6 +144,36 @@ None.
 - Model: any capable model.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-029-pinned-artifact-identity.md](WO-029-pinned-artifact-identity.md)
+
+### WO-030
+
+[WO-030 — Concurrent control state: one append-only segment per work order, lifecycle legality scoped to the named order, a selected-order status projection over every in-flight order, and a proven serial integration of two concurrent orders, v0.7.0](WO-030-concurrent-control-state.md)
+
+- State: draft.
+- Application target: v0.7.0.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-018: satisfied (closed); WO-026: satisfied (closed); WO-028: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-030-concurrent-control-state.md](WO-030-concurrent-control-state.md)
+
+### WO-031
+
+[WO-031 — Actor usage projection: read-only elapsed time per harness, model, effort, and phase across every work order, with an opt-in opaque account label whose meaning lives only in an ignored local file (version assigned at activation)](WO-031-actor-usage-projection.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-030.
+- References: WO-019: satisfied (closed); WO-028: satisfied (closed); WO-030: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-031-actor-usage-projection.md](WO-031-actor-usage-projection.md)
 
 ### WO-102
 
@@ -440,7 +472,7 @@ None.
 - References: WO-007: satisfied (closed); WO-016: satisfied (closed); WO-017: satisfied (closed).
 - Verification: [VER-001](../../docs/verifications/WO-020/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-020/FINAL-001.md) (pass).
-- Release: unreleased.
+- Release: v0.6.0 (manifest workOrder.id).
 - Model: any capable model.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-020-beacon-codebook.md](WO-020-beacon-codebook.md)
@@ -592,13 +624,13 @@ None.
 - **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.
 - **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.
 
-Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`.
+Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`.
 
 Tag observation is explicitly refreshed by `index`. Check requires every recorded tag object to remain available and unchanged; newer local release tags are reported as newer evidence, without invalidating this snapshot. This avoids making a committed source release fail its own tests immediately after tagging. Header/control changes still require regeneration after lifecycle transitions.
 
 See [the human planning map](../planning/work-order-map.md) for recommendation, rationale, tracks, and activation preflight. Dependency-ready does not grant activation or effect authority.
 
-<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e"},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa"},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a"},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e"},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4"},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03"},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773"},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7"},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6"},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a"},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442"},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7"},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8"},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205"},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc"},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c"}] -->
+<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e"},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa"},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a"},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e"},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4"},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03"},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773"},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7"},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6"},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a"},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442"},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7"},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8"},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205"},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc"},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c"},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20"}] -->
 
 [WO-001]: WO-001-environment-truth.md
 [WO-002]: WO-002-pure-kernel.md
@@ -629,6 +661,8 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-027]: WO-027-local-inference-probe.md
 [WO-028]: WO-028-control-event-time.md
 [WO-029]: WO-029-pinned-artifact-identity.md
+[WO-030]: WO-030-concurrent-control-state.md
+[WO-031]: WO-031-actor-usage-projection.md
 [WO-101]: WO-101-program-and-hash-corpus.md
 [WO-102]: WO-102-cadence-corpus.md
 [WO-103]: WO-103-authority-outbox-corpus.md

@@ -1,6 +1,7 @@
 # Work-order map — human planning judgment
 
-**Planning revision:** 2026-09-04, WO-020 ideation. The generated
+**Planning revision:** 2026-09-05, the planning pass after the `v0.6.0`
+close (previous revision 2026-09-04, WO-020 ideation). The generated
 [work-order index](../work-orders/README.md) now owns header observations,
 control evidence, dependency-token status, and local release attribution. This
 map retains recommendations, rationale, tracks, and human activation preflight.
@@ -20,18 +21,23 @@ require mainline work to count upward to reach it.
 
 ## Recommendation and rationale
 
-The operator restated this sequence during WO-020. This marked list is its
-single editable source; the work-order README renders it with evidence-derived
-progress marks. Keep the plain one-item-per-line form usable in a text editor.
+The operator restated this sequence during WO-020; the 2026-09-05 planning
+pass inserted WO-030 ahead of WO-021 and placed WO-031 in the free lane beside
+WO-009 (see the [concurrent work-orders plan](concurrent-work-orders-plan.md)).
+This marked list is its single editable source; the work-order README renders
+it with evidence-derived progress marks. Keep the plain one-item-per-line form
+usable in a text editor.
 Closed entries remain here until the operator changes the planning horizon;
 the generator marks them rather than asking the operator to cross them off.
 
 <!-- dotln-work-order-sequence:start -->
 
 - WO-020 — Beacon codebook
+- WO-030 — Concurrent control state
 - WO-021 — Control-plane beacons
 - WO-029 — Pinned artifact identity
 - WO-009 — Real disposable worker
+- WO-031 — Actor usage projection
 - WO-022 — Senses
 - WO-010 — Independent verification
 - WO-011 — Feedback compiler
@@ -53,6 +59,16 @@ of WO-023 responded to repeated manual review/planning and availability of the
 real compiler. WO-028's append-time projection can support beacon derivation
 without introducing attention or resource telemetry.
 
+WO-030 precedes WO-021 because the beacon hook and group composite assume
+per-order control state, and because the paired trial in the ladders document
+cannot run on a fold that lets a second activation capture the first order's
+events. After WO-030 merges, WO-021 and WO-029 are the first paired wave
+(disjoint write surfaces), WO-009 pairs with the small read-only WO-031, and
+WO-022 pairs with WO-010 after the worker lands; WO-011 follows WO-010. The
+[concurrent work-orders plan](concurrent-work-orders-plan.md) holds the hand
+rules, the unfiled later slices, and the reversal condition (Beacons first if
+the operator prefers, with the trial one wave later).
+
 Version assignment is the operator's opt-out default. Complete an unassigned
 activation target using the roadmap classification, observed release base, and
 matching source claim. Published tags and already pinned targets keep their
@@ -66,19 +82,22 @@ DotLn or Protíno product thesis. This observation adds no release gate or
 automatic change to the sequence above.
 
 An alternative [budget-window ladder plan](budget-window-work-order-ladders.md)
-now preserves the operator's proposed two-lane experiment. The normal sequence
-above remains current. The alternative pairs WO-021/WO-029, joins at WO-009,
-and then considers WO-022/WO-010 before WO-011. The
-[Fable planning handoff](budget-window-work-order-ladders.md#fable-planning-handoff)
-defines the enabling subject: zero to many concurrent orders, potentially
-different steps per order, and lane derivation from dependencies and capacity.
-Compatibility choices, integration overlap, and required evidence remain
-planning work; this candidate is not a second live status checklist.
+preserves the operator's proposed two-lane experiment and the original
+[Fable planning handoff](budget-window-work-order-ladders.md#fable-planning-handoff).
+That handoff was discharged on 2026-09-05 into the
+[concurrent work-orders plan](concurrent-work-orders-plan.md) and WO-030; the
+waves the sequence above implies are WO-030 → WO-021 ∥ WO-029 → WO-009 ∥
+WO-031 → WO-022 ∥ WO-010 → WO-011. Neither document is a second live status
+checklist.
 
 WO-014 remains a floating option when approval friction is the constraint.
-For adjacent evidence/corpus work, retain **WO-108 as the first candidate**:
-a base at or after v0.4.0 includes the compiler in its commit-keyed mutation
-matrix. WO-103, WO-107, WO-105, and WO-102 remain alternative uses of that track.
+For adjacent evidence/corpus work, **WO-107 is now the first candidate**: the
+operator's declared-versus-observed cost loop needs an observed baseline
+column before analysis, and the profiling order is written to be executable by
+a low-cost model in a quiet window. WO-108 remains the first choice when
+evidence quality is the concern (a base at or after v0.4.0 includes the
+compiler in its commit-keyed mutation matrix); WO-103, WO-105, and WO-102
+remain alternative uses of that track.
 Each still needs its own version, close disposition, base and environment
 preflight, and governed authority; writing it in the map grants none.
 WO-109 remains a bounded research pilot with its source, image-harness, budget,
@@ -90,11 +109,11 @@ identity migration.
 
 ## Preserved unallocated candidates
 
-- Plan the [concurrent-workflow control change](budget-window-work-order-ladders.md#fable-planning-handoff),
-  with independent per-order steps and attributable history, then prove serial
-  integration/release closeout on synthetic branches before the paired trial.
-  Derive lane assignment from eligible work and capacity; do not pin the model
-  to two orders or a shared phase clock.
+- The concurrent-workflow control change is planned and its first slice is
+  filed as WO-030; the lane-plan projection, declared per-order workflows,
+  admission policy, contribution tracks, and tenant-scoped tracks remain
+  unfiled with the filing conditions in the
+  [concurrent work-orders plan](concurrent-work-orders-plan.md#later-slices-unfiled).
 
 - Correct the compiled Entropy Reducer's Shape-First wording and regenerate its
   residue under a bounded follow-on. The current manual usage guide records the
@@ -160,6 +179,23 @@ identity migration.
   decide which layers a support may claim and project RESTRICTIONS from the
   compiled envelope. This nomination has no work-order number, sequence
   position, release, or activation authority.
+- **Nominated boy-scout item for the next activation — explicit Node types:**
+  add `"types": ["node"]` to the `compilerOptions` of the three package
+  `tsconfig.json` files. TypeScript 7.0.2 (current `latest`) reports
+  `Cannot find name 'node:test'` and the downstream `CompileResult` narrowing
+  errors the operator saw in an editor because `@types/node` is no longer
+  included implicitly; with `--types node` all three packages are clean, and
+  the pinned 5.4.5 accepts the field. Unambiguous, low risk, covered by the
+  activated order's `npm test`; record it in that order's result.
+- **Unallocated measurement candidate — presentation-surface comparison:**
+  once WO-009 lands two transports, a WO-107-style profiling cell compares the
+  same order through a terminal harness, a raw API episode, and, where
+  observable, an IDE or desktop surface, on protected outcomes, elapsed time,
+  and accounting regime. Product 03's candidate names the axes; no surface is
+  preferred in advance.
+- **Unallocated data candidate — UIFA roles as data:** the five human roles
+  are prose in product 13 until a consumer needs one as an event field; the
+  first plausible consumer is tester-authored scenarios in WO-011.
 
 ## Direct-draft provenance for the 2026-09-02 batch
 
@@ -183,6 +219,12 @@ WO-027 and WO-028 are planner-synthesized drafts from the operator's 2026-09-03
 post-`v0.3.4` planning messages, preserved locally as a compaction-safety
 capture. Their observed gaps were measured against the repository at `v0.3.4`;
 they carry no direct-filing provenance.
+
+WO-030 and WO-031 are planner-synthesized drafts from the operator's 2026-09-05
+planning dispatch, preserved locally as a compaction-safety capture. Their
+observed gaps were measured against the repository at `v0.6.0`; they carry no
+direct-filing provenance. WO-030 discharges the ladders document's Fable
+planning handoff through the concurrent work-orders plan.
 
 The 2026-09-04 gardening pass added one
 `**Effort:** executor xhigh+; verifier xhigh+; reviewer any.` line, immediately
@@ -238,6 +280,8 @@ second completion ledger.
 | [WO-027](../work-orders/WO-027-local-inference-probe.md)       | discovery — local-inference runner inventory, pinned artifact, no-egress evidence, calibration decision        | satisfied — `v0.3.3` assigned; operator present; no download; one combined-boundary launch; v3 loopback succeeded, external attribution ambiguous; operator merge and no-release close completed              | bounded environment investigator, then independent verifier                     | LM Studio 0.4.13+1 was the only installed runner and its sole service launch crashed                    | `docs/discovery/local-inference.md` and `.json`, roadmap/discovery/README/ledger write-backs; nothing under `packages/` or `scripts/`                                                  |
 | [WO-028](../work-orders/WO-028-control-event-time.md)          | control plane — `recordedAt` on control events, elapsed-phase projection, labeled recovery of historical times | historical bounded local-ref observation; no activation decision maintained here                                                                                                                              | control-plane implementer, then independent verifier                            | see authority                                                                                           | `scripts/resume.mjs` and `scripts/lib/`, resume and checkpoint suites, `docs/control/current.md`, a dated `docs/discovery/` observation, architecture/guide/playbook/domain-model docs |
 | [WO-029](../work-orders/WO-029-pinned-artifact-identity.md)    | composition/runtime evidence — pin equipped artifact identity and refuse on drift                              | interpret the reverse WO-009 reference; assign version and close disposition; pin semantic/component-definition identities and legacy-event policy                                                            | compiler/skeleton receipt implementer, then independent verifier                | pure compiler plus deterministic runtime/audit fixtures                                                 | compiler artifact identity; skeleton equip/recompile/refusal/audit path; product, map, and lineage docs                                                                                |
+| [WO-030](../work-orders/WO-030-concurrent-control-state.md)    | control plane — one segment per order, order-scoped legality, multi-order projection, proven integration       | runs alone as wave 0 while the active slot is closed; `v0.7.0` pinned 2026-09-05, retime with a dated note if WO-021 runs first; confirm per-segment layout over a union-merged file                          | control-plane implementer, then independent verifier                            | real-Git fixtures with two worktrees and a fixture main; no network                                     | `scripts/lib/control.mjs`, `resume.mjs`, `worktree.mjs`, `release.mjs`, `work-orders.mjs`, control docs, playbook, ladders plan                                                        |
+| [WO-031](../work-orders/WO-031-actor-usage-projection.md)      | control-plane projection — elapsed time per actor and phase; opt-in opaque account label                       | WO-030 merged; assign version and close disposition; confirm the public two-accounts disclosure                                                                                                               | control-plane implementer                                                       | deterministic log fixtures; the real log for the echoed report                                          | `resume.mjs`, `scripts/lib/control-time.mjs`, `.gitignore`, product 02/07/09, playbook                                                                                                 |
 | [WO-101](../work-orders/WO-101-program-and-hash-corpus.md)     | evidence/corpus — Program and identity regression floor                                                        | not applicable                                                                                                                                                                                                | deterministic corpus executor                                                   | offline harness                                                                                         | `corpus/harness/`, fixtures, manifests                                                                                                                                                 |
 | [WO-102](../work-orders/WO-102-cadence-corpus.md)              | evidence/corpus — cadence boundary sweep                                                                       | assign version and close disposition; pin suitable base/deps and governed closeout path                                                                                                                       | deterministic corpus executor                                                   | offline harness                                                                                         | cadence fixtures and manifests                                                                                                                                                         |
 | [WO-103](../work-orders/WO-103-authority-outbox-corpus.md)     | evidence/corpus — authority/outbox decision table                                                              | assign version and close disposition; pin the landed WO-017 base and governed closeout path                                                                                                                   | deterministic corpus executor                                                   | offline harness                                                                                         | authority/outbox fixtures and manifests                                                                                                                                                |

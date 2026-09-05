@@ -23,6 +23,258 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-05 UIFA-roles planning pass (operator-dispatched, after the `v0.6.0` close)
+
+Source: the operator's 2026-09-05 dispatch for a deliberately larger planning
+session, carrying ten `ideation:` entries in the same message, preserved
+verbatim in local-only
+`docs/intake/notes/2026-09-05-planning-session-uifa-roles-ideation.md`, SHA-256
+`0e946d82dc426dfd066157a0affcd7b0dc4debd53bdf9741a8bf57d21272985f`. The
+ideation synthesis is the sibling section below; this section records the
+planning results. The pass ran on the clean `main` checkout between work
+orders with Beware of Naive Interventionism and Do Nothing equipped, filed two
+planner-synthesized drafts, changed the recommended sequence once, and recorded
+a NoOp with its reversal condition for every candidate it declined.
+Identifiers are opaque stable references; a recommendation records a finding
+and a bounded route, not activation authority. The clean-room screen found no
+employer, credential, internal-service, or other stop condition; the two
+example addresses in the raw message are placeholders and were not promoted.
+
+- **A planning pass is a documented dispatch, not a mode to guess at**
+  `adopted`
+  - This is the fifth planning pass and the first opened by an operator who
+    did not know whether to invoke the Repo Gardener, the Entropy Reducer, or
+    something else. The procedure existed only as ledger precedent. Product 07
+    gains §Operator-opened planning pass (trigger, inputs, stance, standard
+    artifacts, limits, and how it differs from an Entropy Reducer review and
+    the skeleton's Gardener identity); `CLAUDE.md` §Start here names the
+    `planning:` prefix; the playbook points at both. A typed mechanism is
+    deferred until the documented procedure exposes a repeated mechanical step.
+- **The concurrent-workflow handoff is discharged into one bounded first
+  slice** `adopted`
+  - `docs/planning/concurrent-work-orders-plan.md` answers the ladders
+    document's nine required planning results and files WO-030: one
+    append-only control segment per order, legality scoped to the named order,
+    a selected-order projection with `orders[]`, per-segment append-only and
+    release-attribution proofs, and a two-branch integration fixture. Lane
+    generation, admission control, declared per-order workflows, contribution
+    tracks, and tenant-scoped tracks remain unfiled, each with a filing
+    condition. Hand-executable lane rules give the first paired wave.
+- **WO-030 precedes WO-021, and the paired trial follows it** `adopted`
+  - The one sequence change. WO-021's per-transition beacon and group composite
+    assume per-order state, and the ladders' paired trial cannot run on a fold
+    that lets a second activation capture the first order's events. The
+    recommended sequence is WO-030 → WO-021 ∥ WO-029 → WO-009 ∥ WO-031 →
+    WO-022 ∥ WO-010 → WO-011. Reverse by running WO-021 first if the operator
+    prefers Beacons dogfood before concurrency; nothing else moves.
+- **Actor usage becomes a read-only projection with an opt-in opaque account
+  label** `adopted`
+  - WO-031: `resume usage` groups completed phases by harness, version, model,
+    effort, label, and phase across every order, from `recordedAt` and the
+    attestations that already exist. The label is opt-in, matches a short
+    lowercase grammar, and means nothing outside the repository; its mapping
+    to an account is a hand-maintained ignored local file no script reads.
+    Product 09 preserves the candidate; the order carries the two-accounts
+    disclosure note. No token, cost, or attention field is added.
+- **The editor diagnostics are a TypeScript default change, not a missing
+  linter** `adopted` `recovered`
+  - Reproduced 2026-09-05: the pinned TypeScript 5.4.5 builds every package
+    clean, while TypeScript 7.0.2 (the current `latest`, the native port an
+    editor is likely to bundle) reports `Cannot find name 'node:test'` and,
+    downstream of that, `Property 'semanticHash' does not exist on type
+    'CompileResult'` — once `@types/node` is no longer included implicitly,
+    `assert.fail` loses its `never` type and the tests' narrowing collapses.
+    Passing `--types node` makes 7.0.2 clean on all three packages. The fix is
+    `types: ["node"]` in each package `tsconfig.json`, nominated as a bounded
+    boy-scout item for the next activated order rather than edited on `main`
+    by a planning pass. ESLint is not adopted; ADR-0002 records the posture.
+- **Declared cost is the prior; the profiling track supplies the observed
+  column** `adopted`
+  - The compiled tooltip's `COST` lines (mechanism, prompt tokens, runtime
+    operations, episodes per support) are static claims the operator can read
+    before a build runs; WO-107's harness supplies the observed vector. Product
+    06 states the loop the operator named — data, experiment, analysis, change
+    or report, repeat — as declared-versus-observed cost. The adjacent-track
+    recommendation therefore moves to WO-107 first, with WO-108 the alternative
+    when evidence quality is the concern; reverse if the operator wants the
+    mutation findings before the first baseline.
+- **The tree at `v0.6.0` is healthy** `adopted`
+  - `npm test` is green at this revision with the planning edits applied
+    (recorded in the session result); `git worktree list` shows only the main
+    checkout and `git branch` only `main`; the only non-doc change this pass
+    identified is the one-line TypeScript configuration item above.
+- **Role names confirmed: product lead and showrunner; stickiness is the
+  naming criterion** `adopted`
+  - Source: the operator's same-day reply, preserved verbatim in local-only
+    `docs/intake/notes/2026-09-05-uifa-role-names-decision.md`, SHA-256
+    `17a832894edd98b87d43976b8900a63de9082f9baabcdf2df8c21e54617a1eca`. The
+    operator chose `UIFA product lead` over `product owner`, briefly considered
+    ending all five names in _lead_, and withdrew that in favor of keeping
+    `UIFA showrunner`; engineer, tester, and devops stand as given. The
+    confirmed set is product lead, showrunner, engineer, tester, devops, with
+    `UIFA conductor` recorded as the alternative not taken. The operator
+    remains open to stickier names in the sense of Gladwell's stickiness
+    factor; the inspirations register records that criterion, and any rename
+    lands as a dated note in product 13 and here.
+- **WO-030 is pinned at `v0.7.0`** `adopted`
+  - The next minor above published `v0.6.0`, assigned under the operator's
+    opt-out default because WO-030 is the recommended next activation and the
+    operator asked for the post-merge steps. If WO-021 runs first instead, the
+    target is retimed with a dated note per 06 §Release boundary; nothing else
+    in the order changes.
+- **Declined candidates, each with its reversal condition** `preserved`
+  - Filing the lane-plan generator, admission policy, per-order workflow
+    declaration, contribution tracks, or tenant tracks now: NoOp; the plan
+    names a filing condition for each, starting with one paired wave run by
+    hand under WO-030.
+  - Filing a harness-versus-API comparison order: NoOp. No comparable cells
+    exist until WO-009 lands two transports; the comparison then becomes a
+    WO-107-style profiling cell, per the candidate in product 03.
+  - Adding ESLint or a lint dependency: NoOp; strict `tsc`, Prettier, and the
+    evidence suites are the gate. Reverse when a repeated defect motivates a
+    specific self-written check.
+  - Editing the three `tsconfig.json` files on `main` in this pass: NoOp;
+    configuration that changes the build is implementation and lands through a
+    work order's evidence, as a boy-scout item at the next activation.
+  - Committing editor settings that pin the workspace TypeScript: NoOp; the
+    `types` field removes the divergence and editor configuration is
+    operator-owned. Reverse if a second editor-only divergence appears.
+  - Modeling the five UIFA roles as domain entities or events: NoOp until a
+    consumer needs a human role as data, for example tester-authored scenarios
+    in WO-011. Reverse at that consumer.
+  - Token, cost, or attention telemetry in the control log: NoOp, unchanged
+    from the 2026-09-03 pass; WO-031 records only elapsed time and an opaque
+    label.
+  - A `planning:` resume command or typed dispatch: NoOp; prose projection
+    first, as ideation mode was. Reverse when the third pass under the
+    documented procedure shows the same mechanical step repeated.
+  - Retiring or rewording WO-014: NoOp; it remains a floating option when
+    approval friction is the constraint.
+  - Confirming the two proposed role names: not the planner's to decide, and
+    decided by the operator the same day; see the confirmation entry above.
+
+## 2026-09-05 planning-session ideation — five UIFA roles, actor usage, authorship, harness choice, dependency posture, positioning
+
+Source: ten `ideation:` entries in the operator's planning dispatch, preserved
+verbatim in local-only
+`docs/intake/notes/2026-09-05-planning-session-uifa-roles-ideation.md`, SHA-256
+`0e946d82dc426dfd066157a0affcd7b0dc4debd53bdf9741a8bf57d21272985f`. Clean
+Room found no stop condition; the two example account addresses are
+placeholders and appear in no committed surface. Shape-First Synthesis
+rewrites the operator's meaning for public docs; no direct-filing exception is
+invoked. The planning results that followed are in the section above.
+
+- **Five UIFA roles name the humans around an agentic platform** `adopted`
+  `transformed`
+  - Transforms the founding **Two-role future org** entry (Notes 001,
+    `preserved`), which sketched a product person and an architect-plus-scrum-
+    master, into five: UIFA product lead (first proposed as product owner; the
+    operator chose _lead_ the same day because _owner_ already means an
+    implementation's owner), UIFA showrunner (proposed and confirmed; `UIFA
+    conductor` recorded as the alternative not taken), UIFA engineer, UIFA
+    tester, and UIFA devops. Adopted for immediate circulation at the
+    operator's direction. New product 13 carries the full treatment; the README and
+    product 00 introduce it; the playbook points to it. Human job names, not a
+    domain-model `Role`, an Actor primitive, or an organization chart.
+- **The UIFA tester tests shapes, not software** `adopted`
+  - The role tests whether a proposed shape, role, or support does what it
+    should in the appropriate circumstances. Duplication is automated through
+    replay, fixtures, verifier episodes, and paired counterfactuals; the person
+    supplies scenarios a model would not think to try and validates outcomes
+    themselves. Findings feed the feedback compiler, opinion cohorts, and the
+    `προτείνω` scoreboard.
+- **The UIFA engineer hand-crafts the actor experience** `adopted`
+  - Identities, roles, supports, link groups, cadences, and temporal structures
+    composed by a person from legos or custom pieces, rather than a model's
+    guess at the mapping. The compiler's diff, tooltip with declared costs,
+    semantic hash, and workshop are the role's assistance.
+- **The showrunner's tooling is parallel workflows with per-release status**
+  `adopted`
+  - The operator observed that the architect-plus-scrum-master role is already
+    served by parallel workflows, their status, and what each release
+    contained. Product 13 maps the role to the generated index, the planning
+    map, control status, release records, WO-030, WO-021, and WO-031.
+- **The product owner's vision is transcribed and stored the way this
+  repository's own docs are** `adopted`
+  - The role keeps sharpening a future-state vision; the platform's job is
+    fidelity and memory: intake, shape-first synthesis, the append-only ledger,
+    and projections of what the fleet made of the words.
+- **Humans stay in the loop because their priors differ from a model's**
+  `adopted`
+  - All five roles receive both ahead-of-time and just-in-time assistance
+    (automation, visibility, understanding, creativity). People want to
+    document, reuse, and explain, and also to play ad hoc; product 13 asks for
+    unmistakable, cheap sandbox and preview surfaces so exploration is a
+    first-class mode. Product 00's “secret sauce belongs to each
+    implementation” now has a human location.
+- **One person wears several hats; “UIFA programmer” is the umbrella**
+  `adopted`
+  - The operator's self-description — a UIFA programmer doing UIFA devops plus
+    UIFA showrunner and dabbling in everything UIFA — is recorded as the
+    intended public way of describing the work. Roles are hats, not headcount.
+- **The roles are illustrated across many domains, not one industry**
+  `adopted`
+  - Product 13 maps the five roles onto a kitchen, a hospital ward, film and
+    television, a classroom, a farm cooperative, an orchestra, a basketball
+    team, and an open-source project, extending the founding “every reader of
+    those books already knows a feature of the app” thesis to people who direct
+    work in any domain.
+- **Recorded time plus attestations already answer “which model, how long”;
+  account distinction is opt-in and opaque** `adopted`
+  - `recordedAt` and the actor attestation on every completion event make
+    per-actor elapsed time a pure projection; WO-031 files it. Distinguishing
+    two accounts of one harness uses an opaque public label whose mapping stays
+    in an ignored local file; no email or account identifier enters the
+    repository. The operator's meta-question (how to use allowances, whether a
+    second subscription helps particular phases) is answered from that
+    projection, not from telemetry.
+- **Authorship for UIFA roles is multi-dimensional completion with compiled
+  consequences** `preserved`
+  - The operator's open question: what intellisense looks like in three or
+    four dimensions, and how to keep the humans in flow. Product 04 preserves a
+    candidate: completion along structure (what fits this socket), time (what
+    fires next), consequence (declared cost, authority delta, evidence
+    obligations — the tooltip's `COST` and `RESTRICTIONS` lines are the
+    prototype), and history (what earlier compositions did here, first
+    divergence), always as a proposal with a compiled diff, never a silent
+    mutation.
+- **Terminal harness, IDE extension, desktop app, raw API, and local runner
+  are presentation surfaces of one model; differences are hypotheses**
+  `preserved`
+  - Product 03's runtime-primitive-catalog section preserves the candidate:
+    each surface differs in system context, tools, permissions and sandbox,
+    context construction, session persistence, readback, structured output,
+    and accounting regime (subscription window versus metered tokens). DotLn
+    records the surface used as an environment fact and measures claimed
+    quality, throughput, accuracy, or cost differences in the profiling lane;
+    WO-009's two transports are the first comparable cells.
+- **Editor diagnostics revealed a TypeScript default change, not a missing
+  linter** `adopted` `recovered`
+  - The operator saw `Property 'semanticHash' does not exist on type
+    'CompileResult'` in an editor while `npm test` passed. Root cause,
+    reproduction, and the one-line `types: ["node"]` fix are in the planning
+    section above; no linter was missing, and none is added.
+- **Declared cost is the prior; the experiment loop supplies the observed
+  column** `adopted`
+  - The operator's reaction to the compiled `COST` lines and the loop “data,
+    experiments, analyze, update or report or fix, repeat” is recorded in
+    product 06 as declared-versus-observed cost, with WO-107 as the route to
+    the first observed column and no new telemetry field.
+- **Prefer self-written code; runtime dependencies stay at zero; vendoring is
+  the exception, not the strategy** `adopted`
+  - ADR-0002's amendments record the order of preference (Node built-ins,
+    self-written code with tests, an exactly pinned dev-only dependency with a
+    note, a runtime dependency only with a decision-record note), decline
+    vendored minified CDN builds as unreviewable bytes with a license duty, and
+    allow a small unminified single-file utility with its license text when
+    that is clearer than a dependency.
+- **DotLn is an agentic platform, not an agent, a harness, or an orchestrator**
+  `adopted`
+  - Product 00 §What DotLn is not and the README opening carry the operator's
+    positioning: the platform hosts harnesses as observed environments and
+    contains an orchestration layer, but is defined by the shared substrate on
+    which people and software actors hold work, authority, and evidence.
+
 ## WO-020 name sound associations — 2026-09-04
 
 Source: operator naming follow-up in local-only

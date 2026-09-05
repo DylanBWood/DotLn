@@ -18,6 +18,11 @@ only the rules it needs, enforces its chosen hard rules outside the model, and
 keeps a replayable record of what happened. Models rotate. Sessions die. The
 judgment survives.
 
+DotLn is not an agent, not an agent harness, and not an orchestration layer. It
+is an **agentic platform**: the shared substrate on which people and software
+actors hold work, authority, and evidence. Harnesses run on it as observed
+environments and an orchestration layer runs inside it; neither is what it is.
+
 Those guardrails are an implementation loadout, not commandments baked into the
 platform. Another owner may choose stricter doctrine, different doctrine, or a
 deliberately permissive profile with no verification or replay capability. DotLn
@@ -201,6 +206,36 @@ raw, each naming exactly what it omits.
 The scarce resource is not generation. It is the **selection function**: knowing
 which combination is good, which correction matters, and when the right move is
 to wait.
+
+## Who works here: five UIFA roles
+
+UIFA (“wee-fuh”, User Interfaces for Actors) is the name for the interface
+direction, and the humans around it now have names too. One person can wear all
+five hats in an afternoon; the author's own description is “a UIFA programmer,
+mostly UIFA devops plus UIFA showrunner, dabbling in everything UIFA.”
+
+- **UIFA product lead** knows the domain and its screens and
+  keeps sharpening the future state; the platform transcribes and stores that
+  vision the way this repo's own docs pipeline does.
+- **UIFA showrunner** (architect plus scrum master) sequences
+  bounded work across parallel workflows, knows what is active, blocked, and
+  closed, and what each release contained.
+- **UIFA engineer** hand-crafts the actor experience: roles, supports, link
+  groups, and temporal structures, from shared legos or custom pieces, instead
+  of letting a model guess the mapping.
+- **UIFA tester** does not test DotLn or whether a UI works; they test whether a
+  proposed shape, role, or support does what it should in the circumstances
+  that matter, and they invent the scenarios automation then repeats forever.
+- **UIFA devops** builds the machinery that makes the machinery: the control
+  plane, compilers, generators, and evidence gates.
+
+People stay in these loops because their prior associations differ from a
+model's, and that judgment is where an implementation's secret sauce lives.
+Each role gets assistance ahead of time and in the moment without giving up
+authorship. The full treatment, with the same five roles mapped onto a kitchen,
+a hospital ward, a film crew, a classroom, a farm, an orchestra, a basketball
+team, and an open-source project, is in
+[UIFA roles](docs/product/13-uifa-roles.md).
 
 ## The game is not decoration
 
@@ -386,7 +421,8 @@ explicit: typed mechanisms are meant to progressively absorb the prose. The
   backup, and their shell suites.
 - [`docs/product/`](docs/product/) — the blueprint: vision, principles, domain
   model, architecture, interfaces, patterns, roadmap, execution guide,
-  publication compiler, audit and privacy, IR compatibility, προτείνω.
+  publication compiler, audit and privacy, IR compatibility, προτείνω, the
+  workstream application candidate, and the UIFA roles.
 - [`docs/work-orders/`](docs/work-orders/) — bounded implementation authority,
   one file per unit of work.
 - [`docs/verifications/`](docs/verifications/) and
