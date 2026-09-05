@@ -1,0 +1,161 @@
+{
+  "observedAt": "2026-09-05T08:06:11.461Z",
+  "node": "v22.2.0",
+  "platform": "darwin",
+  "scope": "warm-cache full-status reads; one timed batch per case; no concurrent writer; independent worker-thread JS runtimes in one process",
+  "sameDeviceAsCheckout": true,
+  "limits": {
+    "maxReaderThreads": 4,
+    "maxWorkerOldHeapMb": 64,
+    "caseTimeoutMs": 30000,
+    "totalRequestsPerCase": 1000
+  },
+  "timing": "excludes fixture setup, worker startup and five warmups per reader; includes dispatch and completion messages in elapsed time; request latency starts when a worker begins that read",
+  "caveat": "1000 total requests per case, not 1000 simultaneous processes; no write contention, cold-cache, power-loss or multi-machine claim; 1000 members exercises individual beacons, beyond the 12-member group bound",
+  "results": [
+    {
+      "members": 12,
+      "readers": 1,
+      "metadataSweep": {
+        "requests": 1000,
+        "readers": 1,
+        "equalObservationPayloads": true,
+        "elapsedMs": 85.04,
+        "requestsPerSecond": 11758.8,
+        "medianRequestMs": 0.0791,
+        "p95RequestMs": 0.1136,
+        "processCpuMs": 114.56
+      },
+      "singleJsonIndex": {
+        "requests": 1000,
+        "readers": 1,
+        "equalObservationPayloads": true,
+        "elapsedMs": 19.2,
+        "requestsPerSecond": 52091.2,
+        "medianRequestMs": 0.0181,
+        "p95RequestMs": 0.0214,
+        "processCpuMs": 20.18
+      }
+    },
+    {
+      "members": 12,
+      "readers": 2,
+      "singleJsonIndex": {
+        "requests": 1000,
+        "readers": 2,
+        "equalObservationPayloads": true,
+        "elapsedMs": 10.92,
+        "requestsPerSecond": 91553.8,
+        "medianRequestMs": 0.0197,
+        "p95RequestMs": 0.0247,
+        "processCpuMs": 23.69
+      },
+      "metadataSweep": {
+        "requests": 1000,
+        "readers": 2,
+        "equalObservationPayloads": true,
+        "elapsedMs": 52.29,
+        "requestsPerSecond": 19124,
+        "medianRequestMs": 0.0952,
+        "p95RequestMs": 0.1601,
+        "processCpuMs": 140.66
+      }
+    },
+    {
+      "members": 12,
+      "readers": 4,
+      "metadataSweep": {
+        "requests": 1000,
+        "readers": 4,
+        "equalObservationPayloads": true,
+        "elapsedMs": 30.61,
+        "requestsPerSecond": 32667.2,
+        "medianRequestMs": 0.107,
+        "p95RequestMs": 0.1818,
+        "processCpuMs": 151.89
+      },
+      "singleJsonIndex": {
+        "requests": 1000,
+        "readers": 4,
+        "equalObservationPayloads": true,
+        "elapsedMs": 7.11,
+        "requestsPerSecond": 140703.9,
+        "medianRequestMs": 0.0234,
+        "p95RequestMs": 0.0409,
+        "processCpuMs": 29.95
+      }
+    },
+    {
+      "members": 1000,
+      "readers": 1,
+      "metadataSweep": {
+        "requests": 1000,
+        "readers": 1,
+        "equalObservationPayloads": true,
+        "elapsedMs": 3847.99,
+        "requestsPerSecond": 259.9,
+        "medianRequestMs": 3.8428,
+        "p95RequestMs": 4.0872,
+        "processCpuMs": 3933.71
+      },
+      "singleJsonIndex": {
+        "requests": 1000,
+        "readers": 1,
+        "equalObservationPayloads": true,
+        "elapsedMs": 711.2,
+        "requestsPerSecond": 1406.1,
+        "medianRequestMs": 0.6954,
+        "p95RequestMs": 0.8173,
+        "processCpuMs": 724.5
+      }
+    },
+    {
+      "members": 1000,
+      "readers": 2,
+      "singleJsonIndex": {
+        "requests": 1000,
+        "readers": 2,
+        "equalObservationPayloads": true,
+        "elapsedMs": 368.56,
+        "requestsPerSecond": 2713.3,
+        "medianRequestMs": 0.7164,
+        "p95RequestMs": 0.8468,
+        "processCpuMs": 755.22
+      },
+      "metadataSweep": {
+        "requests": 1000,
+        "readers": 2,
+        "equalObservationPayloads": true,
+        "elapsedMs": 2233.95,
+        "requestsPerSecond": 447.6,
+        "medianRequestMs": 4.3617,
+        "p95RequestMs": 5.0261,
+        "processCpuMs": 4491.58
+      }
+    },
+    {
+      "members": 1000,
+      "readers": 4,
+      "metadataSweep": {
+        "requests": 1000,
+        "readers": 4,
+        "equalObservationPayloads": true,
+        "elapsedMs": 1324.58,
+        "requestsPerSecond": 755,
+        "medianRequestMs": 5.2028,
+        "p95RequestMs": 6.226,
+        "processCpuMs": 5214.41
+      },
+      "singleJsonIndex": {
+        "requests": 1000,
+        "readers": 4,
+        "equalObservationPayloads": true,
+        "elapsedMs": 194.08,
+        "requestsPerSecond": 5152.6,
+        "medianRequestMs": 0.7452,
+        "p95RequestMs": 0.9276,
+        "processCpuMs": 797.3
+      }
+    }
+  ]
+}

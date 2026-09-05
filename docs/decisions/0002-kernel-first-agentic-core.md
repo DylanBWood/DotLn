@@ -46,6 +46,15 @@ same LoadoutGraph IR regardless of which verticals are plugged in.
 Appendable without relitigating the decision (see execution guide): dependency
 notes and tooling choices within the decided constraints.
 
+- 2026-09-05, WO-021 bootstrap tooling: four small skeleton source leaves
+  (`beacon-codebook.mjs`, `control-codebook.mjs`, `beacon-io.mjs`, and
+  `control-beacon-fs.mjs`) use JSDoc types and the skeleton's strict TypeScript
+  `allowJs`/`checkJs` build. Resume/worktree bootstrap imports their source
+  before `npm ci` and never trusts ignored build output for lifecycle
+  projection. This avoids duplicated codebooks and filesystem writers while
+  retaining compiler checks and zero new dependencies. The typed reactor and
+  recorded agent-sweep adapter remain TypeScript; kernel/compiler are unchanged.
+
 - WO-002 uses TypeScript 5.4.5 and `@types/node` 22.20.1 as exact dev
   dependencies, matching the compiler and Node 22 line observed by WO-001.
   The Node types bring the runtime acceptance suite under strict compilation;

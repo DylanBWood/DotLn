@@ -1,3 +1,4 @@
+import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
@@ -33,6 +34,7 @@ const repo = join(root, "control-segments");
 mkdirSync(join(repo, "scripts"), { recursive: true });
 cpSync(join(scriptRoot, "resume.mjs"), join(repo, "scripts/resume.mjs"));
 cpSync(join(scriptRoot, "lib"), join(repo, "scripts/lib"), { recursive: true });
+installBeaconFixture(repo);
 const write = (path, bytes) => {
   mkdirSync(dirname(join(repo, path)), { recursive: true });
   writeFileSync(join(repo, path), bytes);
@@ -334,6 +336,7 @@ for (const row of observed.events) {
 const timesRepo = join(root, "legacy-times");
 mkdirSync(join(timesRepo, "scripts"), { recursive: true });
 cpSync(join(repo, "scripts"), join(timesRepo, "scripts"), { recursive: true });
+installBeaconFixture(timesRepo);
 mkdirSync(join(timesRepo, "docs/control"), { recursive: true });
 writeFileSync(join(timesRepo, LEGACY_CONTROL_PATH), source);
 const bin = join(timesRepo, "bin");

@@ -67,6 +67,7 @@ make_repo() {
   mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/releases" "$main/packages/kernel/src" "$main/packages/kernel/test-fixtures" "$main/packages/skeleton/dist/src" "$main/packages/skeleton/src"
   cp "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
   cp -R "$script_dir/lib" "$main/scripts/lib"
+  node "$script_dir/test-beacon-fixture.mjs" "$main"
   cp "$script_dir/../docs/releases/tag-manifest.template.json" "$main/docs/releases/"
   printf '# Historical v0.2.0 manifest for WO-003\n' >"$main/docs/releases/v0.2.0.md"
   printf '# Historical v0.2.0 notes for WO-003\n' >"$main/docs/releases/v0.2.0-notes.md"

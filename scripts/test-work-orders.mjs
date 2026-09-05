@@ -1,3 +1,4 @@
+import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
@@ -54,6 +55,7 @@ const makeRepo = (name) => {
     join(scriptRoot, "work-orders.mjs"),
     join(repo, "scripts/work-orders.mjs"),
   );
+  installBeaconFixture(repo);
   cpSync(join(scriptRoot, "lib"), join(repo, "scripts/lib"), {
     recursive: true,
   });

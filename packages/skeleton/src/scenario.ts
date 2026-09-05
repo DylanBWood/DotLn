@@ -1,4 +1,5 @@
 import type { BeaconClaimRecord } from "./beacon.js";
+import { renderBeaconGlyphs } from "./control-beacon.js";
 import {
   appendEvent,
   decodeLog,
@@ -325,6 +326,9 @@ export function renderGlyphScene(state: RuntimeState): string {
       : "○ unverified",
     returned ? "☀️ phase:returned" : "○ away",
     state.queuedPulseNoOp ? "💤 faded/cancelled" : "○ scheduled",
+    ...(state.beaconObservations.length
+      ? [renderBeaconGlyphs(state.beaconObservations)]
+      : []),
   ].join("  ");
 }
 

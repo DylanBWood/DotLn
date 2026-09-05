@@ -436,6 +436,17 @@ guessing a state. A self-reported claim stays beside the host projection even
 when they disagree. Receipt reads are a separate, higher-fidelity operation.
 WO-020's CLI uses virtual event/claim time, so its dates are 1970-relative.
 
+WO-021 adds `npm run worktree -- constellation` beside the terminal status
+region. Its v2 rows show phase, latest verdict, attested effort, provenance,
+age, version, and logical bytes, sorted by phase/address. The final group row
+shows counts in the same eight-phase order and labels its host-cache or
+sweep-derived source. The command reads metadata across worktrees and appends
+nothing. The twelve-member group bound is explicit; this is no liveness test.
+For recorded agent perception, `--agent <host-request.json> --log
+docs/observations/<name>.jsonl` authorizes the Observe request before scanning,
+then persists one replayable `BeaconObserved`; refusal is recorded without a
+Beacon read. The runbook in 07 names the grant and disclosure boundaries.
+
 Every state the human views richly also renders as a deliberately **sparse,
 machine-facing projection**: one current assignment, one context capsule, a few
 statechart-gated actions, one result form — token-budgeted by design, whether
@@ -522,9 +533,11 @@ visually explicit and participate in compatibility checks.
 Beacon renderings follow the same grammar: when a declared observation policy
 marks a projection stale, blur it; retained historical projections become
 near-transparent. Age and claim provenance must also be readable as text.
-WO-020 exposes mtime but sets no staleness threshold and adds no visual UI;
-authorized sweep events, cadence-based staleness, and composites belong to
-WO-021. A file's existence alone never means its emitter is alive.
+WO-020's original demo exposes mtime without a staleness threshold. WO-021's
+recorded observations now drive text glyphs: `✦ fresh`, `◌ blurred/stale`,
+`○ absent`, and `⚑ flagged/clock-skew`; invalid or unknown codes stay flagged.
+These are textual treatments in the skeleton scene, with no new web renderer.
+A file's existence alone never means its emitter is alive.
 
 The operator's own emoji + Tailwind experiment is the seed: one base glyph +
 composable CSS treatments = a zero-asset parametric icon system, and a visual

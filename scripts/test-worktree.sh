@@ -31,6 +31,7 @@ git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/discovery" "$main/packages/kernel"
 cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$main/scripts/"
 cp -R "$script_dir/lib" "$main/scripts/lib"
+node "$script_dir/test-beacon-fixture.mjs" "$main"
 if grep -Fq 'current.md' "$main/scripts/worktree.mjs"; then
   printf 'error: worktree lifecycle parses the Markdown control projection\n' >&2
   exit 1
@@ -453,10 +454,14 @@ printf 'generated package output\n' >"$subject/$package_dist_path"
 printf 'finder metadata\n' >"$subject/$ds_store_path"
 printf 'disposable build state\n' >"$subject/$tsbuildinfo_path"
 git -C "$subject" branch --unset-upstream
+test -d "$subject/.control-beacons/public"
+test -d "$subject/.control-beacons/verifier"
+test -d "$subject/.control-beacons/groups"
 finish_worktree WO-099 >/dev/null
 test ! -e "$subject"
 test "$(git -C "$main" branch --list wo-099)" = ""
 test -f "$main/result.txt"
+printf 'beacon cleanup: populated anchored projection directories removed; docs/intake/dist/x.md negative fixture preserved\n'
 test "$(git -C "$main" status --porcelain)" = ""
 
 hidden_subject="$test_root/project-wo098"
@@ -523,4 +528,5 @@ grep -Fq 'WO-097 is not closed in merged control state' <<<"$reopened_output"
 test -d "$reopened_subject"
 test -n "$(git -C "$main" branch --list wo-097)"
 printf 'finish refused reopened merged order and preserved its closed subject\n'
+node "$script_dir/test-control-beacons.mjs" "$test_root"
 printf 'worktree tests passed\n'

@@ -18,3 +18,6 @@ dist/
 
 # Explicit, rebuildable skeleton beacon output.
 /.beacons/
+
+# Rebuildable host control projections and local audience capabilities.
+/.control-beacons/

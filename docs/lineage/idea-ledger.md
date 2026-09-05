@@ -23,6 +23,42 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-05 WO-021 implementation and operator follow-up
+
+**Provenance:** implementation of the filed WO-021 plus the operator's
+execution-time questions about practical measurements, concurrent reads,
+function-table selectors, and scan observability. These are synthesized
+execution findings and preserved options, with no imported implementation or
+raw-intake promotion. The [work-order receipt](../evidence/WO-021/README.md)
+keeps the measurement limits separate from the unrun operator trial.
+
+- **Additive bounded phase counts** `adopted`
+  - A separate phase-group family uses radix 13 for at most twelve members;
+    all 125,970 vectors round-trip without collisions. Individual verdict,
+    effort, and claim provenance are excluded from its sum. Individual v2 is
+    separately bounded to 288 states and 81,833 dense logical bytes.
+- **Sparse group lowering observed** `adopted`
+  - The local Node/filesystem probe emitted the 192,763,452,654-byte logical
+    maximum with zero allocated file-data blocks. This is a bounded host
+    observation, not a portable assumption. Dense hosts permit only the
+    reproduced ceiling; larger groups refuse before allocation.
+- **Measure the read query, not encoding novelty** `adopted`
+  - Warm-cache individual metadata sweeps beat separate JSON records in the
+    large fixture, but a single compact JSON index remained faster under one,
+    two, and four readers. Group counts are a smaller query. No real writer,
+    user navigation, model-token, or subjective benefit was measured.
+- **State-selected function tables** `preserved`
+  - Existing decoded states can index a versioned local table with richer
+    behavior; a new explicit function-ID field would require a bounded new
+    codebook. Table identity/compatibility and execution authority remain
+    separate. The sweep comparison does not evaluate this route.
+- **Payload-free perception and scan visibility** `adopted` `preserved`
+  - Metadata status calls remain visible to sufficiently privileged OS
+    monitoring; the public codeword itself discloses state. Keep that privacy
+    boundary explicit. Local snapshots and a shared authorized observer are
+    preserved ways to reduce repeated source access, without claiming stealth
+    or implemented same-user isolation.
+
 ## 2026-09-05 WO-030 work-order splitting and UIFA assurance ideation
 
 **Provenance:** the operator's two `ideation:` entries during WO-030 execution,

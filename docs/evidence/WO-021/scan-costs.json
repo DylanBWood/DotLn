@@ -1,0 +1,122 @@
+{
+  "observedAt": "2026-09-05T08:13:27.648Z",
+  "node": "v22.2.0",
+  "platform": "darwin",
+  "scope": "synthetic temporary fixtures; one process; warm local filesystem cache; no concurrent writer or crash",
+  "sameDeviceAsCheckout": true,
+  "rounds": 50,
+  "warmups": 5,
+  "groupMemberLimit": 12,
+  "storageAccounting": "allocated file-data blocks only; excludes inodes, directories and filesystem metadata",
+  "observationsBeyondGroupLimit": "100 and 1000 exercise individual reader scaling only; the group codebook refuses more than 12 members",
+  "results": [
+    {
+      "members": 3,
+      "equalObservationPayloads": true,
+      "metadataSweep": {
+        "medianMs": 0.0573,
+        "p95Ms": 0.1446
+      },
+      "compactJsonPerMember": {
+        "medianMs": 0.0412,
+        "p95Ms": 0.0451
+      },
+      "singleJsonIndex": {
+        "medianMs": 0.0116,
+        "p95Ms": 0.013
+      },
+      "allocatedFileDataBytes": {
+        "beacons": 73728,
+        "compactJsonPerMember": 12288,
+        "singleJsonIndex": 4096
+      },
+      "phaseCountsOnly": {
+        "groupBeacon": {
+          "medianMs": 0.0032,
+          "p95Ms": 0.007
+        },
+        "jsonCounts": {
+          "medianMs": 0.0102,
+          "p95Ms": 0.013
+        },
+        "logicalBytes": "55258",
+        "allocatedFileDataBytes": 0
+      }
+    },
+    {
+      "members": 12,
+      "equalObservationPayloads": true,
+      "metadataSweep": {
+        "medianMs": 0.096,
+        "p95Ms": 0.1211
+      },
+      "compactJsonPerMember": {
+        "medianMs": 0.1442,
+        "p95Ms": 0.1672
+      },
+      "singleJsonIndex": {
+        "medianMs": 0.0181,
+        "p95Ms": 0.0228
+      },
+      "allocatedFileDataBytes": {
+        "beacons": 491520,
+        "compactJsonPerMember": 49152,
+        "singleJsonIndex": 8192
+      },
+      "phaseCountsOnly": {
+        "groupBeacon": {
+          "medianMs": 0.0026,
+          "p95Ms": 0.0029
+        },
+        "jsonCounts": {
+          "medianMs": 0.0095,
+          "p95Ms": 0.0101
+        },
+        "logicalBytes": "17402873038",
+        "allocatedFileDataBytes": 0
+      }
+    },
+    {
+      "members": 100,
+      "equalObservationPayloads": true,
+      "metadataSweep": {
+        "medianMs": 0.4535,
+        "p95Ms": 0.6111
+      },
+      "compactJsonPerMember": {
+        "medianMs": 1.1107,
+        "p95Ms": 1.1809
+      },
+      "singleJsonIndex": {
+        "medianMs": 0.0727,
+        "p95Ms": 0.1025
+      },
+      "allocatedFileDataBytes": {
+        "beacons": 4636672,
+        "compactJsonPerMember": 409600,
+        "singleJsonIndex": 36864
+      }
+    },
+    {
+      "members": 1000,
+      "equalObservationPayloads": true,
+      "metadataSweep": {
+        "medianMs": 3.8813,
+        "p95Ms": 4.1782
+      },
+      "compactJsonPerMember": {
+        "medianMs": 11.1995,
+        "p95Ms": 11.9051
+      },
+      "singleJsonIndex": {
+        "medianMs": 0.6972,
+        "p95Ms": 0.7468
+      },
+      "allocatedFileDataBytes": {
+        "beacons": 47104000,
+        "compactJsonPerMember": 4096000,
+        "singleJsonIndex": 364544
+      }
+    }
+  ]
+}

@@ -97,8 +97,13 @@ test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async ()
   assert.match(reactor, /export const seiriReactor: Reactor<RuntimeState> =/u);
   assert.deepEqual(
     [...reactor.matchAll(/from\s+"([^"]+)"/gu)].map((match) => match[1]),
-    ["@dotln/kernel", "@dotln/compiler"],
-    "the pure reactor imports only the kernel and pure compiler",
+    [
+      "@dotln/kernel",
+      "@dotln/compiler",
+      "./control-codebook.mjs",
+      "./control-beacon.js",
+    ],
+    "the reactor imports the kernel, pure compiler and pure Beacon projections",
   );
   for (const decider of [
     "evaluateCadence",

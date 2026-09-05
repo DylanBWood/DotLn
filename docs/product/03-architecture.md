@@ -918,6 +918,36 @@ one commit; timestamps never order segments. Views describe the segments
 available in that checkout or committed revision, not live observations of
 unmerged sibling worktrees. The histories are canonical; Markdown is disposable.
 
+**Control Beacons (2026-09-05, WO-021):** after each successful append, the
+shared resume helper projects the selected order's folded phase, verdict, and
+latest attested effort into `.control-beacons/public/` and `verifier/`.
+These ignored directories are disposable; the canonical control history can
+rebuild them. `status`, `times`, and `next` emit nothing. Optional projection
+failure warns after the transition remains recorded; it neither rolls back the
+append nor permits repeating an otherwise illegal transition. A later
+transition refreshes the projection; trusted host tooling can call the same
+projection helper from the fold without inventing a lifecycle event.
+
+`npm run worktree -- constellation` observes the public directories across
+`git worktree list` with directory metadata and `lstat` only. It writes nothing,
+sorts individual observations by lifecycle phase/address, and prints a group
+count line. Each emitting checkout owns a separate group cache keyed by the
+whole swept set, avoiding cross-worktree writers. A reader accepts only a
+cache whose decoded counts match its current sweep; otherwise it labels the
+group as derived from this sweep with no matching cache. Individual publication
+is atomic; cross-file observations can span different transition times.
+Groups are bounded to twelve host-projected members and refuse larger sets.
+
+Agent perception uses an explicit host envelope and a durable observation log
+through the skeleton reactor. Authorization precedes any Beacon read; replay
+judges staleness from the captured sweep time, never the ambient clock. The
+verifier projection accepts only the narrow host record, excluding claims and
+implementer narrative. An optional host-issued session capability reveals its
+separate random restricted path only in that order's authorized `resume next`
+briefing. This is projection discipline within a trusted local host, with the
+same-user and privileged-observer limits in 09 §Privacy and minimization;
+WO-022 supplies the later mounted-sense boundary.
+
 **Segment-layout migration (2026-09-05, WO-030):** this supersedes the v1
 statement that concurrent control-log writers were deferred. One writable agent
 per worktree still serializes appends within a worktree; distinct work orders

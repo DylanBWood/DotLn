@@ -25,6 +25,16 @@ re-observe exact sparse-file, atomic-rename, mtime, host-integer, and filesystem
 logical-size behavior; arrange a non-repository key; refuse activation if the
 v3 maximum cannot be represented and emitted within the bounds below.
 
+**WO-021 implementation input (2026-09-05):** individual v2 has 288 states,
+`MAX_V2_CODE = 1150`, and `MAX_V2_LOGICAL_BYTES = 81833`, with dense emission.
+The separate phase-group family is version 1 with framing tag 3 and a dedicated
+directory/decoder; that does not implement or consume the individual v3
+contract below. The default individual reader still labels tag 3 unknown.
+WO-021 lowers Observe to `observe.beacons.<audience>` through the existing Act
+guard and records the command before scanning. Consume the normative tables
+in 02 and [fresh bounded evidence](../evidence/WO-021/README.md); re-observe
+for this order rather than inheriting the sparse-file ceiling or privacy claims.
+
 **Cites (read these sections):** 04-interfaces.md §RPG / Path-of-Exile view
 (helmet = perception; supports declare true cost), §Agent projection (gated
 affordances; the sparse twin), §Semantic zoom; 03-architecture.md §Composition

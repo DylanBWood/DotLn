@@ -363,6 +363,16 @@ independent real verification in WO-010, feedback in WO-011; a representative
 end-to-end trial is still needed to judge the work-system thesis. Protíno
 needs its own playable evidence slice at its separately selected horizon.
 
+**2026-09-05 technical observation:** WO-021 now exercises the workflow and
+records [bounded scan comparisons](../evidence/WO-021/README.md). Individual
+metadata sweeps beat separate compact JSON records in the measured large warm
+fixture, while a single JSON index stayed faster through four readers. A
+single group metadata read is a different, phase-count-only query. These
+results preserve useful read-path choices without claiming an operator trial,
+lower token cost, or general scalability. State-selected function tables and
+cached/shared observers remain design options; metadata scans have no
+invisibility guarantee. The operator comparison above remains outstanding.
+
 ### Candidate — unattended work-order portfolio
 
 The earlier operator-away scheduler was partly a workaround for supervising one

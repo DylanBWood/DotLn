@@ -41,6 +41,12 @@ and schema-bound output. Also deliver a deterministic worktree lifecycle,
   those mounts. Where Beacon support has landed, a real worker emits only a
   self-reported Beacon claim while the host projects evidenced Beacons from
   canonical events.
+  WO-021 now supplies separate host-only verifier projections and the recorded
+  `Cadence.After` age contract (20-minute default, explicit per-sweep override;
+  stale/absent/clock-skew never changes authority). A real worker's heartbeat
+  interval and lease expiry must be declared here when implemented; do not
+  infer worker liveness from a lifecycle Beacon or refresh its host mtime from
+  an unsupported worker claim.
 - Verifier episodes belong to WO-010; none here.
 
 **Constraints:** adapters and the host live outside kernel and compiler

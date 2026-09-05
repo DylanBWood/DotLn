@@ -82,6 +82,15 @@ preceding release, while test, documentation, and unrelated application changes
 do not imply a component bump; publish and close compare this fact with the
 preceding tag manifest.
 
+Beacon codebooks are another independent axis. WO-021 directly decodes the
+unchanged individual v1 family and additive individual v2; an old v1 reader
+labels v2 unknown. The separate phase-group family has version 1, uses framing
+tag 3, and is selected only by its group directory/decoder. A group codeword
+must never be guessed as an individual v3 observation; WO-022's individual v3
+proposal remains unimplemented. Extending fields or changing rank meaning
+requires a new codebook, not an application/package bump alone. The bounded
+v2 and group constants in 02 are activation inputs for later extensions.
+
 ## Transformation graph
 
 Schema and component changes form a directed graph of named, versioned
