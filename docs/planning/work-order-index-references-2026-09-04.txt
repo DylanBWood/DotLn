@@ -1,0 +1,7 @@
+Base: 68b1ab2 (WO-026 activation, v0.5.1)
+PASS 242 pre-existing concrete work-order references resolve to 36 retained authority paths.
+PASS all 36 WO authority files retain their paths; no move, rename or deletion.
+PASS 35 other WO authorities and codex-downtime-series.md retain their exact base bytes.
+The sole existing-file exception is WO-026's authorized target, scope receipt and amendments.
+52 matched non-file tokens were already absent at the base and are excluded from the retained-target count: fixture/template mentions plus one historical dangling reference.
+The historical pointer is docs/verifications/WO-003/VER-001.md -> docs/work-orders/WO-002-verification.md. It predates this work; the immutable report is preserved, not rewritten or backfilled.

@@ -154,6 +154,7 @@ recorded, rather than asking the operator to opt in again. An already pinned
 target still follows the retiming rule. This authorizes preparing the version
 surfaces, not publishing a tag, Release, package, or branch without its existing
 dispatch. WO-028 applies the default as `v0.5.1` above published `v0.5.0`.
+WO-026 applies it as `v0.5.2` above published `v0.5.1`.
 
 Patch releases contain compatible corrections, documentation, and evidence
 improvements; minor releases add backwards-compatible application capability;
@@ -243,13 +244,34 @@ role is distinct from model, effort, harness, and required capabilities;
 dependency is distinct from a preflight such as version assignment,
 authentication, provisioned dependencies, or a quiet-machine window.
 
-The first increment is a dated, human-readable map in
-`docs/planning/work-order-map.md`. It is an explicitly provisional projection,
-not scheduler IR. Use should reveal whether a later bounded work order should
-standardize metadata in work-order documents, create a separate registry, parse
-the documents, or generate dependency and eligibility views. Do not pin that
-schema or allocator before the pilot exposes its actual consumers and drift
-risks.
+**2026-09-04 migration (WO-026):** the evidence view is adopted; the broader
+metadata and scheduling design remains a candidate under this stable heading.
+The pilot's repeated evidence drift is now
+addressed by the [generated work-order index](../work-orders/README.md).
+Work-order files retain their paths as durable addresses. The index observes
+their headers, reduces every order through the shared control fold, and
+attributes release inclusion from local annotated manifests, with the explicit
+pre-manifest v0.2.0 record. It distinguishes the active slot, open orders,
+control-closed orders, and time-indexed history. Closed means the applicable
+passing final review, not independent proof of merge or remote publication.
+
+The index is the evidence-state answer; the [human map](../planning/work-order-map.md)
+keeps recommendation, rationale, tracks, and activation preflight. Dependency
+status is a conservative observation of every WO token in the Depends on
+paragraph against the control-closed set. It does not parse natural-language
+recommendations or reverse references into a scheduling policy. The dated
+[activation comparison](../planning/work-order-index-activation-2026-09-04.md)
+explains the differences from the pilot's hand-written cells.
+
+`npm run work-orders -- index` explicitly refreshes the generated view.
+`index --check`, included in `npm test`, checks current headers/control against
+the recorded tag-object snapshot; missing or changed recorded tags refuse, and
+additional local release tags are reported as newer evidence. The operator
+selected this snapshot rule so tagging a reviewed commit does not invalidate
+its own reproducible evidence. No command fetches tags. Refresh after lifecycle
+transitions before running evidence; lifecycle helpers do not regenerate the
+index. Standardized front matter, a separate registry, a scheduler, and automatic
+recommendation remain unselected candidates.
 
 ### Candidate — unattended work-order portfolio
 

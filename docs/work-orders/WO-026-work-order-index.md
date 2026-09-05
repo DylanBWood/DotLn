@@ -1,11 +1,13 @@
-# WO-026 — Work-order index: open and closed orders as a generated view over control evidence; files never move (version assigned at activation)
+# WO-026 — Work-order index: open and closed orders as a generated view over control evidence; files never move, v0.5.2
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Expected
-class: patch, or the honest no-release path. Planning tooling; no exported
-runtime capability.
+**Release classification:** patch, v0.5.2 above locally present published
+v0.5.1 (`68b1ab2`), completed on 2026-09-04 under the operator's release-assignment
+default after activation omitted the target. Planning tooling and candidate
+product documentation; no exported runtime capability. This fills an unassigned
+target, not a retiming or publication authorization.
 **Nomination provenance:** the operator's 2026-09-02 planning session ("it also
 might make sense to separate open and closed work orders, though that would
 include a lot of updating other docs as they are likely referenced a lot"),
@@ -111,10 +113,14 @@ reduced map; the write-backs below.
 
 **Acceptance criteria (all required)**
 
-1. No file under `docs/work-orders/` is moved, renamed, deleted, or edited by
-   this order; `git diff --name-status` against the base shows only the added
-   README there; every pre-existing `docs/work-orders/WO-*` reference in the
-   repository still resolves (script-checked in the result).
+1. No file under `docs/work-orders/` is moved, renamed, or deleted by this
+   order. Apart from this authority's activation-target completion and the
+   operator-authorized breakout/implementation receipts and dated amendments below, existing files
+   retain their bytes; the only added file there is the generated README.
+   Every pre-existing `docs/work-orders/WO-*` reference in the repository still
+   resolves (script-checked in the result). This bounded exception was recorded
+   on 2026-09-04 because the operator opened ideation requiring a scope receipt
+   and the standing activation default requires the missing release target.
 2. The index lists every `WO-*.md` exactly once, in exactly one section, with
    every column; `index --check` passes on the committed tree; deleting one
    committed row or editing one cell makes it fail naming the line; two
@@ -159,3 +165,144 @@ automatic recommendation; standardized front matter (candidate); beacons
 (WO-020 and WO-021 project episode state, not the backlog); changing any
 lifecycle transition; editing historical evidence or the control log; fetching
 from origin.
+
+## Operator-authorized ideation breakout receipt — 2026-09-04
+
+**Authority and return:** During `resume: next`, the operator requested an
+end-user application/workflow exploration: everyday use on an available host,
+gradual replacement of a successful but costly existing workflow, and durable
+workstreams across repositories. The operator expressly authorized the full
+intake pipeline, return to this implementation, and a stop at readiness for
+independent verification. This expands the documentation subject, not the
+index's runtime or lifecycle scope.
+
+**Intake and source treatment:** Main's canonical ignored capture is
+`docs/intake/notes/WO-026-end-user-workflows-2026-09-04.md`. The worktree staging
+copy, canonical file, and entry in the validated mode-0600
+`DotLn-intake-20260904T224818Z.zip` local snapshot were compared byte for byte;
+staging was removed only afterward. The snapshot is temporary local recovery,
+not external durability. No canonical reconciliation remains pending.
+Ordinary Shape-First Synthesis rewrote the intent; this was not a public draft
+for direct filing. The private early-use label was withheld from committed
+surfaces. No predecessor implementation, employer code/configuration, internal
+service detail, or credential was requested or incorporated. Host constraints
+remain generic and unobserved; the worked example is synthetic.
+
+**Promoted surfaces:** `docs/product/12-workstream-application.md` records the
+candidate desk-to-delivery journey, incremental parity checks, cross-repository
+coordination, current capability limits, and open choices. Vision and interfaces
+link that candidate. The idea-ledger section “WO-026 ideation — an end-user
+workstream application” records the three adopted product directions and the
+preserved pilot choices. The documentation map and publication coverage/locks
+include the new blueprint document. No ADR, schema, dependency, application
+identity, deployment, UI host, command, or implementation order was introduced.
+
+**Required review:** The verifier and final reviewer must include these
+documents and this receipt in their subject. Check source fidelity without
+publishing the private label, synthetic-example treatment, consistency with
+ADR-0006 and the settled core/vertical boundary, candidate versus implemented
+claims, source/repository authority boundaries, partial-delivery honesty,
+publication coverage/locks, and cross-references. No executable helper was
+created for this ideation; capture/reconciliation used direct file operations
+and the existing tested backup utility. The index implementation remains
+subject to its own executable evidence gate below.
+
+**Bounded file-freeze exception:** The receipt and missing activation target
+require editing this authority, as now stated in criterion 1. The requested
+`codex-downtime-series.md` pointer write-back conflicts with the remaining file
+freeze: preserve that file and give its existing map link the generated-index
+pointer instead. No work-order path changes.
+
+## Operator-authorized tag-snapshot amendment — 2026-09-04
+
+The executor identified a reproducibility conflict in the original freshness
+rule: creating the next annotated release tag changes the full local tag set
+after the reviewed source is committed, so that source would immediately fail
+`npm test` and the equal-tag release-close retry. The operator selected the
+recommended recorded-snapshot solution during this execution.
+
+`index` observes current local annotated release tags and records their names
+and immutable tag-object IDs in the generated README. `index --check` reads
+current headers and control evidence against that recorded snapshot, requires
+every recorded local tag to exist with the same object, and regenerates to
+memory for the byte/first-differing-line check. Additional local release tags
+are reported as newer evidence without failing the snapshot check. Explicit
+`index` refresh includes them. No fetch, lifecycle regeneration, Git mutation,
+or silent tag substitution is added.
+
+This supersedes only the original requirement that every check implicitly
+refresh the tag set. Fixtures must prove a newly created release tag leaves the
+recorded check green with a newer-evidence notice, explicit refresh incorporates
+it, and missing or changed required tag objects refuse. Control changes still
+stale the index: refresh after the readiness/result transition as well as before
+its evidence gate; reviewers/verifiers refresh after their dispatch transition.
+The immutable transition checkpoint therefore predates the final projection
+refresh. The next role checks that projection before running its evidence gate.
+
+## Implementation evidence receipt — 2026-09-04
+
+**Executor attestation:** Codex CLI `0.153.2`; model `gpt-6-astra`; effort
+`max`; source `operator-attested`. The installed CLI version was observed;
+the repository's dated operator assignment supplies model/effort selection,
+not effective-session readback. The executor floor is xhigh+.
+
+**Delivered:** `scripts/work-orders.mjs` and its package mapping; the generated
+36-row README; shared control parsing/folding in `scripts/lib/control.mjs`
+with the existing `resume.mjs` exports preserved; shared local tag, manifest,
+version, and attribution helpers in `scripts/lib/release-records.mjs`; guarded
+shell/Node fixtures; the reduced human map; blueprint/playbook/ledger write-back;
+and the separately authorized end-user workflow candidate. No dependency,
+component `src/`, `.claude/`, control-log schema, or lifecycle legality changed.
+
+**Executable evidence run successfully:**
+
+- `npm ci`: installed the existing lockfile; no dependency or lockfile change.
+- `npm test`: exit 0 on the final code, including all existing shell suites,
+  the new index fixtures, real-repository publication/index checks, 173 package
+  tests, and 8 corpus tests; zero failures.
+- [Fixture transcript](../planning/work-order-index-fixtures-2026-09-04.txt):
+  eleven scenario groups cover the required derived states, complete/sorted
+  rows, deterministic bytes, edited/deleted rows with first-line diagnostics,
+  read-only checks, tag-snapshot refresh/refusal, later-tag time, malformed and
+  missing metadata, historical attribution, Markdown escaping, and path guards.
+- [Activation comparison](../planning/work-order-index-activation-2026-09-04.md):
+  all 36 orders compared with the base map; the eight originally named closure
+  mappings agree. Later closures and prose-token discrepancies are explained.
+- [Reference audit](../planning/work-order-index-references-2026-09-04.txt):
+  242 concrete pre-existing references resolve to all 36 retained authority
+  paths; 35 other authorities and the runbook retain exact base bytes.
+- `rg` found exactly one definition each of `runGit`, `containedRegularFile`,
+  and `readJsonFile`, and one event-type switch, all inside `scripts/lib/`.
+- Publication coverage is 183/183 headings; both current-byte edition locks
+  pass. The staleness demonstration appends the ideation and index recaptures.
+- The read-only release-surface check passed: source/target `v0.5.2` above
+  published `v0.5.1`; all component sources unchanged, so no component bump.
+  Its sandbox-blocked origin tag lookup was rerun with one-invocation approval;
+  the index itself never contacts origin.
+- `git diff --check` passed. The changed/added public surfaces contain no
+  private early-use label or credential-pattern match.
+
+**Deviations and limits:** The operator selected the recorded-tag amendment
+above. This authority is the bounded existing-file exception for the omitted
+activation target, explicit scope receipt, amendments, and evidence. The
+runbook's existing map link supplies the indirect index pointer. One historical
+dangling reference already existed in `WO-003/VER-001.md`; it remains disclosed
+in the audit, not rewritten or represented as newly resolved. Dependency tokens
+are not a semantic prerequisite parser. Historical no-release timing uses a
+clearly labeled first-committed-prefix observation when `recordedAt` is absent;
+it does not recover append time or prove remote publication time. The new
+application journey remains a candidate with pilot, deployment, and parity
+threshold choices open.
+
+**Self-referential instrument:** Readiness is recorded through `resume.mjs`,
+whose shared fold was extracted in this deliverable. The unchanged lifecycle
+behavior was independently exercised by the existing resume, checkpoint,
+worktree, and release fixture suites, and the new index fixtures test its
+per-order projection. The next independent verifier must inspect those helpers
+as subject code, not treat a successful readiness event as their proof.
+
+**Handoff:** Stop at `ready-to-verify`; do not allocate or write a VER report in
+this executor session. After `resume: verify`, refresh the index before the
+verification gate, include the ideation receipt and candidate docs in review,
+and retain the immutable prior evidence. No work-order branch commit, push,
+PR, merge, tag, Release, or deployment is part of this executor handoff.

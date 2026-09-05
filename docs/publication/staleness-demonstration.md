@@ -429,3 +429,60 @@ proves that linked source changed after an edition lock was reviewed; it does
 not prove that two audience phrasings are semantically equivalent or
 contradiction-free. Verification still compares facts, limitations, permissions,
 status, and evidence across the two outlines and sample.
+
+## 13. WO-026 end-user workflow ideation recapture — 2026-09-04
+
+The operator-opened breakout added the candidate workstream application and
+linked it from vision and interfaces. Coverage now includes all 183 product
+headings. The first `--expect-stale` run detected both stale editions; refreshing
+only their current-byte locks restored the normal check. Source-base revisions
+and historical records retain their existing bytes.
+
+```text
+$ node scripts/check-publication.mjs --expect-stale
+PASS expected-stale proof: 2/2 editions flagged stale
+PASS publication bootstrap checks
+$ node scripts/check-publication.mjs --print-locks
+LOCK everyday-ai-user-toc.md: sha256:2c594edc31830dbae46d62993a37fb95c6fa4686342f565cdb7a38e4f2aecb04
+LOCK software-engineer-toc.md: sha256:da39d23f15a766219ee863b1151b961d255508ef76d2668626266735f81e0999
+$ node scripts/check-publication.mjs
+PASS index coverage: 183/183 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 27 linked source sections match
+CURRENT software-engineer-toc.md: 42 linked source sections match
+PASS publication bootstrap checks
+```
+
+The normal output above records the executed recapture; the earlier deliberate
+patch examples remain the mechanism proof. WO-026's later implementation
+write-back receives a separate recapture when its product changes are settled.
+
+## 14. WO-026 generated-index write-back recapture — 2026-09-04
+
+The execution guide and roadmap now describe the generated evidence index,
+the retained human planning map, and the operator-selected tag snapshot.
+The linked engineering edition became stale; the everyday edition retained its
+previous lock. The navigation heading retains its established anchor while its
+body adopts the index and keeps the broader scheduling design as a candidate.
+Only the current-byte locks changed; source-base revisions stayed fixed.
+
+```text
+$ node scripts/check-publication.mjs
+PASS index coverage: 183/183 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 27 linked source sections match
+STALE software-engineer-toc.md: source lock da39d23f15a766219ee863b1151b961d255508ef76d2668626266735f81e0999; current 0d215055efc9547924ce71658fe0e1dbb256f6619618a320a3cbd21066e56088
+FAIL 1 edition(s) are stale
+$ node scripts/check-publication.mjs --print-locks
+PASS index coverage: 183/183 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+LOCK everyday-ai-user-toc.md: sha256:2c594edc31830dbae46d62993a37fb95c6fa4686342f565cdb7a38e4f2aecb04
+LOCK software-engineer-toc.md: sha256:0d215055efc9547924ce71658fe0e1dbb256f6619618a320a3cbd21066e56088
+PASS publication bootstrap checks
+$ node scripts/check-publication.mjs
+PASS index coverage: 183/183 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 27 linked source sections match
+CURRENT software-engineer-toc.md: 42 linked source sections match
+PASS publication bootstrap checks
+```

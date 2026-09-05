@@ -205,6 +205,10 @@ ideation. Its fullest product expression is the first-party application thesis,
 
 Horizon 3 must emerge from the same kernel (deterministic replay is what makes
 counterfactuals possible at all) and is not allowed to distort Horizon 1.
+The [workstream application candidate](12-workstream-application.md) develops
+Horizon 1 through concrete end-user journeys and gradual workflow replacement,
+including one outcome spanning multiple repositories. It leaves deployment and
+application identity open and does not allocate another release rung.
 [`προτείνω`](11-proteino.md) is the operator-named application destination that
 joins Horizons 2 and 3: prose-authored patterns and ad hoc interventions become
 playable inside an inspectable counterfactual community. Naming the destination

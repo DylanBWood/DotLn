@@ -24,6 +24,18 @@ import {
   workOrderAuthorityPath,
 } from "./lib/paths.mjs";
 
+import {
+  CONTROL_LOG_SCHEMA_VERSION,
+  fold,
+  parseControlEvents,
+} from "./lib/control.mjs";
+// Keep the WO-018 import surface stable for lifecycle peers.
+export {
+  CONTROL_LOG_SCHEMA_VERSION,
+  fold,
+  parseControlEvents,
+} from "./lib/control.mjs";
+
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const logPath = join(repoRoot, "docs/control/resume.jsonl");
 const currentPath = join(repoRoot, "docs/control/current.md");
@@ -33,170 +45,13 @@ const effortDeclarations = new Set([
   "any",
   ...effortLevels.map((level) => `${level}+`),
 ]);
-const attestedEventTypes = new Set([
-  "ImplementationReady",
-  "VerificationCompleted",
-  "RepairCompleted",
-  "FinalReviewCompleted",
-]);
 const actorFlagUsage =
   "--harness <claude-code|codex-cli|human|other:label> --harness-version <version> --model <model> --effort <level> --source <self-reported|harness-readback|operator-attested>";
 const actorHeaderPrefix = "**Actor attestation:**";
 const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
 
-export const CONTROL_LOG_SCHEMA_VERSION = 1;
-
-export const parseControlEvents = (source) =>
-  source
-    .trim()
-    .split("\n")
-    .filter(Boolean)
-    .map((line, index) => {
-      try {
-        return JSON.parse(line);
-      } catch {
-        throw new Error(`invalid control event at line ${index + 1}`);
-      }
-    });
-
 const readEvents = () =>
   existsSync(logPath) ? parseControlEvents(readFileSync(logPath, "utf8")) : [];
-
-export const fold = (events) => {
-  const state = {
-    workOrderId: undefined,
-    workOrderPath: undefined,
-    phase: "none",
-    latestVerificationId: undefined,
-    latestVerificationPath: undefined,
-    latestVerdict: undefined,
-    finalReviewId: undefined,
-    finalReviewPath: undefined,
-    failureSourceId: undefined,
-    failureSourcePath: undefined,
-    latestCheckpointSha: undefined,
-    latestCheckpointRef: undefined,
-    checkpointUnavailable: false,
-    latestAttestation: undefined,
-    effortPairs: [],
-    effortDeclarationValidated: false,
-  };
-  for (const [index, event] of events.entries()) {
-    validateRecordedAt(event, `at line ${index + 1}`);
-    switch (event?.type) {
-      case "WorkOrderActivated":
-        Object.assign(state, {
-          workOrderId: event.workOrderId,
-          workOrderPath: event.workOrderPath,
-          phase: "active",
-          latestVerificationId: undefined,
-          latestVerificationPath: undefined,
-          latestVerdict: undefined,
-          finalReviewId: undefined,
-          finalReviewPath: undefined,
-          failureSourceId: undefined,
-          failureSourcePath: undefined,
-          latestCheckpointSha: undefined,
-          latestCheckpointRef: undefined,
-          checkpointUnavailable: false,
-          latestAttestation: undefined,
-          effortPairs: [],
-          effortDeclarationValidated: event.effortDeclarationValidated === true,
-        });
-        break;
-      case "ImplementationReady":
-        state.phase = "ready-to-verify";
-        break;
-      case "VerificationRequested":
-        Object.assign(state, {
-          phase: "verifying",
-          latestVerificationId: event.verificationId,
-          latestVerificationPath: event.reportPath,
-          latestVerdict: undefined,
-        });
-        break;
-      case "VerificationCompleted":
-        Object.assign(state, {
-          phase: event.verdict === "pass" ? "verified" : "needs-fix",
-          latestVerificationId: event.verificationId,
-          latestVerificationPath: event.reportPath,
-          latestVerdict: event.verdict,
-          failureSourceId:
-            event.verdict === "fail" ? event.verificationId : undefined,
-          failureSourcePath:
-            event.verdict === "fail" ? event.reportPath : undefined,
-        });
-        break;
-      case "RepairRequested":
-        state.phase = "repairing";
-        break;
-      case "RepairCompleted":
-        state.phase = "ready-to-verify";
-        break;
-      case "FinalReviewRequested":
-        Object.assign(state, {
-          phase: "final-review",
-          finalReviewId: event.finalReviewId,
-          finalReviewPath: event.reportPath,
-        });
-        break;
-      case "FinalReviewCompleted":
-        Object.assign(state, {
-          phase: event.verdict === "pass" ? "closed" : "needs-fix",
-          failureSourceId:
-            event.verdict === "fail" ? event.finalReviewId : undefined,
-          failureSourcePath:
-            event.verdict === "fail" ? event.reportPath : undefined,
-        });
-        break;
-      default:
-        throw new Error(
-          `unknown control event type at line ${index + 1}: ${event?.type ?? "missing"}`,
-        );
-    }
-    if (
-      attestedEventTypes.has(event.type) &&
-      event.workOrderId === state.workOrderId &&
-      event.actor &&
-      typeof event.actor.harness === "string" &&
-      typeof event.actor.harnessVersion === "string" &&
-      typeof event.actor.model === "string" &&
-      typeof event.actor.effort === "string" &&
-      typeof event.actor.source === "string"
-    ) {
-      state.latestAttestation = event.actor;
-      const pair = {
-        effort: event.actor.effort,
-        raw: typeof event.actor.raw === "string" ? event.actor.raw : undefined,
-      };
-      if (
-        !state.effortPairs.some(
-          (existing) =>
-            existing.effort === pair.effort &&
-            (existing.raw ?? null) === (pair.raw ?? null),
-        )
-      )
-        state.effortPairs.push(pair);
-    }
-    if (
-      typeof event.checkpointSha === "string" &&
-      typeof event.checkpointRef === "string"
-    ) {
-      Object.assign(state, {
-        latestCheckpointSha: event.checkpointSha,
-        latestCheckpointRef: event.checkpointRef,
-        checkpointUnavailable: false,
-      });
-    } else if (event.workOrderId === state.workOrderId) {
-      Object.assign(state, {
-        latestCheckpointSha: undefined,
-        latestCheckpointRef: undefined,
-        checkpointUnavailable: true,
-      });
-    }
-  }
-  return state;
-};
 
 const append = (event) => {
   const record = {

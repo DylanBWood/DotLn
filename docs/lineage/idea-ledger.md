@@ -23,6 +23,64 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## WO-026 implementation — evidence index and stable addresses (2026-09-04)
+
+Source: WO-026, the map at activation base `68b1ab2`, the canonical control log,
+local annotated releases, and the operator's in-session selection of a
+recorded-tag snapshot after the release-retry conflict was identified.
+
+- **Work-order files are stable addresses; open and closed are views** `adopted`
+  - Implement the 2026-09-02 navigation nomination with a generated README
+    over header observations, one shared event fold, and local release-manifest
+    attribution. Keep historical orders time-indexed and no-release inference
+    separate from later release inclusion. Existing authority paths do not move;
+    this order's own target and authorized scope receipts are the bounded edit
+    exception. Standardized metadata and scheduling remain unselected.
+- **The pilot map's hand-maintained evidence columns** `superseded`
+  - Replace those columns with the index; retain human recommendation, tracks,
+    rationale, and preflight. The dated activation comparison preserves every
+    discrepancy, including stale closure claims and reverse/independent
+    references that a literal dependency-token view cannot interpret.
+- **Explicit local tag observations make generated evidence reproducible** `adopted`
+  - `index` refreshes local tags; `index --check` requires the recorded tag
+    objects and current header/control projection. Additional tags are reported
+    as newer evidence until refresh. This operator-selected amendment prevents
+    a new tag from making its reviewed source fail its own repeat evidence gate.
+    It adds no fetch or lifecycle mutation and does not equate local tag time
+    with proven remote publication time.
+
+## WO-026 ideation — an end-user workstream application (2026-09-04)
+
+Source: the operator's in-session ideation, preserved unedited in main's ignored
+`docs/intake/notes/WO-026-end-user-workflows-2026-09-04.md`. Ordinary Shape-First
+Synthesis; private application/deployment naming remains in the local lane.
+Public examples are newly authored synthetic scenarios. The operator authorized
+the full pipeline and return to WO-026, stopping at readiness for verification.
+
+- **Design the day at the desk before choosing more machinery** `adopted`
+  - Add the candidate journey in `docs/product/12-workstream-application.md`:
+    arrive, start an outcome, establish scope, receive a receipt, steer, review,
+    authorize delivery, and return after interruption. Existing terminal/console,
+    sparse context, source-revision, and instance-policy contracts supply its
+    foundations. Application identity, deployment topology, and first pilot stay
+    open; the documentation does not implement the candidate.
+- **Retain successful behavior while replacing its coordination burden** `adopted`
+  - Use separate synthetic parity baselines for both existing workflow
+    generations to preserve useful intake, scoping,
+    standards, evidence, and recovery. Adopt one evidenced slice at a time and
+    measure restatement, handoffs, interruptions, and return-to-work cost.
+    Neither predecessor implementation material nor a bigger inherited prompt
+    becomes the specification. Thresholds and a representative pilot remain
+    `preserved` choices rather than invented acceptance results.
+- **One outcome can coordinate separate repository changes** `adopted`
+  - A durable workstream relates bounded work orders and evidence across
+    repositories. Keep local histories, bases, writers, reviews, and delivery
+    states separate, and tie shared acceptance to named revisions. Preserve
+    partial delivery and conflict visibility; do not imply an atomic merge,
+    universal rollback, or that every green local check proves the outcome.
+    Shared-repository contention and changed dependencies become explicit
+    coordination scenarios for a later bounded implementation.
+
 ## WO-028 implementation — control append time and labeled recovery (2026-09-04)
 
 Source: WO-028's control-time authority, its activation log, and executable

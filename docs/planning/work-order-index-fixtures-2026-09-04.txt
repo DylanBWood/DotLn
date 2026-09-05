@@ -1,0 +1,12 @@
+PASS index derives release membership, no-release, unreleased, active, blocked, ready, malformed and unknown
+PASS complete columns, exactly one row per file, sorted sections, safe Markdown and deterministic bytes
+PASS check is read-only; deleting a committed row or editing a cell names the first differing line
+PASS a new release tag preserves the recorded check; explicit refresh includes it without retroactive no-release inference
+PASS later tag time cannot turn an old source prefix into a prior release; unvalidated additional tags do not invalidate the snapshot
+PASS missing or changed recorded tag objects refuse without rewriting the index
+PASS lifecycle transitions stale the index; failed final review and a new request have distinct verdicts
+PASS unknown event and invalid time refuse at the original global ordinal
+PASS unknown headers, invalid versions, duplicate fields, body metadata and duplicate IDs never become guesses
+PASS source and destination symlinks refuse; CLI rejects unknown arguments
+PASS the sole manifest-free historical release requires its explicit record
+PASS work-order index fixtures

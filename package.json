@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "build": "tsc -b",
-    "test": "npm run format:check --silent && node scripts/test-github-body.mjs && bash scripts/test-fixture-temp-root.sh && bash scripts/test-publication.sh && bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-checkpoint.sh && bash scripts/test-worktree.sh && bash scripts/test-release.sh && node scripts/check-publication.mjs && rm -rf packages/kernel/dist packages/compiler/dist packages/skeleton/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/compiler/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/compiler/dist/test/*.test.js packages/skeleton/dist/test/*.test.js && node --test corpus/harness/wo101-id-corpus.test.mjs",
+    "test": "npm run format:check --silent && node scripts/test-github-body.mjs && bash scripts/test-fixture-temp-root.sh && bash scripts/test-publication.sh && bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-checkpoint.sh && bash scripts/test-worktree.sh && bash scripts/test-release.sh && bash scripts/test-work-orders.sh && node scripts/check-publication.mjs && node scripts/work-orders.mjs index --check && rm -rf packages/kernel/dist packages/compiler/dist packages/skeleton/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/compiler/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/compiler/dist/test/*.test.js packages/skeleton/dist/test/*.test.js && node --test corpus/harness/wo101-id-corpus.test.mjs",
     "skeleton": "npm run build --silent && node packages/skeleton/dist/src/cli.js",
     "backup:intake": "bash scripts/backup-intake.sh",
     "format": "prettier --write . --ignore-unknown",
@@ -14,7 +14,8 @@
     "publication:check": "node scripts/check-publication.mjs",
     "resume": "node scripts/resume.mjs",
     "worktree": "node scripts/worktree.mjs",
-    "release": "node scripts/release.mjs"
+    "release": "node scripts/release.mjs",
+    "work-orders": "node scripts/work-orders.mjs"
   },
   "devDependencies": {
     "@types/node": "22.20.1",
