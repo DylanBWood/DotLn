@@ -95,14 +95,25 @@ operator is deliberately not repeating themselves.
    refusal rather than forcing or working around it.
 
 `resume: next` answers the current slot's lifecycle question; it does not select
-a backlog order when the repository is between work orders. For the provisional
-portfolio view, read
-[`docs/planning/work-order-map.md`](../planning/work-order-map.md). Keep its
+a backlog order when the repository is between work orders. For evidence state,
+read the [generated work-order index](../work-orders/README.md); for recommendation,
+rationale, tracks, and human preflight, read
+[`docs/planning/work-order-map.md`](../planning/work-order-map.md). Keep the
 three answers separate: legal lifecycle transition, dependency/preflight
 eligibility, and recommended choice. Never infer any of them from the next
 integer. The map is a dated human projection, so revalidate its candidate
 against the authoritative work order and current control evidence before
 activation.
+
+WO-026's generated index observes current headers and control evidence with a
+recorded snapshot of local annotated release tag objects. Run
+`npm run work-orders -- index` before the executor's evidence gate and again
+after `implementation-ready`; verification and final-review actors refresh
+after dispatch and after recording their result. `npm test` includes
+`index --check`: it refuses stale cells or a missing/changed recorded tag,
+while reporting additional local release tags as newer evidence. Explicit
+regeneration includes those tags. No lifecycle transition regenerates the
+index; its final refresh is later than the transition's immutable checkpoint.
 
 `resume: final review` and `resume: release close` carry narrowly scoped
 external-effect authority. A passing final reviewer may commit the reviewed

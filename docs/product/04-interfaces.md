@@ -129,6 +129,17 @@ current tranche, active window, ceiling, and stop/reset/replenishment behavior.
 A work-order portfolio separately shows which orders are eligible, optional,
 selected, active, or blocked; selection never masquerades as authorization.
 
+### Candidate — workstream application
+
+The [end-user workflow candidate](12-workstream-application.md) makes this
+interface concrete through arriving at the desk, starting an outcome, reviewing
+evidence, returning after interruption, and coordinating changes across
+repositories. It treats the operator's successful existing workflow as a parity
+baseline while testing whether DotLn reduces its coordination burden. The
+candidate supplies synthetic adoption scenarios, not a shipped console or a
+deployment assertion. The workstream is the durable unit of return; repository
+sessions remain inspectable underneath it.
+
 ### Candidate — exact operator command vocabulary
 
 The fourth Westworld-derived shape is a reserved vocabulary whose exact phrases

@@ -807,8 +807,8 @@ make_repo success
   );
   if (changed === source) process.exit(1);
   fs.writeFileSync(path, changed);
-' "$main/scripts/resume.mjs"
-git -C "$main" add scripts/resume.mjs
+' "$main/scripts/lib/control.mjs"
+git -C "$main" add scripts/lib/control.mjs
 git -C "$main" commit -m 'fixture distinct control schema export' >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 subject="$fixture/project-wo099"

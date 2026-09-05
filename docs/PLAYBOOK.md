@@ -95,12 +95,22 @@ changes remain intact throughout.
 ## The loop, per work order
 
 **1. Plan (Fable, main checkout).** Pick or refine the WO in
-`docs/work-orders/`. Use the provisional
-[`planning/work-order-map.md`](planning/work-order-map.md) to distinguish what
-is closed, dependency-eligible, preflight-blocked, and recommended; never choose
-by the next integer. Revalidate the selected row against its work order and the
+`docs/work-orders/`. Consult the [generated index](work-orders/README.md) for
+header, control, dependency-token, and local release evidence; use the
+[human map](planning/work-order-map.md) for recommendation, rationale, tracks,
+and activation preflight. Never choose by the next integer. Revalidate the
+selected row against its work order and the
 current control state before activation. If the docs need updating first, do it
 here. Main checkout is the control plane — no implementation happens here.
+
+`npm run work-orders -- index` refreshes the evidence view. Its `--check` form
+uses the recorded tag-object snapshot so a new release tag does not break that
+release's own checks; it reports newer local release tags and refuses missing or
+changed recorded ones. Refresh after lifecycle dispatch/result transitions and
+before evidence runs, including after executor readiness and final review.
+The control helpers do not update it automatically. The index is a text
+observation, so preflight still interprets recommended, independent, and reverse
+references in dependency paragraphs.
 
 **2. Implement (Codex, fresh session, own worktree).**
 

@@ -80,6 +80,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Interfaces — the isomorphic views](../product/04-interfaces.md#interfaces--the-isomorphic-views)                                | everyday-ai-user, software-engineer | planned     |
 | [Editable-view v1 normalization and semantic hash](../product/04-interfaces.md#editable-view-v1-normalization-and-semantic-hash) | software-engineer                   | implemented |
 | [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal)                                        | everyday-ai-user, software-engineer | planned     |
+| [Candidate — workstream application](../product/04-interfaces.md#candidate--workstream-application)                              | everyday-ai-user, software-engineer | vision      |
 | [Candidate — exact operator command vocabulary](../product/04-interfaces.md#candidate--exact-operator-command-vocabulary)        | everyday-ai-user, software-engineer | vision      |
 | [`προτείνω` — prose as a world action](../product/04-interfaces.md#προτείνω--prose-as-a-world-action)                            | everyday-ai-user, software-engineer | vision      |
 | [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract)                  | everyday-ai-user, software-engineer | planned     |
@@ -248,3 +249,15 @@ as a current blocked verdict.
 | [Source shapes, not copied implementations](../product/11-proteino.md#source-shapes-not-copied-implementations)                                 | everyday-ai-user, software-engineer | vision    |
 | [Candidate first evidence slice](../product/11-proteino.md#candidate-first-evidence-slice)                                                      | everyday-ai-user, software-engineer | vision    |
 | [Unresolved product choices](../product/11-proteino.md#unresolved-product-choices)                                                              | everyday-ai-user, software-engineer | vision    |
+
+## 12 — Workstream application
+
+| Section                                                                                                                                             | Audiences                           | Status |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------ |
+| [Workstream application — end-user workflow candidate](../product/12-workstream-application.md#workstream-application--end-user-workflow-candidate) | everyday-ai-user, software-engineer | vision |
+| [Arriving at the desk](../product/12-workstream-application.md#arriving-at-the-desk)                                                                | everyday-ai-user, software-engineer | vision |
+| [One outcome from request to return](../product/12-workstream-application.md#one-outcome-from-request-to-return)                                    | everyday-ai-user, software-engineer | vision |
+| [Replacing a successful but costly workflow](../product/12-workstream-application.md#replacing-a-successful-but-costly-workflow)                    | everyday-ai-user, software-engineer | vision |
+| [One workstream across repositories](../product/12-workstream-application.md#one-workstream-across-repositories)                                    | everyday-ai-user, software-engineer | vision |
+| [What exists and what must be proved](../product/12-workstream-application.md#what-exists-and-what-must-be-proved)                                  | everyday-ai-user, software-engineer | vision |
+| [Open product choices](../product/12-workstream-application.md#open-product-choices)                                                                | everyday-ai-user, software-engineer | vision |

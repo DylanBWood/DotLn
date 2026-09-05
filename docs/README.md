@@ -12,14 +12,15 @@ docs/LEGAL.md      interim license/legal posture and explicit future decision ga
 docs/product/      the blueprint: vision, principles, domain model,
                    architecture, interfaces, patterns, roadmap, execution guide,
                    publication compiler, audit/resilience map, IR compatibility,
-                   and the προτείνω first-party application thesis
+                   the προτείνω first-party application thesis,
+                   and the candidate end-user workstream application
 docs/publication/  audience/status index, audience outlines, shared sample,
                    implementation overlay template, and staleness proof
-docs/planning/     evidence-backed capability inventory + provisional work-order map
+docs/planning/     capability inventory + human recommendation/preflight map
 docs/lineage/      idea-ledger.md — append-only idea history;
                    inspirations.md — best-known public influence register
 docs/decisions/    ADRs — settled questions
-docs/work-orders/  bounded, executable next steps (feed one to any model)
+docs/work-orders/  stable scope addresses + generated README evidence index
 docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
 docs/control/       append-only resume log and generated current-state projection

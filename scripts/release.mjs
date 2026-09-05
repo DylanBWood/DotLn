@@ -39,6 +39,19 @@ import {
 } from "./lib/paths.mjs";
 import { CONTROL_LOG_SCHEMA_VERSION, statusProjection } from "./resume.mjs";
 
+import {
+  compareVersions,
+  historicalWorkOrders,
+  humanLayerFromTag,
+  isDotLnRelease,
+  localTags,
+  manifestFromTag,
+  manifestWorkOrders,
+  semver,
+  strictVersionsIn,
+  tagAnnotation,
+} from "./lib/release-records.mjs";
+
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const evidenceCommands = [
   "npm ci",
@@ -147,44 +160,6 @@ const ensureNoIgnoredInfluence = (path) => {
     throw new Error(
       `main checkout contains ignored material that can contaminate release evidence: ${ignored[0]}`,
     );
-};
-const semver = (value) => {
-  const match = /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(value);
-  const parts = match?.slice(1).map(Number);
-  return parts?.every(Number.isSafeInteger) ? parts : undefined;
-};
-const strictVersionsIn = (source) =>
-  [
-    ...source.matchAll(
-      /(?<![A-Za-z0-9._+\-])v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?![A-Za-z0-9._+\-])/g,
-    ),
-  ].map((match) => match[0]);
-const compareVersions = (left, right) => {
-  const a = semver(left);
-  const b = semver(right);
-  if (!a || !b)
-    throw new Error(
-      `cannot compare malformed release versions: ${left}, ${right}`,
-    );
-  for (let index = 0; index < 3; index += 1)
-    if (a[index] !== b[index]) return a[index] - b[index];
-  return 0;
-};
-const localTags = (root) => {
-  const rows = runGit(root, [
-    "for-each-ref",
-    "--format=%(refname:strip=2)%00%(objecttype)%00%(objectname)%00%(*objectname)",
-    "refs/tags",
-  ]);
-  return new Map(
-    rows
-      .split("\n")
-      .filter(Boolean)
-      .map((row) => {
-        const [name, objectType, object, peeled] = row.split("\0");
-        return [name, { name, objectType, object, target: peeled || object }];
-      }),
-  );
 };
 const remoteTags = (root) => {
   const rows = runGit(root, ["ls-remote", "--tags", "origin"]);
@@ -1216,52 +1191,6 @@ const releaseEdition = (root, manifest) => {
 };
 const tagMessage = (root, manifest) =>
   `${releaseEdition(root, manifest)}\n\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest, null, 2)}\nDOTLN-MANIFEST-END\n`;
-const tagContents = (root, tag) => {
-  const result = execute("git", ["-C", root, "cat-file", "-p", tag]);
-  if (result.status !== 0)
-    throw new Error(failureOf(result, `cannot read tag ${tag}`));
-  return result.stdout;
-};
-const tagAnnotation = (root, tag) => {
-  const object = tagContents(root, tag);
-  const boundary = object.indexOf("\n\n");
-  if (boundary < 0) throw new Error(`${tag} is not an annotated tag object`);
-  return object.slice(boundary + 2);
-};
-const humanLayerFromTag = (root, tag) => {
-  const annotation = tagAnnotation(root, tag);
-  const marker = annotation.lastIndexOf("\n\nDOTLN-MANIFEST-BEGIN\n");
-  if (marker >= 0 && /\nDOTLN-MANIFEST-END\n?$/.test(annotation.slice(marker)))
-    return annotation.slice(0, marker);
-  return annotation.endsWith("\n") ? annotation.slice(0, -1) : annotation;
-};
-const isDotLnRelease = (humanLayer, tag) => {
-  const firstLine = humanLayer.split("\n", 1)[0];
-  return (
-    firstLine === `DotLn ${tag}` || firstLine.startsWith(`DotLn ${tag} — `)
-  );
-};
-const manifestFromTag = (root, tag) => {
-  const annotation = tagAnnotation(root, tag);
-  const beginMarker = "DOTLN-MANIFEST-BEGIN\n";
-  const endMarker = "\nDOTLN-MANIFEST-END";
-  const begin = annotation.lastIndexOf(beginMarker);
-  const end = annotation.endsWith(`${endMarker}\n`)
-    ? annotation.length - `${endMarker}\n`.length
-    : annotation.endsWith(endMarker)
-      ? annotation.length - endMarker.length
-      : -1;
-  if (begin < 0 || end < begin + beginMarker.length)
-    throw new Error(`${tag} does not contain a DotLn release manifest`);
-  try {
-    return parseJson(
-      annotation.slice(begin + beginMarker.length, end),
-      `${tag} release manifest`,
-    );
-  } catch {
-    throw new Error(`${tag} contains invalid manifest JSON`);
-  }
-};
 const ensureExistingRelease = (root, tag, head, local, remote) => {
   const localTag = local.get(tag);
   const remoteTag = remote.get(tag);
@@ -1670,18 +1599,6 @@ const renderPublishedNotes = (tag) => {
     throw new Error(`${tag} is not a DotLn release tag`);
   process.stdout.write(`${humanLayer}\n`);
 };
-const historicalWorkOrders = (root, tag) => {
-  if (tag !== "v0.2.0") return [];
-  const path = join(root, "docs/releases/v0.2.0.md");
-  if (!existsSync(path)) return [];
-  return [
-    ...new Set(
-      [...readFileSync(path, "utf8").matchAll(/\bWO-\d{3}\b/g)].map(
-        (match) => match[0],
-      ),
-    ),
-  ];
-};
 const releaseWorkOrdersBetween = (root, previousRelease, release) => {
   const workOrders = [];
   for (const commit of firstParentCommits(root, previousRelease, release)) {
@@ -1716,8 +1633,8 @@ const listPublishedReleases = () => {
       manifest?.release?.previousRelease ?? releases[index - 1]?.name,
       item.name,
     );
-    if (workOrders.length === 0 && /^WO-\d{3}$/.test(manifest?.workOrder?.id))
-      workOrders.push(manifest.workOrder.id);
+    if (workOrders.length === 0)
+      workOrders.push(...manifestWorkOrders(manifest));
     if (workOrders.length === 0)
       workOrders.push(...historicalWorkOrders(toolRoot, item.name));
     return {
