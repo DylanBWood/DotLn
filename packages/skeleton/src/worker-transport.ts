@@ -10,6 +10,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { feedbackClaudeSettings } from "./loadouts/feedback.js";
 import {
   WorkerFailure,
   WORKER_TIMEOUT_MS,
@@ -19,6 +20,7 @@ import {
   type WorkerTransportName,
 } from "./worker-protocol.js";
 import {
+  FEEDBACK_VERIFIER_LIMITS,
   parseTransportResult,
   validateTransportRequest,
   transportPrompt,
@@ -189,7 +191,12 @@ export function canonicalWorkerArgs(
       "--setting-sources",
       "project,local",
       "--settings",
-      '{"autoMemoryEnabled":false}',
+      "feedback" in request &&
+      request.feedback?.mechanisms.some(
+        (item) => item.handler === "attribution" && item.enforcement === "hard",
+      )
+        ? JSON.stringify(feedbackClaudeSettings)
+        : '{"autoMemoryEnabled":false}',
       "--tools",
       "",
       "--disable-slash-commands",
@@ -199,7 +206,9 @@ export function canonicalWorkerArgs(
       '{"mcpServers":{}}',
       "--no-chrome",
       "--max-budget-usd",
-      "1.00",
+      "feedback" in request && request.feedback
+        ? FEEDBACK_VERIFIER_LIMITS.maxBudgetUsd
+        : "1.00",
     ];
   }
   if (request.effort !== "unknown") throw new WorkerFailure("profile-refused");
@@ -325,7 +334,7 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
   readonly harnessVersion: string;
   constructor(
     private readonly binary: string,
-    observedVersion: string,
+    observedVersions: readonly string[],
     private readonly runner: ProcessRunner = runWorkerProcess,
     version?: string,
   ) {
@@ -338,7 +347,7 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
       });
     this.harnessVersion =
       installed.match(/\b\d+\.\d+\.\d+\b/u)?.[0] ?? "unknown";
-    if (this.harnessVersion !== observedVersion)
+    if (!observedVersions.includes(this.harnessVersion))
       throw new WorkerFailure("profile-refused");
   }
   dispatch<R extends TransportRequest>(
@@ -361,7 +370,10 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         args,
         cwd: request.cwd,
         input: transportPrompt(request),
-        timeoutMs: WORKER_TIMEOUT_MS,
+        timeoutMs:
+          "feedback" in request && request.feedback
+            ? FEEDBACK_VERIFIER_LIMITS.timeoutMs
+            : WORKER_TIMEOUT_MS,
       });
       const receipt = process.accepted.then(() => ({
         commandId: request.command.commandId,
@@ -384,12 +396,12 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
 export class ClaudeCliPrintWorkOrderTransport extends CliWorkOrderTransport {
   readonly name = "claude-cli-print" as const;
   constructor(runner?: ProcessRunner, version?: string) {
-    super("claude", "2.1.261", runner, version);
+    super("claude", ["2.1.261", "2.1.263"], runner, version);
   }
 }
 export class CodexCliExecWorkOrderTransport extends CliWorkOrderTransport {
   readonly name = "codex-cli-exec" as const;
   constructor(runner?: ProcessRunner, version?: string) {
-    super("codex", "0.153.4", runner, version);
+    super("codex", ["0.153.4"], runner, version);
   }
 }

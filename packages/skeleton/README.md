@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.11.0
+# `@dotln/skeleton` 0.12.0
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on
@@ -365,4 +365,71 @@ npm run evidence:verification -- --check
 node --test packages/compiler/dist/test/verification.test.js packages/skeleton/dist/test/verification.test.js
 ```
 
-See the [domain payload and matrix contract](../../docs/product/02-domain-model.md#independent-verification-v1) and [WO-010 acceptance mapping](../../docs/evidence/WO-010/README.md). `evidence:verification -- --write` regenerates the synthetic receipt after an intentional source change; `npm test` checks its exact bytes. Compiler-version changes record current loadout identity evidence under `docs/evidence/WO-010/artifact-identity/`, leaving prior WO-029/WO-022 receipts intact.
+See the [domain payload and matrix contract](../../docs/product/02-domain-model.md#independent-verification-v1) and [WO-010 acceptance mapping](../../docs/evidence/WO-010/README.md). `evidence:verification -- --write` regenerates the synthetic receipt after an intentional source change; `npm test` checks its exact bytes. Compiler-version changes record current loadout identity evidence under `docs/evidence/WO-011/artifact-identity/`, leaving prior receipts intact. The current verification fixture edition is `docs/evidence/WO-011/verification/`.
+
+## Feedback compiler and bounded self-hosting
+
+Component `0.12.0` prepares application `v0.13.0` with compiler `0.6.0`.
+The personal [ten-unit catalog](src/loadouts/feedback.ts) is compiled into
+explicit boundary checks, with the semantic correction transition in the shared
+reactor. `feedbackBoundary` checks host-derived facts before running an effect;
+writer reservations must remain locked across observation and dispatch. A read
+receipt witnesses delivered bytes, not whether the reader understood them.
+The source-comment boundary loads the existing TypeScript `5.4.5` parser on
+demand and compares actual comment ranges; parser-version drift refuses.
+This host dependency is recorded in ADR-0002. The pure compiler and kernel
+retain zero runtime dependencies.
+
+Run the repeatable fixture evidence:
+
+```sh
+npm run evidence:feedback -- --write
+```
+
+This executes each named regression with its mechanism present and removed,
+then records the matched instruction-byte comparison and fixture maturity
+observations. The source pin covers the declared audit implementation and
+fixture surfaces. Build before invoking the underlying JS APIs directly.
+
+The self-hosted task is one read-only audit of this repo. Its executor is a fixed
+local subprocess runner. A separate verifier receives the pinned source/report
+capsule through an existing CLI transport, in an empty Git mount with model
+file tools disabled. It does not receive this session's implementation narrative.
+
+```sh
+DOTLN_LIVE_WORKERS=1 npm run dotln -- feedback-audit --store .runtime/feedback-audit --transport claude-cli-print --model claude-sonnet-5 --effort max
+npm run evidence:feedback -- --record-selfhost .runtime/feedback-audit
+```
+
+Use an unused store for a new source revision. Reusing the same store resumes
+only the same source, policy, and verifier selection; an already saved audit or
+completed verification is not dispatched again.
+`dotln status --store .runtime/feedback-audit/verifier` projects the
+verification matrix from its canonical events. The store lives under the
+gitignored `.runtime/` root and its path must be canonical: the host refuses
+the verifier mount when its resolved path differs from the path given, so on
+macOS `/tmp/...` (a symlink to `/private/tmp`) is refused after the audit has
+already run, while `/private/tmp/...` or a repository-relative directory is
+accepted. `--transport fake` exercises the deterministic path without
+live-model claims and cannot be recorded as the witnessed live self-hosted run.
+The default transport is fake; a live transport needs explicit model/effort and
+`DOTLN_LIVE_WORKERS=1`, as in the existing demos.
+The feedback verifier has a fixed ten-minute process deadline and a $3 Claude
+budget cap, recorded with its attempt. The initial live source audit exceeded
+the inherited three-minute bound; other worker profiles retain their existing
+limits. An interrupted command stays pending and its next attempt is logged.
+
+When the feedback profile is equipped on a Claude verification request, the
+host emits command-scoped attribution settings (`commit` and `pr` empty,
+`sessionUrl` false). The [official setting reference](https://code.claude.com/docs/en/settings-reference)
+was retrieved with Context7 on 2026-09-06. No user/account/repository setting is
+installed. `scripts/feedback-commit-msg.mjs` is the separate hook adapter; its
+real-Git fixture installs it only in a temporary test repository. Missing builds
+or an unreadable message fail the hook closed. The predicate rejects named AI
+coauthor trailers and generated-with footers while allowing human coauthors and
+ordinary descriptions of AI-related functionality. A host must explicitly
+install the hook for its selected publication boundary.
+
+The [WO-011 evidence receipt](../../docs/evidence/WO-011/README.md) owns the
+acceptance mapping, measured limits, and source edition. Outside an equipped
+host, the existing execution guide remains the manual rule carrier.

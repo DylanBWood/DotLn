@@ -112,6 +112,21 @@ v2 and group constants in 02 are activation inputs for later extensions.
 
 WO-010 adds the separate `verification-v1` capsule contract and `verificationResultVersion: 1` accepted-result payload, with compiler `0.5.0`, skeleton `0.11.0` and application target `v0.12.0`. Kernel `0.2.1`, existing inspection results, event-envelope schema 1 and compiled-loadout contract 1 are unchanged. The capsule's input key includes its compiler package version, criteria, subject bytes and witnesses; it is not a `CompiledProgram` semantic hash. Dispatch/admission recompute the capsule and refuse drift. Current loadout artifact evidence is now recorded under WO-010; WO-029 and WO-022 evidence remains historical. `dotln status` adds `acceptanceEvidenceMatrices`, an empty array for stores without verification streams. Matrix status comes from accepted evidence events and source-derived staleness, never a new mutable source file.
 
+WO-011 adds `feedback-v1` as a separate optional compiled contract, with compiler
+`0.6.0`, skeleton `0.12.0`, and application target `v0.13.0`. Its canonical
+`policyHash` covers the complete normalized unit definitions and lowered
+handlers, including compiler package version; it does not change existing
+loadout semantic hashes. The single reactor adds a feedback audit/correction
+branch and preserves old traces when that branch is absent. An optional
+feedback profile on verifier transport requests participates in the existing
+request cache identity and selects command-scoped attribution settings.
+It also selects fixed feedback-verifier resource limits, recorded in each
+attempt; unequipped requests retain their previous limits.
+Historical numbered evidence stays intact; current generated identity and
+verification fixtures live under `docs/evidence/WO-011/`. The
+[feedback contract](02-domain-model.md#feedback-compiler-v1) states its host and
+judgment boundaries. No new kernel dependency or general migration is introduced.
+
 ## Transformation graph
 
 Schema and component changes form a directed graph of named, versioned

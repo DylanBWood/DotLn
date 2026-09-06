@@ -24,7 +24,7 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0]))
   throw new Error(
     "usage: verification-evidence.mjs --write|--check (build first)",
   );
-const root = new URL("../docs/evidence/WO-010/", import.meta.url);
+const root = new URL("../docs/evidence/WO-011/verification/", import.meta.url);
 const directory = realpathSync(
   mkdtempSync(join(tmpdir(), "dotln-verification-evidence-")),
 );

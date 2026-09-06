@@ -29,6 +29,9 @@ docs/evidence/WO-022/artifact-identity/*.json
 docs/evidence/WO-010/artifact-identity/*.json
 docs/evidence/WO-010/matrix.json
 docs/evidence/WO-010/stale-status.json
+docs/evidence/WO-011/artifact-identity/*.json
+docs/evidence/WO-011/verification/*.json
+docs/evidence/WO-011/feedback.json
 docs/verifications/WO-*/
 docs/final-reviews/WO-*/
 docs/releases/v*.md

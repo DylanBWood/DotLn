@@ -7,7 +7,7 @@ import {
   type EventDraft,
   type ResultEnvelope,
 } from "@dotln/kernel";
-import { canonicalStringify } from "@dotln/compiler";
+import { canonicalStringify, type CompiledFeedback } from "@dotln/compiler";
 import { WorkerStore } from "./worker-store.js";
 import {
   HEARTBEAT_MS,
@@ -20,6 +20,7 @@ import type {
   TransportDispatch,
 } from "./worker-transport.js";
 import {
+  FEEDBACK_VERIFIER_LIMITS,
   parseEvidenceResult,
   validateTransportRequest,
   type EvidenceWorkerRequest,
@@ -135,6 +136,7 @@ export class VerificationDriver {
 }
 
 export interface VerificationHostOptions {
+  readonly feedback?: CompiledFeedback;
   readonly driver: VerificationDriver;
   readonly transport: WorkOrderTransport<EvidenceWorkerRequest>;
   readonly now: () => number;
@@ -181,6 +183,7 @@ export class VerificationHost {
     this.expire();
     const episodeId = `${pending.command.episodeId}_attempt_${pending.attempts.length + 1}`;
     const request: EvidenceWorkerRequest = {
+      ...(this.options.feedback ? { feedback: this.options.feedback } : {}),
       kind: "evidence-worker",
       command: pending.command,
       capsule: pending.capsule,
@@ -218,6 +221,12 @@ export class VerificationHost {
         selectionSource: "host-launch",
         effectiveModel: "unknown",
         effectiveEffort: "unknown",
+        ...(request.feedback
+          ? {
+              feedbackPolicyHash: request.feedback.policyHash,
+              limits: FEEDBACK_VERIFIER_LIMITS,
+            }
+          : {}),
         heartbeatMs: HEARTBEAT_MS,
         leaseMs: LEASE_MS,
         leaseExpiresAt: now() + LEASE_MS,

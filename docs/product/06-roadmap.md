@@ -1099,7 +1099,7 @@ This recommendation has no version, work-order identity, or activation
 authority and does not expand WO-009, WO-010, or the current resume protocol.
 
 <!-- prettier-ignore -->
-## Application version pending — Feedback compiler v1 (ten units)  → WO-011
+## v0.13.0 — Feedback compiler v1 (ten units)  → WO-011
 
 Ten representative FeedbackUnits authored from the corpus (this repo's ledger,
 not any external rule stack): anti-oscillation; correctness-over-sycophancy; the
@@ -1113,6 +1113,17 @@ equivalents; each unit's fixture fails when the mechanism is removed; **and the
 first self-hosted step** — one DotLn work order for this repo itself is
 compiled, dispatched, executed, and verified by DotLn (ADR-0001's strangler
 experiment gets its vehicle).
+
+**WO-011 source (2026-09-06):** the omitted activation target is assigned
+`v0.13.0`, a minor addition above published `v0.12.0`. Compiler `0.6.0` adds the
+separate `feedback-v1` contract and skeleton `0.12.0` hosts its ten personal
+units, boundary adapters, semantic correction branch, and bounded
+`dotln feedback-audit` work order. Kernel `0.2.1` and existing loadout/event
+contracts stay at their current versions. The audit executes local regression
+subprocesses and invokes a separate verifier over pinned evidence; the
+[executor receipt](../evidence/WO-011/README.md) distinguishes controlled fixture
+proof, matched instruction-byte accounting, and the witnessed self-hosted run.
+The manual repository verification and publication phases remain separate.
 
 ## Application version pending — Projections & console
 

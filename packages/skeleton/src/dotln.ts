@@ -12,6 +12,7 @@ import { WorkerFailure, type WorkerEffort } from "./worker-protocol.js";
 import type { FixtureTree } from "./scenario.js";
 import { runVerificationDemo } from "./verification-demo.js";
 import { FakeVerificationTransport } from "./verification-fake.js";
+import { runFeedbackSelfhost } from "./feedback-selfhost.js";
 
 const args = process.argv.slice(2);
 const command = args.shift();
@@ -38,7 +39,7 @@ try {
   const directory = options.get("--store");
   if (!directory)
     throw new Error(
-      "usage: dotln status --store <directory> [--json] | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln verify-demo --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]",
+      "usage: dotln status --store <directory> [--json] | dotln demo --store <directory> --transport <claude-cli-print|codex-cli-exec> --model <model> --effort <level> [--beacons] | dotln <verify-demo|feedback-audit> --store <directory> [--transport fake|claude-cli-print|codex-cli-exec --model <model> --effort <level>]",
     );
   if (command === "status") {
     if (options.size !== 1 || switches.has("--beacons"))
@@ -51,7 +52,7 @@ try {
         ? JSON.stringify(status, null, 2)
         : renderWorkerStatus(status),
     );
-  } else if (command === "verify-demo") {
+  } else if (command === "verify-demo" || command === "feedback-audit") {
     if (switches.size > 0) throw new Error("demo requires no switches");
     const transportName = options.get("--transport") ?? "fake";
     const model =
@@ -74,14 +75,34 @@ try {
         : transportName === "claude-cli-print"
           ? new ClaudeCliPrintWorkOrderTransport()
           : new CodexCliExecWorkOrderTransport();
-    const result = await runVerificationDemo({
-      directory,
-      transport,
-      model,
-      effort: effort as WorkerEffort,
-    });
-    console.log(JSON.stringify(result.envelope));
-    if (result.matrix.phase !== "complete") process.exitCode = 1;
+    if (command === "feedback-audit") {
+      const result = await runFeedbackSelfhost({
+        root: process.cwd(),
+        directory,
+        transport,
+        model,
+        effort: effort as WorkerEffort,
+      });
+      console.log(
+        JSON.stringify({
+          workOrderId: result.workOrder.workOrderId,
+          phase: result.matrix.phase,
+          fixtures: result.report.fixtures.length,
+          savedInstructionBytes: result.report.context.savedBytes,
+          verifier: transport.name,
+        }),
+      );
+      if (!result.complete) process.exitCode = 1;
+    } else {
+      const result = await runVerificationDemo({
+        directory,
+        transport,
+        model,
+        effort: effort as WorkerEffort,
+      });
+      console.log(JSON.stringify(result.envelope));
+      if (result.matrix.phase !== "complete") process.exitCode = 1;
+    }
   } else if (command === "demo") {
     if (process.env.DOTLN_LIVE_WORKERS !== "1")
       throw new Error(
@@ -119,7 +140,8 @@ try {
     // The dispatching session sees exactly the compact envelope, never CLI logs.
     console.log(JSON.stringify(result.envelope));
     if (result.envelope.status !== "completed") process.exitCode = 1;
-  } else throw new Error("expected status, demo or verify-demo");
+  } else
+    throw new Error("expected status, demo, verify-demo or feedback-audit");
 } catch (error) {
   // Unexpected external diagnostics may contain paths or auth details.
   console.error(

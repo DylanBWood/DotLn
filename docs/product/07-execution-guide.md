@@ -284,8 +284,8 @@ replacing an approach, check the recorded reasons for earlier rejections; neithe
 repeat a rejected approach nor jump to its opposite without supporting evidence.
 For example, a complaint about paragraph-length PR titles calls for useful,
 concise titles; an earlier title's word count does not establish a length rule.
-This is the current manual application of anti-oscillation, whose compiled
-mechanism remains assigned to WO-011.
+This is the manual application outside the equipped
+[WO-011 feedback host](02-domain-model.md#feedback-compiler-v1).
 
 In ideation mode:
 
@@ -343,6 +343,11 @@ synthesis. Record the operator's explicit scope-expansion authority in the
 affected work order (or a new bounded work order), together with a receipt that
 names the raw intake batch, ledger entries, product/decision/schema surfaces
 changed, unresolved choices, and required review.
+
+Local intake backup ZIPs are disposable operational snapshots. Do not put their
+filenames in work orders or durable receipts, or make them review/evidence
+dependencies. Provenance points to canonical intake and promoted source;
+routine deletion of an obsolete local ZIP does not invalidate that provenance.
 
 The eventual verifier and final reviewer must digest that receipt and the
 promoted documents as part of their subject—not treat them as incidental notes.
@@ -532,6 +537,12 @@ references to bound the check. Record the affected surfaces and evidence in the
 existing work-order outcome or breakout receipt; do not create a new ceremony
 or rewrite unrelated historical artifacts.
 
+Apply the [corpus maintenance constraint](03-architecture.md#corpus-policy)
+when choosing that surface: reuse an existing outcome or receipt, link canonical
+evidence, and regenerate derived views. Retaining required evidence does not
+require repeating its explanation in another report. A proposed consolidation
+must preserve the current source, verification, and recovery contracts.
+
 The verifier checks those claims and runnable examples against the subject and
 acceptance evidence. Final review checks their consistency across the resulting
 documentation and publication package. It may make only the already permitted
@@ -690,6 +701,15 @@ claim evidence or releases it does not have.
   no apology theater.
 
 ## Model-specific notes
+
+WO-011's equipped feedback host absorbs the executable checks for decision
+lineage, evidence-backed judgments, semantic correction, application checks,
+attribution, writer isolation, suppression diffs, output reads, complete scope,
+and bounded cleanup at its declared boundaries. The
+[contract and evidence](02-domain-model.md#feedback-compiler-v1) identify those
+consumers and their limits. Ordinary `resume` sessions still follow this guide;
+the matched context measurement does not authorize removing rules from unrelated
+harness startup files or claim that all manual duties have been replaced.
 
 - **Operator default (2026-09-04):** Codex steps use GPT-6 Astra at `max`
   unless the operator specifies otherwise. This is an operator-attested

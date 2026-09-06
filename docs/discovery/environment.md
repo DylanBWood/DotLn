@@ -539,3 +539,26 @@ No account configuration was changed. Session persistence controls were
 accepted at these versions; no fresh session-file search was performed.
 Earlier live failures and the final repair are disclosed in the
 [executor evidence](../evidence/WO-009/README.md).
+
+## WO-011 bounded harness observation (2026-09-06)
+
+`claude --version` reports `2.1.263`; its installed help includes all fifteen
+flags used by the established print launch. The transport retains `2.1.261` and
+adds this observed patch rather than accepting an arbitrary version. The
+[feedback evidence receipt](../evidence/WO-011/README.md) records the live
+verification outcome separately. The documented attribution settings were
+retrieved through Context7 from the official settings reference; their
+command-scoped emission is tested. No account or persistent setting changed.
+Codex remains locally observed at `0.153.4`; the parent executor uses the
+operator-attested GPT-6 Astra / max selection, with no effective-session readback
+claim. Earlier observations remain time-indexed above.
+
+The final WO-011 source audit completed with both criteria verified on its
+second physical verifier attempt. The first return was refused as
+`invalid-result`; recovery reused the same pinned task and saved audit, with
+the same launch selections. Earlier source observations include a three-minute
+timeout and a completed audit superseded by an executor-found source-comment
+scanner defect. The final feedback profile records a ten-minute deadline and
+$3 Claude cap; other profiles keep their existing limits. Canonical final
+events and the source pins are linked from the feedback receipt above. This is
+a live verifier over controlled fixture evidence, not a field-performance claim.

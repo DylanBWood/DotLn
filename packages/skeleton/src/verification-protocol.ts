@@ -1,5 +1,7 @@
 import {
   assertVerificationTask,
+  assertCompiledFeedback,
+  type CompiledFeedback,
   canonicalStringify,
   copyFinding,
   verificationLine,
@@ -21,7 +23,14 @@ import {
   type WorkerResult,
 } from "./worker-protocol.js";
 
+/** Fixed bound for the source-heavy feedback audit; other profiles keep WO-009 limits. */
+export const FEEDBACK_VERIFIER_LIMITS = {
+  timeoutMs: 600_000,
+  maxBudgetUsd: "3.00",
+} as const;
+
 export interface EvidenceWorkerRequest {
+  readonly feedback?: CompiledFeedback;
   readonly kind: "evidence-worker";
   readonly command: Command;
   readonly workOrder: WorkOrder;
@@ -372,6 +381,8 @@ export function validateTransportRequest(request: TransportRequest): void {
   if (!isEvidenceRequest(request)) return validateRequest(request);
   try {
     assertVerificationTask(request.capsule);
+    if (request.feedback !== undefined)
+      assertCompiledFeedback(request.feedback);
     if (
       canonicalStringify(request.workOrder) !==
         canonicalStringify(request.capsule.workOrder) ||

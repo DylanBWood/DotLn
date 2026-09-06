@@ -104,3 +104,14 @@ notes and tooling choices within the decided constraints.
   native; the pinned 5.4.5 accepts the same field). That one-line change is
   implementation and lands through a work order's evidence, not through this
   amendment.
+
+- 2026-09-06, WO-011 source-comment boundary: the skeleton's feedback adapter
+  consumes the already pinned TypeScript `5.4.5` parser as an exact runtime
+  dependency, loaded only when a source-comment check runs. A reproduced
+  lightweight-scanner defect let a quoted regular expression hide a later
+  type-suppression comment. Parsed token boundaries distinguish actual comments
+  from regex, template, and JSX text; the pure compiler compares host-supplied
+  comment bodies and acquires no dependency. Kernel/compiler remain free of
+  runtime dependencies. This reuses the existing Apache-2.0 lockfile package,
+  introduces no new version or vendored source, and records its host consumer
+  under the dependency-posture rule above.

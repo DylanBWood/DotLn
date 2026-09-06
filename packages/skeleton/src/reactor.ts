@@ -20,6 +20,12 @@ import {
   type WorkOrder,
 } from "@dotln/kernel";
 import {
+  applyFeedbackCorrection,
+  assertCompiledFeedback,
+  compileFeedbackAudit,
+  SEMANTIC_CORRECTIONS,
+  type CompiledFeedback,
+  type CorrectionState,
   affectedVerificationCriteria,
   assertVerificationTask,
   changedVerificationSurfaces,
@@ -96,6 +102,7 @@ export type Loadout = LoadoutGraph;
 type RuntimePolicy = Readonly<{ maintenance: string }>;
 
 export type RuntimeState = Readonly<{
+  feedback?: JsonValue;
   verification?: JsonValue;
   presence: "away" | "returned";
   rngState: number;
@@ -1323,6 +1330,8 @@ const react = (
 };
 
 export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
+  if (event.type === "FeedbackAuditOpened" || state.feedback !== undefined)
+    return feedbackDecision(state, event);
   if (state.verification !== undefined)
     return verificationDecision(state, event);
 
@@ -2032,4 +2041,228 @@ function verificationDecision(
       cadenceEvaluations: [],
     },
   };
+}
+
+export interface FeedbackRuntimeState {
+  readonly workstreamId: string;
+  readonly program: CompiledFeedback;
+  readonly workOrder: WorkOrder;
+  readonly subject: string;
+  readonly authority: AuthorityEnvelope;
+  readonly policy: CorrectionState;
+  readonly pending: Command | null;
+  readonly persisted: boolean;
+  readonly result: JsonValue | null;
+}
+export function feedbackStateFromRuntime(
+  state: RuntimeState,
+): FeedbackRuntimeState {
+  if (state.feedback === undefined)
+    throw new Error("feedback workstream not opened");
+  return state.feedback as unknown as FeedbackRuntimeState;
+}
+/** Feedback shares the single kernel decider. All I/O remains in its host. */
+function feedbackDecision(
+  state: RuntimeState,
+  event: Event,
+): Decision<RuntimeState> {
+  if (event.type === "FeedbackAuditOpened") {
+    if (
+      state.feedback !== undefined ||
+      event.actorId !== "feedback-host" ||
+      !event.workstreamId
+    )
+      throw new Error("feedback opening refused");
+    const value = event.payload as unknown as {
+      program: CompiledFeedback;
+      workOrder: WorkOrder;
+      subject: string;
+      authority: AuthorityEnvelope;
+    };
+    assertCompiledFeedback(value.program);
+    if (
+      !same(
+        value.workOrder,
+        compileFeedbackAudit(
+          value.program,
+          value.workOrder.repo,
+          value.workOrder.baseCommit,
+          value.subject,
+        ),
+      )
+    )
+      throw new Error("feedback work order drift");
+    const next: FeedbackRuntimeState = {
+      ...value,
+      workstreamId: event.workstreamId,
+      pending: null,
+      persisted: false,
+      result: null,
+      policy: {
+        allowedEffects: value.authority.allowedEffects,
+        destructiveEffects: ["repo.write", "repo.delete", "publish"],
+        scopeExpansionAllowed: false,
+        preserveEvidence: true,
+        diagnosisRequired: false,
+        corrections: [],
+      },
+    };
+    return observed(
+      { ...state, feedback: json(next) },
+      event,
+      "feedback-opened",
+    );
+  }
+  const before = feedbackStateFromRuntime(state);
+  if (event.workstreamId !== before.workstreamId)
+    return observed(state, event, "feedback-outside-workstream");
+  assertCompiledFeedback(before.program);
+  if (
+    event.actorId === "operator" &&
+    SEMANTIC_CORRECTIONS.some((type) => type === event.type)
+  ) {
+    const policy = applyFeedbackCorrection(
+      before.program,
+      before.policy,
+      event,
+    );
+    const decision = observed(
+      { ...state, feedback: json({ ...before, policy }) },
+      event,
+      "feedback-correction",
+    );
+    return policy === before.policy
+      ? decision
+      : {
+          ...decision,
+          continuation: Program.Emit(
+            {
+              schemaVersion: 1,
+              type: "FeedbackDiagnosisRequested",
+              actorId: "feedback-host",
+              occurredAt: event.occurredAt,
+              workstreamId: event.workstreamId,
+              causationId: event.eventId,
+              payload: {
+                correctionEventId: event.eventId,
+                policyHash: before.program.policyHash,
+              },
+            },
+            Program.Done(),
+          ),
+        };
+  }
+  if (event.actorId !== "feedback-host")
+    return observed(state, event, "feedback-untrusted-event");
+  if (event.type === "FeedbackAuditExecutionRequested") {
+    if (
+      !before.pending ||
+      !before.persisted ||
+      before.result ||
+      before.policy.diagnosisRequired ||
+      !before.policy.allowedEffects.includes("feedback.audit")
+    )
+      return observed(state, event, "feedback-execution-refused");
+    const grant = authorize(before.pending.intent, before.authority, {
+      now: event.occurredAt,
+      actorId: "feedback-host",
+      workstreamId: event.workstreamId!,
+      episodeId: "ep_feedback_executor",
+      decisionIndex: 1,
+      intentIndex: 0,
+      evidence: ["feedback-policy", "pinned-source"],
+      revokedBy: [],
+    });
+    return observed(
+      state,
+      event,
+      grant.authorized && same(grant.command, before.pending)
+        ? "feedback-execution-ready"
+        : "feedback-execution-refused",
+    );
+  }
+  if (event.type === "FeedbackAuditRequested") {
+    if (
+      before.pending ||
+      before.result ||
+      before.policy.diagnosisRequired ||
+      !before.policy.allowedEffects.includes("feedback.audit")
+    )
+      return observed(state, event, "feedback-audit-refused");
+    const intent: ActIntent = {
+      kind: "Act",
+      effect: "feedback.audit",
+      resource: "audits",
+      payload: json({
+        workOrder: before.workOrder,
+        policyHash: before.program.policyHash,
+        subject: before.subject,
+      }),
+    };
+    const grant = authorize(intent, before.authority, {
+      now: event.occurredAt,
+      actorId: "feedback-host",
+      workstreamId: event.workstreamId!,
+      episodeId: "ep_feedback_executor",
+      decisionIndex: 1,
+      intentIndex: 0,
+      evidence: ["feedback-policy", "pinned-source"],
+      revokedBy: [],
+    });
+    if (!grant.authorized)
+      return {
+        ...observed(state, event, "feedback-authority-refused"),
+        continuation: Program.Emit(grant.refusal, Program.Done()),
+      };
+    const program = Program.Invoke(grant.command.commandId, intent, {
+      completed: Program.Done(),
+    });
+    const dispatched = decideProgram(program, {}, env(event.occurredAt));
+    return {
+      ...observed(
+        { ...state, feedback: json({ ...before, pending: grant.command }) },
+        event,
+        "feedback-audit-dispatched",
+      ),
+      intents: dispatched.intents,
+      continuation: program,
+    };
+  }
+  if (event.type === "CommandPersisted") {
+    const command = (event.payload as unknown as { command: Command }).command;
+    if (!before.pending || before.result || !same(command, before.pending))
+      throw new Error("feedback command persistence mismatch");
+    return observed(
+      { ...state, feedback: json({ ...before, persisted: true }) },
+      event,
+      "feedback-command-persisted",
+    );
+  }
+  if (event.type === "CommandResult") {
+    const result = event.payload as unknown as {
+      commandId: string;
+      subject: string;
+      policyHash: string;
+      report: JsonValue;
+    };
+    if (
+      !before.persisted ||
+      !before.pending ||
+      before.result ||
+      result.commandId !== before.pending.commandId ||
+      result.subject !== before.subject ||
+      result.policyHash !== before.program.policyHash ||
+      result.report === undefined
+    )
+      throw new Error("feedback result mismatch");
+    return {
+      ...observed(
+        { ...state, feedback: json({ ...before, result: result.report }) },
+        event,
+        "feedback-audit-executed",
+      ),
+      continuation: Program.Done(),
+    };
+  }
+  return observed(state, event, "feedback-observed");
 }
