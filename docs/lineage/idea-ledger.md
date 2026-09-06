@@ -23,6 +23,232 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-06 phase-two planning pass (operator-dispatched, after the `v0.13.1` close)
+
+Source: the operator's 2026-09-06 `planning:` dispatch, "the largest and
+girthiest planning session to date", preserved verbatim in local-only
+`docs/intake/notes/2026-09-06-phase-two-planning-dispatch.md`, SHA-256
+`e8ccc4e788ca0ce66612a12cdd8919d7f4dee5e9303b799460e18dc1c087b287`. The pass
+ran on the clean `main` checkout between work orders with Beware of Naive
+Interventionism and Do Nothing equipped, delegated two read-only sweeps (code
+and documentation structure) to fresh sessions, filed seven planner-synthesized
+drafts (WO-032 through WO-038), replaced the completed marked sequence, wrote
+[`docs/planning/phase-two-plan-2026-09-06.md`](../planning/phase-two-plan-2026-09-06.md),
+and recorded a NoOp with its reversal condition for every candidate it declined.
+Identifiers are opaque stable references; a recommendation records a finding
+and a bounded route, not activation authority. The clean-room screen found no
+employer, credential, internal-service, or other stop condition; the two
+repositories named are the operator's own empty public repositories.
+Ordering note: this section is inserted below the header per the declared
+newest-first rule; seven sections appended below §Resolutions on 2026-09-05
+and 2026-09-06 are left where they are and WO-035 relocates them with a
+migration note. The operator later widened the pass ("take as much time and
+resources to fully understand the requests and vision and make any necessary
+updates you wish"), which added the targeted founding-corpus lookup, the
+external-fork consequences, and WO-037; the operator then resolved the
+license gate (WO-038) and asked how a session in the fork learns the Angular
+repository's purpose.
+
+- **The blueprint-to-code gap is the real gap; intake-to-ledger is not**
+  `adopted`
+  - The founding corpus (eleven chats, two notes files, forty-six images) is
+    represented at the entry level; 364 entries are `adopted`, 283
+    `preserved`, 60 `transformed`, 16 `raw`. Of nine pinned capability rows
+    none is above level 2. Twenty-odd of twenty-seven closed orders are
+    control-plane, evidence, or projection machinery and six are runtime
+    rungs. The smallest useful loop the vision demands has no product surface
+    and no second repository. The pass therefore turns the horizon toward the
+    visible loop rather than toward more intake mining; WO-109 stays
+    unactivated with its preflight.
+- **The next rung is the console, and the operator's two asks coincide with
+  it** `adopted`
+  - ADR-0002's build order ends "feedback compiler → projections → pattern
+    workshop"; the roadmap's next unfilled rung is Projections & console. The
+    operator asked for a console and for the enterprise workflow; both land in
+    this horizon without changing the accepted build order. The pattern
+    workshop is the recommended wave after.
+- **Console v0 in core, console v1 through the launchpad** `adopted`
+  - WO-032 is a read-only showrunner board: a pure projection over
+    `status --json`, `usage --json`, the constellation, `release list`, the
+    generated index, the publication index, the capability table, and the
+    roadmap, rendered in the terminal and as a zero-asset static page with no
+    framework, no command invocation, and no second state machine. The Angular
+    shell is console v1 in the operator's example consumer, built as the
+    pilot's first target change over the board's versioned JSON view model;
+    the framework decision waits for that evidence. Products 04, 06, and 13
+    carry the split.
+- **The enterprise workflow is a launchpad exported from core, forked, and
+  pointed at target repositories that receive only clean pull requests**
+  `adopted`
+  - "Use DotLn to create the starter" means exporting the process kit — the
+    control plane, resume phrases, worktrees, checkpoints, independent
+    verification, final review, release close, and operating documents — not
+    the runtime workers, which remain read-only inspectors. The starter is a
+    template of a launchpad instance with pinned provenance, never a fork of
+    core; the operator's fork is their launchpad; targets keep no DotLn state
+    (workplace camouflage). This is ADR-0006 Decision 7's first physical
+    slice, with the starter as the representative second implementation shape
+    (dated amendment). WO-033 files the mechanics, WO-034 the pilot; products
+    03 and 12 and the roadmap's new launchpad rung carry the route.
+- **External organizations fork the starter; kit and instance separate; the
+  license gate has a date** `adopted` `operator-directed`
+  - The operator clarified during the pass that the starter is meant for
+    several external organizations to fork as the base of their workflows,
+    the operator's fork being the first test and the first external fork
+    expected within about a week. Consequences recorded in the plan, WO-033,
+    products 03/06/12, and `docs/LEGAL.md`: the licensing decision precedes
+    the first external fork; the starter separates manifest-listed kit files
+    from instance files so upstream updates merge into a fork without
+    touching its orders and evidence; updates flow core → starter by a
+    manifest-driven export update and starter → forks by ordinary reviewed
+    upstream merges, never automatically; a fork is taken right after the
+    starter's first exported commit; each fork's first order is environment
+    truth for its own host, harness, and gateway. No external organization's
+    material enters this repository, and the operator's own work-time fork
+    is an instance like any other: its content never flows back to core.
+    `DotLn-Angular` carries three purposes for the pilot — an exemplar of the
+    Angular, Nx, and NgRx architecture the operator wants emulated, the proof
+    that the starter builds out another repository, and a console for DotLn
+    — and its first order establishes the repo-native authority later orders
+    follow (Principle 17).
+- **License posture decided: Apache-2.0 code, CC BY 4.0 documentation, DCO
+  inbound, names reserved** `adopted` `operator-directed`
+  - The operator resolved the gate in `docs/LEGAL.md` during the pass, after a
+    decision packet with four postures, choosing the permissive pair that an
+    external organization's legal review can accept inside a week and that
+    grants no trademark rights, and choosing to land `LICENSE`,
+    `LICENSE-docs`, and `NOTICE` in the planning pull request. WO-038 lands
+    package `license` and `private` metadata, a publication-refusal check in
+    the release-surface preflight, `CONTRIBUTING.md` with the DCO rule, and
+    the export's default license files. Workspaces stay private until a
+    package-publication decision; the employment-agreement question is
+    recorded as the operator's own check. This supersedes the 2026-09-03
+    "Personal research may keep an explicit no-license posture for now"
+    disposition for this repository; that entry stays as history.
+- **A fork's sessions are primed by files, never by restated narration**
+  `adopted` `north-star`
+  - The operator asked how a session started in the fork understands what
+    should happen in the Angular repository. The answer is the repository's
+    own rule one level out: the fork's operating contract fixes a cold-start
+    read order (execution guide → active order → its workstream document →
+    the target's repository profile → only the pinned upstream sections those
+    name); the workstream document carries the outcome, the consumed contract
+    with its version, and the demonstrations; the repository profile carries
+    the three purposes, the standards to emulate, and a pinned
+    upstream-references list into core. Both are written by the fork's first
+    `planning:` pass and cited by every member order. The link to core is a
+    pin reported stale by `resume: status`, not a live dependency; the
+    reverse link is the sibling registry. WO-033 exports the templates and
+    read order; WO-034's receipt counts every vision restatement the executor
+    needed by hand as a defect in those files.
+- **The starter and the Angular consumer are first-class siblings tracked in
+  core; forks are not** `adopted` `operator-directed`
+  - The operator directed that the two sibling repositories' status,
+    capabilities, and progress be tracked in this repository, and that fork
+    status stay out unless a fork's experience improves core, the starter, or
+    the Angular consumer. Lowered as a sibling registry in core with export
+    and update receipts as evidence, a capability-table row per sibling, and a
+    board section (WO-032, WO-033, WO-034). The operator also confirmed the
+    expected shape of adoption: fork the starter after its first commit and
+    take later kit improvements through the manifest-driven update and an
+    ordinary upstream merge; an update that needs an instance change prints an
+    instance-actions note and never applies it.
+- **Policy layers by scope carry across repositories** `adopted` `recovered`
+  - A targeted lookup of the founding notes during this pass (Notes 002 and
+    the north star; synthesized, nothing copied) recovered the original
+    impetus for a launchpad: rules written for one repository did not carry
+    to the next, and the operator wanted them layered as launchpad-wide,
+    general to a class of repositories such as Angular UI, and specific to
+    one repository, instead of mixed in one pile. The existing
+    **Config-surface layering strategy** entry covers harness configuration
+    files; this entry covers DotLn policy. Lowered into WO-033 as launchpad →
+    repository class → repository profile, with a named authority profile per
+    repository (the founding "never push or PR" rule, overridden by hand per
+    repository, becomes a declaration) and a repository profile document as
+    repo-native authority. The same lookup confirmed two shapes already
+    ledgered and now consumed: the offline launchpad dashboard that shows
+    work in flight (WO-032's board) and the constrained-environment
+    capability audit as an external fork's first order (WO-033's exported
+    first order).
+- **Concurrent work orders are structurally safe, operationally untested, and
+  need one sync step** `adopted`
+  - WO-030's per-order segments, order-scoped legality, per-segment proofs,
+    and the real-Git two-branch fixture make a paired wave safe; no wave has
+    run, so its cost is unmeasured. The playbook and the phase-two plan record
+    the hand procedure for the lane whose sibling merged first (checkpoint,
+    named stash, fast-forward or merge, apply, regenerate the projections and
+    locks, retime, rerun evidence, repair on substantive change) and the
+    conflicts a wave produces by construction (README block, `package.json`,
+    ledger head, map recommendation section, edition locks, generated
+    projections). WO-033 ships `worktree sync` for those steps. Version
+    assignment is serial; the second merger retimes.
+- **Six-month projection: what breaks first is the serial evidence chain, then
+  the reactor, then the release helper, then golden evidence, then the cold
+  start** `adopted` `recovered`
+  - Measured per tag: documentation 8,065 → 57,475 lines, runtime source 484 →
+    19,248, scripts 613 → 12,886, verification and final-review files 7 → 121
+    in seven days. The code sweep measured a 23-step serial chain of 6–10
+    minutes with a stale-build ordering defect (the worktree suite exercises
+    `release.mjs` against whatever skeleton build exists before the forced
+    rebuild), a 2,268-line reactor carrying 34 of the 69 unsafe casts, an
+    eight-concern release helper, and a control plane that imports skeleton
+    source files for Beacons from two module identities. The documentation
+    sweep measured zero broken links, a ledger growing at both ends, dated
+    receipts inside specifications, three hand-maintained release-history
+    layers, and a cold start of about 1,300 mandatory lines. Dispositions are
+    in the plan's two tables.
+- **Structural corrections filed now, deep refactors declined with named
+  triggers** `adopted`
+  - Filed: the build-first ordering (WO-033 boy-scout item), the evidence
+    runner (WO-036), Beacon portability and one configuration root (WO-033),
+    the documentation reset (WO-035: one ledger order with a generated index
+    and check, receipts out of specifications, generated release history, a
+    guide under 450 lines, the capability addenda folded). Declined: the
+    reactor split until the next host branch, the release-helper split until
+    the next surface rule, the FNV duplication (watched), skeleton-side
+    duplication, bash-suite rewrites, per-session ledger files, retiring the
+    `11-proteino.md` stub.
+- **The shelf's first full entry is filed as the wave after the visible
+  loop** `adopted`
+  - WO-037 compiles the 5S set as a multi-active link group with shared
+    supports and piece-count set bonuses (canonical-home proposals, integrity
+    checks, standardization proposals, self-scheduled reevaluation, the
+    destructive-change gate), equips it on the Repo Gardener in a second
+    deterministic scenario beside the frozen oracle, and renders each piece
+    and the set as tooltips while existing programs keep their hashes. It
+    lowers the founding "5S as a slotted equipment set", "Set bonuses compile
+    to real mechanics", and "Shared supports across multiple actives" entries
+    without changing them; the drag-equip surface remains console v1 work.
+- **Two drift signals recorded, not corrected** `adopted`
+  - The Beacon line took three releases while its usefulness checkpoint has
+    not been run; the board puts the constellation beside the status surfaces
+    so the operator can run it. The prose-to-mechanism ratio stays the open
+    tension named on 2026-09-02.
+- **Declined candidates, each with its reversal condition** `preserved`
+  - A console framework ADR now: NoOp; WO-034 produces the evidence and the
+    next pass writes it. Reverse if the operator wants the Angular shell
+    before the pilot.
+  - Building the Angular console inside core: NoOp; it pre-empts the decision
+    and pulls a toolchain into the gate; the pilot needs a real target.
+  - Publishing `@dotln/*` packages for the starter: NoOp until the licensing
+    gate or a package consumer.
+  - A `WorkstreamOpened` control event: NoOp; the pilot's workstream is a
+    document plus projections. Reverse when a second launchpad or a
+    contribution track needs outcome-level legality.
+  - Lane generator, admission policy, tenant and contribution tracks: NoOp;
+    filing conditions unchanged, the first measured wave now scheduled.
+  - Pattern workshop v1 in this horizon: NoOp; it needs the console shell and
+    is the recommended next wave.
+  - Activating WO-109 now: NoOp until an image-capable harness is observed.
+  - Retiming WO-014 or the corpus drafts: NoOp; they float.
+  - Running the Beacon comparison inside the pass: NoOp; it is an operator
+    trial after WO-032.
+  - Hand-fixing product status banners and capability rows: NoOp; WO-035
+    removes the pattern. Exception taken: the README's missing `resume: times`.
+  - Editing the ledger's tail sections into place in this pass: NoOp; WO-035
+    relocates them with the migration note and the check that keeps them
+    there.
+
 ## 2026-09-06 WO-022 compiled senses implementation
 
 **Provenance:** the filed WO-022 public draft and fresh synthetic compiler,

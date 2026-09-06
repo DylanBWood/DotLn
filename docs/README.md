@@ -17,7 +17,8 @@ docs/product/      the blueprint: vision, principles, domain model,
                    and the five UIFA human roles
 docs/publication/  audience/status index, audience outlines, shared sample,
                    implementation overlay template, and staleness proof
-docs/planning/     capability inventory + human recommendation/preflight map
+docs/planning/     capability inventory, human recommendation/preflight map,
+                   and dated planning-pass plans
 docs/lineage/      idea-ledger.md — append-only idea history;
                    inspirations.md — best-known public influence register
 docs/decisions/    ADRs — settled questions

@@ -110,3 +110,14 @@ because it reads every order's segment through the same fold.
 - If the per-segment layout proves awkward for a consumer, a union-merged single
   file is the recorded alternative; it was declined here because it reorders
   global ordinals and weakens the byte-prefix proofs.
+
+## 2026-09-06 update — the trial moves to phase two
+
+The 2026-09-05 horizon executed serially, so the paired wave this plan
+scheduled (WO-021 ∥ WO-029) never ran and none of the trial measurements were
+taken. The [phase-two plan](phase-two-plan-2026-09-06.md#wave-plan) schedules
+the first measured wave as WO-032 ∥ WO-033, records the hand procedure for the
+lane whose sibling merges first, and files the rebase helper named under
+"Canonical history and integration" as WO-033's `worktree sync`. The lane
+rules above are unchanged. The later slices keep their filing conditions; the
+first paired-wave receipt lands in the phase-two plan.
