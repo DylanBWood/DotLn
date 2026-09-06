@@ -127,6 +127,17 @@ while reporting additional local release tags as newer evidence. Explicit
 regeneration includes those tags. No lifecycle transition regenerates the
 index; its final refresh is later than the transition's immutable checkpoint.
 
+For completed actor usage, run
+`npm run resume --silent -- usage [--json]`: it reports every known order using
+only the canonical control segments. `byActor` groups by harness/version/model/
+effort/account label and phase; `byWorkOrder` gives order totals and the same
+groups within each order. `attempts` includes retries and failures, `elapsedMs`
+sums known signed spans, and `unknown` counts attempts missing either endpoint.
+Wall-clock spans include waiting and interruptions; overlapping orders can
+overlap in the sums. Missing actors remain `unknown` and missing labels
+`not-applicable`. Usage is independent of the current branch, accepts no
+`--work-order`, recovers no checkpoint times, and rewrites nothing.
+
 For a read-only view of live worktree projections, run
 `npm run worktree -- constellation`. It enumerates `git worktree list`, reads
 only Beacon directory/status metadata, and prints phase-ordered individuals
@@ -684,6 +695,18 @@ claim evidence or releases it does not have.
   observed fact. Echo the attested values in the session result, but the log is
   the durable record and `current.md` projects the latest value and within-order
   drift.
+- **Optional account label (WO-031):** all four completion commands accept
+  `--account-label <label>`. `DOTLN_ACCOUNT_LABEL` supplies the default for that
+  shell; an explicit flag wins even when the environment default is invalid.
+  A label must match `^[a-z][a-z0-9-]{0,15}$` exactly, with no control or line
+  separator characters. Empty or invalid values refuse before append. When
+  absent, the stored actor omits the field and projections show `not-applicable`;
+  no account is inferred. The label goes last in the normalized actor JSON,
+  including verification/final-review report headers when supplied. The private
+  meaning may be recorded one line per label in ignored
+  `docs/control/local/account-labels.md`; no script reads it. Use opaque labels
+  without identity or plan information. This public profile accepts that distinct
+  labels disclose distinct accounts; a stricter profile leaves the field unset.
 - A session label can describe more than reasoning effort. The documented
   Claude Code `ultracode` note means dynamic workflows plus `xhigh` reasoning;
   only the latter occupies the effort ladder. When that dated operator

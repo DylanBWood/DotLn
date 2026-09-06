@@ -21,6 +21,13 @@ require mainline work to count upward to reach it.
 
 ## Recommendation and rationale
 
+**WO-031 implementation (2026-09-05):** this source prepares `v0.10.1` above
+published `v0.10.0`. The actor-usage report and opt-in labels are implemented;
+the [evidence](../evidence/WO-031/README.md) and generated index own validation
+and lifecycle status. Publication and continuation corrections from the
+[ideation receipt](../evidence/WO-031/ideation.md) join the review subject.
+The marked work-order sequence is unchanged.
+
 The operator restated this sequence during WO-020; the 2026-09-05 planning
 pass inserted WO-030 ahead of WO-021 and placed WO-031 in the free lane beside
 WO-009 (see the [concurrent work-orders plan](concurrent-work-orders-plan.md)).

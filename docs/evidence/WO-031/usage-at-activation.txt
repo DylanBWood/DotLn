@@ -1,0 +1,132 @@
+Completed phase attempts attributed to the completion actor. Wall-clock spans include waiting and interruptions; they are not active model time. elapsedMs sums known signed spans only; unknown counts attempts missing either endpoint. Retries are separate attempts. Overlapping work orders can overlap in these totals. No checkpoint times are recovered.
+Total: attempts=88; elapsedMs=77936313; unknown=68
+
+By actor and phase:
+- harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=11; elapsedMs=0; unknown=11; workOrders=WO-003,WO-004,WO-005,WO-006,WO-007,WO-012,WO-013,WO-015,WO-024,WO-025,WO-101
+- harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=16; elapsedMs=0; unknown=16; workOrders=WO-003,WO-004,WO-005,WO-006,WO-007,WO-012,WO-013,WO-015,WO-024,WO-025,WO-101
+- harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="repair"; attempts=6; elapsedMs=0; unknown=6; workOrders=WO-003,WO-004,WO-006,WO-007
+- harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=11; elapsedMs=0; unknown=11; workOrders=WO-003,WO-004,WO-005,WO-006,WO-007,WO-012,WO-013,WO-015,WO-024,WO-025,WO-101
+- harness="codex-cli"; harnessVersion="0.153.0"; model="unknown"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-008
+- harness="claude-code"; harnessVersion="2.1.260"; model="claude-opus-5[1m]"; effort="xhigh"; accountLabel="not-applicable"; phase="verification"; attempts=2; elapsedMs=0; unknown=2; workOrders=WO-008,WO-018
+- harness="claude-code"; harnessVersion="2.1.260"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=2; elapsedMs=0; unknown=2; workOrders=WO-008,WO-023
+- harness="codex-cli"; harnessVersion="0.153.4"; model="gpt-6-astra"; effort="max"; accountLabel="not-applicable"; phase="implementation"; attempts=2; elapsedMs=14240465; unknown=0; workOrders=WO-009,WO-029
+- harness="claude-code"; harnessVersion="2.1.261"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=7; elapsedMs=6797902; unknown=0; workOrders=WO-009,WO-020,WO-021,WO-026,WO-028,WO-029,WO-030
+- harness="claude-code"; harnessVersion="2.1.261"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=7; elapsedMs=9313062; unknown=0; workOrders=WO-009,WO-020,WO-021,WO-026,WO-028,WO-029,WO-030
+- harness="codex-cli"; harnessVersion="0.153.0"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=3; elapsedMs=0; unknown=3; workOrders=WO-016,WO-017,WO-018
+- harness="claude-code"; harnessVersion="2.1.259"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=4; elapsedMs=0; unknown=4; workOrders=WO-016,WO-017,WO-019
+- harness="claude-code"; harnessVersion="2.1.259"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=4; elapsedMs=0; unknown=4; workOrders=WO-016,WO-017,WO-019,WO-027
+- harness="claude-code"; harnessVersion="2.1.260"; model="claude-fable-5-1"; effort="xhigh"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-018
+- harness="codex-cli"; harnessVersion="0.152.1"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=2; elapsedMs=0; unknown=2; workOrders=WO-019,WO-027
+- harness="codex-cli"; harnessVersion="0.152.1"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="repair"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-019
+- harness="codex-cli"; harnessVersion="0.153.2"; model="gpt-6-astra"; effort="max"; accountLabel="not-applicable"; phase="implementation"; attempts=5; elapsedMs=47584884; unknown=1; workOrders=WO-020,WO-021,WO-026,WO-028,WO-030
+- harness="codex-cli"; harnessVersion="0.153.2"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-023
+- harness="claude-code"; harnessVersion="2.1.260"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-023
+- harness="claude-code"; harnessVersion="2.1.259"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-027
+
+By work order:
+WO-003: attempts=5; elapsedMs=0; unknown=5
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-003
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=2; elapsedMs=0; unknown=2; workOrders=WO-003
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="repair"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-003
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-003
+WO-004: attempts=5; elapsedMs=0; unknown=5
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-004
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=2; elapsedMs=0; unknown=2; workOrders=WO-004
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="repair"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-004
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-004
+WO-005: attempts=3; elapsedMs=0; unknown=3
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-005
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-005
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-005
+WO-006: attempts=8; elapsedMs=0; unknown=8
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-006
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=3; elapsedMs=0; unknown=3; workOrders=WO-006
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="repair"; attempts=3; elapsedMs=0; unknown=3; workOrders=WO-006
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-006
+WO-007: attempts=5; elapsedMs=0; unknown=5
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-007
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=2; elapsedMs=0; unknown=2; workOrders=WO-007
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="repair"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-007
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-007
+WO-008: attempts=3; elapsedMs=0; unknown=3
+  - harness="codex-cli"; harnessVersion="0.153.0"; model="unknown"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-008
+  - harness="claude-code"; harnessVersion="2.1.260"; model="claude-opus-5[1m]"; effort="xhigh"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-008
+  - harness="claude-code"; harnessVersion="2.1.260"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-008
+WO-009: attempts=3; elapsedMs=13165697; unknown=0
+  - harness="codex-cli"; harnessVersion="0.153.4"; model="gpt-6-astra"; effort="max"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=10530866; unknown=0; workOrders=WO-009
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=879688; unknown=0; workOrders=WO-009
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=1755143; unknown=0; workOrders=WO-009
+WO-012: attempts=3; elapsedMs=0; unknown=3
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-012
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-012
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-012
+WO-013: attempts=3; elapsedMs=0; unknown=3
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-013
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-013
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-013
+WO-015: attempts=3; elapsedMs=0; unknown=3
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-015
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-015
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-015
+WO-016: attempts=3; elapsedMs=0; unknown=3
+  - harness="codex-cli"; harnessVersion="0.153.0"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-016
+  - harness="claude-code"; harnessVersion="2.1.259"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-016
+  - harness="claude-code"; harnessVersion="2.1.259"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-016
+WO-017: attempts=3; elapsedMs=0; unknown=3
+  - harness="codex-cli"; harnessVersion="0.153.0"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-017
+  - harness="claude-code"; harnessVersion="2.1.259"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-017
+  - harness="claude-code"; harnessVersion="2.1.259"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-017
+WO-018: attempts=3; elapsedMs=0; unknown=3
+  - harness="codex-cli"; harnessVersion="0.153.0"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-018
+  - harness="claude-code"; harnessVersion="2.1.260"; model="claude-opus-5[1m]"; effort="xhigh"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-018
+  - harness="claude-code"; harnessVersion="2.1.260"; model="claude-fable-5-1"; effort="xhigh"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-018
+WO-019: attempts=5; elapsedMs=0; unknown=5
+  - harness="codex-cli"; harnessVersion="0.152.1"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-019
+  - harness="claude-code"; harnessVersion="2.1.259"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=2; elapsedMs=0; unknown=2; workOrders=WO-019
+  - harness="codex-cli"; harnessVersion="0.152.1"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="repair"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-019
+  - harness="claude-code"; harnessVersion="2.1.259"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-019
+WO-020: attempts=3; elapsedMs=9466219; unknown=0
+  - harness="codex-cli"; harnessVersion="0.153.2"; model="gpt-6-astra"; effort="max"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=7107547; unknown=0; workOrders=WO-020
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=813288; unknown=0; workOrders=WO-020
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=1545384; unknown=0; workOrders=WO-020
+WO-021: attempts=3; elapsedMs=34653271; unknown=0
+  - harness="codex-cli"; harnessVersion="0.153.2"; model="gpt-6-astra"; effort="max"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=32565591; unknown=0; workOrders=WO-021
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=863517; unknown=0; workOrders=WO-021
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=1224163; unknown=0; workOrders=WO-021
+WO-023: attempts=3; elapsedMs=0; unknown=3
+  - harness="codex-cli"; harnessVersion="0.153.2"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-023
+  - harness="claude-code"; harnessVersion="2.1.260"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-023
+  - harness="claude-code"; harnessVersion="2.1.260"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-023
+WO-024: attempts=3; elapsedMs=0; unknown=3
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-024
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-024
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-024
+WO-025: attempts=3; elapsedMs=0; unknown=3
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-025
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-025
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-025
+WO-026: attempts=3; elapsedMs=5792808; unknown=0
+  - harness="codex-cli"; harnessVersion="0.153.2"; model="gpt-6-astra"; effort="max"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=3740817; unknown=0; workOrders=WO-026
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=954799; unknown=0; workOrders=WO-026
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=1097192; unknown=0; workOrders=WO-026
+WO-027: attempts=3; elapsedMs=0; unknown=3
+  - harness="codex-cli"; harnessVersion="0.152.1"; model="gpt-5.6-sol"; effort="xhigh"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-027
+  - harness="claude-code"; harnessVersion="2.1.259"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-027
+  - harness="claude-code"; harnessVersion="2.1.259"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-027
+WO-028: attempts=3; elapsedMs=1734605; unknown=1
+  - harness="codex-cli"; harnessVersion="0.153.2"; model="gpt-6-astra"; effort="max"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-028
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=889287; unknown=0; workOrders=WO-028
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=845318; unknown=0; workOrders=WO-028
+WO-029: attempts=3; elapsedMs=5913883; unknown=0
+  - harness="codex-cli"; harnessVersion="0.153.4"; model="gpt-6-astra"; effort="max"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=3709599; unknown=0; workOrders=WO-029
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=1244232; unknown=0; workOrders=WO-029
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=960052; unknown=0; workOrders=WO-029
+WO-030: attempts=3; elapsedMs=7209830; unknown=0
+  - harness="codex-cli"; harnessVersion="0.153.2"; model="gpt-6-astra"; effort="max"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=4170929; unknown=0; workOrders=WO-030
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-opus-5[1m]"; effort="max"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=1153091; unknown=0; workOrders=WO-030
+  - harness="claude-code"; harnessVersion="2.1.261"; model="claude-fable-5-1"; effort="max"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=1885810; unknown=0; workOrders=WO-030
+WO-031: attempts=0; elapsedMs=0; unknown=0
+WO-101: attempts=3; elapsedMs=0; unknown=3
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="implementation"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-101
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="verification"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-101
+  - harness="unknown"; harnessVersion="unknown"; model="unknown"; effort="unknown"; accountLabel="not-applicable"; phase="finalReview"; attempts=1; elapsedMs=0; unknown=1; workOrders=WO-101

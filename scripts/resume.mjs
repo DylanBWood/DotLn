@@ -14,6 +14,15 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { mainWorktree, runGit } from "./lib/git.mjs";
 import {
+  projectActor,
+  renderAttestation,
+  validateAccountLabel,
+} from "./lib/control-actor.mjs";
+import {
+  controlUsageProjection,
+  renderControlUsage,
+} from "./lib/control-usage.mjs";
+import {
   projectControlBeacon,
   restrictedBeaconBriefing,
 } from "./lib/beacons.mjs";
@@ -60,7 +69,7 @@ const effortDeclarations = new Set([
   ...effortLevels.map((level) => `${level}+`),
 ]);
 const actorFlagUsage =
-  "--harness <claude-code|codex-cli|human|other:label> --harness-version <version> --model <model> --effort <level> --source <self-reported|harness-readback|operator-attested>";
+  "--harness <claude-code|codex-cli|human|other:label> --harness-version <version> --model <model> --effort <level> --source <self-reported|harness-readback|operator-attested> [--account-label <label>]";
 const actorHeaderPrefix = "**Actor attestation:**";
 const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
 
@@ -417,13 +426,14 @@ const hasObservedEffortReadbackValue = (harness, harnessVersion, effort) => {
 };
 
 const parseActor = (action, args, positional = "") => {
-  const allowedFlags = new Set([
+  const requiredFlags = [
     "--harness",
     "--harness-version",
     "--model",
     "--effort",
     "--source",
-  ]);
+  ];
+  const allowedFlags = new Set([...requiredFlags, "--account-label"]);
   const values = new Map();
   for (let index = 0; index < args.length; index += 2) {
     const flag = args[index];
@@ -439,10 +449,7 @@ const parseActor = (action, args, positional = "") => {
       throw new Error(actorUsage(action, positional));
     values.set(flag, value);
   }
-  if (
-    args.length !== allowedFlags.size * 2 ||
-    [...allowedFlags].some((flag) => !values.has(flag))
-  )
+  if (requiredFlags.some((flag) => !values.has(flag)))
     throw new Error(actorUsage(action, positional));
 
   const harness = values.get("--harness");
@@ -488,6 +495,11 @@ const parseActor = (action, args, positional = "") => {
   if (!recognizedEffort && suppliedEffort !== "unknown")
     actor.raw = suppliedEffort;
   actor.source = source;
+  const accountLabel = values.has("--account-label")
+    ? values.get("--account-label")
+    : process.env.DOTLN_ACCOUNT_LABEL;
+  validateAccountLabel(accountLabel);
+  if (accountLabel !== undefined) actor.accountLabel = accountLabel;
   return actor;
 };
 
@@ -541,11 +553,6 @@ const completionActor = (action, args, state, role, positional = "") => {
   validateEffort(actor, role, declaration, state.workOrderPath);
   return actor;
 };
-
-const renderAttestation = (actor) =>
-  actor
-    ? `harness ${actor.harness}; version ${actor.harnessVersion}; model ${actor.model}; effort ${renderEffort(actor)}; source ${actor.source}`
-    : "none";
 
 const renderDrift = (pairs) =>
   pairs.length <= 1 ? "none" : pairs.map(renderEffort).join(" -> ");
@@ -615,7 +622,7 @@ const projectOrder = (state, events) => {
     latestVerdict: state.latestVerdict ?? null,
     finalReview: state.finalReviewId ?? null,
     finalReviewPath: state.finalReviewPath ?? null,
-    latestAttestation: state.latestAttestation ?? null,
+    latestAttestation: projectActor(state.latestAttestation),
     effortDrift: state.effortPairs.map(({ effort, raw }) => ({
       effort,
       ...(raw === undefined ? {} : { raw }),
@@ -717,8 +724,11 @@ export const main = (argv = process.argv.slice(2)) => {
   const [action = "status", ...rawArgs] = argv;
   const { args, workOrder } = selectionArgs(rawArgs);
   let control = readControl(repoRoot);
-  const branch = branchWorkOrder(repoRoot);
-  let latestClosed = latestClosedOrder(control, repoRoot, "HEAD", branch);
+  const branch = action === "usage" ? undefined : branchWorkOrder(repoRoot);
+  let latestClosed =
+    action === "usage"
+      ? undefined
+      : latestClosedOrder(control, repoRoot, "HEAD", branch);
   if (action === "activate" && workOrder && args[0] !== workOrder)
     throw new Error("activation id must match --work-order");
   if (action === "activate" && branch && !workOrder && args[0] !== branch)
@@ -726,7 +736,7 @@ export const main = (argv = process.argv.slice(2)) => {
       `activation binds ${branch}; use --work-order ${args[0]} to override`,
     );
   const selected =
-    action === "times"
+    action === "times" || action === "usage"
       ? undefined
       : selectWorkOrder(control, {
           workOrder: action === "activate" ? args[0] : workOrder,
@@ -739,6 +749,20 @@ export const main = (argv = process.argv.slice(2)) => {
   let message;
 
   switch (action) {
+    case "usage": {
+      if (
+        workOrder ||
+        args.length > 1 ||
+        (args.length === 1 && args[0] !== "--json")
+      )
+        throw new Error("usage: resume usage [--json]");
+      const usage = controlUsageProjection(control);
+      message =
+        args[0] === "--json"
+          ? JSON.stringify(usage, null, 2)
+          : renderControlUsage(usage);
+      break;
+    }
     case "status": {
       if (args.length > 1 || (args.length === 1 && args[0] !== "--json"))
         throw new Error("usage: resume status [--json]");
@@ -981,7 +1005,7 @@ export const main = (argv = process.argv.slice(2)) => {
       throw new Error(`unknown resume action: ${action}`);
   }
 
-  if (action !== "status" && action !== "times") {
+  if (!["status", "times", "usage"].includes(action)) {
     control = readControl(repoRoot);
     latestClosed = latestClosedOrder(
       control,

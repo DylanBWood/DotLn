@@ -53,6 +53,23 @@ as readback or silently replace another loadout's required actor. The
 [Entropy Reducer guide](instance/entropy-reducer/README.md) supplies its separate
 manual Fable 5.1/max dispatch and the fresh refutation step.
 
+To distinguish accounts, set an opaque label separately in each terminal, for
+example `export DOTLN_ACCOUNT_LABEL=a1` in one and
+`export DOTLN_ACCOUNT_LABEL=claude-2` in another. Completion commands use that
+default; `--account-label <label>` overrides it. Use 1–16 lowercase letters,
+digits or hyphens, beginning with a letter. `unset DOTLN_ACCOUNT_LABEL` returns
+to omission; an empty value is invalid. Store any private meaning by hand, one
+line per label in ignored `docs/control/local/account-labels.md`. Scripts never
+read that file. The label itself is public, so choose no identifying content.
+An omitted label displays `not-applicable`.
+
+Run `npm run resume --silent -- usage` for elapsed-time summaries across all
+orders, or add `--json` for `totals`, `byActor`, and `byWorkOrder`. Retries remain
+separate completed attempts. `elapsedMs` sums known signed spans; `unknown`
+counts attempts with a missing endpoint. These are wall-clock spans including
+waiting and interruptions, attributed to the completion actor. Overlapping work
+orders can overlap in the sums. No token, cost, or attention data is collected.
+
 ## Harness safety baseline
 
 Before dispatching from a personal machine, verify the dated Claude Code and
@@ -490,6 +507,7 @@ launch; agents run the remaining commands after their chat dispatches:
 npm run worktree -- start WO-00N docs/work-orders/WO-00N-name.md
 npm run resume --silent -- status --json # read-only machine projection
 npm run resume --silent -- times         # read-only labeled time observation
+npm run resume --silent -- usage --json  # read-only actor and work-order totals
 npm run resume -- implementation-ready --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run resume -- verify                 # allocates the next immutable VER-NNN
 npm run resume -- verification-result pass|fail --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>

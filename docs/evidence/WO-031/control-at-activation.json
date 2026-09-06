@@ -1,0 +1,27 @@
+[
+  {
+    "segment": "docs/control/resume.jsonl",
+    "events": 158,
+    "sha256": "6c293645a6d444aff2550fd25fbcb101a6293aca10425127f457b9aed576f6ee"
+  },
+  {
+    "segment": "docs/control/orders/WO-009.jsonl",
+    "events": 6,
+    "sha256": "7b3c16a8fcadcee965fa2c4f0bb970a83d4b954da360ec0bdb140a1c652cbbc6"
+  },
+  {
+    "segment": "docs/control/orders/WO-021.jsonl",
+    "events": 6,
+    "sha256": "734b8066ac153c53ac54d60d7c2a4083de5a8e6ddc1ad191688b1590bb1a525f"
+  },
+  {
+    "segment": "docs/control/orders/WO-029.jsonl",
+    "events": 6,
+    "sha256": "bfe8e2a46d90ab6e073539397abd40c7bc10b801e612fef8753a1e5eee01b72e"
+  },
+  {
+    "segment": "docs/control/orders/WO-031.jsonl",
+    "events": 1,
+    "sha256": "135dd78661a9e3f1e655f422183b6a05e16f2cd3492afecafe87de5d58a7eee2"
+  }
+]

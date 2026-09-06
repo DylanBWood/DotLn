@@ -25,6 +25,7 @@ docs/work-orders/  stable scope addresses + generated README evidence index
 docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
 docs/control/       legacy resume log, per-order segments, and generated overview
+docs/control/local/ ignored operator-maintained account-label meanings; never read by scripts
 docs/evidence/      bounded executor comparisons and fixture transcripts
 docs/releases/     historical v0.2.0 records + forward tag-manifest template;
                    later immutable manifests/notes live in annotated tags
@@ -62,6 +63,13 @@ operator explicitly directs that filing and the committed surface records its
 provenance; a local compaction-safety copy of the same message does not become a
 second source. Both paths still pass the employer/credential boundary, and raw
 intake remains ignored rather than moved into Git.
+
+## Private account-label meanings
+
+The optional account-label mapping belongs in the separate ignored
+`docs/control/local/account-labels.md`, with one line per label and its private
+meaning. No script reads it. Only the opaque label enters the public control
+attestation, using the [playbook's per-terminal setup](PLAYBOOK.md#who-does-what).
 
 ## Dumping into intake
 

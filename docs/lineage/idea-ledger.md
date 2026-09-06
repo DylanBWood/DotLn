@@ -23,6 +23,27 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-05 WO-031 actor usage implementation
+
+**Provenance:** the filed WO-031 and its executor's bounded fixtures. The
+[implementation evidence](../evidence/WO-031/README.md) records the real-log
+observation and its limits.
+
+- **All completed phase attempts remain visible** `adopted`
+  - One shared pairing helper supplies latest-phase status and the all-attempt
+    usage projection over the existing multi-order fold. The usage view groups
+    the completing actor's attestation and each work order, retaining retries,
+    signed durations, and unknown endpoints. Wall time includes waiting and
+    overlapping work; it is not active compute or a verified-outcome count.
+- **Opaque account labels in the public profile** `adopted`
+  - The completion flag and per-shell default supply an optional label; the flag
+    wins. Projections render an omitted field as `not-applicable` without
+    rewriting history or inferring identity. The operator maintains any meaning
+    in ignored `docs/control/local/`, which scripts never read. This adopts the
+    specific privacy candidate in product 09 while leaving the broader private
+    evidence lane pending. Public correlation and the disclosure of distinct
+    accounts remain explicit limits.
+
 ## 2026-09-05 WO-031 continuation after ideation
 
 **Provenance:** the operator's direct correction after the ideation breakout,

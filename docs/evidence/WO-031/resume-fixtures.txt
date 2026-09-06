@@ -1,0 +1,23 @@
+time append: 10 events, all 8 types, valid host times and non-decreasing order in one process; invalid append preserved bytes
+time projection: mixed={"implementation":"unknown","verification":4000,"repair":3000,"finalReview":5000}; latest attempts, in-flight phases, activation reset, absent and backwards times checked
+time validation: 15 malformed values refuse with ordinal and preserve log/projection; valid leap day accepted
+time-blind current.md cmp: absent passed
+time-blind current.md cmp: reordered passed
+time-blind current.md cmp: backwards passed
+usage fixture: {"attempts":10,"elapsedMs":11000,"unknown":1}; 6 exact actor/phase groups; all three work-order groups and text numbers match
+usage privacy: every instrumented filesystem call avoided docs/control/local; ambient label ignored; stale projection and every segment preserved
+usage cmp: current.md, legacy log and both order segments byte-identical after both output forms and refused arguments
+usage source boundary: no subprocess or Git discovery; CLI and direct dispatcher reports agree
+account labels: 11 invalid forms, missing/duplicate flags and invalid env refused before append; a1/claude-2 accepted; env default and flag override checked through all four completion commands
+account projections: optional field stays absent in stored history; status/current render not-applicable; labelled status/current/index and report-header parity checked
+docs/control/local/account-labels.md
+usage cmp: legacy and every original order segment unchanged; local mapping ignored
+PASS synthetic interleaving: WO-901 ready-to-verify; WO-902 active
+PASS activation owns storage: legacy appends remain legacy; new orders never span segments
+PASS corrupt segments: path and ordinal reported; all 13 commands preserve every control byte
+PASS per-segment byte-prefix proof: sibling additions pass; deletions and equivalent-JSON rewrites refuse
+PASS named-order reactivation retains its segment while a sibling is open; active reactivation refuses
+PASS legacy comparison: 153 events, unchanged bytes and v0.6.0 per-order states
+PASS legacy times: byte-identical observation, 120 named local refs, original global ordinals and source labels
+beacons: every lifecycle transition matches phase/verdict/effort/time; status and next preserve inode/ctime/size/mtime
+resume tests passed

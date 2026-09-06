@@ -3,9 +3,12 @@
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Expected
-class: patch. It adds one read-only projection and one optional attestation
+**Release classification:** patch. It adds one read-only projection and one optional attestation
 field; no exported runtime capability.
+**Activation completion (2026-09-05):** the executor assigns the omitted target
+under the standing release default: `v0.10.1` above published `v0.10.0`
+(`272a150`). Component versions remain unchanged because the work affects the
+repository control scripts and documentation.
 **Nomination provenance:** the 2026-09-05 planning pass, from the operator's
 `ideation:` question whether the recorded timestamps show which models are in
 use and for how long, and how to distinguish two provider accounts without

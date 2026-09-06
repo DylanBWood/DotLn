@@ -28,8 +28,9 @@ shape (including `raw` only when applicable):
 ```
 
 The canonical serialization has no extra whitespace and orders keys as
-`harness`, `harnessVersion`, `model`, `effort`, optional `raw`, then `source`.
-For example, an unmapped label is:
+`harness`, `harnessVersion`, `model`, `effort`, optional `raw`, `source`, then
+the optional `accountLabel` that WO-031 added, which is present only when the
+completion supplied one. For example, an unmapped label is:
 
 ```markdown
 **Actor attestation:** {"harness":"codex-cli","harnessVersion":"<version>","model":"<model>","effort":"unknown","raw":"ultracode","source":"self-reported"}

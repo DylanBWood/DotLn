@@ -29,30 +29,46 @@ const phaseEnds = new Map([
   ["FinalReviewCompleted", "finalReview"],
 ]);
 
-// Timing is a projection over append order, never an input to lifecycle state.
-// Each phase names its latest completed attempt, including failed attempts.
-export const controlTimeProjection = (events) => {
-  let workOrderId;
-  let elapsed = {};
-  const starts = new Map();
+// Shared pairing for latest-phase status and all-attempt usage. A completion
+// belongs to its completing actor; a missing endpoint never borrows a time.
+export function* completedPhaseAttempts(events) {
+  const orders = new Map();
   for (const event of events) {
-    if (event.type === "WorkOrderActivated") {
-      workOrderId = event.workOrderId;
-      starts.clear();
-      elapsed = {};
-    }
-    if (event.workOrderId !== workOrderId) continue;
+    if (event.type === "WorkOrderActivated")
+      orders.set(event.workOrderId, new Map());
+    const starts = orders.get(event.workOrderId) ?? new Map();
+    orders.set(event.workOrderId, starts);
     const start = phaseStarts.get(event.type);
     if (start) starts.set(start, event.recordedAt);
     const end = phaseEnds.get(event.type);
     if (end) {
       const from = starts.get(end);
-      elapsed[end] =
-        from === undefined || event.recordedAt === undefined
-          ? "unknown"
-          : Date.parse(event.recordedAt) - Date.parse(from);
+      yield {
+        workOrder: event.workOrderId,
+        phase: end,
+        actor: event.actor,
+        elapsedMs:
+          from === undefined || event.recordedAt === undefined
+            ? "unknown"
+            : Date.parse(event.recordedAt) - Date.parse(from),
+      };
       starts.delete(end);
     }
+  }
+}
+
+// Timing is a projection over append order, never an input to lifecycle state.
+// Each phase names its latest completed attempt, including failed attempts.
+export const controlTimeProjection = (events) => {
+  const activation = events.findLastIndex(
+    (event) => event.type === "WorkOrderActivated",
+  );
+  const elapsed = {};
+  if (activation !== -1) {
+    const workOrder = events[activation].workOrderId;
+    for (const attempt of completedPhaseAttempts(events.slice(activation)))
+      if (attempt.workOrder === workOrder)
+        elapsed[attempt.phase] = attempt.elapsedMs;
   }
   return { recordedAt: events.at(-1)?.recordedAt ?? null, elapsed };
 };

@@ -125,7 +125,7 @@ legacy-log location), and the shared fold keeps lifecycle legality and evidence
 independent while selection chooses which order to inspect.
 
 The resume control log pins an actor attestation on each completion event as
-`{ harness, harnessVersion, model, effort, raw?, source }`. `effort` is one of
+`{ harness, harnessVersion, model, effort, raw?, source, accountLabel? }`. `effort` is one of
 `low | medium | high | xhigh | max | unknown`; `raw` preserves an unrecognized
 label when present; and `source` is `self-reported | harness-readback |
 operator-attested`. This record is control-plane evidence and does not enlarge
@@ -146,6 +146,9 @@ unassisted-human record is `{ harness: "human", harnessVersion:
 New activation events also carry `effortDeclarationValidated: true`. Its absence
 marks pre-migration history rather than false, and does not weaken WO-019's own
 strict declaration boundary.
+WO-031 adds the opt-in opaque `accountLabel`, supplied by `--account-label` or
+`DOTLN_ACCOUNT_LABEL`; absence projects `not-applicable`, while its meaning stays
+in an ignored operator-maintained file that scripts never read.
 From WO-028, optional control-event `recordedAt` records the host's UTC append
 time, independently of kernel `occurredAt`; append order alone determines
 lifecycle state, and historical absence remains valid under schema version 1.
