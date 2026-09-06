@@ -4,7 +4,8 @@ import type { Candidate } from "./reactor.js";
 import type { FixtureTree } from "./scenario.js";
 import type { FixtureInspectionProfile } from "./execution-environment.js";
 
-export type WorkerTransportName = "claude-cli-print" | "codex-cli-exec";
+export type WorkerTransportName =
+  "claude-cli-print" | "codex-cli-exec" | "fake";
 export type WorkerEffort =
   "low" | "medium" | "high" | "xhigh" | "max" | "unknown";
 

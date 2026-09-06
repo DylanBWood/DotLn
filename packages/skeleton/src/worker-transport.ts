@@ -13,15 +13,19 @@ import { join } from "node:path";
 import {
   WorkerFailure,
   WORKER_TIMEOUT_MS,
-  parseWorkerResult,
-  validateRequest,
-  workerPrompt,
-  workerResultSchema,
   type CommandReceipt,
   type WorkerRequest,
   type WorkerResult,
   type WorkerTransportName,
 } from "./worker-protocol.js";
+import {
+  parseTransportResult,
+  validateTransportRequest,
+  transportPrompt,
+  transportResultSchema,
+  type TransportRequest,
+  type TransportResultFor,
+} from "./verification-protocol.js";
 
 export interface WorkerLaunch {
   readonly binary: string;
@@ -118,16 +122,21 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
   return { accepted, completed, alive: () => live, kill };
 };
 
-export interface TransportDispatch {
+export interface TransportDispatch<T = WorkerResult> {
   readonly receipt: Promise<CommandReceipt>;
-  readonly completed: Promise<WorkerResult>;
+  readonly completed: Promise<T>;
   readonly alive: () => boolean;
   readonly kill: () => void;
 }
-export interface WorkOrderTransport {
+export interface WorkOrderTransport<
+  R extends TransportRequest = WorkerRequest,
+> {
   readonly name: WorkerTransportName;
   readonly harnessVersion: string;
-  dispatch(request: WorkerRequest, now: () => number): TransportDispatch;
+  dispatch(
+    request: R,
+    now: () => number,
+  ): TransportDispatch<TransportResultFor<R>>;
 }
 
 const codexDisabled = [
@@ -158,10 +167,11 @@ const codexDisabled = [
 
 export function canonicalWorkerArgs(
   name: WorkerTransportName,
-  request: WorkerRequest,
+  request: TransportRequest,
   schemaPath: string,
 ): readonly string[] {
-  validateRequest(request);
+  validateTransportRequest(request);
+  if (name === "fake") throw new WorkerFailure("profile-refused");
   if (name === "claude-cli-print") {
     if (request.effort === "unknown")
       throw new WorkerFailure("profile-refused");
@@ -174,7 +184,7 @@ export function canonicalWorkerArgs(
       "--output-format",
       "json",
       "--json-schema",
-      JSON.stringify(workerResultSchema(request)),
+      JSON.stringify(transportResultSchema(request)),
       "--no-session-persistence",
       "--setting-sources",
       "project,local",
@@ -230,11 +240,11 @@ export function canonicalWorkerArgs(
   ];
 }
 
-function decodeResult(
+function decodeResult<R extends TransportRequest>(
   name: WorkerTransportName,
   output: ProcessResult,
-  request: WorkerRequest,
-): WorkerResult {
+  request: R,
+): TransportResultFor<R> {
   let wireDetail = `exit-${output.exitCode ?? "unknown"}`;
   if (name === "claude-cli-print") {
     try {
@@ -276,7 +286,7 @@ function decodeResult(
         result.is_error === true
       )
         throw new WorkerFailure("transport-failed", wireDetail);
-      return parseWorkerResult(result.structured_output, request);
+      return parseTransportResult(result.structured_output, request);
     }
     const events = output.stdout
       .trim()
@@ -303,7 +313,7 @@ function decodeResult(
     if (typeof text !== "string")
       throw new WorkerFailure("invalid-result", "final-message-absent");
     parsePhase = "final-message-json";
-    return parseWorkerResult(JSON.parse(text), request);
+    return parseTransportResult(JSON.parse(text), request);
   } catch (error) {
     if (error instanceof WorkerFailure) throw error;
     throw new WorkerFailure("invalid-result", parsePhase);
@@ -331,19 +341,26 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
     if (this.harnessVersion !== observedVersion)
       throw new WorkerFailure("profile-refused");
   }
-  dispatch(request: WorkerRequest, now: () => number): TransportDispatch {
+  dispatch<R extends TransportRequest>(
+    request: R,
+    now: () => number,
+  ): TransportDispatch<TransportResultFor<R>> {
     const schemaDirectory = mkdtempSync(join(tmpdir(), "dotln-worker-schema-"));
     try {
       const schemaPath = join(schemaDirectory, "result.json");
       const args = canonicalWorkerArgs(this.name, request, schemaPath);
-      writeFileSync(schemaPath, JSON.stringify(workerResultSchema(request)), {
-        mode: 0o600,
-      });
+      writeFileSync(
+        schemaPath,
+        JSON.stringify(transportResultSchema(request)),
+        {
+          mode: 0o600,
+        },
+      );
       const process = this.runner({
         binary: this.binary,
         args,
         cwd: request.cwd,
-        input: workerPrompt(request),
+        input: transportPrompt(request),
         timeoutMs: WORKER_TIMEOUT_MS,
       });
       const receipt = process.accepted.then(() => ({

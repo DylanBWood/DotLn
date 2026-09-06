@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.10.0
+# `@dotln/skeleton` 0.11.0
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on
@@ -335,3 +335,34 @@ faster than individual metadata sweeps with one, two, and four readers. This
 does not measure a writer, a production workload, or operator usefulness.
 Payload-free scans remain visible to sufficiently privileged OS monitoring;
 same-user filesystem access and provenance spoofing are outside this boundary.
+
+## Independent verification
+
+Component `0.11.0` prepares application `v0.12.0`, using compiler `0.5.0` and unchanged kernel `0.2.1`. A verification branch of the shared typed `seiriReactor` drives kernel programs, authorized durable commands, blinded verification, focused repair proposals and affected-evidence staleness. The host and kernel replay compare complete Decisions through that same branch. The established Seiri demo remains available.
+
+Run a complete synthetic planted-defect loop, then inspect its store:
+
+```sh
+npm run build
+node packages/skeleton/dist/src/dotln.js verify-demo --store .runtime/verification
+node packages/skeleton/dist/src/dotln.js status --store .runtime/verification
+node packages/skeleton/dist/src/dotln.js status --store .runtime/verification --json
+```
+
+The store lives under the gitignored `.runtime/` root like the disposable-worker stores above. Its path must be canonical: the worker host refuses a store whose resolved path differs from the path given, so on macOS `/tmp/...` (a symlink to `/private/tmp`) is refused while `/private/tmp/...` or a repository-relative directory is accepted. Use a new store directory for a new run; rerunning against the same completed store returns its compact envelope and makes no new invocation. The default `fake` transport needs no authentication or network. The host creates a synthetic repository, witnesses its baseline, plants a policy defect that includes a referenced file, and obtains a blocking finding. A fresh repairer proposes only the relevant JSON policy replacement. The host applies it, marks two affected criteria stale while preserving an unrelated row, and dispatches another blinded verifier. The event store retains all findings and old evidence. The final envelope reports an episode's completion; the matrix's `phase` and rows report acceptance.
+
+`verify-demo` also accepts `--transport claude-cli-print|codex-cli-exec --model <required-model> --effort <level>` under the existing `DOTLN_LIVE_WORKERS=1` opt-in. This uses the WO-009 disposable launches, with the new `verification-snapshot-v1` capsule/schema and read mount. Both wire protocols are tested with local subprocess doubles in this work order; live model verification has not been witnessed. Codex effort remains `unknown` under the existing observed launch profile. The fixture and its evidence stay synthetic even when a real model judges them.
+
+The host preserves the existing one-second heartbeat, five-second lease, three-minute transport deadline, serialized store writer and immutable completed-result cache. Interrupted work keeps its stable command; after lease expiry a new physical episode can retry. A saved result can be queried without another model invocation while retaining its original producing episode. Accepted-result/status and applied-repair/event crash windows recover without repeating the effect. Unknown model selection, capsule drift, dirty mounts and expired or revoked authority refuse; a worker requesting a human decision leaves the workstream at `attention`. The default repair bound is three applications.
+
+This adapter permits a fixed interpreter and validated JSON policy data only. It cannot apply arbitrary repository patches or execute proposed source. Claim types are state and behavior; explicit `synthetic-fixture`/`live` labels prevent fixture evidence from certifying integration. The event store is host-owned, not authenticated against a hostile same-user writer. The pure compiler and kernel retain zero runtime dependencies. The repository's manual independent verifier still judges this implementation; the runtime demo does not replace `resume: verify`.
+
+Evidence can be reproduced and checked mechanically:
+
+```sh
+npm run build
+npm run evidence:verification -- --check
+node --test packages/compiler/dist/test/verification.test.js packages/skeleton/dist/test/verification.test.js
+```
+
+See the [domain payload and matrix contract](../../docs/product/02-domain-model.md#independent-verification-v1) and [WO-010 acceptance mapping](../../docs/evidence/WO-010/README.md). `evidence:verification -- --write` regenerates the synthetic receipt after an intentional source change; `npm test` checks its exact bytes. Compiler-version changes record current loadout identity evidence under `docs/evidence/WO-010/artifact-identity/`, leaving prior WO-029/WO-022 receipts intact.

@@ -16,10 +16,10 @@ import { createHash } from "node:crypto";
 import { decodeLog, type Event } from "@dotln/kernel";
 import { canonicalStringify } from "@dotln/compiler";
 import {
-  parseWorkerResult,
-  type WorkerRequest,
-  type WorkerResult,
-} from "./worker-protocol.js";
+  parseTransportResult,
+  type TransportRequest,
+  type TransportResultFor,
+} from "./verification-protocol.js";
 
 function regularFile(path: string): void {
   if (!lstatSync(path).isFile() || lstatSync(path).isSymbolicLink())
@@ -42,7 +42,7 @@ function syncDirectory(path: string): void {
     closeSync(fd);
   }
 }
-export function workerRequestKey(request: WorkerRequest): string {
+export function workerRequestKey(request: TransportRequest): string {
   const { episodeId: _attempt, ...stable } = request;
   return createHash("sha256").update(canonicalStringify(stable)).digest("hex");
 }
@@ -121,9 +121,12 @@ export class WorkerStore {
       closeSync(fd);
     }
   };
-  saveResult(request: WorkerRequest, result: WorkerResult): void {
+  saveResult<R extends TransportRequest>(
+    request: R,
+    result: TransportResultFor<R>,
+  ): void {
     if (!this.#locked) throw new Error("result writer lacks its host lock");
-    const validated = parseWorkerResult(result, request);
+    const validated = parseTransportResult(result, request);
     const existing = this.loadResult(request);
     if (existing) return;
     const path = this.resultPath(request);
@@ -147,23 +150,25 @@ export class WorkerStore {
       unlinkSync(staging);
     }
   }
-  loadResult(request: WorkerRequest): WorkerResult | undefined {
+  loadResult<R extends TransportRequest>(
+    request: R,
+  ): TransportResultFor<R> | undefined {
     const path = this.resultPath(request);
     if (!existsSync(path)) return undefined;
     regularFile(path);
     const cached = JSON.parse(readFileSync(path, "utf8")) as {
       requestKey: string;
-      result: WorkerResult;
+      result: TransportResultFor<R>;
     };
     if (cached.requestKey !== workerRequestKey(request))
       throw new Error("cached worker result belongs to a different request");
     // Keep the original producing episode, even when a fresh recovery host queries it.
-    return parseWorkerResult(cached.result, {
+    return parseTransportResult(cached.result, {
       ...request,
       episodeId: cached.result.envelope.episodeId,
     });
   }
-  private resultPath(request: WorkerRequest): string {
+  private resultPath(request: TransportRequest): string {
     if (!/^cmd_[a-zA-Z0-9_-]+$/u.test(request.command.commandId))
       throw new Error("invalid result command id");
     return join(this.directory, `${request.command.commandId}.result.json`);

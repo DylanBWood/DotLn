@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:f84d950de7ccaf9dbc94e66b5f789f1c6f0271fcfc5d6afff85e9571289a96ee`
+`sha256:4ce95029f12c0bb20a16fe18903c352c65cf4b3f4a7072219a07230f328e8076`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -59,8 +59,7 @@ implementation-deep, lossy projection of the same
      [Composition system](../product/03-architecture.md#composition-system)
 8. **Ports, runtime catalogs, and execution boundaries**
    - executor, store, clock, authority, tracker, repository, target lowering,
-     and isolation profiles; version-gated CLI inspection transports, explicit
-     launch claims and the authenticated broker boundary
+     and isolation profiles; version-gated inspection and blinded verification/repair transports, explicit launch claims and the authenticated broker boundary
    - sources:
      [Runtime primitive catalogs](../product/03-architecture.md#runtime-primitive-catalogs),
      [Architecture](../product/03-architecture.md#architecture),
@@ -70,8 +69,7 @@ implementation-deep, lossy projection of the same
 
 9. **Disposable sessions, continuations, and cadence races**
    - host heartbeat/lease fencing, result admission and pending-command
-     recovery, idempotent inspection, read-only status and NoOp traces;
-     worker claims remain separate from host liveness
+     recovery, idempotent inspection and repair continuation, claim-typed acceptance/staleness matrices, read-only status and NoOp traces; worker claims remain separate from host liveness
    - sources:
      [Session lifecycle and resilience](../product/03-architecture.md#session-lifecycle--resilience),
      [Operator-presence policy](../product/03-architecture.md#operator-presence-policy)

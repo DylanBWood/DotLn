@@ -1,13 +1,17 @@
-# WO-010 — Independent verification (application version assigned at activation)
+# WO-010 — Independent verification (v0.12.0)
 
 **Model:** any capable model.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** minor, with the application version assigned at
 activation under the roadmap's 2026-09-04 retiming. Adds backwards-compatible
 verifier episodes, findings, repair continuation, and evidence staleness.
+**Activation completion (2026-09-06):** assigns the omitted target `v0.12.0`,
+a minor addition above published `v0.11.0`, under the standing opt-out release
+default. Compiler `0.5.0` and skeleton `0.11.0` move independently; kernel
+`0.2.1` and the event-envelope/compiled-loadout schema versions remain unchanged.
 **Depends on:** WO-009 complete.
 
-**Cites (read these sections):** 06-roadmap.md §Application version pending —
+**Cites (read these sections):** 06-roadmap.md §v0.12.0 —
 Independent verification; 03-architecture.md
 §Ports `VerificationAdapter` (blinding, claim-typed evidence, Live Witness,
 verification-vs-review separation); 02-domain-model.md (VerificationFinding,

@@ -1,0 +1,423 @@
+{
+  "acceptanceEvidenceMatrices": [
+    {
+      "workstreamId": "ws_independent_verification",
+      "subjectRevision": "68d2ff898395d912307a57f4c2caf12b64b41c06",
+      "phase": "verify",
+      "baseline": {
+        "repo": "synthetic-verification-fixture",
+        "baseCommit": "c84501fce5b760a88eec8fc8afd5519eecde3147",
+        "revision": "c84501fce5b760a88eec8fc8afd5519eecde3147",
+        "diff": "",
+        "files": [
+          {
+            "path": "policy.json",
+            "contents": "{\"schemaVersion\":1,\"includeReferenced\":false}\n"
+          },
+          {
+            "path": "inventory.json",
+            "contents": "[{\"path\":\"unused.tmp\",\"generated\":true,\"references\":[]},{\"path\":\"used.tmp\",\"generated\":true,\"references\":[\"entry.ts\"]}]\n"
+          },
+          {
+            "path": "select.mjs",
+            "contents": "export const select = (inventory, policy) => inventory.filter(file => file.generated && (policy.includeReferenced || file.references.length === 0)).map(file => file.path);\n"
+          },
+          {
+            "path": "README.txt",
+            "contents": "Synthetic independent verification fixture.\n"
+          }
+        ],
+        "evidence": [
+          {
+            "evidenceId": "c84501fce5b760a88eec8fc8afd5519eecde3147:policy-schema",
+            "criterionId": "AC-policy",
+            "checkId": "policy-schema",
+            "claimType": "state",
+            "source": "synthetic-fixture",
+            "subjectRevision": "c84501fce5b760a88eec8fc8afd5519eecde3147",
+            "codeSurfaces": [
+              "policy.json"
+            ],
+            "automatedTest": null,
+            "observed": "1",
+            "expected": "1",
+            "outcome": "pass",
+            "reproductionSteps": [
+              "Read policy.json and compare schemaVersion with 1."
+            ]
+          },
+          {
+            "evidenceId": "c84501fce5b760a88eec8fc8afd5519eecde3147:exclude-referenced",
+            "criterionId": "AC-selection",
+            "checkId": "exclude-referenced",
+            "claimType": "behavior",
+            "source": "synthetic-fixture",
+            "subjectRevision": "c84501fce5b760a88eec8fc8afd5519eecde3147",
+            "codeSurfaces": [
+              "policy.json",
+              "inventory.json",
+              "select.mjs"
+            ],
+            "automatedTest": "fixture.select.exclude-referenced",
+            "observed": "[\"unused.tmp\"]",
+            "expected": "[\"unused.tmp\"]",
+            "outcome": "pass",
+            "reproductionSteps": [
+              "Run select(inventory, policy) from select.mjs with the checked-in JSON inputs."
+            ]
+          },
+          {
+            "evidenceId": "c84501fce5b760a88eec8fc8afd5519eecde3147:fixture-descriptor",
+            "criterionId": "AC-description",
+            "checkId": "fixture-descriptor",
+            "claimType": "state",
+            "source": "synthetic-fixture",
+            "subjectRevision": "c84501fce5b760a88eec8fc8afd5519eecde3147",
+            "codeSurfaces": [
+              "README.txt"
+            ],
+            "automatedTest": null,
+            "observed": "Synthetic independent verification fixture.",
+            "expected": "Synthetic independent verification fixture.",
+            "outcome": "pass",
+            "reproductionSteps": [
+              "Read README.txt and compare with the fixture descriptor."
+            ]
+          }
+        ]
+      },
+      "rows": [
+        {
+          "criterion": {
+            "criterionId": "AC-policy",
+            "description": "The policy schema version is 1.",
+            "claimType": "state",
+            "evidenceSource": "synthetic-fixture",
+            "codeSurfaces": [
+              "policy.json"
+            ],
+            "requiredChecks": [
+              "policy-schema"
+            ]
+          },
+          "status": "stale",
+          "evaluations": [
+            {
+              "criterionId": "AC-policy",
+              "claimType": "state",
+              "verdict": "pass",
+              "evidenceRefs": [
+                "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40:policy-schema"
+              ],
+              "exemplarRefs": [],
+              "dissentRefs": [],
+              "provenance": {
+                "kind": "host-admitted-verifier",
+                "commandId": "cmd_3b843b5108e71409",
+                "inputHash": "fnv1a64:01e1bd3628f525a4"
+              },
+              "eventId": "evt_9",
+              "episodeId": "ep_verifier_1_attempt_1",
+              "subjectRevision": "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40",
+              "stale": true
+            }
+          ]
+        },
+        {
+          "criterion": {
+            "criterionId": "AC-selection",
+            "description": "Selecting generated files excludes files that are still referenced.",
+            "claimType": "behavior",
+            "evidenceSource": "synthetic-fixture",
+            "codeSurfaces": [
+              "policy.json",
+              "inventory.json",
+              "select.mjs"
+            ],
+            "requiredChecks": [
+              "exclude-referenced"
+            ]
+          },
+          "status": "stale",
+          "evaluations": [
+            {
+              "criterionId": "AC-selection",
+              "claimType": "behavior",
+              "verdict": "fail",
+              "evidenceRefs": [
+                "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40:exclude-referenced"
+              ],
+              "exemplarRefs": [],
+              "dissentRefs": [],
+              "provenance": {
+                "kind": "host-admitted-verifier",
+                "commandId": "cmd_3b843b5108e71409",
+                "inputHash": "fnv1a64:01e1bd3628f525a4"
+              },
+              "eventId": "evt_9",
+              "episodeId": "ep_verifier_1_attempt_1",
+              "subjectRevision": "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40",
+              "stale": true
+            }
+          ]
+        },
+        {
+          "criterion": {
+            "criterionId": "AC-description",
+            "description": "The fixture has its source descriptor.",
+            "claimType": "state",
+            "evidenceSource": "synthetic-fixture",
+            "codeSurfaces": [
+              "README.txt"
+            ],
+            "requiredChecks": [
+              "fixture-descriptor"
+            ]
+          },
+          "status": "verified",
+          "evaluations": [
+            {
+              "criterionId": "AC-description",
+              "claimType": "state",
+              "verdict": "pass",
+              "evidenceRefs": [
+                "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40:fixture-descriptor"
+              ],
+              "exemplarRefs": [],
+              "dissentRefs": [],
+              "provenance": {
+                "kind": "host-admitted-verifier",
+                "commandId": "cmd_3b843b5108e71409",
+                "inputHash": "fnv1a64:01e1bd3628f525a4"
+              },
+              "eventId": "evt_9",
+              "episodeId": "ep_verifier_1_attempt_1",
+              "subjectRevision": "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40",
+              "stale": false
+            }
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "evidenceId": "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40:policy-schema",
+          "criterionId": "AC-policy",
+          "checkId": "policy-schema",
+          "claimType": "state",
+          "source": "synthetic-fixture",
+          "subjectRevision": "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40",
+          "codeSurfaces": [
+            "policy.json"
+          ],
+          "automatedTest": null,
+          "observed": "1",
+          "expected": "1",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Read policy.json and compare schemaVersion with 1."
+          ]
+        },
+        {
+          "evidenceId": "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40:exclude-referenced",
+          "criterionId": "AC-selection",
+          "checkId": "exclude-referenced",
+          "claimType": "behavior",
+          "source": "synthetic-fixture",
+          "subjectRevision": "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40",
+          "codeSurfaces": [
+            "policy.json",
+            "inventory.json",
+            "select.mjs"
+          ],
+          "automatedTest": "fixture.select.exclude-referenced",
+          "observed": "[\"unused.tmp\",\"used.tmp\"]",
+          "expected": "[\"unused.tmp\"]",
+          "outcome": "fail",
+          "reproductionSteps": [
+            "Run select(inventory, policy) from select.mjs with the checked-in JSON inputs."
+          ]
+        },
+        {
+          "evidenceId": "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40:fixture-descriptor",
+          "criterionId": "AC-description",
+          "checkId": "fixture-descriptor",
+          "claimType": "state",
+          "source": "synthetic-fixture",
+          "subjectRevision": "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40",
+          "codeSurfaces": [
+            "README.txt"
+          ],
+          "automatedTest": null,
+          "observed": "Synthetic independent verification fixture.",
+          "expected": "Synthetic independent verification fixture.",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Read README.txt and compare with the fixture descriptor."
+          ]
+        },
+        {
+          "evidenceId": "68d2ff898395d912307a57f4c2caf12b64b41c06:policy-schema",
+          "criterionId": "AC-policy",
+          "checkId": "policy-schema",
+          "claimType": "state",
+          "source": "synthetic-fixture",
+          "subjectRevision": "68d2ff898395d912307a57f4c2caf12b64b41c06",
+          "codeSurfaces": [
+            "policy.json"
+          ],
+          "automatedTest": null,
+          "observed": "1",
+          "expected": "1",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Read policy.json and compare schemaVersion with 1."
+          ]
+        },
+        {
+          "evidenceId": "68d2ff898395d912307a57f4c2caf12b64b41c06:exclude-referenced",
+          "criterionId": "AC-selection",
+          "checkId": "exclude-referenced",
+          "claimType": "behavior",
+          "source": "synthetic-fixture",
+          "subjectRevision": "68d2ff898395d912307a57f4c2caf12b64b41c06",
+          "codeSurfaces": [
+            "policy.json",
+            "inventory.json",
+            "select.mjs"
+          ],
+          "automatedTest": "fixture.select.exclude-referenced",
+          "observed": "[\"unused.tmp\"]",
+          "expected": "[\"unused.tmp\"]",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Run select(inventory, policy) from select.mjs with the checked-in JSON inputs."
+          ]
+        },
+        {
+          "evidenceId": "68d2ff898395d912307a57f4c2caf12b64b41c06:fixture-descriptor",
+          "criterionId": "AC-description",
+          "checkId": "fixture-descriptor",
+          "claimType": "state",
+          "source": "synthetic-fixture",
+          "subjectRevision": "68d2ff898395d912307a57f4c2caf12b64b41c06",
+          "codeSurfaces": [
+            "README.txt"
+          ],
+          "automatedTest": null,
+          "observed": "Synthetic independent verification fixture.",
+          "expected": "Synthetic independent verification fixture.",
+          "outcome": "pass",
+          "reproductionSteps": [
+            "Read README.txt and compare with the fixture descriptor."
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "finding": {
+            "findingId": "finding_verification_1_AC-selection",
+            "criterionId": "AC-selection",
+            "severity": "blocking",
+            "observed": "[\"unused.tmp\",\"used.tmp\"]",
+            "expected": "[\"unused.tmp\"]",
+            "reproductionSteps": [
+              "Run select(inventory, policy) from select.mjs with the checked-in JSON inputs."
+            ],
+            "evidenceRefs": [
+              "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40:exclude-referenced"
+            ],
+            "likelySurface": [
+              "policy.json"
+            ]
+          },
+          "eventId": "evt_9",
+          "episodeId": "ep_verifier_1_attempt_1",
+          "subjectRevision": "19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40",
+          "status": "open"
+        }
+      ],
+      "staleness": [
+        {
+          "eventId": "evt_22",
+          "changedSurfaces": [
+            "policy.json"
+          ],
+          "criterionIds": [
+            "AC-policy",
+            "AC-selection"
+          ]
+        }
+      ]
+    }
+  ],
+  "episodes": [
+    {
+      "episodeId": "ep_verifier_1_attempt_1",
+      "commandId": "cmd_3b843b5108e71409",
+      "model": "synthetic",
+      "effort": "unknown",
+      "transport": "fake",
+      "mode": "fresh-transport",
+      "phase": "completed",
+      "startedAt": 1000007,
+      "lastHeartbeatAt": 1000007,
+      "leaseExpiresAt": 1005008
+    },
+    {
+      "episodeId": "ep_repairer_2_attempt_1",
+      "commandId": "cmd_66d748765e7e021d",
+      "model": "synthetic",
+      "effort": "unknown",
+      "transport": "fake",
+      "mode": "fresh-transport",
+      "phase": "completed",
+      "startedAt": 1000016,
+      "lastHeartbeatAt": 1000016,
+      "leaseExpiresAt": 1005017
+    }
+  ],
+  "runningEpisodes": [],
+  "pendingCommands": [],
+  "recentEvents": [
+    {
+      "eventId": "evt_15",
+      "type": "WorkerAttemptStarted",
+      "occurredAt": 1000016
+    },
+    {
+      "eventId": "evt_16",
+      "type": "CommandReceipt",
+      "occurredAt": 1000019
+    },
+    {
+      "eventId": "evt_17",
+      "type": "VerificationWorkerResultObserved",
+      "occurredAt": 1000021
+    },
+    {
+      "eventId": "evt_18",
+      "type": "CommandResult",
+      "occurredAt": 1000021
+    },
+    {
+      "eventId": "evt_19",
+      "type": "WorkerCompleted",
+      "occurredAt": 1000021
+    },
+    {
+      "eventId": "evt_20",
+      "type": "VerificationContinuation",
+      "occurredAt": 1000021
+    },
+    {
+      "eventId": "evt_21",
+      "type": "WorkerWorktreeRemoved",
+      "occurredAt": 1000022
+    },
+    {
+      "eventId": "evt_22",
+      "type": "VerificationSubjectSubmitted",
+      "occurredAt": 1000023
+    }
+  ]
+}

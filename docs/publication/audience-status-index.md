@@ -42,6 +42,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [LoadoutGraph v1 payload contract](../product/02-domain-model.md#loadoutgraph-v1-payload-contract)                    | software-engineer                   | implemented |
 | [Artifact identity v1](../product/02-domain-model.md#artifact-identity-v1)                                            | software-engineer                   | implemented |
 | [Feedback](../product/02-domain-model.md#feedback)                                                                    | everyday-ai-user, software-engineer | specified   |
+| [Independent verification v1](../product/02-domain-model.md#independent-verification-v1)                              | everyday-ai-user, software-engineer | implemented |
 | [Memory and observation](../product/02-domain-model.md#memory-and-observation)                                        | everyday-ai-user, software-engineer | specified   |
 | [Beacon codebook v1](../product/02-domain-model.md#beacon-codebook-v1)                                                | everyday-ai-user, software-engineer | implemented |
 | [Beacon codebook v2 — control state](../product/02-domain-model.md#beacon-codebook-v2--control-state)                 | everyday-ai-user, software-engineer | implemented |
@@ -167,7 +168,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [v0.4.0 — Composition compiler v1 → WO-008](../product/06-roadmap.md#v040--composition-compiler-v1---wo-008)                                                                            | everyday-ai-user, software-engineer | verified    |
 | [v0.5.0 — Compiled Entropy Reducer → WO-023](../product/06-roadmap.md#v050--compiled-entropy-reducer---wo-023)                                                                          | everyday-ai-user, software-engineer | planned     |
 | [v0.10.0 — Real disposable worker → WO-009](../product/06-roadmap.md#v0100--real-disposable-worker---wo-009)                                                                            | everyday-ai-user, software-engineer | implemented |
-| [Application version pending — Independent verification → WO-010](../product/06-roadmap.md#application-version-pending--independent-verification---wo-010)                              | everyday-ai-user, software-engineer | planned     |
+| [v0.12.0 — Independent verification → WO-010](../product/06-roadmap.md#v0120--independent-verification---wo-010)                                                                        | everyday-ai-user, software-engineer | implemented |
 | [Application version pending — Feedback compiler v1 (ten units) → WO-011](../product/06-roadmap.md#application-version-pending--feedback-compiler-v1-ten-units---wo-011)                | software-engineer                   | planned     |
 | [Application version pending — Projections & console](../product/06-roadmap.md#application-version-pending--projections--console)                                                       | everyday-ai-user, software-engineer | planned     |
 | [Application version pending — Pattern workshop v1](../product/06-roadmap.md#application-version-pending--pattern-workshop-v1)                                                          | everyday-ai-user, software-engineer | planned     |

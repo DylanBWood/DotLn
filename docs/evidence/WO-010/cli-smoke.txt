@@ -1,0 +1,26 @@
+$ node packages/skeleton/dist/src/dotln.js verify-demo --store <fresh-temporary-store>
+{"workOrderId":"verification_3","episodeId":"ep_verifier_3_attempt_1","resultId":"result_cmd_a55351b8ec012a11","status":"completed","summary":"Synthetic fixture episode completed.","requiresHuman":false}
+$ node packages/skeleton/dist/src/dotln.js status --store <same-store> --json
+# Reduced projection of the printed JSON, not verbatim output (final-review note, 2026-09-06):
+# the command prints the top-level keys acceptanceEvidenceMatrices, episodes, runningEpisodes,
+# pendingCommands and recentEvents; "phase" below is acceptanceEvidenceMatrices[0].phase and each
+# "criteria" entry is acceptanceEvidenceMatrices[0].rows[].criterion.criterionId with that row's status.
+{
+  "runningEpisodes": [],
+  "pendingCommands": [],
+  "phase": "complete",
+  "criteria": [
+    {
+      "criterionId": "AC-policy",
+      "status": "verified"
+    },
+    {
+      "criterionId": "AC-selection",
+      "status": "verified"
+    },
+    {
+      "criterionId": "AC-description",
+      "status": "verified"
+    }
+  ]
+}

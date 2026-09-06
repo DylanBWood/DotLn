@@ -1,4 +1,4 @@
-# `@dotln/compiler` v0.4.0
+# `@dotln/compiler` v0.5.0
 
 The pure DotLn composition compiler. It has zero runtime dependencies and no
 I/O: callers pass a `LoadoutGraph` plus an explicit environment and receive a
@@ -64,7 +64,7 @@ fnv1a64:9ca8d0229c6bd8db
 
 ## Artifact identity v1
 
-Successful `compileLoadout` and `compileEditableView` results also carry `artifactIdentity`: schema version `1`, `compilerContractVersion` (the program's unchanged `compilerVersion: "1"`), `compilerPackageVersion: "0.4.0"`, `semanticHash`, the exact `compilationEnvironment`, `authorityExpiresAt`, and `componentDefinitions`. The package version is a pure source constant tested against `package.json`; compilation performs no manifest I/O.
+Successful `compileLoadout` and `compileEditableView` results also carry `artifactIdentity`: schema version `1`, `compilerContractVersion` (the program's unchanged `compilerVersion: "1"`), `compilerPackageVersion: "0.5.0"`, `semanticHash`, the exact `compilationEnvironment`, `authorityExpiresAt`, and `componentDefinitions`. The package version is a pure source constant tested against `package.json`; compilation performs no manifest I/O.
 
 Each definition record contains only `(componentKind, componentId, version)`, `hashScheme: "dotln-component-definition-fnv1a64-v1"`, and `definitionHash`. Its tuples equal the participating component manifest exactly: active mechanics, linked supports, and declared ambient effects. Unlinked catalog entries do not acquire a participation receipt. Link groups and mechanism types remain manifest projections.
 
@@ -77,6 +77,12 @@ Both hashes are deterministic equality keys. They are not collision-resistant id
 Run `npm run skeleton -- --compiled-diff` from the repository root for the
 three-view equality receipt and the exact RPG item tooltip. Run
 `npm run test --workspace @dotln/compiler` for the focused compiler suite.
+
+## Blinded verification capsules
+
+`compileVerificationTask(workOrderId, criteria, subject, finding?)` positively constructs a `verification-v1` capsule: criteria, pinned revision/diff, explicit host-read repository files and witnesses, and the compiled WorkOrder. The optional full blocking finding selects a focused repair role. Nested fields are copied by name, so extra implementer narratives, transcripts or result objects cannot enter the compiled context. `assertVerificationTask` compares the complete capsule with fresh compilation before dispatch and result admission.
+
+The capsule pins compiler package version and an `inputHash` over canonical JSON of all its other fields. It is a deterministic equality key, with the same non-cryptographic limits as the existing FNV keys. It is separate from `CompiledProgram` and `ArtifactIdentityV1`; existing loadout semantic hashes do not change. `changedVerificationSurfaces` compares exact source bytes and `affectedVerificationCriteria` selects criteria whose declared dependencies intersect the change, conservatively selecting every criterion for an unknown surface. The skeleton owns physical reads, transport output validation, authority, events and repair application. See the [domain contract](../../docs/product/02-domain-model.md#independent-verification-v1) and [acceptance tests](test/verification.test.ts).
 
 PolarAxis evaluation, multi-active lowering, saved builds, compatibility
 migration, set bonuses, and interactive editing remain deferred. Their types do

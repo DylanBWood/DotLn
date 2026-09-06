@@ -94,6 +94,13 @@ The only teardown addition restores access to generated search-only cache
 directories after the existing close/material/merge gates; a failed removal
 restores the original permissions.
 
+Migration note (2026-09-06, WO-010): since compiler `0.5.0` the evidence helper
+writes and checks the current edition under
+[`docs/evidence/WO-010/artifact-identity/`](../WO-010/artifact-identity/audit.json)
+instead of this directory. These four files are retained historical bytes that
+the helper no longer regenerates or byte-checks; `docs/evidence/WO-029/baseline.json`
+remains the pinned source of the frozen oracle and every semantic hash.
+
 No scope expansion, new dependency, kernel change, branch commit or publication is
 part of this executor pass. The omitted activation version was completed under
 the repository's standing release rule. Open limitations are explicit above;
