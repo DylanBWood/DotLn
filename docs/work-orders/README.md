@@ -9,7 +9,7 @@
 - [x] [WO-021] — Control-plane beacons · **final-reviewed**
 - [x] [WO-029] — Pinned artifact identity · **final-reviewed**
 - [x] [WO-009] — Real disposable worker · **final-reviewed**
-- [ ] [WO-031] — Actor usage projection · **queued**
+- [x] [WO-031] — Actor usage projection · **final-reviewed**
 - [ ] [WO-022] — Senses · **queued**
 - [ ] [WO-010] — Independent verification · **queued**
 - [ ] [WO-011] — Feedback compiler · **queued**
@@ -99,21 +99,6 @@ None.
 - Model: any capable model.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-022-senses.md](WO-022-senses.md)
-
-### WO-031
-
-[WO-031 — Actor usage projection: read-only elapsed time per harness, model, effort, and phase across every work order, with an opt-in opaque account label whose meaning lives only in an ignored local file (version assigned at activation)](WO-031-actor-usage-projection.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-019: satisfied (closed); WO-028: satisfied (closed); WO-030: satisfied (closed).
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Authority: [docs/work-orders/WO-031-actor-usage-projection.md](WO-031-actor-usage-projection.md)
 
 ### WO-102
 
@@ -295,6 +280,7 @@ None.
 - Release: v0.4.0 (manifest workOrder.id).
 - Model: any capable model.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.260; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-008-composition-compiler.md](WO-008-composition-compiler.md)
 
 ### WO-009
@@ -307,9 +293,10 @@ None.
 - References: WO-004: satisfied (closed); WO-008: satisfied (closed).
 - Verification: [VER-001](../../docs/verifications/WO-009/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-009/FINAL-001.md) (pass).
-- Release: unreleased.
+- Release: v0.10.0 (manifest workOrder.id).
 - Model: any capable model.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-009-real-disposable-worker.md](WO-009-real-disposable-worker.md)
 
 ### WO-012
@@ -370,6 +357,7 @@ None.
 - Release: v0.3.6 (manifest workOrder.id).
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.259; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-016-skeleton-reactor.md](WO-016-skeleton-reactor.md)
 
 ### WO-017
@@ -385,6 +373,7 @@ None.
 - Release: v0.3.5 (manifest workOrder.id).
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.259; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-017-kernel-truthfulness.md](WO-017-kernel-truthfulness.md)
 
 ### WO-018
@@ -400,6 +389,7 @@ None.
 - Release: v0.4.1 (manifest workOrder.id).
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.260; model claude-fable-5-1; effort xhigh; source operator-attested; account not-applicable.
 - Authority: [docs/work-orders/WO-018-control-plane-consolidation.md](WO-018-control-plane-consolidation.md)
 
 ### WO-019
@@ -415,6 +405,7 @@ None.
 - Release: v0.3.4 (manifest workOrder.id).
 - Model: any capable model.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any. Until this order lands, these values are self-reported in the result. The final reviewer must confirm the order's own attestations were recorded through the mechanism it ships, and disclose that as a self-referential instrument per 07-execution-guide.md §Discipline.
+- Latest attestation: harness claude-code; version 2.1.259; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-019-effort-truth.md](WO-019-effort-truth.md)
 
 ### WO-020
@@ -430,6 +421,7 @@ None.
 - Release: v0.6.0 (manifest workOrder.id).
 - Model: any capable model.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-020-beacon-codebook.md](WO-020-beacon-codebook.md)
 
 ### WO-021
@@ -445,6 +437,7 @@ None.
 - Release: v0.8.0 (manifest workOrder.id).
 - Model: any capable model.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-021-control-plane-beacons.md](WO-021-control-plane-beacons.md)
 
 ### WO-023
@@ -460,6 +453,7 @@ None.
 - Release: v0.5.0 (manifest workOrder.id).
 - Model: any capable model for the implementation. The loadout it compiles pins its own actor: Claude Fable 5.1 at &#96;max&#96; effort for review episodes (Principle 8; a substitute is a different reviewer and must be attested as one).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.260; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-023-compile-entropy-reducer.md](WO-023-compile-entropy-reducer.md)
 
 ### WO-024
@@ -505,6 +499,7 @@ None.
 - Release: v0.5.2 (manifest workOrder.id).
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-026-work-order-index.md](WO-026-work-order-index.md)
 
 ### WO-027
@@ -520,6 +515,7 @@ None.
 - Release: v0.3.5 (manifest changedFiles).
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.259; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-027-local-inference-probe.md](WO-027-local-inference-probe.md)
 
 ### WO-028
@@ -535,6 +531,7 @@ None.
 - Release: v0.5.1 (manifest workOrder.id).
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-028-control-event-time.md](WO-028-control-event-time.md)
 
 ### WO-029
@@ -550,6 +547,7 @@ None.
 - Release: v0.9.0 (manifest workOrder.id).
 - Model: any capable model.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-029-pinned-artifact-identity.md](WO-029-pinned-artifact-identity.md)
 
 ### WO-030
@@ -565,7 +563,24 @@ None.
 - Release: v0.7.0 (manifest workOrder.id).
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-030-concurrent-control-state.md](WO-030-concurrent-control-state.md)
+
+### WO-031
+
+[WO-031 — Actor usage projection (v0.10.1)](WO-031-actor-usage-projection.md)
+
+- State: closed.
+- Application target: v0.10.1.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-019: satisfied (closed); WO-028: satisfied (closed); WO-030: satisfied (closed).
+- Verification: [VER-001](../../docs/verifications/WO-031/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-031/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-031-actor-usage-projection.md](WO-031-actor-usage-projection.md)
 
 ### WO-101
 
@@ -624,13 +639,13 @@ None.
 - **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose per-segment tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.
 - **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.
 
-Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`, `v0.7.0`, `v0.8.0`, `v0.9.0`.
+Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`, `v0.7.0`, `v0.8.0`, `v0.9.0`, `v0.10.0`.
 
 Tag observation is explicitly refreshed by `index`. Check requires every recorded tag object to remain available and unchanged; newer local release tags are reported as newer evidence, without invalidating this snapshot. This avoids making a committed source release fail its own tests immediately after tagging. Header/control changes still require regeneration after lifecycle transitions.
 
 See [the human planning map](../planning/work-order-map.md) for recommendation, rationale, tracks, and activation preflight. Dependency-ready does not grant activation or effect authority.
 
-<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.7.0","object":"064d304f0a49d3ba397173420e815b44807934d8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.8.0","object":"7b494beaac507b3369c4092598edc33d64242b67","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl"]},{"name":"v0.9.0","object":"b2720f4bb0574ca2929658e2bf7056bf40c8e5c1","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]}] -->
+<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.7.0","object":"064d304f0a49d3ba397173420e815b44807934d8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.8.0","object":"7b494beaac507b3369c4092598edc33d64242b67","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl"]},{"name":"v0.9.0","object":"b2720f4bb0574ca2929658e2bf7056bf40c8e5c1","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.0","object":"2cb12ddbd670e74639411cd77a98277d6b6110a6","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]}] -->
 
 [WO-001]: WO-001-environment-truth.md
 [WO-002]: WO-002-pure-kernel.md
