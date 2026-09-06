@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:52a2cff92dfeafffd62bdb189b22ae2b1a22854d58d7c85bde7bcde47d9fe28c`
+`sha256:f84d950de7ccaf9dbc94e66b5f789f1c6f0271fcfc5d6afff85e9571289a96ee`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -52,7 +52,8 @@ implementation-deep, lossy projection of the same
      [Platform and instance boundary](../product/03-architecture.md#platform-and-instance-boundary),
      [Package ecosystem and marketplaces](../product/03-architecture.md#package-ecosystem-and-marketplaces)
 7. **Composition without accidental execution order**
-   - links, supports, transforms, conflicts, rejection, and explicit pipelines
+   - links, supports, transforms, conflicts, rejection, explicit pipelines,
+     and perception supports compiled from host mount capabilities
    - sources:
      [Identity and composition](../product/02-domain-model.md#identity-and-composition),
      [Composition system](../product/03-architecture.md#composition-system)
@@ -90,8 +91,9 @@ implementation-deep, lossy projection of the same
       [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract),
       [Agent projection](../product/04-interfaces.md#agent-projection-the-sparse-twin)
 12. **Replay, glyphs, and physical channels**
-    - deterministic replay surfaces, exact Beacon codewords, atomic metadata
-      publication, claim provenance, visual encoding, and analog-complete views
+    - deterministic replay surfaces, exact sparse Beacon codewords, atomic
+      metadata publication, weak keyed consistency checks, equipped senses,
+      visual encoding, and analog-complete views
     - sources:
       [Memory and observation](../product/02-domain-model.md#memory-and-observation),
       [Glyph system](../product/04-interfaces.md#glyph-system-visual-prototype-zero),
@@ -133,7 +135,8 @@ implementation-deep, lossy projection of the same
       [Bootstrap path](../product/08-publication-compiler.md#bootstrap-path)
 17. **Implemented baseline versus target architecture**
     - current evidence, next gates, deferred surfaces, and compatibility
-      promises; the real fixture executor retains the deterministic fake verifier
+      promises; the real fixture executor retains a deterministic verifier,
+      with optional mounted Beacon perception excluding implementer prose
     - sources:
       [v0.2.2 — Capability table v1](../product/06-roadmap.md#v022--capability-table-v1---wo-005),
       [Architecture](../product/03-architecture.md#architecture),

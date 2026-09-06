@@ -173,6 +173,26 @@ lifecycle state, and historical absence remains valid under schema version 1.
 | **IR artifact**                   | Immutable, version-addressed configuration or behavioral definition carrying artifact kind, schema identity, provenance, and semantic hash. Application/runtime, schema, artifact, component, compiler/transformation-set, and environment-profile versions are separate axes; see 10-ir-compatibility.md.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Compatibility plan**            | Inspectable path from a source artifact and component set to a target runtime/environment. Each step names its transformation and whether execution is native, exact, adapted, lossy, emulated, inert, blocked, or unverified. The same definitions support JIT compatibility and AOT migration; neither silently overwrites the source.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
+The first perception-slot support facets are below. A sense is a compiled,
+authorized and mounted capability; the codebook is a skill/reference and grants
+nothing. A Watcher projects already admitted records, while a sense controls
+which metadata can enter an episode in the first place.
+
+| Sense support | Required host capability                                          | Evidence and measured context cost                                                                                        |
+| ------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Beacon Sight  | `beacons.individual.metadata` from an individual mount/path grant | `BeaconObserved`; one context line per sweep, at most twelve addresses; individual v1/v2/v3 fields and whole-second mtime |
+| Fine Spectrum | `beacons.individual.metadata`                                     | `BeaconObserved`; one additional context line per sweep; sub-second mtime, only when linked                               |
+| Composition   | `beacons.group.metadata` from a group mount/path grant            | `BeaconObserved`; one additional context line per sweep; one phase-group codeword, only when linked                       |
+
+All three supports carry the `observe` tag, occupy the perception container,
+declare no authority changes and emit zero prompt fragments. Line costs are
+measured rendering costs, not estimated tokens or universal latency claims.
+Beacon Sight is required for the sweep active; missing mounts report SUPPORT
+INACTIVE with the exact missing capability and a structured correction.
+Fine and group channels that are not equipped say `not-sensed`, including when
+the underlying file might be absent. An equipped sense can separately observe
+an absent expected file.
+
 ### LoadoutGraph v1 payload contract
 
 WO-008 pins the first serializable graph shape. Names ending in `Id` are stable
@@ -519,12 +539,96 @@ codebook. Readers must share the table identity and meaning; selecting an entry
 does not grant permission to execute it. No function-dispatch runtime or
 performance benefit is claimed by WO-021's status-sweep measurements.
 
+### Beacon codebook v3 — weak keyed provenance
+
+WO-022 extends the individual control family with two finite digits. The
+following data is normative and equality-tested against the pure codebook;
+all inherited ranks retain the v2 array order above.
+
+```json
+{
+  "version": 3,
+  "inheritedVersion": 2,
+  "fieldOrder": [
+    "phase",
+    "latestVerdict",
+    "effort",
+    "provenance",
+    "keyEpoch",
+    "authenticator"
+  ],
+  "phaseRadix": 8,
+  "verdictRadix": 3,
+  "effortRadix": 6,
+  "provenanceRadix": 2,
+  "epochRadix": 256,
+  "authenticatorRadix": 65536,
+  "versionRadix": 4,
+  "maxCode": "19327352831",
+  "maxLogicalBytes": "1236950589434",
+  "maxAllocatedBlocks": "8",
+  "maxPrefixBytes": 4096,
+  "padding": "sparse-zero-tail"
+}
+```
+
+Let `s = ((phase * 3 + verdict) * 6 + effort) * 2 + provenance`, epoch `k`
+range over `0..255`, and authenticator `a` over `0..65535`. Then
+`code = ((s * 256 + k) * 65536 + a) * 4 + 3`; the unchanged v1 framing
+formula maps code to logical bytes. Arithmetic is `bigint` throughout.
+There are `288 * 256 * 65536 = 4,831,838,208` field tuples.
+`MAX_V3_CODE = 19,327,352,831` and
+`MAX_V3_LOGICAL_BYTES = 1,236,950,589,434`.
+
+**Injectivity proof over that entire product:** Euclidean division of
+`size - 8192` by 64 recovers code because the check residue is strictly below 64. Division by 4 removes the version digit. Successive quotient/remainder
+pairs at radices 65,536, 256, 2, 6, 3, and 8 recover exactly the original
+bounded digits, so equal framed sizes imply equal tuples. Boundary tests and
+all 65,536 residues for nine representative state/epoch pairs independently
+exercise that inverse; the computed maximum equals the declared constants.
+
+The host's 32-byte key lives in a mode-0600 regular file outside every Git
+checkout. A residue is the first two bytes, big-endian, of HMAC-SHA-256 over
+UTF-8 `dotln-beacon-v3`, NUL, the fixed Beacon basename, NUL, decimal `s`, NUL,
+decimal epoch. Neither the key nor its path is an observation field. The
+unsigned epoch is non-secret. Creation starts at zero; locked atomic rotation
+increments it, replaces the current key file without retaining an old-key
+file, and refuses at 255 before replacing any key or Beacon. A long-lived
+host must reopen its key handle after rotation.
+
+Beacon Sight labels v1/v2 `unauthenticated-legacy` without changing their
+encoding or decoded fields. For v3, an unavailable key or non-current epoch
+(including one never observed by the host) yields `unverifiable-provenance`;
+a current-epoch mismatch yields `forged-provenance`; a match yields
+`residue-matched`. These describe a weak keyed host-consistency and error
+check, **not authorship, hostile-writer attribution, or enumeration resistance**.
+The 16-bit space can be enumerated by someone with path and decoder access.
+Mount/path permissions and the Observe guard remain the security boundary.
+The same codebook state re-derived from canonical control records has the same
+residue under the same key/epoch. Pure event replay checks arithmetic and
+replays the recorded host check outcome; it never loads a secret to authenticate
+its own evidence.
+
+V3 content is bounded UTF-8 JSON plus a newline, followed by a logical zero
+tail. Its whitelist is the v2 control record with version 3; the epoch and
+authenticator occur only in the size codeword, never the prefix or filename.
+It is **sparse-required**, never dense newline padding. Before
+emission, `probeV3Storage` observes a small hole, exact Node integer conversion,
+the maximum file, its bounded prefix, zero tail, exact mtime and atomic rename
+on the destination device. `MAX_V3_ALLOCATED_BLOCKS = 8` counts 512-byte units;
+the prefix is at most 4,096 bytes. Unsupported sparse, numeric, device, or
+filesystem premises refuse before destination allocation; the host returns to
+planning rather than changing channels. This is an observed codebook ceiling,
+not a claim about the filesystem's theoretical maximum. See
+[WO-022 evidence](../evidence/WO-022/README.md).
+
 ### Beacon group codebook v1 — phase counts
 
 The phase-group family is separate from individual Beacon versions. Its
-directory and dedicated decoder select the family; the individual reader
-continues to return `unknown-codebook` for framed tag 3. Individual v3 remains
-available to WO-022. This normative data is equality-tested too:
+directory and dedicated decoder select the family. Since WO-022, framing tag
+3 also identifies individual v3 in the individual family; a reader must never
+guess the family from size alone. The legacy v1 decoder still reports tag 3
+as unknown. This normative data is equality-tested too:
 
 ```json
 {
@@ -541,7 +645,7 @@ In v2 phase order, count `c[i]` contributes `c[i] * 13 ** i`.
 `code = 4 * sum(c[i] * 13 ** i) + 3`, then the ordinary framing formula
 produces size. Every digit is an integer in `0..12` and the total is at most 12. There are 125,970 valid vectors, exhaustively collision/round-trip tested.
 `MAX_GROUP_CODE = 3011928819`, `MAX_GROUP_LOGICAL_BYTES = 192763452654`.
-Only decoded host-projected v2 observations enter the sum; verdict, effort,
+Only decoded host-projected v2/v3 observations enter the sum; verdict, effort,
 claims, absent files, and malformed/unknown codewords contribute nothing.
 Counts describe the swept metadata, including old observations; they do not
 prove liveness or a simultaneous snapshot of every member.
@@ -573,6 +677,22 @@ exactly one `BeaconObserved`, and `CommandResult`. The observation contains
 The event's `occurredAt` equals `sweptAt`; replay uses that recorded `env.now`.
 Missing files retain null metadata and `absent`. Only the observations in the
 event are replayed; replay never scans the current filesystem.
+
+**WO-022 forward migration:** new sweep requests carry `perceptionVersion: 1`
+and the compiled sense selection plus a path-free projection of the host mount
+record. The physical environment and key stay at the edge. The reactor checks
+the envelope and perception capability before emitting an intent; the sparse
+twin uses that same decision to render zero or exactly one sweep action.
+New observations also carry `perceptionVersion: 1`, a non-secret `keyEpoch`
+at observation time (or null), and `groups` as the sensed group set or
+`not-sensed`. Each individual has a `provenanceCheck` and a `fineSpectrum`
+label. Without Fine Spectrum, `mtimeNs` is omitted and `mtimeMs` is rounded
+down to a whole second before persistence or projection. Age then honestly
+uses that coarse observation. The metadata reader performs only known-name
+status calls, never enumeration, content or xattr reads. It verifies the
+captured address set and rejects extra observation fields. Historical requests
+without the new version keep the old v1/v2 decoder and full timestamp meaning;
+new live input cannot use that legacy path.
 
 Default `staleAfterMs` is 1,200,000 (20 minutes). For a valid decoded Beacon,
 `mtime > sweptAt` is `clock-skew`; age greater than or equal to the declared

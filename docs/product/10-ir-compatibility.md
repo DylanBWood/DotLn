@@ -96,8 +96,17 @@ Beacon codebooks are another independent axis. WO-021 directly decodes the
 unchanged individual v1 family and additive individual v2; an old v1 reader
 labels v2 unknown. The separate phase-group family has version 1, uses framing
 tag 3, and is selected only by its group directory/decoder. A group codeword
-must never be guessed as an individual v3 observation; WO-022's individual v3
-proposal remains unimplemented. Extending fields or changing rank meaning
+must never be guessed as an individual v3 observation. WO-022 implements v3
+only in the individual family, inheriting v2 ranks and adding an 8-bit epoch
+and 16-bit keyed residue. Sparse zero-tail content is a versioned v3 contract;
+v1/v2 dense content remains unchanged. New perception payloads explicitly carry
+`perceptionVersion: 1`; historical unversioned observations retain the legacy
+decoder and timestamp disclosure on replay. `beacon-perception-v1` is a host
+profile specialization beside WO-009's fixture profile. Compiler `0.4.0` and
+skeleton `0.10.0` prepare application `v0.11.0` without changing kernel `0.2.1`,
+event-envelope schema 1 or compiled-program contract 1. The new compiler
+package version has a new current artifact-evidence edition under WO-022;
+WO-029's recorded evidence and frozen baseline are retained. Extending fields or changing rank meaning
 requires a new codebook, not an application/package bump alone. The bounded
 v2 and group constants in 02 are activation inputs for later extensions.
 

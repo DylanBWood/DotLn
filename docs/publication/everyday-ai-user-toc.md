@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:d88c6c10ec483998bd394b9a78c68230efef74c7797b9408b85010fb7f7785a9`
+`sha256:05d0e949185913c8d67e7ffc86468285777f33b4ab3949dfcbfd22ba13b143b2`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -66,8 +66,8 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
      [Principles](../product/01-principles.md#principles-design-axioms),
      [Authority and honesty rules](../product/08-publication-compiler.md#authority-and-honesty-rules)
 8. **Who acted, why, and under what authority**
-   - human receipt, cheap Beacon observations, claims beside evidence,
-     metadata disclosure, and recovery questions
+   - human receipt, equipped and authorized Beacon senses, claims beside
+     evidence, metadata disclosure, and recovery questions
    - sources:
      [Audit audiences and decisions](../product/09-audit-resilience-privacy.md#audit-audiences-and-decisions),
      [Fidelity levels](../product/09-audit-resilience-privacy.md#fidelity-levels),
@@ -88,8 +88,9 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
 ## Part VI — Separate today from the destination
 
 11. **What the reference build actually supports**
-    - the implemented baseline, bounded real inspection workers with a fake
-      verifier, evidence strength, known gaps, and a readable
+    - the implemented baseline, bounded real inspection workers with a
+      deterministic verifier and optional mounted Beacon perception, evidence
+      strength, known gaps, and a readable
       proposed work sequence with progress derived from evidence; candidate
       concurrent workflows, early completion batches, and release traceability
     - sources:

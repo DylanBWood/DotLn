@@ -446,11 +446,36 @@ WO-021 separates public, verifier, and restricted projections. The verifier
 writer accepts only host-folded lifecycle fields, and public/shared logs never
 include the random restricted directory or its separate session capability.
 Only the authorized order's `resume next` briefing discloses that path.
-Directories use mode 0700 and session records mode 0600. These permissions and
-unguessable names do not isolate mutually untrusted agents running as the same
-OS user: an agent with that user's filesystem privileges can enumerate or
-alter the files. Host provenance is still unauthenticated. Enforced mount/path
-sense boundaries and the separate keyed consistency proposal remain WO-022.
+Public/verifier directories use mode 0700 and session records mode 0600.
+WO-022's random restricted directories are search-only (0111) at rest: listing
+refuses while a known-name status lookup succeeds. The trusted host temporarily
+restores owner write access to publish, then restores 0111 even on failure;
+guarded worktree teardown restores owner access only after its existing gates.
+Content-read denial does not hide existence or mtime. These permissions and
+unguessable names do not isolate mutually untrusted processes running as the
+same OS user, which can change permissions or inspect the host's session data.
+Separate OS-user isolation remains the preserved stronger local boundary; this
+order introduces no stronger same-user metadata-hiding mechanism.
+
+The `beacon-perception-v1` host profile is the mount/path authority record and
+excludes narrative surfaces, writes and model tools. Compilation and sparse
+affordances project that record; the Observe permission guard enforces it before
+any Beacon lookup. The mounted reader accesses only declared basenames and
+returns a strict metadata whitelist. Fine Spectrum and Composition each gate
+their own disclosure; absent supports yield `not-sensed`. Neither physical
+mount paths, session capabilities nor the external key enters perception logs
+or the verifier's input capsule. This boundary constrains the evaluating role's
+inputs, not a hostile same-user host process.
+
+V1/v2 provenance remains `unauthenticated-legacy`. V3 adds a non-secret 8-bit
+epoch and exact 16-bit keyed residue in size only, with a sparse zero-tail
+content contract. `residue-matched`, `forged-provenance`, and
+`unverifiable-provenance` label weak host-consistency checks, not authorship or
+the identity of an attacker. An actor able to reach the path and query the
+decoder can enumerate the residue space. Rotation retains no old-key file and
+refuses at epoch 255. Mounts and the guard, rather than this weak residue,
+remain the security boundary; see product 02 and the
+[fresh WO-022 evidence](../evidence/WO-022/README.md).
 
 Payload-free observation does not imply an invisible scan. The operating
 system still services directory/status calls, and a sufficiently privileged

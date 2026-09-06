@@ -58,7 +58,13 @@ for (const fixture of fixtures) {
       JSON.stringify(first.artifactIdentity),
       JSON.stringify(second.artifactIdentity),
     );
-    assert.deepEqual(first.artifactIdentity, expected[fixture.name]);
+    // Preserve the historical receipt; only the executing package's version
+    // advances. All semantic hashes, definitions and environment fields remain
+    // pinned to the independently recorded WO-029 identity.
+    assert.deepEqual(first.artifactIdentity, {
+      ...expected[fixture.name],
+      compilerPackageVersion: COMPILER_PACKAGE_VERSION,
+    });
     assert.equal(
       first.semanticHash,
       expected[fixture.name]!.semanticHash,

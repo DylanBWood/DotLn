@@ -15,7 +15,8 @@ export type SignalDecode =
       status: "decoded";
       state:
         | Readonly<{ [K in keyof BeaconState]: BeaconState[K] }>
-        | ControlBeaconState;
+        | ControlBeaconState
+        | import("./beacon-v3-codebook.mjs").BeaconV3State;
     }>;
 export type GroupDecode =
   | Readonly<{ status: "malformed" }>
@@ -29,6 +30,8 @@ export type SignalObservation = Readonly<{
   mtimeMs: number | null;
   mtimeNs?: string | null;
   decoded: SignalDecode | Readonly<{ status: "absent" }>;
+  provenanceCheck?: import("./beacon-provenance.mjs").ProvenanceCheck;
+  fineSpectrum?: "sensed" | "not-sensed";
 }>;
 export type BeaconAge =
   | "fresh"
@@ -56,6 +59,8 @@ export type BeaconSweepRequest = Readonly<{
   evidence: readonly string[];
   revokedBy: readonly Event[];
   staleAfterMs: number;
+  senses?: readonly import("@dotln/compiler").SenseId[];
+  environment?: import("./execution-environment.js").BeaconPerceptionProfile;
 }>;
 
 export function renderBeaconGlyphs(

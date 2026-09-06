@@ -1,9 +1,11 @@
-# WO-022 — Senses: perception as a compiled, authorized, mounted capability (version assigned at activation)
+# WO-022 — Senses: perception as a compiled, authorized, mounted capability (v0.11.0)
 
 **Model:** any capable model.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
-**Release classification:** assigned by the planner at activation. Expected
-class: minor.
+**Release classification:** minor. The executor completes the omitted activation
+assignment on 2026-09-06 under the standing opt-out release rule: `v0.11.0`
+above published `v0.10.1`. Compiler `0.4.0` and skeleton `0.10.0` advance;
+kernel `0.2.1` and the event/compiled-program schema axes remain unchanged.
 **Nomination provenance:** the operator's second question in the 2026-09-02
 beacon planning session: whether a role can be required to hold a sense before
 it can read another agent's beacons. The local-only

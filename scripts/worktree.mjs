@@ -33,7 +33,7 @@ import {
 } from "./lib/paths.mjs";
 import { statusProjection } from "./resume.mjs";
 import { readControl } from "./lib/control-store.mjs";
-import { constellation } from "./lib/beacons.mjs";
+import { constellation, prepareBeaconDisposal } from "./lib/beacons.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
@@ -313,7 +313,13 @@ const main = async () => {
     );
     if (integrated.phase !== "closed")
       throw new Error(`${workOrderId} is not closed in merged control state`);
-    runGit(mainPath, ["worktree", "remove", subject]);
+    const restoreBeaconPermissions = prepareBeaconDisposal(subject);
+    try {
+      runGit(mainPath, ["worktree", "remove", subject]);
+    } catch (error) {
+      restoreBeaconPermissions();
+      throw error;
+    }
     removeMergedBranch(mainPath, branch);
     process.stdout.write(
       `Updated main and removed merged ${branch} worktree/branch.\n`,

@@ -99,6 +99,16 @@ read-only actor-usage projection and optional opaque account labels; exported
 runtime capabilities and component versions remain unchanged. The source claim
 prepares this release; review and publication remain separate evidence.
 
+**WO-022 activation completion (2026-09-06):** the omitted release target is
+assigned `v0.11.0`, a minor addition above published `v0.10.1`. The bounded
+sparse probe represents and emits the entire v3 maximum, and fixture keys are
+created outside every repository. Compiler `0.4.0` adds the three perception
+supports; skeleton `0.10.0` adds mounted/guarded sensing and weak keyed v3
+projection. Kernel `0.2.1`, the compiled-program contract and event-envelope
+schema remain unchanged. The deterministic mounted verifier demonstrates
+blinding; native model verification remains WO-010. Review and publication
+remain separate lifecycle evidence.
+
 The manifest records the Git commit, application release, package/component
 versions, supported schema and artifact ranges, transformation-set version (or
 explicitly `none`), evidence commands/results, evaluable and deferred cadence

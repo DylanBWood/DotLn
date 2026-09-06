@@ -62,9 +62,16 @@ The frozen WO-003 trace oracle retains SHA-256
 SHA-256 here is an evidence-file comparison, not a new runtime trust claim.
 
 The generated transcripts use original public fixtures and synthetic changes.
-No intake content was incorporated. The four generated files are byte-checked
-by the evidence helper and excluded individually from Prettier; the test log
-retains timing-dependent full gate output.
+No intake content was incorporated. The four generated files were byte-checked
+by the evidence helper at this edition and are excluded individually from
+Prettier; the test log retains timing-dependent full gate output.
+
+Migration note (2026-09-06, WO-022): since compiler `0.4.0` the evidence helper
+writes and checks the current edition under
+[`docs/evidence/WO-022/artifact-identity/`](../WO-022/artifact-identity/audit.json)
+instead of this directory. These four files are retained historical bytes that
+the helper no longer regenerates or byte-checks; `baseline.json` remains the
+pinned source of the frozen oracle and every semantic hash.
 
 ## Scope and handoff
 

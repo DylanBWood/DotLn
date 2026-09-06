@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import {
+  chmodSync,
   lstatSync,
   mkdirSync,
   readdirSync,
@@ -24,6 +25,7 @@ import {
   encodeGroupBeacon,
   groupCounts,
 } from "./control-codebook.mjs";
+import { emitV3Beacon, probeV3Storage } from "./beacon-v3-fs.mjs";
 
 export const CONTROL_BEACON_ROOT = ".control-beacons";
 /** @param {string} text */
@@ -72,7 +74,7 @@ export function observeBeaconMetadata(path, address) {
 
 /** @param {SignalObservation} observation */
 const phaseRank = ({ decoded }) =>
-  decoded.status === "decoded" && decoded.state.codebookVersion === 2
+  decoded.status === "decoded" && decoded.state.codebookVersion !== 1
     ? CONTROL_CODEBOOK.phases.indexOf(decoded.state.phase)
     : CONTROL_CODEBOOK.phases.length;
 
@@ -141,6 +143,10 @@ export function issueBeaconSession(root, workOrderId) {
   mkdirSync(sessions, { recursive: true, mode: 0o700 });
   const token = randomBytes(32).toString("hex");
   const name = randomBytes(32).toString("hex");
+  const restricted = join(base, "restricted", name);
+  safeDirectory(restricted);
+  mkdirSync(restricted, { recursive: true, mode: 0o700 });
+  chmodSync(restricted, 0o111);
   writeFileSync(
     join(sessions, `${hash(token)}.json`),
     JSON.stringify({ workOrderId, name }),
@@ -164,6 +170,14 @@ const sessionRecord = (base, filename) => {
 
 /** @param {string} root @param {string} workOrderId @param {string} token */
 export function restrictedBeaconBriefing(root, workOrderId, token) {
+  return `Restricted host Beacon directory: ${beaconSessionMount(root, workOrderId, token).path}`;
+}
+
+/** Trusted session provisioning only; never serialize this path in shared logs.
+ * @param {string} root @param {string} workOrderId @param {string} token
+ * @returns {import("./execution-environment.js").BeaconMount}
+ */
+export function beaconSessionMount(root, workOrderId, token) {
   try {
     root = canonicalDestination(resolve(root));
     if (!/^[a-f0-9]{64}$/.test(token)) throw new Error("invalid capability");
@@ -172,11 +186,44 @@ export function restrictedBeaconBriefing(root, workOrderId, token) {
     const record = sessionRecord(base, `${hash(token)}.json`);
     if (record.workOrderId !== workOrderId)
       throw new Error("different session scope");
-    return `Restricted host Beacon directory: ${join(base, "restricted", record.name)}`;
+    return {
+      mountId: "restricted",
+      path: join(base, "restricted", record.name),
+      access: "beacon-metadata",
+      family: "individual",
+      addresses: [controlBeaconAddress(workOrderId)],
+    };
   } catch {
     // Errors never disclose a path or echo the supplied capability.
     throw new Error("beacon session is not authorized for this work order");
   }
+}
+
+/** Called only after the worktree's close/ignored-material/merge gates passed.
+ * Restore owner access solely to anchored generated search-only directories so
+ * ordinary non-forced Git teardown can remove its disposable cache.
+ * @param {string} root
+ */
+export function prepareBeaconDisposal(root) {
+  const base = join(root, CONTROL_BEACON_ROOT, "restricted");
+  safeDirectory(base);
+  if (!exists(base)) return () => {};
+  const directories = readdirSync(base).map((name) => {
+    if (!/^[a-f0-9]{64}$/.test(name))
+      throw new Error("unexpected restricted beacon directory");
+    const directory = join(base, name);
+    safeDirectory(directory);
+    if (!lstatSync(directory).isDirectory())
+      throw new Error("invalid restricted beacon directory");
+    return { directory, mode: lstatSync(directory).mode & 0o777 };
+  });
+  for (const { directory } of directories) chmodSync(directory, 0o700);
+  return () => {
+    for (const { directory, mode } of directories) {
+      safeDirectory(directory);
+      if (exists(directory)) chmodSync(directory, mode);
+    }
+  };
 }
 
 /**
@@ -184,8 +231,9 @@ export function restrictedBeaconBriefing(root, workOrderId, token) {
  * Per-file publication is atomic; a failed optional projection never rolls back
  * the already-appended transition or changes its legal result.
  * @param {string} root @param {import("./control-beacon.js").ControlProjectionRecord} record
+ * @param {{key?: import("./beacon-provenance.mjs").BeaconProvenance}} options
  */
-export function emitControlBeacon(root, record) {
+export function emitControlBeacon(root, record, options = {}) {
   root = canonicalDestination(resolve(root));
   if (
     record.recordType !== "control-beacon-projection" ||
@@ -235,14 +283,35 @@ export function emitControlBeacon(root, record) {
           directories.push(join(base, "restricted", session.name));
       }
     for (const directory of directories) safeDirectory(directory);
-    const storage = probeBeaconStorage(base);
-    for (const directory of directories)
-      writeBeaconFile(
-        directory,
-        controlBeaconAddress(record.workOrderId),
-        { size, mtimeMs, content },
-        { ...storage, sparse: false },
-      );
+    const storage = options.key
+      ? probeV3Storage(base)
+      : probeBeaconStorage(base);
+    for (const directory of directories) {
+      const restricted = directory.startsWith(`${join(base, "restricted")}/`);
+      if (restricted) {
+        mkdirSync(directory, { recursive: true, mode: 0o700 });
+        chmodSync(directory, 0o700);
+      }
+      try {
+        if (options.key)
+          emitV3Beacon(
+            directory,
+            controlBeaconAddress(record.workOrderId),
+            record,
+            options.key,
+            /** @type {import("./beacon-v3-fs.mjs").V3Storage} */ (storage),
+          );
+        else
+          writeBeaconFile(
+            directory,
+            controlBeaconAddress(record.workOrderId),
+            { size, mtimeMs, content },
+            { ...storage, sparse: false },
+          );
+      } finally {
+        if (restricted) chmodSync(directory, 0o111);
+      }
+    }
     return storage;
   } catch {
     throw new Error(
@@ -328,10 +397,15 @@ export function renderControlConstellation(
       return `Beacon ${address} | ${decoded.status} | ${age}`;
     const state = decoded.state;
     const fields =
-      state.codebookVersion === 2
+      state.codebookVersion !== 1
         ? `${state.phase} | ${state.latestVerdict} | ${state.effort} | ${state.provenance}`
         : `${state.actionClass}/${state.outcome} | ${state.provenance}`;
-    return `Beacon ${address} | ${fields} | ${age} | v${state.codebookVersion} | ${observation.size} bytes`;
+    const check =
+      observation.provenanceCheck ??
+      (state.codebookVersion === 3
+        ? "unverifiable-provenance"
+        : "unauthenticated-legacy");
+    return `Beacon ${address} | ${fields} | ${age} | v${state.codebookVersion} | ${observation.size} bytes | ${check}`;
   });
   const counts = groupCounts(observations);
   const source = group

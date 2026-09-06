@@ -85,6 +85,7 @@ const now = BEACON_STALE_AFTER_MS + 10;
 const request: BeaconSweepRequest = {
   intent: { kind: "Observe", subject: "control-beacons" },
   audience: "public",
+  senses: ["beacon-sight", "fine-spectrum"],
   authority: {
     authorityEnvelopeId: "fixture-beacon-grant",
     allowedEffects: ["observe.beacons.public"],
@@ -98,6 +99,37 @@ const request: BeaconSweepRequest = {
   revokedBy: [],
   staleAfterMs: BEACON_STALE_AFTER_MS,
 };
+
+const currentRequest = (count: number): BeaconSweepRequest => ({
+  ...request,
+  environment: {
+    profileId: "beacon-perception-v1",
+    audience: "public",
+    mounts: [
+      {
+        mountId: "fixture",
+        path: "/fixture",
+        access: "beacon-metadata",
+        family: "individual",
+        addresses: Array.from({ length: count }, (_, index) =>
+          controlBeaconAddress(`fixture-${index}`),
+        ),
+      },
+    ],
+    modelTools: [],
+    writableSurfaces: [],
+    narrativeSurfaces: [],
+  },
+});
+const currentObservations = (values: readonly SignalObservation[]) =>
+  values.map((item, index) => ({
+    ...item,
+    address: `fixture:${controlBeaconAddress(`fixture-${index}`)}`,
+    provenanceCheck:
+      item.decoded.status === "decoded"
+        ? ("unauthenticated-legacy" as const)
+        : ("not-applicable" as const),
+  }));
 
 test("WO-021 normative v2 and phase-group data match the blueprint", () => {
   const domain = readFileSync(
@@ -210,7 +242,7 @@ test("WO-021 group exhaustively proves the bounded additive lattice", (t) => {
         status: "decoded",
         state: { groupCodebookVersion: 1, counts: [...counts] },
       });
-      assert.deepEqual(decodeSignalSize(size), {
+      assert.deepEqual(decodeBeaconSize(size), {
         status: "unknown-codebook",
         codebookVersion: 3,
       });
@@ -419,14 +451,12 @@ test("WO-021 age retains sub-millisecond metadata at skew and cadence boundaries
     ),
     "unknown-codebook",
   );
-  const result = observeBeaconSweep(
-    "",
-    request,
-    [],
-    now,
-    () => {},
-    () => [future, justFresh],
-  );
+  const result = observeBeaconSweep("", currentRequest(2), now, () => {}, {
+    read: () => ({
+      observations: currentObservations([future, justFresh]),
+      groups: "not-sensed",
+    }),
+  });
   assert.deepEqual(
     result.state.beaconObservations.map(({ age }) => age),
     ["clock-skew", "fresh"],
@@ -452,7 +482,10 @@ test("WO-021 authorization precedes every beacon stat; refusals and one authoriz
   const read = () => {
     assert.equal(decodeLog(durable).at(-1)?.type, "CommandPersisted");
     reads++;
-    return observations;
+    return {
+      observations: currentObservations(observations),
+      groups: "not-sensed" as const,
+    };
   };
   for (const authority of [
     { ...request.authority, allowedEffects: [] },
@@ -463,13 +496,12 @@ test("WO-021 authorization precedes every beacon stat; refusals and one authoriz
   ]) {
     const refused = observeBeaconSweep(
       "",
-      { ...request, authority },
-      [],
+      { ...currentRequest(observations.length), authority },
       now,
       (log) => {
         durable = log;
       },
-      read,
+      { read },
     );
     assert.equal(refused.authorized, false);
     assert.equal(reads, 0);
@@ -488,13 +520,12 @@ test("WO-021 authorization precedes every beacon stat; refusals and one authoriz
   }
   const result = observeBeaconSweep(
     "",
-    request,
-    [],
+    currentRequest(observations.length),
     now,
     (log) => {
       durable = log;
     },
-    read,
+    { read },
   );
   assert.equal(reads, 1);
   assert.equal(result.authorized, true);
@@ -531,10 +562,7 @@ test("WO-021 authorization precedes every beacon stat; refusals and one authoriz
         : event,
     ),
   );
-  assert.notDeepEqual(
-    replayBeaconSweep(changed).state.beaconObservations,
-    result.state.beaconObservations,
-  );
+  assert.throws(() => replayBeaconSweep(changed), /mounted sense set/);
   t.diagnostic(
     "refused: 0 metadata reads, 1 CommandRefused, 0 BeaconObserved; authorized: 1 sweep, 1 BeaconObserved; complete decisions and glyph replay identical",
   );
@@ -589,11 +617,15 @@ test("WO-016 identity extends to live sweep events appended to the walking skele
   const scenario = runScenario(fixture);
   const live = observeBeaconSweep(
     scenario.log,
-    request,
-    [],
+    currentRequest(1),
     now,
     () => {},
-    () => [observation(0)],
+    {
+      read: () => ({
+        observations: currentObservations([observation(0)]),
+        groups: "not-sensed",
+      }),
+    },
   );
   const replayed = replayScenario(live.log);
   assert.deepEqual(live.decisions, replayed.decisions);

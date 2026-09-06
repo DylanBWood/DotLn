@@ -1,4 +1,4 @@
-# `@dotln/compiler` v0.3.0
+# `@dotln/compiler` v0.4.0
 
 The pure DotLn composition compiler. It has zero runtime dependencies and no
 I/O: callers pass a `LoadoutGraph` plus an explicit environment and receive a
@@ -13,7 +13,8 @@ The public type surface covers the full graph boundary: `Identity`, `Role`,
 and `AuthorityEnvelope`. Executable lowering is deliberately narrower: one
 active mechanic, at most one participating link group, at most one explicit
 pipeline in that group, and the emissions exercised by the Repo Gardener +
-Seiri scenario and the Entropy Reducer review loadout.
+Seiri scenario, the Entropy Reducer review loadout and the Beacon perception
+loadout.
 
 `compileLoadout` performs the four composition steps in order:
 
@@ -30,6 +31,14 @@ Seiri scenario and the Entropy Reducer review loadout.
 An incompatible support returns `SUPPORT INACTIVE`, the exact missing
 capability or tag family, and concrete structured corrections. It is never
 silently dropped.
+
+`beaconSenses`, `beaconSenseLoadout` and `compileBeaconSenses` expose the first
+perception supports: Beacon Sight, Fine Spectrum and Composition. They consume
+host-derived `beacons.individual.metadata` / `beacons.group.metadata`
+capabilities, declare no authority change, and emit `BeaconObserved` schemas.
+The sweep active requires Beacon Sight. Each linked channel declares one
+measured context line per bounded sweep and zero prompt fragments; the
+skeleton host owns permission enforcement, mounted reads and sparse affordances.
 
 Compiler v1 accepts exact authority and operation names plus direct terminal
 prefix globs such as `repo.read*` when the participating graph has no
@@ -55,7 +64,7 @@ fnv1a64:9ca8d0229c6bd8db
 
 ## Artifact identity v1
 
-Successful `compileLoadout` and `compileEditableView` results also carry `artifactIdentity`: schema version `1`, `compilerContractVersion` (the program's unchanged `compilerVersion: "1"`), `compilerPackageVersion: "0.3.0"`, `semanticHash`, the exact `compilationEnvironment`, `authorityExpiresAt`, and `componentDefinitions`. The package version is a pure source constant tested against `package.json`; compilation performs no manifest I/O.
+Successful `compileLoadout` and `compileEditableView` results also carry `artifactIdentity`: schema version `1`, `compilerContractVersion` (the program's unchanged `compilerVersion: "1"`), `compilerPackageVersion: "0.4.0"`, `semanticHash`, the exact `compilationEnvironment`, `authorityExpiresAt`, and `componentDefinitions`. The package version is a pure source constant tested against `package.json`; compilation performs no manifest I/O.
 
 Each definition record contains only `(componentKind, componentId, version)`, `hashScheme: "dotln-component-definition-fnv1a64-v1"`, and `definitionHash`. Its tuples equal the participating component manifest exactly: active mechanics, linked supports, and declared ambient effects. Unlinked catalog entries do not acquire a participation receipt. Link groups and mechanism types remain manifest projections.
 

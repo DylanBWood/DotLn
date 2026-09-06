@@ -8,6 +8,7 @@ import {
   guardQueuedPulse,
   type ActIntent,
   type AuthorityEnvelope,
+  type AuthorizationResult,
   type Command,
   type Decision,
   type Event,
@@ -41,7 +42,18 @@ import {
   type ArtifactDriftField,
   type ArtifactRefusalType,
 } from "./artifact-identity.js";
-import { beaconAge, decodeSignalSize } from "./control-codebook.mjs";
+import {
+  beaconAge,
+  decodeSignalSize,
+  decodeLegacySignalSize,
+} from "./control-codebook.mjs";
+import {
+  perceptionGate,
+  refusePerception,
+  validatePerception,
+  type PerceptionRead,
+} from "./beacon-perception.js";
+import type { PerceptionDeclaration } from "./execution-environment.js";
 import type {
   BeaconSweepRequest,
   JudgedBeacon,
@@ -928,6 +940,9 @@ const beaconSweepDecision = (
 ): Decision<RuntimeState> => {
   const request = event.payload as unknown as BeaconSweepRequest & {
     decisionIndex: number;
+    perceptionVersion?: number;
+    perception?: PerceptionDeclaration;
+    perceptionError?: string | null;
   };
   if (
     request.intent?.kind !== "Observe" ||
@@ -946,18 +961,35 @@ const beaconSweepDecision = (
     payload: { subject: request.intent.subject, audience: request.audience },
   };
   // Observation values are deliberately absent from this authority context.
-  const authorization = authorize(effect, request.authority, {
-    now: env.now,
-    actorId: event.actorId,
-    workstreamId: event.workstreamId,
-    ...(event.episodeId ? { episodeId: event.episodeId } : {}),
-    decisionIndex: request.decisionIndex,
-    intentIndex: 0,
-    evidence: request.evidence,
-    revokedBy: request.revokedBy,
-    state: { presence: state.presence, policy: state.policy },
-    predicateEnv: predicateEnv(env),
-  });
+  let authorization: AuthorizationResult = authorize(
+    effect,
+    request.authority,
+    {
+      now: env.now,
+      actorId: event.actorId,
+      workstreamId: event.workstreamId,
+      ...(event.episodeId ? { episodeId: event.episodeId } : {}),
+      decisionIndex: request.decisionIndex,
+      intentIndex: 0,
+      evidence: request.evidence,
+      revokedBy: request.revokedBy,
+      state: { presence: state.presence, policy: state.policy },
+      predicateEnv: predicateEnv(env),
+    },
+  );
+  if (authorization.authorized && request.perceptionVersion !== undefined) {
+    const reason =
+      request.perceptionVersion !== 1 || !request.perception
+        ? "invalid Beacon perception version"
+        : (request.perceptionError ??
+          perceptionGate(
+            request.perception,
+            request.authority,
+            request.audience,
+          ));
+    if (reason)
+      authorization = refusePerception(event, request.authority, reason);
+  }
   return {
     state: {
       ...state,
@@ -965,6 +997,9 @@ const beaconSweepDecision = (
         requestEventId: event.eventId,
         staleAfterMs: request.staleAfterMs,
         authorization: authorization as unknown as JsonValue,
+        ...(request.perceptionVersion === undefined
+          ? {}
+          : { perception: request.perception as unknown as JsonValue }),
       },
     },
     intents: authorization.authorized ? [request.intent] : [],
@@ -982,10 +1017,14 @@ const beaconObservedDecision = (
     sweptAt: number;
     observations: readonly SignalObservation[];
     commandId: string;
+    groups?: PerceptionRead["groups"];
+    keyEpoch?: number | null;
+    perceptionVersion?: number;
   };
   const sweep = state.beaconSweep as unknown as {
     staleAfterMs: number;
     authorization: { authorized: boolean; command?: Command };
+    perception?: PerceptionDeclaration;
   } | null;
   if (
     !sweep?.authorization.authorized ||
@@ -995,13 +1034,28 @@ const beaconObservedDecision = (
     !Array.isArray(payload.observations)
   )
     throw new Error("BeaconObserved lacks its authorized sweep or event time");
+  if (sweep.perception) {
+    if (
+      payload.perceptionVersion !== 1 ||
+      payload.groups === undefined ||
+      payload.keyEpoch === undefined
+    )
+      throw new Error("BeaconObserved lacks its sense projection version");
+    validatePerception(
+      { observations: payload.observations, groups: payload.groups },
+      sweep.perception,
+      payload.keyEpoch,
+    );
+  }
   const cadenceEvaluations: string[] = [];
   const observations = payload.observations.map((observation): JudgedBeacon => {
     // Persist decoded perception, but bind it to the captured size on replay.
     const decoded =
       observation.size === null
         ? { status: "absent" }
-        : decodeSignalSize(BigInt(observation.size));
+        : (sweep.perception ? decodeSignalSize : decodeLegacySignalSize)(
+            BigInt(observation.size),
+          );
     if (canonicalStringify(decoded) !== canonicalStringify(observation.decoded))
       throw new Error(
         "BeaconObserved decoded fields differ from captured metadata",
@@ -1029,7 +1083,13 @@ const beaconObservedDecision = (
     return { ...observation, age };
   });
   return {
-    state: { ...state, beaconObservations: observations },
+    state: {
+      ...state,
+      beaconObservations: observations,
+      ...(sweep.perception
+        ? { beaconGroups: payload.groups as unknown as JsonValue }
+        : {}),
+    },
     intents: [],
     schedules: [],
     trace: {

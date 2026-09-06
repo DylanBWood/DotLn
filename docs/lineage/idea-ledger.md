@@ -23,6 +23,42 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-06 WO-022 compiled senses implementation
+
+**Provenance:** the filed WO-022 public draft and fresh synthetic compiler,
+permission, filesystem and walking-skeleton evidence; no intake was copied or
+mined. The [implementation evidence](../evidence/WO-022/README.md) owns the
+bounded observations and current validation status.
+
+- **Adopted:** a sense is equipped as a perception support, compiled against
+  host-derived mount/path capabilities, authorized by the existing Observe
+  effect guard, and recorded as `BeaconObserved`. Beacon Sight, Fine Spectrum
+  and Composition disclose only their codebook channels and declare measured
+  context-line costs without changing authority. The sparse twin projects the
+  same decision; unavailable supports are `not-sensed`.
+- **Recovered:** denying content reads does not hide metadata. Fresh probes
+  retain existence, size and mtime through read denial, and 0111 directories
+  refuse listing while permitting known-name status calls. The host profile
+  therefore owns the actual path grant; prose and codebook possession grant
+  nothing.
+- **Adopted:** individual v3 carries an unsigned 8-bit epoch and exact 16-bit
+  keyed residue, with sparse-required zero-tail content and declared bigint
+  maxima. The residue is only a weak keyed consistency/error signal; it cannot
+  prove authorship or resist decoder enumeration. A current bad residue is
+  `forged-provenance`; an unavailable/non-current epoch is
+  `unverifiable-provenance`; legacy v1/v2 remains `unauthenticated-legacy`.
+  Rotation has no old-key file and refuses at 255 rather than wrapping.
+- **Preserved:** separate OS-user isolation is the stronger local boundary for
+  mutually untrusted processes. This implementation proves a finite host input
+  projection, not concealment from a hostile same-user host process. General
+  isolated providers and native model verification remain their existing work.
+- **Implementation choice:** reuse WO-021's `observe.beacons.<audience>` effect
+  lowering without changing the kernel. Reuse WO-009's host-projected profile
+  boundary for the mounted deterministic verifier and assert that its actual
+  capsule excludes implementer prose. Preserve unversioned observation replay
+  and WO-029's historical evidence while recording a new current compiler
+  evidence edition. Source prepares `v0.11.0` above published `v0.10.1`.
+
 ## 2026-09-05 WO-031 actor usage implementation
 
 **Provenance:** the filed WO-031 and its executor's bounded fixtures. The

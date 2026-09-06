@@ -8,8 +8,7 @@ import {
 import { dirname, join, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { canonicalDestination } from "../../packages/skeleton/src/beacon-io.mjs";
-import { renderControlConstellation } from "../../packages/skeleton/src/control-beacon-fs.mjs";
-import { parseWorktrees } from "./git.mjs";
+import { openBeaconKey } from "../../packages/skeleton/src/beacon-provenance.mjs";
 import { readJsonFile } from "./paths.mjs";
 
 export const agentConstellation = async (root, requestFile, logFile) => {
@@ -35,11 +34,12 @@ export const agentConstellation = async (root, requestFile, logFile) => {
     );
   }
   const request = readJsonFile(resolve(root, requestFile));
+  const keyFile = process.env.DOTLN_BEACON_KEY_FILE;
+  const key = keyFile ? openBeaconKey(keyFile, root) : undefined;
   let log = existsSync(path) ? readFileSync(path, "utf8") : "";
   const result = runtime.observeBeaconSweep(
     log,
     request,
-    parseWorktrees(root),
     Date.now(),
     (next) => {
       if (!next.startsWith(log))
@@ -48,6 +48,7 @@ export const agentConstellation = async (root, requestFile, logFile) => {
       writeFileSync(path, next.slice(log.length), { flag: "a", mode: 0o600 });
       log = next;
     },
+    key ? { key } : {},
   );
   if (!result.authorized)
     return {
@@ -56,10 +57,12 @@ export const agentConstellation = async (root, requestFile, logFile) => {
     };
   return {
     authorized: true,
-    text: renderControlConstellation(
-      result.observations,
-      result.sweptAt,
-      request.staleAfterMs,
-    ),
+    text: (
+      await import(
+        pathToFileURL(
+          join(root, "packages/skeleton/dist/src/beacon-perception.js"),
+        ).href
+      )
+    ).renderBeaconPerception(result),
   };
 };
