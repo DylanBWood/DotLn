@@ -314,6 +314,12 @@ the operator chose to see and touch them.
   competing branches, spell echo = bounded repeat, unleash =
   accumulate-then-burst, cast-when-damage-taken = failure-triggered reactor,
   totem/minion = delegation...).
+- **The first helmet supports are senses:** Beacon Sight exposes the individual
+  codebook fields, Fine Spectrum adds sub-second mtime, and Composition exposes
+  the separately mounted group codeword. Tooltips show the missing mount/path
+  capability or active status, unchanged authority, `BeaconObserved` evidence,
+  and one measured context line per equipped channel per sweep. A codebook
+  reference by itself grants no perception.
 - **Clean Room is an active gem, not a maximum-rigor toggle.** Its locked
   boundary facet is always visible; one linked strategy shows whether the source
   is rewritten, shape-first synthesized, or preserved as an explicitly
@@ -457,6 +463,16 @@ statechart-gated actions, one result form — token-budgeted by design, whether
 rendered as a page, CLI output, or file. Never force an agent to parse an 80-row
 dashboard; never let it see an action the current state makes illegal (gated
 affordances, 03 §agentic core).
+
+WO-022's `projectBeaconSparseTwin` compiles the selected perception supports
+and runs the same permission decision as the live sweep. An unmounted,
+unequipped, denied, expired or exhausted role receives no sweep action; an
+authorized Beacon Sight role receives exactly one. `renderBeaconPerception`
+uses one physical JSON line for the individual set, plus one each for equipped
+Fine Spectrum and Composition. Coarse mtime cannot reveal the finer field;
+missing supports are labeled `not-sensed`, distinct from an equipped sense's
+`absent` observation. The v3 provenance label is a weak residue-check result,
+with drill-down to the normative field/algorithm and evidence in product 02.
 
 Agent-runtime skills are another projection of this sparse twin. An
 implementation may ship Claude, Codex, or future-runtime skills that expose its

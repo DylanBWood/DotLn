@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.9.0
+# `@dotln/skeleton` 0.10.0
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on
@@ -252,9 +252,48 @@ the concept useful; the
 [proposed operator comparison](../../docs/planning/beacon-usefulness-checkpoint.md)
 remains a separate evidence step.
 
+## Senses
+
+Component `0.10.0` prepares application `v0.11.0`, with compiler `0.4.0` and
+unchanged kernel `0.2.1`. Beacon Sight, Fine Spectrum and Composition compile
+as ordinary perception supports. The host's `beacon-perception-v1` profile
+provides finite metadata mounts and excludes narrative, write and model-tool
+surfaces. Compilation and `projectBeaconSparseTwin` expose the same permission
+decision used by `observeBeaconSweep`; a missing sense or grant yields a
+recorded refusal with no Beacon read.
+
+`renderBeaconPerception` emits one JSON line for the bounded individual set,
+and one extra line each for equipped Fine Spectrum and Composition. Absent
+supports say `not-sensed`; whole-second mtime cannot disclose the finer field.
+The reader uses only status calls on the host's known basenames. It never
+enumerates directories, opens content or reads xattrs. `MountedBeaconVerifier`
+plugs into `runScenario` or `finishScenario` and completes the deterministic
+verification episode using candidate paths, an independent inventory projection
+and authorized Beacon fields; implementer summaries/evidence prose stay in the
+host log. This does not add a native model verifier.
+
+Individual v3 adds a non-secret 8-bit key epoch and a 16-bit keyed consistency
+residue. Labels are `residue-matched`, `forged-provenance`, or
+`unverifiable-provenance`; legacy versions remain `unauthenticated-legacy`.
+The residue does not prove authorship or resist enumeration by an actor with
+decoder/path access. A configured external `DOTLN_BEACON_KEY_FILE` selects v3
+in the lifecycle emitter and keyed checks in the agent CLI. The key helpers
+refuse repository paths and non-private files; rotation increments the epoch
+and refuses at 255. Reopen a long-lived handle after rotation.
+
+V3 is sparse-required: at most a 4,096-byte JSON prefix, then a logical zero
+tail. Its entire 1,236,950,589,434-byte maximum is freshly probed on the target
+device with at most eight 512-byte allocated blocks. The writer never densely
+pads v3 or falls back after a failed premise. The existing individual v1/v2
+encodings and separate phase-group family retain their meanings. See the
+[normative codebook](../../docs/product/02-domain-model.md#beacon-codebook-v3--weak-keyed-provenance),
+[host request/runbook](../../docs/product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched),
+and [WO-022 evidence](../../docs/evidence/WO-022/README.md).
+
 ## Control-plane Beacons
 
-Every appended resume transition writes a dense v2 projection inside ignored
+Every appended resume transition writes a dense v2 projection, or sparse v3
+when the host explicitly supplies its external key, inside ignored
 `.control-beacons/public/` and `verifier/`, with canonical transition mtime.
 The verifier whitelist excludes claims and narrative. Optional session-specific
 restricted projections are provisioned by the host; only the matching
@@ -278,7 +317,8 @@ reproduced logical ceiling. Never copy or open a huge sparse group as content.
 npm run worktree -- constellation --agent <host-request.json> --log docs/observations/<name>.jsonl
 ```
 
-After a current build, this form consumes an explicit host envelope and records
+After a current build, this form consumes an explicit host envelope, equipped
+senses and metadata mount profile (see Senses above), and records
 the Observe request through the pure reactor. The existing guard checks the
 `observe.beacons.public` or `.verifier` effect before any Beacon metadata read.
 Refusal yields no perception; allowance persists the command, one

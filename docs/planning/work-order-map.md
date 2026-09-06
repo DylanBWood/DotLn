@@ -21,6 +21,14 @@ require mainline work to count upward to reach it.
 
 ## Recommendation and rationale
 
+**WO-022 source (2026-09-06):** this worktree prepares `v0.11.0` above published
+`v0.10.1`. WO-021, WO-008 and WO-009 are present in the activation base; the
+fresh sparse probe emits the entire v3 maximum within eight allocated blocks.
+The [WO-022 evidence](../evidence/WO-022/README.md) covers compiled senses,
+the host mount/profile boundary, weak provenance and deterministic verifier
+blinding. Native model verification remains WO-010, and the marked sequence
+is unchanged. The generated index and control fold own lifecycle status.
+
 **WO-031 implementation (2026-09-05):** this source prepares `v0.10.1` above
 published `v0.10.0`. The actor-usage report and opt-in labels are implemented;
 the [evidence](../evidence/WO-031/README.md) and generated index own validation

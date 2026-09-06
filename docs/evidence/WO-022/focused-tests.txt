@@ -1,0 +1,65 @@
+TAP version 13
+# Subtest: WO-022 AC1 missing Beacon mount reports SUPPORT INACTIVE with an actionable correction; grants preserve authority
+ok 1 - WO-022 AC1 missing Beacon mount reports SUPPORT INACTIVE with an actionable correction; grants preserve authority
+  ---
+  duration_ms: 4.191333
+  ...
+# SUPPORT INACTIVE: support "beacon-sight" linked to active "beacon-sweep" is missing capability "beacons.individual.metadata". Correction: provide-capability beacons.individual.metadata
+# all three active; authority unchanged; measured rendering contract: 1 context line per equipped channel, 0 prompt fragments
+# Subtest: WO-022 AC9 v3 data, algebraic product bounds, all residues for representative states, malformed boundaries
+ok 2 - WO-022 AC9 v3 data, algebraic product bounds, all residues for representative states, malformed boundaries
+  ---
+  duration_ms: 445.119417
+  ...
+# v2 × epoch × authenticator = 288 × 256 × 65536 = 4831838208; MAX_V3_CODE=19327352831; MAX_V3_LOGICAL_BYTES=1236950589434; 589824 exhaustive representative residue round trips
+# Subtest: WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported hosts create no file
+ok 3 - WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported hosts create no file
+  ---
+  duration_ms: 4.203
+  ...
+# maximum file: logical=1236950589434; blocks=8/8; blockBytes=4096; exact mtime and zero tail preserved through temp/rename; unsupported hosts: no files or directories
+# Subtest: WO-022 AC6/8/10 dynamic external keys, forged provenance, replay, unknown/rotated epochs and exhaustion
+ok 4 - WO-022 AC6/8/10 dynamic external keys, forged provenance, replay, unknown/rotated epochs and exhaustion
+  ---
+  duration_ms: 84.575625
+  ...
+# current bad residue: forged-provenance; same key/epoch replay: residue-matched; rotated and never-observed epochs: unverifiable-provenance; 255 rotations then exhaustion without key/beacon changes; no retained old-key file
+# Subtest: WO-022 AC2/3 affordance and permission guard agree; no sense or grant yields an event with zero reads
+ok 5 - WO-022 AC2/3 affordance and permission guard agree; no sense or grant yields an event with zero reads
+  ---
+  duration_ms: 407.70325
+  ...
+# sparse twin: unequipped actions=[]; equipped actions=[{"action":"sweep","intent":{"kind":"Observe","subject":"control-beacons"}}]; nine refusal cases, zero metadata reads; envelope=fixture-verifier-envelope
+# Subtest: WO-022 legacy v1/v2 sensing is unauthenticated and pre-sense replay retains the unknown tag-3 meaning
+ok 6 - WO-022 legacy v1/v2 sensing is unauthenticated and pre-sense replay retains the unknown tag-3 meaning
+  ---
+  duration_ms: 338.169792
+  ...
+# legacy v1/v2 fields preserved and labeled unauthenticated-legacy; pre-WO-022 tag 3 remains unknown on replay; new live input cannot select that bypass
+# Subtest: WO-022 AC4/6/7 exact metadata-only channels; search-only listing refusal and no extra names/content/xattrs
+ok 7 - WO-022 AC4/6/7 exact metadata-only channels; search-only listing refusal and no extra names/content/xattrs
+  ---
+  duration_ms: 332.856708
+  ...
+# 0111 directory: listing=EACCES, known-name lstat=allowed; mode-000 garbage content and xattr do not affect the codeword; coarse=1 line, all senses=3 lines; one BeaconObserved; content, extra names, xattrs, paths, capability and key excluded
+# Subtest: WO-022 AC5 a mounted Beacon Sight verifier completes the skeleton with no implementer prose in its inputs
+ok 8 - WO-022 AC5 a mounted Beacon Sight verifier completes the skeleton with no implementer prose in its inputs
+  ---
+  duration_ms: 397.547292
+  ...
+# walking skeleton VerificationCompleted accepted=true; verifier received candidate paths, independent inventory fields and Beacon perception only; implementer narrative remained in host log and was absent from every verifier input
+# Subtest: WO-022 AC8 canonical control-log re-derivation uses the same host v3 writer and key
+ok 9 - WO-022 AC8 canonical control-log re-derivation uses the same host v3 writer and key
+  ---
+  duration_ms: 667.924875
+  ...
+# canonical control JSONL folded twice; production lifecycle emitter re-derived identical v3 state/size/mtime and residue; both sweeps matched; control log unchanged
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2227.036958

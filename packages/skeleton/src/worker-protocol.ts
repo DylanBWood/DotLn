@@ -2,6 +2,7 @@ import type { Command, ResultEnvelope, WorkOrder } from "@dotln/kernel";
 import type { ArtifactIdentityV1 } from "@dotln/compiler";
 import type { Candidate } from "./reactor.js";
 import type { FixtureTree } from "./scenario.js";
+import type { FixtureInspectionProfile } from "./execution-environment.js";
 
 export type WorkerTransportName = "claude-cli-print" | "codex-cli-exec";
 export type WorkerEffort =
@@ -24,12 +25,7 @@ export interface WorkerRequest {
   readonly effort: WorkerEffort;
   readonly cwd: string;
   readonly fixture: FixtureTree;
-  readonly profile: {
-    readonly profileId: "fixture-inspection-v1";
-    readonly mounts: readonly [
-      { readonly path: string; readonly access: "read" },
-    ];
-  };
+  readonly profile: FixtureInspectionProfile;
 }
 
 export const HEARTBEAT_MS = 1_000;

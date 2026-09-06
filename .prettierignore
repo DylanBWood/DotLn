@@ -25,6 +25,7 @@ docs/evidence/WO-030/legacy-times.json
 docs/evidence/WO-029/audit.json
 docs/evidence/WO-029/negative-transcripts.json
 docs/evidence/WO-029/semantic-hash-inventory.json
+docs/evidence/WO-022/artifact-identity/*.json
 docs/verifications/WO-*/
 docs/final-reviews/WO-*/
 docs/releases/v*.md

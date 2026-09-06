@@ -1,4 +1,5 @@
 import { decodeBeaconSize, framedSize } from "./beacon-codebook.mjs";
+import { decodeV3BeaconSize } from "./beacon-v3-codebook.mjs";
 
 // Independent field space; v1 keeps its episode/receipt meaning unchanged.
 export const CONTROL_CODEBOOK = /** @type {const} */ ({
@@ -83,6 +84,16 @@ export function encodeGroupBeacon(counts) {
 
 /** @param {number | bigint} size @returns {SignalDecode} */
 export function decodeSignalSize(size) {
+  const legacy = decodeLegacySignalSize(size);
+  return legacy.status === "unknown-codebook" && legacy.codebookVersion === 3
+    ? decodeV3BeaconSize(size)
+    : legacy;
+}
+
+/** The decoder selected by pre-WO-022 observation events during replay.
+ * @param {number | bigint} size @returns {SignalDecode}
+ */
+export function decodeLegacySignalSize(size) {
   const legacy = decodeBeaconSize(size);
   if (legacy.status !== "unknown-codebook") return legacy;
   const code = (BigInt(size) - 8192n) / 64n;
@@ -102,8 +113,6 @@ export function decodeSignalSize(size) {
       state: { codebookVersion: 2, phase, latestVerdict, effort, provenance },
     };
   }
-  // Individual v3 remains available to WO-022. A group is a separate family,
-  // selected only by the dedicated group directory/decoder, never guessed here.
   return legacy;
 }
 
@@ -137,7 +146,7 @@ export function groupCounts(observations) {
   for (const { decoded } of observations) {
     if (
       decoded.status !== "decoded" ||
-      decoded.state.codebookVersion !== 2 ||
+      decoded.state.codebookVersion === 1 ||
       decoded.state.provenance !== "host-projected"
     )
       continue;

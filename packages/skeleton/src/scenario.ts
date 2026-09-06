@@ -65,6 +65,7 @@ export interface ScenarioOptions {
   readonly equippedLoadout?: Loadout;
   readonly onEvents?: (events: readonly Event[]) => void;
   readonly onExecutorClaim?: (claim: BeaconClaimRecord) => void;
+  readonly verifier?: ScenarioVerifier;
 }
 
 export interface ScenarioResult {
@@ -131,7 +132,16 @@ export class FakeExecutor {
   }
 }
 
-class FakeVerifier {
+export interface ScenarioVerifier {
+  dispatch(
+    intent: ObserveIntent,
+    candidates: readonly Candidate[],
+    driver: LiveReactorDriver,
+    now: number,
+  ): boolean;
+}
+
+class FakeVerifier implements ScenarioVerifier {
   constructor(private readonly fixture: FixtureTree) {}
 
   dispatch(intent: ObserveIntent, candidates: readonly Candidate[]): boolean {
@@ -185,6 +195,14 @@ export class LiveReactorDriver {
   ) {}
 
   feed(draft: EventDraft): ReactorStep {
+    if (
+      draft.type === "BeaconSweepRequested" &&
+      (draft.payload as { perceptionVersion?: unknown } | null)
+        ?.perceptionVersion !== 1
+    )
+      throw new Error(
+        "new BeaconSweepRequested requires perceptionVersion: 1; use observeBeaconSweep",
+      );
     if (draft.type === "ArtifactIdentityEnforcementStarted")
       throw new Error(
         "the enforcement boundary is host-owned; use ensureIdentityEnforcement",
@@ -591,7 +609,14 @@ export function runScenario(
   );
 
   return {
-    ...finishScenario(driver, fixture, opening, commandResult),
+    ...finishScenario(
+      driver,
+      fixture,
+      opening,
+      commandResult,
+      undefined,
+      options.verifier,
+    ),
     adapterEffects: executor.effects,
     adapterDispatches: executor.dispatches,
     recoveredCommands,
@@ -605,10 +630,10 @@ export function finishScenario(
   opening: ScenarioOpening,
   commandResult: ReactorStep,
   now?: () => number,
+  verifier: ScenarioVerifier = new FakeVerifier(fixture),
 ): ScenarioResult {
   const { away, pulse, command, queuedScheduleId } = opening;
   const candidates = commandResult.decision.state.candidates;
-  const verifier = new FakeVerifier(fixture);
   const scheduler = new FakeScheduler();
   scheduler.schedule(
     ...away.decision.schedules.map((schedule) => schedule.scheduleId),
@@ -656,6 +681,8 @@ export function finishScenario(
   const accepted = verifier.dispatch(
     observeIntent(verificationRequested.decision, "candidates"),
     candidates,
+    driver,
+    at(5),
   );
   feedOnce(
     draft(

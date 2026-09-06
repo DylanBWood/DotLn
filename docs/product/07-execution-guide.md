@@ -168,6 +168,42 @@ log is contained under `docs/observations/` and created mode 0600; it is
 deliberate evidence, not a disposable cache. Default age policy is 20 minutes;
 the recorded request may explicitly choose another threshold.
 
+WO-022 additionally requires host-selected `senses` (`beacon-sight`, optionally
+`fine-spectrum` and `composition`) and an `environment` with
+`profileId: "beacon-perception-v1"`, matching `audience`, `mounts`, and empty
+`writableSurfaces`, `modelTools` and `narrativeSurfaces`. Each mount supplies a
+stable non-private `mountId`, absolute `path`, `access: "beacon-metadata"`,
+`family: "individual" | "phase-group"`, and the complete known `addresses`
+array. `controlBeaconAddress(WO-NNN)` derives the fixed basename. There are at
+most twelve individual addresses and one group address. These are host inputs;
+the worker neither chooses its mount nor creates an envelope. The compiled
+capabilities and path-free mount record enter the request event. Physical paths
+do not enter the observation log or the sparse projection. A new live request
+without Beacon Sight or its mount is refused even if its envelope allows
+Observe. `projectBeaconSparseTwin` previews that same decision without reading.
+
+For restricted mounting, trusted host code calls `issueBeaconSession` and
+`beaconSessionMount(root, order, capability)` from the control Beacon module.
+The latter returns a physical mount record to the host; the matching `resume
+next` briefing remains the only textual disclosure of its random directory.
+Restricted directories are 0111 at rest, allowing known-name metadata access
+and refusing enumeration. The host restores write access only around emission
+and restores search-only access in `finally`. Ordinary worktree teardown
+restores owner access only after all existing close/merge/material gates pass.
+
+V3 emission uses an external host key supplied through the command-scoped
+`DOTLN_BEACON_KEY_FILE`. `createBeaconKey`, `openBeaconKey`, and
+`rotateBeaconKey` in `beacon-provenance.mjs` create/open/rotate that mode-0600
+file outside every Git checkout; never put its bytes in a request, prompt,
+fixture or log. A configured key selects sparse-required v3 for lifecycle
+emission and keyed checks for agent sweeps. A missing key selection retains
+legacy v2 emission, and a reader without a key labels reachable v3
+`unverifiable-provenance`. An invalid configured key or failed v3 storage probe
+does not fall back to v2. Rotation increments the epoch and requires reopening
+long-lived key handles; epoch 255 refuses. The full codebook and its weak-signal
+limit are in product 02. The bounded tests arrange fresh non-repository keys
+and remove them afterward; no operator key is needed for `npm test`.
+
 Optional restricted projection provisioning is a trusted host API,
 `issueBeaconSession(root, workOrderId)`, returning a separate random capability.
 Only `npm run resume -- next --beacon-session <capability>` for that selected

@@ -108,10 +108,18 @@ test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async ()
       "@dotln/compiler",
       "./artifact-identity.js",
       "./control-codebook.mjs",
+      "./beacon-perception.js",
+      "./execution-environment.js",
       "./control-beacon.js",
     ],
     "the reactor imports only the kernel, pure compiler, identity checks and pure Beacon projections",
   );
+  for (const pure of ["beacon-perception.ts", "execution-environment.ts"])
+    assert.doesNotMatch(
+      sources.get(pure) ?? "",
+      /from\s+"node:/u,
+      `${pure} must keep filesystem and key access at the edge`,
+    );
   for (const decider of [
     "evaluateCadence",
     "authorize",

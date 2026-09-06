@@ -458,6 +458,16 @@ git -C "$subject" branch --unset-upstream
 test -d "$subject/.control-beacons/public"
 test -d "$subject/.control-beacons/verifier"
 test -d "$subject/.control-beacons/groups"
+node --input-type=module - "$subject" <<'NODE'
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+const root = process.argv[2];
+const host = await import(pathToFileURL(join(root, "packages/skeleton/src/control-beacon-fs.mjs")));
+host.issueBeaconSession(root, "WO-099");
+const record = JSON.parse(readFileSync(join(host.controlBeaconDirectory(root), host.controlBeaconAddress("WO-099")), "utf8"));
+host.emitControlBeacon(root, record);
+NODE
 finish_worktree WO-099 >/dev/null
 test ! -e "$subject"
 test "$(git -C "$main" branch --list wo-099)" = ""

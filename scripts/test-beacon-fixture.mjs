@@ -28,6 +28,9 @@ export const installBeaconFixture = (root) => {
     "control-codebook.mjs",
     "beacon-io.mjs",
     "control-beacon-fs.mjs",
+    "beacon-v3-codebook.mjs",
+    "beacon-v3-fs.mjs",
+    "beacon-provenance.mjs",
   ])
     cpSync(join(source, name), join(destination, name));
 };
@@ -43,7 +46,7 @@ export const snapshotBeacons = (root) => {
         metadata.mtimeNs,
         metadata.ctimeNs,
       ].map(String),
-      ...(metadata.isDirectory()
+      ...(metadata.isDirectory() && (Number(metadata.mode) & 0o400) !== 0
         ? readdirSync(join(base, path))
             .sort()
             .flatMap((child) => visit(join(path, child)))

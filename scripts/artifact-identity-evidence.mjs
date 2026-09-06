@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import {
   canonicalStringify,
   compileLoadout,
@@ -34,6 +34,9 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0])) {
   process.exit(2);
 }
 const root = new URL("../", import.meta.url);
+// Compiler 0.4.0 gets a new current evidence edition. WO-029's observed
+// receipts and frozen baseline remain historical bytes, not mutable goldens.
+const evidenceDirectory = "docs/evidence/WO-022/artifact-identity";
 const read = (path) => readFileSync(new URL(path, root), "utf8");
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const baseline = JSON.parse(read("docs/evidence/WO-029/baseline.json"));
@@ -301,9 +304,11 @@ const files = new Map([
   ],
 ]);
 for (const [name, bytes] of files) {
-  const path = `docs/evidence/WO-029/${name}`;
-  if (mode[0] === "--write") writeFileSync(new URL(path, root), bytes);
-  else if (read(path) !== bytes) {
+  const path = `${evidenceDirectory}/${name}`;
+  if (mode[0] === "--write") {
+    mkdirSync(new URL(`${evidenceDirectory}/`, root), { recursive: true });
+    writeFileSync(new URL(path, root), bytes);
+  } else if (read(path) !== bytes) {
     console.error(
       `stale artifact evidence: ${path}; inspect the change before regenerating with --write`,
     );
@@ -312,5 +317,5 @@ for (const [name, bytes] of files) {
 }
 if (!process.exitCode)
   console.log(
-    `${mode[0] === "--write" ? "Recorded" : "Verified"} ${files.size} WO-029 artifact evidence files; original semantic hashes and frozen oracle unchanged.`,
+    `${mode[0] === "--write" ? "Recorded" : "Verified"} ${files.size} current artifact evidence files in ${evidenceDirectory}; original semantic hashes and frozen oracle unchanged.`,
   );

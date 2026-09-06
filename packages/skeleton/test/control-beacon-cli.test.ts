@@ -61,6 +61,9 @@ test("WO-021 agent constellation CLI persists permission/refusal and one metadat
     "beacon-io.mjs",
     "control-codebook.mjs",
     "control-beacon-fs.mjs",
+    "beacon-v3-codebook.mjs",
+    "beacon-v3-fs.mjs",
+    "beacon-provenance.mjs",
   ])
     cpSync(
       join(repository, "packages/skeleton/src", name),
@@ -83,6 +86,23 @@ test("WO-021 agent constellation CLI persists permission/refusal and one metadat
   const request: BeaconSweepRequest = {
     intent: { kind: "Observe", subject: "control-beacons" },
     audience: "public",
+    senses: ["beacon-sight", "fine-spectrum"],
+    environment: {
+      profileId: "beacon-perception-v1",
+      audience: "public",
+      mounts: [
+        {
+          mountId: "fixture",
+          path: controlBeaconDirectory(root),
+          access: "beacon-metadata",
+          family: "individual",
+          addresses: [controlBeaconAddress("WO-099")],
+        },
+      ],
+      modelTools: [],
+      writableSurfaces: [],
+      narrativeSurfaces: [],
+    },
     staleAfterMs: 1200000,
     authority: {
       authorityEnvelopeId: "fixture-host-grant",
@@ -147,7 +167,10 @@ test("WO-021 agent constellation CLI persists permission/refusal and one metadat
     "docs/observations/allowed.jsonl",
   ]);
   ok(allowed);
-  assert.match(allowed.stdout, /active.*host-projected.*fresh/);
+  assert.match(
+    allowed.stdout,
+    /active.*host-projected.*unauthenticated-legacy/,
+  );
   const log = readFileSync(
     join(root, "docs/observations/allowed.jsonl"),
     "utf8",

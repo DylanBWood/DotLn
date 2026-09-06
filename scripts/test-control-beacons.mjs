@@ -27,6 +27,7 @@ import {
   emitControlBeacon,
   groupBeaconAddress,
   issueBeaconSession,
+  prepareBeaconDisposal,
   sweepControlBeacons,
 } from "../packages/skeleton/src/control-beacon-fs.mjs";
 import {
@@ -196,7 +197,13 @@ for (const directory of [
     () => validateBeaconDirectory(directory, root),
     /host projections only/,
   );
-  for (const filename of readdirSync(directory)) {
+  if (directory === restricted) {
+    assert.equal(lstatSync(directory).mode & 0o777, 0o111);
+    assert.throws(() => readdirSync(directory), { code: "EACCES" });
+  }
+  for (const filename of directory === restricted
+    ? [controlBeaconAddress("WO-097")]
+    : readdirSync(directory)) {
     const record = JSON.parse(readFileSync(join(directory, filename), "utf8"));
     assert.equal(record.recordType, "control-beacon-projection");
     assert.equal(record.provenance, "host-projected");
@@ -270,3 +277,4 @@ try {
 console.log(
   "PASS filesystem projection failure records exactly one transition and warns without leaking restricted paths",
 );
+prepareBeaconDisposal(root);

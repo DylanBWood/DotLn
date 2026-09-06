@@ -8,23 +8,31 @@ import {
   renderControlConstellation,
   sweepControlBeacons,
   readGroupBeacon,
+  prepareBeaconDisposal,
 } from "../../packages/skeleton/src/control-beacon-fs.mjs";
 import { CONTROL_CODEBOOK } from "../../packages/skeleton/src/control-codebook.mjs";
+import { openBeaconKey } from "../../packages/skeleton/src/beacon-provenance.mjs";
 
-export { restrictedBeaconBriefing };
+export { restrictedBeaconBriefing, prepareBeaconDisposal };
 
 export const projectControlBeacon = (root, state, recordedAt) => {
+  const keyFile = process.env.DOTLN_BEACON_KEY_FILE;
+  const key = keyFile ? openBeaconKey(keyFile, root) : undefined;
   const effort = state.latestAttestation?.effort ?? "unknown";
-  const storage = emitControlBeacon(root, {
-    recordType: "control-beacon-projection",
-    codebookVersion: 2,
-    workOrderId: state.workOrderId,
-    phase: state.phase,
-    latestVerdict: state.latestVerdict ?? "unknown",
-    effort: CONTROL_CODEBOOK.efforts.includes(effort) ? effort : "unknown",
-    provenance: "host-projected",
-    recordedAt,
-  });
+  const storage = emitControlBeacon(
+    root,
+    {
+      recordType: "control-beacon-projection",
+      codebookVersion: 2,
+      workOrderId: state.workOrderId,
+      phase: state.phase,
+      latestVerdict: state.latestVerdict ?? "unknown",
+      effort: CONTROL_CODEBOOK.efforts.includes(effort) ? effort : "unknown",
+      provenance: "host-projected",
+      recordedAt,
+    },
+    key ? { key } : {},
+  );
   emitGroupBeacon(root, parseWorktrees(root), Date.parse(recordedAt), storage);
 };
 

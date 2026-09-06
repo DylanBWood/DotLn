@@ -1,6 +1,6 @@
 # Architecture
 
-**Status:** implemented slices within a target architecture. This source prepares `v0.10.0`: the pure kernel and compiler, pinned composition, deterministic walking skeleton, audit/Beacon projections, and a durable host for bounded real CLI inspection episodes. Native verification, general write-capable workers, and the console remain planned unless a section explicitly says otherwise. See the roadmap and work-order evidence for each boundary.
+**Status:** implemented slices within a target architecture. This source prepares `v0.11.0`: the pure kernel and compiler, pinned composition, deterministic walking skeleton, audit/Beacon projections, bounded real CLI inspection episodes, and compiled metadata senses with weak keyed v3 provenance. Native model verification, general write-capable workers, and the console remain planned unless a section explicitly says otherwise. See the roadmap and work-order evidence for each boundary.
 
 The diagram below is the author's reference topology. Platform contracts make
 its modules composable; an implementation that omits durable history, replay,
@@ -489,6 +489,19 @@ proved by discovery. `ExecutionEnvironmentProfile` is a working name for the
 selection record, not a pinned schema. It remains orthogonal to
 `RuntimePrimitiveCatalog`, `WorkOrderTransport`, and `AuthorityEnvelope`.
 
+WO-022 adds the bounded `beacon-perception-v1` specialization beside WO-009's
+`fixture-inspection-v1`. Both are explicit `ExecutionEnvironmentProfile`
+variants. A Beacon profile grants a finite set of individual/group paths and
+known opaque basenames with `beacon-metadata` access; it declares no writable,
+model-tool, or narrative surfaces. Only the host holds the physical profile.
+Compiler capabilities derive from its mounts; the audit receives the mount IDs,
+families and address sets without physical paths. This is the existing host
+projection boundary, not a new OS mount namespace or a hostile-process sandbox.
+The deterministic mounted verifier receives an isolated JSON capsule of
+candidate paths, independently projected inventory fields and authorized Beacon
+observations; implementer evidence strings, summaries and log prose are not
+inputs. General native model verification remains WO-010.
+
 A profile needs inspectable facts rather than one “stronger isolation” score:
 substrate and provider versions; pinned image, root filesystem, guest kernel, or
 template identity; source and base revision; mounts and writable surfaces;
@@ -656,6 +669,17 @@ constant:
 4. Emit: WorkOrder + permissions + hooks + schemas + cadences + verification
    plan + the (small) prompt fragment residue. Per-support cost is declared:
    mechanism type, prompt tokens (usually 0), runtime cost, extra episodes.
+
+WO-022 exercises step 2 with perception supports: Beacon Sight and Fine Spectrum
+require `beacons.individual.metadata`, and Composition requires
+`beacons.group.metadata`. The host derives these capabilities from its mounted
+path record, never from a worker's possession of a codebook. A missing mount
+renders SUPPORT INACTIVE naming that capability and the correction. The sweep
+active also requires linked Beacon Sight. Supports add no effect authority:
+the existing `observe.beacons.<audience>` guard remains required at runtime,
+and the sparse twin projects that same grant as an affordance. The compiler's
+ordinary graph, costs, manifest and evidence-schema emissions implement all
+three; no new kernel intent or effect namespace is introduced.
 
 The emitted component manifest is also a participation proof for the compiled
 chain. A data-acquisition active may legitimately include an authorized
@@ -1169,7 +1193,7 @@ text, never the default channel for state you own in structured form.
   architecture, never in the model's training-set fashion.
 - `WorkOrderTransport`: the deterministic fake remains first-class. The two real Node adapters are `ClaudeCliPrintWorkOrderTransport` and `CodexCliExecWorkOrderTransport`. `dispatch(request, now)` returns separate promises for a `CommandReceipt` and validated `WorkerResult`, plus host-only process-liveness and kill handles. The request carries the compiled WorkOrder, authorized persisted command, pinned artifact/environment, selected model/effort, physical episode and declared read mount. The host checks the existing compiled recovery decision before either adapter runs. The typed result and evidence stay in the store; only its six-field envelope reaches the dispatching session.
 
-  The current personal profile is `fixture-inspection-v1`: one detached, clean, verified Git worktree, one host-read inventory projection, no repository writes, and no model tool access. Cleanup checks root, common Git directory, exact base, detached state and all dirty/untracked/ignored files; it never force-removes a worktree. Broader mounts or write effects refuse. The CLI broker still needs its own authentication and runtime files; this profile constrains model perception/tools, not a hostile same-user broker process. General Senses/environment provisioning remains WO-022.
+  The current personal profile is `fixture-inspection-v1`: one detached, clean, verified Git worktree, one host-read inventory projection, no repository writes, and no model tool access. Cleanup checks root, common Git directory, exact base, detached state and all dirty/untracked/ignored files; it never force-removes a worktree. Broader mounts or write effects refuse. The CLI broker still needs its own authentication and runtime files; this profile constrains model perception/tools, not a hostile same-user broker process. WO-022 adds the separate metadata-only Beacon profile described above; general environment providers remain candidates.
 
   Claude's canonical shape uses `--print --model <required> --effort <declared> --output-format json --json-schema <schema> --no-session-persistence --setting-sources project,local --settings '{"autoMemoryEnabled":false}' --tools "" --disable-slash-commands --safe-mode --strict-mcp-config --mcp-config '{"mcpServers":{}}' --no-chrome --max-budget-usd 1.00`. Safe mode suppresses ambient customization; authentication remains CLI-owned. Codex uses `exec --ephemeral --ignore-user-config --strict-config --model <required> --json --output-schema <schema> --cd <worktree>` and observed named permissions admitting only minimal runtime reads plus the read-only workspace mount, with command network access disabled. Per-invocation overrides disable memories, project instruction loading, MCP, apps, plugins, browser/computer tools, shell/image tools and delegation. Neither adapter supplies a fallback model. Unsupported runtime versions, unavailable models, invalid outputs and unsupported profiles fail closed. Codex effort remains `unknown` because the bounded installed-host probe found no dedicated selector; a generic config override is not silently promoted to observed effort selection. Both model and effort are recorded as host launch claims, with effective readback `unknown`.
 
