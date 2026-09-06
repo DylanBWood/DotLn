@@ -43,6 +43,10 @@ follow `docs/product/07-execution-guide.md` §Operator-opened ideation mode
 without requiring the operator to restate those stages. A `planning:` prefix
 dispatches the doc-only planning pass described in the same guide.
 
+After ideation intake during an active work order, execution continues through
+the evidence gate to ready to verify unless the operator explicitly requests a
+pause or capture only.
+
 ## Why intake is gitignored
 
 `docs/intake/` is excluded from Git so unfinished personal ideation can stay
@@ -69,7 +73,9 @@ No naming scheme required. Tell me when a batch has landed and I'll read it.
 
 The intended surviving location is the main control-plane checkout's ignored
 `docs/intake/`. A relative path in a work-order worktree is a different private
-directory, not another view of main. If access constraints require a provisional
+directory, not another view of main. Resolve main with
+`git worktree list --porcelain` before looking up original sources as well as
+before capturing new material. If access constraints require a provisional
 capture there, keep the worktree, back the note up, and reconcile it into main
 before removal. The current tooling protects such notes by refusing normal
 worktree cleanup but does not perform that reconciliation automatically.

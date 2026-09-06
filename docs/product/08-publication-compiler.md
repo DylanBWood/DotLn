@@ -239,6 +239,44 @@ inspector shows the canonical source, implementation status, evidence, other
 editions that use it, and what the current edition omitted. This is the
 publication equivalent of DotLn's mechanics inspector.
 
+## PRs and commits
+
+A PR title names the main change in concise, ordinary prose after the required
+gitmoji shortcode. Choose enough detail to distinguish the change in a PR list.
+Put explanations, implementation inventories, and validation in the body. Write
+from the current diff and the reader's needs; earlier titles are historical
+artifacts, not a style template. There is no fixed word count.
+
+Select the gitmoji with the same care as the wording. Consult the
+[full catalog](https://gitmoji.dev/) and choose a relevant, expressive match for
+the change's main purpose. Its vocabulary includes analytics, concurrency,
+validation, developer experience, accessibility, and other specific intents.
+Use that range without turning variety into a rotation requirement. The
+2026-09-05 operator correction replaces the former narrow default mapping;
+hand-authored commit messages continue to use plain subjects.
+
+The summary leads with the resulting behavior and why it matters. Include the
+validation result and any limitation or migration a reviewer needs to act on;
+link the full evidence. Optimize for accuracy, clarity, and useful substance.
+Scale detail to the change: complex behavior and consequential tradeoffs may
+need several paragraphs or grouped explanations. There is no sentence quota,
+and shortening the text must not remove what the reviewer needs. Remove repeated claims,
+self-praise, stock transitions, invented labels, and procedural narration that
+does not help assess the change. Review the rendered summary as well as its
+source layout; the existing GitHub body check detects accidental line wrapping,
+not editorial quality.
+
+Commit distinct coherent changes separately. Keep an implementation with the
+tests and documentation needed to understand and validate it; separate an
+independent correction when it can be reviewed on its own. Subjects describe
+the change in plain, concise language; explanatory context belongs in the commit
+body. Neither a work-order boundary nor a file count determines the number of
+commits. The final reviewer creates this series after the passing review under
+the existing lifecycle authority.
+
+This convention applies to new publication work from the 2026-09-05 operator
+correction. Historical reviewed artifacts retain their original wording.
+
 ## Release-note edition
 
 Patch notes are a compact, layered edition over the release manifest, diff,

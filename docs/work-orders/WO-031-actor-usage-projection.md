@@ -1,4 +1,4 @@
-# WO-031 — Actor usage projection: read-only elapsed time per harness, model, effort, and phase across every work order, with an opt-in opaque account label whose meaning lives only in an ignored local file (version assigned at activation)
+# WO-031 — Actor usage projection (v0.10.1)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
@@ -129,3 +129,20 @@ policy.
 2. The mapping file is a plain ignored text file the operator maintains by
    hand; no tool reads it.
 3. The order waits for WO-030 so the multi-order fold is written once.
+
+## Operator-authorized ideation breakout — 2026-09-05
+
+The operator's five `ideation:` messages and an affirmation authorize documentation changes for
+PR and commit quality, relevant gitmoji variety, proportionate corrections, and use of main's canonical
+intake. The [receipt](../evidence/WO-031/ideation.md) records their source
+treatment, founding-source lookup, changed surfaces, and required independent
+review. This includes shortening this work-order heading; its objective and
+actor-usage acceptance criteria are unchanged. Publication guidance is a
+distinct change to commit separately from the eventual actor-usage implementation
+at final review. No executable publication guard or feedback compiler is added
+by this breakout.
+
+The operator's subsequent continuation directive replaces the former pause
+default: finish ideation and continue the active work through its evidence gate
+to ready to verify. That directive and the updated guidance are included in the
+same receipt and verification subject.

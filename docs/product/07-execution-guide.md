@@ -210,9 +210,12 @@ required scope-expansion receipt—not intake persistence alone. Do not make the
 operator restate those stages.
 
 The work order becomes context rather than a scope fence during the breakout.
-Preserve its existing changes. If the operator also says to continue the work
-order, complete the breakout and its receipt, then return to the authorized
-work; otherwise wait for an explicit instruction before resuming execution.
+Preserve its existing changes. Complete the breakout and its receipt, then
+continue the authorized work through its evidence gate to ready to verify.
+The operator does not need to repeat `continue` after each intake. An explicit
+pause or capture-only instruction takes precedence; otherwise ideation is part
+of the ongoing work, not a new permission boundary. Preserve the legal lifecycle
+transitions and independent verification roles.
 
 Interpret the operator's situations and analogies **shape first**, including in
 earlier intake. The intended payload is ordinarily a relationship, interaction,
@@ -228,9 +231,21 @@ entries, or reopening an ADR or settled resolution. Apply it to material already
 inside the authorized ideation subject; surface a genuine new tension through
 the existing decision process.
 
+Apply corrections to the behavior the operator rejected. Preserve the surrounding
+requirements and distinguish an example from an explicit constraint. Before
+replacing an approach, check the recorded reasons for earlier rejections; neither
+repeat a rejected approach nor jump to its opposite without supporting evidence.
+For example, a complaint about paragraph-length PR titles calls for useful,
+concise titles; an earlier title's word count does not establish a length rule.
+This is the current manual application of anti-oscillation, whose compiled
+mechanism remains assigned to WO-011.
+
 In ideation mode:
 
-1. Capture unedited material in a dated file under `docs/intake/chats/`,
+1. Resolve the main control-plane checkout with `git worktree list --porcelain`
+   before looking for original intake or choosing a capture destination. A work
+   order's relative `docs/intake/` does not contain main's ignored source corpus.
+   Capture unedited material in a dated file under `docs/intake/chats/`,
    `docs/intake/notes/`, or `docs/intake/images/`. The intended survivor is the
    main control-plane checkout's ignored intake, resolved explicitly rather than
    assumed from a relative path. If the active harness cannot write there, a
@@ -261,8 +276,8 @@ In ideation mode:
    decision-record proposal.
 6. Keep pre-existing implementation changes intact and distinguish them from
    ideation artifacts. Finish any required breakout receipt before resuming
-   coding, verification, or work-order closeout; resume only when the operator
-   has explicitly asked to continue.
+   coding, verification, or work-order closeout, then continue the active work
+   to its ready-to-verify handoff unless the operator explicitly paused it.
 
 These steps are the current manual projection of the Clean Room active described
 in `05-pattern-library.md`. Bare `ideation:` uses the repository's saved public
@@ -605,13 +620,24 @@ claim evidence or releases it does not have.
 - **Projection boundary.** Internal vocabulary (gems, masks, DotLn taxonomy)
   stays out of artifacts consumed outside the system (PRs to other repos,
   generated reports for third parties).
-- **PR titles carry a gitmoji shortcode.** Open each PR title with the shortcode
-  matching the change — `:memo:` for documentation-only deliverables,
-  `:adhesive_bandage:` for a simple fix to a non-critical issue, standard
-  gitmoji otherwise. Titles only: commit messages stay plain, and a merged
+- **PR titles carry a relevant gitmoji shortcode.** Choose deliberately from
+  the [full gitmoji catalog](https://gitmoji.dev/) for the current change's main
+  purpose. Use its more specific choices where they fit; explore beyond the
+  familiar feature, documentation, and fix defaults. Relevance takes priority
+  over novelty, with no forced rotation or ban on repeating a good choice.
+  Titles only: commit messages stay plain, and a merged
   commit is never rewritten to add one. On a squash merge the platform copies
   the PR title into the commit subject — that inherited emoji is fine; the plain
   rule governs hand-authored messages. Retitle with `gh pr edit <n> --title`.
+- **Write PRs and commits for the reviewer.** Apply the
+  [publication guidance](08-publication-compiler.md#prs-and-commits): name the
+  change in the title, summarize its effect and relevant validation in the body,
+  and explain consequential complexity and tradeoffs with enough detail for
+  review. Link the full evidence. Derive wording from the current diff; previous
+  titles are not templates. At final review, commit distinct coherent changes
+  separately, keeping each change's necessary tests and documentation with it.
+  One work order does not imply one commit. Check the staged diff for each commit
+  and confirm that the completed series contains exactly the reviewed state.
 - **Return shape.** End with a compact result: what changed, evidence pointers,
   deviations from the work order, open questions. Terse; no narration theater,
   no apology theater.

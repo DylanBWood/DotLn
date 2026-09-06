@@ -91,11 +91,17 @@ work order—a scope-expansion receipt for verification. Use
 `ideation: capture only` when you deliberately want local intake without
 synthesis. You should not need to restate the pipeline after the prefix.
 
-During an active work order, also say whether the executor should pause or
-continue after the breakout. A committed expansion needs explicit authority; the
+During an active work order, the executor finishes the breakout and continues
+through the evidence gate to ready to verify. You do not need to repeat
+`continue`; say so when you want a pause or capture only.
+A committed expansion needs explicit authority; the
 receipt names that authority, raw batch, affected ledger/product/decision/
 schema surfaces, unresolved choices, and required review. Existing worktree
 changes remain intact throughout.
+
+Original intake lives in the main checkout's ignored directory. The executor
+resolves that checkout before source lookup and capture; a worktree's relative
+`docs/intake/` is not a copy of the corpus.
 
 ## Planning pass
 
@@ -245,6 +251,16 @@ one physical source line per paragraph or list-item paragraph, with separate
 lines retained for actual Markdown structure. Do not hand-wrap them to the
 repository's code width; GitHub decides how the unchanged reviewed bytes wrap
 inside its own page layout.
+
+Use a concise title that identifies the change, then a summary of its effect,
+reason, and relevant validation. Link detailed reports. Follow the
+[PR and commit guidance](product/08-publication-compiler.md#prs-and-commits),
+including separate commits for distinct coherent changes and a staged-diff check
+for each. The final reviewer commits the reviewed series; one work order does
+not require a single catch-all commit.
+
+Choose the title's gitmoji from the full catalog to suit the actual change;
+give specific, expressive choices consideration beyond the usual defaults.
 
 After the reviewed commit exists, the final reviewer invokes the bounded PR
 publisher with a committed body file inside the worktree:
