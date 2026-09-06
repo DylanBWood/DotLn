@@ -36,6 +36,12 @@ repo, for free, automatically — constant, ever-present, never in the way:
 cleaners, fixers, tool builders, bridge makers, gap pluggers, auditors,
 referees."
 
+A useful 5S recommendation also needs a sound implementation. The candidate
+[implementation-consequences extension](#candidate-extension--implementation-and-delayed-consequences)
+preserves the purpose of a selected change through method choice and bounded
+follow-up; completing a relocation or cleanup step alone does not establish its
+net outcome.
+
 **Repo Gardener** is the founding identity that carries this set: dispositions —
 patient, evidence-bound, propose-don't-destroy; invariants — no deletion
 authority at base rank, every candidate carries evidence, active only while the
@@ -891,6 +897,49 @@ verification radius; which signals show that caution is causing stagnation; and
 whether repeated successful interventions should lower its burden in that
 specific domain. Preserve the exact phrase as the familiar lens while the formal
 and code lenses evolve.
+
+### Candidate extension — implementation and delayed consequences
+
+A justified intervention can be implemented in a way that defeats its purpose.
+An executor may satisfy a work order's literal step while quietly activating
+another process, consuming a scarce resource, or moving a failure into the
+future. This extends the intervention question into execution: the reason to
+act can remain valid while the chosen method or its observation needs repair.
+It does not require reopening a settled decision merely because implementation
+reveals an interaction that must be handled.
+
+The motivating shape is an object moved out of a work area into an apparently
+secure place that also activates equipment. The immediate organization succeeds;
+an unnoticed resource drain later defeats the larger objective. A software
+analogue is moving generated files into a watched directory that triggers
+continuous work. The analogy supplies a delayed-effect scenario, not a selected
+storage design or a verified account of a fictional scene.
+
+Candidate composition follows the existing suggestion → planning → authorized
+work order → execution → observation path. The selected work should preserve
+its intended outcome and material obligations, inspect what the concrete method
+activates or changes for affected consumers, and use the smallest useful check
+for credible delayed consequences. Where observation is needed, its owner,
+signal, duration, resource budget, and correction/stop condition should be
+explicit. An immediate green check cannot establish a claim about a longer
+unobserved interval. Monitoring itself has costs and side effects and must not
+become an unbounded task.
+
+Evidence should distinguish a good recommendation with a bad method, a revised
+method that preserves the recommendation's purpose, and a monitoring signal
+that actually leads to correction before the protected resource is exhausted.
+For a small reversible change with no credible delayed effect, ordinary outcome
+verification may be sufficient. This candidate creates no universal approval
+step, ambient veto, or requirement to monitor every edit; execution and repair
+remain inside their existing authority.
+
+Open choices: whether the behavior belongs within the existing intervention
+support or composes as a separate support; how observations attach to the work
+order; how to choose and retire a sufficient observation window; and what a
+concrete controlled scenario can prove. No new IR type, runtime monitor, or
+shipped 5S behavior is implied. Provenance: the 2026-09-06 WO-108 ideation
+receipt and the ledger entry “A justified intervention still needs
+consequence-aware execution.”
 
 ## Clean Room — active mechanic with contextual supports
 

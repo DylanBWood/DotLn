@@ -862,6 +862,14 @@ candidates deserve implementation. The role occupant is selected by the current
 operating model; model assignment remains replaceable and is never embedded in
 the semantic record.
 
+Selection also preserves the suggestion's purpose into the work order. The
+[implementation-consequences candidate](05-pattern-library.md#candidate-extension--implementation-and-delayed-consequences)
+distinguishes a sound recommendation from an implementation that creates an
+unnoticed delayed cost. Concrete method checks and any bounded follow-up belong
+to the authorized execution/observation plan; selection alone does not certify
+them. This is a candidate refinement, not an implemented suggestion pipeline or
+an additional source of effect authority.
+
 ### First live Entropy Reducer use
 
 The current [operator guide](../instance/entropy-reducer/README.md) dispatches
