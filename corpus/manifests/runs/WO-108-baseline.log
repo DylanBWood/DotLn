@@ -1,0 +1,26 @@
+
+> build
+> tsc -b
+
+error TS2688: Cannot find type definition file for 'node'.
+  The file is in the program because:
+    Entry point of type library 'node' specified in compilerOptions
+error TS2688: Cannot find type definition file for 'node'.
+  The file is in the program because:
+    Entry point of type library 'node' specified in compilerOptions
+
+> build
+> tsc -b
+
+
+> test
+> npm run format:check --silent && node scripts/test-github-body.mjs && bash scripts/test-fixture-temp-root.sh && bash scripts/test-publication.sh && bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-checkpoint.sh && bash scripts/test-worktree.sh && bash scripts/test-release.sh && bash scripts/test-work-orders.sh && node scripts/check-publication.mjs && node scripts/work-orders.mjs index --check && rm -rf packages/kernel/dist packages/compiler/dist packages/skeleton/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/compiler/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/compiler/dist/test/*.test.js packages/skeleton/dist/test/*.test.js && node --test corpus/harness/wo101-id-corpus.test.mjs && node scripts/artifact-identity-evidence.mjs --check && node scripts/verification-evidence.mjs --check && node scripts/feedback-evidence.mjs --check
+
+Checking formatting...
+[warn] corpus/mutation/enumerate.mjs
+[warn] corpus/mutation/mutate.mjs
+[warn] corpus/mutation/policy-3dc19b7342ad03662172cf86663f406b96a43db4.json
+[warn] Code style issues found in 3 files. Run Prettier with --write to fix.
+
+The earlier handoff/development preflight failures were corrected before measurement. The successful complete gate is WO-108-gate.log; each measurement baseline is in WO-108-3dc19b7342ad03662172cf86663f406b96a43db4.log.
+Observed runtime: {"node":"v22.2.0","platform":"darwin","arch":"arm64","git":"git version 2.55.0","typescript":"5.4.5"}

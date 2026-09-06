@@ -1322,6 +1322,18 @@ personal-profile default—sources regenerate summaries, never the reverse. A
 different implementation may omit retained source and declare lineage or
 regeneration unavailable.
 
+Generated evidence corpora have a separate consumer and lifecycle. WO-101's
+`corpus/fixtures/`, `corpus/harness/`, and `corpus/manifests/` hold original
+test inputs and their deterministic provenance. WO-108 adds
+`corpus/mutation/`: a pinned source census and selected mutation campaign,
+append-only measured verdicts, and regenerable survivor findings, with run
+transcripts in `corpus/manifests/runs/`. These are generated from committed
+personal-project source, not sanitized incident transcripts. The
+[corpus entry point](../../corpus/README.md) links each lane's commands and
+limits. Unmeasured candidates and compile failures do not establish test-suite
+strength. This 2026-09-06 synchronization closes the layout follow-up left by
+WO-101; it does not change incident-source retention policy.
+
 For the current repository workflow, the main control-plane checkout's ignored
 `docs/intake/` is the intended surviving raw source. A relative capture made
 inside a work-order worktree exists only there: Git, checkpoints, stashes, and

@@ -1,0 +1,34 @@
+PASS pre-readiness scope audit. Initial control projection/WO-108 activation were preserved; all other paths follow the operator-amended work order and ideation receipt. No shipped package, existing script, or dependency-lock change. Ignored dependencies were provisioned offline with operator authorization. Raw ideation was captured in main’s ignored intake, not this worktree.
+
+Command: git status --porcelain --untracked-files=all
+ M README.md
+ M corpus/README.md
+ M docs/control/current.md
+ M docs/lineage/idea-ledger.md
+ M docs/planning/work-order-map.md
+ M docs/product/03-architecture.md
+ M docs/product/05-pattern-library.md
+ M docs/publication/audience-status-index.md
+ M docs/publication/everyday-ai-user-toc.md
+ M docs/publication/software-engineer-toc.md
+ M docs/work-orders/README.md
+ M docs/work-orders/WO-108-mutation-probe.md
+ M package.json
+?? corpus/manifests/runs/WO-108-3dc19b7342ad03662172cf86663f406b96a43db4.log
+?? corpus/manifests/runs/WO-108-artifact-audit.log
+?? corpus/manifests/runs/WO-108-baseline.log
+?? corpus/manifests/runs/WO-108-gate.log
+?? corpus/manifests/runs/WO-108-scope.log
+?? corpus/manifests/runs/WO-108-scratch-baseline.log
+?? corpus/manifests/runs/WO-108-selftest.log
+?? corpus/manifests/runs/WO-108-survivor-reproductions.log
+?? corpus/mutation/README.md
+?? corpus/mutation/candidates-3dc19b7342ad03662172cf86663f406b96a43db4.jsonl
+?? corpus/mutation/enumerate.mjs
+?? corpus/mutation/findings-WO-108.md
+?? corpus/mutation/kill-matrix-3dc19b7342ad03662172cf86663f406b96a43db4.jsonl
+?? corpus/mutation/mutate.mjs
+?? corpus/mutation/policy-3dc19b7342ad03662172cf86663f406b96a43db4.json
+?? corpus/mutation/sites-3dc19b7342ad03662172cf86663f406b96a43db4.jsonl
+?? corpus/mutation/wo108-selftest.test.mjs
+?? docs/control/orders/WO-108.jsonl

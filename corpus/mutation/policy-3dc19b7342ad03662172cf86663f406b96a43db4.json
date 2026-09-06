@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "3dc19b7342ad03662172cf86663f406b96a43db4",
+  "contextHash": "64dee0f7c9895905088f27c12e0fde8e869acccbf6dfce80c43e61ea45c66886",
+  "siteCount": 32,
+  "instrumentHash": "179369766e6b45f6e5169700434d787d37b9937ff42b9c164893762d795882c6",
+  "candidateCount": 2901,
+  "timeoutMs": 120000,
+  "runBudgetMs": 2700000,
+  "node": "v22.2.0",
+  "typescript": "5.4.5",
+  "compilerHash": "113d5ce713ec89581ed77a66c88272d8db18c1c38c97729ceb32fc461a49deaa",
+  "packages": ["kernel", "compiler", "skeleton"],
+  "enumeration": "conservative-lexical-v1; full candidate census; templates and regexes opaque",
+  "selection": "campaign-v1: 8 historical compiler seeds, 6 kernel, 6 current compiler, 12 current skeleton; declared files, preferred operators, median eligible site; no verdict-dependent selection",
+  "snapshot": "all tracked base files; fresh dist; isolated Git refs; read-only base object lookup; local workspace links",
+  "build": "node node_modules/typescript/bin/tsc -b --force",
+  "tests": "node --test --test-reporter=tap <sorted nonempty kernel+compiler+skeleton test files>",
+  "score": "killed-by-test / (killed-by-test + survived); compile noise and timeouts separate"
+}

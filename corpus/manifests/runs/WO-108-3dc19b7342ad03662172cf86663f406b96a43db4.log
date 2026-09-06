@@ -1,0 +1,36 @@
+run {"baseCommit":"3dc19b7342ad03662172cf86663f406b96a43db4","policyHash":"10b07a3dda1e3666054aea794176df7237a57bb059a1250cce9f376166d31ca7","sites":32,"timeoutMs":120000,"runBudgetMs":2700000}
+baseline {"verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":44096}
+M00001 survived 43873ms
+M00002 survived 43827ms
+M00003 killed-by-test 43874ms WO-029 diagnostics, malformed v2 payloads and pre-equip consumers are typed inert refusals
+M00004 killed-by-test 43938ms WO-029 unequipped definitions stay outside the manifest and identity; failed compiles have no identity
+M00005 survived 43665ms
+M00006 survived 43771ms
+M00007 survived 43687ms
+M00008 killed-by-test 43762ms WO-029 entropy-reducer: exact identity, manifest membership and independent no-BigInt FNV agreement
+M00009 killed-by-compile 870ms
+M00010 killed-by-test 40596ms WO-017 semantic revocation: every condition sees every event, state, and the authorization clock
+M00011 killed-by-test 43888ms AC2 evidence: evaluateCadence, stepProgram, and authorize never read ambient time or randomness under poison
+M00012 killed-by-test 43700ms AC2 evidence: evaluateCadence, stepProgram, and authorize never read ambient time or randomness under poison
+M00013 killed-by-test 43796ms AC3 evidence: Until open path recurses into the inner cadence verbatim
+M00014 killed-by-test 44545ms WO-017 store contract: partial tail refuses decode and append at the offending line
+M00015 killed-by-test 46092ms WO-011 regression anti-oscillation
+M00016 killed-by-test 44186ms WO-010 AC2 verifier compilation positively selects nested context, is pure and cannot retain implementer prose
+M00017 survived 43939ms
+M00018 killed-by-compile 850ms
+M00019 killed-by-test 43883ms WO-008 AC2 normalization makes JSON numbers round-trip safe
+M00020 killed-by-test 43703ms WO-023 compiler v1 accepts claim-free prefix wildcards and still rejects wildcard precedence
+M00021 survived 43730ms
+M00022 killed-by-test 43401ms WO-009 row 2 crash after effect before result persist re-queries the durable receipt without double application
+M00023 killed-by-test 32672ms WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+M00024 killed-by-test 43747ms WO-009 AC6 canonical launch shapes pin model, settings, memory, persistence, mounts and honest effort
+M00025 survived 43794ms
+M00026 killed-by-test 42718ms WO-010 claude-cli-print killed verifier retains its command and recovers in a fresh leased episode
+M00027 survived 44694ms
+M00028 killed-by-test 44204ms WO-022 AC2/3 affordance and permission guard agree; no sense or grant yields an event with zero reads
+M00029 survived 44215ms
+M00030 timeout 120003ms
+M00031 killed-by-test 42246ms WO-011 regression anti-oscillation
+M00032 survived 44124ms
+baseline-after {"verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":44386}
+stop complete {"enumerated":32,"executed":32,"remaining":0,"counts":{"killed-by-compile":2,"killed-by-test":18,"survived":11,"timeout":1},"compiledConclusive":29,"compiledKillRate":0.6206896551724138,"compileNoiseRate":0.0625,"compiledTimeoutsExcluded":1,"nextMutant":null}

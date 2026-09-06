@@ -1,0 +1,116 @@
+TAP version 13
+# Subtest: deterministic enumeration changes exactly one guarded source site
+ok 1 - deterministic enumeration changes exactly one guarded source site
+  ---
+  duration_ms: 3.271833
+  ...
+# Subtest: comments, strings, regex classes and nested template interpolations are opaque
+ok 2 - comments, strings, regex classes and nested template interpolations are opaque
+  ---
+  duration_ms: 0.279
+  ...
+# Subtest: scratch cleanup rejects borrowed handles, changed markers and root symlinks
+ok 3 - scratch cleanup rejects borrowed handles, changed markers and root symlinks
+  ---
+  duration_ms: 3.914084
+  ...
+# Subtest: real offline builds distinguish named test kill, compile noise and planted survivor
+ok 4 - real offline builds distinguish named test kill, compile noise and planted survivor
+  ---
+  duration_ms: 1895.785125
+  ...
+# Subtest: all eight historical compiler shapes are planted known-survivable cases
+    # Subtest: seed 1
+    ok 1 - seed 1
+      ---
+      duration_ms: 507.966458
+      ...
+    # Subtest: seed 2
+    ok 2 - seed 2
+      ---
+      duration_ms: 500.008083
+      ...
+    # Subtest: seed 3
+    ok 3 - seed 3
+      ---
+      duration_ms: 504.377125
+      ...
+    # Subtest: seed 4
+    ok 4 - seed 4
+      ---
+      duration_ms: 509.162542
+      ...
+    # Subtest: seed 5
+    ok 5 - seed 5
+      ---
+      duration_ms: 510.762584
+      ...
+    # Subtest: seed 6
+    ok 6 - seed 6
+      ---
+      duration_ms: 498.508375
+      ...
+    # Subtest: seed 7
+    ok 7 - seed 7
+      ---
+      duration_ms: 499.044166
+      ...
+    # Subtest: seed 8
+    ok 8 - seed 8
+      ---
+      duration_ms: 501.97875
+      ...
+    1..8
+ok 5 - all eight historical compiler shapes are planted known-survivable cases
+  ---
+  duration_ms: 4033.21175
+  ...
+# Subtest: a real red baseline refuses before any matrix row is written
+ok 6 - a real red baseline refuses before any matrix row is written
+  ---
+  duration_ms: 498.732125
+  ...
+# Subtest: fresh compilation refuses a missing package suite and cannot reuse stale dist
+ok 7 - fresh compilation refuses a missing package suite and cannot reuse stale dist
+  ---
+  duration_ms: 401.252125
+  ...
+# Subtest: timeout kills a descendant before it can write after its parent is stopped
+ok 8 - timeout kills a descendant before it can write after its parent is stopped
+  ---
+  duration_ms: 1204.686458
+  ...
+# Subtest: a compiled infinite-loop mutant is a test timeout, never a kill or survivor
+ok 9 - a compiled infinite-loop mutant is a test timeout, never a kill or survivor
+  ---
+  duration_ms: 2006.7125
+  ...
+# Subtest: rendered exact patches apply with Git and produce the same single mutation
+ok 10 - rendered exact patches apply with Git and produce the same single mutation
+  ---
+  duration_ms: 232.811375
+  ...
+# Subtest: append-only resume rechecks baseline, preserves prefix, records exact stopping point
+ok 11 - append-only resume rechecks baseline, preserves prefix, records exact stopping point
+  ---
+  duration_ms: 14.000708
+  ...
+# Subtest: session budget and statistics never turn compilation noise or timeouts into strength
+ok 12 - session budget and statistics never turn compilation noise or timeouts into strength
+  ---
+  duration_ms: 3.578083
+  ...
+# Subtest: TAP parsing retains nested named failures and refuses to infer an absent suite
+ok 13 - TAP parsing retains nested named failures and refuses to infer an absent suite
+  ---
+  duration_ms: 0.214625
+  ...
+1..13
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10351.445667
