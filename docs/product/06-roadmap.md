@@ -138,7 +138,9 @@ review service terms before offering an app or hosted service to others, and
 review commercial and brand posture before sale, licensing, fundraising,
 material marketing, or substantial investment in a DotLn or feature-brand
 name. The list in `docs/LEGAL.md` is controlling; sale is not the first trigger.
-No license is selected by this roadmap paragraph.
+The license posture was decided on 2026-09-06 (Apache-2.0 code, CC BY 4.0
+documentation; `docs/LEGAL.md` §Decision), and WO-038 lands the package
+metadata and publication guard; the remaining gates stay open.
 
 The hand-closed `v0.2.0` manifest and notes under `docs/releases/` remain their
 immutable historical projection. For later releases, the annotated tag message
@@ -495,6 +497,13 @@ observed allowance, window, model availability, and reserve inputs. The earlier
 resource-pressure candidate can prioritize an early completion batch instead
 of universally conserving routine work. Trial feasibility and benefit remain
 open; no new order is activated or added to the default sequence.
+
+The 2026-09-05 horizon ran serially, so the trial did not occur. The
+2026-09-06 planning pass schedules the first measured paired wave as phase
+two's wave 1 (WO-032 ∥ WO-033), records the manual sync procedure for the lane
+whose sibling merges first, and files the sync helper inside WO-033; the
+[phase-two plan](../planning/phase-two-plan-2026-09-06.md#concurrency-what-is-safe-what-is-untested-and-the-procedure)
+holds both.
 
 ## Capability progression policies
 
@@ -1150,6 +1159,36 @@ Terminal remains a complete control surface. Exit: the v0.2.0 demo watched
 entirely from the console, then re-watched via replay; every animated element
 opens its mechanics inspector.
 
+The 2026-09-06 planning pass names the rung's first slice: WO-032, a
+read-only showrunner board inside core that projects control state,
+worktrees and Beacons, releases, evidence links, and blueprint status into the
+terminal and a zero-asset static page, invoking no command and adding no
+framework. The framework decision above waits for the cross-repository pilot's
+evidence; the Angular shell is console v1 in the operator's example consumer,
+reached through the launchpad rung below.
+
+## Application version pending — Launchpad and cross-repository workstreams → WO-033 + WO-034
+
+Make the process kit runnable outside core: one configuration root, work
+orders that name a registered target repository, an exported launchpad
+skeleton with pinned provenance, and a lane sync step for paired waves
+(WO-033); then one workstream whose bounded orders span several target
+repositories, proven first on synthetic repositories through the six
+demonstrations product 12 names and then by an operator-witnessed real run
+from a fork of the starter into `DotLn-Angular` (WO-034). Targets receive only
+conventional branches and pull requests; the launchpad holds their orders and
+evidence. This is Horizon 1's first product surface beyond this repository and
+the process-level precursor of the source-to-deliverable vertical below; DotLn
+runtime transports do not yet execute the target work. Exit: the pilot's real
+run opens a target pull request through the workflow with its verification and
+final review recorded in the launchpad, and its receipt compares restatement,
+handoffs, interruptions, and return time with the operator's separate-session
+practice. The starter is intended for other organizations to fork as their
+own launchpads, so this rung is where the ladder's personal-machine
+assumption stops holding: each fork's first order is bounded environment
+truth for its own host, harness, and gateway, and the licensing decision in
+`docs/LEGAL.md` precedes the first external fork.
+
 ## Application version pending — Pattern workshop v1
 
 5S equipment set with compiled set bonuses; Marquet ladder as the operator-agent
@@ -1157,6 +1196,14 @@ protocol (autonomy rung computed, not set); mitigated-speech voice selector;
 drag-and-drop equip with exact compiled diff preview. Exit: dragging Seiri onto
 Repo Gardener in the console produces the same semantic hash as authoring the
 equivalent link group in code.
+
+The 2026-09-06 planning pass names the compiler-side first slice: WO-037
+compiles the 5S set as a multi-active link group with shared supports and
+piece-count set bonuses, equips it on the Repo Gardener in a second
+deterministic scenario, and renders every piece and the set as tooltips,
+while existing programs keep their hashes. The drag-equip surface is console
+v1 work in the operator's example consumer; the Marquet ladder and voice
+selector remain a later order.
 
 ## Application version pending — Source-to-deliverable vertical
 

@@ -104,6 +104,26 @@ not establish that result. This is one candidate adoption path, not a canonical
 topology or an implementation claim. Other paths remain open under the same
 outcome and evidence requirements. See the [sibling-repository intentions](03-architecture.md#platform-and-instance-boundary).
 
+The 2026-09-06 planning pass takes that path as the first pilot and files its
+two bounded routes. WO-033 makes the control plane relocatable and exports a
+launchpad skeleton with pinned provenance; the operator's fork or clone of
+that starter becomes their launchpad instance, registering target
+repositories and holding their orders, control segments, and evidence, while
+each target receives only conventional branches and pull requests. WO-034
+adds the workstream document and projections without a new control event,
+proves the six demonstrations below on synthetic repositories, and then runs
+one operator-witnessed real workstream into `DotLn-Angular` whose first
+member scaffolds console v1 over the showrunner board's view model. The
+executors in that run are the operator's model and human sessions opened from
+the launchpad's handoffs; DotLn runtime transports executing target work
+remain later roadmap work. A session opened in the fork is primed by the
+fork's own files, the workstream document and the target's repository
+profile with its pinned references into this blueprint, so the operator never
+restates the vision per session. Other organizations are expected to fork the same
+starter as their own launchpad instances; their workstreams, repositories,
+and evidence stay in their forks, and kit updates reach them only as reviewed
+upstream merges.
+
 A workstream owns an outcome spanning repositories and time. A repository owns
 its local code history, branch/worktree, tests, and delivery boundaries. Each
 bounded work order names its repository bases and scope; the workstream view

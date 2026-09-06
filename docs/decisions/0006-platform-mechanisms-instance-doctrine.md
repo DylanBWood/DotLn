@@ -101,4 +101,14 @@ to inherit the founding instance's doctrine.
 
 ## Amendments
 
-None.
+- 2026-09-06, phase-two planning pass: Decision 7's "later work order" is
+  nominated as WO-033. The representative implementation shape is the
+  operator's `DotLn-Enterprise-Starter`, an exported launchpad instance of
+  the process kit (control plane, resume phrases, worktrees, checkpoints,
+  independent verification, final review, release close, operating
+  documents), never a fork of core. Core stays self-hosted and keeps the
+  kernel, compiler, and skeleton; the launchpad holds orders and evidence for
+  registered target repositories, which receive only conventional branches
+  and pull requests. This names the first physical slice within the decided
+  constraints and changes no decision; the package boundary for the runtime
+  packages remains evidence-selected.

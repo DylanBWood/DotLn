@@ -284,7 +284,12 @@ and interactive editing remain deferred.
 
 The release ladder climbs there one visible payoff at a time: audit projections,
 a real composition compiler, a real disposable worker, independent verification,
-a feedback compiler, then synchronized terminal and visual consoles. `v1.0.0`
+a feedback compiler, then synchronized terminal and visual consoles. The next
+horizon, planned on 2026-09-06 and not yet built, adds a read-only showrunner
+board, a launchpad export of this repository's process kit that other
+organizations can fork to coordinate work across their own repositories, and
+the first cross-repository pilot; see
+[the phase-two plan](docs/planning/phase-two-plan-2026-09-06.md). `v1.0.0`
 has one exit criterion: a person who has never read these docs declares one
 bounded intent and receives a verifiable result, witnessed by a non-author.
 
@@ -358,17 +363,15 @@ claim of invention. Names identify sources and imply no affiliation or
 endorsement. Attribution alone grants no permission to copy protected expression
 or code.
 
-This repository currently grants **no project license**. Public source is not
-the same as open source; GitHub's service terms still permit viewing and
-reproduction through GitHub functionality, including in-service forking. No
-permanent license has been chosen because this remains personal research, but
-that ambiguity must end at the first canonical decision gate: outside
-contributions; package, executable, container, dataset, model, or asset
-distribution; a hosted or multi-user service; collection of another person's
-account data, prompts, logs, telemetry, or other personal information; sale,
-licensing, fundraising, or material marketing; or substantial investment in a
-DotLn or feature-brand name. The observed state, options,
-package-publication gap, and controlling checklist are in
+Code is licensed under the [Apache License 2.0](LICENSE) and documentation
+under [Creative Commons Attribution 4.0](LICENSE-docs); see [`NOTICE`](NOTICE)
+for the copyright notice. The names DotLn, προτείνω, and UIFA are not
+licensed as source identifiers; a fork may say it is based on DotLn without
+implying affiliation or endorsement. Outside contributions are accepted under
+the same licenses with a Developer Certificate of Origin sign-off. Workspaces
+stay private until a separate package-publication decision. The decision
+record, its scope for code, documentation, names, contributions, and
+distribution, and the gates that remain open are in
 [Legal and licensing posture](docs/LEGAL.md).
 
 ## The repo runs on itself
@@ -381,6 +384,7 @@ review is a third pass. A fresh session resumes from one phrase:
 
 ```text
 resume: status
+resume: times
 resume: next
 resume: fix
 resume: verify
@@ -434,8 +438,9 @@ explicit: typed mechanisms are meant to progressively absorb the prose. The
   generated projection.
 - [`docs/lineage/`](docs/lineage/) — the idea ledger and public sources and
   inspirations register.
-- [`docs/LEGAL.md`](docs/LEGAL.md) — current no-license posture and the gates
-  that force an explicit choice.
+- [`docs/LEGAL.md`](docs/LEGAL.md) — the 2026-09-06 license decision
+  (Apache-2.0 code, CC BY 4.0 documentation, DCO inbound, names reserved) and
+  the gates that remain open.
 - [`docs/decisions/`](docs/decisions/) — settled questions. Do not relitigate
   them.
 - [`docs/releases/`](docs/releases/) — release evidence and the tag-manifest

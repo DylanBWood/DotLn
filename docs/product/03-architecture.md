@@ -128,6 +128,26 @@ not a canonical topology or an implemented multi-repo coordinator. It simulates
 an organization user's needs with personal/synthetic material. Packaging,
 licensing, compatibility, update strategy, and the first task still need evidence.
 
+The 2026-09-06 planning pass selects that route as the first physical slice
+of this boundary under ADR-0006 Decision 7, with the starter as the
+representative second implementation shape. What DotLn can export today is
+the process kit — the control plane, its resume phrases, worktrees,
+checkpoints, independent verification, final review, and release close, with
+the operating documents — not the runtime workers, which remain read-only
+inspectors. WO-033 makes the control plane relocatable (one configuration
+root, registered target repositories, a launchpad export with pinned
+provenance, Beacon emission that no longer depends on the skeleton package)
+and WO-034 runs the pilot. Core stays self-hosted and keeps the kernel,
+compiler, and skeleton; the launchpad instance holds target orders and
+evidence; targets receive only conventional branches and pull requests. The
+starter is also intended for other organizations to fork as their own
+launchpad instances. Inside the starter, kit files (listed in a manifest with
+hashes) and instance files (configuration, orders, control segments,
+evidence, the instance's product overlay) are separate sets, so an upstream
+kit update merges into a fork without touching that instance's work. That is
+this boundary made physical: the kit is the shared mechanism, the fork is
+the doctrine.
+
 Playwright and Context7 are optional environment adapters. The operator reports
 adding MCP access and Context7 integrations for the two local coding harnesses;
 neither that setup nor a paid documentation account is a DotLn user prerequisite.
