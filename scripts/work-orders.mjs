@@ -11,6 +11,7 @@ import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { LEGACY_CONTROL_PATH } from "./lib/control.mjs";
 import { readControl } from "./lib/control-store.mjs";
+import { renderAttestation } from "./lib/control-actor.mjs";
 import { runGit, runGitPathList } from "./lib/git.mjs";
 import {
   containedRegularFile,
@@ -375,6 +376,11 @@ export const renderIndex = ({ rows, releases, sequence }) => {
         `- Release: ${cell(row.disposition)}.`,
         `- Model: ${cell(row.model)}`,
         `- Effort: ${cell(row.effort)}`,
+        ...(state?.latestAttestation
+          ? [
+              `- Latest attestation: ${cell(renderAttestation(state.latestAttestation))}.`,
+            ]
+          : []),
         `- Authority: ${link(row.path, basename(row.path))}`,
         "",
       );

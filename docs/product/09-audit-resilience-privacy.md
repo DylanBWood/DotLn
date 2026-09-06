@@ -469,6 +469,12 @@ may retain that a governed deletion occurred while separately deleting or
 cryptographically rendering inaccessible the sensitive payload. Hashes are not
 automatically anonymous when the input space can be guessed.
 
+WO-031's optional public account labels permit correlation across completed
+phase attempts. Two labels disclose that two accounts are distinguished, and
+timing plus other public activity may help re-identification. This profile
+accepts that disclosure when the operator opts in; a stricter profile omits the
+field. Opaque syntax and an ignored mapping are not anonymity guarantees.
+
 ## Candidate — minimized incident reporting
 
 A failure-triggered active, projected into supported runtimes as an agent skill,
@@ -604,17 +610,17 @@ design must choose the local root, envelope, encryption,
 retention/deletion, backup posture, projection profile, and non-identifying
 lineage mechanism before private runtime data is collected.
 
-**Candidate — opt-in opaque actor account label (2026-09-05).** The operator
-may run one harness under more than one provider account and wants to compare
-their usage windows without publishing account identities. The shape is one
-opaque label in the public actor attestation (for example `a1`), supplied only
-when the operator opts in, and an ignored local file mapping each label to
-whatever the operator uses to recognize the account, which no tool reads. The
-public log never carries an email address, account identifier, or plan name;
-the label is stable inside the repository and meaningless outside it; a
-missing label is `not-applicable`, never inferred. The re-identification rule
-above applies before a public profile adopts the field: two labels disclose
-that two accounts exist. WO-031 is the bounded route.
+**Adopted — opt-in opaque actor account label (2026-09-05, WO-031).** The
+completion flag `--account-label` or shell default `DOTLN_ACCOUNT_LABEL` supplies
+one opaque public label, with the flag taking precedence. Labels contain 1–16
+lowercase letters, digits or hyphens and begin with a letter; use no identity,
+email address or plan information. Absence projects `not-applicable` and is never
+inferred. The operator may maintain `docs/control/local/account-labels.md`, one
+line per label with its private meaning. The directory is ignored, and no script
+opens it. `resume usage` joins only public attestation fields and recorded phase
+endpoints; it collects no provider account, billing or session data. Two labels
+disclose that two accounts are distinguished, as this profile permits. The
+broader governed private evidence lane remains a candidate.
 
 Maintenance for that lane is an offline capability family, not a Git workflow:
 inspect, validate, transform, snapshot, rotate, restore, and governed deletion.

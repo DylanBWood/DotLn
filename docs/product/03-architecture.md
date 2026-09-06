@@ -980,6 +980,21 @@ measurements of model work or operator attention. Negative values expose clock
 regression rather than repairing it. `current.md` renders the same values and
 uses `unknown` for an absent latest timestamp.
 
+WO-031 adds `npm run resume --silent -- usage [--json]`, a read-only report over
+every order in this checkout's shared control fold. The same phase-pairing helper
+retains every completed attempt for usage, including failures and retries.
+`byActor` groups by harness, harness version, model, effort, account label and
+phase; `byWorkOrder` supplies each order's totals and its actor/phase groups.
+Each summary has `attempts`, `elapsedMs` (the sum of known signed spans), and
+`unknown` (attempts with either endpoint absent); groups also list `workOrders`.
+Orders with no completed attempts have zero counts and no actor groups. Legacy
+events without an actor group under `unknown`, with account `not-applicable`.
+Attribution uses the completion actor's claim. Spans include waiting and
+interruptions, and concurrent orders may overlap in the sums. These are not
+active model time, verified outcome counts, or token/cost/attention measurements.
+The report reads no checkpoint refs or private mapping and refreshes no
+projection, Beacon, or control event. It accepts no work-order selection.
+
 `npm run resume --silent -- times` emits a read-only JSON observation, one line
 per event in source append order, legacy first and then segments in filename
 order. New events include a `segment` path and an ordinal local to that file;

@@ -25,6 +25,7 @@ docs/work-orders/  stable scope addresses + generated README evidence index
 docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
 docs/control/       legacy resume log, per-order segments, and generated overview
+docs/control/local/ ignored operator-maintained account-label meanings; never read by scripts
 docs/evidence/      bounded executor comparisons and fixture transcripts
 docs/releases/     historical v0.2.0 records + forward tag-manifest template;
                    later immutable manifests/notes live in annotated tags
@@ -43,6 +44,10 @@ follow `docs/product/07-execution-guide.md` §Operator-opened ideation mode
 without requiring the operator to restate those stages. A `planning:` prefix
 dispatches the doc-only planning pass described in the same guide.
 
+After ideation intake during an active work order, execution continues through
+the evidence gate to ready to verify unless the operator explicitly requests a
+pause or capture only.
+
 ## Why intake is gitignored
 
 `docs/intake/` is excluded from Git so unfinished personal ideation can stay
@@ -59,6 +64,13 @@ provenance; a local compaction-safety copy of the same message does not become a
 second source. Both paths still pass the employer/credential boundary, and raw
 intake remains ignored rather than moved into Git.
 
+## Private account-label meanings
+
+The optional account-label mapping belongs in the separate ignored
+`docs/control/local/account-labels.md`, with one line per label and its private
+meaning. No script reads it. Only the opaque label enters the public control
+attestation, using the [playbook's per-terminal setup](PLAYBOOK.md#who-does-what).
+
 ## Dumping into intake
 
 - `chats/` — transcript exports, any format. Name them so order is recoverable.
@@ -69,7 +81,9 @@ No naming scheme required. Tell me when a batch has landed and I'll read it.
 
 The intended surviving location is the main control-plane checkout's ignored
 `docs/intake/`. A relative path in a work-order worktree is a different private
-directory, not another view of main. If access constraints require a provisional
+directory, not another view of main. Resolve main with
+`git worktree list --porcelain` before looking up original sources as well as
+before capturing new material. If access constraints require a provisional
 capture there, keep the worktree, back the note up, and reconcile it into main
 before removal. The current tooling protects such notes by refusing normal
 worktree cleanup but does not perform that reconciliation automatically.

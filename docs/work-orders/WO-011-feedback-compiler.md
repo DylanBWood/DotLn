@@ -65,3 +65,10 @@ criterion mapped to a named test or witnessed run.
 (the projections-and-console rung); autonomy-rung computation and set bonuses
 (the pattern-workshop rung); replacing the
 operator playbook wholesale.
+
+**Additional incident source (2026-09-05):** the
+[WO-031 publication correction](../evidence/WO-031/ideation.md) supplies a
+regression case for the existing anti-oscillation unit. Rejecting verbose titles
+must preserve useful specificity without inventing a numeric limit; rejecting
+that limit must not restore the original verbosity. This adds evidence for one
+of the ten units, not another unit or an implementation claim.

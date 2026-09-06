@@ -93,6 +93,12 @@ activation; no arithmetic shift is inferred here.
 
 **WO-009 activation completion (2026-09-05):** its omitted target is assigned `v0.10.0`, a minor addition above published `v0.9.0` (`002593f`). Skeleton source advances to component `0.9.0`; compiler `0.3.0`, kernel `0.2.1`, and the event/compiled-program schema axes remain unchanged. The earlier retiming table is historical. The source worktree prepares disposable fixture-inspection workers and their durable host; independent verification and publication remain separate lifecycle evidence.
 
+**WO-031 activation completion (2026-09-05):** its omitted target is assigned
+`v0.10.1`, a patch above published `v0.10.0` (`272a150`). It adds the repository's
+read-only actor-usage projection and optional opaque account labels; exported
+runtime capabilities and component versions remain unchanged. The source claim
+prepares this release; review and publication remain separate evidence.
+
 The manifest records the Git commit, application release, package/component
 versions, supported schema and artifact ranges, transformation-set version (or
 explicitly `none`), evidence commands/results, evaluable and deferred cadence
@@ -670,6 +676,11 @@ type EfficiencyObservation = {
 The denominator is a verified outcome or completed contract—not output volume,
 activations, story points, or busyness. Comparisons require comparable scenario,
 quality, authority, and risk conditions. Missing measurement remains unknown.
+
+The repository's WO-031 `resume usage` command supplies a limited observation of
+completed phase-attempt wall time per actor and work order. Its counts include
+failed attempts and its spans include waiting; combine it with outcome and
+scenario evidence before drawing efficiency conclusions.
 
 A useful provisional efficiency scale is:
 

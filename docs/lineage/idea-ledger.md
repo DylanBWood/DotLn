@@ -23,6 +23,81 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-05 WO-031 actor usage implementation
+
+**Provenance:** the filed WO-031 and its executor's bounded fixtures. The
+[implementation evidence](../evidence/WO-031/README.md) records the real-log
+observation and its limits.
+
+- **All completed phase attempts remain visible** `adopted`
+  - One shared pairing helper supplies latest-phase status and the all-attempt
+    usage projection over the existing multi-order fold. The usage view groups
+    the completing actor's attestation and each work order, retaining retries,
+    signed durations, and unknown endpoints. Wall time includes waiting and
+    overlapping work; it is not active compute or a verified-outcome count.
+- **Opaque account labels in the public profile** `adopted`
+  - The completion flag and per-shell default supply an optional label; the flag
+    wins. Projections render an omitted field as `not-applicable` without
+    rewriting history or inferring identity. The operator maintains any meaning
+    in ignored `docs/control/local/`, which scripts never read. This adopts the
+    specific privacy candidate in product 09 while leaving the broader private
+    evidence lane pending. Public correlation and the disclosure of distinct
+    accounts remain explicit limits.
+
+## 2026-09-05 WO-031 continuation after ideation
+
+**Provenance:** the operator's direct correction after the ideation breakout,
+preserved in main's ignored `notes/wo-031-ideation-continuation-2026-09-05.md`.
+
+- **Ideation returns to execution by default** `adopted`
+  - Finish intake, synthesis, and the receipt, then carry the active authorized
+    work through its evidence gate to ready to verify. The operator need not
+    supply another continuation instruction. This explicitly supersedes product
+    07 and the playbook's former opt-in resumption requirement, which caused an
+    unnecessary stop. Explicit pause and capture-only requests still govern.
+    Legal lifecycle transitions and independent verification remain in force.
+
+## 2026-09-05 WO-031 publication and correction discipline
+
+**Provenance:** five operator `ideation:` messages and an affirmation on
+PR/commit quality, gitmoji choice, overcorrection, and canonical intake, retained in main's
+ignored intake. Targeted
+lookup found the relevant rule names in founding `notes/001-notes.md` and the
+anti-oscillation mechanism mappings in chats 005 and 010. These are synthesized
+findings under ADR-0001, not an import of external rules. The
+[receipt](../evidence/WO-031/ideation.md) records the source paths and review scope.
+
+- **Publication serves the reviewer's reading task** `adopted`
+  - Titles identify the change; summaries explain its effect, reason, relevant
+    evidence, and material limitations. Derive them from the current change.
+    Prior verbose titles do not justify further growth. The operator's example
+    of earlier title lengths establishes no numeric limit. The later
+    clarification requires the substance a complex change deserves; it does not
+    authorize replacing bloated prose with an inadequate short summary. See
+    [PRs and commits](../product/08-publication-compiler.md#prs-and-commits).
+- **Commit by coherent change** `adopted`
+  - Distinct changes receive separate commits at the authorized commit phase;
+    each includes the tests and documentation needed to review it. Work-order
+    identity does not force a single commit, and file count does not determine
+    the split.
+- **Expressive, relevant gitmoji selection** `adopted`
+  - Choose from the full catalog for the change's main purpose, considering
+    specific meanings beyond the recurring generic defaults. This supersedes
+    product 07's narrow documentation/fix mapping under the operator's explicit
+    correction. Relevance remains the criterion; no rotation requirement or
+    prohibition on repetition follows. Commit subjects remain plain.
+- **Correction preserves intent** `adopted`
+  - The assistant responded to excessive verbosity by proposing an unsupported
+    word-count rule, which the operator rejected. Apply the correction while
+    retaining the desired specificity and the reasons earlier approaches failed.
+    This extends the founding anti-oscillation idea with a concrete incident;
+    it does not supersede that idea. The execution guide now states the manual
+    behavior, while WO-011 still owns compiled enforcement and regression tests.
+- **Main owns the original intake** `adopted`
+  - Resolve main before original-source lookup and new capture. Worktrees do
+    not inherit ignored intake. The five capture files were verified in main;
+    the two temporary worktree copies were removed after byte comparison.
+
 ## 2026-09-05 WO-021 implementation and operator follow-up
 
 **Provenance:** implementation of the filed WO-021 plus the operator's

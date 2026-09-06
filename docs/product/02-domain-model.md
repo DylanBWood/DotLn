@@ -125,7 +125,7 @@ legacy-log location), and the shared fold keeps lifecycle legality and evidence
 independent while selection chooses which order to inspect.
 
 The resume control log pins an actor attestation on each completion event as
-`{ harness, harnessVersion, model, effort, raw?, source }`. `effort` is one of
+`{ harness, harnessVersion, model, effort, raw?, source, accountLabel? }`. `effort` is one of
 `low | medium | high | xhigh | max | unknown`; `raw` preserves an unrecognized
 label when present; and `source` is `self-reported | harness-readback |
 operator-attested`. This record is control-plane evidence and does not enlarge
@@ -146,6 +146,9 @@ unassisted-human record is `{ harness: "human", harnessVersion:
 New activation events also carry `effortDeclarationValidated: true`. Its absence
 marks pre-migration history rather than false, and does not weaken WO-019's own
 strict declaration boundary.
+WO-031 adds the opt-in opaque `accountLabel`, supplied by `--account-label` or
+`DOTLN_ACCOUNT_LABEL`; absence projects `not-applicable`, while its meaning stays
+in an ignored operator-maintained file that scripts never read.
 From WO-028, optional control-event `recordedAt` records the host's UTC append
 time, independently of kernel `occurredAt`; append order alone determines
 lifecycle state, and historical absence remains valid under schema version 1.
@@ -372,6 +375,13 @@ The personal host records `LoadoutEquipped` under EventEnvelope schema 1 with `{
 | **InterruptionPolicy**         | When the operator may be interrupted — see the six materiality conditions in `04-interfaces.md` §Terminal first.                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | **Comparison**                 | The Eye Dr Test event payload: `{ itemA, itemB, dimension?, judge, result: itemA \| itemB \| draw, context, orderRandomized }`. Comparisons are source of truth; ratings (Elo/Glicko/Bradley-Terry) are pure-fold projections over the comparison stream — replaceable without losing anything. Judges themselves accrue agreement-with-operator ratings; "draw" is a result (the just-noticeable-difference floor), not a failure. Applies only below hard constraints in the composition precedence: a guard-violating candidate gets rejected, not ranked.                               |
 | **Semantic correction events** | Typed operator signals (`OperatorCorrectionReceived, OperatorReportsRegression, OperatorRejectsUnsupportedAssumption, OperatorReportsRepeatedFailure`) — surface language (including profanity) is at most a weak classifier feature. In the author's personal profile, the correction reactor is **fail-conservative**: a false positive only tightens behavior (freeze destructive authority, preserve evidence, prohibit scope expansion, dispatch diagnosis, no apology theater). Another profile must declare its selected correction policy rather than inheriting this one silently. |
+
+The personal profile's anti-oscillation unit retains the desired behavior, the
+rejected approaches and their reasons, and any explicit supersession. A proposed
+correction is checked against that history before it replaces an approach;
+examples alone cannot supply new hard constraints. Its decision-lineage guard
+remains planned in WO-011. The execution guide applies the judgment manually
+today; that is not evidence of compiled enforcement.
 
 ## Memory and observation
 

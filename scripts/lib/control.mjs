@@ -1,4 +1,5 @@
 import { validateRecordedAt } from "./control-time.mjs";
+import { validateAccountLabel } from "./control-actor.mjs";
 
 const attestedEventTypes = new Set([
   "ImplementationReady",
@@ -45,6 +46,7 @@ const scanControl = (events, visit) => {
   let state = emptyState();
   for (const [index, event] of events.entries()) {
     validateRecordedAt(event, `at line ${index + 1}`);
+    validateAccountLabel(event?.actor?.accountLabel);
     state = states.get(event?.workOrderId) ?? emptyState();
     switch (event?.type) {
       case "WorkOrderActivated":

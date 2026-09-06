@@ -13,6 +13,9 @@ dist/
 .env.*
 !.env.example
 
+# Operator-maintained account-label meanings; scripts never read this directory.
+/docs/control/local/
+
 # Exact operator-owned Claude Code settings; no other .claude path is allowed.
 /.claude/settings.local.json
 

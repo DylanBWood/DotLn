@@ -207,6 +207,7 @@ as a current blocked verdict.
 | [Freshness and ownership](../product/08-publication-compiler.md#freshness-and-ownership)                                                                             | everyday-ai-user, software-engineer | specified |
 | [Authority and honesty rules](../product/08-publication-compiler.md#authority-and-honesty-rules)                                                                     | everyday-ai-user, software-engineer | specified |
 | [Product surface](../product/08-publication-compiler.md#product-surface)                                                                                             | everyday-ai-user, software-engineer | vision    |
+| [PRs and commits](../product/08-publication-compiler.md#prs-and-commits)                                                                                             | software-engineer                   | specified |
 | [Release-note edition](../product/08-publication-compiler.md#release-note-edition)                                                                                   | everyday-ai-user, software-engineer | verified  |
 | [Bootstrap path](../product/08-publication-compiler.md#bootstrap-path)                                                                                               | software-engineer                   | planned   |
 

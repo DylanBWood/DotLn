@@ -53,6 +53,23 @@ as readback or silently replace another loadout's required actor. The
 [Entropy Reducer guide](instance/entropy-reducer/README.md) supplies its separate
 manual Fable 5.1/max dispatch and the fresh refutation step.
 
+To distinguish accounts, set an opaque label separately in each terminal, for
+example `export DOTLN_ACCOUNT_LABEL=a1` in one and
+`export DOTLN_ACCOUNT_LABEL=claude-2` in another. Completion commands use that
+default; `--account-label <label>` overrides it. Use 1–16 lowercase letters,
+digits or hyphens, beginning with a letter. `unset DOTLN_ACCOUNT_LABEL` returns
+to omission; an empty value is invalid. Store any private meaning by hand, one
+line per label in ignored `docs/control/local/account-labels.md`. Scripts never
+read that file. The label itself is public, so choose no identifying content.
+An omitted label displays `not-applicable`.
+
+Run `npm run resume --silent -- usage` for elapsed-time summaries across all
+orders, or add `--json` for `totals`, `byActor`, and `byWorkOrder`. Retries remain
+separate completed attempts. `elapsedMs` sums known signed spans; `unknown`
+counts attempts with a missing endpoint. These are wall-clock spans including
+waiting and interruptions, attributed to the completion actor. Overlapping work
+orders can overlap in the sums. No token, cost, or attention data is collected.
+
 ## Harness safety baseline
 
 Before dispatching from a personal machine, verify the dated Claude Code and
@@ -91,11 +108,17 @@ work order—a scope-expansion receipt for verification. Use
 `ideation: capture only` when you deliberately want local intake without
 synthesis. You should not need to restate the pipeline after the prefix.
 
-During an active work order, also say whether the executor should pause or
-continue after the breakout. A committed expansion needs explicit authority; the
+During an active work order, the executor finishes the breakout and continues
+through the evidence gate to ready to verify. You do not need to repeat
+`continue`; say so when you want a pause or capture only.
+A committed expansion needs explicit authority; the
 receipt names that authority, raw batch, affected ledger/product/decision/
 schema surfaces, unresolved choices, and required review. Existing worktree
 changes remain intact throughout.
+
+Original intake lives in the main checkout's ignored directory. The executor
+resolves that checkout before source lookup and capture; a worktree's relative
+`docs/intake/` is not a copy of the corpus.
 
 ## Planning pass
 
@@ -245,6 +268,16 @@ one physical source line per paragraph or list-item paragraph, with separate
 lines retained for actual Markdown structure. Do not hand-wrap them to the
 repository's code width; GitHub decides how the unchanged reviewed bytes wrap
 inside its own page layout.
+
+Use a concise title that identifies the change, then a summary of its effect,
+reason, and relevant validation. Link detailed reports. Follow the
+[PR and commit guidance](product/08-publication-compiler.md#prs-and-commits),
+including separate commits for distinct coherent changes and a staged-diff check
+for each. The final reviewer commits the reviewed series; one work order does
+not require a single catch-all commit.
+
+Choose the title's gitmoji from the full catalog to suit the actual change;
+give specific, expressive choices consideration beyond the usual defaults.
 
 After the reviewed commit exists, the final reviewer invokes the bounded PR
 publisher with a committed body file inside the worktree:
@@ -474,6 +507,7 @@ launch; agents run the remaining commands after their chat dispatches:
 npm run worktree -- start WO-00N docs/work-orders/WO-00N-name.md
 npm run resume --silent -- status --json # read-only machine projection
 npm run resume --silent -- times         # read-only labeled time observation
+npm run resume --silent -- usage --json  # read-only actor and work-order totals
 npm run resume -- implementation-ready --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run resume -- verify                 # allocates the next immutable VER-NNN
 npm run resume -- verification-result pass|fail --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>

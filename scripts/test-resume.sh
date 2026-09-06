@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+unset DOTLN_ACCOUNT_LABEL # Fixtures declare their own labels.
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 source "$script_dir/test-temp-root.sh"
@@ -93,7 +94,7 @@ assert.equal(typeof recordedAt, "string");
 assert.equal(typeof elapsed, "object");
 assert.deepStrictEqual(
   actual,
-  JSON.parse(expectedSource),
+  JSON.parse(expectedSource, (key, value) => key === "latestAttestation" && value ? { ...value, accountLabel: "not-applicable" } : value),
 );
 NODE
 }
@@ -434,7 +435,7 @@ assert.deepStrictEqual(status, {
   latestVerdict: "pass",
   finalReview: "FINAL-003",
   finalReviewPath: "docs/final-reviews/WO-099/FINAL-003.md",
-  latestAttestation: { harness: "human", harnessVersion: "not-applicable", model: "human", effort: "unknown", source: "operator-attested" },
+  latestAttestation: { harness: "human", harnessVersion: "not-applicable", model: "human", effort: "unknown", source: "operator-attested", accountLabel: "not-applicable" },
   effortDrift: [
     { effort: "xhigh" },
     { effort: "unknown", raw: "ultracode" },
@@ -701,6 +702,239 @@ for variant in absent reordered backwards; do
   cmp "$test_root/time-baseline.masked" "$test_root/time-$variant.masked"
   printf 'time-blind current.md cmp: %s passed\n' "$variant"
 done
+
+usage_repo="$test_root/usage-repo"
+mkdir -p "$usage_repo/scripts" "$usage_repo/docs/control/orders" "$usage_repo/docs/control/local"
+cp -- "$script_dir/resume.mjs" "$usage_repo/scripts/resume.mjs"
+cp -R -- "$script_dir/lib" "$usage_repo/scripts/lib"
+cp -- "$script_dir/../.gitignore" "$usage_repo/.gitignore"
+node "$script_dir/test-beacon-fixture.mjs" "$usage_repo"
+git init "$usage_repo" >/dev/null 2>&1
+node --input-type=module - "$usage_repo" "$script_dir" <<'NODE'
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
+import { execFileSync } from "node:child_process";
+import childProcess from "node:child_process";
+import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, scripts] = process.argv.slice(2);
+const { main } = await import(pathToFileURL(join(root, "scripts/resume.mjs")));
+const { readControl } = await import(pathToFileURL(join(root, "scripts/lib/control-store.mjs")));
+const { completedPhaseAttempts, controlTimeProjection } = await import(pathToFileURL(join(root, "scripts/lib/control-time.mjs")));
+const { renderIndex } = await import(pathToFileURL(join(scripts, "work-orders.mjs")));
+const stdout = process.stdout.write, stderr = process.stderr.write;
+const call = (args) => {
+  let output = "";
+  process.stdout.write = (chunk) => { output += chunk; return true; };
+  process.stderr.write = () => true;
+  try { main(args); } finally { process.stdout.write = stdout; process.stderr.write = stderr; }
+  return output;
+};
+const actorA = { harness: "codex-cli", harnessVersion: "fixture-1", model: "model-alpha", effort: "high", source: "self-reported", accountLabel: "a1" };
+const actorB = { harness: "claude-code", harnessVersion: "fixture-1", model: "model-beta", effort: "unknown", source: "self-reported", accountLabel: "claude-2" };
+const actorC = { ...actorA, harnessVersion: "fixture-2", effort: "max", accountLabel: "claude-2" };
+const { accountLabel, ...actorD } = actorA;
+const event = (workOrderId, type, seconds, actor, verdict = "pass") => ({
+  schemaVersion: 1, type, workOrderId,
+  ...(type === "WorkOrderActivated" ? { workOrderPath: `docs/work-orders/${workOrderId}-fixture.md` } : {}),
+  ...(seconds === undefined ? {} : { recordedAt: new Date(Date.UTC(2026, 8, 5) + seconds * 1000).toISOString() }),
+  ...(actor ? { actor, verdict } : {}),
+});
+const first = [
+  event("WO-075", "WorkOrderActivated"),
+  event("WO-075", "ImplementationReady", 0, actorA),
+  event("WO-075", "VerificationRequested", 0),
+  event("WO-075", "VerificationCompleted", 1, actorA, "fail"),
+  event("WO-075", "RepairRequested", 2),
+  event("WO-075", "RepairCompleted", 5, actorB),
+  event("WO-075", "VerificationRequested", 6),
+  event("WO-075", "VerificationCompleted", 10, actorA),
+  event("WO-075", "FinalReviewRequested", 11),
+  event("WO-075", "FinalReviewCompleted", 9, actorB),
+];
+const second = [
+  event("WO-076", "WorkOrderActivated", 20),
+  event("WO-076", "ImplementationReady", 22, actorA),
+  event("WO-076", "VerificationRequested", 23),
+  event("WO-076", "VerificationCompleted", 24, actorA),
+  event("WO-076", "FinalReviewRequested", 25),
+  event("WO-076", "FinalReviewCompleted", 26, actorB, "fail"),
+];
+const third = [
+  event("WO-077", "WorkOrderActivated", 30),
+  event("WO-077", "ImplementationReady", 31, actorC),
+  event("WO-077", "VerificationRequested", 32),
+  event("WO-077", "VerificationCompleted", 32, actorD),
+  event("WO-077", "FinalReviewRequested", 33),
+];
+const writeEvents = (path, events) => fs.writeFileSync(join(root, path), events.map(JSON.stringify).join("\n") + "\n");
+const paths = ["docs/control/resume.jsonl", "docs/control/orders/WO-076.jsonl", "docs/control/orders/WO-077.jsonl", "docs/control/current.md"];
+writeEvents(paths[0], first); writeEvents(paths[1], second); writeEvents(paths[2], third);
+fs.writeFileSync(join(root, paths[3]), "deliberately stale projection\n");
+fs.writeFileSync(join(root, "docs/control/local/account-labels.md"), "fixture mapping canary\n");
+for (const path of paths) fs.copyFileSync(join(root, path), join(root, `${path}.before`));
+// Snapshot copies cannot live in orders/, whose entire directory is authoritative.
+for (const path of paths.filter((path) => path.includes("/orders/")))
+  fs.renameSync(join(root, `${path}.before`), join(root, `${path.replace("/orders/", "/")}.before`));
+const before = paths.map((path) => fs.readFileSync(join(root, path)));
+process.env.DOTLN_ACCOUNT_LABEL = "invalid@fixture";
+// Observe actual filesystem calls made by the dispatcher; the private lane
+// must remain unopened, even if a mapping is present and the env label is set.
+const savedFs = {};
+for (const name of ["readFileSync", "readdirSync", "existsSync", "lstatSync", "statSync", "realpathSync"]) {
+  savedFs[name] = fs[name];
+  fs[name] = (path, ...args) => {
+    const named = path instanceof URL ? path.pathname : String(path);
+    assert.ok(!resolve(named).startsWith(join(root, "docs/control/local")), `private lane accessed by ${name}`);
+    return savedFs[name](path, ...args);
+  };
+}
+syncBuiltinESMExports();
+let usage, rendered;
+const savedSpawn = childProcess.spawnSync;
+childProcess.spawnSync = () => { throw new Error("usage attempted to launch a process"); };
+syncBuiltinESMExports();
+try {
+  usage = JSON.parse(call(["usage", "--json"]));
+  rendered = call(["usage"]);
+} finally { Object.assign(fs, savedFs); childProcess.spawnSync = savedSpawn; syncBuiltinESMExports(); delete process.env.DOTLN_ACCOUNT_LABEL; }
+assert.deepEqual(JSON.parse(execFileSync(process.execPath, [join(root, "scripts/resume.mjs"), "usage", "--json"], { encoding: "utf8" })), usage);
+assert.equal(execFileSync(process.execPath, [join(root, "scripts/resume.mjs"), "usage"], { encoding: "utf8" }), rendered);
+assert.deepEqual(usage.totals, { attempts: 10, elapsedMs: 11000, unknown: 1 });
+const group = (actor, phase, attempts, elapsedMs, unknown, workOrders) => {
+  const { harness, harnessVersion, model, effort } = actor;
+  return { harness, harnessVersion, model, effort, accountLabel: actor.accountLabel ?? "not-applicable", phase, attempts, elapsedMs, unknown, workOrders };
+};
+const expectedGroups = [
+  group(actorA, "implementation", 2, 2000, 1, ["WO-075", "WO-076"]),
+  group(actorA, "verification", 3, 6000, 0, ["WO-075", "WO-076"]),
+  group(actorB, "repair", 1, 3000, 0, ["WO-075"]),
+  group(actorB, "finalReview", 2, -1000, 0, ["WO-075", "WO-076"]),
+  group(actorC, "implementation", 1, 1000, 0, ["WO-077"]),
+  group(actorD, "verification", 1, 0, 0, ["WO-077"]),
+];
+assert.deepEqual(usage.byActor, expectedGroups);
+assert.deepEqual(usage.byWorkOrder, [
+  { workOrder: "WO-075", attempts: 5, elapsedMs: 6000, unknown: 1, byActor: [
+    group(actorA, "implementation", 1, 0, 1, ["WO-075"]),
+    group(actorA, "verification", 2, 5000, 0, ["WO-075"]),
+    group(actorB, "repair", 1, 3000, 0, ["WO-075"]),
+    group(actorB, "finalReview", 1, -2000, 0, ["WO-075"]),
+  ] },
+  { workOrder: "WO-076", attempts: 3, elapsedMs: 4000, unknown: 0, byActor: [
+    group(actorA, "implementation", 1, 2000, 0, ["WO-076"]),
+    group(actorA, "verification", 1, 1000, 0, ["WO-076"]),
+    group(actorB, "finalReview", 1, 1000, 0, ["WO-076"]),
+  ] },
+  { workOrder: "WO-077", attempts: 2, elapsedMs: 1000, unknown: 0, byActor: expectedGroups.slice(4) },
+]);
+assert.match(usage.timing, /include waiting/);
+// Parse both text groupings back into records independently of the renderer.
+const textGroups = rendered.split("\n").filter((line) => /^\s*- harness=/.test(line)).map((line) => {
+  const entries = line.replace(/^\s*- /, "").split("; ").map((part) => {
+    const at = part.indexOf("="); const key = part.slice(0, at), value = part.slice(at + 1);
+    return [key, key === "workOrders" ? value.split(",") : JSON.parse(value)];
+  });
+  return Object.fromEntries(entries);
+});
+assert.deepEqual(textGroups, [...expectedGroups, ...usage.byWorkOrder.flatMap((row) => row.byActor)]);
+assert.match(rendered, /Total: attempts=10; elapsedMs=11000; unknown=1/);
+for (const row of usage.byWorkOrder)
+  assert.ok(rendered.includes(`${row.workOrder}: attempts=${row.attempts}; elapsedMs=${row.elapsedMs}; unknown=${row.unknown}`));
+assert.throws(() => call(["status", "--json"]), /ambiguous work-order selection/);
+for (const args of [["--wat"], ["--json", "--json"], ["--work-order", "WO-075"]])
+  assert.throws(() => call(["usage", ...args]), /usage: resume usage/);
+assert.deepEqual(paths.map((path) => fs.readFileSync(join(root, path))), before);
+for (const path of paths)
+  execFileSync("cmp", [join(root, path), join(root, `${path.replace("/orders/", "/")}.before`)]);
+console.log(`usage fixture: ${JSON.stringify(usage.totals)}; 6 exact actor/phase groups; all three work-order groups and text numbers match`);
+console.log("usage privacy: every instrumented filesystem call avoided docs/control/local; ambient label ignored; stale projection and every segment preserved");
+console.log("usage cmp: current.md, legacy log and both order segments byte-identical after both output forms and refused arguments");
+console.log("usage source boundary: no subprocess or Git discovery; CLI and direct dispatcher reports agree");
+// Pairing must retain all attempts across activations without borrowing a
+// stale start, or confusing interleaved orders. Status still resets on activation.
+assert.equal([...completedPhaseAttempts([first[0], first[2], event("WO-075", "WorkOrderActivated", 50), first[3]])][0].elapsedMs, "unknown");
+assert.equal([...completedPhaseAttempts([...first, event("WO-075", "WorkOrderActivated", 50), event("WO-075", "ImplementationReady", 51, actorA)])].length, 6);
+assert.deepEqual(controlTimeProjection([...first, event("WO-075", "WorkOrderActivated", 50)]).elapsed, {});
+assert.deepEqual([...completedPhaseAttempts([second[0], third[0], second[1], third[1]])].map((row) => row.elapsedMs), [2000, 1000]);
+assert.equal([...completedPhaseAttempts([second[0], event("WO-076", "ImplementationReady", undefined, actorA)])][0].elapsedMs, "unknown");
+assert.equal([...completedPhaseAttempts([first[0], event("WO-075", "ImplementationReady", undefined, actorA)])][0].elapsedMs, "unknown");
+writeEvents(paths[0], first.map((entry) => entry.type === "ImplementationReady" ? { ...entry, actor: undefined } : entry));
+assert.equal(JSON.parse(call(["usage", "--json"])).byActor[0].harness, "unknown");
+writeEvents(paths[0], first);
+
+// Completion label grammar, report parity, and all downstream projections.
+const id = "WO-078", authority = `docs/work-orders/${id}-fixture.md`;
+fs.mkdirSync(join(root, "docs/work-orders"), { recursive: true });
+fs.writeFileSync(join(root, authority), `# ${id} fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n`);
+const selectedCall = (args) => call([...args, "--work-order", id]);
+selectedCall(["activate", id, authority]);
+const actor = { harness: "human", harnessVersion: "not-applicable", model: "human", effort: "unknown", source: "operator-attested" };
+const flags = ["--harness", "human", "--harness-version", "not-applicable", "--model", "human", "--effort", "unknown", "--source", "operator-attested"];
+const labelLog = join(root, `docs/control/orders/${id}.jsonl`);
+const last = () => JSON.parse(fs.readFileSync(labelLog, "utf8").trim().split("\n").at(-1));
+const snapshot = () => [fs.readFileSync(labelLog), fs.readFileSync(join(root, "docs/control/current.md"))];
+for (const label of ["Test", "a b", "x@y", "a".repeat(17), "a\u2028b", "a\u2029b", "a\nb", "a\n", "a\x00b", "", "1a"]) {
+  const before = snapshot();
+  assert.throws(() => selectedCall(["implementation-ready", ...flags, "--account-label", label]), /invalid account label|usage: resume implementation-ready/);
+  assert.deepEqual(snapshot(), before);
+}
+for (const extra of [["--account-label"], ["--account-label", "a1", "--account-label", "claude-2"]])
+  assert.throws(() => selectedCall(["implementation-ready", ...flags, ...extra]), /usage: resume implementation-ready/);
+process.env.DOTLN_ACCOUNT_LABEL = "invalid@fixture";
+const beforeEnv = snapshot();
+assert.throws(() => selectedCall(["implementation-ready", ...flags]), /invalid account label/);
+assert.deepEqual(snapshot(), beforeEnv);
+process.env.DOTLN_ACCOUNT_LABEL = "a1";
+selectedCall(["implementation-ready", ...flags]);
+assert.equal(last().actor.accountLabel, "a1");
+assert.equal(JSON.parse(selectedCall(["status", "--json"])).latestAttestation.accountLabel, "a1");
+assert.match(fs.readFileSync(join(root, "docs/control/current.md"), "utf8"), /account a1/);
+selectedCall(["verify"]);
+const report = (field, attestation) => {
+  const status = JSON.parse(selectedCall(["status", "--json"]));
+  const file = join(root, status[field]);
+  fs.mkdirSync(join(file, ".."), { recursive: true });
+  fs.writeFileSync(file, `# Fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n`);
+};
+report("verificationPath", actor);
+const beforeReport = snapshot();
+assert.throws(() => selectedCall(["verification-result", "fail", ...flags]), /actor header does not match/);
+assert.deepEqual(snapshot(), beforeReport);
+report("verificationPath", { ...actor, accountLabel: "claude-2" });
+process.env.DOTLN_ACCOUNT_LABEL = "invalid@fixture";
+selectedCall(["verification-result", "fail", ...flags, "--account-label", "claude-2"]);
+assert.equal(last().actor.accountLabel, "claude-2");
+selectedCall(["fix"]);
+selectedCall(["repair-complete", ...flags, "--account-label", "a1"]);
+assert.equal(last().actor.accountLabel, "a1");
+delete process.env.DOTLN_ACCOUNT_LABEL;
+selectedCall(["verify"]);
+report("verificationPath", actor);
+selectedCall(["verification-result", "pass", ...flags]);
+assert.ok(!Object.hasOwn(last().actor, "accountLabel"));
+assert.equal(JSON.parse(selectedCall(["status", "--json"])).latestAttestation.accountLabel, "not-applicable");
+assert.match(fs.readFileSync(join(root, "docs/control/current.md"), "utf8"), /account not-applicable/);
+selectedCall(["final-review"]);
+report("finalReviewPath", { ...actor, accountLabel: "claude-2" });
+process.env.DOTLN_ACCOUNT_LABEL = "a1";
+selectedCall(["final-review-result", "pass", ...flags, "--account-label", "claude-2"]);
+delete process.env.DOTLN_ACCOUNT_LABEL;
+assert.equal(last().actor.accountLabel, "claude-2");
+const state = readControl(root).orders.get(id).state;
+const index = renderIndex({ rows: [{ id, path: authority, title: "Fixture", phase: "closed", section: "Closed", model: "any", effort: "any", dependencies: [], closed: new Set(), state }], sequence: [], releases: [] });
+assert.match(index, /Latest attestation: harness human;.*account claude-2/);
+console.log("account labels: 11 invalid forms, missing/duplicate flags and invalid env refused before append; a1/claude-2 accepted; env default and flag override checked through all four completion commands");
+console.log("account projections: optional field stays absent in stored history; status/current render not-applicable; labelled status/current/index and report-header parity checked");
+NODE
+for source in resume.jsonl orders/WO-076.jsonl orders/WO-077.jsonl; do
+  cmp "$usage_repo/docs/control/$source" "$usage_repo/docs/control/${source#orders/}.before"
+done
+# current.md was intentionally refreshed by the later labelled lifecycle fixture;
+# its usage-only byte comparison ran before any completion transition above.
+git -C "$usage_repo" check-ignore docs/control/local/account-labels.md
+printf 'usage cmp: legacy and every original order segment unchanged; local mapping ignored\n'
 
 node "$script_dir/test-control-segments.mjs" "$test_root"
 printf 'beacons: every lifecycle transition matches phase/verdict/effort/time; status and next preserve inode/ctime/size/mtime\n'
