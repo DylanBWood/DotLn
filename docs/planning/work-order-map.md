@@ -21,7 +21,7 @@ require mainline work to count upward to reach it.
 
 ## Recommendation and rationale
 
-**WO-010 source (2026-09-06):** this worktree prepares `v0.12.0` above published `v0.11.0`. WO-009's transports now accept blinded verification and focused repair capsules; the bounded synthetic fixture demonstrates findings, fresh repair/re-verification and a living evidence matrix. The [executor evidence](../evidence/WO-010/README.md) labels the deterministic transport witnesses explicitly. Live model verification and general source-writing workers remain unwitnessed. WO-011 remains the next recommended rung after WO-010's own independent verification, final review and integration; the generated index and control fold own those lifecycle facts. The marked sequence is unchanged.
+**WO-011 source (2026-09-06):** this worktree prepares `v0.13.0` above published `v0.12.0`. The ten-unit feedback compiler and a bounded self-hosted audit are the active implementation. The [executor receipt](../evidence/WO-011/README.md) distinguishes causal fixture evidence, instruction-byte accounting, and separate verifier episodes. Independent repository verification, final review, and integration still follow the control fold. Optional sibling-repo and artifact-organization pilots remain unallocated candidates; the marked sequence is unchanged.
 
 **WO-022 source (2026-09-06):** this worktree prepares `v0.11.0` above published
 `v0.10.1`. WO-021, WO-008 and WO-009 are present in the activation base; the
@@ -139,6 +139,20 @@ Its bytes are preserved under WO-026's file-freeze rule; there is no path or
 identity migration.
 
 ## Preserved unallocated candidates
+
+- **Artifact growth and maintenance:** if a reading or upkeep problem is
+  demonstrated, a bounded assessment can apply the [corpus policy](../product/03-architecture.md#corpus-policy)
+  to documentation, logs, and derived views. Consider clearer organization,
+  explicit archives, or consolidation while preserving links and required
+  immutable history. A healthy structure needs no change. No file quota,
+  mandatory cleanup, selected layout, order number, or activation is assigned.
+- **Optional sibling workflow pilot:** use DotLn to help build the starter,
+  fork the starter as a coordination repo, and issue work orders for multiple
+  target repos, routing Angular changes only through that fork during the trial.
+  This is one test of the [workstream application](../product/12-workstream-application.md#one-workstream-across-repositories),
+  not its canonical topology. The example can witness implicit lookup with Context7;
+  the product must remain usable without that adapter or a paid account.
+  Authentication, packaging, update strategy, and licensing remain open.
 
 - The concurrent-workflow control slice is implemented in WO-030's source and
   passed independent verification and final review at this revision, pending

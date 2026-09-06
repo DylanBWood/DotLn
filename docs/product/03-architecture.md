@@ -112,6 +112,32 @@ history separately from secrets and raw protected sources, then load them on a
 compatible DotLn runtime with the same semantic hashes. Whether workstream
 events themselves move is a separate retention and sovereignty decision.
 
+The operator's 2026-09-06 sibling-repository experiments exercise this boundary:
+[DotLn-Enterprise-Starter](https://github.com/DylanBWood/DotLn-Enterprise-Starter)
+is intended as a reusable launchpad for organization-owned implementations;
+[DotLn-Angular](https://github.com/DylanBWood/DotLn-Angular) is intended as an
+example consumer using Angular, Nx, NgRx Signal Store with events, and Transloco.
+Authentication and authorization are open choices, with Auth0 one candidate.
+These are operator-reported intentions, not inspected implementation claims.
+The proposed pilot uses DotLn to help create the starter, then forks the starter
+as a coordination repo that issues work orders for multiple target repos.
+During the trial, changes to the Angular target go through that fork's workflow.
+The fork is of the starter, not of DotLn core. This is one candidate route to
+test the [workstream application](12-workstream-application.md#one-workstream-across-repositories),
+not a canonical topology or an implemented multi-repo coordinator. It simulates
+an organization user's needs with personal/synthetic material. Packaging,
+licensing, compatibility, update strategy, and the first task still need evidence.
+
+Playwright and Context7 are optional environment adapters. The operator reports
+adding MCP access and Context7 integrations for the two local coding harnesses;
+neither that setup nor a paid documentation account is a DotLn user prerequisite.
+The Angular example can test whether task-relevant documentation lookup happens
+without a per-task reminder. Record observed retrieval and its effect on a
+bounded implementation; installation alone proves neither use nor correctness.
+An environment without the adapter must expose that limitation and use another
+declared documentation source when needed. This selects no universal UI stack,
+transport, model provider, or authentication service.
+
 ### Candidate — owner-sovereign implementation profile
 
 “Owner-sovereign” is the working label, not a selected public name. An
@@ -1302,6 +1328,30 @@ bytes into the surviving store does not update the ledger or blueprint. The
 `ideation:` pipeline and its receipt record that interpretation; a later raw
 addition opens a new ideation or re-mining pass rather than silently mutating a
 prior conclusion.
+
+The 2026-09-06 artifact-growth discussion asks whether retained documentation
+creates an actual reading or maintenance problem; file count alone establishes
+none. If discovery, review, and upkeep work well, no intervention is needed.
+When a problem is evidenced, prefer updating an existing authority and linking
+it from a view over creating another prose copy. Immutable incidents,
+decisions, control events, and numbered verification evidence retain their
+existing contracts; current indexes and summaries should be reproducible from
+those sources, and incidental debug output stays local unless selected as
+evidence. More retained history must not automatically become more startup
+context or more material the operator has to review on each order.
+
+A bounded assessment may inventory counts and bytes by purpose, canonical
+source, consumer, and regeneration or retention rule, with reading and upkeep
+cost as the decision inputs. Candidate responses include clearer folders and
+navigation, explicit archival folders for historical material, consolidated
+views, or leaving the structure alone. Archives preserve discoverability,
+provenance, stable references, and replay/recovery dependencies; moving a file
+is distinct from deleting it or changing its retention contract. Prefer a
+read-only command over another recurring checked-in inventory. No numeric file
+quota, exponential-growth claim, required reorganization, or selected archive
+layout follows from this discussion. Removing retained evidence or changing its
+retention contract requires a separately reviewed migration; an ordinary safe
+organizational change follows its existing work-order authority.
 
 ### Candidate — canonical private intake reconciliation
 

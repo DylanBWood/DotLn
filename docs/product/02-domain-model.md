@@ -400,8 +400,63 @@ The personal profile's anti-oscillation unit retains the desired behavior, the
 rejected approaches and their reasons, and any explicit supersession. A proposed
 correction is checked against that history before it replaces an approach;
 examples alone cannot supply new hard constraints. Its decision-lineage guard
-remains planned in WO-011. The execution guide applies the judgment manually
-today; that is not evidence of compiled enforcement.
+is implemented for equipped WO-011 feedback boundaries. Outside that host,
+the execution guide still applies the judgment manually.
+
+### Feedback compiler v1
+
+WO-011 adds the separate `feedback-v1` contract in compiler `0.6.0` and skeleton
+`0.12.0`. The [personal catalog](../../packages/skeleton/src/loadouts/feedback.ts)
+contains exactly the roadmap's ten units. Each carries source references and
+treatment, incident synthesis, observable undesired/desired behavior, scope,
+trigger, mechanism and rationale, enforcement, required evidence, regression
+fixtures, conflicts, supersession, retirement, and next-maturity conditions.
+Scrubbed public incident accounts remain at their canonical references; this
+does not promote ordinary raw intake verbatim or duplicate its source text.
+
+`compileFeedbackUnits` validates and positively copies those declarations,
+rejects unsupported handlers, conflicts and co-equipped superseded versions,
+and lowers them to the declared handler/rung. Its `policyHash` covers canonical
+compiled data, including retained definitions and the compiler package version.
+It is an equality key, not authentication. An empty or reduced profile leaves
+unequipped rules inactive; advisory findings do not become hard denials.
+The saved personal profile makes all ten hard at their declared boundaries.
+
+`evaluateFeedback` consumes host-derived facts for nine boundaries; the tenth,
+`applyFeedbackCorrection`, consumes typed semantic correction events. The
+shared `seiriReactor` retains the correction, narrows allowed effects, prevents
+scope expansion, preserves evidence, and emits a diagnosis request. Ordinary
+message content has no trigger path. A mistakenly classified correction only
+tightens policy; it cannot restore effects or erase prior evidence.
+
+The boundary adapter refuses the effect before invoking its callback. Host
+facts include independent witnesses, executable check results, resolved Git
+roots/writer reservations, source diffs, and reads bound to output hashes.
+Semantic assessments such as desired-outcome preservation and low-risk cleanup
+still require host/operator judgment. Worker prose cannot supply its own host
+facts. Read receipts witness delivery of bytes, not comprehension. The current
+suppression check compares host-parsed comment bodies from the exactly pinned
+TypeScript parser; regex, template literals, and JSX text are distinguished from
+actual directives. The parser is a skeleton dependency, loaded only for that
+check; the pure compiler and kernel have none. This is not a
+general detector of weakened compiler configuration or every way to game tests.
+
+`feedbackMaturity` folds explicitly labeled fixture/live observations into
+eligible episodes, activations, prevented incidents, false activations, and
+overrides. Unobserved use has zero observations and no inferred rate. The
+selected regression episodes do not establish broad field performance or
+awakened maturity. Compiled versions retained in audit events support replay;
+replacement creates a new version rather than editing a retained definition.
+
+The bounded self-hosted consumer compiles `WO-011-feedback-audit`, authorizes
+and persists its command, executes the fixed regression subprocesses against
+this repository, then uses the WO-010 verifier host and a WO-009 transport for
+a separate blinded episode. Source bytes and the report are pinned; the base
+revision's unexecuted audit is honestly unavailable. The empty verifier mount
+contains no ambient repository instructions. This audits actual repository
+code with controlled fixtures; it does not implement general source-writing
+workers or replace the manual repository verification lifecycle. The
+[evidence receipt](../evidence/WO-011/README.md) records the run and limits.
 
 ### Independent verification v1
 

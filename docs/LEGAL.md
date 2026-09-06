@@ -30,10 +30,12 @@ publication gap is an implementation change for a bounded follow-on, not a
 silent documentation edit inside WO-016.
 
 As a package-lock observation rather than an independent audit of upstream
-license texts, the current external packages are development-only:
-`@types/node`, `undici-types`, and Prettier are recorded as MIT, and TypeScript
-as Apache-2.0. The skeleton's only runtime dependency is the local kernel
-workspace. Recheck the material actually shipped when any distribution exists.
+license texts, `@types/node`, `undici-types`, and Prettier are recorded as MIT,
+and TypeScript as Apache-2.0. WO-011 (2026-09-06) makes the already pinned
+TypeScript `5.4.5` package a skeleton runtime dependency for parsed source-comment
+checks, alongside its local compiler/kernel workspace dependencies. The other
+external packages remain development-only. Kernel and compiler have no runtime
+dependencies. Recheck the material actually shipped when any distribution exists.
 
 ## Interim direction
 

@@ -92,6 +92,18 @@ future adapter choice, not permission to bring its implementation here.
 
 ## One workstream across repositories
 
+One operator-proposed pilot (2026-09-06) starts by using DotLn to help create
+Enterprise Starter, then forking that starter as the coordination repository.
+The fork issues work orders for multiple targets, including DotLn-Angular;
+during the trial, Angular updates enter through that workflow. The trial
+simulates an organization user's needs using personal/synthetic material and
+tests scope, dispatch, target isolation, evidence, verification, and return
+across repository boundaries. It must show that the workflow actually drove
+the target changes; a starter skeleton and an independently developed app do
+not establish that result. This is one candidate adoption path, not a canonical
+topology or an implementation claim. Other paths remain open under the same
+outcome and evidence requirements. See the [sibling-repository intentions](03-architecture.md#platform-and-instance-boundary).
+
 A workstream owns an outcome spanning repositories and time. A repository owns
 its local code history, branch/worktree, tests, and delivery boundaries. Each
 bounded work order names its repository bases and scope; the workstream view
