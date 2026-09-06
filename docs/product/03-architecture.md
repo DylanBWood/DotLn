@@ -862,6 +862,14 @@ candidates deserve implementation. The role occupant is selected by the current
 operating model; model assignment remains replaceable and is never embedded in
 the semantic record.
 
+Selection also preserves the suggestion's purpose into the work order. The
+[implementation-consequences candidate](05-pattern-library.md#candidate-extension--implementation-and-delayed-consequences)
+distinguishes a sound recommendation from an implementation that creates an
+unnoticed delayed cost. Concrete method checks and any bounded follow-up belong
+to the authorized execution/observation plan; selection alone does not certify
+them. This is a candidate refinement, not an implemented suggestion pipeline or
+an additional source of effect authority.
+
 ### First live Entropy Reducer use
 
 The current [operator guide](../instance/entropy-reducer/README.md) dispatches
@@ -1313,6 +1321,18 @@ excluded-from-learning. Verbatim-with-scrubbing is the author's
 personal-profile default—sources regenerate summaries, never the reverse. A
 different implementation may omit retained source and declare lineage or
 regeneration unavailable.
+
+Generated evidence corpora have a separate consumer and lifecycle. WO-101's
+`corpus/fixtures/`, `corpus/harness/`, and `corpus/manifests/` hold original
+test inputs and their deterministic provenance. WO-108 adds
+`corpus/mutation/`: a pinned source census and selected mutation campaign,
+append-only measured verdicts, and regenerable survivor findings, with run
+transcripts in `corpus/manifests/runs/`. These are generated from committed
+personal-project source, not sanitized incident transcripts. The
+[corpus entry point](../../corpus/README.md) links each lane's commands and
+limits. Unmeasured candidates and compile failures do not establish test-suite
+strength. This 2026-09-06 synchronization closes the layout follow-up left by
+WO-101; it does not change incident-source retention policy.
 
 For the current repository workflow, the main control-plane checkout's ignored
 `docs/intake/` is the intended surviving raw source. A relative capture made

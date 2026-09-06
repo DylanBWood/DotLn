@@ -107,37 +107,38 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 
 ## 05 — Pattern library
 
-| Section                                                                                                                                          | Audiences                           | Status  |
-| ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- | ------- |
-| [Founding pattern library](../product/05-pattern-library.md#founding-pattern-library)                                                            | everyday-ai-user, software-engineer | planned |
-| [5S / 6S — the maintenance organism](../product/05-pattern-library.md#5s--6s--the-maintenance-organism)                                          | everyday-ai-user, software-engineer | planned |
-| [Leadership & autonomy — Marquet](../product/05-pattern-library.md#leadership--autonomy--marquet)                                                | everyday-ai-user, software-engineer | planned |
-| [SMART & exploration contracts](../product/05-pattern-library.md#smart--exploration-contracts)                                                   | everyday-ai-user, software-engineer | planned |
-| [Communication — mitigated speech](../product/05-pattern-library.md#communication--mitigated-speech)                                             | everyday-ai-user, software-engineer | planned |
-| [Candidate — exact phrasebook voice support](../product/05-pattern-library.md#candidate--exact-phrasebook-voice-support)                         | everyday-ai-user, software-engineer | vision  |
-| [Decision policies — Algorithms to Live By](../product/05-pattern-library.md#decision-policies--algorithms-to-live-by)                           | everyday-ai-user, software-engineer | planned |
-| [Candidate — success under growth](../product/05-pattern-library.md#candidate--success-under-growth)                                             | everyday-ai-user, software-engineer | vision  |
-| [Candidate — influence response policies](../product/05-pattern-library.md#candidate--influence-response-policies)                               | everyday-ai-user, software-engineer | vision  |
-| [Systems & quality](../product/05-pattern-library.md#systems--quality)                                                                           | everyday-ai-user, software-engineer | planned |
-| [Party topology — commedia dell'arte (the masks)](../product/05-pattern-library.md#party-topology--commedia-dellarte-the-masks)                  | everyday-ai-user, software-engineer | planned |
-| [The Eye Dr Test — pairwise preference](../product/05-pattern-library.md#the-eye-dr-test--pairwise-preference)                                   | everyday-ai-user, software-engineer | planned |
-| [Candidate — Additional Opinion](../product/05-pattern-library.md#candidate--additional-opinion)                                                 | everyday-ai-user, software-engineer | vision  |
-| [Rhythm patterns](../product/05-pattern-library.md#rhythm-patterns)                                                                              | everyday-ai-user, software-engineer | planned |
-| [Candidate — temporal interaction interpretation](../product/05-pattern-library.md#candidate--temporal-interaction-interpretation)               | everyday-ai-user, software-engineer | vision  |
-| [Candidate — continuity-critical flow and binary quench](../product/05-pattern-library.md#candidate--continuity-critical-flow-and-binary-quench) | everyday-ai-user, software-engineer | vision  |
-| [Candidate role — Flow Steward](../product/05-pattern-library.md#candidate-role--flow-steward)                                                   | everyday-ai-user, software-engineer | vision  |
-| [Candidate — oppositional support](../product/05-pattern-library.md#candidate--oppositional-support)                                             | software-engineer                   | vision  |
-| [Candidate — The Malcolm Check](../product/05-pattern-library.md#candidate--the-malcolm-check)                                                   | everyday-ai-user, software-engineer | vision  |
-| [Candidate — Beware of Naive Interventionism](../product/05-pattern-library.md#candidate--beware-of-naive-interventionism)                       | software-engineer                   | vision  |
-| [Clean Room — active mechanic with contextual supports](../product/05-pattern-library.md#clean-room--active-mechanic-with-contextual-supports)   | everyday-ai-user, software-engineer | vision  |
-| [Candidate — Snooping Footprint Reducer](../product/05-pattern-library.md#candidate--snooping-footprint-reducer)                                 | everyday-ai-user, software-engineer | vision  |
-| [Candidate — Do Nothing, active and support](../product/05-pattern-library.md#candidate--do-nothing-active-and-support)                          | everyday-ai-user, software-engineer | vision  |
-| [Active: Do Nothing](../product/05-pattern-library.md#active-do-nothing)                                                                         | software-engineer                   | vision  |
-| [Support: Do Nothing](../product/05-pattern-library.md#support-do-nothing)                                                                       | software-engineer                   | vision  |
-| [Relationship to nearby mechanics](../product/05-pattern-library.md#relationship-to-nearby-mechanics)                                            | software-engineer                   | vision  |
-| [Candidate — Default to True / Default to False](../product/05-pattern-library.md#candidate--default-to-true--default-to-false)                  | software-engineer                   | vision  |
-| [Fallback generalization — graded propositions](../product/05-pattern-library.md#fallback-generalization--graded-propositions)                   | software-engineer                   | vision  |
-| [Candidate — Embodied Explorer](../product/05-pattern-library.md#candidate--embodied-explorer)                                                   | everyday-ai-user, software-engineer | vision  |
+| Section                                                                                                                                                        | Audiences                           | Status  |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
+| [Founding pattern library](../product/05-pattern-library.md#founding-pattern-library)                                                                          | everyday-ai-user, software-engineer | planned |
+| [5S / 6S — the maintenance organism](../product/05-pattern-library.md#5s--6s--the-maintenance-organism)                                                        | everyday-ai-user, software-engineer | planned |
+| [Leadership & autonomy — Marquet](../product/05-pattern-library.md#leadership--autonomy--marquet)                                                              | everyday-ai-user, software-engineer | planned |
+| [SMART & exploration contracts](../product/05-pattern-library.md#smart--exploration-contracts)                                                                 | everyday-ai-user, software-engineer | planned |
+| [Communication — mitigated speech](../product/05-pattern-library.md#communication--mitigated-speech)                                                           | everyday-ai-user, software-engineer | planned |
+| [Candidate — exact phrasebook voice support](../product/05-pattern-library.md#candidate--exact-phrasebook-voice-support)                                       | everyday-ai-user, software-engineer | vision  |
+| [Decision policies — Algorithms to Live By](../product/05-pattern-library.md#decision-policies--algorithms-to-live-by)                                         | everyday-ai-user, software-engineer | planned |
+| [Candidate — success under growth](../product/05-pattern-library.md#candidate--success-under-growth)                                                           | everyday-ai-user, software-engineer | vision  |
+| [Candidate — influence response policies](../product/05-pattern-library.md#candidate--influence-response-policies)                                             | everyday-ai-user, software-engineer | vision  |
+| [Systems & quality](../product/05-pattern-library.md#systems--quality)                                                                                         | everyday-ai-user, software-engineer | planned |
+| [Party topology — commedia dell'arte (the masks)](../product/05-pattern-library.md#party-topology--commedia-dellarte-the-masks)                                | everyday-ai-user, software-engineer | planned |
+| [The Eye Dr Test — pairwise preference](../product/05-pattern-library.md#the-eye-dr-test--pairwise-preference)                                                 | everyday-ai-user, software-engineer | planned |
+| [Candidate — Additional Opinion](../product/05-pattern-library.md#candidate--additional-opinion)                                                               | everyday-ai-user, software-engineer | vision  |
+| [Rhythm patterns](../product/05-pattern-library.md#rhythm-patterns)                                                                                            | everyday-ai-user, software-engineer | planned |
+| [Candidate — temporal interaction interpretation](../product/05-pattern-library.md#candidate--temporal-interaction-interpretation)                             | everyday-ai-user, software-engineer | vision  |
+| [Candidate — continuity-critical flow and binary quench](../product/05-pattern-library.md#candidate--continuity-critical-flow-and-binary-quench)               | everyday-ai-user, software-engineer | vision  |
+| [Candidate role — Flow Steward](../product/05-pattern-library.md#candidate-role--flow-steward)                                                                 | everyday-ai-user, software-engineer | vision  |
+| [Candidate — oppositional support](../product/05-pattern-library.md#candidate--oppositional-support)                                                           | software-engineer                   | vision  |
+| [Candidate — The Malcolm Check](../product/05-pattern-library.md#candidate--the-malcolm-check)                                                                 | everyday-ai-user, software-engineer | vision  |
+| [Candidate — Beware of Naive Interventionism](../product/05-pattern-library.md#candidate--beware-of-naive-interventionism)                                     | software-engineer                   | vision  |
+| [Candidate extension — implementation and delayed consequences](../product/05-pattern-library.md#candidate-extension--implementation-and-delayed-consequences) | everyday-ai-user, software-engineer | vision  |
+| [Clean Room — active mechanic with contextual supports](../product/05-pattern-library.md#clean-room--active-mechanic-with-contextual-supports)                 | everyday-ai-user, software-engineer | vision  |
+| [Candidate — Snooping Footprint Reducer](../product/05-pattern-library.md#candidate--snooping-footprint-reducer)                                               | everyday-ai-user, software-engineer | vision  |
+| [Candidate — Do Nothing, active and support](../product/05-pattern-library.md#candidate--do-nothing-active-and-support)                                        | everyday-ai-user, software-engineer | vision  |
+| [Active: Do Nothing](../product/05-pattern-library.md#active-do-nothing)                                                                                       | software-engineer                   | vision  |
+| [Support: Do Nothing](../product/05-pattern-library.md#support-do-nothing)                                                                                     | software-engineer                   | vision  |
+| [Relationship to nearby mechanics](../product/05-pattern-library.md#relationship-to-nearby-mechanics)                                                          | software-engineer                   | vision  |
+| [Candidate — Default to True / Default to False](../product/05-pattern-library.md#candidate--default-to-true--default-to-false)                                | software-engineer                   | vision  |
+| [Fallback generalization — graded propositions](../product/05-pattern-library.md#fallback-generalization--graded-propositions)                                 | software-engineer                   | vision  |
+| [Candidate — Embodied Explorer](../product/05-pattern-library.md#candidate--embodied-explorer)                                                                 | everyday-ai-user, software-engineer | vision  |
 
 ## 06 — Roadmap
 

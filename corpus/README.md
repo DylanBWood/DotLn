@@ -9,6 +9,11 @@ uses:
 - `fixtures/`, `harness/`, and `manifests/` hold generated executable corpora.
   These inputs are original test data, contain no intake content, and regenerate
   byte-for-byte from recorded seeds.
+- `mutation/` holds the deterministic candidate census, selected campaign,
+  runner, append-only kill matrix, and derived survivor findings. Its
+  [runbook and outcome](mutation/README.md) distinguish measured suite detection
+  from compile noise and unmeasured candidates. Mutation happens only in owned
+  temporary fixtures; shipped source and tests are unchanged.
 
 WO-101 establishes the generated-corpus layout. Its ID fixtures commit the full
 hash and command-identity corpus and are an independent oracle; the exact ID
@@ -33,5 +38,6 @@ node --test corpus/harness/wo101-program-corpus.test.mjs
 ```
 
 The generated layout extends `docs/product/03-architecture.md` §Corpus policy.
-That document requires a later authorized documentation pass; WO-101 has no
-authority to edit it.
+WO-108's operator-authorized scope amendment synchronizes that policy with the
+existing generated corpora and the mutation lane; the historical WO-101 source
+and evidence remain unchanged.

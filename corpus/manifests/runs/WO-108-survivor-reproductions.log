@@ -1,0 +1,12 @@
+baseline {"verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":43638}
+{"id":"M00001","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":43475}
+{"id":"M00002","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":43496}
+{"id":"M00005","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":43956}
+{"id":"M00006","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":43722}
+{"id":"M00007","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":43856}
+{"id":"M00017","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":43859}
+{"id":"M00021","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":43939}
+{"id":"M00025","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":46815}
+{"id":"M00027","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":43861}
+{"id":"M00029","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":44090}
+{"id":"M00032","verdict":"survived","phase":"test","compiled":true,"tests":281,"passed":281,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":43712}

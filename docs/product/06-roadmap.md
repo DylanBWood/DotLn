@@ -109,6 +109,16 @@ schema remain unchanged. The deterministic mounted verifier demonstrates
 blinding; native model verification remains WO-010. Review and publication
 remain separate lifecycle evidence.
 
+**WO-108 activation completion (2026-09-06):** the omitted target is assigned
+`v0.13.1`, an internal tooling/evidence patch above published `v0.13.0`
+(`3dc19b7`), under the operator's dated scope amendment in the work order. It
+adds the offline mutation-evidence runner with its pinned census, selected
+campaign, append-only kill matrix, and survivor findings under
+`corpus/mutation/`, plus root test wiring for the runner's self-tests. Exported
+runtime capabilities, component versions, dependency declarations, and schemas
+remain unchanged. The source claim prepares this release; independent
+verification, final review, and publication remain separate lifecycle evidence.
+
 The manifest records the Git commit, application release, package/component
 versions, supported schema and artifact ranges, transformation-set version (or
 explicitly `none`), evidence commands/results, evaluable and deferred cadence

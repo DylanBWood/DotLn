@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:c56f65bba0057103c86a9ced9f71e9e087392d23073801b68937a75c137d8f26`
+`sha256:da2e61698825fa62fcf3347498ee84f2a578d1486b8218e955a34fe6d26490fe`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -81,7 +81,8 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
      [Persistence and recovery classes](../product/09-audit-resilience-privacy.md#persistence-and-recovery-classes),
      [Operator-presence policy](../product/03-architecture.md#operator-presence-policy)
 10. **Turn a correction into a reusable guard**
-    - preserved source, compiled feedback, and visible maturity
+    - preserved source, compiled feedback, visible maturity, and candidate
+      follow-up checks for useful changes with delayed side effects
     - sources: [Feedback](../product/02-domain-model.md#feedback),
       [Founding pattern library](../product/05-pattern-library.md#founding-pattern-library)
 

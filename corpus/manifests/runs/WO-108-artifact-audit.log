@@ -1,0 +1,4 @@
+PASS independent Python audit: 2901 candidates, 32 unique source patches, instrument/compiler/site/policy SHA-256 values, exact Git-base source ranges, strict verdict fields, 11 numbered findings, reproduction command coverage, both 281-test baselines, and compiled-only transcript totals.
+M00010 has 275 reported tests and 44 failures: a test kill can abort nested test registration. All 11 survivors have 281/281 passing tests.
+Matrix SHA-256: 741db01c0a1be0f22895b1c82c33e6365b6954d5221151a0120521650b915644
+PASS survivor reproduction audit: fresh green baseline plus exactly all 11 survivor ids, each 281/281 green; matrix hash unchanged from the independent audit.
