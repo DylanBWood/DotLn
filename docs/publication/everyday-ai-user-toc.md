@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:05d0e949185913c8d67e7ffc86468285777f33b4ab3949dfcbfd22ba13b143b2`
+`sha256:008cb7e7176f753c33b4d89fc36dcad0a99505df67875295b5ff401e8e1ea0be`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -61,7 +61,7 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
 ## Part IV — Know what “done” really means
 
 7. **Evidence before confidence**
-   - what a receipt proves, what it does not, and how to inspect mechanics
+   - what a receipt proves, a living criterion/evidence matrix, blinded checks and visible staleness after repair
    - sources:
      [Principles](../product/01-principles.md#principles-design-axioms),
      [Authority and honesty rules](../product/08-publication-compiler.md#authority-and-honesty-rules)
@@ -88,9 +88,7 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
 ## Part VI — Separate today from the destination
 
 11. **What the reference build actually supports**
-    - the implemented baseline, bounded real inspection workers with a
-      deterministic verifier and optional mounted Beacon perception, evidence
-      strength, known gaps, and a readable
+    - the implemented baseline, bounded inspection workers, the synthetic blinded verification/repair loop and optional mounted Beacon perception; live model verification remains unwitnessed; evidence strength, known gaps, and a readable
       proposed work sequence with progress derived from evidence; candidate
       concurrent workflows, early completion batches, and release traceability
     - sources:

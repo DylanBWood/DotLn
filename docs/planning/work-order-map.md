@@ -21,6 +21,8 @@ require mainline work to count upward to reach it.
 
 ## Recommendation and rationale
 
+**WO-010 source (2026-09-06):** this worktree prepares `v0.12.0` above published `v0.11.0`. WO-009's transports now accept blinded verification and focused repair capsules; the bounded synthetic fixture demonstrates findings, fresh repair/re-verification and a living evidence matrix. The [executor evidence](../evidence/WO-010/README.md) labels the deterministic transport witnesses explicitly. Live model verification and general source-writing workers remain unwitnessed. WO-011 remains the next recommended rung after WO-010's own independent verification, final review and integration; the generated index and control fold own those lifecycle facts. The marked sequence is unchanged.
+
 **WO-022 source (2026-09-06):** this worktree prepares `v0.11.0` above published
 `v0.10.1`. WO-021, WO-008 and WO-009 are present in the activation base; the
 fresh sparse probe emits the entire v3 maximum within eight allocated blocks.

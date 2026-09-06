@@ -111,10 +111,16 @@ test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async ()
       "./beacon-perception.js",
       "./execution-environment.js",
       "./control-beacon.js",
+      "./verification-protocol.js",
     ],
-    "the reactor imports only the kernel, pure compiler, identity checks and pure Beacon projections",
+    "the reactor imports only the kernel, pure compiler, identity checks, pure Beacon projections and pure verification contracts",
   );
-  for (const pure of ["beacon-perception.ts", "execution-environment.ts"])
+  for (const pure of [
+    "beacon-perception.ts",
+    "execution-environment.ts",
+    "verification-protocol.ts",
+    "verification.ts",
+  ])
     assert.doesNotMatch(
       sources.get(pure) ?? "",
       /from\s+"node:/u,

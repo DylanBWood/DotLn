@@ -43,6 +43,8 @@ import {
   runWorkerProcess,
   type ProcessRunner,
   type WorkerLaunch,
+  type WorkOrderTransport,
+  type TransportDispatch,
 } from "../src/worker-transport.js";
 import {
   WorkerFailure,
@@ -108,6 +110,14 @@ const stateRequest = (driver: LiveReactorDriver): WorkerRequest => ({
     mounts: [{ path: "/fixture", access: "read" }],
   },
 });
+
+// Compile-time compatibility: an existing inspection-only adapter is still a
+// WorkOrderTransport without implementing the new verification profile.
+const acceptsOriginalTransport = (adapter: {
+  readonly name: "claude-cli-print";
+  readonly harnessVersion: string;
+  dispatch(request: WorkerRequest, now: () => number): TransportDispatch;
+}): WorkOrderTransport => adapter;
 
 test("WO-009 AC6 canonical launch shapes pin model, settings, memory, persistence, mounts and honest effort", () => {
   const driver = new LiveReactorDriver();

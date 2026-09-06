@@ -486,3 +486,11 @@ CURRENT everyday-ai-user-toc.md: 27 linked source sections match
 CURRENT software-engineer-toc.md: 42 linked source sections match
 PASS publication bootstrap checks
 ```
+
+## 15. WO-010 independent-verification write-back recapture — 2026-09-06
+
+The domain model now pins the verification capsule, findings, evidence matrix and source-derived staleness. Architecture, roadmap and compatibility describe the bounded host and its synthetic evidence. Both audience routes were reviewed and updated to distinguish supported transport paths from unwitnessed live model verification. Heading coverage includes the new contract and the assigned roadmap anchor; the existing source-base revision remains unchanged.
+
+The read-only lock observation returned `d1e9fb11abd9106cd6d3a3ed01597ac814df6c59a793109a0f53583bbf9b2dd9` for the everyday edition and `892cfb72f1dbc6a3c072a52db5409d373ca517ecca50c38958ed44b663378ae7` for the engineering edition, with 230/230 product headings indexed. The current-byte locks were refreshed after the factual review; the ordinary publication gate is included in the work-order evidence run.
+
+The final shared-reactor correction clarified the same source claims. A second read-only observation returned `008cb7e7176f753c33b4d89fc36dcad0a99505df67875295b5ff401e8e1ea0be` for the everyday edition and `4ce95029f12c0bb20a16fe18903c352c65cf4b3f4a7072219a07230f328e8076` for engineering; the final locks were refreshed to those values after review.

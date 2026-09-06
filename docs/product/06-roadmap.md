@@ -1065,13 +1065,15 @@ worker profiles and real verifier episodes remain separate work; independent
 verification and publication have not been inferred from executor tests.
 
 <!-- prettier-ignore -->
-## Application version pending — Independent verification  → WO-010
+## v0.12.0 — Independent verification  → WO-010
 
 Blinded verifier episodes; claim-typed evidence mapping; typed
 VerificationFinding → focused repair continuation in a fresh episode;
 substantive repair marks affected evidence stale. Exit: a deliberately-planted
 defect is caught by the verifier, repaired via continuation, re-verified — and
 the implementer episode never certifies itself.
+
+**WO-010 activation completion and implementation receipt (2026-09-06):** the omitted target is assigned `v0.12.0`, a minor addition above published `v0.11.0`. Compiler `0.5.0` adds pure blinded verification and focused repair capsules; skeleton `0.11.0` adds the event-loop host, claim-typed evidence matrix, repair staleness and `dotln verify-demo`. Kernel `0.2.1`, the event envelope and compiled-loadout contract remain unchanged. The deterministic planted-defect loop runs through both WO-009 CLI wire protocols with local subprocess doubles; no live model invocation or live-integration proof is claimed. The bounded host mounts a synthetic repository snapshot and applies validated JSON policy repairs. General source-writing workers, independent code review and post-PR loops remain later work. See the [executor evidence](../evidence/WO-010/README.md) and [runbook](../../packages/skeleton/README.md#independent-verification). Independent verification of this implementation and publication remain separate lifecycle evidence.
 
 Follow-on work orders should project the proven resume protocol as native,
 on-demand agent skills rather than ambient role prose: (1) a shared typed

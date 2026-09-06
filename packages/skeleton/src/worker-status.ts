@@ -1,4 +1,8 @@
 import { pendingCommands, replayOutbox, type Event } from "@dotln/kernel";
+import {
+  projectAcceptanceEvidenceMatrices,
+  type AcceptanceEvidenceMatrix,
+} from "./verification.js";
 
 export interface WorkerEpisodeStatus {
   readonly episodeId: string;
@@ -19,6 +23,7 @@ export interface WorkerEpisodeStatus {
   readonly leaseExpiresAt: number;
 }
 export interface WorkerStatus {
+  readonly acceptanceEvidenceMatrices: readonly AcceptanceEvidenceMatrix[];
   readonly episodes: readonly WorkerEpisodeStatus[];
   readonly runningEpisodes: readonly string[];
   readonly pendingCommands: readonly string[];
@@ -89,6 +94,7 @@ export function projectWorkerStatus(events: readonly Event[]): WorkerStatus {
     }
   }
   return {
+    acceptanceEvidenceMatrices: projectAcceptanceEvidenceMatrices(events),
     episodes: [...episodes.values()],
     runningEpisodes: [...episodes.values()]
       .filter((episode) => ["starting", "running"].includes(episode.phase))
@@ -110,6 +116,13 @@ export function renderWorkerStatus(status: WorkerStatus): string {
         `${episode.episodeId} ${episode.phase} ${episode.transport} model=${episode.model} effort=${episode.effort} heartbeat=${episode.lastHeartbeatAt} lease=${episode.leaseExpiresAt} mode=${episode.mode}`,
     ),
     `pending commands: ${status.pendingCommands.join(", ") || "none"}`,
+    ...status.acceptanceEvidenceMatrices.flatMap((matrix) => [
+      `acceptance ${matrix.workstreamId} phase=${matrix.phase} revision=${matrix.subjectRevision ?? "unknown"}`,
+      ...matrix.rows.map(
+        (row) =>
+          `  ${row.criterion.criterionId} ${row.criterion.claimType} ${row.status} source=${row.criterion.evidenceSource} evidence=${row.evaluations.at(-1)?.evidenceRefs.join(",") || "none"}`,
+      ),
+    ]),
     "recent events:",
     ...status.recentEvents.map(
       (event) => `  ${event.eventId} ${event.type} ${event.occurredAt}`,

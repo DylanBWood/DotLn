@@ -20,6 +20,18 @@ import {
   type WorkOrder,
 } from "@dotln/kernel";
 import {
+  affectedVerificationCriteria,
+  assertVerificationTask,
+  changedVerificationSurfaces,
+  compileVerificationTask,
+  copyCriterion,
+  copySubject,
+  type AcceptanceCriterion,
+  type Evaluation,
+  type VerificationEvidence,
+  type VerificationFinding,
+  type VerificationSubject,
+  type VerificationTask,
   SEIRI_MINUTE,
   SEIRI_PULSE_SCHEDULE,
   SEIRI_QUEUED_PULSE,
@@ -60,6 +72,12 @@ import type {
   SignalObservation,
 } from "./control-beacon.js";
 
+import {
+  parseEvidenceResult,
+  type EvidenceWorkerResult,
+  type RepairWorkerResult,
+} from "./verification-protocol.js";
+
 export const MINUTE = SEIRI_MINUTE;
 export const WORKSTREAM = "ws_repo_garden";
 export const EPISODE = "ep_seiri_1";
@@ -78,6 +96,7 @@ export type Loadout = LoadoutGraph;
 type RuntimePolicy = Readonly<{ maintenance: string }>;
 
 export type RuntimeState = Readonly<{
+  verification?: JsonValue;
   presence: "away" | "returned";
   rngState: number;
   policy: RuntimePolicy;
@@ -1304,6 +1323,9 @@ const react = (
 };
 
 export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
+  if (state.verification !== undefined)
+    return verificationDecision(state, event);
+
   if (event.type === "ArtifactIdentityEnforcementStarted") {
     if (canonicalStringify(event.payload) !== '{"payloadVersion":1}')
       return artifactRefused(
@@ -1368,3 +1390,646 @@ export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
 };
 
 export const expectedInspectCommandId = commandId(WORKSTREAM, EPISODE, 1, 0);
+
+// Independent-verification workstreams use the same typed reactor boundary.
+export const VERIFICATION_HOST = "verification-host";
+export interface MatrixEvaluation extends Evaluation {
+  readonly provenance: {
+    readonly kind: "host-admitted-verifier";
+    readonly commandId: string;
+    readonly inputHash: string;
+  };
+  readonly eventId: string;
+  readonly episodeId: string;
+  readonly subjectRevision: string;
+  readonly stale: boolean;
+}
+export interface AcceptanceEvidenceRow {
+  readonly criterion: AcceptanceCriterion;
+  readonly status: "incomplete" | "verified" | "failed" | "stale";
+  readonly evaluations: readonly MatrixEvaluation[];
+}
+export interface FindingRecord {
+  readonly finding: VerificationFinding;
+  readonly eventId: string;
+  readonly episodeId: string;
+  readonly subjectRevision: string;
+  readonly status: "open" | "resolved" | "superseded";
+}
+export interface VerificationPending {
+  readonly capsule: VerificationTask;
+  readonly command: Command;
+  readonly ordinal: number;
+  readonly persisted: boolean;
+  readonly attempts: readonly string[];
+  readonly activeEpisode: string | null;
+  readonly leaseExpiresAt: number;
+  readonly leaseExpired: boolean;
+}
+export interface VerificationState {
+  readonly workstreamId: string;
+  readonly criteria: readonly AcceptanceCriterion[];
+  readonly baseline: VerificationSubject | null;
+  readonly subject: VerificationSubject | null;
+  readonly rows: readonly AcceptanceEvidenceRow[];
+  readonly evidence: readonly VerificationEvidence[];
+  readonly findings: readonly FindingRecord[];
+  readonly repairPlans: readonly {
+    readonly findingId: string;
+    readonly capsule: VerificationTask;
+  }[];
+  readonly implementerEpisodes: readonly string[];
+  readonly episodeIds: readonly string[];
+  readonly authority: AuthorityEnvelope | null;
+  readonly revocations: readonly Event[];
+  readonly pending: VerificationPending | null;
+  readonly continuation: Program.T;
+  readonly next:
+    | "unopened"
+    | "verify"
+    | "repair"
+    | "apply-repair"
+    | "complete"
+    | "attention";
+  readonly proposal: RepairWorkerResult | null;
+  readonly dispatchCount: number;
+  readonly repairCount: number;
+  readonly maxRepairs: number;
+  readonly lastResultEventId: string | null;
+  readonly refusedResults: readonly string[];
+  readonly staleness: readonly {
+    readonly eventId: string;
+    readonly changedSurfaces: readonly string[];
+    readonly criterionIds: readonly string[];
+  }[];
+}
+export const initialVerificationState = (
+  workstreamId: string,
+): VerificationState => ({
+  workstreamId,
+  criteria: [],
+  baseline: null,
+  subject: null,
+  rows: [],
+  evidence: [],
+  findings: [],
+  repairPlans: [],
+  implementerEpisodes: [],
+  episodeIds: [],
+  authority: null,
+  revocations: [],
+  pending: null,
+  continuation: Program.Done(),
+  next: "unopened",
+  proposal: null,
+  dispatchCount: 0,
+  repairCount: 0,
+  maxRepairs: 3,
+  lastResultEventId: null,
+  refusedResults: [],
+  staleness: [],
+});
+const json = (value: unknown): JsonValue => value as JsonValue;
+const env = (now: number) => ({ now, rngState: 17, predicates: {} });
+const same = (a: unknown, b: unknown): boolean =>
+  canonicalStringify(a) === canonicalStringify(b);
+const requireState = (value: unknown, detail: string): void => {
+  if (!value) throw new Error(`verification state: ${detail}`);
+};
+// EventEnvelope is deliberately open. Each branch checks the fields it consumes;
+// model results cross the stricter, closed schema in parseEvidenceResult.
+type VerificationPayload = {
+  criteria: readonly AcceptanceCriterion[];
+  baseline: VerificationSubject;
+  subject: VerificationSubject;
+  implementerEpisodeId: string;
+  maxRepairs: number;
+  authority: AuthorityEnvelope;
+  command: Command;
+  commandId: string;
+  workerEpisodeId: string;
+  role: VerificationTask["role"];
+  inputHash: string;
+  leaseExpiresAt: number;
+  mode: string;
+  verificationResultVersion: number;
+  result: string;
+  value: EvidenceWorkerResult;
+};
+
+export function verificationAuthorization(
+  state: VerificationState,
+  at: number,
+) {
+  const pending = state.pending;
+  if (!pending || !state.authority)
+    throw new Error("verification lacks a pending authorized command");
+  return authorize(pending.command.intent, state.authority, {
+    now: at,
+    actorId: VERIFICATION_HOST,
+    workstreamId: state.workstreamId,
+    episodeId: pending.command.episodeId!,
+    decisionIndex: pending.ordinal,
+    intentIndex: 0,
+    evidence: ["pinned-subject", "baseline-witness"],
+    revokedBy: state.revocations,
+  });
+}
+
+function dispatch(state: VerificationState): VerificationState {
+  requireState(
+    !state.pending &&
+      state.subject &&
+      state.continuation.kind === "Done" &&
+      ["verify", "repair"].includes(state.next),
+    "dispatch phase",
+  );
+  const ordinal = state.dispatchCount + 1;
+  const finding =
+    state.next === "repair"
+      ? (state.findings.find(
+          (record) =>
+            record.status === "open" && record.finding.severity === "blocking",
+        )?.finding ?? null)
+      : null;
+  requireState(state.next !== "repair" || finding, "repair finding");
+  const criteria = finding
+    ? state.criteria.filter(
+        (criterion) => criterion.criterionId === finding.criterionId,
+      )
+    : state.rows
+        .filter((row) => row.status !== "verified")
+        .map((row) => row.criterion);
+  const capsule = compileVerificationTask(
+    `verification_${ordinal}`,
+    criteria,
+    state.subject!,
+    finding,
+  );
+  const episodeId = `ep_${capsule.role}_${ordinal}`;
+  const command: Command = {
+    commandId: commandId(state.workstreamId, episodeId, ordinal, 0),
+    episodeId,
+    workstreamId: state.workstreamId,
+    intent: {
+      kind: "Act",
+      effect: capsule.workOrder.allowedOperations[0]!,
+      resource: "episodes",
+      payload: json({ capsule }),
+    },
+  };
+  const continuation = Program.Invoke(command.commandId, command.intent, {
+    completed: Program.Emit(
+      {
+        schemaVersion: 1,
+        type: "VerificationContinuation",
+        actorId: VERIFICATION_HOST,
+        workstreamId: state.workstreamId,
+        occurredAt: 0,
+        correlationId: command.commandId,
+        payload: { commandId: command.commandId },
+      },
+      Program.Done(),
+    ),
+  });
+  // The kernel emits the dispatch intent. The host persists it before invoking a transport.
+  const decision = decideProgram(continuation, json(state), env(0));
+  requireState(decision.intents.length === 1, "kernel dispatch intent");
+  return {
+    ...state,
+    dispatchCount: ordinal,
+    continuation,
+    pending: {
+      capsule,
+      command,
+      ordinal,
+      persisted: false,
+      attempts: [],
+      activeEpisode: null,
+      leaseExpiresAt: 0,
+      leaseExpired: false,
+    },
+  };
+}
+
+/** Pure event-loop fold. Worker prose and implementer events have no acceptance path. */
+function foldVerificationEvent(
+  state: VerificationState,
+  event: Event,
+): VerificationState {
+  if (event.workstreamId !== state.workstreamId) return state;
+  if (state.authority?.revocationEventTypes.includes(event.type))
+    return { ...state, revocations: [...state.revocations, event] };
+  if (event.actorId !== VERIFICATION_HOST) return state;
+  const value = event.payload as unknown as VerificationPayload;
+  switch (event.type) {
+    case "VerificationOpened": {
+      requireState(state.next === "unopened", "workstream already opened");
+      const criteria = (value.criteria as AcceptanceCriterion[]).map(
+        copyCriterion,
+      );
+      const baseline = copySubject(value.baseline as VerificationSubject);
+      const subject = copySubject(value.subject as VerificationSubject);
+      compileVerificationTask("opening", criteria, subject);
+      requireState(
+        baseline.repo === subject.repo &&
+          baseline.baseCommit === subject.baseCommit &&
+          baseline.revision === subject.baseCommit,
+        "baseline identity",
+      );
+      requireState(
+        typeof value.implementerEpisodeId === "string" &&
+          value.implementerEpisodeId.length > 0 &&
+          Number.isSafeInteger(value.maxRepairs) &&
+          value.maxRepairs >= 0 &&
+          value.maxRepairs <= 10,
+        "opening policy",
+      );
+      requireState(
+        baseline.evidence.length > 0 &&
+          criteria.every((criterion) =>
+            baseline.evidence.some(
+              (item) => item.criterionId === criterion.criterionId,
+            ),
+          ),
+        "baseline witness coverage",
+      );
+      return {
+        ...state,
+        criteria,
+        baseline,
+        subject,
+        authority: value.authority as AuthorityEnvelope,
+        maxRepairs: value.maxRepairs,
+        implementerEpisodes: [value.implementerEpisodeId],
+        episodeIds: [value.implementerEpisodeId],
+        rows: criteria.map((criterion) => ({
+          criterion,
+          status: "incomplete",
+          evaluations: [],
+        })),
+        evidence: subject.evidence,
+        next: "verify",
+      };
+    }
+    case "VerificationDispatchRequested":
+      return dispatch(state);
+    case "CommandPersisted": {
+      const pending = state.pending;
+      if (!pending || value.command?.commandId !== pending.command.commandId)
+        return state;
+      requireState(
+        same(value.command, pending.command),
+        "persisted compilation drift",
+      );
+      requireState(
+        verificationAuthorization(state, event.occurredAt).authorized,
+        "persist without authority",
+      );
+      return { ...state, pending: { ...pending, persisted: true } };
+    }
+    case "WorkerAttemptStarted": {
+      const pending = state.pending;
+      if (
+        !pending ||
+        !pending.persisted ||
+        value.commandId !== pending.command.commandId
+      )
+        return state;
+      requireState(
+        !state.episodeIds.includes(value.workerEpisodeId) &&
+          typeof value.workerEpisodeId === "string" &&
+          value.role === pending.capsule.role &&
+          value.inputHash === pending.capsule.inputHash &&
+          typeof value.leaseExpiresAt === "number" &&
+          value.leaseExpiresAt > event.occurredAt,
+        "fresh physical episode",
+      );
+      requireState(
+        pending.activeEpisode === null ||
+          pending.leaseExpired ||
+          event.occurredAt >= pending.leaseExpiresAt ||
+          value.mode === "cached-result-query",
+        "prior episode still leased",
+      );
+      return {
+        ...state,
+        episodeIds: [...state.episodeIds, value.workerEpisodeId],
+        pending: {
+          ...pending,
+          attempts: [...pending.attempts, value.workerEpisodeId],
+          activeEpisode: value.workerEpisodeId,
+          leaseExpiresAt: value.leaseExpiresAt,
+          leaseExpired: false,
+        },
+      };
+    }
+    case "WorkerHeartbeat": {
+      const pending = state.pending;
+      if (
+        !pending ||
+        value.workerEpisodeId !== pending.activeEpisode ||
+        pending.leaseExpired ||
+        event.occurredAt >= pending.leaseExpiresAt
+      )
+        return state;
+      return {
+        ...state,
+        pending: { ...pending, leaseExpiresAt: value.leaseExpiresAt },
+      };
+    }
+    case "WorkerLeaseExpired": {
+      const pending = state.pending;
+      if (
+        !pending ||
+        value.workerEpisodeId !== pending.activeEpisode ||
+        event.occurredAt < pending.leaseExpiresAt
+      )
+        return state;
+      return { ...state, pending: { ...pending, leaseExpired: true } };
+    }
+    case "CommandResult": {
+      const pending = state.pending;
+      if (
+        !pending ||
+        !pending.persisted ||
+        value.commandId !== pending.command.commandId ||
+        value.verificationResultVersion !== 1
+      )
+        return state;
+      let result: EvidenceWorkerResult;
+      try {
+        requireState(
+          value.workerEpisodeId === pending.activeEpisode &&
+            !pending.leaseExpired &&
+            event.occurredAt < pending.leaseExpiresAt &&
+            pending.attempts.includes(value.value?.envelope?.episodeId) &&
+            !state.implementerEpisodes.includes(
+              value.value?.envelope?.episodeId,
+            ),
+          "result episode or lease",
+        );
+        requireState(
+          verificationAuthorization(state, event.occurredAt).authorized,
+          "result authority",
+        );
+        assertVerificationTask(pending.capsule);
+        requireState(
+          pending.capsule.subject.revision === state.subject?.revision,
+          "result subject drift",
+        );
+        result = parseEvidenceResult(value.value, {
+          command: pending.command,
+          workOrder: pending.capsule.workOrder,
+          capsule: pending.capsule,
+          episodeId: value.value.envelope.episodeId,
+        });
+        requireState(
+          result.envelope.status === "completed" &&
+            value.result === "completed",
+          "incomplete result",
+        );
+      } catch {
+        return {
+          ...state,
+          refusedResults: [...state.refusedResults, event.eventId],
+        };
+      }
+      const step = decideProgram(
+        state.continuation,
+        json(state),
+        env(event.occurredAt),
+        event,
+      );
+      requireState(step.continuation?.kind === "Emit", "result continuation");
+      const common = {
+        ...state,
+        pending: null,
+        lastResultEventId: event.eventId,
+        continuation: step.continuation!,
+      };
+      if (result.kind === "repair")
+        return {
+          ...common,
+          next: result.envelope.requiresHuman ? "attention" : "apply-repair",
+          proposal: result,
+        };
+      const rows = state.rows.map((row): AcceptanceEvidenceRow => {
+        const evaluation = result.evaluations.find(
+          (item) => item.criterionId === row.criterion.criterionId,
+        );
+        return evaluation
+          ? {
+              criterion: row.criterion,
+              status:
+                evaluation.verdict === "pass"
+                  ? "verified"
+                  : evaluation.verdict === "fail"
+                    ? "failed"
+                    : "incomplete",
+              evaluations: [
+                ...row.evaluations,
+                {
+                  ...evaluation,
+                  provenance: {
+                    kind: "host-admitted-verifier",
+                    commandId: pending.command.commandId,
+                    inputHash: pending.capsule.inputHash,
+                  },
+                  eventId: event.eventId,
+                  episodeId: result.envelope.episodeId,
+                  subjectRevision: result.subjectRevision,
+                  stale: false,
+                },
+              ],
+            }
+          : row;
+      });
+      const findingRecords: FindingRecord[] = result.findings.map(
+        (finding) => ({
+          finding,
+          eventId: event.eventId,
+          episodeId: result.envelope.episodeId,
+          subjectRevision: result.subjectRevision,
+          status: "open",
+        }),
+      );
+      // A subsequent conclusive verifier assessment supersedes findings for its criteria.
+      const assessed = result.evaluations
+        .filter((item) => item.verdict !== "unverified")
+        .map((item) => item.criterionId);
+      const findings = [
+        ...state.findings.map((record): FindingRecord =>
+          assessed.includes(record.finding.criterionId)
+            ? {
+                ...record,
+                status:
+                  result.evaluations.find(
+                    (item) => item.criterionId === record.finding.criterionId,
+                  )?.verdict === "pass"
+                    ? "resolved"
+                    : "superseded",
+              }
+            : record,
+        ),
+        ...findingRecords,
+      ];
+      const repairPlans = result.findings
+        .filter((finding) => finding.severity === "blocking")
+        .map((finding) => ({
+          findingId: finding.findingId,
+          capsule: compileVerificationTask(
+            `repair_${state.dispatchCount}_${finding.findingId}`,
+            state.criteria.filter(
+              (criterion) => criterion.criterionId === finding.criterionId,
+            ),
+            state.subject!,
+            finding,
+          ),
+        }));
+      return {
+        ...common,
+        rows,
+        findings,
+        repairPlans: [...state.repairPlans, ...repairPlans],
+        next: result.envelope.requiresHuman
+          ? "attention"
+          : rows.every((row) => row.status === "verified")
+            ? "complete"
+            : repairPlans.length > 0 && state.repairCount < state.maxRepairs
+              ? "repair"
+              : "attention",
+      };
+    }
+    case "VerificationContinuation": {
+      requireState(
+        state.continuation.kind === "Emit" &&
+          event.correlationId === state.continuation.event.correlationId &&
+          same(event.payload, state.continuation.event.payload),
+        "continuation identity",
+      );
+      const step = decideProgram(
+        state.continuation,
+        json(state),
+        env(event.occurredAt),
+      );
+      requireState(step.emitted.length === 1, "kernel continuation emission");
+      return { ...state, continuation: step.continuation! };
+    }
+    case "VerificationSubjectSubmitted": {
+      requireState(
+        state.next === "apply-repair" &&
+          state.proposal &&
+          state.subject &&
+          state.continuation.kind === "Done",
+        "repair application phase",
+      );
+      const subject = copySubject(value.subject as VerificationSubject);
+      requireState(
+        subject.repo === state.subject!.repo &&
+          subject.baseCommit === state.subject!.baseCommit &&
+          subject.revision !== state.subject!.revision,
+        "repair revision identity",
+      );
+      const expected = state.subject!.files.map(
+        (file) =>
+          state.proposal!.replacements.find(
+            (replacement) => replacement.path === file.path,
+          ) ?? file,
+      );
+      requireState(
+        same(subject.files, expected),
+        "applied repair differs from proposal",
+      );
+      compileVerificationTask("repaired", state.criteria, subject);
+      const changedSurfaces = changedVerificationSurfaces(
+        state.subject!,
+        subject,
+      );
+      requireState(changedSurfaces.length > 0, "repair must change source");
+      const affected = affectedVerificationCriteria(
+        state.criteria,
+        changedSurfaces,
+      );
+      const rows = state.rows.map((row): AcceptanceEvidenceRow =>
+        affected.includes(row.criterion.criterionId)
+          ? {
+              ...row,
+              status: row.evaluations.length > 0 ? "stale" : "incomplete",
+              evaluations: row.evaluations.map((evaluation) => ({
+                ...evaluation,
+                stale: true,
+              })),
+            }
+          : row,
+      );
+      return {
+        ...state,
+        subject,
+        rows,
+        next: "verify",
+        proposal: null,
+        repairCount: state.repairCount + 1,
+        implementerEpisodes: [
+          ...state.implementerEpisodes,
+          state.proposal!.envelope.episodeId,
+        ],
+        evidence: [...state.evidence, ...subject.evidence],
+        staleness: [
+          ...state.staleness,
+          { eventId: event.eventId, changedSurfaces, criterionIds: affected },
+        ],
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+export const initialVerificationRuntime = (
+  workstreamId: string,
+): RuntimeState => ({
+  ...initialState(),
+  verification: json(initialVerificationState(workstreamId)),
+});
+export const verificationStateFromRuntime = (
+  state: RuntimeState,
+): VerificationState => {
+  if (state.verification === undefined)
+    throw new Error("runtime lacks a verification workstream");
+  return state.verification as unknown as VerificationState;
+};
+function verificationDecision(
+  state: RuntimeState,
+  event: Event,
+): Decision<RuntimeState> {
+  const before = verificationStateFromRuntime(state);
+  const next = foldVerificationEvent(before, event);
+  return {
+    state: { ...state, verification: json(next) },
+    intents:
+      before.pending === null && next.pending !== null
+        ? [next.pending.command.intent]
+        : [],
+    continuation: next.continuation,
+    schedules: [],
+    trace: {
+      reactorId: "independent-verification",
+      reactorVersion: "1",
+      branchPath: [
+        event.type,
+        next.next,
+        next.refusedResults.length > before.refusedResults.length
+          ? "refused-result"
+          : "folded",
+      ],
+      envInputs: [
+        "event.actorId",
+        "event.workstreamId",
+        "event.payload",
+        "event.occurredAt",
+      ],
+      cadenceEvaluations: [],
+    },
+  };
+}

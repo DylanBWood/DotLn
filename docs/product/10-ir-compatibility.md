@@ -110,6 +110,8 @@ WO-029's recorded evidence and frozen baseline are retained. Extending fields or
 requires a new codebook, not an application/package bump alone. The bounded
 v2 and group constants in 02 are activation inputs for later extensions.
 
+WO-010 adds the separate `verification-v1` capsule contract and `verificationResultVersion: 1` accepted-result payload, with compiler `0.5.0`, skeleton `0.11.0` and application target `v0.12.0`. Kernel `0.2.1`, existing inspection results, event-envelope schema 1 and compiled-loadout contract 1 are unchanged. The capsule's input key includes its compiler package version, criteria, subject bytes and witnesses; it is not a `CompiledProgram` semantic hash. Dispatch/admission recompute the capsule and refuse drift. Current loadout artifact evidence is now recorded under WO-010; WO-029 and WO-022 evidence remains historical. `dotln status` adds `acceptanceEvidenceMatrices`, an empty array for stores without verification streams. Matrix status comes from accepted evidence events and source-derived staleness, never a new mutable source file.
+
 ## Transformation graph
 
 Schema and component changes form a directed graph of named, versioned
