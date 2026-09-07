@@ -1,0 +1,63 @@
+TAP version 13
+# PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+# PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+# PASS contribution-signoff a9d5c190ec83: observed operator author; expected operator exemption (no sign-off required)
+# PASS contribution-signoff 424b7d91d172: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff eab6f55fe4f8: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff 98a81e507726: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff 957e21ef3559: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff 5b86dc2116b6: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# Subtest: real npm refuses every validated manifest before packing, despite ambient script suppression
+ok 1 - real npm refuses every validated manifest before packing, despite ambient script suppression
+  ---
+  duration_ms: 663.907584
+  ...
+# Subtest: root and workspace metadata refuse missing license, false/string private, and absent or substituted lifecycle guards
+ok 2 - root and workspace metadata refuse missing license, false/string private, and absent or substituted lifecycle guards
+  ---
+  duration_ms: 13.338333
+  ...
+# Subtest: every license file is byte-pinned; missing files, symlinks, and legal-record drift refuse
+ok 3 - every license file is byte-pinned; missing files, symlinks, and legal-record drift refuse
+  ---
+  duration_ms: 7758.304959
+  ...
+# Subtest: new workspaces are checked and unsupported workspace layouts fail closed
+ok 4 - new workspaces are checked and unsupported workspace layouts fail closed
+  ---
+  duration_ms: 3.62
+  ...
+# Subtest: symlinked workspace directories refuse in both working and committed snapshots
+ok 5 - symlinked workspace directories refuse in both working and committed snapshots
+  ---
+  duration_ms: 476.85475
+  ...
+# Subtest: missing npm, unrelated failures, and success with a marker cannot masquerade as publication refusal
+ok 6 - missing npm, unrelated failures, and success with a marker cannot masquerade as publication refusal
+  ---
+  duration_ms: 195.866583
+  ...
+# Subtest: committed checks read Git blobs for metadata, hashes, and npm snapshots
+ok 7 - committed checks read Git blobs for metadata, hashes, and npm snapshots
+  ---
+  duration_ms: 2786.60875
+  ...
+# Subtest: DCO checks every new commit's author and trailer, exempts only the operator, and leaves old history alone
+ok 8 - DCO checks every new commit's author and trailer, exempts only the operator, and leaves old history alone
+  ---
+  duration_ms: 1648.146333
+  ...
+# Subtest: operator merge commits do not hide unsigned outside commits on a merged branch
+ok 9 - operator merge commits do not hide unsigned outside commits on a merged branch
+  ---
+  duration_ms: 552.825375
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14163.496542

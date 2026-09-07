@@ -1,4 +1,4 @@
-# WO-038 — License posture lands in package metadata, publication guards, and the contribution rule (version assigned at activation)
+# WO-038 — License posture lands in package metadata, publication guards, and the contribution rule, v0.13.2
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
@@ -6,6 +6,10 @@ result (07-execution-guide.md §Model-specific notes).
 **Release classification:** patch. Metadata, one guard, one contribution
 document, and the export default; no runtime capability. Assigned at
 activation under the standing opt-out default.
+**Activation completion (2026-09-06):** the activation omitted its version;
+the executor assigns `v0.13.2`, the next patch above origin's published
+`v0.13.1` (`ed2070a`), under 06-roadmap.md §Release boundary. Component
+source and versions remain unchanged.
 **Nomination provenance:** the 2026-09-06 planning pass, in which the
 operator decided the license posture recorded in `docs/LEGAL.md`
 §Decision — 2026-09-06 (Apache License 2.0 for code, Creative Commons

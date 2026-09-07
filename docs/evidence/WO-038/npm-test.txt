@@ -1,0 +1,36 @@
+WO-038 full repository gate — 2026-09-07
+Command: npm test
+Observed process exit code: 0
+Selected terminal lines from the captured full run, in original order.
+The TAP blocks are license/DCO fixtures, runtime suites, identity corpus, and mutation self-tests.
+
+All matched files use Prettier code style!
+GitHub body profile tests passed
+# tests 9
+# pass 9
+# fail 0
+fixture temp-root tests passed
+publication checker tests passed
+backup-intake tests passed
+resume tests passed
+checkpoint tests passed
+worktree tests passed
+release tests passed
+CURRENT everyday-ai-user-toc.md: 30 linked source sections match
+CURRENT software-engineer-toc.md: 45 linked source sections match
+PASS publication bootstrap checks
+# tests 281
+# pass 281
+# fail 0
+# tests 8
+# pass 8
+# fail 0
+Verified 4 current artifact evidence files in docs/evidence/WO-011/artifact-identity; original semantic hashes and frozen oracle unchanged.
+Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.
+Verified ten passing regressions, ten removal failures, and 2393 fewer instruction bytes in the matched projection.
+# tests 21
+# pass 21
+# fail 0
+
+The earlier full run exited 1 because the package metadata changes made the feedback source pin stale.
+The existing recording/check commands validated a fresh live audit before this successful full run.

@@ -119,6 +119,8 @@ runtime capabilities, component versions, dependency declarations, and schemas
 remain unchanged. The source claim prepares this release; independent
 verification, final review, and publication remain separate lifecycle evidence.
 
+**WO-038 activation completion (2026-09-06):** its omitted target is assigned `v0.13.2`, a metadata and publication-guard patch above origin's published `v0.13.1` (`ed2070a`). The source implements the decided licenses in root/workspace metadata, pinned license-surface checks with npm refusal probes, and DCO contribution checks at branch publication. The [executor receipt](../evidence/WO-038/README.md) records the evidence and the WO-033 export-default handoff. The existing gate also requires refreshing the source-pinned feedback edition after these package metadata changes; the receipt records that refresh and a bounded automation nomination. No runtime source, component version, dependency, or schema changes; verification and publication remain separate lifecycle evidence.
+
 The manifest records the Git commit, application release, package/component
 versions, supported schema and artifact ranges, transformation-set version (or
 explicitly `none`), evidence commands/results, evaluable and deferred cadence
@@ -139,7 +141,7 @@ review commercial and brand posture before sale, licensing, fundraising,
 material marketing, or substantial investment in a DotLn or feature-brand
 name. The list in `docs/LEGAL.md` is controlling; sale is not the first trigger.
 The license posture was decided on 2026-09-06 (Apache-2.0 code, CC BY 4.0
-documentation; `docs/LEGAL.md` §Decision), and WO-038 lands the package
+documentation; `docs/LEGAL.md` §Decision), and WO-038 implements the package
 metadata and publication guard; the remaining gates stay open.
 
 The hand-closed `v0.2.0` manifest and notes under `docs/releases/` remain their

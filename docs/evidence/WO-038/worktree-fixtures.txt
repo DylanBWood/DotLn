@@ -1,0 +1,11 @@
+Command: bash scripts/test-worktree.sh
+Exit: 0
+Selected emitted assertion lines (the complete suite ran):
+
+FAIL contribution-signoff e960dec8e035: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+PASS contribution-signoff f75c85a06b26: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 096d278dfa3e: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 1e339d81607b: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+PASS contribution-signoff 2fe9da602eb1: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
+worktree tests passed

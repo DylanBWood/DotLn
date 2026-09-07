@@ -21,8 +21,8 @@ test "$("$node_bin" -e 'process.stdout.write(Buffer.from(process.argv[1], "utf8"
 git init --bare "$test_root/origin.git" >/dev/null
 git clone "$test_root/origin.git" "$test_root/project" >/dev/null 2>&1
 main="$test_root/project"
-git -C "$main" config user.email test@example.invalid
-git -C "$main" config user.name "DotLn Test"
+git -C "$main" config user.email dylanwoodconsulting@gmail.com
+git -C "$main" config user.name "Dylan Wood"
 git -C "$main" config core.quotePath true
 github_repo="dotln-fixture/worktree"
 github_origin="https://github.com/$github_repo.git"
@@ -30,7 +30,7 @@ git -C "$main" config "url.$test_root/origin.git.insteadOf" "$github_origin"
 git -C "$main" remote set-url origin "$github_origin"
 git -C "$main" switch -c main >/dev/null 2>&1
 mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/discovery" "$main/packages/kernel"
-cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$main/scripts/"
+cp "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$script_dir/license-surfaces.mjs" "$main/scripts/"
 cp -R "$script_dir/lib" "$main/scripts/lib"
 node "$script_dir/test-beacon-fixture.mjs" "$main"
 if grep -Fq 'current.md' "$main/scripts/worktree.mjs"; then
@@ -49,6 +49,7 @@ printf '%s\n' \
   '<!-- DOTLN-RELEASE-END -->' >"$main/README.md"
 printf '{"private":true,"scripts":{"release":"node scripts/release.mjs"}}\n' >"$main/package.json"
 printf '{"name":"@dotln/kernel","version":"0.1.0"}\n' >"$main/packages/kernel/package.json"
+node "$script_dir/test-license-fixture.mjs" "$main"
 cp "$script_dir/../.gitignore" "$main/.gitignore"
 printf 'EXAMPLE=tracked\n' >"$main/.env.example"
 git -C "$main" add .
@@ -153,6 +154,8 @@ git -C "$subject" commit -m complete >/dev/null
 mkdir -p "$test_root/no-gh-bin"
 ln -s "$test_root/bin/git" "$test_root/no-gh-bin/git"
 ln -s "$node_bin" "$test_root/no-gh-bin/node"
+ln -s "$(command -v npm)" "$test_root/no-gh-bin/npm"
+ln -s /bin/sh "$test_root/no-gh-bin/sh"
 notes_path="docs/final-reviews/WO-099/RELEASE-NOTES.md"
 assert_notes_refusal() {
   local expected="$1"
@@ -276,7 +279,20 @@ grep -Fq '.env.*: file is not tracked' <<<"$pathspec_body_output"
 test -f "$subject/.env.*"
 rm -- "$subject/.env.*"
 
+git -C "$subject" commit --allow-empty --author='Outside Contributor <outside@example.invalid>' -m 'unsigned outside fixture' >/dev/null
+if unsigned_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted an unsigned outside commit\n' >&2; exit 1; fi
+grep -Fq 'outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)' <<<"$unsigned_output"
+if grep -Fq 'gh is required' <<<"$unsigned_output"; then printf 'error: unsigned outside commit reached gh preflight\n' >&2; exit 1; fi
+if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: unsigned outside commit reached origin\n' >&2; exit 1; fi
+printf '%s\n' "$unsigned_output" | sed -n '/FAIL contribution-signoff/p'
+git -C "$subject" commit --amend --allow-empty -m 'signed outside fixture' -m 'Signed-off-by: Outside Contributor <outside@example.invalid>' >/dev/null
+git -C "$subject" commit --allow-empty -m 'operator fixture without sign-off' >/dev/null
+
 if missing_gh_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: publish accepted a missing gh executable\n' >&2; exit 1; fi
+grep -Fq 'observed matching author sign-off' <<<"$missing_gh_output"
+grep -Fq 'observed operator author; expected operator exemption (no sign-off required)' <<<"$missing_gh_output"
+printf '%s\n' "$missing_gh_output" | sed -n '/PASS contribution-signoff/p'
+printf 'contribution sign-off publication fixtures passed before any remote mutation\n'
 grep -Fq 'gh is required before any remote mutation' <<<"$missing_gh_output"
 if grep -Fq 'at file://' <<<"$missing_gh_output"; then printf 'error: missing-gh refusal leaked a JavaScript stack trace\n' >&2; exit 1; fi
 if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: branch pushed before gh preflight\n' >&2; exit 1; fi

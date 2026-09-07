@@ -84,7 +84,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.13.1`, an internal tooling/evidence patch above the published feedback-compiler release. The [mutation corpus](corpus/mutation/README.md) measures a bounded selection of kernel, compiler, and skeleton changes against the shipped suites and records surviving candidates for future evidence work. The [feedback runbook](packages/skeleton/README.md#feedback-compiler-and-bounded-self-hosting) and [WO-011 evidence](docs/evidence/WO-011/README.md) describe the existing ten-unit feedback compiler and bounded self-hosted audit. General source-writing workers and a self-hosting switchover remain later work. Existing inspection workers, verification matrices, Beacon senses, and actor-usage reports remain available. Published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or available locally through `npm run release -- notes <tag>`.
+This source prepares DotLn `v0.13.2`, a license-metadata and publication-guard patch. The root and workspace manifests declare Apache-2.0 and remain private, with tested npm publication refusals. [CONTRIBUTING.md](CONTRIBUTING.md) states the outside-contributor sign-off rule enforced before work-order branches are pushed. The [mutation corpus](corpus/mutation/README.md) measures a bounded selection of kernel, compiler, and skeleton changes against the shipped suites and records surviving candidates for future evidence work. The [feedback runbook](packages/skeleton/README.md#feedback-compiler-and-bounded-self-hosting) and [WO-011 evidence](docs/evidence/WO-011/README.md) describe the existing ten-unit feedback compiler and bounded self-hosted audit. General source-writing workers and a self-hosting switchover remain later work. Existing inspection workers, verification matrices, Beacon senses, and actor-usage reports remain available. Published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or available locally through `npm run release -- notes <tag>`.
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
@@ -368,8 +368,12 @@ under [Creative Commons Attribution 4.0](LICENSE-docs); see [`NOTICE`](NOTICE)
 for the copyright notice. The names DotLn, προτείνω, and UIFA are not
 licensed as source identifiers; a fork may say it is based on DotLn without
 implying affiliation or endorsement. Outside contributions are accepted under
-the same licenses with a Developer Certificate of Origin sign-off. Workspaces
-stay private until a separate package-publication decision. The decision
+the same licenses with a Developer Certificate of Origin 1.1 sign-off; see
+[CONTRIBUTING.md](CONTRIBUTING.md) for the rule and operator exemption. The
+root and all workspaces declare `license: Apache-2.0` and `private: true`.
+Publication checks verify these fields and the pinned license files, exercise
+the npm refusal, and require outside authors' sign-offs before a branch push.
+Packages stay private until a separate publication decision. The decision
 record, its scope for code, documentation, names, contributions, and
 distribution, and the gates that remain open are in
 [Legal and licensing posture](docs/LEGAL.md).

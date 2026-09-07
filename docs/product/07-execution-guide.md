@@ -473,8 +473,23 @@ post-tag repair. After synchronization and before dependency installation,
 the README block must match release truth, every component whose `src/` changed
 since the preceding tag must have a different component version, and the
 current committed PR/release-note bodies must satisfy the renderer-wrapped
-profile. Failure reports observed and expected values and stops before `npm ci`,
-tag creation, or GitHub mutation.
+profile. The `license-surfaces` rules require Apache-2.0 and `private: true`
+in the root and every workspace, the exact publication-refusal lifecycle
+command, and the three license-file SHA-256 values pinned in `docs/LEGAL.md`.
+The checker runs offline npm dry runs against isolated copies of the selected
+manifests and requires the specific refusal exit and marker; unrelated npm
+failures do not satisfy the rule. `--committed` reads Git blobs for the pins,
+metadata, and probe inputs. `npm run license-surfaces` also runs this bounded
+check on its own, and `npm test` includes it. Failure reports observed and
+expected values and stops before `npm ci`, tag creation, or GitHub mutation.
+
+Before pushing, `worktree publish` also checks every commit in the local
+`origin/main..HEAD` range, including merged side branches, against
+[CONTRIBUTING.md](../../CONTRIBUTING.md). An outside author's commit requires
+a parsed DCO 1.1 `Signed-off-by` trailer matching its raw author name and email.
+The operator's exact public author identity is exempt; the committer and local
+Git settings cannot supply that exemption. This is forward-only from the base
+and verifies an attestation, not personal identity. It installs no Git hook.
 
 For a release boundary, the command works from the fetched `origin/main` HEAD to
 which local `main` was fast-forwarded, not a separately resolved work-order

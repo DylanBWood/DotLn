@@ -8,7 +8,8 @@ docs/intake/       raw, local-only (gitignored) — the founding dump lives here
 docs/PLAYBOOK.md   the operator's canonical loop (models, worktrees, verify)
 docs/AI-HARNESS-SECURITY.md
                    dated personal Claude/Codex sandbox setup and rollback guide
-docs/LEGAL.md      interim license/legal posture and explicit future decision gates
+docs/LEGAL.md      decided licenses, contribution rule, and remaining distribution gates
+CONTRIBUTING.md    outbound licenses, DCO sign-offs, clean-room boundary, and review route
 docs/product/      the blueprint: vision, principles, domain model,
                    architecture, interfaces, patterns, roadmap, execution guide,
                    publication compiler, audit/resilience map, IR compatibility,

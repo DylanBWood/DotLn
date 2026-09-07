@@ -1,0 +1,10 @@
+Command: bash scripts/test-release.sh
+Exit: 0
+Selected emitted assertion lines (the complete suite ran):
+
+FAIL license-surfaces packages/kernel/package.json license: observed missing; expected "Apache-2.0"
+FAIL license-surfaces packages/kernel/package.json private: observed missing; expected true
+FAIL license-surfaces LICENSE: observed sha256:69f8372925094c8510b4924c771da1667d4b82ccf28a96713e687ca04ea70966; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+license-surfaces release preflight fixtures passed (real npm dry runs)
+release close surface gates ran after sync and before npm, tag, or GitHub mutation
+release tests passed
