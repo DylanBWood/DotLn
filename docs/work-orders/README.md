@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-038] — License posture lands · **queued**
+- [x] [WO-038] — License posture lands · **final-reviewed**
 - [ ] [WO-039] — Harness lowering · **queued**
 - [ ] [WO-033] — Compiled starter export · **queued**
 - [ ] [WO-041] — Plan refutation mechanism · **queued**
@@ -76,8 +76,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-038, WO-039.
-- References: WO-018: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-030: satisfied (closed); WO-038: not control-closed; WO-039: not control-closed.
+- Dependency reference check (conservative): blocked on WO-039.
+- References: WO-018: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-030: satisfied (closed); WO-038: satisfied (closed); WO-039: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -144,21 +144,6 @@ None.
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-037-five-s-equipment-set.md](WO-037-five-s-equipment-set.md)
-
-### WO-038
-
-[WO-038 — License posture lands in package metadata, publication guards, and the contribution rule (version assigned at activation)](WO-038-license-posture-lands.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-018: satisfied (closed).
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Authority: [docs/work-orders/WO-038-license-posture-lands.md](WO-038-license-posture-lands.md)
 
 ### WO-039
 
@@ -719,6 +704,22 @@ None.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Latest attestation: harness claude-code; version 2.1.261; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-031-actor-usage-projection.md](WO-031-actor-usage-projection.md)
+
+### WO-038
+
+[WO-038 — License posture lands in package metadata, publication guards, and the contribution rule, v0.13.2](WO-038-license-posture-lands.md)
+
+- State: closed.
+- Application target: v0.13.2.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-018: satisfied (closed).
+- Verification: [VER-001](../../docs/verifications/WO-038/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-038/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-038-license-posture-lands.md](WO-038-license-posture-lands.md)
 
 ### WO-101
 
