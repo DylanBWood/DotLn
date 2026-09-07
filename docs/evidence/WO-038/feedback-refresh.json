@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "refreshFor": "WO-038",
+  "recordedDate": "2026-09-07",
+  "previousEdition": "v0.13.1",
+  "previousSourceSubject": "sha256:410d1f837cac558d3b2176a94e9f8cf616f4a6c9830b12ff9be972527f200c95",
+  "currentSourceSubject": "sha256:cbeb6c5c9bedbdd0202a3e57ef4666165309382dc2206e5e03ee6d449284dcf6",
+  "changedSourcePaths": ["package-lock.json", "packages/skeleton/package.json"],
+  "unchangedReportFieldsApartFromSubject": true,
+  "presentRemovalPairs": 10,
+  "savedInstructionBytes": 2393,
+  "verification": {
+    "subjectRevision": "sha256:0c7c3a8f0c96bc00122f00d094db40d26a8a15f10b5ae2a49312bf45d658e0b3",
+    "phase": "complete",
+    "rows": [
+      {
+        "criterionId": "AC-causal-fixtures",
+        "status": "verified",
+        "evaluations": [
+          {
+            "verdict": "pass",
+            "episodeId": "ep_verifier_1_attempt_4",
+            "stale": false,
+            "provenance": "host-admitted-verifier"
+          }
+        ]
+      },
+      {
+        "criterionId": "AC-context",
+        "status": "verified",
+        "evaluations": [
+          {
+            "verdict": "pass",
+            "episodeId": "ep_verifier_1_attempt_4",
+            "stale": false,
+            "provenance": "host-admitted-verifier"
+          }
+        ]
+      }
+    ],
+    "findings": 0,
+    "staleness": []
+  },
+  "launch": {
+    "transport": "claude-cli-print",
+    "harnessVersion": "2.1.263",
+    "model": "claude-sonnet-5",
+    "effort": "max"
+  },
+  "effectiveSelection": {
+    "model": "unknown",
+    "effort": "unknown"
+  },
+  "attempts": 4,
+  "limitsPerAttempt": {
+    "timeoutMs": 600000,
+    "maxBudgetUsd": "3.00"
+  },
+  "interruptedAttempts": [
+    {
+      "episodeId": "ep_verifier_1_attempt_1",
+      "reason": "invalid-result"
+    },
+    {
+      "episodeId": "ep_verifier_1_attempt_2",
+      "reason": "invalid-result"
+    },
+    {
+      "episodeId": "ep_verifier_1_attempt_3",
+      "reason": "invalid-result"
+    }
+  ],
+  "recovery": {
+    "script": "docs/evidence/WO-038/feedback-audit-recovery.mjs",
+    "acceptedMode": "--summary-pointer",
+    "scope": "Prompt and requested schema narrow only the non-evidentiary envelope summary; substantive assessment fields, source capsule, returned result bytes, and host admission checks are unchanged.",
+    "attempt3Diagnostic": {
+      "diagnostic": "episode-envelope-format",
+      "workOrderMatches": true,
+      "episodeMatches": true,
+      "resultMatches": true,
+      "summaryCharacters": 350,
+      "summaryIsSingleLine": true
+    },
+    "attempt4Diagnostic": {
+      "diagnostic": "episode-envelope-format",
+      "workOrderMatches": true,
+      "episodeMatches": true,
+      "resultMatches": true,
+      "summaryCharacters": 39,
+      "summaryIsSingleLine": true
+    }
+  }
+}

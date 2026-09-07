@@ -1,7 +1,11 @@
 # WO-011 executor evidence
 
-This edition accompanies application `v0.13.0`, compiler `0.6.0`, and skeleton
-`0.12.0`; kernel `0.2.1` is unchanged. The authority is
+WO-011 shipped in application `v0.13.0`, with compiler `0.6.0`, skeleton
+`0.12.0`, and kernel `0.2.1`. This current evidence edition was refreshed on
+2026-09-07 for the package metadata changes in WO-038's `v0.13.2` source;
+runtime implementation and component versions are unchanged. The original
+[receipt and evidence at v0.13.1](https://github.com/DylanBWood/DotLn/blob/v0.13.1/docs/evidence/WO-011/README.md)
+remain the historical edition. The authority is
 [WO-011](../../work-orders/WO-011-feedback-compiler.md). The
 [ten-unit catalog](../../../packages/skeleton/src/loadouts/feedback.ts) retains
 the full declarations and public incident references. There is no eleventh unit.
@@ -55,40 +59,41 @@ and effort remain `unknown`. Its mount is an empty Git repository and model
 tools are disabled. It evaluates the supplied source and host witnesses; it
 does not rerun the subprocesses itself or receive the implementation transcript.
 
-The first live attempt exceeded the inherited three-minute process deadline and
-left its command pending. The feedback profile now has a fixed ten-minute
-deadline and a $3 Claude cap, recorded in its attempt event. Its changed source
-requires a new pin and store; the earlier failed observation is not presented
-as a successful run. Other worker profiles keep their previous limits. A second
-live run completed against an intermediate source, but executor review exposed
-a source-comment scanner defect: a quoted regex hid a subsequent suppression.
-Parsed comment ranges replace that scanner, with regex/template/JSX regressions;
-the final recorded run covers this corrected source.
+The feedback profile has a fixed ten-minute deadline and a $3 Claude cap per
+attempt, recorded in its attempt events. Other worker profiles keep their
+previous limits. The original edition above preserves the earlier deadline
+and source-comment-scanner corrections. WO-038 changes only the two package
+metadata inputs in the declared source set; every other field in the
+regenerated report is identical to the original edition.
 
 The retained [audit stream](selfhost-audit.jsonl) contains one compiled,
 persisted, executed audit command. The [verification stream](selfhost-verification.jsonl)
-records an initial `invalid-result` refusal and recovery in
-`ep_verifier_1_attempt_2`, which supplies host-admitted passing evaluations for
+records three `invalid-result` refusals and recovery in
+`ep_verifier_1_attempt_4`, which supplies host-admitted passing evaluations for
 both `AC-causal-fixtures` and `AC-context`. The matrix is `complete`; neither
-evaluation is stale. The rejected return's specific subcheck is not retained.
-Recovery used the same host API with an allowlisted diagnostic observer on
-transport failures, preserving the request, profile, and admission contract.
-The saved audit was reused. No failed or superseded attempt supplies acceptance.
+evaluation is stale. The third return had a 350-character summary against
+the host's 320-character limit. The fourth used a disclosed
+[recovery wrapper](../WO-038/feedback-audit-recovery.mjs) to narrow that
+non-evidentiary summary to a short pointer in the requested schema. The source
+capsule, substantive evaluation/findings fields, launch limits, returned result
+bytes, and host admission checks were preserved. The saved audit was reused.
+The [WO-038 receipt](../WO-038/README.md#feedback-evidence-refresh) records the
+known diagnostics, the first two returns' limits, and the exact adjustment.
+No failed or superseded attempt supplies acceptance.
 
 The final source pin is
-`sha256:410d1f837cac558d3b2176a94e9f8cf616f4a6c9830b12ff9be972527f200c95`.
+`sha256:cbeb6c5c9bedbdd0202a3e57ef4666165309382dc2206e5e03ee6d449284dcf6`.
 Including the report produces verifier subject
-`sha256:6fb91aab163c29b8700145fc3b673f6c51b05c8e694196a9a9670844865cfb11`.
+`sha256:0c7c3a8f0c96bc00122f00d094db40d26a8a15f10b5ae2a49312bf45d658e0b3`.
 The report and event streams own these identities; this receipt is their review
 entry point.
 
-Final validation on 2026-09-06: `npm test` exited 0. All 281 runtime tests and
-8 corpus tests passed, along with formatting, lifecycle/recovery/release helper
-fixtures, publication/source-lock checks, the generated work-order index, and
-the current artifact-identity, verification, and feedback evidence checks. The
-feedback check reran all twenty present/removal subprocesses and validated the
-retained live streams against this source and report. A clean
-`npm ci --ignore-scripts --offline --no-audit --no-fund` also succeeded.
+Current evidence validation on 2026-09-07:
+`node scripts/feedback-evidence.mjs --check` exited 0. It reran all twenty
+present/removal subprocesses and validated the retained live streams against
+this source and report. The full `npm test` gate also exited 0; the
+[WO-038 receipt](../WO-038/README.md) owns that current validation. The original
+edition preserves its own dated validation.
 
 ## Reproduction and limits
 
