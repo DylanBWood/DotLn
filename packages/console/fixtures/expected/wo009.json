@@ -1,0 +1,2431 @@
+{
+  "viewModelVersion": "uifa-board-v1",
+  "fidelity": "lossy-read-only",
+  "panels": [
+    {
+      "id": "actors",
+      "title": "Actors",
+      "roles": [
+        "showrunner",
+        "engineer",
+        "tester"
+      ],
+      "question": "Who is recorded, what are they equipped to do, and what evidence shows their work?",
+      "sections": [
+        {
+          "id": "actors-6a09cb413decd84a",
+          "title": "WO-009 demonstration (recorded fixture)",
+          "status": "available",
+          "explanation": null,
+          "rows": [
+            {
+              "id": "actor-70eb640d9529fa23",
+              "title": "Repo Gardener — ep_seiri_1_worker_1",
+              "cells": [
+                {
+                  "key": "kind",
+                  "label": "Actor kind",
+                  "status": "known",
+                  "value": "model session",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "identity",
+                  "label": "Identity",
+                  "status": "known",
+                  "value": "Repo Gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "status": "known",
+                  "value": "Fixture maintainer",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1_worker_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-4"
+                  ]
+                },
+                {
+                  "key": "phase",
+                  "label": "Recorded episode phase",
+                  "status": "known",
+                  "value": "completed",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-4"
+                  ]
+                },
+                {
+                  "key": "transport",
+                  "label": "Transport",
+                  "status": "known",
+                  "value": "codex-cli-exec",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-4"
+                  ]
+                },
+                {
+                  "key": "model",
+                  "label": "Selected model",
+                  "status": "known",
+                  "value": "fixture-model",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-4"
+                  ]
+                },
+                {
+                  "key": "effort",
+                  "label": "Selected effort",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-4"
+                  ]
+                },
+                {
+                  "key": "selectionSource",
+                  "label": "Selection source",
+                  "status": "known",
+                  "value": "host-launch",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "effectiveModel",
+                  "label": "Observed effective model",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "effectiveEffort",
+                  "label": "Observed effective effort",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-5"
+                  ]
+                },
+                {
+                  "key": "heartbeat",
+                  "label": "Last host heartbeat",
+                  "status": "known",
+                  "value": 1800004,
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-4"
+                  ]
+                },
+                {
+                  "key": "lease",
+                  "label": "Recorded lease expiry",
+                  "status": "known",
+                  "value": 1805003,
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-4"
+                  ]
+                },
+                {
+                  "key": "buildHash",
+                  "label": "Recorded build hash",
+                  "status": "known",
+                  "value": "fnv1a64:b131af1bf845e8b7",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "hashKind",
+                  "label": "Hash describes",
+                  "status": "known",
+                  "value": "LoadoutGraph semantic hash",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "loadoutHash",
+                  "label": "LoadoutGraph semantic hash",
+                  "status": "known",
+                  "value": "fnv1a64:b131af1bf845e8b7",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "allowed",
+                  "label": "Allowed effects",
+                  "status": "known",
+                  "value": [
+                    "repo.inspect"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "denied",
+                  "label": "Denied effects",
+                  "status": "known",
+                  "value": [],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "grantExpiresAt",
+                  "label": "Recorded grant expiry",
+                  "status": "known",
+                  "value": 3000001,
+                  "explanation": "Recorded bound only; the board does not decide current authority",
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "workOrder",
+                  "label": "Work order",
+                  "status": "known",
+                  "value": "wo_repo_inspection_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "Inspect recorded build",
+                  "target": "recorded-build-9873d81492b1453e"
+                },
+                {
+                  "label": "repo.inspect: allowed",
+                  "target": "receipt-cfe4c73869b81f7a"
+                },
+                {
+                  "label": "repo.inspect: observed",
+                  "target": "receipt-2ed3bcac58b61512"
+                },
+                {
+                  "label": "command.result: returned",
+                  "target": "receipt-71d2d64309e5554a"
+                }
+              ]
+            },
+            {
+              "id": "recorded-actor-c74070f68f46ca81",
+              "title": "repo-gardener",
+              "cells": [
+                {
+                  "key": "identity",
+                  "label": "Recorded actor id",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "kind",
+                  "label": "Actor kind",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Last event episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "lastAction",
+                  "label": "Last recorded action",
+                  "status": "known",
+                  "value": "SchedulesCancelled",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "lastActionAt",
+                  "label": "Recorded action time",
+                  "status": "known",
+                  "value": 1200007,
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                },
+                {
+                  "key": "phase",
+                  "label": "Episode phase",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "An event actor id alone does not establish worker liveness",
+                  "evidence": [
+                    "evidence-7"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "work-order.emit: emitted",
+                  "target": "receipt-f39059ce90e511f3"
+                },
+                {
+                  "label": "repo.inspect: allowed",
+                  "target": "receipt-cfe4c73869b81f7a"
+                },
+                {
+                  "label": "repo.inspect: observed",
+                  "target": "receipt-2ed3bcac58b61512"
+                },
+                {
+                  "label": "command.result: returned",
+                  "target": "receipt-71d2d64309e5554a"
+                },
+                {
+                  "label": "repo.delete: requested",
+                  "target": "receipt-0d4b231552b26810"
+                },
+                {
+                  "label": "repo.delete: denied",
+                  "target": "receipt-8835ccd70509c8c1"
+                },
+                {
+                  "label": "episode.terminate: terminated",
+                  "target": "receipt-97cca933518d70f4"
+                },
+                {
+                  "label": "verification.complete: passed",
+                  "target": "receipt-b9615ebf67a92e03"
+                },
+                {
+                  "label": "cadence.no-op: no-op",
+                  "target": "receipt-ffdcc73956a7bb56"
+                },
+                {
+                  "label": "schedule.cancel: observed",
+                  "target": "receipt-dc31382ef98169e1"
+                }
+              ]
+            },
+            {
+              "id": "recorded-actor-9ba94eb7c4fd8833",
+              "title": "worker-host",
+              "cells": [
+                {
+                  "key": "identity",
+                  "label": "Recorded actor id",
+                  "status": "known",
+                  "value": "worker-host",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "kind",
+                  "label": "Actor kind",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Last event episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "lastAction",
+                  "label": "Last recorded action",
+                  "status": "known",
+                  "value": "WorkerWorktreeRemoved",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "lastActionAt",
+                  "label": "Recorded action time",
+                  "status": "known",
+                  "value": 1800014,
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                },
+                {
+                  "key": "phase",
+                  "label": "Episode phase",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "An event actor id alone does not establish worker liveness",
+                  "evidence": [
+                    "evidence-8"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "work-order.emit: emitted",
+                  "target": "receipt-f39059ce90e511f3"
+                },
+                {
+                  "label": "repo.inspect: allowed",
+                  "target": "receipt-cfe4c73869b81f7a"
+                },
+                {
+                  "label": "repo.inspect: observed",
+                  "target": "receipt-2ed3bcac58b61512"
+                },
+                {
+                  "label": "command.result: returned",
+                  "target": "receipt-71d2d64309e5554a"
+                },
+                {
+                  "label": "repo.delete: requested",
+                  "target": "receipt-0d4b231552b26810"
+                },
+                {
+                  "label": "repo.delete: denied",
+                  "target": "receipt-8835ccd70509c8c1"
+                },
+                {
+                  "label": "episode.terminate: terminated",
+                  "target": "receipt-97cca933518d70f4"
+                },
+                {
+                  "label": "verification.complete: passed",
+                  "target": "receipt-b9615ebf67a92e03"
+                },
+                {
+                  "label": "cadence.no-op: no-op",
+                  "target": "receipt-ffdcc73956a7bb56"
+                },
+                {
+                  "label": "schedule.cancel: observed",
+                  "target": "receipt-dc31382ef98169e1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "control-actors",
+          "title": "People and recorded workflow actors",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "actor-definitions",
+          "title": "Saved actor definitions",
+          "status": "available",
+          "explanation": null,
+          "rows": [
+            {
+              "id": "definition-944c9f5b95d58c8d",
+              "title": "Repo Gardener",
+              "cells": [
+                {
+                  "key": "kind",
+                  "label": "Actor kind",
+                  "status": "known",
+                  "value": "saved definition",
+                  "explanation": "A declared identity and role; not a claim that an episode is running",
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "identity",
+                  "label": "Identity",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "status": "known",
+                  "value": "Fixture maintainer",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "semanticHash",
+                  "label": "Loadout semantic hash",
+                  "status": "known",
+                  "value": "fnv1a64:9ca8d0229c6bd8db",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "phase",
+                  "label": "Episode phase",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "No episode is implied by a saved build",
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "Inspect saved build",
+                  "target": "build-ead9f3101e75d12e"
+                }
+              ]
+            },
+            {
+              "id": "definition-67907a026f6b5653",
+              "title": "Entropy Reducer",
+              "cells": [
+                {
+                  "key": "kind",
+                  "label": "Actor kind",
+                  "status": "known",
+                  "value": "saved definition",
+                  "explanation": "A declared identity and role; not a claim that an episode is running",
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "identity",
+                  "label": "Identity",
+                  "status": "known",
+                  "value": "entropy-reducer",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "status": "known",
+                  "value": "Planning reviewer",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "semanticHash",
+                  "label": "Loadout semantic hash",
+                  "status": "known",
+                  "value": "fnv1a64:cd6f2c9b6f1c3883",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "phase",
+                  "label": "Episode phase",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "No episode is implied by a saved build",
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "Inspect saved build",
+                  "target": "build-2893c8f905fe3d13"
+                }
+              ]
+            },
+            {
+              "id": "definition-3521c64b13265db1",
+              "title": "Entropy Reducer",
+              "cells": [
+                {
+                  "key": "kind",
+                  "label": "Actor kind",
+                  "status": "known",
+                  "value": "saved definition",
+                  "explanation": "A declared identity and role; not a claim that an episode is running",
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "identity",
+                  "label": "Identity",
+                  "status": "known",
+                  "value": "entropy-reducer",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "status": "known",
+                  "value": "Plan refuter",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "semanticHash",
+                  "label": "Loadout semantic hash",
+                  "status": "known",
+                  "value": "fnv1a64:64f5b75b5deeb91f",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "phase",
+                  "label": "Episode phase",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "No episode is implied by a saved build",
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "label": "Inspect saved build",
+                  "target": "build-cd9657984091cc99"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "receipts-6a09cb413decd84a",
+          "title": "Audit receipts — WO-009 demonstration (recorded fixture)",
+          "status": "available",
+          "explanation": null,
+          "rows": [
+            {
+              "id": "receipt-f39059ce90e511f3",
+              "title": "work-order.emit — emitted",
+              "cells": [
+                {
+                  "key": "action",
+                  "label": "Action",
+                  "status": "known",
+                  "value": "work-order.emit",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "outcome",
+                  "label": "Recorded outcome",
+                  "status": "known",
+                  "value": "emitted",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "actor",
+                  "label": "Recorded actor",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "command",
+                  "label": "Command",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "decision",
+                  "label": "Authority decision",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "reason",
+                  "label": "Authority reason",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                },
+                {
+                  "key": "events",
+                  "label": "Canonical events",
+                  "status": "known",
+                  "value": [
+                    "event:evt_10"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-9"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "receipt-cfe4c73869b81f7a",
+              "title": "repo.inspect — allowed",
+              "cells": [
+                {
+                  "key": "action",
+                  "label": "Action",
+                  "status": "known",
+                  "value": "repo.inspect",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-10"
+                  ]
+                },
+                {
+                  "key": "outcome",
+                  "label": "Recorded outcome",
+                  "status": "known",
+                  "value": "allowed",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-10"
+                  ]
+                },
+                {
+                  "key": "actor",
+                  "label": "Recorded actor",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-10"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-10"
+                  ]
+                },
+                {
+                  "key": "command",
+                  "label": "Command",
+                  "status": "known",
+                  "value": "cmd_5ee0c6d8e207bd25",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-10"
+                  ]
+                },
+                {
+                  "key": "decision",
+                  "label": "Authority decision",
+                  "status": "known",
+                  "value": "allowed",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-10"
+                  ]
+                },
+                {
+                  "key": "reason",
+                  "label": "Authority reason",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-10"
+                  ]
+                },
+                {
+                  "key": "events",
+                  "label": "Canonical events",
+                  "status": "known",
+                  "value": [
+                    "event:evt_11",
+                    "event:evt_12"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-10"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "receipt-2ed3bcac58b61512",
+              "title": "repo.inspect — observed",
+              "cells": [
+                {
+                  "key": "action",
+                  "label": "Action",
+                  "status": "known",
+                  "value": "repo.inspect",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-11"
+                  ]
+                },
+                {
+                  "key": "outcome",
+                  "label": "Recorded outcome",
+                  "status": "known",
+                  "value": "observed",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-11"
+                  ]
+                },
+                {
+                  "key": "actor",
+                  "label": "Recorded actor",
+                  "status": "known",
+                  "value": "worker-host",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-11"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-11"
+                  ]
+                },
+                {
+                  "key": "command",
+                  "label": "Command",
+                  "status": "known",
+                  "value": "cmd_5ee0c6d8e207bd25",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-11"
+                  ]
+                },
+                {
+                  "key": "decision",
+                  "label": "Authority decision",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-11"
+                  ]
+                },
+                {
+                  "key": "reason",
+                  "label": "Authority reason",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-11"
+                  ]
+                },
+                {
+                  "key": "events",
+                  "label": "Canonical events",
+                  "status": "known",
+                  "value": [
+                    "event:evt_12",
+                    "event:evt_19"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-11"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "receipt-71d2d64309e5554a",
+              "title": "command.result — returned",
+              "cells": [
+                {
+                  "key": "action",
+                  "label": "Action",
+                  "status": "known",
+                  "value": "command.result",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-12"
+                  ]
+                },
+                {
+                  "key": "outcome",
+                  "label": "Recorded outcome",
+                  "status": "known",
+                  "value": "returned",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-12"
+                  ]
+                },
+                {
+                  "key": "actor",
+                  "label": "Recorded actor",
+                  "status": "known",
+                  "value": "worker-host",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-12"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-12"
+                  ]
+                },
+                {
+                  "key": "command",
+                  "label": "Command",
+                  "status": "known",
+                  "value": "cmd_5ee0c6d8e207bd25",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-12"
+                  ]
+                },
+                {
+                  "key": "decision",
+                  "label": "Authority decision",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-12"
+                  ]
+                },
+                {
+                  "key": "reason",
+                  "label": "Authority reason",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-12"
+                  ]
+                },
+                {
+                  "key": "events",
+                  "label": "Canonical events",
+                  "status": "known",
+                  "value": [
+                    "event:evt_19"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-12"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "receipt-0d4b231552b26810",
+              "title": "repo.delete — requested",
+              "cells": [
+                {
+                  "key": "action",
+                  "label": "Action",
+                  "status": "known",
+                  "value": "repo.delete",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-13"
+                  ]
+                },
+                {
+                  "key": "outcome",
+                  "label": "Recorded outcome",
+                  "status": "known",
+                  "value": "requested",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-13"
+                  ]
+                },
+                {
+                  "key": "actor",
+                  "label": "Recorded actor",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-13"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-13"
+                  ]
+                },
+                {
+                  "key": "command",
+                  "label": "Command",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-13"
+                  ]
+                },
+                {
+                  "key": "decision",
+                  "label": "Authority decision",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-13"
+                  ]
+                },
+                {
+                  "key": "reason",
+                  "label": "Authority reason",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-13"
+                  ]
+                },
+                {
+                  "key": "events",
+                  "label": "Canonical events",
+                  "status": "known",
+                  "value": [
+                    "event:evt_22"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-13"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "receipt-8835ccd70509c8c1",
+              "title": "repo.delete — denied",
+              "cells": [
+                {
+                  "key": "action",
+                  "label": "Action",
+                  "status": "known",
+                  "value": "repo.delete",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-14"
+                  ]
+                },
+                {
+                  "key": "outcome",
+                  "label": "Recorded outcome",
+                  "status": "known",
+                  "value": "denied",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-14"
+                  ]
+                },
+                {
+                  "key": "actor",
+                  "label": "Recorded actor",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-14"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-14"
+                  ]
+                },
+                {
+                  "key": "command",
+                  "label": "Command",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-14"
+                  ]
+                },
+                {
+                  "key": "decision",
+                  "label": "Authority decision",
+                  "status": "known",
+                  "value": "denied",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-14"
+                  ]
+                },
+                {
+                  "key": "reason",
+                  "label": "Authority reason",
+                  "status": "known",
+                  "value": "effect denied",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-14"
+                  ]
+                },
+                {
+                  "key": "events",
+                  "label": "Canonical events",
+                  "status": "known",
+                  "value": [
+                    "event:evt_22",
+                    "event:evt_24",
+                    "event:evt_23"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-14"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "receipt-97cca933518d70f4",
+              "title": "episode.terminate — terminated",
+              "cells": [
+                {
+                  "key": "action",
+                  "label": "Action",
+                  "status": "known",
+                  "value": "episode.terminate",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-15"
+                  ]
+                },
+                {
+                  "key": "outcome",
+                  "label": "Recorded outcome",
+                  "status": "known",
+                  "value": "terminated",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-15"
+                  ]
+                },
+                {
+                  "key": "actor",
+                  "label": "Recorded actor",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-15"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-15"
+                  ]
+                },
+                {
+                  "key": "command",
+                  "label": "Command",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-15"
+                  ]
+                },
+                {
+                  "key": "decision",
+                  "label": "Authority decision",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-15"
+                  ]
+                },
+                {
+                  "key": "reason",
+                  "label": "Authority reason",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-15"
+                  ]
+                },
+                {
+                  "key": "events",
+                  "label": "Canonical events",
+                  "status": "known",
+                  "value": [
+                    "event:evt_26"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-15"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "receipt-b9615ebf67a92e03",
+              "title": "verification.complete — passed",
+              "cells": [
+                {
+                  "key": "action",
+                  "label": "Action",
+                  "status": "known",
+                  "value": "verification.complete",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-16"
+                  ]
+                },
+                {
+                  "key": "outcome",
+                  "label": "Recorded outcome",
+                  "status": "known",
+                  "value": "passed",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-16"
+                  ]
+                },
+                {
+                  "key": "actor",
+                  "label": "Recorded actor",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-16"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-16"
+                  ]
+                },
+                {
+                  "key": "command",
+                  "label": "Command",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-16"
+                  ]
+                },
+                {
+                  "key": "decision",
+                  "label": "Authority decision",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-16"
+                  ]
+                },
+                {
+                  "key": "reason",
+                  "label": "Authority reason",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-16"
+                  ]
+                },
+                {
+                  "key": "events",
+                  "label": "Canonical events",
+                  "status": "known",
+                  "value": [
+                    "event:evt_28",
+                    "event:evt_30"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-16"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "receipt-ffdcc73956a7bb56",
+              "title": "cadence.no-op — no-op",
+              "cells": [
+                {
+                  "key": "action",
+                  "label": "Action",
+                  "status": "known",
+                  "value": "cadence.no-op",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-17"
+                  ]
+                },
+                {
+                  "key": "outcome",
+                  "label": "Recorded outcome",
+                  "status": "known",
+                  "value": "no-op",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-17"
+                  ]
+                },
+                {
+                  "key": "actor",
+                  "label": "Recorded actor",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-17"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-17"
+                  ]
+                },
+                {
+                  "key": "command",
+                  "label": "Command",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-17"
+                  ]
+                },
+                {
+                  "key": "decision",
+                  "label": "Authority decision",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-17"
+                  ]
+                },
+                {
+                  "key": "reason",
+                  "label": "Authority reason",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-17"
+                  ]
+                },
+                {
+                  "key": "events",
+                  "label": "Canonical events",
+                  "status": "known",
+                  "value": [
+                    "event:evt_35"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-17"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "receipt-dc31382ef98169e1",
+              "title": "schedule.cancel — observed",
+              "cells": [
+                {
+                  "key": "action",
+                  "label": "Action",
+                  "status": "known",
+                  "value": "schedule.cancel",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-18"
+                  ]
+                },
+                {
+                  "key": "outcome",
+                  "label": "Recorded outcome",
+                  "status": "known",
+                  "value": "observed",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-18"
+                  ]
+                },
+                {
+                  "key": "actor",
+                  "label": "Recorded actor",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-18"
+                  ]
+                },
+                {
+                  "key": "episode",
+                  "label": "Episode",
+                  "status": "known",
+                  "value": "ep_seiri_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-18"
+                  ]
+                },
+                {
+                  "key": "command",
+                  "label": "Command",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-18"
+                  ]
+                },
+                {
+                  "key": "decision",
+                  "label": "Authority decision",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-18"
+                  ]
+                },
+                {
+                  "key": "reason",
+                  "label": "Authority reason",
+                  "status": "unknown",
+                  "value": null,
+                  "explanation": "Not recorded by this source",
+                  "evidence": [
+                    "evidence-18"
+                  ]
+                },
+                {
+                  "key": "events",
+                  "label": "Canonical events",
+                  "status": "known",
+                  "value": [
+                    "event:evt_36"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-18"
+                  ]
+                }
+              ],
+              "links": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "builds",
+      "title": "Builds",
+      "roles": [
+        "engineer"
+      ],
+      "question": "Does this composition express the behavior I mean, and what does it cost?",
+      "sections": [
+        {
+          "id": "saved-builds",
+          "title": "Saved builds",
+          "status": "available",
+          "explanation": null,
+          "rows": [
+            {
+              "id": "build-ead9f3101e75d12e",
+              "title": "Repo Gardener",
+              "cells": [
+                {
+                  "key": "loadout",
+                  "label": "Loadout",
+                  "status": "known",
+                  "value": "repo-gardener.seiri.v1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "identity",
+                  "label": "Identity",
+                  "status": "known",
+                  "value": "repo-gardener",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "status": "known",
+                  "value": "Fixture maintainer",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "semanticHash",
+                  "label": "Loadout semantic hash",
+                  "status": "known",
+                  "value": "fnv1a64:9ca8d0229c6bd8db",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "hash.code-dsl",
+                  "label": "code-dsl hash",
+                  "status": "known",
+                  "value": "fnv1a64:9ca8d0229c6bd8db",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "hash.function-table",
+                  "label": "function-table hash",
+                  "status": "known",
+                  "value": "fnv1a64:9ca8d0229c6bd8db",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "hash.statechart-json",
+                  "label": "statechart-json hash",
+                  "status": "known",
+                  "value": "fnv1a64:9ca8d0229c6bd8db",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "hashAgreement",
+                  "label": "Three views",
+                  "status": "known",
+                  "value": "equivalent",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "environment",
+                  "label": "Inspection environment",
+                  "status": "known",
+                  "value": "skeleton.fixture",
+                  "explanation": "Saved build preview; its expiry is a fixed inspection input, not a live grant",
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "items",
+                  "label": "Equipped items",
+                  "status": "known",
+                  "value": [
+                    "Seiri (seiri)",
+                    "Bounded repository scope (seiri.repo-scope)",
+                    "Read only (seiri.read-only)",
+                    "Evidence capture (seiri.evidence-capture)",
+                    "Absent-only cadence (seiri.absence-cadence)",
+                    "Independent verification (seiri.independent-verification)"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                },
+                {
+                  "key": "tooltip",
+                  "label": "Mechanics and declared costs",
+                  "status": "known",
+                  "value": "Seiri / Sort / 整理\nThe Evidence-Bound Sort — COMPILED DIFF\n\nGRANTS\n+ Inventory every fixture path\n+ Classify every fixture path\n+ Analyze references\n+ Propose deletion candidates\n\nRESTRICTIONS\n+ Do not mutate repository contents\n+ Deletion remains operator-owned\n+ Inspect only the bounded fixture repository\n\nOBLIGATION\n+ Attach inventory, classification, and reference evidence to every candidate\n+ Independently verify proposed candidates\n\nPASSIVE\n+ Active only while the operator is absent\n\nPULSE\n+ Re-evaluate every 20 virtual minutes\n\nINTERRUPT\n+ Stop on operator return; queued pulses become a traced NoOp\n\nCOST\n+ seiri.absence-cadence — statechart-gate; prompt=0 tokens; runtime=2 predicate-evaluations-per-pulse; episodes=0\n+ seiri.evidence-capture — evidence-schema; prompt=0 tokens; runtime=1 schema-validations-per-result; episodes=0\n+ seiri.independent-verification — verifier-episode; prompt=0 tokens; runtime=1 verifier-dispatches; episodes=1\n+ seiri.read-only — permission-guard; prompt=0 tokens; runtime=1 guard-checks-per-effect; episodes=0\n+ seiri.repo-scope — work-order; prompt=0 tokens; runtime=0 operations; episodes=0\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:9ca8d0229c6bd8db",
+                  "explanation": "Compiler renderCompiledDiff(undefined, program); original terms remain primary",
+                  "evidence": [
+                    "evidence-1"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "build-2893c8f905fe3d13",
+              "title": "Entropy Reducer",
+              "cells": [
+                {
+                  "key": "loadout",
+                  "label": "Loadout",
+                  "status": "known",
+                  "value": "entropy-reducer.review.v1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "identity",
+                  "label": "Identity",
+                  "status": "known",
+                  "value": "entropy-reducer",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "status": "known",
+                  "value": "Planning reviewer",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "semanticHash",
+                  "label": "Loadout semantic hash",
+                  "status": "known",
+                  "value": "fnv1a64:cd6f2c9b6f1c3883",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "hash.code-dsl",
+                  "label": "code-dsl hash",
+                  "status": "known",
+                  "value": "fnv1a64:cd6f2c9b6f1c3883",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "hash.function-table",
+                  "label": "function-table hash",
+                  "status": "known",
+                  "value": "fnv1a64:cd6f2c9b6f1c3883",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "hash.statechart-json",
+                  "label": "statechart-json hash",
+                  "status": "known",
+                  "value": "fnv1a64:cd6f2c9b6f1c3883",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "hashAgreement",
+                  "label": "Three views",
+                  "status": "known",
+                  "value": "equivalent",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "environment",
+                  "label": "Inspection environment",
+                  "status": "known",
+                  "value": "skeleton.fixture",
+                  "explanation": "Saved build preview; its expiry is a fixed inspection input, not a live grant",
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "items",
+                  "label": "Equipped items",
+                  "status": "known",
+                  "value": [
+                    "Seisō (Shine) (seiso-shine)",
+                    "Seiketsu (Standardize) (entropy-reducer.seiketsu-standardize)",
+                    "Verify-First (entropy-reducer.verify-first)",
+                    "Fan-Out Lens (entropy-reducer.fan-out-lens)",
+                    "Mutation Drill (entropy-reducer.mutation-drill)",
+                    "Shape-First (entropy-reducer.shape-first)",
+                    "Constraint-First Ordering (entropy-reducer.constraint-first-ordering)",
+                    "Altitude Tag (entropy-reducer.altitude-tag)",
+                    "Sparse Receipt (entropy-reducer.sparse-receipt)"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                },
+                {
+                  "key": "tooltip",
+                  "label": "Mechanics and declared costs",
+                  "status": "known",
+                  "value": "Seisō / Shine / 清掃\nThe Entropy-Reducing Shine — COMPILED DIFF\n\nGRANTS\n+ Read repository evidence\n+ Run bounded scratch probes\n+ Delegate up to four read-only lenses\n+ Emit a validated report\n\nRESTRICTIONS\n+ Never mutate the tracked repository or control plane\n+ Never change remotes, settings, or operator decisions\n+ At most four no-fix, read-only lens delegates\n+ The result-envelope summary stays under 200 words\n\nOBLIGATION\n+ Reproduce every finding\n+ Apply the clean-room floor\n+ Await operator disposition\n+ Tag the likely surface and intervention altitude\n+ Refute independently before promoting findings\n+ Name the cheapest executable rung for every recurring finding\n+ Separate literal defects from the analogy's useful shape\n+ Every finding carries reproduction and evidence refs\n\nPASSIVE\n+ Measure before assuming\n+ Constraint-first proposal ordering\n\nPULSE\n+ One review on explicit dispatch\n\nINTERRUPT\n+ Stop on OperatorStopRequested or episode expiry\n\nCOST\n+ entropy-reducer.altitude-tag — work-order; prompt=24 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.constraint-first-ordering — prompt-fragment; prompt=27 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.fan-out-lens — work-order; prompt=38 tokens; runtime=4 delegates-maximum; episodes=0\n+ entropy-reducer.mutation-drill — verifier-episode; prompt=28 tokens; runtime=32 scratch-probes-maximum; episodes=1\n+ entropy-reducer.seiketsu-standardize — work-order; prompt=24 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.shape-first — prompt-fragment; prompt=34 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.sparse-receipt — evidence-schema; prompt=31 tokens; runtime=1 validation-per-report; episodes=0\n+ entropy-reducer.verify-first — evidence-schema; prompt=42 tokens; runtime=1 validation-per-output; episodes=0\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:cd6f2c9b6f1c3883",
+                  "explanation": "Compiler renderCompiledDiff(undefined, program); original terms remain primary",
+                  "evidence": [
+                    "evidence-2"
+                  ]
+                }
+              ],
+              "links": []
+            },
+            {
+              "id": "build-cd9657984091cc99",
+              "title": "Entropy Reducer",
+              "cells": [
+                {
+                  "key": "loadout",
+                  "label": "Loadout",
+                  "status": "known",
+                  "value": "plan-refuter.v1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "identity",
+                  "label": "Identity",
+                  "status": "known",
+                  "value": "entropy-reducer",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "status": "known",
+                  "value": "Plan refuter",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "semanticHash",
+                  "label": "Loadout semantic hash",
+                  "status": "known",
+                  "value": "fnv1a64:64f5b75b5deeb91f",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "hash.code-dsl",
+                  "label": "code-dsl hash",
+                  "status": "known",
+                  "value": "fnv1a64:64f5b75b5deeb91f",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "hash.function-table",
+                  "label": "function-table hash",
+                  "status": "known",
+                  "value": "fnv1a64:64f5b75b5deeb91f",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "hash.statechart-json",
+                  "label": "statechart-json hash",
+                  "status": "known",
+                  "value": "fnv1a64:64f5b75b5deeb91f",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "hashAgreement",
+                  "label": "Three views",
+                  "status": "known",
+                  "value": "equivalent",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "environment",
+                  "label": "Inspection environment",
+                  "status": "known",
+                  "value": "skeleton.fixture",
+                  "explanation": "Saved build preview; its expiry is a fixed inspection input, not a live grant",
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "items",
+                  "label": "Equipped items",
+                  "status": "known",
+                  "value": [
+                    "Seisō (Shine) (seiso-shine)"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                },
+                {
+                  "key": "tooltip",
+                  "label": "Mechanics and declared costs",
+                  "status": "known",
+                  "value": "Seisō / Shine / 清掃\nThe Entropy-Reducing Shine — COMPILED DIFF\n\nGRANTS\n+ Read the compiled planning subject\n+ Emit a validated refutation\n\nRESTRICTIONS\n+ No model tools, writes, remotes, settings changes or operator decisions\n\nOBLIGATION\n+ Name the vision passage behind every drift finding\n+ Preserve all unanswered holds\n+ Apply the clean-room floor\n\nPASSIVE\n+ Contra-Auguste; architecture-and-semantics lens\n\nPULSE\n+ One blinded episode on explicit planning dispatch\n\nINTERRUPT\n+ Stop at episode expiry\n\nCOST\n  (no change)\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:64f5b75b5deeb91f",
+                  "explanation": "Compiler renderCompiledDiff(undefined, program); original terms remain primary",
+                  "evidence": [
+                    "evidence-3"
+                  ]
+                }
+              ],
+              "links": []
+            }
+          ]
+        },
+        {
+          "id": "recorded-builds-6a09cb413decd84a",
+          "title": "Recorded builds — WO-009 demonstration (recorded fixture)",
+          "status": "available",
+          "explanation": null,
+          "rows": [
+            {
+              "id": "recorded-build-9873d81492b1453e",
+              "title": "Repo Gardener",
+              "cells": [
+                {
+                  "key": "buildHash",
+                  "label": "Recorded build hash",
+                  "status": "known",
+                  "value": "fnv1a64:b131af1bf845e8b7",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "hashKind",
+                  "label": "Hash describes",
+                  "status": "known",
+                  "value": "LoadoutGraph semantic hash",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "loadoutHash",
+                  "label": "LoadoutGraph semantic hash",
+                  "status": "known",
+                  "value": "fnv1a64:b131af1bf845e8b7",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "allowed",
+                  "label": "Allowed effects",
+                  "status": "known",
+                  "value": [
+                    "repo.inspect"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "denied",
+                  "label": "Denied effects",
+                  "status": "known",
+                  "value": [],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "grantExpiresAt",
+                  "label": "Recorded grant expiry",
+                  "status": "known",
+                  "value": 3000001,
+                  "explanation": "Recorded bound only; the board does not decide current authority",
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "workOrder",
+                  "label": "Work order",
+                  "status": "known",
+                  "value": "wo_repo_inspection_1",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "role",
+                  "label": "Role",
+                  "status": "known",
+                  "value": "Fixture maintainer",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "objective",
+                  "label": "Objective",
+                  "status": "known",
+                  "value": "Inspect the bounded fixture repository and propose safe deletion candidates.",
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "requiredEvidence",
+                  "label": "Required evidence",
+                  "status": "known",
+                  "value": [
+                    "inventory",
+                    "classification",
+                    "reference-analysis"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                },
+                {
+                  "key": "constraints",
+                  "label": "Constraints",
+                  "status": "known",
+                  "value": [
+                    "Inspect only the fixture tree",
+                    "Do not mutate repository contents"
+                  ],
+                  "explanation": null,
+                  "evidence": [
+                    "evidence-6"
+                  ]
+                }
+              ],
+              "links": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mechanisms",
+      "title": "Mechanisms",
+      "roles": [
+        "tester",
+        "engineer",
+        "devops"
+      ],
+      "question": "In this situation, does the equipped behavior do the right thing?",
+      "sections": [
+        {
+          "id": "compiled-mechanisms",
+          "title": "Compiled mechanisms",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "matrices-6a09cb413decd84a",
+          "title": "Acceptance evidence — WO-009 demonstration (recorded fixture)",
+          "status": "available",
+          "explanation": "The source records no entries",
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "work",
+      "title": "Work",
+      "roles": [
+        "showrunner",
+        "devops"
+      ],
+      "question": "What is active, what is blocked, what closed, and what did the release contain?",
+      "sections": [
+        {
+          "id": "orders",
+          "title": "Orders and legal actions",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "worktrees",
+          "title": "Worktree Beacon observations",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "releases",
+          "title": "Published releases",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "work-order-index",
+          "title": "Work-order evidence index",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "usage",
+          "title": "Recorded actor usage",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "blueprint",
+      "title": "Blueprint",
+      "roles": [
+        "product-lead",
+        "devops"
+      ],
+      "question": "Is this still the thing we mean?",
+      "sections": [
+        {
+          "id": "refutation-verdicts",
+          "title": "Latest plan-refutation verdicts",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "capabilities",
+          "title": "Capability evidence",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "publication",
+          "title": "Publication status",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "roadmap",
+          "title": "Pending roadmap rungs",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    }
+  ],
+  "roleAnswers": [
+    {
+      "role": "product-lead",
+      "question": "Is this still the thing we mean?",
+      "target": "refutation-verdicts",
+      "cell": "verdict + reason; latest-refutation.holdStatus",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "showrunner",
+      "question": "What is active, what is blocked, what closed, and what did the release contain?",
+      "target": "orders",
+      "cell": "phase + blockers + dependencyCheck + legalNextActions; releases.workOrders",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "engineer",
+      "question": "Does this composition express the behavior I mean, and what does it cost?",
+      "target": "saved-builds",
+      "cell": "tooltip + semanticHash + hashAgreement",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "tester",
+      "question": "In this situation, does the equipped behavior do the right thing?",
+      "target": "compiled-mechanisms",
+      "cell": "desiredBehavior + fixture.incidentsPrevented + lastActivation; acceptance matrix status and evidence",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "devops",
+      "question": "Which repeated step can become a checked mechanism next?",
+      "target": "compiled-mechanisms",
+      "cell": "boundary + rung + nextMaturity; capabilities.Next smallest promotable increment",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    }
+  ],
+  "sources": [
+    {
+      "ref": "skeleton:loadout-exports",
+      "status": "available",
+      "explanation": null
+    },
+    {
+      "ref": "skeleton:feedback-units",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "packages/console/fixtures/wo009.events.jsonl#worker-status",
+      "status": "available",
+      "explanation": null
+    },
+    {
+      "ref": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "status": "available",
+      "explanation": null
+    },
+    {
+      "ref": "store:wo009-demo",
+      "status": "available",
+      "explanation": null
+    },
+    {
+      "ref": "control:canonical-segments",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/work-orders/README.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "resume:status--json",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "worktree:constellation",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "release:list",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "resume:usage--json",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/planning/capability-table.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/publication/audience-status-index.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/product/06-roadmap.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/planning/refutations/",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-1",
+      "source": "packages/skeleton/src/reactor.ts#loadout",
+      "record": "loadout + explicit inspection environment"
+    },
+    {
+      "id": "evidence-2",
+      "source": "packages/skeleton/src/loadouts/entropy-reducer.ts#entropyReducerLoadout",
+      "record": "loadout + explicit inspection environment"
+    },
+    {
+      "id": "evidence-3",
+      "source": "packages/skeleton/src/loadouts/plan-refuter.ts#planRefuterLoadout",
+      "record": "loadout + explicit inspection environment"
+    },
+    {
+      "id": "evidence-4",
+      "source": "packages/console/fixtures/wo009.events.jsonl#worker-status",
+      "record": "episodes:ep_seiri_1_worker_1"
+    },
+    {
+      "id": "evidence-5",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "event:evt_15 (WorkerAttemptStarted)"
+    },
+    {
+      "id": "evidence-6",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "event:evt_4 (LoadoutEquipped)"
+    },
+    {
+      "id": "evidence-7",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "event:evt_36 (SchedulesCancelled)"
+    },
+    {
+      "id": "evidence-8",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "event:evt_37 (WorkerWorktreeRemoved)"
+    },
+    {
+      "id": "evidence-9",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "receipt:audit:evt_10:work-order-dispatch; event:evt_10"
+    },
+    {
+      "id": "evidence-10",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "receipt:audit:evt_12:authority-decision; event:evt_11, event:evt_12"
+    },
+    {
+      "id": "evidence-11",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "receipt:audit:evt_19:external-effect; event:evt_12, event:evt_19"
+    },
+    {
+      "id": "evidence-12",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "receipt:audit:evt_19:result; event:evt_19"
+    },
+    {
+      "id": "evidence-13",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "receipt:audit:evt_22:external-effect; event:evt_22"
+    },
+    {
+      "id": "evidence-14",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "receipt:audit:evt_24:authority-decision; event:evt_22, event:evt_24, event:evt_23"
+    },
+    {
+      "id": "evidence-15",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "receipt:audit:evt_26:result; event:evt_26"
+    },
+    {
+      "id": "evidence-16",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "receipt:audit:evt_30:verification; event:evt_28, event:evt_30"
+    },
+    {
+      "id": "evidence-17",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "receipt:audit:evt_35:no-op; event:evt_35"
+    },
+    {
+      "id": "evidence-18",
+      "source": "packages/console/fixtures/wo009.events.jsonl#audit-projections",
+      "record": "receipt:audit:evt_36:external-effect; event:evt_36"
+    }
+  ]
+}

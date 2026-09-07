@@ -1,0 +1,582 @@
+DOTLN / ACTOR BOARD
+uifa-board-v1 · Read-only, lossy projection
+Recorded facts only. Unknown is not zero; a missing source is unavailable.
+
+ACTORS [actors]
+Serves: showrunner, engineer, tester
+Who is recorded, what are they equipped to do, and what evidence shows their
+work?
+
+WO-009 demonstration (recorded fixture) [actors-6a09cb413decd84a] — available
+
+Repo Gardener — ep_seiri_1_worker_1 [actor-70eb640d9529fa23]
+  Actor kind: model session [evidence-5]
+  Identity: Repo Gardener [evidence-6]
+  Role: Fixture maintainer [evidence-5]
+  Episode: ep_seiri_1_worker_1 [evidence-4]
+  Recorded episode phase: completed [evidence-4]
+  Transport: codex-cli-exec [evidence-4]
+  Selected model: fixture-model [evidence-4]
+  Selected effort: unknown [evidence-4]
+    Not recorded by this source
+  Selection source: host-launch [evidence-5]
+  Observed effective model: unknown [evidence-5]
+    Not recorded by this source
+  Observed effective effort: unknown [evidence-5]
+    Not recorded by this source
+  Last host heartbeat: 1800004 [evidence-4]
+  Recorded lease expiry: 1805003 [evidence-4]
+  Recorded build hash: fnv1a64:b131af1bf845e8b7 [evidence-6]
+  Hash describes: LoadoutGraph semantic hash [evidence-6]
+  LoadoutGraph semantic hash: fnv1a64:b131af1bf845e8b7 [evidence-6]
+  Allowed effects: repo.inspect [evidence-6]
+  Denied effects: none recorded [evidence-6]
+  Recorded grant expiry: 3000001 [evidence-6]
+    Recorded bound only; the board does not decide current authority
+  Work order: wo_repo_inspection_1 [evidence-6]
+  -> Inspect recorded build [recorded-build-9873d81492b1453e]
+  -> repo.inspect: allowed [receipt-cfe4c73869b81f7a]
+  -> repo.inspect: observed [receipt-2ed3bcac58b61512]
+  -> command.result: returned [receipt-71d2d64309e5554a]
+
+repo-gardener [recorded-actor-c74070f68f46ca81]
+  Recorded actor id: repo-gardener [evidence-7]
+  Actor kind: unknown [evidence-7]
+    Not recorded by this source
+  Role: unknown [evidence-7]
+    Not recorded by this source
+  Last event episode: ep_seiri_1 [evidence-7]
+  Last recorded action: SchedulesCancelled [evidence-7]
+  Recorded action time: 1200007 [evidence-7]
+  Episode phase: unknown [evidence-7]
+    An event actor id alone does not establish worker liveness
+  -> work-order.emit: emitted [receipt-f39059ce90e511f3]
+  -> repo.inspect: allowed [receipt-cfe4c73869b81f7a]
+  -> repo.inspect: observed [receipt-2ed3bcac58b61512]
+  -> command.result: returned [receipt-71d2d64309e5554a]
+  -> repo.delete: requested [receipt-0d4b231552b26810]
+  -> repo.delete: denied [receipt-8835ccd70509c8c1]
+  -> episode.terminate: terminated [receipt-97cca933518d70f4]
+  -> verification.complete: passed [receipt-b9615ebf67a92e03]
+  -> cadence.no-op: no-op [receipt-ffdcc73956a7bb56]
+  -> schedule.cancel: observed [receipt-dc31382ef98169e1]
+
+worker-host [recorded-actor-9ba94eb7c4fd8833]
+  Recorded actor id: worker-host [evidence-8]
+  Actor kind: unknown [evidence-8]
+    Not recorded by this source
+  Role: unknown [evidence-8]
+    Not recorded by this source
+  Last event episode: ep_seiri_1 [evidence-8]
+  Last recorded action: WorkerWorktreeRemoved [evidence-8]
+  Recorded action time: 1800014 [evidence-8]
+  Episode phase: unknown [evidence-8]
+    An event actor id alone does not establish worker liveness
+  -> work-order.emit: emitted [receipt-f39059ce90e511f3]
+  -> repo.inspect: allowed [receipt-cfe4c73869b81f7a]
+  -> repo.inspect: observed [receipt-2ed3bcac58b61512]
+  -> command.result: returned [receipt-71d2d64309e5554a]
+  -> repo.delete: requested [receipt-0d4b231552b26810]
+  -> repo.delete: denied [receipt-8835ccd70509c8c1]
+  -> episode.terminate: terminated [receipt-97cca933518d70f4]
+  -> verification.complete: passed [receipt-b9615ebf67a92e03]
+  -> cadence.no-op: no-op [receipt-ffdcc73956a7bb56]
+  -> schedule.cancel: observed [receipt-dc31382ef98169e1]
+
+People and recorded workflow actors [control-actors] — unavailable
+Source not supplied
+
+Saved actor definitions [actor-definitions] — available
+
+Repo Gardener [definition-944c9f5b95d58c8d]
+  Actor kind: saved definition [evidence-1]
+    A declared identity and role; not a claim that an episode is running
+  Identity: repo-gardener [evidence-1]
+  Role: Fixture maintainer [evidence-1]
+  Loadout semantic hash: fnv1a64:9ca8d0229c6bd8db [evidence-1]
+  Episode phase: unknown [evidence-1]
+    No episode is implied by a saved build
+  -> Inspect saved build [build-ead9f3101e75d12e]
+
+Entropy Reducer [definition-67907a026f6b5653]
+  Actor kind: saved definition [evidence-2]
+    A declared identity and role; not a claim that an episode is running
+  Identity: entropy-reducer [evidence-2]
+  Role: Planning reviewer [evidence-2]
+  Loadout semantic hash: fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
+  Episode phase: unknown [evidence-2]
+    No episode is implied by a saved build
+  -> Inspect saved build [build-2893c8f905fe3d13]
+
+Entropy Reducer [definition-3521c64b13265db1]
+  Actor kind: saved definition [evidence-3]
+    A declared identity and role; not a claim that an episode is running
+  Identity: entropy-reducer [evidence-3]
+  Role: Plan refuter [evidence-3]
+  Loadout semantic hash: fnv1a64:64f5b75b5deeb91f [evidence-3]
+  Episode phase: unknown [evidence-3]
+    No episode is implied by a saved build
+  -> Inspect saved build [build-cd9657984091cc99]
+
+Audit receipts — WO-009 demonstration (recorded fixture)
+[receipts-6a09cb413decd84a] — available
+
+work-order.emit — emitted [receipt-f39059ce90e511f3]
+  Action: work-order.emit [evidence-9]
+  Recorded outcome: emitted [evidence-9]
+  Recorded actor: repo-gardener [evidence-9]
+  Episode: ep_seiri_1 [evidence-9]
+  Command: unknown [evidence-9]
+    Not recorded by this source
+  Authority decision: unknown [evidence-9]
+    Not recorded by this source
+  Authority reason: unknown [evidence-9]
+    Not recorded by this source
+  Canonical events: event:evt_10 [evidence-9]
+
+repo.inspect — allowed [receipt-cfe4c73869b81f7a]
+  Action: repo.inspect [evidence-10]
+  Recorded outcome: allowed [evidence-10]
+  Recorded actor: repo-gardener [evidence-10]
+  Episode: ep_seiri_1 [evidence-10]
+  Command: cmd_5ee0c6d8e207bd25 [evidence-10]
+  Authority decision: allowed [evidence-10]
+  Authority reason: unknown [evidence-10]
+    Not recorded by this source
+  Canonical events: event:evt_11; event:evt_12 [evidence-10]
+
+repo.inspect — observed [receipt-2ed3bcac58b61512]
+  Action: repo.inspect [evidence-11]
+  Recorded outcome: observed [evidence-11]
+  Recorded actor: worker-host [evidence-11]
+  Episode: ep_seiri_1 [evidence-11]
+  Command: cmd_5ee0c6d8e207bd25 [evidence-11]
+  Authority decision: unknown [evidence-11]
+    Not recorded by this source
+  Authority reason: unknown [evidence-11]
+    Not recorded by this source
+  Canonical events: event:evt_12; event:evt_19 [evidence-11]
+
+command.result — returned [receipt-71d2d64309e5554a]
+  Action: command.result [evidence-12]
+  Recorded outcome: returned [evidence-12]
+  Recorded actor: worker-host [evidence-12]
+  Episode: ep_seiri_1 [evidence-12]
+  Command: cmd_5ee0c6d8e207bd25 [evidence-12]
+  Authority decision: unknown [evidence-12]
+    Not recorded by this source
+  Authority reason: unknown [evidence-12]
+    Not recorded by this source
+  Canonical events: event:evt_19 [evidence-12]
+
+repo.delete — requested [receipt-0d4b231552b26810]
+  Action: repo.delete [evidence-13]
+  Recorded outcome: requested [evidence-13]
+  Recorded actor: repo-gardener [evidence-13]
+  Episode: ep_seiri_1 [evidence-13]
+  Command: unknown [evidence-13]
+    Not recorded by this source
+  Authority decision: unknown [evidence-13]
+    Not recorded by this source
+  Authority reason: unknown [evidence-13]
+    Not recorded by this source
+  Canonical events: event:evt_22 [evidence-13]
+
+repo.delete — denied [receipt-8835ccd70509c8c1]
+  Action: repo.delete [evidence-14]
+  Recorded outcome: denied [evidence-14]
+  Recorded actor: repo-gardener [evidence-14]
+  Episode: ep_seiri_1 [evidence-14]
+  Command: unknown [evidence-14]
+    Not recorded by this source
+  Authority decision: denied [evidence-14]
+  Authority reason: effect denied [evidence-14]
+  Canonical events: event:evt_22; event:evt_24; event:evt_23 [evidence-14]
+
+episode.terminate — terminated [receipt-97cca933518d70f4]
+  Action: episode.terminate [evidence-15]
+  Recorded outcome: terminated [evidence-15]
+  Recorded actor: repo-gardener [evidence-15]
+  Episode: ep_seiri_1 [evidence-15]
+  Command: unknown [evidence-15]
+    Not recorded by this source
+  Authority decision: unknown [evidence-15]
+    Not recorded by this source
+  Authority reason: unknown [evidence-15]
+    Not recorded by this source
+  Canonical events: event:evt_26 [evidence-15]
+
+verification.complete — passed [receipt-b9615ebf67a92e03]
+  Action: verification.complete [evidence-16]
+  Recorded outcome: passed [evidence-16]
+  Recorded actor: repo-gardener [evidence-16]
+  Episode: ep_seiri_1 [evidence-16]
+  Command: unknown [evidence-16]
+    Not recorded by this source
+  Authority decision: unknown [evidence-16]
+    Not recorded by this source
+  Authority reason: unknown [evidence-16]
+    Not recorded by this source
+  Canonical events: event:evt_28; event:evt_30 [evidence-16]
+
+cadence.no-op — no-op [receipt-ffdcc73956a7bb56]
+  Action: cadence.no-op [evidence-17]
+  Recorded outcome: no-op [evidence-17]
+  Recorded actor: repo-gardener [evidence-17]
+  Episode: ep_seiri_1 [evidence-17]
+  Command: unknown [evidence-17]
+    Not recorded by this source
+  Authority decision: unknown [evidence-17]
+    Not recorded by this source
+  Authority reason: unknown [evidence-17]
+    Not recorded by this source
+  Canonical events: event:evt_35 [evidence-17]
+
+schedule.cancel — observed [receipt-dc31382ef98169e1]
+  Action: schedule.cancel [evidence-18]
+  Recorded outcome: observed [evidence-18]
+  Recorded actor: repo-gardener [evidence-18]
+  Episode: ep_seiri_1 [evidence-18]
+  Command: unknown [evidence-18]
+    Not recorded by this source
+  Authority decision: unknown [evidence-18]
+    Not recorded by this source
+  Authority reason: unknown [evidence-18]
+    Not recorded by this source
+  Canonical events: event:evt_36 [evidence-18]
+
+BUILDS [builds]
+Serves: engineer
+Does this composition express the behavior I mean, and what does it cost?
+
+Saved builds [saved-builds] — available
+
+Repo Gardener [build-ead9f3101e75d12e]
+  Loadout: repo-gardener.seiri.v1 [evidence-1]
+  Identity: repo-gardener [evidence-1]
+  Role: Fixture maintainer [evidence-1]
+  Loadout semantic hash: fnv1a64:9ca8d0229c6bd8db [evidence-1]
+  code-dsl hash: fnv1a64:9ca8d0229c6bd8db [evidence-1]
+  function-table hash: fnv1a64:9ca8d0229c6bd8db [evidence-1]
+  statechart-json hash: fnv1a64:9ca8d0229c6bd8db [evidence-1]
+  Three views: equivalent [evidence-1]
+  Inspection environment: skeleton.fixture [evidence-1]
+    Saved build preview; its expiry is a fixed inspection input, not a live
+grant
+  Equipped items: Seiri (seiri); Bounded repository scope (seiri.repo-scope);
+Read only (seiri.read-only); Evidence capture (seiri.evidence-capture);
+Absent-only cadence (seiri.absence-cadence); Independent verification
+(seiri.independent-verification) [evidence-1]
+  Mechanics and declared costs: Seiri / Sort / 整理
+The Evidence-Bound Sort — COMPILED DIFF
+
+GRANTS
++ Inventory every fixture path
++ Classify every fixture path
++ Analyze references
++ Propose deletion candidates
+
+RESTRICTIONS
++ Do not mutate repository contents
++ Deletion remains operator-owned
++ Inspect only the bounded fixture repository
+
+OBLIGATION
++ Attach inventory, classification, and reference evidence to every candidate
++ Independently verify proposed candidates
+
+PASSIVE
++ Active only while the operator is absent
+
+PULSE
++ Re-evaluate every 20 virtual minutes
+
+INTERRUPT
++ Stop on operator return; queued pulses become a traced NoOp
+
+COST
++ seiri.absence-cadence — statechart-gate; prompt=0 tokens; runtime=2
+predicate-evaluations-per-pulse; episodes=0
++ seiri.evidence-capture — evidence-schema; prompt=0 tokens; runtime=1
+schema-validations-per-result; episodes=0
++ seiri.independent-verification — verifier-episode; prompt=0 tokens; runtime=1
+verifier-dispatches; episodes=1
++ seiri.read-only — permission-guard; prompt=0 tokens; runtime=1
+guard-checks-per-effect; episodes=0
++ seiri.repo-scope — work-order; prompt=0 tokens; runtime=0 operations;
+episodes=0
+
+SEMANTIC HASH
+  before=none
+  after=fnv1a64:9ca8d0229c6bd8db [evidence-1]
+    Compiler renderCompiledDiff(undefined, program); original terms remain
+primary
+
+Entropy Reducer [build-2893c8f905fe3d13]
+  Loadout: entropy-reducer.review.v1 [evidence-2]
+  Identity: entropy-reducer [evidence-2]
+  Role: Planning reviewer [evidence-2]
+  Loadout semantic hash: fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
+  code-dsl hash: fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
+  function-table hash: fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
+  statechart-json hash: fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
+  Three views: equivalent [evidence-2]
+  Inspection environment: skeleton.fixture [evidence-2]
+    Saved build preview; its expiry is a fixed inspection input, not a live
+grant
+  Equipped items: Seisō (Shine) (seiso-shine); Seiketsu (Standardize)
+(entropy-reducer.seiketsu-standardize); Verify-First
+(entropy-reducer.verify-first); Fan-Out Lens (entropy-reducer.fan-out-lens);
+Mutation Drill (entropy-reducer.mutation-drill); Shape-First
+(entropy-reducer.shape-first); Constraint-First Ordering
+(entropy-reducer.constraint-first-ordering); Altitude Tag
+(entropy-reducer.altitude-tag); Sparse Receipt (entropy-reducer.sparse-receipt)
+[evidence-2]
+  Mechanics and declared costs: Seisō / Shine / 清掃
+The Entropy-Reducing Shine — COMPILED DIFF
+
+GRANTS
++ Read repository evidence
++ Run bounded scratch probes
++ Delegate up to four read-only lenses
++ Emit a validated report
+
+RESTRICTIONS
++ Never mutate the tracked repository or control plane
++ Never change remotes, settings, or operator decisions
++ At most four no-fix, read-only lens delegates
++ The result-envelope summary stays under 200 words
+
+OBLIGATION
++ Reproduce every finding
++ Apply the clean-room floor
++ Await operator disposition
++ Tag the likely surface and intervention altitude
++ Refute independently before promoting findings
++ Name the cheapest executable rung for every recurring finding
++ Separate literal defects from the analogy's useful shape
++ Every finding carries reproduction and evidence refs
+
+PASSIVE
++ Measure before assuming
++ Constraint-first proposal ordering
+
+PULSE
++ One review on explicit dispatch
+
+INTERRUPT
++ Stop on OperatorStopRequested or episode expiry
+
+COST
++ entropy-reducer.altitude-tag — work-order; prompt=24 tokens; runtime=0
+effects; episodes=0
++ entropy-reducer.constraint-first-ordering — prompt-fragment; prompt=27
+tokens; runtime=0 effects; episodes=0
++ entropy-reducer.fan-out-lens — work-order; prompt=38 tokens; runtime=4
+delegates-maximum; episodes=0
++ entropy-reducer.mutation-drill — verifier-episode; prompt=28 tokens;
+runtime=32 scratch-probes-maximum; episodes=1
++ entropy-reducer.seiketsu-standardize — work-order; prompt=24 tokens;
+runtime=0 effects; episodes=0
++ entropy-reducer.shape-first — prompt-fragment; prompt=34 tokens; runtime=0
+effects; episodes=0
++ entropy-reducer.sparse-receipt — evidence-schema; prompt=31 tokens; runtime=1
+validation-per-report; episodes=0
++ entropy-reducer.verify-first — evidence-schema; prompt=42 tokens; runtime=1
+validation-per-output; episodes=0
+
+SEMANTIC HASH
+  before=none
+  after=fnv1a64:cd6f2c9b6f1c3883 [evidence-2]
+    Compiler renderCompiledDiff(undefined, program); original terms remain
+primary
+
+Entropy Reducer [build-cd9657984091cc99]
+  Loadout: plan-refuter.v1 [evidence-3]
+  Identity: entropy-reducer [evidence-3]
+  Role: Plan refuter [evidence-3]
+  Loadout semantic hash: fnv1a64:64f5b75b5deeb91f [evidence-3]
+  code-dsl hash: fnv1a64:64f5b75b5deeb91f [evidence-3]
+  function-table hash: fnv1a64:64f5b75b5deeb91f [evidence-3]
+  statechart-json hash: fnv1a64:64f5b75b5deeb91f [evidence-3]
+  Three views: equivalent [evidence-3]
+  Inspection environment: skeleton.fixture [evidence-3]
+    Saved build preview; its expiry is a fixed inspection input, not a live
+grant
+  Equipped items: Seisō (Shine) (seiso-shine) [evidence-3]
+  Mechanics and declared costs: Seisō / Shine / 清掃
+The Entropy-Reducing Shine — COMPILED DIFF
+
+GRANTS
++ Read the compiled planning subject
++ Emit a validated refutation
+
+RESTRICTIONS
++ No model tools, writes, remotes, settings changes or operator decisions
+
+OBLIGATION
++ Name the vision passage behind every drift finding
++ Preserve all unanswered holds
++ Apply the clean-room floor
+
+PASSIVE
++ Contra-Auguste; architecture-and-semantics lens
+
+PULSE
++ One blinded episode on explicit planning dispatch
+
+INTERRUPT
++ Stop at episode expiry
+
+COST
+  (no change)
+
+SEMANTIC HASH
+  before=none
+  after=fnv1a64:64f5b75b5deeb91f [evidence-3]
+    Compiler renderCompiledDiff(undefined, program); original terms remain
+primary
+
+Recorded builds — WO-009 demonstration (recorded fixture)
+[recorded-builds-6a09cb413decd84a] — available
+
+Repo Gardener [recorded-build-9873d81492b1453e]
+  Recorded build hash: fnv1a64:b131af1bf845e8b7 [evidence-6]
+  Hash describes: LoadoutGraph semantic hash [evidence-6]
+  LoadoutGraph semantic hash: fnv1a64:b131af1bf845e8b7 [evidence-6]
+  Allowed effects: repo.inspect [evidence-6]
+  Denied effects: none recorded [evidence-6]
+  Recorded grant expiry: 3000001 [evidence-6]
+    Recorded bound only; the board does not decide current authority
+  Work order: wo_repo_inspection_1 [evidence-6]
+  Role: Fixture maintainer [evidence-6]
+  Objective: Inspect the bounded fixture repository and propose safe deletion
+candidates. [evidence-6]
+  Required evidence: inventory; classification; reference-analysis [evidence-6]
+  Constraints: Inspect only the fixture tree; Do not mutate repository contents
+[evidence-6]
+
+MECHANISMS [mechanisms]
+Serves: tester, engineer, devops
+In this situation, does the equipped behavior do the right thing?
+
+Compiled mechanisms [compiled-mechanisms] — unavailable
+Source not supplied
+
+Acceptance evidence — WO-009 demonstration (recorded fixture)
+[matrices-6a09cb413decd84a] — available
+The source records no entries
+
+WORK [work]
+Serves: showrunner, devops
+What is active, what is blocked, what closed, and what did the release contain?
+
+Orders and legal actions [orders] — unavailable
+Source not supplied
+
+Worktree Beacon observations [worktrees] — unavailable
+Source not supplied
+
+Published releases [releases] — unavailable
+Source not supplied
+
+Work-order evidence index [work-order-index] — unavailable
+Source not supplied
+
+Recorded actor usage [usage] — unavailable
+Source not supplied
+
+BLUEPRINT [blueprint]
+Serves: product-lead, devops
+Is this still the thing we mean?
+
+Latest plan-refutation verdicts [refutation-verdicts] — unavailable
+Source not supplied
+
+Capability evidence [capabilities] — unavailable
+Source not supplied
+
+Publication status [publication] — unavailable
+Source not supplied
+
+Pending roadmap rungs [roadmap] — unavailable
+Source not supplied
+
+ROLE QUESTIONS
+product-lead: Is this still the thing we mean?
+  [refutation-verdicts] verdict + reason; latest-refutation.holdStatus
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+showrunner: What is active, what is blocked, what closed, and what did the
+release contain?
+  [orders] phase + blockers + dependencyCheck + legalNextActions;
+releases.workOrders
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+engineer: Does this composition express the behavior I mean, and what does it
+cost?
+  [saved-builds] tooltip + semanticHash + hashAgreement
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+tester: In this situation, does the equipped behavior do the right thing?
+  [compiled-mechanisms] desiredBehavior + fixture.incidentsPrevented +
+lastActivation; acceptance matrix status and evidence
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+devops: Which repeated step can become a checked mechanism next?
+  [compiled-mechanisms] boundary + rung + nextMaturity; capabilities.Next
+smallest promotable increment
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+
+SOURCES
+available: skeleton:loadout-exports
+unavailable: skeleton:feedback-units — Source not supplied
+available: packages/console/fixtures/wo009.events.jsonl#worker-status
+available: packages/console/fixtures/wo009.events.jsonl#audit-projections
+available: store:wo009-demo
+unavailable: control:canonical-segments — Source not supplied
+unavailable: docs/work-orders/README.md — Source not supplied
+unavailable: resume:status--json — Source not supplied
+unavailable: worktree:constellation — Source not supplied
+unavailable: release:list — Source not supplied
+unavailable: resume:usage--json — Source not supplied
+unavailable: docs/planning/capability-table.md — Source not supplied
+unavailable: docs/publication/audience-status-index.md — Source not supplied
+unavailable: docs/product/06-roadmap.md — Source not supplied
+unavailable: docs/planning/refutations/ — Source not supplied
+
+EVIDENCE
+[evidence-1] packages/skeleton/src/reactor.ts#loadout
+  loadout + explicit inspection environment
+[evidence-2]
+packages/skeleton/src/loadouts/entropy-reducer.ts#entropyReducerLoadout
+  loadout + explicit inspection environment
+[evidence-3] packages/skeleton/src/loadouts/plan-refuter.ts#planRefuterLoadout
+  loadout + explicit inspection environment
+[evidence-4] packages/console/fixtures/wo009.events.jsonl#worker-status
+  episodes:ep_seiri_1_worker_1
+[evidence-5] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  event:evt_15 (WorkerAttemptStarted)
+[evidence-6] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  event:evt_4 (LoadoutEquipped)
+[evidence-7] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  event:evt_36 (SchedulesCancelled)
+[evidence-8] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  event:evt_37 (WorkerWorktreeRemoved)
+[evidence-9] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  receipt:audit:evt_10:work-order-dispatch; event:evt_10
+[evidence-10] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  receipt:audit:evt_12:authority-decision; event:evt_11, event:evt_12
+[evidence-11] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  receipt:audit:evt_19:external-effect; event:evt_12, event:evt_19
+[evidence-12] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  receipt:audit:evt_19:result; event:evt_19
+[evidence-13] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  receipt:audit:evt_22:external-effect; event:evt_22
+[evidence-14] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  receipt:audit:evt_24:authority-decision; event:evt_22, event:evt_24,
+event:evt_23
+[evidence-15] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  receipt:audit:evt_26:result; event:evt_26
+[evidence-16] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  receipt:audit:evt_30:verification; event:evt_28, event:evt_30
+[evidence-17] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  receipt:audit:evt_35:no-op; event:evt_35
+[evidence-18] packages/console/fixtures/wo009.events.jsonl#audit-projections
+  receipt:audit:evt_36:external-effect; event:evt_36

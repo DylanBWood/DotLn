@@ -1,0 +1,104 @@
+DOTLN / ACTOR BOARD
+uifa-board-v1 · Read-only, lossy projection
+Recorded facts only. Unknown is not zero; a missing source is unavailable.
+
+ACTORS [actors]
+Serves: showrunner, engineer, tester
+Who is recorded, what are they equipped to do, and what evidence shows their
+work?
+
+Recorded episodes [episode-actors] — unavailable
+No worker or audit store was supplied
+
+People and recorded workflow actors [control-actors] — unavailable
+Source not supplied
+
+Saved actor definitions [actor-definitions] — unavailable
+Source not supplied
+
+BUILDS [builds]
+Serves: engineer
+Does this composition express the behavior I mean, and what does it cost?
+
+Saved builds [saved-builds] — unavailable
+Source not supplied
+
+MECHANISMS [mechanisms]
+Serves: tester, engineer, devops
+In this situation, does the equipped behavior do the right thing?
+
+Compiled mechanisms [compiled-mechanisms] — unavailable
+Source not supplied
+
+WORK [work]
+Serves: showrunner, devops
+What is active, what is blocked, what closed, and what did the release contain?
+
+Orders and legal actions [orders] — unavailable
+Source not supplied
+
+Worktree Beacon observations [worktrees] — unavailable
+Source not supplied
+
+Published releases [releases] — unavailable
+Source not supplied
+
+Work-order evidence index [work-order-index] — unavailable
+Source not supplied
+
+Recorded actor usage [usage] — unavailable
+Source not supplied
+
+BLUEPRINT [blueprint]
+Serves: product-lead, devops
+Is this still the thing we mean?
+
+Latest plan-refutation verdicts [refutation-verdicts] — unavailable
+Source not supplied
+
+Capability evidence [capabilities] — unavailable
+Source not supplied
+
+Publication status [publication] — unavailable
+Source not supplied
+
+Pending roadmap rungs [roadmap] — unavailable
+Source not supplied
+
+ROLE QUESTIONS
+product-lead: Is this still the thing we mean?
+  [refutation-verdicts] verdict + reason; latest-refutation.holdStatus
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+showrunner: What is active, what is blocked, what closed, and what did the
+release contain?
+  [orders] phase + blockers + dependencyCheck + legalNextActions;
+releases.workOrders
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+engineer: Does this composition express the behavior I mean, and what does it
+cost?
+  [saved-builds] tooltip + semanticHash + hashAgreement
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+tester: In this situation, does the equipped behavior do the right thing?
+  [compiled-mechanisms] desiredBehavior + fixture.incidentsPrevented +
+lastActivation; acceptance matrix status and evidence
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+devops: Which repeated step can become a checked mechanism next?
+  [compiled-mechanisms] boundary + rung + nextMaturity; capabilities.Next
+smallest promotable increment
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+
+SOURCES
+unavailable: skeleton:loadout-exports — Source not supplied
+unavailable: skeleton:feedback-units — Source not supplied
+unavailable: control:canonical-segments — Source not supplied
+unavailable: docs/work-orders/README.md — Source not supplied
+unavailable: resume:status--json — Source not supplied
+unavailable: worktree:constellation — Source not supplied
+unavailable: release:list — Source not supplied
+unavailable: resume:usage--json — Source not supplied
+unavailable: docs/planning/capability-table.md — Source not supplied
+unavailable: docs/publication/audience-status-index.md — Source not supplied
+unavailable: docs/product/06-roadmap.md — Source not supplied
+unavailable: docs/planning/refutations/ — Source not supplied
+
+EVIDENCE

@@ -1,0 +1,3064 @@
+[
+  {
+    "ref": "packages/skeleton/src/reactor.ts#loadout",
+    "graph": {
+      "schemaVersion": 1,
+      "loadoutId": "repo-gardener.seiri.v1",
+      "identity": {
+        "identityId": "repo-gardener",
+        "version": 1,
+        "name": "Repo Gardener",
+        "dispositions": [
+          "patient",
+          "evidence-bound",
+          "propose-don't-destroy"
+        ],
+        "invariants": [
+          "no deletion authority at base rank",
+          "every candidate carries evidence"
+        ],
+        "updateLaws": [
+          "identity updates require a new version"
+        ],
+        "lineage": [
+          "founding Repo Gardener"
+        ]
+      },
+      "role": {
+        "roleId": "fixture-maintainer",
+        "version": 1,
+        "name": "Fixture maintainer",
+        "obligations": [
+          "inspect the bounded fixture"
+        ],
+        "permissions": [
+          "repo.inspect"
+        ],
+        "objectives": [
+          "propose safe deletion candidates"
+        ],
+        "policyDeltas": [
+          {
+            "key": "maintenance",
+            "value": "absent-only"
+          }
+        ]
+      },
+      "containers": [
+        {
+          "containerId": "repo-gardener.gloves",
+          "version": 1,
+          "name": "Repo Gardener gloves",
+          "kind": "equipment",
+          "socketBudget": 6,
+          "activeMechanicIds": [
+            "seiri"
+          ],
+          "supportFacetIds": [
+            "seiri.repo-scope",
+            "seiri.read-only",
+            "seiri.evidence-capture",
+            "seiri.absence-cadence",
+            "seiri.independent-verification"
+          ]
+        }
+      ],
+      "activeMechanics": [
+        {
+          "activeMechanicId": "seiri",
+          "version": 1,
+          "name": "Seiri",
+          "tags": [
+            "observe",
+            "plan",
+            "verify",
+            "schedule"
+          ],
+          "requiredCapabilities": [],
+          "semantics": [
+            "inventory",
+            "classify",
+            "analyze references",
+            "propose deletion candidates"
+          ],
+          "workOrder": {
+            "workOrderId": "wo_repo_inspection_1",
+            "objective": "Inspect the bounded fixture repository and propose safe deletion candidates.",
+            "acceptanceCriteria": [
+              "Inventory every fixture path",
+              "Classify every path"
+            ],
+            "knownFacts": [
+              "The repository is a deterministic fixture",
+              "The operator is absent at dispatch"
+            ],
+            "decisions": [
+              "Repo Gardener uses Seiri"
+            ],
+            "constraints": [],
+            "nonGoals": [],
+            "allowedOperations": [
+              "repo.inventory",
+              "repo.classify",
+              "repo.references",
+              "repo.proposeDeletion"
+            ],
+            "prohibitedOperations": [],
+            "requiredEvidence": [],
+            "outputContract": {
+              "type": "CommandResult",
+              "result": "candidates",
+              "candidateFields": []
+            }
+          },
+          "authorityEnvelope": {
+            "authorityEnvelopeId": "auth_seiri",
+            "allowedEffects": [
+              "repo.inspect"
+            ],
+            "deniedEffects": [],
+            "resourceLimits": {
+              "inspections": 1
+            },
+            "requiredEvidence": [],
+            "expiresAt": 2400000,
+            "revocationEventTypes": [],
+            "revocationConditions": []
+          },
+          "inspection": {
+            "originalTerm": "Seiri",
+            "translation": "Sort",
+            "kanji": "整理",
+            "rpgTitle": "The Evidence-Bound Sort",
+            "grants": [
+              "Inventory every fixture path",
+              "Classify every fixture path",
+              "Analyze references",
+              "Propose deletion candidates"
+            ],
+            "restrictions": [],
+            "obligations": [],
+            "passive": [],
+            "pulse": [],
+            "interrupt": []
+          }
+        }
+      ],
+      "supportFacets": [
+        {
+          "version": 1,
+          "requiredCapabilities": [
+            "fixture-repository"
+          ],
+          "semanticsModified": [],
+          "authorityChanges": [],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "seiri.repo-scope",
+          "name": "Bounded repository scope",
+          "supportedTags": [
+            "observe"
+          ],
+          "semanticsAdded": [
+            "bounded repository scope"
+          ],
+          "emissions": [
+            {
+              "kind": "work-order",
+              "emissionId": "scope.constraint",
+              "field": "constraints",
+              "values": [
+                "Inspect only the fixture tree"
+              ],
+              "order": 10
+            },
+            {
+              "kind": "work-order",
+              "emissionId": "scope.non-goal",
+              "field": "nonGoals",
+              "values": [
+                "Inspect another repository"
+              ],
+              "order": 20
+            }
+          ],
+          "cost": {
+            "mechanismType": "work-order",
+            "promptTokens": 0,
+            "runtimeCost": {
+              "quantity": 0,
+              "unit": "operations"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "restrictions": [
+              "Inspect only the bounded fixture repository"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [
+            "deny repo.delete",
+            "deny repo.write"
+          ],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [
+            {
+              "claimId": "read-only.delete",
+              "target": "authority.repo.delete",
+              "value": "deny",
+              "layer": "hard-permissions",
+              "hard": true
+            }
+          ],
+          "supportFacetId": "seiri.read-only",
+          "name": "Read only",
+          "supportedTags": [
+            "observe",
+            "plan"
+          ],
+          "semanticsAdded": [
+            "never delete",
+            "read only"
+          ],
+          "emissions": [
+            {
+              "kind": "work-order",
+              "emissionId": "read-only.decision",
+              "field": "decisions",
+              "values": [
+                "Deletion remains operator-owned"
+              ],
+              "order": 10
+            },
+            {
+              "kind": "work-order",
+              "emissionId": "read-only.constraint",
+              "field": "constraints",
+              "values": [
+                "Do not mutate repository contents"
+              ],
+              "order": 20
+            },
+            {
+              "kind": "work-order",
+              "emissionId": "read-only.non-goal",
+              "field": "nonGoals",
+              "values": [
+                "Delete files"
+              ],
+              "order": 10
+            },
+            {
+              "kind": "permission-guard",
+              "emissionId": "read-only.permissions",
+              "allowedOperations": [],
+              "prohibitedOperations": [
+                "repo.delete",
+                "repo.write"
+              ],
+              "allowedEffects": [],
+              "deniedEffects": [
+                "repo.delete",
+                "repo.write"
+              ]
+            }
+          ],
+          "cost": {
+            "mechanismType": "permission-guard",
+            "promptTokens": 0,
+            "runtimeCost": {
+              "quantity": 1,
+              "unit": "guard-checks-per-effect"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "restrictions": [
+              "Do not mutate repository contents",
+              "Deletion remains operator-owned"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [],
+          "evidenceRequirements": [
+            "inventory",
+            "classification",
+            "reference-analysis"
+          ],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "seiri.evidence-capture",
+          "name": "Evidence capture",
+          "supportedTags": [
+            "observe",
+            "verify"
+          ],
+          "semanticsAdded": [
+            "attach evidence"
+          ],
+          "emissions": [
+            {
+              "kind": "work-order",
+              "emissionId": "evidence.acceptance",
+              "field": "acceptanceCriteria",
+              "values": [
+                "Attach reference evidence to every candidate"
+              ],
+              "order": 30
+            },
+            {
+              "kind": "evidence-schema",
+              "emissionId": "evidence.schema",
+              "schemaId": "seiri.candidates.v1",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "path",
+                    "classification",
+                    "evidence"
+                  ]
+                }
+              },
+              "outputContract": {
+                "type": "CommandResult",
+                "result": "candidates",
+                "candidateFields": [
+                  "path",
+                  "classification",
+                  "evidence"
+                ]
+              }
+            }
+          ],
+          "cost": {
+            "mechanismType": "evidence-schema",
+            "promptTokens": 0,
+            "runtimeCost": {
+              "quantity": 1,
+              "unit": "schema-validations-per-result"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "obligations": [
+              "Attach inventory, classification, and reference evidence to every candidate"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [
+            "revoke inspection on operator return"
+          ],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "seiri.absence-cadence",
+          "name": "Absent-only cadence",
+          "supportedTags": [
+            "schedule"
+          ],
+          "semanticsAdded": [
+            "active only while operator is absent",
+            "interrupt on operator return",
+            "re-evaluate every 20 virtual minutes"
+          ],
+          "emissions": [
+            {
+              "kind": "cadence",
+              "emissionId": "absence.cadence",
+              "cadenceId": "seiri.every-20m-until-return",
+              "scheduleId": "schedule_seiri_20m",
+              "queuedScheduleId": "schedule_seiri_already_queued",
+              "queuedDelayMs": 7,
+              "cadence": {
+                "kind": "Until",
+                "cadence": {
+                  "kind": "Gate",
+                  "cadence": {
+                    "kind": "Every",
+                    "intervalMs": 1200000
+                  },
+                  "conditionRef": {
+                    "registryId": "operator.away",
+                    "version": 1
+                  }
+                },
+                "conditionRef": {
+                  "registryId": "operator.returned",
+                  "version": 1
+                }
+              },
+              "cancelOn": [
+                {
+                  "registryId": "operator.returned",
+                  "version": 1
+                }
+              ]
+            },
+            {
+              "kind": "statechart-gate",
+              "emissionId": "absence.guard",
+              "activationCondition": {
+                "registryId": "operator.away",
+                "version": 1
+              },
+              "interruptionCondition": {
+                "registryId": "operator.returned",
+                "version": 1
+              },
+              "authorityRevocationCondition": {
+                "registryId": "operator.return-event",
+                "version": 1
+              }
+            }
+          ],
+          "cost": {
+            "mechanismType": "statechart-gate",
+            "promptTokens": 0,
+            "runtimeCost": {
+              "quantity": 2,
+              "unit": "predicate-evaluations-per-pulse"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "passive": [
+              "Active only while the operator is absent"
+            ],
+            "pulse": [
+              "Re-evaluate every 20 virtual minutes"
+            ],
+            "interrupt": [
+              "Stop on operator return; queued pulses become a traced NoOp"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "seiri.independent-verification",
+          "name": "Independent verification",
+          "supportedTags": [
+            "verify"
+          ],
+          "semanticsAdded": [
+            "independent verification"
+          ],
+          "emissions": [
+            {
+              "kind": "verifier-episode",
+              "emissionId": "verification.candidates",
+              "episodeId": "seiri-candidate-verifier",
+              "subject": "candidates",
+              "required": true
+            }
+          ],
+          "cost": {
+            "mechanismType": "verifier-episode",
+            "promptTokens": 0,
+            "runtimeCost": {
+              "quantity": 1,
+              "unit": "verifier-dispatches"
+            },
+            "extraEpisodes": 1
+          },
+          "inspection": {
+            "obligations": [
+              "Independently verify proposed candidates"
+            ]
+          }
+        }
+      ],
+      "links": [
+        {
+          "linkId": "seiri.link.01",
+          "linkGroupId": "seiri.links",
+          "activeMechanicId": "seiri",
+          "supportFacetId": "seiri.repo-scope"
+        },
+        {
+          "linkId": "seiri.link.02",
+          "linkGroupId": "seiri.links",
+          "activeMechanicId": "seiri",
+          "supportFacetId": "seiri.read-only"
+        },
+        {
+          "linkId": "seiri.link.03",
+          "linkGroupId": "seiri.links",
+          "activeMechanicId": "seiri",
+          "supportFacetId": "seiri.evidence-capture"
+        },
+        {
+          "linkId": "seiri.link.04",
+          "linkGroupId": "seiri.links",
+          "activeMechanicId": "seiri",
+          "supportFacetId": "seiri.absence-cadence"
+        },
+        {
+          "linkId": "seiri.link.05",
+          "linkGroupId": "seiri.links",
+          "activeMechanicId": "seiri",
+          "supportFacetId": "seiri.independent-verification"
+        }
+      ],
+      "linkGroups": [
+        {
+          "linkGroupId": "seiri.links",
+          "containerId": "repo-gardener.gloves",
+          "linkIds": [
+            "seiri.link.01",
+            "seiri.link.02",
+            "seiri.link.03",
+            "seiri.link.04",
+            "seiri.link.05"
+          ]
+        }
+      ],
+      "explicitPipelines": [],
+      "ambientEffects": [],
+      "resourceModel": {
+        "resourceModelId": "seiri.fixture-resources",
+        "version": 1,
+        "capacities": {
+          "inspections": 1
+        },
+        "reservations": []
+      },
+      "polarAxes": []
+    },
+    "environment": {
+      "environmentId": "skeleton.fixture",
+      "version": 1,
+      "capabilities": [
+        "fixture-repository"
+      ],
+      "repo": "packages/skeleton/fixtures/repo-tree.json",
+      "baseCommit": "fixture-base"
+    }
+  },
+  {
+    "ref": "packages/skeleton/src/loadouts/entropy-reducer.ts#entropyReducerLoadout",
+    "graph": {
+      "schemaVersion": 1,
+      "loadoutId": "entropy-reducer.review.v1",
+      "identity": {
+        "identityId": "entropy-reducer",
+        "version": 1,
+        "name": "Entropy Reducer",
+        "dispositions": [
+          "verify-first",
+          "measure-rather-than-assume",
+          "candid-and-fair",
+          "propose-rather-than-mutate",
+          "shape-first-on-operator-analogies"
+        ],
+        "invariants": [
+          "the tracked repository and control plane remain read-only during review",
+          "every finding carries an independent reproduction",
+          "the clean-room floor cannot be weakened",
+          "settled decisions are not relitigated",
+          "authority never substitutes for correctness",
+          "refuted findings leave the promoted set",
+          "side routines stay within declared budgets"
+        ],
+        "updateLaws": [
+          "identity changes require a new version and comparison evidence",
+          "a substitute reviewer model is a different attested actor"
+        ],
+        "lineage": [
+          "second founding identity",
+          "Shine active linked to Standardize",
+          "generated from the WO-023 entropy-reducer definition"
+        ]
+      },
+      "role": {
+        "roleId": "planning-reviewer",
+        "version": 1,
+        "name": "Planning reviewer",
+        "obligations": [
+          "perform a whole-repository census",
+          "assess the mechanism ladder",
+          "emit non-authoritative product suggestions"
+        ],
+        "permissions": [
+          "repo.read*",
+          "probe.run:scratch*",
+          "intake.capture",
+          "delegate.readonly",
+          "report.emit"
+        ],
+        "objectives": [
+          "reduce entropy without exporting cost to quality, authority, or operator attention"
+        ],
+        "policyDeltas": [
+          {
+            "key": "proposalOrdering",
+            "value": "constraint-first"
+          }
+        ]
+      },
+      "containers": [
+        {
+          "containerId": "entropy-reducer.helm",
+          "version": 1,
+          "name": "Entropy Reducer helm",
+          "kind": "equipment",
+          "socketBudget": 8,
+          "activeMechanicIds": [
+            "seiso-shine"
+          ],
+          "supportFacetIds": [
+            "entropy-reducer.seiketsu-standardize",
+            "entropy-reducer.verify-first",
+            "entropy-reducer.fan-out-lens",
+            "entropy-reducer.mutation-drill",
+            "entropy-reducer.shape-first",
+            "entropy-reducer.constraint-first-ordering",
+            "entropy-reducer.altitude-tag",
+            "entropy-reducer.sparse-receipt"
+          ]
+        }
+      ],
+      "activeMechanics": [
+        {
+          "activeMechanicId": "seiso-shine",
+          "version": 1,
+          "name": "Seisō (Shine)",
+          "tags": [
+            "observe",
+            "research",
+            "plan",
+            "verify",
+            "delegate",
+            "narrate"
+          ],
+          "requiredCapabilities": [],
+          "semantics": [
+            "review makes inspection inseparable from cleanup",
+            "produce findings and proposals without implementing them",
+            "stop at operator disposition"
+          ],
+          "workOrder": {
+            "workOrderId": "wo_entropy_review_1",
+            "objective": "Review the whole repository for evidenced entropy, verify findings, and emit bounded non-authoritative product suggestions without mutating the subject.",
+            "acceptanceCriteria": [
+              "Census the declared repository surfaces before prioritizing findings",
+              "Distinguish measured evidence from inspection",
+              "Return typed findings, proposal packet payloads, and one terse result envelope"
+            ],
+            "knownFacts": [
+              "The repository product docs are durable shared memory",
+              "The reviewer has no authority to implement or promote its own suggestions",
+              "The kernel does not yet evaluate Program.All, so this review is dispatched manually",
+              "The compiled reviewer is claude-fable-5-1 at max effort; a substitution is a different attested actor"
+            ],
+            "decisions": [
+              "Entropy Reducer uses Shine linked to Standardize",
+              "Constraint-first ordering applies",
+              "A fresh blinded Contra-Auguste episode refutes selected findings"
+            ],
+            "constraints": [
+              "Treat tracked repository, control plane, remote systems, and settings as read-only",
+              "Read only paths named by the Git index; never inspect docs/intake/** during a review episode",
+              "Use scratch probes and ignored intake capture only inside their authorized roots",
+              "Apply the clean-room stop screen before preparing any report emission",
+              "Do not relitigate settled decisions"
+            ],
+            "nonGoals": [
+              "Implement a finding or suggestion",
+              "File or promote a ProductSuggestion",
+              "Edit an operator decision",
+              "Claim that authority or model output establishes correctness"
+            ],
+            "allowedOperations": [
+              "repo.read*",
+              "probe.run:scratch*",
+              "intake.capture",
+              "delegate.readonly",
+              "report.emit"
+            ],
+            "prohibitedOperations": [
+              "repo.write*",
+              "git.mutate*",
+              "remote.*",
+              "settings.*",
+              "decision.edit"
+            ],
+            "requiredEvidence": [],
+            "outputContract": {
+              "$id": "dotln.entropy-reducer.output.v1",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "schemaVersion",
+                "findings",
+                "proposalPackets",
+                "resultEnvelope",
+                "cleanRoom"
+              ],
+              "properties": {
+                "schemaVersion": {
+                  "const": 1
+                },
+                "findings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "findingId",
+                      "criterion",
+                      "severity",
+                      "evidenceLabel",
+                      "observed",
+                      "expected",
+                      "reproduction",
+                      "evidenceRefs",
+                      "surface",
+                      "altitude",
+                      "standardization"
+                    ],
+                    "properties": {
+                      "findingId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "criterion": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "severity": {
+                        "enum": [
+                          "blocking",
+                          "major",
+                          "minor"
+                        ]
+                      },
+                      "evidenceLabel": {
+                        "enum": [
+                          "measured",
+                          "by inspection"
+                        ]
+                      },
+                      "observed": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "expected": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "reproduction": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "kind",
+                              "command"
+                            ],
+                            "properties": {
+                              "kind": {
+                                "const": "command"
+                              },
+                              "command": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "kind",
+                              "steps"
+                            ],
+                            "properties": {
+                              "kind": {
+                                "const": "inspection"
+                              },
+                              "steps": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "evidenceRefs": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "surface": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "altitude": {
+                        "type": "integer",
+                        "minimum": 2,
+                        "maximum": 12
+                      },
+                      "standardization": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "kind"
+                            ],
+                            "properties": {
+                              "kind": {
+                                "const": "one-off"
+                              }
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "kind",
+                              "rung",
+                              "rationale"
+                            ],
+                            "properties": {
+                              "kind": {
+                                "const": "recurring"
+                              },
+                              "rung": {
+                                "enum": [
+                                  "test",
+                                  "lint",
+                                  "guard",
+                                  "script"
+                                ]
+                              },
+                              "rationale": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "oneOf": [
+                      {
+                        "properties": {
+                          "evidenceLabel": {
+                            "const": "measured"
+                          },
+                          "reproduction": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "kind",
+                              "command"
+                            ],
+                            "properties": {
+                              "kind": {
+                                "const": "command"
+                              },
+                              "command": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "properties": {
+                          "evidenceLabel": {
+                            "const": "by inspection"
+                          },
+                          "reproduction": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "kind",
+                              "steps"
+                            ],
+                            "properties": {
+                              "kind": {
+                                "const": "inspection"
+                              },
+                              "steps": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "proposalPackets": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "schemaVersion",
+                      "kind",
+                      "proposedPath",
+                      "sourceEpisodeId",
+                      "provenance",
+                      "corroboratingEvidenceRefs",
+                      "dissentingEvidenceRefs",
+                      "suggestion"
+                    ],
+                    "properties": {
+                      "schemaVersion": {
+                        "const": 1
+                      },
+                      "kind": {
+                        "const": "ProductSuggestionPacket"
+                      },
+                      "proposedPath": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "^docs/proposals/(?!\\.{1,2}/$)[A-Za-z0-9][A-Za-z0-9._-]*/$",
+                        "$comment": "The host validator also requires the final segment to equal suggestion.suggestionId."
+                      },
+                      "sourceEpisodeId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "provenance": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "corroboratingEvidenceRefs": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "dissentingEvidenceRefs": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "suggestion": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "suggestionId",
+                          "submittedBy",
+                          "problemOrOpportunity",
+                          "scope",
+                          "evidenceRefs",
+                          "affectedUsers",
+                          "affectedSystems",
+                          "expectedValue",
+                          "altitude",
+                          "uncertainty",
+                          "risks",
+                          "alternatives",
+                          "duplicationHints",
+                          "urgencyRationale"
+                        ],
+                        "properties": {
+                          "suggestionId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^(?!\\.{1,2}$)[A-Za-z0-9][A-Za-z0-9._-]*$"
+                          },
+                          "submittedBy": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "problemOrOpportunity": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "scope": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "evidenceRefs": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "affectedUsers": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "affectedSystems": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "expectedValue": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "altitude": {
+                            "type": "integer",
+                            "minimum": 2,
+                            "maximum": 12
+                          },
+                          "uncertainty": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "risks": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "alternatives": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "duplicationHints": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "urgencyRationale": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "resultEnvelope": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "workOrderId",
+                    "episodeId",
+                    "status",
+                    "resultId",
+                    "summary",
+                    "requiresHuman"
+                  ],
+                  "properties": {
+                    "workOrderId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "episodeId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "status": {
+                      "enum": [
+                        "completed",
+                        "failed",
+                        "blocked"
+                      ]
+                    },
+                    "resultId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "summary": {
+                      "type": "string",
+                      "minLength": 1,
+                      "$comment": "The host validator requires fewer than 200 whitespace-delimited words."
+                    },
+                    "requiresHuman": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "cleanRoom": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status",
+                    "stopConditionsFound",
+                    "evidenceRefs"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "passed"
+                    },
+                    "stopConditionsFound": {
+                      "const": false
+                    },
+                    "evidenceRefs": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "authorityEnvelope": {
+            "authorityEnvelopeId": "auth_entropy_reducer",
+            "allowedEffects": [
+              "repo.read*",
+              "probe.run:scratch*",
+              "intake.capture",
+              "delegate.readonly",
+              "report.emit"
+            ],
+            "deniedEffects": [
+              "repo.write*",
+              "git.mutate*",
+              "remote.*",
+              "settings.*",
+              "decision.edit"
+            ],
+            "resourceLimits": {
+              "delegates": 4,
+              "probes": 32
+            },
+            "requiredEvidence": [],
+            "expiresAt": 86400000,
+            "revocationEventTypes": [
+              "OperatorStopRequested"
+            ],
+            "revocationConditions": []
+          },
+          "inspection": {
+            "originalTerm": "Seisō",
+            "translation": "Shine",
+            "kanji": "清掃",
+            "rpgTitle": "The Entropy-Reducing Shine",
+            "grants": [
+              "Read repository evidence",
+              "Run bounded scratch probes",
+              "Delegate up to four read-only lenses",
+              "Emit a validated report"
+            ],
+            "restrictions": [
+              "Never mutate the tracked repository or control plane",
+              "Never change remotes, settings, or operator decisions"
+            ],
+            "obligations": [
+              "Reproduce every finding",
+              "Apply the clean-room floor",
+              "Await operator disposition"
+            ],
+            "passive": [
+              "Measure before assuming"
+            ],
+            "pulse": [
+              "One review on explicit dispatch"
+            ],
+            "interrupt": [
+              "Stop on OperatorStopRequested or episode expiry"
+            ]
+          }
+        }
+      ],
+      "supportFacets": [
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "entropy-reducer.seiketsu-standardize",
+          "name": "Seiketsu (Standardize)",
+          "supportedTags": [
+            "plan"
+          ],
+          "semanticsAdded": [
+            "route every recurring finding to a test, lint, guard, or script rung"
+          ],
+          "emissions": [
+            {
+              "kind": "work-order",
+              "emissionId": "standardize.acceptance",
+              "field": "acceptanceCriteria",
+              "values": [
+                "Route every recurring finding to a proposed test, lint, guard, or script rung"
+              ],
+              "order": 10
+            },
+            {
+              "kind": "prompt-fragment",
+              "emissionId": "standardize.residue",
+              "text": "Convert repetition into a cheaper executable standard."
+            }
+          ],
+          "cost": {
+            "mechanismType": "work-order",
+            "promptTokens": 24,
+            "runtimeCost": {
+              "quantity": 0,
+              "unit": "effects"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "obligations": [
+              "Name the cheapest executable rung for every recurring finding"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [],
+          "evidenceRequirements": [
+            "reproduction"
+          ],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "entropy-reducer.verify-first",
+          "name": "Verify-First",
+          "supportedTags": [
+            "verify"
+          ],
+          "semanticsAdded": [
+            "label each finding measured or by inspection",
+            "attach an independent reproduction command"
+          ],
+          "emissions": [
+            {
+              "kind": "evidence-schema",
+              "emissionId": "verify-first.finding-schema",
+              "schemaId": "dotln.entropy-reducer.finding.v1",
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "findingId",
+                  "criterion",
+                  "severity",
+                  "evidenceLabel",
+                  "observed",
+                  "expected",
+                  "reproduction",
+                  "evidenceRefs",
+                  "surface",
+                  "altitude",
+                  "standardization"
+                ],
+                "properties": {
+                  "findingId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "criterion": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "severity": {
+                    "enum": [
+                      "blocking",
+                      "major",
+                      "minor"
+                    ]
+                  },
+                  "evidenceLabel": {
+                    "enum": [
+                      "measured",
+                      "by inspection"
+                    ]
+                  },
+                  "observed": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "expected": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reproduction": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "kind",
+                          "command"
+                        ],
+                        "properties": {
+                          "kind": {
+                            "const": "command"
+                          },
+                          "command": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "kind",
+                          "steps"
+                        ],
+                        "properties": {
+                          "kind": {
+                            "const": "inspection"
+                          },
+                          "steps": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "evidenceRefs": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "surface": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "altitude": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 12
+                  },
+                  "standardization": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "kind"
+                        ],
+                        "properties": {
+                          "kind": {
+                            "const": "one-off"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "kind",
+                          "rung",
+                          "rationale"
+                        ],
+                        "properties": {
+                          "kind": {
+                            "const": "recurring"
+                          },
+                          "rung": {
+                            "enum": [
+                              "test",
+                              "lint",
+                              "guard",
+                              "script"
+                            ]
+                          },
+                          "rationale": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "oneOf": [
+                  {
+                    "properties": {
+                      "evidenceLabel": {
+                        "const": "measured"
+                      },
+                      "reproduction": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "kind",
+                          "command"
+                        ],
+                        "properties": {
+                          "kind": {
+                            "const": "command"
+                          },
+                          "command": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "evidenceLabel": {
+                        "const": "by inspection"
+                      },
+                      "reproduction": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "kind",
+                          "steps"
+                        ],
+                        "properties": {
+                          "kind": {
+                            "const": "inspection"
+                          },
+                          "steps": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "prompt-fragment",
+              "emissionId": "verify-first.residue",
+              "text": "Measure before concluding, label inspection honestly, and give every finding a runnable reproduction."
+            }
+          ],
+          "cost": {
+            "mechanismType": "evidence-schema",
+            "promptTokens": 42,
+            "runtimeCost": {
+              "quantity": 1,
+              "unit": "validation-per-output"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "obligations": [
+              "Every finding carries reproduction and evidence refs"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [
+            "consume only delegate.readonly"
+          ],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "entropy-reducer.fan-out-lens",
+          "name": "Fan-Out Lens",
+          "supportedTags": [
+            "delegate"
+          ],
+          "semanticsAdded": [
+            "delegate at most four read-only lenses with fixed briefs and word budgets"
+          ],
+          "emissions": [
+            {
+              "kind": "evidence-schema",
+              "emissionId": "fan-out.lens-brief-schema",
+              "schemaId": "dotln.entropy-reducer.lens-brief.v1",
+              "schema": {
+                "$id": "dotln.entropy-reducer.lens-brief.v1",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "lensId",
+                  "files",
+                  "questions",
+                  "outputShape",
+                  "wordBudget",
+                  "noFix"
+                ],
+                "properties": {
+                  "lensId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "files": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "$comment": "The host validator also normalizes separators and case and rejects broad, parent-traversing, absolute, backslash, and docs/intake scopes."
+                  },
+                  "questions": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "outputShape": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "wordBudget": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "noFix": {
+                    "const": true
+                  }
+                }
+              }
+            },
+            {
+              "kind": "work-order",
+              "emissionId": "fan-out.constraint",
+              "field": "constraints",
+              "values": [
+                "Delegate at most four read-only lenses; every brief declares files, questions, output shape, word budget, and no-fix"
+              ],
+              "order": 20
+            },
+            {
+              "kind": "prompt-fragment",
+              "emissionId": "fan-out.residue",
+              "text": "Use bounded side routines for census breadth; keep synthesis in the main reviewer."
+            }
+          ],
+          "cost": {
+            "mechanismType": "work-order",
+            "promptTokens": 38,
+            "runtimeCost": {
+              "quantity": 4,
+              "unit": "delegates-maximum"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "restrictions": [
+              "At most four no-fix, read-only lens delegates"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [
+            "permit probe.run:scratch* only outside the tracked tree"
+          ],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "entropy-reducer.mutation-drill",
+          "name": "Mutation Drill",
+          "supportedTags": [
+            "verify"
+          ],
+          "semanticsAdded": [
+            "challenge evidence with bounded perturbations in a scratch copy"
+          ],
+          "emissions": [
+            {
+              "kind": "verifier-episode",
+              "emissionId": "mutation-drill.refutation",
+              "episodeId": "entropy-reducer-contra-auguste",
+              "subject": "review-findings",
+              "required": true
+            },
+            {
+              "kind": "prompt-fragment",
+              "emissionId": "mutation-drill.residue",
+              "text": "Attempt to falsify findings from their reproduction commands in an isolated scratch copy."
+            }
+          ],
+          "cost": {
+            "mechanismType": "verifier-episode",
+            "promptTokens": 28,
+            "runtimeCost": {
+              "quantity": 32,
+              "unit": "scratch-probes-maximum"
+            },
+            "extraEpisodes": 1
+          },
+          "inspection": {
+            "obligations": [
+              "Refute independently before promoting findings"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "entropy-reducer.shape-first",
+          "name": "Shape-First",
+          "supportedTags": [
+            "research",
+            "plan"
+          ],
+          "semanticsAdded": [
+            "state literal weaknesses and fixes before carrying an analogy down the mechanism ladder"
+          ],
+          "emissions": [
+            {
+              "kind": "prompt-fragment",
+              "emissionId": "shape-first.residue",
+              "text": "For an operator analogy, state the literal weakness and literal fix first; only then preserve the useful relation across lower mechanisms."
+            }
+          ],
+          "cost": {
+            "mechanismType": "prompt-fragment",
+            "promptTokens": 34,
+            "runtimeCost": {
+              "quantity": 0,
+              "unit": "effects"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "obligations": [
+              "Separate literal defects from the analogy's useful shape"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "entropy-reducer.constraint-first-ordering",
+          "name": "Constraint-First Ordering",
+          "supportedTags": [
+            "plan"
+          ],
+          "semanticsAdded": [
+            "order proposals by the currently evidenced constraint before local polish"
+          ],
+          "emissions": [
+            {
+              "kind": "prompt-fragment",
+              "emissionId": "constraint-first.residue",
+              "text": "Identify the evidenced system constraint before ordering recommendations; do not mistake priority for authority."
+            }
+          ],
+          "cost": {
+            "mechanismType": "prompt-fragment",
+            "promptTokens": 27,
+            "runtimeCost": {
+              "quantity": 0,
+              "unit": "effects"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "passive": [
+              "Constraint-first proposal ordering"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "entropy-reducer.altitude-tag",
+          "name": "Altitude Tag",
+          "supportedTags": [
+            "observe",
+            "plan"
+          ],
+          "semanticsAdded": [
+            "tag every finding and proposal with its mechanism altitude"
+          ],
+          "emissions": [
+            {
+              "kind": "work-order",
+              "emissionId": "altitude.acceptance",
+              "field": "acceptanceCriteria",
+              "values": [
+                "Tag every finding with a Meadows mechanism altitude from 12 through 2"
+              ],
+              "order": 30
+            },
+            {
+              "kind": "prompt-fragment",
+              "emissionId": "altitude.residue",
+              "text": "Name the intervention altitude and prefer the highest supported mechanism over repeated parameter patching."
+            }
+          ],
+          "cost": {
+            "mechanismType": "work-order",
+            "promptTokens": 24,
+            "runtimeCost": {
+              "quantity": 0,
+              "unit": "effects"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "obligations": [
+              "Tag the likely surface and intervention altitude"
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "requiredCapabilities": [],
+          "semanticsModified": [],
+          "authorityChanges": [
+            "validate typed output before report.emit"
+          ],
+          "evidenceRequirements": [],
+          "resourceMultiplier": 1,
+          "conflictsWith": [],
+          "preservesDeterminism": true,
+          "commutativity": "commutative",
+          "claims": [],
+          "supportFacetId": "entropy-reducer.sparse-receipt",
+          "name": "Sparse Receipt",
+          "supportedTags": [
+            "narrate"
+          ],
+          "semanticsAdded": [
+            "return a terse result envelope while retaining findings and suggestions by reference"
+          ],
+          "emissions": [
+            {
+              "kind": "evidence-schema",
+              "emissionId": "sparse-receipt.output-schema",
+              "schemaId": "dotln.entropy-reducer.output.v1",
+              "schema": {
+                "$id": "dotln.entropy-reducer.output.v1",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "schemaVersion",
+                  "findings",
+                  "proposalPackets",
+                  "resultEnvelope",
+                  "cleanRoom"
+                ],
+                "properties": {
+                  "schemaVersion": {
+                    "const": 1
+                  },
+                  "findings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "findingId",
+                        "criterion",
+                        "severity",
+                        "evidenceLabel",
+                        "observed",
+                        "expected",
+                        "reproduction",
+                        "evidenceRefs",
+                        "surface",
+                        "altitude",
+                        "standardization"
+                      ],
+                      "properties": {
+                        "findingId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "criterion": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "severity": {
+                          "enum": [
+                            "blocking",
+                            "major",
+                            "minor"
+                          ]
+                        },
+                        "evidenceLabel": {
+                          "enum": [
+                            "measured",
+                            "by inspection"
+                          ]
+                        },
+                        "observed": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "expected": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "reproduction": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind",
+                                "command"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "command"
+                                },
+                                "command": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind",
+                                "steps"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "inspection"
+                                },
+                                "steps": {
+                                  "type": "array",
+                                  "minItems": 1,
+                                  "items": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "evidenceRefs": {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "surface": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "altitude": {
+                          "type": "integer",
+                          "minimum": 2,
+                          "maximum": 12
+                        },
+                        "standardization": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "one-off"
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind",
+                                "rung",
+                                "rationale"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "recurring"
+                                },
+                                "rung": {
+                                  "enum": [
+                                    "test",
+                                    "lint",
+                                    "guard",
+                                    "script"
+                                  ]
+                                },
+                                "rationale": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "evidenceLabel": {
+                              "const": "measured"
+                            },
+                            "reproduction": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind",
+                                "command"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "command"
+                                },
+                                "command": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "properties": {
+                            "evidenceLabel": {
+                              "const": "by inspection"
+                            },
+                            "reproduction": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind",
+                                "steps"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "inspection"
+                                },
+                                "steps": {
+                                  "type": "array",
+                                  "minItems": 1,
+                                  "items": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "proposalPackets": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "schemaVersion",
+                        "kind",
+                        "proposedPath",
+                        "sourceEpisodeId",
+                        "provenance",
+                        "corroboratingEvidenceRefs",
+                        "dissentingEvidenceRefs",
+                        "suggestion"
+                      ],
+                      "properties": {
+                        "schemaVersion": {
+                          "const": 1
+                        },
+                        "kind": {
+                          "const": "ProductSuggestionPacket"
+                        },
+                        "proposedPath": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^docs/proposals/(?!\\.{1,2}/$)[A-Za-z0-9][A-Za-z0-9._-]*/$",
+                          "$comment": "The host validator also requires the final segment to equal suggestion.suggestionId."
+                        },
+                        "sourceEpisodeId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "provenance": {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "corroboratingEvidenceRefs": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "dissentingEvidenceRefs": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "suggestion": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "suggestionId",
+                            "submittedBy",
+                            "problemOrOpportunity",
+                            "scope",
+                            "evidenceRefs",
+                            "affectedUsers",
+                            "affectedSystems",
+                            "expectedValue",
+                            "altitude",
+                            "uncertainty",
+                            "risks",
+                            "alternatives",
+                            "duplicationHints",
+                            "urgencyRationale"
+                          ],
+                          "properties": {
+                            "suggestionId": {
+                              "type": "string",
+                              "minLength": 1,
+                              "pattern": "^(?!\\.{1,2}$)[A-Za-z0-9][A-Za-z0-9._-]*$"
+                            },
+                            "submittedBy": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "problemOrOpportunity": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "scope": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "evidenceRefs": {
+                              "type": "array",
+                              "minItems": 1,
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "affectedUsers": {
+                              "type": "array",
+                              "minItems": 1,
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "affectedSystems": {
+                              "type": "array",
+                              "minItems": 1,
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "expectedValue": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "altitude": {
+                              "type": "integer",
+                              "minimum": 2,
+                              "maximum": 12
+                            },
+                            "uncertainty": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "risks": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "alternatives": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "duplicationHints": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "urgencyRationale": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "resultEnvelope": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "workOrderId",
+                      "episodeId",
+                      "status",
+                      "resultId",
+                      "summary",
+                      "requiresHuman"
+                    ],
+                    "properties": {
+                      "workOrderId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "episodeId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "status": {
+                        "enum": [
+                          "completed",
+                          "failed",
+                          "blocked"
+                        ]
+                      },
+                      "resultId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "summary": {
+                        "type": "string",
+                        "minLength": 1,
+                        "$comment": "The host validator requires fewer than 200 whitespace-delimited words."
+                      },
+                      "requiresHuman": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "cleanRoom": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "stopConditionsFound",
+                      "evidenceRefs"
+                    ],
+                    "properties": {
+                      "status": {
+                        "const": "passed"
+                      },
+                      "stopConditionsFound": {
+                        "const": false
+                      },
+                      "evidenceRefs": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "outputContract": {
+                "$id": "dotln.entropy-reducer.output.v1",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "schemaVersion",
+                  "findings",
+                  "proposalPackets",
+                  "resultEnvelope",
+                  "cleanRoom"
+                ],
+                "properties": {
+                  "schemaVersion": {
+                    "const": 1
+                  },
+                  "findings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "findingId",
+                        "criterion",
+                        "severity",
+                        "evidenceLabel",
+                        "observed",
+                        "expected",
+                        "reproduction",
+                        "evidenceRefs",
+                        "surface",
+                        "altitude",
+                        "standardization"
+                      ],
+                      "properties": {
+                        "findingId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "criterion": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "severity": {
+                          "enum": [
+                            "blocking",
+                            "major",
+                            "minor"
+                          ]
+                        },
+                        "evidenceLabel": {
+                          "enum": [
+                            "measured",
+                            "by inspection"
+                          ]
+                        },
+                        "observed": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "expected": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "reproduction": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind",
+                                "command"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "command"
+                                },
+                                "command": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind",
+                                "steps"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "inspection"
+                                },
+                                "steps": {
+                                  "type": "array",
+                                  "minItems": 1,
+                                  "items": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "evidenceRefs": {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "surface": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "altitude": {
+                          "type": "integer",
+                          "minimum": 2,
+                          "maximum": 12
+                        },
+                        "standardization": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "one-off"
+                                }
+                              }
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind",
+                                "rung",
+                                "rationale"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "recurring"
+                                },
+                                "rung": {
+                                  "enum": [
+                                    "test",
+                                    "lint",
+                                    "guard",
+                                    "script"
+                                  ]
+                                },
+                                "rationale": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "evidenceLabel": {
+                              "const": "measured"
+                            },
+                            "reproduction": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind",
+                                "command"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "command"
+                                },
+                                "command": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "properties": {
+                            "evidenceLabel": {
+                              "const": "by inspection"
+                            },
+                            "reproduction": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "kind",
+                                "steps"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "inspection"
+                                },
+                                "steps": {
+                                  "type": "array",
+                                  "minItems": 1,
+                                  "items": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "proposalPackets": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "schemaVersion",
+                        "kind",
+                        "proposedPath",
+                        "sourceEpisodeId",
+                        "provenance",
+                        "corroboratingEvidenceRefs",
+                        "dissentingEvidenceRefs",
+                        "suggestion"
+                      ],
+                      "properties": {
+                        "schemaVersion": {
+                          "const": 1
+                        },
+                        "kind": {
+                          "const": "ProductSuggestionPacket"
+                        },
+                        "proposedPath": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^docs/proposals/(?!\\.{1,2}/$)[A-Za-z0-9][A-Za-z0-9._-]*/$",
+                          "$comment": "The host validator also requires the final segment to equal suggestion.suggestionId."
+                        },
+                        "sourceEpisodeId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "provenance": {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "corroboratingEvidenceRefs": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "dissentingEvidenceRefs": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "suggestion": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "suggestionId",
+                            "submittedBy",
+                            "problemOrOpportunity",
+                            "scope",
+                            "evidenceRefs",
+                            "affectedUsers",
+                            "affectedSystems",
+                            "expectedValue",
+                            "altitude",
+                            "uncertainty",
+                            "risks",
+                            "alternatives",
+                            "duplicationHints",
+                            "urgencyRationale"
+                          ],
+                          "properties": {
+                            "suggestionId": {
+                              "type": "string",
+                              "minLength": 1,
+                              "pattern": "^(?!\\.{1,2}$)[A-Za-z0-9][A-Za-z0-9._-]*$"
+                            },
+                            "submittedBy": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "problemOrOpportunity": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "scope": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "evidenceRefs": {
+                              "type": "array",
+                              "minItems": 1,
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "affectedUsers": {
+                              "type": "array",
+                              "minItems": 1,
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "affectedSystems": {
+                              "type": "array",
+                              "minItems": 1,
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "expectedValue": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "altitude": {
+                              "type": "integer",
+                              "minimum": 2,
+                              "maximum": 12
+                            },
+                            "uncertainty": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "risks": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "alternatives": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "duplicationHints": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "urgencyRationale": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "resultEnvelope": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "workOrderId",
+                      "episodeId",
+                      "status",
+                      "resultId",
+                      "summary",
+                      "requiresHuman"
+                    ],
+                    "properties": {
+                      "workOrderId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "episodeId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "status": {
+                        "enum": [
+                          "completed",
+                          "failed",
+                          "blocked"
+                        ]
+                      },
+                      "resultId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "summary": {
+                        "type": "string",
+                        "minLength": 1,
+                        "$comment": "The host validator requires fewer than 200 whitespace-delimited words."
+                      },
+                      "requiresHuman": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "cleanRoom": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "stopConditionsFound",
+                      "evidenceRefs"
+                    ],
+                    "properties": {
+                      "status": {
+                        "const": "passed"
+                      },
+                      "stopConditionsFound": {
+                        "const": false
+                      },
+                      "evidenceRefs": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "kind": "prompt-fragment",
+              "emissionId": "sparse-receipt.residue",
+              "text": "Return findings and suggestion packets as typed payloads, then summarize the episode in fewer than 200 words."
+            }
+          ],
+          "cost": {
+            "mechanismType": "evidence-schema",
+            "promptTokens": 31,
+            "runtimeCost": {
+              "quantity": 1,
+              "unit": "validation-per-report"
+            },
+            "extraEpisodes": 0
+          },
+          "inspection": {
+            "restrictions": [
+              "The result-envelope summary stays under 200 words"
+            ]
+          }
+        }
+      ],
+      "links": [
+        {
+          "linkId": "entropy-reducer.link.01",
+          "linkGroupId": "entropy-reducer.links",
+          "activeMechanicId": "seiso-shine",
+          "supportFacetId": "entropy-reducer.seiketsu-standardize"
+        },
+        {
+          "linkId": "entropy-reducer.link.02",
+          "linkGroupId": "entropy-reducer.links",
+          "activeMechanicId": "seiso-shine",
+          "supportFacetId": "entropy-reducer.verify-first"
+        },
+        {
+          "linkId": "entropy-reducer.link.03",
+          "linkGroupId": "entropy-reducer.links",
+          "activeMechanicId": "seiso-shine",
+          "supportFacetId": "entropy-reducer.fan-out-lens"
+        },
+        {
+          "linkId": "entropy-reducer.link.04",
+          "linkGroupId": "entropy-reducer.links",
+          "activeMechanicId": "seiso-shine",
+          "supportFacetId": "entropy-reducer.mutation-drill"
+        },
+        {
+          "linkId": "entropy-reducer.link.05",
+          "linkGroupId": "entropy-reducer.links",
+          "activeMechanicId": "seiso-shine",
+          "supportFacetId": "entropy-reducer.shape-first"
+        },
+        {
+          "linkId": "entropy-reducer.link.06",
+          "linkGroupId": "entropy-reducer.links",
+          "activeMechanicId": "seiso-shine",
+          "supportFacetId": "entropy-reducer.constraint-first-ordering"
+        },
+        {
+          "linkId": "entropy-reducer.link.07",
+          "linkGroupId": "entropy-reducer.links",
+          "activeMechanicId": "seiso-shine",
+          "supportFacetId": "entropy-reducer.altitude-tag"
+        },
+        {
+          "linkId": "entropy-reducer.link.08",
+          "linkGroupId": "entropy-reducer.links",
+          "activeMechanicId": "seiso-shine",
+          "supportFacetId": "entropy-reducer.sparse-receipt"
+        }
+      ],
+      "linkGroups": [
+        {
+          "linkGroupId": "entropy-reducer.links",
+          "containerId": "entropy-reducer.helm",
+          "linkIds": [
+            "entropy-reducer.link.01",
+            "entropy-reducer.link.02",
+            "entropy-reducer.link.03",
+            "entropy-reducer.link.04",
+            "entropy-reducer.link.05",
+            "entropy-reducer.link.06",
+            "entropy-reducer.link.07",
+            "entropy-reducer.link.08"
+          ]
+        }
+      ],
+      "explicitPipelines": [],
+      "ambientEffects": [],
+      "resourceModel": {
+        "resourceModelId": "entropy-reducer.resources",
+        "version": 1,
+        "capacities": {
+          "delegates": 4,
+          "probes": 32
+        },
+        "reservations": []
+      },
+      "polarAxes": []
+    },
+    "environment": {
+      "environmentId": "skeleton.fixture",
+      "version": 1,
+      "capabilities": [
+        "fixture-repository"
+      ],
+      "repo": "packages/skeleton/fixtures/repo-tree.json",
+      "baseCommit": "fixture-base"
+    }
+  },
+  {
+    "ref": "packages/skeleton/src/loadouts/plan-refuter.ts#planRefuterLoadout",
+    "graph": {
+      "schemaVersion": 1,
+      "loadoutId": "plan-refuter.v1",
+      "identity": {
+        "identityId": "entropy-reducer",
+        "version": 1,
+        "name": "Entropy Reducer",
+        "dispositions": [
+          "verify-first",
+          "measure-rather-than-assume",
+          "candid-and-fair",
+          "propose-rather-than-mutate",
+          "shape-first-on-operator-analogies"
+        ],
+        "invariants": [
+          "the tracked repository and control plane remain read-only during review",
+          "every finding carries an independent reproduction",
+          "the clean-room floor cannot be weakened",
+          "settled decisions are not relitigated",
+          "authority never substitutes for correctness",
+          "refuted findings leave the promoted set",
+          "side routines stay within declared budgets"
+        ],
+        "updateLaws": [
+          "identity changes require a new version and comparison evidence",
+          "a substitute reviewer model is a different attested actor"
+        ],
+        "lineage": [
+          "second founding identity",
+          "Shine active linked to Standardize",
+          "generated from the WO-023 entropy-reducer definition"
+        ]
+      },
+      "role": {
+        "roleId": "plan-refuter",
+        "version": 1,
+        "name": "Plan refuter",
+        "obligations": [
+          "For each planned order: thesis-advancing, machinery, or drift?",
+          "Which vision thesis or exclusion passage supports that verdict?",
+          "Which capability row would the order move or create?",
+          "Which of the five UIFA roles gets a surface?",
+          "What is the single largest remaining gap to the one-paragraph story?",
+          "Does the horizon pass or hold, and which order and criterion must answer each hold?"
+        ],
+        "permissions": [
+          "repo.read*",
+          "report.emit"
+        ],
+        "objectives": [
+          "Challenge the planning horizon against the vision without planner narrative"
+        ],
+        "policyDeltas": []
+      },
+      "containers": [
+        {
+          "containerId": "entropy-reducer.helm",
+          "version": 1,
+          "name": "Entropy Reducer helm",
+          "kind": "equipment",
+          "socketBudget": 0,
+          "activeMechanicIds": [
+            "seiso-shine"
+          ],
+          "supportFacetIds": []
+        }
+      ],
+      "activeMechanics": [
+        {
+          "activeMechanicId": "seiso-shine",
+          "version": 1,
+          "name": "Seisō (Shine)",
+          "tags": [
+            "observe",
+            "research",
+            "plan",
+            "verify",
+            "delegate",
+            "narrate"
+          ],
+          "requiredCapabilities": [],
+          "semantics": [
+            "one blinded plan refutation; findings confer no decision authority"
+          ],
+          "workOrder": {
+            "workOrderId": "wo_plan_refuter",
+            "objective": "Refute the proposed horizon against the vision and the five roles.",
+            "acceptanceCriteria": [
+              "For each planned order: thesis-advancing, machinery, or drift?",
+              "Which vision thesis or exclusion passage supports that verdict?",
+              "Which capability row would the order move or create?",
+              "Which of the five UIFA roles gets a surface?",
+              "What is the single largest remaining gap to the one-paragraph story?",
+              "Does the horizon pass or hold, and which order and criterion must answer each hold?"
+            ],
+            "knownFacts": [
+              "Only the compiled subject is visible",
+              "WO-041's own verdict is advisory"
+            ],
+            "decisions": [
+              "Contra-Auguste mask; architecture-and-semantics lens"
+            ],
+            "constraints": [
+              "No planner narrative or previous receipts",
+              "No drift finding without a vision passage",
+              "No model tools",
+              "The clean-room floor is locked"
+            ],
+            "nonGoals": [
+              "Planning or implementing changes",
+              "Overriding a hold",
+              "Certifying the refutation mechanism"
+            ],
+            "allowedOperations": [
+              "repo.read*",
+              "report.emit"
+            ],
+            "prohibitedOperations": [
+              "repo.write*",
+              "git.mutate*",
+              "remote.*",
+              "settings.*",
+              "decision.*",
+              "decision.edit"
+            ],
+            "requiredEvidence": [],
+            "outputContract": {
+              "schema": "plan-refutation-v1"
+            }
+          },
+          "authorityEnvelope": {
+            "authorityEnvelopeId": "auth_plan_refuter",
+            "allowedEffects": [
+              "repo.read*",
+              "report.emit"
+            ],
+            "deniedEffects": [
+              "repo.write*",
+              "git.mutate*",
+              "remote.*",
+              "settings.*",
+              "decision.*",
+              "decision.edit"
+            ],
+            "resourceLimits": {},
+            "requiredEvidence": [],
+            "expiresAt": 86400000,
+            "revocationEventTypes": [
+              "OperatorStopRequested"
+            ],
+            "revocationConditions": []
+          },
+          "inspection": {
+            "originalTerm": "Seisō",
+            "translation": "Shine",
+            "kanji": "清掃",
+            "rpgTitle": "The Entropy-Reducing Shine",
+            "grants": [
+              "Read the compiled planning subject",
+              "Emit a validated refutation"
+            ],
+            "restrictions": [
+              "No model tools, writes, remotes, settings changes or operator decisions"
+            ],
+            "obligations": [
+              "Name the vision passage behind every drift finding",
+              "Preserve all unanswered holds",
+              "Apply the clean-room floor"
+            ],
+            "passive": [
+              "Contra-Auguste; architecture-and-semantics lens"
+            ],
+            "pulse": [
+              "One blinded episode on explicit planning dispatch"
+            ],
+            "interrupt": [
+              "Stop at episode expiry"
+            ]
+          }
+        }
+      ],
+      "supportFacets": [],
+      "links": [],
+      "linkGroups": [],
+      "explicitPipelines": [],
+      "ambientEffects": [],
+      "resourceModel": {
+        "resourceModelId": "entropy-reducer.resources",
+        "version": 1,
+        "capacities": {},
+        "reservations": []
+      },
+      "polarAxes": []
+    },
+    "environment": {
+      "environmentId": "skeleton.fixture",
+      "version": 1,
+      "capabilities": [
+        "fixture-repository"
+      ],
+      "repo": "packages/skeleton/fixtures/repo-tree.json",
+      "baseCommit": "fixture-base"
+    }
+  }
+]

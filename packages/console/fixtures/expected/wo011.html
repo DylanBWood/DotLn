@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>DotLn · Actor board</title>
+<style>
+:root{color-scheme:dark;--bg:#10181b;--panel:#152125;--card:#1b2a2f;--line:#35484d;--text:#edece2;--muted:#b0c1c3;--gold:#eed39a;--aqua:#9bd9cf;--dim:#95a6aa}
+*{box-sizing:border-box}html{scroll-padding-top:2rem}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,sans-serif}a{color:var(--aqua);text-underline-offset:.2em}a:hover{color:var(--gold)}a:focus-visible{outline:3px solid var(--gold);outline-offset:4px}h1,h2,h3,h4,p{margin-top:0}h1,h2{font-family:Georgia,serif;font-weight:normal}h1{font-size:clamp(2.4rem,5vw,4.5rem);line-height:1.1;margin:.6rem 0 1rem}h2{font-size:2.5rem;margin-bottom:.4rem}h3{font-size:1.1rem;font-weight:600;margin:0}h4{font-size:1.05rem;color:var(--gold);padding-bottom:1rem;border-bottom:1px solid var(--line);overflow-wrap:anywhere}.masthead{padding:3rem clamp(1.2rem,5vw,5rem);border-bottom:1px solid var(--line);background:#18282c}.eyebrow{font: .8rem/1.4 ui-monospace,monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--gold)}.intro{max-width:52rem;color:var(--muted);margin-bottom:0}.layout{max-width:1600px;margin:auto;display:grid;grid-template-columns:190px minmax(0,1fr);gap:2.5rem;padding:2.5rem}.sidebar{align-self:start;position:sticky;top:2rem}.sidebar a{display:block;padding:.6rem 0;color:var(--text);text-decoration:none;border-bottom:1px solid var(--line)}.sidebar small{display:block;margin-top:1.4rem;color:var(--muted)}main{min-width:0}.panel{padding-bottom:3rem;margin-bottom:2rem;border-bottom:1px solid var(--line)}.question{color:var(--muted);max-width:65ch}.role{color:var(--aqua);font:.75rem/1.4 ui-monospace,monospace;letter-spacing:.05em;text-transform:uppercase}.collection{margin-top:2rem}.collection-heading{display:flex;gap:1rem;align-items:baseline;justify-content:space-between;margin-bottom:1rem}.status{color:var(--dim);font:.72rem/1.5 ui-monospace,monospace;white-space:nowrap}.status.unavailable{color:var(--gold)}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,350px),1fr));gap:1rem;align-items:start}.card{background:var(--card);border:1px solid var(--line);border-radius:7px;padding:1.5rem;min-width:0}.card:target,.collection:target{outline:2px solid var(--gold);outline-offset:5px}dl{margin:0}.fact{margin-top:.85rem}dt{font-size:.75rem;letter-spacing:.025em;color:var(--muted)}dd{margin:0;overflow-wrap:anywhere;font-size:.9rem;white-space:pre-wrap}.unknown dd,.unavailable dd{color:var(--gold)}small{font-size:.77rem;color:var(--dim);display:block;line-height:1.5;margin-top:.3rem}.citations{font-size:.68rem;display:inline-block;margin-left:.5rem;white-space:normal}.card-links{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.8rem}.note{color:var(--muted);font-size:.9rem}pre{white-space:pre-wrap;overflow-wrap:anywhere;font: .78rem/1.55 ui-monospace,monospace;color:var(--text);margin:.5rem 0}.evidence-list{padding-left:1.4rem;font:.8rem/1.55 ui-monospace,monospace}.evidence-list li{margin-bottom:.8rem;overflow-wrap:anywhere}.evidence-list li:target{outline:2px solid var(--gold);outline-offset:4px}.source-list{padding-left:1rem;overflow-wrap:anywhere;font-size:.85rem}.footer{color:var(--muted);font-size:.8rem;padding-top:2rem}.role-questions{padding-left:1.2rem}.role-questions li{margin-bottom:.8rem}.wide .cards{grid-template-columns:1fr}
+@media(max-width:850px){.layout{grid-template-columns:1fr;padding:1.2rem;gap:1.5rem}.sidebar{position:static;display:flex;flex-wrap:wrap;gap:.5rem 1.2rem}.sidebar small{width:100%;margin:0}.sidebar a{padding:.25rem 0}.card{padding:1.2rem}.masthead{padding:2rem 1.2rem}.collection-heading{align-items:start}}@media print{body{color:#111;background:white}.sidebar{display:none}.layout{display:block}.masthead,.card{background:white;color:#111}.card{break-inside:avoid}a,h4,.role,dt,small,.note,.question{color:#333}pre{color:#111}}
+</style>
+</head>
+<body>
+<header class="masthead"><div class="eyebrow">DotLn / User Interfaces for Actors</div><h1>The actor board.</h1><p class="intro">People, builds, and bounded episodes — with the evidence behind their work. Inspect a build, follow a mechanism, or trace a result back to its source.</p></header>
+<div class="layout"><nav class="sidebar" aria-label="Board panels"><a href="#actors">01  Actors</a>
+<a href="#builds">02  Builds</a>
+<a href="#mechanisms">03  Mechanisms</a>
+<a href="#work">04  Work</a>
+<a href="#blueprint">05  Blueprint</a><small>Read-only snapshot<br>Unknown is not zero.<br>Missing sources stay visible.</small></nav>
+<main>
+<section class="panel" id="actors"><p class="role">For showrunner · engineer · tester</p><h2>Actors</h2><p class="question">Who is recorded, what are they equipped to do, and what evidence shows their work?</p><section class="collection" id="actors-8ecb85cf71fd36f5"><div class="collection-heading"><h3>WO-011 self-hosted executor</h3><span class="status available">available</span></div><div class="cards"><article class="card" id="actor-4c5739a152bfae5a"><h4>feedback-host — executor</h4><dl><div class="fact known"><dt>Actor kind</dt><dd>script<small>FeedbackAuditOpened is the fixed host executor&#39;s recorded dispatch</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Identity</dt><dd>feedback-host<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>executor<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Episode</dt><dd>ep_feedback_executor<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded episode phase</dt><dd>result-recorded<small>The script has an audit result, not a worker lease lifecycle</small><span class="citations"><a href="#evidence-25">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Transport</dt><dd>unknown<small>A fixed host script executes this audit</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Selected model</dt><dd>unknown<small>This executor is a script</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Selected effort</dt><dd>unknown<small>This executor is a script</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Last host heartbeat</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Recorded lease expiry</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded build hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Hash describes</dt><dd>feedback-v1 policy hash<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>LoadoutGraph semantic hash</dt><dd>unknown<small>This actor has a compiled policy or verification capsule; the source records no LoadoutGraph hash</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Allowed effects</dt><dd>feedback.audit<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Denied effects</dt><dd>repo.write; repo.delete; publish<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded grant expiry</dt><dd>1788789410896<small>Recorded bound only; the board does not decide current authority</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Work order</dt><dd>WO-011-feedback-audit<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div></dl><nav class="card-links" aria-label="Inspect feedback-host — executor"><a href="#recorded-build-47e7725567e6d1e6">Inspect recorded build</a>
+<a href="#receipt-518b6c01831fd167">feedback.audit: allowed</a>
+<a href="#receipt-85d6a3f292be89aa">feedback.audit: observed</a>
+<a href="#receipt-6b53a8be4ef4ef22">command.result: returned</a>
+<a href="#matrix-3e4bdc81f5bf7f5c">Independent acceptance evidence</a></nav></article></div></section>
+<section class="collection" id="actors-1fec985d965cb210"><div class="collection-heading"><h3>WO-011 self-hosted verifier</h3><span class="status available">available</span></div><div class="cards"><article class="card" id="actor-c734b501838dbcd0"><h4>verifier — ep_verifier_1_attempt_1</h4><dl><div class="fact known"><dt>Actor kind</dt><dd>model session<span class="citations"><a href="#evidence-30">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Identity</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>verifier<span class="citations"><a href="#evidence-30">[1]</a></span></dd></div>
+<div class="fact known"><dt>Episode</dt><dd>ep_verifier_1_attempt_1<span class="citations"><a href="#evidence-29">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded episode phase</dt><dd>lease-expired<span class="citations"><a href="#evidence-29">[1]</a></span></dd></div>
+<div class="fact known"><dt>Transport</dt><dd>claude-cli-print<span class="citations"><a href="#evidence-29">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selected model</dt><dd>claude-sonnet-5<span class="citations"><a href="#evidence-29">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selected effort</dt><dd>max<span class="citations"><a href="#evidence-29">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selection source</dt><dd>host-launch<span class="citations"><a href="#evidence-30">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Observed effective model</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-30">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Observed effective effort</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-30">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last host heartbeat</dt><dd>1788786191887<span class="citations"><a href="#evidence-29">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded lease expiry</dt><dd>1788786196887<span class="citations"><a href="#evidence-29">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded build hash</dt><dd>fnv1a64:eb312ec46e198b93<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Hash describes</dt><dd>verification-v1 input hash<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>LoadoutGraph semantic hash</dt><dd>unknown<small>This actor has a compiled policy or verification capsule; the source records no LoadoutGraph hash</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Allowed effects</dt><dd>verification.evaluate<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Denied effects</dt><dd>repo.write; repo.delete; repair.propose; publish<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded grant expiry</dt><dd>1788789415260<small>Recorded bound only; the board does not decide current authority</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Work order</dt><dd>verification_1<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div></dl><nav class="card-links" aria-label="Inspect verifier — ep_verifier_1_attempt_1"><a href="#recorded-build-5f14b81be1a31e12">Inspect recorded build</a>
+<a href="#receipt-b475d9757e96387f">verification.evaluate: allowed</a>
+<a href="#receipt-79f33205c51c1631">verification.evaluate: observed</a>
+<a href="#receipt-e7c6e352c0f86657">command.result: returned</a></nav></article>
+<article class="card" id="actor-c734b801838dc1e9"><h4>verifier — ep_verifier_1_attempt_2</h4><dl><div class="fact known"><dt>Actor kind</dt><dd>model session<span class="citations"><a href="#evidence-33">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Identity</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>verifier<span class="citations"><a href="#evidence-33">[1]</a></span></dd></div>
+<div class="fact known"><dt>Episode</dt><dd>ep_verifier_1_attempt_2<span class="citations"><a href="#evidence-32">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded episode phase</dt><dd>lease-expired<span class="citations"><a href="#evidence-32">[1]</a></span></dd></div>
+<div class="fact known"><dt>Transport</dt><dd>claude-cli-print<span class="citations"><a href="#evidence-32">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selected model</dt><dd>claude-sonnet-5<span class="citations"><a href="#evidence-32">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selected effort</dt><dd>max<span class="citations"><a href="#evidence-32">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selection source</dt><dd>host-launch<span class="citations"><a href="#evidence-33">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Observed effective model</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-33">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Observed effective effort</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-33">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last host heartbeat</dt><dd>1788786880022<span class="citations"><a href="#evidence-32">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded lease expiry</dt><dd>1788786885022<span class="citations"><a href="#evidence-32">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded build hash</dt><dd>fnv1a64:eb312ec46e198b93<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Hash describes</dt><dd>verification-v1 input hash<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>LoadoutGraph semantic hash</dt><dd>unknown<small>This actor has a compiled policy or verification capsule; the source records no LoadoutGraph hash</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Allowed effects</dt><dd>verification.evaluate<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Denied effects</dt><dd>repo.write; repo.delete; repair.propose; publish<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded grant expiry</dt><dd>1788789415260<small>Recorded bound only; the board does not decide current authority</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Work order</dt><dd>verification_1<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div></dl><nav class="card-links" aria-label="Inspect verifier — ep_verifier_1_attempt_2"><a href="#recorded-build-5f14b81be1a31e12">Inspect recorded build</a>
+<a href="#receipt-b475d9757e96387f">verification.evaluate: allowed</a>
+<a href="#receipt-79f33205c51c1631">verification.evaluate: observed</a>
+<a href="#receipt-e7c6e352c0f86657">command.result: returned</a></nav></article>
+<article class="card" id="actor-c734b701838dc036"><h4>verifier — ep_verifier_1_attempt_3</h4><dl><div class="fact known"><dt>Actor kind</dt><dd>model session<span class="citations"><a href="#evidence-35">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Identity</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>verifier<span class="citations"><a href="#evidence-35">[1]</a></span></dd></div>
+<div class="fact known"><dt>Episode</dt><dd>ep_verifier_1_attempt_3<span class="citations"><a href="#evidence-34">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded episode phase</dt><dd>lease-expired<span class="citations"><a href="#evidence-34">[1]</a></span></dd></div>
+<div class="fact known"><dt>Transport</dt><dd>claude-cli-print<span class="citations"><a href="#evidence-34">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selected model</dt><dd>claude-sonnet-5<span class="citations"><a href="#evidence-34">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selected effort</dt><dd>max<span class="citations"><a href="#evidence-34">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selection source</dt><dd>host-launch<span class="citations"><a href="#evidence-35">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Observed effective model</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-35">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Observed effective effort</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-35">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last host heartbeat</dt><dd>1788787412686<span class="citations"><a href="#evidence-34">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded lease expiry</dt><dd>1788787417686<span class="citations"><a href="#evidence-34">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded build hash</dt><dd>fnv1a64:eb312ec46e198b93<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Hash describes</dt><dd>verification-v1 input hash<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>LoadoutGraph semantic hash</dt><dd>unknown<small>This actor has a compiled policy or verification capsule; the source records no LoadoutGraph hash</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Allowed effects</dt><dd>verification.evaluate<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Denied effects</dt><dd>repo.write; repo.delete; repair.propose; publish<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded grant expiry</dt><dd>1788789415260<small>Recorded bound only; the board does not decide current authority</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Work order</dt><dd>verification_1<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div></dl><nav class="card-links" aria-label="Inspect verifier — ep_verifier_1_attempt_3"><a href="#recorded-build-5f14b81be1a31e12">Inspect recorded build</a>
+<a href="#receipt-b475d9757e96387f">verification.evaluate: allowed</a>
+<a href="#receipt-79f33205c51c1631">verification.evaluate: observed</a>
+<a href="#receipt-e7c6e352c0f86657">command.result: returned</a></nav></article>
+<article class="card" id="actor-c734ba01838dc54f"><h4>verifier — ep_verifier_1_attempt_4</h4><dl><div class="fact known"><dt>Actor kind</dt><dd>model session<span class="citations"><a href="#evidence-37">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Identity</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>verifier<span class="citations"><a href="#evidence-37">[1]</a></span></dd></div>
+<div class="fact known"><dt>Episode</dt><dd>ep_verifier_1_attempt_4<span class="citations"><a href="#evidence-36">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded episode phase</dt><dd>completed<span class="citations"><a href="#evidence-36">[1]</a></span></dd></div>
+<div class="fact known"><dt>Transport</dt><dd>claude-cli-print<span class="citations"><a href="#evidence-36">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selected model</dt><dd>claude-sonnet-5<span class="citations"><a href="#evidence-36">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selected effort</dt><dd>max<span class="citations"><a href="#evidence-36">[1]</a></span></dd></div>
+<div class="fact known"><dt>Selection source</dt><dd>host-launch<span class="citations"><a href="#evidence-37">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Observed effective model</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-37">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Observed effective effort</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-37">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last host heartbeat</dt><dd>1788788099959<span class="citations"><a href="#evidence-36">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded lease expiry</dt><dd>1788788104959<span class="citations"><a href="#evidence-36">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded build hash</dt><dd>fnv1a64:eb312ec46e198b93<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Hash describes</dt><dd>verification-v1 input hash<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>LoadoutGraph semantic hash</dt><dd>unknown<small>This actor has a compiled policy or verification capsule; the source records no LoadoutGraph hash</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Allowed effects</dt><dd>verification.evaluate<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Denied effects</dt><dd>repo.write; repo.delete; repair.propose; publish<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded grant expiry</dt><dd>1788789415260<small>Recorded bound only; the board does not decide current authority</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Work order</dt><dd>verification_1<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div></dl><nav class="card-links" aria-label="Inspect verifier — ep_verifier_1_attempt_4"><a href="#recorded-build-5f14b81be1a31e12">Inspect recorded build</a>
+<a href="#matrix-3e4bdc81f5bf7f5c">Acceptance matrix: ws_feedback_audit_verification</a>
+<a href="#receipt-b475d9757e96387f">verification.evaluate: allowed</a>
+<a href="#receipt-79f33205c51c1631">verification.evaluate: observed</a>
+<a href="#receipt-e7c6e352c0f86657">command.result: returned</a></nav></article>
+<article class="card" id="recorded-actor-0bcfe5a90e1c3286"><h4>verification-host</h4><dl><div class="fact known"><dt>Recorded actor id</dt><dd>verification-host<span class="citations"><a href="#evidence-38">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Actor kind</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-38">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Role</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-38">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Last event episode</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-38">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded action</dt><dd>VerificationContinuation<span class="citations"><a href="#evidence-38">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded action time</dt><dd>1788788099988<span class="citations"><a href="#evidence-38">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Episode phase</dt><dd>unknown<small>An event actor id alone does not establish worker liveness</small><span class="citations"><a href="#evidence-38">[1]</a></span></dd></div></dl><nav class="card-links" aria-label="Inspect verification-host"><a href="#matrix-3e4bdc81f5bf7f5c">Acceptance matrix: ws_feedback_audit_verification</a></nav></article></div></section>
+<section class="collection" id="control-actors"><div class="collection-heading"><h3>People and recorded workflow actors</h3><span class="status unavailable">unavailable</span></div><p class="note">Source not supplied</p><div class="cards"></div></section>
+<section class="collection" id="actor-definitions"><div class="collection-heading"><h3>Saved actor definitions</h3><span class="status available">available</span></div><div class="cards"><article class="card" id="definition-944c9f5b95d58c8d"><h4>Repo Gardener</h4><dl><div class="fact known"><dt>Actor kind</dt><dd>saved definition<small>A declared identity and role; not a claim that an episode is running</small><span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>Identity</dt><dd>repo-gardener<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>Fixture maintainer<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>Loadout semantic hash</dt><dd>fnv1a64:9ca8d0229c6bd8db<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Episode phase</dt><dd>unknown<small>No episode is implied by a saved build</small><span class="citations"><a href="#evidence-1">[1]</a></span></dd></div></dl><nav class="card-links" aria-label="Inspect Repo Gardener"><a href="#build-ead9f3101e75d12e">Inspect saved build</a></nav></article>
+<article class="card" id="definition-67907a026f6b5653"><h4>Entropy Reducer</h4><dl><div class="fact known"><dt>Actor kind</dt><dd>saved definition<small>A declared identity and role; not a claim that an episode is running</small><span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Identity</dt><dd>entropy-reducer<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>Planning reviewer<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Loadout semantic hash</dt><dd>fnv1a64:cd6f2c9b6f1c3883<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Episode phase</dt><dd>unknown<small>No episode is implied by a saved build</small><span class="citations"><a href="#evidence-2">[1]</a></span></dd></div></dl><nav class="card-links" aria-label="Inspect Entropy Reducer"><a href="#build-2893c8f905fe3d13">Inspect saved build</a></nav></article>
+<article class="card" id="definition-3521c64b13265db1"><h4>Entropy Reducer</h4><dl><div class="fact known"><dt>Actor kind</dt><dd>saved definition<small>A declared identity and role; not a claim that an episode is running</small><span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>Identity</dt><dd>entropy-reducer<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>Plan refuter<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>Loadout semantic hash</dt><dd>fnv1a64:64f5b75b5deeb91f<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Episode phase</dt><dd>unknown<small>No episode is implied by a saved build</small><span class="citations"><a href="#evidence-3">[1]</a></span></dd></div></dl><nav class="card-links" aria-label="Inspect Entropy Reducer"><a href="#build-cd9657984091cc99">Inspect saved build</a></nav></article></div></section>
+<section class="collection" id="receipts-8ecb85cf71fd36f5"><div class="collection-heading"><h3>Audit receipts — WO-011 self-hosted executor</h3><span class="status available">available</span></div><div class="cards"><article class="card" id="receipt-518b6c01831fd167"><h4>feedback.audit — allowed</h4><dl><div class="fact known"><dt>Action</dt><dd>feedback.audit<span class="citations"><a href="#evidence-26">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded outcome</dt><dd>allowed<span class="citations"><a href="#evidence-26">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded actor</dt><dd>feedback-host<span class="citations"><a href="#evidence-26">[1]</a></span></dd></div>
+<div class="fact known"><dt>Episode</dt><dd>ep_feedback_executor<span class="citations"><a href="#evidence-26">[1]</a></span></dd></div>
+<div class="fact known"><dt>Command</dt><dd>cmd_eade8c6d3b76891a<span class="citations"><a href="#evidence-26">[1]</a></span></dd></div>
+<div class="fact known"><dt>Authority decision</dt><dd>allowed<span class="citations"><a href="#evidence-26">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Authority reason</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-26">[1]</a></span></dd></div>
+<div class="fact known"><dt>Canonical events</dt><dd>event:evt_3<span class="citations"><a href="#evidence-26">[1]</a></span></dd></div></dl></article>
+<article class="card" id="receipt-85d6a3f292be89aa"><h4>feedback.audit — observed</h4><dl><div class="fact known"><dt>Action</dt><dd>feedback.audit<span class="citations"><a href="#evidence-27">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded outcome</dt><dd>observed<span class="citations"><a href="#evidence-27">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded actor</dt><dd>feedback-host<span class="citations"><a href="#evidence-27">[1]</a></span></dd></div>
+<div class="fact known"><dt>Episode</dt><dd>ep_feedback_executor<span class="citations"><a href="#evidence-27">[1]</a></span></dd></div>
+<div class="fact known"><dt>Command</dt><dd>cmd_eade8c6d3b76891a<span class="citations"><a href="#evidence-27">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Authority decision</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-27">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Authority reason</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-27">[1]</a></span></dd></div>
+<div class="fact known"><dt>Canonical events</dt><dd>event:evt_3; event:evt_5<span class="citations"><a href="#evidence-27">[1]</a></span></dd></div></dl></article>
+<article class="card" id="receipt-6b53a8be4ef4ef22"><h4>command.result — returned</h4><dl><div class="fact known"><dt>Action</dt><dd>command.result<span class="citations"><a href="#evidence-28">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded outcome</dt><dd>returned<span class="citations"><a href="#evidence-28">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded actor</dt><dd>feedback-host<span class="citations"><a href="#evidence-28">[1]</a></span></dd></div>
+<div class="fact known"><dt>Episode</dt><dd>ep_feedback_executor<span class="citations"><a href="#evidence-28">[1]</a></span></dd></div>
+<div class="fact known"><dt>Command</dt><dd>cmd_eade8c6d3b76891a<span class="citations"><a href="#evidence-28">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Authority decision</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-28">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Authority reason</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-28">[1]</a></span></dd></div>
+<div class="fact known"><dt>Canonical events</dt><dd>event:evt_5<span class="citations"><a href="#evidence-28">[1]</a></span></dd></div></dl></article></div></section>
+<section class="collection" id="receipts-1fec985d965cb210"><div class="collection-heading"><h3>Audit receipts — WO-011 self-hosted verifier</h3><span class="status available">available</span></div><div class="cards"><article class="card" id="receipt-b475d9757e96387f"><h4>verification.evaluate — allowed</h4><dl><div class="fact known"><dt>Action</dt><dd>verification.evaluate<span class="citations"><a href="#evidence-42">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded outcome</dt><dd>allowed<span class="citations"><a href="#evidence-42">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded actor</dt><dd>verification-host<span class="citations"><a href="#evidence-42">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Episode</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-42">[1]</a></span></dd></div>
+<div class="fact known"><dt>Command</dt><dd>cmd_3b843b5108e71409<span class="citations"><a href="#evidence-42">[1]</a></span></dd></div>
+<div class="fact known"><dt>Authority decision</dt><dd>allowed<span class="citations"><a href="#evidence-42">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Authority reason</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-42">[1]</a></span></dd></div>
+<div class="fact known"><dt>Canonical events</dt><dd>event:evt_4<span class="citations"><a href="#evidence-42">[1]</a></span></dd></div></dl></article>
+<article class="card" id="receipt-79f33205c51c1631"><h4>verification.evaluate — observed</h4><dl><div class="fact known"><dt>Action</dt><dd>verification.evaluate<span class="citations"><a href="#evidence-43">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded outcome</dt><dd>observed<span class="citations"><a href="#evidence-43">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded actor</dt><dd>verification-host<span class="citations"><a href="#evidence-43">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Episode</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-43">[1]</a></span></dd></div>
+<div class="fact known"><dt>Command</dt><dd>cmd_3b843b5108e71409<span class="citations"><a href="#evidence-43">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Authority decision</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-43">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Authority reason</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-43">[1]</a></span></dd></div>
+<div class="fact known"><dt>Canonical events</dt><dd>event:evt_4; event:evt_1598<span class="citations"><a href="#evidence-43">[1]</a></span></dd></div></dl></article>
+<article class="card" id="receipt-e7c6e352c0f86657"><h4>command.result — returned</h4><dl><div class="fact known"><dt>Action</dt><dd>command.result<span class="citations"><a href="#evidence-44">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded outcome</dt><dd>returned<span class="citations"><a href="#evidence-44">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded actor</dt><dd>verification-host<span class="citations"><a href="#evidence-44">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Episode</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-44">[1]</a></span></dd></div>
+<div class="fact known"><dt>Command</dt><dd>cmd_3b843b5108e71409<span class="citations"><a href="#evidence-44">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Authority decision</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-44">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Authority reason</dt><dd>unknown<small>Not recorded by this source</small><span class="citations"><a href="#evidence-44">[1]</a></span></dd></div>
+<div class="fact known"><dt>Canonical events</dt><dd>event:evt_1598<span class="citations"><a href="#evidence-44">[1]</a></span></dd></div></dl></article></div></section></section>
+<section class="panel wide" id="builds"><p class="role">For engineer</p><h2>Builds</h2><p class="question">Does this composition express the behavior I mean, and what does it cost?</p><section class="collection" id="saved-builds"><div class="collection-heading"><h3>Saved builds</h3><span class="status available">available</span></div><div class="cards"><article class="card" id="build-ead9f3101e75d12e"><h4>Repo Gardener</h4><dl><div class="fact known"><dt>Loadout</dt><dd>repo-gardener.seiri.v1<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>Identity</dt><dd>repo-gardener<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>Fixture maintainer<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>Loadout semantic hash</dt><dd>fnv1a64:9ca8d0229c6bd8db<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>code-dsl hash</dt><dd>fnv1a64:9ca8d0229c6bd8db<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>function-table hash</dt><dd>fnv1a64:9ca8d0229c6bd8db<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>statechart-json hash</dt><dd>fnv1a64:9ca8d0229c6bd8db<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>Three views</dt><dd>equivalent<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>Inspection environment</dt><dd>skeleton.fixture<small>Saved build preview; its expiry is a fixed inspection input, not a live grant</small><span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>Equipped items</dt><dd>Seiri (seiri); Bounded repository scope (seiri.repo-scope); Read only (seiri.read-only); Evidence capture (seiri.evidence-capture); Absent-only cadence (seiri.absence-cadence); Independent verification (seiri.independent-verification)<span class="citations"><a href="#evidence-1">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanics and declared costs</dt><dd><pre>Seiri / Sort / 整理
+The Evidence-Bound Sort — COMPILED DIFF
+
+GRANTS
++ Inventory every fixture path
++ Classify every fixture path
++ Analyze references
++ Propose deletion candidates
+
+RESTRICTIONS
++ Do not mutate repository contents
++ Deletion remains operator-owned
++ Inspect only the bounded fixture repository
+
+OBLIGATION
++ Attach inventory, classification, and reference evidence to every candidate
++ Independently verify proposed candidates
+
+PASSIVE
++ Active only while the operator is absent
+
+PULSE
++ Re-evaluate every 20 virtual minutes
+
+INTERRUPT
++ Stop on operator return; queued pulses become a traced NoOp
+
+COST
++ seiri.absence-cadence — statechart-gate; prompt=0 tokens; runtime=2 predicate-evaluations-per-pulse; episodes=0
++ seiri.evidence-capture — evidence-schema; prompt=0 tokens; runtime=1 schema-validations-per-result; episodes=0
++ seiri.independent-verification — verifier-episode; prompt=0 tokens; runtime=1 verifier-dispatches; episodes=1
++ seiri.read-only — permission-guard; prompt=0 tokens; runtime=1 guard-checks-per-effect; episodes=0
++ seiri.repo-scope — work-order; prompt=0 tokens; runtime=0 operations; episodes=0
+
+SEMANTIC HASH
+  before=none
+  after=fnv1a64:9ca8d0229c6bd8db</pre><small>Compiler renderCompiledDiff(undefined, program); original terms remain primary</small><span class="citations"><a href="#evidence-1">[1]</a></span></dd></div></dl></article>
+<article class="card" id="build-2893c8f905fe3d13"><h4>Entropy Reducer</h4><dl><div class="fact known"><dt>Loadout</dt><dd>entropy-reducer.review.v1<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Identity</dt><dd>entropy-reducer<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>Planning reviewer<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Loadout semantic hash</dt><dd>fnv1a64:cd6f2c9b6f1c3883<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>code-dsl hash</dt><dd>fnv1a64:cd6f2c9b6f1c3883<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>function-table hash</dt><dd>fnv1a64:cd6f2c9b6f1c3883<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>statechart-json hash</dt><dd>fnv1a64:cd6f2c9b6f1c3883<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Three views</dt><dd>equivalent<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Inspection environment</dt><dd>skeleton.fixture<small>Saved build preview; its expiry is a fixed inspection input, not a live grant</small><span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Equipped items</dt><dd>Seisō (Shine) (seiso-shine); Seiketsu (Standardize) (entropy-reducer.seiketsu-standardize); Verify-First (entropy-reducer.verify-first); Fan-Out Lens (entropy-reducer.fan-out-lens); Mutation Drill (entropy-reducer.mutation-drill); Shape-First (entropy-reducer.shape-first); Constraint-First Ordering (entropy-reducer.constraint-first-ordering); Altitude Tag (entropy-reducer.altitude-tag); Sparse Receipt (entropy-reducer.sparse-receipt)<span class="citations"><a href="#evidence-2">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanics and declared costs</dt><dd><pre>Seisō / Shine / 清掃
+The Entropy-Reducing Shine — COMPILED DIFF
+
+GRANTS
++ Read repository evidence
++ Run bounded scratch probes
++ Delegate up to four read-only lenses
++ Emit a validated report
+
+RESTRICTIONS
++ Never mutate the tracked repository or control plane
++ Never change remotes, settings, or operator decisions
++ At most four no-fix, read-only lens delegates
++ The result-envelope summary stays under 200 words
+
+OBLIGATION
++ Reproduce every finding
++ Apply the clean-room floor
++ Await operator disposition
++ Tag the likely surface and intervention altitude
++ Refute independently before promoting findings
++ Name the cheapest executable rung for every recurring finding
++ Separate literal defects from the analogy&#39;s useful shape
++ Every finding carries reproduction and evidence refs
+
+PASSIVE
++ Measure before assuming
++ Constraint-first proposal ordering
+
+PULSE
++ One review on explicit dispatch
+
+INTERRUPT
++ Stop on OperatorStopRequested or episode expiry
+
+COST
++ entropy-reducer.altitude-tag — work-order; prompt=24 tokens; runtime=0 effects; episodes=0
++ entropy-reducer.constraint-first-ordering — prompt-fragment; prompt=27 tokens; runtime=0 effects; episodes=0
++ entropy-reducer.fan-out-lens — work-order; prompt=38 tokens; runtime=4 delegates-maximum; episodes=0
++ entropy-reducer.mutation-drill — verifier-episode; prompt=28 tokens; runtime=32 scratch-probes-maximum; episodes=1
++ entropy-reducer.seiketsu-standardize — work-order; prompt=24 tokens; runtime=0 effects; episodes=0
++ entropy-reducer.shape-first — prompt-fragment; prompt=34 tokens; runtime=0 effects; episodes=0
++ entropy-reducer.sparse-receipt — evidence-schema; prompt=31 tokens; runtime=1 validation-per-report; episodes=0
++ entropy-reducer.verify-first — evidence-schema; prompt=42 tokens; runtime=1 validation-per-output; episodes=0
+
+SEMANTIC HASH
+  before=none
+  after=fnv1a64:cd6f2c9b6f1c3883</pre><small>Compiler renderCompiledDiff(undefined, program); original terms remain primary</small><span class="citations"><a href="#evidence-2">[1]</a></span></dd></div></dl></article>
+<article class="card" id="build-cd9657984091cc99"><h4>Entropy Reducer</h4><dl><div class="fact known"><dt>Loadout</dt><dd>plan-refuter.v1<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>Identity</dt><dd>entropy-reducer<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>Plan refuter<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>Loadout semantic hash</dt><dd>fnv1a64:64f5b75b5deeb91f<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>code-dsl hash</dt><dd>fnv1a64:64f5b75b5deeb91f<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>function-table hash</dt><dd>fnv1a64:64f5b75b5deeb91f<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>statechart-json hash</dt><dd>fnv1a64:64f5b75b5deeb91f<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>Three views</dt><dd>equivalent<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>Inspection environment</dt><dd>skeleton.fixture<small>Saved build preview; its expiry is a fixed inspection input, not a live grant</small><span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>Equipped items</dt><dd>Seisō (Shine) (seiso-shine)<span class="citations"><a href="#evidence-3">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanics and declared costs</dt><dd><pre>Seisō / Shine / 清掃
+The Entropy-Reducing Shine — COMPILED DIFF
+
+GRANTS
++ Read the compiled planning subject
++ Emit a validated refutation
+
+RESTRICTIONS
++ No model tools, writes, remotes, settings changes or operator decisions
+
+OBLIGATION
++ Name the vision passage behind every drift finding
++ Preserve all unanswered holds
++ Apply the clean-room floor
+
+PASSIVE
++ Contra-Auguste; architecture-and-semantics lens
+
+PULSE
++ One blinded episode on explicit planning dispatch
+
+INTERRUPT
++ Stop at episode expiry
+
+COST
+  (no change)
+
+SEMANTIC HASH
+  before=none
+  after=fnv1a64:64f5b75b5deeb91f</pre><small>Compiler renderCompiledDiff(undefined, program); original terms remain primary</small><span class="citations"><a href="#evidence-3">[1]</a></span></dd></div></dl></article></div></section>
+<section class="collection" id="recorded-builds-8ecb85cf71fd36f5"><div class="collection-heading"><h3>Recorded builds — WO-011 self-hosted executor</h3><span class="status available">available</span></div><div class="cards"><article class="card" id="recorded-build-47e7725567e6d1e6"><h4>feedback-host</h4><dl><div class="fact known"><dt>Recorded build hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Hash describes</dt><dd>feedback-v1 policy hash<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>LoadoutGraph semantic hash</dt><dd>unknown<small>This actor has a compiled policy or verification capsule; the source records no LoadoutGraph hash</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Allowed effects</dt><dd>feedback.audit<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Denied effects</dt><dd>repo.write; repo.delete; publish<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded grant expiry</dt><dd>1788789410896<small>Recorded bound only; the board does not decide current authority</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Work order</dt><dd>WO-011-feedback-audit<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>executor<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Objective</dt><dd>Audit this repository&#39;s ten FeedbackUnits through their executable regression and removal fixtures.<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Required evidence</dt><dd>present-and-removed-fixtures; context-accounting; independent-verification<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact known"><dt>Constraints</dt><dd>Read-only source access; Controlled fixtures do not establish general live prevention rates<span class="citations"><a href="#evidence-24">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Three editable views</dt><dd>unknown<small>The compiler exposes editable views for LoadoutGraph, not for this recorded capsule or feedback policy</small><span class="citations"><a href="#evidence-24">[1]</a></span></dd></div></dl></article></div></section>
+<section class="collection" id="recorded-builds-1fec985d965cb210"><div class="collection-heading"><h3>Recorded builds — WO-011 self-hosted verifier</h3><span class="status available">available</span></div><div class="cards"><article class="card" id="recorded-build-5f14b81be1a31e12"><h4>verifier</h4><dl><div class="fact known"><dt>Recorded build hash</dt><dd>fnv1a64:eb312ec46e198b93<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Hash describes</dt><dd>verification-v1 input hash<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>LoadoutGraph semantic hash</dt><dd>unknown<small>This actor has a compiled policy or verification capsule; the source records no LoadoutGraph hash</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Allowed effects</dt><dd>verification.evaluate<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Denied effects</dt><dd>repo.write; repo.delete; repair.propose; publish<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Recorded grant expiry</dt><dd>1788789415260<small>Recorded bound only; the board does not decide current authority</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Work order</dt><dd>verification_1<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Role</dt><dd>verifier<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Objective</dt><dd>Independently verify the supplied acceptance criteria against the pinned repository and witnessed evidence.<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Required evidence</dt><dd>present-removed-pairs; instruction-byte-accounting<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact known"><dt>Constraints</dt><dd>Evidence source and claim type must match each criterion.; Worker completion is a self-report; only host-admitted verifier evidence updates acceptance.<span class="citations"><a href="#evidence-31">[1]</a></span></dd></div>
+<div class="fact unknown"><dt>Three editable views</dt><dd>unknown<small>The compiler exposes editable views for LoadoutGraph, not for this recorded capsule or feedback policy</small><span class="citations"><a href="#evidence-31">[1]</a></span></dd></div></dl></article></div></section></section>
+<section class="panel" id="mechanisms"><p class="role">For tester · engineer · devops</p><h2>Mechanisms</h2><p class="question">In this situation, does the equipped behavior do the right thing?</p><section class="collection" id="compiled-mechanisms"><div class="collection-heading"><h3>Compiled mechanisms</h3><span class="status available">available</span></div><div class="cards"><article class="card" id="mechanism-bbd4dc0875db2367"><h4>anti-oscillation</h4><dl><div class="fact known"><dt>Version</dt><dd>1<span class="citations"><a href="#evidence-4">[1]</a></span></dd></div>
+<div class="fact known"><dt>Feedback policy hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-4">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism rung</dt><dd>2<span class="citations"><a href="#evidence-4">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism</dt><dd>pre-effect-guard<span class="citations"><a href="#evidence-4">[1]</a></span></dd></div>
+<div class="fact known"><dt>Host boundary</dt><dd>decision-lineage<span class="citations"><a href="#evidence-4">[1]</a></span></dd></div>
+<div class="fact known"><dt>Scope</dt><dd>equipped-feedback-host; personal-profile<span class="citations"><a href="#evidence-4">[1]</a></span></dd></div>
+<div class="fact known"><dt>Enforcement</dt><dd>hard<span class="citations"><a href="#evidence-4">[1]</a></span></dd></div>
+<div class="fact known"><dt>Intended behavior</dt><dd>Preserve desired outcomes and rejection reasons; replacing a rejected decision needs explicit supersession from the operator.<span class="citations"><a href="#evidence-4">[1]</a></span></dd></div>
+<div class="fact known"><dt>Why this rung</dt><dd>A pre-effect lineage guard compares explicit decisions; a text lint cannot decide which prior rejection applies.<span class="citations"><a href="#evidence-4">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture observations</dt><dd>observed<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture eligibleEpisodes</dt><dd>1<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture activations</dt><dd>1<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture incidentsPrevented</dt><dd>1<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture falseActivations</dt><dd>0<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture overrides</dt><dd>0<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>live observations</dt><dd>unobserved<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>live eligibleEpisodes</dt><dd>0<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>live activations</dt><dd>0<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>live incidentsPrevented</dt><dd>0<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>live falseActivations</dt><dd>0<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>live overrides</dt><dd>0<span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded activation</dt><dd>fixture: regression_anti-oscillation<small>Fixture episode id reconstructed from the audit generator&#39;s named causal-pair convention; no activation timestamp was collected</small><span class="citations"><a href="#evidence-5">[1]</a></span></dd></div>
+<div class="fact known"><dt>Next maturity condition</dt><dd>Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.<span class="citations"><a href="#evidence-4">[1]</a></span></dd></div></dl></article>
+<article class="card" id="mechanism-f2da2f32510e5b43"><h4>bounded-boy-scout-cleanup</h4><dl><div class="fact known"><dt>Version</dt><dd>1<span class="citations"><a href="#evidence-6">[1]</a></span></dd></div>
+<div class="fact known"><dt>Feedback policy hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-6">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism rung</dt><dd>2<span class="citations"><a href="#evidence-6">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism</dt><dd>pre-effect-guard<span class="citations"><a href="#evidence-6">[1]</a></span></dd></div>
+<div class="fact known"><dt>Host boundary</dt><dd>cleanup-scope<span class="citations"><a href="#evidence-6">[1]</a></span></dd></div>
+<div class="fact known"><dt>Scope</dt><dd>equipped-feedback-host; personal-profile<span class="citations"><a href="#evidence-6">[1]</a></span></dd></div>
+<div class="fact known"><dt>Enforcement</dt><dd>hard<span class="citations"><a href="#evidence-6">[1]</a></span></dd></div>
+<div class="fact known"><dt>Intended behavior</dt><dd>Admit only host-reviewed adjacent low-risk cleanup within named paths and shared checks that keeps the diff legible; nominate the rest separately.<span class="citations"><a href="#evidence-6">[1]</a></span></dd></div>
+<div class="fact known"><dt>Why this rung</dt><dd>A pre-effect gate checks a scoped host-reviewed assessment; scripts alone cannot establish semantic adjacency or risk.<span class="citations"><a href="#evidence-6">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture observations</dt><dd>observed<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture eligibleEpisodes</dt><dd>1<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture activations</dt><dd>1<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture incidentsPrevented</dt><dd>1<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture falseActivations</dt><dd>0<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture overrides</dt><dd>0<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>live observations</dt><dd>unobserved<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>live eligibleEpisodes</dt><dd>0<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>live activations</dt><dd>0<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>live incidentsPrevented</dt><dd>0<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>live falseActivations</dt><dd>0<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>live overrides</dt><dd>0<span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded activation</dt><dd>fixture: regression_bounded-boy-scout-cleanup<small>Fixture episode id reconstructed from the audit generator&#39;s named causal-pair convention; no activation timestamp was collected</small><span class="citations"><a href="#evidence-7">[1]</a></span></dd></div>
+<div class="fact known"><dt>Next maturity condition</dt><dd>Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.<span class="citations"><a href="#evidence-6">[1]</a></span></dd></div></dl></article>
+<article class="card" id="mechanism-c485b68e78cc8fd6"><h4>concurrent-work-requires-worktrees</h4><dl><div class="fact known"><dt>Version</dt><dd>1<span class="citations"><a href="#evidence-8">[1]</a></span></dd></div>
+<div class="fact known"><dt>Feedback policy hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-8">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism rung</dt><dd>2<span class="citations"><a href="#evidence-8">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism</dt><dd>pre-effect-guard<span class="citations"><a href="#evidence-8">[1]</a></span></dd></div>
+<div class="fact known"><dt>Host boundary</dt><dd>writer-isolation<span class="citations"><a href="#evidence-8">[1]</a></span></dd></div>
+<div class="fact known"><dt>Scope</dt><dd>equipped-feedback-host; personal-profile<span class="citations"><a href="#evidence-8">[1]</a></span></dd></div>
+<div class="fact known"><dt>Enforcement</dt><dd>hard<span class="citations"><a href="#evidence-8">[1]</a></span></dd></div>
+<div class="fact known"><dt>Intended behavior</dt><dd>Resolve physical cwd and Git root and require exactly one registered writer for that worktree before writable dispatch.<span class="citations"><a href="#evidence-8">[1]</a></span></dd></div>
+<div class="fact known"><dt>Why this rung</dt><dd>A pre-dispatch invariant checks current host facts; a static repository test cannot see live writer reservations.<span class="citations"><a href="#evidence-8">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture observations</dt><dd>observed<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture eligibleEpisodes</dt><dd>1<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture activations</dt><dd>1<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture incidentsPrevented</dt><dd>1<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture falseActivations</dt><dd>0<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture overrides</dt><dd>0<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>live observations</dt><dd>unobserved<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>live eligibleEpisodes</dt><dd>0<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>live activations</dt><dd>0<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>live incidentsPrevented</dt><dd>0<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>live falseActivations</dt><dd>0<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>live overrides</dt><dd>0<span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded activation</dt><dd>fixture: regression_concurrent-work-requires-worktrees<small>Fixture episode id reconstructed from the audit generator&#39;s named causal-pair convention; no activation timestamp was collected</small><span class="citations"><a href="#evidence-9">[1]</a></span></dd></div>
+<div class="fact known"><dt>Next maturity condition</dt><dd>Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.<span class="citations"><a href="#evidence-8">[1]</a></span></dd></div></dl></article>
+<article class="card" id="mechanism-bdcdc07d055fb337"><h4>correctness-over-sycophancy</h4><dl><div class="fact known"><dt>Version</dt><dd>1<span class="citations"><a href="#evidence-10">[1]</a></span></dd></div>
+<div class="fact known"><dt>Feedback policy hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-10">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism rung</dt><dd>5<span class="citations"><a href="#evidence-10">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism</dt><dd>evaluator<span class="citations"><a href="#evidence-10">[1]</a></span></dd></div>
+<div class="fact known"><dt>Host boundary</dt><dd>evidence-judgment<span class="citations"><a href="#evidence-10">[1]</a></span></dd></div>
+<div class="fact known"><dt>Scope</dt><dd>equipped-feedback-host; personal-profile<span class="citations"><a href="#evidence-10">[1]</a></span></dd></div>
+<div class="fact known"><dt>Enforcement</dt><dd>hard<span class="citations"><a href="#evidence-10">[1]</a></span></dd></div>
+<div class="fact known"><dt>Intended behavior</dt><dd>Judge the current subject from consistent independent evidence and preserve disagreement as a failed or unsupported claim.<span class="citations"><a href="#evidence-10">[1]</a></span></dd></div>
+<div class="fact known"><dt>Why this rung</dt><dd>An evidence evaluator is necessary for a claim about correctness; token or phrasing checks cannot establish truth.<span class="citations"><a href="#evidence-10">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture observations</dt><dd>observed<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture eligibleEpisodes</dt><dd>1<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture activations</dt><dd>1<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture incidentsPrevented</dt><dd>1<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture falseActivations</dt><dd>0<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture overrides</dt><dd>0<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>live observations</dt><dd>unobserved<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>live eligibleEpisodes</dt><dd>0<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>live activations</dt><dd>0<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>live incidentsPrevented</dt><dd>0<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>live falseActivations</dt><dd>0<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>live overrides</dt><dd>0<span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded activation</dt><dd>fixture: regression_correctness-over-sycophancy<small>Fixture episode id reconstructed from the audit generator&#39;s named causal-pair convention; no activation timestamp was collected</small><span class="citations"><a href="#evidence-11">[1]</a></span></dd></div>
+<div class="fact known"><dt>Next maturity condition</dt><dd>Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.<span class="citations"><a href="#evidence-10">[1]</a></span></dd></div></dl></article>
+<article class="card" id="mechanism-b3f20c546f585084"><h4>fail-conservative-correction</h4><dl><div class="fact known"><dt>Version</dt><dd>1<span class="citations"><a href="#evidence-12">[1]</a></span></dd></div>
+<div class="fact known"><dt>Feedback policy hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-12">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism rung</dt><dd>3<span class="citations"><a href="#evidence-12">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism</dt><dd>pure-reactor<span class="citations"><a href="#evidence-12">[1]</a></span></dd></div>
+<div class="fact known"><dt>Host boundary</dt><dd>semantic-correction<span class="citations"><a href="#evidence-12">[1]</a></span></dd></div>
+<div class="fact known"><dt>Scope</dt><dd>equipped-feedback-host; personal-profile<span class="citations"><a href="#evidence-12">[1]</a></span></dd></div>
+<div class="fact known"><dt>Enforcement</dt><dd>hard<span class="citations"><a href="#evidence-12">[1]</a></span></dd></div>
+<div class="fact known"><dt>Intended behavior</dt><dd>On a typed correction, freeze destructive effects and scope expansion, preserve evidence, and require diagnosis; a false activation only tightens behavior.<span class="citations"><a href="#evidence-12">[1]</a></span></dd></div>
+<div class="fact known"><dt>Why this rung</dt><dd>A pure event reactor computes the monotone policy transition; a static guard cannot remember the correction across later effects.<span class="citations"><a href="#evidence-12">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture observations</dt><dd>observed<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture eligibleEpisodes</dt><dd>1<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture activations</dt><dd>1<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture incidentsPrevented</dt><dd>1<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture falseActivations</dt><dd>0<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture overrides</dt><dd>0<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>live observations</dt><dd>unobserved<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>live eligibleEpisodes</dt><dd>0<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>live activations</dt><dd>0<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>live incidentsPrevented</dt><dd>0<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>live falseActivations</dt><dd>0<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>live overrides</dt><dd>0<span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded activation</dt><dd>fixture: regression_fail-conservative-correction<small>Fixture episode id reconstructed from the audit generator&#39;s named causal-pair convention; no activation timestamp was collected</small><span class="citations"><a href="#evidence-13">[1]</a></span></dd></div>
+<div class="fact known"><dt>Next maturity condition</dt><dd>Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.<span class="citations"><a href="#evidence-12">[1]</a></span></dd></div></dl></article>
+<article class="card" id="mechanism-4ef8cd68a9e46286"><h4>no-attribution</h4><dl><div class="fact known"><dt>Version</dt><dd>1<span class="citations"><a href="#evidence-14">[1]</a></span></dd></div>
+<div class="fact known"><dt>Feedback policy hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-14">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism rung</dt><dd>1<span class="citations"><a href="#evidence-14">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism</dt><dd>script<span class="citations"><a href="#evidence-14">[1]</a></span></dd></div>
+<div class="fact known"><dt>Host boundary</dt><dd>attribution<span class="citations"><a href="#evidence-14">[1]</a></span></dd></div>
+<div class="fact known"><dt>Scope</dt><dd>equipped-feedback-host; personal-profile<span class="citations"><a href="#evidence-14">[1]</a></span></dd></div>
+<div class="fact known"><dt>Enforcement</dt><dd>hard<span class="citations"><a href="#evidence-14">[1]</a></span></dd></div>
+<div class="fact known"><dt>Intended behavior</dt><dd>Disable available automatic attribution in the invocation settings and reject matching AI trailers or footers at the publication boundary; preserve ordinary subject text and human coauthors.<span class="citations"><a href="#evidence-14">[1]</a></span></dd></div>
+<div class="fact known"><dt>Why this rung</dt><dd>A deterministic footer/trailer predicate is sufficient; invocation settings reduce generation and the commit hook checks actual bytes.<span class="citations"><a href="#evidence-14">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture observations</dt><dd>observed<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture eligibleEpisodes</dt><dd>1<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture activations</dt><dd>1<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture incidentsPrevented</dt><dd>1<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture falseActivations</dt><dd>0<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture overrides</dt><dd>0<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>live observations</dt><dd>unobserved<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>live eligibleEpisodes</dt><dd>0<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>live activations</dt><dd>0<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>live incidentsPrevented</dt><dd>0<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>live falseActivations</dt><dd>0<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>live overrides</dt><dd>0<span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded activation</dt><dd>fixture: regression_no-attribution<small>Fixture episode id reconstructed from the audit generator&#39;s named causal-pair convention; no activation timestamp was collected</small><span class="citations"><a href="#evidence-15">[1]</a></span></dd></div>
+<div class="fact known"><dt>Next maturity condition</dt><dd>Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.<span class="citations"><a href="#evidence-14">[1]</a></span></dd></div></dl></article>
+<article class="card" id="mechanism-329e44bccddf8b10"><h4>no-lint-type-disables-as-fixes</h4><dl><div class="fact known"><dt>Version</dt><dd>1<span class="citations"><a href="#evidence-16">[1]</a></span></dd></div>
+<div class="fact known"><dt>Feedback policy hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-16">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism rung</dt><dd>1<span class="citations"><a href="#evidence-16">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism</dt><dd>script<span class="citations"><a href="#evidence-16">[1]</a></span></dd></div>
+<div class="fact known"><dt>Host boundary</dt><dd>suppression-diff<span class="citations"><a href="#evidence-16">[1]</a></span></dd></div>
+<div class="fact known"><dt>Scope</dt><dd>equipped-feedback-host; personal-profile<span class="citations"><a href="#evidence-16">[1]</a></span></dd></div>
+<div class="fact known"><dt>Enforcement</dt><dd>hard<span class="citations"><a href="#evidence-16">[1]</a></span></dd></div>
+<div class="fact known"><dt>Intended behavior</dt><dd>Compare source comment directives with the baseline and reject newly introduced suppressions while allowing unchanged historical directives and quoted examples.<span class="citations"><a href="#evidence-16">[1]</a></span></dd></div>
+<div class="fact known"><dt>Why this rung</dt><dd>A deterministic source-diff check covers the declared directive vocabulary without a model episode.<span class="citations"><a href="#evidence-16">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture observations</dt><dd>observed<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture eligibleEpisodes</dt><dd>1<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture activations</dt><dd>1<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture incidentsPrevented</dt><dd>1<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture falseActivations</dt><dd>0<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture overrides</dt><dd>0<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>live observations</dt><dd>unobserved<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>live eligibleEpisodes</dt><dd>0<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>live activations</dt><dd>0<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>live incidentsPrevented</dt><dd>0<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>live falseActivations</dt><dd>0<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>live overrides</dt><dd>0<span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded activation</dt><dd>fixture: regression_no-lint-type-disables-as-fixes<small>Fixture episode id reconstructed from the audit generator&#39;s named causal-pair convention; no activation timestamp was collected</small><span class="citations"><a href="#evidence-17">[1]</a></span></dd></div>
+<div class="fact known"><dt>Next maturity condition</dt><dd>Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.<span class="citations"><a href="#evidence-16">[1]</a></span></dd></div></dl></article>
+<article class="card" id="mechanism-b3ab87cab0504ba7"><h4>no-partial-completion</h4><dl><div class="fact known"><dt>Version</dt><dd>1<span class="citations"><a href="#evidence-18">[1]</a></span></dd></div>
+<div class="fact known"><dt>Feedback policy hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-18">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism rung</dt><dd>6<span class="citations"><a href="#evidence-18">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism</dt><dd>workflow-gate<span class="citations"><a href="#evidence-18">[1]</a></span></dd></div>
+<div class="fact known"><dt>Host boundary</dt><dd>complete-scope<span class="citations"><a href="#evidence-18">[1]</a></span></dd></div>
+<div class="fact known"><dt>Scope</dt><dd>equipped-feedback-host; personal-profile<span class="citations"><a href="#evidence-18">[1]</a></span></dd></div>
+<div class="fact known"><dt>Enforcement</dt><dd>hard<span class="citations"><a href="#evidence-18">[1]</a></span></dd></div>
+<div class="fact known"><dt>Intended behavior</dt><dd>Only admit completed status when the required obligation set is discharged and no remaining work is reported.<span class="citations"><a href="#evidence-18">[1]</a></span></dd></div>
+<div class="fact known"><dt>Why this rung</dt><dd>A workflow transition gate checks the complete obligation set; a single successful check is not whole-order completion.<span class="citations"><a href="#evidence-18">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture observations</dt><dd>observed<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture eligibleEpisodes</dt><dd>1<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture activations</dt><dd>1<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture incidentsPrevented</dt><dd>1<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture falseActivations</dt><dd>0<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture overrides</dt><dd>0<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>live observations</dt><dd>unobserved<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>live eligibleEpisodes</dt><dd>0<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>live activations</dt><dd>0<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>live incidentsPrevented</dt><dd>0<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>live falseActivations</dt><dd>0<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>live overrides</dt><dd>0<span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded activation</dt><dd>fixture: regression_no-partial-completion<small>Fixture episode id reconstructed from the audit generator&#39;s named causal-pair convention; no activation timestamp was collected</small><span class="citations"><a href="#evidence-19">[1]</a></span></dd></div>
+<div class="fact known"><dt>Next maturity condition</dt><dd>Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.<span class="citations"><a href="#evidence-18">[1]</a></span></dd></div></dl></article>
+<article class="card" id="mechanism-151b4607eaf02f7c"><h4>read-your-own-output</h4><dl><div class="fact known"><dt>Version</dt><dd>1<span class="citations"><a href="#evidence-20">[1]</a></span></dd></div>
+<div class="fact known"><dt>Feedback policy hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-20">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism rung</dt><dd>6<span class="citations"><a href="#evidence-20">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism</dt><dd>workflow-gate<span class="citations"><a href="#evidence-20">[1]</a></span></dd></div>
+<div class="fact known"><dt>Host boundary</dt><dd>output-review<span class="citations"><a href="#evidence-20">[1]</a></span></dd></div>
+<div class="fact known"><dt>Scope</dt><dd>equipped-feedback-host; personal-profile<span class="citations"><a href="#evidence-20">[1]</a></span></dd></div>
+<div class="fact known"><dt>Enforcement</dt><dd>hard<span class="citations"><a href="#evidence-20">[1]</a></span></dd></div>
+<div class="fact known"><dt>Intended behavior</dt><dd>Bind each required output to a host-observed read of its current bytes before handoff; this witnesses delivery to the reader, not comprehension.<span class="citations"><a href="#evidence-20">[1]</a></span></dd></div>
+<div class="fact known"><dt>Why this rung</dt><dd>A handoff gate compares read receipts and current content identities; prose cannot witness that the bytes were delivered.<span class="citations"><a href="#evidence-20">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture observations</dt><dd>observed<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture eligibleEpisodes</dt><dd>1<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture activations</dt><dd>1<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture incidentsPrevented</dt><dd>1<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture falseActivations</dt><dd>0<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture overrides</dt><dd>0<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>live observations</dt><dd>unobserved<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>live eligibleEpisodes</dt><dd>0<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>live activations</dt><dd>0<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>live incidentsPrevented</dt><dd>0<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>live falseActivations</dt><dd>0<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>live overrides</dt><dd>0<span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded activation</dt><dd>fixture: regression_read-your-own-output<small>Fixture episode id reconstructed from the audit generator&#39;s named causal-pair convention; no activation timestamp was collected</small><span class="citations"><a href="#evidence-21">[1]</a></span></dd></div>
+<div class="fact known"><dt>Next maturity condition</dt><dd>Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.<span class="citations"><a href="#evidence-20">[1]</a></span></dd></div></dl></article>
+<article class="card" id="mechanism-6645c7316851d019"><h4>verify-app-before-done</h4><dl><div class="fact known"><dt>Version</dt><dd>1<span class="citations"><a href="#evidence-22">[1]</a></span></dd></div>
+<div class="fact known"><dt>Feedback policy hash</dt><dd>fnv1a64:d0000feb2622b0d4<span class="citations"><a href="#evidence-22">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism rung</dt><dd>6<span class="citations"><a href="#evidence-22">[1]</a></span></dd></div>
+<div class="fact known"><dt>Mechanism</dt><dd>workflow-gate<span class="citations"><a href="#evidence-22">[1]</a></span></dd></div>
+<div class="fact known"><dt>Host boundary</dt><dd>application-evidence<span class="citations"><a href="#evidence-22">[1]</a></span></dd></div>
+<div class="fact known"><dt>Scope</dt><dd>equipped-feedback-host; personal-profile<span class="citations"><a href="#evidence-22">[1]</a></span></dd></div>
+<div class="fact known"><dt>Enforcement</dt><dd>hard<span class="citations"><a href="#evidence-22">[1]</a></span></dd></div>
+<div class="fact known"><dt>Intended behavior</dt><dd>Require executed passing checks for every required application check at the current subject before the completion transition.<span class="citations"><a href="#evidence-22">[1]</a></span></dd></div>
+<div class="fact known"><dt>Why this rung</dt><dd>A workflow gate consumes executable evidence at completion; a one-time test alone cannot prevent a later unsupported done transition.<span class="citations"><a href="#evidence-22">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture observations</dt><dd>observed<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture eligibleEpisodes</dt><dd>1<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture activations</dt><dd>1<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture incidentsPrevented</dt><dd>1<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture falseActivations</dt><dd>0<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>fixture overrides</dt><dd>0<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>live observations</dt><dd>unobserved<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>live eligibleEpisodes</dt><dd>0<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>live activations</dt><dd>0<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>live incidentsPrevented</dt><dd>0<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>live falseActivations</dt><dd>0<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>live overrides</dt><dd>0<span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>Last recorded activation</dt><dd>fixture: regression_verify-app-before-done<small>Fixture episode id reconstructed from the audit generator&#39;s named causal-pair convention; no activation timestamp was collected</small><span class="citations"><a href="#evidence-23">[1]</a></span></dd></div>
+<div class="fact known"><dt>Next maturity condition</dt><dd>Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.<span class="citations"><a href="#evidence-22">[1]</a></span></dd></div></dl></article></div></section>
+<section class="collection" id="matrices-8ecb85cf71fd36f5"><div class="collection-heading"><h3>Acceptance evidence — WO-011 self-hosted executor</h3><span class="status available">available</span></div><p class="note">The source records no entries</p><div class="cards"></div></section>
+<section class="collection" id="matrices-1fec985d965cb210"><div class="collection-heading"><h3>Acceptance evidence — WO-011 self-hosted verifier</h3><span class="status available">available</span></div><div class="cards"><article class="card" id="matrix-3e4bdc81f5bf7f5c"><h4>ws_feedback_audit_verification</h4><dl><div class="fact known"><dt>Matrix phase</dt><dd>complete<span class="citations"><a href="#evidence-39">[1]</a></span></dd></div>
+<div class="fact known"><dt>Subject revision</dt><dd>sha256:0c7c3a8f0c96bc00122f00d094db40d26a8a15f10b5ae2a49312bf45d658e0b3<span class="citations"><a href="#evidence-39">[1]</a></span></dd></div>
+<div class="fact known"><dt>Acceptance criterion</dt><dd>All ten feedback regression episodes pass with mechanisms present and fail by assertion with only their mechanism removed.<span class="citations"><a href="#evidence-40">[1]</a></span></dd></div>
+<div class="fact known"><dt>Acceptance status</dt><dd>verified<span class="citations"><a href="#evidence-40">[1]</a></span></dd></div>
+<div class="fact known"><dt>Claim type</dt><dd>behavior<span class="citations"><a href="#evidence-40">[1]</a></span></dd></div>
+<div class="fact known"><dt>Evidence source</dt><dd>synthetic-fixture<span class="citations"><a href="#evidence-40">[1]</a></span></dd></div>
+<div class="fact known"><dt>Producing verifier episode</dt><dd>ep_verifier_1_attempt_4<span class="citations"><a href="#evidence-40">[1]</a></span></dd></div>
+<div class="fact known"><dt>Evidence stale</dt><dd>false<span class="citations"><a href="#evidence-40">[1]</a></span></dd></div>
+<div class="fact known"><dt>Evidence references</dt><dd>sha256:0c7c3a8f0c96bc00122f00d094db40d26a8a15f10b5ae2a49312bf45d658e0b3:AC-causal-fixtures<span class="citations"><a href="#evidence-40">[1]</a></span></dd></div>
+<div class="fact known"><dt>Acceptance criterion</dt><dd>The matched instruction projection reduces UTF-8 bytes relative to the WO-004 baseline plus the ten prose equivalents; it makes no effective-session token claim.<span class="citations"><a href="#evidence-41">[1]</a></span></dd></div>
+<div class="fact known"><dt>Acceptance status</dt><dd>verified<span class="citations"><a href="#evidence-41">[1]</a></span></dd></div>
+<div class="fact known"><dt>Claim type</dt><dd>state<span class="citations"><a href="#evidence-41">[1]</a></span></dd></div>
+<div class="fact known"><dt>Evidence source</dt><dd>synthetic-fixture<span class="citations"><a href="#evidence-41">[1]</a></span></dd></div>
+<div class="fact known"><dt>Producing verifier episode</dt><dd>ep_verifier_1_attempt_4<span class="citations"><a href="#evidence-41">[1]</a></span></dd></div>
+<div class="fact known"><dt>Evidence stale</dt><dd>false<span class="citations"><a href="#evidence-41">[1]</a></span></dd></div>
+<div class="fact known"><dt>Evidence references</dt><dd>sha256:0c7c3a8f0c96bc00122f00d094db40d26a8a15f10b5ae2a49312bf45d658e0b3:AC-context<span class="citations"><a href="#evidence-41">[1]</a></span></dd></div></dl></article></div></section></section>
+<section class="panel" id="work"><p class="role">For showrunner · devops</p><h2>Work</h2><p class="question">What is active, what is blocked, what closed, and what did the release contain?</p><section class="collection" id="orders"><div class="collection-heading"><h3>Orders and legal actions</h3><span class="status unavailable">unavailable</span></div><p class="note">Source not supplied</p><div class="cards"></div></section>
+<section class="collection" id="worktrees"><div class="collection-heading"><h3>Worktree Beacon observations</h3><span class="status unavailable">unavailable</span></div><p class="note">Source not supplied</p><div class="cards"></div></section>
+<section class="collection" id="releases"><div class="collection-heading"><h3>Published releases</h3><span class="status unavailable">unavailable</span></div><p class="note">Source not supplied</p><div class="cards"></div></section>
+<section class="collection" id="work-order-index"><div class="collection-heading"><h3>Work-order evidence index</h3><span class="status unavailable">unavailable</span></div><p class="note">Source not supplied</p><div class="cards"></div></section>
+<section class="collection" id="usage"><div class="collection-heading"><h3>Recorded actor usage</h3><span class="status unavailable">unavailable</span></div><p class="note">Source not supplied</p><div class="cards"></div></section></section>
+<section class="panel" id="blueprint"><p class="role">For product lead · devops</p><h2>Blueprint</h2><p class="question">Is this still the thing we mean?</p><section class="collection" id="refutation-verdicts"><div class="collection-heading"><h3>Latest plan-refutation verdicts</h3><span class="status unavailable">unavailable</span></div><p class="note">Source not supplied</p><div class="cards"></div></section>
+<section class="collection" id="capabilities"><div class="collection-heading"><h3>Capability evidence</h3><span class="status unavailable">unavailable</span></div><p class="note">Source not supplied</p><div class="cards"></div></section>
+<section class="collection" id="publication"><div class="collection-heading"><h3>Publication status</h3><span class="status unavailable">unavailable</span></div><p class="note">Source not supplied</p><div class="cards"></div></section>
+<section class="collection" id="roadmap"><div class="collection-heading"><h3>Pending roadmap rungs</h3><span class="status unavailable">unavailable</span></div><p class="note">Source not supplied</p><div class="cards"></div></section></section>
+<section id="role-questions"><h2>Five roles. Five questions.</h2><ul class="role-questions"><li><strong>product lead</strong> — <a href="#refutation-verdicts">Is this still the thing we mean?</a><small>Answered by verdict + reason; latest-refutation.holdStatus<br>Source: docs/product/13-uifa-roles.md#the-five-roles</small></li>
+<li><strong>showrunner</strong> — <a href="#orders">What is active, what is blocked, what closed, and what did the release contain?</a><small>Answered by phase + blockers + dependencyCheck + legalNextActions; releases.workOrders<br>Source: docs/product/13-uifa-roles.md#the-five-roles</small></li>
+<li><strong>engineer</strong> — <a href="#saved-builds">Does this composition express the behavior I mean, and what does it cost?</a><small>Answered by tooltip + semanticHash + hashAgreement<br>Source: docs/product/13-uifa-roles.md#the-five-roles</small></li>
+<li><strong>tester</strong> — <a href="#compiled-mechanisms">In this situation, does the equipped behavior do the right thing?</a><small>Answered by desiredBehavior + fixture.incidentsPrevented + lastActivation; acceptance matrix status and evidence<br>Source: docs/product/13-uifa-roles.md#the-five-roles</small></li>
+<li><strong>devops</strong> — <a href="#compiled-mechanisms">Which repeated step can become a checked mechanism next?</a><small>Answered by boundary + rung + nextMaturity; capabilities.Next smallest promotable increment<br>Source: docs/product/13-uifa-roles.md#the-five-roles</small></li></ul></section>
+<section id="sources"><h2>Source availability</h2><ul class="source-list"><li><strong>available</strong> — skeleton:loadout-exports</li>
+<li><strong>available</strong> — packages/skeleton/src/loadouts/feedback.ts</li>
+<li><strong>available</strong> — docs/evidence/WO-011/feedback.json</li>
+<li><strong>available</strong> — docs/evidence/WO-011/selfhost-audit.jsonl#worker-status</li>
+<li><strong>available</strong> — docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections</li>
+<li><strong>available</strong> — store:wo011-audit</li>
+<li><strong>available</strong> — docs/evidence/WO-011/selfhost-verification.jsonl#worker-status</li>
+<li><strong>available</strong> — docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections</li>
+<li><strong>available</strong> — store:wo011-verifier</li>
+<li><strong>unavailable</strong> — control:canonical-segments<small>Source not supplied</small></li>
+<li><strong>unavailable</strong> — docs/work-orders/README.md<small>Source not supplied</small></li>
+<li><strong>unavailable</strong> — resume:status--json<small>Source not supplied</small></li>
+<li><strong>unavailable</strong> — worktree:constellation<small>Source not supplied</small></li>
+<li><strong>unavailable</strong> — release:list<small>Source not supplied</small></li>
+<li><strong>unavailable</strong> — resume:usage--json<small>Source not supplied</small></li>
+<li><strong>unavailable</strong> — docs/planning/capability-table.md<small>Source not supplied</small></li>
+<li><strong>unavailable</strong> — docs/publication/audience-status-index.md<small>Source not supplied</small></li>
+<li><strong>unavailable</strong> — docs/product/06-roadmap.md<small>Source not supplied</small></li>
+<li><strong>unavailable</strong> — docs/planning/refutations/<small>Source not supplied</small></li></ul></section>
+<section id="evidence"><h2>Evidence references</h2><p class="note">Links stay within this file. References name the original source and record; raw payloads and source-file bodies are omitted.</p><ol class="evidence-list"><li id="evidence-1">packages/skeleton/src/reactor.ts#loadout<br>loadout + explicit inspection environment</li>
+<li id="evidence-2">packages/skeleton/src/loadouts/entropy-reducer.ts#entropyReducerLoadout<br>loadout + explicit inspection environment</li>
+<li id="evidence-3">packages/skeleton/src/loadouts/plan-refuter.ts#planRefuterLoadout<br>loadout + explicit inspection environment</li>
+<li id="evidence-4">packages/skeleton/src/loadouts/feedback.ts<br>unit:anti-oscillation@1</li>
+<li id="evidence-5">docs/evidence/WO-011/feedback.json<br>maturity:anti-oscillation; fixtures:anti-oscillation</li>
+<li id="evidence-6">packages/skeleton/src/loadouts/feedback.ts<br>unit:bounded-boy-scout-cleanup@1</li>
+<li id="evidence-7">docs/evidence/WO-011/feedback.json<br>maturity:bounded-boy-scout-cleanup; fixtures:bounded-boy-scout-cleanup</li>
+<li id="evidence-8">packages/skeleton/src/loadouts/feedback.ts<br>unit:concurrent-work-requires-worktrees@1</li>
+<li id="evidence-9">docs/evidence/WO-011/feedback.json<br>maturity:concurrent-work-requires-worktrees; fixtures:concurrent-work-requires-worktrees</li>
+<li id="evidence-10">packages/skeleton/src/loadouts/feedback.ts<br>unit:correctness-over-sycophancy@1</li>
+<li id="evidence-11">docs/evidence/WO-011/feedback.json<br>maturity:correctness-over-sycophancy; fixtures:correctness-over-sycophancy</li>
+<li id="evidence-12">packages/skeleton/src/loadouts/feedback.ts<br>unit:fail-conservative-correction@1</li>
+<li id="evidence-13">docs/evidence/WO-011/feedback.json<br>maturity:fail-conservative-correction; fixtures:fail-conservative-correction</li>
+<li id="evidence-14">packages/skeleton/src/loadouts/feedback.ts<br>unit:no-attribution@1</li>
+<li id="evidence-15">docs/evidence/WO-011/feedback.json<br>maturity:no-attribution; fixtures:no-attribution</li>
+<li id="evidence-16">packages/skeleton/src/loadouts/feedback.ts<br>unit:no-lint-type-disables-as-fixes@1</li>
+<li id="evidence-17">docs/evidence/WO-011/feedback.json<br>maturity:no-lint-type-disables-as-fixes; fixtures:no-lint-type-disables-as-fixes</li>
+<li id="evidence-18">packages/skeleton/src/loadouts/feedback.ts<br>unit:no-partial-completion@1</li>
+<li id="evidence-19">docs/evidence/WO-011/feedback.json<br>maturity:no-partial-completion; fixtures:no-partial-completion</li>
+<li id="evidence-20">packages/skeleton/src/loadouts/feedback.ts<br>unit:read-your-own-output@1</li>
+<li id="evidence-21">docs/evidence/WO-011/feedback.json<br>maturity:read-your-own-output; fixtures:read-your-own-output</li>
+<li id="evidence-22">packages/skeleton/src/loadouts/feedback.ts<br>unit:verify-app-before-done@1</li>
+<li id="evidence-23">docs/evidence/WO-011/feedback.json<br>maturity:verify-app-before-done; fixtures:verify-app-before-done</li>
+<li id="evidence-24">docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections<br>event:evt_1 (FeedbackAuditOpened)</li>
+<li id="evidence-25">docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections<br>event:evt_5 (CommandResult)</li>
+<li id="evidence-26">docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections<br>receipt:audit:evt_3:authority-decision; event:evt_3</li>
+<li id="evidence-27">docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections<br>receipt:audit:evt_5:external-effect; event:evt_3, event:evt_5</li>
+<li id="evidence-28">docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections<br>receipt:audit:evt_5:result; event:evt_5</li>
+<li id="evidence-29">docs/evidence/WO-011/selfhost-verification.jsonl#worker-status<br>episodes:ep_verifier_1_attempt_1</li>
+<li id="evidence-30">docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections<br>event:evt_5 (WorkerAttemptStarted)</li>
+<li id="evidence-31">docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections<br>event:evt_4 (CommandPersisted)</li>
+<li id="evidence-32">docs/evidence/WO-011/selfhost-verification.jsonl#worker-status<br>episodes:ep_verifier_1_attempt_2</li>
+<li id="evidence-33">docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections<br>event:evt_385 (WorkerAttemptStarted)</li>
+<li id="evidence-34">docs/evidence/WO-011/selfhost-verification.jsonl#worker-status<br>episodes:ep_verifier_1_attempt_3</li>
+<li id="evidence-35">docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections<br>event:evt_875 (WorkerAttemptStarted)</li>
+<li id="evidence-36">docs/evidence/WO-011/selfhost-verification.jsonl#worker-status<br>episodes:ep_verifier_1_attempt_4</li>
+<li id="evidence-37">docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections<br>event:evt_1221 (WorkerAttemptStarted)</li>
+<li id="evidence-38">docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections<br>event:evt_1600 (VerificationContinuation)</li>
+<li id="evidence-39">docs/evidence/WO-011/selfhost-verification.jsonl#worker-status<br>acceptanceEvidenceMatrices:ws_feedback_audit_verification</li>
+<li id="evidence-40">docs/evidence/WO-011/selfhost-verification.jsonl#worker-status<br>acceptanceEvidenceMatrices:ws_feedback_audit_verification/criterion:AC-causal-fixtures</li>
+<li id="evidence-41">docs/evidence/WO-011/selfhost-verification.jsonl#worker-status<br>acceptanceEvidenceMatrices:ws_feedback_audit_verification/criterion:AC-context</li>
+<li id="evidence-42">docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections<br>receipt:audit:evt_4:authority-decision; event:evt_4</li>
+<li id="evidence-43">docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections<br>receipt:audit:evt_1598:external-effect; event:evt_4, event:evt_1598</li>
+<li id="evidence-44">docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections<br>receipt:audit:evt_1598:result; event:evt_1598</li></ol></section>
+<footer class="footer">uifa-board-v1 · lossy-read-only. Declared mechanics, recorded observations, and reported selections retain their separate meanings. A Beacon is not a worker heartbeat.</footer>
+</main></div>
+</body>
+</html>

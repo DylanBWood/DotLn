@@ -1,0 +1,1354 @@
+# Roadmap — application release ladder
+
+Application versions with exit criteria; pivots are gated on evidence at each
+rung. Ideas recorded in the ledger never block a rung and never sneak into one —
+the deferral list is part of each milestone's definition. Two pacing rules:
+**point of view before efficiency** (explore until a perspective exists, then
+optimize), and **every rung ships a visible payoff** — this is a solo project
+run on momentum; six rungs of invisible infrastructure is a project-death risk,
+so each version ends with something the operator can see, touch, or play with.
+The environment for this ladder is the **personal machine** (macOS, personal
+Claude Code plan, Codex CLI as second executor, personal GitHub);
+managed-environment constraints (enterprise gateways, centrally managed
+settings) are out of scope until such a deployment exists.
+
+This ladder builds the author's personal reference implementation while
+extracting reusable platform mechanisms from it. It is not the minimum policy
+every DotLn implementation must adopt. Each rung should increasingly label
+platform contract, personal-instance doctrine, and optional saved profile; the
+eventual physical package boundary remains evidence-selected under ADR-0006.
+
+## Release boundary
+
+**WO-032 activation assignment (2026-09-07):** the first actor-board slice targets application `v0.14.0`, the next minor above the observed annotated `v0.13.3` baseline. Its new console component is `0.1.0`; existing kernel, compiler and skeleton components retain their versions. Independent verification, final review, and publication remain separate. A sibling that consumes the same application target triggers the existing integration-retiming rule.
+
+The sole `vX.Y.Z` in a current work-order heading is its planned **application
+release**, not its work-order number, package version, schema version, or
+conceptual insertion point. The operator's 2026-09-07 workflow correction authorizes
+routine collision retiming of an unpublished target under its existing release
+classification, with a dated migration note, through `release prepare`. It does
+not authorize reclassification, a scope/acceptance change, or publication; those
+retain their explicit authority and independent evidence requirements. A published
+tag may not move. Begin source releases when a rung
+produces a reproducible artifact that another build, saved configuration, or
+compatibility rule can name. The first useful boundary was `v0.2.0`: after
+WO-003 received passing final review, its PR was merged, and the exact merged
+commit passed the full evidence gate, an annotated Git tag and immutable release
+manifest were created. Never tag the feature branch or an unreviewed commit.
+
+### 2026-08-31 forward retiming
+
+WO-004 through WO-011 were drafted before `v0.2.0` was published. Three belated
+foundation tasks were inserted at conceptual pre-release positions
+`v0.0.2`–`v0.0.4`, and WO-007 was called `v0.2.1`; those planning labels then
+looked like backwards application releases when the work orders were executed
+numerically. Current and pending plans are retimed onto one monotonic
+application sequence:
+
+| Work order / milestone                         | Superseded planning label | Application release target |
+| ---------------------------------------------- | ------------------------: | -------------------------: |
+| WO-004 — environment and lifecycle corrections |                  `v0.0.2` |                   `v0.2.1` |
+| WO-005 — capability evidence table             |                  `v0.0.3` |                   `v0.2.2` |
+| WO-006 — documentation-publication bootstrap   |                  `v0.0.4` |                   `v0.2.3` |
+| WO-007 — audit-record baseline                 |                  `v0.2.1` |                   `v0.3.0` |
+| WO-008 — composition compiler                  |                  `v0.3.0` |                   `v0.4.0` |
+| WO-009 — real disposable worker                |                  `v0.4.0` |                   `v0.5.0` |
+| WO-010 — independent verification              |                  `v0.5.0` |                   `v0.6.0` |
+| WO-011 — feedback compiler                     |                  `v0.6.0` |                   `v0.7.0` |
+| projections and console                        |                  `v0.7.0` |                   `v0.8.0` |
+| pattern workshop                               |                  `v0.8.0` |                   `v0.9.0` |
+| source-to-deliverable vertical                 |                  `v0.9.0` |                  `v0.10.0` |
+
+This is a forward-only planning correction. The `v0.2.0` tag, its manifest,
+immutable verification/final-review reports, component versions, schema
+versions, and earlier ledger entries remain historical truth. The `v0.2.x`
+maintenance line is intentionally narrow: WO-004 corrects evidence and lifecycle
+behavior, WO-005 inventories existing evidence, and WO-006 proves a
+documentation-publication loop without extending the exported application
+runtime. If execution expands one of those scopes into public runtime
+capability, its release target must be reclassified before implementation.
+
+### 2026-09-04 forward retiming — WO-023 occupies v0.5.0
+
+The operator's `resume: next` activation placed WO-023 on published `v0.4.1`
+and assigned it `v0.5.0`, satisfying the earlier recorded reversal condition
+for another forward retiming. This note supersedes only the still-unpublished
+targets at and above the former `v0.5.0`; published tags and the accepted build
+order do not move.
+
+| Work order / milestone            | Superseded target | Current application release target |
+| --------------------------------- | ----------------: | ---------------------------------: |
+| WO-023 — compiled Entropy Reducer |        unassigned |                           `v0.5.0` |
+| WO-029 — pinned artifact identity |        unassigned |        unassigned until activation |
+| WO-009 — real disposable worker   |          `v0.5.0` |        unassigned until activation |
+| WO-010 — independent verification |          `v0.6.0` |        unassigned until activation |
+| WO-011 — feedback compiler        |          `v0.7.0` |        unassigned until activation |
+| projections and console           |          `v0.8.0` |        unassigned until activation |
+| pattern workshop                  |          `v0.9.0` |        unassigned until activation |
+| source-to-deliverable vertical    |         `v0.10.0` |        unassigned until activation |
+
+Filing WO-029 assigns neither a version nor a queue position. The recommended
+dependency placement remains immediately before WO-009, whenever the active
+slot reaches that worker boundary. Each unassigned rung receives a compatible
+version and synchronized work-order heading only through its own explicit
+activation; no arithmetic shift is inferred here.
+
+**WO-029 activation completion (2026-09-05):** its control activation omitted a target. The executor completes the standing opt-out release assignment at `v0.9.0`, a minor addition above published `v0.8.0` (`961601a`). Compiler package `0.3.0` and skeleton package `0.8.0` move independently; the kernel and existing semantic-hash preimage do not. The earlier table remains a dated retiming record, and WO-009 still receives its own release assignment at activation. This source prepares the pin/compare receipt; independent verification, final review, merge, and release publication remain separate lifecycle evidence.
+
+**WO-009 activation completion (2026-09-05):** its omitted target is assigned `v0.10.0`, a minor addition above published `v0.9.0` (`002593f`). Skeleton source advances to component `0.9.0`; compiler `0.3.0`, kernel `0.2.1`, and the event/compiled-program schema axes remain unchanged. The earlier retiming table is historical. The source worktree prepares disposable fixture-inspection workers and their durable host; independent verification and publication remain separate lifecycle evidence.
+
+**WO-031 activation completion (2026-09-05):** its omitted target is assigned
+`v0.10.1`, a patch above published `v0.10.0` (`272a150`). It adds the repository's
+read-only actor-usage projection and optional opaque account labels; exported
+runtime capabilities and component versions remain unchanged. The source claim
+prepares this release; review and publication remain separate evidence.
+
+**WO-022 activation completion (2026-09-06):** the omitted release target is
+assigned `v0.11.0`, a minor addition above published `v0.10.1`. The bounded
+sparse probe represents and emits the entire v3 maximum, and fixture keys are
+created outside every repository. Compiler `0.4.0` adds the three perception
+supports; skeleton `0.10.0` adds mounted/guarded sensing and weak keyed v3
+projection. Kernel `0.2.1`, the compiled-program contract and event-envelope
+schema remain unchanged. The deterministic mounted verifier demonstrates
+blinding; native model verification remains WO-010. Review and publication
+remain separate lifecycle evidence.
+
+**WO-108 activation completion (2026-09-06):** the omitted target is assigned
+`v0.13.1`, an internal tooling/evidence patch above published `v0.13.0`
+(`3dc19b7`), under the operator's dated scope amendment in the work order. It
+adds the offline mutation-evidence runner with its pinned census, selected
+campaign, append-only kill matrix, and survivor findings under
+`corpus/mutation/`, plus root test wiring for the runner's self-tests. Exported
+runtime capabilities, component versions, dependency declarations, and schemas
+remain unchanged. The source claim prepares this release; independent
+verification, final review, and publication remain separate lifecycle evidence.
+
+**WO-038 activation completion (2026-09-06):** its omitted target is assigned `v0.13.2`, a metadata and publication-guard patch above origin's published `v0.13.1` (`ed2070a`). The source implements the decided licenses in root/workspace metadata, pinned license-surface checks with npm refusal probes, and DCO contribution checks at branch publication. The [executor receipt](../evidence/WO-038/README.md) records the evidence and the WO-033 export-default handoff. The existing gate also requires refreshing the source-pinned feedback edition after these package metadata changes; the receipt records that refresh and a bounded automation nomination. No runtime source, component version, dependency, or schema changes; verification and publication remain separate lifecycle evidence.
+
+**WO-041 activation completion (2026-09-07):** the omitted release target is
+assigned `v0.13.2`, a control-plane patch above published `v0.13.1`. The source
+adds the compiled plan refuter, receipt and override commands, and forward-only
+planning gate. Skeleton component `0.12.1` carries the source changes; compiler
+`0.6.0`, kernel `0.2.1`, lifecycle legality and event schema remain unchanged; planning overrides use their own append-only
+control log. Independent verification, final review and publication remain
+separate evidence.
+
+**WO-041 collision retiming (2026-09-07):** unpublished target `v0.13.2` is superseded by `v0.13.3` under the existing patch classification because the observed release baseline is `v0.13.2`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
+The manifest records the Git commit, application release, package/component
+versions, supported schema and artifact ranges, transformation-set version (or
+explicitly `none`), evidence commands/results, evaluable and deferred cadence
+kinds, toolchain, and known limitations. A release may initially be source-only.
+Publishing npm packages, executables, containers, or hosted artifacts is a
+separate projection selected only when a consumer needs it; a Git tag must not
+imply those channels exist.
+
+Source visibility is not itself a distribution license. Before accepting an
+outside contribution, publishing any package/binary/container/data or asset
+bundle, or operating a multi-user service, the operator must pass the explicit
+[licensing and legal decision gate](../LEGAL.md): select the applicable code and
+documentation posture, protect unpublished packages, establish inbound terms,
+inventory incorporated third-party material, review privacy/data practices
+before any app or service collects, retains, or transmits another person's data,
+review service terms before offering an app or hosted service to others, and
+review commercial and brand posture before sale, licensing, fundraising,
+material marketing, or substantial investment in a DotLn or feature-brand
+name. The list in `docs/LEGAL.md` is controlling; sale is not the first trigger.
+The license posture was decided on 2026-09-06 (Apache-2.0 code, CC BY 4.0
+documentation; `docs/LEGAL.md` §Decision), and WO-038 implements the package
+metadata and publication guard; the remaining gates stay open.
+
+The hand-closed `v0.2.0` manifest and notes under `docs/releases/` remain their
+immutable historical projection. For later releases, the annotated tag message
+is the immutable location for both the canonical JSON manifest and layered
+notes. The generator starts from `docs/releases/tag-manifest.template.json`; the
+validator re-derives its fields from the tagged source, control state, installed
+toolchain, and observed evidence before any tag ref is created. This order is
+deliberate: **the tag names the reviewed merged commit, and its annotation
+carries the record**. A tracked manifest committed after the tag would describe
+a different commit; committing one before the tag would require guessing its own
+commit identity.
+
+Beginning with `v0.3.2`, every passing final review supplies a five-section
+reviewed notes artifact, including for no-release work orders. Release close
+assembles all notes merged since the preceding tag in first-parent order, labels
+older work orders with a time-indexed commit-subject fallback, appends
+manifest-derived evidence and compatibility, and keeps that edition in the
+annotated tag. After the validated tag push, the same human layer is projected
+as a GitHub Release; the projection never replaces the tag's immutable JSON
+record and is recovered by rerunning close rather than silently edited.
+Current final-review PR and release-note bodies are authored as renderer-wrapped
+Markdown: one physical source line per prose paragraph or list-item paragraph,
+with semantic Markdown boundaries retained. The publisher checks the committed
+current package and transports it byte for byte; historical packages and tag
+re-derivation remain unchanged.
+
+Version ownership stays separated. Planning pins the application target in the
+active work-order H1, execution updates the delimited README source claim, and
+publish/close tooling checks both against tag truth. Execution must also move a
+component package version whenever that component's `src/` differs from the
+preceding release; the release preflight proves it from the previous tag
+manifest. Schema, artifact, transformation, and other compatibility axes move
+only under their own contract owners and are never inferred from an application
+or component bump.
+
+**Operator default (2026-09-04):** assign and update a release target as part of
+ordinary work-order preparation unless the operator explicitly opts out. A
+compatible control-plane, documentation, or evidence improvement takes the next
+patch above the latest published release; new capability and breaking changes
+follow the classification rules below. An activated order whose target was
+omitted is completed under this default, with the classification and base
+recorded, rather than asking the operator to opt in again. An already pinned
+target still follows the retiming rule. This authorizes preparing the version
+surfaces, not publishing a tag, Release, package, or branch without its existing
+dispatch. WO-028 applies the default as `v0.5.1` above published `v0.5.0`.
+WO-026 applies it as `v0.5.2` above published `v0.5.1`.
+WO-020 assigns the next minor, `v0.6.0`, above published `v0.5.2`, with skeleton
+component `0.6.0` and unchanged kernel/compiler versions. WO-030 assigns the
+next minor, `v0.7.0`, above published `v0.6.0` (2026-09-05 planning pass); the
+other horizon orders stay unassigned until their own activations.
+
+Patch releases contain compatible corrections, documentation, and evidence
+improvements; minor releases add backwards-compatible application capability;
+breaking public contracts require the next major boundary even before 1.0 unless
+an explicitly experimental surface says otherwise. Historical tags and manifests
+are immutable. Never move a tag to make the past resemble the present; issue a
+new patch release. Do not invent a retroactive `v0.1.0` tag unless its exact
+reviewed commit and evidence can be reconstructed. Tag creation and remote
+publication remain explicit operator actions.
+
+Release closeout is the final workflow task after PR merge, not an activity
+hidden inside final review. The guarded close command finishes the merged
+worktree/branch, fast-forwards the clean main checkout to `origin/main`, and
+requires the closed control state to name the same work order. At a new SemVer
+boundary it runs `npm ci` before evidence, proves tracked files remain
+unchanged, reruns the declared evidence, builds and validates the manifest and
+notes, and creates/pushes only the annotated tag when its explicit publish form
+was authorized. It never pushes `main`. The `resume: release close` phrase is
+that explicit tag-publication authorization. Without it, the raw command still
+performs guarded closeout and validation but withholds tag creation and
+publication. If any guarded release-close check refuses before tag creation —
+including declared evidence, manifest derivation or validation, or another
+release gate — do not tag. The lifecycle should grow a first-class
+**fix-in-place** recovery for such a failure: preserve the interrupted release
+obligation and target, open and activate a bounded patch work order from current
+`origin/main`, drive it through the ordinary implementation, independent
+verification, final review, and merge gates, then resume the interrupted
+closeout. “In place” means continuity of the parent closeout episode, not
+editing `main`, reusing a removed worktree, bypassing review, or carrying
+tag-publication authority into the patch. WO-012 and WO-015 are reference cases
+for the current manual composition of those steps; neither adds the still-future
+durable command/event surface or repeated-failure semantics.
+
+An application target in a work-order heading that is strictly below the latest
+release is a successful no-release closeout, leaving clean `main` in the closed,
+between-work-orders state rather than publishing backwards. An equal version is
+idempotent only when the existing validated annotated tag names that exact
+commit; any conflict refuses. An operator who deliberately defers an otherwise
+eligible release records the reason in a reviewed durable artifact; absence of a
+tag alone must not leave the milestone's publication state ambiguous.
+
+Each published release also carries layered patch notes. Lead with the release's
+visible payoff and a short explanation of why it matters; isolate breaking,
+migration, compatibility, security, data-loss, authority, and operator-action
+items where they cannot be missed; then group substantive changes by product
+area. Collapse low-signal repetition into honest aggregate lines such as
+progressive copy, fixture, diagnostic, or visual polish instead of narrating
+every touched file. The aggregate must not conceal a behavioral, schema,
+compatibility, safety, or recovery change. Link detailed evidence and manifests
+for readers who need the full trace.
+
+## Work-order navigation and identity (candidate)
+
+The current control projection answers one narrow question: given a selected
+work order and its independently folded phase, which lifecycle transitions are legal now?
+It does not answer which backlog order should be activated after close. The
+release ladder, hard dependency graph, adjacent evidence/corpus work, and
+operator preference are distinct planning inputs and must not be collapsed into
+the next integer.
+
+Keep three answers visible:
+
+1. **Workflow legal next:** the transition allowed for the selected order, such as
+   verify, repair, or final review.
+2. **Eligible now:** every candidate whose hard dependencies, activation
+   prerequisites, authority, environment, and exclusive-resource constraints are
+   satisfied.
+3. **Recommended next:** the eligible choice selected by an explicit planning
+   policy or by the operator, with the reason and alternatives retained.
+
+Existing `WO-NNN` identifiers are stable, opaque references. They do not encode
+priority, roadmap position, or family, and numeric gaps carry no meaning. The
+completed/drafted WO-10x orders therefore remain addressable under their current
+IDs; mainline work never has to “catch up,” and activated or historically cited
+orders are not renumbered. Future grouping belongs in explicit metadata and
+views, not reserved number ranges.
+
+A provisional planning row should be able to show:
+
+`id | title | purpose/track | planning state | lifecycle evidence | hard dependencies | activation prerequisites | eligibility reason | recommended rank/reason | execution role | model/effort/environment constraints | affected surfaces | release relation`.
+
+Lifecycle evidence remains derived from the control log, numbered verification
+and final-review artifacts, merge evidence, and release/no-release records—not a
+manually asserted `complete: true`. “Implemented,” “verified,” “final-reviewed,”
+“merged,” and “released/no-release” are different boundaries. Likewise, worker
+role is distinct from model, effort, harness, and required capabilities;
+dependency is distinct from a preflight such as version assignment,
+authentication, provisioned dependencies, or a quiet-machine window.
+
+**2026-09-04 migration (WO-026):** the evidence view is adopted; the broader
+metadata and scheduling design remains a candidate under this stable heading.
+The pilot's repeated evidence drift is now
+addressed by the [generated work-order index](../work-orders/README.md).
+Work-order files retain their paths as durable addresses. The index observes
+their headers, reduces every order through the shared control fold, and
+attributes release inclusion from local annotated manifests, with the explicit
+pre-manifest v0.2.0 record. It distinguishes all in-flight orders, open drafts,
+control-closed orders, and time-indexed history. Closed means the applicable
+passing final review, not independent proof of merge or remote publication.
+
+The index is the evidence-state answer; the [human map](../planning/work-order-map.md)
+keeps recommendation, rationale, tracks, and activation preflight. Dependency
+status is a conservative observation of every WO token in the Depends on
+paragraph against the control-closed set. It does not parse natural-language
+recommendations or reverse references into a scheduling policy. The dated
+[activation comparison](../planning/work-order-index-activation-2026-09-04.md)
+explains the differences from the pilot's hand-written cells.
+
+`npm run work-orders -- index` explicitly refreshes the generated view.
+`index --check`, included in `npm test`, checks current headers/control against
+the recorded tag-object snapshot; missing or changed recorded tags refuse, and
+additional local release tags are reported as newer evidence. The operator
+selected this snapshot rule so tagging a reviewed commit does not invalidate
+its own reproducible evidence. No command fetches tags. Refresh after lifecycle
+transitions before running evidence; lifecycle helpers do not regenerate the
+index. Standardized front matter, a separate registry, a scheduler, and automatic
+recommendation remain unselected candidates.
+
+**2026-09-04 usability correction (WO-020 ideation):** the operator's reading
+task is to follow a proposed sequence and see progress, including in a plain
+text editor. The README therefore leads with a short checklist sourced from
+one marked recommendation block in the human map. It derives its check marks
+from passing final review, labels the active phase, and puts full per-order
+evidence below the first screen. The checked state is not proof of merge or
+publication. Detailed dependency-token observations retain their conservative
+label; the generator must not turn prose references into false hard blockers
+or silently reorder the operator's recommendation. A missing or malformed
+sequence block, duplicate IDs, or IDs without an authority refuse. An explicitly
+empty block means no proposed sequence. No work-order ID, authority path, or
+historical evidence moves.
+
+### Candidate — whole or split work orders under one umbrella
+
+**2026-09-05 operator ideation:** offer a split assessment for any work order.
+Keep its outcome, scope, and acceptance criteria visible under one umbrella,
+while proposing smaller, independently reviewable increments. The purpose is to
+let one body of work produce several useful PRs without losing its shared
+intent or evidence trail. A split is optional: an already atomic order may be
+best left whole, and an arbitrary partition should not be recommended merely
+to reach a requested number of children.
+
+Before execution, the whole order and a proposed child plan are alternative
+routes. Both can be available to choose; their execution is mutually exclusive.
+Starting the whole route excludes its alternative children. Starting the first
+child selects the split route and permanently excludes execution of that
+original whole-order route, including after a child fails or is abandoned. The
+parent remains addressable as the umbrella; its aggregate status must not claim
+that the original whole-order implementation ran. Planning or previewing a split
+alone does not select it.
+
+Hierarchy and execution order answer different questions. Children may be
+serial, parallel, or a mixture, according to explicit dependencies, shared
+surfaces and resources, available actors, and capacity. For example, two
+independent increments can proceed together and a third can wait for both.
+Each child retains its own workflow and evidence; the umbrella maps its
+acceptance criteria to those increments and exposes uncovered work. Child
+review, integration, release, and completion of the umbrella remain separately
+evidenced. A family of orders does not make all its work safe to run at once.
+This extends the [budget-window ladders](#candidate--budget-window-work-order-ladders)
+and the [UIFA showrunner's](13-uifa-roles.md#uifa-showrunner) planning view.
+
+A useful suggestion explains the proposed acceptance boundaries, dependency
+edges, expected review size, integration risks, and why the split helps. It may
+recommend keeping the order intact, or a different number of increments.
+Suggestions stay non-authoritative until selected under the applicable dispatch
+policy. Smaller increments do not require changing this repository's current
+commit or PR convention as part of the ideation.
+
+Parent and child relationships belong in explicit metadata. A suffixed child
+label is a possible display affordance; it does not replace the existing opaque
+`WO-NNN` identity contract, renumber historical orders, or establish priority.
+Planning still needs to define the exact route-selection event and its atomic
+exclusion across worktrees, active/completed-order split requests, nested or
+revised decompositions, failure/abandonment handling, aggregate closure, and
+release attribution. Existing evidence remains immutable through those choices.
+No child-ID grammar, lifecycle event, split command, scheduler, or automatic
+suggestion mechanism is implemented by this candidate; WO-030's concurrent
+control state is a foundation, not an implementation of splitting.
+
+### Candidate — beacon usefulness checkpoint
+
+WO-020's exact decoding, replay, metadata-only reading, and atomic emission
+can establish the local mechanism. WO-021's lifecycle integration, audiences,
+staleness, and group projection can establish a usable control-plane example.
+Neither demonstrates that all of DotLn is viable or that Protíno's simulated
+world is compelling. Technical feasibility, practical usefulness, and felt
+interest are different questions with different evidence.
+
+The [bounded comparison plan](../planning/beacon-usefulness-checkpoint.md)
+nominates an operator trial after WO-021: answer the same work-state questions
+with existing status projections and with Beacons, using normal, refused,
+stale, absent, and conflicting-claim cases. Observe correctness and navigation
+burden; record any measured cost with its method, and leave subjective value
+to the operator's witnessed response. Retain, simplify, or defer further
+investment based on that comparison. A passing codec test is not evidence of
+delight, and an elaborate encoding is not justified merely by being possible.
+
+This is a proposed product-learning checkpoint, not a newly imposed release
+gate, a runtime telemetry requirement, or an expansion of WO-020/WO-021's
+technical acceptance criteria. Real worker behavior arrives in WO-009,
+independent real verification in WO-010, feedback in WO-011; a representative
+end-to-end trial is still needed to judge the work-system thesis. Protíno
+needs its own playable evidence slice at its separately selected horizon.
+
+**2026-09-05 technical observation:** WO-021 now exercises the workflow and
+records [bounded scan comparisons](../evidence/WO-021/README.md). Individual
+metadata sweeps beat separate compact JSON records in the measured large warm
+fixture, while a single JSON index stayed faster through four readers. A
+single group metadata read is a different, phase-count-only query. These
+results preserve useful read-path choices without claiming an operator trial,
+lower token cost, or general scalability. State-selected function tables and
+cached/shared observers remain design options; metadata scans have no
+invisibility guarantee. The operator comparison above remains outstanding.
+
+### Candidate — unattended work-order portfolio
+
+The earlier operator-away scheduler was partly a workaround for supervising one
+prompt-bound agent and arranging recurring maintenance timers by hand. Once the
+work-order processor can close one order and select another, unattended
+autonomy should operate primarily over bounded WorkOrders rather than recreate a
+permanent prompt session.
+
+An opted-in portfolio has two candidate lanes. First are small eligible orders
+already covered by standing authority and requiring no new material decision;
+housekeeping often fits because it can reduce return-time reorientation. Second
+is a bounded set of larger-authority orders the operator explicitly
+preauthorizes before leaving. Those are options, not a promised sequence:
+“capacity permitting” is implicit unless an order is marked required, and
+dependencies, source revision, environment, budget, active window, verifier
+capacity, and the selected planning policy still participate in activation.
+
+Operator silence alone does not create the portfolio. A versioned policy says
+whether an away event or lack of new ordering activates it, which planning
+strategy ranks it, how many slots it owns, and what return, pause, expiry,
+failure, or budget event stops, resets, or replenishes it. Selection does not
+grant authority; a larger order's grant comes from its recorded
+preauthorization or standing regime. A return view distinguishes completed,
+active, skipped, blocked, and still-optional work and foregrounds material
+changes and unresolved decisions.
+
+The current one-slot resume protocol remains manual and authoritative. No
+automatic allocator, approval phrase, queue schema, or concurrency model is
+selected by this candidate.
+
+### Candidate — budget-window work-order ladders
+
+The operator prefers concentrating useful work early in available usage windows
+so the remaining period can be spent on other activities. Preserve a control
+state machine supporting **zero to many concurrent work orders, each with its
+own declared workflow steps**. A single ladder and a two-ladder batch are trial
+capacity settings. Orders may occupy different phases and advance independently;
+steps and legal transitions remain governed by each order's pinned workflow
+and evidence contract. The initial role preference is Codex implementation,
+fresh Opus 5 verification, and fresh Fable final review, with one writer per
+worktree and model/effort assignment per order.
+
+The [concrete candidate plan](../planning/budget-window-work-order-ladders.md)
+splits the existing horizon into Beacons/Senses and Artifact Identity/Runtime:
+after WO-020, pair WO-021 with WO-029, run WO-009 at the join, then consider
+WO-022 with WO-010 before WO-011. It preserves hard dependencies and marks
+planning preferences separately. Its original executable one-order
+control-fold limitation is superseded by WO-030's per-order segments and real-Git
+integration fixture. That bounded slice preserves attribution and release
+readers; different workflow definitions and a measured paired wave remain
+future evidence. A
+[Fable planning handoff](../planning/budget-window-work-order-ladders.md#fable-planning-handoff)
+asks for bounded enabling work orders and rules that derive lanes from
+dependencies, conflicts, available actors, and capacity. The planner chooses
+compatibility per affected surface, including a versioned computed/cached
+mapping when useful under product 10's declared compatibility laws.
+No automatic allocator or concurrency schema is implemented by this proposal.
+
+Public contributions can use the same independent tracks. A shared projection
+should show every known order's current declared step, blocker, evidence, and
+freshness; a release view should identify the reviewed changes included in each
+published release and lead back to the corresponding orders. Completion,
+integration, and publication are separately evidenced facts. The current
+generated index and immutable release manifests provide a foundation; the
+per-order control model is implemented in WO-030's source, while
+contribution-to-order mapping remains planning work.
+
+Extend declared dependencies and recommended order to tenant-scoped tracks.
+The scheduling view combines per-track plans with cross-track prerequisites,
+shared conflicts, and capacity; readiness changes when their evidence or base
+changes. The planner must define tenant/track ownership, scoped visibility and
+authority, and the treatment of shared reserves and blocked work. A track
+boundary cannot erase another track's prerequisite or advance its lifecycle.
+The meaning of tenant and the storage/schema representation remain open.
+
+The operator also wants an observation and admission policy that distinguishes
+open tracks, admitted orders, active steps, and useful completed throughput.
+When a downstream step is the constraint, limit or pause upstream production
+at a declared safe boundary instead of growing waiting work. Recorded queue,
+age, completion, capacity, and reserve observations inform per-step/track/global
+limits and explicit resumption conditions. The resource-pressure candidate
+provides a composition point; the first monitor, thresholds, freshness policy,
+fairness, and moving-constraint behavior are planning choices. A bounded trial
+should show a constrained verification step throttling implementation and
+resuming it when capacity returns. No automatic monitor or pause exists yet.
+
+Measure completed reviewed work, integration repair, total elapsed time,
+operator involvement, and uninterrupted time away. Runtime policy consumes
+observed allowance, window, model availability, and reserve inputs. The earlier
+resource-pressure candidate can prioritize an early completion batch instead
+of universally conserving routine work. Trial feasibility and benefit remain
+open; no new order is activated or added to the default sequence.
+
+The 2026-09-05 horizon ran serially, so the trial did not occur. The
+2026-09-06 planning pass schedules the first measured paired wave as phase
+two's wave 1 (WO-032 ∥ WO-033), records the manual sync procedure for the lane
+whose sibling merges first, and files the sync helper inside WO-033; the
+[phase-two plan](../planning/phase-two-plan-2026-09-06.md#concurrency-what-is-safe-what-is-untested-and-the-procedure)
+holds both.
+
+## Capability progression policies
+
+The application ladder is one release view. Inside and across its rungs, DotLn
+can treat each feature, integration, projection, pattern, or operational
+capability like a skill that advances through evidence-backed levels. This makes
+several implementation strategies explicit rather than letting whichever feature
+is most exciting consume the whole roadmap.
+
+Candidate capability levels:
+
+| Level            | Meaning                                                    | Minimum evidence                                                                 |
+| ---------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| 0 — latent       | named idea or need; no usable behavior                     | source and intended outcome                                                      |
+| 1 — demonstrable | thinnest coherent behavior exists                          | bounded fixture or witnessed example                                             |
+| 2 — dependable   | normal path and important failures behave predictably      | automated checks and repeatable evidence                                         |
+| 3 — integrated   | participates in real workflows and lifecycle               | end-to-end use, recovery, authority, and audit evidence                          |
+| 4 — production   | supportable under the implementation's declared risk       | security, privacy, operations, restore, performance, and acceptance gates        |
+| 5 — polished     | professional, legible, efficient, accessible, and pleasant | user evidence, edge-case quality, documentation, and maintained regression suite |
+
+The labels and gates matter more than whether numbering starts at zero or one.
+Level is scoped: `audit.timeline@2` can coexist with `audit.rawExport@0`.
+Production means production for a declared implementation profile, not one
+universal enterprise bar.
+
+“XP” is shorthand for admissible evidence—passing fixtures, witnessed use,
+recovery exercises, resolved findings, measured usability—not commits, tokens,
+hours, output volume, or model confidence. Work can accumulate evidence without
+leveling up; promotion occurs only when every required gate for the next level
+passes. A compact overall level is the minimum of its required dimensions, so
+averaging cannot hide a security or recovery zero behind a polished interface.
+
+### Activation, utilization, and XP
+
+Capability learning needs at least three separate measures:
+
+- **activation:** the planner/compiler selected the capability because its
+  predicate and scope matched;
+- **utilization:** the capability materially participated in a decision,
+  behavior, artifact, control, or verified outcome after activation;
+- **XP/evidence gain:** the episode produced admissible new evidence about the
+  capability's competence, limits, reliability, usability, or next-level gate.
+
+Also retain **eligibility/opportunity**—how often the capability could have
+activated—so a low count is interpretable. These measures must not collapse into
+one popularity score:
+
+| Signal                              | Likely question                                                             |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| high opportunity, low activation    | Is selection, discoverability, tagging, or policy wrong?                    |
+| high activation, low utilization    | Did we equip a gear set this map did not need without changing the outcome? |
+| high utilization, low evidence gain | Is it repeatedly working without learning, or are outcomes unmeasured?      |
+| high utilization, poor outcomes     | Is the capability weak, mis-scoped, or blocking the system?                 |
+| low use, catastrophic consequence   | Is this a rare invariant that must remain mature despite low frequency?     |
+| rising XP, unchanged level          | Which unsatisfied promotion gate is holding it back?                        |
+
+Utilization can be causal only where the fixture or counterfactual supports the
+claim; otherwise label it `participated`, not `caused`. XP can be positive,
+negative, or narrowing: a failed experiment that exposes a boundary improves
+knowledge without pretending the feature became more capable.
+
+An activation is still a durable learning event even when utilization is zero.
+It records that the selector saw a relevant opportunity under a particular scope
+and state. Useful activation-event properties include capability and version,
+trigger/predicate, matched facts, scope, competing candidates, selection score
+or reason, selected/suppressed outcome, expected cost, reserved context/tools,
+expiry, and the later utilization/result link. Over time these events reveal
+demand, false and missed activation, trigger drift, co-activation patterns,
+unused loadout weight, seasonality, and candidates for prefetching, retirement,
+composition, or deeper investment.
+
+Therefore activation evidence can earn **selector/activation-policy XP** and can
+improve knowledge about a capability's applicability. It does not by itself earn
+capability-effectiveness XP. A zero-utilization activation remains evidence
+rather than waste by definition; repeated zero-utilization under the same
+conditions becomes evidence that the selection rule or packaging needs
+attention. Suppressed and declined activations are retained when policy and
+privacy permit, because future outcomes may show that the road not taken was the
+important signal.
+
+### Reps, curiosity, and voluntary craft
+
+The progression system must not punish **getting the reps in**. Repeated use can
+build operator fluency, implementation familiarity, sample diversity, muscle
+memory, better examples, edge-case discovery, and confidence in a known path
+even when it does not immediately clear a promotion gate or attack the current
+system constraint.
+
+Keep at least two evidence accounts:
+
+- **practice XP:** attributable repetitions, varied contexts, completed
+  exercises, and observations that improve familiarity or enlarge the sample;
+- **promotion evidence:** proof that a named next-level capability gate now
+  passes under its declared conditions.
+
+Practice XP is real and visible but cannot counterfeit reliability, security, or
+production readiness. Conversely, lack of immediate promotion does not turn a
+useful rep into failure. Repetitions should retain context and novelty so ten
+identical easy runs are distinguishable from ten increasingly varied ones,
+without imposing a game mechanic that makes people optimize counts.
+
+Theory of Constraints is advisory except where a bounded release contract
+explicitly makes the constraint a gate. It explains where work may have the
+greatest end-to-end leverage; it does not revoke the operator's freedom to
+follow curiosity, joy, craftsmanship, availability, or momentum. The operator
+may always choose a capability and make it better within the active authority
+envelope, while the system shows opportunity cost and dependencies without
+shaming or blocking the choice.
+
+Theory of Constraints uses these signals to decide which capabilities receive
+love. Identify the current system constraint from end-to-end flow and evidence;
+exploit it with the smallest intervention; subordinate adjacent work; elevate
+its capability level only when needed; then repeat because the constraint may
+move. The scheduler considers blocked work, queue/wait time, failure and retry
+concentration, handoff delay, evidence gaps, operator burden, and the
+counterfactual value of an improvement—not utilization alone. The most-used
+feature is not necessarily the constraint, and the least-used feature is not
+necessarily neglected.
+
+The capability table can therefore begin with:
+
+`opportunities | activations | utilizations | outcome/evidence refs | XP delta | current level | blocking gate | constraint contribution | next experiment`.
+
+All counts retain scope and observation window. Comparisons across unrelated
+capabilities or implementations are invalid unless their opportunities,
+consequences, and evidence standards are comparable.
+
+The planner can select a progression policy per horizon or portfolio:
+
+- **breadth first / one skill point better:** choose the smallest useful,
+  verified increment for each eligible capability before returning for another
+  lap; useful for revealing the whole shape and integration seams;
+- **depth first:** hold focus on one capability until a named target level,
+  including professional and polished qualities; useful for the load-bearing
+  path or a flagship experience;
+- **minimum threshold:** bring every required capability to a release floor,
+  leaving optional capabilities untouched;
+- **furthest back first / golf scoring:** select the lowest qualified capability
+  or weakest required dimension, with risk and dependency tie-breakers;
+- **constraint first:** improve the capability currently limiting end-to-end
+  value, reliability, or learning, following the activation/utilization/XP
+  diagnosis above and Theory of Constraints;
+- **risk-weighted:** raise high-consequence authority, privacy, recovery, or
+  evidence capabilities before cosmetic maturity;
+- **mixed portfolio:** reserve explicit capacity for floor-raising, one deep
+  flagship, integration debt, and exploratory level-zero probes.
+- **free practice / follow interest:** improve whichever capability attracts
+  voluntary attention, recording reps, learning, and evidence while keeping
+  constraint recommendations visible but non-coercive.
+
+Selection is still constrained by dependencies, authority, expected value,
+verification capacity, and the release's visible-payoff rule. A breadth pass
+must produce coherent vertical behavior rather than a field of disconnected
+stubs. A depth pass stops at its declared target instead of polishing one corner
+indefinitely. `Do Nothing` remains a valid result when no candidate has positive
+expected value or sufficient evidence.
+
+The first implementation can remain simple: a reviewed capability table with
+current level, target level, required dimensions, evidence links, dependencies,
+last change, and next smallest promotable increment. Only after real planning
+uses expose a need should this become scheduler IR or an XP engine.
+
+### Efficiency as a separate capability axis
+
+Every skill, feature, domain, integration, workflow, projection, and role can
+also carry an **efficiency profile**. Maturity asks whether it can satisfy its
+contract; efficiency asks what resources a verified unit of useful outcome
+requires under declared conditions. A mature capability can be inefficient, and
+an efficient demo can still be immature.
+
+Efficiency is not one number. Record a resource/outcome vector such as:
+
+```ts
+type EfficiencyObservation = {
+  capabilityRef: string;
+  scenarioRef: string;
+  implementationRef: string;
+  window: { from: string; to: string };
+  opportunities: number;
+  verifiedOutcomes: number;
+  resources: {
+    elapsedMs?: number;
+    operatorAttentionMs?: number;
+    modelTokens?: number;
+    modelCalls?: number;
+    toolCalls?: number;
+    computeCost?: number;
+    retryCount?: number;
+    storageBytes?: number;
+    energyEstimate?: number;
+  };
+  qualityRefs: string[];
+  failureRefs: string[];
+  authorityAndRiskRefs: string[];
+  baselineRef?: string;
+};
+```
+
+The denominator is a verified outcome or completed contract—not output volume,
+activations, story points, or busyness. Comparisons require comparable scenario,
+quality, authority, and risk conditions. Missing measurement remains unknown.
+
+The repository's WO-031 `resume usage` command supplies a limited observation of
+completed phase-attempt wall time per actor and work order. Its counts include
+failed attempts and its spans include waiting; combine it with outcome and
+scenario evidence before drawing efficiency conclusions.
+
+A useful provisional efficiency scale is:
+
+| Level                | Meaning                                                                                             |
+| -------------------- | --------------------------------------------------------------------------------------------------- |
+| E0 — unknown         | no trustworthy baseline                                                                             |
+| E1 — measured        | representative baseline and resource vector exist                                                   |
+| E2 — economical      | obvious waste removed without weakening the contract                                                |
+| E3 — fit for profile | meets the implementation's declared budgets and service objectives                                  |
+| E4 — frontier        | no observed alternative improves one important resource without worsening another protected outcome |
+| E5 — adaptive        | detects drift, selects among proven strategies, and revalidates the frontier as conditions change   |
+
+`E4` is a local Pareto frontier, not “perfect.” It is scoped to a scenario,
+implementation, time window, and protected outcomes. A later technique can move
+the frontier.
+
+Constant efficiency awareness should produce **optimization candidates**, not
+constant intervention. Candidates name observed waste, affected resource,
+baseline, hypothesis, protected invariants, smallest reversible experiment,
+expected gain, measurement plan, and rollback. `Beware of Naive Interventionism`
+applies: do nothing when measurement cost or change risk exceeds expected gain,
+and never optimize a non-constraint merely because its metric is easy to
+improve.
+
+Common efficiency avenues include avoiding unnecessary activation and context;
+better caching and reuse; deterministic mechanisms replacing repeated model
+work; batching or parallelism where ordering permits; cheaper perception before
+expensive perception; right-sized model/runtime selection without silent
+substitution; fewer handoffs and retries; smaller evidence with equal strength;
+incremental computation; better stop conditions; archival/tiering; and reduced
+operator cognitive load. Efficiency improvements retain before/after evidence
+and note which resource moved elsewhere.
+
+The [resource-pressure environment candidate](03-architecture.md#candidate--resource-pressure-as-an-environmental-modifier)
+explores spending less on routine activation as scoped budget pressure rises.
+Raising an admission threshold is a scheduling choice; improving efficiency
+means reducing actual resources per comparable useful outcome. A candidate trial
+must measure both deferred work and completed obligations, including declared
+reserves, before claiming a benefit. It has no assigned work order or shipped
+runtime behavior.
+
+### Candidate — bounded system baseline
+
+Routine observation can reveal an accumulating burden before it becomes the
+current constraint. The useful shape is a small, repeatable baseline check and
+a trend, even when no optimization is underway. Public reporting uses neutral
+system measures such as size, latency, waiting, and maintenance cost.
+Daily observation is one possible owner-selected cadence; this candidate
+installs no job and adds no always-on collection to WO-028.
+
+Select only measurements that answer a declared question:
+
+| Question                                          | Candidate evidence                                                                                                                                     | Interpretation boundary                                                                            |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| Is history crowding out new work?                 | Retained event/log bytes alongside the source bytes actually admitted to a task; exact tokens only when an observed tokenizer/transport supplies them. | Storage size and context consumption differ; do not load the log into an LLM merely to measure it. |
+| Is deterministic processing becoming slow?        | Fold duration over a pinned event set with host, cold/warm state, method, and repeated observations.                                                   | Event count alone is not a latency measurement; compare equivalent claims and conditions.          |
+| Is workflow overhead delaying useful outcomes?    | Work-order elapsed time, completed phase attempts, retries, and handoffs beside verified outcome and complexity references.                            | Wall time includes waiting and interruptions; it is not model effort or operator attention.        |
+| Is one change spreading across too many surfaces? | Number of authoritative edits versus regenerated projections and repair work for comparable changes.                                                   | More links can improve traceability; counts do not establish waste.                                |
+
+Reuse existing structured evidence and deterministic summaries, retain detailed
+measurements in the appropriate privacy lane, and expose a small bounded view
+with sources, missingness, comparison window, and the collector's own cost.
+Retention, aggregation, review frequency, and a stop budget apply to the
+observer too. An LLM should receive a selected trend or an actionable exception,
+not every daily raw sample. Public timing in WO-028 does not authorize public
+token, cost, attention, or behavioral telemetry.
+
+The Entropy Reducer can inspect these receipts when a separately authorized
+review needs them. Thresholds, minimum sample sizes, trend/noise handling,
+cadence, private storage, and the first consumer remain open. Act when evidence
+supports the current constraint or a material impending failure; otherwise
+retain an explicit accept/observe/defer decision. No universal performance
+target, new event schema, scheduler, or architecture change is selected here.
+
+### Counterfactual profiling work orders
+
+An optimization candidate can compile into a bounded profiling work order so
+candidate generation, implementation, measurement, and judgment do not blur
+together. The work order pins an immutable baseline; one hypothesis or a bounded
+candidate family; representative scenarios and fixtures; protected correctness,
+quality, authority, and risk invariants; exact build, test, and benchmark
+commands; the environment and toolchain profile; warm-up, repetition, and
+run-order rules; the resource vector; decision thresholds; evidence paths; and
+cleanup and rollback. The representation is intentionally executable by a
+low-cost model because the important judgment has already been compiled into the
+contract. Model assignment remains per work order and is never hardcoded.
+
+The deterministic harness measures; models propose candidates and interpret
+results. Every candidate runs in an isolated worktree or equivalent sandbox,
+must pass the semantic and quality gate before comparison, and is never promoted
+or merged automatically. Baseline and candidate runs are repeated and
+interleaved or randomized where order can bias the result. Conclusions report
+the distribution and uncertainty rather than treating one timing as truth.
+
+Results are append-only, machine-readable observations linked to the exact
+commits, scenarios, environment, and evidence. Retain regressions, failed
+candidates, no-change results, and improvements that merely move cost to a
+different resource. A generator may fan one reviewed optimization program into
+many small profiling work orders for inexpensive executors, followed by a
+comparison projection that shows protected outcomes, the resource frontier, and
+first divergence. Candidate families may vary code, prompts, loadouts, models,
+runtimes, or harness choices only when their authority and quality conditions
+remain comparable. This is the concrete code-efficiency projection of the
+graded-counterfactual-build idea in the lineage ledger, not permission to
+optimize output volume or weaken the contract.
+
+For reasoning-effort experiments, a complete work order is the default unit for
+verification and final review: it is already the bounded unit whose evidence and
+judgment must cohere. Compare declared settings such as `xhigh` and `max` over
+representative orders before splitting those roles into smaller fragments merely
+to create more samples. An unmapped label remains a raw `unknown`, and a lower
+token or account-cap observation is motivation for a controlled comparison—not
+evidence that effort, model quality, or work-order size caused it.
+
+A local-inference calibration is a candidate profiling order after a bounded
+capability probe identifies an available runner. Start from one pinned story
+prompt and a proposed repeated baseline, then compare baseline, role-only,
+active/support-mechanics-only, and role-plus-mechanics cells with interleaved or
+randomized run order. Each cell is a distinct compiled loadout. Pin model
+artifact and version, quantization, prompt template, decoding parameters,
+context and stop rules, seed policy, runner, hardware, and verified
+network-egress state. Predeclare coherence, instruction-following, diversity,
+role behavior, mechanic participation, and resource evaluators; report
+distributions and evaluator disagreement. The operator's proposed 100 baseline
+runs are a starting hypothesis, not a universal sample-size rule. Offline
+execution removes provider connectivity and API-meter constraints, not local
+compute, memory, context, latency, storage, energy, or thermal constraints.
+
+The operator wants local inference at the earliest practical point. The next
+planning pass should therefore run or nominate the smallest bounded runner and
+no-egress capability probe, then decide whether to file the calibration order;
+this priority does not expand WO-019 or silently reorder already authorized
+dependencies.
+
+Discharged 2026-09-03: the planning pass after the `v0.3.4` close ran a
+read-only existence check (LM Studio installed; Ollama, llama.cpp, and MLX
+absent) and nominated WO-027 as the bounded probe. The calibration order is
+deliberately unfiled until WO-027's decision packet names its disposition;
+filing it before determinism, cost, and egress are observed would be the naive
+intervention this section warns against.
+
+WO-027 completed that bounded probe on 2026-09-03 and chose **defer under a
+named condition**. It pinned an existing 7B Q8_0 GGUF without downloading,
+reproduced the installed LM Studio service-wake crash on its sole permitted
+launch, and therefore recorded `n=0` load and generation outcomes. External
+connections failed under the combined outer and nested boundaries, but no
+boundary diagnostic identified the denying layer. A later profile did permit a
+verified loopback request and was not used to relaunch the runner. The
+calibration order remains unfiled until an available runner completes the fixed
+three-request smoke under a boundary with independently attributable egress
+behavior, including deterministic-output and during-generation socket
+evidence. See the [dated discovery packet](../discovery/local-inference.md).
+
+That probe should leave room for a hybrid local-first cell: deterministic
+parsing, then local tagging/association and candidate WorkOrder/context-capsule
+derivation, followed by a remote planning or coding episode that receives only
+the approved capsule and public-safe evidence after ordinary dispatch authority. Compare it with deterministic-only, local-only, and
+direct-remote paths for disclosure surface as well as episode/output quality and
+cost.
+Treat local derived metadata as sensitive and fallible, and count any later
+remote request for more context as a new, visible disclosure decision.
+Do not freeze the first result into permanent local/remote roles: repeat the
+profile when a material model, runner, quantization, or hardware change occurs,
+and allow the same typed intervention point to migrate local as evidence
+supports it. The operator expects the local semantic frontier to improve; the
+experiment still records regressions and constraints instead of defining them
+away.
+
+Every proposed model intervention point in that experiment is typed and
+ablatable: activation predicate, bounded input, output schema, budget, and
+downstream event are compared with a deterministic-only branch. Static maps and
+other senses should be compiled into authorized, versioned state projections
+where possible; an LLM receives only the residual interpretation that actually
+requires inference. This uses the existing model/harness/runtime boundary and
+does not create a second actor kind, a new roadmap rung, or an expansion of
+WO-009 or WO-022.
+
+**Declared cost is the prior; observed cost is the measurement (2026-09-05).**
+The compiler already prints each support's declared mechanism and cost — prompt
+tokens, runtime operations, episodes — in the compiled tooltip and diff. Those
+are static claims about the program, useful for choosing between builds before
+anything runs. The profiling harness supplies the observed vector under
+declared conditions. The operator's loop is data → experiment → analysis →
+change or report → repeat; declared and observed cost are its two columns, and
+a build whose observed cost diverges from its declared cost is a finding, not a
+rounding error. WO-107 is the route to the first observed column; this note
+adds no telemetry field.
+
+The capability table can add `efficiencyLevel`, `baseline`, `resourceVector`,
+`protectedOutcomes`, `frontierAlternatives`, and `nextExperiment`. Efficiency XP
+comes from trustworthy measurements and successful or informative experiments;
+it never raises maturity automatically.
+
+<!-- prettier-ignore -->
+## v0.0.0 — Clean-room bootstrap  *(mostly complete)*
+
+Repo, intake pipeline, blueprint docs, idea ledger, decision records, first work
+orders. Exit: initial commit on `main`; `docs/` is the complete shared memory a
+cold model session needs. No application code. `.claude/` grows iteratively with
+use (one config-log line per change); decision records only for safety-boundary
+config (permissions, hooks).
+
+<!-- prettier-ignore -->
+## v0.0.1 — Environment truth (bounded)  → WO-001
+
+A 30–60 minute bounded inspection, not the comprehensive audit (that variant
+stays preserved in the ledger for wrapped/managed environments). Record with
+epistemic labels: node/package-manager/TS toolchain; git + worktree behavior;
+Claude Code surface actually present (print mode, structured output, agents,
+workflows, background, worktrees, hooks, session persistence); Codex CLI
+surface; Playwright availability; SQLite; localhost serving. Exit:
+`docs/discovery/environment.md` + machine-readable summary; a named choice of
+worker-transport adapters to build first, from evidence.
+
+<!-- prettier-ignore -->
+## v0.1.0 — Pure kernel  → WO-002
+
+TypeScript, **zero runtime dependencies, no I/O**. Events + EventEnvelope
+(including the Comparison event type), immutable state, reactors
+`(state, event, env) → Decision`, continuations, cadence with virtual time,
+explicit RNG state, decision traces, append-only JSONL store + replay. Scope is
+what the walking skeleton consumes — _types_ for the full Program and Cadence
+grammars, _evaluation semantics_ only for the subset WO-002 names; the rest
+arrives on contact at later rungs (the domain model holds the target shape).
+Exit criteria: rows 1, 3, 5 of the canonical failure-injection matrix
+(03-architecture) pass at the kernel boundary. For row 5 the kernel declares
+cancellation and NoOp; the walking skeleton proves those declarations in its
+fake scheduler, while durable scheduler ownership for real workers arrives with
+WO-009. Same event log ⇒ same controller transitions, provably. Visible proof:
+the evidence suite inspects the structured replay decisions and `DecisionTrace`;
+the first human-readable CLI projection arrives with `v0.2.0`. Deferred:
+remaining grammar/matrix rows, every UI, every real adapter, the pattern
+compiler.
+
+<!-- prettier-ignore -->
+## v0.2.0 — Walking skeleton (fake executor)  → WO-003
+
+The Repo Gardener + Seiri vertical against a deterministic fake executor: create
+inspection task → operator Present/Away → virtual 20-minute pulse → kernel emits
+bounded WorkOrder → fake worker returns evidence-backed deletion _candidates_
+(no deletion authority) → separate fake verifier accepts/rejects → Operator
+Returned cancels pulses → replay reproduces the identical final state. CLI
+projection + human-readable event timeline are the first views. Exit: the
+13-step demo runs end-to-end twice — live and from replay — with identical
+traces, **and the run renders as an emoji-glyph scene** (the operator's own
+visual-prototype-zero: 🐛 gardener plus glyph states from the visual grammar,
+printed to terminal or a static HTML page — zero assets, a pure projection of
+the log). Deferred: real model calls, interactive web UI.
+
+<!-- prettier-ignore -->
+## v0.2.1 — Environment truth addendum and lifecycle corrections  → WO-004 + WO-012
+
+Close the gaps WO-001 deliberately deferred: both candidate transport launch
+shapes exercised for real from an unsandboxed authenticated session, MCP as a
+capability row, full startup-context accounting, effective settings loading, the
+user-level `model` key. Exit: the WO-009 transport recommendation re-stated over
+`observed` rows (or honestly re-labeled with cause), and `environment.json` row
+parity including the Codex feature-surface row. The operator-authorized
+expansion also makes the worktree, review, repair, and release-close lifecycle
+executable and restartable.
+
+WO-004 merged after passing independent verification and final review, but
+publication of its eligible release was deferred on 2026-09-01 when release
+close misclassified a protected `docs/intake/` pathname containing U+202F as
+contaminating ignored material. That failed close created no `v0.2.1` tag.
+WO-012 repairs that release-gate defect; the tag is cut only when WO-012 closes
+and carries both work orders.
+
+<!-- prettier-ignore -->
+## v0.2.2 — Capability table v1  → WO-005
+
+The Capability-progression section's own "first implementation can remain
+simple": a reviewed Markdown table — evidence-linked levels,
+minimum-of-dimensions composites, `E0 — unknown` efficiency defaults, one
+recorded progression policy. Exit: `docs/planning/capability-table.md` with
+every non-latent row naming its blocking gate.
+
+<!-- prettier-ignore -->
+## v0.2.3 — Publication bootstrap  → WO-006
+
+Steps 1–4 of the publication-compiler bootstrap (08): audience/status index over
+the blueprint, base outline + implementation-overlay template, two sharply
+different tables of contents from the same sources, one dual-voice sample, and a
+demonstrated staleness loop. This anchors 08's "first-class output from the
+beginning" on the ladder; further editions stay gated on this loop working.
+Exit: `docs/publication/` exists and the staleness demonstration is captured.
+
+During execution the operator expanded this patch rung with thirteen bounded
+same-release additions, fully enumerated in WO-006: Malcolm Check synthesis and
+the durable `ideation:` dispatch; Prettier; personal-harness guidance and
+checkpoint diagnostics; observable restraint accounting; external rule-source
+mapping; Embodied Explorer; work-order navigation; an unmined Team Topologies
+research nomination; the operator-flow mission; binary quench; Flow Steward;
+temporal interaction interpretation plus the bounded RxJS `expand()` hypothesis;
+and the brain/hands, harness/orchestration, isolation, LangGraph-accommodation,
+and foundation-first synthesis. These remain documentation, process, and
+dev-tooling changes; they add no exported runtime capability and do not move the
+release boundary.
+
+WO-006 merged after independent verification and final review. Its authorized
+release close on 2026-09-01 then passed dependency installation, the declared
+test evidence, and the built skeleton CLI before manifest derivation refused:
+the cadence compatibility parser could not read the canonical Prettier-formatted
+type union. No local or origin `v0.2.3` tag was created. WO-015 is the bounded
+fix-in-place continuation of that interrupted release obligation. The target
+remains unpublished until WO-015 completes its own ordinary verification, final
+review, and merge, followed by a separately authorized release close.
+
+<!-- prettier-ignore -->
+## v0.3.0 — Audit-record baseline (three projections)  → WO-007
+
+Bootstrap steps 1–3 of the audit map (09), against the walking skeleton's real
+demo log: consequential-action enumeration with the question each record
+answers, a minimal pinned AuditRecord envelope referencing the event store
+(never a second truth), and three pure-fold projections — L0 receipt, causal
+timeline, governed raw JSON. This anchors 09's bootstrap on the ladder; steps
+4–7 wait for WO-009's machinery. Exit: identical projection output over live and
+replayed logs, with step 9's structural refusal visible in the receipt.
+
+<!-- prettier-ignore -->
+## v0.4.0 — Composition compiler v1  → WO-008
+
+LoadoutGraph with support facets, link type-checking, deterministic precedence,
+and a CLI compiled-diff preview. The Seiri link group compiles to heterogeneous
+mechanisms with per-support declared cost. Exit: an incompatible link fails at
+compile time with the SUPPORT INACTIVE diagnosis; equipping/unequipping changes
+the running program and the semantic hash proves view equivalence across at
+least {code DSL, function table, statechart JSON}. Visible payoff: the
+compiled-diff preview renders as an **RPG item tooltip** (GRANTS / RESTRICTIONS
+/ OBLIGATION / PASSIVE / PULSE / INTERRUPT), not only CLI text.
+
+<!-- prettier-ignore -->
+## v0.5.0 — Compiled Entropy Reducer  → WO-023
+
+One author-trusted instance loadout compiles the Entropy Reducer identity,
+planning-reviewer role, Shine active, Standardize plus seven other supports,
+bounded authority, typed output and refutation guards, and generated residue.
+The operator-mediated run invokes Claude Fable 5.1 at `max`, then gives only
+selected command/inspection subjects to a fresh blinded refuter. Exit: the
+compiled artifact, refusal fixtures, byte-regenerated residue, typed review,
+refutation report, model/effort attestation, and unchanged tracked-status pair
+all agree. `Program.All` remains deferred and no runtime transport is added.
+
+<!-- prettier-ignore -->
+## v0.10.0 — Real disposable worker  → WO-009
+
+WorkOrderTransport adapters chosen from discovery through WO-004's observed
+evidence — expected: Claude CLI print-mode with the canonical launch shape
+(fresh bounded invocation, project+local settings only, **ambient/auto memory
+disabled** — no harness-owned memory loads into a fresh episode; external memory
+is deliberate — isolated worktree, explicit model and effort, no session
+persistence, JSON schema output) and a Codex equivalent using only controls the
+installed host exposes. If Codex still offers no effort selector, record
+`unknown`; never invent a flag. Worktree lifecycle is deterministic (create,
+verify cwd, clean up). Exit: one real episode replaces the fake executor in the
+v0.2.0 demo and returns a compact result envelope; the main session's transcript
+grows by only the envelope; a killed worker leaves a recoverable pending command
+(matrix rows 2, 4, 6 pass here); **`dotln status` exists** — a live in-flight
+projection of the store (running episodes, leases/heartbeats, pending commands,
+recent events) so real workers never run blind. **No silent model substitution**
+— unavailable model ⇒ queue or fail closed.
+
+**Implementation receipt (2026-09-05):** the staged source implements this exit
+for one synthetic inventory inspection. Both actual CLI transports pass the
+shared demo, read-only in-flight status, replay and worktree cleanup; Claude
+also passes forced termination and recovery. Deterministic subprocess tests
+cover rows 2/4/6 and both directions of unavailable-model refusal. Host process
+checks use a 1,000 ms heartbeat, 5,000 ms lease and 180,000 ms deadline; the
+verifier and remaining actors stay fake. See the [executor evidence](../evidence/WO-009/README.md)
+and [runbook](../../packages/skeleton/README.md#disposable-workers). General
+worker profiles and real verifier episodes remain separate work; independent
+verification and publication have not been inferred from executor tests.
+
+<!-- prettier-ignore -->
+## v0.12.0 — Independent verification  → WO-010
+
+Blinded verifier episodes; claim-typed evidence mapping; typed
+VerificationFinding → focused repair continuation in a fresh episode;
+substantive repair marks affected evidence stale. Exit: a deliberately-planted
+defect is caught by the verifier, repaired via continuation, re-verified — and
+the implementer episode never certifies itself.
+
+**WO-010 activation completion and implementation receipt (2026-09-06):** the omitted target is assigned `v0.12.0`, a minor addition above published `v0.11.0`. Compiler `0.5.0` adds pure blinded verification and focused repair capsules; skeleton `0.11.0` adds the event-loop host, claim-typed evidence matrix, repair staleness and `dotln verify-demo`. Kernel `0.2.1`, the event envelope and compiled-loadout contract remain unchanged. The deterministic planted-defect loop runs through both WO-009 CLI wire protocols with local subprocess doubles; no live model invocation or live-integration proof is claimed. The bounded host mounts a synthetic repository snapshot and applies validated JSON policy repairs. General source-writing workers, independent code review and post-PR loops remain later work. See the [executor evidence](../evidence/WO-010/README.md) and [runbook](../../packages/skeleton/README.md#independent-verification). Independent verification of this implementation and publication remain separate lifecycle evidence.
+
+Follow-on work orders should project the proven resume protocol as native,
+on-demand agent skills rather than ambient role prose: (1) a shared typed
+intent/transition contract and conformance fixtures, (2) verifier and repair
+skills, and (3) final-review plus worktree-lifecycle skills. Each projection
+must remain behaviorally equivalent to the CLI, refuse illegal transitions,
+write the same immutable artifacts, and demonstrate measured startup-context
+reduction. Runtime observability work should expose context remaining and the
+delegation graph in a persistent TUI status projection when the host provides
+those signals, with explicit unknown states otherwise. Exact release placement
+waits on evidence from WO-009 and WO-010 rather than expanding those orders by
+implication.
+
+The recommended first Additional Opinion pilot also waits on WO-009 and WO-010:
+two total blinded verification episodes over one immutable candidate, followed
+by a sealed independent adjudication that routes only to fix or final review.
+It must preserve dissent and every input result, label same-model reruns as
+replicates, and prove that a supported blocking finding cannot be outvoted. Only
+after that evidence model works should a later order attempt mutating
+implementation variants, which require one writer/worktree per candidate, a
+single integration branch, and fresh verification for any synthesized result.
+This recommendation has no version, work-order identity, or activation
+authority and does not expand WO-009, WO-010, or the current resume protocol.
+
+<!-- prettier-ignore -->
+## v0.13.0 — Feedback compiler v1 (ten units)  → WO-011
+
+Ten representative FeedbackUnits authored from the corpus (this repo's ledger,
+not any external rule stack): anti-oscillation; correctness-over-sycophancy; the
+fail-conservative correction reactor (semantic events, not profanity triggers);
+verify-app-before-done; no-attribution (settings + commit-msg hook as defense in
+depth, with a precise predicate); concurrent-work-requires-worktrees;
+no-lint/type-disables-as-fixes; read-your-own-output; no-partial-completion;
+bounded boy-scout cleanup. Each: mechanism per the hierarchy + regression
+fixture + maturity stats. Exit: measured startup-context reduction vs. prose
+equivalents; each unit's fixture fails when the mechanism is removed; **and the
+first self-hosted step** — one DotLn work order for this repo itself is
+compiled, dispatched, executed, and verified by DotLn (ADR-0001's strangler
+experiment gets its vehicle).
+
+**WO-011 source (2026-09-06):** the omitted activation target is assigned
+`v0.13.0`, a minor addition above published `v0.12.0`. Compiler `0.6.0` adds the
+separate `feedback-v1` contract and skeleton `0.12.0` hosts its ten personal
+units, boundary adapters, semantic correction branch, and bounded
+`dotln feedback-audit` work order. Kernel `0.2.1` and existing loadout/event
+contracts stay at their current versions. The audit executes local regression
+subprocesses and invokes a separate verifier over pinned evidence; the
+[executor receipt](../evidence/WO-011/README.md) distinguishes controlled fixture
+proof, matched instruction-byte accounting, and the witnessed self-hosted run.
+The manual repository verification and publication phases remain separate.
+
+## Application version pending — Harness lowering and rule migration → WO-039 + WO-040
+
+Make a saved build govern the sessions that actually run. A pure compiler
+target, `harness-v1`, lowers a loadout, its equipped feedback units, and its
+authority envelope into what a harness enforces: settings permissions and
+hook scripts at rung 2 of the mechanism hierarchy, on-demand role skills at
+rung 7, and a marked instruction block at rung 8 holding only the residue
+nothing lower could carry, with a byte count. Every generated hook evaluates
+the same compiled unit the audit host evaluates; there is no second
+predicate, and surface language never triggers a correction. This
+repository defines its own session build, the **Contributor** (four roles
+selected by resume phrase, the ten personal units, the Clean Room floor, and
+the harness posture as an envelope), emits its configuration from the
+compiler, commits it, and refuses drift in the evidence gate (WO-039). Then
+the remaining feedback shapes get a rung: a generated migration ledger
+classifies every shape the operator has named into the founding taxonomy
+with its chosen rung and status, and batches of about twelve compile through
+the target into the Contributor build, each with fixtures and maturity stats
+(WO-040, batch one; later batches from its template). Exit: this
+repository's sessions run under generated configuration that `harness
+check` proves matches the build; a fresh fork of the starter runs on the
+same mechanism from its first commit; the migration ledger reports the
+number the one-paragraph story is about, shapes governing live sessions by
+mechanism rather than by prose, before and after each batch, beside the
+measured startup context. Filed by the 2026-09-06 redirect, which found
+that ten compiled units governed no session the operator actually opened.
+
+## Application version pending — Projections & console
+
+Web console (UI framework and repository boundary decided _here_ by ADR with
+representative evidence; Angular and its operator-fluent baseline are the
+default conventional-shell candidate, Babylon.js is the spatial-view candidate,
+and a plain workspace remains the default unless Nx proves enough measured value
+and reliability to justify its weight — the kernel doesn't care). Synchronized
+views: RPG loadout, statechart, function table, event timeline, and raw IR;
+semantic-hash equality across editable views; glyph system with the visual
+grammar; replay scrubber; the first full transmog skin beyond glyphs (Native
+Emoji) — the friendly skin serves the teammate goal and does not wait for v1.0.
+Terminal remains a complete control surface. Exit: the v0.2.0 demo watched
+entirely from the console, then re-watched via replay; every animated element
+opens its mechanics inspector.
+
+The 2026-09-06 planning pass, as redirected the same day, names the rung's
+first slice: WO-032, UIFA v0, a read-only actor board inside core with
+Actors, Builds, Mechanisms, Work, and Blueprint panels over the documented
+machine interfaces and evidence stores, each panel naming the UIFA role it
+serves, rendered in the terminal and as a zero-asset static page, invoking
+no command and adding no framework, and exported as the versioned
+`uifa-board-v1` view model. The first draft's showrunner board over control
+state is the Work panel. The framework decision above waits for the
+cross-repository pilot's evidence; the Angular shell is console v1 in the
+operator's example consumer, rendering that view model's actor panels,
+reached through the launchpad rung below.
+
+## Application version pending — Launchpad and cross-repository workstreams → WO-033 + WO-034
+
+Make the control plane runnable outside core and export an instance that
+carries a build: one configuration root, work orders that name a registered
+target repository whose authority profile is an envelope and whose class is a
+link group, a launchpad export with pinned provenance that carries the
+Contributor build as an enforceable harness bundle plus the pinned runtime
+build the bundle imports, kit and instance and overlay separation so a fork
+takes updates and re-emits its own build, worktree-local harness emit for
+targets so a target never sees a DotLn file in a commit, and a lane sync
+step for paired waves (WO-033); then one workstream whose bounded orders
+span several target repositories, proven first on synthetic repositories
+through the six demonstrations product 12 names and then by an
+operator-witnessed real run from a fork of the starter, running that build,
+into `DotLn-Angular`, whose first change is a UIFA v1 shell over the actor
+board's view model (WO-034). Targets receive only conventional branches and
+pull requests; the launchpad holds their orders and evidence. This is
+Horizon 1's first product surface beyond this repository and the
+process-level precursor of the source-to-deliverable vertical below; DotLn
+runtime transports do not yet execute the target work. Exit: a session
+opened in the export is refused a denied effect by a generated hook and
+resolves a role skill by resume phrase; the pilot's real run opens a target
+pull request through the workflow with its verification and final review
+recorded in the launchpad, its receipt compares restatement, handoffs,
+interruptions, and return time with the operator's separate-session
+practice, and its hook logs report which compiled units fired in the fork's
+sessions. The starter is intended for other organizations to fork as their
+own launchpads, so this rung is where the ladder's personal-machine
+assumption stops holding: each fork's first order is bounded environment
+truth for its own host, harness, and gateway, extended with the harness
+smoke, and the licensing decision in `docs/LEGAL.md` precedes the first
+external fork. The 2026-09-06 redirect superseded the first draft of this
+rung, which exported the process kit with no build in it.
+
+## Application version pending — Pattern workshop v1
+
+5S equipment set with compiled set bonuses; Marquet ladder as the operator-agent
+protocol (autonomy rung computed, not set); mitigated-speech voice selector;
+drag-and-drop equip with exact compiled diff preview. Exit: dragging Seiri onto
+Repo Gardener in the console produces the same semantic hash as authoring the
+equivalent link group in code.
+
+The 2026-09-06 planning pass names the compiler-side first slice: WO-037
+compiles the 5S set as a multi-active link group with shared supports and
+piece-count set bonuses, equips it on the Repo Gardener in a second
+deterministic scenario, and renders every piece and the set as tooltips,
+while existing programs keep their hashes; the redirect places it in wave 4
+beside the migration's second batch, after the actor board can render it.
+The drag-equip surface is console v1 work in the operator's example
+consumer; the Marquet ladder and voice selector remain a later order.
+
+## Application version pending — Source-to-deliverable vertical
+
+Prove the ports with a personal-flavor vertical: GitHub Issue → SourceBundle →
+StoryContract → RepoProfile + ImpactMap → **Live Witness baseline** (reproduce
+before changing; preserve baseline evidence) → implementation episode → blinded
+behavior verification **and** independent code review (two separate episodes) →
+evidence-grounded PR on a personal repo (the deliverable-ready conjunction
+checklist, 03 §DeliveryAdapter) → post-PR loop (CI classification, comment
+triage, source revision guard). The enterprise-tracker adapter remains a future
+optional plug-in — the promise generalizes to "any tracked-work artifact +
+registered repo + named authority profile → independently verified deliverable."
+Exit: one real issue travels the pipeline with operator interruptions only at
+material decisions.
+
+## v1.0.0 — Teammate-ready
+
+A person who has never read these docs declares one bounded intent and receives
+a verifiable result, without learning the taxonomy and without a giant
+transcript. Exit: witnessed run by a non-author.
+
+## Post-1.0 horizons
+
+[`προτείνω`](11-protino.md) is the operator-named flagship first-party
+application horizon: a compact persistent community where long-form prose is a
+targeted, inspectable intervention; residents may ignore, resist, misinterpret,
+adopt, adapt, or relay it; and paired branches show what changed inside a
+declared simulation. It joins the executable pattern workshop to the simulation
+laboratory without promoting application content into the kernel. Calling it the
+prospective flagship records ambition, not product evidence, release priority,
+or permission to expand a current work order. Within the application layer it
+belongs to the intended first cohort; that sequencing signal does not move it
+ahead of the platform ladder or select a delivery date. A small basketball
+squad is a candidate first proof, not a selected milestone.
+
+The broader simulation catalog remains: paired counterfactuals, first-divergence
+search, agent swaps, all-clone towns, reflection-question design, time-dilation,
+time-fidelity and observation-relative closure experiments, conservative
+future-reachability envelopes, recognition-beyond-identifiers,
+accuracy-vs-rationale decoupling, biographical seeding, bounded-inconsistency
+generation, and length-scale attention aggregation (the full founding catalog
+lives in the ledger's chat-005 entries; later operator-dispatched additions are
+recorded in newer ledger sections); an Embodied Explorer fixture that learns
+evidence-backed composite skills from bounded sensorimotor primitives in a 3D
+simulator; a later commander-mediated strategy sibling where commander options,
+operator riffs, issued tactics, actual execution, and outcomes remain separately
+inspectable; the full pattern shelf (Compendium skin); remaining transmog
+skins; physical-card importer; hypothesis flywheel. All are gated on the same
+kernel, and no application, simulation, or embodiment choice may distort
+Horizon 1.
+
+Additional horizon: a lightweight offline-capable IR verifier; explicit
+application/schema/artifact/component version lineage; inspectable JIT
+compatibility and AOT migration of historical configurations; release-scoped,
+non-monotonic active/support availability with declared inactive behavior; and a
+general behavioral toolbox whose game-AI use tests whether actors, loadouts,
+Programs, Cadences, preview, simulation, and replay genuinely generalize. See
+10-ir-compatibility.md. Distribution as package, executable, cloneable repo, web
+generator, or compact share code remains an evidence-driven choice.
+
+Also unscheduled: make the platform/personal-implementation split physical and
+ship an owner-sovereign instance profile that may remove DotLn-level approvals,
+verification, retention, replay, and advisory warnings for an owner who chooses
+that tradeoff. The profile is not preconfigured by this horizon statement, and
+it cannot promise to override a model provider, harness, operating system, or
+destination outside DotLn's control. Its presence policy must be able to
+distinguish attention, work scope, effect authority, and external capability and
+exercise hold, shrink, progressive-growth, cap, return/reset, and non-ratcheting
+loop fixtures.
+
+Also unscheduled: replace worktree-local intake drift with one canonical private
+store plus capture, status, backup, and reconciliation operations. The helper
+must prove collision-safe, interruption-safe movement from a disposable
+worktree, keep raw names and bytes out of public artifacts, and distinguish
+storage reconciliation from the ideation/re-mining receipt that records
+semantic reconciliation.
+
+Two unscheduled infrastructure probes share that same gate. An orchestration
+conformance probe may lower one bounded Program through LangGraph and compare it
+with the pure TypeScript reference at the decision/event boundary; this selects
+no framework dependency. An isolated-execution probe may compare the current
+worktree/harness baseline with hardened container and VM/microVM profiles where
+local discovery proves them available; it selects no deployment default and does
+not expand WO-009. Neither starts until the smallest intent-to-evidence loop is
+responsive, legible, independently evidenced, and pleasant enough to repeat.
+External feature breadth is then admitted through exact primitive composition,
+an explicit adapter, or evidence for a genuinely missing primitive—not
+competitive checklist accumulation.
