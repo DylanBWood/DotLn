@@ -1,0 +1,63 @@
+WO-032 validation — 2026-09-07
+Command: npm test
+Outcome: exit 0
+Full run: release-preparation and license tests; lifecycle, recovery, worktree, release and index fixtures; 303 runtime tests including 18 console cases; 11 plan-refutation fixture groups; 8 identity-corpus tests; 21 mutation self-tests; artifact, verification and current feedback evidence checks.
+
+TAP suite totals in execution order:
+# tests 7
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# tests 9
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# tests 303
+# pass 303
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# tests 8
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# tests 21
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+Selected publication and evidence output:
+fixture temp-root tests passed
+publication checker tests passed
+backup-intake tests passed
+resume tests passed
+checkpoint tests passed
+worktree tests passed
+release tests passed
+PASS work-order index fixtures
+PASS index coverage: 239/239 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 30 linked source sections match
+CURRENT software-engineer-toc.md: 45 linked source sections match
+PASS publication bootstrap checks
+Verified 4 current artifact evidence files in docs/evidence/WO-011/artifact-identity; original semantic hashes and frozen oracle unchanged.
+Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.
+Verified ten passing regressions, ten removal failures, and 2393 fewer instruction bytes in the matched projection.
+
+Additional executed checks:
+PASS node scripts/console-fixtures.mjs --check: all five JSON, terminal and HTML snapshots match.
+PASS dependency comparison: only node_modules/@dotln/console and packages/console were added; every previous parsed lockfile entry is unchanged. Console declares no external dependency.
+PASS git diff --check.
+PASS explicit formatting checks for the renderer and its updated Unicode-width regression.
+
+Visual inspection: native Chrome displayed Actors, Builds, Mechanisms and Blueprint from the combined fixture. No restart was needed after the permission retry.
+Historical-source limitations and independent review duties: README.md in this evidence directory.

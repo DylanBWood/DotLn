@@ -94,6 +94,8 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Candidate — multi-dimensional authorship assistance](../product/04-interfaces.md#candidate--multi-dimensional-authorship-assistance) | everyday-ai-user, software-engineer | vision      |
 | [`προτείνω` — prose as a world action](../product/04-interfaces.md#προτείνω--prose-as-a-world-action)                                 | everyday-ai-user, software-engineer | vision      |
 | [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract)                       | everyday-ai-user, software-engineer | planned     |
+| [Actor board v0](../product/04-interfaces.md#actor-board-v0)                                                                          | everyday-ai-user, software-engineer | implemented |
+| [Later console hosts](../product/04-interfaces.md#later-console-hosts)                                                                | everyday-ai-user, software-engineer | planned     |
 | [RPG / Path-of-Exile view](../product/04-interfaces.md#rpg--path-of-exile-view)                                                       | everyday-ai-user, software-engineer | planned     |
 | [Semantic zoom](../product/04-interfaces.md#semantic-zoom)                                                                            | everyday-ai-user, software-engineer | planned     |
 | [Community build workshop](../product/04-interfaces.md#community-build-workshop)                                                      | everyday-ai-user, software-engineer | planned     |
@@ -174,6 +176,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [v0.13.0 — Feedback compiler v1 (ten units) → WO-011](../product/06-roadmap.md#v0130--feedback-compiler-v1-ten-units---wo-011)                                                                                 | software-engineer                   | implemented |
 | [Application version pending — Harness lowering and rule migration → WO-039 + WO-040](../product/06-roadmap.md#application-version-pending--harness-lowering-and-rule-migration--wo-039--wo-040)               | everyday-ai-user, software-engineer | planned     |
 | [Application version pending — Projections & console](../product/06-roadmap.md#application-version-pending--projections--console)                                                                              | everyday-ai-user, software-engineer | planned     |
+| [UIFA v0 actor board](../product/06-roadmap.md#uifa-v0-actor-board)                                                                                                                                            | everyday-ai-user, software-engineer | implemented |
 | [Application version pending — Launchpad and cross-repository workstreams → WO-033 + WO-034](../product/06-roadmap.md#application-version-pending--launchpad-and-cross-repository-workstreams--wo-033--wo-034) | everyday-ai-user, software-engineer | planned     |
 | [Application version pending — Pattern workshop v1](../product/06-roadmap.md#application-version-pending--pattern-workshop-v1)                                                                                 | everyday-ai-user, software-engineer | planned     |
 | [Application version pending — Source-to-deliverable vertical](../product/06-roadmap.md#application-version-pending--source-to-deliverable-vertical)                                                           | everyday-ai-user, software-engineer | planned     |
@@ -301,6 +304,7 @@ as a current blocked verdict.
 | [One person, several hats](../product/13-uifa-roles.md#one-person-several-hats)                                                                                            | everyday-ai-user, software-engineer | specified   |
 | [The same five roles in other domains](../product/13-uifa-roles.md#the-same-five-roles-in-other-domains)                                                                   | everyday-ai-user, software-engineer | vision      |
 | [Assistance the platform owes each role](../product/13-uifa-roles.md#assistance-the-platform-owes-each-role)                                                               | everyday-ai-user, software-engineer | planned     |
+| [Actor board role service](../product/13-uifa-roles.md#actor-board-role-service)                                                                                           | everyday-ai-user, software-engineer | implemented |
 | [What this does not decide](../product/13-uifa-roles.md#what-this-does-not-decide)                                                                                         | everyday-ai-user, software-engineer | specified   |
 
 ## Historical Protíno path — compatibility pointers

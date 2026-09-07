@@ -1,0 +1,42 @@
+[
+  {
+    "role": "product-lead",
+    "question": "Is this still the thing we mean?",
+    "fixture": "refutations",
+    "section": "refutation-verdicts",
+    "rowTitle": "WO-032",
+    "keys": ["verdict", "reason"]
+  },
+  {
+    "role": "showrunner",
+    "question": "What is active, what is blocked, what closed, and what did the release contain?",
+    "fixture": "control",
+    "section": "orders",
+    "rowTitle": "WO-032",
+    "keys": ["phase", "legalNextActions", "dependencyCheck"]
+  },
+  {
+    "role": "engineer",
+    "question": "Does this composition express the behavior I mean, and what does it cost?",
+    "fixture": "wo011",
+    "section": "saved-builds",
+    "rowTitle": "Repo Gardener",
+    "keys": ["tooltip", "semanticHash", "hashAgreement"]
+  },
+  {
+    "role": "tester",
+    "question": "In this situation, does the equipped behavior do the right thing?",
+    "fixture": "wo011",
+    "section": "compiled-mechanisms",
+    "rowTitle": "anti-oscillation",
+    "keys": ["desiredBehavior", "fixture.incidentsPrevented", "lastActivation"]
+  },
+  {
+    "role": "devops",
+    "question": "Which repeated step can become a checked mechanism next?",
+    "fixture": "wo011",
+    "section": "compiled-mechanisms",
+    "rowTitle": "anti-oscillation",
+    "keys": ["boundary", "rung", "nextMaturity"]
+  }
+]

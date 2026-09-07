@@ -1,9 +1,10 @@
 # Interfaces — the isomorphic views
 
-**Status:** target interface contract. The `v0.2.0` baseline ships the CLI
-timeline and zero-asset glyph scene only; the complete terminal control surface,
-web/spatial console, editable equivalent views, replay UI, and build inspector
-remain planned unless a section explicitly says otherwise.
+**Status:** target interface contract with implemented slices. WO-008 ships
+three equivalent editable views. WO-032 prepares `v0.14.0` with the read-only
+actor board, saved-build inspector, terminal render, and zero-asset HTML page
+over `uifa-board-v1`. The complete console command surface, spatial views,
+replay UI, and richer authoring remain planned. Each section names its scope.
 
 The future interface direction is **Actor UI**. Its proposed spoken name is
 **UIFA**, pronounced **“wee-fuh”** to rhyme with **FIFA**, expanded as
@@ -13,8 +14,8 @@ the domain's Actors: people, model sessions, scripts, browser workers, and test
 runners, with their roles, current work, state, and evidence. Actor capability
 and authority determine the available interactions; the existing terminal,
 console, editable-view, and projection contracts provide its surfaces. This
-names the target interface direction and introduces no new Actor primitive or
-implemented screen. Agent-specific views remain projections of the relevant
+names the interface direction and introduces no new Actor primitive.
+Agent-specific views remain projections of the relevant
 actors within that broader interface.
 
 These are capability contracts, not mandatory screens for every private DotLn
@@ -288,20 +289,38 @@ contracts must permit an Angular shell and Babylon.js canvas to coexist,
 exchange selection and command intents, and render the same underlying state
 without either owning the other.
 
+### Actor board v0
+
 The 2026-09-06 planning pass, as redirected the same day, fixes the first
-two hosts around actors rather than around the process. Console v0 is the
-**actor board**, UIFA v0 (WO-032): a read-only projection inside core with
+two hosts around actors rather than around the process. WO-032 implements
+console v0 for `v0.14.0`: the **actor board**, UIFA v0, a read-only projection inside core with
 five panels, Actors (identity, role, loadout hash, episode state, authority,
 evidence), Builds (every shipped loadout's tooltips and view hashes through
 the compiler render), Mechanisms (every compiled unit with its rung,
 boundary, enforcement, and maturity counts), Work (the control state's
 orders, phases, blockers, worktrees, releases, and evidence links, which was
 the first draft's whole scope), and Blueprint (capability rows and
-publication statuses), each naming the UIFA role it serves, over the
+publication statuses plus the latest recorded plan-refutation verdicts and
+hold state), each naming the UIFA role it serves, over the
 documented machine interfaces and evidence stores, rendered in the terminal
 and as a zero-asset static page that invokes no command, holds no state, and
 adds no framework, and exported as a versioned JSON view model,
-`uifa-board-v1`. Console v1 is the Angular shell in the operator's example
+`uifa-board-v1`. Its [package contract](../../packages/console/README.md)
+defines `projectBoard(sources)`, evidence-linked cells, local selection links,
+source availability, pinned text adapters, and the
+[JSON schema](../../packages/console/uifa-board-v1.schema.json). The host reads
+existing projections; the pure projector owns no lifecycle transitions.
+Unknown fields stay unknown, and unavailable sources remain visible. Recorded
+worker build contracts retain their own hash kinds; a saved LoadoutGraph hash
+is never substituted for an episode that did not record one. Operator actions
+without a recorded identity appear as an unattributed operator role, with no
+claim about who authored them or whether a person is present. The
+[executor evidence](../evidence/WO-032/README.md) records these source limits and
+the independent role-question review boundary.
+
+### Later console hosts
+
+Console v1 is the planned Angular shell in the operator's example
 consumer, built as the cross-repository pilot's first target change (WO-034)
 rendering that view model's actor panels; the framework decision above is
 taken with that evidence, not before it. Command invocation from a console
@@ -458,6 +477,13 @@ separate operator action that compiles official scope and gates. Neither a
 persuasive discussion nor a green proposal PR may activate work by itself.
 
 ## Agent projection (the sparse twin)
+
+WO-032's `uifa-board-v1` is a read-only inventory for the human's broad view.
+Its Actors panel exposes recorded episodes, authority summaries, matrices and
+receipts; its Work panel includes the existing Beacon constellation with its
+own provenance. The board supplies no action affordance and does not replace
+the selected, permission-checked sparse twin below. A historical actor row is
+not a live session; Beacon metadata and worker heartbeats remain distinct.
 
 The **Beacon constellation** is the sparse twin's metadata row: fixed opaque
 address, exact byte size, decoded consequential class and outcome, refusal count

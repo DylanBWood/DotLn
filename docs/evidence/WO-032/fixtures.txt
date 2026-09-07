@@ -1,0 +1,97 @@
+Command: npm test
+Outcome: exit 0
+Selection: the 18 WO-032 console cases from the successful full runtime TAP stream.
+Original full-suite ordinals are retained.
+
+# Subtest: WO-032 AC1/6 wo009: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 49 - WO-032 AC1/6 wo009: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 115.42375
+  ...
+# Subtest: WO-032 AC1/6 wo011: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 50 - WO-032 AC1/6 wo011: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 153.009417
+  ...
+# Subtest: WO-032 AC1/6 control: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 51 - WO-032 AC1/6 control: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 82.513125
+  ...
+# Subtest: WO-032 AC1/6 refutations: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 52 - WO-032 AC1/6 refutations: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 135.363625
+  ...
+# Subtest: WO-032 AC1/6 missing: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 53 - WO-032 AC1/6 missing: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 3.191667
+  ...
+# Subtest: WO-032 schema refuses a different version, unknown fields, unsupported cells and unlabeled missing facts
+ok 54 - WO-032 schema refuses a different version, unknown fields, unsupported cells and unlabeled missing facts
+  ---
+  duration_ms: 60.822542
+  ...
+# Subtest: WO-032 AC2 executor, verifier attempts, authority, hashes and actual accepted episode remain distinct
+ok 55 - WO-032 AC2 executor, verifier attempts, authority, hashes and actual accepted episode remain distinct
+  ---
+  duration_ms: 58.276375
+  ...
+# Subtest: WO-032 AC2 the WO-031 operator role has recorded actions and unknown identity, authorship and presence
+ok 56 - WO-032 AC2 the WO-031 operator role has recorded actions and unknown identity, authorship and presence
+  ---
+  duration_ms: 1.935042
+  ...
+# Subtest: WO-032 AC3 all shipped exports use the compiler renderer; a new export adds a build without console edits
+ok 57 - WO-032 AC3 all shipped exports use the compiler renderer; a new export adds a build without console edits
+  ---
+  duration_ms: 82.642125
+  ...
+# Subtest: WO-032 AC4 ten mechanisms retain five counts per source; zero observations never become a rate
+ok 58 - WO-032 AC4 ten mechanisms retain five counts per source; zero observations never become a rate
+  ---
+  duration_ms: 121.097459
+  ...
+# Subtest: WO-032 AC5 control facts preserve legal actions, negative elapsed, failures, index evidence and Beacon separation
+ok 59 - WO-032 AC5 control facts preserve legal actions, negative elapsed, failures, index evidence and Beacon separation
+  ---
+  duration_ms: 1.736
+  ...
+# Subtest: WO-032 text adapters pin formats and refuse malformed, missing or unsupported sources
+ok 60 - WO-032 text adapters pin formats and refuse malformed, missing or unsupported sources
+  ---
+  duration_ms: 1.801542
+  ...
+# Subtest: WO-032 the last manual and latest versioned refutations populate verdicts and hold state, without reevaluating the gate
+ok 61 - WO-032 the last manual and latest versioned refutations populate verdicts and hold state, without reevaluating the gate
+  ---
+  duration_ms: 4.084083
+  ...
+# Subtest: WO-032 AC5 each role's pinned answering cells exist and the questions match product 13
+ok 62 - WO-032 AC5 each role's pinned answering cells exist and the questions match product 13
+  ---
+  duration_ms: 176.147708
+  ...
+# Subtest: WO-032 AC6 hostile source text stays inert; output is local anchors and styles only
+ok 63 - WO-032 AC6 hostile source text stays inert; output is local anchors and styles only
+  ---
+  duration_ms: 641.819958
+  ...
+# Subtest: WO-032 command renders recorded sources without changing them; HTML output preserves existing files and refuses conflicting modes
+ok 64 - WO-032 command renders recorded sources without changing them; HTML output preserves existing files and refuses conflicting modes
+  ---
+  duration_ms: 1181.252333
+  ...
+# Subtest: WO-032 unavailable worker stores stay unavailable; corrupt logs do not become empty success
+ok 65 - WO-032 unavailable worker stores stay unavailable; corrupt logs do not become empty success
+  ---
+  duration_ms: 0.19775
+  ...
+# Subtest: WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store
+ok 66 - WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store
+  ---
+  duration_ms: 60905.229709
+  ...
+
+Console cases selected: 18 passed; 0 failed.

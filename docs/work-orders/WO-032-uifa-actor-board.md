@@ -1,4 +1,4 @@
-# WO-032 — UIFA v0: a read-only actor board over episodes, builds, mechanisms, evidence, and work (version assigned at activation)
+# WO-032 — UIFA v0: a read-only actor board over episodes, builds, mechanisms, evidence, and work (v0.14.0)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
@@ -35,6 +35,11 @@ no primary write surface; the two form the first product wave. When WO-039
 merges first, the board renders the Contributor build through the same
 compiler render without a change here. A recommendation, not a dependency
 token.
+
+**Activation assignment (2026-09-07):** application target `v0.14.0`, the next
+minor above the observed local annotated `v0.13.3` release. Console starts at
+component `0.1.0`; kernel, compiler and skeleton versions are unchanged. The
+existing minor classification and integration-retiming rule remain in force.
 
 **Cites (read these sections):** 04-interfaces.md §Interfaces — the isomorphic
 views (UIFA organizes work around the domain's Actors: people, model
@@ -216,3 +221,19 @@ text).
    showrunner was promised is lost.
 3. The view-model version is `uifa-board-v1`; a later panel is an additive
    change under 10-ir-compatibility.md's invariants.
+
+**Executor source reconciliation (2026-09-07; retained for independent review):**
+The named historical inputs do not contain several facts assumed by the draft.
+WO-011 records a feedback policy hash and a verification input hash, not two
+LoadoutGraph hashes. WO-031 records operator activation/review requests without
+a human identity attestation and contains no release-close event. The board
+therefore preserves the distinct recorded hash kinds, leaves loadout hashes
+unknown, and displays an operator-role row with identity/authorship unknown.
+This follows the evidence-backed-only constraint; it is not a claim that the
+literal missing source facts in criterion 2 were found. The compiler's actual
+tooltip-bearing API is `renderCompiledDiff`, used directly, rather than the
+draft's `renderTooltip` name. Control status also has no blocker-reason field;
+recorded failure references and the generated index's dependency evidence remain
+separate. The [executor receipt](../evidence/WO-032/README.md) maps these limits
+to the concrete fixtures so the independent verifier can judge the intended
+actor-board behavior without accepting fabricated provenance.
