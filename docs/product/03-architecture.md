@@ -128,6 +128,35 @@ not a canonical topology or an implemented multi-repo coordinator. It simulates
 an organization user's needs with personal/synthetic material. Packaging,
 licensing, compatibility, update strategy, and the first task still need evidence.
 
+The 2026-09-06 planning pass, as redirected the same day, selects that
+route as the first physical slice of this boundary under ADR-0006 Decision
+7, with the starter as the representative second implementation shape. What
+DotLn exports is a **build**, not a process kit: the Contributor loadout
+lowered by the `harness-v1` target (WO-039) into the settings permissions,
+hooks, role skills, and marked instruction block a harness enforces, the
+pinned runtime build those hooks import, and the control plane with its
+resume phrases, worktrees, checkpoints, independent verification, final
+review, release close, and operating documents. The runtime workers remain
+read-only inspectors. WO-033 makes the control plane relocatable (one
+configuration root, registered target repositories whose authority profile
+is an envelope and whose class is a link group, a launchpad export with
+pinned provenance carrying that build, worktree-local harness emit for
+targets, Beacon emission that no longer depends on the skeleton package) and
+WO-034 runs the pilot. Core stays self-hosted, keeps the kernel, compiler,
+and skeleton source, and runs on its own generated configuration; the
+launchpad instance holds target orders and evidence and composes its own
+build overlay over the kit's; targets receive only conventional branches and
+pull requests and carry the emitted bundle only in ignored worktree state.
+The starter is also intended for other organizations to fork as their own
+launchpad instances. Inside the starter, kit files (listed in a manifest
+with hashes, including the harness bundle and the runtime build) and
+instance files (configuration, orders, control segments, evidence, the
+instance's product overlay, and its build overlay) are separate sets, so an
+upstream kit update merges into a fork without touching that instance's
+work, and a re-emit gives the fork its own build again. That is this
+boundary made physical: the kit is the shared mechanism and the shared
+legos, the fork's overlay is the doctrine.
+
 Playwright and Context7 are optional environment adapters. The operator reports
 adding MCP access and Context7 integrations for the two local coding harnesses;
 neither that setup nor a paid documentation account is a DotLn user prerequisite.
@@ -341,6 +370,17 @@ test the shared intent-to-transition contract, then package verifier and repair
 skills, then final-review and lifecycle skills, and finally measure startup
 context saved, invocation accuracy, and parity with the CLI. Until those work
 orders land, the current resume resolver and durable docs remain authoritative.
+
+The 2026-09-06 redirect filed the first order for this section, three days
+after it was written with none: WO-039 adds the `harness-v1` compiler target
+that lowers a build into a harness profile observed by a bounded smoke, with
+the role skills generated per resume phrase from the guide's procedures, the
+hooks generated from the compiled units' declared mechanisms so that the same
+predicate runs in the hook and in the audit host, and the instruction block
+generated as marked residue with a byte count. The delivery order above
+stands; the smoke that observes what the harness can load and enforce is the
+runtime profile this section asks for, recorded before any lowering rule is
+written.
 
 #### Candidate — contributed execution pool
 

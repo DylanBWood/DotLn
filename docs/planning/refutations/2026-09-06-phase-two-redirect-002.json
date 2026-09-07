@@ -1,0 +1,176 @@
+{
+  "orders": [
+    {
+      "workOrderId": "WO-032",
+      "verdict": "thesis-advancing",
+      "thesis": "The core bet — the smallest useful loop (see what the system understood, observe authorized progress, inspect evidence)",
+      "capabilityRow": "projection.uifa-board (created)",
+      "rolesServed": [
+        "UIFA showrunner",
+        "UIFA engineer",
+        "UIFA tester",
+        "UIFA product lead"
+      ],
+      "reason": "Three of five panels are actor-, build- and mechanism-centred and every cell must trace to a record, so the loop's 'see / observe / inspect' legs become legible for the first time; but the board is read-only with command invocation deferred to an unnamed 'parity contract', the Work and Blueprint panels are the process dashboard the redirect rejected, and no actor can declare intent through it, so the loop stays open at its first leg and devops gets no named panel."
+    },
+    {
+      "workOrderId": "WO-033",
+      "verdict": "thesis-advancing",
+      "thesis": "The one-paragraph story — a session gets a build, not a biography; the platform supplies the compiler and mechanism contracts without prescribing that loadout (also Three horizons, H1 made portable)",
+      "capabilityRow": "launchpad.starter (created)",
+      "rolesServed": ["UIFA showrunner", "UIFA devops", "UIFA engineer"],
+      "reason": "The export carries a compiled bundle the fork's harness enforces (criterion 5's recorded refusal and skill resolution) and the overlay / build:none path makes 'without prescribing that loadout' mechanical rather than aspirational; even fully succeeding, a fork's sessions still receive the executor half of the guide, the playbook and a client README as prose, so a fork gets a build and a biography, and the v1.0 test (a person who has never read these docs) is not approached."
+    },
+    {
+      "workOrderId": "WO-034",
+      "verdict": "thesis-advancing",
+      "thesis": "Three horizons, one kernel — Horizon 1 (workstreams, evidence-backed completion; one outcome spanning multiple repositories)",
+      "capabilityRow": "consumer.angular (created); the cross-repository workstream capability itself gets no row",
+      "rolesServed": ["UIFA showrunner", "UIFA engineer"],
+      "reason": "One outcome across repositories is the H1 sentence the vision reserves for product 12, and criterion 1's six fixtures plus the fired-unit counts of criterion 3 would evidence it; but assumption 4 lets the order close on synthetic fixtures with the objective's 'actually driven by that workflow' unproven, and the only capability row it creates tracks the Angular consumer rather than the workstream capability the thesis names."
+    },
+    {
+      "workOrderId": "WO-035",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["UIFA showrunner", "UIFA devops"],
+      "reason": "Ledger ordering, receipt relocation, generated release history and a guide capped at 450 lines are documentation governance; the order's own redirect note concedes that a shorter biography is still a biography, and its non-goals name no order that retires the prose it cannot remove."
+    },
+    {
+      "workOrderId": "WO-036",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["UIFA devops"],
+      "reason": "A faster, concurrent, per-case evidence gate changes how quickly existing evidence is obtained, not what the vision claims or evidences; criterion 3 correctly requires the wall time to fall."
+    },
+    {
+      "workOrderId": "WO-037",
+      "verdict": "thesis-advancing",
+      "thesis": "The differentiated interface — every pattern (5S, ...) compiles into exact mechanics; Horizon 2's shelf-to-mechanism compiler",
+      "capabilityRow": "compiler.five-s-set (created); lifts the single-active limitation recorded on compiler.seiri-v1",
+      "rolesServed": ["UIFA engineer", "UIFA tester"],
+      "reason": "The first shelf entry compiles in full, with bonuses that change the semantic hash only when armed (criterion 3) and a replay-identical scenario, which moves 'the shelf compiles' from prose to fixture; it leaves the rest of the sentence untrue: the set is authored as TypeScript data, renders only through the three existing codecs (no pattern card, statechart, function table or temporal view), and runs against deterministic fakes rather than a real session."
+    },
+    {
+      "workOrderId": "WO-038",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["UIFA devops", "UIFA showrunner"],
+      "reason": "License metadata, a publish refusal and a DCO rule are legal hygiene the vision never names as a thesis; nothing about the loop, the compiler or an actor changes, and keeping packages private is consistent with 'not dependent on a public marketplace'."
+    },
+    {
+      "workOrderId": "WO-039",
+      "verdict": "thesis-advancing",
+      "thesis": "The one-paragraph story — compiled rules attached where relevant; a session gets a build, not a biography",
+      "capabilityRow": "compiler.harness-v1; harness.self-hosted (both created)",
+      "rolesServed": ["UIFA engineer", "UIFA devops", "UIFA showrunner"],
+      "reason": "Lowering equipped units into settings, hooks, skills and a bounded residue, then running core on that output with a directional context measurement, is the story entering code; even fully succeeding, ten units govern beside a hand-written floor, a trimmed guide and a playbook, one vendor's harness is the first-class target (Codex only if observed), and criterion 4's correction-token leg contradicts assumption 1."
+    },
+    {
+      "workOrderId": "WO-040",
+      "verdict": "thesis-advancing",
+      "thesis": "The one-paragraph story — each correction becomes a typed mechanism; the roughly 140 rules compiled rather than loaded as prose",
+      "capabilityRow": "feedback.migration (created)",
+      "rolesServed": ["UIFA engineer", "UIFA tester", "UIFA devops"],
+      "reason": "Twelve more typed mechanisms with fixtures that fail when the mechanism is removed advance the migration the story describes and give 'build, not biography' its first number; but the 'governing by prose' count is a ledger classification, sentence removal is deferred to WO-035, and the correction-to-mechanism path stays a hand-authored batch rather than the compiled feedback loop the core bet describes."
+    },
+    {
+      "workOrderId": "WO-041",
+      "verdict": "thesis-advancing",
+      "thesis": "Mission — checking unsupported claims is the babysitting to remove; verification should happen automatically when authorized; flow does not silently authorize self-certification",
+      "capabilityRow": "control.plan-refutation (created)",
+      "rolesServed": ["UIFA product lead", "UIFA showrunner", "UIFA tester"],
+      "reason": "A blinded, read-only compiled actor gating every planning pass puts the Mission's automatic verification into code and asks the product lead's question ('is this still the thing we mean?') mechanically; but its subject hash omits the vision text it judges against, and a hold is discharged by the refuted planner's own dated override line, so the gate certifies process, not alignment."
+    }
+  ],
+  "largestGap": "The differentiated interface's authoring half: 'the analogies are the ways you mix and match the agents' and Horizon 2's drag-a-card-onto-an-agent surface. After all ten orders every build (Seiri, Entropy Reducer, Contributor, plan-refuter, the 5S set) is TypeScript data written by the author; no person can compose or remix an actor through any surface or metaphor, one shelf entry is compiled, and the compiled program still renders only through the three existing codecs (no business pattern card, statechart, function table, temporal track or timeline view). WO-032 ('drag-equip authoring (the pattern workshop)') and WO-037 ('the drag-equip authoring surface or any console change'; the Marquet ladder 'their own order') defer it, but to no named work order. Runner-up: the one-paragraph story's residue — after WO-039, WO-040 and WO-035 the author's own sessions still read a hand-written floor, a guide capped at 450 lines and the playbook, with roughly 22 of about 140 shapes compiled and later batches floating unnamed.",
+  "planVerdict": "hold",
+  "holdReasons": [
+    "WO-040 criterion 4: the count of shapes 'governing live sessions by prose' is a classification column in migration.json; a shape flips to 'mechanism' when compiled while its sentence stays in the always-on read (removal is explicitly nominated to WO-035), and 'not larger' admits unchanged instruction bytes — so the batch can close with no change to what a live session reads, which is activity-as-progress under the vision's own 'not a metrics theater' exclusion.",
+    "WO-039 criterion 6 does not state that the generated role skill and residue bytes the resume phrase now loads are counted in the after value; moving guide text into SKILL.md files would satisfy 'shorter' while reproducing the predecessor's always-on context in a new file. Criterion 4 also requires a correction event typed from the exact token while assumption 1 defers that token and lowers the unit to a skill, so the criterion is unmeetable as written on the assumed path.",
+    "WO-034 criterion 3 with assumption 4: an 'honest partial receipt' closes the order while the objective's claim that a compiled actor drove the DotLn-Angular change stays unevidenced; criteria 4 and 6 count context restatements and manual handoffs with no required direction against the separate-sessions baseline, although the Mission thesis ('remove recurring supervision and avoidable context switches') implies one.",
+    "WO-041 criterion 1: the subject hash covers only the sequence block and order files, omitting the vision anchors, roles and capability levels the refuter judges against, so a receipt stays valid after the standard it certifies against changes; criterion 5 then lets any dated override text from the refuted planner discharge a hold."
+  ],
+  "selfCertificationRisks": [
+    {
+      "workOrderId": "WO-032",
+      "criterion": 5,
+      "reason": "The question-to-cell mapping is a fixture the implementer authors; the product lead's question 'Is this still the thing we mean?' is not answerable by capability rows and publication statuses, yet naming any cell satisfies the criterion."
+    },
+    {
+      "workOrderId": "WO-034",
+      "criterion": 3,
+      "reason": "Assumption 4 allows an honest partial receipt to close the order, so the real-run evidence the criterion describes (PR, VER, FINAL, fired units, witness line) can be absent while the order is complete."
+    },
+    {
+      "workOrderId": "WO-034",
+      "criterion": 4,
+      "reason": "Counts are observed but no direction is required relative to the separate-sessions baseline; a run needing more restatement and more handoffs than today's practice passes, although the Mission thesis implies fewer."
+    },
+    {
+      "workOrderId": "WO-034",
+      "criterion": 6,
+      "reason": "'Zero is the target' but any number of hand vision restatements passes provided each names a file; the thesis (the build is the priming) is not made a pass condition."
+    },
+    {
+      "workOrderId": "WO-039",
+      "criterion": 6,
+      "reason": "The after measurement of the mandatory cold-start read is not stated to include the generated role skill and residue bytes that replace it; relocation into skills would pass as a reduction, and 'not larger' admits equality for the always-on bytes."
+    },
+    {
+      "workOrderId": "WO-039",
+      "criterion": 4,
+      "reason": "Requires typing a correction event from the exact operator token, while assumption 1 says the token is unconfirmed and the unit lowers to a skill; the executor would have to soften the criterion to declare completion on that path."
+    },
+    {
+      "workOrderId": "WO-040",
+      "criterion": 4,
+      "reason": "Governance-mode counts are executor classifications; 'prose lower' is satisfiable by relabelling compiled shapes while their sentences remain (removal nominated to WO-035); 'not larger' admits unchanged bytes; and 'every shape the operator's intake names' is unverifiable from committed files, so the whole-set denominator is self-reported."
+    },
+    {
+      "workOrderId": "WO-041",
+      "criterion": 5,
+      "reason": "The gate checks that each hold reason carries a dated disposition, not what it says; the planner whose plan was refuted writes the override, so a hold never blocks beyond one line of text."
+    },
+    {
+      "workOrderId": "WO-041",
+      "criterion": 1,
+      "reason": "A one-byte change to the vision's thesis sections, the roles table or the capability table leaves the subject hash unchanged, so the receipt keeps passing the gate after the standard it judged against has moved."
+    }
+  ],
+  "cleanRoomRisks": [
+    {
+      "workOrderId": "WO-040",
+      "surface": "corpus/feedback/migration.json rows (synthesized notes, incident summaries, behavior sentences, reference rows), the rendered docs/lineage/feedback-migration.md, the committed SHA-256 deny list, and the criterion-1 refusal fixture row",
+      "mechanicalCheck": "named",
+      "reason": "The hashed deny-token check and a reviewer read are named, but SHA-256 over lowercased tokens of well-known product names is a dictionary oracle in a public repository (anyone can hash candidate tracker names and confirm a match), token hashing misses multi-word names, variants and paraphrase, and the refusal fixture must contain a plaintext token whose hash is listed — the order does not require that token to be synthetic."
+    },
+    {
+      "workOrderId": "WO-033",
+      "surface": "worktree publish title and body for target repositories",
+      "mechanicalCheck": "named",
+      "reason": "The camouflage lint hashes each token of the title and body against the per-repository deny list; this is the one surface with a check, and it inherits the same low-entropy oracle and tokenization limits as WO-040's list."
+    },
+    {
+      "workOrderId": "WO-033",
+      "surface": "kit contents exported to the starter and every fork: dotln.config.example.json and the hashed deny list travelling as kit content, the criterion-4/5 lint fixtures (a body containing a deny-listed term), the pre-drafted first work order's constrained-environment audit questions (gateway, provider, managed-settings precedence), and the copied executor guide and playbook",
+      "mechanicalCheck": "absent",
+      "reason": "The negative export fixture checks for intake, local settings, Beacons, stores, package source and evidence, not for terms; the lint covers pull-request text only; propagating the hash list into forks widens the oracle; and the audit questions are the closest committed text to a description of a managed host and corporate gateway, which CLAUDE.md bars, so an independent read of the kit text is the only screen."
+    },
+    {
+      "workOrderId": "WO-034",
+      "surface": "docs/evidence/WO-034/README.md sanitized transcripts of the operator's fork sessions and the baseline description of the operator's 'current practice of separate sessions per repository'",
+      "mechanicalCheck": "absent",
+      "reason": "Sanitization is by hand; the camouflage lint covers the target pull request, not the receipt; live session transcripts are where the operator's work vocabulary is most likely to surface, and if the baseline practice is the operator's employer workflow its description falls in the 'employer policy' class the boundary excludes."
+    },
+    {
+      "workOrderId": "WO-039",
+      "surface": "docs/discovery/harness-smoke-*.md and .json (hook payload fields such as cwd, absolute paths, session ids), generated SKILL.md procedure text, and the residue block inside CLAUDE.md",
+      "mechanicalCheck": "absent",
+      "reason": "harness check proves byte-identity to the emitter, not term absence; payload dumps carry local identifiers; the order states the predecessor's rule files are not an input, so the employer-term risk is low but nothing checks the generated prose."
+    }
+  ]
+}

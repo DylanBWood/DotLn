@@ -101,4 +101,25 @@ to inherit the founding instance's doctrine.
 
 ## Amendments
 
-None.
+- 2026-09-06, phase-two planning pass: Decision 7's "later work order" is
+  nominated as WO-033. The representative implementation shape is the
+  operator's `DotLn-Enterprise-Starter`, an exported launchpad instance of
+  the process kit (control plane, resume phrases, worktrees, checkpoints,
+  independent verification, final review, release close, operating
+  documents), never a fork of core. Core stays self-hosted and keeps the
+  kernel, compiler, and skeleton; the launchpad holds orders and evidence for
+  registered target repositories, which receive only conventional branches
+  and pull requests. This names the first physical slice within the decided
+  constraints and changes no decision; the package boundary for the runtime
+  packages remains evidence-selected.
+- 2026-09-06, phase-two redirect (same day): the representative shape's kit
+  carries a compiled build, not only the process kit. WO-039 lowers the
+  Contributor loadout into the harness configuration a session runs under,
+  and WO-033's export carries that bundle plus a pinned, unminified runtime
+  build of the compiler and the skeleton modules the hooks import, under the
+  decided license; a fork composes its own overlay over the kit's build and
+  re-emits. Core keeps the package source and stays self-hosted on its own
+  generated configuration. This still changes no decision: the kit is the
+  shared mechanism (Decision 1), the fork's overlay is the doctrine
+  (Decisions 3 and 4), and the package boundary remains evidence-selected
+  (Decision 7).

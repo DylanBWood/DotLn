@@ -1,19 +1,24 @@
 # Legal and licensing posture
 
-**Status:** interim project record, last reviewed 2026-09-03. This document is
-not a license or legal advice.
+**Status:** project record, last reviewed 2026-09-06. The license posture was
+decided on 2026-09-06 (see §Decision — 2026-09-06); the remaining gates below
+stay open. This document is not a license or legal advice.
 
 ## Current state
 
-DotLn currently has no `LICENSE`, `COPYING`, third-party notice, contributor
-agreement, or project-wide license metadata. The repository is source-visible,
-but it is not presently offered as open-source software. Under GitHub's own
+Until 2026-09-06 DotLn had no `LICENSE`, `COPYING`, third-party notice,
+contributor agreement, or project-wide license metadata. The repository was
+source-visible but not offered as open-source software. Under GitHub's own
 guidance, default copyright rules apply when a repository has no license; the
 author retains the copyright rights in original expression and grants no general
 permission to use, modify, redistribute, or create derivative works. GitHub's
 Terms separately permit viewing and reproduction through GitHub functionality,
 including in-service forking of public repositories. Public visibility and a
 GitHub fork button therefore do not amount to a general open-source license.
+From the 2026-09-06 planning pull request onward, `LICENSE` (Apache-2.0),
+`LICENSE-docs` (CC-BY-4.0), and `NOTICE` are present; package metadata and
+the publication guard follow in WO-038. The paragraphs below record the state
+that decision replaced.
 
 This is the observed interim state, not a permanent licensing decision. The
 project is currently personal research by and for its operator, with no assumed
@@ -37,7 +42,85 @@ checks, alongside its local compiler/kernel workspace dependencies. The other
 external packages remain development-only. Kernel and compiler have no runtime
 dependencies. Recheck the material actually shipped when any distribution exists.
 
+**2026-09-06 observation (phase-two planning pass):** the operator intends
+`DotLn-Enterprise-Starter`, an exported launchpad kit of this repository's
+control plane and operating documents, to be forked by several external
+organizations as the base of their own workflows, with the first external
+fork expected within about a week. An external fork is distribution to
+others, which is this document's gate. The decision below was taken the same
+day.
+
+## Decision — 2026-09-06
+
+The operator decided the license posture during the 2026-09-06 planning pass
+and chose to land the license files in that pass's pull request, leaving
+package metadata, the publication guard, and the contribution document to
+[WO-038](work-orders/WO-038-license-posture-lands.md). This is a project
+decision recorded by its author; it is not legal advice.
+
+- **Copyright holder and notice.** Dylan Wood. The notice text is in
+  `NOTICE` at the repository root; the SPDX identifiers below name the
+  licenses, and the license files hold the canonical texts, byte-identical
+  to the publishers' plain-text editions. Pinned hashes, which WO-038's check
+  verifies:
+  - `LICENSE` — `sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30`
+  - `LICENSE-docs` — `sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411`
+  - `NOTICE` — `sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c`
+- **Code.** Apache License 2.0 (`Apache-2.0`), in `LICENSE`. Scope: every
+  source, script, configuration, fixture, corpus, and test file in this
+  repository, the exported launchpad kit, and code samples embedded in the
+  documentation.
+- **Documentation.** Creative Commons Attribution 4.0 International
+  (`CC-BY-4.0`), in `LICENSE-docs`. Scope: the prose under `docs/`, the
+  README, work orders, verification and final-review reports, evidence prose,
+  the ledger, and the operating documents the kit exports. Code samples
+  inside documentation are also available under Apache-2.0. No committed
+  images or other assets exist at this decision; an asset added later takes
+  CC-BY-4.0 unless its file says otherwise.
+- **Names.** Apache-2.0 §6 grants no trademark rights. The names DotLn,
+  προτείνω (protíno), UIFA, and any feature names are not licensed for use as
+  a source identifier; forks and derivatives may state that they are based on
+  DotLn without implying affiliation or endorsement. No confusingly-similar-
+  name search has been run; that check precedes serious brand investment as
+  the gate below still says.
+- **Inbound contributions.** Outside contributions are accepted under the
+  same outbound licenses with a Developer Certificate of Origin 1.1
+  `Signed-off-by` line on each commit. No contributor license agreement; no
+  relicensing right is sought. The operator's own commits carry no sign-off
+  requirement. WO-038 writes `CONTRIBUTING.md` and the publish-time check.
+- **Distribution.** Workspaces stay `private: true` until a separate package
+  publication decision; the license is the grant on the source, not a
+  distribution channel. Exporting the kit into the operator's own or an
+  external organization's repository carries `LICENSE`, `LICENSE-docs`, and
+  `NOTICE` as kit files.
+- **Third-party material.** Nothing vendored. Development dependencies are
+  MIT (`@types/node`, `undici-types`, Prettier) and Apache-2.0 (TypeScript),
+  observed from the lockfile; a `THIRD_PARTY_NOTICES` file becomes due when a
+  built or bundled artifact is distributed. The source-associated phrasebook
+  keeps the bounded disposition in §Inspiration is not incorporation; the
+  documentation license covers the operator's compilation and does not
+  enlarge rights in the underlying short expressions.
+- **Privacy and service.** Not triggered: DotLn is local-first, collects no
+  one's data, and offers no hosted service. Each launchpad fork's control
+  logs and evidence belong to that fork's owner.
+- **Operator-owned check.** The operator intends to use a fork at work. Whether
+  an employment agreement's intellectual-property clause affects a personal
+  project used at work is the operator's question to settle with their own
+  agreement or counsel; this record does not answer it.
+
+What this discharges from the gate below: the copyright notice, the code and
+documentation licenses, and the inbound rule (pending WO-038's document and
+check). What remains: package `license` and `private` metadata plus the
+publication guard (WO-038), `THIRD_PARTY_NOTICES` at first bundled
+distribution, the name-confusion check before brand investment, and the
+privacy and service reviews if a hosted or data-collecting surface ever
+appears.
+
 ## Interim direction
+
+_Superseded on 2026-09-06 by the decision above; kept as the record of the
+reasoning that preceded it. The candidate table below is history, not an open
+choice._
 
 Until the operator makes an explicit choice:
 
@@ -78,19 +161,21 @@ Choose and implement the legal posture before the first of these events:
 5. selling, licensing, fundraising around, or materially marketing DotLn; or
 6. investing substantially in the DotLn or feature-brand names.
 
-The bounded decision should include:
+The bounded decision should include (status as of 2026-09-06 in brackets):
 
-- the copyright-holder and notice text;
+- the copyright-holder and notice text [decided; `NOTICE`];
 - code and documentation license(s), or an explicit continued no-license
-  posture;
-- package `private` and `license` metadata plus publication guards;
+  posture [decided; Apache-2.0 and CC-BY-4.0];
+- package `private` and `license` metadata plus publication guards [WO-038];
 - the outbound project license and matching inbound contribution rule before
   accepting work; optionally a DCO to certify provenance, or a lawyer-reviewed
-  CLA if additional rights such as relicensing are needed;
+  CLA if additional rights such as relicensing are needed [decided: DCO 1.1,
+  no CLA; `CONTRIBUTING.md` and the publish-time check are WO-038];
 - an inventory of material actually distributed and any required
-  `THIRD_PARTY_NOTICES`;
-- a non-affiliation/trademark statement and a check for confusingly similar
-  product names before serious brand investment; and
+  `THIRD_PARTY_NOTICES` [open until a bundled artifact is distributed];
+- a non-affiliation/trademark statement [decided; names reserved] and a check
+  for confusingly similar product names before serious brand investment
+  [open]; and
 - privacy/data-practice review before any app or service collects, retains, or
   transmits another person's data, including telemetry or prompts; and service-
   terms review before offering an app or hosted service to others, as applicable.

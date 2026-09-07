@@ -412,6 +412,21 @@ needs its own measured outcome; lane generation, admission control, and
 per-order workflow variation remain deferred. Main stays clean for the
 operator and planning session.
 
+The sync step for the lane whose sibling merged first is spelled out in the
+[phase-two plan](planning/phase-two-plan-2026-09-06.md#concurrency-what-is-safe-what-is-untested-and-the-procedure):
+confirm containment, `git stash push --include-untracked -m 'WO-NNN sync <date>'`,
+fast-forward an uncommitted branch (merge, never rebase, a branch with reviewed
+commits), `git stash apply` and keep the stash, regenerate `current.md`, the
+index, and the publication locks rather than hand-merging them, retime the
+release target with a dated note if the sibling took the version, rerun the
+evidence, and return through `resume: fix` plus a fresh `VER-NNN` when the
+integrated subject changed substantively. WO-033 ships `npm run worktree -- sync WO-NNN`
+for exactly these steps. Expect textual conflicts by construction in the README
+release block, `package.json`, the ledger head, the map's recommendation
+section, and the edition lock lines; none is a reason to union-merge or rewrite
+a control segment. Keep one verifier session's worth of reserve: do not start a
+third implementation while two orders wait for verification.
+
 ## When things break
 
 - **Session dies / rate-limited mid-WO:** nothing is lost — the repo + WO are

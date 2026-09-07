@@ -138,7 +138,9 @@ review service terms before offering an app or hosted service to others, and
 review commercial and brand posture before sale, licensing, fundraising,
 material marketing, or substantial investment in a DotLn or feature-brand
 name. The list in `docs/LEGAL.md` is controlling; sale is not the first trigger.
-No license is selected by this roadmap paragraph.
+The license posture was decided on 2026-09-06 (Apache-2.0 code, CC BY 4.0
+documentation; `docs/LEGAL.md` §Decision), and WO-038 lands the package
+metadata and publication guard; the remaining gates stay open.
 
 The hand-closed `v0.2.0` manifest and notes under `docs/releases/` remain their
 immutable historical projection. For later releases, the annotated tag message
@@ -495,6 +497,13 @@ observed allowance, window, model availability, and reserve inputs. The earlier
 resource-pressure candidate can prioritize an early completion batch instead
 of universally conserving routine work. Trial feasibility and benefit remain
 open; no new order is activated or added to the default sequence.
+
+The 2026-09-05 horizon ran serially, so the trial did not occur. The
+2026-09-06 planning pass schedules the first measured paired wave as phase
+two's wave 1 (WO-032 ∥ WO-033), records the manual sync procedure for the lane
+whose sibling merges first, and files the sync helper inside WO-033; the
+[phase-two plan](../planning/phase-two-plan-2026-09-06.md#concurrency-what-is-safe-what-is-untested-and-the-procedure)
+holds both.
 
 ## Capability progression policies
 
@@ -1135,6 +1144,33 @@ subprocesses and invokes a separate verifier over pinned evidence; the
 proof, matched instruction-byte accounting, and the witnessed self-hosted run.
 The manual repository verification and publication phases remain separate.
 
+## Application version pending — Harness lowering and rule migration → WO-039 + WO-040
+
+Make a saved build govern the sessions that actually run. A pure compiler
+target, `harness-v1`, lowers a loadout, its equipped feedback units, and its
+authority envelope into what a harness enforces: settings permissions and
+hook scripts at rung 2 of the mechanism hierarchy, on-demand role skills at
+rung 7, and a marked instruction block at rung 8 holding only the residue
+nothing lower could carry, with a byte count. Every generated hook evaluates
+the same compiled unit the audit host evaluates; there is no second
+predicate, and surface language never triggers a correction. This
+repository defines its own session build, the **Contributor** (four roles
+selected by resume phrase, the ten personal units, the Clean Room floor, and
+the harness posture as an envelope), emits its configuration from the
+compiler, commits it, and refuses drift in the evidence gate (WO-039). Then
+the remaining feedback shapes get a rung: a generated migration ledger
+classifies every shape the operator has named into the founding taxonomy
+with its chosen rung and status, and batches of about twelve compile through
+the target into the Contributor build, each with fixtures and maturity stats
+(WO-040, batch one; later batches from its template). Exit: this
+repository's sessions run under generated configuration that `harness
+check` proves matches the build; a fresh fork of the starter runs on the
+same mechanism from its first commit; the migration ledger reports the
+number the one-paragraph story is about, shapes governing live sessions by
+mechanism rather than by prose, before and after each batch, beside the
+measured startup context. Filed by the 2026-09-06 redirect, which found
+that ten compiled units governed no session the operator actually opened.
+
 ## Application version pending — Projections & console
 
 Web console (UI framework and repository boundary decided _here_ by ADR with
@@ -1150,6 +1186,52 @@ Terminal remains a complete control surface. Exit: the v0.2.0 demo watched
 entirely from the console, then re-watched via replay; every animated element
 opens its mechanics inspector.
 
+The 2026-09-06 planning pass, as redirected the same day, names the rung's
+first slice: WO-032, UIFA v0, a read-only actor board inside core with
+Actors, Builds, Mechanisms, Work, and Blueprint panels over the documented
+machine interfaces and evidence stores, each panel naming the UIFA role it
+serves, rendered in the terminal and as a zero-asset static page, invoking
+no command and adding no framework, and exported as the versioned
+`uifa-board-v1` view model. The first draft's showrunner board over control
+state is the Work panel. The framework decision above waits for the
+cross-repository pilot's evidence; the Angular shell is console v1 in the
+operator's example consumer, rendering that view model's actor panels,
+reached through the launchpad rung below.
+
+## Application version pending — Launchpad and cross-repository workstreams → WO-033 + WO-034
+
+Make the control plane runnable outside core and export an instance that
+carries a build: one configuration root, work orders that name a registered
+target repository whose authority profile is an envelope and whose class is a
+link group, a launchpad export with pinned provenance that carries the
+Contributor build as an enforceable harness bundle plus the pinned runtime
+build the bundle imports, kit and instance and overlay separation so a fork
+takes updates and re-emits its own build, worktree-local harness emit for
+targets so a target never sees a DotLn file in a commit, and a lane sync
+step for paired waves (WO-033); then one workstream whose bounded orders
+span several target repositories, proven first on synthetic repositories
+through the six demonstrations product 12 names and then by an
+operator-witnessed real run from a fork of the starter, running that build,
+into `DotLn-Angular`, whose first change is a UIFA v1 shell over the actor
+board's view model (WO-034). Targets receive only conventional branches and
+pull requests; the launchpad holds their orders and evidence. This is
+Horizon 1's first product surface beyond this repository and the
+process-level precursor of the source-to-deliverable vertical below; DotLn
+runtime transports do not yet execute the target work. Exit: a session
+opened in the export is refused a denied effect by a generated hook and
+resolves a role skill by resume phrase; the pilot's real run opens a target
+pull request through the workflow with its verification and final review
+recorded in the launchpad, its receipt compares restatement, handoffs,
+interruptions, and return time with the operator's separate-session
+practice, and its hook logs report which compiled units fired in the fork's
+sessions. The starter is intended for other organizations to fork as their
+own launchpads, so this rung is where the ladder's personal-machine
+assumption stops holding: each fork's first order is bounded environment
+truth for its own host, harness, and gateway, extended with the harness
+smoke, and the licensing decision in `docs/LEGAL.md` precedes the first
+external fork. The 2026-09-06 redirect superseded the first draft of this
+rung, which exported the process kit with no build in it.
+
 ## Application version pending — Pattern workshop v1
 
 5S equipment set with compiled set bonuses; Marquet ladder as the operator-agent
@@ -1157,6 +1239,15 @@ protocol (autonomy rung computed, not set); mitigated-speech voice selector;
 drag-and-drop equip with exact compiled diff preview. Exit: dragging Seiri onto
 Repo Gardener in the console produces the same semantic hash as authoring the
 equivalent link group in code.
+
+The 2026-09-06 planning pass names the compiler-side first slice: WO-037
+compiles the 5S set as a multi-active link group with shared supports and
+piece-count set bonuses, equips it on the Repo Gardener in a second
+deterministic scenario, and renders every piece and the set as tooltips,
+while existing programs keep their hashes; the redirect places it in wave 4
+beside the migration's second batch, after the actor board can render it.
+The drag-equip surface is console v1 work in the operator's example
+consumer; the Marquet ladder and voice selector remain a later order.
 
 ## Application version pending — Source-to-deliverable vertical
 
