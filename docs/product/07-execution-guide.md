@@ -411,6 +411,15 @@ Standard artifacts, all doc-only:
 - one dated ledger section for the pass (and one for any ideation batch);
 - the map's planning revision: the marked sequence block, rationale, adjacent
   track, preflight, candidates, catalog rows, and provenance;
+- a blinded refutation receipt under `docs/planning/refutations/`, produced
+  by `npm run plan -- refute` once WO-041 has landed and, until then, by a
+  manual blinded dispatch that the receipt discloses as pre-mechanism: a
+  fresh session that receives the vision's thesis sections, the five roles,
+  the capability rows, and the marked sequence's orders, never the planner's
+  narrative, and returns for every order whether it advances a named thesis
+  and capability row, is machinery, or drifts, with a `pass` or `hold`
+  verdict for the horizon; every hold is answered in the receipt with a
+  dated disposition before the pass ends;
 - zero or more planner-synthesized work-order drafts, each with `Model:` and
   three-role `Effort:` lines, provenance, a dated observed gap, acceptance
   criteria, evidence, non-goals, and operator-review assumptions;
@@ -419,7 +428,11 @@ Standard artifacts, all doc-only:
 - `npm run work-orders -- index` regenerated and `npm test` green.
 
 A planning pass never activates, implements, tags, publishes, merges, edits
-immutable evidence, or relitigates a settled decision. A code or configuration
+immutable evidence, or relitigates a settled decision. A planning pass also
+never certifies its own direction: the refutation receipt is the pass's
+independent verification, on the same implementer-is-not-verifier rule that
+governs code, and the 2026-09-06 redirect records what a pass without one
+produced. A code or configuration
 change it identifies becomes a work order or a named boy-scout item for the
 next activation. Its output lands through the ordinary pull request from a
 planning branch, since `main` requires one; the `:memo:` title rule applies.

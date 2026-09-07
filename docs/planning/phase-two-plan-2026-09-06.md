@@ -7,18 +7,31 @@ Do Nothing equipped. It answers four operator questions — a whole-repository
 sweep with a six-month projection, two product fronts at once (the enterprise
 workflow and a console), whether progress still tracks the vision and the
 founding corpus, and whether concurrent work orders are safe — and files five
-planner-synthesized drafts: [WO-032](../work-orders/WO-032-showrunner-board.md),
-[WO-033](../work-orders/WO-033-relocatable-control-plane.md),
+planner-synthesized drafts: [WO-032](../work-orders/WO-032-uifa-actor-board.md),
+[WO-033](../work-orders/WO-033-compiled-starter-export.md),
 [WO-034](../work-orders/WO-034-cross-repository-workstream-pilot.md),
 [WO-035](../work-orders/WO-035-documentation-structure-reset.md),
 [WO-036](../work-orders/WO-036-evidence-runner.md), and, as the wave-3
 candidate that keeps the differentiated product's path visible,
-[WO-037](../work-orders/WO-037-five-s-equipment-set.md). It grants no
+[WO-037](../work-orders/WO-037-five-s-equipment-set.md); the same-day
+redirect rescoped the first three and filed
+[WO-039](../work-orders/WO-039-harness-lowering.md),
+[WO-040](../work-orders/WO-040-rule-migration-batch-one.md), and
+[WO-041](../work-orders/WO-041-plan-refutation-mechanism.md). It grants no
 activation authority and changes no immutable evidence. The
 [marked sequence](work-order-map.md#recommendation-and-rationale) is the
 editable recommendation; this plan explains it. The verbatim dispatch is
 preserved locally in `docs/intake/notes/2026-09-06-phase-two-planning-dispatch.md`
 (SHA-256 `e8ccc4e788ca0ce66612a12cdd8919d7f4dee5e9303b799460e18dc1c087b287`).
+
+**Revised the same day.** The operator read the first version and corrected
+its direction; the correction and the redirected horizon are in
+[§The redirect](#the-redirect--second-pass-of-2026-09-06) below, and the
+sections it supersedes are marked in place. The first version is retained in
+Git history at commit `1611860` and `dcf4b2d`; the ledger's redirect section
+records what was superseded and why, append-only. The sweep findings, the
+six-month projection, the concurrency procedure, and most of the NoOp
+register stand unchanged.
 
 Two read-only sweeps were delegated to fresh sessions during the pass, one
 over code and one over documentation structure. Their measurements are
@@ -86,16 +99,105 @@ distinction decides where effort goes next.
   2026-09-02 entropy review named; the documentation grew 8,065 → 57,475
   lines in seven days while runtime source grew 484 → 19,248.
 
-**Disposition.** The operator's two product asks coincide with the accepted
-build order's next rung: ADR-0002's sequence ends "... feedback compiler →
-projections → pattern workshop", and the next unfilled roadmap rung is
-"Projections & console". The pass therefore turns the horizon toward the
-visible loop — a console the showrunner and product lead can look at, and a
-launchpad through which one workstream drives a second repository — and
-files the sweep's structural corrections beside them. Horizon 2 (the pattern
-workshop and the drag-equip authoring surface) is the natural wave after this
-one; it needs the console shell this horizon produces. προτείνω is unchanged
-as the post-1.0 destination.
+**Disposition (superseded by the redirect below; retained as record).**
+The first version read the accepted build order's next rung, "projections &
+console", and turned the horizon toward a board over control state and a
+process-kit export. The operator's correction showed why that was wrong even
+though every sentence above is right: the review named the blueprint-to-code
+gap and then filed more of the machinery that had produced it, because the
+review was written by the planner about its own plan and no blinded refuter
+read it. The redirect below keeps every measurement in this section and
+changes what is done about them.
+
+## The redirect — second pass of 2026-09-06
+
+The operator's correction, in one sentence: the work-order state machine is
+the smallest part of the vision, and the whole idea is that the predecessor's
+roughly 140 hand-crafted rules become skills or hooks or the platform itself,
+a user interface for actors. The first version of this plan built none of
+that. Its five new orders were a board over control state, an export of the
+control-plane scripts, a workstream pilot whose first Angular change rendered
+that board's JSON, a documentation reset, and a test runner; the one order
+that touched the differentiated product was placed last as a candidate.
+
+**How it drifted, by mechanism.** Three substitutions, each locally
+reasonable, compounded.
+
+- "Launchpad" was read as the control-plane scripts. In the founding corpus
+  the launchpad is the whole compiled system: rules lowered to mechanisms,
+  the kernel, the loadouts, the actor view. Once the word meant the scripts,
+  "use DotLn to create the starter" collapsed into "copy the scripts", which
+  was also the only thing that could ship before the first external fork.
+- "Console v0" was read as the roadmap's showrunner status view. The
+  interfaces doc defines the target interface as work organized around
+  actors with their roles, loadouts, state, and evidence. A board of orders
+  and phases has no actor in it.
+- "Feedback compiler v1 shipped" was read as the rule thesis being on track.
+  Ten shapes are compiled and they are hard only inside the audit demo host;
+  no session the operator opens is governed by them. The sessions run on
+  `CLAUDE.md`, an 804-line guide, and the playbook, which is rung 9 of the
+  repository's own mechanism hierarchy, and the remaining shapes were on no
+  rung of the roadmap. The predecessor's startup-context failure was being
+  re-created in a different shape, and the six-month projection below said
+  so without drawing the conclusion.
+
+The plan's own vision-alignment review was written by the planner about its
+own plan; the two delegated sweeps checked code and documentation structure,
+not direction; "equipped Beware of Naive Interventionism and Do Nothing"
+meant the session had read those sections. The operator had to be the
+refuter, which is the supervision the mission exists to remove.
+
+**What the redirect changes.** Five moves, each an order.
+
+1. **A saved build must govern the sessions that run** (WO-039). A pure
+   compiler target lowers a loadout, its units, and its envelope into what a
+   harness enforces: settings permissions and hooks at rung 2, on-demand role
+   skills at rung 7, and a marked instruction block at rung 8 holding only
+   the residue with a byte count. This repository defines its own session
+   build, the Contributor, emits its configuration from the compiler, commits
+   it, and refuses drift in the evidence gate. Core eats its product, not
+   only its process.
+2. **The starter ships an actor** (WO-033, rescoped). The export carries the
+   Contributor build as an enforceable bundle plus the pinned runtime build
+   the bundle needs; a fork runs its sessions on a compiled actor from its
+   first commit and composes its own overlay (registered repositories,
+   classes, extra units) over the kit's build. A target worktree gets the
+   bundle in ignored local state, so the target never sees a DotLn file in a
+   commit. Kit updates reach forks as an upstream merge plus a re-emit: the
+   operator's chain, progress in core makes the starter better which makes
+   every fork and target better, made mechanical.
+3. **The rule migration has a rung** (WO-040). A generated migration ledger
+   classifies every shape the operator has named; batch one compiles at
+   least twelve through the harness target into the Contributor build and
+   reports the number the vision cares about: shapes governing live sessions
+   by mechanism versus prose. Later batches are cut from its template.
+4. **Console v0 is UIFA v0** (WO-032, rescoped). A read-only actor board over
+   the documented machine interfaces with five panels, Actors, Builds,
+   Mechanisms, Work, and Blueprint, each naming the role it serves. The first
+   version's showrunner board is the Work panel in full. Its versioned JSON
+   view model is what the Angular shell renders in the pilot (WO-034,
+   rescoped), so the pilot proves that a compiled actor drove the target
+   change, and the fork's hook logs report which units fired there.
+5. **Plans get a blinded refuter as a mechanism** (WO-041). A compiled
+   read-only episode over the marked sequence and the vision returns, for
+   every order, whether it advances a thesis, is machinery, or drifts, and a
+   hold blocks the planning pull request until answered. Not a resume phrase
+   the operator must remember; a check in `npm test`.
+
+The documentation reset, the evidence runner, the license order, and the 5S
+set keep their scope; the 5S set moves from a candidate to wave 4 beside the
+migration's second batch. The first receipt of the refuter mechanism is the
+manual blinded run recorded in
+[`refutations/2026-09-06-phase-two-redirect.md`](refutations/2026-09-06-phase-two-redirect.md);
+WO-041 mechanizes that shape.
+
+**Where the operator stands in the five roles after this horizon.** The
+showrunner keeps the screen (the Work panel), the engineer composes the
+Contributor build and sees it lowered into the harness (WO-039, WO-040) and
+compiles the first shelf entry (WO-037), the tester has the plan refuter and
+the batch fixtures (WO-041, WO-040), devops exports a starter that carries a
+build (WO-033), and the product lead reads the Blueprint panel. A fork's
+users get the same five surfaces because the fork runs the same build.
 
 ## Six-month projection
 
@@ -168,215 +270,148 @@ cite the old path in prose.
 | Per-session ledger files instead of one file                                                                                                                                                                                | **NoOp.** Every order and `CLAUDE.md` cite the single address; the generated index is the cheaper fix                                     | The index proves insufficient for a reader                            |
 | Retire the `11-proteino.md` stub and its deprecated index rows                                                                                                                                                              | **NoOp.** Immutable prose citations resolve through it                                                                                    | A generated deprecated-path mechanism replaces the rows               |
 
-## The enterprise workflow decision
+## The enterprise workflow decision (redirected)
 
 The operator proposed: use DotLn to create `DotLn-Enterprise-Starter`, fork
 the starter, open Claude and Codex in the fork, and plan the work orders that
 produce `DotLn-Angular`, so that a launchpad holds several workstreams across
 repositories and the operator does not keep a session open in each. Both
-repositories are empty as of this pass. The plan adopts the topology with two
-clarifications.
+repositories were empty at the time of this pass. The first version of this
+plan adopted the topology and exported the process kit; the redirect keeps
+the topology and changes what the export contains.
 
-- **What "use DotLn" means today.** DotLn's runtime workers are read-only
+- **What "use DotLn" means now.** DotLn's runtime workers are read-only
   fixture inspectors and JSON-policy repairers; they cannot write a starter.
-  What DotLn offers today, and what the operator uses daily, is the
-  _process kit_: the control plane, its resume phrases, worktrees,
-  checkpoints, independent verification, final review, and release close,
-  plus the operating documents. "Use DotLn to create the starter" therefore
-  means exporting that kit as a launchpad skeleton (WO-033 phase 3) and
-  driving the starter's own first work orders through it. That export is
-  also the physical platform/instance split ADR-0006 deferred until "a
-  representative implementation shape" existed: the starter is that shape.
+  What DotLn can export, once WO-039 lands, is a **build**: the Contributor
+  loadout lowered into settings permissions, hooks, role skills, and a marked
+  instruction block, plus the pinned runtime build those hooks import, plus
+  the control plane and its operating documents. "Use DotLn to create the
+  starter" means `launchpad export` emits that build into the starter and
+  the starter's own first orders run under it. The first version's
+  process-kit export is the same command with no actor in it; it is
+  declined.
 - **Topology.** DotLn core stays the platform and remains self-hosted (it is
-  its own launchpad). The starter is a template of a launchpad instance,
-  exported from core with pinned provenance, never a fork of core. The
-  operator's fork or clone of the starter is their launchpad instance; it
-  registers target repositories and holds their work orders, control
-  segments, verification, and final-review evidence. Target repositories,
-  `DotLn-Angular` first, receive only conventional branches and pull requests
-  under the workplace-camouflage rule; their DotLn state never lives in their
-  trees. Executor, verifier, and reviewer sessions open in a target worktree
-  from the launchpad's handoff and resume from the launchpad's control state.
-- **Console v0 here, console v1 there.** The roadmap sanctions a zero-asset
-  terminal or static-HTML page as prototype zero and defers the framework
-  decision to representative evidence. So the first console (WO-032) is a
-  read-only showrunner board inside core, a pure projection over the machine
-  interfaces that already exist, with no framework and no second state
-  machine. The Angular shell becomes console v1 in `DotLn-Angular`, built as
-  the pilot workstream's first target change (WO-034), consuming the board's
-  view model as JSON. That makes the pilot real — it must drive an actual
-  target change — and produces the evidence the framework decision needs.
-- **Licensing.** Exporting the kit into the operator's own public
-  repositories is not the distribution gate in `docs/LEGAL.md`; offering the
-  starter to anyone else is, and the operator clarified that external
-  organizations will fork it within about a week. The gate was therefore
-  decided inside the pass (below) rather than deferred.
+  its own launchpad and, after WO-039, runs on its own compiled build). The
+  starter is a template of a launchpad instance, exported from core with
+  pinned provenance, never a fork of core. The operator's fork or clone of
+  the starter is their launchpad instance; it registers target repositories,
+  composes its own build overlay over the kit's Contributor build, and holds
+  their work orders, control segments, verification, and final-review
+  evidence. Target repositories, `DotLn-Angular` first, receive only
+  conventional branches and pull requests under the workplace-camouflage
+  rule; a target worktree carries the emitted bundle in ignored local state
+  that leaves with the worktree. Executor, verifier, and reviewer sessions
+  open in a target worktree from the launchpad's handoff, under that bundle,
+  and resume from the launchpad's control state.
+- **Console v0 here, console v1 there.** Console v0 is the actor board
+  (WO-032): a read-only projection over the machine interfaces that already
+  exist, with Actors, Builds, Mechanisms, Work, and Blueprint panels, no
+  framework, no second state machine, and a versioned JSON view model. The
+  Angular shell becomes console v1 in `DotLn-Angular`, built as the pilot
+  workstream's first target change (WO-034), rendering that view model.
+  That makes the pilot real twice over: the workflow must drive an actual
+  target change, and the change must be an actor view, not a phase table.
+  The framework decision follows that evidence.
+- **Licensing.** Unchanged from the first version: exporting the kit into
+  the operator's own public repositories is not the distribution gate in
+  `docs/LEGAL.md`; offering the starter to anyone else is, and the operator
+  resolved it inside the first pass. The runtime build travels under the
+  same terms with the NOTICE.
 
 **External organizations fork the starter (operator clarification during
-the pass).** The starter is intended as the base several external
+the first pass).** The starter is intended as the base several external
 organizations fork to begin their own workflows; the operator's fork is the
 first test and the first external fork is expected within about a week. The
-topology above does not change, but five consequences do:
+consequences recorded in the first version stand, with one addition:
 
-- The `docs/LEGAL.md` gate was on the critical path with a date, and the
-  operator resolved it inside the pass: Apache-2.0 for code, CC BY 4.0 for
-  documentation, a DCO for inbound contributions, names reserved, workspaces
-  private until a publication decision. The license files land in this
-  planning pull request; WO-038 lands the package metadata, the
-  publication-refusal check, and `CONTRIBUTING.md`, and it runs in the first
-  free lane before the first external fork. WO-033's export copies the
-  license files as kit files by default.
-- The starter must separate kit from instance. Kit files (scripts, suites,
-  `package.json`, the operating contract, guide and playbook copies,
-  templates, README) are listed in a manifest with hashes; instance files
-  (the real `dotln.config.json`, orders, control segments, evidence,
-  workstreams, the instance's product overlay) never are. That separation is
-  what lets a fork take upstream updates without touching its own work.
+- The license gate was on the critical path with a date, and the operator
+  resolved it: Apache-2.0 for code, CC BY 4.0 for documentation, a DCO for
+  inbound contributions, names reserved, workspaces private until a
+  publication decision. The license files landed in this planning pull
+  request; WO-038 lands the package metadata, the publication-refusal check,
+  and `CONTRIBUTING.md`, and it runs in lane 0.
+- The starter separates kit, instance, and the instance's build overlay.
+  Kit files (scripts, suites, `package.json`, the operating contract's
+  marked block and floor, guide and playbook copies, templates, README, the
+  harness bundle, the runtime build, the license files) are listed in a
+  manifest with hashes; instance files (the real `dotln.config.json`,
+  orders, control segments, evidence, workstreams, refutations, the
+  instance's product overlay, and `build/overlay.json`) never are. That
+  separation is what lets a fork take upstream updates without touching its
+  own work, and the overlay is what makes the fork's `.claude/` its own
+  build rather than core's.
 - Updates are mechanical, explicit, and never automatic: core → starter by
   `launchpad export --update` (manifest-driven; refuses to overwrite a kit
-  file the instance modified; never touches an instance file), landed in the
-  starter as a reviewed change; starter → forks by each fork's ordinary
-  upstream merge, landed as a reviewed pull request in that fork.
-- Fork immediately after the starter's first exported commit. There is no
-  later "ready" shape to wait for: the starter only ever holds the kit and
-  templates, and the fork is where a launchpad's real content accumulates.
-  A GitHub fork keeps the upstream relation visible; a repository created
-  from the starter as a template works the same way with a manually added
-  `upstream` remote.
-- Each fork's first work order is bounded environment truth for its own
-  host, harness, and gateway (WO-001's shape, pre-drafted by the export).
-  The roadmap's personal-machine assumption stops holding for external
-  forks; their managed hosts, gateways, and approval surfaces make WO-014's
-  approval-burden contract and the ledger's preserved managed-host capability
-  audit relevant again. Nothing from an external fork enters this
-  repository; their instances are theirs.
+  file the instance modified; never touches an instance or overlay file;
+  prints the re-emit instruction), landed in the starter as a reviewed
+  change; starter → forks by each fork's ordinary upstream merge followed by
+  a re-emit, landed as a reviewed pull request in that fork. A compiled unit
+  added in core reaches every fork's sessions by that path.
+- Each fork's first order is bounded environment truth for its own host,
+  harness, and gateway, extended with the harness smoke, so the fork
+  observes its own profile before it trusts its build.
+- The operator's own work-time fork is an instance like any other: its
+  content never flows back to core. Core tracks the starter and the Angular
+  consumer as siblings with export receipts; it does not track forks unless
+  a fork's experience changes core, the starter, or the consumer.
 
-**The starter and the Angular repository are first-class siblings of core
-(operator direction during the pass).** Their status, capabilities, and
-progress are tracked here: WO-033 creates a sibling registry
-(`docs/siblings/README.md`) with one entry per sibling, export and update
-receipts under `docs/evidence/siblings/` that make the starter's kit version
-evidence rather than memory, and a capability-table row per sibling; WO-034
-adds the Angular consumer's entry and row; WO-032's board renders the
-registry. A first imperfect starter is expected: kit improvements reach every
-fork through the manifest-driven update and an ordinary upstream merge, and
-an update that needs something from an instance prints an instance-actions
-note rather than applying it. Fork status is not tracked in core unless a
-fork's experience changes core, the starter, or the Angular consumer; then
-the lesson enters as a ledger entry or a work order.
-
-**How a session in the fork learns what the Angular repository is for
-(operator question during the pass).** The same rule that governs core
-governs the fork one level out: the docs are the shared memory, so a fresh
-session is primed by files it is told to read, never by the operator
-restating the vision. Three files carry it. The fork's operating contract
-(the kit's `CLAUDE.md`, exported by WO-033) fixes the cold-start read order:
-the fork's execution guide, then the active order, then the order's
-workstream document, then the target's repository profile, then only the
-upstream sections those two name. The workstream document
-(`docs/workstreams/WS-001-console-v1-shell.md`, the founding "first screen")
-states the outcome, why it matters to core, the six demonstrations it must
-witness, the contract it consumes with its version (the WO-032 board view
-model, `boardVersion: 1`, at a named core tag), and the member-order
-sequence. The repository profile (`docs/repositories/dotln-angular.md`)
-states the three purposes, the standards to emulate, the authority profile,
-the commands, and a pinned upstream-references list: `owner/repo@tag
-path#anchor` entries into core's product docs (the console paragraphs in 04,
-the showrunner role in 13, the console rung in 06, the board's JSON contract
-in WO-032) with one line each on why the section matters. Those two files are
-written once by the first `planning:` pass the operator dispatches in the
-fork, which reads core through the pinned references and synthesizes, and
-every later order cites them by section like any order here. The link back
-to core is therefore a pin, not a live dependency: the fork's `resume:
-status` reports when the referenced core tag has moved, and the kit update
-refreshes the kit, never the profile, which the fork's owner re-pins by a
-reviewed edit. The reverse link is core's sibling registry, which records the
-Angular repository's status and the contract version it consumes. The
-operator's per-session job shrinks to the phrase they already use here:
-`resume: next`.
-
-The operator's own fork has two lives. As the pilot it drives `DotLn-Angular`,
-which the operator gives three purposes: an exemplar of the Angular, Nx, and
-NgRx architecture and fundamentals they want emulated, the demonstration that
-the starter can build out another repository, and a console for DotLn.
-Beyond the pilot the operator intends to use a fork at work against work
-repositories. That fork is an instance like any client's: its orders,
-evidence, and target material stay in it, nothing flows back to core except
-kit updates in the other direction, and the clean-room boundary in
-`CLAUDE.md` is unchanged. Target repositories, whoever owns them, receive
-only conventional branches and pull requests.
-
-Given the date, WO-033 is the order the external timeline binds. If capacity
-is short, run it alone first (the plan's first reversal condition) rather
-than pairing it with WO-032.
-
-**What the founding corpus adds.** A targeted lookup of the founding notes
-and north-star document during this pass (synthesized here; nothing copied)
-recovered three shapes the ledger had flattened, now lowered into the
-drafts. First, the original impetus for a launchpad was that rules written
-for one repository did not carry to the next, and the operator wanted them
-layered by scope: launchpad-wide, a class of repositories such as Angular
-UI, and one repository. WO-033's configuration therefore layers launchpad →
-repository class → repository profile, with a named authority profile per
-repository replacing the hand-overridden "never push or PR" rule. Second,
-the founding corpus's first browser screen was one workstream page (contract,
-current state, active build, open decisions, running episodes, changed files,
-acceptance matrix, evidence, pull-request status, event timeline); WO-032's
-order detail renders that list from the sources that exist and labels the
-rest unavailable, and it works offline, which the founding notes demanded of
-any launchpad dashboard. Third, the preserved constrained-environment
-capability audit is the right first order for an external fork on a managed
-host, so WO-033's exported first order extends WO-001's shape with its
-questions. The coworker promise in the north star, one bounded intent from a
-person who never learned the taxonomy, is the v1.0.0 exit criterion; the
-external forks are its first honest test.
+**Critical path for the fork.** WO-038, then WO-039 phase 1 and its
+self-host, then WO-033. If capacity is short, run those three alone and let
+the rest float. WO-039 is the order the timeline binds now, not WO-033; its
+phase structure exists so that the minimum (the ten units lowered, the
+Contributor build, `harness check`) can ship before the skills and the Codex
+profile.
 
 ## Wave plan
 
-Lane rules are the hand rules in
-[`concurrent-work-orders-plan.md`](concurrent-work-orders-plan.md#lane-rules-the-showrunner-can-apply-by-hand);
-this horizon is their first real trial.
+Each lane is one worktree and one writer. Pairs share no primary write
+surface; the conflicts a pair produces by construction (README release
+block, `package.json`, the ledger head, the map's recommendation section,
+edition locks, generated projections, and now the generated harness
+configuration) are handled by the sync procedure below, not by scoping.
 
 ```text
-lane 0   WO-038 (license posture lands)   — first free lane; smallest order in the set; before WO-033's export ships
-wave 1   WO-032 (showrunner board)        ∥  WO-033 (relocatable control plane, export, sync)
-float    WO-036 (evidence runner)         — any free lane, ideally before wave 2
-wave 2   WO-035 (documentation reset)     ∥  WO-034 (cross-repository workstream pilot)
-wave 3   WO-037 (5S equipment set)        — candidate once WO-032 has merged; pairs with any wave-2 order
+lane 0   WO-038 (license posture lands)     ∥  WO-041 (plan refutation mechanism)
+wave 1   WO-039 (harness lowering)          ∥  WO-032 (UIFA v0 actor board)
+float    WO-036 (evidence runner)
+wave 2   WO-033 (compiled starter export)   ∥  WO-040 (rule migration, batch one)
+wave 3   WO-034 (cross-repository pilot)    ∥  WO-035 (documentation reset)
+wave 4   WO-037 (5S equipment set)          ∥  migration batch two (cut from WO-040's template)
 ```
 
-Serial fallback, if the operator returns to one lane: WO-038 → WO-032 →
-WO-033 → WO-035 → WO-034, with WO-036 wherever a quiet window appears. The adjacent
-track is unchanged: WO-107 first when an evidence window opens, WO-108's
-survivors informing later hardening; WO-014 floats and becomes more likely
-once target-repository sessions report approval friction.
+Serial fallback, fork-binding path first: WO-038 → WO-039 → WO-033 →
+WO-041 → WO-032 → WO-040 → WO-036 → WO-034 → WO-035 → WO-037.
 
-Primary write surfaces, to hold rule 2 (no shared surface in one wave):
+Why this order and not the first version's:
 
-| Order  | Primary surfaces                                                                                                                    | Shared with its wave partner                                                                 |
-| ------ | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| WO-032 | `packages/console/**`; product 04, 13; capability table row                                                                         | `package.json` (one line), README release block (serial by version), ledger head, map, locks |
-| WO-033 | `scripts/**`; the Beacon module move; product 03, 07, 12, 10; playbook; ADR-0006 amendment; LEGAL note                              | same list                                                                                    |
-| WO-034 | `scripts/work-orders.mjs`; `packages/console`; `docs/workstreams`; product 12, 04, 13; evidence WO-034                              | `package.json`, README block, ledger head, map, locks                                        |
-| WO-035 | ledger structure, `docs/lineage/`, product 02/03/06/10/14, capability table, guide, `scripts/lineage.mjs`, `scripts/docs-check.mjs` | same list; must not touch `work-orders.mjs` or `packages/console`                            |
-| WO-036 | `package.json` `test`, `scripts/test-runner.mjs`, `scripts/test-*.mjs`                                                              | `package.json` with everyone                                                                 |
-| WO-037 | `packages/compiler`, skeleton loadouts, scenario, reactor; product 02, 04, 05, 06, 10; capability table row                         | README block, ledger head, map, locks; must not edit `packages/console`                      |
-| WO-038 | root and workspace `package.json` license and private fields; `check-surfaces` in `release.mjs`; `CONTRIBUTING.md`; README, LEGAL   | `package.json` with everyone (serial), README block, ledger head, map, locks                 |
+- **Lane 0 is two small orders that gate the outside.** WO-038 must land
+  before the first external fork; WO-041 must land before the next planning
+  pass. They share no surface and are the first measured paired wave, which
+  makes the first measurement cheap.
+- **Wave 1 is the product.** WO-039 turns the compiled units into the
+  configuration the operator's sessions actually run under and makes core
+  run on its own build; WO-032 gives the five roles their first shared
+  screen. They are disjoint (compiler and skeleton loadouts and `scripts/`
+  versus `packages/console`). WO-039 is on the fork's critical path and
+  starts first.
+- **Wave 2 is the export and the migration.** WO-033 needs WO-039's bundle
+  and WO-038's license metadata; WO-040 needs WO-039's target. They are
+  disjoint (`scripts/` and the export versus the compiler's feedback module
+  and the skeleton's loadouts). WO-033 is the fork's last binding order.
+- **Wave 3 is the pilot and the reset.** WO-034 needs WO-033 and WO-032;
+  WO-035 needs WO-033's configuration root. They are disjoint by
+  construction (WO-035 must not edit the index generator or the console).
+- **Wave 4 is the shelf and the second batch.** WO-037 needs WO-032 to
+  render the set; batch two is cut from WO-040's template once batch one's
+  measurement exists. WO-036 floats into any quiet window, ideally before
+  wave 2 registers new suites.
 
-Conflicts that a paired wave produces by construction, all textual or
-regenerable: the README release block and the second order's version (retime
-with a dated note), `package.json`, the ledger head (both prepend below the
-header), the map's recommendation section (WO-035 stabilizes it), product
-status banners (WO-035 removes them), the publication edition locks whenever
-both lanes touch an indexed heading (regenerate with `--print-locks`), and
-the two generated projections (`current.md`, the index — regenerate, never
-hand-merge). Version assignment is serial: the first order to merge takes the
-next version of its class above the latest published tag; the second retimes
-at its sync step.
-
-Capacity: two implementation lanes; one verifier session at a time; do not
-start a third implementation while two orders wait for verification. An empty
-lane is a legal outcome.
+Version assignment stays serial: the first order in a wave to merge takes
+the next version above the latest published tag; the second retimes at its
+sync step with a dated note. The order that merges second in each wave
+records the wave receipt here (elapsed per phase from `status`, operator
+interventions, integration repair, time away), per the concurrent plan's
+trial section.
 
 ## Concurrency: what is safe, what is untested, and the procedure
 
@@ -428,6 +463,28 @@ until WO-033 ships `worktree sync`, which automates exactly these steps):
 
 Each entry follows the `NoOpIntent` shape: reason, evidence, and the
 condition that would make action useful.
+
+Added by the redirect:
+
+- **Exporting the process kit without a build.** NoOp, and the first
+  version's central error. A fork would run on prose. Reverse never; a
+  starter without an actor is not a DotLn instance.
+- **Hand-writing hooks and skills for the ten units.** NoOp. A second
+  behavior system the compiler cannot see is the exact failure the vision
+  names; hooks are compiler output (WO-039). Reverse never.
+- **A rung-9 prose unit for a shape that resists lowering.** NoOp. Such a
+  shape is a `reference` or a finding in the migration ledger, not a unit.
+  Reverse if the mechanism hierarchy gains a rung between 7 and 9 with
+  evidence.
+- **A numeric alignment score for plans.** NoOp. A verdict naming a thesis
+  and a capability row is inspectable; a number is not (WO-041). Reverse if
+  a consumer needs to rank plans rather than gate them.
+- **Publishing `@dotln/*` packages so the starter's hooks can import them.**
+  NoOp, still. The pinned runtime build in the export is reviewable compiled
+  output under the decided license; publication waits for its own decision
+  and a package consumer.
+- **Migrating every remaining shape in one order.** NoOp; the founding
+  north star's own anti-goal. Batches of about twelve, cut from a template.
 
 - **A console framework decision (Angular, Nx, Babylon.js) or an ADR for it
   now.** NoOp. The roadmap defers it to representative evidence; WO-034

@@ -23,6 +23,217 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+
+## 2026-09-06 phase-two redirect (operator correction, second pass of the same day)
+
+Source: the operator's correction of the first phase-two pass, sent after
+reading its result, and the direction that followed it. The first message
+asked how any of the filed horizon related to DotLn, named the thesis that
+the predecessor's roughly 140 hand-crafted rules become skills or hooks or
+the platform itself, "a user interface for actors", and asked at what point
+the operator would get to be one of the UIFA roles under the starter as
+planned. The second message named the missing mechanism: an agent should
+have read the plan and said "hold up" before the operator had to. The third
+authorized every update the planner saw fit and stated the chain the
+redirect is built around: progress in core makes the starter better, which
+makes the Angular repository better, which feeds back into core. All three
+are preserved verbatim in local-only
+`docs/intake/notes/2026-09-06-phase-two-redirect-dispatch.md` (SHA-256
+`8f8102467c9de429ecc9fce5b8ce91c994d104edf3032588f22a85eaa75c9a60`).
+The pass ran on the same planning branch, rescoped WO-032, WO-033, and
+WO-034 in place (the first two renamed to match their scope before any
+activation), filed WO-039 through WO-041, revised the phase-two plan with
+the first version retained in Git history, replaced the marked sequence, ran
+a manual blinded refutation whose receipt is the first under
+`docs/planning/refutations/`, and recorded a NoOp with its reversal
+condition for every candidate it declined. Identifiers are opaque stable
+references; a recommendation records a finding and a bounded route, not
+activation authority. The clean-room screen found no employer, credential,
+internal-service, or other stop condition; the predecessor's rule files are
+named as a category and never as an input. Ordering note: this section is
+inserted below the header per the declared newest-first rule, above the
+first pass's section, which it supersedes in part and which stays as
+history.
+
+- **A plan that certifies its own direction drifts, and the operator was the
+  refuter** `adopted` `operator-directed`
+  - The first pass diagnosed the blueprint-to-code gap correctly and filed
+    five more orders of the kind it diagnosed. Its vision-alignment review
+    was written by the planner about its own plan; the two delegated sweeps
+    checked code and documentation structure, not direction; "equipped
+    Beware of Naive Interventionism and Do Nothing" meant the session had
+    read those sections. Three substitutions compounded: "launchpad" read as
+    the control-plane scripts, "console v0" read as the showrunner status
+    view, and "feedback compiler v1 shipped" read as the rule thesis being
+    on track while ten compiled units governed no session the operator
+    opened. The operator caught it by hand, which is the supervision the
+    mission exists to remove. Durable home: the phase-two plan §The
+    redirect; the execution guide's planning pass now requires a refutation
+    receipt.
+- **A saved build must govern the sessions that run: the harness is a
+  compiler target** `adopted` `north-star`
+  - The founding axioms already said it: hard constraints live outside the
+    model in permissions and hooks, prompt fragments are a last-mile
+    artifact, and the architecture's agent-enablement section specified
+    resume phrases loading only the reviewed role skill. None of it had an
+    order. WO-039 adds the pure `harness-v1` target that lowers a loadout,
+    its units, and its envelope into settings permissions and hook scripts
+    at rung 2, role skills at rung 7, and a marked residue block at rung 8
+    with a byte count; every generated hook evaluates the same compiled unit
+    the audit host evaluates, so there is no second predicate; the harness
+    profile is observed by a bounded smoke before any lowering rule is
+    written (Principle 15). Durable home: 03 §Agent enablement skills, the
+    roadmap's new harness-lowering rung, WO-039.
+- **Core eats its product, not only its process: the Contributor build and
+  the self-host** `adopted`
+  - The repository has dogfooded its control plane since WO-003 and never
+    its compiled units. WO-039 defines the Contributor, the identity that
+    works this repository with four roles selected by resume phrase, the
+    ten personal units, the Clean Room floor, and the ADR-0003 through
+    ADR-0005 posture as an envelope; emits this repository's own `.claude/`
+    and the marked instruction block from it; and refuses drift in the
+    evidence gate. It authorizes exactly that project-scope configuration
+    mutation and requires a dated ADR-0005 amendment. Startup context is
+    measured before and after under each role. Durable home: WO-039, 06.
+- **"Launchpad" means the compiled system; the starter ships an actor**
+  `adopted` `operator-directed` `recovered`
+  - In the founding corpus the launchpad is the whole compiled system, not
+    the scripts. WO-033 is rescoped: the export carries the Contributor
+    build as an enforceable harness bundle plus a pinned, unminified runtime
+    build of the compiler and the skeleton modules the hooks import, under
+    the decided license, beside the control plane and its documents; a
+    fork composes its own overlay (registered repositories, classes, extra
+    units, envelope narrowings) over the kit's build and re-emits, so its
+    `.claude/` is its own; a registered repository's authority profile is an
+    envelope and its class is a link group; a target worktree receives the
+    bundle in ignored local state that leaves with the worktree, so a target
+    never sees a DotLn file in a commit. Kit updates reach forks as an
+    upstream merge plus a re-emit. This supersedes the export content of
+    the first pass's entries "The enterprise workflow is a launchpad
+    exported from core ..." and "External organizations fork the starter;
+    kit and instance separate ..."; both stay as history, and their
+    topology, manifest, update path, license, and sibling-registry
+    decisions stand. Durable home: 03 §Platform and instance boundary, 12,
+    06, ADR-0006 amendment, WO-033.
+- **The rule migration has a rung and a ledger** `adopted` `north-star`
+  - The north star's migration milestone said to prove the compiler on ten
+    representative incidents and then scale; WO-011 delivered the ten and
+    no order carried the rest, and the roadmap after `v0.13.0` never named
+    them. WO-040 adds a generated migration ledger over typed rows that
+    classifies every shape the operator has named into the founding
+    taxonomy with its rung and status, excludes or generalizes
+    employer-specific shapes with the reason recorded, compiles batch one
+    of at least twelve units through the harness target into the
+    Contributor build under a selection rule (every category covered, at
+    least eight at rung 1 or 2, one skill, one cadence, one reference), and
+    reports the number the one-paragraph story is about: shapes governing
+    live sessions by mechanism versus prose. Later batches are cut from its
+    template. Durable home: the roadmap's harness-lowering and migration
+    rung, WO-040.
+- **Console v0 is UIFA v0, the actor board; the showrunner board is its
+  Work panel** `adopted`
+  - The interfaces doc defines the target interface as work organized
+    around actors with their roles, loadouts, state, and evidence; the
+    first draft of WO-032 projected control state alone. Rescoped: five
+    panels, Actors, Builds, Mechanisms, Work, and Blueprint, each naming
+    the UIFA role it serves, over the documented machine interfaces and
+    evidence stores, zero dependencies, no framework, terminal and
+    zero-asset page, exported as the versioned `uifa-board-v1` view model.
+    The first draft's scope is the Work panel in full. This supersedes the
+    first pass's "Console v0 in core, console v1 through the launchpad"
+    entry's content for v0; the host split stands. Durable home: 04
+    §Plural UI hosts, 06 §Projections & console, 13, WO-032.
+- **The Angular repository's first change is an actor view, and the
+  fork's hook logs are the evidence that core reached it** `adopted`
+  `operator-directed`
+  - WO-034 is rescoped: the fork runs the compiled build; `WS-001` is a
+    UIFA v1 shell rendering `uifa-board-v1`'s actor panels, not a phase
+    table; the role skill for the active order loads the workstream
+    document and the repository profile on demand rather than at cold
+    start; the receipt counts vision restatements as before and adds,
+    from the hook logs, which compiled units fired and which refusals
+    occurred in the fork's sessions. The three purposes of the Angular
+    repository and the six demonstrations stand. This supersedes the first
+    pass's "A fork's sessions are primed by files, never by restated
+    narration" in mechanism, not in intent: the priming is the build, and
+    the files are what the build loads. Durable home: 12, 04, WO-034.
+- **Plans get a blinded refuter as a mechanism** `adopted` `recovered`
+  - Recovered from the founding corpus's standing auditors, referees, and
+    adjudicators, the Contra-Auguste mask, and the Ex Machina rule that
+    implementer and verifier are structurally separate. The Entropy Reducer
+    already holds the exact lens and has run once, by manual dispatch,
+    against a frozen repository; the planning-pass procedure said a pass
+    "may" consume its findings. WO-041 compiles a `plan-refuter` loadout
+    (the Entropy Reducer identity wearing Contra-Auguste with the
+    architecture-and-semantics lens, read-only envelope) over a subject
+    built from committed files only (the vision's thesis sections, the
+    five roles, the capability rows, and the marked sequence's orders,
+    never the planner's narrative), dispatches it through a WO-009
+    transport, validates a closed `plan-refutation-v1` result (per order:
+    thesis-advancing, machinery, or drift, with the thesis, the capability
+    row, and the roles served; for the horizon: the largest gap and pass
+    or hold), writes an immutable receipt, and adds an evidence-gate check
+    that refuses a planning pass without a matching receipt or with an
+    unanswered hold. Not a resume phrase the operator must remember. The
+    first receipt is this pass's manual blinded run, time-indexed as
+    pre-mechanism. Durable home: 07 §Operator-opened planning pass,
+    `docs/planning/refutations/`, WO-041.
+- **The operator's chain is the design rule: core → starter → fork →
+  target → back** `adopted` `operator-directed`
+  - "Progress on dotln automatically makes enterprise starter better, which
+    automatically makes dotln angular better, which helps me understand and
+    build processes, which may feed back into dotln." Lowered as: a
+    compiled unit added in core reaches a fork's sessions as a kit update
+    plus a re-emit (WO-033); the fork's target worktrees run under that
+    build (WO-033); the Angular repository renders core's actor view model
+    (WO-032, WO-034); a fork's lesson enters core as an ordinary ledger
+    entry or order (sibling registry). No fork content flows back
+    automatically.
+- **Exact operator token for corrections** `preserved`
+  - The semantic-correction unit lowers to a UserPromptSubmit hook only from
+    an exact operator-supplied token, in the shape of the recorded
+    `analysis:` token; the planner's candidate is `correction:`. Until the
+    operator confirms a token, the unit lowers to a role skill at rung 7
+    and the residue says why. Surface language is never a trigger, as 02
+    already requires.
+- **Waves re-paired; lane 0 is the first measured pair** `adopted`
+  - Lane 0 WO-038 ∥ WO-041; wave 1 WO-039 ∥ WO-032; wave 2 WO-033 ∥ WO-040;
+    wave 3 WO-034 ∥ WO-035; wave 4 WO-037 beside the migration's second
+    batch; WO-036 floats. Serial fallback with the fork-binding path first:
+    WO-038 → WO-039 → WO-033 → WO-041 → WO-032 → WO-040 → WO-036 → WO-034 →
+    WO-035 → WO-037. WO-039 is the order the external-fork timeline binds
+    now, so its phases are structured to ship the minimum first. The
+    generated harness configuration joins the projections a lane sync
+    regenerates. Version assignment stays serial.
+- **What the redirect did not change** `adopted`
+  - The sweep findings, the six-month projection, the concurrency
+    procedure, the license decision and WO-038, the documentation reset
+    (WO-035), the evidence runner (WO-036), the 5S set's scope (WO-037,
+    moved to wave 4), the sibling registry, the kit-and-instance manifest,
+    and the fork-timing answer (fork after the first exported commit; take
+    updates as reviewed merges).
+- **Declined in the redirect, each with its reversal condition**
+  `preserved`
+  - Exporting the process kit without a build: NoOp, the first version's
+    central error; reverse never.
+  - Hand-writing hooks and skills for the ten units: NoOp; a second
+    behavior system the compiler cannot see; reverse never.
+  - A rung-9 prose unit for a shape that resists lowering: NoOp; it is a
+    reference or a finding in the migration ledger; reverse if the
+    hierarchy gains an evidenced rung between 7 and 9.
+  - A numeric alignment score for plans: NoOp; a verdict naming a thesis
+    and a row is inspectable; reverse if a consumer needs ranking rather
+    than gating.
+  - Publishing `@dotln/*` packages so the starter's hooks can import them:
+    NoOp, still; the pinned runtime build is reviewable compiled output
+    under the decided license; reverse with a publication decision and a
+    package consumer.
+  - Migrating every remaining shape in one order: NoOp; the north star's
+    own anti-goal; batches of about twelve from a template.
+  - Renumbering the rescoped orders: NoOp; identifiers are opaque and the
+    first drafts were never activated; the two file names changed to match
+    scope and every link was repointed.
+
 ## 2026-09-06 phase-two planning pass (operator-dispatched, after the `v0.13.1` close)
 
 Source: the operator's 2026-09-06 `planning:` dispatch, "the largest and

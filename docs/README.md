@@ -18,7 +18,8 @@ docs/product/      the blueprint: vision, principles, domain model,
 docs/publication/  audience/status index, audience outlines, shared sample,
                    implementation overlay template, and staleness proof
 docs/planning/     capability inventory, human recommendation/preflight map,
-                   and dated planning-pass plans
+                   dated planning-pass plans, and blinded plan-refutation
+                   receipts under refutations/
 docs/lineage/      idea-ledger.md — append-only idea history;
                    inspirations.md — best-known public influence register
 docs/decisions/    ADRs — settled questions

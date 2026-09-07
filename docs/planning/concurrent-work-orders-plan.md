@@ -115,9 +115,12 @@ because it reads every order's segment through the same fold.
 
 The 2026-09-05 horizon executed serially, so the paired wave this plan
 scheduled (WO-021 ∥ WO-029) never ran and none of the trial measurements were
-taken. The [phase-two plan](phase-two-plan-2026-09-06.md#wave-plan) schedules
-the first measured wave as WO-032 ∥ WO-033, records the hand procedure for the
-lane whose sibling merges first, and files the rebase helper named under
-"Canonical history and integration" as WO-033's `worktree sync`. The lane
-rules above are unchanged. The later slices keep their filing conditions; the
-first paired-wave receipt lands in the phase-two plan.
+taken. The [phase-two plan](phase-two-plan-2026-09-06.md#wave-plan), as
+redirected the same day, schedules the first measured wave as lane 0,
+WO-038 ∥ WO-041, with four product waves behind it, records the hand
+procedure for the lane whose sibling merges first, and files the rebase
+helper named under "Canonical history and integration" as WO-033's
+`worktree sync`. The generated harness configuration joins the list of
+projections a sync regenerates rather than hand-merges. The lane rules above
+are unchanged. The later slices keep their filing conditions; each wave's
+receipt lands in the phase-two plan.

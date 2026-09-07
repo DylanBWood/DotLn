@@ -5,11 +5,14 @@
 ## Proposed order
 
 - [ ] [WO-038] — License posture lands · **queued**
-- [ ] [WO-032] — Showrunner board · **queued**
-- [ ] [WO-033] — Relocatable control plane · **queued**
-- [ ] [WO-035] — Documentation structure reset · **queued**
-- [ ] [WO-034] — Cross-repository workstream pilot · **queued**
+- [ ] [WO-039] — Harness lowering · **queued**
+- [ ] [WO-033] — Compiled starter export · **queued**
+- [ ] [WO-041] — Plan refutation mechanism · **queued**
+- [ ] [WO-032] — UIFA v0 actor board · **queued**
+- [ ] [WO-040] — Rule migration, batch one · **queued**
 - [ ] [WO-036] — Evidence runner · **queued**
+- [ ] [WO-034] — Cross-repository workstream pilot · **queued**
+- [ ] [WO-035] — Documentation structure reset · **queued**
 - [ ] [WO-037] — 5S equipment set · **queued**
 
 Order and short labels come from [the planning map](../planning/work-order-map.md#recommendation-and-rationale).
@@ -54,46 +57,46 @@ None.
 
 ### WO-032
 
-[WO-032 — Showrunner board: a read-only first console over control state, worktrees, releases, evidence, and blueprint status (version assigned at activation)](WO-032-showrunner-board.md)
+[WO-032 — UIFA v0: a read-only actor board over episodes, builds, mechanisms, evidence, and work (version assigned at activation)](WO-032-uifa-actor-board.md)
 
 - State: draft.
-- Application target: unassigned.
+- Application target: malformed.
 - Dependency reference check (conservative): dependency-ready.
-- References: WO-021: satisfied (closed); WO-026: satisfied (closed); WO-028: satisfied (closed); WO-030: satisfied (closed); WO-031: satisfied (closed).
+- References: WO-007: satisfied (closed); WO-008: satisfied (closed); WO-009: satisfied (closed); WO-010: satisfied (closed); WO-011: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-028: satisfied (closed); WO-030: satisfied (closed); WO-031: satisfied (closed).
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Authority: [docs/work-orders/WO-032-showrunner-board.md](WO-032-showrunner-board.md)
+- Authority: [docs/work-orders/WO-032-uifa-actor-board.md](WO-032-uifa-actor-board.md)
 
 ### WO-033
 
-[WO-033 — Relocatable control plane: one configuration root, registered target repositories, a launchpad export, and a lane-sync helper (version assigned at activation)](WO-033-relocatable-control-plane.md)
+[WO-033 — The starter is a compiled export: one configuration root, registered target repositories, a launchpad export that carries the saved build, and a lane-sync helper (version assigned at activation)](WO-033-compiled-starter-export.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-018: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-030: satisfied (closed).
+- Dependency reference check (conservative): blocked on WO-038, WO-039.
+- References: WO-018: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-030: satisfied (closed); WO-038: not control-closed; WO-039: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Authority: [docs/work-orders/WO-033-relocatable-control-plane.md](WO-033-relocatable-control-plane.md)
+- Authority: [docs/work-orders/WO-033-compiled-starter-export.md](WO-033-compiled-starter-export.md)
 
 ### WO-034
 
-[WO-034 — Cross-repository workstream pilot: one outcome, several target repositories, driven from a launchpad fork (version assigned at activation)](WO-034-cross-repository-workstream-pilot.md)
+[WO-034 — Cross-repository workstream pilot: one outcome, several target repositories, driven from a launchpad fork that runs the compiled build (version assigned at activation)](WO-034-cross-repository-workstream-pilot.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-033.
-- References: WO-033: not control-closed.
+- Dependency reference check (conservative): blocked on WO-032, WO-033.
+- References: WO-032: not control-closed; WO-033: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
-- Model: any capable model for the implementation and fixtures. The real run's executor, verifier, and reviewer sessions are dispatched from the launchpad under its own work orders' declarations; the operator must witness the real run. State the model and effort actually run for every session that produces evidence (07-execution-guide.md §Model-specific notes).
+- Model: any capable model for the implementation and fixtures. The real run's executor, verifier, and reviewer sessions are dispatched from the launchpad under its own work orders' declarations and its emitted harness bundle; the operator must witness the real run. State the model and effort actually run for every session that produces evidence (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-034-cross-repository-workstream-pilot.md](WO-034-cross-repository-workstream-pilot.md)
 
@@ -156,6 +159,51 @@ None.
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-038-license-posture-lands.md](WO-038-license-posture-lands.md)
+
+### WO-039
+
+[WO-039 — Harness lowering: compile a saved build into enforceable harness configuration, and run this repository on its own compiled build (version assigned at activation)](WO-039-harness-lowering.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-001.
+- References: WO-001: not control-closed; WO-004: satisfied (closed); WO-008: satisfied (closed); WO-011: satisfied (closed); WO-029: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the compiler and fixtures. The live smoke and the self-host step need the actual local harnesses (Claude Code; Codex where installed) and must state the harness version, model, and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-039-harness-lowering.md](WO-039-harness-lowering.md)
+
+### WO-040
+
+[WO-040 — Rule migration, batch one: the migration ledger and the first batch of feedback shapes compiled through the harness target (version assigned at activation)](WO-040-rule-migration-batch-one.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-039.
+- References: WO-011: satisfied (closed); WO-039: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-040-rule-migration-batch-one.md](WO-040-rule-migration-batch-one.md)
+
+### WO-041
+
+[WO-041 — Plan refutation as a mechanism: a blinded episode that gates every planning pass on the vision (version assigned at activation)](WO-041-plan-refutation-mechanism.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-009: satisfied (closed); WO-010: satisfied (closed); WO-023: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the script and fixtures. The refuter episode runs on the actual local transports and must state harness version, model, and effort (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-041-plan-refutation-mechanism.md](WO-041-plan-refutation-mechanism.md)
 
 ### WO-102
 
@@ -784,13 +832,16 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-029]: WO-029-pinned-artifact-identity.md
 [WO-030]: WO-030-concurrent-control-state.md
 [WO-031]: WO-031-actor-usage-projection.md
-[WO-032]: WO-032-showrunner-board.md
-[WO-033]: WO-033-relocatable-control-plane.md
+[WO-032]: WO-032-uifa-actor-board.md
+[WO-033]: WO-033-compiled-starter-export.md
 [WO-034]: WO-034-cross-repository-workstream-pilot.md
 [WO-035]: WO-035-documentation-structure-reset.md
 [WO-036]: WO-036-evidence-runner.md
 [WO-037]: WO-037-five-s-equipment-set.md
 [WO-038]: WO-038-license-posture-lands.md
+[WO-039]: WO-039-harness-lowering.md
+[WO-040]: WO-040-rule-migration-batch-one.md
+[WO-041]: WO-041-plan-refutation-mechanism.md
 [WO-101]: WO-101-program-and-hash-corpus.md
 [WO-102]: WO-102-cadence-corpus.md
 [WO-103]: WO-103-authority-outbox-corpus.md

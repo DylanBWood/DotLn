@@ -104,25 +104,33 @@ not establish that result. This is one candidate adoption path, not a canonical
 topology or an implementation claim. Other paths remain open under the same
 outcome and evidence requirements. See the [sibling-repository intentions](03-architecture.md#platform-and-instance-boundary).
 
-The 2026-09-06 planning pass takes that path as the first pilot and files its
-two bounded routes. WO-033 makes the control plane relocatable and exports a
-launchpad skeleton with pinned provenance; the operator's fork or clone of
-that starter becomes their launchpad instance, registering target
-repositories and holding their orders, control segments, and evidence, while
-each target receives only conventional branches and pull requests. WO-034
-adds the workstream document and projections without a new control event,
-proves the six demonstrations below on synthetic repositories, and then runs
-one operator-witnessed real workstream into `DotLn-Angular` whose first
-member scaffolds console v1 over the showrunner board's view model. The
-executors in that run are the operator's model and human sessions opened from
-the launchpad's handoffs; DotLn runtime transports executing target work
-remain later roadmap work. A session opened in the fork is primed by the
-fork's own files, the workstream document and the target's repository
-profile with its pinned references into this blueprint, so the operator never
-restates the vision per session. Other organizations are expected to fork the same
-starter as their own launchpad instances; their workstreams, repositories,
-and evidence stay in their forks, and kit updates reach them only as reviewed
-upstream merges.
+The 2026-09-06 planning pass, as redirected the same day, takes that path
+as the first pilot and files its two bounded routes. WO-033 makes the control
+plane relocatable and exports a launchpad instance that carries a compiled
+build: the Contributor loadout lowered by WO-039 into the settings
+permissions, hooks, role skills, and instruction block a harness enforces,
+plus the pinned runtime build those hooks import. The operator's fork or
+clone of that starter becomes their launchpad instance, running its sessions
+on that build from its first commit, composing its own overlay (registered
+target repositories, classes, extra units) over it, and holding its orders,
+control segments, and evidence, while each target receives only conventional
+branches and pull requests and carries the emitted bundle only in ignored
+worktree state. WO-034 adds the workstream document and projections without
+a new control event, proves the six demonstrations below on synthetic
+repositories, and then runs one operator-witnessed real workstream into
+`DotLn-Angular` whose first member scaffolds a UIFA v1 shell over the actor
+board's `uifa-board-v1` view model. The executors in that run are the
+operator's model and human sessions opened from the launchpad's handoffs
+under the fork's build; DotLn runtime transports executing target work remain
+later roadmap work. A session opened in the fork is governed and oriented by
+that build: the role skill for the active order loads the workstream
+document and the target's repository profile, with its pinned references
+into this blueprint, on demand, so the operator never restates the vision
+per session, and the fork's hook logs report which compiled units fired
+there. Other organizations are expected to fork the same starter as their
+own launchpad instances; their workstreams, repositories, and evidence stay
+in their forks, and kit updates reach them as reviewed upstream merges
+followed by a re-emit of their own build.
 
 A workstream owns an outcome spanning repositories and time. A repository owns
 its local code history, branch/worktree, tests, and delivery boundaries. Each

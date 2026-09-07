@@ -288,19 +288,26 @@ contracts must permit an Angular shell and Babylon.js canvas to coexist,
 exchange selection and command intents, and render the same underlying state
 without either owning the other.
 
-The 2026-09-06 planning pass fixes the first two hosts. Console v0 is the
-showrunner board (WO-032): a read-only projection inside core over the
-documented machine interfaces (`status --json`, `usage --json`, the
-constellation, `release list`, the generated index, the publication index,
-the capability table, and the roadmap), rendered in the terminal and as a
-zero-asset static page that invokes no command, holds no state, and adds no
-framework. Console v1 is the Angular shell in the operator's example consumer,
-built as the cross-repository pilot's first target change (WO-034) over the
-board's versioned view model as JSON; the framework decision above is taken
-with that evidence, not before it. Command invocation from a console waits for
-a parity contract with the terminal, so that no host grows a second workflow
-state machine. The plain-workspace default and the Nx caution above govern
-this repository; a consumer repository's stack is its owner's exemplar
+The 2026-09-06 planning pass, as redirected the same day, fixes the first
+two hosts around actors rather than around the process. Console v0 is the
+**actor board**, UIFA v0 (WO-032): a read-only projection inside core with
+five panels, Actors (identity, role, loadout hash, episode state, authority,
+evidence), Builds (every shipped loadout's tooltips and view hashes through
+the compiler render), Mechanisms (every compiled unit with its rung,
+boundary, enforcement, and maturity counts), Work (the control state's
+orders, phases, blockers, worktrees, releases, and evidence links, which was
+the first draft's whole scope), and Blueprint (capability rows and
+publication statuses), each naming the UIFA role it serves, over the
+documented machine interfaces and evidence stores, rendered in the terminal
+and as a zero-asset static page that invokes no command, holds no state, and
+adds no framework, and exported as a versioned JSON view model,
+`uifa-board-v1`. Console v1 is the Angular shell in the operator's example
+consumer, built as the cross-repository pilot's first target change (WO-034)
+rendering that view model's actor panels; the framework decision above is
+taken with that evidence, not before it. Command invocation from a console
+waits for a parity contract with the terminal, so that no host grows a second
+workflow state machine. The plain-workspace default and the Nx caution above
+govern this repository; a consumer repository's stack is its owner's exemplar
 choice, judged here only for compatibility with the shared contracts.
 
 ## RPG / Path-of-Exile view
