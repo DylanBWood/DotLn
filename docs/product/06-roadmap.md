@@ -20,6 +20,8 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-032 activation assignment (2026-09-07):** the first actor-board slice targets application `v0.14.0`, the next minor above the observed annotated `v0.13.3` baseline. Its new console component is `0.1.0`; existing kernel, compiler and skeleton components retain their versions. Independent verification, final review, and publication remain separate. A sibling that consumes the same application target triggers the existing integration-retiming rule.
+
 The sole `vX.Y.Z` in a current work-order heading is its planned **application
 release**, not its work-order number, package version, schema version, or
 conceptual insertion point. The operator's 2026-09-07 workflow correction authorizes
@@ -1200,8 +1202,11 @@ Terminal remains a complete control surface. Exit: the v0.2.0 demo watched
 entirely from the console, then re-watched via replay; every animated element
 opens its mechanics inspector.
 
-The 2026-09-06 planning pass, as redirected the same day, names the rung's
-first slice: WO-032, UIFA v0, a read-only actor board inside core with
+### UIFA v0 actor board
+
+The 2026-09-06 planning pass, as redirected the same day, named the rung's
+first slice. **Implemented for `v0.14.0` (2026-09-07):** WO-032, UIFA v0,
+a read-only actor board inside core with
 Actors, Builds, Mechanisms, Work, and Blueprint panels over the documented
 machine interfaces and evidence stores, each panel naming the UIFA role it
 serves, rendered in the terminal and as a zero-asset static page, invoking
@@ -1210,7 +1215,11 @@ no command and adding no framework, and exported as the versioned
 state is the Work panel. The framework decision above waits for the
 cross-repository pilot's evidence; the Angular shell is console v1 in the
 operator's example consumer, rendering that view model's actor panels,
-reached through the launchpad rung below.
+reached through the launchpad rung below. The [console package](../../packages/console/README.md)
+and [executor evidence](../evidence/WO-032/README.md) define this first slice's
+source fidelity, five pinned fixture families, role-question mapping and
+remaining independent review. It does not complete the richer rung's replay,
+animation, authoring or command-parity exits.
 
 ## Application version pending — Launchpad and cross-repository workstreams → WO-033 + WO-034
 

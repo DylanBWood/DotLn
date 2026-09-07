@@ -41,3 +41,8 @@ docs/planning/refutations/*.json
 docs/planning/refutations/*-[0-9][0-9][0-9].md
 # Current immutable feedback evidence edition after shared transport changes.
 docs/evidence/WO-041/feedback/feedback.json
+
+# WO-032 recorded source bytes, generated views, and immutable feedback edition.
+packages/console/fixtures/inputs/
+packages/console/fixtures/expected/
+docs/evidence/WO-032/feedback/feedback.json

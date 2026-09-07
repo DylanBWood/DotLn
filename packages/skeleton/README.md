@@ -410,7 +410,7 @@ DOTLN_LIVE_WORKERS=1 npm run dotln -- feedback-audit --store .runtime/feedback-a
 npm run evidence:feedback -- --record-selfhost .runtime/feedback-audit
 ```
 
-The current root evidence command selects the [WO-041 edition](../../docs/evidence/WO-041/README.md#feedback-evidence-edition), because that order changes the shared transports and the source projection. The published WO-011 report and logs at the synchronized base remain untouched. The repair explicitly supersedes WO-041's earlier uncommitted edition, preserving it in recovery history; the evidence README names that recovery point. `scripts/feedback-evidence.mjs --edition WO-NNN` selects a new edition; writing different bytes to an existing edition refuses. The logical report label inside the pinned verification capsule is unchanged.
+The current root evidence command selects the [WO-032 edition](../../docs/evidence/WO-032/README.md#feedback-evidence-edition), because adding the console workspace changes the declared lockfile projection. The published WO-011 and WO-041 reports and logs remain untouched. `scripts/feedback-evidence.mjs --edition WO-NNN` selects a new edition; writing different bytes to an existing edition refuses. The logical report label inside the pinned verification capsule is unchanged.
 
 Use an unused store for a new source revision. Reusing the same store resumes
 only the same source, policy, and verifier selection; an already saved audit or

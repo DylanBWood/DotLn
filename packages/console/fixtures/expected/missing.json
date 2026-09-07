@@ -1,0 +1,260 @@
+{
+  "viewModelVersion": "uifa-board-v1",
+  "fidelity": "lossy-read-only",
+  "panels": [
+    {
+      "id": "actors",
+      "title": "Actors",
+      "roles": [
+        "showrunner",
+        "engineer",
+        "tester"
+      ],
+      "question": "Who is recorded, what are they equipped to do, and what evidence shows their work?",
+      "sections": [
+        {
+          "id": "episode-actors",
+          "title": "Recorded episodes",
+          "status": "unavailable",
+          "explanation": "No worker or audit store was supplied",
+          "rows": []
+        },
+        {
+          "id": "control-actors",
+          "title": "People and recorded workflow actors",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "actor-definitions",
+          "title": "Saved actor definitions",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "builds",
+      "title": "Builds",
+      "roles": [
+        "engineer"
+      ],
+      "question": "Does this composition express the behavior I mean, and what does it cost?",
+      "sections": [
+        {
+          "id": "saved-builds",
+          "title": "Saved builds",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "mechanisms",
+      "title": "Mechanisms",
+      "roles": [
+        "tester",
+        "engineer",
+        "devops"
+      ],
+      "question": "In this situation, does the equipped behavior do the right thing?",
+      "sections": [
+        {
+          "id": "compiled-mechanisms",
+          "title": "Compiled mechanisms",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "work",
+      "title": "Work",
+      "roles": [
+        "showrunner",
+        "devops"
+      ],
+      "question": "What is active, what is blocked, what closed, and what did the release contain?",
+      "sections": [
+        {
+          "id": "orders",
+          "title": "Orders and legal actions",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "worktrees",
+          "title": "Worktree Beacon observations",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "releases",
+          "title": "Published releases",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "work-order-index",
+          "title": "Work-order evidence index",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "usage",
+          "title": "Recorded actor usage",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "blueprint",
+      "title": "Blueprint",
+      "roles": [
+        "product-lead",
+        "devops"
+      ],
+      "question": "Is this still the thing we mean?",
+      "sections": [
+        {
+          "id": "refutation-verdicts",
+          "title": "Latest plan-refutation verdicts",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "capabilities",
+          "title": "Capability evidence",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "publication",
+          "title": "Publication status",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        },
+        {
+          "id": "roadmap",
+          "title": "Pending roadmap rungs",
+          "status": "unavailable",
+          "explanation": "Source not supplied",
+          "rows": []
+        }
+      ]
+    }
+  ],
+  "roleAnswers": [
+    {
+      "role": "product-lead",
+      "question": "Is this still the thing we mean?",
+      "target": "refutation-verdicts",
+      "cell": "verdict + reason; latest-refutation.holdStatus",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "showrunner",
+      "question": "What is active, what is blocked, what closed, and what did the release contain?",
+      "target": "orders",
+      "cell": "phase + blockers + dependencyCheck + legalNextActions; releases.workOrders",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "engineer",
+      "question": "Does this composition express the behavior I mean, and what does it cost?",
+      "target": "saved-builds",
+      "cell": "tooltip + semanticHash + hashAgreement",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "tester",
+      "question": "In this situation, does the equipped behavior do the right thing?",
+      "target": "compiled-mechanisms",
+      "cell": "desiredBehavior + fixture.incidentsPrevented + lastActivation; acceptance matrix status and evidence",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    },
+    {
+      "role": "devops",
+      "question": "Which repeated step can become a checked mechanism next?",
+      "target": "compiled-mechanisms",
+      "cell": "boundary + rung + nextMaturity; capabilities.Next smallest promotable increment",
+      "source": "docs/product/13-uifa-roles.md#the-five-roles"
+    }
+  ],
+  "sources": [
+    {
+      "ref": "skeleton:loadout-exports",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "skeleton:feedback-units",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "control:canonical-segments",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/work-orders/README.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "resume:status--json",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "worktree:constellation",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "release:list",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "resume:usage--json",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/planning/capability-table.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/publication/audience-status-index.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/product/06-roadmap.md",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    },
+    {
+      "ref": "docs/planning/refutations/",
+      "status": "unavailable",
+      "explanation": "Source not supplied"
+    }
+  ],
+  "evidence": []
+}

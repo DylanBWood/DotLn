@@ -1,0 +1,2160 @@
+DOTLN / ACTOR BOARD
+uifa-board-v1 · Read-only, lossy projection
+Recorded facts only. Unknown is not zero; a missing source is unavailable.
+
+ACTORS [actors]
+Serves: showrunner, engineer, tester
+Who is recorded, what are they equipped to do, and what evidence shows their
+work?
+
+Recorded episodes [episode-actors] — unavailable
+No worker or audit store was supplied
+
+People and recorded workflow actors [control-actors] — available
+
+gpt-6-astra — executor [control-actor-eb7238733fdf2b8e]
+  Actor kind: recorded workflow actor [evidence-2]
+  Person or session identity: unknown [evidence-2]
+    Harness and model fields do not identify a unique person or session
+  Recorded role: executor [evidence-2]
+  Work order: WO-031 [evidence-2]
+  Last recorded action: ImplementationReady [evidence-2]
+  Recorded action time: 2026-09-06T00:20:43.045Z [evidence-2]
+  Harness: codex-cli [evidence-2]
+  Harness version: 0.153.4 [evidence-2]
+  Recorded model: gpt-6-astra [evidence-2]
+  Recorded effort: max [evidence-2]
+  How the selection was recorded: operator-attested [evidence-2]
+  Evidence report: unknown [evidence-2]
+    Not recorded by this source
+  Episode phase: unknown [evidence-2]
+    A completed workflow action is not a live session observation
+
+claude-opus-5[1m] — verifier [control-actor-eb723a733fdf2ef4]
+  Actor kind: recorded workflow actor [evidence-4]
+  Person or session identity: unknown [evidence-4]
+    Harness and model fields do not identify a unique person or session
+  Recorded role: verifier [evidence-4]
+  Work order: WO-031 [evidence-4]
+  Last recorded action: VerificationCompleted [evidence-4]
+  Recorded action time: 2026-09-06T00:34:09.094Z [evidence-4]
+  Harness: claude-code [evidence-4]
+  Harness version: 2.1.261 [evidence-4]
+  Recorded model: claude-opus-5[1m] [evidence-4]
+  Recorded effort: max [evidence-4]
+  How the selection was recorded: self-reported [evidence-4]
+  Evidence report: docs/verifications/WO-031/VER-001.md [evidence-4]
+  Episode phase: unknown [evidence-4]
+    A completed workflow action is not a live session observation
+
+claude-fable-5-1 — final reviewer [control-actor-eb723c733fdf325a]
+  Actor kind: recorded workflow actor [evidence-6]
+  Person or session identity: unknown [evidence-6]
+    Harness and model fields do not identify a unique person or session
+  Recorded role: final reviewer [evidence-6]
+  Work order: WO-031 [evidence-6]
+  Last recorded action: FinalReviewCompleted [evidence-6]
+  Recorded action time: 2026-09-06T01:56:51.293Z [evidence-6]
+  Harness: claude-code [evidence-6]
+  Harness version: 2.1.261 [evidence-6]
+  Recorded model: claude-fable-5-1 [evidence-6]
+  Recorded effort: max [evidence-6]
+  How the selection was recorded: self-reported [evidence-6]
+  Evidence report: docs/final-reviews/WO-031/FINAL-001.md [evidence-6]
+  Episode phase: unknown [evidence-6]
+    A completed workflow action is not a live session observation
+
+Operator — identity not recorded (WO-031) [operator-0177124c89bbbd8a]
+  Actor kind: person role [evidence-7, evidence-8, evidence-9, evidence-10]
+    The workflow defines an operator role; these events do not identify their
+author or prove that the requests came from one person
+  Identity: unknown [evidence-7, evidence-8, evidence-9]
+    Not recorded by this source
+  Who issued these requests: unknown [evidence-7, evidence-8, evidence-9]
+    Not recorded by this source
+  Role: operator [evidence-7, evidence-8, evidence-9, evidence-10]
+  Work order: WO-031 [evidence-7, evidence-8, evidence-9]
+  Recorded requests: WorkOrderActivated; VerificationRequested;
+FinalReviewRequested [evidence-7, evidence-8, evidence-9]
+  Last recorded request: FinalReviewRequested [evidence-9]
+  Recorded request time: 2026-09-06T01:34:13.085Z [evidence-9]
+  Episode phase: unknown [evidence-7, evidence-8, evidence-9]
+    No person presence or attention is inferred
+  -> Recorded request [evidence-7]
+  -> Recorded request [evidence-8]
+  -> Recorded request [evidence-9]
+
+Saved actor definitions [actor-definitions] — unavailable
+Source not supplied
+
+BUILDS [builds]
+Serves: engineer
+Does this composition express the behavior I mean, and what does it cost?
+
+Saved builds [saved-builds] — unavailable
+Source not supplied
+
+MECHANISMS [mechanisms]
+Serves: tester, engineer, devops
+In this situation, does the equipped behavior do the right thing?
+
+Compiled mechanisms [compiled-mechanisms] — unavailable
+Source not supplied
+
+WORK [work]
+Serves: showrunner, devops
+What is active, what is blocked, what closed, and what did the release contain?
+
+Orders and legal actions [orders] — available
+
+WO-031 [order-0177124c89bbbd8a]
+  Phase: closed [evidence-171]
+  Latest verdict: pass [evidence-171]
+  Latest recorded time: 2026-09-06T01:56:51.293Z [evidence-171]
+  Legal next actions: release-close; next; activate [evidence-171]
+    Observed actions only; the board cannot invoke them
+  implementation elapsed milliseconds: 2743960 [evidence-171]
+    Latest completed attempt; signed wall-clock span, not active work time
+  verification elapsed milliseconds: 664336 [evidence-171]
+    Latest completed attempt; signed wall-clock span, not active work time
+  finalReview elapsed milliseconds: 1358208 [evidence-171]
+    Latest completed attempt; signed wall-clock span, not active work time
+  Recorded failure source: unknown [evidence-171]
+    Status records no blocker-reason field; absence is not proof that work is
+unblocked
+  Index dependency check: dependency-ready. [evidence-147]
+  Verification evidence: docs/verifications/WO-031/VER-001.md [evidence-171]
+  Final-review evidence: docs/final-reviews/WO-031/FINAL-001.md [evidence-171]
+  Work-order authority: docs/work-orders/WO-031-actor-usage-projection.md
+[evidence-171]
+  -> Work-order evidence and dependencies [indexed-order-0177124c89bbbd8a]
+
+WO-032 [order-0177114c89bbbbd7]
+  Phase: active [evidence-172]
+  Latest verdict: unknown [evidence-172]
+    Not recorded by this source
+  Latest recorded time: 2026-09-07T19:01:53.316Z [evidence-172]
+  Legal next actions: next; implementation-ready [evidence-172]
+    Observed actions only; the board cannot invoke them
+  Elapsed time: unknown [evidence-172]
+    No completed phase timing is recorded
+  Recorded failure source: unknown [evidence-172]
+    Status records no blocker-reason field; absence is not proof that work is
+unblocked
+  Index dependency check: dependency-ready. [evidence-11]
+  Verification evidence: unknown [evidence-172]
+    Not recorded by this source
+  Final-review evidence: unknown [evidence-172]
+    Not recorded by this source
+  Work-order authority: docs/work-orders/WO-032-uifa-actor-board.md
+[evidence-172]
+  -> Work-order evidence and dependencies [indexed-order-0177114c89bbbbd7]
+
+Worktree Beacon observations [worktrees] — available
+
+Worktree fixture-worktree-1:public.beacon [worktree-804a32e240931ae9]
+  phase: active [evidence-173]
+  verdict: unknown [evidence-173]
+    Not recorded by this source
+  effort: unknown [evidence-173]
+    Not recorded by this source
+  provenance: host-projected [evidence-173]
+  age: stale [evidence-173]
+  codebook: v2 [evidence-173]
+  storage: 8365 bytes [evidence-173]
+  provenanceCheck: unauthenticated-legacy [evidence-173]
+  Worker liveness: unknown [evidence-173]
+    A lifecycle Beacon is metadata, not a worker heartbeat or a human presence
+observation
+
+Worktree fixture-worktree-2:public.beacon [worktree-26047a8d22f22660]
+  phase: active [evidence-174]
+  verdict: unknown [evidence-174]
+    Not recorded by this source
+  effort: unknown [evidence-174]
+    Not recorded by this source
+  provenance: host-projected [evidence-174]
+  age: stale [evidence-174]
+  codebook: v2 [evidence-174]
+  storage: 8365 bytes [evidence-174]
+  provenanceCheck: unauthenticated-legacy [evidence-174]
+  Worker liveness: unknown [evidence-174]
+    A lifecycle Beacon is metadata, not a worker heartbeat or a human presence
+observation
+
+Worktree fixture-worktree-3:public.beacon [worktree-9b40793b325fa30b]
+  observation: absent [evidence-175]
+  age: absent [evidence-175]
+  Worker liveness: unknown [evidence-175]
+    A lifecycle Beacon is metadata, not a worker heartbeat or a human presence
+observation
+
+Group Beacon [worktree-dc57e42946f6e08c]
+  counts: active=2 ready-to-verify=0 verifying=0 needs-fix=0 repairing=0
+verified=0 final-review=0 closed=0 [evidence-176]
+  codebook: group-v1 [evidence-176]
+  storage: 8902 bytes (host cache; stale) [evidence-176]
+  Worker liveness: unknown [evidence-176]
+    A lifecycle Beacon is metadata, not a worker heartbeat or a human presence
+observation
+
+Published releases [releases] — available
+
+v0.2.0 [release-a93964f20cc19e41]
+  tag: v0.2.0 [evidence-177]
+  commit: 7acc4d914ec927b97f250d39233a5e8cb8c0bd88 [evidence-177]
+  application: v0.2.0 [evidence-177]
+  Work orders in this release: WO-003 [evidence-177]
+  -> Evidence for WO-003 [indexed-order-017a784c89bea0b3]
+
+v0.2.1 [release-a93963f20cc19c8e]
+  tag: v0.2.1 [evidence-178]
+  commit: 329820e14c55a46a987b9d788449eca14e42b6db [evidence-178]
+  application: v0.2.1 [evidence-178]
+  Work orders in this release: WO-004,WO-012 [evidence-178]
+  -> Evidence for WO-004 [indexed-order-017a7d4c89bea932]
+  -> Evidence for WO-012 [indexed-order-017e014c89c1bf55]
+
+v0.2.2 [release-a93962f20cc19adb]
+  tag: v0.2.2 [evidence-179]
+  commit: f2a4b232e1868691398964433c7e373fca4b84bb [evidence-179]
+  application: v0.2.2 [evidence-179]
+  Work orders in this release: WO-101,WO-005 [evidence-179]
+  -> Evidence for WO-101 [indexed-order-0a90b34c8f03047e]
+  -> Evidence for WO-005 [indexed-order-017a7e4c89beaae5]
+
+v0.2.3 [release-a93961f20cc19928]
+  tag: v0.2.3 [evidence-180]
+  commit: 08a79f240bf0a38d1eb0266316b5444e4a14581a [evidence-180]
+  application: v0.2.3 [evidence-180]
+  Work orders in this release: WO-006,WO-015 [evidence-180]
+  -> Evidence for WO-006 [indexed-order-017a7b4c89bea5cc]
+  -> Evidence for WO-015 [indexed-order-017dfa4c89c1b370]
+
+v0.3.0 [release-a09d41f207e4bf7a]
+  tag: v0.3.0 [evidence-181]
+  commit: 3ea27044cfbc69c6d92f945164bd2b2788fbee95 [evidence-181]
+  application: v0.3.0 [evidence-181]
+  Work orders in this release: WO-007 [evidence-181]
+  -> Evidence for WO-007 [indexed-order-017a7c4c89bea77f]
+
+v0.3.1 [release-a09d42f207e4c12d]
+  tag: v0.3.1 [evidence-182]
+  commit: c1ea2ed856f8d7b99848c7658f9ace3345667db4 [evidence-182]
+  application: v0.3.1 [evidence-182]
+  Work orders in this release: WO-013 [evidence-182]
+  -> Evidence for WO-013 [indexed-order-017e004c89c1bda2]
+
+v0.3.2 [release-a09d3ff207e4bc14]
+  tag: v0.3.2 [evidence-183]
+  commit: 46d3212f164a9b8bc8d887f5d83bf6748dbae33e [evidence-183]
+  application: v0.3.2 [evidence-183]
+  Work orders in this release: WO-024 [evidence-183]
+  -> Evidence for WO-024 [indexed-order-0174094c89b97868]
+
+v0.3.3 [release-a09d40f207e4bdc7]
+  tag: v0.3.3 [evidence-184]
+  commit: 5d20c6274475a85e501e9842024e3901a607d4c2 [evidence-184]
+  application: v0.3.3 [evidence-184]
+  Work orders in this release: WO-025 [evidence-184]
+  -> Evidence for WO-025 [indexed-order-01740a4c89b97a1b]
+
+v0.3.4 [release-a09d3df207e4b8ae]
+  tag: v0.3.4 [evidence-185]
+  commit: 96a0e87a6b3c67fac813e4ff327e8c1856d1fabf [evidence-185]
+  application: v0.3.4 [evidence-185]
+  Work orders in this release: WO-019 [evidence-185]
+  -> Evidence for WO-019 [indexed-order-017e064c89c1c7d4]
+
+v0.3.5 [release-a09d3ef207e4ba61]
+  tag: v0.3.5 [evidence-186]
+  commit: a217d64d3db47b7c1ac25395524fc643db7f2c63 [evidence-186]
+  application: v0.3.5 [evidence-186]
+  Work orders in this release: WO-027,WO-017 [evidence-186]
+  -> Evidence for WO-027 [indexed-order-01740c4c89b97d81]
+  -> Evidence for WO-017 [indexed-order-017dfc4c89c1b6d6]
+
+v0.3.6 [release-a09d3bf207e4b548]
+  tag: v0.3.6 [evidence-187]
+  commit: 03444395e8386b0c2a6ffff281be47ca2e6e7364 [evidence-187]
+  application: v0.3.6 [evidence-187]
+  Work orders in this release: WO-016 [evidence-187]
+  -> Evidence for WO-016 [indexed-order-017dfd4c89c1b889]
+
+v0.4.0 [release-98e896f203ccdab7]
+  tag: v0.4.0 [evidence-188]
+  commit: 9293d50b71fc3635f3e30af2982ca1865abd50de [evidence-188]
+  application: v0.4.0 [evidence-188]
+  Work orders in this release: WO-008 [evidence-188]
+  -> Evidence for WO-008 [indexed-order-017a814c89beaffe]
+
+v0.4.1 [release-98e895f203ccd904]
+  tag: v0.4.1 [evidence-189]
+  commit: e3e639fea0c7566e9aa9418dc231bea6b36f4dd7 [evidence-189]
+  application: v0.4.1 [evidence-189]
+  Work orders in this release: WO-018 [evidence-189]
+  -> Evidence for WO-018 [indexed-order-017e074c89c1c987]
+
+v0.5.0 [release-8fdfd3f1fe93cd30]
+  tag: v0.5.0 [evidence-190]
+  commit: 27e344b16d789010b01ae4fbd7c84296dd606575 [evidence-190]
+  application: v0.5.0 [evidence-190]
+  Work orders in this release: WO-023 [evidence-190]
+  -> Evidence for WO-023 [indexed-order-0174104c89b9844d]
+
+v0.5.1 [release-8fdfd4f1fe93cee3]
+  tag: v0.5.1 [evidence-191]
+  commit: 68b1ab2544765bfa2fdb063fe1be7d8f9f720843 [evidence-191]
+  application: v0.5.1 [evidence-191]
+  Work orders in this release: WO-028 [evidence-191]
+  -> Evidence for WO-028 [indexed-order-0174054c89b9719c]
+
+v0.5.2 [release-8fdfd5f1fe93d096]
+  tag: v0.5.2 [evidence-192]
+  commit: 45db219a6c7320808c8f25e82a684ffa57884964 [evidence-192]
+  application: v0.5.2 [evidence-192]
+  Work orders in this release: WO-026 [evidence-192]
+  -> Evidence for WO-026 [indexed-order-01740b4c89b97bce]
+
+v0.6.0 [release-8751c8f1f9c3548d]
+  tag: v0.6.0 [evidence-193]
+  commit: 0323f7499d8bda5b15f9ba83f87373f1ba72aad1 [evidence-193]
+  application: v0.6.0 [evidence-193]
+  Work orders in this release: WO-020 [evidence-193]
+  -> Evidence for WO-020 [indexed-order-01740d4c89b97f34]
+
+v0.7.0 [release-7ddc05f1f42d7526]
+  tag: v0.7.0 [evidence-194]
+  commit: aca01dd826a950475cae7e6f587eb8d85713029b [evidence-194]
+  application: v0.7.0 [evidence-194]
+  Work orders in this release: WO-030 [evidence-194]
+  -> Evidence for WO-030 [indexed-order-0177134c89bbbf3d]
+
+v0.8.0 [release-754ddaf1ef5cc623]
+  tag: v0.8.0 [evidence-195]
+  commit: 961601a17174c14ac69afa24dbd62ca5432ad7e7 [evidence-195]
+  application: v0.8.0 [evidence-195]
+  Work orders in this release: WO-021 [evidence-195]
+  -> Evidence for WO-021 [indexed-order-01740e4c89b980e7]
+
+v0.9.0 [release-6d8bb7f1eb398b1c]
+  tag: v0.9.0 [evidence-196]
+  commit: 002593f6599b745a5d3e14ed8e2ac0d8fee37e87 [evidence-196]
+  application: v0.9.0 [evidence-196]
+  Work orders in this release: WO-029 [evidence-196]
+  -> Evidence for WO-029 [indexed-order-0174064c89b9734f]
+
+v0.10.0 [release-7c2daa54e48ee420]
+  tag: v0.10.0 [evidence-197]
+  commit: 272a1502f0049043f63b0858c9d869e8ce441842 [evidence-197]
+  application: v0.10.0 [evidence-197]
+  Work orders in this release: WO-009 [evidence-197]
+  -> Evidence for WO-009 [indexed-order-017a824c89beb1b1]
+
+v0.10.1 [release-7c2dab54e48ee5d3]
+  tag: v0.10.1 [evidence-198]
+  commit: 285122570696f58023b8ebdb0ea2c39ab8a06ed8 [evidence-198]
+  application: v0.10.1 [evidence-198]
+  Work orders in this release: WO-031 [evidence-198]
+  -> Evidence for WO-031 [indexed-order-0177124c89bbbd8a]
+
+v0.11.0 [release-85366d54e9c7f1a7]
+  tag: v0.11.0 [evidence-199]
+  commit: 1a81e008611731883d43eb19743c5dcb9205b062 [evidence-199]
+  application: v0.11.0 [evidence-199]
+  Work orders in this release: WO-022 [evidence-199]
+  -> Evidence for WO-022 [indexed-order-01740f4c89b9829a]
+
+v0.12.0 [release-6a29dc54da288c16]
+  tag: v0.12.0 [evidence-200]
+  commit: d6179e189d35567955c0c3855d7e881180e1d0c2 [evidence-200]
+  application: v0.12.0 [evidence-200]
+  Work orders in this release: WO-010 [evidence-200]
+  -> Evidence for WO-010 [indexed-order-017dff4c89c1bbef]
+
+v0.13.0 [release-72c59f54df04c7bd]
+  tag: v0.13.0 [evidence-201]
+  commit: 3dc19b7342ad03662172cf86663f406b96a43db4 [evidence-201]
+  application: v0.13.0 [evidence-201]
+  Work orders in this release: WO-011 [evidence-201]
+  -> Evidence for WO-011 [indexed-order-017dfe4c89c1ba3c]
+
+v0.13.1 [release-72c59e54df04c60a]
+  tag: v0.13.1 [evidence-202]
+  commit: ed2070aed2691bee3239c34300d10cb9df1ca09c [evidence-202]
+  application: v0.13.1 [evidence-202]
+  Work orders in this release: WO-108 [evidence-202]
+  -> Evidence for WO-108 [indexed-order-0a90ac4c8f02f899]
+
+v0.13.2 [release-72c59d54df04c457]
+  tag: v0.13.2 [evidence-203]
+  commit: a360d04ac865e6a55c64f06cd0467f9e69acf9f7 [evidence-203]
+  application: v0.13.2 [evidence-203]
+  Work orders in this release: WO-038 [evidence-203]
+  -> Evidence for WO-038 [indexed-order-01770b4c89bbb1a5]
+
+v0.13.3 [release-72c59c54df04c2a4]
+  tag: v0.13.3 [evidence-204]
+  commit: 8b55eca3b3427146e98d34c68f67f679dc59bea5 [evidence-204]
+  application: v0.13.3 [evidence-204]
+  Work orders in this release: WO-041 [evidence-204]
+  -> Evidence for WO-041 [indexed-order-016d024c89b34dd5]
+
+Work-order evidence index [work-order-index] — available
+
+WO-032 [indexed-order-0177114c89bbbbd7]
+  title: WO-032 — UIFA v0: a read-only actor board over episodes, builds,
+mechanisms, evidence, and work (v0.14.0) [evidence-11]
+  State: active. [evidence-11]
+  Application target: v0.14.0. [evidence-11]
+  Dependency reference check (conservative): dependency-ready. [evidence-11]
+  References: WO-007: satisfied (closed); WO-008: satisfied (closed); WO-009:
+satisfied (closed); WO-010: satisfied (closed); WO-011: satisfied (closed);
+WO-021: satisfied (closed); WO-026: satisfied (closed); WO-028: satisfied
+(closed); WO-030: satisfied (closed); WO-031: satisfied (closed). [evidence-11]
+  Verification: none recorded. [evidence-11]
+  Final review: none recorded. [evidence-11]
+  Release: none recorded. [evidence-11]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-11]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-11]
+  Authority: docs/work-orders/WO-032-uifa-actor-board.md [evidence-11]
+  -> Evidence: WO-032-uifa-actor-board.md [evidence-12]
+
+WO-014 [indexed-order-017dfb4c89c1b523]
+  title: WO-014 — Approval-burden baseline, remediation, and fresh-session
+acceptance (version assigned at activation) [evidence-13]
+  State: draft. [evidence-13]
+  Application target: unassigned. [evidence-13]
+  Dependency reference check (conservative): dependency-ready. [evidence-13]
+  References: WO-006: satisfied (closed); WO-013: satisfied (closed).
+[evidence-13]
+  Verification: none recorded. [evidence-13]
+  Final review: none recorded. [evidence-13]
+  Release: none recorded. [evidence-13]
+  Model: any capable model per harness for the executor; the independent
+verifier must reproduce in genuinely fresh sessions; the operator must witness
+at least one final interactive run. State the model and effort actually run for
+every session that produces evidence (07-execution-guide.md §Model-specific
+notes). Harness authority stays with the operator: this order authorizes no
+change to personal settings, and any setting change it finds necessary returns
+to the operator as a decision packet. [evidence-13]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-13]
+  Authority: docs/work-orders/WO-014-approval-burden-contract.md [evidence-13]
+  -> Evidence: WO-014-approval-burden-contract.md [evidence-14]
+
+WO-033 [indexed-order-0177104c89bbba24]
+  title: WO-033 — The starter is a compiled export: one configuration root,
+registered target repositories, a launchpad export that carries the saved
+build, and a lane-sync helper (version assigned at activation) [evidence-15]
+  State: draft. [evidence-15]
+  Application target: unassigned. [evidence-15]
+  Dependency reference check (conservative): blocked on WO-039. [evidence-15]
+  References: WO-018: satisfied (closed); WO-021: satisfied (closed); WO-026:
+satisfied (closed); WO-030: satisfied (closed); WO-038: satisfied (closed);
+WO-039: not control-closed. [evidence-15]
+  Verification: none recorded. [evidence-15]
+  Final review: none recorded. [evidence-15]
+  Release: none recorded. [evidence-15]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-15]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-15]
+  Authority: docs/work-orders/WO-033-compiled-starter-export.md [evidence-15]
+  -> Evidence: WO-033-compiled-starter-export.md [evidence-16]
+
+WO-034 [indexed-order-01770f4c89bbb871]
+  title: WO-034 — Cross-repository workstream pilot: one outcome, several
+target repositories, driven from a launchpad fork that runs the compiled build
+(version assigned at activation) [evidence-17]
+  State: draft. [evidence-17]
+  Application target: unassigned. [evidence-17]
+  Dependency reference check (conservative): blocked on WO-032, WO-033.
+[evidence-17]
+  References: WO-032: not control-closed; WO-033: not control-closed.
+[evidence-17]
+  Verification: none recorded. [evidence-17]
+  Final review: none recorded. [evidence-17]
+  Release: none recorded. [evidence-17]
+  Model: any capable model for the implementation and fixtures. The real run's
+executor, verifier, and reviewer sessions are dispatched from the launchpad
+under its own work orders' declarations and its emitted harness bundle; the
+operator must witness the real run. State the model and effort actually run for
+every session that produces evidence (07-execution-guide.md §Model-specific
+notes). [evidence-17]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-17]
+  Authority: docs/work-orders/WO-034-cross-repository-workstream-pilot.md
+[evidence-17]
+  -> Evidence: WO-034-cross-repository-workstream-pilot.md [evidence-18]
+
+WO-035 [indexed-order-01770e4c89bbb6be]
+  title: WO-035 — Documentation structure reset: one ledger order, a
+spec/receipt boundary, generated release history, and a shorter cold start
+(version assigned at activation) [evidence-19]
+  State: draft. [evidence-19]
+  Application target: unassigned. [evidence-19]
+  Dependency reference check (conservative): blocked on WO-033. [evidence-19]
+  References: WO-033: not control-closed. [evidence-19]
+  Verification: none recorded. [evidence-19]
+  Final review: none recorded. [evidence-19]
+  Release: none recorded. [evidence-19]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-19]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-19]
+  Authority: docs/work-orders/WO-035-documentation-structure-reset.md
+[evidence-19]
+  -> Evidence: WO-035-documentation-structure-reset.md [evidence-20]
+
+WO-036 [indexed-order-01770d4c89bbb50b]
+  title: WO-036 — Evidence runner: build first, run suites concurrently, report
+per case (version assigned at activation) [evidence-21]
+  State: draft. [evidence-21]
+  Application target: unassigned. [evidence-21]
+  Dependency reference check (conservative): dependency-ready. [evidence-21]
+  References: WO-013: satisfied (closed); WO-018: satisfied (closed).
+[evidence-21]
+  Verification: none recorded. [evidence-21]
+  Final review: none recorded. [evidence-21]
+  Release: none recorded. [evidence-21]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-21]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-21]
+  Authority: docs/work-orders/WO-036-evidence-runner.md [evidence-21]
+  -> Evidence: WO-036-evidence-runner.md [evidence-22]
+
+WO-037 [indexed-order-01770c4c89bbb358]
+  title: WO-037 — Pattern workshop, compiler side: the 5S equipment set
+compiles as a multi-active link group with set bonuses (version assigned at
+activation) [evidence-23]
+  State: draft. [evidence-23]
+  Application target: unassigned. [evidence-23]
+  Dependency reference check (conservative): dependency-ready. [evidence-23]
+  References: WO-008: satisfied (closed); WO-011: satisfied (closed); WO-016:
+satisfied (closed); WO-023: satisfied (closed); WO-029: satisfied (closed).
+[evidence-23]
+  Verification: none recorded. [evidence-23]
+  Final review: none recorded. [evidence-23]
+  Release: none recorded. [evidence-23]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-23]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-23]
+  Authority: docs/work-orders/WO-037-five-s-equipment-set.md [evidence-23]
+  -> Evidence: WO-037-five-s-equipment-set.md [evidence-24]
+
+WO-039 [indexed-order-01770a4c89bbaff2]
+  title: WO-039 — Harness lowering: compile a saved build into enforceable
+harness configuration, and run this repository on its own compiled build
+(version assigned at activation) [evidence-25]
+  State: draft. [evidence-25]
+  Application target: unassigned. [evidence-25]
+  Dependency reference check (conservative): blocked on WO-001. [evidence-25]
+  References: WO-001: not control-closed; WO-004: satisfied (closed); WO-008:
+satisfied (closed); WO-011: satisfied (closed); WO-029: satisfied (closed).
+[evidence-25]
+  Verification: none recorded. [evidence-25]
+  Final review: none recorded. [evidence-25]
+  Release: none recorded. [evidence-25]
+  Model: any capable model for the compiler and fixtures. The live smoke and
+the self-host step need the actual local harnesses (Claude Code; Codex where
+installed) and must state the harness version, model, and effort actually run
+(07-execution-guide.md §Model-specific notes). [evidence-25]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-25]
+  Authority: docs/work-orders/WO-039-harness-lowering.md [evidence-25]
+  -> Evidence: WO-039-harness-lowering.md [evidence-26]
+
+WO-040 [indexed-order-016d014c89b34c22]
+  title: WO-040 — Rule migration, batch one: the migration ledger and the first
+batch of feedback shapes compiled through the harness target (version assigned
+at activation) [evidence-27]
+  State: draft. [evidence-27]
+  Application target: unassigned. [evidence-27]
+  Dependency reference check (conservative): blocked on WO-039. [evidence-27]
+  References: WO-011: satisfied (closed); WO-039: not control-closed.
+[evidence-27]
+  Verification: none recorded. [evidence-27]
+  Final review: none recorded. [evidence-27]
+  Release: none recorded. [evidence-27]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-27]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-27]
+  Authority: docs/work-orders/WO-040-rule-migration-batch-one.md [evidence-27]
+  -> Evidence: WO-040-rule-migration-batch-one.md [evidence-28]
+
+WO-102 [indexed-order-0a90b24c8f0302cb]
+  title: WO-102 — Cadence virtual-time grid sweep and golden vector corpus
+(version assigned at activation) [evidence-29]
+  State: draft. [evidence-29]
+  Application target: unassigned. [evidence-29]
+  Dependency reference check (conservative): dependency-ready. [evidence-29]
+  References: WO-004: satisfied (closed); WO-101: satisfied (closed).
+[evidence-29]
+  Verification: none recorded. [evidence-29]
+  Final review: none recorded. [evidence-29]
+  Release: none recorded. [evidence-29]
+  Model: Codex (any capable tier); any capable model may substitute. State the
+model and effort actually run in the result (07-execution-guide.md
+§Model-specific notes). [evidence-29]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-29]
+  Authority: docs/work-orders/WO-102-cadence-corpus.md [evidence-29]
+  -> Evidence: WO-102-cadence-corpus.md [evidence-30]
+
+WO-103 [indexed-order-0a90b14c8f030118]
+  title: WO-103 — Authorization guard and outbox factorial decision-table
+corpus (version assigned at activation) [evidence-31]
+  State: draft. [evidence-31]
+  Application target: unassigned. [evidence-31]
+  Dependency reference check (conservative): dependency-ready. [evidence-31]
+  References: WO-004: satisfied (closed); WO-017: satisfied (closed).
+[evidence-31]
+  Verification: none recorded. [evidence-31]
+  Final review: none recorded. [evidence-31]
+  Release: none recorded. [evidence-31]
+  Model: Codex (any capable tier); any capable model may substitute. State the
+model and effort actually run in the result (07-execution-guide.md
+§Model-specific notes). [evidence-31]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-31]
+  Authority: docs/work-orders/WO-103-authority-outbox-corpus.md [evidence-31]
+  -> Evidence: WO-103-authority-outbox-corpus.md [evidence-32]
+
+WO-105 [indexed-order-0a90b74c8f030b4a]
+  title: WO-105 — Crash-shape corpus: store truncation sweep, skeleton recovery
+sweep, golden traces, and fixture-tree families (version assigned at
+activation) [evidence-33]
+  State: draft. [evidence-33]
+  Application target: unassigned. [evidence-33]
+  Dependency reference check (conservative): dependency-ready. [evidence-33]
+  References: WO-004: satisfied (closed); WO-017: satisfied (closed).
+[evidence-33]
+  Verification: none recorded. [evidence-33]
+  Final review: none recorded. [evidence-33]
+  Release: none recorded. [evidence-33]
+  Model: Codex (any capable tier); any capable model may substitute. State the
+model and effort actually run in the result (07-execution-guide.md
+§Model-specific notes). [evidence-33]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-33]
+  Authority: docs/work-orders/WO-105-crash-shape-corpus.md [evidence-33]
+  -> Evidence: WO-105-crash-shape-corpus.md [evidence-34]
+
+WO-107 [indexed-order-0a90b54c8f0307e4]
+  title: WO-107 — Deterministic profiling harness and first baseline
+observation corpus (version assigned at activation) [evidence-35]
+  State: draft. [evidence-35]
+  Application target: unassigned. [evidence-35]
+  Dependency reference check (conservative): dependency-ready. [evidence-35]
+  References: WO-004: satisfied (closed); WO-005: satisfied (closed).
+[evidence-35]
+  Verification: none recorded. [evidence-35]
+  Final review: none recorded. [evidence-35]
+  Release: none recorded. [evidence-35]
+  Model: Codex (any capable tier); any capable model may substitute. State the
+model and effort actually run in the result (07-execution-guide.md
+§Model-specific notes). [evidence-35]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-35]
+  Authority: docs/work-orders/WO-107-profiling-baseline.md [evidence-35]
+  -> Evidence: WO-107-profiling-baseline.md [evidence-36]
+
+WO-109 [indexed-order-0a90ab4c8f02f6e6]
+  title: WO-109 — Re-mining Well: source census and first pilot draw (version
+assigned at activation) [evidence-37]
+  State: draft. [evidence-37]
+  Application target: unassigned. [evidence-37]
+  Dependency reference check (conservative): dependency-ready. [evidence-37]
+  References: WO-007: satisfied (closed). [evidence-37]
+  Verification: none recorded. [evidence-37]
+  Final review: none recorded. [evidence-37]
+  Release: none recorded. [evidence-37]
+  Model: any capable model for the census, source register, OCR-as-observation,
+and first-contact capsules. The lineage encounter, tension classification,
+supersession proposals, and atlas weaving are planning-role work under
+&#96;docs/PLAYBOOK.md&#96; §Who does what and are performed by the planning
+model or the operator, never by the mechanical tier. Image passes require a
+harness observed to inspect original-resolution images; that capability is
+unrecorded in &#96;docs/discovery/&#96; and is an activation preflight. Every
+run receipt states model, harness, attested effort, lens, prior-context
+visibility, and source batch. [evidence-37]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. Mechanical census,
+register, and capsule side routines may run at &#96;high+&#96;; the lifecycle
+executor and all planning-role judgments remain &#96;xhigh+&#96;. [evidence-37]
+  Authority: docs/work-orders/WO-109-shape-first-source-remine.md [evidence-37]
+  -> Evidence: WO-109-shape-first-source-remine.md [evidence-38]
+
+WO-003 [indexed-order-017a784c89bea0b3]
+  title: WO-003 — Walking skeleton (fake executor), v0.2.0 [evidence-39]
+  State: closed. [evidence-39]
+  Application target: v0.2.0. [evidence-39]
+  Dependency reference check (conservative): blocked on WO-002. [evidence-39]
+  References: WO-002: not control-closed. [evidence-39]
+  Verification: VER-002 (pass). [evidence-39]
+  Final review: FINAL-001 (pass). [evidence-39]
+  Release: v0.2.0 (historical record). [evidence-39]
+  Model: any capable model. [evidence-39]
+  Effort: unknown [evidence-39]
+  Authority: docs/work-orders/WO-003-walking-skeleton.md [evidence-39]
+  -> Evidence: ../../docs/verifications/WO-003/VER-002.md [evidence-40]
+  -> Evidence: ../../docs/final-reviews/WO-003/FINAL-001.md [evidence-41]
+  -> Evidence: WO-003-walking-skeleton.md [evidence-42]
+
+WO-004 [indexed-order-017a7d4c89bea932]
+  title: WO-004 — Environment truth addendum and lifecycle corrections, v0.2.1
+[evidence-43]
+  State: closed. [evidence-43]
+  Application target: v0.2.1. [evidence-43]
+  Dependency reference check (conservative): blocked on WO-001. [evidence-43]
+  References: WO-001: not control-closed; WO-003: satisfied (closed).
+[evidence-43]
+  Verification: VER-002 (pass). [evidence-43]
+  Final review: FINAL-001 (pass). [evidence-43]
+  Release: v0.2.1 (manifest changedFiles). [evidence-43]
+  Model: any capable model. [evidence-43]
+  Effort: unknown [evidence-43]
+  Authority: docs/work-orders/WO-004-environment-truth-addendum.md [evidence-43]
+  -> Evidence: ../../docs/verifications/WO-004/VER-002.md [evidence-44]
+  -> Evidence: ../../docs/final-reviews/WO-004/FINAL-001.md [evidence-45]
+  -> Evidence: WO-004-environment-truth-addendum.md [evidence-46]
+
+WO-005 [indexed-order-017a7e4c89beaae5]
+  title: WO-005 — Capability table v1, v0.2.2 [evidence-47]
+  State: closed. [evidence-47]
+  Application target: v0.2.2. [evidence-47]
+  Dependency reference check (conservative): dependency-ready. [evidence-47]
+  References: WO-004: satisfied (closed). [evidence-47]
+  Verification: VER-001 (pass). [evidence-47]
+  Final review: FINAL-001 (pass). [evidence-47]
+  Release: v0.2.2 (manifest workOrder.id). [evidence-47]
+  Model: any capable model. [evidence-47]
+  Effort: unknown [evidence-47]
+  Authority: docs/work-orders/WO-005-capability-table.md [evidence-47]
+  -> Evidence: ../../docs/verifications/WO-005/VER-001.md [evidence-48]
+  -> Evidence: ../../docs/final-reviews/WO-005/FINAL-001.md [evidence-49]
+  -> Evidence: WO-005-capability-table.md [evidence-50]
+
+WO-006 [indexed-order-017a7b4c89bea5cc]
+  title: WO-006 — Publication bootstrap (two contents, one staleness loop),
+v0.2.3 [evidence-51]
+  State: closed. [evidence-51]
+  Application target: v0.2.3. [evidence-51]
+  Dependency reference check (conservative): dependency-ready. [evidence-51]
+  References: none named. [evidence-51]
+  Verification: VER-003 (pass). [evidence-51]
+  Final review: FINAL-001 (pass). [evidence-51]
+  Release: v0.2.3 (manifest changedFiles). [evidence-51]
+  Model: any capable model. [evidence-51]
+  Effort: unknown [evidence-51]
+  Authority: docs/work-orders/WO-006-publication-bootstrap.md [evidence-51]
+  -> Evidence: ../../docs/verifications/WO-006/VER-003.md [evidence-52]
+  -> Evidence: ../../docs/final-reviews/WO-006/FINAL-001.md [evidence-53]
+  -> Evidence: WO-006-publication-bootstrap.md [evidence-54]
+
+WO-007 [indexed-order-017a7c4c89bea77f]
+  title: WO-007 — Audit-record baseline (three projections), v0.3.0
+[evidence-55]
+  State: closed. [evidence-55]
+  Application target: v0.3.0. [evidence-55]
+  Dependency reference check (conservative): dependency-ready. [evidence-55]
+  References: WO-003: satisfied (closed). [evidence-55]
+  Verification: VER-002 (pass). [evidence-55]
+  Final review: FINAL-001 (pass). [evidence-55]
+  Release: v0.3.0 (manifest workOrder.id). [evidence-55]
+  Model: any capable model. [evidence-55]
+  Effort: unknown [evidence-55]
+  Authority: docs/work-orders/WO-007-audit-record-baseline.md [evidence-55]
+  -> Evidence: ../../docs/verifications/WO-007/VER-002.md [evidence-56]
+  -> Evidence: ../../docs/final-reviews/WO-007/FINAL-001.md [evidence-57]
+  -> Evidence: WO-007-audit-record-baseline.md [evidence-58]
+
+WO-008 [indexed-order-017a814c89beaffe]
+  title: WO-008 — Composition compiler v1, v0.4.0 [evidence-59]
+  State: closed. [evidence-59]
+  Application target: v0.4.0. [evidence-59]
+  Dependency reference check (conservative): dependency-ready. [evidence-59]
+  References: WO-003: satisfied (closed). [evidence-59]
+  Verification: VER-001 (pass). [evidence-59]
+  Final review: FINAL-001 (pass). [evidence-59]
+  Release: v0.4.0 (manifest workOrder.id). [evidence-59]
+  Model: any capable model. [evidence-59]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-59]
+  Latest attestation: harness claude-code; version 2.1.260; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-59]
+  Authority: docs/work-orders/WO-008-composition-compiler.md [evidence-59]
+  -> Evidence: ../../docs/verifications/WO-008/VER-001.md [evidence-60]
+  -> Evidence: ../../docs/final-reviews/WO-008/FINAL-001.md [evidence-61]
+  -> Evidence: WO-008-composition-compiler.md [evidence-62]
+
+WO-009 [indexed-order-017a824c89beb1b1]
+  title: WO-009 — Real disposable worker, v0.10.0 [evidence-63]
+  State: closed. [evidence-63]
+  Application target: v0.10.0. [evidence-63]
+  Dependency reference check (conservative): dependency-ready. [evidence-63]
+  References: WO-004: satisfied (closed); WO-008: satisfied (closed).
+[evidence-63]
+  Verification: VER-001 (pass). [evidence-63]
+  Final review: FINAL-001 (pass). [evidence-63]
+  Release: v0.10.0 (manifest workOrder.id). [evidence-63]
+  Model: any capable model. [evidence-63]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-63]
+  Latest attestation: harness claude-code; version 2.1.261; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-63]
+  Authority: docs/work-orders/WO-009-real-disposable-worker.md [evidence-63]
+  -> Evidence: ../../docs/verifications/WO-009/VER-001.md [evidence-64]
+  -> Evidence: ../../docs/final-reviews/WO-009/FINAL-001.md [evidence-65]
+  -> Evidence: WO-009-real-disposable-worker.md [evidence-66]
+
+WO-010 [indexed-order-017dff4c89c1bbef]
+  title: WO-010 — Independent verification (v0.12.0) [evidence-67]
+  State: closed. [evidence-67]
+  Application target: v0.12.0. [evidence-67]
+  Dependency reference check (conservative): dependency-ready. [evidence-67]
+  References: WO-009: satisfied (closed). [evidence-67]
+  Verification: VER-001 (pass). [evidence-67]
+  Final review: FINAL-001 (pass). [evidence-67]
+  Release: v0.12.0 (manifest workOrder.id). [evidence-67]
+  Model: any capable model. [evidence-67]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-67]
+  Latest attestation: harness claude-code; version 2.1.263; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-67]
+  Authority: docs/work-orders/WO-010-independent-verification.md [evidence-67]
+  -> Evidence: ../../docs/verifications/WO-010/VER-001.md [evidence-68]
+  -> Evidence: ../../docs/final-reviews/WO-010/FINAL-001.md [evidence-69]
+  -> Evidence: WO-010-independent-verification.md [evidence-70]
+
+WO-011 [indexed-order-017dfe4c89c1ba3c]
+  title: WO-011 — Feedback compiler v1 (v0.13.0) [evidence-71]
+  State: closed. [evidence-71]
+  Application target: v0.13.0. [evidence-71]
+  Dependency reference check (conservative): dependency-ready. [evidence-71]
+  References: WO-004: satisfied (closed); WO-009: satisfied (closed); WO-010:
+satisfied (closed). [evidence-71]
+  Verification: VER-001 (pass). [evidence-71]
+  Final review: FINAL-001 (pass). [evidence-71]
+  Release: v0.13.0 (manifest workOrder.id). [evidence-71]
+  Model: any capable model. [evidence-71]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-71]
+  Latest attestation: harness claude-code; version 2.1.263; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-71]
+  Authority: docs/work-orders/WO-011-feedback-compiler.md [evidence-71]
+  -> Evidence: ../../docs/verifications/WO-011/VER-001.md [evidence-72]
+  -> Evidence: ../../docs/final-reviews/WO-011/FINAL-001.md [evidence-73]
+  -> Evidence: WO-011-feedback-compiler.md [evidence-74]
+
+WO-012 [indexed-order-017e014c89c1bf55]
+  title: WO-012 — Release-gate path quoting fix, v0.2.1 [evidence-75]
+  State: closed. [evidence-75]
+  Application target: v0.2.1. [evidence-75]
+  Dependency reference check (conservative): dependency-ready. [evidence-75]
+  References: WO-004: satisfied (closed). [evidence-75]
+  Verification: VER-001 (pass). [evidence-75]
+  Final review: FINAL-001 (pass). [evidence-75]
+  Release: v0.2.1 (manifest workOrder.id). [evidence-75]
+  Model: any capable model. [evidence-75]
+  Effort: unknown [evidence-75]
+  Authority: docs/work-orders/WO-012-release-gate-path-quoting.md [evidence-75]
+  -> Evidence: ../../docs/verifications/WO-012/VER-001.md [evidence-76]
+  -> Evidence: ../../docs/final-reviews/WO-012/FINAL-001.md [evidence-77]
+  -> Evidence: WO-012-release-gate-path-quoting.md [evidence-78]
+
+WO-013 [indexed-order-017e004c89c1bda2]
+  title: WO-013 — Portable temporary roots for shell test fixtures, v0.3.1
+[evidence-79]
+  State: closed. [evidence-79]
+  Application target: v0.3.1. [evidence-79]
+  Dependency reference check (conservative): dependency-ready. [evidence-79]
+  References: WO-006: satisfied (closed). [evidence-79]
+  Verification: VER-001 (pass). [evidence-79]
+  Final review: FINAL-001 (pass). [evidence-79]
+  Release: v0.3.1 (manifest workOrder.id). [evidence-79]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). The target environment is
+a sandboxed harness that permits only its own session temporary root; the
+executor should work inside one so the acceptance evidence is first-hand.
+[evidence-79]
+  Effort: unknown [evidence-79]
+  Authority: docs/work-orders/WO-013-portable-fixture-temp-roots.md
+[evidence-79]
+  -> Evidence: ../../docs/verifications/WO-013/VER-001.md [evidence-80]
+  -> Evidence: ../../docs/final-reviews/WO-013/FINAL-001.md [evidence-81]
+  -> Evidence: WO-013-portable-fixture-temp-roots.md [evidence-82]
+
+WO-015 [indexed-order-017dfa4c89c1b370]
+  title: WO-015 — Release-manifest cadence parser repair, v0.2.3 [evidence-83]
+  State: closed. [evidence-83]
+  Application target: v0.2.3. [evidence-83]
+  Dependency reference check (conservative): dependency-ready. [evidence-83]
+  References: WO-006: satisfied (closed). [evidence-83]
+  Verification: VER-001 (pass). [evidence-83]
+  Final review: FINAL-001 (pass). [evidence-83]
+  Release: v0.2.3 (manifest workOrder.id). [evidence-83]
+  Model: any capable model. The executor and independent verifier must record
+the model, effort, and harness they actually use (07-execution-guide.md
+§Model-specific notes). [evidence-83]
+  Effort: unknown [evidence-83]
+  Authority: docs/work-orders/WO-015-release-cadence-parser.md [evidence-83]
+  -> Evidence: ../../docs/verifications/WO-015/VER-001.md [evidence-84]
+  -> Evidence: ../../docs/final-reviews/WO-015/FINAL-001.md [evidence-85]
+  -> Evidence: WO-015-release-cadence-parser.md [evidence-86]
+
+WO-016 [indexed-order-017dfd4c89c1b889]
+  title: WO-016 — Skeleton reactor: one decider, driven live and by replay,
+v0.3.6 [evidence-87]
+  State: closed. [evidence-87]
+  Application target: v0.3.6. [evidence-87]
+  Dependency reference check (conservative): dependency-ready. [evidence-87]
+  References: WO-007: satisfied (closed); WO-008: satisfied (closed); WO-017:
+satisfied (closed). [evidence-87]
+  Verification: VER-001 (pass). [evidence-87]
+  Final review: FINAL-001 (pass). [evidence-87]
+  Release: v0.3.6 (manifest workOrder.id). [evidence-87]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-87]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-87]
+  Latest attestation: harness claude-code; version 2.1.259; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-87]
+  Authority: docs/work-orders/WO-016-skeleton-reactor.md [evidence-87]
+  -> Evidence: ../../docs/verifications/WO-016/VER-001.md [evidence-88]
+  -> Evidence: ../../docs/final-reviews/WO-016/FINAL-001.md [evidence-89]
+  -> Evidence: WO-016-skeleton-reactor.md [evidence-90]
+
+WO-017 [indexed-order-017dfc4c89c1b6d6]
+  title: WO-017 — Kernel truthfulness: store codec, outbox ordering, authority
+guard, evidence hardening, v0.3.5 [evidence-91]
+  State: closed. [evidence-91]
+  Application target: v0.3.5. [evidence-91]
+  Dependency reference check (conservative): blocked on WO-105. [evidence-91]
+  References: WO-016: satisfied (closed); WO-105: not control-closed.
+[evidence-91]
+  Verification: VER-001 (pass). [evidence-91]
+  Final review: FINAL-001 (pass). [evidence-91]
+  Release: v0.3.5 (manifest workOrder.id). [evidence-91]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-91]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-91]
+  Latest attestation: harness claude-code; version 2.1.259; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-91]
+  Authority: docs/work-orders/WO-017-kernel-truthfulness.md [evidence-91]
+  -> Evidence: ../../docs/verifications/WO-017/VER-001.md [evidence-92]
+  -> Evidence: ../../docs/final-reviews/WO-017/FINAL-001.md [evidence-93]
+  -> Evidence: WO-017-kernel-truthfulness.md [evidence-94]
+
+WO-018 [indexed-order-017e074c89c1c987]
+  title: WO-018 — Control-plane consolidation: shared helpers, machine-readable
+state, manifest from the built kernel, v0.4.1 [evidence-95]
+  State: closed. [evidence-95]
+  Application target: v0.4.1. [evidence-95]
+  Dependency reference check (conservative): dependency-ready. [evidence-95]
+  References: WO-013: satisfied (closed); WO-017: satisfied (closed).
+[evidence-95]
+  Verification: VER-001 (pass). [evidence-95]
+  Final review: FINAL-001 (pass). [evidence-95]
+  Release: v0.4.1 (manifest workOrder.id). [evidence-95]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-95]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-95]
+  Latest attestation: harness claude-code; version 2.1.260; model
+claude-fable-5-1; effort xhigh; source operator-attested; account
+not-applicable. [evidence-95]
+  Authority: docs/work-orders/WO-018-control-plane-consolidation.md
+[evidence-95]
+  -> Evidence: ../../docs/verifications/WO-018/VER-001.md [evidence-96]
+  -> Evidence: ../../docs/final-reviews/WO-018/FINAL-001.md [evidence-97]
+  -> Evidence: WO-018-control-plane-consolidation.md [evidence-98]
+
+WO-019 [indexed-order-017e064c89c1c7d4]
+  title: WO-019 — Effort truth: declared in the work order, attested in the
+control log, v0.3.4 [evidence-99]
+  State: closed. [evidence-99]
+  Application target: v0.3.4. [evidence-99]
+  Dependency reference check (conservative): dependency-ready. [evidence-99]
+  References: WO-013: satisfied (closed); WO-018: satisfied (closed).
+[evidence-99]
+  Verification: VER-002 (pass). [evidence-99]
+  Final review: FINAL-001 (pass). [evidence-99]
+  Release: v0.3.4 (manifest workOrder.id). [evidence-99]
+  Model: any capable model. [evidence-99]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. Until this order
+lands, these values are self-reported in the result. The final reviewer must
+confirm the order's own attestations were recorded through the mechanism it
+ships, and disclose that as a self-referential instrument per
+07-execution-guide.md §Discipline. [evidence-99]
+  Latest attestation: harness claude-code; version 2.1.259; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-99]
+  Authority: docs/work-orders/WO-019-effort-truth.md [evidence-99]
+  -> Evidence: ../../docs/verifications/WO-019/VER-002.md [evidence-100]
+  -> Evidence: ../../docs/final-reviews/WO-019/FINAL-001.md [evidence-101]
+  -> Evidence: WO-019-effort-truth.md [evidence-102]
+
+WO-020 [indexed-order-01740d4c89b97f34]
+  title: WO-020 — Beacons: metadata-level projection of episode state with an
+exact codebook (v0.6.0) [evidence-103]
+  State: closed. [evidence-103]
+  Application target: v0.6.0. [evidence-103]
+  Dependency reference check (conservative): dependency-ready. [evidence-103]
+  References: WO-007: satisfied (closed); WO-016: satisfied (closed); WO-017:
+satisfied (closed). [evidence-103]
+  Verification: VER-001 (pass). [evidence-103]
+  Final review: FINAL-001 (pass). [evidence-103]
+  Release: v0.6.0 (manifest workOrder.id). [evidence-103]
+  Model: any capable model. [evidence-103]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-103]
+  Latest attestation: harness claude-code; version 2.1.261; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-103]
+  Authority: docs/work-orders/WO-020-beacon-codebook.md [evidence-103]
+  -> Evidence: ../../docs/verifications/WO-020/VER-001.md [evidence-104]
+  -> Evidence: ../../docs/final-reviews/WO-020/FINAL-001.md [evidence-105]
+  -> Evidence: WO-020-beacon-codebook.md [evidence-106]
+
+WO-021 [indexed-order-01740e4c89b980e7]
+  title: WO-021 — Beacons for the control plane: dogfood, sweep events,
+staleness, group composites (v0.8.0) [evidence-107]
+  State: closed. [evidence-107]
+  Application target: v0.8.0. [evidence-107]
+  Dependency reference check (conservative): dependency-ready. [evidence-107]
+  References: WO-009: satisfied (closed); WO-018: satisfied (closed); WO-019:
+satisfied (closed); WO-020: satisfied (closed). [evidence-107]
+  Verification: VER-001 (pass). [evidence-107]
+  Final review: FINAL-001 (pass). [evidence-107]
+  Release: v0.8.0 (manifest workOrder.id). [evidence-107]
+  Model: any capable model. [evidence-107]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-107]
+  Latest attestation: harness claude-code; version 2.1.261; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-107]
+  Authority: docs/work-orders/WO-021-control-plane-beacons.md [evidence-107]
+  -> Evidence: ../../docs/verifications/WO-021/VER-001.md [evidence-108]
+  -> Evidence: ../../docs/final-reviews/WO-021/FINAL-001.md [evidence-109]
+  -> Evidence: WO-021-control-plane-beacons.md [evidence-110]
+
+WO-022 [indexed-order-01740f4c89b9829a]
+  title: WO-022 — Senses: perception as a compiled, authorized, mounted
+capability (v0.11.0) [evidence-111]
+  State: closed. [evidence-111]
+  Application target: v0.11.0. [evidence-111]
+  Dependency reference check (conservative): dependency-ready. [evidence-111]
+  References: WO-008: satisfied (closed); WO-009: satisfied (closed); WO-021:
+satisfied (closed). [evidence-111]
+  Verification: VER-001 (pass). [evidence-111]
+  Final review: FINAL-001 (pass). [evidence-111]
+  Release: v0.11.0 (manifest workOrder.id). [evidence-111]
+  Model: any capable model. [evidence-111]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-111]
+  Latest attestation: harness claude-code; version 2.1.263; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-111]
+  Authority: docs/work-orders/WO-022-senses.md [evidence-111]
+  -> Evidence: ../../docs/verifications/WO-022/VER-001.md [evidence-112]
+  -> Evidence: ../../docs/final-reviews/WO-022/FINAL-001.md [evidence-113]
+  -> Evidence: WO-022-senses.md [evidence-114]
+
+WO-023 [indexed-order-0174104c89b9844d]
+  title: WO-023 — Compile the Entropy Reducer: identity, role, loadout,
+envelope, Program, and generated residue, v0.5.0 [evidence-115]
+  State: closed. [evidence-115]
+  Application target: v0.5.0. [evidence-115]
+  Dependency reference check (conservative): dependency-ready. [evidence-115]
+  References: WO-008: satisfied (closed); WO-019: satisfied (closed).
+[evidence-115]
+  Verification: VER-001 (pass). [evidence-115]
+  Final review: FINAL-001 (pass). [evidence-115]
+  Release: v0.5.0 (manifest workOrder.id). [evidence-115]
+  Model: any capable model for the implementation. The loadout it compiles pins
+its own actor: Claude Fable 5.1 at &#96;max&#96; effort for review episodes
+(Principle 8; a substitute is a different reviewer and must be attested as
+one). [evidence-115]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-115]
+  Latest attestation: harness claude-code; version 2.1.260; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-115]
+  Authority: docs/work-orders/WO-023-compile-entropy-reducer.md [evidence-115]
+  -> Evidence: ../../docs/verifications/WO-023/VER-001.md [evidence-116]
+  -> Evidence: ../../docs/final-reviews/WO-023/FINAL-001.md [evidence-117]
+  -> Evidence: WO-023-compile-entropy-reducer.md [evidence-118]
+
+WO-024 [indexed-order-0174094c89b97868]
+  title: WO-024 — Release notes surfaced: reviewed layered notes in the tag and
+a GitHub Release from the validated tag, v0.3.2 [evidence-119]
+  State: closed. [evidence-119]
+  Application target: v0.3.2. [evidence-119]
+  Dependency reference check (conservative): dependency-ready. [evidence-119]
+  References: WO-013: satisfied (closed); WO-018: satisfied (closed).
+[evidence-119]
+  Verification: VER-001 (pass). [evidence-119]
+  Final review: FINAL-001 (pass). [evidence-119]
+  Release: v0.3.2 (manifest workOrder.id). [evidence-119]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-119]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-119]
+  Authority: docs/work-orders/WO-024-release-notes-surfaced.md [evidence-119]
+  -> Evidence: ../../docs/verifications/WO-024/VER-001.md [evidence-120]
+  -> Evidence: ../../docs/final-reviews/WO-024/FINAL-001.md [evidence-121]
+  -> Evidence: WO-024-release-notes-surfaced.md [evidence-122]
+
+WO-025 [indexed-order-01740a4c89b97a1b]
+  title: WO-025 — Version-bearing surfaces: the front door names the release of
+the source it is in, checked before merge and at close, v0.3.3 [evidence-123]
+  State: closed. [evidence-123]
+  Application target: v0.3.3. [evidence-123]
+  Dependency reference check (conservative): dependency-ready. [evidence-123]
+  References: WO-013: satisfied (closed); WO-018: satisfied (closed); WO-024:
+satisfied (closed). [evidence-123]
+  Verification: VER-001 (pass). [evidence-123]
+  Final review: FINAL-001 (pass). [evidence-123]
+  Release: v0.3.3 (manifest workOrder.id). [evidence-123]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-123]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-123]
+  Authority: docs/work-orders/WO-025-version-bearing-surfaces.md [evidence-123]
+  -> Evidence: ../../docs/verifications/WO-025/VER-001.md [evidence-124]
+  -> Evidence: ../../docs/final-reviews/WO-025/FINAL-001.md [evidence-125]
+  -> Evidence: WO-025-version-bearing-surfaces.md [evidence-126]
+
+WO-026 [indexed-order-01740b4c89b97bce]
+  title: WO-026 — Work-order index: open and closed orders as a generated view
+over control evidence; files never move, v0.5.2 [evidence-127]
+  State: closed. [evidence-127]
+  Application target: v0.5.2. [evidence-127]
+  Dependency reference check (conservative): dependency-ready. [evidence-127]
+  References: WO-018: satisfied (closed); WO-019: satisfied (closed); WO-024:
+satisfied (closed). [evidence-127]
+  Verification: VER-001 (pass). [evidence-127]
+  Final review: FINAL-001 (pass). [evidence-127]
+  Release: v0.5.2 (manifest workOrder.id). [evidence-127]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-127]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-127]
+  Latest attestation: harness claude-code; version 2.1.261; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-127]
+  Authority: docs/work-orders/WO-026-work-order-index.md [evidence-127]
+  -> Evidence: ../../docs/verifications/WO-026/VER-001.md [evidence-128]
+  -> Evidence: ../../docs/final-reviews/WO-026/FINAL-001.md [evidence-129]
+  -> Evidence: WO-026-work-order-index.md [evidence-130]
+
+WO-027 [indexed-order-01740c4c89b97d81]
+  title: WO-027 — Local inference probe: runner inventory, pinned artifact,
+no-egress evidence, and the calibration decision, v0.3.3 [evidence-131]
+  State: closed. [evidence-131]
+  Application target: v0.3.3. [evidence-131]
+  Dependency reference check (conservative): blocked on WO-001. [evidence-131]
+  References: WO-001: not control-closed; WO-004: satisfied (closed); WO-008:
+satisfied (closed); WO-009: satisfied (closed). [evidence-131]
+  Verification: VER-001 (pass). [evidence-131]
+  Final review: FINAL-001 (pass). [evidence-131]
+  Release: v0.3.5 (manifest changedFiles). [evidence-131]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-131]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-131]
+  Latest attestation: harness claude-code; version 2.1.259; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-131]
+  Authority: docs/work-orders/WO-027-local-inference-probe.md [evidence-131]
+  -> Evidence: ../../docs/verifications/WO-027/VER-001.md [evidence-132]
+  -> Evidence: ../../docs/final-reviews/WO-027/FINAL-001.md [evidence-133]
+  -> Evidence: WO-027-local-inference-probe.md [evidence-134]
+
+WO-028 [indexed-order-0174054c89b9719c]
+  title: WO-028 — Control-event time: &#96;recordedAt&#96; on every appended
+control event, an elapsed-phase projection, and labeled recovery of historical
+times from local checkpoint refs, v0.5.1 [evidence-135]
+  State: closed. [evidence-135]
+  Application target: v0.5.1. [evidence-135]
+  Dependency reference check (conservative): dependency-ready. [evidence-135]
+  References: WO-018: satisfied (closed); WO-019: satisfied (closed); WO-021:
+satisfied (closed); WO-026: satisfied (closed). [evidence-135]
+  Verification: VER-001 (pass). [evidence-135]
+  Final review: FINAL-001 (pass). [evidence-135]
+  Release: v0.5.1 (manifest workOrder.id). [evidence-135]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-135]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-135]
+  Latest attestation: harness claude-code; version 2.1.261; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-135]
+  Authority: docs/work-orders/WO-028-control-event-time.md [evidence-135]
+  -> Evidence: ../../docs/verifications/WO-028/VER-001.md [evidence-136]
+  -> Evidence: ../../docs/final-reviews/WO-028/FINAL-001.md [evidence-137]
+  -> Evidence: WO-028-control-event-time.md [evidence-138]
+
+WO-029 [indexed-order-0174064c89b9734f]
+  title: WO-029 — Pinned artifact identity: bind an equipped compilation to its
+consuming decisions, v0.9.0 [evidence-139]
+  State: closed. [evidence-139]
+  Application target: v0.9.0. [evidence-139]
+  Dependency reference check (conservative): dependency-ready. [evidence-139]
+  References: WO-008: satisfied (closed); WO-009: satisfied (closed); WO-016:
+satisfied (closed); WO-023: satisfied (closed); WO-101: satisfied (closed).
+[evidence-139]
+  Verification: VER-001 (pass). [evidence-139]
+  Final review: FINAL-001 (pass). [evidence-139]
+  Release: v0.9.0 (manifest workOrder.id). [evidence-139]
+  Model: any capable model. [evidence-139]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-139]
+  Latest attestation: harness claude-code; version 2.1.261; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-139]
+  Authority: docs/work-orders/WO-029-pinned-artifact-identity.md [evidence-139]
+  -> Evidence: ../../docs/verifications/WO-029/VER-001.md [evidence-140]
+  -> Evidence: ../../docs/final-reviews/WO-029/FINAL-001.md [evidence-141]
+  -> Evidence: WO-029-pinned-artifact-identity.md [evidence-142]
+
+WO-030 [indexed-order-0177134c89bbbf3d]
+  title: WO-030 — Concurrent control state: one append-only segment per work
+order, lifecycle legality scoped to the named order, a selected-order status
+projection over every in-flight order, and a proven serial integration of two
+concurrent orders, v0.7.0 [evidence-143]
+  State: closed. [evidence-143]
+  Application target: v0.7.0. [evidence-143]
+  Dependency reference check (conservative): dependency-ready. [evidence-143]
+  References: WO-018: satisfied (closed); WO-026: satisfied (closed); WO-028:
+satisfied (closed). [evidence-143]
+  Verification: VER-001 (pass). [evidence-143]
+  Final review: FINAL-001 (pass). [evidence-143]
+  Release: v0.7.0 (manifest workOrder.id). [evidence-143]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-143]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-143]
+  Latest attestation: harness claude-code; version 2.1.261; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-143]
+  Authority: docs/work-orders/WO-030-concurrent-control-state.md [evidence-143]
+  -> Evidence: ../../docs/verifications/WO-030/VER-001.md [evidence-144]
+  -> Evidence: ../../docs/final-reviews/WO-030/FINAL-001.md [evidence-145]
+  -> Evidence: WO-030-concurrent-control-state.md [evidence-146]
+
+WO-031 [indexed-order-0177124c89bbbd8a]
+  title: WO-031 — Actor usage projection (v0.10.1) [evidence-147]
+  State: closed. [evidence-147]
+  Application target: v0.10.1. [evidence-147]
+  Dependency reference check (conservative): dependency-ready. [evidence-147]
+  References: WO-019: satisfied (closed); WO-028: satisfied (closed); WO-030:
+satisfied (closed). [evidence-147]
+  Verification: VER-001 (pass). [evidence-147]
+  Final review: FINAL-001 (pass). [evidence-147]
+  Release: v0.10.1 (manifest workOrder.id). [evidence-147]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-147]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-147]
+  Latest attestation: harness claude-code; version 2.1.261; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-147]
+  Authority: docs/work-orders/WO-031-actor-usage-projection.md [evidence-147]
+  -> Evidence: ../../docs/verifications/WO-031/VER-001.md [evidence-148]
+  -> Evidence: ../../docs/final-reviews/WO-031/FINAL-001.md [evidence-149]
+  -> Evidence: WO-031-actor-usage-projection.md [evidence-150]
+
+WO-038 [indexed-order-01770b4c89bbb1a5]
+  title: WO-038 — License posture lands in package metadata, publication
+guards, and the contribution rule, v0.13.2 [evidence-151]
+  State: closed. [evidence-151]
+  Application target: v0.13.2. [evidence-151]
+  Dependency reference check (conservative): dependency-ready. [evidence-151]
+  References: WO-018: satisfied (closed). [evidence-151]
+  Verification: VER-001 (pass). [evidence-151]
+  Final review: FINAL-001 (pass). [evidence-151]
+  Release: v0.13.2 (manifest workOrder.id). [evidence-151]
+  Model: any capable model. State the model and effort actually run in the
+result (07-execution-guide.md §Model-specific notes). [evidence-151]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-151]
+  Latest attestation: harness claude-code; version 2.1.263; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-151]
+  Authority: docs/work-orders/WO-038-license-posture-lands.md [evidence-151]
+  -> Evidence: ../../docs/verifications/WO-038/VER-001.md [evidence-152]
+  -> Evidence: ../../docs/final-reviews/WO-038/FINAL-001.md [evidence-153]
+  -> Evidence: WO-038-license-posture-lands.md [evidence-154]
+
+WO-041 [indexed-order-016d024c89b34dd5]
+  title: WO-041 — Plan refutation as a mechanism: a blinded episode that gates
+every planning pass on the vision (v0.13.3) [evidence-155]
+  State: closed. [evidence-155]
+  Application target: v0.13.3. [evidence-155]
+  Dependency reference check (conservative): dependency-ready. [evidence-155]
+  References: WO-009: satisfied (closed); WO-010: satisfied (closed); WO-023:
+satisfied (closed). [evidence-155]
+  Verification: VER-003 (pass). [evidence-155]
+  Final review: FINAL-002 (pass). [evidence-155]
+  Release: v0.13.3 (manifest workOrder.id). [evidence-155]
+  Model: any capable model for the script and fixtures. The refuter episode
+runs on the actual local transports and must state harness version, model, and
+effort (07-execution-guide.md §Model-specific notes). [evidence-155]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-155]
+  Latest attestation: harness claude-code; version 2.1.263; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-155]
+  Authority: docs/work-orders/WO-041-plan-refutation-mechanism.md [evidence-155]
+  -> Evidence: ../../docs/verifications/WO-041/VER-003.md [evidence-156]
+  -> Evidence: ../../docs/final-reviews/WO-041/FINAL-002.md [evidence-157]
+  -> Evidence: WO-041-plan-refutation-mechanism.md [evidence-158]
+
+WO-101 [indexed-order-0a90b34c8f03047e]
+  title: WO-101 — Program stepper enumeration, continuation round-trip, and
+hash-identity corpus, v0.2.0 [evidence-159]
+  State: closed. [evidence-159]
+  Application target: v0.2.0. [evidence-159]
+  Dependency reference check (conservative): dependency-ready. [evidence-159]
+  References: WO-004: satisfied (closed); WO-005: satisfied (closed); WO-011:
+satisfied (closed). [evidence-159]
+  Verification: VER-001 (pass). [evidence-159]
+  Final review: FINAL-001 (pass). [evidence-159]
+  Release: v0.2.2 (manifest changedFiles). [evidence-159]
+  Model: Codex (any capable tier); any capable model may substitute. State the
+model and effort actually run in the result (07-execution-guide.md
+§Model-specific notes). [evidence-159]
+  Effort: unknown [evidence-159]
+  Authority: docs/work-orders/WO-101-program-and-hash-corpus.md [evidence-159]
+  -> Evidence: ../../docs/verifications/WO-101/VER-001.md [evidence-160]
+  -> Evidence: ../../docs/final-reviews/WO-101/FINAL-001.md [evidence-161]
+  -> Evidence: WO-101-program-and-hash-corpus.md [evidence-162]
+
+WO-108 [indexed-order-0a90ac4c8f02f899]
+  title: WO-108 — Mutation evidence campaign for the current kernel, compiler,
+and skeleton — v0.13.1 [evidence-163]
+  State: closed. [evidence-163]
+  Application target: v0.13.1. [evidence-163]
+  Dependency reference check (conservative): dependency-ready. [evidence-163]
+  References: WO-004: satisfied (closed); WO-008: satisfied (closed); WO-011:
+satisfied (closed). [evidence-163]
+  Verification: VER-001 (pass). [evidence-163]
+  Final review: FINAL-001 (pass). [evidence-163]
+  Release: v0.13.1 (manifest workOrder.id). [evidence-163]
+  Model: Codex (any capable tier); any capable model may substitute. State the
+model and effort actually run in the result (07-execution-guide.md
+§Model-specific notes). [evidence-163]
+  Effort: executor xhigh+; verifier xhigh+; reviewer any. [evidence-163]
+  Latest attestation: harness claude-code; version 2.1.263; model
+claude-fable-5-1; effort max; source self-reported; account not-applicable.
+[evidence-163]
+  Authority: docs/work-orders/WO-108-mutation-probe.md [evidence-163]
+  -> Evidence: ../../docs/verifications/WO-108/VER-001.md [evidence-164]
+  -> Evidence: ../../docs/final-reviews/WO-108/FINAL-001.md [evidence-165]
+  -> Evidence: WO-108-mutation-probe.md [evidence-166]
+
+WO-001 [indexed-order-017a7a4c89bea419]
+  title: WO-001 — Environment truth (bounded), v0.0.1 [evidence-167]
+  State: historical (time-indexed). [evidence-167]
+  Application target: v0.0.1. [evidence-167]
+  Dependency reference check (conservative): dependency-ready. [evidence-167]
+  References: none named. [evidence-167]
+  Verification: none recorded. [evidence-167]
+  Final review: none recorded. [evidence-167]
+  Release: none recorded. [evidence-167]
+  Model: any capable model. [evidence-167]
+  Effort: unknown [evidence-167]
+  Authority: docs/work-orders/WO-001-environment-truth.md [evidence-167]
+  -> Evidence: WO-001-environment-truth.md [evidence-168]
+
+WO-002 [indexed-order-017a774c89be9f00]
+  title: WO-002 — Pure kernel package, v0.1.0 [evidence-169]
+  State: historical (time-indexed). [evidence-169]
+  Application target: v0.1.0. [evidence-169]
+  Dependency reference check (conservative): blocked on WO-001. [evidence-169]
+  References: WO-001: not control-closed. [evidence-169]
+  Verification: none recorded. [evidence-169]
+  Final review: none recorded. [evidence-169]
+  Release: none recorded. [evidence-169]
+  Model: any capable model. [evidence-169]
+  Effort: unknown [evidence-169]
+  Authority: docs/work-orders/WO-002-pure-kernel.md [evidence-169]
+  -> Evidence: WO-002-pure-kernel.md [evidence-170]
+
+Recorded actor usage [usage] — available
+
+Completed phase attempts [usage-total]
+  Measurement boundary: Completed phase attempts attributed to the completion
+actor. Wall-clock spans include waiting and interruptions; they are not active
+model time. elapsedMs sums known signed spans only; unknown counts attempts
+missing either endpoint. Retries are separate attempts. Overlapping work orders
+can overlap in these totals. No checkpoint times are recovered. [evidence-205]
+  attempts: 114 [evidence-205]
+  elapsedMs: 237471465 [evidence-205]
+  unknown: 68 [evidence-205]
+
+unknown — implementation [usage-af63ad4c86019caf]
+  harness: unknown [evidence-206]
+    Not recorded by this source
+  harnessVersion: unknown [evidence-206]
+    Not recorded by this source
+  model: unknown [evidence-206]
+    Not recorded by this source
+  effort: unknown [evidence-206]
+    Not recorded by this source
+  phase: implementation [evidence-206]
+  attempts: 11 [evidence-206]
+  elapsedMs: 0 [evidence-206]
+  unknown: 11 [evidence-206]
+  workOrders: WO-003; WO-004; WO-005; WO-006; WO-007; WO-012; WO-013; WO-015;
+WO-024; WO-025; WO-101 [evidence-206]
+
+unknown — verification [usage-af63ac4c86019afc]
+  harness: unknown [evidence-207]
+    Not recorded by this source
+  harnessVersion: unknown [evidence-207]
+    Not recorded by this source
+  model: unknown [evidence-207]
+    Not recorded by this source
+  effort: unknown [evidence-207]
+    Not recorded by this source
+  phase: verification [evidence-207]
+  attempts: 16 [evidence-207]
+  elapsedMs: 0 [evidence-207]
+  unknown: 16 [evidence-207]
+  workOrders: WO-003; WO-004; WO-005; WO-006; WO-007; WO-012; WO-013; WO-015;
+WO-024; WO-025; WO-101 [evidence-207]
+
+unknown — repair [usage-af63af4c8601a015]
+  harness: unknown [evidence-208]
+    Not recorded by this source
+  harnessVersion: unknown [evidence-208]
+    Not recorded by this source
+  model: unknown [evidence-208]
+    Not recorded by this source
+  effort: unknown [evidence-208]
+    Not recorded by this source
+  phase: repair [evidence-208]
+  attempts: 6 [evidence-208]
+  elapsedMs: 0 [evidence-208]
+  unknown: 6 [evidence-208]
+  workOrders: WO-003; WO-004; WO-006; WO-007 [evidence-208]
+
+unknown — finalReview [usage-af63ae4c86019e62]
+  harness: unknown [evidence-209]
+    Not recorded by this source
+  harnessVersion: unknown [evidence-209]
+    Not recorded by this source
+  model: unknown [evidence-209]
+    Not recorded by this source
+  effort: unknown [evidence-209]
+    Not recorded by this source
+  phase: finalReview [evidence-209]
+  attempts: 11 [evidence-209]
+  elapsedMs: 0 [evidence-209]
+  unknown: 11 [evidence-209]
+  workOrders: WO-003; WO-004; WO-005; WO-006; WO-007; WO-012; WO-013; WO-015;
+WO-024; WO-025; WO-101 [evidence-209]
+
+unknown — implementation [usage-af63a94c860195e3]
+  harness: codex-cli [evidence-210]
+  harnessVersion: 0.153.0 [evidence-210]
+  model: unknown [evidence-210]
+    Not recorded by this source
+  effort: xhigh [evidence-210]
+  phase: implementation [evidence-210]
+  attempts: 1 [evidence-210]
+  elapsedMs: 0 [evidence-210]
+  unknown: 1 [evidence-210]
+  workOrders: WO-008 [evidence-210]
+
+claude-opus-5[1m] — verification [usage-af63a84c86019430]
+  harness: claude-code [evidence-211]
+  harnessVersion: 2.1.260 [evidence-211]
+  model: claude-opus-5[1m] [evidence-211]
+  effort: xhigh [evidence-211]
+  phase: verification [evidence-211]
+  attempts: 2 [evidence-211]
+  elapsedMs: 0 [evidence-211]
+  unknown: 2 [evidence-211]
+  workOrders: WO-008; WO-018 [evidence-211]
+
+claude-fable-5-1 — finalReview [usage-af63ab4c86019949]
+  harness: claude-code [evidence-212]
+  harnessVersion: 2.1.260 [evidence-212]
+  model: claude-fable-5-1 [evidence-212]
+  effort: max [evidence-212]
+  phase: finalReview [evidence-212]
+  attempts: 2 [evidence-212]
+  elapsedMs: 0 [evidence-212]
+  unknown: 2 [evidence-212]
+  workOrders: WO-008; WO-023 [evidence-212]
+
+gpt-6-astra — implementation [usage-af63aa4c86019796]
+  harness: codex-cli [evidence-213]
+  harnessVersion: 0.153.4 [evidence-213]
+  model: gpt-6-astra [evidence-213]
+  effort: max [evidence-213]
+  phase: implementation [evidence-213]
+  attempts: 9 [evidence-213]
+  elapsedMs: 149174067 [evidence-213]
+  unknown: 0 [evidence-213]
+  workOrders: WO-009; WO-010; WO-011; WO-022; WO-029; WO-031; WO-038; WO-041;
+WO-108 [evidence-213]
+
+claude-opus-5[1m] — verification [usage-af63b54c8601aa47]
+  harness: claude-code [evidence-214]
+  harnessVersion: 2.1.261 [evidence-214]
+  model: claude-opus-5[1m] [evidence-214]
+  effort: max [evidence-214]
+  phase: verification [evidence-214]
+  attempts: 8 [evidence-214]
+  elapsedMs: 7462238 [evidence-214]
+  unknown: 0 [evidence-214]
+  workOrders: WO-009; WO-020; WO-021; WO-026; WO-028; WO-029; WO-030; WO-031
+[evidence-214]
+
+claude-fable-5-1 — finalReview [usage-af63b44c8601a894]
+  harness: claude-code [evidence-215]
+  harnessVersion: 2.1.261 [evidence-215]
+  model: claude-fable-5-1 [evidence-215]
+  effort: max [evidence-215]
+  phase: finalReview [evidence-215]
+  attempts: 8 [evidence-215]
+  elapsedMs: 10671270 [evidence-215]
+  unknown: 0 [evidence-215]
+  workOrders: WO-009; WO-020; WO-021; WO-026; WO-028; WO-029; WO-030; WO-031
+[evidence-215]
+
+claude-opus-5[1m] — verification [usage-07f89207b4ba08a4]
+  harness: claude-code [evidence-216]
+  harnessVersion: 2.1.263 [evidence-216]
+  model: claude-opus-5[1m] [evidence-216]
+  effort: max [evidence-216]
+  phase: verification [evidence-216]
+  attempts: 8 [evidence-216]
+  elapsedMs: 8066118 [evidence-216]
+  unknown: 0 [evidence-216]
+  workOrders: WO-010; WO-011; WO-022; WO-038; WO-041; WO-108 [evidence-216]
+
+claude-fable-5-1 — finalReview [usage-07f89307b4ba0a57]
+  harness: claude-code [evidence-217]
+  harnessVersion: 2.1.263 [evidence-217]
+  model: claude-fable-5-1 [evidence-217]
+  effort: max [evidence-217]
+  phase: finalReview [evidence-217]
+  attempts: 7 [evidence-217]
+  elapsedMs: 9812079 [evidence-217]
+  unknown: 0 [evidence-217]
+  workOrders: WO-010; WO-011; WO-022; WO-038; WO-041; WO-108 [evidence-217]
+
+gpt-5.6-sol — implementation [usage-07f89407b4ba0c0a]
+  harness: codex-cli [evidence-218]
+  harnessVersion: 0.153.0 [evidence-218]
+  model: gpt-5.6-sol [evidence-218]
+  effort: xhigh [evidence-218]
+  phase: implementation [evidence-218]
+  attempts: 3 [evidence-218]
+  elapsedMs: 0 [evidence-218]
+  unknown: 3 [evidence-218]
+  workOrders: WO-016; WO-017; WO-018 [evidence-218]
+
+claude-opus-5[1m] — verification [usage-07f89507b4ba0dbd]
+  harness: claude-code [evidence-219]
+  harnessVersion: 2.1.259 [evidence-219]
+  model: claude-opus-5[1m] [evidence-219]
+  effort: max [evidence-219]
+  phase: verification [evidence-219]
+  attempts: 4 [evidence-219]
+  elapsedMs: 0 [evidence-219]
+  unknown: 4 [evidence-219]
+  workOrders: WO-016; WO-017; WO-019 [evidence-219]
+
+claude-fable-5-1 — finalReview [usage-07f88e07b4ba01d8]
+  harness: claude-code [evidence-220]
+  harnessVersion: 2.1.259 [evidence-220]
+  model: claude-fable-5-1 [evidence-220]
+  effort: max [evidence-220]
+  phase: finalReview [evidence-220]
+  attempts: 4 [evidence-220]
+  elapsedMs: 0 [evidence-220]
+  unknown: 4 [evidence-220]
+  workOrders: WO-016; WO-017; WO-019; WO-027 [evidence-220]
+
+claude-fable-5-1 — finalReview [usage-07f88f07b4ba038b]
+  harness: claude-code [evidence-221]
+  harnessVersion: 2.1.260 [evidence-221]
+  model: claude-fable-5-1 [evidence-221]
+  effort: xhigh [evidence-221]
+  phase: finalReview [evidence-221]
+  attempts: 1 [evidence-221]
+  elapsedMs: 0 [evidence-221]
+  unknown: 1 [evidence-221]
+  workOrders: WO-018 [evidence-221]
+
+gpt-5.6-sol — implementation [usage-07f89007b4ba053e]
+  harness: codex-cli [evidence-222]
+  harnessVersion: 0.152.1 [evidence-222]
+  model: gpt-5.6-sol [evidence-222]
+  effort: xhigh [evidence-222]
+  phase: implementation [evidence-222]
+  attempts: 2 [evidence-222]
+  elapsedMs: 0 [evidence-222]
+  unknown: 2 [evidence-222]
+  workOrders: WO-019; WO-027 [evidence-222]
+
+gpt-5.6-sol — repair [usage-07f89107b4ba06f1]
+  harness: codex-cli [evidence-223]
+  harnessVersion: 0.152.1 [evidence-223]
+  model: gpt-5.6-sol [evidence-223]
+  effort: xhigh [evidence-223]
+  phase: repair [evidence-223]
+  attempts: 1 [evidence-223]
+  elapsedMs: 0 [evidence-223]
+  unknown: 1 [evidence-223]
+  workOrders: WO-019 [evidence-223]
+
+gpt-6-astra — implementation [usage-07f88a07b4b9fb0c]
+  harness: codex-cli [evidence-224]
+  harnessVersion: 0.153.2 [evidence-224]
+  model: gpt-6-astra [evidence-224]
+  effort: max [evidence-224]
+  phase: implementation [evidence-224]
+  attempts: 5 [evidence-224]
+  elapsedMs: 47584884 [evidence-224]
+  unknown: 1 [evidence-224]
+  workOrders: WO-020; WO-021; WO-026; WO-028; WO-030 [evidence-224]
+
+gpt-5.6-sol — implementation [usage-07f88b07b4b9fcbf]
+  harness: codex-cli [evidence-225]
+  harnessVersion: 0.153.2 [evidence-225]
+  model: gpt-5.6-sol [evidence-225]
+  effort: xhigh [evidence-225]
+  phase: implementation [evidence-225]
+  attempts: 1 [evidence-225]
+  elapsedMs: 0 [evidence-225]
+  unknown: 1 [evidence-225]
+  workOrders: WO-023 [evidence-225]
+
+claude-opus-5[1m] — verification [usage-08030407b4c31edf]
+  harness: claude-code [evidence-226]
+  harnessVersion: 2.1.260 [evidence-226]
+  model: claude-opus-5[1m] [evidence-226]
+  effort: max [evidence-226]
+  phase: verification [evidence-226]
+  attempts: 1 [evidence-226]
+  elapsedMs: 0 [evidence-226]
+  unknown: 1 [evidence-226]
+  workOrders: WO-023 [evidence-226]
+
+claude-fable-5-1 — verification [usage-08030307b4c31d2c]
+  harness: claude-code [evidence-227]
+  harnessVersion: 2.1.259 [evidence-227]
+  model: claude-fable-5-1 [evidence-227]
+  effort: max [evidence-227]
+  phase: verification [evidence-227]
+  attempts: 1 [evidence-227]
+  elapsedMs: 0 [evidence-227]
+  unknown: 1 [evidence-227]
+  workOrders: WO-027 [evidence-227]
+
+gpt-6-astra — repair [usage-08030607b4c32245]
+  harness: codex-cli [evidence-228]
+  harnessVersion: 0.153.4 [evidence-228]
+  model: gpt-6-astra [evidence-228]
+  effort: max [evidence-228]
+  phase: repair [evidence-228]
+  attempts: 2 [evidence-228]
+  elapsedMs: 4700809 [evidence-228]
+  unknown: 0 [evidence-228]
+  workOrders: WO-041 [evidence-228]
+
+BLUEPRINT [blueprint]
+Serves: product-lead, devops
+Is this still the thing we mean?
+
+Latest plan-refutation verdicts [refutation-verdicts] — unavailable
+Source not supplied
+
+Capability evidence [capabilities] — unavailable
+Source not supplied
+
+Publication status [publication] — unavailable
+Source not supplied
+
+Pending roadmap rungs [roadmap] — unavailable
+Source not supplied
+
+ROLE QUESTIONS
+product-lead: Is this still the thing we mean?
+  [refutation-verdicts] verdict + reason; latest-refutation.holdStatus
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+showrunner: What is active, what is blocked, what closed, and what did the
+release contain?
+  [orders] phase + blockers + dependencyCheck + legalNextActions;
+releases.workOrders
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+engineer: Does this composition express the behavior I mean, and what does it
+cost?
+  [saved-builds] tooltip + semanticHash + hashAgreement
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+tester: In this situation, does the equipped behavior do the right thing?
+  [compiled-mechanisms] desiredBehavior + fixture.incidentsPrevented +
+lastActivation; acceptance matrix status and evidence
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+devops: Which repeated step can become a checked mechanism next?
+  [compiled-mechanisms] boundary + rung + nextMaturity; capabilities.Next
+smallest promotable increment
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+
+SOURCES
+unavailable: skeleton:loadout-exports — Source not supplied
+unavailable: skeleton:feedback-units — Source not supplied
+available: control:canonical-segments
+available: docs/work-orders/README.md
+available: resume:status--json
+available: worktree:constellation
+available: release:list
+available: resume:usage--json
+unavailable: docs/planning/capability-table.md — Source not supplied
+unavailable: docs/publication/audience-status-index.md — Source not supplied
+unavailable: docs/product/06-roadmap.md — Source not supplied
+unavailable: docs/planning/refutations/ — Source not supplied
+
+EVIDENCE
+[evidence-1] docs/control/orders/WO-031.jsonl
+  append:1 (WorkOrderActivated, WO-031)
+[evidence-2] docs/control/orders/WO-031.jsonl
+  append:2 (ImplementationReady, WO-031)
+[evidence-3] docs/control/orders/WO-031.jsonl
+  append:3 (VerificationRequested, WO-031)
+[evidence-4] docs/control/orders/WO-031.jsonl
+  append:4 (VerificationCompleted, WO-031)
+[evidence-5] docs/control/orders/WO-031.jsonl
+  append:5 (FinalReviewRequested, WO-031)
+[evidence-6] docs/control/orders/WO-031.jsonl
+  append:6 (FinalReviewCompleted, WO-031)
+[evidence-7] docs/control/orders/WO-031.jsonl
+  append:1
+[evidence-8] docs/control/orders/WO-031.jsonl
+  append:3
+[evidence-9] docs/control/orders/WO-031.jsonl
+  append:5
+[evidence-10] docs/product/07-execution-guide.md
+  Operator resume phrases — operator dispatch role
+[evidence-11] docs/work-orders/README.md
+  line:39 (WO-032)
+[evidence-12] docs/work-orders/README.md
+  link:WO-032-uifa-actor-board.md
+[evidence-13] docs/work-orders/README.md
+  line:56 (WO-014)
+[evidence-14] docs/work-orders/README.md
+  link:WO-014-approval-burden-contract.md
+[evidence-15] docs/work-orders/README.md
+  line:71 (WO-033)
+[evidence-16] docs/work-orders/README.md
+  link:WO-033-compiled-starter-export.md
+[evidence-17] docs/work-orders/README.md
+  line:86 (WO-034)
+[evidence-18] docs/work-orders/README.md
+  link:WO-034-cross-repository-workstream-pilot.md
+[evidence-19] docs/work-orders/README.md
+  line:101 (WO-035)
+[evidence-20] docs/work-orders/README.md
+  link:WO-035-documentation-structure-reset.md
+[evidence-21] docs/work-orders/README.md
+  line:116 (WO-036)
+[evidence-22] docs/work-orders/README.md
+  link:WO-036-evidence-runner.md
+[evidence-23] docs/work-orders/README.md
+  line:131 (WO-037)
+[evidence-24] docs/work-orders/README.md
+  link:WO-037-five-s-equipment-set.md
+[evidence-25] docs/work-orders/README.md
+  line:146 (WO-039)
+[evidence-26] docs/work-orders/README.md
+  link:WO-039-harness-lowering.md
+[evidence-27] docs/work-orders/README.md
+  line:161 (WO-040)
+[evidence-28] docs/work-orders/README.md
+  link:WO-040-rule-migration-batch-one.md
+[evidence-29] docs/work-orders/README.md
+  line:176 (WO-102)
+[evidence-30] docs/work-orders/README.md
+  link:WO-102-cadence-corpus.md
+[evidence-31] docs/work-orders/README.md
+  line:191 (WO-103)
+[evidence-32] docs/work-orders/README.md
+  link:WO-103-authority-outbox-corpus.md
+[evidence-33] docs/work-orders/README.md
+  line:206 (WO-105)
+[evidence-34] docs/work-orders/README.md
+  link:WO-105-crash-shape-corpus.md
+[evidence-35] docs/work-orders/README.md
+  line:221 (WO-107)
+[evidence-36] docs/work-orders/README.md
+  link:WO-107-profiling-baseline.md
+[evidence-37] docs/work-orders/README.md
+  line:236 (WO-109)
+[evidence-38] docs/work-orders/README.md
+  link:WO-109-shape-first-source-remine.md
+[evidence-39] docs/work-orders/README.md
+  line:253 (WO-003)
+[evidence-40] docs/work-orders/README.md
+  link:../../docs/verifications/WO-003/VER-002.md
+[evidence-41] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-003/FINAL-001.md
+[evidence-42] docs/work-orders/README.md
+  link:WO-003-walking-skeleton.md
+[evidence-43] docs/work-orders/README.md
+  line:268 (WO-004)
+[evidence-44] docs/work-orders/README.md
+  link:../../docs/verifications/WO-004/VER-002.md
+[evidence-45] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-004/FINAL-001.md
+[evidence-46] docs/work-orders/README.md
+  link:WO-004-environment-truth-addendum.md
+[evidence-47] docs/work-orders/README.md
+  line:283 (WO-005)
+[evidence-48] docs/work-orders/README.md
+  link:../../docs/verifications/WO-005/VER-001.md
+[evidence-49] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-005/FINAL-001.md
+[evidence-50] docs/work-orders/README.md
+  link:WO-005-capability-table.md
+[evidence-51] docs/work-orders/README.md
+  line:298 (WO-006)
+[evidence-52] docs/work-orders/README.md
+  link:../../docs/verifications/WO-006/VER-003.md
+[evidence-53] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-006/FINAL-001.md
+[evidence-54] docs/work-orders/README.md
+  link:WO-006-publication-bootstrap.md
+[evidence-55] docs/work-orders/README.md
+  line:313 (WO-007)
+[evidence-56] docs/work-orders/README.md
+  link:../../docs/verifications/WO-007/VER-002.md
+[evidence-57] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-007/FINAL-001.md
+[evidence-58] docs/work-orders/README.md
+  link:WO-007-audit-record-baseline.md
+[evidence-59] docs/work-orders/README.md
+  line:328 (WO-008)
+[evidence-60] docs/work-orders/README.md
+  link:../../docs/verifications/WO-008/VER-001.md
+[evidence-61] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-008/FINAL-001.md
+[evidence-62] docs/work-orders/README.md
+  link:WO-008-composition-compiler.md
+[evidence-63] docs/work-orders/README.md
+  line:344 (WO-009)
+[evidence-64] docs/work-orders/README.md
+  link:../../docs/verifications/WO-009/VER-001.md
+[evidence-65] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-009/FINAL-001.md
+[evidence-66] docs/work-orders/README.md
+  link:WO-009-real-disposable-worker.md
+[evidence-67] docs/work-orders/README.md
+  line:360 (WO-010)
+[evidence-68] docs/work-orders/README.md
+  link:../../docs/verifications/WO-010/VER-001.md
+[evidence-69] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-010/FINAL-001.md
+[evidence-70] docs/work-orders/README.md
+  link:WO-010-independent-verification.md
+[evidence-71] docs/work-orders/README.md
+  line:376 (WO-011)
+[evidence-72] docs/work-orders/README.md
+  link:../../docs/verifications/WO-011/VER-001.md
+[evidence-73] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-011/FINAL-001.md
+[evidence-74] docs/work-orders/README.md
+  link:WO-011-feedback-compiler.md
+[evidence-75] docs/work-orders/README.md
+  line:392 (WO-012)
+[evidence-76] docs/work-orders/README.md
+  link:../../docs/verifications/WO-012/VER-001.md
+[evidence-77] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-012/FINAL-001.md
+[evidence-78] docs/work-orders/README.md
+  link:WO-012-release-gate-path-quoting.md
+[evidence-79] docs/work-orders/README.md
+  line:407 (WO-013)
+[evidence-80] docs/work-orders/README.md
+  link:../../docs/verifications/WO-013/VER-001.md
+[evidence-81] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-013/FINAL-001.md
+[evidence-82] docs/work-orders/README.md
+  link:WO-013-portable-fixture-temp-roots.md
+[evidence-83] docs/work-orders/README.md
+  line:422 (WO-015)
+[evidence-84] docs/work-orders/README.md
+  link:../../docs/verifications/WO-015/VER-001.md
+[evidence-85] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-015/FINAL-001.md
+[evidence-86] docs/work-orders/README.md
+  link:WO-015-release-cadence-parser.md
+[evidence-87] docs/work-orders/README.md
+  line:437 (WO-016)
+[evidence-88] docs/work-orders/README.md
+  link:../../docs/verifications/WO-016/VER-001.md
+[evidence-89] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-016/FINAL-001.md
+[evidence-90] docs/work-orders/README.md
+  link:WO-016-skeleton-reactor.md
+[evidence-91] docs/work-orders/README.md
+  line:453 (WO-017)
+[evidence-92] docs/work-orders/README.md
+  link:../../docs/verifications/WO-017/VER-001.md
+[evidence-93] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-017/FINAL-001.md
+[evidence-94] docs/work-orders/README.md
+  link:WO-017-kernel-truthfulness.md
+[evidence-95] docs/work-orders/README.md
+  line:469 (WO-018)
+[evidence-96] docs/work-orders/README.md
+  link:../../docs/verifications/WO-018/VER-001.md
+[evidence-97] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-018/FINAL-001.md
+[evidence-98] docs/work-orders/README.md
+  link:WO-018-control-plane-consolidation.md
+[evidence-99] docs/work-orders/README.md
+  line:485 (WO-019)
+[evidence-100] docs/work-orders/README.md
+  link:../../docs/verifications/WO-019/VER-002.md
+[evidence-101] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-019/FINAL-001.md
+[evidence-102] docs/work-orders/README.md
+  link:WO-019-effort-truth.md
+[evidence-103] docs/work-orders/README.md
+  line:501 (WO-020)
+[evidence-104] docs/work-orders/README.md
+  link:../../docs/verifications/WO-020/VER-001.md
+[evidence-105] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-020/FINAL-001.md
+[evidence-106] docs/work-orders/README.md
+  link:WO-020-beacon-codebook.md
+[evidence-107] docs/work-orders/README.md
+  line:517 (WO-021)
+[evidence-108] docs/work-orders/README.md
+  link:../../docs/verifications/WO-021/VER-001.md
+[evidence-109] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-021/FINAL-001.md
+[evidence-110] docs/work-orders/README.md
+  link:WO-021-control-plane-beacons.md
+[evidence-111] docs/work-orders/README.md
+  line:533 (WO-022)
+[evidence-112] docs/work-orders/README.md
+  link:../../docs/verifications/WO-022/VER-001.md
+[evidence-113] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-022/FINAL-001.md
+[evidence-114] docs/work-orders/README.md
+  link:WO-022-senses.md
+[evidence-115] docs/work-orders/README.md
+  line:549 (WO-023)
+[evidence-116] docs/work-orders/README.md
+  link:../../docs/verifications/WO-023/VER-001.md
+[evidence-117] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-023/FINAL-001.md
+[evidence-118] docs/work-orders/README.md
+  link:WO-023-compile-entropy-reducer.md
+[evidence-119] docs/work-orders/README.md
+  line:565 (WO-024)
+[evidence-120] docs/work-orders/README.md
+  link:../../docs/verifications/WO-024/VER-001.md
+[evidence-121] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-024/FINAL-001.md
+[evidence-122] docs/work-orders/README.md
+  link:WO-024-release-notes-surfaced.md
+[evidence-123] docs/work-orders/README.md
+  line:580 (WO-025)
+[evidence-124] docs/work-orders/README.md
+  link:../../docs/verifications/WO-025/VER-001.md
+[evidence-125] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-025/FINAL-001.md
+[evidence-126] docs/work-orders/README.md
+  link:WO-025-version-bearing-surfaces.md
+[evidence-127] docs/work-orders/README.md
+  line:595 (WO-026)
+[evidence-128] docs/work-orders/README.md
+  link:../../docs/verifications/WO-026/VER-001.md
+[evidence-129] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-026/FINAL-001.md
+[evidence-130] docs/work-orders/README.md
+  link:WO-026-work-order-index.md
+[evidence-131] docs/work-orders/README.md
+  line:611 (WO-027)
+[evidence-132] docs/work-orders/README.md
+  link:../../docs/verifications/WO-027/VER-001.md
+[evidence-133] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-027/FINAL-001.md
+[evidence-134] docs/work-orders/README.md
+  link:WO-027-local-inference-probe.md
+[evidence-135] docs/work-orders/README.md
+  line:627 (WO-028)
+[evidence-136] docs/work-orders/README.md
+  link:../../docs/verifications/WO-028/VER-001.md
+[evidence-137] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-028/FINAL-001.md
+[evidence-138] docs/work-orders/README.md
+  link:WO-028-control-event-time.md
+[evidence-139] docs/work-orders/README.md
+  line:643 (WO-029)
+[evidence-140] docs/work-orders/README.md
+  link:../../docs/verifications/WO-029/VER-001.md
+[evidence-141] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-029/FINAL-001.md
+[evidence-142] docs/work-orders/README.md
+  link:WO-029-pinned-artifact-identity.md
+[evidence-143] docs/work-orders/README.md
+  line:659 (WO-030)
+[evidence-144] docs/work-orders/README.md
+  link:../../docs/verifications/WO-030/VER-001.md
+[evidence-145] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-030/FINAL-001.md
+[evidence-146] docs/work-orders/README.md
+  link:WO-030-concurrent-control-state.md
+[evidence-147] docs/work-orders/README.md
+  line:675 (WO-031)
+[evidence-148] docs/work-orders/README.md
+  link:../../docs/verifications/WO-031/VER-001.md
+[evidence-149] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-031/FINAL-001.md
+[evidence-150] docs/work-orders/README.md
+  link:WO-031-actor-usage-projection.md
+[evidence-151] docs/work-orders/README.md
+  line:691 (WO-038)
+[evidence-152] docs/work-orders/README.md
+  link:../../docs/verifications/WO-038/VER-001.md
+[evidence-153] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-038/FINAL-001.md
+[evidence-154] docs/work-orders/README.md
+  link:WO-038-license-posture-lands.md
+[evidence-155] docs/work-orders/README.md
+  line:707 (WO-041)
+[evidence-156] docs/work-orders/README.md
+  link:../../docs/verifications/WO-041/VER-003.md
+[evidence-157] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-041/FINAL-002.md
+[evidence-158] docs/work-orders/README.md
+  link:WO-041-plan-refutation-mechanism.md
+[evidence-159] docs/work-orders/README.md
+  line:723 (WO-101)
+[evidence-160] docs/work-orders/README.md
+  link:../../docs/verifications/WO-101/VER-001.md
+[evidence-161] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-101/FINAL-001.md
+[evidence-162] docs/work-orders/README.md
+  link:WO-101-program-and-hash-corpus.md
+[evidence-163] docs/work-orders/README.md
+  line:738 (WO-108)
+[evidence-164] docs/work-orders/README.md
+  link:../../docs/verifications/WO-108/VER-001.md
+[evidence-165] docs/work-orders/README.md
+  link:../../docs/final-reviews/WO-108/FINAL-001.md
+[evidence-166] docs/work-orders/README.md
+  link:WO-108-mutation-probe.md
+[evidence-167] docs/work-orders/README.md
+  line:756 (WO-001)
+[evidence-168] docs/work-orders/README.md
+  link:WO-001-environment-truth.md
+[evidence-169] docs/work-orders/README.md
+  line:771 (WO-002)
+[evidence-170] docs/work-orders/README.md
+  link:WO-002-pure-kernel.md
+[evidence-171] resume:status--json
+  selected:WO-031
+[evidence-172] resume:status--json
+  selected:WO-032
+[evidence-173] worktree:constellation
+  line:1
+[evidence-174] worktree:constellation
+  line:2
+[evidence-175] worktree:constellation
+  line:3
+[evidence-176] worktree:constellation
+  line:4
+[evidence-177] release:list
+  line:2 (v0.2.0)
+[evidence-178] release:list
+  line:3 (v0.2.1)
+[evidence-179] release:list
+  line:4 (v0.2.2)
+[evidence-180] release:list
+  line:5 (v0.2.3)
+[evidence-181] release:list
+  line:6 (v0.3.0)
+[evidence-182] release:list
+  line:7 (v0.3.1)
+[evidence-183] release:list
+  line:8 (v0.3.2)
+[evidence-184] release:list
+  line:9 (v0.3.3)
+[evidence-185] release:list
+  line:10 (v0.3.4)
+[evidence-186] release:list
+  line:11 (v0.3.5)
+[evidence-187] release:list
+  line:12 (v0.3.6)
+[evidence-188] release:list
+  line:13 (v0.4.0)
+[evidence-189] release:list
+  line:14 (v0.4.1)
+[evidence-190] release:list
+  line:15 (v0.5.0)
+[evidence-191] release:list
+  line:16 (v0.5.1)
+[evidence-192] release:list
+  line:17 (v0.5.2)
+[evidence-193] release:list
+  line:18 (v0.6.0)
+[evidence-194] release:list
+  line:19 (v0.7.0)
+[evidence-195] release:list
+  line:20 (v0.8.0)
+[evidence-196] release:list
+  line:21 (v0.9.0)
+[evidence-197] release:list
+  line:22 (v0.10.0)
+[evidence-198] release:list
+  line:23 (v0.10.1)
+[evidence-199] release:list
+  line:24 (v0.11.0)
+[evidence-200] release:list
+  line:25 (v0.12.0)
+[evidence-201] release:list
+  line:26 (v0.13.0)
+[evidence-202] release:list
+  line:27 (v0.13.1)
+[evidence-203] release:list
+  line:28 (v0.13.2)
+[evidence-204] release:list
+  line:29 (v0.13.3)
+[evidence-205] resume:usage--json
+  totals
+[evidence-206] resume:usage--json
+  byActor:0
+[evidence-207] resume:usage--json
+  byActor:1
+[evidence-208] resume:usage--json
+  byActor:2
+[evidence-209] resume:usage--json
+  byActor:3
+[evidence-210] resume:usage--json
+  byActor:4
+[evidence-211] resume:usage--json
+  byActor:5
+[evidence-212] resume:usage--json
+  byActor:6
+[evidence-213] resume:usage--json
+  byActor:7
+[evidence-214] resume:usage--json
+  byActor:8
+[evidence-215] resume:usage--json
+  byActor:9
+[evidence-216] resume:usage--json
+  byActor:10
+[evidence-217] resume:usage--json
+  byActor:11
+[evidence-218] resume:usage--json
+  byActor:12
+[evidence-219] resume:usage--json
+  byActor:13
+[evidence-220] resume:usage--json
+  byActor:14
+[evidence-221] resume:usage--json
+  byActor:15
+[evidence-222] resume:usage--json
+  byActor:16
+[evidence-223] resume:usage--json
+  byActor:17
+[evidence-224] resume:usage--json
+  byActor:18
+[evidence-225] resume:usage--json
+  byActor:19
+[evidence-226] resume:usage--json
+  byActor:20
+[evidence-227] resume:usage--json
+  byActor:21
+[evidence-228] resume:usage--json
+  byActor:22

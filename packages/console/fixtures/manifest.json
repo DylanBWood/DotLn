@@ -1,0 +1,190 @@
+{
+  "fixtureVersion": "uifa-board-fixtures-v1",
+  "capture": "2026-09-07 WO-032 executor; canonical records and source-format snapshots. Constellation checkout addresses replaced by declared fixture addresses; no liveness or human identity inferred.",
+  "inputs": {
+    "loadouts": {
+      "path": "packages/console/fixtures/inputs/loadouts.json",
+      "ref": "skeleton:loadout-exports",
+      "format": "json",
+      "sha256": "ffa8922c3cbb4651828a107f1b1d512f893622c33ab5876a3d8148225e364a11"
+    },
+    "feedbackUnits": {
+      "path": "packages/console/fixtures/inputs/feedbackUnits.json",
+      "ref": "packages/skeleton/src/loadouts/feedback.ts",
+      "format": "json",
+      "sha256": "5a71574fbb94d44aa3c17bec893b9387f7acb02881712843b43e7a4bcac27cbc"
+    },
+    "controlStatus": {
+      "path": "packages/console/fixtures/inputs/controlStatus.json",
+      "ref": "resume:status--json",
+      "format": "json",
+      "sha256": "55189193af02ccab482a2b85774267e3103f83e416d9e5d17332f07b19d0a2f7"
+    },
+    "controlUsage": {
+      "path": "packages/console/fixtures/inputs/controlUsage.json",
+      "ref": "resume:usage--json",
+      "format": "json",
+      "sha256": "c908ad9d47e87e750f7ab914679fc85070651665750cf48955e0b9e01ac55d05"
+    },
+    "constellation": {
+      "path": "packages/console/fixtures/inputs/constellation.md",
+      "ref": "worktree:constellation",
+      "format": "text",
+      "sha256": "586a8718a1bbacb5c6b37dbe05611c26d33e777aea053a8fde0bc9c3082b1f3e"
+    },
+    "releases": {
+      "path": "packages/console/fixtures/inputs/releases.md",
+      "ref": "release:list",
+      "format": "text",
+      "sha256": "50f90350a6d6b34b6496182f663ebb2f9bb8c3cd25a5dc307da3c781ad8a3150"
+    },
+    "workOrderIndex": {
+      "path": "packages/console/fixtures/inputs/workOrderIndex.md",
+      "ref": "docs/work-orders/README.md",
+      "format": "text",
+      "sha256": "5a250bb79498ce9c43a555e6bc0fd9161ff4b7de5ce3ccd373b39e214256d342"
+    },
+    "capabilities": {
+      "path": "packages/console/fixtures/inputs/capabilities.md",
+      "ref": "docs/planning/capability-table.md",
+      "format": "text",
+      "sha256": "a6b42c95add01b3cf6115504154246bff8aad878de9bb564d6d4e9d79d228f93"
+    },
+    "publication": {
+      "path": "packages/console/fixtures/inputs/publication.md",
+      "ref": "docs/publication/audience-status-index.md",
+      "format": "text",
+      "sha256": "bade7bb8382748fcbf9f0b8c66a14dbb1fe98920c47d133bd3bc9e7817fec5b1"
+    },
+    "roadmap": {
+      "path": "packages/console/fixtures/inputs/roadmap.md",
+      "ref": "docs/product/06-roadmap.md",
+      "format": "text",
+      "sha256": "6398532a9f547060eaa8875faaa96372e60b68e8bbb076ac81e2cca7d8028673"
+    },
+    "wo009": {
+      "path": "packages/console/fixtures/wo009.events.jsonl",
+      "ref": "packages/console/fixtures/wo009.events.jsonl",
+      "format": "log",
+      "sha256": "4f89e73d7776c7d990f9ba1cea9fcfe0192f8d6cb02f38a24379645193467029"
+    },
+    "wo011Audit": {
+      "path": "docs/evidence/WO-011/selfhost-audit.jsonl",
+      "ref": "docs/evidence/WO-011/selfhost-audit.jsonl",
+      "format": "log",
+      "sha256": "f6b558ef1ac8ddf275580ac0ac1b3b8dd6f7270d530967c0d481e68dbb29c93e"
+    },
+    "wo011Verifier": {
+      "path": "docs/evidence/WO-011/selfhost-verification.jsonl",
+      "ref": "docs/evidence/WO-011/selfhost-verification.jsonl",
+      "format": "log",
+      "sha256": "a3bf7f1be10204a53c37dbbb7b4c094e32c3b8649ecfb61a85110dfcd0c83e5f"
+    },
+    "maturity": {
+      "path": "docs/evidence/WO-011/feedback.json",
+      "ref": "docs/evidence/WO-011/feedback.json",
+      "format": "json",
+      "sha256": "3ae7a8cf9b8af38a1d14bdd0d224605167eb59e25baf51515624fc2e35380cde"
+    },
+    "controlLog": {
+      "path": "docs/control/orders/WO-031.jsonl",
+      "ref": "docs/control/orders/WO-031.jsonl",
+      "format": "log",
+      "sha256": "ae0e90c604af421eacf99ee3d9da8ca430fa4726eafa166ba512ba040acc42a2"
+    },
+    "receipt1": {
+      "path": "docs/planning/refutations/2026-09-06-phase-two-redirect-002.json",
+      "ref": "docs/planning/refutations/2026-09-06-phase-two-redirect-002.json",
+      "format": "json",
+      "sha256": "f9111d5dc265feb078126ac5be7a89bd9f1097515ffdfa82ac7f5cb704f5982e"
+    },
+    "receipt2": {
+      "path": "docs/planning/refutations/2026-09-06-phase-two-redirect-003.json",
+      "ref": "docs/planning/refutations/2026-09-06-phase-two-redirect-003.json",
+      "format": "json",
+      "sha256": "e37aa9c3014844ec05104c3aa1f8e7577102e6a05c70cf4f4610ba74af902929"
+    },
+    "receipt3": {
+      "path": "docs/planning/refutations/2026-09-06-phase-two-redirect-004.json",
+      "ref": "docs/planning/refutations/2026-09-06-phase-two-redirect-004.json",
+      "format": "json",
+      "sha256": "ab431102b7f554c2999e75e76b8f7e2119b7ba080e4c8d6add419e6682082668"
+    },
+    "receipt4": {
+      "path": "docs/planning/refutations/2026-09-06-phase-two-redirect-005.json",
+      "ref": "docs/planning/refutations/2026-09-06-phase-two-redirect-005.json",
+      "format": "json",
+      "sha256": "245cdca610492ddc2fc18c4249f73fa490619938a0c74340b30ca7df25bec906"
+    },
+    "receipt5": {
+      "path": "docs/planning/refutations/2026-09-06-phase-two-redirect-006.json",
+      "ref": "docs/planning/refutations/2026-09-06-phase-two-redirect-006.json",
+      "format": "json",
+      "sha256": "6366389c6d07e54227e80978a10c7e51c6fd3269d208c2ba469dec7eab608b82"
+    },
+    "receipt6": {
+      "path": "docs/planning/refutations/2026-09-06-phase-two-redirect.json",
+      "ref": "docs/planning/refutations/2026-09-06-phase-two-redirect.json",
+      "format": "json",
+      "sha256": "fbcd56ebc3df6e28e99c57a062ee76862390e94a9351f3cd910bd78fa7a7e603"
+    },
+    "receipt7": {
+      "path": "docs/planning/refutations/2026-09-07-wo041-live-001.json",
+      "ref": "docs/planning/refutations/2026-09-07-wo041-live-001.json",
+      "format": "json",
+      "sha256": "049fd2cd4be7cdc3fa8e700d9dc3bf0aeae7420c4497322536f43940dda17ea9"
+    }
+  },
+  "cases": {
+    "wo009": {
+      "loadouts": "loadouts",
+      "stores": [
+        {
+          "id": "wo009-demo",
+          "label": "WO-009 demonstration (recorded fixture)",
+          "input": "wo009"
+        }
+      ]
+    },
+    "wo011": {
+      "loadouts": "loadouts",
+      "stores": [
+        {
+          "id": "wo011-audit",
+          "label": "WO-011 self-hosted executor",
+          "input": "wo011Audit"
+        },
+        {
+          "id": "wo011-verifier",
+          "label": "WO-011 self-hosted verifier",
+          "input": "wo011Verifier"
+        }
+      ],
+      "feedbackUnits": "feedbackUnits",
+      "maturity": "maturity"
+    },
+    "control": {
+      "controlLog": ["controlLog"],
+      "controlStatus": "controlStatus",
+      "controlUsage": "controlUsage",
+      "constellation": "constellation",
+      "releases": "releases",
+      "workOrderIndex": "workOrderIndex"
+    },
+    "refutations": {
+      "capabilities": "capabilities",
+      "publication": "publication",
+      "roadmap": "roadmap",
+      "refutations": [
+        "receipt1",
+        "receipt2",
+        "receipt3",
+        "receipt4",
+        "receipt5",
+        "receipt6",
+        "receipt7"
+      ]
+    },
+    "missing": {}
+  }
+}

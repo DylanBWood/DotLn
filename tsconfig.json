@@ -3,6 +3,7 @@
   "references": [
     { "path": "./packages/kernel" },
     { "path": "./packages/compiler" },
-    { "path": "./packages/skeleton" }
+    { "path": "./packages/skeleton" },
+    { "path": "./packages/console" }
   ]
 }

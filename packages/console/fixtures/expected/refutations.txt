@@ -1,0 +1,3288 @@
+DOTLN / ACTOR BOARD
+uifa-board-v1 · Read-only, lossy projection
+Recorded facts only. Unknown is not zero; a missing source is unavailable.
+
+ACTORS [actors]
+Serves: showrunner, engineer, tester
+Who is recorded, what are they equipped to do, and what evidence shows their
+work?
+
+Recorded episodes [episode-actors] — unavailable
+No worker or audit store was supplied
+
+People and recorded workflow actors [control-actors] — unavailable
+Source not supplied
+
+Saved actor definitions [actor-definitions] — unavailable
+Source not supplied
+
+BUILDS [builds]
+Serves: engineer
+Does this composition express the behavior I mean, and what does it cost?
+
+Saved builds [saved-builds] — unavailable
+Source not supplied
+
+MECHANISMS [mechanisms]
+Serves: tester, engineer, devops
+In this situation, does the equipped behavior do the right thing?
+
+Compiled mechanisms [compiled-mechanisms] — unavailable
+Source not supplied
+
+WORK [work]
+Serves: showrunner, devops
+What is active, what is blocked, what closed, and what did the release contain?
+
+Orders and legal actions [orders] — unavailable
+Source not supplied
+
+Worktree Beacon observations [worktrees] — unavailable
+Source not supplied
+
+Published releases [releases] — unavailable
+Source not supplied
+
+Work-order evidence index [work-order-index] — unavailable
+Source not supplied
+
+Recorded actor usage [usage] — unavailable
+Source not supplied
+
+BLUEPRINT [blueprint]
+Serves: product-lead, devops
+Is this still the thing we mean?
+
+Latest plan-refutation verdicts [refutation-verdicts] — available
+
+2026-09-07-wo041-live-001 [latest-refutation]
+  Plan verdict: pass [evidence-544]
+  Recorded hold status: no holds recorded [evidence-544]
+    Receipt result only; this board does not evaluate overrides, staleness, or
+planning-gate legality
+  Hold reasons: none recorded [evidence-544]
+  Receipt purpose: evidence [evidence-544]
+  Receipt format: plan-refutation-receipt-v1 [evidence-544]
+
+WO-038 [refutation-01770b4c89bbb1a5]
+  Vision-fit verdict: machinery [evidence-545]
+  Why this verdict: Changes manifests, adds a license and private-flag check,
+adds a Signed-off-by refusal to worktree publish, and writes the contributing
+and legal documents. No thesis speaks to licensing, and no capability row
+moves: publication.bootstrap stays latent because the order's own non-goals
+exclude publishing anything, and the new guard exists to refuse a publish
+rather than to produce an artifact. Not drift: exclusion 4 keeps local and
+private distribution complete, and nothing here narrows distribution; the DCO
+rule binds contributors, not owners. Surfaces: devops gains two checked
+mechanisms that replace a repeated manual read, the license and hash refusals
+in check-surfaces and the DCO refusal in publish; the showrunner gains a
+release control that refuses an accidental package publish. Criterion 6 is the
+only guard on the clean-room floor for this order because it lands before the
+local-terms check exists; the reviewer's read of CONTRIBUTING.md against the
+floor should be recorded as what was read and what was found, not as a
+checkbox. [evidence-545]
+  Vision passage: unknown [evidence-545]
+    Not recorded by this source
+  Capability row: unknown [evidence-545]
+    Not recorded by this source
+  Roles served: UIFA devops; UIFA showrunner [evidence-545]
+  -> Receipt and hold status [latest-refutation]
+
+WO-039 [refutation-01770a4c89bbaff2]
+  Vision-fit verdict: thesis-advancing [evidence-546]
+  Why this verdict: The one-paragraph story's own sentence made executable:
+each correction becomes a typed mechanism attached only where relevant, and a
+session gets a build, not a biography. The target lowers the ten units to rung
+2 permissions and hooks, rung 7 role skills, and a rung 8 residue with a byte
+count. Criterion 3 anchors every hook's allow or refuse decision to
+feedbackBoundary on the same host facts, so enforcement is a lowering of the
+kernel's boundary rather than a second rule set, which is the core bet's
+runtime-lowering posture. Criterion 6 is the strongest sentence in the horizon:
+it counts every file the floor or the skill directs, rewrites the read order
+per role, and refuses relocation into a skill as a way to pass. Creates
+compiler.harness-v1 and harness.self-hosted. Exclusion 1 supports the order
+rather than refuting it: harnesses are hosted as observed environments, and
+criterion 1's phase 0 record with cited profile rows is that posture. Exclusion
+2 is not triggered because the profile abstraction and the declared Codex limit
+keep this from being one vendor's harness made nicer, but it stays a watch item
+until a second profile is fully observed. Surfaces: the engineer defines the
+Contributor loadout and reads its cost per rung; devops gets harness emit and
+harness check inside the gate; the tester gets one synthetic-payload fixture
+per hook proving the decision equals the boundary and that removing the unit
+makes the hook allow. Weakness: criterion 4 lets the correction unit pass with
+its token unconfirmed, and that unit is the only live foothold of the
+correction-to-mechanism loop in this horizon. [evidence-546]
+  Vision passage: the-one-paragraph-story [evidence-546]
+  Capability row: new:compiler.harness-v1 [evidence-546]
+  Roles served: UIFA engineer; UIFA devops; UIFA tester [evidence-546]
+  -> Receipt and hold status [latest-refutation]
+
+WO-033 [refutation-0177104c89bbba24]
+  Vision-fit verdict: thesis-advancing [evidence-547]
+  Why this verdict: Horizon 1 is workstreams, disposable workers, and
+evidence-backed completion, and the thesis names one outcome spanning multiple
+repositories as the workstream application's route. A control plane that runs
+from a launchpad outside core, drives bounded orders against registered target
+repositories, and leaves those trees only conventional branches and pull
+requests is the precondition for that route. The export that carries the
+Contributor bundle with the pinned runtime build extends the one-paragraph
+story to a fork from its first commit, and the overlay that replaces the
+identity, unequips units, or declares build none keeps the platform from
+prescribing the loadout, which the story requires. Offline npm ci against the
+exported lockfile satisfies exclusion 4. Creates launchpad.starter. Surfaces:
+the showrunner gets target orders, no-release dispositions, and worktree sync
+with three refusal cases; devops gets the export generator, manifest hashes,
+the camouflage lint, and harness check inside the export; the engineer gets the
+overlay as the fork's build-editing surface. Two notes for verification:
+criterion 5 bundles more than a dozen distinct proofs into one criterion, so a
+verifier's finding will be coarse and any one failure holds all of them; and
+criterion 6, the sync helper, has no thesis of its own and is machinery riding
+a thesis-advancing order. [evidence-547]
+  Vision passage: three-horizons-one-kernel [evidence-547]
+  Capability row: new:launchpad.starter [evidence-547]
+  Roles served: UIFA showrunner; UIFA devops; UIFA engineer [evidence-547]
+  -> Receipt and hold status [latest-refutation]
+
+WO-041 [refutation-016d024c89b34dd5]
+  Vision-fit verdict: thesis-advancing [evidence-548]
+  Why this verdict: Advisory verdict, because this order builds the instrument
+type rendering it. The mission thesis says verification should happen
+automatically when authorized and that investment should favor capabilities
+that remove recurring supervision; reading a planning horizon against the
+vision is recurring supervision the operator performs by hand today, and the
+product lead's standing question, is this still the thing we mean, gets a
+mechanical answer cell that WO-032 criterion 5 then binds to. The core bet's
+interchangeable actor slot is exercised in earnest: a compiled read-only
+loadout dispatched through an existing transport occupies the verifier slot.
+That also moves runtime.independent-verification off latent in substance, since
+its row note says review reports are process precedent rather than runtime
+behavior, and this order makes a review a runtime episode; criterion 6 names
+only control.plan-refutation and should either date that second row or say why
+not. Not drift: the non-goals refuse a numeric alignment score, which honors
+exclusion 6; the override requires a recorded event naming the hold, the actor,
+and a capture hash, which honors the mission's refusal of silent
+self-certification; and criterion 4 discloses the self-referential instrument.
+Surfaces: the product lead gets a verdict per order tied to a thesis or
+exclusion; the showrunner gets a pass gated by a receipt plus the hold and
+override path; devops gets the subject builder, the validator, and the
+evidence-gate check; the tester gets a loadout whose refusals are
+fixture-pinned. Nothing here is evidence for the order's own criterion 4.
+[evidence-548]
+  Vision passage: mission--increase-the-chance-of-operator-flow [evidence-548]
+  Capability row: new:control.plan-refutation [evidence-548]
+  Roles served: UIFA product lead; UIFA showrunner; UIFA devops; UIFA tester
+[evidence-548]
+  -> Receipt and hold status [latest-refutation]
+
+WO-032 [refutation-0177114c89bbbbd7]
+  Vision-fit verdict: thesis-advancing [evidence-549]
+  Why this verdict: The core bet says the smallest loop, declare intent, see
+what the system understood, observe authorized progress, receive timely
+feedback, and inspect evidence, must feel legible before features are added. A
+read-only board whose every claim links to its evidence is that legibility
+surface, and organizing it around actors, with a person as an actor drawn from
+the control log, matches exclusion 1's identity: the shared substrate on which
+people and software actors hold work, authority, and evidence. The Builds
+panel's hash equality with the compiled-diff receipt applies the
+differentiated-interface view law to a projection. Creates
+projection.uifa-board and gives the staged projection.worker-status and
+projection.control-beacon slices a home. Roles: criterion 5 refuses
+self-labeling and requires a pinned question-to-cell mapping that the verifier
+reviews against the roles table. On the subject's text the mapping is product
+lead to the Blueprint refutation-verdict cell, showrunner to the Work panel's
+phase, blockers, next legal action, and releases, engineer to the Builds
+panel's loadout cards, tester to the Mechanisms panel's observed counts with
+unobserved marked, and devops to the Mechanisms panel's rung, boundary, and
+enforcement. The engineer's cost question and the devops question are the
+thinnest answers and the verifier should press them. Dependency note: criterion
+1 asserts that refutation receipts dated 2026-09-06 already exist as the
+fixture source, while WO-041, sequenced before this order, is what defines and
+validates the receipt shape; if WO-041 changes that shape, this order's pinned
+JSON and the product lead's cell pin a pre-mechanism artifact. The refuter
+cannot verify the assertion from the compiled subject. [evidence-549]
+  Vision passage: the-core-bet [evidence-549]
+  Capability row: new:projection.uifa-board [evidence-549]
+  Roles served: UIFA product lead; UIFA showrunner; UIFA engineer; UIFA tester;
+UIFA devops [evidence-549]
+  -> Receipt and hold status [latest-refutation]
+
+WO-040 [refutation-016d014c89b34c22]
+  Vision-fit verdict: thesis-advancing [evidence-550]
+  Why this verdict: Names its purpose in the story's words and supplies the
+mechanism the story needs: every operator-named shape classified into the
+founding taxonomy, at least twelve new units lowered through harness-v1 into
+the Contributor build, and each retired always-on sentence pinned by hash with
+its absence asserted, so prose lower and mechanism higher is derived rather
+than relabeled. Criterion 4's reverse-mapping fixture and the verifier's
+restatement search close the obvious loophole of removing a sentence no unit
+covers. The core bet's rule that source incidents preserve what was felt and
+regression fixtures show where constructions diverge is honored by one fixture
+per unit and by the reviewer reading each incident summary against its ledger
+reference. Exclusion 6 is respected: the denominator is pinned to the intake
+capture hash and the operator's attestation is disclosed rather than turned
+into an observed count. Creates feedback.migration. Surfaces: the engineer
+authors the units; the tester owns the per-unit fixture and the restatement
+search, which is a finding about the shape; devops gets the ledger's check
+mode. What it leaves is the horizon's largest gap: one batch, a named candidate
+for the rest, and no route from a live correction to a unit. [evidence-550]
+  Vision passage: the-one-paragraph-story [evidence-550]
+  Capability row: new:feedback.migration [evidence-550]
+  Roles served: UIFA engineer; UIFA tester; UIFA devops [evidence-550]
+  -> Receipt and hold status [latest-refutation]
+
+WO-036 [refutation-01770d4c89bbb50b]
+  Vision-fit verdict: machinery [evidence-551]
+  Why this verdict: A build-first, concurrent evidence runner with per-case
+reporting moves no capability row and no thesis; it changes how this
+repository's gate runs, not what the product does. The observed gap is real:
+the serial chain exercises the release script against whatever skeleton build
+exists before the forced rebuild, so a green run can be green against stale
+code. The fix is the devops question answered: a repeated step becomes a
+checked mechanism with named cases. Not drift: criterion 3 reports measured
+wall time with its method, criterion 1 compares the runner's table against the
+previous chain and refuses silent removal of a suite, and the non-goals keep
+the mutation self-test and golden checks in the default gate, which satisfies
+exclusion 6's refusal of invented numbers and weakened checks. Only devops gets
+a surface; the tester role's domain is shapes, not suite runners. [evidence-551]
+  Vision passage: unknown [evidence-551]
+    Not recorded by this source
+  Capability row: unknown [evidence-551]
+    Not recorded by this source
+  Roles served: UIFA devops [evidence-551]
+  -> Receipt and hold status [latest-refutation]
+
+WO-034 [refutation-01770f4c89bbb871]
+  Vision-fit verdict: thesis-advancing [evidence-552]
+  Why this verdict: The thesis text is nearly the title: the workstream
+application develops Horizon 1 through concrete journeys and gradual workflow
+replacement, including one outcome spanning multiple repositories. Criterion
+4's four measures, restatements, manual handoffs, unnecessary interruptions,
+and time to a trusted return state, are the mission thesis's list of
+babysitting costs turned into counted evidence, and criterion 6's
+zero-restatement pass condition tests the one-paragraph story's
+build-not-biography claim on a fork. Not drift: the baseline is labeled an
+operator attestation that enters the repository only as hashes, an unknown
+baseline yields unverified and never passed, and the framework decision is
+deferred to a later ADR, so the application identity the thesis leaves open is
+not closed here. Surfaces: the showrunner gets the workstream index and board
+across repositories and the convergence of verification and final review in the
+launchpad; the engineer gets a named build element for every restatement the
+executor needed by hand; devops gets the launchpad and publish machinery under
+a real run; the product lead gets product 12's sections moved to evidenced or
+recorded as failed. Two defects to fix at activation. First, criterion 4 says
+the baseline is never called observed and then requires the run to be lower
+than the observed baseline; the verifier must read that as run count against
+attested count or the receipt will present an attested number as observed,
+which exclusion 6 forbids. Second, the only dated capability row is
+consumer.angular, the by-product, while the multi-repository workstream itself
+lands only in prose; launchpad.starter should move on this evidence or the
+table under-reports the horizon's central claim. [evidence-552]
+  Vision passage: three-horizons-one-kernel [evidence-552]
+  Capability row: new:consumer.angular [evidence-552]
+  Roles served: UIFA showrunner; UIFA engineer; UIFA devops; UIFA product lead
+[evidence-552]
+  -> Receipt and hold status [latest-refutation]
+
+WO-035 [refutation-01770e4c89bbb6be]
+  Vision-fit verdict: machinery [evidence-553]
+  Why this verdict: A ledger order, a spec-versus-receipt boundary, generated
+release history, and a docs check move no capability row; criterion 6's
+capability-table work folds addenda into rows for work already shipped and
+forbids any level a cited final review does not support, which is bookkeeping
+under exclusion 6, not a capability move. The cold-start reduction in criterion
+5 borrows WO-039's method and refuses relocation with a pointer as a way to
+pass, which keeps it from being a biography moved next door; but the reduction
+is by relocation rather than compilation, so it serves the one-paragraph story
+only indirectly and earns no thesis credit of its own. Not drift. Surfaces: the
+showrunner gets release history generated from annotated tags and release list,
+which answers what each release contained from the record instead of three
+hand-kept tables; the product lead gets one row per capability and product
+documents free of dated receipts, which is durable product understanding;
+devops gets the lineage check, the docs check, and the marker check in the
+chain. The boundary with WO-040 is explicit in WO-040 criterion 4, where no
+sentence a batch unit covers may be nominated here, and that is the right seam.
+[evidence-553]
+  Vision passage: unknown [evidence-553]
+    Not recorded by this source
+  Capability row: unknown [evidence-553]
+    Not recorded by this source
+  Roles served: UIFA product lead; UIFA showrunner; UIFA devops [evidence-553]
+  -> Receipt and hold status [latest-refutation]
+
+WO-037 [refutation-01770c4c89bbb358]
+  Vision-fit verdict: thesis-advancing [evidence-554]
+  Why this verdict: The differentiated-interface thesis lists 5S first among
+the patterns that compile into exact mechanics and names the socket-and-link
+build as a view. Multi-active link groups with shared supports, piece-count set
+bonuses lowered to statechart gates, evidence obligations, verifier episodes,
+and cadences that arm and go dark with the real state machine, and a tooltip
+per piece with declared cost and semantic hash are that sentence executed; it
+is also Horizon 2's first compiler-side slice. The core bet's rule that a new
+idea becomes one missing primitive or boundary rather than an opaque special
+case is met by the additive sets collection with an exact normalization rule,
+no new graph schema version, and every existing program's hash unchanged in
+criterion 1. Exclusion 3 holds: the set is a compiled example equipped by an
+example actor and the kernel is unchanged. Creates compiler.five-s-set.
+Surfaces: the engineer gets the composition and its cost answer through the
+link-budget diagnostic and the tooltip; the tester gets a dark and armed
+fixture per bonus plus a live-versus-replay identity scenario, which is the
+tester's own question in the roles table; devops gets the compiler extension.
+The non-goals defer the authoring surface and the rest of the shelf to named
+candidates. [evidence-554]
+  Vision passage: the-differentiated-interface [evidence-554]
+  Capability row: new:compiler.five-s-set [evidence-554]
+  Roles served: UIFA engineer; UIFA tester; UIFA devops [evidence-554]
+  -> Receipt and hold status [latest-refutation]
+
+Capability evidence [capabilities] — available
+
+Kernel event loop (kernel.event-loop) [capability-324cc84a08b6298b]
+  Assessment: Capability inventory [evidence-1]
+  Capability and declared scope: Kernel event loop (kernel.event-loop)
+[evidence-1]
+  Current level: 2 — dependable (min 2) [evidence-1]
+  Target level: 3 — integrated [evidence-1]
+  Required dimensions: reactor/Decision stepping L2;; explicit environment and
+purity L2;; event identity and DecisionTrace L2 [evidence-1]
+  Evidence links: AC1 purity, AC2 replay, AC5 failure rows, WO-101 Program
+corpus, WO-003 VER-002 [evidence-1]
+  Dependencies: EventEnvelope, KernelEnv, predicate registry; real host/store
+adapters for the target [evidence-1]
+  Last change: 2026-09-01 [evidence-1]
+  Next smallest promotable increment: Drive one real-worker event through the
+reactor, persist its decision inputs, then replay the same transition and trace
+after restart. [evidence-1]
+  Blocking gate: No real workflow yet supplies end-to-end lifecycle, recovery,
+authority, and audit evidence together. [evidence-1]
+  Efficiency: E0 — unknown [evidence-1]
+  -> Capability evidence: ../../packages/kernel/test/ac1-purity.test.ts
+[evidence-2]
+  -> Capability evidence: ../../packages/kernel/test/ac2-replay-store.test.ts
+[evidence-3]
+  -> Capability evidence: ../../packages/kernel/test/ac5-failure-rows.test.ts
+[evidence-4]
+  -> Capability evidence: ../../corpus/harness/wo101-program-corpus.test.mjs
+[evidence-5]
+  -> Capability evidence: ../verifications/WO-003/VER-002.md [evidence-6]
+
+Cadence (cadence.evaluable-subset: Once, After, Every, Until, Gate, Backoff)
+[capability-e10305578516eccc]
+  Assessment: Capability inventory [evidence-7]
+  Capability and declared scope: Cadence (cadence.evaluable-subset: Once,
+After, Every, Until, Gate, Backoff) [evidence-7]
+  Current level: 2 — dependable (min 2) [evidence-7]
+  Target level: 3 — integrated [evidence-7]
+  Required dimensions: bounded evaluator L2;; virtual time and explicit RNG
+L2;; predicate gating and cancellation L2 [evidence-7]
+  Evidence links: AC3 cadence, skeleton scheduler checks, kernel scope map,
+v0.2.0 supported-range evidence [evidence-7]
+  Dependencies: KernelEnv and predicate registry; durable scheduler ownership
+for the target [evidence-7]
+  Last change: 2026-09-01 [evidence-7]
+  Next smallest promotable increment: Fire one host-owned schedule in a real
+worker episode and prove restart plus operator-return cancellation from the
+durable log. [evidence-7]
+  Blocking gate: Cadence has no real scheduler lifecycle, recovery, or audit
+evidence; the other typed constructors remain intentionally unevaluated.
+[evidence-7]
+  Efficiency: E0 — unknown [evidence-7]
+  -> Capability evidence: ../../packages/kernel/test/ac3-cadence.test.ts
+[evidence-8]
+  -> Capability evidence: ../../packages/skeleton/test/scenario.test.ts
+[evidence-9]
+  -> Capability evidence: ../../packages/kernel/README.md [evidence-10]
+  -> Capability evidence: ../releases/v0.2.0.md [evidence-11]
+
+Authorization guard (kernel.authorize) [capability-974c0258ceb15e4a]
+  Assessment: Capability inventory [evidence-12]
+  Capability and declared scope: Authorization guard (kernel.authorize)
+[evidence-12]
+  Current level: 2 — dependable (min 2) [evidence-12]
+  Target level: 3 — integrated [evidence-12]
+  Required dimensions: allow/deny matching L2;; expiry, revocation, evidence,
+and resource accounting L2;; structural refusal event and trace L2;; command
+identity L2 [evidence-12]
+  Evidence links: AC6 authorization, AC5 authorized outbox path, WO-101
+identity corpus, skeleton refusal test, WO-003 VER-002 [evidence-12]
+  Dependencies: Intent and AuthorityEnvelope; command identity and store; real
+effect adapter for the target [evidence-12]
+  Last change: 2026-09-01 [evidence-12]
+  Next smallest promotable increment: Route one real transport intent through
+the guard with non-empty evidence/resource/revocation constraints, then persist
+both its grant and a denied-effect refusal. [evidence-12]
+  Blocking gate: No real adapter boundary has exercised authority through
+recovery and audit; the skeleton's required-evidence list is empty.
+[evidence-12]
+  Efficiency: E0 — unknown [evidence-12]
+  -> Capability evidence: ../../packages/kernel/test/ac6-authorization.test.ts
+[evidence-13]
+  -> Capability evidence: ../../packages/kernel/test/ac5-failure-rows.test.ts
+[evidence-4]
+  -> Capability evidence: ../../corpus/harness/wo101-id-corpus.test.mjs
+[evidence-14]
+  -> Capability evidence: ../../packages/skeleton/test/scenario.test.ts
+[evidence-9]
+  -> Capability evidence: ../verifications/WO-003/VER-002.md [evidence-6]
+
+Store/replay (kernel.jsonl-replay and outbox) [capability-d4c53755c4c0c623]
+  Assessment: Capability inventory [evidence-15]
+  Capability and declared scope: Store/replay (kernel.jsonl-replay and outbox)
+[evidence-15]
+  Current level: 2 — dependable (min 2) [evidence-15]
+  Target level: 3 — integrated [evidence-15]
+  Required dimensions: JSONL codec and edge-assigned ids L2;; deterministic
+state/decision replay L2;; outbox reconstruction and deduplication L2
+[evidence-15]
+  Evidence links: AC2 store/replay, AC5 outbox recovery, skeleton
+crash/restart, WO-003 VER-002 [evidence-15]
+  Dependencies: EventEnvelope and reactor; filesystem/durable adapter plus
+restore path for the target [evidence-15]
+  Last change: 2026-09-01 [evidence-15]
+  Next smallest promotable increment: Add one durable append/reload boundary
+and prove a killed real worker resumes the pending command without duplicating
+its effect. [evidence-15]
+  Blocking gate: The shipped kernel stores a pure JSONL value; no durable
+adapter, backup/restore exercise, or real-worker recovery is integrated.
+[evidence-15]
+  Efficiency: E0 — unknown [evidence-15]
+  -> Capability evidence: ../../packages/kernel/test/ac2-replay-store.test.ts
+[evidence-3]
+  -> Capability evidence: ../../packages/kernel/test/ac5-failure-rows.test.ts
+[evidence-4]
+  -> Capability evidence: ../../packages/skeleton/test/scenario.test.ts
+[evidence-9]
+  -> Capability evidence: ../verifications/WO-003/VER-002.md [evidence-6]
+
+Continuations (program.evaluable-subset: Done, Emit, Invoke, Await, Sequence,
+Guard) [capability-0978cdb405febff7]
+  Assessment: Capability inventory [evidence-16]
+  Capability and declared scope: Continuations (program.evaluable-subset: Done,
+Emit, Invoke, Await, Sequence, Guard) [evidence-16]
+  Current level: 2 — dependable (min 2) [evidence-16]
+  Target level: 3 — integrated [evidence-16]
+  Required dimensions: bounded Program stepper L2;; correlation and data
+predicates L2;; serialization/residual round-trip L2 [evidence-16]
+  Evidence links: AC4 continuations, WO-101 Program corpus, WO-101 VER-001
+[evidence-16]
+  Dependencies: Program grammar, predicate registry, Cadence timeout, store;
+real episodes for the target [evidence-16]
+  Last change: 2026-09-01 [evidence-16]
+  Next smallest promotable increment: Persist one Await residual, resume it in
+a fresh real episode, deliver its correlated event, and compare the resulting
+decision trace. [evidence-16]
+  Blocking gate: No continuation has crossed a real session boundary with
+lifecycle, recovery, authority, and audit evidence. [evidence-16]
+  Efficiency: E0 — unknown [evidence-16]
+  -> Capability evidence: ../../packages/kernel/test/ac4-continuations.test.ts
+[evidence-17]
+  -> Capability evidence: ../../corpus/harness/wo101-program-corpus.test.mjs
+[evidence-5]
+  -> Capability evidence: ../verifications/WO-101/VER-001.md [evidence-18]
+
+Walking-skeleton vertical (skeleton.fake-vertical, including its verifier and
+visible projection) [capability-829079ad0ab3bd4c]
+  Assessment: Capability inventory [evidence-19]
+  Capability and declared scope: Walking-skeleton vertical
+(skeleton.fake-vertical, including its verifier and visible projection)
+[evidence-19]
+  Current level: 1 — demonstrable (min 1) [evidence-19]
+  Target level: 2 — dependable [evidence-19]
+  Required dimensions: provisional WorkOrder compilation L2;; fake
+transport/execution L2;; authority, crash recovery, and return race L2;;
+live/replay decision identity L2;; application verifier L1;; CLI/glyph
+projection L1 [evidence-19]
+  Evidence links: scenario implementation, scenario suite, WO-003 VER-002,
+WO-003 FINAL-001, v0.2.0 evidence and limits [evidence-19]
+  Dependencies: Kernel event loop, cadence, guard, store/replay, continuations
+[evidence-19]
+  Last change: 2026-09-01 [evidence-19]
+  Next smallest promotable increment: Add a mutation-resistant
+verifier-rejection case and automated canonical-state CLI/glyph checks,
+including enforcement of non-empty candidate evidence. [evidence-19]
+  Blocking gate: The negative verifier path is untested, the integrated
+required-evidence gate is inert, and the CLI/glyph surface lacks exact
+automated coverage. [evidence-19]
+  Efficiency: E0 — unknown [evidence-19]
+  -> Capability evidence: ../../packages/skeleton/src/scenario.ts [evidence-20]
+  -> Capability evidence: ../../packages/skeleton/test/scenario.test.ts
+[evidence-9]
+  -> Capability evidence: ../verifications/WO-003/VER-002.md [evidence-6]
+  -> Capability evidence: ../final-reviews/WO-003/FINAL-001.md [evidence-21]
+  -> Capability evidence: ../releases/v0.2.0.md [evidence-11]
+
+Composition compile (compiler.seiri-v1) [capability-409a1e88493476a6]
+  Assessment: Capability inventory [evidence-22]
+  Capability and declared scope: Composition compile (compiler.seiri-v1)
+[evidence-22]
+  Current level: 0 — latent (min 0; no usable behavior) [evidence-22]
+  Target level: 1 — demonstrable [evidence-22]
+  Required dimensions: LoadoutGraph/support facets L0;; link checking L0;;
+precedence, normalization, and semantic hash L0;; compiled-diff tooltip L0
+[evidence-22]
+  Evidence links: Explicit latent source and outcome: WO-008; the current
+hand-built input is provisional in the scenario implementation and suite
+[evidence-22]
+  Dependencies: Walking-skeleton fixture and kernel contracts [evidence-22]
+  Last change: 2026-09-01 [evidence-22]
+  Next smallest promotable increment: Compile the current Seiri loadout, reject
+one incompatible link, and render the deterministic diff from equivalent
+bounded views. [evidence-22]
+  Blocking gate: No compiler package, normalized IR, link checker, or
+semantic-hash implementation exists. [evidence-22]
+  Efficiency: E0 — unknown [evidence-22]
+  -> Capability evidence: ../work-orders/WO-008-composition-compiler.md
+[evidence-23]
+  -> Capability evidence: ../../packages/skeleton/src/scenario.ts [evidence-20]
+  -> Capability evidence: ../../packages/skeleton/test/scenario.test.ts
+[evidence-9]
+
+Transports (runtime.work-order-transport) [capability-ba0df4370bd5ae4f]
+  Assessment: Capability inventory [evidence-24]
+  Capability and declared scope: Transports (runtime.work-order-transport)
+[evidence-24]
+  Current level: 0 — latent (min 0; observed host shapes are not adapters)
+[evidence-24]
+  Target level: 1 — demonstrable [evidence-24]
+  Required dimensions: adapter launch L0;; schema-bound Result envelope L0;;
+isolation and persistence controls L0;; fail-closed model/auth/runtime handling
+L0 [evidence-24]
+  Evidence links: Observed transport smokes, runtime map, implementation source
+and outcome: WO-009 [evidence-24]
+  Dependencies: Composition compiler per WO-009; WO-004 discovery; host process
+boundary [evidence-24]
+  Last change: 2026-09-01 [evidence-24]
+  Next smallest promotable increment: Implement one bounded CLI adapter profile
+that completes a read-only WorkOrder with schema-conforming output and fails
+closed when its requested model is unavailable. [evidence-24]
+  Blocking gate: Only manual discovery smokes exist; the repository contains no
+WorkOrderTransport adapter or real-episode lifecycle. [evidence-24]
+  Efficiency: E0 — unknown [evidence-24]
+  -> Capability evidence:
+../discovery/environment.md#wo-004-transport-and-startup-context-addendum-2026-0
+8-31 [evidence-25]
+  -> Capability evidence: ../discovery/codex-runtime-map.md [evidence-26]
+  -> Capability evidence: ../work-orders/WO-009-real-disposable-worker.md
+[evidence-27]
+
+Verification (runtime.independent-verification) [capability-5b9d5eb81e9d05c8]
+  Assessment: Capability inventory [evidence-28]
+  Capability and declared scope: Verification
+(runtime.independent-verification) [evidence-28]
+  Current level: 0 — latent (min 0; repository review reports are process
+precedent, not runtime behavior) [evidence-28]
+  Target level: 1 — demonstrable [evidence-28]
+  Required dimensions: blinded verifier episode L0;; claim-typed evidence
+matrix L0;; typed finding and repair continuation L0;; staleness and
+re-verification L0 [evidence-28]
+  Evidence links: Source and intended outcome: WO-010; process precedent:
+WO-003 sequence, WO-004 sequence [evidence-28]
+  Dependencies: Real transports, store/status projection, continuations
+[evidence-28]
+  Last change: 2026-09-01 [evidence-28]
+  Next smallest promotable increment: Run one planted-defect fixture through
+blinded finding, focused repair continuation, evidence staleness, and green
+re-verification. [evidence-28]
+  Blocking gate: No VerificationAdapter, runtime evidence matrix, typed repair
+compiler, or staleness projection exists. [evidence-28]
+  Efficiency: E0 — unknown [evidence-28]
+  -> Capability evidence: ../work-orders/WO-010-independent-verification.md
+[evidence-29]
+  -> Capability evidence: ../verifications/WO-003/VER-002.md [evidence-6]
+  -> Capability evidence: ../verifications/WO-004/VER-002.md [evidence-30]
+
+Projections (projection.skeleton-cli: timeline and glyph scene)
+[capability-d5e37b6ddc25b373]
+  Assessment: Capability inventory [evidence-31]
+  Capability and declared scope: Projections (projection.skeleton-cli: timeline
+and glyph scene) [evidence-31]
+  Current level: 1 — demonstrable (min 1) [evidence-31]
+  Target level: 2 — dependable [evidence-31]
+  Required dimensions: log-derived timeline L1;; glyph scene L1;; live/replay
+source equivalence L2 [evidence-31]
+  Evidence links: scenario projection assertions, skeleton usage, WO-003
+VER-002 limits, release limitations [evidence-31]
+  Dependencies: Walking-skeleton log and store/replay [evidence-31]
+  Last change: 2026-09-01 [evidence-31]
+  Next smallest promotable increment: Pin exact CLI timeline, glyph, and
+receipt output for normal, refusal, empty/malformed-log, and
+negative-verification cases in automated tests. [evidence-31]
+  Blocking gate: The CLI itself is witnessed but unautomated;
+rejected-verification glyph semantics and negative/error paths lack a
+maintained regression gate. [evidence-31]
+  Efficiency: E0 — unknown [evidence-31]
+  -> Capability evidence: ../../packages/skeleton/test/scenario.test.ts
+[evidence-9]
+  -> Capability evidence: ../../packages/skeleton/README.md [evidence-32]
+  -> Capability evidence: ../verifications/WO-003/VER-002.md [evidence-6]
+  -> Capability evidence: ../releases/v0.2.0.md#known-limitations [evidence-33]
+
+Publication bootstrap (publication.bootstrap) [capability-6ac67c1009a0e3c1]
+  Assessment: Capability inventory [evidence-34]
+  Capability and declared scope: Publication bootstrap (publication.bootstrap)
+[evidence-34]
+  Current level: 0 — latent (min 0; no artifacts) [evidence-34]
+  Target level: 1 — demonstrable [evidence-34]
+  Required dimensions: audience/status index L0;; shared outline and dual
+contents L0;; dual-voice claim links L0;; staleness loop L0 [evidence-34]
+  Evidence links: Explicit latent source and outcome: WO-006 [evidence-34]
+  Dependencies: Committed blueprint only [evidence-34]
+  Last change: 2026-09-01 [evidence-34]
+  Next smallest promotable increment: Produce the bounded source index, two
+audience contents, one dual-voice sample, and one captured two-edition
+staleness demonstration. [evidence-34]
+  Blocking gate: docs/publication/ and every bootstrap artifact are absent.
+[evidence-34]
+  Efficiency: E0 — unknown [evidence-34]
+  -> Capability evidence: ../work-orders/WO-006-publication-bootstrap.md
+[evidence-35]
+
+Audit projections (audit.baseline-three) [capability-4638bd9e26dfd850]
+  Assessment: Capability inventory [evidence-36]
+  Capability and declared scope: Audit projections (audit.baseline-three)
+[evidence-36]
+  Current level: 0 — latent (min 0; the skeleton log is input, not an audit
+implementation) [evidence-36]
+  Target level: 1 — demonstrable [evidence-36]
+  Required dimensions: canonical-reference AuditRecord L0;; L0 receipt L0;;
+causal timeline L0;; governed raw JSON L0;; replay equivalence L0 [evidence-36]
+  Evidence links: Explicit latent source and outcome: WO-007; available input
+fixture: skeleton scenario [evidence-36]
+  Dependencies: Completed walking-skeleton JSONL log and canonical ids
+[evidence-36]
+  Last change: 2026-09-01 [evidence-36]
+  Next smallest promotable increment: Build all three pure folds over the
+existing demo log, expose the structural refusal, and reproduce byte-identical
+output from replay. [evidence-36]
+  Blocking gate: No AuditRecord type or audit fold exists; the current event
+timeline is not the three governed audit projections. [evidence-36]
+  Efficiency: E0 — unknown [evidence-36]
+  -> Capability evidence: ../work-orders/WO-007-audit-record-baseline.md
+[evidence-37]
+  -> Capability evidence: ../../packages/skeleton/test/scenario.test.ts
+[evidence-9]
+
+skeleton.fake-vertical [capability-523b4ce06f8faef6]
+  Assessment: WO-016 dated reassessment (2026-09-03) [evidence-38]
+  Capability key: skeleton.fake-vertical [evidence-38]
+  New staged evidence: One exported seiriReactor now makes every live and
+replay decision; the scenario suite compares complete Decision values and
+semantic projections, pins six payload-sensitive paths, rejects the negative
+fixture, preserves evidence-bearing candidates, and exercises replay-based
+crash recovery. [evidence-38]
+  Blocking-gate reassessment: The negative application-verifier path and the
+prior hand-mirrored replay gap are closed in staged tests. The integrated
+AuthorityEnvelope.requiredEvidence list is still empty, the executor and
+verifier remain deterministic fakes, and the included CLI/glyph dimension
+retains the input/error-path gap described below. [evidence-38]
+  Disposition: Keep 1 — demonstrable pending independent review and the
+remaining integrated-evidence/projection gates; do not claim the row's target
+level from this bounded correction alone. [evidence-38]
+  -> Capability evidence: ../../packages/skeleton/src/reactor.ts [evidence-39]
+  -> Capability evidence: ../../packages/skeleton/test/scenario.test.ts
+[evidence-9]
+
+projection.skeleton-cli [capability-e0bbdf011592d61f]
+  Assessment: WO-016 dated reassessment (2026-09-03) [evidence-40]
+  Capability key: projection.skeleton-cli [evidence-40]
+  New staged evidence: cli.test.ts compares complete stdout and empty stderr
+for both the default and --audit forms; the scenario suite derives the glyph
+from folded state and pins verified=false plus ○ unverified for a negative
+fixture. Live and replayed timeline, glyph, final state, and decisions are
+identical. [evidence-40]
+  Blocking-gate reassessment: Normal output, the structural refusal within it,
+both public CLI forms, and negative-verification glyph semantics now have
+automated checks. The CLI still has no input contract through which
+empty/malformed logs or a negative fixture can be supplied, so those exact CLI
+error/negative forms requested by the original row remain unavailable rather
+than silently claimed. [evidence-40]
+  Disposition: Keep 1 — demonstrable. Reconsider level 2 after an authorized
+input/error contract makes the remaining cases testable and independent
+verification confirms the present exact forms. [evidence-40]
+  -> Capability evidence: ../../packages/skeleton/test/cli.test.ts [evidence-41]
+
+compiler.seiri-v1 [capability-f815dc4261ec9d24]
+  Assessment: WO-008 dated reassessment (2026-09-03) [evidence-42]
+  Capability key: compiler.seiri-v1 [evidence-42]
+  New staged evidence: The dependency-free @dotln/compiler now exports the full
+graph type boundary and bounded Seiri lowering. Compiler tests pin capability
+diagnostics, all adjacent precedence levels, hard conflicts, explicit
+pipelines, and heterogeneous costs; the purity test pins determinism, input
+immutability, I/O-free source, and zero runtime dependencies. View tests
+exercise all three codecs, round-trip laws, semantic mutations, and equip
+changes. The tooltip test pins the literal RPG diff and three equal hashes; the
+skeleton scenario consumes compiled runtime data and compares all 21 traces
+with the frozen WO-003 oracle. [evidence-42]
+  Blocking-gate reassessment: The prior absence of a package, normalized IR,
+link checker, semantic hash, and compiled diff is closed in the staged subject.
+Execution remains intentionally bounded to one Seiri active, deterministic
+fakes, and three views; multi-active lowering, saved builds, compatibility
+migration, other patterns, and interactive editing remain absent. [evidence-42]
+  Disposition: Stage 1 — demonstrable pending independent verification. Do not
+promote to dependable or infer support for the typed-but-deferred surfaces.
+[evidence-42]
+  -> Capability evidence: ../../packages/compiler/README.md [evidence-43]
+  -> Capability evidence: ../../packages/compiler/test/compiler.test.ts
+[evidence-44]
+  -> Capability evidence: ../../packages/compiler/test/purity.test.ts
+[evidence-45]
+  -> Capability evidence: ../../packages/compiler/test/views.test.ts
+[evidence-46]
+  -> Capability evidence: ../../packages/compiler/test/tooltip.test.ts
+[evidence-47]
+  -> Capability evidence: ../../packages/skeleton/test/scenario.test.ts
+[evidence-9]
+
+projection.beacon — v1 dense metadata encoding, host L0 fold, separately
+labeled fake-executor claim, explicit-directory CLI
+[capability-4b45c87e1cb4ff49]
+  Assessment: WO-020 dated addition (2026-09-04) [evidence-48]
+  Capability and scope: projection.beacon — v1 dense metadata encoding, host L0
+fold, separately labeled fake-executor claim, explicit-directory CLI
+[evidence-48]
+  Current level: 1 — demonstrable, staged pending independent review
+[evidence-48]
+  Target: 2 — dependable in this bounded scope; 3 requires real workflow
+evidence [evidence-48]
+  Evidence: Pure tests, filesystem/CLI tests, probe, WO-020 implementation
+receipt [evidence-48]
+  Next increment and dependencies: Nominate existing WO-021 after WO-020
+merges: control-plane dogfood, authorized sweep events, staleness, and
+composites. Real-worker liveness depends on WO-009. [evidence-48]
+  Blocking gate: Independent verification and final review of exact decoding,
+replay, metadata-only reads, premature claim isolation, atomic publication, and
+disclosure. Later promotion also needs the declared control/staleness gates;
+operator usefulness is separate evidence, not inferred from code correctness.
+[evidence-48]
+  -> Capability evidence: ../../packages/skeleton/test/beacon.test.ts
+[evidence-49]
+  -> Capability evidence: ../../packages/skeleton/test/beacon-fs.test.ts
+[evidence-50]
+  -> Capability evidence: ../discovery/beacon-probe-2026-09-04.md [evidence-51]
+  -> Capability evidence: ../work-orders/WO-020-beacon-codebook.md [evidence-52]
+  -> Capability evidence: ../work-orders/WO-021-control-plane-beacons.md
+[evidence-53]
+  -> Capability evidence: beacon-usefulness-checkpoint.md [evidence-54]
+
+control.concurrent-orders — several in-flight orders, one segment per order,
+branch/flag selection, serial integration and release attribution
+[capability-f0dc7e93a276bd59]
+  Assessment: WO-030 dated addition (2026-09-05) [evidence-55]
+  Capability and scope: control.concurrent-orders — several in-flight orders,
+one segment per order, branch/flag selection, serial integration and release
+attribution [evidence-55]
+  Current level: 1 — demonstrable, staged pending independent review
+[evidence-55]
+  Target: 2 — dependable within the declared repository workflow [evidence-55]
+  Evidence: Legacy comparisons and transcripts, segment/refusal tests, real-Git
+integration [evidence-55]
+  Next increment and dependencies: Run the first paired wave after WO-030
+merges; WO-021 can consume independent per-order state. [evidence-55]
+  Blocking gate: Independent verification/final review of storage ownership,
+selection, prefix proofs and committed readers; an actual paired wave must
+establish coordination cost separately. [evidence-55]
+  -> Capability evidence: ../evidence/WO-030/README.md [evidence-56]
+  -> Capability evidence: ../../scripts/test-control-segments.mjs [evidence-57]
+  -> Capability evidence: ../../scripts/test-concurrent-control.mjs
+[evidence-58]
+
+projection.control-beacon — lifecycle v2, metadata constellation, authorized
+recorded sweep, age glyphs, twelve-member phase-group family
+[capability-44de1e741ae0cd6c]
+  Assessment: WO-021 dated addition (2026-09-05) [evidence-59]
+  Capability and scope: projection.control-beacon — lifecycle v2, metadata
+constellation, authorized recorded sweep, age glyphs, twelve-member phase-group
+family [evidence-59]
+  Current level: 1 — demonstrable, staged pending independent review
+[evidence-59]
+  Target: 2 — dependable within this bounded control workflow [evidence-59]
+  Evidence: Execution receipt and measurements, pure/replay tests, agent CLI,
+three-worktree fixture [evidence-59]
+  Next increment and dependencies: WO-009 supplies real-worker leases and
+claims; WO-022 supplies mounted senses and its separate keyed consistency
+contract; operator comparison remains open. [evidence-59]
+  Blocking gate: Review every transition, audience boundary, no-read refusal,
+replay, and allocation bound. Same-user adversaries and privileged scan
+visibility are outside this boundary. Warm-cache index wins preclude a blanket
+read-performance claim. [evidence-59]
+  -> Capability evidence: ../evidence/WO-021/README.md [evidence-60]
+  -> Capability evidence: ../../packages/skeleton/test/control-beacon.test.ts
+[evidence-61]
+  -> Capability evidence:
+../../packages/skeleton/test/control-beacon-cli.test.ts [evidence-62]
+  -> Capability evidence: ../../scripts/test-control-beacons.mjs [evidence-63]
+
+transport.disposable-inspection — Claude print and Codex exec over a host-read
+synthetic inventory [capability-8e3deaeeb4092db2]
+  Assessment: WO-009 dated reassessment (2026-09-05) [evidence-64]
+  Capability and scope: transport.disposable-inspection — Claude print and
+Codex exec over a host-read synthetic inventory [evidence-64]
+  Current assessment: 1 — demonstrable, staged [evidence-64]
+  Evidence and remaining gate: Both actual hosts return schema-bound envelopes
+with exact launch selections; fake peers prove no substitution and
+malformed-output refusal. General mounts/writes, provider identity readback and
+real verification remain outside scope. [evidence-64]
+
+runtime.inspection-recovery — single-writer JSONL host, immutable result
+receipt, lease fencing, detached worktree [capability-63f4777c8798b8ce]
+  Assessment: WO-009 dated reassessment (2026-09-05) [evidence-65]
+  Capability and scope: runtime.inspection-recovery — single-writer JSONL host,
+immutable result receipt, lease fencing, detached worktree [evidence-65]
+  Current assessment: 1 — demonstrable, staged [evidence-65]
+  Evidence and remaining gate: Rows 2/4/6, late result/heartbeat fencing, real
+kill/recovery, replay and safe cleanup pass. Broader transactional effects and
+a durable background scheduler need separate evidence. [evidence-65]
+
+projection.worker-status — canonical runtime event fold and CLI
+[capability-7b8e2e8fdd93f5a3]
+  Assessment: WO-009 dated reassessment (2026-09-05) [evidence-66]
+  Capability and scope: projection.worker-status — canonical runtime event fold
+and CLI [evidence-66]
+  Current assessment: 1 — demonstrable, staged [evidence-66]
+  Evidence and remaining gate: Both live runs expose in-flight state from
+another read-only process; status neither creates a store nor invents expiry
+from the wall clock. Worker claims do not promote Beacon liveness. [evidence-66]
+
+control.plan-refutation — compiled blinded planning episode, immutable
+receipts, criterion-bound follow-ups, attributed overrides, forward-only gate
+[capability-19a29dfb5bd32c70]
+  Assessment: WO-041 dated addition (2026-09-07) [evidence-67]
+  Capability and scope: control.plan-refutation — compiled blinded planning
+episode, immutable receipts, criterion-bound follow-ups, attributed overrides,
+forward-only gate [evidence-67]
+  Current level: 1 — demonstrable, original mechanism passed VER-002;
+integrated repair pending review [evidence-67]
+  Target: 2 — dependable within the bounded planning workflow [evidence-67]
+  Evidence and remaining gate: Fixture transcript and live receipt; the
+integrated repair and operator breakout require independent verification, final
+review, and merge. A real planning pass after introduction establishes workflow
+integration separately; this order's live instrument run and its advisory
+self-verdict do not establish that promotion. [evidence-67]
+  -> Capability evidence: ../evidence/WO-041/README.md [evidence-68]
+
+Publication status [publication] — available
+
+DotLn — Vision [publication-e4059f2c607ab7ac]
+  Audiences: everyday-ai-user, software-engineer [evidence-69]
+  Published status label: vision [evidence-69]
+  -> Source section [evidence-70]
+
+Mission — increase the chance of operator flow [publication-da8f5b71b6bdbe8e]
+  Audiences: everyday-ai-user, software-engineer [evidence-71]
+  Published status label: vision [evidence-71]
+  -> Source section [evidence-72]
+
+Common substrate, local doctrine [publication-d02a434d414f96bd]
+  Audiences: everyday-ai-user, software-engineer [evidence-73]
+  Published status label: specified [evidence-73]
+  -> Source section [evidence-74]
+
+The one-paragraph story [publication-6382355304fc5bdc]
+  Audiences: everyday-ai-user, software-engineer [evidence-75]
+  Published status label: vision [evidence-75]
+  -> Source section [evidence-76]
+
+The core bet [publication-6afbc84d03f5fae7]
+  Audiences: everyday-ai-user, software-engineer [evidence-77]
+  Published status label: vision [evidence-77]
+  -> Source section [evidence-78]
+
+The differentiated interface [publication-f6cfbd5a85380a60]
+  Audiences: everyday-ai-user, software-engineer [evidence-79]
+  Published status label: vision [evidence-79]
+  -> Source section [evidence-80]
+
+Shape-first synthesis [publication-300054fae0f2f0c6]
+  Audiences: everyday-ai-user, software-engineer [evidence-81]
+  Published status label: specified [evidence-81]
+  -> Source section [evidence-82]
+
+Three horizons, one kernel [publication-1717a76fc1ac3f0b]
+  Audiences: everyday-ai-user, software-engineer [evidence-83]
+  Published status label: planned [evidence-83]
+  -> Source section [evidence-84]
+
+Inspirational sources [publication-66ad547d7f288e1e]
+  Audiences: everyday-ai-user, software-engineer [evidence-85]
+  Published status label: vision [evidence-85]
+  -> Source section [evidence-86]
+
+What DotLn is not [publication-30b3513cd62a498b]
+  Audiences: everyday-ai-user, software-engineer [evidence-87]
+  Published status label: specified [evidence-87]
+  -> Source section [evidence-88]
+
+Principles (design axioms) [publication-2a525d6c27ffda84]
+  Audiences: everyday-ai-user, software-engineer [evidence-89]
+  Published status label: specified [evidence-89]
+  -> Source section [evidence-90]
+
+Domain model [publication-6f39997611df4736]
+  Audiences: software-engineer [evidence-91]
+  Published status label: specified [evidence-91]
+  -> Source section [evidence-92]
+
+Events and decisions (the kernel loop) [publication-34af15732ea1061c]
+  Audiences: everyday-ai-user, software-engineer [evidence-93]
+  Published status label: implemented [evidence-93]
+  -> Source section [evidence-94]
+
+Actors and episodes (the edge) [publication-36c989bd1384f2b5]
+  Audiences: everyday-ai-user, software-engineer [evidence-95]
+  Published status label: specified [evidence-95]
+  -> Source section [evidence-96]
+
+Identity and composition [publication-a17796a7422d3d69]
+  Audiences: everyday-ai-user, software-engineer [evidence-97]
+  Published status label: specified [evidence-97]
+  -> Source section [evidence-98]
+
+LoadoutGraph v1 payload contract [publication-5a3ebef16df4f85d]
+  Audiences: software-engineer [evidence-99]
+  Published status label: implemented [evidence-99]
+  -> Source section [evidence-100]
+
+Artifact identity v1 [publication-4f8e9612ec6ac93d]
+  Audiences: software-engineer [evidence-101]
+  Published status label: implemented [evidence-101]
+  -> Source section [evidence-102]
+
+Feedback [publication-60960afd9df6510c]
+  Audiences: everyday-ai-user, software-engineer [evidence-103]
+  Published status label: specified [evidence-103]
+  -> Source section [evidence-104]
+
+Feedback compiler v1 [publication-8e3cecc3e333eb9f]
+  Audiences: software-engineer [evidence-105]
+  Published status label: implemented [evidence-105]
+  -> Source section [evidence-106]
+
+Independent verification v1 [publication-3e7ccc70235173de]
+  Audiences: everyday-ai-user, software-engineer [evidence-107]
+  Published status label: implemented [evidence-107]
+  -> Source section [evidence-108]
+
+Memory and observation [publication-9b6f8837e07d694f]
+  Audiences: everyday-ai-user, software-engineer [evidence-109]
+  Published status label: specified [evidence-109]
+  -> Source section [evidence-110]
+
+Beacon codebook v1 [publication-f8b7a46d47f20aa6]
+  Audiences: everyday-ai-user, software-engineer [evidence-111]
+  Published status label: implemented [evidence-111]
+  -> Source section [evidence-112]
+
+Beacon codebook v2 — control state [publication-e00ff72a61d72110]
+  Audiences: everyday-ai-user, software-engineer [evidence-113]
+  Published status label: implemented [evidence-113]
+  -> Source section [evidence-114]
+
+Beacon codebook v3 — weak keyed provenance [publication-20aa2e416de38897]
+  Audiences: everyday-ai-user, software-engineer [evidence-115]
+  Published status label: implemented [evidence-115]
+  -> Source section [evidence-116]
+
+Beacon group codebook v1 — phase counts [publication-73c305b0574d162e]
+  Audiences: everyday-ai-user, software-engineer [evidence-117]
+  Published status label: implemented [evidence-117]
+  -> Source section [evidence-118]
+
+Beacon perception and age [publication-442aec2d17fc936c]
+  Audiences: everyday-ai-user, software-engineer [evidence-119]
+  Published status label: implemented [evidence-119]
+  -> Source section [evidence-120]
+
+Formal grounding [publication-ce16c05d1dae1c57]
+  Audiences: software-engineer [evidence-121]
+  Published status label: specified [evidence-121]
+  -> Source section [evidence-122]
+
+Architecture [publication-fd3a61d4418d08a0]
+  Audiences: everyday-ai-user, software-engineer [evidence-123]
+  Published status label: planned [evidence-123]
+  -> Source section [evidence-124]
+
+Layer diagram [publication-b57223b5bc04d5f1]
+  Audiences: software-engineer [evidence-125]
+  Published status label: planned [evidence-125]
+  -> Source section [evidence-126]
+
+Platform and instance boundary [publication-3c99892f94b83824]
+  Audiences: everyday-ai-user, software-engineer [evidence-127]
+  Published status label: specified [evidence-127]
+  -> Source section [evidence-128]
+
+Candidate — owner-sovereign implementation profile
+[publication-6a8348997c1ae3ac]
+  Audiences: everyday-ai-user, software-engineer [evidence-129]
+  Published status label: vision [evidence-129]
+  -> Source section [evidence-130]
+
+Package ecosystem and marketplaces [publication-a9809c868fd86282]
+  Audiences: everyday-ai-user, software-engineer [evidence-131]
+  Published status label: planned [evidence-131]
+  -> Source section [evidence-132]
+
+Community builds and sandbox promotion [publication-5ac9ff580c86ee1e]
+  Audiences: everyday-ai-user, software-engineer [evidence-133]
+  Published status label: planned [evidence-133]
+  -> Source section [evidence-134]
+
+Agent enablement skills [publication-b828da062c1ee575]
+  Audiences: everyday-ai-user, software-engineer [evidence-135]
+  Published status label: planned [evidence-135]
+  -> Source section [evidence-136]
+
+Candidate — contributed execution pool [publication-00e94d059987ab92]
+  Audiences: everyday-ai-user, software-engineer [evidence-137]
+  Published status label: vision [evidence-137]
+  -> Source section [evidence-138]
+
+Runtime primitive catalogs [publication-64f66ba4693f5bef]
+  Audiences: software-engineer [evidence-139]
+  Published status label: planned [evidence-139]
+  -> Source section [evidence-140]
+
+Candidate — isolated execution environments [publication-804130a9f8b604ea]
+  Audiences: everyday-ai-user, software-engineer [evidence-141]
+  Published status label: vision [evidence-141]
+  -> Source section [evidence-142]
+
+The agentic communication core [publication-3d9098a35a29ce08]
+  Audiences: software-engineer [evidence-143]
+  Published status label: planned [evidence-143]
+  -> Source section [evidence-144]
+
+Candidate — opinion cohorts and sealed adjudication
+[publication-74985ffedcd878a5]
+  Audiences: everyday-ai-user, software-engineer [evidence-145]
+  Published status label: vision [evidence-145]
+  -> Source section [evidence-146]
+
+Composition system [publication-79dd7c1cb24e537b]
+  Audiences: software-engineer [evidence-147]
+  Published status label: planned [evidence-147]
+  -> Source section [evidence-148]
+
+Candidate — resource pressure as an environmental modifier
+[publication-9a6a3a42b27097ea]
+  Audiences: everyday-ai-user, software-engineer [evidence-149]
+  Published status label: planned [evidence-149]
+  -> Source section [evidence-150]
+
+Pinned artifact identity [publication-6d71a2f83a919e5e]
+  Audiences: everyday-ai-user, software-engineer [evidence-151]
+  Published status label: implemented [evidence-151]
+  -> Source section [evidence-152]
+
+Agent-originated product suggestions [publication-4844ea916f3d173f]
+  Audiences: everyday-ai-user, software-engineer [evidence-153]
+  Published status label: planned [evidence-153]
+  -> Source section [evidence-154]
+
+First live Entropy Reducer use [publication-2c0e6a5643a997c8]
+  Audiences: everyday-ai-user, software-engineer [evidence-155]
+  Published status label: implemented [evidence-155]
+  -> Source section [evidence-156]
+
+Channel-plural intake, PR-backed registration [publication-641d8510b7219298]
+  Audiences: software-engineer [evidence-157]
+  Published status label: planned [evidence-157]
+  -> Source section [evidence-158]
+
+Session lifecycle & resilience [publication-fbcf9076c55687eb]
+  Audiences: everyday-ai-user, software-engineer [evidence-159]
+  Published status label: planned [evidence-159]
+  -> Source section [evidence-160]
+
+Ports (what keeps work-flavored verticals pluggable)
+[publication-88f0faf348682479]
+  Audiences: software-engineer [evidence-161]
+  Published status label: planned [evidence-161]
+  -> Source section [evidence-162]
+
+Operator-presence policy [publication-5fb2808f29e6221f]
+  Audiences: everyday-ai-user, software-engineer [evidence-163]
+  Published status label: specified [evidence-163]
+  -> Source section [evidence-164]
+
+Candidate — progressive absence authority and return readiness
+[publication-6a90fa7dead1d973]
+  Audiences: everyday-ai-user, software-engineer [evidence-165]
+  Published status label: vision [evidence-165]
+  -> Source section [evidence-166]
+
+Corpus policy [publication-f7c9777815324f18]
+  Audiences: everyday-ai-user, software-engineer [evidence-167]
+  Published status label: specified [evidence-167]
+  -> Source section [evidence-168]
+
+Candidate — canonical private intake reconciliation
+[publication-dfb4ad3ec688dd67]
+  Audiences: everyday-ai-user, software-engineer [evidence-169]
+  Published status label: vision [evidence-169]
+  -> Source section [evidence-170]
+
+Learning loop [publication-c3e182d397f1c962]
+  Audiences: everyday-ai-user, software-engineer [evidence-171]
+  Published status label: planned [evidence-171]
+  -> Source section [evidence-172]
+
+Interfaces — the isomorphic views [publication-ad9c920ae3e1c4e7]
+  Audiences: everyday-ai-user, software-engineer [evidence-173]
+  Published status label: planned [evidence-173]
+  -> Source section [evidence-174]
+
+Editable-view v1 normalization and semantic hash [publication-6381fae223c519a6]
+  Audiences: software-engineer [evidence-175]
+  Published status label: implemented [evidence-175]
+  -> Source section [evidence-176]
+
+Terminal first, console equal [publication-c70e19ead6732287]
+  Audiences: everyday-ai-user, software-engineer [evidence-177]
+  Published status label: planned [evidence-177]
+  -> Source section [evidence-178]
+
+Candidate — workstream application [publication-c66e3009d47d7532]
+  Audiences: everyday-ai-user, software-engineer [evidence-179]
+  Published status label: vision [evidence-179]
+  -> Source section [evidence-180]
+
+Candidate — exact operator command vocabulary [publication-d00d0f67201aec77]
+  Audiences: everyday-ai-user, software-engineer [evidence-181]
+  Published status label: vision [evidence-181]
+  -> Source section [evidence-182]
+
+Candidate — multi-dimensional authorship assistance
+[publication-bf2e2a8cd0177f43]
+  Audiences: everyday-ai-user, software-engineer [evidence-183]
+  Published status label: vision [evidence-183]
+  -> Source section [evidence-184]
+
+προτείνω — prose as a world action [publication-b5a2322529bf5a08]
+  Audiences: everyday-ai-user, software-engineer [evidence-185]
+  Published status label: vision [evidence-185]
+  -> Source section [evidence-186]
+
+Plural UI hosts, one projection contract [publication-3238bff342bb331e]
+  Audiences: everyday-ai-user, software-engineer [evidence-187]
+  Published status label: planned [evidence-187]
+  -> Source section [evidence-188]
+
+RPG / Path-of-Exile view [publication-dd865cfc1b013908]
+  Audiences: everyday-ai-user, software-engineer [evidence-189]
+  Published status label: planned [evidence-189]
+  -> Source section [evidence-190]
+
+Semantic zoom [publication-2caff4a38173f5a8]
+  Audiences: everyday-ai-user, software-engineer [evidence-191]
+  Published status label: planned [evidence-191]
+  -> Source section [evidence-192]
+
+Community build workshop [publication-08574a7a22479ca8]
+  Audiences: everyday-ai-user, software-engineer [evidence-193]
+  Published status label: planned [evidence-193]
+  -> Source section [evidence-194]
+
+External rule-source mapping preview [publication-54d05640e563fa06]
+  Audiences: everyday-ai-user, software-engineer [evidence-195]
+  Published status label: vision [evidence-195]
+  -> Source section [evidence-196]
+
+Suggestion and proposal review [publication-71cd35f23303cf91]
+  Audiences: everyday-ai-user, software-engineer [evidence-197]
+  Published status label: planned [evidence-197]
+  -> Source section [evidence-198]
+
+Agent projection (the sparse twin) [publication-9a366531b0327e4c]
+  Audiences: everyday-ai-user, software-engineer [evidence-199]
+  Published status label: planned [evidence-199]
+  -> Source section [evidence-200]
+
+Glyph system (visual prototype zero) [publication-5557834a9ac572e5]
+  Audiences: everyday-ai-user, software-engineer [evidence-201]
+  Published status label: planned [evidence-201]
+  -> Source section [evidence-202]
+
+Transmog [publication-28b7d6dd9d3c3489]
+  Audiences: everyday-ai-user, software-engineer [evidence-203]
+  Published status label: planned [evidence-203]
+  -> Source section [evidence-204]
+
+Replay [publication-ce6552e0bd7d5458]
+  Audiences: everyday-ai-user, software-engineer [evidence-205]
+  Published status label: planned [evidence-205]
+  -> Source section [evidence-206]
+
+Physical channel [publication-e475a1867971e3c8]
+  Audiences: everyday-ai-user, software-engineer [evidence-207]
+  Published status label: planned [evidence-207]
+  -> Source section [evidence-208]
+
+Founding pattern library [publication-9b0e0828bc1b2341]
+  Audiences: everyday-ai-user, software-engineer [evidence-209]
+  Published status label: planned [evidence-209]
+  -> Source section [evidence-210]
+
+5S / 6S — the maintenance organism [publication-dc9f69d275dcb14f]
+  Audiences: everyday-ai-user, software-engineer [evidence-211]
+  Published status label: planned [evidence-211]
+  -> Source section [evidence-212]
+
+Leadership & autonomy — Marquet [publication-e84d2f83f948b871]
+  Audiences: everyday-ai-user, software-engineer [evidence-213]
+  Published status label: planned [evidence-213]
+  -> Source section [evidence-214]
+
+SMART & exploration contracts [publication-8650656de0cac44f]
+  Audiences: everyday-ai-user, software-engineer [evidence-215]
+  Published status label: planned [evidence-215]
+  -> Source section [evidence-216]
+
+Communication — mitigated speech [publication-14fa81d539f2954e]
+  Audiences: everyday-ai-user, software-engineer [evidence-217]
+  Published status label: planned [evidence-217]
+  -> Source section [evidence-218]
+
+Candidate — exact phrasebook voice support [publication-7e7098986c6f11d9]
+  Audiences: everyday-ai-user, software-engineer [evidence-219]
+  Published status label: vision [evidence-219]
+  -> Source section [evidence-220]
+
+Decision policies — Algorithms to Live By [publication-ef8ffde59f5092d5]
+  Audiences: everyday-ai-user, software-engineer [evidence-221]
+  Published status label: planned [evidence-221]
+  -> Source section [evidence-222]
+
+Candidate — success under growth [publication-8350fe30591ac5f2]
+  Audiences: everyday-ai-user, software-engineer [evidence-223]
+  Published status label: vision [evidence-223]
+  -> Source section [evidence-224]
+
+Candidate — influence response policies [publication-ea8ecb938f41a312]
+  Audiences: everyday-ai-user, software-engineer [evidence-225]
+  Published status label: vision [evidence-225]
+  -> Source section [evidence-226]
+
+Systems & quality [publication-0f328cebdaa777af]
+  Audiences: everyday-ai-user, software-engineer [evidence-227]
+  Published status label: planned [evidence-227]
+  -> Source section [evidence-228]
+
+Party topology — commedia dell'arte (the masks) [publication-395bbbaea5ebd580]
+  Audiences: everyday-ai-user, software-engineer [evidence-229]
+  Published status label: planned [evidence-229]
+  -> Source section [evidence-230]
+
+The Eye Dr Test — pairwise preference [publication-4f4dd666d75116e7]
+  Audiences: everyday-ai-user, software-engineer [evidence-231]
+  Published status label: planned [evidence-231]
+  -> Source section [evidence-232]
+
+Candidate — Additional Opinion [publication-2b94704c7a915e51]
+  Audiences: everyday-ai-user, software-engineer [evidence-233]
+  Published status label: vision [evidence-233]
+  -> Source section [evidence-234]
+
+Rhythm patterns [publication-35dddb0807061190]
+  Audiences: everyday-ai-user, software-engineer [evidence-235]
+  Published status label: planned [evidence-235]
+  -> Source section [evidence-236]
+
+Candidate — temporal interaction interpretation [publication-f8c6997bdae21aae]
+  Audiences: everyday-ai-user, software-engineer [evidence-237]
+  Published status label: vision [evidence-237]
+  -> Source section [evidence-238]
+
+Candidate — continuity-critical flow and binary quench
+[publication-3edaaebe4316eafd]
+  Audiences: everyday-ai-user, software-engineer [evidence-239]
+  Published status label: vision [evidence-239]
+  -> Source section [evidence-240]
+
+Candidate role — Flow Steward [publication-0a63d8079dc0d36a]
+  Audiences: everyday-ai-user, software-engineer [evidence-241]
+  Published status label: vision [evidence-241]
+  -> Source section [evidence-242]
+
+Candidate — oppositional support [publication-1e4c178f960db948]
+  Audiences: software-engineer [evidence-243]
+  Published status label: vision [evidence-243]
+  -> Source section [evidence-244]
+
+Candidate — The Malcolm Check [publication-fc2546e435f8566f]
+  Audiences: everyday-ai-user, software-engineer [evidence-245]
+  Published status label: vision [evidence-245]
+  -> Source section [evidence-246]
+
+Candidate — Beware of Naive Interventionism [publication-739f583bc1d9b80b]
+  Audiences: software-engineer [evidence-247]
+  Published status label: vision [evidence-247]
+  -> Source section [evidence-248]
+
+Candidate extension — implementation and delayed consequences
+[publication-4f653f7f844f74f3]
+  Audiences: everyday-ai-user, software-engineer [evidence-249]
+  Published status label: vision [evidence-249]
+  -> Source section [evidence-250]
+
+Clean Room — active mechanic with contextual supports
+[publication-bb4974e29204a4fb]
+  Audiences: everyday-ai-user, software-engineer [evidence-251]
+  Published status label: vision [evidence-251]
+  -> Source section [evidence-252]
+
+Candidate — Snooping Footprint Reducer [publication-b9368a09ff8ef3b9]
+  Audiences: everyday-ai-user, software-engineer [evidence-253]
+  Published status label: vision [evidence-253]
+  -> Source section [evidence-254]
+
+Candidate — Do Nothing, active and support [publication-e1351a23ad70c31a]
+  Audiences: everyday-ai-user, software-engineer [evidence-255]
+  Published status label: vision [evidence-255]
+  -> Source section [evidence-256]
+
+Active: Do Nothing [publication-71d98411c98a7779]
+  Audiences: software-engineer [evidence-257]
+  Published status label: vision [evidence-257]
+  -> Source section [evidence-258]
+
+Support: Do Nothing [publication-717d5cbb52918390]
+  Audiences: software-engineer [evidence-259]
+  Published status label: vision [evidence-259]
+  -> Source section [evidence-260]
+
+Relationship to nearby mechanics [publication-5f186d38f017e0a0]
+  Audiences: software-engineer [evidence-261]
+  Published status label: vision [evidence-261]
+  -> Source section [evidence-262]
+
+Candidate — Default to True / Default to False [publication-db63782709f0ef15]
+  Audiences: software-engineer [evidence-263]
+  Published status label: vision [evidence-263]
+  -> Source section [evidence-264]
+
+Fallback generalization — graded propositions [publication-97770c81e82c80d0]
+  Audiences: software-engineer [evidence-265]
+  Published status label: vision [evidence-265]
+  -> Source section [evidence-266]
+
+Candidate — Embodied Explorer [publication-66ffc759f4d9ad4a]
+  Audiences: everyday-ai-user, software-engineer [evidence-267]
+  Published status label: vision [evidence-267]
+  -> Source section [evidence-268]
+
+Roadmap — application release ladder [publication-095067ba93f4fa4c]
+  Audiences: everyday-ai-user, software-engineer [evidence-269]
+  Published status label: planned [evidence-269]
+  -> Source section [evidence-270]
+
+Release boundary [publication-93b61f073b3de97c]
+  Audiences: software-engineer [evidence-271]
+  Published status label: specified [evidence-271]
+  -> Source section [evidence-272]
+
+2026-08-31 forward retiming [publication-786676d31d38864e]
+  Audiences: software-engineer [evidence-273]
+  Published status label: implemented [evidence-273]
+  -> Source section [evidence-274]
+
+2026-09-04 forward retiming — WO-023 occupies v0.5.0
+[publication-c91b305daa073c42]
+  Audiences: software-engineer [evidence-275]
+  Published status label: implemented [evidence-275]
+  -> Source section [evidence-276]
+
+Candidate — whole or split work orders under one umbrella
+[publication-8f8fe93b9554136e]
+  Audiences: everyday-ai-user, software-engineer [evidence-277]
+  Published status label: vision [evidence-277]
+  -> Source section [evidence-278]
+
+Candidate — beacon usefulness checkpoint [publication-979055035b4e021a]
+  Audiences: everyday-ai-user, software-engineer [evidence-279]
+  Published status label: planned [evidence-279]
+  -> Source section [evidence-280]
+
+Work-order navigation and identity (candidate) [publication-b0fd151fc73ccaca]
+  Audiences: everyday-ai-user, software-engineer [evidence-281]
+  Published status label: planned [evidence-281]
+  -> Source section [evidence-282]
+
+Candidate — unattended work-order portfolio [publication-bc9374ded9a9cb9c]
+  Audiences: everyday-ai-user, software-engineer [evidence-283]
+  Published status label: vision [evidence-283]
+  -> Source section [evidence-284]
+
+Candidate — budget-window work-order ladders [publication-649e99434245c235]
+  Audiences: everyday-ai-user, software-engineer [evidence-285]
+  Published status label: planned [evidence-285]
+  -> Source section [evidence-286]
+
+Capability progression policies [publication-ff7b1bd91de0d476]
+  Audiences: everyday-ai-user, software-engineer [evidence-287]
+  Published status label: specified [evidence-287]
+  -> Source section [evidence-288]
+
+Activation, utilization, and XP [publication-39cbc3c39ef4c640]
+  Audiences: software-engineer [evidence-289]
+  Published status label: specified [evidence-289]
+  -> Source section [evidence-290]
+
+Reps, curiosity, and voluntary craft [publication-99f13b6ff43e4d2c]
+  Audiences: everyday-ai-user, software-engineer [evidence-291]
+  Published status label: specified [evidence-291]
+  -> Source section [evidence-292]
+
+Efficiency as a separate capability axis [publication-d96f47518c1fde10]
+  Audiences: software-engineer [evidence-293]
+  Published status label: specified [evidence-293]
+  -> Source section [evidence-294]
+
+Candidate — bounded system baseline [publication-cf62dcd16deedf13]
+  Audiences: everyday-ai-user, software-engineer [evidence-295]
+  Published status label: vision [evidence-295]
+  -> Source section [evidence-296]
+
+Counterfactual profiling work orders [publication-d1322ea84afaf4ab]
+  Audiences: software-engineer [evidence-297]
+  Published status label: specified [evidence-297]
+  -> Source section [evidence-298]
+
+v0.0.0 — Clean-room bootstrap _(mostly complete)_ [publication-321ed3468981dcce]
+  Audiences: software-engineer [evidence-299]
+  Published status label: implemented [evidence-299]
+  -> Source section [evidence-300]
+
+v0.0.1 — Environment truth (bounded) → WO-001 [publication-537ecb79fb1785c4]
+  Audiences: software-engineer [evidence-301]
+  Published status label: implemented [evidence-301]
+  -> Source section [evidence-302]
+
+v0.1.0 — Pure kernel → WO-002 [publication-5d279486ccd63f97]
+  Audiences: software-engineer [evidence-303]
+  Published status label: implemented [evidence-303]
+  -> Source section [evidence-304]
+
+v0.2.0 — Walking skeleton (fake executor) → WO-003
+[publication-71ea83bd135b4bbb]
+  Audiences: everyday-ai-user, software-engineer [evidence-305]
+  Published status label: verified [evidence-305]
+  -> Source section [evidence-306]
+
+v0.2.1 — Environment truth addendum and lifecycle corrections → WO-004 + WO-012
+[publication-6d62b95ad2909d78]
+  Audiences: software-engineer [evidence-307]
+  Published status label: verified [evidence-307]
+  -> Source section [evidence-308]
+
+v0.2.2 — Capability table v1 → WO-005 [publication-4003ac344bc8a50f]
+  Audiences: everyday-ai-user, software-engineer [evidence-309]
+  Published status label: verified [evidence-309]
+  -> Source section [evidence-310]
+
+v0.2.3 — Publication bootstrap → WO-006 [publication-9cf458327b8bbad1]
+  Audiences: everyday-ai-user, software-engineer [evidence-311]
+  Published status label: implemented [evidence-311]
+  -> Source section [evidence-312]
+
+v0.3.0 — Audit-record baseline (three projections) → WO-007
+[publication-3b52d5ce0ac613d3]
+  Audiences: everyday-ai-user, software-engineer [evidence-313]
+  Published status label: verified [evidence-313]
+  -> Source section [evidence-314]
+
+v0.4.0 — Composition compiler v1 → WO-008 [publication-a174b45a8ad75631]
+  Audiences: everyday-ai-user, software-engineer [evidence-315]
+  Published status label: verified [evidence-315]
+  -> Source section [evidence-316]
+
+v0.5.0 — Compiled Entropy Reducer → WO-023 [publication-a4d1455d8b59c972]
+  Audiences: everyday-ai-user, software-engineer [evidence-317]
+  Published status label: planned [evidence-317]
+  -> Source section [evidence-318]
+
+v0.10.0 — Real disposable worker → WO-009 [publication-9c0acd5e79d0f343]
+  Audiences: everyday-ai-user, software-engineer [evidence-319]
+  Published status label: implemented [evidence-319]
+  -> Source section [evidence-320]
+
+v0.12.0 — Independent verification → WO-010 [publication-8b473c0536e28c69]
+  Audiences: everyday-ai-user, software-engineer [evidence-321]
+  Published status label: implemented [evidence-321]
+  -> Source section [evidence-322]
+
+v0.13.0 — Feedback compiler v1 (ten units) → WO-011
+[publication-a70550e3adf52f06]
+  Audiences: software-engineer [evidence-323]
+  Published status label: implemented [evidence-323]
+  -> Source section [evidence-324]
+
+Application version pending — Harness lowering and rule migration → WO-039 +
+WO-040 [publication-0dafc313800a7ef2]
+  Audiences: everyday-ai-user, software-engineer [evidence-325]
+  Published status label: planned [evidence-325]
+  -> Source section [evidence-326]
+
+Application version pending — Projections & console
+[publication-4bc61fa90ca3bffc]
+  Audiences: everyday-ai-user, software-engineer [evidence-327]
+  Published status label: planned [evidence-327]
+  -> Source section [evidence-328]
+
+Application version pending — Launchpad and cross-repository workstreams →
+WO-033 + WO-034 [publication-7644842a14b51ddd]
+  Audiences: everyday-ai-user, software-engineer [evidence-329]
+  Published status label: planned [evidence-329]
+  -> Source section [evidence-330]
+
+Application version pending — Pattern workshop v1 [publication-9ec7063c642c07aa]
+  Audiences: everyday-ai-user, software-engineer [evidence-331]
+  Published status label: planned [evidence-331]
+  -> Source section [evidence-332]
+
+Application version pending — Source-to-deliverable vertical
+[publication-093e699a40ca171c]
+  Audiences: everyday-ai-user, software-engineer [evidence-333]
+  Published status label: planned [evidence-333]
+  -> Source section [evidence-334]
+
+v1.0.0 — Teammate-ready [publication-7fa630d422fb7855]
+  Audiences: everyday-ai-user, software-engineer [evidence-335]
+  Published status label: planned [evidence-335]
+  -> Source section [evidence-336]
+
+Post-1.0 horizons [publication-e4289658d878697b]
+  Audiences: everyday-ai-user, software-engineer [evidence-337]
+  Published status label: vision [evidence-337]
+  -> Source section [evidence-338]
+
+Execution guide — for any model session working in this repo
+[publication-1747d20835105571]
+  Audiences: software-engineer [evidence-339]
+  Published status label: implemented [evidence-339]
+  -> Source section [evidence-340]
+
+Read order for a cold start [publication-d8441d3b2b9f24f1]
+  Audiences: software-engineer [evidence-341]
+  Published status label: implemented [evidence-341]
+  -> Source section [evidence-342]
+
+Operator resume phrases — how you get dispatched [publication-57ab89d1d7afb652]
+  Audiences: software-engineer [evidence-343]
+  Published status label: verified [evidence-343]
+  -> Source section [evidence-344]
+
+Independent workflows and integration [publication-89342b948201aa4b]
+  Audiences: software-engineer [evidence-345]
+  Published status label: implemented [evidence-345]
+  -> Source section [evidence-346]
+
+Operator-opened ideation mode [publication-896acfb2406da8c1]
+  Audiences: software-engineer [evidence-347]
+  Published status label: specified [evidence-347]
+  -> Source section [evidence-348]
+
+Ideation breakout receipt and verification [publication-d6f55fabd6d3aeb6]
+  Audiences: software-engineer [evidence-349]
+  Published status label: specified [evidence-349]
+  -> Source section [evidence-350]
+
+Operator-opened planning pass [publication-f24078934204e263]
+  Audiences: software-engineer [evidence-351]
+  Published status label: implemented [evidence-351]
+  -> Source section [evidence-352]
+
+Workflow closeout and releases [publication-ce0cfab331995189]
+  Audiences: software-engineer [evidence-353]
+  Published status label: verified [evidence-353]
+  -> Source section [evidence-354]
+
+Documentation freshness and ownership [publication-411a01c5f4a48e74]
+  Audiences: everyday-ai-user, software-engineer [evidence-355]
+  Published status label: specified [evidence-355]
+  -> Source section [evidence-356]
+
+Discipline [publication-26385ab37b580a66]
+  Audiences: software-engineer [evidence-357]
+  Published status label: specified [evidence-357]
+  -> Source section [evidence-358]
+
+Model-specific notes [publication-1605c7f3c96b3584]
+  Audiences: software-engineer [evidence-359]
+  Published status label: specified [evidence-359]
+  -> Source section [evidence-360]
+
+Publication compiler — one source, many authoritative editions
+[publication-16145ad667175794]
+  Audiences: everyday-ai-user, software-engineer [evidence-361]
+  Published status label: vision [evidence-361]
+  -> Source section [evidence-362]
+
+Source model [publication-f82481efc9d43641]
+  Audiences: everyday-ai-user, software-engineer [evidence-363]
+  Published status label: specified [evidence-363]
+  -> Source section [evidence-364]
+
+Audience editions [publication-611e934bc787f3ba]
+  Audiences: everyday-ai-user, software-engineer [evidence-365]
+  Published status label: specified [evidence-365]
+  -> Source section [evidence-366]
+
+Publication manifest [publication-9da31e509498b870]
+  Audiences: software-engineer [evidence-367]
+  Published status label: vision [evidence-367]
+  -> Source section [evidence-368]
+
+Outline first; publication IR only as needed [publication-ca300be2d3ca6637]
+  Audiences: software-engineer [evidence-369]
+  Published status label: specified [evidence-369]
+  -> Source section [evidence-370]
+
+Base publication and implementation overlays [publication-53428ed739f36655]
+  Audiences: software-engineer [evidence-371]
+  Published status label: specified [evidence-371]
+  -> Source section [evidence-372]
+
+Planning, rendering, and checking roles [publication-eaa64f0ba2433f04]
+  Audiences: software-engineer [evidence-373]
+  Published status label: specified [evidence-373]
+  -> Source section [evidence-374]
+
+Freshness and ownership [publication-7bcb9a82ae6f746d]
+  Audiences: everyday-ai-user, software-engineer [evidence-375]
+  Published status label: specified [evidence-375]
+  -> Source section [evidence-376]
+
+Authority and honesty rules [publication-eab7cc603082da77]
+  Audiences: everyday-ai-user, software-engineer [evidence-377]
+  Published status label: specified [evidence-377]
+  -> Source section [evidence-378]
+
+Product surface [publication-cf36d8a537c29386]
+  Audiences: everyday-ai-user, software-engineer [evidence-379]
+  Published status label: vision [evidence-379]
+  -> Source section [evidence-380]
+
+PRs and commits [publication-5ea369afbbcb5ba4]
+  Audiences: software-engineer [evidence-381]
+  Published status label: specified [evidence-381]
+  -> Source section [evidence-382]
+
+Release-note edition [publication-b401706f06d41a36]
+  Audiences: everyday-ai-user, software-engineer [evidence-383]
+  Published status label: verified [evidence-383]
+  -> Source section [evidence-384]
+
+Bootstrap path [publication-59467b758cf6a775]
+  Audiences: software-engineer [evidence-385]
+  Published status label: planned [evidence-385]
+  -> Source section [evidence-386]
+
+Audit, records, resilience, and privacy [publication-70dec204f559b846]
+  Audiences: everyday-ai-user, software-engineer [evidence-387]
+  Published status label: vision [evidence-387]
+  -> Source section [evidence-388]
+
+Audit audiences and decisions [publication-63171e4de7ee2b84]
+  Audiences: everyday-ai-user, software-engineer [evidence-389]
+  Published status label: specified [evidence-389]
+  -> Source section [evidence-390]
+
+Canonical audit record [publication-5976ccb52e3f6692]
+  Audiences: software-engineer [evidence-391]
+  Published status label: planned [evidence-391]
+  -> Source section [evidence-392]
+
+Deterministic artifact receipts [publication-35c435061d7842c5]
+  Audiences: everyday-ai-user, software-engineer [evidence-393]
+  Published status label: implemented [evidence-393]
+  -> Source section [evidence-394]
+
+Fidelity levels [publication-169ae6c4d4fd9c3b]
+  Audiences: everyday-ai-user, software-engineer [evidence-395]
+  Published status label: specified [evidence-395]
+  -> Source section [evidence-396]
+
+Audit projections and visualizations [publication-1c149815ee1f0623]
+  Audiences: everyday-ai-user, software-engineer [evidence-397]
+  Published status label: specified [evidence-397]
+  -> Source section [evidence-398]
+
+Persistence and recovery classes [publication-1c063f23c299d56c]
+  Audiences: everyday-ai-user, software-engineer [evidence-399]
+  Published status label: specified [evidence-399]
+  -> Source section [evidence-400]
+
+Backup and disaster recovery choices [publication-3dbf6f0190e03fe6]
+  Audiences: everyday-ai-user, software-engineer [evidence-401]
+  Published status label: specified [evidence-401]
+  -> Source section [evidence-402]
+
+Privacy and minimization [publication-22d8cf639c8ed309]
+  Audiences: everyday-ai-user, software-engineer [evidence-403]
+  Published status label: specified [evidence-403]
+  -> Source section [evidence-404]
+
+Candidate — minimized incident reporting [publication-71717369be4c924a]
+  Audiences: everyday-ai-user, software-engineer [evidence-405]
+  Published status label: vision [evidence-405]
+  -> Source section [evidence-406]
+
+Candidate — model-input exposure plans [publication-98347f7789d7ed37]
+  Audiences: everyday-ai-user, software-engineer [evidence-407]
+  Published status label: vision [evidence-407]
+  -> Source section [evidence-408]
+
+Candidate — public Git with a local private evidence lane
+[publication-0ce35f8009e4a231]
+  Audiences: software-engineer [evidence-409]
+  Published status label: vision [evidence-409]
+  -> Source section [evidence-410]
+
+Policy dimensions implementations can customize [publication-73924292ed5fabd1]
+  Audiences: software-engineer [evidence-411]
+  Published status label: specified [evidence-411]
+  -> Source section [evidence-412]
+
+Bootstrap sequence [publication-33fee1d8b50f89b7]
+  Audiences: software-engineer [evidence-413]
+  Published status label: planned [evidence-413]
+  -> Source section [evidence-414]
+
+IR verification, lineage, and compatibility [publication-72401274c39116b5]
+  Audiences: everyday-ai-user, software-engineer [evidence-415]
+  Published status label: vision [evidence-415]
+  -> Source section [evidence-416]
+
+Lightweight IR verifier [publication-8d591b28871ead8c]
+  Audiences: everyday-ai-user, software-engineer [evidence-417]
+  Published status label: vision [evidence-417]
+  -> Source section [evidence-418]
+
+Separate version axes [publication-617fdafa57a1baeb]
+  Audiences: software-engineer [evidence-419]
+  Published status label: specified [evidence-419]
+  -> Source section [evidence-420]
+
+Transformation graph [publication-d4254b9e35b3df6d]
+  Audiences: software-engineer [evidence-421]
+  Published status label: specified [evidence-421]
+  -> Source section [evidence-422]
+
+Candidate — external rule-source import plans [publication-f406db8e0084db6c]
+  Audiences: everyday-ai-user, software-engineer [evidence-423]
+  Published status label: vision [evidence-423]
+  -> Source section [evidence-424]
+
+Release-scoped mechanic availability [publication-fb884b56aaf4825a]
+  Audiences: everyday-ai-user, software-engineer [evidence-425]
+  Published status label: specified [evidence-425]
+  -> Source section [evidence-426]
+
+Portable and regenerable sharing [publication-1d8a3f2303896651]
+  Audiences: everyday-ai-user, software-engineer [evidence-427]
+  Published status label: vision [evidence-427]
+  -> Source section [evidence-428]
+
+Behavioral toolbox and game-AI horizon [publication-788a608ffd4035fb]
+  Audiences: everyday-ai-user, software-engineer [evidence-429]
+  Published status label: vision [evidence-429]
+  -> Source section [evidence-430]
+
+Invariants [publication-13fb06f17a742824]
+  Audiences: software-engineer [evidence-431]
+  Published status label: specified [evidence-431]
+  -> Source section [evidence-432]
+
+προτείνω (protíno) — the first-party application thesis
+[publication-22a239d853b70c4f]
+  Audiences: everyday-ai-user, software-engineer [evidence-433]
+  Published status label: vision [evidence-433]
+  -> Source section [evidence-434]
+
+Shape before machinery [publication-2f46846eb35cb23b]
+  Audiences: everyday-ai-user, software-engineer [evidence-435]
+  Published status label: specified [evidence-435]
+  -> Source section [evidence-436]
+
+The playable loop [publication-ad176948799cfaeb]
+  Audiences: everyday-ai-user, software-engineer [evidence-437]
+  Published status label: vision [evidence-437]
+  -> Source section [evidence-438]
+
+A world on DotLn, not a second DotLn world [publication-b0c92b36c5826e2e]
+  Audiences: everyday-ai-user, software-engineer [evidence-439]
+  Published status label: specified [evidence-439]
+  -> Source section [evidence-440]
+
+Candidate — recap-primed resident memory [publication-3869b4fba0cb573f]
+  Audiences: everyday-ai-user, software-engineer [evidence-441]
+  Published status label: vision [evidence-441]
+  -> Source section [evidence-442]
+
+Intervention truth [publication-ea72d00ddf5b8763]
+  Audiences: everyday-ai-user, software-engineer [evidence-443]
+  Published status label: specified [evidence-443]
+  -> Source section [evidence-444]
+
+Ad hoc first, reusable on evidence [publication-81ced8f183b2cb08]
+  Audiences: everyday-ai-user, software-engineer [evidence-445]
+  Published status label: specified [evidence-445]
+  -> Source section [evidence-446]
+
+Candidate — commander-mediated tactical play [publication-62a4e5882b91e128]
+  Audiences: everyday-ai-user, software-engineer [evidence-447]
+  Published status label: vision [evidence-447]
+  -> Source section [evidence-448]
+
+Books and personal styles become experiments [publication-b88c0926e5331802]
+  Audiences: everyday-ai-user, software-engineer [evidence-449]
+  Published status label: vision [evidence-449]
+  -> Source section [evidence-450]
+
+Counterfactuals are the scoreboard [publication-c1621c6ecfe1df0d]
+  Audiences: everyday-ai-user, software-engineer [evidence-451]
+  Published status label: specified [evidence-451]
+  -> Source section [evidence-452]
+
+Candidate — time fidelity and bounded future reachability
+[publication-4e2e92f8b86e7244]
+  Audiences: everyday-ai-user, software-engineer [evidence-453]
+  Published status label: vision [evidence-453]
+  -> Source section [evidence-454]
+
+Candidate — behavior is not animate-only [publication-cfeb2aa35e438901]
+  Audiences: everyday-ai-user, software-engineer [evidence-455]
+  Published status label: vision [evidence-455]
+  -> Source section [evidence-456]
+
+Every apparent affordance tells the truth [publication-5b3e01e5e45a9a1d]
+  Audiences: everyday-ai-user, software-engineer [evidence-457]
+  Published status label: vision [evidence-457]
+  -> Source section [evidence-458]
+
+Source shapes, not copied implementations [publication-1b7e5866cd122fe3]
+  Audiences: everyday-ai-user, software-engineer [evidence-459]
+  Published status label: vision [evidence-459]
+  -> Source section [evidence-460]
+
+Candidate first evidence slice [publication-1db3a9f15acc681d]
+  Audiences: everyday-ai-user, software-engineer [evidence-461]
+  Published status label: vision [evidence-461]
+  -> Source section [evidence-462]
+
+Unresolved product choices [publication-bb167cb3eddade55]
+  Audiences: everyday-ai-user, software-engineer [evidence-463]
+  Published status label: vision [evidence-463]
+  -> Source section [evidence-464]
+
+Workstream application — end-user workflow candidate
+[publication-e9283c7b6f910a62]
+  Audiences: everyday-ai-user, software-engineer [evidence-465]
+  Published status label: vision [evidence-465]
+  -> Source section [evidence-466]
+
+Arriving at the desk [publication-706eedeeab7deb68]
+  Audiences: everyday-ai-user, software-engineer [evidence-467]
+  Published status label: vision [evidence-467]
+  -> Source section [evidence-468]
+
+One outcome from request to return [publication-314f32f62e243bdb]
+  Audiences: everyday-ai-user, software-engineer [evidence-469]
+  Published status label: vision [evidence-469]
+  -> Source section [evidence-470]
+
+Replacing a successful but costly workflow [publication-a944b0159f2ec270]
+  Audiences: everyday-ai-user, software-engineer [evidence-471]
+  Published status label: vision [evidence-471]
+  -> Source section [evidence-472]
+
+One workstream across repositories [publication-58c4c5c0aff4333f]
+  Audiences: everyday-ai-user, software-engineer [evidence-473]
+  Published status label: vision [evidence-473]
+  -> Source section [evidence-474]
+
+What exists and what must be proved [publication-72fb3ebbbcd9faab]
+  Audiences: everyday-ai-user, software-engineer [evidence-475]
+  Published status label: vision [evidence-475]
+  -> Source section [evidence-476]
+
+Open product choices [publication-bd3527bcf696f75a]
+  Audiences: everyday-ai-user, software-engineer [evidence-477]
+  Published status label: vision [evidence-477]
+  -> Source section [evidence-478]
+
+UIFA roles — five human roles around an agentic platform
+[publication-bf1ef7a26c89f11a]
+  Audiences: everyday-ai-user, software-engineer [evidence-479]
+  Published status label: specified [evidence-479]
+  -> Source section [evidence-480]
+
+Why name the humans [publication-7f9949cd955a7699]
+  Audiences: everyday-ai-user, software-engineer [evidence-481]
+  Published status label: vision [evidence-481]
+  -> Source section [evidence-482]
+
+The five roles [publication-fca3432c9909bb05]
+  Audiences: everyday-ai-user, software-engineer [evidence-483]
+  Published status label: specified [evidence-483]
+  -> Source section [evidence-484]
+
+UIFA product lead [publication-0f49c2c836771394]
+  Audiences: everyday-ai-user, software-engineer [evidence-485]
+  Published status label: specified [evidence-485]
+  -> Source section [evidence-486]
+
+UIFA showrunner [publication-f706316933d0c11c]
+  Audiences: everyday-ai-user, software-engineer [evidence-487]
+  Published status label: specified [evidence-487]
+  -> Source section [evidence-488]
+
+UIFA engineer [publication-d63396a46c5651b7]
+  Audiences: everyday-ai-user, software-engineer [evidence-489]
+  Published status label: specified [evidence-489]
+  -> Source section [evidence-490]
+
+UIFA tester [publication-71572628ebe25116]
+  Audiences: everyday-ai-user, software-engineer [evidence-491]
+  Published status label: implemented [evidence-491]
+  -> Source section [evidence-492]
+
+UIFA devops [publication-ef72d04cb4022389]
+  Audiences: everyday-ai-user, software-engineer [evidence-493]
+  Published status label: specified [evidence-493]
+  -> Source section [evidence-494]
+
+Candidate — security, identity, logs, and traceability responsibilities
+[publication-a34a7c460f81cf94]
+  Audiences: everyday-ai-user, software-engineer [evidence-495]
+  Published status label: vision [evidence-495]
+  -> Source section [evidence-496]
+
+Humans stay in the loop [publication-d894ffc6f1acb9e6]
+  Audiences: everyday-ai-user, software-engineer [evidence-497]
+  Published status label: vision [evidence-497]
+  -> Source section [evidence-498]
+
+One person, several hats [publication-a828b50fad1a80d0]
+  Audiences: everyday-ai-user, software-engineer [evidence-499]
+  Published status label: specified [evidence-499]
+  -> Source section [evidence-500]
+
+The same five roles in other domains [publication-6086970fee36b8fe]
+  Audiences: everyday-ai-user, software-engineer [evidence-501]
+  Published status label: vision [evidence-501]
+  -> Source section [evidence-502]
+
+Assistance the platform owes each role [publication-79cddc3981775442]
+  Audiences: everyday-ai-user, software-engineer [evidence-503]
+  Published status label: planned [evidence-503]
+  -> Source section [evidence-504]
+
+What this does not decide [publication-8b826d6dd57d9dd4]
+  Audiences: everyday-ai-user, software-engineer [evidence-505]
+  Published status label: specified [evidence-505]
+  -> Source section [evidence-506]
+
+προτείνω (protíno) — the first-party application thesis
+[publication-cbfc9a282dfe9201]
+  Audiences: everyday-ai-user, software-engineer [evidence-507]
+  Published status label: deprecated [evidence-507]
+  -> Source section [evidence-508]
+
+Shape before machinery [publication-f210803cf8f8b5ad]
+  Audiences: everyday-ai-user, software-engineer [evidence-509]
+  Published status label: deprecated [evidence-509]
+  -> Source section [evidence-510]
+
+The playable loop [publication-ce22ccf461b43d8a]
+  Audiences: everyday-ai-user, software-engineer [evidence-511]
+  Published status label: deprecated [evidence-511]
+  -> Source section [evidence-512]
+
+A world on DotLn, not a second DotLn world [publication-977f4dc5dbc86b97]
+  Audiences: everyday-ai-user, software-engineer [evidence-513]
+  Published status label: deprecated [evidence-513]
+  -> Source section [evidence-514]
+
+Candidate — recap-primed resident memory [publication-aa550f2c65e25c0a]
+  Audiences: everyday-ai-user, software-engineer [evidence-515]
+  Published status label: deprecated [evidence-515]
+  -> Source section [evidence-516]
+
+Intervention truth [publication-0fed3f9eb5141128]
+  Audiences: everyday-ai-user, software-engineer [evidence-517]
+  Published status label: deprecated [evidence-517]
+  -> Source section [evidence-518]
+
+Ad hoc first, reusable on evidence [publication-13f7f31d741e7b33]
+  Audiences: everyday-ai-user, software-engineer [evidence-519]
+  Published status label: deprecated [evidence-519]
+  -> Source section [evidence-520]
+
+Candidate — commander-mediated tactical play [publication-d28901a4bff104d9]
+  Audiences: everyday-ai-user, software-engineer [evidence-521]
+  Published status label: deprecated [evidence-521]
+  -> Source section [evidence-522]
+
+Books and personal styles become experiments [publication-17d2f61efe07aca3]
+  Audiences: everyday-ai-user, software-engineer [evidence-523]
+  Published status label: deprecated [evidence-523]
+  -> Source section [evidence-524]
+
+Counterfactuals are the scoreboard [publication-8f722a4166159286]
+  Audiences: everyday-ai-user, software-engineer [evidence-525]
+  Published status label: deprecated [evidence-525]
+  -> Source section [evidence-526]
+
+Candidate — time fidelity and bounded future reachability
+[publication-c740d05faf2fa164]
+  Audiences: everyday-ai-user, software-engineer [evidence-527]
+  Published status label: deprecated [evidence-527]
+  -> Source section [evidence-528]
+
+Candidate — behavior is not animate-only [publication-8dc99ccb9ed8a595]
+  Audiences: everyday-ai-user, software-engineer [evidence-529]
+  Published status label: deprecated [evidence-529]
+  -> Source section [evidence-530]
+
+Every apparent affordance tells the truth [publication-188b789bee630ff4]
+  Audiences: everyday-ai-user, software-engineer [evidence-531]
+  Published status label: deprecated [evidence-531]
+  -> Source section [evidence-532]
+
+Source shapes, not copied implementations [publication-7dab9feef5d5e1a2]
+  Audiences: everyday-ai-user, software-engineer [evidence-533]
+  Published status label: deprecated [evidence-533]
+  -> Source section [evidence-534]
+
+Candidate first evidence slice [publication-b86c55dbab20b348]
+  Audiences: everyday-ai-user, software-engineer [evidence-535]
+  Published status label: deprecated [evidence-535]
+  -> Source section [evidence-536]
+
+Unresolved product choices [publication-3a459c8c4054db9a]
+  Audiences: everyday-ai-user, software-engineer [evidence-537]
+  Published status label: deprecated [evidence-537]
+  -> Source section [evidence-538]
+
+Pending roadmap rungs [roadmap] — available
+
+Application version pending — Harness lowering and rule migration → WO-039 +
+WO-040 [rung-7879d39eefc9cb37]
+  Roadmap status: pending (roadmap heading) [evidence-539]
+
+Application version pending — Projections & console [rung-190f1bb8ac865191]
+  Roadmap status: pending (roadmap heading) [evidence-540]
+
+Application version pending — Launchpad and cross-repository workstreams →
+WO-033 + WO-034 [rung-f6f53e2ff2903c84]
+  Roadmap status: pending (roadmap heading) [evidence-541]
+
+Application version pending — Pattern workshop v1 [rung-26b44665140c32f0]
+  Roadmap status: pending (roadmap heading) [evidence-542]
+
+Application version pending — Source-to-deliverable vertical
+[rung-c064b4161ecf4c91]
+  Roadmap status: pending (roadmap heading) [evidence-543]
+
+ROLE QUESTIONS
+product-lead: Is this still the thing we mean?
+  [refutation-verdicts] verdict + reason; latest-refutation.holdStatus
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+showrunner: What is active, what is blocked, what closed, and what did the
+release contain?
+  [orders] phase + blockers + dependencyCheck + legalNextActions;
+releases.workOrders
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+engineer: Does this composition express the behavior I mean, and what does it
+cost?
+  [saved-builds] tooltip + semanticHash + hashAgreement
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+tester: In this situation, does the equipped behavior do the right thing?
+  [compiled-mechanisms] desiredBehavior + fixture.incidentsPrevented +
+lastActivation; acceptance matrix status and evidence
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+devops: Which repeated step can become a checked mechanism next?
+  [compiled-mechanisms] boundary + rung + nextMaturity; capabilities.Next
+smallest promotable increment
+  Source: docs/product/13-uifa-roles.md#the-five-roles
+
+SOURCES
+unavailable: skeleton:loadout-exports — Source not supplied
+unavailable: skeleton:feedback-units — Source not supplied
+unavailable: control:canonical-segments — Source not supplied
+unavailable: docs/work-orders/README.md — Source not supplied
+unavailable: resume:status--json — Source not supplied
+unavailable: worktree:constellation — Source not supplied
+unavailable: release:list — Source not supplied
+unavailable: resume:usage--json — Source not supplied
+available: docs/planning/capability-table.md
+available: docs/publication/audience-status-index.md
+available: docs/product/06-roadmap.md
+available: docs/planning/refutations/
+
+EVIDENCE
+[evidence-1] docs/planning/capability-table.md
+  line:82
+[evidence-2] docs/planning/capability-table.md
+  link:../../packages/kernel/test/ac1-purity.test.ts
+[evidence-3] docs/planning/capability-table.md
+  link:../../packages/kernel/test/ac2-replay-store.test.ts
+[evidence-4] docs/planning/capability-table.md
+  link:../../packages/kernel/test/ac5-failure-rows.test.ts
+[evidence-5] docs/planning/capability-table.md
+  link:../../corpus/harness/wo101-program-corpus.test.mjs
+[evidence-6] docs/planning/capability-table.md
+  link:../verifications/WO-003/VER-002.md
+[evidence-7] docs/planning/capability-table.md
+  line:83
+[evidence-8] docs/planning/capability-table.md
+  link:../../packages/kernel/test/ac3-cadence.test.ts
+[evidence-9] docs/planning/capability-table.md
+  link:../../packages/skeleton/test/scenario.test.ts
+[evidence-10] docs/planning/capability-table.md
+  link:../../packages/kernel/README.md
+[evidence-11] docs/planning/capability-table.md
+  link:../releases/v0.2.0.md
+[evidence-12] docs/planning/capability-table.md
+  line:84
+[evidence-13] docs/planning/capability-table.md
+  link:../../packages/kernel/test/ac6-authorization.test.ts
+[evidence-14] docs/planning/capability-table.md
+  link:../../corpus/harness/wo101-id-corpus.test.mjs
+[evidence-15] docs/planning/capability-table.md
+  line:85
+[evidence-16] docs/planning/capability-table.md
+  line:86
+[evidence-17] docs/planning/capability-table.md
+  link:../../packages/kernel/test/ac4-continuations.test.ts
+[evidence-18] docs/planning/capability-table.md
+  link:../verifications/WO-101/VER-001.md
+[evidence-19] docs/planning/capability-table.md
+  line:87
+[evidence-20] docs/planning/capability-table.md
+  link:../../packages/skeleton/src/scenario.ts
+[evidence-21] docs/planning/capability-table.md
+  link:../final-reviews/WO-003/FINAL-001.md
+[evidence-22] docs/planning/capability-table.md
+  line:88
+[evidence-23] docs/planning/capability-table.md
+  link:../work-orders/WO-008-composition-compiler.md
+[evidence-24] docs/planning/capability-table.md
+  line:89
+[evidence-25] docs/planning/capability-table.md
+  link:../discovery/environment.md#wo-004-transport-and-startup-context-addendum
+-2026-08-31
+[evidence-26] docs/planning/capability-table.md
+  link:../discovery/codex-runtime-map.md
+[evidence-27] docs/planning/capability-table.md
+  link:../work-orders/WO-009-real-disposable-worker.md
+[evidence-28] docs/planning/capability-table.md
+  line:90
+[evidence-29] docs/planning/capability-table.md
+  link:../work-orders/WO-010-independent-verification.md
+[evidence-30] docs/planning/capability-table.md
+  link:../verifications/WO-004/VER-002.md
+[evidence-31] docs/planning/capability-table.md
+  line:91
+[evidence-32] docs/planning/capability-table.md
+  link:../../packages/skeleton/README.md
+[evidence-33] docs/planning/capability-table.md
+  link:../releases/v0.2.0.md#known-limitations
+[evidence-34] docs/planning/capability-table.md
+  line:92
+[evidence-35] docs/planning/capability-table.md
+  link:../work-orders/WO-006-publication-bootstrap.md
+[evidence-36] docs/planning/capability-table.md
+  line:93
+[evidence-37] docs/planning/capability-table.md
+  link:../work-orders/WO-007-audit-record-baseline.md
+[evidence-38] docs/planning/capability-table.md
+  line:105
+[evidence-39] docs/planning/capability-table.md
+  link:../../packages/skeleton/src/reactor.ts
+[evidence-40] docs/planning/capability-table.md
+  line:106
+[evidence-41] docs/planning/capability-table.md
+  link:../../packages/skeleton/test/cli.test.ts
+[evidence-42] docs/planning/capability-table.md
+  line:118
+[evidence-43] docs/planning/capability-table.md
+  link:../../packages/compiler/README.md
+[evidence-44] docs/planning/capability-table.md
+  link:../../packages/compiler/test/compiler.test.ts
+[evidence-45] docs/planning/capability-table.md
+  link:../../packages/compiler/test/purity.test.ts
+[evidence-46] docs/planning/capability-table.md
+  link:../../packages/compiler/test/views.test.ts
+[evidence-47] docs/planning/capability-table.md
+  link:../../packages/compiler/test/tooltip.test.ts
+[evidence-48] docs/planning/capability-table.md
+  line:141
+[evidence-49] docs/planning/capability-table.md
+  link:../../packages/skeleton/test/beacon.test.ts
+[evidence-50] docs/planning/capability-table.md
+  link:../../packages/skeleton/test/beacon-fs.test.ts
+[evidence-51] docs/planning/capability-table.md
+  link:../discovery/beacon-probe-2026-09-04.md
+[evidence-52] docs/planning/capability-table.md
+  link:../work-orders/WO-020-beacon-codebook.md
+[evidence-53] docs/planning/capability-table.md
+  link:../work-orders/WO-021-control-plane-beacons.md
+[evidence-54] docs/planning/capability-table.md
+  link:beacon-usefulness-checkpoint.md
+[evidence-55] docs/planning/capability-table.md
+  line:151
+[evidence-56] docs/planning/capability-table.md
+  link:../evidence/WO-030/README.md
+[evidence-57] docs/planning/capability-table.md
+  link:../../scripts/test-control-segments.mjs
+[evidence-58] docs/planning/capability-table.md
+  link:../../scripts/test-concurrent-control.mjs
+[evidence-59] docs/planning/capability-table.md
+  line:161
+[evidence-60] docs/planning/capability-table.md
+  link:../evidence/WO-021/README.md
+[evidence-61] docs/planning/capability-table.md
+  link:../../packages/skeleton/test/control-beacon.test.ts
+[evidence-62] docs/planning/capability-table.md
+  link:../../packages/skeleton/test/control-beacon-cli.test.ts
+[evidence-63] docs/planning/capability-table.md
+  link:../../scripts/test-control-beacons.mjs
+[evidence-64] docs/planning/capability-table.md
+  line:174
+[evidence-65] docs/planning/capability-table.md
+  line:175
+[evidence-66] docs/planning/capability-table.md
+  line:176
+[evidence-67] docs/planning/capability-table.md
+  line:203
+[evidence-68] docs/planning/capability-table.md
+  link:../evidence/WO-041/README.md
+[evidence-69] docs/publication/audience-status-index.md
+  line:17
+[evidence-70] docs/publication/audience-status-index.md
+  link:../product/00-vision.md#dotln--vision
+[evidence-71] docs/publication/audience-status-index.md
+  line:18
+[evidence-72] docs/publication/audience-status-index.md
+  link:../product/00-vision.md#mission--increase-the-chance-of-operator-flow
+[evidence-73] docs/publication/audience-status-index.md
+  line:19
+[evidence-74] docs/publication/audience-status-index.md
+  link:../product/00-vision.md#common-substrate-local-doctrine
+[evidence-75] docs/publication/audience-status-index.md
+  line:20
+[evidence-76] docs/publication/audience-status-index.md
+  link:../product/00-vision.md#the-one-paragraph-story
+[evidence-77] docs/publication/audience-status-index.md
+  line:21
+[evidence-78] docs/publication/audience-status-index.md
+  link:../product/00-vision.md#the-core-bet
+[evidence-79] docs/publication/audience-status-index.md
+  line:22
+[evidence-80] docs/publication/audience-status-index.md
+  link:../product/00-vision.md#the-differentiated-interface
+[evidence-81] docs/publication/audience-status-index.md
+  line:23
+[evidence-82] docs/publication/audience-status-index.md
+  link:../product/00-vision.md#shape-first-synthesis
+[evidence-83] docs/publication/audience-status-index.md
+  line:24
+[evidence-84] docs/publication/audience-status-index.md
+  link:../product/00-vision.md#three-horizons-one-kernel
+[evidence-85] docs/publication/audience-status-index.md
+  line:25
+[evidence-86] docs/publication/audience-status-index.md
+  link:../product/00-vision.md#inspirational-sources
+[evidence-87] docs/publication/audience-status-index.md
+  line:26
+[evidence-88] docs/publication/audience-status-index.md
+  link:../product/00-vision.md#what-dotln-is-not
+[evidence-89] docs/publication/audience-status-index.md
+  line:32
+[evidence-90] docs/publication/audience-status-index.md
+  link:../product/01-principles.md#principles-design-axioms
+[evidence-91] docs/publication/audience-status-index.md
+  line:38
+[evidence-92] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#domain-model
+[evidence-93] docs/publication/audience-status-index.md
+  line:39
+[evidence-94] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#events-and-decisions-the-kernel-loop
+[evidence-95] docs/publication/audience-status-index.md
+  line:40
+[evidence-96] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#actors-and-episodes-the-edge
+[evidence-97] docs/publication/audience-status-index.md
+  line:41
+[evidence-98] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#identity-and-composition
+[evidence-99] docs/publication/audience-status-index.md
+  line:42
+[evidence-100] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#loadoutgraph-v1-payload-contract
+[evidence-101] docs/publication/audience-status-index.md
+  line:43
+[evidence-102] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#artifact-identity-v1
+[evidence-103] docs/publication/audience-status-index.md
+  line:44
+[evidence-104] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#feedback
+[evidence-105] docs/publication/audience-status-index.md
+  line:45
+[evidence-106] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#feedback-compiler-v1
+[evidence-107] docs/publication/audience-status-index.md
+  line:46
+[evidence-108] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#independent-verification-v1
+[evidence-109] docs/publication/audience-status-index.md
+  line:47
+[evidence-110] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#memory-and-observation
+[evidence-111] docs/publication/audience-status-index.md
+  line:48
+[evidence-112] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#beacon-codebook-v1
+[evidence-113] docs/publication/audience-status-index.md
+  line:49
+[evidence-114] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#beacon-codebook-v2--control-state
+[evidence-115] docs/publication/audience-status-index.md
+  line:50
+[evidence-116] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#beacon-codebook-v3--weak-keyed-provenance
+[evidence-117] docs/publication/audience-status-index.md
+  line:51
+[evidence-118] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#beacon-group-codebook-v1--phase-counts
+[evidence-119] docs/publication/audience-status-index.md
+  line:52
+[evidence-120] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#beacon-perception-and-age
+[evidence-121] docs/publication/audience-status-index.md
+  line:53
+[evidence-122] docs/publication/audience-status-index.md
+  link:../product/02-domain-model.md#formal-grounding
+[evidence-123] docs/publication/audience-status-index.md
+  line:59
+[evidence-124] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#architecture
+[evidence-125] docs/publication/audience-status-index.md
+  line:60
+[evidence-126] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#layer-diagram
+[evidence-127] docs/publication/audience-status-index.md
+  line:61
+[evidence-128] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#platform-and-instance-boundary
+[evidence-129] docs/publication/audience-status-index.md
+  line:62
+[evidence-130] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#candidate--owner-sovereign-implementation-p
+rofile
+[evidence-131] docs/publication/audience-status-index.md
+  line:63
+[evidence-132] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#package-ecosystem-and-marketplaces
+[evidence-133] docs/publication/audience-status-index.md
+  line:64
+[evidence-134] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#community-builds-and-sandbox-promotion
+[evidence-135] docs/publication/audience-status-index.md
+  line:65
+[evidence-136] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#agent-enablement-skills
+[evidence-137] docs/publication/audience-status-index.md
+  line:66
+[evidence-138] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#candidate--contributed-execution-pool
+[evidence-139] docs/publication/audience-status-index.md
+  line:67
+[evidence-140] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#runtime-primitive-catalogs
+[evidence-141] docs/publication/audience-status-index.md
+  line:68
+[evidence-142] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#candidate--isolated-execution-environments
+[evidence-143] docs/publication/audience-status-index.md
+  line:69
+[evidence-144] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#the-agentic-communication-core
+[evidence-145] docs/publication/audience-status-index.md
+  line:70
+[evidence-146] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#candidate--opinion-cohorts-and-sealed-adjud
+ication
+[evidence-147] docs/publication/audience-status-index.md
+  line:71
+[evidence-148] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#composition-system
+[evidence-149] docs/publication/audience-status-index.md
+  line:72
+[evidence-150] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#candidate--resource-pressure-as-an-environm
+ental-modifier
+[evidence-151] docs/publication/audience-status-index.md
+  line:73
+[evidence-152] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#pinned-artifact-identity
+[evidence-153] docs/publication/audience-status-index.md
+  line:74
+[evidence-154] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#agent-originated-product-suggestions
+[evidence-155] docs/publication/audience-status-index.md
+  line:75
+[evidence-156] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#first-live-entropy-reducer-use
+[evidence-157] docs/publication/audience-status-index.md
+  line:76
+[evidence-158] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#channel-plural-intake-pr-backed-registratio
+n
+[evidence-159] docs/publication/audience-status-index.md
+  line:77
+[evidence-160] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#session-lifecycle--resilience
+[evidence-161] docs/publication/audience-status-index.md
+  line:78
+[evidence-162] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#ports-what-keeps-work-flavored-verticals-pl
+uggable
+[evidence-163] docs/publication/audience-status-index.md
+  line:79
+[evidence-164] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#operator-presence-policy
+[evidence-165] docs/publication/audience-status-index.md
+  line:80
+[evidence-166] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#candidate--progressive-absence-authority-an
+d-return-readiness
+[evidence-167] docs/publication/audience-status-index.md
+  line:81
+[evidence-168] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#corpus-policy
+[evidence-169] docs/publication/audience-status-index.md
+  line:82
+[evidence-170] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#candidate--canonical-private-intake-reconci
+liation
+[evidence-171] docs/publication/audience-status-index.md
+  line:83
+[evidence-172] docs/publication/audience-status-index.md
+  link:../product/03-architecture.md#learning-loop
+[evidence-173] docs/publication/audience-status-index.md
+  line:89
+[evidence-174] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#interfaces--the-isomorphic-views
+[evidence-175] docs/publication/audience-status-index.md
+  line:90
+[evidence-176] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#editable-view-v1-normalization-and-semantic-h
+ash
+[evidence-177] docs/publication/audience-status-index.md
+  line:91
+[evidence-178] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#terminal-first-console-equal
+[evidence-179] docs/publication/audience-status-index.md
+  line:92
+[evidence-180] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#candidate--workstream-application
+[evidence-181] docs/publication/audience-status-index.md
+  line:93
+[evidence-182] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#candidate--exact-operator-command-vocabulary
+[evidence-183] docs/publication/audience-status-index.md
+  line:94
+[evidence-184] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#candidate--multi-dimensional-authorship-assis
+tance
+[evidence-185] docs/publication/audience-status-index.md
+  line:95
+[evidence-186] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#προτείνω--prose-as-a-world-action
+[evidence-187] docs/publication/audience-status-index.md
+  line:96
+[evidence-188] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#plural-ui-hosts-one-projection-contract
+[evidence-189] docs/publication/audience-status-index.md
+  line:97
+[evidence-190] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#rpg--path-of-exile-view
+[evidence-191] docs/publication/audience-status-index.md
+  line:98
+[evidence-192] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#semantic-zoom
+[evidence-193] docs/publication/audience-status-index.md
+  line:99
+[evidence-194] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#community-build-workshop
+[evidence-195] docs/publication/audience-status-index.md
+  line:100
+[evidence-196] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#external-rule-source-mapping-preview
+[evidence-197] docs/publication/audience-status-index.md
+  line:101
+[evidence-198] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#suggestion-and-proposal-review
+[evidence-199] docs/publication/audience-status-index.md
+  line:102
+[evidence-200] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#agent-projection-the-sparse-twin
+[evidence-201] docs/publication/audience-status-index.md
+  line:103
+[evidence-202] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#glyph-system-visual-prototype-zero
+[evidence-203] docs/publication/audience-status-index.md
+  line:104
+[evidence-204] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#transmog
+[evidence-205] docs/publication/audience-status-index.md
+  line:105
+[evidence-206] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#replay
+[evidence-207] docs/publication/audience-status-index.md
+  line:106
+[evidence-208] docs/publication/audience-status-index.md
+  link:../product/04-interfaces.md#physical-channel
+[evidence-209] docs/publication/audience-status-index.md
+  line:112
+[evidence-210] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#founding-pattern-library
+[evidence-211] docs/publication/audience-status-index.md
+  line:113
+[evidence-212] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#5s--6s--the-maintenance-organism
+[evidence-213] docs/publication/audience-status-index.md
+  line:114
+[evidence-214] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#leadership--autonomy--marquet
+[evidence-215] docs/publication/audience-status-index.md
+  line:115
+[evidence-216] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#smart--exploration-contracts
+[evidence-217] docs/publication/audience-status-index.md
+  line:116
+[evidence-218] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#communication--mitigated-speech
+[evidence-219] docs/publication/audience-status-index.md
+  line:117
+[evidence-220] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--exact-phrasebook-voice-suppor
+t
+[evidence-221] docs/publication/audience-status-index.md
+  line:118
+[evidence-222] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#decision-policies--algorithms-to-live-by
+[evidence-223] docs/publication/audience-status-index.md
+  line:119
+[evidence-224] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--success-under-growth
+[evidence-225] docs/publication/audience-status-index.md
+  line:120
+[evidence-226] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--influence-response-policies
+[evidence-227] docs/publication/audience-status-index.md
+  line:121
+[evidence-228] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#systems--quality
+[evidence-229] docs/publication/audience-status-index.md
+  line:122
+[evidence-230] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#party-topology--commedia-dellarte-the-ma
+sks
+[evidence-231] docs/publication/audience-status-index.md
+  line:123
+[evidence-232] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#the-eye-dr-test--pairwise-preference
+[evidence-233] docs/publication/audience-status-index.md
+  line:124
+[evidence-234] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--additional-opinion
+[evidence-235] docs/publication/audience-status-index.md
+  line:125
+[evidence-236] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#rhythm-patterns
+[evidence-237] docs/publication/audience-status-index.md
+  line:126
+[evidence-238] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--temporal-interaction-interpre
+tation
+[evidence-239] docs/publication/audience-status-index.md
+  line:127
+[evidence-240] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--continuity-critical-flow-and-
+binary-quench
+[evidence-241] docs/publication/audience-status-index.md
+  line:128
+[evidence-242] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate-role--flow-steward
+[evidence-243] docs/publication/audience-status-index.md
+  line:129
+[evidence-244] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--oppositional-support
+[evidence-245] docs/publication/audience-status-index.md
+  line:130
+[evidence-246] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--the-malcolm-check
+[evidence-247] docs/publication/audience-status-index.md
+  line:131
+[evidence-248] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--beware-of-naive-interventioni
+sm
+[evidence-249] docs/publication/audience-status-index.md
+  line:132
+[evidence-250] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate-extension--implementation-and-
+delayed-consequences
+[evidence-251] docs/publication/audience-status-index.md
+  line:133
+[evidence-252] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#clean-room--active-mechanic-with-context
+ual-supports
+[evidence-253] docs/publication/audience-status-index.md
+  line:134
+[evidence-254] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--snooping-footprint-reducer
+[evidence-255] docs/publication/audience-status-index.md
+  line:135
+[evidence-256] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--do-nothing-active-and-support
+[evidence-257] docs/publication/audience-status-index.md
+  line:136
+[evidence-258] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#active-do-nothing
+[evidence-259] docs/publication/audience-status-index.md
+  line:137
+[evidence-260] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#support-do-nothing
+[evidence-261] docs/publication/audience-status-index.md
+  line:138
+[evidence-262] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#relationship-to-nearby-mechanics
+[evidence-263] docs/publication/audience-status-index.md
+  line:139
+[evidence-264] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--default-to-true--default-to-f
+alse
+[evidence-265] docs/publication/audience-status-index.md
+  line:140
+[evidence-266] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#fallback-generalization--graded-proposit
+ions
+[evidence-267] docs/publication/audience-status-index.md
+  line:141
+[evidence-268] docs/publication/audience-status-index.md
+  link:../product/05-pattern-library.md#candidate--embodied-explorer
+[evidence-269] docs/publication/audience-status-index.md
+  line:147
+[evidence-270] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#roadmap--application-release-ladder
+[evidence-271] docs/publication/audience-status-index.md
+  line:148
+[evidence-272] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#release-boundary
+[evidence-273] docs/publication/audience-status-index.md
+  line:149
+[evidence-274] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#2026-08-31-forward-retiming
+[evidence-275] docs/publication/audience-status-index.md
+  line:150
+[evidence-276] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#2026-09-04-forward-retiming--wo-023-occupies-v05
+0
+[evidence-277] docs/publication/audience-status-index.md
+  line:151
+[evidence-278] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#candidate--whole-or-split-work-orders-under-one-
+umbrella
+[evidence-279] docs/publication/audience-status-index.md
+  line:152
+[evidence-280] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#candidate--beacon-usefulness-checkpoint
+[evidence-281] docs/publication/audience-status-index.md
+  line:153
+[evidence-282] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#work-order-navigation-and-identity-candidate
+[evidence-283] docs/publication/audience-status-index.md
+  line:154
+[evidence-284] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#candidate--unattended-work-order-portfolio
+[evidence-285] docs/publication/audience-status-index.md
+  line:155
+[evidence-286] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#candidate--budget-window-work-order-ladders
+[evidence-287] docs/publication/audience-status-index.md
+  line:156
+[evidence-288] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#capability-progression-policies
+[evidence-289] docs/publication/audience-status-index.md
+  line:157
+[evidence-290] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#activation-utilization-and-xp
+[evidence-291] docs/publication/audience-status-index.md
+  line:158
+[evidence-292] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#reps-curiosity-and-voluntary-craft
+[evidence-293] docs/publication/audience-status-index.md
+  line:159
+[evidence-294] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#efficiency-as-a-separate-capability-axis
+[evidence-295] docs/publication/audience-status-index.md
+  line:160
+[evidence-296] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#candidate--bounded-system-baseline
+[evidence-297] docs/publication/audience-status-index.md
+  line:161
+[evidence-298] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#counterfactual-profiling-work-orders
+[evidence-299] docs/publication/audience-status-index.md
+  line:162
+[evidence-300] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v000--clean-room-bootstrap--mostly-complete
+[evidence-301] docs/publication/audience-status-index.md
+  line:163
+[evidence-302] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v001--environment-truth-bounded---wo-001
+[evidence-303] docs/publication/audience-status-index.md
+  line:164
+[evidence-304] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v010--pure-kernel---wo-002
+[evidence-305] docs/publication/audience-status-index.md
+  line:165
+[evidence-306] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v020--walking-skeleton-fake-executor---wo-003
+[evidence-307] docs/publication/audience-status-index.md
+  line:166
+[evidence-308] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v021--environment-truth-addendum-and-lifecycle-c
+orrections---wo-004--wo-012
+[evidence-309] docs/publication/audience-status-index.md
+  line:167
+[evidence-310] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v022--capability-table-v1---wo-005
+[evidence-311] docs/publication/audience-status-index.md
+  line:168
+[evidence-312] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v023--publication-bootstrap---wo-006
+[evidence-313] docs/publication/audience-status-index.md
+  line:169
+[evidence-314] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v030--audit-record-baseline-three-projections---
+wo-007
+[evidence-315] docs/publication/audience-status-index.md
+  line:170
+[evidence-316] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v040--composition-compiler-v1---wo-008
+[evidence-317] docs/publication/audience-status-index.md
+  line:171
+[evidence-318] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v050--compiled-entropy-reducer---wo-023
+[evidence-319] docs/publication/audience-status-index.md
+  line:172
+[evidence-320] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v0100--real-disposable-worker---wo-009
+[evidence-321] docs/publication/audience-status-index.md
+  line:173
+[evidence-322] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v0120--independent-verification---wo-010
+[evidence-323] docs/publication/audience-status-index.md
+  line:174
+[evidence-324] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v0130--feedback-compiler-v1-ten-units---wo-011
+[evidence-325] docs/publication/audience-status-index.md
+  line:175
+[evidence-326] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#application-version-pending--harness-lowering-an
+d-rule-migration--wo-039--wo-040
+[evidence-327] docs/publication/audience-status-index.md
+  line:176
+[evidence-328] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#application-version-pending--projections--consol
+e
+[evidence-329] docs/publication/audience-status-index.md
+  line:177
+[evidence-330] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#application-version-pending--launchpad-and-cross
+-repository-workstreams--wo-033--wo-034
+[evidence-331] docs/publication/audience-status-index.md
+  line:178
+[evidence-332] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#application-version-pending--pattern-workshop-v1
+[evidence-333] docs/publication/audience-status-index.md
+  line:179
+[evidence-334] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#application-version-pending--source-to-deliverab
+le-vertical
+[evidence-335] docs/publication/audience-status-index.md
+  line:180
+[evidence-336] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#v100--teammate-ready
+[evidence-337] docs/publication/audience-status-index.md
+  line:181
+[evidence-338] docs/publication/audience-status-index.md
+  link:../product/06-roadmap.md#post-10-horizons
+[evidence-339] docs/publication/audience-status-index.md
+  line:191
+[evidence-340] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#execution-guide--for-any-model-session-w
+orking-in-this-repo
+[evidence-341] docs/publication/audience-status-index.md
+  line:192
+[evidence-342] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#read-order-for-a-cold-start
+[evidence-343] docs/publication/audience-status-index.md
+  line:193
+[evidence-344] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dis
+patched
+[evidence-345] docs/publication/audience-status-index.md
+  line:194
+[evidence-346] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#independent-workflows-and-integration
+[evidence-347] docs/publication/audience-status-index.md
+  line:195
+[evidence-348] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#operator-opened-ideation-mode
+[evidence-349] docs/publication/audience-status-index.md
+  line:196
+[evidence-350] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#ideation-breakout-receipt-and-verificati
+on
+[evidence-351] docs/publication/audience-status-index.md
+  line:197
+[evidence-352] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#operator-opened-planning-pass
+[evidence-353] docs/publication/audience-status-index.md
+  line:198
+[evidence-354] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#workflow-closeout-and-releases
+[evidence-355] docs/publication/audience-status-index.md
+  line:199
+[evidence-356] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#documentation-freshness-and-ownership
+[evidence-357] docs/publication/audience-status-index.md
+  line:200
+[evidence-358] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#discipline
+[evidence-359] docs/publication/audience-status-index.md
+  line:201
+[evidence-360] docs/publication/audience-status-index.md
+  link:../product/07-execution-guide.md#model-specific-notes
+[evidence-361] docs/publication/audience-status-index.md
+  line:207
+[evidence-362] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#publication-compiler--one-source-ma
+ny-authoritative-editions
+[evidence-363] docs/publication/audience-status-index.md
+  line:208
+[evidence-364] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#source-model
+[evidence-365] docs/publication/audience-status-index.md
+  line:209
+[evidence-366] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#audience-editions
+[evidence-367] docs/publication/audience-status-index.md
+  line:210
+[evidence-368] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#publication-manifest
+[evidence-369] docs/publication/audience-status-index.md
+  line:211
+[evidence-370] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#outline-first-publication-ir-only-a
+s-needed
+[evidence-371] docs/publication/audience-status-index.md
+  line:212
+[evidence-372] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#base-publication-and-implementation
+-overlays
+[evidence-373] docs/publication/audience-status-index.md
+  line:213
+[evidence-374] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#planning-rendering-and-checking-rol
+es
+[evidence-375] docs/publication/audience-status-index.md
+  line:214
+[evidence-376] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#freshness-and-ownership
+[evidence-377] docs/publication/audience-status-index.md
+  line:215
+[evidence-378] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#authority-and-honesty-rules
+[evidence-379] docs/publication/audience-status-index.md
+  line:216
+[evidence-380] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#product-surface
+[evidence-381] docs/publication/audience-status-index.md
+  line:217
+[evidence-382] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#prs-and-commits
+[evidence-383] docs/publication/audience-status-index.md
+  line:218
+[evidence-384] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#release-note-edition
+[evidence-385] docs/publication/audience-status-index.md
+  line:219
+[evidence-386] docs/publication/audience-status-index.md
+  link:../product/08-publication-compiler.md#bootstrap-path
+[evidence-387] docs/publication/audience-status-index.md
+  line:225
+[evidence-388] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#audit-records-resilience-and-pr
+ivacy
+[evidence-389] docs/publication/audience-status-index.md
+  line:226
+[evidence-390] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#audit-audiences-and-decisions
+[evidence-391] docs/publication/audience-status-index.md
+  line:227
+[evidence-392] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#canonical-audit-record
+[evidence-393] docs/publication/audience-status-index.md
+  line:228
+[evidence-394] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#deterministic-artifact-receipts
+[evidence-395] docs/publication/audience-status-index.md
+  line:229
+[evidence-396] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#fidelity-levels
+[evidence-397] docs/publication/audience-status-index.md
+  line:230
+[evidence-398] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#audit-projections-and-visualiza
+tions
+[evidence-399] docs/publication/audience-status-index.md
+  line:231
+[evidence-400] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#persistence-and-recovery-classe
+s
+[evidence-401] docs/publication/audience-status-index.md
+  line:232
+[evidence-402] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#backup-and-disaster-recovery-ch
+oices
+[evidence-403] docs/publication/audience-status-index.md
+  line:233
+[evidence-404] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#privacy-and-minimization
+[evidence-405] docs/publication/audience-status-index.md
+  line:234
+[evidence-406] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#candidate--minimized-incident-r
+eporting
+[evidence-407] docs/publication/audience-status-index.md
+  line:235
+[evidence-408] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#candidate--model-input-exposure
+-plans
+[evidence-409] docs/publication/audience-status-index.md
+  line:236
+[evidence-410] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#candidate--public-git-with-a-lo
+cal-private-evidence-lane
+[evidence-411] docs/publication/audience-status-index.md
+  line:237
+[evidence-412] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#policy-dimensions-implementatio
+ns-can-customize
+[evidence-413] docs/publication/audience-status-index.md
+  line:238
+[evidence-414] docs/publication/audience-status-index.md
+  link:../product/09-audit-resilience-privacy.md#bootstrap-sequence
+[evidence-415] docs/publication/audience-status-index.md
+  line:244
+[evidence-416] docs/publication/audience-status-index.md
+  link:../product/10-ir-compatibility.md#ir-verification-lineage-and-compatibili
+ty
+[evidence-417] docs/publication/audience-status-index.md
+  line:245
+[evidence-418] docs/publication/audience-status-index.md
+  link:../product/10-ir-compatibility.md#lightweight-ir-verifier
+[evidence-419] docs/publication/audience-status-index.md
+  line:246
+[evidence-420] docs/publication/audience-status-index.md
+  link:../product/10-ir-compatibility.md#separate-version-axes
+[evidence-421] docs/publication/audience-status-index.md
+  line:247
+[evidence-422] docs/publication/audience-status-index.md
+  link:../product/10-ir-compatibility.md#transformation-graph
+[evidence-423] docs/publication/audience-status-index.md
+  line:248
+[evidence-424] docs/publication/audience-status-index.md
+  link:../product/10-ir-compatibility.md#candidate--external-rule-source-import-
+plans
+[evidence-425] docs/publication/audience-status-index.md
+  line:249
+[evidence-426] docs/publication/audience-status-index.md
+  link:../product/10-ir-compatibility.md#release-scoped-mechanic-availability
+[evidence-427] docs/publication/audience-status-index.md
+  line:250
+[evidence-428] docs/publication/audience-status-index.md
+  link:../product/10-ir-compatibility.md#portable-and-regenerable-sharing
+[evidence-429] docs/publication/audience-status-index.md
+  line:251
+[evidence-430] docs/publication/audience-status-index.md
+  link:../product/10-ir-compatibility.md#behavioral-toolbox-and-game-ai-horizon
+[evidence-431] docs/publication/audience-status-index.md
+  line:252
+[evidence-432] docs/publication/audience-status-index.md
+  link:../product/10-ir-compatibility.md#invariants
+[evidence-433] docs/publication/audience-status-index.md
+  line:258
+[evidence-434] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#προτείνω-protíno--the-first-party-application-th
+esis
+[evidence-435] docs/publication/audience-status-index.md
+  line:259
+[evidence-436] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#shape-before-machinery
+[evidence-437] docs/publication/audience-status-index.md
+  line:260
+[evidence-438] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#the-playable-loop
+[evidence-439] docs/publication/audience-status-index.md
+  line:261
+[evidence-440] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#a-world-on-dotln-not-a-second-dotln-world
+[evidence-441] docs/publication/audience-status-index.md
+  line:262
+[evidence-442] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#candidate--recap-primed-resident-memory
+[evidence-443] docs/publication/audience-status-index.md
+  line:263
+[evidence-444] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#intervention-truth
+[evidence-445] docs/publication/audience-status-index.md
+  line:264
+[evidence-446] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#ad-hoc-first-reusable-on-evidence
+[evidence-447] docs/publication/audience-status-index.md
+  line:265
+[evidence-448] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#candidate--commander-mediated-tactical-play
+[evidence-449] docs/publication/audience-status-index.md
+  line:266
+[evidence-450] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#books-and-personal-styles-become-experiments
+[evidence-451] docs/publication/audience-status-index.md
+  line:267
+[evidence-452] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#counterfactuals-are-the-scoreboard
+[evidence-453] docs/publication/audience-status-index.md
+  line:268
+[evidence-454] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#candidate--time-fidelity-and-bounded-future-reac
+hability
+[evidence-455] docs/publication/audience-status-index.md
+  line:269
+[evidence-456] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#candidate--behavior-is-not-animate-only
+[evidence-457] docs/publication/audience-status-index.md
+  line:270
+[evidence-458] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#every-apparent-affordance-tells-the-truth
+[evidence-459] docs/publication/audience-status-index.md
+  line:271
+[evidence-460] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#source-shapes-not-copied-implementations
+[evidence-461] docs/publication/audience-status-index.md
+  line:272
+[evidence-462] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#candidate-first-evidence-slice
+[evidence-463] docs/publication/audience-status-index.md
+  line:273
+[evidence-464] docs/publication/audience-status-index.md
+  link:../product/11-protino.md#unresolved-product-choices
+[evidence-465] docs/publication/audience-status-index.md
+  line:279
+[evidence-466] docs/publication/audience-status-index.md
+  link:../product/12-workstream-application.md#workstream-application--end-user-
+workflow-candidate
+[evidence-467] docs/publication/audience-status-index.md
+  line:280
+[evidence-468] docs/publication/audience-status-index.md
+  link:../product/12-workstream-application.md#arriving-at-the-desk
+[evidence-469] docs/publication/audience-status-index.md
+  line:281
+[evidence-470] docs/publication/audience-status-index.md
+  link:../product/12-workstream-application.md#one-outcome-from-request-to-retur
+n
+[evidence-471] docs/publication/audience-status-index.md
+  line:282
+[evidence-472] docs/publication/audience-status-index.md
+  link:../product/12-workstream-application.md#replacing-a-successful-but-costly
+-workflow
+[evidence-473] docs/publication/audience-status-index.md
+  line:283
+[evidence-474] docs/publication/audience-status-index.md
+  link:../product/12-workstream-application.md#one-workstream-across-repositorie
+s
+[evidence-475] docs/publication/audience-status-index.md
+  line:284
+[evidence-476] docs/publication/audience-status-index.md
+  link:../product/12-workstream-application.md#what-exists-and-what-must-be-prov
+ed
+[evidence-477] docs/publication/audience-status-index.md
+  line:285
+[evidence-478] docs/publication/audience-status-index.md
+  link:../product/12-workstream-application.md#open-product-choices
+[evidence-479] docs/publication/audience-status-index.md
+  line:291
+[evidence-480] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#uifa-roles--five-human-roles-around-an-agenti
+c-platform
+[evidence-481] docs/publication/audience-status-index.md
+  line:292
+[evidence-482] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#why-name-the-humans
+[evidence-483] docs/publication/audience-status-index.md
+  line:293
+[evidence-484] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#the-five-roles
+[evidence-485] docs/publication/audience-status-index.md
+  line:294
+[evidence-486] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#uifa-product-lead
+[evidence-487] docs/publication/audience-status-index.md
+  line:295
+[evidence-488] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#uifa-showrunner
+[evidence-489] docs/publication/audience-status-index.md
+  line:296
+[evidence-490] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#uifa-engineer
+[evidence-491] docs/publication/audience-status-index.md
+  line:297
+[evidence-492] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#uifa-tester
+[evidence-493] docs/publication/audience-status-index.md
+  line:298
+[evidence-494] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#uifa-devops
+[evidence-495] docs/publication/audience-status-index.md
+  line:299
+[evidence-496] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#candidate--security-identity-logs-and-traceab
+ility-responsibilities
+[evidence-497] docs/publication/audience-status-index.md
+  line:300
+[evidence-498] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#humans-stay-in-the-loop
+[evidence-499] docs/publication/audience-status-index.md
+  line:301
+[evidence-500] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#one-person-several-hats
+[evidence-501] docs/publication/audience-status-index.md
+  line:302
+[evidence-502] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#the-same-five-roles-in-other-domains
+[evidence-503] docs/publication/audience-status-index.md
+  line:303
+[evidence-504] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#assistance-the-platform-owes-each-role
+[evidence-505] docs/publication/audience-status-index.md
+  line:304
+[evidence-506] docs/publication/audience-status-index.md
+  link:../product/13-uifa-roles.md#what-this-does-not-decide
+[evidence-507] docs/publication/audience-status-index.md
+  line:310
+[evidence-508] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#προτείνω-protíno--the-first-party-application-t
+hesis
+[evidence-509] docs/publication/audience-status-index.md
+  line:311
+[evidence-510] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#shape-before-machinery
+[evidence-511] docs/publication/audience-status-index.md
+  line:312
+[evidence-512] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#the-playable-loop
+[evidence-513] docs/publication/audience-status-index.md
+  line:313
+[evidence-514] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#a-world-on-dotln-not-a-second-dotln-world
+[evidence-515] docs/publication/audience-status-index.md
+  line:314
+[evidence-516] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#candidate--recap-primed-resident-memory
+[evidence-517] docs/publication/audience-status-index.md
+  line:315
+[evidence-518] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#intervention-truth
+[evidence-519] docs/publication/audience-status-index.md
+  line:316
+[evidence-520] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#ad-hoc-first-reusable-on-evidence
+[evidence-521] docs/publication/audience-status-index.md
+  line:317
+[evidence-522] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#candidate--commander-mediated-tactical-play
+[evidence-523] docs/publication/audience-status-index.md
+  line:318
+[evidence-524] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#books-and-personal-styles-become-experiments
+[evidence-525] docs/publication/audience-status-index.md
+  line:319
+[evidence-526] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#counterfactuals-are-the-scoreboard
+[evidence-527] docs/publication/audience-status-index.md
+  line:320
+[evidence-528] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#candidate--time-fidelity-and-bounded-future-rea
+chability
+[evidence-529] docs/publication/audience-status-index.md
+  line:321
+[evidence-530] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#candidate--behavior-is-not-animate-only
+[evidence-531] docs/publication/audience-status-index.md
+  line:322
+[evidence-532] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#every-apparent-affordance-tells-the-truth
+[evidence-533] docs/publication/audience-status-index.md
+  line:323
+[evidence-534] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#source-shapes-not-copied-implementations
+[evidence-535] docs/publication/audience-status-index.md
+  line:324
+[evidence-536] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#candidate-first-evidence-slice
+[evidence-537] docs/publication/audience-status-index.md
+  line:325
+[evidence-538] docs/publication/audience-status-index.md
+  link:../product/11-proteino.md#unresolved-product-choices
+[evidence-539] docs/product/06-roadmap.md
+  line:1163
+[evidence-540] docs/product/06-roadmap.md
+  line:1190
+[evidence-541] docs/product/06-roadmap.md
+  line:1217
+[evidence-542] docs/product/06-roadmap.md
+  line:1251
+[evidence-543] docs/product/06-roadmap.md
+  line:1268
+[evidence-544] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  planVerdict + holdReasons (immutable recorded result)
+[evidence-545] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  orders:WO-038
+[evidence-546] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  orders:WO-039
+[evidence-547] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  orders:WO-033
+[evidence-548] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  orders:WO-041
+[evidence-549] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  orders:WO-032
+[evidence-550] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  orders:WO-040
+[evidence-551] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  orders:WO-036
+[evidence-552] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  orders:WO-034
+[evidence-553] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  orders:WO-035
+[evidence-554] docs/planning/refutations/2026-09-07-wo041-live-001.json
+  orders:WO-037

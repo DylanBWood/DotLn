@@ -1,0 +1,798 @@
+[
+  {
+    "workOrder": "WO-031",
+    "workOrderPath": "docs/work-orders/WO-031-actor-usage-projection.md",
+    "phase": "closed",
+    "latestVerification": "VER-001",
+    "verificationPath": "docs/verifications/WO-031/VER-001.md",
+    "latestVerdict": "pass",
+    "finalReview": "FINAL-001",
+    "finalReviewPath": "docs/final-reviews/WO-031/FINAL-001.md",
+    "latestAttestation": {
+      "harness": "claude-code",
+      "harnessVersion": "2.1.261",
+      "model": "claude-fable-5-1",
+      "effort": "max",
+      "source": "self-reported",
+      "accountLabel": "not-applicable"
+    },
+    "effortDrift": [
+      {
+        "effort": "max"
+      }
+    ],
+    "recordedAt": "2026-09-06T01:56:51.293Z",
+    "elapsed": {
+      "implementation": 2743960,
+      "verification": 664336,
+      "finalReview": 1358208
+    },
+    "latestCheckpoint": {
+      "sha": "c55a16897fb128190399110700a7bd3edb91350a",
+      "ref": "refs/dotln/checkpoint/WO-031/6",
+      "restoreCommand": "git checkout refs/dotln/checkpoint/WO-031/6 -- ."
+    },
+    "legalNextActions": [
+      "release-close",
+      "next",
+      "activate"
+    ],
+    "orders": [
+      {
+        "workOrder": "WO-003",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "repair": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-004",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "repair": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-012",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-101",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-005",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-006",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "repair": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-015",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-007",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "repair": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-013",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-024",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-025",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-019",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "repair": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-027",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-017",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-016",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-008",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-018",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-023",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-028",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-04T21:22:21.995Z",
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": 889287,
+          "finalReview": 845318
+        }
+      },
+      {
+        "workOrder": "WO-026",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T00:27:23.191Z",
+        "elapsed": {
+          "implementation": 3740817,
+          "verification": 954799,
+          "finalReview": 1097192
+        }
+      },
+      {
+        "workOrder": "WO-020",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T03:44:27.739Z",
+        "elapsed": {
+          "implementation": 7107547,
+          "verification": 813288,
+          "finalReview": 1545384
+        }
+      },
+      {
+        "workOrder": "WO-030",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T07:04:56.153Z",
+        "elapsed": {
+          "implementation": 4170929,
+          "verification": 1153091,
+          "finalReview": 1885810
+        }
+      },
+      {
+        "workOrder": "WO-009",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T23:20:36.763Z",
+        "elapsed": {
+          "implementation": 10530866,
+          "verification": 879688,
+          "finalReview": 1755143
+        }
+      },
+      {
+        "workOrder": "WO-010",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-06T15:44:16.159Z",
+        "elapsed": {
+          "implementation": 36346888,
+          "verification": 833654,
+          "finalReview": 1427664
+        }
+      },
+      {
+        "workOrder": "WO-011",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-06T18:49:19.762Z",
+        "elapsed": {
+          "implementation": 6527691,
+          "verification": 701763,
+          "finalReview": 1673600
+        }
+      },
+      {
+        "workOrder": "WO-021",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T17:08:42.329Z",
+        "elapsed": {
+          "implementation": 32565591,
+          "verification": 863517,
+          "finalReview": 1224163
+        }
+      },
+      {
+        "workOrder": "WO-022",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-06T04:12:47.952Z",
+        "elapsed": {
+          "implementation": 4179858,
+          "verification": 1410848,
+          "finalReview": 1410577
+        }
+      },
+      {
+        "workOrder": "WO-029",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T19:27:11.752Z",
+        "elapsed": {
+          "implementation": 3709599,
+          "verification": 1244232,
+          "finalReview": 960052
+        }
+      },
+      {
+        "workOrder": "WO-031",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-06T01:56:51.293Z",
+        "elapsed": {
+          "implementation": 2743960,
+          "verification": 664336,
+          "finalReview": 1358208
+        }
+      },
+      {
+        "workOrder": "WO-032",
+        "phase": "active",
+        "latestVerdict": null,
+        "recordedAt": "2026-09-07T19:01:53.316Z",
+        "elapsed": {}
+      },
+      {
+        "workOrder": "WO-038",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-07T16:18:44.050Z",
+        "elapsed": {
+          "implementation": 43658628,
+          "verification": 786612,
+          "finalReview": 1625815
+        }
+      },
+      {
+        "workOrder": "WO-041",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-07T18:44:50.878Z",
+        "elapsed": {
+          "implementation": 36409941,
+          "verification": 923951,
+          "repair": 3355985,
+          "finalReview": 1454946
+        }
+      },
+      {
+        "workOrder": "WO-108",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-06T21:36:56.902Z",
+        "elapsed": {
+          "implementation": 5066636,
+          "verification": 1183151,
+          "finalReview": 1661814
+        }
+      }
+    ]
+  },
+  {
+    "workOrder": "WO-032",
+    "workOrderPath": "docs/work-orders/WO-032-uifa-actor-board.md",
+    "phase": "active",
+    "latestVerification": null,
+    "verificationPath": null,
+    "latestVerdict": null,
+    "finalReview": null,
+    "finalReviewPath": null,
+    "latestAttestation": null,
+    "effortDrift": [],
+    "recordedAt": "2026-09-07T19:01:53.316Z",
+    "elapsed": {},
+    "latestCheckpoint": {
+      "sha": "2e507a496ba6e0af9d9f17da35285b69598949c2",
+      "ref": "refs/dotln/checkpoint/WO-032/1",
+      "restoreCommand": "git checkout refs/dotln/checkpoint/WO-032/1 -- ."
+    },
+    "legalNextActions": [
+      "next",
+      "implementation-ready"
+    ],
+    "orders": [
+      {
+        "workOrder": "WO-003",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "repair": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-004",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "repair": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-012",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-101",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-005",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-006",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "repair": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-015",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-007",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "repair": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-013",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-024",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-025",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-019",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "repair": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-027",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-017",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-016",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-008",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-018",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-023",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": null,
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": "unknown",
+          "finalReview": "unknown"
+        }
+      },
+      {
+        "workOrder": "WO-028",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-04T21:22:21.995Z",
+        "elapsed": {
+          "implementation": "unknown",
+          "verification": 889287,
+          "finalReview": 845318
+        }
+      },
+      {
+        "workOrder": "WO-026",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T00:27:23.191Z",
+        "elapsed": {
+          "implementation": 3740817,
+          "verification": 954799,
+          "finalReview": 1097192
+        }
+      },
+      {
+        "workOrder": "WO-020",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T03:44:27.739Z",
+        "elapsed": {
+          "implementation": 7107547,
+          "verification": 813288,
+          "finalReview": 1545384
+        }
+      },
+      {
+        "workOrder": "WO-030",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T07:04:56.153Z",
+        "elapsed": {
+          "implementation": 4170929,
+          "verification": 1153091,
+          "finalReview": 1885810
+        }
+      },
+      {
+        "workOrder": "WO-009",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T23:20:36.763Z",
+        "elapsed": {
+          "implementation": 10530866,
+          "verification": 879688,
+          "finalReview": 1755143
+        }
+      },
+      {
+        "workOrder": "WO-010",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-06T15:44:16.159Z",
+        "elapsed": {
+          "implementation": 36346888,
+          "verification": 833654,
+          "finalReview": 1427664
+        }
+      },
+      {
+        "workOrder": "WO-011",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-06T18:49:19.762Z",
+        "elapsed": {
+          "implementation": 6527691,
+          "verification": 701763,
+          "finalReview": 1673600
+        }
+      },
+      {
+        "workOrder": "WO-021",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T17:08:42.329Z",
+        "elapsed": {
+          "implementation": 32565591,
+          "verification": 863517,
+          "finalReview": 1224163
+        }
+      },
+      {
+        "workOrder": "WO-022",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-06T04:12:47.952Z",
+        "elapsed": {
+          "implementation": 4179858,
+          "verification": 1410848,
+          "finalReview": 1410577
+        }
+      },
+      {
+        "workOrder": "WO-029",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-05T19:27:11.752Z",
+        "elapsed": {
+          "implementation": 3709599,
+          "verification": 1244232,
+          "finalReview": 960052
+        }
+      },
+      {
+        "workOrder": "WO-031",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-06T01:56:51.293Z",
+        "elapsed": {
+          "implementation": 2743960,
+          "verification": 664336,
+          "finalReview": 1358208
+        }
+      },
+      {
+        "workOrder": "WO-032",
+        "phase": "active",
+        "latestVerdict": null,
+        "recordedAt": "2026-09-07T19:01:53.316Z",
+        "elapsed": {}
+      },
+      {
+        "workOrder": "WO-038",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-07T16:18:44.050Z",
+        "elapsed": {
+          "implementation": 43658628,
+          "verification": 786612,
+          "finalReview": 1625815
+        }
+      },
+      {
+        "workOrder": "WO-041",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-07T18:44:50.878Z",
+        "elapsed": {
+          "implementation": 36409941,
+          "verification": 923951,
+          "repair": 3355985,
+          "finalReview": 1454946
+        }
+      },
+      {
+        "workOrder": "WO-108",
+        "phase": "closed",
+        "latestVerdict": "pass",
+        "recordedAt": "2026-09-06T21:36:56.902Z",
+        "elapsed": {
+          "implementation": 5066636,
+          "verification": 1183151,
+          "finalReview": 1661814
+        }
+      }
+    ]
+  }
+]

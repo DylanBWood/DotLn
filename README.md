@@ -84,7 +84,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.13.3`, a control-plane patch above the published license-posture release. The [plan refuter](docs/planning/refutations/README.md) compiles a blinded planning subject, dispatches a read-only Contra-Auguste episode, and gates new planning passes on immutable receipts and answered holds. Its [executor evidence](docs/evidence/WO-041/README.md) separates live judgment from fixtures that check the instrument. The [independent-workflow contract](docs/product/07-execution-guide.md#independent-workflows-and-integration) keeps implementation and verification independent, handles routine integration within final review, and limits new evidence to affected claims. Root and workspace manifests retain the license and publication controls described in [CONTRIBUTING.md](CONTRIBUTING.md). The [mutation corpus](corpus/mutation/README.md), [feedback runbook](packages/skeleton/README.md#feedback-compiler-and-bounded-self-hosting), inspection workers, verification matrices, Beacon senses and actor-usage reports remain available. General source-writing workers and a self-hosting switchover remain later work. Published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or available locally through `npm run release -- notes <tag>`.
+This source prepares DotLn `v0.14.0`. The [actor board](packages/console/README.md) shows recorded actors, their builds and authority, compiled feedback mechanisms, acceptance evidence, work orders, releases, and the blueprint's planning verdicts. Run `npm run console -- board`, add `--json` for the versioned view model, or `--html <new.html>` for a self-contained page. Both views are read-only and show missing evidence explicitly. The [executor evidence](docs/evidence/WO-032/README.md) records the fixtures and their limits; independent verification and final review remain separate. The [plan refuter](docs/planning/refutations/README.md), [feedback host](packages/skeleton/README.md#feedback-compiler-and-bounded-self-hosting), inspection workers, verification matrices, Beacon senses and actor-usage reports remain available. General source-writing workers and a self-hosting switchover remain later work. Published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases), or available locally through `npm run release -- notes <tag>`.
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
@@ -166,10 +166,10 @@ Proven:
 
 Not yet built, and not claimed:
 
-- real Claude, Codex, human, or shell worker adapters;
+- general source-writing worker profiles and human/shell integrations;
 - composition semantics beyond the bounded Seiri v1 subset;
 - saved community builds or compatibility migration;
-- a web, spatial, or drag-and-drop console;
+- an interactive web, spatial, or drag-and-drop console;
 - SQLite persistence, hosted operation, or a published package;
 - the complete independently verified source-to-deliverable pipeline.
 
@@ -285,8 +285,8 @@ and interactive editing remain deferred.
 The release ladder climbs there one visible payoff at a time: audit projections,
 a real composition compiler, a real disposable worker, independent verification,
 a feedback compiler, then synchronized terminal and visual consoles. The next
-horizon, planned on 2026-09-06 and not yet built, adds a read-only showrunner
-board, a launchpad export of this repository's process kit that other
+horizon, planned on 2026-09-06, starts with the read-only actor board now in
+this source. The remaining work adds a launchpad export of this repository's process kit that other
 organizations can fork to coordinate work across their own repositories, and
 the first cross-repository pilot; see
 [the phase-two plan](docs/planning/phase-two-plan-2026-09-06.md). `v1.0.0`
@@ -427,6 +427,8 @@ explicit: typed mechanisms are meant to progressively absorb the prose. The
   and decision core.
 - [`packages/skeleton/`](packages/skeleton/) — the executable Repo Gardener +
   Seiri vertical.
+- [`packages/console/`](packages/console/) — the read-only actor board, its
+  versioned JSON contract, terminal renderer, and self-contained HTML renderer.
 - [`scripts/`](scripts/) — the control plane: resume, worktree, release, intake
   backup, and their shell suites.
 - [`docs/product/`](docs/product/) — the blueprint: vision, principles, domain

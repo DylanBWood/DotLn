@@ -1,0 +1,386 @@
+[
+  {
+    "unitId": "anti-oscillation",
+    "version": 1,
+    "incident": {
+      "sourceRefs": [
+        "docs/lineage/idea-ledger.md",
+        "docs/evidence/WO-031/ideation.md"
+      ],
+      "sourceTreatment": "synthesized-from-public-lineage",
+      "summary": "The publication correction rejected verbose titles, then rejected an invented length limit without restoring the original verbosity. WO-011 also distinguishes optional organization from a mandatory cleanup project.",
+      "retainedSource": "public-reference"
+    },
+    "undesiredBehavior": "Do not restore a rejected approach or turn an example into a new hard constraint when correcting behavior.",
+    "desiredBehavior": "Preserve desired outcomes and rejection reasons; replacing a rejected decision needs explicit supersession from the operator.",
+    "scope": [
+      "personal-profile",
+      "equipped-feedback-host"
+    ],
+    "trigger": "decision-lineage",
+    "mechanism": {
+      "handler": "decision-lineage",
+      "version": 1,
+      "rationale": "A pre-effect lineage guard compares explicit decisions; a text lint cannot decide which prior rejection applies."
+    },
+    "enforcement": "hard",
+    "requiredEvidence": [
+      "desired-outcomes",
+      "rejected-approaches-and-reasons",
+      "operator-explicit-constraints"
+    ],
+    "regressionFixtures": [
+      "WO-011 regression anti-oscillation"
+    ],
+    "conflicts": [],
+    "supersedes": [],
+    "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
+    "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+    "proseEquivalent": "Do not restore a rejected approach or turn an example into a new hard constraint when correcting behavior. Preserve desired outcomes and rejection reasons; replacing a rejected decision needs explicit supersession from the operator."
+  },
+  {
+    "unitId": "correctness-over-sycophancy",
+    "version": 1,
+    "incident": {
+      "sourceRefs": [
+        "docs/lineage/idea-ledger.md"
+      ],
+      "sourceTreatment": "synthesized-from-public-lineage",
+      "summary": "The founding feedback-to-mechanism inventory assigns correctness-over-sycophancy to an evaluator and policy invariant.",
+      "retainedSource": "public-reference"
+    },
+    "undesiredBehavior": "Do not accept a preferred answer when independent evidence contradicts it or only implementer claims support it.",
+    "desiredBehavior": "Judge the current subject from consistent independent evidence and preserve disagreement as a failed or unsupported claim.",
+    "scope": [
+      "personal-profile",
+      "equipped-feedback-host"
+    ],
+    "trigger": "evidence-judgment",
+    "mechanism": {
+      "handler": "evidence-judgment",
+      "version": 1,
+      "rationale": "An evidence evaluator is necessary for a claim about correctness; token or phrasing checks cannot establish truth."
+    },
+    "enforcement": "hard",
+    "requiredEvidence": [
+      "independent-witnesses",
+      "subject-identity"
+    ],
+    "regressionFixtures": [
+      "WO-011 regression correctness-over-sycophancy"
+    ],
+    "conflicts": [],
+    "supersedes": [],
+    "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
+    "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+    "proseEquivalent": "Do not accept a preferred answer when independent evidence contradicts it or only implementer claims support it. Judge the current subject from consistent independent evidence and preserve disagreement as a failed or unsupported claim."
+  },
+  {
+    "unitId": "fail-conservative-correction",
+    "version": 1,
+    "incident": {
+      "sourceRefs": [
+        "docs/lineage/idea-ledger.md",
+        "docs/product/02-domain-model.md"
+      ],
+      "sourceTreatment": "synthesized-from-public-lineage",
+      "summary": "The recorded semantic correction policy tightens authority in response to typed operator correction events, not emotional wording.",
+      "retainedSource": "public-reference"
+    },
+    "undesiredBehavior": "Do not infer authority or a correction solely from surface language, or discard evidence when the operator reports a regression.",
+    "desiredBehavior": "On a typed correction, freeze destructive effects and scope expansion, preserve evidence, and require diagnosis; a false activation only tightens behavior.",
+    "scope": [
+      "personal-profile",
+      "equipped-feedback-host"
+    ],
+    "trigger": "semantic-correction",
+    "mechanism": {
+      "handler": "semantic-correction",
+      "version": 1,
+      "rationale": "A pure event reactor computes the monotone policy transition; a static guard cannot remember the correction across later effects."
+    },
+    "enforcement": "hard",
+    "requiredEvidence": [
+      "typed-correction-event",
+      "prior-authority"
+    ],
+    "regressionFixtures": [
+      "WO-011 regression fail-conservative-correction"
+    ],
+    "conflicts": [],
+    "supersedes": [],
+    "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
+    "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+    "proseEquivalent": "Do not infer authority or a correction solely from surface language, or discard evidence when the operator reports a regression. On a typed correction, freeze destructive effects and scope expansion, preserve evidence, and require diagnosis; a false activation only tightens behavior."
+  },
+  {
+    "unitId": "verify-app-before-done",
+    "version": 1,
+    "incident": {
+      "sourceRefs": [
+        "docs/lineage/idea-ledger.md",
+        "docs/product/01-principles.md"
+      ],
+      "sourceTreatment": "synthesized-from-public-lineage",
+      "summary": "The lineage records verification becoming an optional question even though live behavior was already part of the completion contract.",
+      "retainedSource": "public-reference"
+    },
+    "undesiredBehavior": "Do not call an application change done from prose, a skipped check, an old revision, or a failing executable check.",
+    "desiredBehavior": "Require executed passing checks for every required application check at the current subject before the completion transition.",
+    "scope": [
+      "personal-profile",
+      "equipped-feedback-host"
+    ],
+    "trigger": "application-evidence",
+    "mechanism": {
+      "handler": "application-evidence",
+      "version": 1,
+      "rationale": "A workflow gate consumes executable evidence at completion; a one-time test alone cannot prevent a later unsupported done transition."
+    },
+    "enforcement": "hard",
+    "requiredEvidence": [
+      "required-checks",
+      "executed-results",
+      "subject-identity"
+    ],
+    "regressionFixtures": [
+      "WO-011 regression verify-app-before-done"
+    ],
+    "conflicts": [],
+    "supersedes": [],
+    "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
+    "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+    "proseEquivalent": "Do not call an application change done from prose, a skipped check, an old revision, or a failing executable check. Require executed passing checks for every required application check at the current subject before the completion transition."
+  },
+  {
+    "unitId": "no-attribution",
+    "version": 1,
+    "incident": {
+      "sourceRefs": [
+        "docs/lineage/idea-ledger.md",
+        "docs/product/06-roadmap.md"
+      ],
+      "sourceTreatment": "synthesized-from-public-lineage",
+      "summary": "The founding mapping selects attribution settings plus a commit hook as defense in depth for the no-attribution requirement.",
+      "retainedSource": "public-reference"
+    },
+    "undesiredBehavior": "Do not append an AI coauthor trailer or generated-with footer to a commit or publication result.",
+    "desiredBehavior": "Disable available automatic attribution in the invocation settings and reject matching AI trailers or footers at the publication boundary; preserve ordinary subject text and human coauthors.",
+    "scope": [
+      "personal-profile",
+      "equipped-feedback-host"
+    ],
+    "trigger": "attribution",
+    "mechanism": {
+      "handler": "attribution",
+      "version": 1,
+      "rationale": "A deterministic footer/trailer predicate is sufficient; invocation settings reduce generation and the commit hook checks actual bytes."
+    },
+    "enforcement": "hard",
+    "requiredEvidence": [
+      "commit-message-bytes",
+      "invocation-settings",
+      "real-git-hook-result"
+    ],
+    "regressionFixtures": [
+      "WO-011 regression no-attribution"
+    ],
+    "conflicts": [],
+    "supersedes": [],
+    "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
+    "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+    "proseEquivalent": "Do not append an AI coauthor trailer or generated-with footer to a commit or publication result. Disable available automatic attribution in the invocation settings and reject matching AI trailers or footers at the publication boundary; preserve ordinary subject text and human coauthors."
+  },
+  {
+    "unitId": "concurrent-work-requires-worktrees",
+    "version": 1,
+    "incident": {
+      "sourceRefs": [
+        "docs/lineage/idea-ledger.md",
+        "docs/product/07-execution-guide.md"
+      ],
+      "sourceTreatment": "synthesized-from-public-lineage",
+      "summary": "The implementation discipline and concurrent workflow rules require a verified worktree and one writer per worktree.",
+      "retainedSource": "public-reference"
+    },
+    "undesiredBehavior": "Do not dispatch a writer into main, a mismatched repository root, or a worktree occupied by another writer.",
+    "desiredBehavior": "Resolve physical cwd and Git root and require exactly one registered writer for that worktree before writable dispatch.",
+    "scope": [
+      "personal-profile",
+      "equipped-feedback-host"
+    ],
+    "trigger": "writer-isolation",
+    "mechanism": {
+      "handler": "writer-isolation",
+      "version": 1,
+      "rationale": "A pre-dispatch invariant checks current host facts; a static repository test cannot see live writer reservations."
+    },
+    "enforcement": "hard",
+    "requiredEvidence": [
+      "resolved-cwd-and-root",
+      "host-writer-reservations"
+    ],
+    "regressionFixtures": [
+      "WO-011 regression concurrent-work-requires-worktrees"
+    ],
+    "conflicts": [],
+    "supersedes": [],
+    "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
+    "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+    "proseEquivalent": "Do not dispatch a writer into main, a mismatched repository root, or a worktree occupied by another writer. Resolve physical cwd and Git root and require exactly one registered writer for that worktree before writable dispatch."
+  },
+  {
+    "unitId": "no-lint-type-disables-as-fixes",
+    "version": 1,
+    "incident": {
+      "sourceRefs": [
+        "docs/lineage/idea-ledger.md"
+      ],
+      "sourceTreatment": "synthesized-from-public-lineage",
+      "summary": "The anti-gaming verification requirement rejects lint-disables and type suppressions presented as repairs.",
+      "retainedSource": "public-reference"
+    },
+    "undesiredBehavior": "Do not make a repair appear green by adding lint or type suppression directives to code.",
+    "desiredBehavior": "Compare source comment directives with the baseline and reject newly introduced suppressions while allowing unchanged historical directives and quoted examples.",
+    "scope": [
+      "personal-profile",
+      "equipped-feedback-host"
+    ],
+    "trigger": "suppression-diff",
+    "mechanism": {
+      "handler": "suppression-diff",
+      "version": 1,
+      "rationale": "A deterministic source-diff check covers the declared directive vocabulary without a model episode."
+    },
+    "enforcement": "hard",
+    "requiredEvidence": [
+      "baseline-source",
+      "candidate-source",
+      "suppression-diff"
+    ],
+    "regressionFixtures": [
+      "WO-011 regression no-lint-type-disables-as-fixes"
+    ],
+    "conflicts": [],
+    "supersedes": [],
+    "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
+    "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+    "proseEquivalent": "Do not make a repair appear green by adding lint or type suppression directives to code. Compare source comment directives with the baseline and reject newly introduced suppressions while allowing unchanged historical directives and quoted examples."
+  },
+  {
+    "unitId": "read-your-own-output",
+    "version": 1,
+    "incident": {
+      "sourceRefs": [
+        "docs/lineage/idea-ledger.md",
+        "docs/product/07-execution-guide.md"
+      ],
+      "sourceTreatment": "synthesized-from-public-lineage",
+      "summary": "The implementer discipline requires reading the produced diff before reporting completion.",
+      "retainedSource": "public-reference"
+    },
+    "undesiredBehavior": "Do not hand off an artifact that was never read back, or that changed after it was read.",
+    "desiredBehavior": "Bind each required output to a host-observed read of its current bytes before handoff; this witnesses delivery to the reader, not comprehension.",
+    "scope": [
+      "personal-profile",
+      "equipped-feedback-host"
+    ],
+    "trigger": "output-review",
+    "mechanism": {
+      "handler": "output-review",
+      "version": 1,
+      "rationale": "A handoff gate compares read receipts and current content identities; prose cannot witness that the bytes were delivered."
+    },
+    "enforcement": "hard",
+    "requiredEvidence": [
+      "current-output-identities",
+      "host-read-receipts"
+    ],
+    "regressionFixtures": [
+      "WO-011 regression read-your-own-output"
+    ],
+    "conflicts": [],
+    "supersedes": [],
+    "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
+    "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+    "proseEquivalent": "Do not hand off an artifact that was never read back, or that changed after it was read. Bind each required output to a host-observed read of its current bytes before handoff; this witnesses delivery to the reader, not comprehension."
+  },
+  {
+    "unitId": "no-partial-completion",
+    "version": 1,
+    "incident": {
+      "sourceRefs": [
+        "docs/lineage/idea-ledger.md",
+        "docs/product/07-execution-guide.md"
+      ],
+      "sourceTreatment": "synthesized-from-public-lineage",
+      "summary": "The session contract and completion gates require the bounded work order's evidence rather than an inferred success report.",
+      "retainedSource": "public-reference"
+    },
+    "undesiredBehavior": "Do not mark a partial result complete while required obligations or declared remaining work are unresolved.",
+    "desiredBehavior": "Only admit completed status when the required obligation set is discharged and no remaining work is reported.",
+    "scope": [
+      "personal-profile",
+      "equipped-feedback-host"
+    ],
+    "trigger": "complete-scope",
+    "mechanism": {
+      "handler": "complete-scope",
+      "version": 1,
+      "rationale": "A workflow transition gate checks the complete obligation set; a single successful check is not whole-order completion."
+    },
+    "enforcement": "hard",
+    "requiredEvidence": [
+      "required-obligations",
+      "discharged-obligations",
+      "remaining-work"
+    ],
+    "regressionFixtures": [
+      "WO-011 regression no-partial-completion"
+    ],
+    "conflicts": [],
+    "supersedes": [],
+    "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
+    "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+    "proseEquivalent": "Do not mark a partial result complete while required obligations or declared remaining work are unresolved. Only admit completed status when the required obligation set is discharged and no remaining work is reported."
+  },
+  {
+    "unitId": "bounded-boy-scout-cleanup",
+    "version": 1,
+    "incident": {
+      "sourceRefs": [
+        "docs/lineage/idea-ledger.md",
+        "docs/product/07-execution-guide.md"
+      ],
+      "sourceTreatment": "synthesized-from-public-lineage",
+      "summary": "The recorded Boy Scout policy admits only unambiguous adjacent cleanup covered by the same verification; the operator's artifact-growth clarification also rejects cleanup without a demonstrated problem.",
+      "retainedSource": "public-reference"
+    },
+    "undesiredBehavior": "Do not expand into ambiguous, risky, unrelated, unverified, or retained-evidence cleanup merely because an adjacent item was noticed.",
+    "desiredBehavior": "Admit only host-reviewed adjacent low-risk cleanup within named paths and shared checks that keeps the diff legible; nominate the rest separately.",
+    "scope": [
+      "personal-profile",
+      "equipped-feedback-host"
+    ],
+    "trigger": "cleanup-scope",
+    "mechanism": {
+      "handler": "cleanup-scope",
+      "version": 1,
+      "rationale": "A pre-effect gate checks a scoped host-reviewed assessment; scripts alone cannot establish semantic adjacency or risk."
+    },
+    "enforcement": "hard",
+    "requiredEvidence": [
+      "host-reviewed-assessment",
+      "allowed-paths",
+      "same-verification-checks"
+    ],
+    "regressionFixtures": [
+      "WO-011 regression bounded-boy-scout-cleanup"
+    ],
+    "conflicts": [],
+    "supersedes": [],
+    "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
+    "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+    "proseEquivalent": "Do not expand into ambiguous, risky, unrelated, unverified, or retained-evidence cleanup merely because an adjacent item was noticed. Admit only host-reviewed adjacent low-risk cleanup within named paths and shared checks that keeps the diff legible; nominate the rest separately."
+  }
+]
