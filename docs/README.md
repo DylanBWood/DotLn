@@ -19,15 +19,16 @@ docs/product/      the blueprint: vision, principles, domain model,
 docs/publication/  audience/status index, audience outlines, shared sample,
                    implementation overlay template, and staleness proof
 docs/planning/     capability inventory, human recommendation/preflight map,
-                   dated planning-pass plans, and blinded plan-refutation
-                   receipts under refutations/
+                   dated planning-pass plans, and immutable blinded refutation
+                   receipts under refutations/ (npm run plan -- refute)
 docs/lineage/      idea-ledger.md — append-only idea history;
                    inspirations.md — best-known public influence register
 docs/decisions/    ADRs — settled questions
 docs/work-orders/  stable scope addresses + generated README evidence index
 docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
-docs/control/       legacy resume log, per-order segments, and generated overview
+docs/control/       legacy resume log, per-order segments, generated overview,
+                    and the separate plan-refutations.jsonl override log
 docs/control/local/ ignored operator-maintained account-label meanings; never read by scripts
 docs/evidence/      bounded executor comparisons and fixture transcripts
 docs/releases/     historical v0.2.0 records + forward tag-manifest template;

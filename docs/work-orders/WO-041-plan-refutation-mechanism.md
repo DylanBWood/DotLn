@@ -1,4 +1,4 @@
-# WO-041 — Plan refutation as a mechanism: a blinded episode that gates every planning pass on the vision (version assigned at activation)
+# WO-041 — Plan refutation as a mechanism: a blinded episode that gates every planning pass on the vision (v0.13.3)
 
 **Model:** any capable model for the script and fixtures. The refuter episode
 runs on the actual local transports and must state harness version, model,
@@ -241,3 +241,14 @@ schema; running the refuter on historical passes (forward-only); a general
    §What DotLn is not, and a finding that names no passage at all is
    `machinery`, not `drift`.
 3. The first receipt is the redirect's manual run and stays as written.
+
+## Operator-authorized breakout — 2026-09-07
+
+During FINAL-001 repair the operator explicitly requested an immediate fix to the extra serial review cycle introduced by parallel work, prohibited phase dependencies between parallel workflows, and retained voluntary serialization of each final-review-through-release-close window. The [ideation receipt](../evidence/WO-041/ideation.md) records all three captures, clean-room synthesis, authority, and review duties. This amendment expands the original scope to independent integration policy, bounded release preparation and early release-surface checks, and feedback evidence that excludes release-only workspace metadata from its behavior subject. It introduces no sibling-phase prerequisite or lifecycle event-schema change.
+
+Additional acceptance criteria:
+
+8. The execution guide, playbook, and planning entry points permit each order to progress independently. Integration-only bookkeeping does not automatically fail final review; affected behavior claims retain independent verification, and historical evidence stays immutable. The existing WO-033 sync-helper scope reflects this distinction without changing the marked sequence.
+9. A release-preparation command retimes a colliding unpublished target and README source claim under the declared release classification, records a dated retiming note, and preserves unrelated files and all control events. Fixtures prove ordinary retiming, repeated invocation, malformed-input refusal without partial edits, and operation without sibling-phase inspection. The ordinary evidence gate checks release surfaces against local tags in the subject's ancestry; an unintegrated sibling's tag cannot invalidate its verification, while a missing component bump against its own baseline still fails. Publication checks origin.
+10. Feedback source projection fixtures prove that workspace release-version/license changes retain the same subject while runtime source, manifest execution/dependency settings, and lockfile dependency versions/integrity invalidate it. The projection is explicitly labeled in the verifier capsule. A fresh bounded live feedback run verifies this changed instrument on the integrated, bumped tree.
+11. `npm test`, remote release-surface checks, the plan-receipt gate, publication checks, and `git diff --check` pass on the final repaired subject. The sync record, first-pair observation, and breakout evidence identify what was measured and what remains manual.

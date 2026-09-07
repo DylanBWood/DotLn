@@ -15,11 +15,14 @@ import { join, resolve } from "node:path";
 import { createHash } from "node:crypto";
 import { decodeLog, type Event } from "@dotln/kernel";
 import { canonicalStringify } from "@dotln/compiler";
+import type { PlanRefutationRequest } from "./plan-refutation-protocol.js";
 import {
   parseTransportResult,
   type TransportRequest,
   type TransportResultFor,
 } from "./verification-protocol.js";
+
+type StoredRequest = Exclude<TransportRequest, PlanRefutationRequest>;
 
 function regularFile(path: string): void {
   if (!lstatSync(path).isFile() || lstatSync(path).isSymbolicLink())
@@ -121,7 +124,7 @@ export class WorkerStore {
       closeSync(fd);
     }
   };
-  saveResult<R extends TransportRequest>(
+  saveResult<R extends StoredRequest>(
     request: R,
     result: TransportResultFor<R>,
   ): void {
@@ -150,7 +153,7 @@ export class WorkerStore {
       unlinkSync(staging);
     }
   }
-  loadResult<R extends TransportRequest>(
+  loadResult<R extends StoredRequest>(
     request: R,
   ): TransportResultFor<R> | undefined {
     const path = this.resultPath(request);

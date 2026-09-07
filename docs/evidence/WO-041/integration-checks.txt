@@ -1,0 +1,62 @@
+WO-041 FINAL-001 repair and operator-authorized workflow breakout
+2026-09-07; branch wo-041, integrated base a360d04ac865e6a55c64f06cd0467f9e69acf9f7
+
+npm test: exit 0 on the completed source, including the ancestry correction.
+TAP groups, in command order: release preparation 7, license surfaces 9,
+runtime 285, identity corpus 8, mutation self-tests 21; all passed.
+Selected captured output follows; this is not the full test log.
+
+# tests 7
+# pass 7
+# fail 0
+GitHub body profile tests passed
+# tests 9
+# pass 9
+# fail 0
+fixture temp-root tests passed
+publication checker tests passed
+backup-intake tests passed
+resume tests passed
+checkpoint tests passed
+worktree tests passed
+local release surfaces ignored an unrelated sibling tag and passed without a remote; authoritative check still requires origin
+release preparation CLI preserved three independent control segments and all Git refs
+release tests passed
+PASS index coverage: 235/235 product headings indexed
+CURRENT everyday-ai-user-toc.md: 30 linked source sections match
+CURRENT software-engineer-toc.md: 45 linked source sections match
+# tests 285
+# pass 285
+# fail 0
+Plan gate: {"receipts":1,"passes":0,"enforcement":"pending introduction commit","localTerms":"unavailable"}
+# tests 8
+# pass 8
+# fail 0
+Verified 4 current artifact evidence files in docs/evidence/WO-011/artifact-identity; original semantic hashes and frozen oracle unchanged.
+Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.
+Verified ten passing regressions, ten removal failures, and 2393 fewer instruction bytes in the matched projection.
+# tests 21
+# pass 21
+# fail 0
+
+Additional observed checks:
+- npm run plan -- check: exit 0; one receipt; forward enforcement pending
+  introduction commit; operator local-terms list unavailable.
+- npm run release -- check-surfaces: exit 0 against origin v0.13.2;
+  work-order/README target v0.13.3; skeleton 0.12.1 vs prior 0.12.0;
+  compiler/kernel source and versions unchanged; all license checks passed.
+- node scripts/check-publication.mjs: exit 0; 235/235 headings indexed,
+  both audience locks CURRENT.
+- git diff --check and git diff --cached --check: exit 0.
+- Original VER-001, VER-002, FINAL-001 and live plan receipt pair compared
+  byte-for-byte with the preserved pre-sync stash: unchanged.
+- Published WO-011 evidence and all compiler/kernel files: no diff from HEAD.
+- New sibling-tag fixture: exit 1 before ancestry filtering; the updated
+  release suite and final full npm test both passed after the correction.
+- Fresh feedback self-host: codex-cli-exec, CLI 0.153.4, gpt-6-astra,
+  effort unknown under the transport profile; first attempt; complete.
+  AC-causal-fixtures and AC-context verified with host-admitted provenance.
+  evidence:feedback -- --record-selfhost and -- --check: exit 0.
+
+These are executor checks. The new release/evidence behavior and the ideation
+contract remain subject to independent work-order verification and final review.

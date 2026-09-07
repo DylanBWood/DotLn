@@ -23,6 +23,29 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-07 independent workflows and evidence-scoped integration
+
+Source: the three operator messages captured in main's ignored `docs/intake/notes/2026-09-07-wo041-parallel-workflow-correction.md`; the [WO-041 breakout receipt](../evidence/WO-041/ideation.md) records the capture digest, clean-room screen, and expanded review subject. Ordinary source material was synthesized, not directly filed.
+
+- **Parallel work must preserve independent lifecycle progress** `adopted` `operator-directed`
+  - The first WO-038/WO-041 pair added a serial repair and repeat verification/review cycle after an unrelated merge. The operator rejects fixing that overhead by requiring one workflow to reach a phase before another proceeds. Implementation and verification remain independent; resource availability and one writer per worktree still constrain actual execution. The earlier phase-count verification-reserve rule and automatic restart after base movement are superseded.
+  - The operator will voluntarily finish one final-review → PR → merge → release-close window before beginning another. This is the narrow stated coordination discipline, not an enforced transition gate; a gate remains an open option. Durable home: execution guide 07 §Independent workflows and integration, with matching playbook and planning handoffs.
+- **Integration invalidates evidence by affected claim, not by elapsed order** `adopted`
+  - A review may incorporate independently reviewed upstream work and reconcile release/projection bookkeeping while preserving old reports as evidence for their actual snapshots. A new base or text conflict alone does not justify a failed final review. Behavior-changing resolutions and actual acceptance defects retain bounded repair and independent evidence; no actor certifies its own behavioral fix.
+  - The first mechanical increments are collision retiming through `release prepare`, release-surface checks early in the ordinary gate, and a labeled feedback dependency projection that excludes workspace release versions/license metadata while preserving behavioral and dependency inputs. WO-033's future sync helper inherits this contract instead of a sibling-phase barrier. General evidence-impact analysis and semantic conflict resolution remain manual and explicit.
+- **The first paired wave exposed release and evidence coupling** `adopted`
+  - FINAL-001 also found genuine executor defects: two strict README versions and changed skeleton source without a component bump. WO-041 now prepares skeleton `0.12.1`; the earlier staged no-component-change framing is superseded. The synchronized package and projection change require a fresh live feedback edition. The prior uncommitted WO-041 edition is preserved in recovery history and explicitly superseded, while published WO-011 editions and numbered reviews stay immutable. One edition per order is a current writer limit, not a reason to fabricate freshness.
+
+## 2026-09-07 WO-041 plan-refutation mechanism
+
+- **Blinded direction review becomes a checked planning gate** `adopted`
+  - The host compiles the vision's thesis/exclusion passages, five-role table, capability identifiers and levels, and the marked sequence's order fields from committed blobs. A fresh Contra-Auguste actor receives that subject without planner narrative; positive validation constructs mandatory holds independently of its claimed verdict. The immutable receipt chain preserves each judged revision and every unresolved hold.
+  - Accepted follow-ups name changed held criteria; whitespace and unrelated edits cannot reset a verdict. Three consecutive holds stop a pass. A later pass may repair the named criteria while carrying earlier dispositions. Operator overrides are separate attributed control events with an ignored capture's SHA-256, never authority written into receipt prose. This is attribution, not authentication of the human behind the capture; the pre-mechanism receipt's disclosed limit remains.
+  - The small local-terms screen needed by the receipt writer lands ahead of WO-039's consumers, using that order's already-settled ignored-list contract. Absence is reported as unavailable; no term or term hash is published. The six manual redirect receipts remain time-indexed pre-mechanism evidence.
+  - The first live instrument receipt uses the committed activation-base horizon. It does not reopen that historical pass; WO-041's self-verdict is advisory. The executor's new capability row and activation title describe staged source and are outside that frozen judgment. Final review commits the receipt with the deliverable. Durable homes: [receipt convention](../planning/refutations/README.md), [execution guide](../product/07-execution-guide.md#operator-opened-planning-pass), [executor evidence](../evidence/WO-041/README.md).
+
+- **The first mechanized episode passes; its remaining gap stays visible** `adopted`
+  - The [live receipt](../planning/refutations/2026-09-07-wo041-live-001.md) returns no holds over the committed activation-base sequence. It identifies the still-manual route from a newly captured correction to the next compiled batch as the largest gap. WO-041's own verdict remains advisory, and no general runtime-verification capability is promoted from it. Shared transport changes require a new source-pinned feedback audit; the WO-041 edition preserves the original WO-011 evidence and retains the full current-source gate.
 
 ## 2026-09-06 phase-two redirect (operator correction, second pass of the same day)
 

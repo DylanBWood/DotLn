@@ -458,6 +458,8 @@ code with controlled fixtures; it does not implement general source-writing
 workers or replace the manual repository verification lifecycle. The
 [evidence receipt](../evidence/WO-011/README.md) records the run and limits.
 
+**WO-041 integration correction (2026-09-07):** the current feedback subject pins raw runtime/fixture source bytes and explicitly labeled `feedback-package-projection-v1` snapshots for the skeleton manifest and package lock. These snapshots exclude only `version` and `license` at the skeleton manifest root and the lockfile root/known workspace entries. External dependency versions, resolutions and integrity, scripts, exports, dependencies, private/publication controls, and unknown fields remain in the projection. This audits feedback behavior rather than release labeling; the separate license and release-surface gates still judge those labels. The new projection requires its own live evidence edition; it does not retroactively change the raw-byte contract of prior editions. Each capsule labels projected files and names their physical source paths so a verifier cannot mistake them for raw manifests. Fixtures prove both metadata stability and behavioral/dependency invalidation. General dependency-scoped evidence selection remains beyond this bounded host.
+
 ### Independent verification v1
 
 WO-010 pins the first executable verification contract in compiler `0.5.0` and skeleton `0.11.0`. This is a bounded realization of the Feedback terms above, with state and behavior claims. Visual/network evidence and comparison/rating consumers remain deferred.

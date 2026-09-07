@@ -1545,6 +1545,36 @@ export function verificationAuthorization(
   });
 }
 
+/** The one-shot planning host shares the skeleton's authority decider owner. */
+export function planRefutationAuthorization(
+  authority: AuthorityEnvelope,
+  subjectHash: string,
+  episodeId: string,
+  phase: "read" | "report",
+  at: number,
+) {
+  return authorize(
+    phase === "read"
+      ? {
+          kind: "Act",
+          effect: "repo.read.plan-subject",
+          payload: { subjectHash },
+        }
+      : { kind: "Act", effect: "report.emit", payload: {} },
+    authority,
+    {
+      now: at,
+      actorId: "entropy-reducer",
+      workstreamId: "ws_plan_refuter",
+      episodeId,
+      decisionIndex: 0,
+      intentIndex: phase === "read" ? 0 : 1,
+      evidence: [],
+      revokedBy: [],
+    },
+  );
+}
+
 function dispatch(state: VerificationState): VerificationState {
   requireState(
     !state.pending &&

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { canonicalStringify } from "@dotln/compiler";
@@ -18,17 +18,40 @@ import {
 import { projectAcceptanceEvidenceMatrices } from "../packages/skeleton/dist/src/verification.js";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
-const destination = join(root, "docs/evidence/WO-011");
 const args = process.argv.slice(2);
+const editionAt = args.indexOf("--edition");
+const edition = editionAt < 0 ? "WO-011" : args[editionAt + 1];
+if (!/^WO-\d{3}$/u.test(edition ?? ""))
+  throw new Error("expected --edition WO-NNN");
+if (editionAt >= 0) args.splice(editionAt, 2);
+const destination = join(
+  root,
+  "docs/evidence",
+  edition,
+  ...(edition === "WO-011" ? [] : ["feedback"]),
+);
 const mode = args[0];
 if (!(
   (args.length === 1 && ["--write", "--check"].includes(mode)) ||
   (args.length === 2 && mode === "--record-selfhost")
 ))
   throw new Error(
-    "usage: feedback-evidence.mjs --write|--check|--record-selfhost <store> (build first)",
+    "usage: feedback-evidence.mjs --write|--check|--record-selfhost <store> [--edition WO-NNN] (build first)",
   );
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
+function immutableWrite(name, source) {
+  const path = join(destination, name);
+  if (existsSync(path)) {
+    assert.equal(
+      readFileSync(path, "utf8"),
+      source,
+      "evidence edition is immutable; choose a new edition",
+    );
+    return;
+  }
+  mkdirSync(destination, { recursive: true });
+  writeFileSync(path, source, { flag: "wx" });
+}
 function validateSelfhost(auditLog, verifierLog) {
   const audit = feedbackStateFromRuntime(
     replay(initialState(), decodeLog(auditLog), seiriReactor, {}).state,
@@ -89,16 +112,15 @@ if (mode === "--record-selfhost") {
     "utf8",
   );
   validateSelfhost(auditLog, verifierLog);
-  writeFileSync(join(destination, "selfhost-audit.jsonl"), auditLog);
-  writeFileSync(join(destination, "selfhost-verification.jsonl"), verifierLog);
+  immutableWrite("selfhost-audit.jsonl", auditLog);
+  immutableWrite("selfhost-verification.jsonl", verifierLog);
   console.log(
     "Recorded the audited selfhost and independent verifier event streams.",
   );
 } else {
   const report = runFeedbackRegressions(root, personalFeedback());
   if (mode === "--write") {
-    mkdirSync(destination, { recursive: true });
-    writeFileSync(join(destination, "feedback.json"), json(report));
+    immutableWrite("feedback.json", json(report));
   } else {
     assert.equal(
       canonicalStringify(

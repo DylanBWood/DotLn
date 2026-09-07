@@ -254,8 +254,11 @@ resume: final review
 
 It reads the original work order, complete verification sequence, diff, tests,
 ideation receipt, and all affected product/ledger/schema surfaces. It may make
-only non-substantive handoff corrections. An acceptance-relevant change fails
-the review and returns through repair plus fresh verification. On pass, this
+non-substantive handoff corrections and routine integration under the
+[independent-workflow contract](product/07-execution-guide.md#independent-workflows-and-integration).
+An actual acceptance defect or a behavioral fix requires bounded repair and
+independent evidence for the affected claims. A new base or release-only
+retiming does not itself fail review or require another verification. On pass, this
 phrase is explicit authority to write the immutable `FINAL-NNN`, the reviewed PR
 body, and `RELEASE-NOTES.md` with the five required release-note sections,
 record the pass, commit the reviewed state, push only the WO branch, and open a
@@ -397,18 +400,20 @@ own ignored `.control-beacons/` cache, which may leave with a safely closed
 worktree; the anchored `docs/intake/**` protection is unchanged. A stale or
 absent Beacon is a reason to inspect canonical state, not proof of a dead worker.
 
-For a paired wave:
+The operator's 2026-09-07 correction keeps implementation and verification independent across work orders. The operator voluntarily takes one order through final review, PR, merge, and release close before bringing another into final review; this is discipline, not a transition gate. No earlier phase must wait on another order's phase. See [the integration contract](product/07-execution-guide.md#independent-workflows-and-integration).
+
+For concurrent work:
 
 1. Recheck the [lane rules](planning/concurrent-work-orders-plan.md#lane-rules-the-showrunner-can-apply-by-hand), dependencies, write surfaces, actor capacity, and each release target. Start each authorized order from clean main with `npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md`, then use a separate session in each emitted worktree.
 2. Use the ordinary resume phrases there; the `wo-NNN` branch selects the order. On main, use `npm run resume -- status` for the overview and `npm run resume --silent -- status --json --work-order WO-NNN` for a selected order. Explicit selection overrides a worktree's branch too.
 3. Integrate reviewed PRs one at a time. Keep both histories byte-exact if shared generated projections conflict. Regenerate those projections with `npm run resume -- next --work-order <closed-order-id>` and `npm run work-orders -- index`; the former can refresh from any known closed order and reports the remaining in-flight orders. Never union-merge, rewrite, or move control events.
-4. Bring the integrated base into the remaining lane and rerun its evidence. A substantive integration change requires repair and fresh independent verification before final review; an old report cannot certify a changed combined subject. Release-target changes retain their dated operator-authority rule.
+4. Within its final-review window, the integrating actor incorporates current upstream and assesses affected acceptance claims. Regenerate projections and use `npm run release -- prepare` for collision retiming; rerun the affected executable checks. An unrelated merge, additive documentation, independent manifest fields, or release-only metadata does not automatically fail review or restart verification. Preserve the earlier report as evidence for its actual subject and record integration evidence in the current review. An actual behavior-changing resolution or acceptance defect needs bounded repair and independent evidence for the affected claims.
 5. After each authorized merge, use that order's printed release-close handoff. Finish and release select the named order from committed control, so a sibling can remain open. Only an empty in-flight set means between work orders.
 
 The [feasibility fixture](../scripts/test-concurrent-control.mjs) exercises two
 independent lifecycles, serial integration and release attribution, plus a
-third branch created before the first merge. The first actual paired wave still
-needs its own measured outcome; lane generation, admission control, and
+third branch created before the first merge. The first actual pair's
+integration costs are recorded in the phase-two plan; lane generation and
 per-order workflow variation remain deferred. Main stays clean for the
 operator and planning session.
 
@@ -419,13 +424,13 @@ fast-forward an uncommitted branch (merge, never rebase, a branch with reviewed
 commits), `git stash apply` and keep the stash, regenerate `current.md`, the
 index, and the publication locks rather than hand-merging them, retime the
 release target with a dated note if the sibling took the version, rerun the
-evidence, and return through `resume: fix` plus a fresh `VER-NNN` when the
-integrated subject changed substantively. WO-033 ships `npm run worktree -- sync WO-NNN`
-for exactly these steps. Expect textual conflicts by construction in the README
+affected checks, and record which claims retained or needed new evidence. A
+new base is not itself a repair finding. WO-033 ships `npm run worktree -- sync WO-NNN`
+for these mechanical steps and the evidence-impact handoff. Expect textual conflicts by construction in the README
 release block, `package.json`, the ledger head, the map's recommendation
 section, and the edition lock lines; none is a reason to union-merge or rewrite
-a control segment. Keep one verifier session's worth of reserve: do not start a
-third implementation while two orders wait for verification.
+a control segment. Available actors and one writer per worktree bound resources;
+do not impose a phase-count admission rule on independent orders.
 
 ## When things break
 

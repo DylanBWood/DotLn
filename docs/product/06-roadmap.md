@@ -22,10 +22,12 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 The sole `vX.Y.Z` in a current work-order heading is its planned **application
 release**, not its work-order number, package version, schema version, or
-conceptual insertion point. An unpublished target may be retimed only by
-explicit operator authorization and a dated migration note; when that changes
-active scope or acceptance, the work order and its independent review subject
-change with it. A published tag may not move. Begin source releases when a rung
+conceptual insertion point. The operator's 2026-09-07 workflow correction authorizes
+routine collision retiming of an unpublished target under its existing release
+classification, with a dated migration note, through `release prepare`. It does
+not authorize reclassification, a scope/acceptance change, or publication; those
+retain their explicit authority and independent evidence requirements. A published
+tag may not move. Begin source releases when a rung
 produces a reproducible artifact that another build, saved configuration, or
 compatibility rule can name. The first useful boundary was `v0.2.0`: after
 WO-003 received passing final review, its PR was merged, and the exact merged
@@ -120,6 +122,16 @@ remain unchanged. The source claim prepares this release; independent
 verification, final review, and publication remain separate lifecycle evidence.
 
 **WO-038 activation completion (2026-09-06):** its omitted target is assigned `v0.13.2`, a metadata and publication-guard patch above origin's published `v0.13.1` (`ed2070a`). The source implements the decided licenses in root/workspace metadata, pinned license-surface checks with npm refusal probes, and DCO contribution checks at branch publication. The [executor receipt](../evidence/WO-038/README.md) records the evidence and the WO-033 export-default handoff. The existing gate also requires refreshing the source-pinned feedback edition after these package metadata changes; the receipt records that refresh and a bounded automation nomination. No runtime source, component version, dependency, or schema changes; verification and publication remain separate lifecycle evidence.
+
+**WO-041 activation completion (2026-09-07):** the omitted release target is
+assigned `v0.13.2`, a control-plane patch above published `v0.13.1`. The source
+adds the compiled plan refuter, receipt and override commands, and forward-only
+planning gate. Skeleton component `0.12.1` carries the source changes; compiler
+`0.6.0`, kernel `0.2.1`, lifecycle legality and event schema remain unchanged; planning overrides use their own append-only
+control log. Independent verification, final review and publication remain
+separate evidence.
+
+**WO-041 collision retiming (2026-09-07):** unpublished target `v0.13.2` is superseded by `v0.13.3` under the existing patch classification because the observed release baseline is `v0.13.2`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
 
 The manifest records the Git commit, application release, package/component
 versions, supported schema and artifact ranges, transformation-set version (or

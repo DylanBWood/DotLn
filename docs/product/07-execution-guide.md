@@ -246,6 +246,20 @@ path; ruleset-aware API preflight remains a separate hardening candidate.
 The operator's own copy of this loop lives in `docs/PLAYBOOK.md`; this section
 is the executor's half of the same contract.
 
+## Independent workflows and integration
+
+**Operator correction (2026-09-07, WO-041 breakout):** each work order's implementation and verification progress independently of every other order's phase. Do not require another lane to finish, verify, merge, or release before these transitions. A published dependency needed to implement a feature is still a real input dependency; paired-wave barriers and a verifier-reserve rule tied to the number of waiting orders are not. Actual available actors and one writer per worktree bound resource use.
+
+The operator voluntarily takes one order from final review through PR, merge, and release close before bringing another into final review. Preserve that discipline in handoffs; it is not an enforced cross-order transition gate. It leaves other orders free to implement and verify during that window. A gate for this final-review window is an open option, not authorized implementation. The integrating final-review session owns routine integration within its window, without requiring the operator to arrange earlier sibling phases.
+
+Verification judges its recorded subject. When upstream moves, the integrating actor owns the merge and an explicit assessment of which acceptance claims, if any, changed. Incorporating independently reviewed upstream work, regenerating projections, reconciling additive documentation or independent manifest fields, and retiming an unpublished release under its existing classification are permitted final-review integration work when they preserve behavior, contracts, authority, and acceptance. A new base, a text conflict, a changed whole-tree hash, or a version collision alone is not a failed review. Preserve every original report and source revision; the final report names both bases, resolved paths, carried-forward claims, and checks on the integrated result. It must not pretend an old verdict judged new bytes.
+
+Run the affected executable checks and release/publication preflights on the integrated tree. Feedback evidence uses its declared dependency projection, so workspace release versions and license labels do not demand another live audit. Source, executable configuration, dependency, contract, or acceptance changes still need evidence for the claims they affect. If an integration resolution requires new behavioral code, or a check reveals an actual acceptance defect, return that bounded finding through repair and fresh independent verification; unchanged claims are carried forward with their original evidence. A reviewer never writes a behavioral fix and certifies it. Integration bookkeeping alone must not create a new `VER-NNN`, a failed `FINAL-NNN`, or a repair event.
+
+The existing resume phrases remain the operator interface. The actor performing a handoff completes authorized integration chores within that session. `npm run release -- prepare` handles a colliding target, the README claim, and a dated roadmap note under the recorded release classification. It uses origin's tag observation; `--local` deliberately uses only the fetched local tag snapshot. It never publishes, alters component versions, or appends control events. A missing component bump against the verified branch baseline remains an executor defect. A component bump that was valid at verification may be retimed during integration if upstream consumed the same version, preserving its already-declared compatibility impact and recording that evidence; this is distinct from omitting the original bump. `npm test` runs `check-surfaces --local` before expensive suites against annotated local releases in the subject's own `HEAD` ancestry. Worktrees share tag refs, so an unintegrated sibling's newer tag is excluded from this verification baseline. `worktree publish` / `release close` retain the authoritative remote check on the integrated result. No command acquires authority from a sibling's phase.
+
+The fuller `worktree sync` automation remains WO-033's deliverable. Until it ships, the integrating actor runs the existing preserve → fetch/merge → apply → regenerate procedure and records the evidence-impact assessment. That manual seam is explicit; it is not a rule that workflows restart when their bases differ. The [breakout receipt](../evidence/WO-041/ideation.md) records the measured failure that prompted this correction.
+
 ## Operator-opened ideation mode
 
 The operator may explicitly reopen ideation during work-order execution,
@@ -356,9 +370,11 @@ provenance, traceability to operator intent, consistency with settled decisions
 and canonical vocabulary, version/schema effects, internal cross-references, and
 whether speculative choices were accidentally presented as settled. They may
 propose and apply authorized, non-substantive handoff/documentation corrections.
-Any correction affecting code, contracts, acceptance, schema, compatibility,
-authority, or prior evidence fails final review and returns through repair plus
-a fresh independent numbered verification before another final-review attempt.
+Any correction that changes behavior, contracts, acceptance, schema, compatibility,
+authority, or the validity of prior evidence returns through repair plus
+a fresh independent numbered verification for the affected claims. Apply
+§Independent workflows and integration to upstream incorporation and mechanical
+release/projection changes; those are not behavioral repairs by themselves.
 They do not promote raw intake verbatim or expand implementation merely because
 the ideation describes a future feature.
 
@@ -405,21 +421,42 @@ Preconditions and inputs:
 4. `ideation:` entries in the same dispatch run the complete ideation pipeline
    first; their synthesis is planning input.
 
+After drafting the orders, commit the planning subject locally and run
+`npm run plan -- refute` before preparing the pull request. The subject is
+compiled from committed files only; the command refuses dirty judged inputs.
+It uses a fresh Entropy Reducer / Contra-Auguste episode through an existing
+transport, with planner narrative and model tools excluded. Commit the immutable
+receipt pair and run `npm test` before the pass ends. The
+[receipt convention](../planning/refutations/README.md) gives the closed result,
+criterion-bound follow-up and override commands.
+
+A hold requires either a changed named criterion and a fresh receipt carrying
+its dated accepted disposition, or an operator-authorized
+`npm run plan -- override <receipt-id> <hold-id> <reason>` event with actor flags,
+an ignored intake capture and its SHA-256. Accepted text never discharges a hold
+by itself, and receipt text never grants an override. The third consecutive
+hold over one sequence stops that pass. A subsequent pass may repair it, but
+must carry every earlier hold forward or explicitly identify the changed
+criterion. Override attribution records the acting session; it does not prove
+the human's identity or let a planner supply its own authorization.
+
+The gate is forward-only from the mechanism's first-parent introduction/merge
+date. Earlier headings, including same-day headings already present at that
+boundary, are exempt. Every later dated planning-pass heading needs an addressed
+receipt; the latest horizon receipt must match current committed and workspace
+inputs. Earlier receipts keep their judged revisions, with unresolved holds
+carried through the receipt chain. The six manual redirect receipts are
+pre-mechanism evidence and are never rewritten or re-run by this gate.
+
 Standard artifacts, all doc-only:
 
 - a compaction-safety capture of the dispatch in ignored intake;
 - one dated ledger section for the pass (and one for any ideation batch);
 - the map's planning revision: the marked sequence block, rationale, adjacent
   track, preflight, candidates, catalog rows, and provenance;
-- a blinded refutation receipt under `docs/planning/refutations/`, produced
-  by `npm run plan -- refute` once WO-041 has landed and, until then, by a
-  manual blinded dispatch that the receipt discloses as pre-mechanism: a
-  fresh session that receives the vision's thesis sections, the five roles,
-  the capability rows, and the marked sequence's orders, never the planner's
-  narrative, and returns for every order whether it advances a named thesis
-  and capability row, is machinery, or drifts, with a `pass` or `hold`
-  verdict for the horizon; every hold is answered in the receipt with a
-  dated disposition before the pass ends;
+- a blinded refutation receipt pair under `docs/planning/refutations/`,
+  produced by `npm run plan -- refute`, with all holds answered through the
+  checked disposition chain or attributed override events;
 - zero or more planner-synthesized work-order drafts, each with `Model:` and
   three-role `Effort:` lines, provenance, a dated observed gap, acceptance
   criteria, evidence, non-goals, and operator-review assumptions;

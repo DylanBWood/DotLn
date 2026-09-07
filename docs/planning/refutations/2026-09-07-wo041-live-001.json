@@ -1,0 +1,873 @@
+{
+  "schemaVersion": "plan-refutation-receipt-v1",
+  "receiptId": "2026-09-07-wo041-live-001",
+  "pass": {
+    "id": "evidence-wo041-live",
+    "kind": "evidence",
+    "heading": null
+  },
+  "ordinal": 1,
+  "previousReceiptHash": null,
+  "subject": {
+    "schemaVersion": "plan-subject-v1",
+    "revision": "01c2e321268bf9cb9842b58b3e95fc8ed5a09d67",
+    "hash": "sha256:dc02ed397a3a4963f40f340367f62f64ca466ba69afbf942e44ecf74c7a59ec8",
+    "sequenceHash": "sha256:22be356dd989a3279de0e289fd10c888eeef82371b1e8f778fc83cc9868e9ac9",
+    "inputs": [
+      {
+        "name": "sequence",
+        "hash": "sha256:22be356dd989a3279de0e289fd10c888eeef82371b1e8f778fc83cc9868e9ac9"
+      },
+      {
+        "name": "docs/work-orders/WO-038-license-posture-lands.md",
+        "hash": "sha256:be7fb1eee044ab4a35b4069a992ec5244685ffb23e925356c4d45d6fc564d215"
+      },
+      {
+        "name": "docs/work-orders/WO-039-harness-lowering.md",
+        "hash": "sha256:ddae3e127347e15c9995c450b88b93a7adf500b9dc0a0ec98ef68f500052d094"
+      },
+      {
+        "name": "docs/work-orders/WO-033-compiled-starter-export.md",
+        "hash": "sha256:1bb0ec39713e154291330d34656b65c6a85c9b8c0eaca52f540928e1d8c5a939"
+      },
+      {
+        "name": "docs/work-orders/WO-041-plan-refutation-mechanism.md",
+        "hash": "sha256:8188ead943f802e810ee4dc18a8173620ef5e92562b76ecec68180a1d4ea02e5"
+      },
+      {
+        "name": "docs/work-orders/WO-032-uifa-actor-board.md",
+        "hash": "sha256:ce94d53ae852911936398655880108b6e5e584d46fef8a89a4cdb25af3100a3d"
+      },
+      {
+        "name": "docs/work-orders/WO-040-rule-migration-batch-one.md",
+        "hash": "sha256:a1b47c300514f7ca2dd5af948ba335a26df93463a5a246ef3fe9c74781b29ce1"
+      },
+      {
+        "name": "docs/work-orders/WO-036-evidence-runner.md",
+        "hash": "sha256:d50562eaf0c9d4f3580d40e8d1f2b24a317c384129dba99453f63e0274443667"
+      },
+      {
+        "name": "docs/work-orders/WO-034-cross-repository-workstream-pilot.md",
+        "hash": "sha256:b695f0fd522e6dd278b3ddfedb2d2281a6a4da123989a654feb4c0047241cc18"
+      },
+      {
+        "name": "docs/work-orders/WO-035-documentation-structure-reset.md",
+        "hash": "sha256:416e4821ff39f929c9c953f0c6b103792f687bb8285e2ed5f03001d5c918248c"
+      },
+      {
+        "name": "docs/work-orders/WO-037-five-s-equipment-set.md",
+        "hash": "sha256:cd9b19086f17818e14253ec0dffbf776d5637e0519f8ed5d76e646c96f5ffed3"
+      },
+      {
+        "name": "vision:the-one-paragraph-story",
+        "hash": "sha256:8bab0822506793b72af969c7882b4eea981c3ae27e34c0911da4ed94629d8407"
+      },
+      {
+        "name": "vision:the-core-bet",
+        "hash": "sha256:93d94591f5dafcff1a1ab826a46bc70c81226e4c001dfc9997ef41073df18cfc"
+      },
+      {
+        "name": "vision:the-differentiated-interface",
+        "hash": "sha256:35cdbd43d18593ca268bac2f49014c1831183b08fd2961a54d2351fad35fd354"
+      },
+      {
+        "name": "vision:three-horizons-one-kernel",
+        "hash": "sha256:775922ded1065b40d6f5f607043fe66e89aaa688653a7c9e7a89f17c362151f8"
+      },
+      {
+        "name": "vision:mission--increase-the-chance-of-operator-flow",
+        "hash": "sha256:13c986b14b83eae35b89cba2eaf2f9919feddc7e9461b3b32fb6ffe9b0589593"
+      },
+      {
+        "name": "vision:what-dotln-is-not",
+        "hash": "sha256:1028e087608b682e34cb02a7436836895f761e87d01beae275a6f524c77cad09"
+      },
+      {
+        "name": "roles",
+        "hash": "sha256:5b778837ab3b8a8d6eb335d3587707e06c38e0d24e0f90f5d5d184d430fdac80"
+      },
+      {
+        "name": "capability:kernel.event-loop",
+        "hash": "sha256:7739759ab9d9c2738c8cb837d0918fe88ea34dfae5507b2db3e89f9b92c35b07"
+      },
+      {
+        "name": "capability:cadence.evaluable-subset",
+        "hash": "sha256:8f53825613355d79c795ee67b20bdfa666258fd622a1c2a4f7b7261ac3ea9b9a"
+      },
+      {
+        "name": "capability:kernel.authorize",
+        "hash": "sha256:bdb1ea66a2a9e3cca8deb9ea78ec38858eed2ec297316adc5042a34af35e7d88"
+      },
+      {
+        "name": "capability:kernel.jsonl-replay",
+        "hash": "sha256:5305f71a51e5b2b6336d12b962a6d6eb603ffa0763288cedccc59f9f3816c53a"
+      },
+      {
+        "name": "capability:program.evaluable-subset",
+        "hash": "sha256:dda2c6f8dd0fbf534433320d046b0c048d9c416d2da78e92147bf6eb6de963c4"
+      },
+      {
+        "name": "capability:skeleton.fake-vertical",
+        "hash": "sha256:4f8c8e5bcb634ee38c12702bb34fddd99c7fe11e4363d68dc5a65ff9dc553cfb"
+      },
+      {
+        "name": "capability:compiler.seiri-v1",
+        "hash": "sha256:7c04477892ef8e8af45df9494fdc7794db8fd63b731b08427271776fbe806c83"
+      },
+      {
+        "name": "capability:runtime.work-order-transport",
+        "hash": "sha256:36e309c6ff454b64b9cc372e888e8f9852b9cc2b38aa518b8ced12e7061dfb6f"
+      },
+      {
+        "name": "capability:runtime.independent-verification",
+        "hash": "sha256:de5f76613aa962c847862da50b4c07b2369c3a449633f9dd101fa904f0b69107"
+      },
+      {
+        "name": "capability:projection.skeleton-cli",
+        "hash": "sha256:bce906defe011bf9998e44bba03139fa407b9d27d539bc890429d19eb655112e"
+      },
+      {
+        "name": "capability:publication.bootstrap",
+        "hash": "sha256:397bcbb3567b45f4142417f81585f83b5f966523bd295b73b3785a30e57f4e12"
+      },
+      {
+        "name": "capability:audit.baseline-three",
+        "hash": "sha256:00c43e67f2b84393f1ee65678ca2fc0732c0eb0b12d1452f31e0e6cb9097b4f9"
+      },
+      {
+        "name": "capability:skeleton.fake-vertical",
+        "hash": "sha256:7cbf75afc984b4786865f086bbbdafb89d33453e86ea84b74885bff14e48f5cb"
+      },
+      {
+        "name": "capability:projection.skeleton-cli",
+        "hash": "sha256:e3dc1ce64f552eef8cc3d2fb2044e2867a42eb45e29604500267518f7580c367"
+      },
+      {
+        "name": "capability:compiler.seiri-v1",
+        "hash": "sha256:2368e814ecf7c09ee3a72fac2870937517c929b28fc5737d1e46ccf9753e8f06"
+      },
+      {
+        "name": "capability:projection.beacon",
+        "hash": "sha256:edfe1a8a0de7fd494c693cb22699346569b641ef636c89a6b00a29d71cde6213"
+      },
+      {
+        "name": "capability:control.concurrent-orders",
+        "hash": "sha256:cee769e8fc3749f74051c677356e2a4500872be55e3d8356330b26300d296d4b"
+      },
+      {
+        "name": "capability:projection.control-beacon",
+        "hash": "sha256:22c525cd45a3b281c68f826d99b09692cf2e774b1272a91b14afe627a25e2376"
+      },
+      {
+        "name": "capability:transport.disposable-inspection",
+        "hash": "sha256:347530f50f6bc15fb683dd2504b84d8ae5fcdc45b569cc58b717029d18d548a7"
+      },
+      {
+        "name": "capability:runtime.inspection-recovery",
+        "hash": "sha256:7fc74491e93f0658e07375cf623094b6621add8a25f2f9c976b508caa78744ae"
+      },
+      {
+        "name": "capability:projection.worker-status",
+        "hash": "sha256:cafbb171a63bbe8a8276d00f0a116194c73a1de8fe93287ed4d3b84a6c657878"
+      }
+    ],
+    "standard": {
+      "theses": [
+        {
+          "id": "the-one-paragraph-story",
+          "title": "The one-paragraph story",
+          "text": "## The one-paragraph story\n\nA predecessor system (not present in this repo) proved the concept and then\ncollapsed under its own success: roughly 140 accumulated feedback rules loaded\nas prose pushed fresh sessions toward 400–500k tokens of always-on context,\nwhere rules fired wrongly or vanished when needed most. In the project's RPG\nvocabulary, it brought the **whole stash into every map** — as if a character\ncarried gear for every damage type when the encounter called only for cold\nresistance. In plain language, irrelevant rules consumed attention and created\nunintended interactions before the task began. The author's implementation\nanswers with _compiled_ rules: each correction becomes a typed mechanism (a\npermission, a guard, a reactor, an evaluator, a transformer, a workflow gate)\nattached only where relevant. A session in that profile gets **a build, not a\nbiography** — one active behavior, a handful of linked supports, its selected\nsafety layer, and the exact task state. The platform supplies the compiler and\nmechanism contracts without prescribing that loadout.\n\n"
+        },
+        {
+          "id": "the-core-bet",
+          "title": "The core bet",
+          "text": "## The core bet\n\n> \"The true work of the inventor consists in choosing among these combinations\n> so as to eliminate the useless ones... the rules that must guide the choice\n> are extremely fine and delicate. It's almost impossible to state them\n> precisely; they must be felt rather than formulated.\" — Poincaré, via Pirsig\n\nGeneration is cheap and getting cheaper; the scarce asset is the **selection\nfunction** — the operator's sense of what is good, currently exercised one\ncorrection at a time. DotLn's bet is not that this delicate judgment can be\nexhaustively formulated. It is that useful operational approximations can be\nprogressively arrived at: source incidents preserve what was felt, candidate\nmechanisms approach it from different directions, and regression fixtures show\nwhere each construction agrees or diverges. As mathematical or geometric\ntechniques can converge on a shape without becoming the shape itself, the\nformulation is an instrument for approaching the operator's selection function,\nnot a claim to contain it precisely. **The model changes; the organization\nsurvives.** Claude, Codex, a human, a shell script, and a future model are\ninterchangeable occupants of the same actor slot.\n\nThat bet needs an excellent foundation before it needs a long feature list. In\nthe reference implementation, the smallest useful loop—declare intent, see what\nthe system understood, observe authorized progress, receive timely feedback,\nand inspect evidence—should already feel responsive, legible, and worth\nrepeating. Competitive gap-filling does not excuse a weak loop. When another\nsystem introduces a useful idea, DotLn first asks whether the exact behavior can\nbe accommodated by existing primitives, compositions, ports, and runtime\nlowerings. If not, the difference becomes evidence for one missing primitive or\nboundary, not permission to bolt on an opaque special case. Integration and\nsemantic accommodation are preferred to imitation; both preserve every\ncapability contract the receiving implementation declares and expose any\nomitted or lossy capability.\n\n"
+        },
+        {
+          "id": "the-differentiated-interface",
+          "title": "The differentiated interface",
+          "text": "## The differentiated interface\n\nDotLn's second thesis is about _authoring_, not running:\n\n> \"I will take the entire Business, Leadership, and Personal Development shelf\n> at Barnes & Noble and just map them to different agent / subagent\n> communication structures... at once anyone who has read those books is an\n> expert in some feature of the app — and it turns all those books into\n> programming books overnight.\"\n\nThe analogies are not documentation — **the analogies are the ways you mix and\nmatch the agents**. Every pattern (5S, the Ladder of Leadership, mitigated\nspeech, Theory of Constraints, commedia dell'arte roles, the\nAlgorithms-to-Live-By policies) compiles into exact mechanics, and the same\ncompiled program renders through an open-ended set of isomorphically equivalent\nviews: an RPG character with a Path-of-Exile-style socket-and-link build, a\nbusiness pattern card, a statechart, a function table, a marble/Morse temporal\ntrack, a TypeScript DSL, an event timeline. Friendly metaphors are authoring\nlanguages, never camouflage: every view either provably compiles to the same\nnormalized program or is labeled a lossy projection with the exact mechanics one\nclick away.\n\n### Shape-first synthesis\n\nThe operator uses situations and analogies to communicate a desired **shape**: a\nrelationship, interaction, transition, contrast, feedback loop, or felt quality.\nLiteral similarity to the reference is not the acceptance test unless a specific\nliteral detail becomes load-bearing. Preserve the experience first, then\nprogressively lower it through observable interaction, domain mechanics,\ncontracts and evidence, and finally technology selected from representative\nenvironment evidence. An imperfect analogy can carry a precise requirement;\nsource accidents do not become ontology by resemblance.\n\nThis is the standing interpretation rule for earlier and future operator\nideation. Its fullest product expression is the first-party application thesis,\n[`προτείνω`](11-protino.md), but it applies to the whole platform.\n\n"
+        },
+        {
+          "id": "three-horizons-one-kernel",
+          "title": "Three horizons, one kernel",
+          "text": "## Three horizons, one kernel\n\n1. **Work operating system** — workstreams, disposable workers, evidence-backed\n   completion, offline-capable state, a near-empty main thread. The immediate\n   product.\n2. **Executable pattern workshop** — the shelf-to-mechanism compiler and the\n   drag-a-card-onto-an-agent authoring surface. The differentiated product.\n3. **Agent ecology & simulation laboratory** — paired counterfactual runs,\n   first-divergence detection, agent swaps, reflection-policy experiments over\n   recorded event logs. The research product.\n\nHorizon 3 must emerge from the same kernel (deterministic replay is what makes\ncounterfactuals possible at all) and is not allowed to distort Horizon 1.\nThe [workstream application candidate](12-workstream-application.md) develops\nHorizon 1 through concrete end-user journeys and gradual workflow replacement,\nincluding one outcome spanning multiple repositories. It leaves deployment and\napplication identity open and does not allocate another release rung.\n[`προτείνω`](11-protino.md) is the operator-named application destination that\njoins Horizons 2 and 3: prose-authored patterns and ad hoc interventions become\nplayable inside an inspectable counterfactual community. Naming the destination\ndoes not move it ahead of the release ladder or make its application-local\ncontent kernel doctrine.\n\n"
+        },
+        {
+          "id": "mission--increase-the-chance-of-operator-flow",
+          "title": "Mission — increase the chance of operator flow",
+          "text": "## Mission — increase the chance of operator flow\n\nThis is the mission of the author's personal implementation and a motivating\nuse of the platform, not a compulsory objective or operating policy for every\nDotLn owner.\n\nAI-assisted work commonly falls into a babysitting mode: the operator repeatedly\nrestates context, supplies procedural guidance, coordinates tools and workers,\nchecks unsupported completion claims, recovers stalled work, and spends active\nattention on the machinery instead of the idea. The desired alternative is not\nunbounded improvisation or confidence without evidence. It is a sustained\ncreative flow in which the operator can keep the idea and implementation\ndirection in mind while the surrounding work behaves dependably.\n\nThe reference implementation's mission is to improve the conditions for that\n**operator flow state**.\nSupporting research, capability-building, coordination, routine procedure,\nrecovery, and verification should happen automatically when authorized,\npredictably when routine, and helpfully when a genuinely material decision needs\nthe operator. Product and research investment should favor capabilities that\nremove recurring supervision and avoidable context switches without exporting\ntheir cost into correctness, authority, evidence, privacy, or recoverability.\n\nThe implementation cannot promise or infer a person's psychological state. It can\nreduce interruption, repetition, manual ceremony, and rediscovery; preserve\nintent and working context across handoffs; package necessary interruptions as\ndecision-ready inputs; and make recovery unsurprising. Under its selected\nprofile, flow does not silently authorize scope expansion, skipped verification,\nperpetual action, or self-certification. “Give an agent a build, not your\nbiography” remains useful architectural shorthand for one mechanism serving\nthis larger mission.\n\n"
+        }
+      ],
+      "exclusions": [
+        {
+          "id": "what-dotln-is-not:1",
+          "text": "Not an agent, an agent harness, or an agent-orchestration layer, as its\n  identity. DotLn is an **agentic platform**: the shared substrate on which\n  people and software actors hold work, authority, and evidence. It contains an\n  orchestration layer and hosts harnesses as observed environments\n  ([runtime primitive catalogs](03-architecture.md#runtime-primitive-catalogs)),\n  but neither of those is what it is."
+        },
+        {
+          "id": "what-dotln-is-not:2",
+          "text": "Not a prompt library, and not a wrapper that makes one vendor's model nicer."
+        },
+        {
+          "id": "what-dotln-is-not:3",
+          "text": "Not a prescribed catalog of ideal agents, roles, personalities, workflows, or\n  organizational doctrine. Bundled patterns are examples and optional starting\n  points, not kernel truth."
+        },
+        {
+          "id": "what-dotln-is-not:4",
+          "text": "Not dependent on a public marketplace. Local files, private catalogs,\n  organization-internal registries, and offline or air-gapped installations\n  remain complete authoring and distribution paths."
+        },
+        {
+          "id": "what-dotln-is-not:5",
+          "text": "Not one prescribed autonomy curve. Presence and recorded time are policy\n  inputs; an explicit owner policy may hold, shrink, grow, peak, reset, or loop\n  scope and authority within its declared ceiling."
+        },
+        {
+          "id": "what-dotln-is-not:6",
+          "text": "In the reference implementation, not a metrics theater: no invented numbers,\n  no activity-as-progress, evidence precedes \"done,\" and utilization is not the\n  objective. A profile that omits verification says so instead."
+        },
+        {
+          "id": "what-dotln-is-not:7",
+          "text": "The reference implementation is not finished when it works for its author:\n  v1.0 means a person who has never read these docs can declare a bounded intent\n  and receive a verifiable result."
+        }
+      ],
+      "roles": [
+        "UIFA product lead",
+        "UIFA showrunner",
+        "UIFA engineer",
+        "UIFA tester",
+        "UIFA devops"
+      ],
+      "rolesTable": "| Role                  | Owns                                                                                                                              | Produces                                                                                                               | The question they keep asking                                                     |\n| --------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |\n| **UIFA product lead** | The domain's future state: what the work should become, described at flowchart grade by someone who knows its screens and rhythms | A vision that is transcribed, synthesized, and stored as durable product understanding                                 | “Is this still the thing we mean?”                                                |\n| **UIFA showrunner**   | Sequencing, capacity, and closure across parallel workflows; what shipped in each release and with what evidence                  | Bounded work orders, a recommended order, activation decisions, release dispositions                                   | “What is active, what is blocked, what closed, and what did the release contain?” |\n| **UIFA engineer**     | The hand-crafted actor experience: identities, roles, supports, link groups, cadences, and temporal structures                    | Compiled loadouts and reusable compositions built from legos or custom pieces, not from a model's guess at the mapping | “Does this composition express the behavior I mean, and what does it cost?”       |\n| **UIFA tester**       | Whether a proposed shape, role, or support does what it should in the circumstances that matter                                   | Scenarios, expected behaviors, replayed comparisons, and findings about the shape, not about the software              | “In this situation, does the equipped behavior do the right thing?”               |\n| **UIFA devops**       | The machinery that makes the machinery: compilers, control plane, generators, evidence gates, and their tests                     | Executable mechanisms that remove recurring procedure and keep judgment at the point that needs it                     | “Which repeated step can become a checked mechanism next?”                        |",
+      "capabilities": [
+        {
+          "id": "kernel.event-loop",
+          "level": "**2 — dependable** (min 2)"
+        },
+        {
+          "id": "cadence.evaluable-subset",
+          "level": "**2 — dependable** (min 2)"
+        },
+        {
+          "id": "kernel.authorize",
+          "level": "**2 — dependable** (min 2)"
+        },
+        {
+          "id": "kernel.jsonl-replay",
+          "level": "**2 — dependable** (min 2)"
+        },
+        {
+          "id": "program.evaluable-subset",
+          "level": "**2 — dependable** (min 2)"
+        },
+        {
+          "id": "skeleton.fake-vertical",
+          "level": "**1 — demonstrable** (min 1)"
+        },
+        {
+          "id": "compiler.seiri-v1",
+          "level": "**0 — latent** (min 0; no usable behavior)"
+        },
+        {
+          "id": "runtime.work-order-transport",
+          "level": "**0 — latent** (min 0; observed host shapes are not adapters)"
+        },
+        {
+          "id": "runtime.independent-verification",
+          "level": "**0 — latent** (min 0; repository review reports are process precedent, not runtime behavior)"
+        },
+        {
+          "id": "projection.skeleton-cli",
+          "level": "**1 — demonstrable** (min 1)"
+        },
+        {
+          "id": "publication.bootstrap",
+          "level": "**0 — latent** (min 0; no artifacts)"
+        },
+        {
+          "id": "audit.baseline-three",
+          "level": "**0 — latent** (min 0; the skeleton log is input, not an audit implementation)"
+        },
+        {
+          "id": "skeleton.fake-vertical",
+          "level": "One exported [`seiriReactor`](../../packages/skeleton/src/reactor.ts) now makes every live and replay decision; the [scenario suite](../../packages/skeleton/test/scenario.test.ts) compares complete `Decision` values and semantic projections, pins six payload-sensitive paths, rejects the negative fixture, preserves evidence-bearing candidates, and exercises replay-based crash recovery."
+        },
+        {
+          "id": "projection.skeleton-cli",
+          "level": "[`cli.test.ts`](../../packages/skeleton/test/cli.test.ts) compares complete stdout and empty stderr for both the default and `--audit` forms; the scenario suite derives the glyph from folded state and pins `verified=false` plus `○ unverified` for a negative fixture. Live and replayed timeline, glyph, final state, and decisions are identical."
+        },
+        {
+          "id": "compiler.seiri-v1",
+          "level": "The dependency-free [`@dotln/compiler`](../../packages/compiler/README.md) now exports the full graph type boundary and bounded Seiri lowering. [Compiler tests](../../packages/compiler/test/compiler.test.ts) pin capability diagnostics, all adjacent precedence levels, hard conflicts, explicit pipelines, and heterogeneous costs; the [purity test](../../packages/compiler/test/purity.test.ts) pins determinism, input immutability, I/O-free source, and zero runtime dependencies. [View tests](../../packages/compiler/test/views.test.ts) exercise all three codecs, round-trip laws, semantic mutations, and equip changes. The [tooltip test](../../packages/compiler/test/tooltip.test.ts) pins the literal RPG diff and three equal hashes; the [skeleton scenario](../../packages/skeleton/test/scenario.test.ts) consumes compiled runtime data and compares all 21 traces with the frozen WO-003 oracle."
+        },
+        {
+          "id": "projection.beacon",
+          "level": "**1 — demonstrable**, staged pending independent review"
+        },
+        {
+          "id": "control.concurrent-orders",
+          "level": "**1 — demonstrable**, staged pending independent review"
+        },
+        {
+          "id": "projection.control-beacon",
+          "level": "**1 — demonstrable**, staged pending independent review"
+        },
+        {
+          "id": "transport.disposable-inspection",
+          "level": "**1 — demonstrable**, staged"
+        },
+        {
+          "id": "runtime.inspection-recovery",
+          "level": "**1 — demonstrable**, staged"
+        },
+        {
+          "id": "projection.worker-status",
+          "level": "**1 — demonstrable**, staged"
+        }
+      ]
+    },
+    "orders": [
+      {
+        "workOrderId": "WO-038",
+        "path": "docs/work-orders/WO-038-license-posture-lands.md",
+        "title": "WO-038 — License posture lands in package metadata, publication guards, and the contribution rule (version assigned at activation)",
+        "objective": "Make the decided posture true in every place a tool or a\nperson reads it: package metadata, a publication guard that refuses an\naccidental package publish, a contribution rule with a certificate of origin,\nthe export's default license files, and the README and legal record in\nagreement.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "Every workspace manifest carries `\"license\": \"Apache-2.0\"` and\n   `\"private\": true`; `npm publish --dry-run` refuses for each workspace and\n   the check records the refusal."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`check-surfaces` fails on a fixture with a missing license field, a\n   changed `LICENSE` hash, or a workspace without `private: true`, naming the\n   observed and expected values, and passes on the repository."
+          },
+          {
+            "id": "criterion:3",
+            "text": "`worktree publish` refuses a branch containing a non-author commit without\n   a `Signed-off-by` line and accepts author commits without one (fixture)."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`CONTRIBUTING.md` exists, states the DCO rule and the outbound licenses,\n   and links the boundary, process, and playbook; `docs/LEGAL.md` and the\n   README agree with the manifests."
+          },
+          {
+            "id": "criterion:5",
+            "text": "`npm test` green; `git diff --check` clean; no new dependency; no hook or\n   settings change."
+          },
+          {
+            "id": "criterion:6",
+            "text": "The final reviewer reads `CONTRIBUTING.md` against `CLAUDE.md`'s\n   clean-room floor before this order closes, since it lands before the\n   local-terms check exists, and records that read in the review."
+          }
+        ],
+        "nonGoals": "publishing any package; a CLA; a Git hook; changing the license\nchoice; third-party notices for material not yet distributed; a trademark\nfiling."
+      },
+      {
+        "workOrderId": "WO-039",
+        "path": "docs/work-orders/WO-039-harness-lowering.md",
+        "title": "WO-039 — Harness lowering: compile a saved build into enforceable harness configuration, and run this repository on its own compiled build (version assigned at activation)",
+        "objective": "Make a saved build govern the sessions that actually run. Add a\npure compiler target that lowers a loadout, its equipped feedback units, and\nits authority envelope into the configuration a harness enforces: settings\npermissions and hook scripts at rung 2, on-demand role skills at rung 7, and a\ngenerated instruction fragment at rung 8 that holds only the residue nothing\nlower could carry, with a byte count. Then define this repository's own\nsession build, the **Contributor**, emit its harness configuration from the\ncompiler, commit the result, and refuse drift in the evidence gate, so that\ncore runs on its own product and not only on its own process.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "The phase 0 record exists for the local Claude Code harness and, where\n   installed, Codex, with observed hook events, payload fields, refusal\n   semantics, skill resolution, and what remained unobserved; every profile\n   capability the compiler consumes cites a row of it."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`lowerToHarness` is pure, deterministic, and dependency-free; the bundle's\n   manifest hashes verify; every emitted file names its origin unit or facet\n   and the loadout's semantic hash; each of the ten units lowers to its\n   declared rung or appears in the residue with a reason; a fixture proves\n   that changing one unit changes only the files that name it and that the\n   Seiri and Entropy Reducer programs keep their exact semantic hashes."
+          },
+          {
+            "id": "criterion:3",
+            "text": "For each generated hook, a fixture invokes it with a synthetic payload and\n   proves its allow or refuse decision equals `feedbackBoundary`'s verdict on\n   the same host facts, and that removing the unit makes the hook allow."
+          },
+          {
+            "id": "criterion:4",
+            "text": "A recorded live smoke in a scratch checkout carrying the emitted bundle\n   shows the actual harness refusing at least one denied effect through a\n   generated hook and resolving one role skill by resume phrase; when the\n   operator has confirmed the correction token, the smoke also types one\n   correction event from it, and when the token is unconfirmed the smoke\n   shows the correction unit reached through its role skill and the residue\n   report names the unconfirmed token as the reason. The smoke also records,\n   through a generated read-observing hook that runs for the whole smoke\n   session under each role, every file the session actually read, and\n   compares that set with the directed-read set criterion 6 derives: a read\n   outside the directed set plus the active order's own cited sections\n   fails this criterion and is named in the residue report, whether it\n   happened before the first effect or after the last resume command, so a\n   skill that merely suggests the guide while the session reads it anyway\n   cannot pass. The transcript names harness version, model, and effort."
+          },
+          {
+            "id": "criterion:5",
+            "text": "This repository's committed `.claude/settings.json`, hooks, skills, and the\n   marked `CLAUDE.md` block are byte-identical to `harness emit` for the\n   Contributor build; `harness check` runs in `npm test` and fails on a\n   one-byte drift fixture; the config log has the entry; ADR-0005 carries the\n   dated amendment; no user-scope file changed."
+          },
+          {
+            "id": "criterion:6",
+            "text": "The startup-context measurement is directional and counts everything\n   the session is directed to load: for a cold start under each of the four\n   roles, the after value is the sum of the whole instruction file (the\n   hand-written floor and the marked residue block alike), the generated\n   role skill's bytes as loaded by the resume phrase, and **every file that\n   either the instruction file or the skill directs the session to read\n   anywhere in the role's procedure**, before acting or at any later step,\n   including any read order the floor still states; the\n   before value is the activation base's whole instruction file plus every\n   file its §Start here read order and the execution guide's role procedure\n   directed for that role. The after value is strictly lower in bytes and\n   lines for every role, and the instruction file alone is strictly lower\n   than the activation base's; the method is stated, and a fixture derives\n   the directed-read set mechanically from the instruction file and the\n   skill rather than from the executor's list. The floor's read order is\n   rewritten so that, per role, it names the role skill and only files the\n   measurement counts; a read the floor directs that the measurement does\n   not count fails this criterion. Relocating guide text into a skill counts\n   in the after value and therefore cannot satisfy this criterion on its\n   own; a role that is not lower fails this criterion and the residue\n   report names what kept it long. The build replaces the biography for\n   that role; it is not placed beside it."
+          },
+          {
+            "id": "criterion:7",
+            "text": "Write-backs land: 02 §Feedback (the `harness-v1` contract, its lowering\n   table, and the residue rule); 03 §Agent enablement skills (the first slice\n   shipped and what remains of the delivery order); 07 §Operator resume\n   phrases and §Read order for a cold start, and `CLAUDE.md` §Start here\n   (phrases load the generated role skill; the cold-start read order names,\n   per role, the skill and only the files criterion 6 counts); 13 engineer\n   and\n   devops rows; README \"What runs today\"; dated capability-table rows for\n   `compiler.harness-v1` and `harness.self-hosted`; publication index rows and\n   both edition locks; ledger entry."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`npm test` green; `git diff --check` clean; no new runtime dependency (the\n   hooks import built modules already in the repository; the recorded\n   TypeScript parser dependency is unchanged); kernel unchanged; the\n   local-terms check has run over every generated skill, the residue block,\n   and the discovery record with the operator's list present, reported in\n   the result, not assumed, and its synthetic-term fixture refuses."
+          }
+        ],
+        "nonGoals": "compiling units beyond the ten (WO-040 migrates the rest in\nbatches through this target); the starter export and the fork's profile\n(WO-033); Codex lowering beyond what phase 0 observed; user-scope settings;\nloosening any ADR-0003 through ADR-0005 control; a general effect-to-tool\ntable for every harness (the profile declares what this harness has); a hook\nthat reads model output or operator wording for sentiment; the actor board\n(WO-032); changing lifecycle legality or the event schema."
+      },
+      {
+        "workOrderId": "WO-033",
+        "path": "docs/work-orders/WO-033-compiled-starter-export.md",
+        "title": "WO-033 — The starter is a compiled export: one configuration root, registered target repositories, a launchpad export that carries the saved build, and a lane-sync helper (version assigned at activation)",
+        "objective": "Make the control plane runnable from a repository that is not\nDotLn core, driving bounded work orders against registered target\nrepositories whose own trees receive only conventional branches and pull\nrequests; export a launchpad instance that carries the Contributor build as\nan enforceable harness bundle plus the pinned runtime build the bundle needs,\nso that a fork of the starter runs its sessions on a compiled actor from its\nfirst commit and takes every later improvement in core as a re-export; and\ngive the paired-wave workflow the sync step it is missing.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "With no `dotln.config.json`, every existing suite passes unchanged, and\n   `status --json`, `current.md`, the generated index, `times`, `usage`, and\n   a release manifest derived over the real log are byte-identical to the\n   activation base (`cmp` transcripts). A test refuses any remaining literal\n   `docs/` root outside `scripts/lib/config.mjs`."
+          },
+          {
+            "id": "criterion:2",
+            "text": "A fixture launchpad in a temporary directory with non-default roots drives\n   `activate`, `implementation-ready`, `verify`, `verification-result`,\n   `final-review`, `final-review-result`, and `worktree finish` through the\n   unchanged commands, writing only under its configured roots."
+          },
+          {
+            "id": "criterion:3",
+            "text": "A fixture work order declaring a registered target repository activates;\n   `worktree start` creates the target worktree from the declared base,\n   echoes the repository's authority profile as a receipt, and emits the\n   harness bundle for the launchpad build plus the repository's class and\n   profile into the worktree's ignored local configuration; the compiled\n   WorkOrder's allowed and prohibited operations equal that profile; a\n   repository class's declared checks appear in every member order's required\n   checks; the activation event and every projection show the repository id\n   and base commit and no physical path; `status`, `next`, `verify`, and\n   `final-review` work from the target worktree through `DOTLN_LAUNCHPAD` and\n   through the local registry; every report lands in the launchpad; the\n   target worktree's branch and every commit it can produce contain no DotLn\n   control, work-order, evidence, or harness file."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`worktree publish` for a target order opens the pull request against the\n   target repository through the `gh` stub with the reviewed body, and the\n   camouflage lint refuses a title or body containing a deny-listed term;\n   `release close` for a target order records the no-release disposition,\n   removes only the target worktree and merged branch after containment, and\n   creates no tag in either repository."
+          },
+          {
+            "id": "criterion:5",
+            "text": "`launchpad export <dir>` refuses a non-empty destination; the exported\n   scripts and runtime build are byte-identical to the source commit named\n   in `UPSTREAM.md` and the manifest hashes verify; the exported suites,\n   including `harness check`, pass in place with an offline `npm ci` against\n   the exported lockfile; a lifecycle transition inside the export emits a\n   control Beacon without any `packages/skeleton` source present; a session\n   opened in the export under the emitted bundle is refused a denied effect\n   by a generated hook and resolves a role skill by resume phrase (recorded\n   smoke); a negative fixture proves the export contains no intake, local\n   settings, Beacon output, runtime store, package source, evidence from\n   this repository's orders, or any term list, hashed or plain; the\n   local-terms check runs over every exported kit text with the operator's\n   list present and reports it; and the reviewer reads the exported kit\n   text, including the pre-drafted first order's audit questions, for any\n   description of a specific managed host, gateway, or policy (generic\n   questions are permitted, descriptions are not). A grep test proves no\n   `scripts/` file imports\n   the same module from both source and `dist/`. The export carries\n   `LICENSE`, `LICENSE-docs`, and `NOTICE` byte-identical to core's as kit\n   files, writes `LICENSE-PENDING.md` only under `--license none`, and never\n   fabricates license text. `--update` over a fixture export with one\n   locally modified kit file, one instance file, one overlay file, one\n   dropped kit file, and one new kit file replaces only the unmodified kit\n   files, lists the modified one as refused, leaves every instance and\n   overlay file byte-identical, rewrites the manifest and `UPSTREAM.md`, and\n   prints the re-emit instruction; a re-emit over the fixture overlay\n   produces a `.claude/` that differs from the kit's only where the overlay\n   says; a second fixture overlay that replaces the identity and unequips\n   two units re-emits to a bundle that carries neither, and a third that\n   declares `build: none` re-emits to the floor alone with `harness check`\n   passing on it; the camouflage lint refuses a fixture body containing a\n   synthetic local term and a fixture body containing a launchpad\n   vocabulary term, and reports `unavailable` for the local part when no\n   list is present; without a prior manifest it refuses. Inside the export,\n   the directed-load total per role is measured by WO-039's criterion 6\n   method over the export's own instruction file and skills, reported in\n   the receipt, and is not larger than core's for the same role at the\n   export's commit, so the fork's biography is measured beside its build\n   rather than assumed."
+          },
+          {
+            "id": "criterion:6",
+            "text": "`worktree sync` over a real-Git fixture with two orders, a merged sibling,\n   a conflicting generated projection, a conflicting authored file, and a\n   colliding release target: mints the checkpoint, keeps the named stash,\n   updates the base without rewriting commits, regenerates the projections,\n   reports the authored conflict, prints the retime instruction, and refuses\n   its three refusal cases without changing the tree."
+          },
+          {
+            "id": "criterion:7",
+            "text": "Write-backs land: `docs/siblings/README.md` created with the starter's\n   entry and the export receipt convention, plus a dated capability-table row\n   for `launchpad.starter` at its evidenced level; 03 §Platform and instance\n   boundary (the physical split's first slice carries the build; what stays\n   in core); 07 §Operator resume phrases (config discovery, `Repository:`,\n   `DOTLN_LAUNCHPAD`, `sync`) and §Workflow closeout (target orders);\n   `docs/PLAYBOOK.md` §The loop and §Concurrency (the target loop and the\n   sync step replacing the prose procedure); 12 §One workstream across\n   repositories (the route taken); 10 §Separate version axes (the\n   configuration schema axis and the overlay); `docs/README.md`; ADR-0006\n   Amendments (a dated note naming this order as the first physical-split\n   slice under Decision 7, with the build in the kit); `docs/LEGAL.md` (a\n   dated observation that the runtime build travels under the decided\n   terms); the root release block; the publication index rows and both\n   edition locks; ledger entry."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`npm test` green; `git diff --check` clean; no new dependency."
+          }
+        ],
+        "nonGoals": "publishing packages, binaries, or package source into the\nstarter; changing the license posture (decided; the export carries the\nfiles); automatic refresh or re-emit of any fork; multi-repository\nworkstreams and their projections (WO-034); DotLn runtime transports\nexecuting target work; automatic worker launch; changing lifecycle legality,\nthe event schema, or the legacy log; a lane generator, admission policy, or\nscheduler; per-repository release ladders; rewriting reviewed history;\nAngular, Nx, or any target-repository content; any external organization's\nmaterial; the harness target itself (WO-039)."
+      },
+      {
+        "workOrderId": "WO-041",
+        "path": "docs/work-orders/WO-041-plan-refutation-mechanism.md",
+        "title": "WO-041 — Plan refutation as a mechanism: a blinded episode that gates every planning pass on the vision (version assigned at activation)",
+        "objective": "Make \"does this plan serve the vision?\" a question the\nmachinery asks before the operator has to. Add a command that compiles a\nblinded refutation episode over the current planning horizon, dispatches it\nthrough an existing transport under a read-only loadout, validates a closed\nresult that names for every planned order which vision thesis and capability\nrow it moves or whether it is machinery or drift, writes an immutable receipt,\nand adds an evidence-gate check that refuses a planning pass without a\nmatching receipt or with an unanswered hold.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "The subject builder produces a deterministic hash from committed files\n   only, excludes every planning narrative surface, and a fixture proves\n   that a one-byte change to the sequence block, to a listed order, to a\n   vision thesis section, to the roles table, or to a capability row\n   changes the hash."
+          },
+          {
+            "id": "criterion:2",
+            "text": "The `plan-refuter` loadout compiles with a read-only envelope; a fixture\n   proves a write, remote, settings, or decision effect is refused by the\n   authority guard; the compiled WorkOrder's questions are pinned."
+          },
+          {
+            "id": "criterion:3",
+            "text": "The host validates `plan-refutation-v1` positively, rejects extra fields\n   and unknown order ids, holds by construction under the rules above, and\n   the receipt writer refuses a result whose free text matches the\n   local-terms list, proven by the synthetic-term fixture, with the list's\n   presence reported."
+          },
+          {
+            "id": "criterion:4",
+            "text": "A recorded live run over the current marked sequence through one actual\n   transport produces a receipt with transport, model, effort, and harness\n   version; the receipt is committed. Because that sequence contains this\n   order, the receipt discloses the self-referential instrument, and its\n   verdict on WO-041 itself is recorded as advisory rather than as evidence\n   for this criterion (07 §Discipline, \"disclose a self-referential\n   instrument\")."
+          },
+          {
+            "id": "criterion:5",
+            "text": "The evidence-gate check passes on the committed receipt, fails on the\n   canned drift fixture with no disposition, ignores override text inside a\n   receipt, passes with an override event in a fixture control log that\n   names the hold, the actor, and a fixture capture hash, passes on a fresh\n   `pass` receipt that dispositions the prior hold over a subject changed\n   inside the held criterion, refuses a fresh receipt over a subject changed\n   only outside it, stops the loop after the third consecutive hold in one\n   pass, and fails when the sequence block, an order, a thesis section, the\n   roles table, or a capability row changes without a fresh receipt; the\n   override command refuses without a capture hash and records the acting\n   session's actor label."
+          },
+          {
+            "id": "criterion:6",
+            "text": "Write-backs land: 07 §Operator-opened planning pass (the mandatory step\n   and the receipt as a standard artifact); 13 tester row; `docs/README.md`\n   map line; README \"What runs today\"; a dated capability-table row for\n   `control.plan-refutation`; publication index rows and both edition locks;\n   ledger entry."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`npm test` green; `git diff --check` clean; no new dependency; kernel\n   unchanged."
+          }
+        ],
+        "nonGoals": "automatic planning or re-planning; refuting execution work\norders; a numeric alignment score; changing lifecycle legality or the event\nschema; running the refuter on historical passes (forward-only); a general\n`Program.All` fan-out (the episode is one blinded run)."
+      },
+      {
+        "workOrderId": "WO-032",
+        "path": "docs/work-orders/WO-032-uifa-actor-board.md",
+        "title": "WO-032 — UIFA v0: a read-only actor board over episodes, builds, mechanisms, evidence, and work (version assigned at activation)",
+        "objective": "Give the five UIFA roles their first shared screen, organized\naround actors rather than around the process: one read-only board, rendered\nin the terminal and as a zero-asset static page over a versioned JSON view\nmodel, that shows every actor the repository knows about with its build, its\nepisode state, its authority, which compiled mechanisms fired for it, and the\nevidence behind each claim, with the work-order state machine as one panel\namong five.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "`projectBoard` is pure over its recorded sources; fixtures pin the\n   `uifa-board-v1` JSON for the WO-009 demonstration store, the WO-011\n   self-hosted audit store, the control log, and the committed refutation\n   receipts under `docs/planning/refutations/` (the 2026-09-06 receipts\n   exist and are the fixture source), and both renders are pinned for each\n   fixture; a missing source renders `unavailable`, and the fixture that\n   carries the receipts renders the product lead's verdict cell populated,\n   never `unavailable`."
+          },
+          {
+            "id": "criterion:2",
+            "text": "The Actors panel shows, for the WO-011 self-hosted run, the executor and\n   the verifier as separate actors with different loadout hashes, episode\n   phases, and authority summaries, and links each to the matrix and receipt\n   that evidence it; and it shows at least one person as an actor from the\n   control log's recorded roles (the operator's activation, review, and\n   release-close events under the WO-031 actor attribution), pinned as a\n   fixture row with its role, its last recorded action, and its evidence\n   links, with no attention or presence inference. A board with no human\n   row in the pinned control-log fixture fails this criterion."
+          },
+          {
+            "id": "criterion:3",
+            "text": "The Builds panel renders every loadout exported by the skeleton through\n   the compiler render with hashes equal to the compiled-diff receipt; adding\n   a loadout to the skeleton's exports adds a card with no console change,\n   proven by a fixture loadout."
+          },
+          {
+            "id": "criterion:4",
+            "text": "The Mechanisms panel lists all ten units with rung, boundary, enforcement,\n   and the maturity fold's five counts from the observations file, and marks\n   a unit with zero observations as unobserved rather than zero-rate."
+          },
+          {
+            "id": "criterion:5",
+            "text": "The Work panel reproduces the first draft's scope: orders with phase,\n   blockers, elapsed, and next legal action from `status --json`; worktrees\n   from the constellation; releases from `release list`; evidence links from\n   the index; and the Blueprint panel reproduces capability rows and\n   publication statuses. Role service is proven, not self-labeled: for each\n   of the five roles, the question 13 §The five roles records for that role\n   is answered by a named cell or link of the board over the fixture\n   stores, the mapping from question to cell is pinned as a fixture, and\n   the independent verifier reviews that mapping against 13 §The five roles\n   rather than accepting the implementer's labels; the product lead's\n   question maps to the Blueprint panel's refutation-verdict cell, not to\n   a status label; a panel's role label with no pinned answering cell fails\n   this criterion."
+          },
+          {
+            "id": "criterion:6",
+            "text": "The HTML render is one file with no script, no external reference, and no\n   state, verified by a fixture that scans it; the terminal render fits the\n   documented width."
+          },
+          {
+            "id": "criterion:7",
+            "text": "Write-backs land: 04 §Plural UI hosts (console v0 shipped as the actor\n   board; the `uifa-board-v1` contract) and §Agent projection; 13 (each\n   role's \"today\" cell); 06 §Projections & console (first slice shipped);\n   README \"What runs today\"; a dated capability-table row for\n   `projection.uifa-board`; publication index rows and both edition locks;\n   ledger entry."
+          },
+          {
+            "id": "criterion:8",
+            "text": "`npm test` green; no new dependency; `git diff --check` clean."
+          }
+        ],
+        "nonGoals": "command invocation and drag-equip authoring, which together\nare the recorded wave-5 candidate \"Console parity contract and drag-equip\nauthoring\" in the planning map's preserved candidates, to be filed by the\nnext planning pass once this order and WO-037 have merged; a framework or\nthe Angular shell (WO-034's first target change);\nreplay scrubbing; presence inference; Beacon comparison (an operator trial\nthe Work panel makes possible); JSON forms for the index, constellation, and\n`release list` (nominated as a follow-on; this order parses their pinned\ntext)."
+      },
+      {
+        "workOrderId": "WO-040",
+        "path": "docs/work-orders/WO-040-rule-migration-batch-one.md",
+        "title": "WO-040 — Rule migration, batch one: the migration ledger and the first batch of feedback shapes compiled through the harness target (version assigned at activation)",
+        "objective": "Give the one-paragraph story a path to completion. Classify\nevery remaining feedback shape the operator has named into the founding\nmigration taxonomy, record each with its chosen rung and status in a\ngenerated migration ledger, compile the first batch of at least twelve new\nunits through the harness target into the Contributor build, and measure\nhow many shapes now govern live sessions by mechanism rather than by prose.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "The migration ledger classifies every shape the operator's intake names,\n   with the ten existing units marked `compiled`, employer-specific shapes\n   present only as a count per exclusion class with no row, the denominator\n   pinned to the intake capture's hash with the operator's attestation\n   disclosed, and the counts per status and governance mode rendered from\n   the derived rule; `--check` refuses a stale render, a missing compiled\n   unit, a `mechanism` row whose retired sentence is still present, and any\n   row or unit text matching the local-terms list, proven by a fixture row\n   that carries a synthetic term."
+          },
+          {
+            "id": "criterion:2",
+            "text": "At least twelve new units satisfy the selection rule (all lowerable\n   categories covered; at least eight at rung 1 or 2; at least one skill and\n   one cadence), each with the full FeedbackUnit shape and a regression\n   fixture that fails when its mechanism is removed; at least one reference\n   is recorded beside them and counted as `reference`, never as a unit."
+          },
+          {
+            "id": "criterion:3",
+            "text": "Every batch unit lowers through `harness-v1` into the Contributor build,\n   `harness check` still passes after the regenerated configuration is\n   committed, and the hook fixtures of WO-039 cover each new hook."
+          },
+          {
+            "id": "criterion:4",
+            "text": "The measurement is directional, derived, and cannot be satisfied by\n   relabeling: per-unit instruction-byte comparison; for each unit compiled\n   in the batch, the always-on sentence that stated it is removed in this\n   order, with the retired sentence's hash pinned and its absence asserted\n   by fixture; the derived count of shapes governed by mechanism is higher,\n   and by prose lower, after the batch than before it; the instruction file\n   and every role's directed-load total under WO-039's criterion 6 method\n   (every file the instruction file or the skill directs before acting,\n   derived mechanically) are strictly lower after the batch than before\n   it; the reverse-mapping fixture proves every always-on sentence removed\n   in this order has a covering unit in the batch or in the ten, and fails\n   on a fixture removal that has none; the independent verifier searches\n   the whole always-on set for any restatement, paraphrased or not, of\n   each unit labeled `mechanism` and records the search, and a found\n   restatement reverts that shape to `prose` before the counts are\n   reported; and the list of sentences that\n   remain names why each could not be retired here. A batch whose bytes do\n   not fall fails this criterion, and so does a batch whose fall includes\n   an uncovered removal; removal is not nominated to WO-035 for a sentence\n   this batch's units cover."
+          },
+          {
+            "id": "criterion:5",
+            "text": "The batch template is recorded in the result and the migration ledger\n   names batch two's candidates."
+          },
+          {
+            "id": "criterion:6",
+            "text": "Write-backs land: 02 §Feedback compiler v1 (the batch and any handler\n   extension); 06 (the harness-lowering and migration rung's status); 13\n   engineer and tester rows; README \"What runs today\"; a dated\n   capability-table row for `feedback.migration` with the counts;\n   publication index rows and both edition locks; ledger entry."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`npm test` green; `git diff --check` clean; no new dependency; kernel\n   unchanged; the local-terms check has run over every committed row and\n   unit text with the operator's list present (reported, not assumed), and\n   a reviewer reads each incident summary against the ledger reference it\n   cites."
+          }
+        ],
+        "nonGoals": "more than one batch (batches two onward are the recorded\ncandidate \"Rule migration, batches two onward\" in the planning map's\npreserved candidates: one batch per wave from wave 4, each cut from this\norder's template, each named in the migration ledger before it is filed);\nany predecessor file or wording; the harness target itself (WO-039); the\nconsole (WO-032); the pattern shelf (WO-037); a general attention-policy\nengine; changing lifecycle legality."
+      },
+      {
+        "workOrderId": "WO-036",
+        "path": "docs/work-orders/WO-036-evidence-runner.md",
+        "title": "WO-036 — Evidence runner: build first, run suites concurrently, report per case (version assigned at activation)",
+        "objective": "Make the root evidence gate faster to run, honest about\nordering, and legible per case, without weakening any check: one runner\nbuilds first, runs independent suites concurrently under a bounded\nparallelism, reports every case with a summary, and preserves the same\nrefusal semantics as today's serial chain.\n\n**Observed gap (dated 2026-09-06, `main` at `v0.13.1`; measured by the\nread-only sweep):**\n\n- The root `test` script is a 23-step `&&` chain: eight bash suites, eight\n  Node scripts, the formatter, a forced rebuild, three golden `--check`\n  commands, and the mutation self-test. The first failure aborts; there is no\n  per-case reporting and no summary.\n- The forced package rebuild is step 15, after `scripts/test-worktree.sh`\n  (step 9) has exercised `release.mjs`, which loads\n  `packages/skeleton/dist/src/cli.js`; that suite runs against whatever\n  build already exists. WO-033 carries the one-line reorder as a boy-scout\n  item; this order makes the build-first rule structural.\n- Measured wall time: package build 1.1 s; kernel 0.14 s (81 tests);\n  compiler 0.18 s (56); skeleton 62 s wall and about 122 s CPU (144 tests,\n  the top eight each 5–16 s because they spawn CLIs and Git); the\n  work-orders shell suite 36 s; the resume and release suites are of similar\n  size; the whole chain is about 6–10 minutes and entirely serial. At the\n  observed growth rate the chain reaches 40 minutes within months, and every\n  executor runs it many times per order.\n- The bash suites use bare `assert` with no `test()` blocks, so a failure\n  names a line, not a case, and no suite can be filtered.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "`npm test` runs every command the previous chain ran (the runner's\n   declaration table is compared against the previous `package.json` entry\n   in a test), builds before any suite that declares `needsBuild`, and exits\n   non-zero when any suite fails, when a declared built test glob matches\n   nothing, or when a suite is removed from the table without a recorded\n   reason."
+          },
+          {
+            "id": "criterion:2",
+            "text": "Suites in a serialization group never overlap (a fixture with two\n   deliberately colliding suites proves the group holds); independent suites\n   overlap in the recorded timeline."
+          },
+          {
+            "id": "criterion:3",
+            "text": "Measured wall time on the same host, same commit, is reported before and\n   after with the method; the after value is lower, and the receipt names\n   which suites dominate."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`--only` and `--serial` work; the summary names every suite with its\n   status and duration."
+          },
+          {
+            "id": "criterion:5",
+            "text": "Every converted Node script reports named cases under `node:test` and\n   preserves its assertions (case count before and after recorded)."
+          },
+          {
+            "id": "criterion:6",
+            "text": "Write-backs land: 07 §Discipline evidence-gate sentence (how to run one\n   suite; the build-first rule), README \"What runs today\" test paragraph,\n   `docs/README.md`, ledger entry; publication index rows and locks if any\n   product heading changed."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`npm test` green; `git diff --check` clean; no new dependency."
+          }
+        ],
+        "nonGoals": "a coverage tool; changing what any suite asserts; rewriting\nbash suites; CI configuration; watch mode; removing the mutation self-test or\nthe golden checks from the default gate."
+      },
+      {
+        "workOrderId": "WO-034",
+        "path": "docs/work-orders/WO-034-cross-repository-workstream-pilot.md",
+        "title": "WO-034 — Cross-repository workstream pilot: one outcome, several target repositories, driven from a launchpad fork that runs the compiled build (version assigned at activation)",
+        "objective": "Prove, first with synthetic fixtures and then with one\noperator-witnessed real run, that a launchpad can hold one workstream whose\nbounded work orders target several repositories; that executor sessions open\nin target worktrees from the launchpad's handoff, under the launchpad's\nemitted build, without per-repository orientation; that evidence and\nacceptance converge in the launchpad on named target revisions; and that the\nfirst change in the operator's DotLn-Angular repository, a UIFA v1 shell over\nthe actor board's view model, was actually driven by that workflow rather\nthan built beside it.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "The synthetic pilot's six demonstrations each have a passing fixture, and\n   the fixture proves that a green member check cannot make a stale or\n   failing sibling green, that partial delivery is visible with its next safe\n   action, and that an unrelated member continues when one repository is\n   blocked."
+          },
+          {
+            "id": "criterion:2",
+            "text": "The index and board show every member order's repository id, base, phase,\n   verdict, and integration state under its workstream, derived only from\n   work-order headers, control segments, and Git containment; no physical\n   path appears."
+          },
+          {
+            "id": "criterion:3",
+            "text": "The real run's receipt names the launchpad instance repository, the target\n   pull request opened by `worktree publish`, the `VER-NNN` and `FINAL-NNN`\n   recorded in the launchpad, the elapsed phases from `status`, every\n   operator intervention and manual handoff, the units that fired and the\n   refusals observed in the fork's sessions, the pre-run baseline block with\n   its record hashes and the activation event that follows it, and the\n   operator's witness line; the target pull request contains no launchpad\n   vocabulary and no harness file; the sanitized transcripts pass the\n   local-terms check with the\n   operator's list present, and the baseline practice is described only as\n   the four measures' counts, never as a narrative of the operator's\n   working arrangements."
+          },
+          {
+            "id": "criterion:4",
+            "text": "The receipt's baseline comparison lists the four product-12 measures\n   under a pinned counting rule the independent verifier applies to the\n   committed sanitized transcripts and control log: a context restatement\n   is an operator message in the run whose substance is already present in\n   the fork's committed `WS-001`, repository profile, or emitted skill (the\n   verifier cites the file), a manual handoff is any step between two\n   sessions not produced by a printed handoff, an unnecessary interruption\n   is a decision packet the verifier finds answerable from committed files,\n   and time to a trusted return state is the elapsed time from the run's\n   last session end to the receipt's `resume: status` showing the next\n   legal action. At least the restatement and handoff counts are counted\n   by the verifier from the run's own transcripts and control log, never\n   from memory, and the other two are counted or `unknown`. The baseline\n   half is an **operator attestation, labeled as such in the receipt**:\n   counts over the operator's private pre-run records, which enter the\n   repository only as the pre-run block's SHA-256 names, cannot be\n   recounted by a verifier and are never called observed; the\n   statement of which predecessor steps the operator would retire is\n   limited to steps whose measure was observed, and any step retired on an\n   `unknown` measure is a defect in the receipt. Direction is required\n   wherever a baseline measure is observed: the run's restatement count,\n   handoff count, unnecessary interruptions, and time to a trusted return\n   state must each be lower than the observed baseline for that measure, or\n   the receipt records that measure as failed; a measure with an `unknown`\n   baseline is `unverified`, never passed."
+          },
+          {
+            "id": "criterion:5",
+            "text": "Write-backs land: `docs/siblings/README.md` gains the Angular consumer's\n   entry (purpose, the view-model version it consumes, the exemplar class it\n   seeds, the orders in core that advanced it, its pilot status) and the\n   capability table a dated row for `consumer.angular`; 12 (the pilot's\n   outcome moves the relevant sections from vision to evidenced status or\n   records the failure honestly); 04 §Plural UI hosts (console v1 shipped as\n   the Angular shell over `uifa-board-v1`, and the framework decision's\n   evidence); 13 showrunner and engineer rows; 06 (the launchpad rung's\n   status); the concurrent plan's contribution-track slice (still unfiled,\n   with the pilot as its precondition); the planning map; ledger entry;\n   publication index rows and both edition locks."
+          },
+          {
+            "id": "criterion:6",
+            "text": "The real run's `WS-001` and the `DotLn-Angular` repository profile exist\n   in the fork in the shapes above, every member order cites both, and the\n   receipt lists each vision restatement the executor needed by hand. Zero\n   is the pass condition for the claim that the build is the priming; one or\n   more records that claim as failed in the receipt, each naming the file or\n   build element that should have carried it, and the order may still close\n   with that failure recorded."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`npm test` green; no new dependency; `git diff --check` clean."
+          }
+        ],
+        "nonGoals": "DotLn runtime transports executing the target work; console\nv1 features beyond the four panels and their JSON contract; tenant-scoped\ntracks, contribution tracks, admission policy, or a lane generator;\nautomatic workstream planning; publishing packages; a framework ADR (it\nfollows this evidence in a later pass); any change to lifecycle legality or\nthe event schema; evidence from any external organization's fork of the\nstarter (their instances are theirs; this repository records only synthetic\nfixtures and the operator's own witnessed run, and the client-facing README\nlearns from that receipt)."
+      },
+      {
+        "workOrderId": "WO-035",
+        "path": "docs/work-orders/WO-035-documentation-structure-reset.md",
+        "title": "WO-035 — Documentation structure reset: one ledger order, a spec/receipt boundary, generated release history, and a shorter cold start (version assigned at activation)",
+        "objective": "Stop the four growth patterns the sweep measured before they\ncompound — a ledger that grows at both ends, specification documents that\naccrete dated implementation receipts, release history maintained by hand in\nthree places, and a cold start that reads roughly 1,300 lines before the first\ncited section — by moving each recurring fact to one generated or immutable\nhome, adding a check that keeps it there, and leaving immutable evidence,\nstable work-order addresses, and settled decisions untouched.\n\n**Observed gap (dated 2026-09-06, `main` at `v0.13.1`; measured by the\nread-only sweep):**\n\n- `docs/lineage/idea-ledger.md` declares newest-first insertion below its\n  header and Resolutions at the bottom (lines 18–24). It has 103 sections: 95\n  above `## Resolutions of known tensions` (line 4680) and seven appended\n  below it by executor sessions on 2026-09-05 and 2026-09-06, while other\n  same-day sections were prepended. The four newest top sections use a bold\n  `**Adopted:**` lead instead of the backtick status tag. Of 283 `preserved`\n  entries, 24 carry any forward pointer to a product document, decision, or\n  work order.\n- Dated implementation receipts live inside specifications: seven bold\n  `**WO-NNN … (date):**` paragraphs plus ten dated parentheticals in\n  06-roadmap.md, nine dated lines including three migration receipts in\n  03-architecture.md, one in 02-domain-model.md, seven dated addenda in the\n  capability table, and seven receipt paragraphs in the planning map's\n  recommendation section. Three product documents carry version-bearing\n  status banners that nothing checks: 03 says the source prepares `v0.11.0`\n  and 04 says `v0.2.0` while `v0.13.1` is published; only the README block is\n  checked. The capability table still shows transports and verification at\n  level 0 after WO-009 and WO-010 shipped, with the change recorded in\n  addenda rather than the rows, and has no WO-010 row.\n- Release history is maintained by hand in three layers of 06-roadmap.md\n  (the 2026-08-31 retiming table still names WO-009 at `v0.5.0`, WO-010 at\n  `v0.6.0`, and WO-011 at `v0.7.0`), in 10-ir-compatibility.md, and in the\n  map, while the annotated tags and the generated index are the record.\n  Sixteen of the twenty-six published tags have no rung heading in the\n  roadmap. The resume-phrase table exists in four copies; the README's copy\n  omits `resume: times`.\n- The mandatory cold start is `CLAUDE.md` (78 lines) plus the execution guide\n  (804) plus the work order; for WO-011 the minimum with cited sections was\n  about 1,340 lines and a realistic whole-file load about 3,900. The guide is\n  seven times the work order; its resume-phrase and discipline sections alone\n  are 375 lines, and its model-specific and Codex-sandbox paragraphs\n  duplicate the harness runbook and playbook.\n- Relative-link health is clean: 993 links and 422 anchors, zero broken. No\n  link checker is needed yet; a cheap one belongs in the same check script so\n  the next restructure cannot break it silently.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "`lineage index --check` passes on the reset ledger, refuses a section\n   placed below the boundary, an unlabeled entry, and an unknown status in\n   fixtures, and the generated `docs/lineage/README.md` counts equal a grep\n   of the file; no entry's prose changes (diff shows only section moves, tag\n   normalization, and the header note)."
+          },
+          {
+            "id": "criterion:2",
+            "text": "`docs-check` refuses a fixture product document containing a dated\n   receipt paragraph and a version-bearing banner, refuses a broken relative\n   link or anchor, and passes on the reset repository; every moved receipt is\n   present verbatim in its evidence README with a pointer left behind."
+          },
+          {
+            "id": "criterion:3",
+            "text": "The generated release table equals the local annotated tags joined to the\n   orders they name (checked against `release list`), the roadmap and 10\n   contain it between markers, and the marker check refuses a stale table;\n   the preserved retiming records are byte-identical in their receipt file."
+          },
+          {
+            "id": "criterion:4",
+            "text": "`14-planning-policies.md` holds the moved sections with unchanged slugs;\n   `check-publication` passes with the index rows relocated and both edition\n   locks refreshed; zero broken links."
+          },
+          {
+            "id": "criterion:5",
+            "text": "The mandatory cold-start total per role, measured by WO-039's criterion 6\n   method (every file the instruction file or the role skill directs the\n   session to read before acting, derived mechanically), is lower after this\n   order than before it for every role, and no paragraph relocated \"with a\n   pointer\" is in any role's directed-read set unless it was already there;\n   the execution guide is under 450 lines as a consequence, not as the\n   measure; the relocation table in the result accounts for every removed\n   paragraph and names, for each, whether it was retired because a generated\n   skill or compiled unit carries it or relocated as reference; and the\n   resume-phrase table is byte-identical in the guide, the playbook, and the\n   README and generated from `resume.mjs`."
+          },
+          {
+            "id": "criterion:6",
+            "text": "The capability table has one row per capability with the addenda folded\n   and a dated migration note; the WO-010 row exists; no level exceeds what a\n   cited passing final review supports."
+          },
+          {
+            "id": "criterion:7",
+            "text": "No file under `docs/verifications/`, `docs/final-reviews/`,\n   `docs/releases/`, `docs/decisions/`, or `docs/control/` changes; no\n   work-order file moves or renames; `docs/work-orders/README.md` regenerates\n   unchanged apart from the new order's own row."
+          },
+          {
+            "id": "criterion:8",
+            "text": "Write-backs land: 07 (§Read order; §Documentation freshness names the\n   receipt home; the trimmed sections' pointers), `CLAUDE.md` §Start here\n   (Resolutions path), `docs/README.md` map, 03 §Corpus policy (a dated note\n   that this reset applied the constraint and what it measured), the\n   planning map's provenance section relocation, ledger entry."
+          },
+          {
+            "id": "criterion:9",
+            "text": "`npm test` green with the new checks in the chain; `git diff --check`\n   clean; no new dependency."
+          }
+        ],
+        "nonGoals": "editing immutable evidence or decision bodies; renumbering or\nmoving work orders; per-session ledger files; a claim-level publication IR;\nrewriting ledger entry prose; changing lifecycle scripts beyond the phrase\ntable emission and the release-history output; editing `work-orders.mjs` or\n`packages/console`; a documentation site."
+      },
+      {
+        "workOrderId": "WO-037",
+        "path": "docs/work-orders/WO-037-five-s-equipment-set.md",
+        "title": "WO-037 — Pattern workshop, compiler side: the 5S equipment set compiles as a multi-active link group with set bonuses (version assigned at activation)",
+        "objective": "Make the founding pattern executable as a set: the five S\nactives and Safety compile in one link group with shared supports;\npiece-count set bonuses compile to statechart gates, evidence obligations,\nverifier episodes, and cadences that visibly arm and go dark with the real\nstate machine; the Repo Gardener equips the full set in a second\ndeterministic skeleton scenario with live and replay identity; every piece\nand the set itself render as item tooltips with declared cost and semantic\nhashes; and every existing compiled program keeps its exact hash.",
+        "criteria": [
+          {
+            "id": "criterion:1",
+            "text": "The Seiri and Entropy Reducer programs compile to exactly their current\n   semantic hashes and artifact identities; the frozen WO-003 trace oracle\n   and the WO-029 CLI fixture are byte-identical; every existing compiler,\n   skeleton, and corpus test passes unchanged."
+          },
+          {
+            "id": "criterion:2",
+            "text": "A fixture group with three actives sharing two supports compiles with\n   per-active emissions, refuses a non-commuting pair without a pipeline,\n   accepts it with one, and emits the over-budget diagnostic at seven links;\n   the three editable views of a graph with `sets` round-trip and hash equal."
+          },
+          {
+            "id": "criterion:3",
+            "text": "For each of the five bonuses, a fixture proves it is dark with one fewer\n   piece equipped and armed at its count, and that its emission changes the\n   compiled program (a different semantic hash) only when armed."
+          },
+          {
+            "id": "criterion:4",
+            "text": "The full-set scenario runs live and from replay with identical complete\n   Decisions and semantic projections, exercises every bonus once, refuses\n   the destructive change, and cancels the reevaluation cadence on operator\n   return; the 13-step scenario's output is unchanged."
+          },
+          {
+            "id": "criterion:5",
+            "text": "The tooltip render pins each piece's original term, translation, kanji,\n   RPG title, GRANTS, RESTRICTIONS, OBLIGATION, PASSIVE, PULSE, INTERRUPT, and\n   declared cost, and the set summary pins each bonus's state; both are pinned\n   as fixtures."
+          },
+          {
+            "id": "criterion:6",
+            "text": "Write-backs land: 02 §LoadoutGraph v1 payload contract (the additive\n   `sets` collection and multi-active lowering, with the exact normalization\n   rule); 04 §RPG view (set bonuses implemented for this set; the rest still\n   planned); 05 §5S / 6S (which pieces are compiled and what remains prose);\n   06 §Pattern workshop v1 (compiler-side slice named); 10 §Separate version\n   axes (the additive change and the compiler package version); README \"What\n   runs today\"; a dated capability-table row for `compiler.five-s-set` at\n   level 1; publication index rows and both edition locks; ledger entry."
+          },
+          {
+            "id": "criterion:7",
+            "text": "`npm test` green; `git diff --check` clean; no new dependency; kernel\n   unchanged."
+          }
+        ],
+        "nonGoals": "the drag-equip authoring surface or any console change (the\nrecorded wave-5 candidate \"Console parity contract and drag-equip\nauthoring\" in the planning map's preserved candidates, to be filed by the\nnext planning pass once this order and WO-032 have merged); saved or\ncommunity builds; the Marquet ladder as a typed protocol, the\nmitigated-speech voice selector, and the rest of the founding shelf (the\nrecorded candidate \"Pattern workshop v1, remaining shelf entries\" in the\nplanning map's preserved candidates, one entry per order after this one);\nreal deletion or\nescalation authority; προτείνω; changing the kernel; a new graph schema\nversion."
+      }
+    ],
+    "deferrals": []
+  },
+  "episode": {
+    "transport": "claude-cli-print",
+    "harnessVersion": "2.1.263",
+    "model": "claude-fable-5-1",
+    "effort": "max",
+    "selectionSource": "host-launch",
+    "effectiveModel": "unknown",
+    "effectiveEffort": "unknown",
+    "dispatchedAt": "2026-09-07T12:59:32.930Z",
+    "completedAt": "2026-09-07T13:09:21.372Z",
+    "semanticHash": "fnv1a64:96001a9051369f67",
+    "commandReceipt": {
+      "commandId": "cmd_20d52794a5c8604e",
+      "transport": "claude-cli-print",
+      "acceptedAt": 1788785972936
+    }
+  },
+  "result": {
+    "orders": [
+      {
+        "workOrderId": "WO-038",
+        "verdict": "machinery",
+        "thesis": null,
+        "capabilityRow": null,
+        "rolesServed": [
+          "UIFA devops",
+          "UIFA showrunner"
+        ],
+        "reason": "Changes manifests, adds a license and private-flag check, adds a Signed-off-by refusal to worktree publish, and writes the contributing and legal documents. No thesis speaks to licensing, and no capability row moves: publication.bootstrap stays latent because the order's own non-goals exclude publishing anything, and the new guard exists to refuse a publish rather than to produce an artifact. Not drift: exclusion 4 keeps local and private distribution complete, and nothing here narrows distribution; the DCO rule binds contributors, not owners. Surfaces: devops gains two checked mechanisms that replace a repeated manual read, the license and hash refusals in check-surfaces and the DCO refusal in publish; the showrunner gains a release control that refuses an accidental package publish. Criterion 6 is the only guard on the clean-room floor for this order because it lands before the local-terms check exists; the reviewer's read of CONTRIBUTING.md against the floor should be recorded as what was read and what was found, not as a checkbox."
+      },
+      {
+        "workOrderId": "WO-039",
+        "verdict": "thesis-advancing",
+        "thesis": "the-one-paragraph-story",
+        "capabilityRow": "new:compiler.harness-v1",
+        "rolesServed": [
+          "UIFA engineer",
+          "UIFA devops",
+          "UIFA tester"
+        ],
+        "reason": "The one-paragraph story's own sentence made executable: each correction becomes a typed mechanism attached only where relevant, and a session gets a build, not a biography. The target lowers the ten units to rung 2 permissions and hooks, rung 7 role skills, and a rung 8 residue with a byte count. Criterion 3 anchors every hook's allow or refuse decision to feedbackBoundary on the same host facts, so enforcement is a lowering of the kernel's boundary rather than a second rule set, which is the core bet's runtime-lowering posture. Criterion 6 is the strongest sentence in the horizon: it counts every file the floor or the skill directs, rewrites the read order per role, and refuses relocation into a skill as a way to pass. Creates compiler.harness-v1 and harness.self-hosted. Exclusion 1 supports the order rather than refuting it: harnesses are hosted as observed environments, and criterion 1's phase 0 record with cited profile rows is that posture. Exclusion 2 is not triggered because the profile abstraction and the declared Codex limit keep this from being one vendor's harness made nicer, but it stays a watch item until a second profile is fully observed. Surfaces: the engineer defines the Contributor loadout and reads its cost per rung; devops gets harness emit and harness check inside the gate; the tester gets one synthetic-payload fixture per hook proving the decision equals the boundary and that removing the unit makes the hook allow. Weakness: criterion 4 lets the correction unit pass with its token unconfirmed, and that unit is the only live foothold of the correction-to-mechanism loop in this horizon."
+      },
+      {
+        "workOrderId": "WO-033",
+        "verdict": "thesis-advancing",
+        "thesis": "three-horizons-one-kernel",
+        "capabilityRow": "new:launchpad.starter",
+        "rolesServed": [
+          "UIFA showrunner",
+          "UIFA devops",
+          "UIFA engineer"
+        ],
+        "reason": "Horizon 1 is workstreams, disposable workers, and evidence-backed completion, and the thesis names one outcome spanning multiple repositories as the workstream application's route. A control plane that runs from a launchpad outside core, drives bounded orders against registered target repositories, and leaves those trees only conventional branches and pull requests is the precondition for that route. The export that carries the Contributor bundle with the pinned runtime build extends the one-paragraph story to a fork from its first commit, and the overlay that replaces the identity, unequips units, or declares build none keeps the platform from prescribing the loadout, which the story requires. Offline npm ci against the exported lockfile satisfies exclusion 4. Creates launchpad.starter. Surfaces: the showrunner gets target orders, no-release dispositions, and worktree sync with three refusal cases; devops gets the export generator, manifest hashes, the camouflage lint, and harness check inside the export; the engineer gets the overlay as the fork's build-editing surface. Two notes for verification: criterion 5 bundles more than a dozen distinct proofs into one criterion, so a verifier's finding will be coarse and any one failure holds all of them; and criterion 6, the sync helper, has no thesis of its own and is machinery riding a thesis-advancing order."
+      },
+      {
+        "workOrderId": "WO-041",
+        "verdict": "thesis-advancing",
+        "thesis": "mission--increase-the-chance-of-operator-flow",
+        "capabilityRow": "new:control.plan-refutation",
+        "rolesServed": [
+          "UIFA product lead",
+          "UIFA showrunner",
+          "UIFA devops",
+          "UIFA tester"
+        ],
+        "reason": "Advisory verdict, because this order builds the instrument type rendering it. The mission thesis says verification should happen automatically when authorized and that investment should favor capabilities that remove recurring supervision; reading a planning horizon against the vision is recurring supervision the operator performs by hand today, and the product lead's standing question, is this still the thing we mean, gets a mechanical answer cell that WO-032 criterion 5 then binds to. The core bet's interchangeable actor slot is exercised in earnest: a compiled read-only loadout dispatched through an existing transport occupies the verifier slot. That also moves runtime.independent-verification off latent in substance, since its row note says review reports are process precedent rather than runtime behavior, and this order makes a review a runtime episode; criterion 6 names only control.plan-refutation and should either date that second row or say why not. Not drift: the non-goals refuse a numeric alignment score, which honors exclusion 6; the override requires a recorded event naming the hold, the actor, and a capture hash, which honors the mission's refusal of silent self-certification; and criterion 4 discloses the self-referential instrument. Surfaces: the product lead gets a verdict per order tied to a thesis or exclusion; the showrunner gets a pass gated by a receipt plus the hold and override path; devops gets the subject builder, the validator, and the evidence-gate check; the tester gets a loadout whose refusals are fixture-pinned. Nothing here is evidence for the order's own criterion 4."
+      },
+      {
+        "workOrderId": "WO-032",
+        "verdict": "thesis-advancing",
+        "thesis": "the-core-bet",
+        "capabilityRow": "new:projection.uifa-board",
+        "rolesServed": [
+          "UIFA product lead",
+          "UIFA showrunner",
+          "UIFA engineer",
+          "UIFA tester",
+          "UIFA devops"
+        ],
+        "reason": "The core bet says the smallest loop, declare intent, see what the system understood, observe authorized progress, receive timely feedback, and inspect evidence, must feel legible before features are added. A read-only board whose every claim links to its evidence is that legibility surface, and organizing it around actors, with a person as an actor drawn from the control log, matches exclusion 1's identity: the shared substrate on which people and software actors hold work, authority, and evidence. The Builds panel's hash equality with the compiled-diff receipt applies the differentiated-interface view law to a projection. Creates projection.uifa-board and gives the staged projection.worker-status and projection.control-beacon slices a home. Roles: criterion 5 refuses self-labeling and requires a pinned question-to-cell mapping that the verifier reviews against the roles table. On the subject's text the mapping is product lead to the Blueprint refutation-verdict cell, showrunner to the Work panel's phase, blockers, next legal action, and releases, engineer to the Builds panel's loadout cards, tester to the Mechanisms panel's observed counts with unobserved marked, and devops to the Mechanisms panel's rung, boundary, and enforcement. The engineer's cost question and the devops question are the thinnest answers and the verifier should press them. Dependency note: criterion 1 asserts that refutation receipts dated 2026-09-06 already exist as the fixture source, while WO-041, sequenced before this order, is what defines and validates the receipt shape; if WO-041 changes that shape, this order's pinned JSON and the product lead's cell pin a pre-mechanism artifact. The refuter cannot verify the assertion from the compiled subject."
+      },
+      {
+        "workOrderId": "WO-040",
+        "verdict": "thesis-advancing",
+        "thesis": "the-one-paragraph-story",
+        "capabilityRow": "new:feedback.migration",
+        "rolesServed": [
+          "UIFA engineer",
+          "UIFA tester",
+          "UIFA devops"
+        ],
+        "reason": "Names its purpose in the story's words and supplies the mechanism the story needs: every operator-named shape classified into the founding taxonomy, at least twelve new units lowered through harness-v1 into the Contributor build, and each retired always-on sentence pinned by hash with its absence asserted, so prose lower and mechanism higher is derived rather than relabeled. Criterion 4's reverse-mapping fixture and the verifier's restatement search close the obvious loophole of removing a sentence no unit covers. The core bet's rule that source incidents preserve what was felt and regression fixtures show where constructions diverge is honored by one fixture per unit and by the reviewer reading each incident summary against its ledger reference. Exclusion 6 is respected: the denominator is pinned to the intake capture hash and the operator's attestation is disclosed rather than turned into an observed count. Creates feedback.migration. Surfaces: the engineer authors the units; the tester owns the per-unit fixture and the restatement search, which is a finding about the shape; devops gets the ledger's check mode. What it leaves is the horizon's largest gap: one batch, a named candidate for the rest, and no route from a live correction to a unit."
+      },
+      {
+        "workOrderId": "WO-036",
+        "verdict": "machinery",
+        "thesis": null,
+        "capabilityRow": null,
+        "rolesServed": [
+          "UIFA devops"
+        ],
+        "reason": "A build-first, concurrent evidence runner with per-case reporting moves no capability row and no thesis; it changes how this repository's gate runs, not what the product does. The observed gap is real: the serial chain exercises the release script against whatever skeleton build exists before the forced rebuild, so a green run can be green against stale code. The fix is the devops question answered: a repeated step becomes a checked mechanism with named cases. Not drift: criterion 3 reports measured wall time with its method, criterion 1 compares the runner's table against the previous chain and refuses silent removal of a suite, and the non-goals keep the mutation self-test and golden checks in the default gate, which satisfies exclusion 6's refusal of invented numbers and weakened checks. Only devops gets a surface; the tester role's domain is shapes, not suite runners."
+      },
+      {
+        "workOrderId": "WO-034",
+        "verdict": "thesis-advancing",
+        "thesis": "three-horizons-one-kernel",
+        "capabilityRow": "new:consumer.angular",
+        "rolesServed": [
+          "UIFA showrunner",
+          "UIFA engineer",
+          "UIFA devops",
+          "UIFA product lead"
+        ],
+        "reason": "The thesis text is nearly the title: the workstream application develops Horizon 1 through concrete journeys and gradual workflow replacement, including one outcome spanning multiple repositories. Criterion 4's four measures, restatements, manual handoffs, unnecessary interruptions, and time to a trusted return state, are the mission thesis's list of babysitting costs turned into counted evidence, and criterion 6's zero-restatement pass condition tests the one-paragraph story's build-not-biography claim on a fork. Not drift: the baseline is labeled an operator attestation that enters the repository only as hashes, an unknown baseline yields unverified and never passed, and the framework decision is deferred to a later ADR, so the application identity the thesis leaves open is not closed here. Surfaces: the showrunner gets the workstream index and board across repositories and the convergence of verification and final review in the launchpad; the engineer gets a named build element for every restatement the executor needed by hand; devops gets the launchpad and publish machinery under a real run; the product lead gets product 12's sections moved to evidenced or recorded as failed. Two defects to fix at activation. First, criterion 4 says the baseline is never called observed and then requires the run to be lower than the observed baseline; the verifier must read that as run count against attested count or the receipt will present an attested number as observed, which exclusion 6 forbids. Second, the only dated capability row is consumer.angular, the by-product, while the multi-repository workstream itself lands only in prose; launchpad.starter should move on this evidence or the table under-reports the horizon's central claim."
+      },
+      {
+        "workOrderId": "WO-035",
+        "verdict": "machinery",
+        "thesis": null,
+        "capabilityRow": null,
+        "rolesServed": [
+          "UIFA product lead",
+          "UIFA showrunner",
+          "UIFA devops"
+        ],
+        "reason": "A ledger order, a spec-versus-receipt boundary, generated release history, and a docs check move no capability row; criterion 6's capability-table work folds addenda into rows for work already shipped and forbids any level a cited final review does not support, which is bookkeeping under exclusion 6, not a capability move. The cold-start reduction in criterion 5 borrows WO-039's method and refuses relocation with a pointer as a way to pass, which keeps it from being a biography moved next door; but the reduction is by relocation rather than compilation, so it serves the one-paragraph story only indirectly and earns no thesis credit of its own. Not drift. Surfaces: the showrunner gets release history generated from annotated tags and release list, which answers what each release contained from the record instead of three hand-kept tables; the product lead gets one row per capability and product documents free of dated receipts, which is durable product understanding; devops gets the lineage check, the docs check, and the marker check in the chain. The boundary with WO-040 is explicit in WO-040 criterion 4, where no sentence a batch unit covers may be nominated here, and that is the right seam."
+      },
+      {
+        "workOrderId": "WO-037",
+        "verdict": "thesis-advancing",
+        "thesis": "the-differentiated-interface",
+        "capabilityRow": "new:compiler.five-s-set",
+        "rolesServed": [
+          "UIFA engineer",
+          "UIFA tester",
+          "UIFA devops"
+        ],
+        "reason": "The differentiated-interface thesis lists 5S first among the patterns that compile into exact mechanics and names the socket-and-link build as a view. Multi-active link groups with shared supports, piece-count set bonuses lowered to statechart gates, evidence obligations, verifier episodes, and cadences that arm and go dark with the real state machine, and a tooltip per piece with declared cost and semantic hash are that sentence executed; it is also Horizon 2's first compiler-side slice. The core bet's rule that a new idea becomes one missing primitive or boundary rather than an opaque special case is met by the additive sets collection with an exact normalization rule, no new graph schema version, and every existing program's hash unchanged in criterion 1. Exclusion 3 holds: the set is a compiled example equipped by an example actor and the kernel is unchanged. Creates compiler.five-s-set. Surfaces: the engineer gets the composition and its cost answer through the link-budget diagnostic and the tooltip; the tester gets a dark and armed fixture per bonus plus a live-versus-replay identity scenario, which is the tester's own question in the roles table; devops gets the compiler extension. The non-goals defer the authoring surface and the rest of the shelf to named candidates."
+      }
+    ],
+    "largestGap": {
+      "workOrderId": "WO-040",
+      "criterionId": "criterion:5",
+      "thesis": "the-one-paragraph-story",
+      "reason": "The story's operative sentence is present tense: each correction becomes a typed mechanism. After this horizon that mechanism runs only as a hand-authored batch. WO-039 lowers the ten existing units, WO-040 adds at least twelve, and every other shape the operator has named stays prose or a ledger row with a status. Batches two onward are deferred to a recorded candidate rather than a filed order, and no order or non-goal addresses the forward path from a correction made inside a governed session to a compiled, fixture-backed unit. WO-039 criterion 4 is the only live foothold, a correction unit that types an event from a token, and it may pass with the token unconfirmed and the capture unexercised. So the horizon closes with the story true for a minority of the operator's own corrections and with no machinery that keeps it true as new corrections arrive. WO-040 criterion 5, where the ledger names batch two's candidates and records the template, is where the plan should either name the order that routes captured corrections into the ledger and the next batch or state that this stays manual until a named later order. The thesis is touched by two orders and the remainder is deferred by name, so this is weighed as a gap and not a hold."
+    },
+    "planVerdict": "pass",
+    "holdReasons": []
+  },
+  "holds": [],
+  "dispositions": [],
+  "localTerms": {
+    "status": "unavailable"
+  },
+  "receiptHash": "sha256:998a410d188cb6414b768ef5ec79b3cec7681be83da0dac57f3286296e29bb33"
+}

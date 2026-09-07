@@ -425,7 +425,7 @@ const hasObservedEffortReadbackValue = (harness, harnessVersion, effort) => {
   );
 };
 
-const parseActor = (action, args, positional = "") => {
+export const parseActor = (action, args, positional = "") => {
   const requiredFlags = [
     "--harness",
     "--harness-version",

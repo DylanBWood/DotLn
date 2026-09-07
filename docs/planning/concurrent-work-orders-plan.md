@@ -18,6 +18,8 @@ contains the baseline comparisons and real-Git integration transcript. It is
 pending independent verification and final review. All later slices and the
 first measured paired wave retain their own evidence requirements.
 
+**Operator correction (2026-09-07, WO-041):** the first pair exposed an extra serial fix/verification/review cycle after an unrelated upstream merge. The operator rejects cross-workflow phase prerequisites, including a verification-reserve rule based on waiting-order count. Implementation and verification remain independent; the operator voluntarily completes one final-review → PR → merge → release-close window before opening the next. No gate enforces that discipline. The current [integration contract](../product/07-execution-guide.md#independent-workflows-and-integration) supersedes the earlier automatic return-to-repair and phase-count admission rules below. The first-pair observation lives in the phase-two plan.
+
 ## What was found
 
 The executable observation in the ladders document still holds at `v0.6.0`:
@@ -47,7 +49,7 @@ WO-030 → WO-021 ∥ WO-029.
 | Different workflows               | Not in the first slice. Every order keeps the existing implementation → verification → final-review contract, and the fold's phase table is unchanged. The segment layout leaves room for a per-order declared workflow later because each segment begins with its own activation event.                                                                                                                                                                 | A `workflow` field on activation naming a pinned step table, with the current contract as the only registered workflow until a second is needed.                                     |
 | Dispatch and lane generation      | A hand-executable rule set (below) that the showrunner applies to the marked sequence; the map records the resulting waves. No generator.                                                                                                                                                                                                                                                                                                                | A generated lane projection over declared dependencies, write surfaces, and capacity, filed after one paired wave has been run by hand and its friction is known.                    |
 | Tenant-scoped tracks              | Not in scope; there is one operator and one tenant.                                                                                                                                                                                                                                                                                                                                                                                                      | Define tenant and track ownership only when a second owner exists; until then it is speculation without a consumer.                                                                  |
-| Constraint and admission control  | One rule, applied by hand: do not start a new implementation while two orders already wait for verification and the verifier capacity is one session. Recorded pauses go in the map.                                                                                                                                                                                                                                                                     | An observed admission policy with queue age, completion rate, and reserves, once two lanes have produced enough closed orders to measure anything.                                   |
+| Constraint and admission control  | Corrected 2026-09-07: available actors and one writer per worktree bound execution. The original waiting-order-count reserve is superseded; no sibling phase gates independent implementation or verification.                                                                                                                                                                                                                                           | An observed admission policy with queue age, completion rate, and reserves, once two lanes have produced enough closed orders to measure anything.                                   |
 | Canonical history and integration | Per-order segments make “an event cannot advance another order” structural. Main integration stays serialized through pull requests; merging one branch touches only its own segment and the shared generated projections, which regenerate. The append-only proof and release attribution run per segment.                                                                                                                                              | Nothing structural; a rebase helper for a remaining branch after a sibling merges is an automation candidate if the manual step recurs.                                              |
 | Contribution and release views    | The existing index already attributes closed orders to releases; WO-030 extends that attribution per segment and lists every in-flight order with its phase and freshness.                                                                                                                                                                                                                                                                               | Contribution tracks, group and sub-task mapping, and bidirectional release-membership navigation, filed at the first outside contribution or the licensing gate, whichever is first. |
 | Compatibility                     | Direct support for the legacy log: no rewrite, no migration event, byte-identical historical ordinals and `times` output. New orders use segments. `status --json` keeps its existing top-level fields for the selected order and adds `orders[]`, so `worktree.mjs` and `release.mjs` keep reading the same shape.                                                                                                                                      | A derived single-stream view (all segments merged by `recordedAt`) only if a consumer needs cross-order chronology; it would be a labeled projection, never a legality input.        |
@@ -61,13 +63,15 @@ WO-030 → WO-021 ∥ WO-029.
    surfaces” intersect in the map's catalog do not run concurrently. Product
    docs, the map, and the ledger are not conflicts; they merge as ordinary text
    and the second final review reconciles wording.
-3. **Capacity:** two lanes at most, and a repair loop occupies its lane.
-4. **Verification reserve:** with one verifier session available, do not start
-   a third implementation while two orders wait for verification.
-5. **Serial integration:** merge in final-review order; a lane whose base moved
-   materially re-runs its evidence before its own final review, and a
-   substantive integration change returns through repair and fresh
-   verification.
+3. **Capacity:** use available actors and one writer per worktree. The original
+   two-lane trial is a dated measurement, not a permanent topology limit.
+4. **Independent progress:** a waiting verifier or another order's phase does
+   not prohibit starting or advancing an authorized independent order.
+5. **Integration:** the operator voluntarily serializes final review through
+   release close. Within that window the actor integrates, retimes, regenerates,
+   and checks affected claims. Only a demonstrated acceptance defect or a
+   behavior-changing resolution requires bounded repair and independent
+   re-verification; a changed base alone does not.
 6. **Idle is allowed:** an empty lane is a legal outcome, not a failure to plan.
 
 Applied to the current horizon these rules give:

@@ -1,0 +1,26 @@
+PASS AC1 committed-only deterministic subject; narrative blinding; all five hash inputs
+PASS AC2 compiled identity, mask, lens, pinned questions, one-shot cadence and authority refusals
+PASS AC3 closed schema, exhaustive ids, verdict construction, row-less exclusion drift and gap deferrals
+PASS AC3 local-terms presence, separated-token match, no secret in refusal and no receipt on refusal
+PASS AC5 unanswered drift and receipt-text override refuse; captured, attributed control event discharges
+PASS AC5 pass after held criterion repair; elsewhere and whitespace edits cannot re-roll
+PASS AC5 third consecutive hold stops the pass, including changed sequence labels and pre-dispatch CLI
+PASS AC2/4 transport adapters keep fixed schema, empty cwd and no model tools; host rejects a mismatched receipt
+PASS AC5 forward-only gate, real-adapter fixture receipt, and stale committed standard refusal
+PASS receipt source symlinks refuse and CLI override retains the acting account label
+Plan gate: {"receipts":1,"passes":0,"enforcement":"pending introduction commit","localTerms":"unavailable"}
+
+Repair of VER-001 — 2026-09-07
+Command: node scripts/test-plan-refutation.mjs
+PASS AC1 committed-only deterministic subject; narrative blinding; all five hash inputs
+PASS AC2 compiled identity, mask, lens, pinned questions, one-shot cadence and authority refusals
+PASS AC3 closed schema, exhaustive ids, verdict construction, row-less exclusion drift and gap deferrals
+PASS AC3/5 deferrals require a later sequence member; outside, closed, self, earlier and missing orders refuse
+PASS AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal
+PASS AC5 unanswered drift and receipt-text override refuse; captured, attributed control event discharges
+PASS AC5 pass after held criterion repair; elsewhere and whitespace edits cannot re-roll
+PASS AC5 third consecutive hold stops the pass, including changed sequence labels and pre-dispatch CLI
+PASS AC2/4 transport adapters keep fixed schema, empty cwd and no model tools; host rejects a mismatched receipt
+PASS AC5 forward-only gate, real-adapter fixture receipt, and stale committed standard refusal
+PASS receipt source symlinks refuse and CLI override retains the acting account label
+Plan gate: {"receipts":1,"passes":0,"enforcement":"pending introduction commit","localTerms":"unavailable"}

@@ -107,6 +107,15 @@ completed 2026-09-05 horizon (WO-020, WO-030, WO-021, WO-029, WO-009, WO-031,
 WO-022, WO-010, WO-011) keeps its closed evidence in the generated index; its
 rationale is retained below for the record.
 
+**Operator correction (2026-09-07, WO-041):** the pairings above are opportunities
+for overlap, not phase prerequisites. Implementation and verification progress
+independently. The operator voluntarily completes each final-review-through-
+release-close window before opening another; no gate enforces it. The integrating
+actor handles routine upstream incorporation, release retiming, and projections
+within that window and requests new evidence only for affected claims. The
+[integration contract](../product/07-execution-guide.md#independent-workflows-and-integration)
+and WO-041 breakout receipt supersede the earlier automatic restart rule.
+
 The planning reasons remain: the index reduces repeated evidence gardening;
 the beacons make state and staleness legible before the external worker;
 WO-029 pins consuming artifact identities immediately before WO-009; and

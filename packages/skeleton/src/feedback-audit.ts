@@ -26,8 +26,56 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/worker-transport.ts",
   "packages/skeleton/src/worker-store.ts",
   "packages/skeleton/test/feedback-fixtures.test.ts",
+  "packages/skeleton/test/feedback-audit-source.test.ts",
   "scripts/feedback-commit-msg.mjs",
 ] as const;
+
+/** A labeled behavior dependency projection, never a claim of raw manifest bytes. */
+export function feedbackSourceFile(path: string, contents: string) {
+  if (!["package-lock.json", "packages/skeleton/package.json"].includes(path))
+    return { path, contents };
+  const object = (value: unknown): value is Record<string, unknown> =>
+    value !== null && typeof value === "object" && !Array.isArray(value);
+  const value: unknown = JSON.parse(contents);
+  if (!object(value))
+    throw new Error("feedback package source must be an object");
+  const omitted = ["/version", "/license"];
+  delete value.version;
+  delete value.license;
+  if (path === "package-lock.json") {
+    if (!object(value.packages))
+      throw new Error("feedback lockfile requires a packages object");
+    for (const workspace of [
+      "",
+      "packages/kernel",
+      "packages/compiler",
+      "packages/skeleton",
+    ]) {
+      const entry = value.packages[workspace];
+      if (entry === undefined) continue;
+      if (!object(entry))
+        throw new Error("feedback workspace lock entry must be an object");
+      delete entry.version;
+      delete entry.license;
+      const pointer = workspace.replaceAll("/", "~1");
+      omitted.push(
+        `/packages/${pointer}/version`,
+        `/packages/${pointer}/license`,
+      );
+    }
+  }
+  return {
+    path: `.feedback-source/${path}`,
+    contents:
+      canonicalStringify({
+        projection: "feedback-package-projection-v1",
+        sourcePath: path,
+        omitted,
+        value,
+      }) + "\n",
+  };
+}
+
 export function readFeedbackSource(root: string) {
   const physical = realpathSync(root);
   const gitRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
@@ -42,7 +90,7 @@ export function readFeedbackSource(root: string) {
     const absolute = resolve(physical, path);
     if (realpathSync(absolute) !== absolute || !lstatSync(absolute).isFile())
       throw new Error("feedback source must be a contained regular file");
-    return { path, contents: readFileSync(absolute, "utf8") };
+    return feedbackSourceFile(path, readFileSync(absolute, "utf8"));
   });
   return { files, subject: feedbackContentHash(canonicalStringify(files)) };
 }

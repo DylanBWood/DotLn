@@ -389,7 +389,16 @@ npm run evidence:feedback -- --write
 This executes each named regression with its mechanism present and removed,
 then records the matched instruction-byte comparison and fixture maturity
 observations. The source pin covers the declared audit implementation and
-fixture surfaces. Build before invoking the underlying JS APIs directly.
+fixture surfaces. WO-041 adds explicitly labeled `feedback-package-projection-v1`
+capsules at logical `.feedback-source/` paths for the skeleton manifest and
+package lock. They retain executable settings and dependency selections while
+excluding only root/known-workspace release versions and license labels. Runtime
+source, scripts, exports, publication controls, external dependency versions,
+resolutions/integrity, and unknown metadata still invalidate the audit. The
+separate release/license gates judge the omitted labels. This prevents an
+unrelated release retiming or license-only integration from demanding another
+live feedback run; it does not make behavioral evidence reusable after source
+changes. Build before invoking the underlying JS APIs directly.
 
 The self-hosted task is one read-only audit of this repo. Its executor is a fixed
 local subprocess runner. A separate verifier receives the pinned source/report
@@ -400,6 +409,8 @@ file tools disabled. It does not receive this session's implementation narrative
 DOTLN_LIVE_WORKERS=1 npm run dotln -- feedback-audit --store .runtime/feedback-audit --transport claude-cli-print --model claude-sonnet-5 --effort max
 npm run evidence:feedback -- --record-selfhost .runtime/feedback-audit
 ```
+
+The current root evidence command selects the [WO-041 edition](../../docs/evidence/WO-041/README.md#feedback-evidence-edition), because that order changes the shared transports and the source projection. The published WO-011 report and logs at the synchronized base remain untouched. The repair explicitly supersedes WO-041's earlier uncommitted edition, preserving it in recovery history; the evidence README names that recovery point. `scripts/feedback-evidence.mjs --edition WO-NNN` selects a new edition; writing different bytes to an existing edition refuses. The logical report label inside the pinned verification capsule is unchanged.
 
 Use an unused store for a new source revision. Reusing the same store resumes
 only the same source, policy, and verifier selection; an already saved audit or
