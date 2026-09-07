@@ -1,0 +1,130 @@
+{
+  "orders": [
+    {
+      "workOrderId": "WO-032",
+      "verdict": "thesis-advancing",
+      "thesis": "Vision intro: UIFA as 'a shared view of participating people and software actors, their work, and its evidence'; The core bet: the smallest loop's 'see what the system understood, observe authorized progress ... inspect evidence'.",
+      "capabilityRow": "new `projection.uifa-board` (reads `projection.worker-status`, `audit.baseline-three`, and the `compiler.seiri-v1` render)",
+      "rolesServed": [
+        "product lead",
+        "showrunner",
+        "engineer",
+        "tester",
+        "devops"
+      ],
+      "reason": "First surface that shows an actor with its build, firings, and evidence, so the UIFA sentence gains code. Even fully done it is read-only, two of five panels are the process dashboard the UIFA sentence does not ask for, no criterion labels the board a lossy projection with exact mechanics one click away, and role service rests on each panel naming its own roles; the differentiated interface's authoring half stays untrue."
+    },
+    {
+      "workOrderId": "WO-033",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": "new `launchpad.starter`; would move `control.concurrent-orders` (the sync step)",
+      "rolesServed": ["showrunner", "devops"],
+      "reason": "Three of four parts (configuration root, registered target repositories, lane sync) are control-plane portability, which the vision files under 'distribution infrastructure, not the differentiated thesis'; the compiled behavior it carries is WO-039's product. It ships the author's Contributor build into every fork by default with no criterion evidencing a fork may omit or replace it, so 'without prescribing that loadout' remains unevidenced."
+    },
+    {
+      "workOrderId": "WO-034",
+      "verdict": "thesis-advancing",
+      "thesis": "Three horizons, one kernel: Horizon 1 'workstreams, disposable workers, evidence-backed completion' and 'one outcome spanning multiple repositories'; criterion 6 also measures the one-paragraph story in the field (restatements the executor needed by hand).",
+      "capabilityRow": "new `consumer.angular`; would move `launchpad.starter` and `control.concurrent-orders`",
+      "rolesServed": ["showrunner", "engineer"],
+      "reason": "The cross-repository outcome is a vision-named Horizon 1 demonstration, but its only non-synthetic evidence is one run witnessed by the operator who ran it, the baseline may be all `unknown`, and an Angular shell is built before any authoring perspective exists, which 'point of view before efficiency' questions. A person who has never read the docs is still not the subject."
+    },
+    {
+      "workOrderId": "WO-035",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["product lead", "showrunner", "devops"],
+      "reason": "Manages the biography the predecessor's way, by pruning and re-homing prose to a 450-line guide, and produces no typed mechanism; the vision's answer to prose growth is compilation, so when this succeeds a session is still governed by prose by design. Its criterion 6 level cap (no level above a cited passing final review) is the one anti-metrics-theater piece."
+    },
+    {
+      "workOrderId": "WO-036",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["devops"],
+      "reason": "A faster, per-case evidence gate leaves every vision claim where it was. Its 'after value is lower' criterion is the only directional measurement in the horizon and is absent from the thesis orders."
+    },
+    {
+      "workOrderId": "WO-037",
+      "verdict": "thesis-advancing",
+      "thesis": "The differentiated interface: 'Every pattern (5S, ...) compiles into exact mechanics' and views 'provably compile to the same normalized program'; Horizon 2 'the shelf-to-mechanism compiler'.",
+      "capabilityRow": "moves `compiler.seiri-v1` (multi-active link groups, `sets`); creates `compiler.five-s-set` at level 1",
+      "rolesServed": ["engineer", "tester"],
+      "reason": "The cleanest thesis move in the horizon: a whole pattern set lowered to gates, obligations, verifier episodes, and cadences with hash-equal views and live/replay identity. Yet the graph is hand-written by an executor, it runs only in the fake skeleton scenario, and the shelf remains a library of one, so 'anyone who has read those books' still has no way to author."
+    },
+    {
+      "workOrderId": "WO-038",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["devops"],
+      "reason": "License metadata, a publish guard, and a DCO rule make exchange legal, which the vision files under distribution infrastructure; nothing about actors, builds, or evidence changes."
+    },
+    {
+      "workOrderId": "WO-039",
+      "verdict": "thesis-advancing",
+      "thesis": "The one-paragraph story: 'each correction becomes a typed mechanism ... attached only where relevant. A session ... gets a build, not a biography'; vision intro: 'the machinery, not the operator's attention, carries the rules'.",
+      "capabilityRow": "new `compiler.harness-v1` and `harness.self-hosted`",
+      "rolesServed": ["engineer", "devops"],
+      "reason": "First time a saved build governs a real session, but the build is placed beside the biography, not in place of it: CLAUDE.md, the guide, and a generated rung-8 prose residue still load, criterion 6 only reports startup context with no requirement that it fall, and the target is one harness's hook/skill profile with Codex allowed to ship prose only."
+    },
+    {
+      "workOrderId": "WO-040",
+      "verdict": "thesis-advancing",
+      "thesis": "The one-paragraph story: 'roughly 140 accumulated feedback rules ... each correction becomes a typed mechanism'.",
+      "capabilityRow": "new `feedback.migration`; would move `harness.self-hosted`",
+      "rolesServed": ["engineer", "tester", "devops"],
+      "reason": "Twelve of roughly 130 remaining shapes compile, the measurement has no required direction, and the selection rule counts a 'reference' unit (knowledge prose) among compiled mechanisms although the vision's mechanism list has no such type. Its committed ledger of every intake-named shape, including employer-specific ones with reasons, is the horizon's riskiest clean-room surface, and criterion 7's 'no intake text' names no check."
+    },
+    {
+      "workOrderId": "WO-041",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": "new `control.plan-refutation`",
+      "rolesServed": ["showrunner", "tester"],
+      "reason": "Governs planning, not actors; the refuting evaluator is an inspiration (Ex Machina), not a thesis section. Its rule that a finding naming no thesis and row is `machinery` makes violations of 'What DotLn is not', which have no capability row, structurally unreportable as drift, and 'hold when no order is thesis-advancing' is cleared by a single thesis order."
+    }
+  ],
+  "largestGap": "After all ten orders the operator's own session still gets a biography with a build attached: about 22 of roughly 140 corrections are typed mechanisms, CLAUDE.md plus a guide of up to 450 lines plus a generated prose residue still load, and no criterion requires always-on context to shrink. On the interface side nothing lets any actor author: the board is read-only, the one compiled pattern set is hand-graphed by an executor and runs only in the fake skeleton, and Horizon 2's drag-a-card surface has no order, so 'patterns as authoring languages for people who have read those books' remains entirely prose.",
+  "planVerdict": "hold",
+  "holdReasons": [
+    "WO-039 criterion 6 and WO-040 criterion 4 only report startup context and mechanism-versus-prose counts before and after, with no required direction; both thesis orders can close with the cold start unchanged or larger, leaving 'a build, not a biography' asserted rather than evidenced, while WO-036 criterion 3 shows the horizon knows how to write 'the after value is lower'.",
+    "WO-033 ships the author's Contributor build into every fork by default and evidences only overlay diffs (criterion 5); no criterion shows a fork can omit or replace the build, which the vision requires ('The platform supplies the compiler and mechanism contracts without prescribing that loadout'; 'Another owner may replace or omit them ... decline capabilities').",
+    "WO-040 criterion 1 commits a migration-ledger row for every intake-named shape, including employer-specific shapes 'excluded ... with its reason', and criterion 7's 'no intake text in any committed file' names no mechanism; under the clean-room floor (descriptions of a managed work host, gateway, or employer policy must not re-enter) the exclusion reasons need a fixture-checked generic vocabulary before this can be an acceptance criterion.",
+    "WO-041 operator-review assumption 2 classifies any finding that does not name a thesis and a capability row as `machinery`; violations of 'What DotLn is not' name no row, so the mechanism as specified cannot return the verdict the vision most needs from it."
+  ],
+  "selfCertificationRisks": [
+    {
+      "workOrderId": "WO-032",
+      "criterion": 5,
+      "reason": "The order claims a first shared screen for the five roles; the only criterion about roles is that 'each panel names its roles', a self-label with no per-role fixture."
+    },
+    {
+      "workOrderId": "WO-034",
+      "criterion": 4,
+      "reason": "Every baseline measure may be `unknown` and the statement of which predecessor steps would be retired is the operator's own report; with criterion 3's witness line supplied by the same operator and assumption 4 allowing closure on a failed run, 'the workflow drove the change' can close on self-report."
+    },
+    {
+      "workOrderId": "WO-039",
+      "criterion": 6,
+      "reason": "Reports before/after bytes with no required direction and permits `unknown`; the thesis claim (a build, not a biography) can be declared complete with the cold start larger."
+    },
+    {
+      "workOrderId": "WO-040",
+      "criterion": 4,
+      "reason": "Undirected before/after measurement; combined with criterion 2's admission of `reference` units, re-homed prose can be counted as shapes governed 'by mechanism'."
+    },
+    {
+      "workOrderId": "WO-040",
+      "criterion": 7,
+      "reason": "'No intake text in any committed file' is asserted, not checked by any named fixture."
+    },
+    {
+      "workOrderId": "WO-041",
+      "criterion": 4,
+      "reason": "The committed live receipt is produced by the mechanism under certification, over a sequence that contains WO-041 itself; criterion 3's constructive hold is cleared by any one thesis order."
+    }
+  ]
+}

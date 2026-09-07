@@ -73,31 +73,62 @@ how many shapes now govern live sessions by mechanism rather than by prose.
   `transformer`, `workflow`, `knowledge`, `preference`, `incident`,
   `obsolete`), the cheapest sufficient rung, its status
   (`compiled` with the unit id, `batch-N` with the batch it is assigned to,
-  `reference` for knowledge that stays an on-demand reference,
-  `declined` with a reason, or `excluded` with the reason class
-  `employer-specific`), whether it governs live sessions by `mechanism`,
-  `prose`, or `none`, and a one-line synthesized source note that cites the
-  ledger, never intake. `npm run feedback -- migration` renders
-  `docs/lineage/feedback-migration.md` from it with the counts per status and
-  per governance mode; `--check` in `npm test` refuses a stale render and
-  refuses a compiled unit missing from the rows.
+  `reference` for knowledge that stays an on-demand reference, or
+  `declined` with a reason), whether it governs live sessions by
+  `mechanism`, `prose`, or `none` (a `reference` row is never `mechanism`),
+  and a one-line synthesized source note that cites the ledger, never
+  intake. Shapes that describe an employer's tracker, environment, login,
+  team, or project **do not get rows**: the committed file carries only a
+  count per exclusion class (`excluded.employer-specific: N`), with no
+  name, reason, or paraphrase, and the operator's local classification of
+  those shapes stays in ignored intake. `npm run feedback -- migration`
+  renders `docs/lineage/feedback-migration.md` from the rows with the
+  counts per status and per governance mode; `--check` in `npm test`
+  refuses a stale render, refuses a compiled unit missing from the rows,
+  and runs WO-039's **local-terms check** over every row id, note, unit id,
+  incident summary, and behavior sentence: the operator's plaintext list of
+  terms that must not re-enter (the commercial tracker's name, the
+  predecessor's name, employer host and gateway and policy words, and any
+  term the operator adds) lives only in ignored local state, nothing about
+  it is committed or hashed into a committed file, a match refuses the
+  render, and an absent list reports `unavailable` rather than passing.
+  The whole-set denominator (how many shapes the operator's intake names)
+  cannot be verified from committed files by construction; the ledger pins
+  it to the intake capture's SHA-256 and the operator, who owns the intake,
+  attests the count in the receipt, disclosed as an operator attestation.
+  Governance mode is derived, not classified, by one rule: a shape whose
+  status is `reference` or `declined` is `none`; a shape is `mechanism`
+  only when its unit is equipped in the Contributor build **and** no
+  always-on sentence restating it remains in the instruction file, the
+  marked block, or the guide's always-on portion, which a fixture proves by
+  pinning the retired sentence's hash and asserting its absence; every
+  other shape is `prose`. Removal runs in both directions: each retired
+  sentence is mapped to the unit that covers it (sentence to unit), and a
+  reverse-mapping fixture fails the batch when any always-on sentence
+  removed in the order has no covering unit, so the required byte fall
+  cannot be reached by deleting a correction no unit carries.
 - **Classification of the whole set.** Every shape the operator's intake
   names is classified in this order, including the ten already compiled
   (marked `compiled`) and the shapes WO-033's camouflage lint and WO-039's
   hooks already cover (marked `compiled` against those orders). A shape
   that names a commercial tracker, a work login or environment, a team
-  convention, or a specific project is `excluded` or generalized to a public
-  class such as "tracked-work artifact reads include their paired images"
-  only where a generic shape exists, and the row says which was done.
+  convention, or a specific project is counted under its exclusion class
+  and gets no row, or is generalized to a public class such as
+  "tracked-work artifact reads include their paired images" only where a
+  generic shape exists with no employer detail, in which case the generic
+  row says it was generalized and nothing more. The redundant sentences a
+  batch retires are removed in the same order, never merely nominated.
 - **Batch selection rule.** Batch one holds at least twelve new units chosen
-  so that: every taxonomy category has at least one member across the ten
-  plus the batch; at least eight lower to rung 1 or 2 (a deterministic check
-  or a generated hook), because those retire prose fastest and prove the
-  target; at least one lowers to a role skill at rung 7; at least one is a
-  cadence-shaped unit (a wait, retry, or stall threshold expressed as a
-  kernel `Cadence`); at least one is a `reference`-class shape shipped as an
-  on-demand reference the role skill names; none duplicates a unit already
-  compiled. Candidate shapes from the ledger's founding inventory include the
+  so that: every taxonomy category that can lower to a mechanism has at
+  least one member across the ten plus the batch; at least eight lower to
+  rung 1 or 2 (a deterministic check or a generated hook), because those
+  retire prose fastest and prove the target; at least one lowers to a role
+  skill at rung 7; at least one is a cadence-shaped unit (a wait, retry, or
+  stall threshold expressed as a kernel `Cadence`); none duplicates a unit
+  already compiled. Beside the twelve, at least one `reference`-class shape
+  is recorded as a reference the role skill names on demand; a reference
+  is not a unit, is not counted among the twelve, and is never counted as
+  governing a session by mechanism. Candidate shapes from the ledger's founding inventory include the
   working-directory-and-root check before any repository command, existence
   checks for paths cited in a result, committed-prose lints (typography and
   a single spelling convention) and the formatter run after Markdown edits,
@@ -145,21 +176,42 @@ write-backs below.
 **Acceptance criteria (all required)**
 
 1. The migration ledger classifies every shape the operator's intake names,
-   with the ten existing units marked `compiled`, every employer-specific
-   shape `excluded` or generalized with its reason, and the counts per
-   status and governance mode rendered; `--check` refuses a stale render and
-   a missing compiled unit.
-2. At least twelve new units satisfy the selection rule (all categories
-   covered; at least eight at rung 1 or 2; at least one skill, one cadence,
-   one reference); each carries the full FeedbackUnit shape and a regression
-   fixture that fails when its mechanism is removed.
+   with the ten existing units marked `compiled`, employer-specific shapes
+   present only as a count per exclusion class with no row, the denominator
+   pinned to the intake capture's hash with the operator's attestation
+   disclosed, and the counts per status and governance mode rendered from
+   the derived rule; `--check` refuses a stale render, a missing compiled
+   unit, a `mechanism` row whose retired sentence is still present, and any
+   row or unit text matching the local-terms list, proven by a fixture row
+   that carries a synthetic term.
+2. At least twelve new units satisfy the selection rule (all lowerable
+   categories covered; at least eight at rung 1 or 2; at least one skill and
+   one cadence), each with the full FeedbackUnit shape and a regression
+   fixture that fails when its mechanism is removed; at least one reference
+   is recorded beside them and counted as `reference`, never as a unit.
 3. Every batch unit lowers through `harness-v1` into the Contributor build,
    `harness check` still passes after the regenerated configuration is
    committed, and the hook fixtures of WO-039 cover each new hook.
-4. The measurement reports, with method stated: per-unit instruction-byte
-   comparison; shapes governing live sessions by mechanism versus prose
-   before and after; startup context before and after; and the redundant
-   sentences list with what was removed here and what was nominated.
+4. The measurement is directional, derived, and cannot be satisfied by
+   relabeling: per-unit instruction-byte comparison; for each unit compiled
+   in the batch, the always-on sentence that stated it is removed in this
+   order, with the retired sentence's hash pinned and its absence asserted
+   by fixture; the derived count of shapes governed by mechanism is higher,
+   and by prose lower, after the batch than before it; the instruction file
+   and every role's directed-load total under WO-039's criterion 6 method
+   (every file the instruction file or the skill directs before acting,
+   derived mechanically) are strictly lower after the batch than before
+   it; the reverse-mapping fixture proves every always-on sentence removed
+   in this order has a covering unit in the batch or in the ten, and fails
+   on a fixture removal that has none; the independent verifier searches
+   the whole always-on set for any restatement, paraphrased or not, of
+   each unit labeled `mechanism` and records the search, and a found
+   restatement reverts that shape to `prose` before the counts are
+   reported; and the list of sentences that
+   remain names why each could not be retired here. A batch whose bytes do
+   not fall fails this criterion, and so does a batch whose fall includes
+   an uncovered removal; removal is not nominated to WO-035 for a sentence
+   this batch's units cover.
 5. The batch template is recorded in the result and the migration ledger
    names batch two's candidates.
 6. Write-backs land: 02 §Feedback compiler v1 (the batch and any handler
@@ -168,16 +220,23 @@ write-backs below.
    capability-table row for `feedback.migration` with the counts;
    publication index rows and both edition locks; ledger entry.
 7. `npm test` green; `git diff --check` clean; no new dependency; kernel
-   unchanged; no intake text in any committed file.
+   unchanged; the local-terms check has run over every committed row and
+   unit text with the operator's list present (reported, not assumed), and
+   a reviewer reads each incident summary against the ledger reference it
+   cites.
 
 **Evidence gate:** the fixture transcripts for criteria 2 and 3; the
 measurement for criterion 4; `npm test`.
 
 **Write-back duty:** as listed in criterion 6.
 
-**Non-goals:** more than one batch; any predecessor file or wording; the
-harness target itself (WO-039); the console (WO-032); the pattern shelf
-(WO-037); a general attention-policy engine; changing lifecycle legality.
+**Non-goals:** more than one batch (batches two onward are the recorded
+candidate "Rule migration, batches two onward" in the planning map's
+preserved candidates: one batch per wave from wave 4, each cut from this
+order's template, each named in the migration ledger before it is filed);
+any predecessor file or wording; the harness target itself (WO-039); the
+console (WO-032); the pattern shelf (WO-037); a general attention-policy
+engine; changing lifecycle legality.
 
 **Operator-review assumptions**
 
@@ -187,4 +246,5 @@ harness target itself (WO-039); the console (WO-032); the pattern shelf
    class is admitted only when the executor can state it without any
    employer detail.
 3. The redundant-sentence removals in this order are bounded to sentences
-   the batch's mechanisms provably cover; the rest go to WO-035.
+   the batch's mechanisms provably cover, which criterion 4's reverse-mapping
+   fixture enforces rather than assumes; the rest go to WO-035.

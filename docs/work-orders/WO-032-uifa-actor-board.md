@@ -116,8 +116,13 @@ among five.
   state's orders, phases, blockers, elapsed, next legal action, worktrees,
   releases, and evidence links; this panel is the first draft's whole scope.
   _Blueprint_ (product lead): capability rows with levels, publication
-  statuses, and the roadmap's pending rungs. Every panel states which of the
-  five roles it serves and which question of theirs it answers.
+  statuses, the roadmap's pending rungs, and the latest plan-refutation
+  receipt's per-order verdicts with its hold status (from
+  `docs/planning/refutations/`, rendered `unavailable` until one exists),
+  which is the cell that answers the product lead's question, "is this
+  still the thing we mean?", with evidence rather than with a status
+  label. Every panel states which of the five roles it serves and which
+  question of theirs it answers.
 - **Two renders.** `npm run console -- board [--json | --html <path>]`: the
   terminal render and a single self-contained HTML file with inline styles
   and no script, no network, no assets, holding no state and invoking no
@@ -142,12 +147,21 @@ among five.
 
 1. `projectBoard` is pure over its recorded sources; fixtures pin the
    `uifa-board-v1` JSON for the WO-009 demonstration store, the WO-011
-   self-hosted audit store, and the control log, and both renders are pinned
-   for each fixture; a missing source renders `unavailable`.
+   self-hosted audit store, the control log, and the committed refutation
+   receipts under `docs/planning/refutations/` (the 2026-09-06 receipts
+   exist and are the fixture source), and both renders are pinned for each
+   fixture; a missing source renders `unavailable`, and the fixture that
+   carries the receipts renders the product lead's verdict cell populated,
+   never `unavailable`.
 2. The Actors panel shows, for the WO-011 self-hosted run, the executor and
    the verifier as separate actors with different loadout hashes, episode
    phases, and authority summaries, and links each to the matrix and receipt
-   that evidence it.
+   that evidence it; and it shows at least one person as an actor from the
+   control log's recorded roles (the operator's activation, review, and
+   release-close events under the WO-031 actor attribution), pinned as a
+   fixture row with its role, its last recorded action, and its evidence
+   links, with no attention or presence inference. A board with no human
+   row in the pinned control-log fixture fails this criterion.
 3. The Builds panel renders every loadout exported by the skeleton through
    the compiler render with hashes equal to the compiled-diff receipt; adding
    a loadout to the skeleton's exports adds a card with no console change,
@@ -159,7 +173,15 @@ among five.
    blockers, elapsed, and next legal action from `status --json`; worktrees
    from the constellation; releases from `release list`; evidence links from
    the index; and the Blueprint panel reproduces capability rows and
-   publication statuses; each panel names its roles.
+   publication statuses. Role service is proven, not self-labeled: for each
+   of the five roles, the question 13 §The five roles records for that role
+   is answered by a named cell or link of the board over the fixture
+   stores, the mapping from question to cell is pinned as a fixture, and
+   the independent verifier reviews that mapping against 13 §The five roles
+   rather than accepting the implementer's labels; the product lead's
+   question maps to the Blueprint panel's refutation-verdict cell, not to
+   a status label; a panel's role label with no pinned answering cell fails
+   this criterion.
 6. The HTML render is one file with no script, no external reference, and no
    state, verified by a fixture that scans it; the terminal render fits the
    documented width.
@@ -176,8 +198,11 @@ test`.
 
 **Write-back duty:** as listed in criterion 7.
 
-**Non-goals:** command invocation; drag-equip authoring (the pattern
-workshop); a framework or the Angular shell (WO-034's first target change);
+**Non-goals:** command invocation and drag-equip authoring, which together
+are the recorded wave-5 candidate "Console parity contract and drag-equip
+authoring" in the planning map's preserved candidates, to be filed by the
+next planning pass once this order and WO-037 have merged; a framework or
+the Angular shell (WO-034's first target change);
 replay scrubbing; presence inference; Beacon comparison (an operator trial
 the Work panel makes possible); JSON forms for the index, constellation, and
 `release list` (nominated as a follow-on; this order parses their pinned

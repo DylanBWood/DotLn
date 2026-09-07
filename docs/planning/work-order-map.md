@@ -195,6 +195,44 @@ identity migration.
   Authentication, packaging beyond the process kit, and per-repository
   release policy remain open; licensing was decided on 2026-09-06 and lands
   through WO-038.
+- **Rule migration, batches two onward — named 2026-09-06 by the
+  redirect's refutation receipts.** WO-040 compiles batch one and leaves
+  roughly 120 shapes classified but not compiled. One batch per wave from
+  wave 4, each cut from WO-040's template, each with its candidates named in
+  the migration ledger before it is filed, each measured by the same
+  directional method; the migration ledger's counts are the progress
+  record. No number until each is filed; the template is the authority.
+- **Pattern workshop v1, remaining shelf entries — named 2026-09-06 by the
+  redirect's refutation receipts.** After WO-037 compiles the 5S set, the
+  Marquet ladder as a typed protocol, the mitigated-speech voice selector,
+  Theory of Constraints, the commedia masks as a party topology, and the
+  Algorithms-to-Live-By policies each become one compiler-side order in the
+  shape of WO-037, in an order the pattern library's founding sequence and
+  the console's evidence decide; no number until filed.
+- **Intent declaration and the stranger test — named 2026-09-06 by the
+  redirect's final refutation receipt.** The smallest useful loop's first
+  step, declare a bounded intent in prose and receive a fire-and-forget
+  receipt, still enters this repository as a hand-written work order through
+  a planning pass, and the `v1.0.0` criterion (a person who has never read
+  these docs declares one bounded intent and receives a verifiable result)
+  has no order. After the parity contract exists, one order makes intent
+  declaration a command over it, from prose to a compiled work order with
+  its receipt, exercised by a non-author; the workstream application
+  journeys in product 12 are its scenarios. No number until filed.
+- **Console parity contract and drag-equip authoring — wave-5 candidate,
+  named 2026-09-06 by the redirect's refutation receipt.** The differentiated
+  interface's authoring half (the analogies are the ways you mix and match
+  the agents; drag a pattern card onto an actor and see the exact compiled
+  diff) has no order after this horizon: the actor board is read-only, the
+  5S set is authored as data, and every build is written by the author.
+  The next planning pass files, once WO-032 and WO-037 have merged and
+  WO-034's shell exists: first the parity contract that names which
+  commands a console may invoke (equip preview, compiled diff, saved-build
+  selection) as the same commands the terminal runs, in core; then the
+  drag-equip surface over that contract as a `WS-001` member order in the
+  example consumer, and the pattern-card, statechart, function-table, and
+  temporal views as further equivalent views under 04's round-trip laws.
+  Precondition, not a number: the redirect's receipts are the input.
 - **JSON forms for the index, the constellation, and `release list`:**
   nominated by WO-032, which parses their pinned text so that wave 1's write
   surfaces stay disjoint. A bounded follow-on adds `--json` to each once a

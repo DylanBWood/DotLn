@@ -196,6 +196,32 @@ history.
     operator confirms a token, the unit lowers to a role skill at rung 7
     and the residue says why. Surface language is never a trigger, as 02
     already requires.
+- **The refuter ran six times before this pass ended, and every hold was
+  accepted and changed** `adopted` `recovered`
+  - The pre-mechanism loop is the evidence for WO-041. Receipt 001 held on
+    undirected measurements, a starter that prescribed the author's build,
+    a migration ledger that would have committed employer-specific rows,
+    and a drift verdict that could not cite §What DotLn is not. Receipt 002
+    held on a governance count that relabeling could satisfy, a context
+    measurement that relocation into skills could game, a pilot that could
+    close with its central claim unproven, and a refuter whose subject hash
+    omitted the standard and whose hold the planner could discharge; the
+    hashed deny list the first fixes introduced was withdrawn as a
+    dictionary oracle and replaced by a local-terms check that commits
+    nothing. Receipt 003 held on an after value that missed reads the
+    instruction file's floor still directed and a documentation target that
+    counted one file's lines. Receipt 004 held on a product-lead cell no
+    pinned fixture populated, a pilot baseline with no pre-run selection
+    rule, and a byte fall reachable by deleting an uncovered correction;
+    overrides moved out of receipt text into attributed control-log events.
+    Receipt 005 held on a baseline called observed when it is an operator
+    attestation and an actor board that showed no person; the gate gained
+    a no-re-roll rule and a three-hold stop. Each finding was invisible to
+    the planner that wrote the orders and each fix was one criterion.
+    Receipt 006 is final for the pass and carries the standing verdict; a
+    hold it returns stays open, because the planner may not override its
+    own refutation. Durable home: `docs/planning/refutations/`, the plan's
+    redirect section, WO-041.
 - **Waves re-paired; lane 0 is the first measured pair** `adopted`
   - Lane 0 WO-038 ∥ WO-041; wave 1 WO-039 ∥ WO-032; wave 2 WO-033 ∥ WO-040;
     wave 3 WO-034 ∥ WO-035; wave 4 WO-037 beside the migration's second

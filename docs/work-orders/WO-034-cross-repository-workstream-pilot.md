@@ -142,8 +142,12 @@ than built beside it.
   upstream-references list (`owner/repo@tag path#anchor`, one line each on
   why it matters) into core's UIFA sections and the `uifa-board-v1`
   contract. Both documents are written by the first `planning:` pass the
-  operator dispatches in the fork, and that pass runs the plan refuter if
-  WO-041 has shipped. The receipt records every vision restatement the
+  operator dispatches in the fork, after the fork's first order has
+  registered the fork's own local-terms list (WO-033's exported first order
+  asks for it), and that pass runs the plan refuter if WO-041 has shipped;
+  the receipt here records that the fork's list was present when `WS-001`
+  and the profile were committed. The receipt records every vision
+  restatement the
   executor needed by hand (each is a defect in the two files or in the
   build, fixed in the fork before the next order) and, from the hook logs,
   which compiled units fired in the fork's sessions and which refusals
@@ -152,8 +156,15 @@ than built beside it.
 - **Baseline comparison.** Per product 12, the receipt compares the real run
   with the operator's current practice of separate sessions per repository
   on context restatement, manual handoffs, unnecessary interruptions, and
-  time to a trusted return state. The operator supplies the baseline
-  observation; unmeasured values stay `unknown`.
+  time to a trusted return state. The baseline half is counted from the
+  operator's own records of the separate-session practice (transcripts,
+  logs, or notes that exist before the run), and those records are
+  selected **before the real run's first order activates**: the launchpad
+  records a pre-run baseline block naming each record by SHA-256 and the
+  measure it supports, appended to the order's evidence before activation,
+  so that no record can be chosen after the run; a record not named in that
+  block is not a baseline, a recalled number is recorded as `unknown`,
+  never as a baseline, and unmeasured values stay `unknown`.
 - **Camouflage.** The target repository receives one conventional pull
   request with destination-conventional prose; the launchpad's vocabulary
   stays in the launchpad and the worktree-local harness bundle never enters
@@ -187,12 +198,39 @@ and the fired-unit counts; the write-backs below.
    pull request opened by `worktree publish`, the `VER-NNN` and `FINAL-NNN`
    recorded in the launchpad, the elapsed phases from `status`, every
    operator intervention and manual handoff, the units that fired and the
-   refusals observed in the fork's sessions, and the operator's witness line;
-   the target pull request contains no launchpad vocabulary and no harness
-   file.
-4. The receipt's baseline comparison lists the four product-12 measures with
-   observed values or `unknown`, and a plain statement of which predecessor
-   steps the operator would retire on this evidence and which not.
+   refusals observed in the fork's sessions, the pre-run baseline block with
+   its record hashes and the activation event that follows it, and the
+   operator's witness line; the target pull request contains no launchpad
+   vocabulary and no harness file; the sanitized transcripts pass the
+   local-terms check with the
+   operator's list present, and the baseline practice is described only as
+   the four measures' counts, never as a narrative of the operator's
+   working arrangements.
+4. The receipt's baseline comparison lists the four product-12 measures
+   under a pinned counting rule the independent verifier applies to the
+   committed sanitized transcripts and control log: a context restatement
+   is an operator message in the run whose substance is already present in
+   the fork's committed `WS-001`, repository profile, or emitted skill (the
+   verifier cites the file), a manual handoff is any step between two
+   sessions not produced by a printed handoff, an unnecessary interruption
+   is a decision packet the verifier finds answerable from committed files,
+   and time to a trusted return state is the elapsed time from the run's
+   last session end to the receipt's `resume: status` showing the next
+   legal action. At least the restatement and handoff counts are counted
+   by the verifier from the run's own transcripts and control log, never
+   from memory, and the other two are counted or `unknown`. The baseline
+   half is an **operator attestation, labeled as such in the receipt**:
+   counts over the operator's private pre-run records, which enter the
+   repository only as the pre-run block's SHA-256 names, cannot be
+   recounted by a verifier and are never called observed; the
+   statement of which predecessor steps the operator would retire is
+   limited to steps whose measure was observed, and any step retired on an
+   `unknown` measure is a defect in the receipt. Direction is required
+   wherever a baseline measure is observed: the run's restatement count,
+   handoff count, unnecessary interruptions, and time to a trusted return
+   state must each be lower than the observed baseline for that measure, or
+   the receipt records that measure as failed; a measure with an `unknown`
+   baseline is `unverified`, never passed.
 5. Write-backs land: `docs/siblings/README.md` gains the Angular consumer's
    entry (purpose, the view-model version it consumes, the exemplar class it
    seeds, the orders in core that advanced it, its pilot status) and the
@@ -206,9 +244,11 @@ and the fired-unit counts; the write-backs below.
    publication index rows and both edition locks.
 6. The real run's `WS-001` and the `DotLn-Angular` repository profile exist
    in the fork in the shapes above, every member order cites both, and the
-   receipt lists each vision restatement the executor needed by hand (zero is
-   the target; each one names the file or build element that should have
-   carried it).
+   receipt lists each vision restatement the executor needed by hand. Zero
+   is the pass condition for the claim that the build is the priming; one or
+   more records that claim as failed in the receipt, each naming the file or
+   build element that should have carried it, and the order may still close
+   with that failure recorded.
 7. `npm test` green; no new dependency; `git diff --check` clean.
 
 **Evidence gate:** the fixture transcripts for criteria 1 and 2; the real-run
@@ -236,5 +276,9 @@ learns from that receipt).
    planned in the fork.
 3. Private paths and the operator's local layout stay out of the receipt.
 4. If the real run cannot complete inside the order, the synthetic pilot and
-   an honest partial receipt still close the order with the failure recorded;
-   the next planning pass decides the follow-on.
+   an honest partial receipt still close the order with criterion 3 recorded
+   as failed; a failed or partial real run creates no `consumer.angular`
+   capability row above level 0, enters the sibling registry as "not
+   evidenced", moves no section of product 12 from vision to evidenced,
+   and the next planning pass decides the follow-on. Closure is honest
+   bookkeeping, never a claim.

@@ -25,11 +25,13 @@ merged (Shine and Standardize compiled inside the Entropy Reducer; satisfied
 at `v0.5.0`); WO-029 merged (artifact identity per component; satisfied at
 `v0.9.0`); WO-011 merged (the feedback contract beside the loadout contract;
 satisfied at `v0.13.0`).
-**Recommended placement:** wave 3, after WO-032 merges so the board renders
-the set through the compiler's tooltip render without a console change. Its
-primary surfaces (`packages/compiler`, the skeleton's loadouts, scenario, and
-reactor) are disjoint from WO-033, WO-034, and WO-035; it must not edit
-`packages/console`. A recommendation, not a dependency token.
+**Recommended placement:** wave 4 in the redirected horizon, beside the
+migration's second batch, after WO-032 merges so the board renders the set
+through the compiler's tooltip render without a console change. Its primary
+surfaces (`packages/compiler`, the skeleton's loadouts, scenario, and
+reactor) are disjoint from WO-033, WO-034, WO-035, and WO-040's feedback
+module; it must not edit `packages/console`. A recommendation, not a
+dependency token.
 
 **Cites (read these sections):** 05-pattern-library.md §Founding pattern
 library (deeply implement a small number of patterns; a pattern is not a
@@ -186,9 +188,15 @@ render; the write-backs below.
 
 **Write-back duty:** as listed in criterion 6.
 
-**Non-goals:** the drag-equip authoring surface or any console change; saved
-or community builds; the Marquet ladder as a typed protocol and the
-mitigated-speech voice selector (their own order); real deletion or
+**Non-goals:** the drag-equip authoring surface or any console change (the
+recorded wave-5 candidate "Console parity contract and drag-equip
+authoring" in the planning map's preserved candidates, to be filed by the
+next planning pass once this order and WO-032 have merged); saved or
+community builds; the Marquet ladder as a typed protocol, the
+mitigated-speech voice selector, and the rest of the founding shelf (the
+recorded candidate "Pattern workshop v1, remaining shelf entries" in the
+planning map's preserved candidates, one entry per order after this one);
+real deletion or
 escalation authority; προτείνω; changing the kernel; a new graph schema
 version.
 

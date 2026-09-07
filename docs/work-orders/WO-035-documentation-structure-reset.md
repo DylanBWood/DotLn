@@ -42,6 +42,15 @@ release-block check), `scripts/resume.mjs` (the phrase table);
 `docs/planning/phase-two-plan-2026-09-06.md` §Six-month projection and
 §Documentation sweep.
 
+**Redirect note (2026-09-06):** the shorter cold start this order targets
+is measured by WO-039's method and is reached first by removal, not by
+pruning: where WO-039 has lowered a role's procedure into a generated role
+skill, the guide's copy of that procedure is removed rather than shortened,
+and the line target counts only the always-on read. A session governed by a
+shorter biography is still governed by a biography; this order shortens the
+prose that remains after compilation, and nominates what it cannot remove
+to the next migration batch.
+
 **Objective:** Stop the four growth patterns the sweep measured before they
 compound — a ledger that grows at both ends, specification documents that
 accrete dated implementation receipts, release history maintained by hand in
@@ -175,10 +184,17 @@ write-backs below.
 4. `14-planning-policies.md` holds the moved sections with unchanged slugs;
    `check-publication` passes with the index rows relocated and both edition
    locks refreshed; zero broken links.
-5. The execution guide is under 450 lines, the relocation table in the
-   result accounts for every removed paragraph, and the resume-phrase table
-   is byte-identical in the guide, the playbook, and the README and generated
-   from `resume.mjs`.
+5. The mandatory cold-start total per role, measured by WO-039's criterion 6
+   method (every file the instruction file or the role skill directs the
+   session to read before acting, derived mechanically), is lower after this
+   order than before it for every role, and no paragraph relocated "with a
+   pointer" is in any role's directed-read set unless it was already there;
+   the execution guide is under 450 lines as a consequence, not as the
+   measure; the relocation table in the result accounts for every removed
+   paragraph and names, for each, whether it was retired because a generated
+   skill or compiled unit carries it or relocated as reference; and the
+   resume-phrase table is byte-identical in the guide, the playbook, and the
+   README and generated from `resume.mjs`.
 6. The capability table has one row per capability with the addenda folded
    and a dated migration note; the WO-010 row exists; no level exceeds what a
    cited passing final review supports.

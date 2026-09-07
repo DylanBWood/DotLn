@@ -183,8 +183,15 @@ give the paired-wave workflow the sync step it is missing.
   in the launchpad under the order, never in the target tree. `worktree
   publish` pushes the target branch and opens the pull request on the target
   repository through the existing GitHub helpers, and a camouflage lint
-  refuses a title or body containing a term from the repository's deny list.
-  `release close` for a target order performs the guarded finish and
+  refuses a title or body containing a term from the repository's deny
+  list. The deny list has two parts: the launchpad's own vocabulary, which
+  is committed in the configuration because it is public, and the
+  instance's local-terms list, which lives only in ignored local state and
+  is read through WO-039's local-terms check, so that the terms
+  `CLAUDE.md` says must not re-enter are refused without ever being
+  committed or hashed into any file; an absent local list makes the lint
+  report `unavailable` on that part rather than pass. The lint fixture
+  uses a synthetic term. `release close` for a target order performs the guarded finish and
   containment proof, records an honest no-release disposition, and never
   touches the target's tags; a per-repository release policy is out of scope.
 - **Phase 3 — launchpad export carries the build.** `npm run launchpad --
@@ -212,10 +219,12 @@ give the paired-wave workflow the sync step it is missing.
   implementation-overlay template from `docs/publication/` as the instance's
   product-doc seed with an upstream pointer list to core's blueprint at the
   pinned commit rather than a copy of it; a pre-drafted first work order in
-  WO-001's shape extended with WO-039's harness smoke and the ledger's
-  preserved constrained-environment audit questions (gateway and provider
-  behavior, metering differences between foreground and delegated execution,
-  interruption recovery, managed settings precedence), so the fork observes
+  WO-001's shape extended with WO-039's harness smoke, the registration of
+  the fork's own local-terms list in its ignored local state before any
+  prose is committed, and the ledger's preserved constrained-environment
+  audit questions (gateway and provider behavior, metering differences
+  between foreground and delegated execution, interruption recovery,
+  managed settings precedence), so the fork observes
   its own host, harness, and gateway before it trusts its build; a
   `.gitignore` for intake, Beacons, and runtime stores; the license files;
   and an `UPSTREAM.md` plus `KIT-MANIFEST.json` naming the DotLn commit, tag,
@@ -235,7 +244,14 @@ give the paired-wave workflow the sync step it is missing.
   overlay, and the **instance build overlay** (`build/overlay.json`: the
   fork's registered repositories, classes, extra units, and envelope
   narrowings, which `harness emit` composes over the kit's Contributor build
-  to produce the fork's own `.claude/`). `launchpad export --update <dir>`
+  to produce the fork's own `.claude/`). The Contributor build is starter
+  content, not kit law: the overlay may replace the identity, unequip any
+  unit, narrow or widen the envelope within the fork's own harness posture,
+  or declare `build: none`, in which case `harness emit` produces only the
+  fork's hand-written floor and `harness check` verifies that; the client
+  README says so in its first section, per the vision's rule that the
+  platform supplies the compiler and mechanism contracts without
+  prescribing the loadout. `launchpad export --update <dir>`
   refreshes an existing export: it requires a prior manifest, replaces a kit
   file only when its current bytes still match the prior manifest's hash,
   lists and refuses to overwrite a kit file the instance modified locally,
@@ -354,8 +370,14 @@ launchpad-and-target fixture; the write-backs below.
    opened in the export under the emitted bundle is refused a denied effect
    by a generated hook and resolves a role skill by resume phrase (recorded
    smoke); a negative fixture proves the export contains no intake, local
-   settings, Beacon output, runtime store, package source, or evidence from
-   this repository's orders. A grep test proves no `scripts/` file imports
+   settings, Beacon output, runtime store, package source, evidence from
+   this repository's orders, or any term list, hashed or plain; the
+   local-terms check runs over every exported kit text with the operator's
+   list present and reports it; and the reviewer reads the exported kit
+   text, including the pre-drafted first order's audit questions, for any
+   description of a specific managed host, gateway, or policy (generic
+   questions are permitted, descriptions are not). A grep test proves no
+   `scripts/` file imports
    the same module from both source and `dist/`. The export carries
    `LICENSE`, `LICENSE-docs`, and `NOTICE` byte-identical to core's as kit
    files, writes `LICENSE-PENDING.md` only under `--license none`, and never
@@ -366,7 +388,18 @@ launchpad-and-target fixture; the write-backs below.
    overlay file byte-identical, rewrites the manifest and `UPSTREAM.md`, and
    prints the re-emit instruction; a re-emit over the fixture overlay
    produces a `.claude/` that differs from the kit's only where the overlay
-   says; without a prior manifest it refuses.
+   says; a second fixture overlay that replaces the identity and unequips
+   two units re-emits to a bundle that carries neither, and a third that
+   declares `build: none` re-emits to the floor alone with `harness check`
+   passing on it; the camouflage lint refuses a fixture body containing a
+   synthetic local term and a fixture body containing a launchpad
+   vocabulary term, and reports `unavailable` for the local part when no
+   list is present; without a prior manifest it refuses. Inside the export,
+   the directed-load total per role is measured by WO-039's criterion 6
+   method over the export's own instruction file and skills, reported in
+   the receipt, and is not larger than core's for the same role at the
+   export's commit, so the fork's biography is measured beside its build
+   rather than assumed.
 6. `worktree sync` over a real-Git fixture with two orders, a merged sibling,
    a conflicting generated projection, a conflicting authored file, and a
    colliding release target: mints the checkpoint, keeps the named stash,

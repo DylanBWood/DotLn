@@ -99,6 +99,9 @@ the README and LEGAL sync; ledger entry.
    README agree with the manifests.
 5. `npm test` green; `git diff --check` clean; no new dependency; no hook or
    settings change.
+6. The final reviewer reads `CONTRIBUTING.md` against `CLAUDE.md`'s
+   clean-room floor before this order closes, since it lands before the
+   local-terms check exists, and records that read in the review.
 
 **Evidence gate:** the check transcripts for criteria 1 through 3; `npm test`.
 

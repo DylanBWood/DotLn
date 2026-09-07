@@ -186,10 +186,42 @@ refuter, which is the supervision the mission exists to remove.
 
 The documentation reset, the evidence runner, the license order, and the 5S
 set keep their scope; the 5S set moves from a candidate to wave 4 beside the
-migration's second batch. The first receipt of the refuter mechanism is the
-manual blinded run recorded in
-[`refutations/2026-09-06-phase-two-redirect.md`](refutations/2026-09-06-phase-two-redirect.md);
-WO-041 mechanizes that shape.
+migration's second batch. The refuter mechanism ran three times by manual blinded dispatch before
+this pass ended, and each run is a receipt under
+[`refutations/`](refutations/README.md): receipt 001 held on four defects
+(undirected measurements, a starter that prescribed the author's build, a
+migration ledger that would have committed employer-specific rows, and a
+drift verdict that could not cite §What DotLn is not); receipt 002 held on
+four sharper ones (a governance count that could be relabeled while the same
+bytes loaded, a context measurement that relocation into skills could game,
+a pilot that could close with its central claim unproven, and a refuter
+whose subject hash omitted the standard and whose hold the planner could
+discharge); every hold was accepted and changed in the orders, and the
+hashed deny list the first fixes introduced was replaced by a local-terms
+check that commits nothing; receipt 003 held on two exact measurement
+defects (an after value that did not count reads the instruction file's
+hand-written floor still directed, and a documentation target that counted
+one file's lines instead of the cold-start total), both accepted and
+changed, and named the remaining batches and the remaining shelf entries as
+recorded candidates. Receipt 004 held on three narrow points (a
+product-lead cell that no pinned fixture populated, a pilot baseline with no
+pre-run selection rule, and a migration byte fall reachable by deleting an
+uncovered correction), each accepted and changed, and moved plan overrides
+out of receipt text into attributed control-log events. Receipt 005 held on two exact points (a pilot baseline
+called observed when it is an operator attestation, and an actor board that
+no criterion required to show a person), each accepted and changed, and its
+disposition corrected receipt 004's statement that 005 would be the last run:
+the rule the orders now carry requires a fresh receipt after an accepted
+change, so receipt 006 is the run that rule requires and is final for this
+pass. Its verdict is the horizon's standing verdict; any hold it returns
+stays open for the operator's control-log override or the next pass, with no
+further change by the planner. The loop itself is the evidence for WO-041:
+six blinded runs found, in order, direction, denominators, standards,
+selection rules, attestation labels, and re-roll paths, each a one-criterion
+fix, none visible to the planner that wrote the orders. WO-041
+mechanizes that shape, with the rules those receipts taught: a hold is
+answered by a change plus a fresh receipt or by an operator override citing
+a capture, never by the planner's own line.
 
 **Where the operator stands in the five roles after this horizon.** The
 showrunner keeps the screen (the Work panel), the engineer composes the

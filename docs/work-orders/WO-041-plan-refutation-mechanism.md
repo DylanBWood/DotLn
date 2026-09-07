@@ -97,25 +97,67 @@ matching receipt or with an unanswered hold.
   verdict: "thesis-advancing" | "machinery" | "drift", thesis,
   capabilityRow, rolesServed, reason }], largestGap, planVerdict: "pass" |
   "hold", holdReasons }`. The host validates it positively, rejects extra
-  fields, and refuses a result that names an order not in the subject. A
-  `machinery` verdict is not a failure by itself; the check below counts
-  them and a horizon in which no order is thesis-advancing is a hold by
-  construction.
+  fields, and refuses a result that names an order not in the subject. The
+  verdict rules are fixed in the schema: `thesis-advancing` must name a
+  vision thesis section and the capability row it moves or creates;
+  `drift` must name the vision passage the order works against, which may
+  be a thesis section or an item of §What DotLn is not, and needs no
+  capability row, because the vision's exclusions have none; `machinery`
+  is the verdict for an order that names neither. A `machinery` verdict is
+  not a failure by itself. The horizon is a hold by construction when any
+  order is `drift`, when no order is `thesis-advancing`, or when the
+  refuter's `largestGap` names a thesis that no order in the sequence
+  touches and no order's non-goals defer it to a named later order.
 - **The receipt is immutable and addressed.** `docs/planning/refutations/
   <date>-<slug>.md` and `.json`: the subject hash (SHA-256 over the map's
-  sequence block bytes and each listed order file's bytes), transport,
-  model, effort, harness version, the validated result, and an operator
-  disposition block where each `hold` reason gets a dated line: accepted
-  with the change made, or overridden with the reason. A receipt is never
-  edited after its disposition; a re-run creates the next receipt.
+  sequence block bytes, each listed order file's bytes, **and the standard
+  judged against**: the vision's thesis sections, the roles table, and the
+  capability table's row identifiers and levels, so that a receipt goes
+  stale when the standard moves as well as when the plan does), transport,
+  model, effort, harness version, the validated result, and a disposition
+  block where each `hold` reason gets a dated line. A disposition is either
+  **accepted**, naming the order and criterion changed, after which the
+  subject hash changes and a fresh receipt is required; or an **operator
+  override**, which is not a line in the receipt at all: it is a control
+  event appended through `npm run plan -- override <receipt> <hold>
+  <reason>` under the acting session's recorded actor label (the WO-031
+  actor attribution), citing a captured operator instruction by its
+  SHA-256 in ignored intake in the same shape as a planning dispatch
+  capture. The gate reads overrides only from the control log, never from
+  receipt text, so an override is attributed, timestamped, and append-only
+  like every other control event, and a planner session that writes one
+  is visible as the actor that did. A hold with neither disposition stays
+  open and blocks. A receipt is never edited after its disposition; a re-run
+  creates the next receipt. The receipt's free-text fields are model
+  output landing in a committed file, so the receipt writer runs the
+  local-terms check over the validated result before writing and refuses
+  to write a receipt that matches, reporting the list's presence; the
+  fixture uses a synthetic term.
 - **The gate.** `scripts/test-plan-refutation.mjs` in `npm test`: for every
   ledger section whose heading names a planning pass dated on or after this
   order's merge (forward-only enforcement), a receipt must exist whose
   subject hash equals the current hash, and its verdict must be `pass` or
-  every hold reason must carry a disposition. The `fake` transport fixture
-  returns a canned drift verdict; the check fails on it until a disposition
-  line is added, and passes when the sequence block is unchanged since the
-  receipt. A changed sequence block without a fresh receipt fails.
+  every hold reason must have an override event in the control log naming
+  the receipt, the hold, the actor, and a capture hash; an accepted
+  disposition does not discharge a hold, it changes the subject and demands
+  the next receipt. A fresh receipt after a hold is admitted only when it
+  carries, for each prior hold, either the accepted-disposition line naming
+  the order and criterion changed or the same hold repeated, and only when
+  its subject differs from the held receipt's subject inside at least one
+  held order's named criterion; a receipt over a subject that changed only
+  elsewhere is refused, and the verdict cannot be re-rolled by trivial
+  edits. Within one planning pass, the third consecutive hold over the same
+  sequence stops the loop: its holds stay open for an operator override
+  event or the next pass, and no further receipt is admitted for that pass.
+  The `fake` transport fixture returns a canned drift verdict; the check
+  fails on it with no disposition, ignores any override text written into
+  the receipt itself, passes with an override event in a fixture control
+  log that names the hold and a fixture capture hash, passes on a fresh
+  `pass` receipt that dispositions the prior hold over a subject changed
+  inside the held criterion, refuses a fresh receipt over a subject changed
+  only outside it, and stops after the third consecutive hold. A changed
+  sequence block, order file, thesis section, roles table, or capability
+  row without a fresh receipt fails.
 - **The procedure.** The execution guide's planning pass gains one mandatory
   step after the drafts and before the pull request: run
   `npm run plan -- refute`, commit the receipt, and answer every hold in the
@@ -139,20 +181,35 @@ write-backs below.
 
 1. The subject builder produces a deterministic hash from committed files
    only, excludes every planning narrative surface, and a fixture proves
-   that a one-byte change to the sequence block or to a listed order changes
-   the hash.
+   that a one-byte change to the sequence block, to a listed order, to a
+   vision thesis section, to the roles table, or to a capability row
+   changes the hash.
 2. The `plan-refuter` loadout compiles with a read-only envelope; a fixture
    proves a write, remote, settings, or decision effect is refused by the
    authority guard; the compiled WorkOrder's questions are pinned.
 3. The host validates `plan-refutation-v1` positively, rejects extra fields
-   and unknown order ids, and holds by construction when no order is
-   thesis-advancing.
+   and unknown order ids, holds by construction under the rules above, and
+   the receipt writer refuses a result whose free text matches the
+   local-terms list, proven by the synthetic-term fixture, with the list's
+   presence reported.
 4. A recorded live run over the current marked sequence through one actual
    transport produces a receipt with transport, model, effort, and harness
-   version; the receipt is committed.
+   version; the receipt is committed. Because that sequence contains this
+   order, the receipt discloses the self-referential instrument, and its
+   verdict on WO-041 itself is recorded as advisory rather than as evidence
+   for this criterion (07 §Discipline, "disclose a self-referential
+   instrument").
 5. The evidence-gate check passes on the committed receipt, fails on the
-   canned drift fixture without a disposition, passes with one, and fails
-   when the sequence block changes without a fresh receipt.
+   canned drift fixture with no disposition, ignores override text inside a
+   receipt, passes with an override event in a fixture control log that
+   names the hold, the actor, and a fixture capture hash, passes on a fresh
+   `pass` receipt that dispositions the prior hold over a subject changed
+   inside the held criterion, refuses a fresh receipt over a subject changed
+   only outside it, stops the loop after the third consecutive hold in one
+   pass, and fails when the sequence block, an order, a thesis section, the
+   roles table, or a capability row changes without a fresh receipt; the
+   override command refuses without a capture hash and records the acting
+   session's actor label.
 6. Write-backs land: 07 §Operator-opened planning pass (the mandatory step
    and the receipt as a standard artifact); 13 tester row; `docs/README.md`
    map line; README "What runs today"; a dated capability-table row for
@@ -173,9 +230,14 @@ schema; running the refuter on historical passes (forward-only); a general
 
 **Operator-review assumptions**
 
-1. A `hold` blocks the planning pull request until answered; an override is
-   a dated line in the receipt, never a deleted reason.
+1. A `hold` blocks the planning pull request until answered; the two
+   answers are a change with a fresh receipt, or an override event in the
+   control log, attributed to its actor, citing a captured operator
+   instruction by hash. The planner session may not override its own
+   refutation; if one does, the log shows it. No reason is ever deleted.
 2. The refuter's identity is the Entropy Reducer's Contra-Auguste mask, so
-   its guard against destructive contrarianism applies: a finding that does
-   not name a thesis and a row is a `machinery` verdict, not `drift`.
+   its guard against destructive contrarianism applies: a `drift` verdict
+   must name the vision passage it rests on, including the exclusions in
+   §What DotLn is not, and a finding that names no passage at all is
+   `machinery`, not `drift`.
 3. The first receipt is the redirect's manual run and stays as written.

@@ -99,10 +99,30 @@ core runs on its own product and not only on its own process.
   repo-local skills root and hooks. Record in
   `docs/discovery/harness-smoke-2026-MM-DD.md` and its JSON projection: the
   harness version, which events fired, the payload fields each hook actually
-  received, how a refusal is expressed and whether the harness honored it,
-  what `--bare` skipped, and what remained unobserved. Every later claim in
-  this order cites a row of that record; an unobserved capability is declared
-  unavailable in the profile, never assumed.
+  received (field names and value shapes; absolute paths, session ids, and
+  host names are reduced to shapes such as `<cwd>` and `<session>` before
+  the record is committed, per 09 §Privacy and minimization), how a refusal
+  is expressed and whether the harness honored it, what `--bare` skipped,
+  and what remained unobserved. Every later claim in this order cites a row
+  of that record; an unobserved capability is declared unavailable in the
+  profile, never assumed.
+- **The local-terms check (small, shared).** Generated text is a committed
+  surface, so this order adds `scripts/lib/terms.mjs` and
+  `npm run terms -- check <paths>`: it reads an operator-maintained
+  plaintext list of terms that must not enter committed files from the
+  ignored local directory the control plane already reserves
+  (`docs/control/local/terms.txt`, never committed, never hashed into any
+  committed file), normalizes each committed line into tokens and adjacent
+  token pairs with separators removed, and refuses a match; when the local
+  list is absent it reports `unavailable` and says so in `npm test` rather than passing
+  silently. A refusal prints only the file, the line number, and a count,
+  never the matched text, so a refusal echoed into a transcript that is
+  later committed as evidence cannot republish the term the check exists
+  to keep out. Nothing about the terms is ever committed, so there is no
+  list to reverse; a fork registers its own local list. The fixture uses a
+  synthetic term registered in a fixture-local list. This order runs
+  it over every generated skill, the residue block, and the discovery
+  record; WO-033, WO-034, and WO-040 consume it.
 - **Phase 1 — the `harness-v1` contract and lowering.** In the pure compiler:
   `HarnessProfile` (harness id, observed version, capabilities as observed in
   phase 0: hook events and refusal semantics, skills root, settings
@@ -141,7 +161,10 @@ core runs on its own product and not only on its own process.
   the instruction file, holding the residue and its byte count; the
   hand-written clean-room floor stays outside the markers. Lowering is pure,
   deterministic, and dependency-free; a changed unit changes only the files
-  that name it.
+  that name it. The residue block is bounded: it may hold only text that no
+  unit or facet lowered below rung 8, each residue line names the unit or
+  facet it came from, and the emitter refuses a residue that restates
+  procedure a generated role skill already carries.
 - **Phase 2 — the Contributor build and the self-host.** Add
   `packages/skeleton/src/loadouts/contributor.ts`: the identity that works
   this repository, with four roles selected by resume phrase, the ten
@@ -180,7 +203,8 @@ core runs on its own product and not only on its own process.
   import them (the built modules already exist in this repository, and the
   export question is WO-033's).
 
-**Deliverables:** the phase 0 discovery record; the `harness-v1` contract,
+**Deliverables:** the phase 0 discovery record; the local-terms check; the
+`harness-v1` contract,
 `lowerToHarness`, and its fixtures in `packages/compiler`; the generated hook,
 skill, and fragment emitters and the `harness` command in the skeleton and
 `scripts/`; the Contributor loadout; this repository's committed generated
@@ -204,28 +228,62 @@ measurement; the write-backs below.
    the same host facts, and that removing the unit makes the hook allow.
 4. A recorded live smoke in a scratch checkout carrying the emitted bundle
    shows the actual harness refusing at least one denied effect through a
-   generated hook, resolving one role skill by resume phrase, and typing one
-   correction event from the exact token; the transcript names harness
-   version, model, and effort.
+   generated hook and resolving one role skill by resume phrase; when the
+   operator has confirmed the correction token, the smoke also types one
+   correction event from it, and when the token is unconfirmed the smoke
+   shows the correction unit reached through its role skill and the residue
+   report names the unconfirmed token as the reason. The smoke also records,
+   through a generated read-observing hook that runs for the whole smoke
+   session under each role, every file the session actually read, and
+   compares that set with the directed-read set criterion 6 derives: a read
+   outside the directed set plus the active order's own cited sections
+   fails this criterion and is named in the residue report, whether it
+   happened before the first effect or after the last resume command, so a
+   skill that merely suggests the guide while the session reads it anyway
+   cannot pass. The transcript names harness version, model, and effort.
 5. This repository's committed `.claude/settings.json`, hooks, skills, and the
    marked `CLAUDE.md` block are byte-identical to `harness emit` for the
    Contributor build; `harness check` runs in `npm test` and fails on a
    one-byte drift fixture; the config log has the entry; ADR-0005 carries the
    dated amendment; no user-scope file changed.
-6. The startup-context measurement reports bytes and lines before and after
-   for a cold start under each role, with the method stated and the mandatory
-   cold-start read included; unmeasured values stay `unknown`.
+6. The startup-context measurement is directional and counts everything
+   the session is directed to load: for a cold start under each of the four
+   roles, the after value is the sum of the whole instruction file (the
+   hand-written floor and the marked residue block alike), the generated
+   role skill's bytes as loaded by the resume phrase, and **every file that
+   either the instruction file or the skill directs the session to read
+   anywhere in the role's procedure**, before acting or at any later step,
+   including any read order the floor still states; the
+   before value is the activation base's whole instruction file plus every
+   file its §Start here read order and the execution guide's role procedure
+   directed for that role. The after value is strictly lower in bytes and
+   lines for every role, and the instruction file alone is strictly lower
+   than the activation base's; the method is stated, and a fixture derives
+   the directed-read set mechanically from the instruction file and the
+   skill rather than from the executor's list. The floor's read order is
+   rewritten so that, per role, it names the role skill and only files the
+   measurement counts; a read the floor directs that the measurement does
+   not count fails this criterion. Relocating guide text into a skill counts
+   in the after value and therefore cannot satisfy this criterion on its
+   own; a role that is not lower fails this criterion and the residue
+   report names what kept it long. The build replaces the biography for
+   that role; it is not placed beside it.
 7. Write-backs land: 02 §Feedback (the `harness-v1` contract, its lowering
    table, and the residue rule); 03 §Agent enablement skills (the first slice
    shipped and what remains of the delivery order); 07 §Operator resume
-   phrases (phrases now load the generated role skill; the cold-start read
-   order changes only if the measurement shows it shorter); 13 engineer and
+   phrases and §Read order for a cold start, and `CLAUDE.md` §Start here
+   (phrases load the generated role skill; the cold-start read order names,
+   per role, the skill and only the files criterion 6 counts); 13 engineer
+   and
    devops rows; README "What runs today"; dated capability-table rows for
    `compiler.harness-v1` and `harness.self-hosted`; publication index rows and
    both edition locks; ledger entry.
 8. `npm test` green; `git diff --check` clean; no new runtime dependency (the
    hooks import built modules already in the repository; the recorded
-   TypeScript parser dependency is unchanged); kernel unchanged.
+   TypeScript parser dependency is unchanged); kernel unchanged; the
+   local-terms check has run over every generated skill, the residue block,
+   and the discovery record with the operator's list present, reported in
+   the result, not assumed, and its synthetic-term fixture refuses.
 
 **Evidence gate:** the discovery record; the fixture transcripts for
 criteria 2 and 3; the smoke transcript for criterion 4; the drift fixture for

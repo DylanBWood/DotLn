@@ -1,0 +1,189 @@
+{
+  "orders": [
+    {
+      "workOrderId": "WO-032",
+      "verdict": "thesis-advancing",
+      "thesis": "The core bet — the smallest useful loop (see what the system understood, observe authorized progress, inspect evidence) must feel legible",
+      "capabilityRow": "projection.uifa-board (new)",
+      "rolesServed": [
+        "UIFA product lead",
+        "UIFA showrunner",
+        "UIFA engineer",
+        "UIFA tester",
+        "UIFA devops"
+      ],
+      "reason": "Criterion 2 makes it a real actor view (executor and verifier 'as separate actors with different loadout hashes, episode phases, and authority summaries', each linked to its matrix and receipt) and criterion 5 refuses self-labelled role service. Fully succeeded it leaves the loop's 'declare intent' half untouched (read-only, 'invokes no command'), and two of five panels (Work; Blueprint's capability rows, publication statuses, roadmap rungs) are a dashboard of this repository's process that no other implementation's actors would have."
+    },
+    {
+      "workOrderId": "WO-033",
+      "verdict": "thesis-advancing",
+      "thesis": "Three horizons, one kernel — Horizon 1 work operating system; and The one-paragraph story's closing rule that the platform supplies compiler and mechanism contracts 'without prescribing that loadout'",
+      "capabilityRow": "launchpad.starter (new)",
+      "rolesServed": ["UIFA showrunner", "UIFA engineer", "UIFA devops"],
+      "reason": "Criterion 5 evidences a compiled actor in the fork ('a session opened in the export under the emitted bundle is refused a denied effect by a generated hook and resolves a role skill by resume phrase (recorded smoke)') and answers the prescribed-loadout trap with overlay fixtures that replace the identity, unequip units, and declare `build: none`. Fully succeeded, the fork's workers are still sessions a person opens from a printed handoff ('DotLn runtime transports executing target work; automatic worker launch' are non-goals with no named order), so H1's 'disposable workers ... a near-empty main thread' does not move; the kit also ships the executor guide half and playbook as prose beside the build, and the author's clean-room floor as a kit file every `--update` flags if a fork edits it."
+    },
+    {
+      "workOrderId": "WO-034",
+      "verdict": "thesis-advancing",
+      "thesis": "Three horizons, one kernel — Horizon 1 'including one outcome spanning multiple repositories'; Mission's context-restatement and handoff reduction",
+      "capabilityRow": "consumer.angular (new; level 0 if the real run fails) — the workstream projection itself gets no row",
+      "rolesServed": ["UIFA showrunner", "UIFA engineer"],
+      "reason": "Criterion 4 gives the four product-12 measures a required direction against an observed baseline and criterion 6 makes zero hand restatements the pass condition for 'the build is the priming'. Fully succeeded, the pilot's executors are people opening sessions from handoffs (runtime transports are deferred to the roadmap's Source-to-deliverable rung, not a filed order), and assumption 4 lets the order close with the real run recorded as failed, so the horizon can end with the cross-repository thesis honestly unevidenced and its follow-on unnamed."
+    },
+    {
+      "workOrderId": "WO-035",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["UIFA showrunner", "UIFA devops"],
+      "reason": "Its own redirect note concedes 'a session governed by a shorter biography is still governed by a biography'; it moves no thesis and violates none. Criterion 5 measures one file ('The execution guide is under 450 lines') and is satisfiable by relocation 'with pointers', so the mandatory cold-start read the objective names (about 1,300 lines) can stay the same size while the criterion passes."
+    },
+    {
+      "workOrderId": "WO-036",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["UIFA devops"],
+      "reason": "Test infrastructure only: it changes no assertion, adds no actor surface, and names no thesis. Criterion 3's 'the after value is lower' carries a direction and criterion 1 re-proves that a removed suite or empty glob fails the gate."
+    },
+    {
+      "workOrderId": "WO-037",
+      "verdict": "thesis-advancing",
+      "thesis": "The differentiated interface — 'Every pattern (5S, ...) compiles into exact mechanics'; Horizon 2's shelf-to-mechanism compiler",
+      "capabilityRow": "compiler.five-s-set (new, level 1); moves compiler.seiri-v1 (multi-active link groups)",
+      "rolesServed": ["UIFA engineer", "UIFA tester"],
+      "reason": "The first full shelf entry lowers to existing emission kinds whose hash changes 'only when armed' (criterion 3) with a live/replay-identical scenario (criterion 4). Fully succeeded, 'every pattern compiles' still has one entry (Ladder, mitigated speech, ToC, commedia, Algorithms-to-Live-By stay prose under an unnamed 'their own order'), the set is evidenced against deterministic fakes and governs no live session, and the authoring half of the thesis is deferred to the named wave-5 candidate."
+    },
+    {
+      "workOrderId": "WO-038",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": [],
+      "reason": "License metadata, a publish guard, and a DCO rule give no role a surface and name no thesis. Not drift: private workspaces and license files in the export do not make DotLn 'dependent on a public marketplace'."
+    },
+    {
+      "workOrderId": "WO-039",
+      "verdict": "thesis-advancing",
+      "thesis": "The one-paragraph story — 'a build, not a biography'",
+      "capabilityRow": "compiler.harness-v1 and harness.self-hosted (new)",
+      "rolesServed": ["UIFA engineer", "UIFA devops"],
+      "reason": "The ten units leave the fake host and govern real sessions through generated settings, hooks, and skills whose verdicts must equal `feedbackBoundary` (criterion 3), with a live refusal (criterion 4) and a drift refusal (criterion 5). Fully succeeded, the story is still ten of roughly 140 rules plus a residue block, and criterion 6's after value sums only 'every reference the skill instructs the session to read', so a guide read that the instruction file's un-marked floor still directs (CLAUDE.md §Start here) goes uncounted while criterion 7 keeps that read order unless 'the measurement shows it shorter'."
+    },
+    {
+      "workOrderId": "WO-040",
+      "verdict": "thesis-advancing",
+      "thesis": "The one-paragraph story — the ~140 accumulated rules become typed mechanisms; The core bet's incident-plus-regression-fixture shape per unit",
+      "capabilityRow": "feedback.migration (new)",
+      "rolesServed": ["UIFA engineer", "UIFA tester"],
+      "reason": "Gives the story its first number and a required direction: mechanism-governed shapes up, prose down, always-on bytes 'strictly lower', retired sentences 'removed in this order' (criterion 4). Fully succeeded, about 22 of ~140 shapes are compiled, the rest are classified rows, and batch two exists only as a template that 'names batch two's candidates' — no filed order or named candidate carries the remaining ~118."
+    },
+    {
+      "workOrderId": "WO-041",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": "control.plan-refutation (new; created by a machinery order)",
+      "rolesServed": ["UIFA product lead", "UIFA showrunner"],
+      "reason": "A gate on this repository's planning pass: it compiles a blinded episode and refuses a pass without a receipt, but names no thesis it moves (its Cites use the theses as the standard, not the target) and no role gets a product surface beyond the receipt cell WO-032 renders. Machinery is not a failure; this receipt is the shape it would mechanize, and its verdict on WO-041 is advisory per criterion 4."
+    }
+  ],
+  "largestGap": "The authoring half of The differentiated interface. Every order authors a build in TypeScript (`contributor.ts`, the 5S set 'as data', `build/overlay.json`) or reads one on a read-only board; no order lets a person who 'has read those books' mix and match patterns onto an agent and see the same compiled program, so 'turns all those books into programming books overnight' stays untrue for anyone who cannot write a loadout module. Deferred: yes — WO-032 and WO-037 non-goals defer it to the named recorded candidate 'Console parity contract and drag-equip authoring' (wave 5, planning map's preserved candidates), to be filed after both merge. Runner-up, deferred to no named order or candidate: the ~118 shapes WO-040 leaves after batch one ('Later batches are cut from this order's template').",
+  "planVerdict": "hold",
+  "holdReasons": [
+    "WO-039 criterion 6: the after value is defined as 'the always-on instruction bytes (the instruction file including the marked residue block), the generated role skill's bytes as loaded by the resume phrase, and every reference the skill instructs the session to read before acting', while the before value counts 'the mandatory cold-start read the execution guide required'. A read the instruction file's hand-written floor still directs outside the markers (CLAUDE.md §Start here: execution guide → work order → cited sections) is in neither sum's after side, and criterion 7 keeps that read order unless 'the measurement shows it shorter'. The criterion can therefore be met while a cold session still reads the guide, which is the one-paragraph story's failure mode ('a build, not a biography') measured on the wrong denominator. Fix: count every read the instruction file or the skill directs before acting, and require the floor's read order to name only counted files. WO-040 criterion 4 inherits the same method and the same fix.",
+    "WO-035 criterion 5: 'The execution guide is under 450 lines, the relocation table in the result accounts for every removed paragraph'. This counts one file; paragraphs moved to docs/AI-HARNESS-SECURITY.md and the playbook 'with pointers' still load at cold start if the pointer is followed before acting, and no WO-035 criterion measures the mandatory cold-start total that the order's objective ('a cold start that reads roughly 1,300 lines') and redirect note ('the line target counts only the always-on read') name. The one-paragraph story's quantity is always-on context, not a file's line count. Fix: require the mandatory cold-start total per role, under WO-039's corrected method, to be lower after than before."
+  ],
+  "selfCertificationRisks": [
+    {
+      "workOrderId": "WO-039",
+      "criterion": 6,
+      "status": "open",
+      "reason": "The after-value enumeration omits reads directed by the un-marked instruction-file floor; 'strictly lower' can hold while the session still loads the execution guide (see hold reason 1)."
+    },
+    {
+      "workOrderId": "WO-035",
+      "criterion": 5,
+      "status": "open",
+      "reason": "A line count of one file is satisfiable by relocation; nothing in WO-035 requires the cold-start total to fall (see hold reason 2)."
+    },
+    {
+      "workOrderId": "WO-034",
+      "criterion": 4,
+      "status": "open",
+      "reason": "The run's counts must be 'counted from the run's own transcripts and control log, never from memory', but the baseline half is 'the operator's baseline observation' with no requirement that it be counted from records; the required direction can be satisfied against a recalled number. Minor, since an `unknown` baseline is 'unverified, never passed'."
+    },
+    {
+      "workOrderId": "WO-034",
+      "criterion": 6,
+      "status": "addressed by criterion 6",
+      "reason": "'the order may still close with that failure recorded' lets the order complete with its thesis unevidenced, but assumption 4 creates no `consumer.angular` row above 0 and moves no section of product 12 from vision to evidenced, so closure is bookkeeping, not a claim; the horizon may still end without the cross-repository evidence and with no named follow-on."
+    },
+    {
+      "workOrderId": "WO-040",
+      "criterion": 4,
+      "status": "addressed by criterion 4",
+      "reason": "The `mechanism` derivation asserts the absence of the exact retired sentence's hash, which a paraphrase survives; the same criterion's strict decrease in always-on bytes and every role's loaded total makes a compensating restatement costly, not impossible."
+    },
+    {
+      "workOrderId": "WO-040",
+      "criterion": 1,
+      "status": "addressed by criterion 1",
+      "reason": "The ~140 denominator is an operator attestation pinned to an intake hash that no committed file can verify; the criterion requires it be 'disclosed as an operator attestation', so it is labelled, not invented."
+    },
+    {
+      "workOrderId": "WO-032",
+      "criterion": 5,
+      "status": "addressed by criterion 5",
+      "reason": "Role labels on panels could be self-report; the criterion requires a pinned question-to-cell mapping reviewed by the independent verifier against 13 §The five roles, and 'a panel's role label with no pinned answering cell fails this criterion'."
+    },
+    {
+      "workOrderId": "WO-033",
+      "criterion": 5,
+      "status": "addressed by criterion 5",
+      "reason": "'Ships an actor' could be satisfied by copying files; the criterion requires a recorded smoke in which the emitted bundle refuses a denied effect and resolves a role skill inside the export, plus overlay fixtures proving the build can be replaced or omitted."
+    },
+    {
+      "workOrderId": "WO-037",
+      "criterion": 4,
+      "status": "addressed by criterion 6",
+      "reason": "Set bonuses are evidenced only against deterministic fakes, never in a live session; the write-back claims `compiler.five-s-set` at level 1 (demonstrable), which is exactly what the fixtures show."
+    }
+  ],
+  "cleanRoomRisks": [
+    {
+      "workOrderId": "WO-039",
+      "surface": "Generated role skills (SKILL.md), the marked residue block in CLAUDE.md, and docs/discovery/harness-smoke-*.md with hook payload field names",
+      "mechanicalCheck": "named",
+      "status": "open",
+      "reason": "The Design says the local-terms check 'runs it over every generated skill, the residue block, and the discovery record', but none of acceptance criteria 1–8 requires it to run or to report the operator's list present; WO-033 criterion 5 and WO-040 criterion 7 state that requirement and WO-039 does not."
+    },
+    {
+      "workOrderId": "WO-040",
+      "surface": "corpus/feedback/migration.json, docs/lineage/feedback-migration.md, and each unit's synthesized incident summary",
+      "mechanicalCheck": "named",
+      "status": "addressed",
+      "reason": "Criteria 1 and 7 run the local-terms check over every row, note, unit id, incident summary, and behavior sentence 'with the operator's list present (reported, not assumed)', employer-specific shapes appear only as counts with 'no name, reason, or paraphrase', and a reviewer reads each incident against its ledger citation. Residual: a token check cannot catch a paraphrased description of a managed host; the reviewer read checks citation, not description."
+    },
+    {
+      "workOrderId": "WO-033",
+      "surface": "Exported kit text: client README, repository-profile and workstream templates, the pre-drafted first order's constrained-environment audit questions (gateway, managed settings), and the generated floor",
+      "mechanicalCheck": "named",
+      "status": "addressed",
+      "reason": "Criterion 5 runs the local-terms check over every exported kit text with the list present, requires the reviewer to read the audit questions 'for any description of a specific managed host, gateway, or policy (generic questions are permitted, descriptions are not)', and a negative fixture proves the export carries no term list, hashed or plain."
+    },
+    {
+      "workOrderId": "WO-034",
+      "surface": "docs/evidence/WO-034/README.md receipt and sanitized transcripts in core; WS-001 and the DotLn-Angular repository profile committed in the operator's fork",
+      "mechanicalCheck": "named",
+      "status": "open",
+      "reason": "Core-side surfaces are addressed by criterion 3 (transcripts 'pass the local-terms check with the operator's list present'; the baseline 'never as a narrative of the operator's working arrangements'). The fork-side WS-001 and repository profile are public committed prose written by a planning pass outside core's gate; the fork must register its own local list and nothing in this order requires that it has."
+    },
+    {
+      "workOrderId": "WO-041",
+      "surface": "docs/planning/refutations/<date>-<slug>.md and .json — committed model output (reason, holdReasons, largestGap free text)",
+      "mechanicalCheck": "absent",
+      "status": "open",
+      "reason": "The refuter reads committed files only, but its free-text fields are model-authored and committed as an immutable receipt; no criterion runs the local-terms check over the receipt before commit, so a fluent comparison to a named commercial tracker or the predecessor's real name would land unrefused."
+    }
+  ]
+}

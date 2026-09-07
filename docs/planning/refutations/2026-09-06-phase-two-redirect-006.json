@@ -1,0 +1,188 @@
+{
+  "orders": [
+    {
+      "workOrderId": "WO-032",
+      "verdict": "thesis-advancing",
+      "thesis": "The core bet — the smallest useful loop's legible half (see what the system understood, observe authorized progress, inspect evidence); and The differentiated interface's clause that every view provably compiles to the same program, through the hash-checked Builds panel",
+      "capabilityRow": "projection.uifa-board (new)",
+      "rolesServed": [
+        "UIFA product lead",
+        "UIFA showrunner",
+        "UIFA engineer",
+        "UIFA tester",
+        "UIFA devops"
+      ],
+      "reason": "Even complete, the loop's first step stays outside it: nobody can declare intent, equip, or invoke anything from the board, so 'the analogies are the ways you mix and match the agents' remains untouched; it is a hash-checked view of actors, not an authoring surface. Criterion 2's required human row and criterion 5's pinned question-to-cell mapping under verifier review are what keep it from being the process dashboard the first draft was."
+    },
+    {
+      "workOrderId": "WO-033",
+      "verdict": "thesis-advancing",
+      "thesis": "The one-paragraph story — 'a build, not a biography' carried into forks, and its closing clause 'without prescribing that loadout' (the overlay's replace, unequip, and build: none); plus Three horizons' Horizon 1 outcome across repositories, at the target-repository level only",
+      "capabilityRow": "launchpad.starter (new)",
+      "rolesServed": ["UIFA showrunner", "UIFA engineer", "UIFA devops"],
+      "reason": "Even complete, a fork's sessions still arrive with the executor half of the guide, a playbook, templates, and a client README as prose, bounded only to 'not larger than core's' rather than required to fall, and target work is executed by sessions the operator opens by hand; the order proves the kit ships an enforced actor, not that a stranger can use it."
+    },
+    {
+      "workOrderId": "WO-034",
+      "verdict": "thesis-advancing",
+      "thesis": "Three horizons, one kernel — Horizon 1's 'one outcome spanning multiple repositories'; and Mission's babysitting measures (context restatement, manual handoffs, unnecessary interruptions, time to a trusted return state)",
+      "capabilityRow": "consumer.angular (new; stays at level 0 unless the witnessed run succeeds)",
+      "rolesServed": ["UIFA showrunner"],
+      "reason": "Even a fully successful run leaves 'disposable workers' and 'a near-empty main thread' untrue: every executor is a session the operator dispatches by hand from a printed handoff, runtime transports executing target work are a non-goal with no named candidate, and the cross-repository claim rests on one witnessed run whose failure the order may record honestly and still close."
+    },
+    {
+      "workOrderId": "WO-035",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["UIFA showrunner", "UIFA devops"],
+      "reason": "It shortens and relocates the biography that remains after compilation and measures that fall mechanically (criterion 5), but no rule becomes a mechanism and no capability row moves; the vision's story is exactly as true after it as before."
+    },
+    {
+      "workOrderId": "WO-036",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["UIFA devops"],
+      "reason": "A faster, per-case evidence gate keeps 'evidence precedes done' cheap enough to keep, but changes nothing a session, actor, or pattern does; no vision passage becomes code through it."
+    },
+    {
+      "workOrderId": "WO-037",
+      "verdict": "thesis-advancing",
+      "thesis": "The differentiated interface — 'every pattern (5S, …) compiles into exact mechanics' and set bonuses as real mechanics in the RPG view; Three horizons' Horizon 2 shelf-to-mechanism compiler",
+      "capabilityRow": "compiler.five-s-set (new, level 1); widens compiler.seiri-v1 beyond one active mechanic",
+      "rolesServed": ["UIFA engineer", "UIFA tester"],
+      "reason": "Even complete, the shelf has one compiled entry, the set is TypeScript data written by the executor rather than mixed and matched by an author, and the 'open-ended set of isomorphically equivalent views' is still three codecs plus a tooltip with no pattern card, statechart, function table, or temporal view; both residuals are deferred to named candidates."
+    },
+    {
+      "workOrderId": "WO-038",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": null,
+      "rolesServed": ["UIFA devops"],
+      "reason": "License metadata, a publication refusal, and a contribution rule are distribution posture, which the vision itself calls 'distribution infrastructure, not the differentiated thesis'; nothing about actors, builds, or evidence changes."
+    },
+    {
+      "workOrderId": "WO-039",
+      "verdict": "thesis-advancing",
+      "thesis": "The one-paragraph story — 'a session … gets a build, not a biography': each compiled unit attached where relevant as rung 2 permissions and hooks, rung 7 skills, and a bounded rung 8 residue",
+      "capabilityRow": "compiler.harness-v1 and harness.self-hosted (new)",
+      "rolesServed": ["UIFA engineer", "UIFA devops"],
+      "reason": "Even complete, only ten units and one harness are lowered, Codex gets what phase 0 observed, and semantic correction stays at rung 7 until a token is confirmed; what keeps it from being a prompt library with hooks is criterion 6's strictly-lower, mechanically derived per-role total and criterion 4's read-observing smoke, which forbid placing the build beside the biography."
+    },
+    {
+      "workOrderId": "WO-040",
+      "verdict": "thesis-advancing",
+      "thesis": "The one-paragraph story — the roughly 140 rules becoming typed mechanisms; The core bet's triad of preserved incident, candidate mechanism, and regression fixture per unit",
+      "capabilityRow": "feedback.migration (new)",
+      "rolesServed": ["UIFA engineer", "UIFA tester"],
+      "reason": "Even complete, roughly 120 shapes stay classified but uncompiled, the whole-set denominator is an operator attestation by construction, and 'governs live sessions by mechanism' is a derived label (equipped plus retired sentence) rather than an observed live activation; the remainder is carried by the named batches-two-onward candidate."
+    },
+    {
+      "workOrderId": "WO-041",
+      "verdict": "machinery",
+      "thesis": null,
+      "capabilityRow": "control.plan-refutation (new; a control-plane row, not a thesis row)",
+      "rolesServed": ["UIFA product lead", "UIFA showrunner"],
+      "reason": "It compiles a blinded auditor over plans and gates the planning pass, removing one supervision the operator did by hand, but its subject is documents: after it ships no session, actor, or pattern behaves differently, and reading it as Mission-advancing would make every process improvement thesis-advancing."
+    }
+  ],
+  "largestGap": "The authoring half of The differentiated interface. After all ten orders nobody can mix and match agents: the 5S set is TypeScript data the executor writes, the board is read-only, every build is authored in code, and the 'open-ended set of isomorphically equivalent views' is three codecs plus a tooltip with no pattern card, statechart, function table, or temporal view, while the shelf has one compiled entry. WO-032's and WO-037's non-goals defer this explicitly to the map's named preserved candidates 'Console parity contract and drag-equip authoring' (wave 5) and 'Pattern workshop v1, remaining shelf entries'; the one-paragraph story's residual (about 120 uncompiled shapes) is likewise carried by the named 'Rule migration, batches two onward' candidate. The secondary gap has no named candidate: the loop's 'declare intent' step and the v1.0 stranger — intent still enters as hand-written work orders through a planning pass, and WO-034's non-goal 'automatic workstream planning' names none.",
+  "planVerdict": "pass",
+  "holdReasons": [],
+  "selfCertificationRisks": [
+    {
+      "workOrderId": "WO-034",
+      "criterion": 4,
+      "status": "open",
+      "reason": "The direction clause is triggered 'wherever a baseline measure is observed' and compares against 'the observed baseline', while the same criterion says attested baselines 'are never called observed'; an attested baseline is therefore a third state the text does not dispose (not unknown, not observed), so an executor could list run counts beside attested counts with no pass or fail. The worst case is an honest 'unverified', not a false pass, because retirement claims are limited to observed run measures; replacing 'observed baseline' with 'attested baseline' closes it."
+    },
+    {
+      "workOrderId": "WO-034",
+      "criterion": 3,
+      "status": "addressed by criterion 3",
+      "reason": "A failed or absent witnessed run can close the order, but assumption 4 and criterion 5 bind that closure to a recorded failure, no consumer.angular level above 0, and no product-12 promotion; a disclosed limit, not self-certification."
+    },
+    {
+      "workOrderId": "WO-040",
+      "criterion": 4,
+      "status": "addressed by criterion 3",
+      "reason": "'Governs live sessions by mechanism' is a derived label (unit equipped in the Contributor build and its always-on sentence retired), and no criterion requires a batch unit to be observed firing in an actual harness session; the live half rests on WO-039's harness-truth smoke and the per-hook fixtures criterion 3 requires, so the count is derived, directional, and reverse-mapped rather than relabeled, but the word 'live' is inherited evidence."
+    },
+    {
+      "workOrderId": "WO-041",
+      "criterion": 5,
+      "status": "open",
+      "reason": "The override path is attributable but not refusable: the command refuses only a missing capture hash, the hash points into ignored intake that no committed file can verify, and nothing prevents the planner actor from issuing the event; assumption 1 discloses this ('if one does, the log shows it'), so the gate deters by visibility rather than by refusal."
+    },
+    {
+      "workOrderId": "WO-033",
+      "criterion": 5,
+      "status": "addressed by criterion 5",
+      "reason": "The export's per-role directed-load total is bounded to 'not larger than core's' rather than required to fall; acceptable because the kit is a byte-identical copy of core's already-reduced build, but no order measures a fork's biography after it starts adding its own prose."
+    },
+    {
+      "workOrderId": "WO-032",
+      "criterion": 5,
+      "status": "addressed by criterion 5",
+      "reason": "Role service could have been satisfied by labeling panels; the criterion instead pins a question-to-cell mapping per role as a fixture, has the independent verifier review it against 13 §The five roles, and fails any labeled panel without an answering cell."
+    },
+    {
+      "workOrderId": "WO-039",
+      "criterion": 6,
+      "status": "addressed by criterion 6",
+      "reason": "Relocating guide text into a skill or leaving the guide in a read order would preserve the biography; the criterion counts skill bytes and every directed read in the after value, derives the directed set mechanically, fixes the before value at the activation base, and requires the instruction file alone to shrink despite gaining the residue block."
+    }
+  ],
+  "cleanRoomRisks": [
+    {
+      "workOrderId": "WO-039",
+      "surface": "Generated role skills, the marked residue block in CLAUDE.md, and the harness-smoke discovery record",
+      "mechanicalCheck": "named",
+      "status": "addressed",
+      "reason": "Criterion 8 runs the local-terms check over all three with the operator's list present and reported; the list lives only in ignored local state, a refusal prints file, line, and count but never the matched text, and the discovery record reduces paths, session ids, and host names to shapes before commit."
+    },
+    {
+      "workOrderId": "WO-040",
+      "surface": "corpus/feedback/migration.json rows, docs/lineage/feedback-migration.md, and each new unit's incident summary and behavior sentence",
+      "mechanicalCheck": "named",
+      "status": "addressed",
+      "reason": "--check runs the local-terms check over every row id, note, unit id, incident summary, and behavior sentence and refuses the render; employer-specific shapes get no row, only a per-class count; criterion 7 adds a reviewer read of each incident summary against its ledger reference. Residual: a term absent from the operator's list passes the mechanical half, and the reviewer read is the only backstop."
+    },
+    {
+      "workOrderId": "WO-033",
+      "surface": "Exported kit text (client README, the pre-drafted first order's constrained-environment audit questions naming gateways and managed settings, the sanitized harness-security template, guide and playbook copies) and the committed launchpad-vocabulary half of the camouflage deny list",
+      "mechanicalCheck": "named",
+      "status": "addressed",
+      "reason": "Criterion 5 runs the local-terms check over every exported kit text with the list present, a negative fixture proves the export carries no term list hashed or plain, the committed deny-list half holds only launchpad vocabulary, and the reviewer reads the audit questions for descriptions of a specific host, gateway, or policy (generic questions permitted)."
+    },
+    {
+      "workOrderId": "WO-034",
+      "surface": "docs/evidence/WO-034 real-run receipt with sanitized transcripts, fired-unit counts, and baseline block",
+      "mechanicalCheck": "named",
+      "status": "addressed",
+      "reason": "Criterion 3 requires the sanitized transcripts to pass the local-terms check with the operator's list present and confines the baseline practice to four counts, never a narrative of the operator's working arrangements; the fork's WS-001 and repository profile are committed in the operator's public fork under the fork's own list, whose presence the receipt records."
+    },
+    {
+      "workOrderId": "WO-041",
+      "surface": "docs/planning/refutations/<date>-<slug>.md and .json free-text fields (model output)",
+      "mechanicalCheck": "named",
+      "status": "addressed",
+      "reason": "The receipt writer runs the local-terms check over the validated result before writing and refuses a match, with the list's presence reported and a synthetic-term fixture (criterion 3)."
+    },
+    {
+      "workOrderId": "WO-038",
+      "surface": "CONTRIBUTING.md",
+      "mechanicalCheck": "absent",
+      "status": "open",
+      "reason": "It lands before the local-terms check exists; criterion 6 substitutes a final-reviewer read against the clean-room floor, and no later order runs the check over it. Low exposure: fixed-form legal prose with links, no intake synthesis."
+    },
+    {
+      "workOrderId": "WO-032",
+      "surface": "uifa-board-v1 fixtures and the self-contained HTML render",
+      "mechanicalCheck": "absent",
+      "status": "addressed",
+      "reason": "The board authors no prose; every cell traces to an already committed source (control log, stores, receipts, capability table, index) that passed its own gate, so the surface can carry only what the repository already carries."
+    }
+  ]
+}
