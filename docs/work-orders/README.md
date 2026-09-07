@@ -7,7 +7,7 @@
 - [x] [WO-038] — License posture lands · **final-reviewed**
 - [ ] [WO-039] — Harness lowering · **queued**
 - [ ] [WO-033] — Compiled starter export · **queued**
-- [ ] [WO-041] — Plan refutation mechanism · **queued**
+- [x] [WO-041] — Plan refutation mechanism · **final-reviewed**
 - [ ] [WO-032] — UIFA v0 actor board · **queued**
 - [ ] [WO-040] — Rule migration, batch one · **queued**
 - [ ] [WO-036] — Evidence runner · **queued**
@@ -174,21 +174,6 @@ None.
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-040-rule-migration-batch-one.md](WO-040-rule-migration-batch-one.md)
-
-### WO-041
-
-[WO-041 — Plan refutation as a mechanism: a blinded episode that gates every planning pass on the vision (version assigned at activation)](WO-041-plan-refutation-mechanism.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-009: satisfied (closed); WO-010: satisfied (closed); WO-023: satisfied (closed).
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model for the script and fixtures. The refuter episode runs on the actual local transports and must state harness version, model, and effort (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Authority: [docs/work-orders/WO-041-plan-refutation-mechanism.md](WO-041-plan-refutation-mechanism.md)
 
 ### WO-102
 
@@ -715,11 +700,27 @@ None.
 - References: WO-018: satisfied (closed).
 - Verification: [VER-001](../../docs/verifications/WO-038/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-038/FINAL-001.md) (pass).
-- Release: unreleased.
+- Release: v0.13.2 (manifest workOrder.id).
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Latest attestation: harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-038-license-posture-lands.md](WO-038-license-posture-lands.md)
+
+### WO-041
+
+[WO-041 — Plan refutation as a mechanism: a blinded episode that gates every planning pass on the vision (v0.13.3)](WO-041-plan-refutation-mechanism.md)
+
+- State: closed.
+- Application target: v0.13.3.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-009: satisfied (closed); WO-010: satisfied (closed); WO-023: satisfied (closed).
+- Verification: [VER-003](../../docs/verifications/WO-041/VER-003.md) (pass).
+- Final review: [FINAL-002](../../docs/final-reviews/WO-041/FINAL-002.md) (pass).
+- Release: unreleased.
+- Model: any capable model for the script and fixtures. The refuter episode runs on the actual local transports and must state harness version, model, and effort (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-041-plan-refutation-mechanism.md](WO-041-plan-refutation-mechanism.md)
 
 ### WO-101
 
@@ -794,13 +795,13 @@ None.
 - **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose per-segment tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.
 - **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.
 
-Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`, `v0.7.0`, `v0.8.0`, `v0.9.0`, `v0.10.0`, `v0.10.1`, `v0.11.0`, `v0.12.0`, `v0.13.0`, `v0.13.1`.
+Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`, `v0.7.0`, `v0.8.0`, `v0.9.0`, `v0.10.0`, `v0.10.1`, `v0.11.0`, `v0.12.0`, `v0.13.0`, `v0.13.1`, `v0.13.2`.
 
 Tag observation is explicitly refreshed by `index`. Check requires every recorded tag object to remain available and unchanged; newer local release tags are reported as newer evidence, without invalidating this snapshot. This avoids making a committed source release fail its own tests immediately after tagging. Header/control changes still require regeneration after lifecycle transitions.
 
 See [the human planning map](../planning/work-order-map.md) for recommendation, rationale, tracks, and activation preflight. Dependency-ready does not grant activation or effect authority.
 
-<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.7.0","object":"064d304f0a49d3ba397173420e815b44807934d8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.8.0","object":"7b494beaac507b3369c4092598edc33d64242b67","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl"]},{"name":"v0.9.0","object":"b2720f4bb0574ca2929658e2bf7056bf40c8e5c1","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.0","object":"2cb12ddbd670e74639411cd77a98277d6b6110a6","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.1","object":"ca5d3fab28ecfa00cb7d0738d8e6a0be3018569d","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.11.0","object":"539021143175b03184fc8f3ea580a1b6491ab4ea","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.12.0","object":"3eb0fc50aaff394ccd80bbf042948ef7c2e7a015","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.0","object":"12fb52e64ea8915833cf29dac6d61412073c64db","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.1","object":"d5a0f5708ac5e13bc0d1ca2bd06d913bbc1b29b9","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-108.jsonl"]}] -->
+<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.7.0","object":"064d304f0a49d3ba397173420e815b44807934d8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.8.0","object":"7b494beaac507b3369c4092598edc33d64242b67","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl"]},{"name":"v0.9.0","object":"b2720f4bb0574ca2929658e2bf7056bf40c8e5c1","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.0","object":"2cb12ddbd670e74639411cd77a98277d6b6110a6","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.1","object":"ca5d3fab28ecfa00cb7d0738d8e6a0be3018569d","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.11.0","object":"539021143175b03184fc8f3ea580a1b6491ab4ea","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.12.0","object":"3eb0fc50aaff394ccd80bbf042948ef7c2e7a015","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.0","object":"12fb52e64ea8915833cf29dac6d61412073c64db","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.1","object":"d5a0f5708ac5e13bc0d1ca2bd06d913bbc1b29b9","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.13.2","object":"0ff7063c042cede0cef863097334eb43c6da8937","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-108.jsonl"]}] -->
 
 [WO-001]: WO-001-environment-truth.md
 [WO-002]: WO-002-pure-kernel.md
