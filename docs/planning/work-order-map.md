@@ -51,6 +51,8 @@ pass (`docs/LEGAL.md` §Decision) with the license files landing in the
 planning pull request. The adjacent track is unchanged; WO-014 floats and
 gains weight once target-repository sessions report approval friction.
 
+**WO-038 source (2026-09-06):** the planning license files are present in this activation base. The missing release assignment is completed at `v0.13.2`, the next patch above published `v0.13.1`. The [executor receipt](../evidence/WO-038/README.md) records package metadata, npm refusal probes, the pinned license surfaces, contribution sign-offs, and the WO-033 export-default handoff. This source work does not discharge the critical path's merge dependencies or establish that the proposed paired wave occurred; the generated index and control fold own later lifecycle evidence.
+
 **WO-108 source (2026-09-06):** the operator selected the mutation evidence lane on published `v0.13.0` and authorized adapting its stale scope to the current repository. It prepares internal tooling/evidence patch `v0.13.1`: a complete candidate census plus a deterministic 32-site campaign over kernel, compiler, and skeleton, with all historical compiler probes remeasured. The [corpus outcome](../../corpus/mutation/README.md) owns measured results and limitations; survivors inform future evidence-hardening orders and do not authorize fixes here. Its [work-order receipt](../work-orders/WO-108-mutation-probe.md#ideation-breakout-receipt--implementation-consequences-2026-09-06) adds the implementation-consequences ideation to independent review. This supersedes the activation-preflight recommendation below for WO-108; lifecycle status still comes from the control fold.
 
 **WO-011 source (2026-09-06):** this worktree prepares `v0.13.0` above published `v0.12.0`. The ten-unit feedback compiler and a bounded self-hosted audit are the active implementation. The [executor receipt](../evidence/WO-011/README.md) distinguishes causal fixture evidence, instruction-byte accounting, and separate verifier episodes. Independent repository verification, final review, and integration still follow the control fold. Optional sibling-repo and artifact-organization pilots remain unallocated candidates; the marked sequence is unchanged.
@@ -293,6 +295,19 @@ identity migration.
   collision refusal, verified owner-only backup, source removal only after a
   recoverable canonical copy, and a private capture-to-synthesis manifest.
   Storage reconciliation remains distinct from semantic ideation synthesis.
+- **Unallocated evidence candidate — source-bound feedback refresh:** WO-038's
+  [receipt](../evidence/WO-038/README.md#feedback-evidence-refresh) records a
+  manifest-only change requiring the existing regenerate → bounded live audit
+  → validated recording sequence. Add one resumable helper that diagnoses the
+  changed declared inputs, reuses those existing commands, preserves prior
+  editions, and carries explicit transport/model/effort and budget authority.
+  Fixtures must cover unchanged-source reuse, interrupted audit recovery, and
+  refusal to record stale or incomplete results. Include the host's full
+  return-format contract in the verifier input and retain bounded rejection
+  diagnostics: WO-038 observed an envelope refusal and found a summary bound
+  enforced by the parser but omitted from the verifier prompt and schema.
+  No weaker source pin, hidden model spend, new runtime capability, or WO-038
+  scope expansion is nominated.
 - **Governance candidate — licensing and distribution posture: allocated
   2026-09-06.** The operator decided the posture (`docs/LEGAL.md` §Decision:
   Apache-2.0 code, CC BY 4.0 documentation, DCO inbound, names reserved) and

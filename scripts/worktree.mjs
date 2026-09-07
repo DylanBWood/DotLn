@@ -34,6 +34,7 @@ import {
 import { statusProjection } from "./resume.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { constellation, prepareBeaconDisposal } from "./lib/beacons.mjs";
+import { contributionSignoffRules } from "./lib/contributions.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
@@ -251,6 +252,14 @@ const main = async () => {
     );
     parseReleaseNotes(releaseNotes, releaseNotesPath);
     assertGitHubBodyProfile(releaseNotes, releaseNotesPath);
+    const contributions = contributionSignoffRules(subject);
+    process.stdout.write(
+      `${contributions.map(({ line }) => line).join("\n")}\n`,
+    );
+    if (contributions.some(({ pass }) => !pass)) {
+      process.exitCode = 1;
+      return;
+    }
     const repository = ensureGh(subject);
     const opened = withTemporaryBody(body, (committedBodyPath) => {
       runGit(subject, ["push", "--no-follow-tags", "-u", "origin", branch]);

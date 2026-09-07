@@ -6,33 +6,15 @@ stay open. This document is not a license or legal advice.
 
 ## Current state
 
-Until 2026-09-06 DotLn had no `LICENSE`, `COPYING`, third-party notice,
-contributor agreement, or project-wide license metadata. The repository was
-source-visible but not offered as open-source software. Under GitHub's own
-guidance, default copyright rules apply when a repository has no license; the
-author retains the copyright rights in original expression and grants no general
-permission to use, modify, redistribute, or create derivative works. GitHub's
-Terms separately permit viewing and reproduction through GitHub functionality,
-including in-service forking of public repositories. Public visibility and a
-GitHub fork button therefore do not amount to a general open-source license.
-From the 2026-09-06 planning pull request onward, `LICENSE` (Apache-2.0),
-`LICENSE-docs` (CC-BY-4.0), and `NOTICE` are present; package metadata and
-the publication guard follow in WO-038. The paragraphs below record the state
-that decision replaced.
+The source carries `LICENSE` (Apache-2.0), `LICENSE-docs` (CC-BY-4.0), and `NOTICE`, landed with the 2026-09-06 planning decision. WO-038's source now declares `"license": "Apache-2.0"` and `"private": true` in the root, kernel, compiler, and skeleton manifests, with matching lockfile license metadata. [CONTRIBUTING.md](../CONTRIBUTING.md) states the outside-contributor DCO 1.1 rule and the operator exemption. This is the implementation worktree's state; independent verification, merge, and release publication have their own control evidence.
 
-This is the observed interim state, not a permanent licensing decision. The
-project is currently personal research by and for its operator, with no assumed
-outside contributor, package consumer, hosted user, or commercial customer.
-Whether it will ever be sold is not the deciding trigger: contribution,
-distribution, and collection of other people's data create questions before
-revenue does.
+`npm run license-surfaces` checks every manifest in the current `packages/*` workspace layout, the three pinned license files, and this record's hash declarations. The same check runs in `npm test`, `release check-surfaces`, `worktree publish`, and `release close`. It exercises `npm publish --dry-run` against isolated copies of the selected manifests, using offline npm with empty configuration files and no inherited credentials. Committed checks use Git blobs for the manifests and license files, including the dry-run inputs. A new workspace layout must extend the check before it is accepted.
 
-The root package and `@dotln/skeleton` declare `"private": true`.
-`@dotln/kernel` currently does not, and no workspace declares
-`"license": "UNLICENSED"`. npm recommends `UNLICENSED` plus `private: true`
-when an unpublished package grants no usage rights. Correcting that accidental-
-publication gap is an implementation change for a bounded follow-on, not a
-silent documentation edit inside WO-016.
+The observed npm 10.8.0 dry run returned success for a synthetic package with `private: true` alone. Each manifest therefore also has a `prepublishOnly` command that exits with `DOTLN_PACKAGE_PUBLISH_REFUSED`; the check requires that exact guard and observes its exit code and marker. Publish-time overrides (`publishConfig`) remain absent until the separate publication decision, so a manifest cannot replace the probe's npm options. A missing npm or an unrelated failure does not count as a publication refusal. `private: true` remains npm's ordinary publication barrier, including when lifecycle scripts are explicitly suppressed. Packages are not published by this order.
+
+`worktree publish` checks the raw author identity and parsed `Signed-off-by` trailers on every commit in `origin/main..HEAD`, including merged side-branch commits, before pushing. Outside authors must supply a matching name and email; only the operator's exact public author identity is exempt. The checker uses the local remote-tracking base, does not recheck its historical commits, and makes no identity-authentication claim. It installs no Git hook and changes no settings. The [WO-038 receipt](evidence/WO-038/README.md) carries the executable evidence and limitations.
+
+Before 2026-09-06 the repository was source-visible without a project license or general reuse grant. GitHub's viewing and in-service forking permissions were not a general source license. The superseded interim direction below preserves that history. Contribution, distribution, and collection of other people's data remain decision triggers before revenue does.
 
 As a package-lock observation rather than an independent audit of upstream
 license texts, `@types/node`, `undici-types`, and Prettier are recorded as MIT,
@@ -87,7 +69,7 @@ decision recorded by its author; it is not legal advice.
   same outbound licenses with a Developer Certificate of Origin 1.1
   `Signed-off-by` line on each commit. No contributor license agreement; no
   relicensing right is sought. The operator's own commits carry no sign-off
-  requirement. WO-038 writes `CONTRIBUTING.md` and the publish-time check.
+  requirement. WO-038 supplies `CONTRIBUTING.md` and the publish-time check.
 - **Distribution.** Workspaces stay `private: true` until a separate package
   publication decision; the license is the grant on the source, not a
   distribution channel. Exporting the kit into the operator's own or an
@@ -108,13 +90,7 @@ decision recorded by its author; it is not legal advice.
   project used at work is the operator's question to settle with their own
   agreement or counsel; this record does not answer it.
 
-What this discharges from the gate below: the copyright notice, the code and
-documentation licenses, and the inbound rule (pending WO-038's document and
-check). What remains: package `license` and `private` metadata plus the
-publication guard (WO-038), `THIRD_PARTY_NOTICES` at first bundled
-distribution, the name-confusion check before brand investment, and the
-privacy and service reviews if a hosted or data-collecting surface ever
-appears.
+The decision discharges the copyright notice, the code and documentation licenses, and the inbound rule. WO-038 implements the contribution document, package `license` and `private` metadata, and publication guards. Remaining gates are a separate package-publication decision, `THIRD_PARTY_NOTICES` at first bundled distribution, the name-confusion check before brand investment, and privacy and service reviews if a hosted or data-collecting surface appears.
 
 ## Interim direction
 
@@ -166,11 +142,11 @@ The bounded decision should include (status as of 2026-09-06 in brackets):
 - the copyright-holder and notice text [decided; `NOTICE`];
 - code and documentation license(s), or an explicit continued no-license
   posture [decided; Apache-2.0 and CC-BY-4.0];
-- package `private` and `license` metadata plus publication guards [WO-038];
+- package `private` and `license` metadata plus publication guards [implemented in WO-038 source; evidence and lifecycle in its receipt and generated work-order index];
 - the outbound project license and matching inbound contribution rule before
   accepting work; optionally a DCO to certify provenance, or a lawyer-reviewed
   CLA if additional rights such as relicensing are needed [decided: DCO 1.1,
-  no CLA; `CONTRIBUTING.md` and the publish-time check are WO-038];
+  no CLA; `CONTRIBUTING.md` and the publish-time check implemented in WO-038 source];
 - an inventory of material actually distributed and any required
   `THIRD_PARTY_NOTICES` [open until a bundled artifact is distributed];
 - a non-affiliation/trademark statement [decided; names reserved] and a check

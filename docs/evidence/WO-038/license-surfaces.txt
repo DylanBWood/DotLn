@@ -1,0 +1,32 @@
+
+> license-surfaces
+> node scripts/license-surfaces.mjs
+
+PASS license-surfaces package.json workspaces: observed ["packages/*"]; expected ["packages/*"]
+PASS license-surfaces workspace count: observed 3; expected at least one
+PASS license-surfaces package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces package.json private: observed true; expected true
+PASS license-surfaces package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/compiler/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/compiler/package.json private: observed true; expected true
+PASS license-surfaces packages/compiler/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/compiler/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/kernel/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/kernel/package.json private: observed true; expected true
+PASS license-surfaces packages/kernel/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/kernel/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/skeleton/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/skeleton/package.json private: observed true; expected true
+PASS license-surfaces packages/skeleton/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/skeleton/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces LICENSE: observed sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces LICENSE-docs: observed sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces NOTICE: observed sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces docs/LEGAL.md LICENSE pin: observed cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces docs/LEGAL.md LICENSE-docs pin: observed 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces docs/LEGAL.md NOTICE pin: observed 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/compiler/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/skeleton/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED

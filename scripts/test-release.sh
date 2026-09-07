@@ -12,6 +12,7 @@ test_root="$test_temp_root_result"
 install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 node_bin="$(command -v node)"
 real_git="$(command -v git)"
+real_npm="$(command -v npm)"
 u202f="$(printf '\342\200\257')"
 assert_u202f() {
   "$node_bin" -e 'if (!Buffer.from(process.argv[1], "utf8").toString("hex").includes("e280af")) process.exit(1)' "$1"
@@ -66,7 +67,7 @@ make_repo() {
   git -C "$main" remote set-url origin "$github_origin"
   git -C "$main" switch -c main >/dev/null 2>&1
   mkdir -p "$main/scripts" "$main/docs/work-orders" "$main/docs/control" "$main/docs/releases" "$main/packages/kernel/src" "$main/packages/kernel/test-fixtures" "$main/packages/skeleton/dist/src" "$main/packages/skeleton/src"
-  cp "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$main/scripts/"
+  cp "$script_dir/release.mjs" "$script_dir/release-notes.mjs" "$script_dir/github-repository.mjs" "$script_dir/github-body.mjs" "$script_dir/worktree.mjs" "$script_dir/resume.mjs" "$script_dir/license-surfaces.mjs" "$main/scripts/"
   cp -R "$script_dir/lib" "$main/scripts/lib"
   node "$script_dir/test-beacon-fixture.mjs" "$main"
   cp "$script_dir/../docs/releases/tag-manifest.template.json" "$main/docs/releases/"
@@ -90,6 +91,7 @@ make_repo() {
   write_release_block "$main" v0.2.0
   printf '{"name":"@dotln/kernel","version":"0.1.0","type":"module"}\n' >"$main/packages/kernel/package.json"
   printf '{"name":"@dotln/skeleton","version":"0.2.0"}\n' >"$main/packages/skeleton/package.json"
+  node "$script_dir/test-license-fixture.mjs" "$main"
   cp "$script_dir/../packages/kernel/src/types.ts" "$main/packages/kernel/src/types.ts"
   cp "$script_dir/../packages/kernel/src/core.ts" "$main/packages/kernel/src/core.ts"
   printf '%s\n' \
@@ -159,8 +161,12 @@ make_repo() {
   printf '%s\n' \
     '#!/usr/bin/env bash' \
     'set -euo pipefail' \
+    "real_npm='$real_npm'" \
     'case "${1:-}" in' \
     '  --version) printf "10.8.0\\n" ;;' \
+    '  publish)' \
+    '    if [[ " $* " != *" --dry-run "* ]]; then exit 64; fi' \
+    '    exec "$real_npm" "$@" ;;' \
     '  ci)' \
     '    printf "ci\\n" >>"$DOTLN_NPM_LOG"' \
     '    if [[ "${DOTLN_FIXTURE_NPM_FAIL:-}" == "ci" ]]; then exit 7; fi' \
@@ -383,6 +389,23 @@ if malformed_authority="$(release_command check-surfaces 2>&1)"; then
 fi
 grep -Fq 'work-order heading must contain exactly one strict vX.Y.Z version' <<<"$malformed_authority"
 
+make_repo license_surfaces
+commit_candidate "$main" WO-099 v0.2.1
+surface_pass="$(release_command check-surfaces)"
+grep -Fq 'PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED' <<<"$surface_pass"
+for field in license private; do
+  "$node_bin" -e 'const fs = require("node:fs"); const path = process.argv[1]; const data = JSON.parse(fs.readFileSync(path)); delete data[process.argv[2]]; fs.writeFileSync(path, JSON.stringify(data));' "$main/packages/kernel/package.json" "$field"
+  assert_surface_failure "FAIL license-surfaces packages/kernel/package.json $field: observed missing; expected"
+  printf '%s\n' "$surface_failure_output" | sed -n "/FAIL license-surfaces packages\/kernel\/package.json $field:/p"
+  node "$script_dir/test-license-fixture.mjs" "$main"
+done
+printf '\nchanged license bytes\n' >>"$main/LICENSE"
+assert_surface_failure 'FAIL license-surfaces LICENSE: observed sha256:'
+printf '%s\n' "$surface_failure_output" | sed -n '/FAIL license-surfaces LICENSE:/p'
+node "$script_dir/test-license-fixture.mjs" "$main"
+release_command check-surfaces >/dev/null
+printf 'license-surfaces release preflight fixtures passed (real npm dry runs)\n'
+
 make_repo surfaces_committed_readme
 commit_candidate "$main" WO-099 v0.2.1
 write_release_block "$main" v0.2.0
@@ -416,6 +439,7 @@ git -C "$main" push origin main >/dev/null 2>&1
 assert_surface_failure 'FAIL component-version @dotln/kernel: src changed; observed 0.1.0; previous v0.2.0 0.1.0; expected a different version'
 git -C "$main" update-index --assume-unchanged packages/kernel/package.json
 printf '{"name":"@dotln/kernel","version":"0.1.1"}\n' >"$main/packages/kernel/package.json"
+node "$script_dir/test-license-fixture.mjs" "$main"
 release_command check-surfaces >/dev/null
 assert_surface_failure 'FAIL component-version @dotln/kernel: src changed; observed 0.1.0; previous v0.2.0 0.1.0; expected a different version' --committed
 
@@ -432,6 +456,7 @@ make_repo surfaces_new_component
 mkdir -p "$main/packages/new-component/src"
 printf 'export const first = true;\n' >"$main/packages/new-component/src/index.ts"
 printf '{"name":"@dotln/new-component","version":"0.1.0"}\n' >"$main/packages/new-component/package.json"
+node "$script_dir/test-license-fixture.mjs" "$main"
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 new_component_surface="$(release_command check-surfaces)"
@@ -555,6 +580,9 @@ commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 mkdir -p "$fixture/no-gh-bin"
 ln -s "$bin/git" "$fixture/no-gh-bin/git"
+ln -s "$node_bin" "$fixture/no-gh-bin/node"
+ln -s "$real_npm" "$fixture/no-gh-bin/npm"
+ln -s /bin/sh "$fixture/no-gh-bin/sh"
 missing_gh_trace="$fixture/git.trace"
 if missing_gh_output="$(cd "$main" && PATH="$fixture/no-gh-bin" DOTLN_NPM_LOG="$npm_log" GIT_TRACE="$missing_gh_trace" "$node_bin" "$main/scripts/release.mjs" close WO-099 --publish 2>&1)"; then printf 'error: release accepted missing gh\n' >&2; exit 1; fi
 test -s "$missing_gh_trace"

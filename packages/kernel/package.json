@@ -1,6 +1,8 @@
 {
   "name": "@dotln/kernel",
   "version": "0.2.1",
+  "private": true,
+  "license": "Apache-2.0",
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -12,6 +14,7 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "test": "rm -rf dist && tsc -b --force && ls dist/test/*.test.js >/dev/null && node --test dist/test/*.test.js"
+    "test": "rm -rf dist && tsc -b --force && ls dist/test/*.test.js >/dev/null && node --test dist/test/*.test.js",
+    "prepublishOnly": "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
   }
 }

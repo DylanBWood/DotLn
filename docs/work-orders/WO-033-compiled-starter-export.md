@@ -291,6 +291,14 @@ give the paired-wave workflow the sync step it is missing.
   remains only as an explicit opt-out that writes the no-rights-granted
   notice as `LICENSE-PENDING.md`. The command never invents license text;
   WO-038 owns the package metadata and the publication guard.
+  **WO-038 retarget reconciliation (2026-09-06):** the redirected draft
+  already states the decided default, so it is retained rather than replaced
+  by the earlier explicit-license proposal. `LICENSE`, `LICENSE-docs`, and
+  `NOTICE` must each be listed and hashed in `KIT-MANIFEST.json` on the
+  default path; only an explicit `--license none` selects the no-rights
+  notice. WO-038's [receipt](../evidence/WO-038/README.md) records the checked
+  core license surfaces that this exporter must carry. This note changes no
+  license choice and implements no export command in WO-038.
 - **Phase 4 — lane sync.** `npm run worktree -- sync WO-NNN`, run inside the
   order's worktree after a sibling has merged: mint a recovery checkpoint ref
   for the order without appending a lifecycle event; `git stash push

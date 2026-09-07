@@ -22,6 +22,7 @@ import {
   resolveGitHubPushTarget,
 } from "./github-repository.mjs";
 import { assertGitHubBodyProfile } from "./github-body.mjs";
+import { licenseSurfaceRules } from "./license-surfaces.mjs";
 import {
   ensureClean,
   failureOf,
@@ -530,6 +531,7 @@ const checkSurfaces = (root, options = {}) => {
     releaseBlockRule(root, authority, latest, revision),
     ...componentVersionRules(root, latest, local, remote, revision),
     githubBodyRule(root, state, revision),
+    ...licenseSurfaceRules(root, revision),
   ];
   return {
     passed: rules.every(({ pass }) => pass),
