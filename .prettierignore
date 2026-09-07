@@ -35,3 +35,9 @@ docs/evidence/WO-011/feedback.json
 docs/verifications/WO-*/
 docs/final-reviews/WO-*/
 docs/releases/v*.md
+
+# Immutable plan-refutation receipts; the plan gate owns their exact bytes.
+docs/planning/refutations/*.json
+docs/planning/refutations/*-[0-9][0-9][0-9].md
+# Current immutable feedback evidence edition after shared transport changes.
+docs/evidence/WO-041/feedback/feedback.json

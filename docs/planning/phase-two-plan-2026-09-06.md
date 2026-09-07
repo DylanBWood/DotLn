@@ -445,6 +445,8 @@ records the wave receipt here (elapsed per phase from `status`, operator
 interventions, integration repair, time away), per the concurrent plan's
 trial section.
 
+**Operator correction (2026-09-07):** pairings express possible implementation overlap, not synchronized lifecycle stages. Implementation and verification may progress regardless of any sibling's phase. The operator voluntarily completes a final-review → PR → merge → release-close window before opening the next; no cross-order gate is added. The integrating actor owns retiming and projection reconciliation within that window. The [execution guide](../product/07-execution-guide.md#independent-workflows-and-integration) distinguishes integration bookkeeping from actual changed acceptance claims, so an unrelated merge does not create another mandatory review cycle. The marked sequence and real feature dependencies are unchanged.
+
 ## Concurrency: what is safe, what is untested, and the procedure
 
 **Structurally safe.** WO-030 gave each order its own append-only control
@@ -455,11 +457,10 @@ while the other stays open, and attribute releases correctly even with a
 third branch created before the first merge. Checkpoint refs are per order.
 `main` is a single serialized integration point through pull requests.
 
-**Operationally untested.** No paired wave has run; every order after WO-030
-was executed serially. The costs the concurrent plan asks to measure
-(elapsed per phase, operator interventions, integration repair, time away)
-have no observation. Wave 1 is the first, and the order that merges second
-records the receipt in this document.
+**Dated trial status.** The original 2026-09-06 plan had no observed paired wave.
+WO-038 and WO-041 now supply the first observation, recorded below. Their
+extra integration cycle triggered the operator correction above; no throughput
+improvement is claimed from that trial.
 
 **The procedure for the remaining lane after a sibling merges** (manual
 until WO-033 ships `worktree sync`, which automates exactly these steps):
@@ -481,15 +482,62 @@ until WO-033 ships `worktree sync`, which automates exactly these steps):
    pasted into both edition lock lines); authored conflicts are resolved by
    the executor; control segments never conflict unless both orders wrote the
    same segment, which the fold refuses.
-5. Retime if the order's release target no longer sits above the latest
-   published tag: edit the H1 and README block with a dated note per
-   06-roadmap.md §Release boundary.
-6. Rerun the order's evidence. If the integrated base changed the subject
-   substantively, return through `resume: fix` and a fresh numbered
-   verification before final review; a passing report on the old base cannot
-   certify the combined subject.
+5. Retime a colliding unpublished target with `npm run release -- prepare`;
+   its existing classification controls the next version, and the command
+   updates the H1, README source claim, and dated roadmap note.
+6. Assess which acceptance claims changed and run their required checks on
+   the integrated tree. Preserve old reports with their actual source identity;
+   record carried-forward claims and integration evidence in the current
+   review. Mere upstream incorporation, projections, additive documentation,
+   or release metadata are not a failure. An actual behavior-changing resolution
+   or acceptance defect returns only the affected finding through repair and
+   independent verification. This procedure adds no sibling-phase prerequisite.
 7. Record the sync (stash message, base commit before and after, conflicts by
    class, retime if any) in the order's evidence README.
+
+### First-pair receipt — WO-038 and WO-041, observed 2026-09-07
+
+This is lane 0, the first measured pair (called the first wave in FINAL-001).
+At the 17:16:36 UTC observation, `resume status --json` reports the following
+latest completed attempts in milliseconds; these are wall-clock spans, not
+model-compute or operator-attention measurements.
+
+| Order  | Implementation |        Verification |                     Repair |              Final review |
+| ------ | -------------: | ------------------: | -------------------------: | ------------------------: |
+| WO-038 |     43,658,628 |             786,612 |              not attempted |                 1,625,815 |
+| WO-041 |     36,409,941 | 1,109,388 (VER-002) | 1,344,824 (VER-001 repair) | 557,663 (FINAL-001, fail) |
+
+WO-041's first verification failed on two real mechanism defects; its repair
+and VER-002 are separate from the integration overhead. VER-002 passed at
+16:20:02.148 UTC, WO-038 merged at 16:23:01 and was tagged at 16:25:04, and
+WO-041's final review then failed. The [review](../final-reviews/WO-041/FINAL-001.md)
+separates real release-surface omissions from the unrelated upstream merge.
+Its failed final-review span added 9 minutes 17.663 seconds before the current
+repair even opened. Seven files conflicted: three authored files and four
+generated projections; control segments did not. The [sync record](../evidence/WO-041/README.md#repair-of-final-001-and-workflow-breakout--2026-09-07)
+names the preserved stash, before/after commits, retime, and new feedback edition.
+
+The current repair opened at 16:50:30.268 UTC and was still in progress at the
+observation. It also implements the operator's workflow correction, so its
+eventual full duration must not be labeled pure integration cost. This session
+records one repair dispatch and three ideation/correction messages. Earlier
+operator-intervention counts and time away were not measured; waiting and
+interruptions remain in the elapsed values. Overlapping spans cannot be summed
+as total throughput. There is no demonstrated time saving from this pair.
+
+**Completion note (2026-09-07, FINAL-002):** the repair closed at 17:46:26.253
+UTC after 3,355,985 ms; VER-003 opened at 17:49:12.203 UTC and passed at
+18:04:36.154 UTC after 923,951 ms; FINAL-002 opened at 18:20:35.932 UTC, and its
+own span is the control log's `finalReview` value once its result is recorded.
+The repair span covers the FINAL-001 findings and the breakout's new code
+together, so it is not a pure integration cost, as the paragraph above says.
+
+The operator's disposition is to preserve independent implementation and
+verification, voluntarily serialize final review through release close, and
+remove automatic repeat cycles for integration-only changes. The corresponding
+release helpers and feedback dependency projection are WO-041 breakout work;
+the fuller sync helper remains WO-033. No phase-count gate or automatic return
+to serial implementation follows from this observation.
 
 ## Declined candidates — the NoOp register
 
@@ -580,9 +628,10 @@ Added by the redirect:
 
 - If the operator prefers the enterprise path over the console, run WO-033
   alone first, then WO-034 ∥ WO-032; nothing else moves.
-- If the first paired wave costs more in integration repair than it saves,
-  the serial fallback order above applies and WO-033's `worktree sync` still
-  lands as a single-lane convenience.
+- The first pair exposed avoidable integration overhead. The operator's
+  2026-09-07 correction chooses independent progress and evidence-scoped
+  integration; a return to serial implementation would require a new operator
+  choice, not an inferred phase barrier or automatic fallback.
 - If WO-033 proves too large in execution, split phases 3 and 4 into a
   follow-on order before activation, recorded in the map; the pilot (WO-034)
   then depends on that follow-on.

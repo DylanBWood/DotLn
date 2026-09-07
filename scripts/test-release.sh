@@ -389,6 +389,49 @@ if malformed_authority="$(release_command check-surfaces 2>&1)"; then
 fi
 grep -Fq 'work-order heading must contain exactly one strict vX.Y.Z version' <<<"$malformed_authority"
 
+make_repo surfaces_local_snapshot
+commit_candidate "$main" WO-099 v0.2.1
+# A sibling's tag shares the namespace but is outside this subject's history.
+git -C "$main" switch -c unrelated-release >/dev/null 2>&1
+printf 'unrelated sibling source\n' >"$main/unrelated.txt"
+git -C "$main" add unrelated.txt
+git -C "$main" commit -m 'unrelated sibling release' >/dev/null
+git -C "$main" tag -a v0.2.2 -m 'unrelated sibling tag'
+git -C "$main" switch main >/dev/null 2>&1
+git -C "$main" remote remove origin
+if ! local_surface="$(release_command check-surfaces --local)"; then
+  printf '%s\n' "$local_surface" >&2
+  exit 1
+fi
+grep -Fq 'Tag observation: local ancestors of HEAD only; publication checks origin.' <<<"$local_surface"
+grep -Fq 'latest local tag v0.2.0' <<<"$local_surface"
+if release_command check-surfaces >/dev/null 2>&1; then
+  printf 'error: remote surface check did not require origin\n' >&2
+  exit 1
+fi
+printf 'local release surfaces ignored an unrelated sibling tag and passed without a remote; authoritative check still requires origin\n'
+
+make_repo prepare_independent
+git -C "$main" switch -c wo-099 >/dev/null 2>&1
+mkdir -p "$main/docs/control/orders" "$main/docs/product"
+printf '# WO-099 — fixture (v0.2.0)\n\n**Release classification:** patch. Existing scope.\n\n**Objective:** Fixture retiming.\n' >"$main/docs/work-orders/WO-099-fixture.md"
+printf '# Roadmap\n\n## Release boundary\n\nPreserve the existing boundary.\n' >"$main/docs/product/06-roadmap.md"
+printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md"}' >"$main/docs/control/orders/WO-099.jsonl"
+printf '%s\n' '{"schemaVersion":1,"type":"WorkOrderActivated","workOrderId":"WO-100","workOrderPath":"docs/work-orders/WO-100-fixture.md"}' >"$main/docs/control/orders/WO-100.jsonl"
+write_control_events "$main/docs/control/orders/WO-101.jsonl" WO-101 docs/work-orders/WO-101-fixture.md
+cp -R "$main/docs/control" "$fixture/control-before"
+git -C "$main" for-each-ref >"$fixture/refs-before"
+prepared="$(release_command prepare --local)"
+grep -Fq 'Retimed WO-099: v0.2.0 → v0.2.1' <<<"$prepared"
+grep -Fq 'WO-099 collision retiming' "$main/docs/product/06-roadmap.md"
+diff -r "$main/docs/control" "$fixture/control-before"
+git -C "$main" for-each-ref >"$fixture/refs-after"
+cmp "$fixture/refs-before" "$fixture/refs-after"
+prepared_again="$(release_command prepare --local)"
+grep -Fq 'no files changed' <<<"$prepared_again"
+release_command check-surfaces --local >/dev/null
+printf 'release preparation CLI preserved three independent control segments and all Git refs\n'
+
 make_repo license_surfaces
 commit_candidate "$main" WO-099 v0.2.1
 surface_pass="$(release_command check-surfaces)"
@@ -437,6 +480,7 @@ printf '\n// source change\n' >>"$main/packages/kernel/src/core.ts"
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 assert_surface_failure 'FAIL component-version @dotln/kernel: src changed; observed 0.1.0; previous v0.2.0 0.1.0; expected a different version'
+assert_surface_failure 'FAIL component-version @dotln/kernel: src changed; observed 0.1.0; previous v0.2.0 0.1.0; expected a different version' --local
 git -C "$main" update-index --assume-unchanged packages/kernel/package.json
 printf '{"name":"@dotln/kernel","version":"0.1.1"}\n' >"$main/packages/kernel/package.json"
 node "$script_dir/test-license-fixture.mjs" "$main"

@@ -12,6 +12,14 @@ import {
 } from "@dotln/compiler";
 import type { Command, ResultEnvelope, WorkOrder } from "@dotln/kernel";
 import {
+  planPrompt,
+  planResultSchema,
+  validatePlanRequest,
+  validatePlanResult,
+  type PlanRefutationRequest,
+  type PlanRefutationResult,
+} from "./plan-refutation-protocol.js";
+import {
   parseWorkerResult,
   resultId,
   validateRequest,
@@ -62,10 +70,21 @@ export interface RepairWorkerResult {
 }
 export type EvidenceWorkerResult =
   VerificationWorkerResult | RepairWorkerResult;
-export type TransportRequest = WorkerRequest | EvidenceWorkerRequest;
-export type TransportResult = WorkerResult | EvidenceWorkerResult;
+export type TransportRequest =
+  WorkerRequest | EvidenceWorkerRequest | PlanRefutationRequest;
+export type TransportResult =
+  WorkerResult | EvidenceWorkerResult | PlanRefutationResult;
 export type TransportResultFor<R extends TransportRequest> =
-  R extends EvidenceWorkerRequest ? EvidenceWorkerResult : WorkerResult;
+  R extends PlanRefutationRequest
+    ? PlanRefutationResult
+    : R extends EvidenceWorkerRequest
+      ? EvidenceWorkerResult
+      : WorkerResult;
+
+export const isPlanRequest = (
+  request: TransportRequest,
+): request is PlanRefutationRequest =>
+  "kind" in request && request.kind === "plan-refutation";
 
 export const isEvidenceRequest = (
   request: TransportRequest,
@@ -378,6 +397,7 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
 }
 
 export function validateTransportRequest(request: TransportRequest): void {
+  if (isPlanRequest(request)) return validatePlanRequest(request);
   if (!isEvidenceRequest(request)) return validateRequest(request);
   try {
     assertVerificationTask(request.capsule);
@@ -405,6 +425,7 @@ export function validateTransportRequest(request: TransportRequest): void {
   }
 }
 export function transportResultSchema(request: TransportRequest): object {
+  if (isPlanRequest(request)) return planResultSchema(request.subject);
   return isEvidenceRequest(request)
     ? evidenceResultSchema(request)
     : workerResultSchema(request);
@@ -414,12 +435,18 @@ export function parseTransportResult<R extends TransportRequest>(
   request: R,
 ): TransportResultFor<R> {
   return (
-    isEvidenceRequest(request)
-      ? parseEvidenceResult(value, request)
-      : parseWorkerResult(value, request)
+    isPlanRequest(request)
+      ? validatePlanResult(value, request.subject)
+      : isEvidenceRequest(request)
+        ? parseEvidenceResult(value, request)
+        : parseWorkerResult(value, request)
   ) as TransportResultFor<R>;
 }
 export function transportPrompt(request: TransportRequest): string {
+  if (isPlanRequest(request)) {
+    validatePlanRequest(request);
+    return planPrompt(request);
+  }
   if (!isEvidenceRequest(request)) return workerPrompt(request);
   validateTransportRequest(request);
   return JSON.stringify({

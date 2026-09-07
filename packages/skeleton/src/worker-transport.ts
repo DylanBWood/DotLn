@@ -11,6 +11,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { feedbackClaudeSettings } from "./loadouts/feedback.js";
+import { PLAN_REFUTATION_LIMITS } from "./plan-refutation-protocol.js";
 import {
   WorkerFailure,
   WORKER_TIMEOUT_MS,
@@ -25,6 +26,7 @@ import {
   validateTransportRequest,
   transportPrompt,
   transportResultSchema,
+  isPlanRequest,
   type TransportRequest,
   type TransportResultFor,
 } from "./verification-protocol.js";
@@ -206,9 +208,11 @@ export function canonicalWorkerArgs(
       '{"mcpServers":{}}',
       "--no-chrome",
       "--max-budget-usd",
-      "feedback" in request && request.feedback
-        ? FEEDBACK_VERIFIER_LIMITS.maxBudgetUsd
-        : "1.00",
+      isPlanRequest(request)
+        ? PLAN_REFUTATION_LIMITS.maxBudgetUsd
+        : "feedback" in request && request.feedback
+          ? FEEDBACK_VERIFIER_LIMITS.maxBudgetUsd
+          : "1.00",
     ];
   }
   if (request.effort !== "unknown") throw new WorkerFailure("profile-refused");
@@ -370,8 +374,9 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         args,
         cwd: request.cwd,
         input: transportPrompt(request),
-        timeoutMs:
-          "feedback" in request && request.feedback
+        timeoutMs: isPlanRequest(request)
+          ? PLAN_REFUTATION_LIMITS.timeoutMs
+          : "feedback" in request && request.feedback
             ? FEEDBACK_VERIFIER_LIMITS.timeoutMs
             : WORKER_TIMEOUT_MS,
       });

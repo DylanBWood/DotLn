@@ -308,12 +308,16 @@ give the paired-wave workflow the sync step it is missing.
   (never `pop`, never `drop`); report every conflicting path classified as
   generated projection (regenerated automatically: `current.md`, the index,
   the publication locks, the generated harness configuration) or authored
-  (left for the executor); print the retime instruction when the order's
-  release target no longer sits above the latest published tag; and remind
-  the executor that a substantive integration change returns through repair
-  and fresh verification. It refuses outside a `wo-NNN` worktree, when the
-  sibling is not contained in `origin/main`, and when ignored intake is
-  present without a named backup.
+  (left for an explicit resolution); invoke `release prepare` for a colliding
+  unpublished target and report which acceptance claims need new evidence.
+  Under the operator's 2026-09-07 correction, no sibling phase is a prerequisite
+  and integration-only changes do not append a repair event or invalidate a
+  verification report. The integrating actor records current checks and carries
+  forward unchanged claims; a behavior-changing resolution or an actual defect
+  needs bounded repair and independent evidence. It refuses outside a matching
+  `wo-NNN` worktree, when the requested upstream cannot be resolved, and when
+  ignored intake is present without a named backup. The operator voluntarily
+  serializes final review through release close; this helper installs no gate.
 - **Bounded boy-scout item (nominated 2026-09-06, authorized here):**
   reorder the root `npm test` chain so the forced package build precedes the
   first suite that loads built output (`scripts/test-worktree.sh` through
@@ -412,8 +416,11 @@ launchpad-and-target fixture; the write-backs below.
    a conflicting generated projection, a conflicting authored file, and a
    colliding release target: mints the checkpoint, keeps the named stash,
    updates the base without rewriting commits, regenerates the projections,
-   reports the authored conflict, prints the retime instruction, and refuses
-   its three refusal cases without changing the tree.
+   reports the authored conflict, applies collision retiming, and refuses
+   its three refusal cases without changing the tree. Vary a third order's
+   lifecycle phase and prove it never gates the sync or appends control events;
+   distinguish an integration-only case from a behavioral conflict requiring
+   affected-claim evidence.
 7. Write-backs land: `docs/siblings/README.md` created with the starter's
    entry and the export receipt convention, plus a dated capability-table row
    for `launchpad.starter` at its evidenced level; 03 §Platform and instance

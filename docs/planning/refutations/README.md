@@ -1,22 +1,145 @@
-# Plan refutation receipts
+# Plan-refutation receipts
 
-Each planning pass produces one blinded refutation receipt here before its
-pull request opens. The refuter is a fresh episode that receives the vision's
-thesis sections, the five UIFA roles, the capability rows, and the marked
-sequence's work orders (title, objective, acceptance criteria, non-goals) and
-never the planner's plan, ledger section, or narrative. It returns, for every
-order, whether it is thesis-advancing, machinery, or drift, with the thesis,
-the capability row, and the roles served; for the horizon, the single largest
-remaining gap to the one-paragraph story and a `pass` or `hold` verdict with
-reasons. A receipt is immutable once its disposition block is written; a
-re-run creates the next receipt.
+`npm run plan -- refute` asks a fresh refuter whether the marked planning
+horizon serves the vision. It defaults to the Entropy Reducer identity,
+Contra-Auguste mask, architecture-and-semantics lens, and Claude Code's existing
+print transport with `claude-fable-5-1` at `max`. `--transport codex-cli-exec`
+uses `gpt-6-astra` with effort `unknown`, the bounded transport's observed
+selection contract. Both record launch selections and harness version;
+effective provider model and effort readback remain unknown. `fake` is for
+fixtures and cannot satisfy a planning gate.
 
-Until WO-041 ships `npm run plan -- refute`, the `plan-refuter` loadout, the
-`plan-refutation-v1` schema, and the evidence-gate check, a receipt is a manual
-blinded dispatch and says so in its header. The first receipt is
-[`2026-09-06-phase-two-redirect.md`](2026-09-06-phase-two-redirect.md).
+The episode has a twenty-minute deadline; Claude print retains a $5 budget cap.
+An interrupted or invalid result produces no judgment receipt and cannot pass
+the gate. A transport retry is disclosed in the executor evidence.
 
-Receipts are named `<date>-<slug>.md` with a sibling `.json` holding the
-validated result. The execution guide's §Operator-opened planning pass names
-the receipt as a standard artifact and the rule that a pass never certifies
-its own direction.
+Run `npm run plan -- subject` to inspect the committed-only input. Commit the
+draft subject before refuting it. The host reads Git blobs for the map's marked
+sequence and every listed order. It hashes those exact bytes plus the five
+vision thesis subtrees, exclusions, role table, and capability identifier/scope
+and level cells. Dated capability assessments remain in source order. The
+refuter receives only the thesis and exclusion passages, roles, capability ids
+and levels, and each order's title, objective, numbered acceptance criteria and
+non-goals. The map's labels, planner narrative, ledger, assumptions, rationale
+and earlier verdicts are excluded. The hash includes complete order bytes even
+though their narrative is not sent.
+
+The host compiles `plan-refuter.v1` with `repo.read*` and `report.emit`, no other
+grants, explicit write/remote/settings/decision denials, and a one-shot cadence.
+An empty temporary working directory and the existing transports' disabled
+model tools prevent repository traversal. Authentication remains the CLI
+broker's responsibility. A request does not grant the model access to local
+credentials, private intake or the planner's session.
+
+The result is the closed `plan-refutation-v1` object: `orders`, `largestGap`,
+`planVerdict`, and `holdReasons`. Every order appears exactly once, with
+`workOrderId`, `verdict`, `thesis`, `capabilityRow`, `rolesServed`, and `reason`.
+Theses use the vision's heading anchors. Exclusions use
+`what-dotln-is-not:1` through the current exclusion count. Roles use the five
+literal UIFA role names. An advancing order names an existing capability id or
+`new:<capability.id>`. Machinery names neither a thesis nor a capability row
+(`null` for both). Drift cites a thesis or exclusion and uses a null row.
+
+`largestGap` contains a thesis anchor, reason, work-order id, and criterion id.
+Each `holdReasons` entry names `workOrderId`, `criterionId` (`criterion:1`,
+etc.) and a reason. The host constructs a hold when any order drifts, no order
+advances a thesis, or the gap's thesis is untouched without a later-order
+deferral. For an omitted model hold, the affected order's first criterion is
+the deterministic repair target; a model-provided hold can name a more specific
+criterion. A non-goal can explicitly defer a thesis using:
+
+```markdown
+<!-- dotln-plan-defer: the-differentiated-interface -> WO-999 -->
+```
+
+The named later order must be a committed work order strictly after the
+deferring order in the same marked sequence. Earlier orders, the order itself,
+and every order outside that sequence are refused, including closed orders
+from past horizons. Ordinary prose remains visible to the refuter; this marker
+makes the structural exception checkable without another model judgment.
+
+Each attempt creates `<date>-<slug>-NNN.json` and `.md` with a shared immutable
+receipt hash, committed subject revision/hash, global append ordinal and prior
+receipt hash, launch provenance, validated result, stable hold addresses, and
+dated accepted dispositions. The JSON is canonical evidence; Markdown must
+equal its deterministic rendering. Existing files cannot be overwritten or
+deleted to reset history. `--slug <public-label>` selects the readable address.
+The writer serializes publication with a checkout-local lock; an interrupted
+write fails loudly, and a stale lock or incomplete pair requires inspection.
+
+Answer a hold by changing its named criterion, committing the subject, and
+passing `--dispositions <contained-json-file>` to a fresh refutation. That file
+is an array such as:
+
+```json
+[
+  {
+    "receiptId": "2030-01-02-example-001",
+    "holdId": "hold-0123456789abcdef01234567",
+    "kind": "accepted",
+    "date": "2030-01-02",
+    "workOrderId": "WO-999",
+    "criterionId": "criterion:1",
+    "change": "Require the missing behavior in the named criterion."
+  }
+]
+```
+
+Keep input disposition files outside this receipt directory. Every prior hold
+must appear either in a dated accepted disposition naming a changed criterion
+or as the exact same hold in the new result. At least one held criterion must
+change relative to each earlier held subject; whitespace-only changes and
+edits elsewhere cannot re-roll a verdict. These are text-boundary checks, not
+proof that a textual edit fixes the product judgment. A third consecutive hold
+over the same ordered ids stops that pass, even if labels change. A subsequent
+pass may change the criteria and carry the earlier dispositions; it does not
+erase the earlier findings.
+
+An operator may explicitly authorize an override:
+
+```sh
+npm run plan -- override <receipt-id> <hold-id> '<reason>' \
+  --capture docs/intake/notes/<operator-instruction>.md \
+  --capture-hash sha256:<capture-digest> \
+  --harness <harness> --harness-version <version> --model <model> \
+  --effort <effort> --source <source> --account-label <opaque-label>
+```
+
+The capture must be ignored, untracked and contained in local intake. The
+command checks its bytes against the supplied SHA-256 without copying its
+text. It appends `PlanHoldOverridden` to
+`docs/control/plan-refutations.jsonl`, using the shared lifecycle actor parser
+and the acting session's account label. The gate reads only that attributed,
+timestamped log. Receipt prose never supplies authority. The committed tree
+cannot authenticate the person behind a captured instruction; attribution
+exposes a planner that writes its own override, it does not prove human consent.
+
+Before writing, the host runs the shared local-terms screen over result,
+metadata and rendered receipt. The optional operator list is
+`docs/control/local/terms.txt`, one term per line, with `#` comments. Neither
+the list nor hashes of its terms enter public evidence. Matching normalizes
+Unicode and case and compares complete token spans with separators removed,
+including phrases of any listed length and spans across line breaks. It keeps
+token boundaries and checks each surface separately. A match reports only
+surface, starting line and count. Missing lists are explicitly `unavailable`,
+never a silent clean-room pass. Fixtures register only synthetic terms. This
+realizes the small shared screen needed by WO-041 ahead of its WO-039 consumers.
+
+`npm run plan -- check` and `npm test` validate the receipt chain and enforce
+dated planning headings forward from the first-parent introduction commit.
+Pre-existing headings and the six manual 2026-09-06 redirect receipts retain
+their original standard. Every new pass needs a receipt; the current horizon
+must match the current committed/workspace subject. Prior receipts retain their
+committed snapshots, with holds carried forward through the chain.
+
+The [first manual receipt](2026-09-06-phase-two-redirect.md) records the original
+redirect; [receipt 006](2026-09-06-phase-two-redirect-006.md) is that historical
+pass's standing verdict. The new gate does not reinterpret their result format
+or retroactively impose its three-hold stop.
+
+`--evidence-only` records an instrument run against a committed snapshot without
+claiming to reopen or certify a planning pass. WO-041's live receipt uses this
+mode against the activation-base sequence. Its verdict on WO-041 is advisory;
+the test suite and independent verifier supply evidence about the instrument.
+The executor stages the receipt with its code; the final reviewer commits it
+under the work-order workflow. The historical manual receipts are not changed.

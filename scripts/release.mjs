@@ -22,6 +22,10 @@ import {
   resolveGitHubPushTarget,
 } from "./github-repository.mjs";
 import { assertGitHubBodyProfile } from "./github-body.mjs";
+import {
+  applyReleasePreparation,
+  planReleasePreparation,
+} from "./lib/release-preparation.mjs";
 import { licenseSurfaceRules } from "./license-surfaces.mjs";
 import {
   ensureClean,
@@ -173,6 +177,19 @@ const latestVersion = (...maps) => {
     ),
   ];
   return versions.sort(compareVersions).at(-1);
+};
+// Worktrees share tag refs. A sibling's release is not this subject's baseline
+// until the subject integrates that history; publication still checks origin.
+const ancestralLocalTags = (root) => {
+  const reachable = new Set(
+    runGit(root, [
+      "for-each-ref",
+      "--merged=HEAD",
+      "--format=%(refname:strip=2)",
+      "refs/tags",
+    ]).split("\n"),
+  );
+  return new Map([...localTags(root)].filter(([name]) => reachable.has(name)));
 };
 const nestedTagConflict = (tag, ...maps) =>
   maps
@@ -348,12 +365,18 @@ const componentPackages = (root, revision) => {
     .sort((left, right) => left.name.localeCompare(right.name));
 };
 
-const releaseBlockRule = (root, authority, latest, revision) => {
+const releaseBlockRule = (
+  root,
+  authority,
+  latest,
+  revision,
+  localOnly = false,
+) => {
   const expected =
     !latest || compareVersions(authority.version, latest) > 0
       ? authority.version
       : latest;
-  const context = `(work-order target ${authority.version}; latest published ${latest ?? "none"})`;
+  const context = `(work-order target ${authority.version}; latest ${localOnly ? "local tag" : "published"} ${latest ?? "none"})`;
   const source = repositoryFile(root, "README.md", revision);
   const lines = source.split("\n").map((line) => line.replace(/\r$/, ""));
   const beginMarker = "<!-- DOTLN-RELEASE-BEGIN -->";
@@ -524,11 +547,22 @@ const checkSurfaces = (root, options = {}) => {
     );
   const authority =
     options.authority ?? readWorkOrderAuthority(root, state, revision);
-  const local = options.local ?? localTags(root);
-  const remote = options.remote ?? remoteTags(root);
+  const local =
+    options.local ??
+    (options.localOnly ? ancestralLocalTags(root) : localTags(root));
+  const remote =
+    options.remote ??
+    (options.localOnly
+      ? new Map(
+          [...local].map(([name, tag]) => [
+            name,
+            { ...tag, annotated: tag.objectType === "tag" },
+          ]),
+        )
+      : remoteTags(root));
   const latest = latestVersion(remote);
   const rules = [
-    releaseBlockRule(root, authority, latest, revision),
+    releaseBlockRule(root, authority, latest, revision, options.localOnly),
     ...componentVersionRules(root, latest, local, remote, revision),
     githubBodyRule(root, state, revision),
     ...licenseSurfaceRules(root, revision),
@@ -1702,17 +1736,47 @@ const publishHistoricalNotes = (tag) => {
 const main = () => {
   const [action, ...args] = process.argv.slice(2);
   if (action === "close") return close(args[0], args.slice(1));
+  if (action === "prepare") {
+    if (args.length > 1 || (args.length === 1 && args[0] !== "--local"))
+      throw new Error("usage: release prepare [--local]");
+    const localOnly = args.includes("--local");
+    const state = parseControlState(toolRoot);
+    const latest = latestVersion(
+      localOnly ? localTags(toolRoot) : remoteTags(toolRoot),
+    );
+    const plan = planReleasePreparation(
+      toolRoot,
+      state,
+      latest,
+      new Date().toISOString().slice(0, 10),
+    );
+    applyReleasePreparation(plan);
+    process.stdout.write(
+      `${plan.edits.length ? `Retimed ${state.workOrderId}: ${plan.previous} → ${plan.target}; updated its heading, README claim, and dated roadmap note.` : `${state.workOrderId} target ${plan.target} remains current; no files changed.`}\nTag observation: ${localOnly ? "local snapshot only" : "origin"}.\n`,
+    );
+    return;
+  }
   if (action === "check-surfaces") {
+    const localOnly = args.includes("--local");
+    const selection = args.filter((arg) => arg !== "--local");
     if (
-      args.length > 2 ||
-      (args.length > 0 && args[0] !== "--committed") ||
-      (args.length === 2 && !/^WO-\d{3}$/.test(args[1]))
+      args.filter((arg) => arg === "--local").length > 1 ||
+      selection.length > 2 ||
+      (selection.length > 0 && selection[0] !== "--committed") ||
+      (selection.length === 2 && !/^WO-\d{3}$/.test(selection[1]))
     )
-      throw new Error("usage: release check-surfaces [--committed [WO-NNN]]");
+      throw new Error(
+        "usage: release check-surfaces [--local] [--committed [WO-NNN]]",
+      );
     const result = checkSurfaces(toolRoot, {
-      revision: args.includes("--committed") ? "HEAD" : undefined,
-      expectedWorkOrderId: args[1],
+      revision: selection.includes("--committed") ? "HEAD" : undefined,
+      expectedWorkOrderId: selection[1],
+      localOnly,
     });
+    if (localOnly)
+      process.stdout.write(
+        "Tag observation: local ancestors of HEAD only; publication checks origin.\n",
+      );
     process.stdout.write(result.report);
     if (!result.passed) process.exitCode = 1;
     return;
@@ -1751,7 +1815,7 @@ const main = () => {
     return publishHistoricalNotes(tag);
   }
   throw new Error(
-    "usage: release check-surfaces [--committed [WO-NNN]] | release close WO-NNN [--publish] | release validate <manifest.json> | release manifest-from-tag vX.Y.Z | release notes vX.Y.Z | release list | release publish-notes vX.Y.Z",
+    "usage: release prepare [--local] | release check-surfaces [--local] [--committed [WO-NNN]] | release close WO-NNN [--publish] | release validate <manifest.json> | release manifest-from-tag vX.Y.Z | release notes vX.Y.Z | release list | release publish-notes vX.Y.Z",
   );
 };
 
