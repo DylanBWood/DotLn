@@ -1,4 +1,4 @@
-# `@dotln/compiler` v0.6.0
+# `@dotln/compiler` v0.7.0
 
 The pure DotLn composition compiler. It has zero runtime dependencies and no
 I/O: callers pass a `LoadoutGraph` plus an explicit environment and receive a
@@ -100,3 +100,14 @@ and [tests](test/feedback.test.ts).
 PolarAxis evaluation, multi-active lowering, saved builds, compatibility
 migration, set bonuses, and interactive editing remain deferred. Their types do
 not imply executable support.
+
+## Harness target
+
+`lowerToHarness` accepts a separate `harness-v1` program wrapper, compiled
+feedback, the matching compiled authority envelope and an observed profile.
+It returns origin-addressed files, their manifest and unavailable-capability
+residue. It performs no I/O and changes no existing loadout semantic hash.
+Profiles with hooks bind the built feedback boundary and host bytes; an
+unobserved capability never becomes an emitted enforcement claim. See the
+[harness contract](../../docs/product/02-domain-model.md#harness-compiler-v1)
+and [target fixtures](test/harness.test.ts).

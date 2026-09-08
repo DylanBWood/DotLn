@@ -157,6 +157,24 @@ candidate supplies synthetic adoption scenarios, not a shipped console or a
 deployment assertion. The workstream is the durable unit of return; repository
 sessions remain inspectable underneath it.
 
+### Candidate — private exclusion-list management
+
+**Open item:** expose **Clean Room → Excluded terms** in the build inspector so
+the operator can find and manage the private list used to screen output. The
+view identifies the active local list, shows its entries, and offers add and
+remove actions. It shows **No terms configured** when there are none; setup
+never requires an exhaustive inventory. Entries can accumulate as they become
+known, and the locked employer/secret boundary still applies after an entry is
+removed or while the list is unconfigured.
+
+The editor operates on the same private data as the checker. Entries, matched
+text and list hashes stay out of public exports and evidence. An unavailable
+screen is shown honestly rather than as a passed check. A future acceptance
+exercise must cover finding the list, viewing it, adding an entry, removing it
+and returning to the unconfigured state. The UI host, final layout and storage
+reconciliation remain open. This is an unallocated product item from the
+[WO-039 ideation receipt](../evidence/WO-039/ideation.md), not a shipped editor.
+
 ### Candidate — exact operator command vocabulary
 
 The fourth Westworld-derived shape is a reserved vocabulary whose exact phrases

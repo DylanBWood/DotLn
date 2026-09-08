@@ -34,9 +34,9 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0])) {
   process.exit(2);
 }
 const root = new URL("../", import.meta.url);
-// Compiler 0.6.0 gets a new current evidence edition. Prior orders'
+// Compiler 0.7.0 gets a new current evidence edition. Prior orders'
 // observed receipts remain historical bytes, not mutable goldens.
-const evidenceDirectory = "docs/evidence/WO-011/artifact-identity";
+const evidenceDirectory = "docs/evidence/WO-039/artifact-identity";
 const read = (path) => readFileSync(new URL(path, root), "utf8");
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const baseline = JSON.parse(read("docs/evidence/WO-029/baseline.json"));

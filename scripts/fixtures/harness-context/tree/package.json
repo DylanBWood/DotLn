@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "scripts": {
+    "resume": "node scripts/resume.mjs",
+    "test": "node fixture/source.test.mjs"
+  }
+}

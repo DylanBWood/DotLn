@@ -43,6 +43,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Artifact identity v1](../product/02-domain-model.md#artifact-identity-v1)                                            | software-engineer                   | implemented |
 | [Feedback](../product/02-domain-model.md#feedback)                                                                    | everyday-ai-user, software-engineer | specified   |
 | [Feedback compiler v1](../product/02-domain-model.md#feedback-compiler-v1)                                            | software-engineer                   | implemented |
+| [Harness compiler v1](../product/02-domain-model.md#harness-compiler-v1)                                              | everyday-ai-user, software-engineer | implemented |
 | [Independent verification v1](../product/02-domain-model.md#independent-verification-v1)                              | everyday-ai-user, software-engineer | implemented |
 | [Memory and observation](../product/02-domain-model.md#memory-and-observation)                                        | everyday-ai-user, software-engineer | specified   |
 | [Beacon codebook v1](../product/02-domain-model.md#beacon-codebook-v1)                                                | everyday-ai-user, software-engineer | implemented |
@@ -62,7 +63,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Candidate — owner-sovereign implementation profile](../product/03-architecture.md#candidate--owner-sovereign-implementation-profile)                         | everyday-ai-user, software-engineer | vision      |
 | [Package ecosystem and marketplaces](../product/03-architecture.md#package-ecosystem-and-marketplaces)                                                        | everyday-ai-user, software-engineer | planned     |
 | [Community builds and sandbox promotion](../product/03-architecture.md#community-builds-and-sandbox-promotion)                                                | everyday-ai-user, software-engineer | planned     |
-| [Agent enablement skills](../product/03-architecture.md#agent-enablement-skills)                                                                              | everyday-ai-user, software-engineer | planned     |
+| [Agent enablement skills](../product/03-architecture.md#agent-enablement-skills)                                                                              | everyday-ai-user, software-engineer | implemented |
 | [Candidate — contributed execution pool](../product/03-architecture.md#candidate--contributed-execution-pool)                                                 | everyday-ai-user, software-engineer | vision      |
 | [Runtime primitive catalogs](../product/03-architecture.md#runtime-primitive-catalogs)                                                                        | software-engineer                   | planned     |
 | [Candidate — isolated execution environments](../product/03-architecture.md#candidate--isolated-execution-environments)                                       | everyday-ai-user, software-engineer | vision      |
@@ -90,6 +91,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Editable-view v1 normalization and semantic hash](../product/04-interfaces.md#editable-view-v1-normalization-and-semantic-hash)      | software-engineer                   | implemented |
 | [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal)                                             | everyday-ai-user, software-engineer | planned     |
 | [Candidate — workstream application](../product/04-interfaces.md#candidate--workstream-application)                                   | everyday-ai-user, software-engineer | vision      |
+| [Candidate — private exclusion-list management](../product/04-interfaces.md#candidate--private-exclusion-list-management)             | everyday-ai-user, software-engineer | vision      |
 | [Candidate — exact operator command vocabulary](../product/04-interfaces.md#candidate--exact-operator-command-vocabulary)             | everyday-ai-user, software-engineer | vision      |
 | [Candidate — multi-dimensional authorship assistance](../product/04-interfaces.md#candidate--multi-dimensional-authorship-assistance) | everyday-ai-user, software-engineer | vision      |
 | [`προτείνω` — prose as a world action](../product/04-interfaces.md#προτείνω--prose-as-a-world-action)                                 | everyday-ai-user, software-engineer | vision      |
@@ -193,7 +195,7 @@ as a current blocked verdict.
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- | ----------- |
 | [Execution guide — for any model session working in this repo](../product/07-execution-guide.md#execution-guide--for-any-model-session-working-in-this-repo) | software-engineer                   | implemented |
 | [Read order for a cold start](../product/07-execution-guide.md#read-order-for-a-cold-start)                                                                  | software-engineer                   | implemented |
-| [Operator resume phrases — how you get dispatched](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched)                         | software-engineer                   | verified    |
+| [Operator resume phrases — how you get dispatched](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched)                         | software-engineer                   | implemented |
 | [Independent workflows and integration](../product/07-execution-guide.md#independent-workflows-and-integration)                                              | software-engineer                   | implemented |
 | [Operator-opened ideation mode](../product/07-execution-guide.md#operator-opened-ideation-mode)                                                              | software-engineer                   | specified   |
 | [Ideation breakout receipt and verification](../product/07-execution-guide.md#ideation-breakout-receipt-and-verification)                                    | software-engineer                   | specified   |
@@ -296,9 +298,9 @@ as a current blocked verdict.
 | [The five roles](../product/13-uifa-roles.md#the-five-roles)                                                                                                               | everyday-ai-user, software-engineer | specified   |
 | [UIFA product lead](../product/13-uifa-roles.md#uifa-product-lead)                                                                                                         | everyday-ai-user, software-engineer | specified   |
 | [UIFA showrunner](../product/13-uifa-roles.md#uifa-showrunner)                                                                                                             | everyday-ai-user, software-engineer | specified   |
-| [UIFA engineer](../product/13-uifa-roles.md#uifa-engineer)                                                                                                                 | everyday-ai-user, software-engineer | specified   |
+| [UIFA engineer](../product/13-uifa-roles.md#uifa-engineer)                                                                                                                 | everyday-ai-user, software-engineer | implemented |
 | [UIFA tester](../product/13-uifa-roles.md#uifa-tester)                                                                                                                     | everyday-ai-user, software-engineer | implemented |
-| [UIFA devops](../product/13-uifa-roles.md#uifa-devops)                                                                                                                     | everyday-ai-user, software-engineer | specified   |
+| [UIFA devops](../product/13-uifa-roles.md#uifa-devops)                                                                                                                     | everyday-ai-user, software-engineer | implemented |
 | [Candidate — security, identity, logs, and traceability responsibilities](../product/13-uifa-roles.md#candidate--security-identity-logs-and-traceability-responsibilities) | everyday-ai-user, software-engineer | vision      |
 | [Humans stay in the loop](../product/13-uifa-roles.md#humans-stay-in-the-loop)                                                                                             | everyday-ai-user, software-engineer | vision      |
 | [One person, several hats](../product/13-uifa-roles.md#one-person-several-hats)                                                                                            | everyday-ai-user, software-engineer | specified   |

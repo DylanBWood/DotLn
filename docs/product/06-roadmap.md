@@ -1350,6 +1350,13 @@ distinguish attention, work scope, effect authority, and external capability and
 exercise hold, shrink, progressive-growth, cap, return/reset, and non-ratcheting
 loop fixtures.
 
+Also unscheduled: a private Clean Room list editor with a discoverable
+Excluded terms view, current entries, add/remove actions and a No terms
+configured state. The list grows incrementally without an exhaustive setup
+requirement. The [open interface item](04-interfaces.md#candidate--private-exclusion-list-management)
+keeps UI and storage choices pending; WO-039 provides the existing local checker,
+not this editor.
+
 Also unscheduled: replace worktree-local intake drift with one canonical private
 store plus capture, status, backup, and reconciliation operations. The helper
 must prove collision-safe, interruption-safe movement from a disposable
@@ -1368,3 +1375,17 @@ responsive, legible, independently evidenced, and pleasant enough to repeat.
 External feature breadth is then admitted through exact primitive composition,
 an explicit adapter, or evidence for a genuinely missing primitive—not
 competitive checklist accumulation.
+
+**WO-039 activation completion (2026-09-07):** the omitted target is assigned
+`v0.14.0`, a minor application capability above local published `v0.13.3` in
+this subject's ancestry. Compiler `0.7.0` adds the separate `harness-v1` target;
+skeleton `0.13.0` adds the Contributor build and host. Kernel `0.2.1` and the
+loadout/feedback/verification contract axes do not change. Project hooks, role
+skills and marked residue are generated; Codex's unobserved hooks are unavailable.
+The [executor receipt](../evidence/WO-039/README.md) distinguishes fixtures,
+live role entry and context accounting. Independent verification, final review,
+merge and publication remain separate lifecycle evidence.
+
+**WO-039 collision retiming (2026-09-07):** unpublished target `v0.14.0` is superseded by `v0.15.0` under the existing minor classification because the observed release baseline is `v0.14.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
+**WO-039 integration note (2026-09-08):** integrating the published `v0.14.0` base showed that the actor board pinned the WO-011 self-hosted edition, which compiler `0.7.0` refuses as persisted compilation drift; the board now reads the WO-039 edition by default and console `0.1.1` records that patch. The classification stays minor and no published tag changes.

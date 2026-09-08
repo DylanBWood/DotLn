@@ -1,4 +1,4 @@
-# WO-039 — Harness lowering: compile a saved build into enforceable harness configuration, and run this repository on its own compiled build (version assigned at activation)
+# WO-039 — Harness lowering: compile a saved build into enforceable harness configuration, and run this repository on its own compiled build (v0.15.0)
 
 **Model:** any capable model for the compiler and fixtures. The live smoke and
 the self-host step need the actual local harnesses (Claude Code; Codex where
@@ -115,7 +115,12 @@ core runs on its own product and not only on its own process.
   committed file), normalizes each committed line into tokens and adjacent
   token pairs with separators removed, and refuses a match; when the local
   list is absent it reports `unavailable` and says so in `npm test` rather than passing
-  silently. A refusal prints only the file, the line number, and a count,
+  silently. The list grows as the operator identifies terms; it is not an
+  exhaustive inventory required before work can proceed. When no terms are
+  known, leave the list absent and report that state without blocking readiness.
+  The locked Clean Room boundary still applies. This follows the operator's
+  2026-09-07 correction recorded in the ideation receipt below.
+  A refusal prints only the file, the line number, and a count,
   never the matched text, so a refusal echoed into a transcript that is
   later committed as evidence cannot republish the term the check exists
   to keep out. Nothing about the terms is ever committed, so there is no
@@ -282,8 +287,12 @@ measurement; the write-backs below.
    hooks import built modules already in the repository; the recorded
    TypeScript parser dependency is unchanged); kernel unchanged; the
    local-terms check has run over every generated skill, the residue block,
-   and the discovery record with the operator's list present, reported in
-   the result, not assumed, and its synthetic-term fixture refuses.
+   and the discovery record, reporting whether the operator's list is present
+   or unavailable. A present list must pass; no known terms and an absent list
+   are an explicit unavailable state, not a readiness blocker or a claimed
+   passed screen. Its synthetic-term fixture refuses. This replaces the
+   original list-present-only condition under the operator's 2026-09-07
+   correction; neither an exhaustive inventory nor invented entries are required.
 
 **Evidence gate:** the discovery record; the fixture transcripts for
 criteria 2 and 3; the smoke transcript for criterion 4; the drift fixture for
@@ -312,3 +321,13 @@ that reads model output or operator wording for sentiment; the actor board
    self-referential instrument in its result.
 4. If phase 3 finds Codex hooks unobservable here, the Codex profile ships
    with skills and the instruction block only and says so.
+
+## Ideation breakout — incremental private list and future UI (2026-09-07)
+
+The operator corrected the up-front list requirement, explicitly opened ideation
+for a future UI to inspect, add and remove entries, and then authorized an initial
+private seed. This expands the documentation subject while preserving the
+existing implementation. The [breakout receipt](../evidence/WO-039/ideation.md)
+names the canonical ignored capture, synthesized ledger entries, changed product
+surfaces, open UI choices and required independent review. The future UI is an
+unallocated candidate; no UI implementation or additional work order is activated.

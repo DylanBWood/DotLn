@@ -75,4 +75,13 @@ live in
 
 ## Amendments
 
-None.
+**2026-09-07 — WO-039 project compiler output.** The Contributor's reviewed
+`harness-v1` bundle now owns project `.claude/settings.json` deny rules and
+hooks, `.claude/skills`, `.agents/skills`, and the marked instruction block.
+`harness check` refuses divergence from the compiled bundle. This authority is
+project-scoped and comes from WO-039; the hand-written Clean Room floor remains
+outside the block. The emitter writes no user settings, allow grants, default
+mode, sandbox switch or credential policy. ADR-0003 through ADR-0005 retain
+their personal permission posture. Missing harness capabilities are reported
+as unavailable. Regeneration and review replace manual project hook editing;
+a missing build or mismatched runtime bytes make the hooks refuse.

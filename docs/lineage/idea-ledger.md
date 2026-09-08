@@ -5303,3 +5303,378 @@ Source: operator ideation during `resume: next`, captured unedited in main's ign
   - The retained WO-011 audit and verifier record different build-contract hashes, neither a LoadoutGraph semantic hash. They remain separately typed, with the absent loadout hash unknown. WO-031 records operator dispatches without identifying a human; the board names the operator role and its actions without asking for new attestation or inferring a person, authorship, attention or presence. Unknown fields and unavailable sources have distinct representations. The implementation receipt explicitly reconciles the draft's source assumptions, including its nonexistent tooltip API name, with the actual retained evidence for independent review.
 - **Declare the first slice without promoting the remaining console horizon** `adopted`
   - Source prepares `v0.14.0` with console `0.1.0`; other component versions and runtime contracts remain unchanged. The dated `projection.uifa-board` row is staged demonstrable evidence. The whole inventory does not replace the sparse agent twin; Beacon metadata does not become a worker heartbeat, and controlled fixture activations do not become live rates. Adding a workspace invalidates the declared feedback source pin, so WO-032 records a fresh bounded live audit edition and retains the older immutable editions. Interactive commands, authoring, replay and the consumer's application shell keep their separately planned work orders.
+
+## WO-039 implementation — the saved build reaches the harness (2026-09-07)
+
+- **Lower only what the actual harness exposed** `adopted`
+  - A bounded phase-zero probe preceded the lowering rules. Claude Code 2.1.263 exposed the four event hooks, command refusal and project skills; Codex CLI 0.153.4 resolved project skills but no tested project hook fired. `harness-v1` preserves that distinction in observed profiles, emitted files and missing-capability residue. No user settings, sandbox switch, generated allow grant, kernel behavior or earlier contract preimage changes.
+- **One compiled rule, several host seams** `adopted`
+  - Generated unit hooks import the pinned built feedback boundary; fixtures compare their verdicts with that boundary and remove units to show causal refusal. Canonical lifecycle events, executed checks, physical worktrees and delivered output bytes provide host facts. The harness cannot invent semantic judgments for lineage, evidence quality or cleanup; those duties stay in generated role procedure with named missing facts. The correction token remains unconfirmed, so ordinary wording produces no typed event; the confirmed-token path is exercised only synthetically and narrows authority through the compiled correction function.
+- **Replace the mandatory guide read and count late reads too** `adopted`
+  - The locked floor routes four resume roles and separate planning/ideation to generated skills. The measurement scans the whole floor and role procedure, expands the task's declared selectors and includes later reads. A matched synthetic task uses the activation instruction/guide as the before source; it is not an estimate of WO-039's evolving context. Scratch role-entry observations retain all generated read-hook observations through final Stop, reject reads outside the declared set, and retain failed attempts. An empty trailing line reported by the harness is normalized to physical file bytes, with a regression fixture; it does not widen a cited section.
+- **Reproducible project output joins the evidence gate** `adopted`
+  - The Contributor's project settings, hooks, both skill roots and shared instruction residue are installed by `harness emit` and checked byte-for-byte. ADR-0005 and the config log record this one work-order-authorized project mutation. The shared local-terms checker from WO-041 now has its public CLI and screens generated/evidence surfaces; the operator's list stays ignored, never hashed or echoed. Its absence remains unavailable and cannot satisfy WO-039's list-present acceptance condition. Source prepares application v0.14.0 with compiler 0.7.0 and skeleton 0.13.0; new artifact/verification/feedback editions preserve historical receipts. Independent work-order verification and publication remain separate dispatches.
+
+## WO-039 ideation — incremental exclusions and a private list editor (2026-09-07)
+
+Provenance: operator correction and explicit `ideation:` dispatch, captured in
+the main control-plane checkout's ignored
+`docs/intake/notes/WO-039-expanded-ideation-2026-09-07.md`. The
+[breakout receipt](../evidence/WO-039/ideation.md) records synthesis, private
+capture reconciliation and the independent review subject. The following is
+rewritten product understanding; private exclusion values are not source material
+for these public documents.
+
+- **A useful list can grow from what is known** `adopted`
+  - The operator rejected treating the list as a complete up-front inventory.
+    Maintain known entries incrementally. With none known, leave the local file
+    absent and report the screen as unavailable without blocking readiness by
+    itself or claiming a pass. A configured list must pass; the locked Clean
+    Room boundary always applies. This explicitly supersedes the list-present
+    prerequisite in the preceding implementation entry and WO-039's original
+    criterion 8. The existing checker's behavior is unchanged. The operator
+    subsequently authorized an initial private seed, so this order's final
+    local screen can also be observed with a list present.
+- **Make the private list discoverable and editable** `candidate`
+  - The future interface must let the operator find the active list, inspect
+    entries, add entries and remove them, with an explicit unconfigured state.
+    [Interfaces 04](../product/04-interfaces.md#candidate--private-exclusion-list-management)
+    proposes Clean Room → Excluded terms in the build inspector; the roadmap and
+    planning map retain an unallocated open item. The UI host, layout and storage
+    reconciliation remain unresolved. This does not implement a UI or activate
+    another work order.
+
+## WO-039 repair — satisfiable output review and observable read scope (2026-09-07)
+
+Provenance: the operator's `resume: fix` dispatch against
+[VER-001](../verifications/WO-039/VER-001.md), findings 1–4. These are bounded
+repairs to the existing harness contract, not a new work order or changes to
+the locked source boundary.
+
+- **Delivered ranges can discharge one output obligation** `adopted`
+  - The whole-file delivery rule made large evidence outputs impossible to
+    review under the native tool cap. The observer now verifies native line
+    ranges and bounded UTF-8 output-reader deliveries, then combines complete
+    byte coverage only at one file hash. The reader cannot mint its own receipt.
+    Gaps, mismatches, truncation and stale coverage fail. Both completion-hook
+    refusals identify the missing paths and count. The existing session-entry
+    revision still defines the work-order output set across review commits;
+    changing that obligation to session-authored files remains unselected.
+- **Measure attempted reads as well as delivered reads** `adopted`
+  - Historical enforced-scope smokes retain their limits and refused-read counts.
+    New smokes observe native Read requests without enforcing the directed ranges
+    and fail on any out-of-set read or attempt. The host retains relative paths
+    and ranges for scope refusals; shell routes and skill selection remain
+    bounded. The first such executor attempt exposed an unnecessary final-review
+    report read. Generated procedure now distinguishes status metadata from the
+    selected role's required report inputs. Failed attempts remain evidence.
+- **Prove the aggregate hook and describe actual drift coverage** `adopted`
+  - The finish fixture evaluates each eligible unit independently through the
+    existing compiled boundary, with allow/refuse and removal proof. Fixtures
+    also reach missing-file, unexpected-file and manifest drift, unowned
+    replacement refusal and removal of prior-owned obsolete outputs. These
+    extend the existing one-byte and symlink evidence instead of relying on an
+    unsupported receipt sentence.
+
+## WO-039 repair — recoverable writer reservations (2026-09-07)
+
+Provenance: the operator's repair briefing after the blocked `VER-002` attempt
+and the `resume: fix` dispatch; the
+[second repair receipt](../evidence/WO-039/repair-002.md). These bound the
+existing reservation mechanism; the locked source boundary is unchanged.
+
+- **A reservation names its owner and dies with it** `adopted`
+  - The writer lock records the harness process: the declared pid verified
+    against the hook's ancestry, else the nearest non-shell ancestor, with its
+    start time when the process table is readable. A foreign lock whose owner
+    is dead is reclaimed at the next write dispatch with a journal row and an
+    event-log row. A live, unrecorded or self-distrusted owner is honoured and
+    the refusal names it. The executor session reproduced the leak live when
+    the harness resumed it in a new process under a new session id.
+- **The operator can see and release a reservation** `adopted`
+  - `harness writer --show` is a metadata read admitted to refused sessions;
+    `harness writer --release [--force]` is an operator action outside governed
+    sessions that refuses a live owner without force and logs every release.
+- **A time-based lease on the reservation** `rejected`
+  - An idle live session is not a dead one; a lease would hand its worktree to
+    a second writer. The guard errs toward refusal with an explicit operator
+    path instead.
+- **Admitting lifecycle commands as metadata** `rejected`
+  - They write control state; admitting them without a reservation is the
+    concurrent-writer case the unit exists to prevent.
+- **Releasing the reservation in a finally around the Stop units** `rejected`
+  - A refused Stop does not end the session, so releasing there admits a second
+    writer mid-session. The release stays after an accepted finish.
+- **Output-review obligation scope** `open`
+  - Whether the read obligation follows the branch diff or the session's own
+    writes remains the operator's decision; a verifier session that wrote
+    nothing still owed every inherited output.
+
+## WO-039 third repair — serialized reservation recovery (2026-09-07)
+
+Provenance: `VER-002` finding F1 and the `resume: fix` dispatch; the
+[third repair receipt](../evidence/WO-039/repair-003.md). This bounds the
+recovery protocol of the existing reservation mechanism; the locked source
+boundary is unchanged.
+
+- **Every recovery step acts only on the observed instance** `adopted`
+  - The reservation becomes a directory holding one nonce-named file. Reclaim
+    unlinks that exact name, removes the instance only while it is empty, and
+    renames a prepared replacement only onto an absent or emptied slot. Two
+    sessions that classify the same dead holder therefore admit exactly one
+    writer; the loser re-observes, honours the live replacement, and records a
+    `retired` event when it emptied the instance but lost the placement. The
+    compiled predicate, the liveness rules, the journal rows and the operator
+    commands are unchanged.
+- **Pre-repair single-file reservations migrate or are reclaimed** `adopted`
+  - A session's own legacy file migrates into a fresh instance, a dead owner's
+    legacy file is reclaimed, and a live or unknown legacy holder is honoured.
+    The legacy path is never a current-protocol instance, so removing it cannot
+    remove another session's replacement, and the file is never created again.
+- **A separate recovery guard around observe, reclaim and acquire** `rejected`
+  - The worker store's guard serializes its contenders but refuses forever once
+    a crashed holder abandons it. In the harness host that would recreate the
+    unrecoverable-from-inside state the second repair removed, and reclaiming
+    an abandoned guard reintroduces the same observe-then-act race one level
+    up.
+- **Unconditional rename or unlink of the stale lock** `rejected`
+  - Neither primitive can check that the slot still holds the observed
+    reservation, which is exactly the VER-002 counterexample.
+- **Advisory file locks** `rejected`
+  - Node exposes no file locking without a native dependency, and the order
+    admits no new runtime dependency.
+- **A refused Stop is reported once and its re-entry ends the turn** `adopted`
+  - The generated Stop hooks ignored the harness's re-entry flag, so a session
+    that could not yet satisfy its finish predicates was refused at every turn
+    end until the operator interrupted. On re-entry the hooks now record the
+    unmet obligation, never as a finish, and let the turn end. The predicates
+    and the lifecycle ground truth are unchanged. Admitted as adjacent cleanup
+    of the runtime file this repair reinstalls, at the operator's request.
+- **Output refusals name twelve missing paths and the remaining count** `adopted`
+  - A refusal that listed every one of 168 outputs was unusable; the next
+    refusal names the next twelve. The VER-001 obligation to identify missing
+    paths is preserved in a usable form.
+- **One Stop adapter instead of a unit hook per Stop unit plus finish** `open`
+  - Every refusal is reported twice because the three Stop units and the
+    aggregate finish hook all run. Lowering them into one adapter changes the
+    compiler lowering and the installed hook list; a separate order.
+- **Output-review obligation scope, restated** `open`
+  - Narrowing the obligation to session-authored outputs would cut its cost,
+    but a session's shell writes cannot be mechanically attributed to it, so
+    the branch diff remains the only un-gameable set. The trade is the
+    operator's decision, not a defect to repair.
+
+## WO-039 fourth repair — immutable reservation instances (2026-09-08)
+
+Provenance: `VER-003` findings F1, F2 and F3 and the `resume: fix` dispatch;
+the [fourth repair receipt](../evidence/WO-039/repair-004.md). This bounds the
+recovery protocol of the existing reservation mechanism and the live-holder
+smoke's pass rule; the locked source boundary is unchanged.
+
+- **A reservation file's facts never change under its name** `adopted`
+  - A session that records a new fact about its own reservation (an owner, or
+    an unavailable liveness) writes a new nonce-named file naming the one it
+    supersedes, then removes the superseded name. A contender's unlink of the
+    observed name therefore fails once those facts were superseded, so the
+    third repair's conditional steps hold for self-refresh too. Superseded
+    files that linger after a crash are reported by the observer and removed
+    by the owner's next dispatch or by retirement; they are never current.
+- **An operator release binds to one observed reservation** `adopted`
+  - The liveness decision, the retirement and the `operator-released` row all
+    describe the instance the command observed. A holder that changed after
+    the decision is judged again by the same rule; a forced release of a
+    changed holder refuses, because the operator judged a different one.
+- **The live-holder smoke requires the writer guard's refusal** `adopted`
+  - In the live-holder scenario every source write is refused first by the
+    writer guard, so the fixture commit's attribution refusal is reached only
+    when the model keeps writing after being told the worktree is another
+    session's; a session that stops is behaving correctly. The scenario's
+    required denied effect is now the writer refusal naming the holder, and
+    whether the attribution refusal was also reached is still recorded. The
+    role runs and the dead-holder scenario still require the attribution
+    refusal. The failed second attempt is preserved unchanged.
+- **Compare-and-unlink through inode or content checks** `rejected`
+  - A stat before the unlink narrows the window but cannot close it; only an
+    immutable name makes unlink-by-name exact.
+- **Refresh by moving the instance directory aside and placing a new one** `rejected`
+  - The slot would be absent between the two renames, so a contender could
+    acquire it and a live session would lose its worktree mid-work, which is
+    the failure the unit exists to prevent.
+- **Steering the live-holder session into the fixture commit** `rejected`
+  - Model behaviour after a refusal is not a fixture input; requiring a
+    further write after a holder refusal would reward the wrong behaviour.
+
+## WO-039 fourth repair — Stop gates at every turn end (2026-09-08)
+
+Provenance: the operator's instruction at the fourth repair's handoff, after
+the three Stop refusals fired at every intermediate turn end of the session;
+the [fourth repair receipt](../evidence/WO-039/repair-004.md). This restates
+the open output-review and Stop-adapter items above with a concrete direction.
+It is filed for a planning pass; nothing here changes the installed bundle.
+
+- **Stop is a turn end, not a completion claim** `preserved`
+  - The v1 lowering maps the three workflow gates to the harness Stop event,
+    and Stop fires whenever a session ends a turn: yielding to a background
+    job, waiting for the operator's outside-terminal steps, answering a
+    question. The gates cannot tell a yield from a claim of completion, so
+    every intermediate turn end is refused. `no-partial-completion` refuses
+    until the phase's completion command is recorded; `verify-app-before-done`
+    refuses whenever the checks receipt does not hash to the current tree,
+    which the gate's duration and any later edit make the usual state;
+    `read-your-own-output` refuses until every file changed since the base
+    revision is read, and because no branch commit precedes final review,
+    every session on an order inherits the whole order's diff. The third
+    repair reduced a refusal to one report per turn end with the obligation
+    recorded; the cause remains.
+- **Move the evidence gates to the completion command's dispatch** `candidate`
+  - The lifecycle completion commands, `implementation-ready`,
+    `repair-complete` and their verifier and reviewer counterparts, are the
+    project's only real claims of completion. Judge the checks receipt and
+    the output reads there, as pre-effect guards on that dispatch, and let a
+    plain turn end pass. The canonical phase already records incompleteness,
+    so `no-partial-completion` becomes advisory at Stop or retires. Unit
+    versions are immutable: this is a new version of each unit with a changed
+    trigger, a compiler lowering change and a profile change, with the old
+    definitions retained for replay. A separate order.
+- **Snapshot the output set at session entry** `candidate`
+  - Record the path and content hash of every tracked and untracked file at
+    session entry, and owe reads only for files whose bytes differ from that
+    snapshot at the completion claim. This attributes outputs by change
+    rather than by tool, so shell writes are still caught, which answers the
+    objection in the restated open item above. One writer per worktree makes
+    later changes the session's own or the operator's outside-terminal
+    steps, which the session relies on and should read. Outputs inherited
+    from earlier sessions on the same order leave the obligation.
+- **Operator's stance** `preserved`
+  - On 2026-09-08 the operator asked for this to be filed, judging refusals
+    at every turn end for the life of an order unacceptable. Until a planning
+    pass decides, the inherited-output question stays the operator's open
+    decision, as recorded above.
+
+## WO-039 fifth repair — integration with the moved base (2026-09-08)
+
+Provenance: [FINAL-001](../final-reviews/WO-039/FINAL-001.md) finding F1 and
+the `resume: fix` dispatch; the [fifth repair receipt](../evidence/WO-039/repair-005.md).
+This is integration bookkeeping and one fresh live evidence edition under the
+existing contract; no runtime source, contract, or locked boundary changes.
+
+- **The integrating actor merges and re-records only the affected claim** `adopted`
+  - `main` advanced by two merged orders while this order was in flight. The
+    repair preserved the seventeen dual-side files in a tagged stash, fast-
+    forwarded the branch to the integrated base, re-applied the stash, and
+    resolved the eleven text conflicts: authored merges for the release claim,
+    the roles table, the package scripts and the feedback runbook;
+    concatenation for the append-only documents; regeneration for the
+    work-order index, both publication locks and the control projection at
+    the next legal transition. The feedback subject moved from the recorded
+    hash to the integrated hash the review had computed in advance, so the
+    review's arithmetic is confirmed and a fresh live edition replaces the
+    stale one under the same edition path. Unchanged acceptance claims keep
+    their original evidence; the affected claim returns through independent
+    verification.
+- **The superseded edition stays beside its replacement** `adopted`
+  - The pre-integration report and both streams are preserved unchanged in a
+    sibling directory, as the first failed edition already was, because the
+    writer accepts one immutable edition per identifier and no evidence is
+    discarded.
+- **Generalize the workspace projection inside this repair** `rejected`
+  - The projection lives in a source file that is itself pinned in the feedback
+    subject, so the change would need its own live edition and its own
+    independent verification, and the review asked that it not be folded in
+    silently. It is nominated as a separate unallocated candidate on the
+    planning map.
+- **Judge the integrated tree with the WO-032 edition** `rejected`
+  - This order changes raw members of the same subject, so that edition cannot
+    speak for this tree.
+- **The context measurement is pinned on both sides** `preserved`
+  - Regenerating the stored measurement after the merge produced identical
+    bytes: task files are read from the frozen activation snapshot on both
+    sides of the controlled comparison, so a later edit to a directed section
+    of a product document cannot move it. The drift the review anticipated
+    there cannot occur under the recorded method.
+- **The actor board follows the root feedback edition** `adopted`
+  - The first integrated gate failed five WO-032 console tests: the merged
+    board reads the WO-011 self-hosted edition by default and pins it as a
+    fixture, and under compiler `0.7.0` that edition's policy hash and pinned
+    verification capsule no longer recompile, so the reactor refuses its
+    verifier stream as persisted compilation drift and the board renders it
+    unavailable. The console now declares the edition it reads, the fixture
+    case is edition-neutral and pins the WO-039 edition, the accepted verifier
+    attempt is derived from the admitted matrix rather than from one run's
+    attempt count, and console `0.1.1` records the patch. WO-032's criteria
+    keep their substance and return through independent verification.
+- **Keep the WO-011 pins or relax the drift refusal for read-only projections**
+  `rejected`
+  - The first leaves the merged tree unable to pass its own gate on this
+    compiler; the second changes a pinned runtime source under the WO-029
+    identity contract and would need its own live edition and verification.
+    Both the historical-projection question and selecting the edition from one
+    declared source are nominated on the planning map.
+- **The draft integrated report stays beside its replacement** `preserved`
+  - The console patch moved the lockfile's console entry, which is raw in the
+    subject, so the first integrated report is preserved as a draft beside the
+    report for the final subject rather than overwritten.
+- **The full gate is judged from three runs and one step-by-step run**
+  `adopted`
+  - The first integrated gate stopped at the five console failures. After the
+    console change, two full gates each passed 305 of 306 tests with one
+    failure: the actor board's host-collection test, whose release listing
+    exceeded its sixty-second budget under full-gate load and passed alone in
+    nineteen seconds. The later gate steps therefore ran individually on the
+    same build and all passed except the feedback evidence check, which reads
+    live streams that only the operator's outside-sandbox audit can record.
+    Filed transcripts replace the checkout address with a placeholder. The
+    console budget is nominated on the planning map rather than changed here:
+    WO-032's own test is not this order's obligation, and a sandbox load limit
+    is not a defect in either order.
+- **The live edition is recorded and the completion receipt waits for the
+  operator's gate** `adopted`
+  - The operator's fourth attempt, from a terminal outside the sandbox through
+    Codex CLI, produced the live audit and verifier streams in nineteen seconds
+    with both criteria verified; the session validated and recorded them,
+    re-pinned the console's self-hosted case to the recorded edition, and the
+    feedback evidence check passes on the integrated tree. A third full gate
+    on this sandbox failed only on the console host-collection budget, so the
+    receipt the completion hooks read comes from the operator's outside-sandbox
+    gate: one captured run filed as a transcript, one quiet run holding the
+    receipt. Recording completion on a receipt that says the tests failed was
+    rejected, even though the one failing test passes alone.
+- **The outside-sandbox gate reproduced the budget failure, and the operator
+  superseded the deferral by serializing the console suite** `adopted`
+  - The operator's outside-sandbox gate, filed as the sixth transcript, failed
+    on the same single test: the release listing took eighty-two seconds
+    against the console's sixty-second budget, with 305 of 306 passing. That
+    refuted the reason the earlier bullet gave for leaving the budget alone,
+    a sandbox load limit, so the session stopped where the receipt said to
+    and put the decision to the operator. The operator chose the direction
+    the planning map names last: the root gate now runs the console suite in
+    its own `node --test` step after the kernel, compiler and skeleton
+    suites, so the board's fixed read-only commands run on a quiet host. The
+    budget, WO-032's test and the console source are unchanged; the listing
+    takes twelve seconds alone on this tree. Raising the budget was rejected
+    as load-dependent, since the listing took between eighty-two and
+    eighty-seven seconds across four full runs, and because a longer budget
+    delays the board's unavailable verdict on a stuck command. Leaving the
+    order blocked until a separate console order lands was rejected as
+    holding a finished repair on a gate-chain question. The candidate keeps
+    the two directions not taken.
+- **The re-pinned board fixture leaves WO-032's multi-attempt assertion
+  unexercised** `adopted`
+  - Final review confirmed the re-pin itself: under compiler `0.7.0` the
+    WO-011 verifier stream projects a generic `verification-host` row with
+    labelled unknowns instead of its four verifier actors, so that case could
+    not be kept and its recorded outputs cannot be restored. The preceding
+    two entries' conclusion that WO-032's criteria keep their substance is
+    corrected for one half of `AC2`: the WO-039 edition records exactly one
+    verifier attempt, and it is the accepted one, so the assertion that every
+    other recorded attempt shows `lease-expired` and takes no matrix link
+    iterates over no rows, and that string appears in no committed fixture
+    output and nowhere else in the suite. The executor/verifier distinctness
+    half is fully exercised and the accepted episode is still pinned by the
+    golden. A fixture-local synthetic store with two or more verifier
+    attempts, in the manner of the hand-authored WO-009 event log, restores
+    the invariant with no live evidence and no behavioural change. Authoring
+    it inside this review was rejected: a reviewer never writes the test that
+    clears their own finding. Failing the order for it was rejected too, as
+    it defeats no criterion of this order and breaks no gate; it is nominated
+    on the planning map instead.

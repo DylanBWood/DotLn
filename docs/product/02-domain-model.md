@@ -460,6 +460,127 @@ workers or replace the manual repository verification lifecycle. The
 
 **WO-041 integration correction (2026-09-07):** the current feedback subject pins raw runtime/fixture source bytes and explicitly labeled `feedback-package-projection-v1` snapshots for the skeleton manifest and package lock. These snapshots exclude only `version` and `license` at the skeleton manifest root and the lockfile root/known workspace entries. External dependency versions, resolutions and integrity, scripts, exports, dependencies, private/publication controls, and unknown fields remain in the projection. This audits feedback behavior rather than release labeling; the separate license and release-surface gates still judge those labels. The new projection requires its own live evidence edition; it does not retroactively change the raw-byte contract of prior editions. Each capsule labels projected files and names their physical source paths so a verifier cannot mistake them for raw manifests. Fixtures prove both metadata stability and behavioral/dependency invalidation. General dependency-scoped evidence selection remains beyond this bounded host.
 
+### Harness compiler v1
+
+WO-039 adds `harness-v1` in compiler `0.7.0` and the Contributor host in skeleton
+`0.13.0`. `lowerToHarness(program, feedback, envelope, profile)` is pure,
+deterministic and dependency-free. Its target input wraps a compiled loadout
+with role and facet adapters; it does not change the `loadout-v1` preimage.
+The envelope must equal the compiled build's envelope. A profile pins a harness
+version, observed capability references, project paths, refusal protocol and
+built runtime bytes. An unobserved capability is unavailable.
+
+A `HarnessBundle` contains `{ path, contents, origin, rung }` files, a manifest
+and residue. Every origin names its unit/facet IDs, loadout ID and semantic hash.
+The manifest adds compiler version, feedback policy hash, target hash and each
+file's hash. These are equality checks, not authentication. Changing one unit
+changes only files naming that unit; target changes leave existing Seiri and
+Entropy Reducer semantic hashes intact.
+
+| Unit or facet                                       | Claude Code lowering                                                                                   | Missing fact or capability                                                                                            |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| Permission facet                                    | Settings deny matchers and a PreToolUse envelope check, rung 2                                         | No observed generated-allow contract; no universal shell-effect classifier                                            |
+| Writer isolation                                    | PreToolUse worktree, branch and exclusive writer reservation with host-process liveness, rung 2        | Same-user host state is not hostile-worker isolation; an unverifiable owner is honoured until an operator releases it |
+| Attribution                                         | Commit-message adapter at rung 1 and explicit commit-command PreToolUse check at rung 2                | Unknown message bytes refuse                                                                                          |
+| Suppression diff                                    | PostToolUse source-comment comparison, rung 1                                                          | Observes an edit already made; cannot undo it                                                                         |
+| Application evidence, complete scope, output review | Stop checks at rung 6 over executed checks, canonical lifecycle events and current-byte read receipts  | Stop is a completion affordance; the lifecycle command remains authority                                              |
+| Decision lineage, evidence judgment, cleanup scope  | Role procedure at rung 7; the equipped feedback host retains the original hard predicates              | Harness payloads expose no admitted semantic judgment facts; each missing fact is residue                             |
+| Semantic correction                                 | UserPromptSubmit types the exact confirmed token, then applies the compiled narrowing response, rung 3 | Unconfirmed token stays in the role skill at rung 7 with a named missing capability                                   |
+| Clean Room                                          | Locked hand-written floor plus a provenance-judgment residue line                                      | No automatic source-provenance judgment is claimed                                                                    |
+
+Generated unit hooks import the pinned built `feedbackBoundary`; there is no
+copied predicate. Permission decisions go through the shared reactor's authority
+owner, whose built bytes are pinned with the hook runtime. Host checks execute `npm test` and `git diff --check` and bind
+success to current source bytes. Completion obligations come from the selected
+order's actual lifecycle segment. Read receipts witness delivered bytes, not
+comprehension. The observer verifies native Read ranges against the corresponding
+on-disk bytes and combines coverage only at one file hash. For oversized lines,
+`node scripts/harness.mjs read-output <path> --offset <byte> --length 8192`
+delivers bounded UTF-8 chunks of a Git-visible regular file; the helper itself
+mints no receipt. The PostToolUse observer verifies its stdout, range and current
+hash before admitting coverage. Gaps, truncated or mismatched deliveries and
+chunks from different hashes cannot complete a receipt. Both output-review and
+finish refusals name up to twelve missing paths and the remaining count, so the
+next refusal names the next ones. A refused Stop is reported once: when the
+harness re-enters Stop after a refusal, the hook records the unmet obligation
+without marking a finish and lets the turn end, because refusing again would
+loop until the operator interrupts and the lifecycle script remains the ground
+truth for every completion claim. Output obligations retain
+the session-entry revision across review commits, including inherited work-order
+changes; this repair does not substitute a session-authorship boundary.
+A writer reservation records its owning harness process: the pid the harness
+declares through `CLAUDE_PID` when that pid is a verified ancestor of the hook,
+otherwise the nearest non-shell ancestor, with its start time whenever the
+process table is readable. A foreign reservation whose recorded owner is dead
+is reclaimed at the next write dispatch; the reclaim is written to the session
+journal and the local writer event log, and the new lock names what it
+replaced. The reservation is a directory holding nonce-named files whose
+contents never change after creation: a session that records a new fact about
+its own reservation (an owner, or an unavailable liveness) writes a new file
+naming the one it supersedes and then removes the superseded name, so a name
+denotes exactly the facts a contender observed under it. Every recovery step
+acts only on the instance the session observed: the file is unlinked by its
+exact name, which fails once its facts were superseded, the emptied instance
+is removed only while it is empty, and a prepared replacement is renamed into
+place only onto an absent or emptied slot. Two sessions that observe the same
+dead holder therefore admit exactly one writer, and a stale reclaimer cannot
+remove a refreshed reservation; the loser re-observes, honours the live
+replacement, and records a retirement when it emptied the dead instance but
+lost the placement. A separate recovery guard was rejected because an
+abandoned guard
+would be a new state no governed session could clear. A pre-repair single-file
+reservation is migrated when it is the session's own, reclaimed when its owner
+is dead, and otherwise honoured; it is never created again. A live holder, an
+unrecorded owner, or an owner identity the holding
+session itself found dead is honoured, and the refusal names the holder's
+truncated actor key and host process. `node scripts/harness.mjs writer --show`
+is a bounded metadata read that a refused session may run;
+`writer --release [--force]` is an operator action outside a governed session
+that refuses a live owner without `--force` and logs every release; its
+liveness decision, its retirement and its journal row describe one observed
+reservation, a holder that changed after the decision is judged again by the
+same rule, and a forced release of a changed holder refuses. A
+time-based lease was rejected because an idle live session is not a dead one
+and the guard must err toward refusal; releasing on a refused Stop was rejected
+because a refused Stop does not end the session. Bounded status/index commands,
+direct output reads and the writer view do not reserve a coding writer; the
+exact managed release-close helper delegates to the existing guarded host from
+fresh `main` only after canonical closure. The hook adapter recognizes bounded direct command forms;
+arbitrary interpreters and shell indirection remain native sandbox/approval
+and operator responsibilities. A hook, permission rule or skill grants no new
+external-effect authority.
+
+Role skills carry the input contract, procedure, artifacts, evidence and stop
+rules, with no duplicated phase state. Residue reports each unavailable lower
+mechanism and its reason. The marked instruction block contains only
+profile-qualified missing-capability lines and otherwise unlowered fragments,
+with a UTF-8 byte count; it may not restate skill procedure. Codex's observed
+profile emits `.agents/skills` and the shared `AGENTS.md` symlink block; its
+unobserved hooks and settings appear explicitly as unavailable.
+
+`npm run harness -- emit` installs only the project's generated surfaces;
+`harness check` refuses byte drift, missing/extra owned files or symlink escapes.
+The [WO-039 receipt](../evidence/WO-039/README.md) separates pure fixtures,
+live role-entry observations, whole-procedure context accounting and remaining
+judgment limits. The scratch scope keeps shell routes and skill selection bounded.
+Current smokes observe native Read attempts without enforcing the directed file
+ranges, and fail on any out-of-set observed or attempted read. Enforced-mode
+fixtures retain refused relative paths and ranges; receipts publish refusal
+counts and the attempted-read comparison alongside actual reads. The generated
+observer remains active through the last Stop. This separates role restraint
+from the earlier enforced-scope observations rather than treating a prevented
+read as evidence that the role never requested it.
+
+The private exclusion list is incremental operator data, not an exhaustive
+prerequisite. Known terms may be added or removed over time. The current host
+reads the ignored `docs/control/local/terms.txt`; when no terms are configured,
+the file may remain absent and the screen reports `unavailable`. That state is
+visible and does not block readiness by itself or claim that a list-based screen
+passed. A present list must pass, and the locked employer/secret boundary applies
+in every state. Public receipts contain no entries, matched text or list hashes.
+The [future list editor](04-interfaces.md#candidate--private-exclusion-list-management)
+is an open interface item, not an implemented host capability.
+
 ### Independent verification v1
 
 WO-010 pins the first executable verification contract in compiler `0.5.0` and skeleton `0.11.0`. This is a bounded realization of the Feedback terms above, with state and behavior claims. Visual/network evidence and comparison/rating consumers remain deferred.

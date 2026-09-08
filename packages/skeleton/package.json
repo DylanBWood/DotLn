@@ -1,6 +1,6 @@
 {
   "name": "@dotln/skeleton",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "private": true,
   "license": "Apache-2.0",
   "type": "module",
@@ -14,7 +14,7 @@
     "prepublishOnly": "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
   },
   "dependencies": {
-    "@dotln/compiler": "0.6.0",
+    "@dotln/compiler": "0.7.0",
     "@dotln/kernel": "0.2.1",
     "typescript": "5.4.5"
   }
