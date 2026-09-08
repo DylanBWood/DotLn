@@ -1327,12 +1327,12 @@ None.
 
 ### WO-121
 
-[WO-121 — Presence signals with origin: human presence, actor liveness and task progress are distinct signals, a resident-launched actor's tool calls never imply the operator's return, and return cancels only discretionary work (version assigned at activation)](WO-121-presence-signals-with-origin.md)
+[WO-121 — Presence signals with origin: human presence, actor liveness and task progress are distinct signals, tool activity from any session never implies the operator's return whichever process launched it, and return cancels only discretionary work (version assigned at activation)](WO-121-presence-signals-with-origin.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-067, WO-068.
-- References: WO-067: not control-closed; WO-068: not control-closed.
+- Dependency reference check (conservative): blocked on WO-044, WO-067, WO-068.
+- References: WO-044: not control-closed; WO-067: not control-closed; WO-068: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

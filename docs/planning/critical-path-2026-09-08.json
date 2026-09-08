@@ -1568,6 +1568,12 @@
       "reason": "the discretionary-phase scope for cancellation"
     },
     {
+      "from": "WO-121",
+      "to": "WO-044",
+      "relation": "hard",
+      "reason": "the rows that say which hook events a scripted prompt fires in each launch mode"
+    },
+    {
       "from": "WO-122",
       "to": "WO-068",
       "relation": "hard",

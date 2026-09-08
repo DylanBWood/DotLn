@@ -16,5 +16,14 @@
     "workOrderId": "WO-055",
     "criterionId": "criterion:1",
     "change": "Criterion 1 now binds the derived repair order to the original order's declared surfaces, named test commands and effective envelope and operation lists; a finding that names an outside path or a reproduction command the original did not permit yields NeedsHuman naming it, derives no order and changes no envelope, with negative fixtures asserting no dispatch event and a byte-identical persisted envelope; only an admitted provenance-bearing grant covering exactly that expansion derives an order, which records the grant id and stays within the grant."
+  },
+  {
+    "receiptId": "2026-09-08-critical-path-003",
+    "holdId": "hold-29a899abe34f737413d9ca82",
+    "kind": "accepted",
+    "date": "2026-09-08",
+    "workOrderId": "WO-121",
+    "criterionId": "criterion:1",
+    "change": "Criterion 1 now requires that, after an explicit away, activity heartbeats from a resident-launched worker and from an operator-launched autonomous worker never end the away phase or trigger cancel-on-return, asserted by a negative fixture recording no phase change and no cancellation; that an explicit back and a person's submitted prompt in an unstamped session each end away while a stamped session's scripted prompt does not; and that swapping the launch path leaves every decision identical, proving origin is a pure function of the hook event kind and the resident's stamp. The objective classifies tool activity from any session, whichever process launched it, as actor liveness, never presence."
   }
 ]

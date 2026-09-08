@@ -49,7 +49,10 @@ a non-interactive parent process launches the harness with no operator
 present: authentication lifetime without an interactive login, permission
 behavior with no terminal, the harness's own scheduled-task surface and
 whether it can launch a governed session, idle cost, concurrent-session
-limits, and kill and recovery of a resident-launched episode.
+limits, kill and recovery of a resident-launched episode, and, in each
+launch mode, which hook events fire for a scripted prompt and whether the
+hook input lets a non-interactive session be told from a typed one (the
+rows WO-121's presence classifier reads).
 
 **Observed gap (dated 2026-09-08, `main` at `33e2c25`):**
 
@@ -77,9 +80,11 @@ limits, and kill and recovery of a resident-launched episode.
   import is an absolute `file://` path; which instruction files load
   (`CLAUDE.md`, any local variant); the JSON result envelope with tools
   enabled; `--no-session-persistence`; SIGKILL mid-episode and what the
-  worktree holds afterward. Rows for Codex: `workspace-write` with named
+  worktree holds afterward; which hook events fire for the scripted initial
+  prompt in print mode and whether the hook input marks the session
+  non-interactive. Rows for Codex: `workspace-write` with named
   filesystem permissions granting the worktree, the equivalent hook and
-  instruction rows, and the JSONL result.
+  instruction rows, the scripted-prompt hook row, and the JSONL result.
 - Unattended rows for each harness: launch from a detached parent with no
   terminal and the operator's stored authentication (does it run, and for
   how long before a login is demanded); a permission prompt with no terminal

@@ -305,6 +305,32 @@ rule.
     its seventeen fixtures pass, and it rides in this planning pull request
     for final review. Durable home: the refutations README; 07
     §Operator-opened planning pass (one sentence).
+- **The second refutation receipt accepts both repairs and holds on the
+  presence classifier; the criterion is repaired** `adopted`
+  - Receipt [003](../planning/refutations/2026-09-08-critical-path-003.md),
+    the same direct-session source, judged the subject at `7e2c474`:
+    WO-123 and WO-055 advance the mission thesis with their repairs named,
+    fifty-two orders advance a thesis, twenty-three are machinery, and one
+    drifts: WO-121's objective counted a heartbeat from any session the
+    resident did not launch as human origin, so an operator-launched worker
+    that kept working after `away` could end the away phase, and criterion
+    1 tested preassigned labels rather than the classification boundary.
+    The finding held against the order: launch provenance is not evidence
+    that a person returned. WO-121 now classifies origin as a pure function
+    of the hook event kind and the resident's stamp: a person's submitted
+    prompt in an unstamped session or an explicit `back` is human; a tool
+    call, a tool result or a stop from any session, whichever process
+    launched it, is actor liveness with the episode id when stamped; a
+    stamped session's scripted prompt is actor; where a harness cannot tell
+    a scripted prompt from a typed one, only the explicit commands count.
+    Criterion 1 requires the negative fixture the receipt asked for (no
+    phase change and no cancellation under both workers' activity after
+    `away`), the positive returns, and a launch-path swap that proves the
+    classifier's inputs. WO-044 gains the row that says which hook events a
+    scripted prompt fires in each launch mode, and WO-121 names it as an
+    input. Three accepted dispositions travel to the next receipt; a third
+    consecutive hold would stop this pass by rule. Durable home: WO-121;
+    the plan §Refutation status and its risk register.
 
 ## 2026-09-07 independent workflows and evidence-scoped integration
 
