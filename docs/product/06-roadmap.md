@@ -135,6 +135,15 @@ separate evidence.
 
 **WO-041 collision retiming (2026-09-07):** unpublished target `v0.13.2` is superseded by `v0.13.3` under the existing patch classification because the observed release baseline is `v0.13.2`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
 
+**WO-109 activation completion (2026-09-07):** the omitted target is completed at
+`v0.13.3`, strictly below published `v0.14.0`, under the order's recorded
+classification: internal research and documentation with an honest no-release
+close. The source adds the re-mining practice record and its first pilot draw
+under `docs/lineage/remining/`; no runtime source, component version,
+dependency, or schema changes, and the README release block keeps naming
+`v0.14.0`. Final review completed the assignment that activation omitted; the
+reviewed notes ride the next tag that contains this work.
+
 The manifest records the Git commit, application release, package/component
 versions, supported schema and artifact ranges, transformation-set version (or
 explicitly `none`), evidence commands/results, evaluable and deferred cadence

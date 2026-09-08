@@ -1,4 +1,4 @@
-# WO-109 — Re-mining Well: source census and first pilot draw (version assigned at activation)
+# WO-109 — Re-mining Well: source census and first pilot draw (v0.13.3)
 
 > **Operator-revised planning draft, not activation authority.** The operator
 > returned this revision on 2026-09-02. Catalog registration records the
@@ -18,7 +18,10 @@ Mechanical census, register, and capsule side routines may run at `high+`; the
 lifecycle executor and all planning-role judgments remain `xhigh+`.
 **Release classification:** assigned by the planner at activation. Expected
 class: internal research and documentation with an honest no-release close; no
-exported runtime capability.
+exported runtime capability. Completed at final review (2026-09-07): `v0.13.3`,
+strictly below published `v0.14.0`, so release close records the honest
+no-release result and creates no tag; no application or component version
+changes.
 **Nomination provenance:** the operator's 2026-09-02 request for a slow,
 methodical, shape-first re-reading of the source corpus from several scales and
 temperaments, reviewed the same day. `WO-109` is an opaque identifier, not a
