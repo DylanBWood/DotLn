@@ -17,9 +17,10 @@ condition.
 WO-052 merged (the source-change host that executes a derived order);
 WO-054 merged (every derived order is verified before the curve advances);
 WO-042 merged (the derived order's authority is the portfolio's, as a
-narrowing with `host-policy` provenance, never wider); WO-023 merged (the
-compiled Entropy Reducer whose candidates are the first input; satisfied at
-`v0.5.0`).
+narrowing with `host-policy` provenance, never wider); WO-119 merged (the executable
+discovery producer whose candidates are the input; the Entropy Reducer's
+manual review is not a producer); WO-120 merged (a derived order is a
+durable record with the same identity and lifecycle).
 **Recommended placement:** after WO-052 and WO-054 land; it edits the
 configuration schema, adds `packages/skeleton/src/portfolio.ts`, and the
 resident's activation path. A recommendation, not a dependency token.
@@ -38,8 +39,9 @@ shape).
 as they compile), the surfaces (paths), the effect ceiling per presence
 phase, a budget (episodes, tokens where reported, wall time) and the
 verification requirement; `deriveWorkOrders(candidates, portfolio, phase)`
-is pure: one candidate (a Sort candidate with a proposed home, a Shine
-finding, a recurring-repair standardization) becomes one bounded WorkOrder
+is pure: one WO-119 candidate (a misplaced file with a proposed home, a
+failing lint or test, a stale generated file, a recurring repair) becomes
+one bounded WorkOrder, materialized through WO-120 as a durable record,
 whose surfaces are the candidate's files, whose size is within the phase's
 ceiling and whose contract is the mechanic's obligation; a candidate outside
 the portfolio becomes a `ProductSuggestion` or `NeedsHuman`, never an
@@ -49,8 +51,9 @@ verifies it.
 
 **Observed gap (dated 2026-09-08, `main` at `33e2c25`):**
 
-- The Gardener emits candidates into evidence; no order is ever derived from
-  them, and no authority exists for unattended activation.
+- The only candidate producer is manual and awaits an operator; no order is
+  ever derived from a candidate, and no authority exists for unattended
+  activation.
 
 **Design (scope discipline):**
 
@@ -59,17 +62,20 @@ verifies it.
   the intersection of the portfolio and the phase.
 - Budget exhaustion is a NoOp with a reason; the resident never exceeds it.
 - **Declined alternatives, recorded:** a model choosing what to work on
-  (candidates come from compiled mechanics); an order that widens its own
-  surfaces on contact.
+  (candidates come from the executable producer); operator-authored
+  candidate lists as the input; an order that widens its own surfaces on
+  contact.
 
 **Deliverables:** the contract, the derivation, the activation path,
 fixtures with doubles over the WO-052 target, the write-backs below.
 
 **Acceptance criteria (all required)**
 
-1. From fixture candidates, in-portfolio ones derive orders whose surfaces,
-   size and envelope are inside the portfolio and phase (fixture-asserted);
-   out-of-portfolio ones become suggestions or `NeedsHuman` and no order.
+1. From WO-119's candidates over its fixture repository, in-portfolio ones
+   derive orders whose surfaces, size and envelope are inside the portfolio
+   and phase (fixture-asserted) and materialize as durable records visible
+   in the index; out-of-portfolio ones become suggestions or `NeedsHuman`
+   and no order.
 2. A derived order activates with `host-policy` provenance recorded in the
    activation event, executes through the WO-052 double, is verified through
    the WO-054 double, and only then does the phase advance; a failed

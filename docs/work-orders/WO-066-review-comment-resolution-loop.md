@@ -13,7 +13,9 @@ Planner-synthesized draft; captures and hashes in the ledger section of that
 date. Opaque identifier, not a priority. Clean-room screen: no stop
 condition.
 **Depends on:** WO-065 merged (the observed comments and checks); WO-055
-merged (the repair derivation and round limit it reuses).
+merged (the repair derivation and round limit it reuses); WO-054 merged
+(verification of each repaired head before a push); WO-064 merged (the
+grant under which the push and the disposition run).
 **Recommended placement:** after WO-065; it edits `packages/skeleton/src/`
 (the loop continuation) and product 06. A recommendation, not a dependency
 token.
@@ -25,13 +27,19 @@ terminal state); 02-domain-model.md §Independent verification v1;
 `docs/work-orders/WO-064-target-publish.md` (the push under the grant).
 
 **Objective:** For each `automated-review` or `ci-failure` item in the
-latest `PullRequestStateObserved` event, derive a repair WorkOrder with
-WO-055's derivation (surfaces from the comment's path and line or the
-failing check's named files, the contract unchanged, one round per item),
-dispatch a fresh source-change worker, push under WO-064's grant, re-observe
-through WO-065, and continue until every item is `resolved` or the loop
-appends `NeedsHuman` naming the item and reason; `human-review` items are
-never auto-resolved; the loop is an executable-subset continuation.
+latest `PullRequestStateObserved` event: triage it against the contract and
+the diff into `accept` (a repair is warranted), `reject` (the suggestion is
+incorrect or stale, with evidence references) or `NeedsHuman`; for an
+accepted item derive a repair with WO-055's derivation (surfaces from the
+comment's path and line or the failing check's named files, the contract
+unchanged, one round per item), dispatch a fresh source-change worker,
+verify the repaired head through WO-054 before any push, push under
+WO-064's grant, apply the authorized external disposition on the thread
+(`pr.thread.resolve`, or a recorded rejection with the evidence, through
+the CLI helper under the grant), and re-observe through WO-065 until the
+observed state is `resolved`; `human-review` items are never
+auto-dispositioned; the loop is an executable-subset continuation that
+resumes after an interruption without reprompting.
 
 **Observed gap (dated 2026-09-08, `main` at `33e2c25`):**
 
@@ -43,28 +51,38 @@ never auto-resolved; the loop is an executable-subset continuation.
 - Per-item round limit from the order (default one); a comment whose path is
   outside the order's declared surfaces yields `NeedsHuman` rather than a
   widened repair.
-- **Declined alternatives, recorded:** replying to comments in prose (no
-  outward narrative; resolution is the pushed change); resolving human
-  comments.
+- A rejection is a recorded disposition with evidence references, posted
+  through the helper as the thread's disposition, never prose narrative.
+- The observed `resolved` state comes from a fresh WO-065 observation after
+  the disposition, never from the loop's own bookkeeping.
+- **Declined alternatives, recorded:** narrative replies; resolving human
+  comments; treating a pushed change as resolution.
 
 **Deliverables:** the continuation, the event, fixtures over recorded
 observations and doubles, the write-backs below.
 
 **Acceptance criteria (all required)**
 
-1. With doubles, two automated comments and one failing check are resolved
-   in one round each, with each repair touching only the item's surfaces and
-   each push recorded; the loop ends with no unresolved automated item.
-2. A comment outside the declared surfaces ends in `NeedsHuman` with the
-   reason; a human comment is never dispatched.
-3. A kill between a push and the re-observation resumes the continuation
-   without a second push.
-4. Write-backs land: 06 (the post-PR loop sentence), ledger entry.
-5. `npm test` green; `git diff --check` clean; no new dependency.
+1. With doubles over recorded observations: a valid automated comment is
+   accepted, repaired, verified (a WO-054 double records a pass before the
+   push), pushed, dispositioned, and observed `resolved` from a recorded
+   post-disposition observation; a failing check is handled the same way.
+2. An incorrect suggestion is rejected with evidence references and its
+   disposition recorded; a comment outside the declared surfaces ends in
+   `NeedsHuman` with the reason; a human comment is never dispatched; a
+   repair whose verification fails is not pushed.
+3. A comment arriving after the pull request was created is picked up on
+   the next observation; a kill between a push and the re-observation
+   resumes the continuation without a second push or a reprompt.
+4. A mock that flips a `resolved` bit without a post-disposition observation
+   does not count as resolution (a negative fixture).
+5. Write-backs land: 06 (the post-PR loop sentence), 02 (the disposition
+   event), ledger entry.
+6. `npm test` green; `git diff --check` clean; no new dependency.
 
 **Evidence gate:** the fixture transcripts; `npm test`.
 
-**Write-back duty:** as listed in criterion 4.
+**Write-back duty:** as listed in criterion 5.
 
 **Non-goals:** the live loop (part of WO-112); merging; replying in prose.
 

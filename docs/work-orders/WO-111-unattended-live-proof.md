@@ -13,8 +13,9 @@ valuable order makes an existing claim true in a real session: the vision's
 first sentence names a runtime. Planner-synthesized draft; captures and
 hashes in the ledger section of that date. Opaque identifier, not a
 priority. Clean-room screen: the target is a scratch repository.
-**Depends on:** WO-100 merged (the portfolio and derivation); WO-099 merged
-(the mission check runs during the hour); WO-053 merged (the live
+**Depends on:** WO-100 merged (the portfolio and derivation); WO-119
+merged (discovery of the seeded imperfections); WO-099 merged (the mission
+check runs during the hour); WO-053 merged (the live
 source-change primitive); WO-054 merged (verification of each change).
 **Recommended placement:** immediately after WO-100; the second mandatory
 replan checkpoint follows its receipt together with WO-053's. It adds
@@ -27,8 +28,8 @@ replan checkpoint follows its receipt together with WO-053's. It adds
 **Objective:** Seed a scratch repository with 5S candidates (misplaced
 files with obvious homes, a lint mess, a recurring repair), declare a
 portfolio over it with no remote grant, mark the operator away, and let the
-resident run for one bounded window: it derives orders from the Gardener's
-candidates, executes them through the source-change primitive under the
+resident run for one bounded window: the producer (WO-119) discovers the
+imperfections and the resident derives orders from its candidates, executes them through the source-change primitive under the
 curve (the first change one file, later changes a surface), verifies each,
 fires the mission check on its cadence, and stops dispatching on return;
 the receipt shows the progression, every event, each verification result,
@@ -53,8 +54,9 @@ JSON, the write-backs below.
 
 **Acceptance criteria (all required)**
 
-1. The receipt shows at least three derived orders completed in ascending
-   phase with verified results, the first touching one file, and a reset if
+1. The receipt shows the seeded imperfections discovered by the producer
+   and at least three derived orders completed in ascending phase with
+   verified results, the first touching one file, and a reset if
    any verification failed.
 2. The main checkout hash, a sentinel tree, and every path outside the
    portfolio are unchanged; no remote effect occurred.
@@ -79,3 +81,4 @@ JSON, the write-backs below.
 **Operator-review assumptions**
 
 1. The operator runs the window outside the sandbox and files the receipt.
+2. A run that fails records its receipt under this order's evidence and does not close the order; dependents wait for an observed success, and the operator may withdraw the order with a dated note.

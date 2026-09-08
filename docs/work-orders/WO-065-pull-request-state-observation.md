@@ -11,7 +11,10 @@ correction; the parity item "resolves every automated review comment"
 needs the comments observed first. Planner-synthesized draft; captures and
 hashes in the ledger section of that date. Opaque identifier, not a
 priority. Clean-room screen: no stop condition.
-**Depends on:** WO-064 merged (a pull request to observe).
+**Depends on:** WO-064 merged (a pull request to observe); WO-060 merged
+(the screen every stored comment passes). After WO-068, the resident's
+`pull-request-observe` cadence is the ordinary invoker; the command stays
+operator-invocable.
 **Recommended placement:** after WO-064; it edits `packages/skeleton/src/`
 (a new pull-request observer) and reuses the `gh` helper and stub. A
 recommendation, not a dependency token.
@@ -27,7 +30,8 @@ runs and review comments through `gh` in JSON mode and appends one
 where each check is `{ name, state }` and each comment is
 `{ id, role, path?, line?, text, resolved, class }` with `class` from
 `ci-failure`, `automated-review`, `human-review`, `resolved`; observation is
-operator-invoked, never a daemon; identical state appends nothing.
+invoked by the resident's cadence when a resident runs and by the operator
+otherwise, never by a daemon of its own; identical state appends nothing.
 
 **Observed gap (dated 2026-09-08, `main` at `33e2c25`):**
 
@@ -38,9 +42,8 @@ operator-invoked, never a daemon; identical state appends nothing.
 
 - Role labels as in WO-062; automation accounts by a declared pattern;
   comment text is stored as a span source for WO-066's repair derivation.
-- **Declined alternatives, recorded:** polling in the background (presence
-  is a policy input, ADR-0007, not this order's); writing to the pull
-  request.
+- **Declined alternatives, recorded:** a poller of its own (the resident's
+  cadences own timing); writing to the pull request (WO-066's disposition).
 
 **Deliverables:** the observer, the event, recorded fixtures, a live smoke
 record, the write-backs below.
@@ -65,4 +68,5 @@ record, the write-backs below.
 
 **Operator-review assumptions**
 
-1. Operator-invoked observation is acceptable for the first vertical.
+1. The resident's cadence is the invoker once WO-068 lands; the command
+   stays available by hand.

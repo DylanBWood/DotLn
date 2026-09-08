@@ -89,3 +89,4 @@ that later); judging planning passes (the refuter); any source change.
 **Operator-review assumptions**
 
 1. The operator runs the unattended row outside the sandbox.
+2. A run that fails records its receipt under this order's evidence and does not close the order; dependents wait for an observed success, and the operator may withdraw the order with a dated note.

@@ -13,7 +13,8 @@ actor board (WO-032) as the existing read-only projection. Planner-
 synthesized draft; captures and hashes in the ledger section of that date.
 Opaque identifier, not a priority. Clean-room screen: no stop condition.
 **Depends on:** WO-068 merged (the resident whose slice this projects);
-WO-032 merged (`uifa-board-v1` and the console host; satisfied at
+WO-120 merged (derived orders appear under the same identity as
+hand-written ones); WO-032 merged (`uifa-board-v1` and the console host; satisfied at
 `v0.14.0`).
 **Recommended placement:** immediately after WO-068, in a free lane; it
 adds the contract to `packages/compiler` or `packages/console` (the
@@ -31,7 +32,8 @@ actors (kind, availability, last episode), live episodes (order, actor,
 transport, phase, started at, elapsed, launch claims), presence (signal,
 phase, next cadence fire times), holds with reasons, budget consumed and
 remaining, and every open order's lifecycle phase, dependency state and
-verdict from the index's data; the resident writes it atomically to a local
+verdict from the index's data, derived and UI-filed orders included under
+the same identities; the resident writes it atomically to a local
 projection file on each tick and on each event; the console's text host
 renders it and refreshes when the file changes; the Angular consumer in the
 operator's fork reads the same file or its loopback equivalent (WO-115).

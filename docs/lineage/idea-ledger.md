@@ -218,6 +218,45 @@ rule.
     than the command's invocation. Recorded as a map candidate and in the
     plan's risk register; relevant before the resident dispatches `script`
     actors whose arguments carry arbitrary text.
+- **An external review of the revised plan is verified and applied**
+  `adopted` `operator-directed`
+  - Before the refuter ran, the operator supplied a read-only review of the
+    branch at `f7dd92c` by a second model, preserved verbatim in local-only
+    `docs/intake/notes/2026-09-08-codex-planning-review.md`, SHA-256
+    `410c47d5a2901f8c632ddf96bd96350f27a79e86d94f612e4295e64ddc9d52ca`. Its
+    ten findings and one delivery gap were verified against the tree and all
+    held: the product proof did not require the resident or the starter;
+    failed proof runs could close the orders that unlock the next gates;
+    the only candidate producer is the Entropy Reducer's manual review with
+    `Program.All`; the resident's heartbeat conflated actor traffic with
+    presence; derived work had no durable identity; the writer profile named
+    the Beacon profile's tuple and left the inspection validator in place;
+    grants gained authority from graph text; the pull-request loop could
+    pass on a flipped bit; intake decided answers by position; three orders
+    still held two items and three edges were missing. Seven orders are
+    filed (WO-118 the resident-owned loop from a starter instance as the
+    product exit; WO-119 the executable discovery producer; WO-120 derived
+    work identity; WO-121 presence with origin; WO-122 the cli-worker and
+    human-handoff actors; WO-123 the vertical composition; WO-124 impact
+    surfaces) and eighteen orders corrected, including the rule that no
+    proof order closes on a failed run and that WO-043's hard dependency
+    requires a passing final-review verdict. The horizon is seventy-two new
+    orders; the graph is regenerated. Durable home: the plan §The external
+    review; the orders.
+- **The Codex adapter refuses every effort but `unknown`** `adopted`
+  `operator-directed`
+  - The operator relayed a second model's finding while preparing to run
+    the refuter on Codex at `max`: the transport refuses any other effort
+    (`worker-transport.ts:218`) and ignores user configuration, so the
+    refuter's `--effort` flag has one legal value on Codex. Verified. WO-125
+    observes the reasoning-effort override per level, then makes the adapter
+    accept the declared levels and forward it, keeping `unknown` as the
+    value that requests nothing. Durable home: WO-125; the plan §Adapter
+    effort selection. The relayed message is appended to the correction
+    capture, whose SHA-256 is now
+    `4b3a9b276ba0e3e83c0492fe7148ac394a3d07a2242361e4e193207d7d9fee23`; the hash recorded
+    in the earlier entry of this section was true of the capture at that
+    time.
 
 ## 2026-09-07 independent workflows and evidence-scoped integration
 

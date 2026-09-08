@@ -1,6 +1,6 @@
 {
   "schemaVersion": "plan-dependency-graph-v1",
-  "planningPass": "2026-09-08 critical-path planning pass, revised the same day at the operator's corrections: bounded orders, the resident runtime as the spine, the starter as the vehicle, no target-application orders in core, the five-surface separation, the runtime's UI contracts",
+  "planningPass": "2026-09-08 critical-path planning pass, revised the same day at the operator's corrections (bounded orders, the resident runtime as the spine, the starter as the vehicle, no target-application orders in core, the five-surface separation, the runtime's UI contracts) and again at the external review's verified findings (the product exit through the resident from a starter instance, no closing on failure, an executable discovery producer, presence with origin, derived work identity, a separate writer request, trusted grant admission, dispositions in the pull-request loop, evidence-bearing intake relations)",
   "base": "33e2c25bd24a364dafa15d728a61c565ca7bf424",
   "semantics": {
     "edge": "an edge from X to Y means X depends on Y under the named relation",
@@ -221,7 +221,7 @@
       "kind": "work-order",
       "gate": "R",
       "status": "filed",
-      "title": "Resident host (the offline always-on process with three actor kinds)"
+      "title": "Resident host (the offline always-on process; script actors)"
     },
     {
       "id": "WO-099",
@@ -256,7 +256,7 @@
       "kind": "work-order",
       "gate": "V",
       "status": "filed",
-      "title": "The loop from core against a scratch target (live proof)"
+      "title": "The loop from core against a scratch target (live proof of WO-123's composition)"
     },
     {
       "id": "WO-113",
@@ -292,6 +292,62 @@
       "gate": "U",
       "status": "filed",
       "title": "Console live host (witnessed session)"
+    },
+    {
+      "id": "WO-118",
+      "kind": "work-order",
+      "gate": "V",
+      "status": "filed",
+      "title": "The resident-owned loop from a starter instance (the product exit, live proof)"
+    },
+    {
+      "id": "WO-119",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "Executable discovery producer"
+    },
+    {
+      "id": "WO-120",
+      "kind": "work-order",
+      "gate": "B",
+      "status": "filed",
+      "title": "Derived work identity (runtime-derived and UI-filed orders as durable records)"
+    },
+    {
+      "id": "WO-121",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "Presence signals with origin"
+    },
+    {
+      "id": "WO-122",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "Actor catalog: cli-worker and human-handoff kinds"
+    },
+    {
+      "id": "WO-123",
+      "kind": "work-order",
+      "gate": "V",
+      "status": "filed",
+      "title": "dotln vertical composition (doubles)"
+    },
+    {
+      "id": "WO-124",
+      "kind": "work-order",
+      "gate": "G",
+      "status": "filed",
+      "title": "Impact surfaces derivation"
+    },
+    {
+      "id": "WO-125",
+      "kind": "work-order",
+      "gate": "B",
+      "status": "filed",
+      "title": "Codex effort selection"
     },
     {
       "id": "WO-069",
@@ -774,6 +830,13 @@
       "gate": "closed",
       "status": "closed; reference only",
       "title": "Audit record baseline"
+    },
+    {
+      "id": "WO-019",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Effort truth"
     }
   ],
   "edges": [
@@ -1134,6 +1197,18 @@
       "reason": "a pull request to observe"
     },
     {
+      "from": "WO-065",
+      "to": "WO-060",
+      "relation": "hard",
+      "reason": "the screen every stored comment passes"
+    },
+    {
+      "from": "WO-065",
+      "to": "WO-068",
+      "relation": "reference-only",
+      "reason": "the resident's cadence is the ordinary invoker once it exists"
+    },
+    {
       "from": "WO-066",
       "to": "WO-065",
       "relation": "hard",
@@ -1144,6 +1219,18 @@
       "to": "WO-055",
       "relation": "hard",
       "reason": "the repair derivation and round limit it reuses"
+    },
+    {
+      "from": "WO-066",
+      "to": "WO-054",
+      "relation": "hard",
+      "reason": "verification of each repaired head before a push"
+    },
+    {
+      "from": "WO-066",
+      "to": "WO-064",
+      "relation": "hard",
+      "reason": "the grant under which the push and the disposition run"
     },
     {
       "from": "WO-067",
@@ -1234,10 +1321,15 @@
     },
     {
       "from": "WO-100",
-      "to": "WO-023",
-      "relation": "satisfied-by-release",
-      "release": "v0.5.0",
-      "reason": "the compiled Entropy Reducer whose candidates are the first input"
+      "to": "WO-119",
+      "relation": "hard",
+      "reason": "the executable discovery producer whose candidates are the input"
+    },
+    {
+      "from": "WO-100",
+      "to": "WO-120",
+      "relation": "hard",
+      "reason": "a derived order is a durable record with the same identity and lifecycle"
     },
     {
       "from": "WO-110",
@@ -1266,6 +1358,12 @@
     },
     {
       "from": "WO-111",
+      "to": "WO-119",
+      "relation": "hard",
+      "reason": "discovery of the seeded imperfections"
+    },
+    {
+      "from": "WO-111",
       "to": "WO-099",
       "relation": "hard",
       "reason": "the mission check runs during the hour"
@@ -1284,9 +1382,9 @@
     },
     {
       "from": "WO-112",
-      "to": "WO-049",
+      "to": "WO-123",
       "relation": "hard",
-      "reason": "the scratch worktree is governed by an emitted bundle"
+      "reason": "the composition this run executes"
     },
     {
       "from": "WO-112",
@@ -1299,36 +1397,6 @@
       "to": "WO-056",
       "relation": "hard",
       "reason": "independent verification and repair, live"
-    },
-    {
-      "from": "WO-112",
-      "to": "WO-059",
-      "relation": "hard",
-      "reason": "visual and network claims over the scratch page"
-    },
-    {
-      "from": "WO-112",
-      "to": "WO-061",
-      "relation": "hard",
-      "reason": "the contract comes from a tracked-work artifact"
-    },
-    {
-      "from": "WO-112",
-      "to": "WO-062",
-      "relation": "hard",
-      "reason": "the artifact is read through the generic adapter"
-    },
-    {
-      "from": "WO-112",
-      "to": "WO-064",
-      "relation": "hard",
-      "reason": "the pull request"
-    },
-    {
-      "from": "WO-112",
-      "to": "WO-066",
-      "relation": "hard",
-      "reason": "the post-PR loop"
     },
     {
       "from": "WO-112",
@@ -1355,6 +1423,211 @@
       "reason": "host recovery refuses malformed state before dispatch"
     },
     {
+      "from": "WO-123",
+      "to": "WO-052",
+      "relation": "hard",
+      "reason": "the source-change host"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-054",
+      "relation": "hard",
+      "reason": "verification over the worktree"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-055",
+      "relation": "hard",
+      "reason": "the repair continuation"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-059",
+      "relation": "hard",
+      "reason": "browser witnesses"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-061",
+      "relation": "hard",
+      "reason": "the contract from an issue"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-062",
+      "relation": "hard",
+      "reason": "the issue adapter"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-124",
+      "relation": "hard",
+      "reason": "surfaces from the contract"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-064",
+      "relation": "hard",
+      "reason": "publish"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-065",
+      "relation": "hard",
+      "reason": "observation"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-066",
+      "relation": "hard",
+      "reason": "resolution"
+    },
+    {
+      "from": "WO-124",
+      "to": "WO-061",
+      "relation": "hard",
+      "reason": "the contract it reads"
+    },
+    {
+      "from": "WO-124",
+      "to": "WO-054",
+      "relation": "hard",
+      "reason": "the worktree snapshot shape it reads"
+    },
+    {
+      "from": "WO-119",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the producer runs as an actor episode the resident dispatches"
+    },
+    {
+      "from": "WO-119",
+      "to": "WO-023",
+      "relation": "satisfied-by-release",
+      "release": "v0.5.0",
+      "reason": "the Sort rule and candidate shape it reuses"
+    },
+    {
+      "from": "WO-119",
+      "to": "WO-046",
+      "relation": "hard",
+      "reason": "its program is checked against the executable grammar type"
+    },
+    {
+      "from": "WO-120",
+      "to": "WO-043",
+      "relation": "hard",
+      "reason": "generated authority files carry typed dependency blocks"
+    },
+    {
+      "from": "WO-120",
+      "to": "WO-069",
+      "relation": "hard",
+      "reason": "the derived root and identity range are configuration"
+    },
+    {
+      "from": "WO-121",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the resident whose presence fold this defines"
+    },
+    {
+      "from": "WO-121",
+      "to": "WO-067",
+      "relation": "hard",
+      "reason": "the discretionary-phase scope for cancellation"
+    },
+    {
+      "from": "WO-122",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the catalog"
+    },
+    {
+      "from": "WO-122",
+      "to": "WO-051",
+      "relation": "hard",
+      "reason": "the writer request and profile the cli-worker kind dispatches"
+    },
+    {
+      "from": "WO-122",
+      "to": "WO-044",
+      "relation": "hard",
+      "reason": "the detached-launch rows the launch path is designed from"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-075",
+      "relation": "hard",
+      "reason": "a starter instance with the build"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-076",
+      "relation": "hard",
+      "reason": "the instance's overlay"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-121",
+      "relation": "hard",
+      "reason": "presence with origin"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-122",
+      "relation": "hard",
+      "reason": "the cli-worker and human-handoff actors"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-100",
+      "relation": "hard",
+      "reason": "derivation inside a portfolio"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-120",
+      "relation": "hard",
+      "reason": "derived work as durable records"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-124",
+      "relation": "hard",
+      "reason": "surfaces derived from the contract"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-112",
+      "relation": "hard",
+      "reason": "the loop proven from core first"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-111",
+      "relation": "hard",
+      "reason": "the unattended hour"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-066",
+      "relation": "hard",
+      "reason": "the pull-request loop with dispositions"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-114",
+      "relation": "hard",
+      "reason": "the run is visible in the status projection"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-117",
+      "relation": "hard",
+      "reason": "the run is visible in the live console"
+    },
+    {
       "from": "WO-113",
       "to": "WO-043",
       "relation": "hard",
@@ -1375,6 +1648,12 @@
     },
     {
       "from": "WO-114",
+      "to": "WO-120",
+      "relation": "hard",
+      "reason": "derived orders appear under the same identity"
+    },
+    {
+      "from": "WO-114",
       "to": "WO-032",
       "relation": "satisfied-by-release",
       "release": "v0.14.0",
@@ -1391,6 +1670,18 @@
       "to": "WO-114",
       "relation": "hard",
       "reason": "the status projection the surface reads"
+    },
+    {
+      "from": "WO-115",
+      "to": "WO-120",
+      "relation": "hard",
+      "reason": "intent and derived-order activation exist as terminal commands"
+    },
+    {
+      "from": "WO-115",
+      "to": "WO-100",
+      "relation": "hard",
+      "reason": "declaring a portfolio exists as a terminal command"
     },
     {
       "from": "WO-116",
@@ -1586,33 +1877,21 @@
     },
     {
       "from": "WO-083",
+      "to": "WO-118",
+      "relation": "hard",
+      "reason": "the resident-owned loop is proven from a starter instance before the fork runs it against a real target"
+    },
+    {
+      "from": "WO-083",
       "to": "WO-082",
       "relation": "hard",
       "reason": "the synthetic pilot precedes the witnessed run"
     },
     {
       "from": "WO-083",
-      "to": "WO-064",
-      "relation": "hard",
-      "reason": "the pull request is opened by the publish path"
-    },
-    {
-      "from": "WO-083",
-      "to": "WO-076",
-      "relation": "hard",
-      "reason": "the fork's own overlay"
-    },
-    {
-      "from": "WO-083",
       "to": "WO-073",
       "relation": "hard",
-      "reason": "the Angular profile as the first exemplar of a class"
-    },
-    {
-      "from": "WO-083",
-      "to": "WO-112",
-      "relation": "reference-only",
-      "reason": "the loop is proven from core before the fork runs it against a real target"
+      "reason": "the profile convention the fork's profile follows"
     },
     {
       "from": "WO-084",
@@ -1784,6 +2063,19 @@
       "to": "WO-097",
       "relation": "hard",
       "reason": "the first half-batch's retirements and bookkeeping"
+    },
+    {
+      "from": "WO-125",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "the Codex transport"
+    },
+    {
+      "from": "WO-125",
+      "to": "WO-019",
+      "relation": "satisfied-by-close",
+      "reason": "the effort declaration and launch-claim contract"
     },
     {
       "from": "WO-014",

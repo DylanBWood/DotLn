@@ -70,7 +70,10 @@ with the sanitized receipts and JSON; the write-backs below.
 
 **Acceptance criteria (all required)**
 
-1. For at least one harness, the clean episode's receipt shows the main
+1. For each installed harness, one writer-profile smoke edits one file in
+   a scratch worktree and returns the envelope (WO-051's profile, recorded
+   with shapes and launch claims); then, for at least one harness, the
+   clean episode's receipt shows the main
    checkout hash and the sentinel tree unchanged, the test red before and
    green after by host runs, the commit present in the target with no DotLn
    file, the six-field envelope plus `observedCommit`, and the parent
@@ -101,6 +104,5 @@ separate order).
 
 1. The operator runs the episodes and files the receipt from an outside
    terminal; the sandbox cannot dispatch either transport.
-2. An episode that fails a containment check stops the gate until the
-   containment is structural; a receipt recording that failure still closes
-   this order as honest bookkeeping.
+2. A run that fails records its receipt under this order's evidence and does not close the order; dependents wait for an observed success, and the operator may withdraw the order with a dated note. An episode that fails a containment check stops the gate until the
+   containment is structural.

@@ -45,8 +45,10 @@ with an entry cadence or condition, a scope (surfaces, a change-size
 ceiling, a budget) and an envelope narrowing, a curve rule (`progressive`:
 enter the smallest phase on absence, advance one phase after each verified
 success, reset to the smallest on any failure or at the peak), a return
-rule (`cancel-on-return`: no new dispatch after the operator returns;
-in-flight episodes finish or are killed per the phase) and a decay rule
+rule (`cancel-on-return` applies to phases marked `discretionary`: no new
+discretionary dispatch after the operator returns and in-flight
+discretionary episodes finish or are killed per the phase, while an
+explicitly requested foreground task continues under its own authority) and a decay rule
 (what expires after a declared idle time); lower it to kernel cadences,
 statechart gates and per-phase effective envelopes that are always a
 narrowing of the base; and render the curve in the tooltip's PULSE and
@@ -95,8 +97,8 @@ races and unavailable adapters; the write-backs below.
    refuses naming the field.
 3. Fixtures prove the curve as data: hold (no phase entered while present),
    progressive advance after a verified success, reset on a failure, reset
-   at the peak, cancel-on-return with an in-flight episode killed or
-   finished per the phase, decay after the idle time, and an unavailable
+   at the peak, cancel-on-return with an in-flight discretionary episode killed or
+   finished per the phase and a requested foreground task continuing, decay after the idle time, and an unavailable
    adapter yielding a NoOp emission with a reason.
 4. Every committed program keeps its exact semantic hash; the three editable
    views round-trip a graph with `presence`.

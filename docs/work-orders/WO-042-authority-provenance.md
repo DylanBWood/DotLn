@@ -139,6 +139,16 @@ and what its lowered hooks enforce cannot diverge.
   applied, so every grant-free program keeps its exact semantic hash. Unknown
   `grantedBy`, wildcard effects, an empty or foreign `repo`, a missing reason,
   and duplicate ids reject.
+- **Trusted admission.** A grant in a submitted graph carries no authority by
+  itself. The compilation environment supplies a host-owned grant registry:
+  a committed `grants.json` beside the loadouts for `operator` and
+  `registered-repository` provenance, reviewed like any authority file, and
+  an ignored local file for `host-policy`; a graph grant is admitted only
+  when the registry holds an entry with the same `grantId`, `version`,
+  `effects`, `operations`, `repo` and `grantedBy`, otherwise the graph
+  rejects with `AUTHORITY GRANT UNADMITTED`. The manifest records the
+  registry's hash. An unattended consumer therefore cannot be handed
+  authority by text that merely claims operator provenance.
 - **Projected inspection.** A pure `projectAuthorityInspection(program)`
   returns GRANTS as the effective allowed effects (a granted effect annotated
   with its grant id and provenance) and RESTRICTIONS as the effective denied
@@ -208,7 +218,12 @@ negative tests; the new evidence editions; the write-backs below.
    allows it at a higher layer compile to the base allowance with the
    resolution in the trace; the trace and the runtime `authorize` guard agree
    on every fixture.
-3. Grants widen with provenance and are reversible. A graph with an
+3. Grants widen with provenance, are admitted only from the registry, and
+   are reversible. An adversarial fixture graph that carries an
+   `operator`-provenance grant with no registry entry, or whose entry
+   differs in one field, rejects with `AUTHORITY GRANT UNADMITTED`; the same
+   graph with a matching registry entry compiles and the manifest records
+   the registry hash. A graph with an
    `authorityGrants` entry (`grantedBy: "operator"`, the environment's `repo`)
    allowing a base-denied effect compiles with that effect in `allowedEffects`
    and absent from `deniedEffects`, records the grant in `grants` and in the
@@ -263,7 +278,8 @@ bundle diff for criterion 6; `npm test`; the three evidence editions.
 
 **Write-back duty:** as listed in criterion 8.
 
-**Non-goals:** multi-active link groups or set bonuses (WO-037); presence
+**Non-goals:** signatures or an identity system (the registry is a trusted
+local boundary under review, not authentication); multi-active link groups or set bonuses (WO-037); presence
 policy transitions (ADR-0007); wildcard or time-scoped grants; the
 owner-sovereign profile; new harness facets, hooks, roles or profiles;
 changing any `feedbackBoundary` predicate; the harness host's tool

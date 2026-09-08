@@ -73,3 +73,4 @@ any runtime fix.
 **Operator-review assumptions**
 
 1. The operator runs the episodes outside the sandbox and files the receipt.
+2. A run that fails records its receipt under this order's evidence and does not close the order; dependents wait for an observed success, and the operator may withdraw the order with a dated note.

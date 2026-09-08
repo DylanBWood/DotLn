@@ -14,7 +14,9 @@ author and to inspect. Planner-synthesized draft; captures and hashes in
 the ledger section of that date. Opaque identifier, not a priority.
 Clean-room screen: no stop condition.
 **Depends on:** WO-068 merged (the resident that serves the surface);
-WO-114 merged (the status projection the surface reads).
+WO-114 merged (the status projection the surface reads); WO-120 merged
+(`intent` and derived-order activation exist as terminal commands);
+WO-100 merged (declaring a portfolio exists as a terminal command).
 **Recommended placement:** after WO-114; it adds the contract and the
 loopback server to the resident and a client in `packages/console`. A
 recommendation, not a dependency token.
@@ -25,12 +27,14 @@ workshop; 03-architecture.md §Composition system (equip preview; compiled
 diff); 07-execution-guide.md §Operator resume phrases; `packages/skeleton/src/cli.ts`
 and `dotln.ts` (the terminal commands); `scripts/resume.mjs`.
 
-**Objective:** One typed command contract (`console-commands-v1`) lists the
-commands a UI host may invoke: the `resume:` phrases, `worktree` lifecycle,
-`harness emit` and `check`, equip preview and compiled diff for a build,
-saved-build selection, declaring a portfolio, `away` and `back`, activating
-an order, filing an intent as a work-order draft, and the read projections
-(status, audit); the resident serves them over a loopback socket bound to
+**Objective:** One typed command contract (`console-commands-v1`) lists
+exactly the commands that exist as terminal implementations at activation:
+the `resume:` phrases, the `worktree` lifecycle, `harness emit` and
+`check`, the compiled diff and loadout selection the skeleton CLI offers,
+`intent` and derived-order activation (WO-120), declaring a portfolio
+(WO-100), `away` and `back` (WO-068), and the read projections (status;
+audit once WO-116 lands); a command with no terminal implementation is not
+in the contract, and adding one is a named order; the resident serves them over a loopback socket bound to
 the local user only, executing exactly the terminal's implementation under
 the same compiled envelope, so a UI cannot do what the terminal cannot; the
 console's text host and the fork's Angular shell are both clients.
@@ -38,7 +42,9 @@ console's text host and the fork's Angular shell are both clients.
 **Observed gap (dated 2026-09-08, `main` at `33e2c25`):**
 
 - The board is read-only and the terminal is the only command surface;
-  authoring in a UI has no contract.
+  authoring in a UI has no contract; the skeleton CLI today offers `status`,
+  `demo`, `verify-demo`, `feedback-audit`, `--audit`, `--compiled-diff` and
+  `--beacons`, and no intent or saved-build command.
 
 **Design (scope discipline):**
 

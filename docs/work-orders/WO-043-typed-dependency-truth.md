@@ -85,10 +85,11 @@ labeled as such and never as a blocker.
   holding one JSON array. Each entry is
   `{ "workOrderId": "WO-NNN", "relation": <relation>, "reason": <one line> }`
   plus the relation's fields: `hard` (blocks until the order is
-  control-closed); `satisfied-by-release` with `release: "vX.Y.Z"` (met when
+  control-closed with a passing final-review verdict; a closed order whose
+  verdict is failed or absent still blocks); `satisfied-by-release` with `release: "vX.Y.Z"` (met when
   that local annotated release tag is in `HEAD`'s ancestry, otherwise
-  blocking); `satisfied-by-close` (met when control-closed, otherwise
-  blocking); `historical-evidence` and `reference-only` (never block);
+  blocking); `satisfied-by-close` (met when control-closed with a passing
+  final-review verdict, otherwise blocking); `historical-evidence` and `reference-only` (never block);
   `waived` with `date` (never blocks; the reason is the review record);
   `superseded` with `by: "WO-NNN"` (never blocks); and `planning-deferral`
   with `until` naming a work order or a candidate label and `date` (blocks
@@ -140,7 +141,8 @@ the write-backs below.
    relation, a missing reason, a duplicate id, a self-reference, a `hard`
    entry naming WO-001, and a malformed JSON array.
 2. The projection is deterministic over fixtures: `hard` on an open order
-   blocks; `satisfied-by-close` on a closed order is met; `satisfied-by-release`
+   blocks, and on an order closed without a passing verdict still blocks;
+   `satisfied-by-close` on an order closed with a passing verdict is met; `satisfied-by-release`
    is met when the named annotated tag is in the fixture repository's `HEAD`
    ancestry and blocking when it is not; `historical-evidence`,
    `reference-only`, `waived` and `superseded` never block;

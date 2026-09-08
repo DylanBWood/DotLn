@@ -392,3 +392,29 @@ consequences change:
   (WO-067, WO-068, WO-099, WO-100, WO-110, WO-111) and Gate U (WO-114 to
   WO-117) file them, with WO-113 for the five-surface separation the audit
   did name.
+
+## Addendum 2 (2026-09-08, same day) — the external review's code-level claims
+
+The operator supplied a second external input, a read-only review of the
+revised branch (capture hash in the ledger section). Its four claims about
+the source were verified before the plan changed:
+
+- `packages/skeleton/src/loadouts/entropy-reducer.ts`: the reviewer boundary
+  is `mode: "operator-mediated-manual"` (lines 1049 and 1057), its program
+  holds `Program.All` (line 1125), and the loadout's own text says the kernel
+  does not yet evaluate `All` (line 935). Verified; consequence: WO-119.
+- `packages/skeleton/src/execution-environment.ts`: `writableSurfaces: readonly []`
+  belongs to `BeaconPerceptionProfile` (lines 26 to 31); the inspection worker
+  uses `FixtureInspectionProfile` with one read mount; `validateRequest` in
+  `worker-protocol.ts` requires `repo.inspect`, the read mount at `cwd`, and
+  prohibited `repo.write` and `repo.delete`, and `workerPrompt` instructs
+  inspection only. Verified; consequence: WO-051 rewritten.
+- `scripts/resume.mjs` `activate` requires a `WO-\d{3}` identity and an
+  authority file path; the compiled `WorkOrder` in
+  `packages/compiler/src/types.ts` is a different contract; the skeleton CLI
+  offers `status`, `demo`, `verify-demo`, `feedback-audit`, `--audit`,
+  `--compiled-diff` and `--beacons` and no intent or saved-build command.
+  Verified; consequence: WO-120, WO-115 scoped.
+- The compiler accepts a linked support allowing a base-denied effect (the
+  review's local probe, consistent with VER-001 F2 and §A above). Verified;
+  consequence: WO-042 gains the trusted admission boundary.

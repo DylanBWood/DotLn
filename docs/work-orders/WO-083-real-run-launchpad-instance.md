@@ -12,10 +12,10 @@ build is the priming" items, cut into a bounded child at the operator's
 2026-09-08 correction. Planner-synthesized draft. Opaque identifier, not a
 priority. Clean-room screen: the operator's own public repositories; the
 baseline practice is described only as counts.
-**Depends on:** WO-082 merged (the synthetic pilot precedes the witnessed
-run); WO-064 merged (the pull request is opened by the publish path);
-WO-076 merged (the fork's own overlay); WO-073 merged (the Angular profile
-as the first exemplar of a class).
+**Depends on:** WO-118 merged (the resident-owned loop is proven from a
+starter instance before the fork runs it against a real target); WO-082
+merged (the synthetic pilot precedes the witnessed run); WO-073 merged (the
+profile convention the fork's profile follows).
 **Recommended placement:** after WO-082; the shell's orders are planned by
 the fork's own planning pass and never filed here; this order records only
 the receipt under `docs/evidence/WO-083/`. A
@@ -33,8 +33,10 @@ repository, forks or clones it as their instance, registers the Angular
 repository as a target with an Angular UI class, authors `WS-001` whose
 first member order is the first bounded slice of the UIFA v1 shell as that
 fork's planning pass cuts it, records the pre-run baseline block (records named by SHA-256
-before activation), and drives the order through the lifecycle with sessions
-opened from the launchpad's handoffs under the fork's emitted build; the
+before activation), and lets the fork's resident drive the order through the lifecycle with
+its own actors under the fork's emitted build, ordinary phase handoffs
+performed by the runtime and only material decisions returned to the
+operator; the
 receipt records the pull request, the reports, elapsed phases, every
 intervention and manual handoff, the units that fired and the refusals
 observed, each vision restatement the executor needed by hand, and the four
@@ -85,10 +87,10 @@ counts; the write-backs below.
 
 **Write-back duty:** as listed in criterion 4.
 
-**Non-goals:** runtime transports as the executors here; console v1 beyond
-the slice; any external organization's fork.
+**Non-goals:** manually opened sessions as the executors (that is the
+predecessor's shape); console v1 beyond the slice; any external
+organization's fork.
 
 **Operator-review assumptions**
 
-1. A partial or failed run still closes with criterion 1 recorded as failed
-   and no capability promotion.
+1. A run that fails records its receipt under this order's evidence and does not close the order; dependents wait for an observed success, and the operator may withdraw the order with a dated note. No capability promotion follows a partial or failed run.

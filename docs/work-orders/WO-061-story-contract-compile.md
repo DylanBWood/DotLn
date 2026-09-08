@@ -33,8 +33,10 @@ current-behavior observation, inference, assumption, contradiction, open
 decision), a provenance span into the bundle, and an origin of `rule` (a
 deterministic rule decided it) or `inferred` (a supplied model inference
 decided it, never promoted to `rule`); criteria are derived only from
-requirement statements; and `revise(contract, newBundle)` invalidates exactly
-the statements whose spans changed and everything derived from them.
+requirement statements; and `revise(contract, newBundle)` invalidates the statements whose spans
+changed, everything derived from them, and every statement an explicit
+`supersedes` relation names, so a new decision elsewhere in the artifact
+can retire an unedited earlier requirement.
 
 **Observed gap (dated 2026-09-08, `main` at `33e2c25`):**
 
@@ -45,14 +47,18 @@ the statements whose spans changed and everything derived from them.
 
 - Deterministic rules for what text can decide: struck-through spans are
   `struck`; sections whose heading matches a declared out-of-scope pattern
-  are `non-requirement`; interrogative discussion entries are `question`
-  with the next entry by another role as `answer`; image references are
+  are `non-requirement`; interrogative discussion entries are `question`;
+  the next entry by another role is recorded only as the structural fact
+  `follows`, and an `answer` relation is `inferred` with evidence or left
+  `open`, never decided by position; image references are
   `visual annotation`; everything else is a candidate for the inference
   slot.
 - The inference slot takes a list of `{ span, class, rationale }` supplied by
   a caller (a model episode in WO-112, a fixture double here); each is
-  recorded as `inferred` with its rationale; a supplied inference over a
-  span a rule already decided is refused.
+  recorded as `inferred` with its rationale; a supplied inference may not
+  change a structural fact (a strike, a heading, an order of entries) but
+  may attach a semantic relation to it (an answer, a supersession) with
+  evidence; ambiguity is recorded as `open`, never resolved by default.
 - Criteria: one `AcceptanceCriterion` per requirement statement with the
   statement as its text and the span as provenance, typed `behavior` by
   default and `visual` when the statement references a visual annotation.
@@ -73,16 +79,22 @@ below.
    as `rule`.
 3. A revised bundle that changes one section invalidates exactly the
    statements and criteria derived from that section's spans and nothing
-   else, proven by a diff of the two contracts.
-4. The derived criteria validate under `verification-v1` and a WO-054
-   capsule fixture accepts them.
-5. Write-backs land: 12 (the intake behaviors' status), 06 (the revision
+   else; a revision that adds a decision superseding an unedited earlier
+   requirement invalidates that requirement through the `supersedes`
+   relation, proven by diffs of the contracts.
+4. Fixtures with interleaved questions, an unanswered question, quoted
+   earlier planning, a later reversal and a superseding decision yield the
+   pinned structural facts, `inferred` relations only where an inference
+   with evidence was supplied, and `open` otherwise; a positional answer is
+   never emitted.
+5. The derived criteria validate under the `verification-v1` schema.
+6. Write-backs land: 12 (the intake behaviors' status), 06 (the revision
    guard sentence), ledger entry.
-6. `npm test` green; `git diff --check` clean; no new dependency.
+7. `npm test` green; `git diff --check` clean; no new dependency.
 
 **Evidence gate:** the fixture transcripts; `npm test`.
 
-**Write-back duty:** as listed in criterion 5.
+**Write-back duty:** as listed in criterion 6.
 
 **Non-goals:** the adapter (WO-062); an impact map; the enterprise tracker;
 a model episode in tests.

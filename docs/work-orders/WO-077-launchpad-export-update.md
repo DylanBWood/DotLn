@@ -33,10 +33,16 @@ one; and prints the re-emit instruction; it refuses without a prior manifest.
 
 **Design (scope discipline):**
 
-- The command never applies an instance action itself; the note is the
-  kit's, dated.
-- **Declined alternatives, recorded:** automatic refresh of any fork (never);
-  a three-way merge of kit files (refusal is the reviewable path).
+- Without opt-in the command never applies an instance action; the note is
+  the kit's, dated. An instance may opt in through its configuration to
+  `--apply`, which performs only the kit-declared mechanical instance
+  actions (a renamed root, a new configuration field with its default, a
+  changed phrase), records each as an event, and refuses any action the
+  kit did not declare; an unapproved update and an opted-in update are
+  distinct receipts.
+- **Declined alternatives, recorded:** automatic refresh of any fork
+  without its opt-in (never); a three-way merge of kit files (refusal is
+  the reviewable path).
 
 **Deliverables:** the mode, fixtures, the write-backs below.
 
@@ -49,14 +55,19 @@ one; and prints the re-emit instruction; it refuses without a prior manifest.
    the dropped file, adds the new one, rewrites the manifest and
    `UPSTREAM.md`, and prints the re-emit instruction.
 2. A kit carrying a dated instance-actions note prints it; without a prior
-   manifest the command refuses.
-3. Write-backs land: the client README (take upstream updates), ledger
-   entry.
-4. `npm test` green; `git diff --check` clean; no new dependency.
+   manifest the command refuses; with the instance's opt-in, `--apply`
+   performs the declared mechanical actions as events and refuses an
+   undeclared one.
+3. A fixture instance with a running fixture resident survives an opted-in
+   update: the resident resumes from its log after the update, its derived
+   orders keep their identities, and its next cadence fires.
+4. Write-backs land: the client README (take upstream updates; opting in),
+   ledger entry.
+5. `npm test` green; `git diff --check` clean; no new dependency.
 
 **Evidence gate:** the transcripts; `npm test`.
 
-**Write-back duty:** as listed in criterion 3.
+**Write-back duty:** as listed in criterion 4.
 
 **Non-goals:** any fork's own upstream merge; the overlay (WO-076).
 
