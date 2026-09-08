@@ -1,78 +1,64 @@
 # DotLn
 
-Personal project. Two rules that hold no matter what the code turns into.
+## Clean Room — locked floor
 
-## 1. Clean-room boundary
+Personal work only. Never import employer code, configuration, identifiers,
+internal services, credentials, or secrets. Stop and flag suspect material;
+derive decisions from this project's public sources. Refer to the predecessor
+as `v1`; use enterprise tracker, ticket artifact, and constrained managed host
+as generic terms. No support or generated configuration may weaken this floor.
 
-This repo is a personal-time rebuild of an idea the author also has work
-exposure to. **No employer code, config, identifiers, or internal service
-details enter this repo — ever.** Only original ideation.
+`docs/intake/` is ignored, single-copy source material. Synthesize and rewrite
+ordinary raw ideation. Exact wording is allowed only for an operator-authored
+public draft explicitly marked ready to file, with direct-filing provenance
+recorded on the committed surface. Its compaction-safety capture is a sibling
+record, never a source to mine. The same clean-room screen always applies.
 
-Practical effect when you're working here:
+## Shared memory
 
-- `docs/intake/` is gitignored source material. Ordinary raw ideation must be
-  synthesized and rewritten, never lifted verbatim into a committed file. An
-  operator-authored public draft may retain exact wording only when the operator
-  explicitly marks it ready to file and the committed surface records that
-  direct-filing provenance; a compaction-safety capture of the same message is a
-  sibling record, not a source to mine. The clean-room screen below still
-  applies without exception.
-- This is the repository's minimum **Clean Room** loadout. Clean Room is a
-  composable active mechanic, but employer separation and secret/credential
-  exclusion are its locked floor. Supports may vary source treatment, context,
-  and review depth; none may weaken that floor.
-- If something in intake reads like it came from a work codebase (an internal
-  hostname, a proprietary API shape, a pasted source file), **stop and flag it**
-  rather than incorporating it.
-- Don't reach for "how the work version did it" as justification for a design
-  choice. Derive it from the product docs here.
-- **Terms that must not re-enter.** Intake still contains them, so synthesis
-  will surface them again unless you check: the name of any commercial
-  ticketing/ALM product used at work; the predecessor system's name (call it
-  `v1`); and descriptions of a managed work host, corporate model gateway, or
-  employer policy. Generic equivalents are already in use — "enterprise
-  tracker", "ticket artifact", "constrained managed host". This repo is public.
+Intake → synthesis into product docs → planning and work orders → execution.
+Write durable decisions into the product docs in the same pass. Model and
+effort assignments belong to each work order. Preserve settled decisions and
+rejection reasons. No branch commits before final review; never discard work,
+intake, or recovery refs. Use the canonical recovery procedure when needed.
 
-## 2. The pipeline
+## Start here
 
-```
-docs/intake/    raw dumps (local only)
-      |
-      v  synthesis
-docs/product/   durable specs (committed)
-      |
-      v  planning        (planning model)
-implementation plan + work orders
-      |
-      v  execution       (executor models)
-code
-```
+A whole `resume:` phrase dispatches its role through canonical status. Load the
+matching generated skill by name. `@skills` means `.claude/skills` in Claude
+Code or `.agents/skills` in Codex; `AGENTS.md` is this file's symlink.
 
-Model assignments are per work order (Principle 8), never hardcoded here —
-today's planners and executors rotate; the docs survive them.
+Read[executor]: `@skills/dotln-executor/SKILL.md` — next, fix, status, times.
 
-Different models run different stages, so **the docs are the shared memory.**
-Anything decided in a chat that matters past that chat gets written into
-`docs/product/` or it effectively didn't happen. When you finish a piece of work
-that changes a decision, update the doc in the same pass.
+Read[verifier]: `@skills/dotln-verifier/SKILL.md` — verify.
 
-Codex reads this file via the `AGENTS.md` symlink — same rules apply.
+Read[reviewer]: `@skills/dotln-reviewer/SKILL.md` — final review.
 
-## 3. Start here
+Read[release-close]: `@skills/dotln-release-close/SKILL.md` — release close.
 
-The blueprint is the shared memory. If the operator's whole instruction is a
-`resume:` phrase, that is your dispatch — see
-`docs/product/07-execution-guide.md` §Operator resume phrases, which resolves it
-to the active work order and the artifacts you must read. Cold-start read order:
-`docs/product/07-execution-guide.md` → your work order in `docs/work-orders/` →
-only the blueprint sections it cites. Settled questions live in
-`docs/decisions/` and the Resolutions section of `docs/lineage/idea-ledger.md` —
-do not relitigate them. An `ideation:` prefix dispatches the complete capture →
-clean-room synthesis → ledger → product-doc pipeline unless it explicitly says
-capture-only; see the execution guide's §Operator-opened ideation mode. A
-`planning:` prefix, or an explicit planning-session instruction, dispatches the
-doc-only planning pass in the same guide's §Operator-opened planning pass. Nothing
-in a work-order worktree is committed until final review, and `docs/intake` is
-gitignored single-copy — never run a destructive git command (`reset --hard`,
-`checkout .`, `clean`) in one without a checkpoint commit first. Keep this file
-tiny.
+Read[planner]: `@skills/dotln-planner/SKILL.md` — planning or ideation prefix.
+
+Each skill declares all required reads, including later output review. Expand
+its selectors from the selected order and canonical report paths; read cited
+sections only. Add newly discovered required inputs to that scope explicitly.
+
+<!-- dotln-harness:start -->
+Residue: 1432 UTF-8 bytes.
+claude-code-2.1.263/anti-oscillation: unavailable facts.decision-lineage.
+claude-code-2.1.263/bounded-boy-scout-cleanup: unavailable facts.cleanup-scope.
+claude-code-2.1.263/correctness-over-sycophancy: unavailable facts.evidence-judgment.
+claude-code-2.1.263/fail-conservative-correction: unavailable operator.correction-token.confirmed.
+claude-code-2.1.263/clean-room: Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.
+codex-cli-0.153.4/anti-oscillation: unavailable facts.decision-lineage.
+codex-cli-0.153.4/bounded-boy-scout-cleanup: unavailable facts.cleanup-scope.
+codex-cli-0.153.4/concurrent-work-requires-worktrees: unavailable hooks.PreToolUse.
+codex-cli-0.153.4/correctness-over-sycophancy: unavailable facts.evidence-judgment.
+codex-cli-0.153.4/fail-conservative-correction: unavailable operator.correction-token.confirmed.
+codex-cli-0.153.4/no-attribution: unavailable hooks.PreToolUse.
+codex-cli-0.153.4/no-lint-type-disables-as-fixes: unavailable hooks.PostToolUse.
+codex-cli-0.153.4/no-partial-completion: unavailable hooks.Stop.
+codex-cli-0.153.4/read-your-own-output: unavailable hooks.Stop.
+codex-cli-0.153.4/verify-app-before-done: unavailable hooks.Stop.
+codex-cli-0.153.4/contributor.permissions: unavailable hooks.PreToolUse, settings.permissions.
+codex-cli-0.153.4/clean-room: Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.
+<!-- dotln-harness:end -->
