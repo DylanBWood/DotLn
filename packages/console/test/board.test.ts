@@ -255,7 +255,7 @@ for (const name of Object.keys(manifest.cases))
   });
 
 test("WO-032 schema refuses a different version, unknown fields, unsupported cells and unlabeled missing facts", () => {
-  const board = projectBoard(loadFixture("wo011"));
+  const board = projectBoard(loadFixture("selfhost"));
   assert.equal(
     schemaMatches(
       { ...board, viewModelVersion: "uifa-board-v2" },
@@ -317,13 +317,19 @@ test("WO-032 schema refuses a different version, unknown fields, unsupported cel
 });
 
 test("WO-032 AC2 executor, verifier attempts, authority, hashes and actual accepted episode remain distinct", () => {
-  const board = projectBoard(loadFixture("wo011"));
+  const board = projectBoard(loadFixture("selfhost"));
   const actors = board.panels[0]!.sections.flatMap((section) => section.rows);
   const executor = actors.find(
     (row) => cells(row)["episode"]?.value === "ep_feedback_executor",
   )!;
+  // The admitted matrix names the accepted verifier attempt; the recorded run
+  // decides how many physical attempts preceded it.
+  const matrix = allRows(board).find((row) => row.id.startsWith("matrix-"))!;
+  assert.ok(matrix);
+  const accepted = cells(matrix)["AC-context.verifier"]!.value;
+  assert.match(String(accepted), /^ep_verifier_/u);
   const verifier = actors.find(
-    (row) => cells(row)["episode"]?.value === "ep_verifier_1_attempt_4",
+    (row) => cells(row)["episode"]?.value === accepted,
   )!;
   assert.ok(executor && verifier);
   assert.equal(cells(executor)["kind"]!.value, "script");
@@ -359,24 +365,22 @@ test("WO-032 AC2 executor, verifier attempts, authority, hashes and actual accep
       actor.links.some((link) => link.target.startsWith("recorded-build-")),
     );
   }
-  for (const attempt of [1, 2, 3]) {
-    const row = actors.find(
-      (row) =>
-        cells(row)["episode"]?.value === `ep_verifier_1_attempt_${attempt}`,
-    )!;
+  for (const row of actors) {
+    const episode = cells(row)["episode"]?.value;
+    if (
+      typeof episode !== "string" ||
+      !episode.startsWith("ep_verifier_") ||
+      episode === accepted
+    )
+      continue;
     assert.equal(cells(row)["phase"]!.value, "lease-expired");
     assert.equal(
       row.links.some((link) => link.target.startsWith("matrix-")),
       false,
     );
   }
-  const matrix = allRows(board).find((row) => row.id.startsWith("matrix-"))!;
   assert.equal(cells(matrix)["phase"]!.value, "complete");
   assert.equal(cells(matrix)["AC-context.status"]!.value, "verified");
-  assert.equal(
-    cells(matrix)["AC-context.verifier"]!.value,
-    "ep_verifier_1_attempt_4",
-  );
   assert.equal(cells(matrix)["AC-context.stale"]!.value, false);
 });
 
@@ -406,7 +410,7 @@ test("WO-032 AC2 the WO-031 operator role has recorded actions and unknown ident
 });
 
 test("WO-032 AC3 all shipped exports use the compiler renderer; a new export adds a build without console edits", () => {
-  const fixture = loadFixture("wo011");
+  const fixture = loadFixture("selfhost");
   assert.equal(fixture.loadouts?.status, "available");
   if (fixture.loadouts?.status !== "available")
     assert.fail("fixture lacks loadouts");
@@ -467,7 +471,7 @@ test("WO-032 AC3 all shipped exports use the compiler renderer; a new export add
 });
 
 test("WO-032 AC4 ten mechanisms retain five counts per source; zero observations never become a rate", () => {
-  const input = loadFixture("wo011"),
+  const input = loadFixture("selfhost"),
     board = projectBoard(input);
   const mechanisms = section(board, "compiled-mechanisms").rows;
   assert.equal(mechanisms.length, 10);
@@ -787,7 +791,7 @@ test("WO-032 command renders recorded sources without changing them; HTML output
   try {
     const input = join(directory, "sources.json"),
       output = join(directory, "board.html");
-    writeFileSync(input, JSON.stringify(loadFixture("wo011")));
+    writeFileSync(input, JSON.stringify(loadFixture("selfhost")));
     const before = digest(readFileSync(input, "utf8"));
     const cli = join(root, "packages/console/dist/src/cli.js");
     const run = (...args: string[]) =>

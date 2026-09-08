@@ -5,7 +5,7 @@
 ## Proposed order
 
 - [x] [WO-038] — License posture lands · **final-reviewed**
-- [ ] [WO-039] — Harness lowering · **queued**
+- [x] [WO-039] — Harness lowering · **final-reviewed**
 - [ ] [WO-033] — Compiled starter export · **queued**
 - [x] [WO-041] — Plan refutation mechanism · **final-reviewed**
 - [x] [WO-032] — UIFA v0 actor board · **final-reviewed**
@@ -60,8 +60,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-039.
-- References: WO-018: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-030: satisfied (closed); WO-038: satisfied (closed); WO-039: not control-closed.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-018: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-030: satisfied (closed); WO-038: satisfied (closed); WO-039: satisfied (closed).
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -129,29 +129,14 @@ None.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-037-five-s-equipment-set.md](WO-037-five-s-equipment-set.md)
 
-### WO-039
-
-[WO-039 — Harness lowering: compile a saved build into enforceable harness configuration, and run this repository on its own compiled build (version assigned at activation)](WO-039-harness-lowering.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-001.
-- References: WO-001: not control-closed; WO-004: satisfied (closed); WO-008: satisfied (closed); WO-011: satisfied (closed); WO-029: satisfied (closed).
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model for the compiler and fixtures. The live smoke and the self-host step need the actual local harnesses (Claude Code; Codex where installed) and must state the harness version, model, and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Authority: [docs/work-orders/WO-039-harness-lowering.md](WO-039-harness-lowering.md)
-
 ### WO-040
 
 [WO-040 — Rule migration, batch one: the migration ledger and the first batch of feedback shapes compiled through the harness target (version assigned at activation)](WO-040-rule-migration-batch-one.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-039.
-- References: WO-011: satisfied (closed); WO-039: not control-closed.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-011: satisfied (closed); WO-039: satisfied (closed).
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -690,6 +675,22 @@ None.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Latest attestation: harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-038-license-posture-lands.md](WO-038-license-posture-lands.md)
+
+### WO-039
+
+[WO-039 — Harness lowering: compile a saved build into enforceable harness configuration, and run this repository on its own compiled build (v0.15.0)](WO-039-harness-lowering.md)
+
+- State: closed.
+- Application target: v0.15.0.
+- Dependency reference check (conservative): blocked on WO-001.
+- References: WO-001: not control-closed; WO-004: satisfied (closed); WO-008: satisfied (closed); WO-011: satisfied (closed); WO-029: satisfied (closed).
+- Verification: [VER-005](../../docs/verifications/WO-039/VER-005.md) (pass).
+- Final review: [FINAL-002](../../docs/final-reviews/WO-039/FINAL-002.md) (pass).
+- Release: unreleased.
+- Model: any capable model for the compiler and fixtures. The live smoke and the self-host step need the actual local harnesses (Claude Code; Codex where installed) and must state the harness version, model, and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.263; model claude-opus-5&#91;1m&#93;; effort max; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-039-harness-lowering.md](WO-039-harness-lowering.md)
 
 ### WO-041
 

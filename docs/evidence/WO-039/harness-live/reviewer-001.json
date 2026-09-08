@@ -1,0 +1,1228 @@
+{
+  "schemaVersion": 1,
+  "role": "reviewer",
+  "attempt": "001",
+  "observedAt": "2026-09-07T21:10:40.722Z",
+  "phrase": "resume: final review",
+  "scope": "Closed synthetic role-entry smoke; actual canonical status and entry commands, no full phase execution or publication claimed",
+  "harnessVersion": "2.1.263 (Claude Code)",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "observedModels": [
+    "claude-fable-5",
+    "claude-haiku-4-5-20251001"
+  ],
+  "effectiveEffort": [
+    "xhigh"
+  ],
+  "compilerPackageVersion": "0.7.0",
+  "loadout": {
+    "id": "contributor",
+    "semanticHash": "fnv1a64:06245f5c581212f1",
+    "targetHash": "fnv1a64:e6cf2379cf6c0cef"
+  },
+  "runtime": {
+    "boundaryContract": "feedback-v1",
+    "files": [
+      {
+        "hash": "fnv1a64:dc9688aecc4cb056",
+        "path": "packages/compiler/dist/src/feedback.js"
+      },
+      {
+        "hash": "fnv1a64:7f0520a32e27dede",
+        "path": "packages/skeleton/dist/src/feedback-boundary.js"
+      },
+      {
+        "hash": "fnv1a64:6c6f7fcb7164891b",
+        "path": "packages/skeleton/dist/src/feedback-source-comments.js"
+      },
+      {
+        "hash": "fnv1a64:42400c40c91eb668",
+        "path": "packages/skeleton/dist/src/harness-host.js"
+      }
+    ],
+    "skeletonVersion": "0.13.0"
+  },
+  "emittedFiles": [
+    {
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "hash": "fnv1a64:6217f68282404c5a",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "hash": "fnv1a64:cdc286192fbe1ae7",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.planner",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "hash": "fnv1a64:3fa463065239e602",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.release-close",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "hash": "fnv1a64:82c4f0a909da438f",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.reviewer",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "hash": "fnv1a64:13e7eccacf2b8330",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/hooks/commit-msg.mjs",
+      "hash": "fnv1a64:089937ab68bb4d3a",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "no-attribution"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+      "hash": "fnv1a64:60f56f071fa920cd",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "concurrent-work-requires-worktrees"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/hooks/finish.mjs",
+      "hash": "fnv1a64:e87f7d771ab0a27b",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 6
+    },
+    {
+      "path": ".claude/hooks/no-attribution.mjs",
+      "hash": "fnv1a64:c01bab4cf7604b18",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "no-attribution"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+      "hash": "fnv1a64:504f789130f635b9",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "no-lint-type-disables-as-fixes"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/no-partial-completion.mjs",
+      "hash": "fnv1a64:2bc868c56a6dedca",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "no-partial-completion"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 6
+    },
+    {
+      "path": ".claude/hooks/permissions.mjs",
+      "hash": "fnv1a64:a681bf4ca0c16c2f",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.permissions"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/hooks/read-observer.mjs",
+      "hash": "fnv1a64:197024967759f7a3",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/read-your-own-output.mjs",
+      "hash": "fnv1a64:7405cf8c740c5074",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "read-your-own-output"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 6
+    },
+    {
+      "path": ".claude/hooks/session.mjs",
+      "hash": "fnv1a64:f5069679b71f5410",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/verify-app-before-done.mjs",
+      "hash": "fnv1a64:9201b0550ffeda65",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 6
+    },
+    {
+      "path": ".claude/settings.json",
+      "hash": "fnv1a64:e26b58e0848a40f3",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "clean-room",
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "contributor.permissions",
+          "contributor.planner",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "hash": "fnv1a64:aa532dc2179a5d8f",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "contributor.executor",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "hash": "fnv1a64:3cbc6aa228f07bac",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "contributor.planner",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "hash": "fnv1a64:42e760aa908796f5",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "contributor.release-close",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "hash": "fnv1a64:3579f9cf6c539cc0",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "contributor.reviewer",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "hash": "fnv1a64:18c0c08612ba3f67",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 7
+    },
+    {
+      "path": "CLAUDE.md",
+      "hash": "fnv1a64:7a4f41bca2fdef9b",
+      "hashScope": "marked-block",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "clean-room",
+          "concurrent-work-requires-worktrees",
+          "contributor.permissions",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:06245f5c581212f1"
+      },
+      "rung": 8
+    }
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "roleSkillResolved": true,
+  "deniedEffectRefused": true,
+  "fixtureCommitDidNotExecute": true,
+  "correction": {
+    "tokenConfirmed": false,
+    "reachedThroughRoleSkill": true,
+    "missingCapability": "operator.correction-token.confirmed"
+  },
+  "observerFinished": true,
+  "directedReads": [
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "startLine": 1,
+      "endLine": 32,
+      "sources": [
+        "instruction"
+      ]
+    },
+    {
+      "path": "CLAUDE.md",
+      "startLine": 1,
+      "endLine": 64,
+      "sources": [
+        "instruction-autoload"
+      ]
+    },
+    {
+      "path": "docs/product/08-publication-compiler.md",
+      "startLine": 242,
+      "endLine": 279,
+      "sources": [
+        "skill"
+      ]
+    },
+    {
+      "path": "docs/verifications/WO-999/VER-001.md",
+      "startLine": 1,
+      "endLine": 4,
+      "sources": [
+        "skill:@verification-reports"
+      ]
+    },
+    {
+      "path": "docs/work-orders/WO-999-fixture.md",
+      "startLine": 1,
+      "endLine": 26,
+      "sources": [
+        "skill:@work-order"
+      ]
+    },
+    {
+      "path": "fixture/contract.md",
+      "startLine": 1,
+      "endLine": 6,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "fixture/source.test.mjs",
+      "startLine": 1,
+      "endLine": 3,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "fixture/source.ts",
+      "startLine": 1,
+      "endLine": 1,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "package.json",
+      "startLine": 1,
+      "endLine": 7,
+      "sources": [
+        "skill"
+      ]
+    }
+  ],
+  "actualReads": [
+    {
+      "path": "CLAUDE.md",
+      "startLine": 1,
+      "endLine": 64
+    },
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "startLine": 1,
+      "endLine": 32
+    },
+    {
+      "path": "docs/work-orders/WO-999-fixture.md",
+      "startLine": 1,
+      "endLine": 26
+    },
+    {
+      "path": "fixture/source.ts",
+      "startLine": 1,
+      "endLine": 1
+    },
+    {
+      "path": "fixture/contract.md",
+      "startLine": 1,
+      "endLine": 6
+    },
+    {
+      "path": "fixture/source.test.mjs",
+      "startLine": 1,
+      "endLine": 3
+    },
+    {
+      "path": "package.json",
+      "startLine": 1,
+      "endLine": 7
+    },
+    {
+      "path": "docs/verifications/WO-999/VER-001.md",
+      "startLine": 1,
+      "endLine": 4
+    }
+  ],
+  "outsideDirectedSet": [],
+  "residue": [],
+  "observations": [
+    {
+      "event": "UserPromptSubmit",
+      "role": "reviewer",
+      "reads": [
+        {
+          "path": "CLAUDE.md",
+          "startLine": 1,
+          "endLine": 64
+        }
+      ],
+      "source": "instruction-autoload"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": ".claude/skills/dotln-reviewer/SKILL.md",
+          "startLine": 1,
+          "endLine": 32
+        }
+      ],
+      "receipts": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "docs/work-orders/WO-999-fixture.md",
+          "startLine": 1,
+          "endLine": 26
+        }
+      ],
+      "receipts": [
+        {
+          "path": "docs/work-orders/WO-999-fixture.md",
+          "hash": "sha256:111c9d9911928952487e8bcb8b5b30950d478a8173587226d8551d3e6cf306e3",
+          "evidenceRef": "host:Read"
+        }
+      ]
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "allowed": false,
+      "readScopeRefusal": "unobserved shell read/effect route"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "effect": "lifecycle.run",
+      "allowed": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "reads": [],
+      "receipts": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "fixture/source.ts",
+          "startLine": 1,
+          "endLine": 1
+        }
+      ],
+      "receipts": [
+        {
+          "path": "fixture/source.ts",
+          "hash": "sha256:67f7c13167c612f1ef92150372e4c0fe0acf068af7364a137ffd1fce40353fca",
+          "evidenceRef": "host:Read"
+        }
+      ]
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "fixture/contract.md",
+          "startLine": 1,
+          "endLine": 6
+        }
+      ],
+      "receipts": [
+        {
+          "path": "fixture/contract.md",
+          "hash": "sha256:6d124291347da5a0ed5b53e729a53e702ad31a090704bb796b2a4ac53837e820",
+          "evidenceRef": "host:Read"
+        }
+      ]
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "fixture/source.test.mjs",
+          "startLine": 1,
+          "endLine": 3
+        }
+      ],
+      "receipts": [
+        {
+          "path": "fixture/source.test.mjs",
+          "hash": "sha256:c6b01c6375459d9736c231c6ebf45410b8ef4a19a40955e631cc41cb11815d86",
+          "evidenceRef": "host:Read"
+        }
+      ]
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "package.json",
+          "startLine": 1,
+          "endLine": 7
+        }
+      ],
+      "receipts": [
+        {
+          "path": "package.json",
+          "hash": "sha256:ece93eb127b48ae452aa803e31aca7488227dc4ff3ff20fda506e368ced48ee1",
+          "evidenceRef": "host:Read"
+        }
+      ]
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "allowed": false,
+      "readScopeRefusal": "read outside the mechanically directed set"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": "docs/verifications/WO-999/VER-001.md",
+          "startLine": 1,
+          "endLine": 4
+        }
+      ],
+      "receipts": [
+        {
+          "path": "docs/verifications/WO-999/VER-001.md",
+          "hash": "sha256:959e5b3d016676c050e880524f48917c7f416e322df70fa43f54bbb4f7d047f1",
+          "evidenceRef": "host:Read"
+        }
+      ]
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "effort": "xhigh",
+      "allowed": false,
+      "readScopeRefusal": "read outside the mechanically directed set"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "effect": "shell.run",
+      "allowed": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": false,
+      "factKinds": [
+        "attribution"
+      ]
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "effect": "lifecycle.run",
+      "allowed": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "event": "Stop",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-partial-completion"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "Stop",
+      "effort": "xhigh",
+      "finished": true
+    },
+    {
+      "event": "Stop",
+      "effort": "xhigh",
+      "unitIds": [
+        "verify-app-before-done"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "Stop",
+      "effort": "xhigh",
+      "unitIds": [
+        "read-your-own-output"
+      ],
+      "allowed": true,
+      "factKinds": []
+    }
+  ],
+  "passed": true,
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false
+}

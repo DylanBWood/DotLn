@@ -1,0 +1,1955 @@
+
+> harness
+> npm run build --silent && node scripts/harness.mjs evidence
+
+
+> test
+> npm run format:check --silent && node scripts/release.mjs check-surfaces --local && node --test scripts/test-release-preparation.mjs && node scripts/test-github-body.mjs && node --test scripts/test-license-surfaces.mjs && node scripts/license-surfaces.mjs && bash scripts/test-fixture-temp-root.sh && bash scripts/test-publication.sh && bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-checkpoint.sh && bash scripts/test-worktree.sh && bash scripts/test-release.sh && bash scripts/test-work-orders.sh && node scripts/check-publication.mjs && node scripts/work-orders.mjs index --check && rm -rf packages/kernel/dist packages/compiler/dist packages/skeleton/dist packages/console/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/compiler/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && ls packages/console/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/compiler/dist/test/*.test.js packages/skeleton/dist/test/*.test.js packages/console/dist/test/*.test.js && node --test scripts/test-harness.mjs && node scripts/harness.mjs check && node scripts/harness-context.mjs --check && node scripts/harness-evidence.mjs && node scripts/test-plan-refutation.mjs && node --test corpus/harness/wo101-id-corpus.test.mjs && node scripts/artifact-identity-evidence.mjs --check && node scripts/verification-evidence.mjs --check && node scripts/feedback-evidence.mjs --check --edition WO-039 && npm run test:mutation --silent
+
+Checking formatting...
+All matched files use Prettier code style!
+Tag observation: local ancestors of HEAD only; publication checks origin.
+PASS release-block: observed v0.15.0; expected v0.15.0 (work-order target v0.15.0; latest local tag v0.14.0)
+PASS component-version @dotln/compiler: src changed; observed 0.7.0; previous v0.14.0 0.6.0; expected a different version
+PASS component-version @dotln/console: src changed; observed 0.1.1; previous v0.14.0 0.1.0; expected a different version
+PASS component-version @dotln/kernel: src unchanged; observed 0.2.1; previous v0.14.0 0.2.1; expected no bump required
+PASS component-version @dotln/skeleton: src changed; observed 0.13.0; previous v0.14.0 0.12.1; expected a different version
+PASS github-body-profile: observed no current final-review bodies yet; expected one physical line per prose paragraph or list-item paragraph
+PASS license-surfaces package.json workspaces: observed ["packages/*"]; expected ["packages/*"]
+PASS license-surfaces workspace count: observed 4; expected at least one
+PASS license-surfaces package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces package.json private: observed true; expected true
+PASS license-surfaces package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/compiler/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/compiler/package.json private: observed true; expected true
+PASS license-surfaces packages/compiler/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/compiler/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/console/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/console/package.json private: observed true; expected true
+PASS license-surfaces packages/console/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/console/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/kernel/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/kernel/package.json private: observed true; expected true
+PASS license-surfaces packages/kernel/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/kernel/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/skeleton/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/skeleton/package.json private: observed true; expected true
+PASS license-surfaces packages/skeleton/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/skeleton/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces LICENSE: observed sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces LICENSE-docs: observed sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces NOTICE: observed sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces docs/LEGAL.md LICENSE pin: observed cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces docs/LEGAL.md LICENSE-docs pin: observed 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces docs/LEGAL.md NOTICE pin: observed 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/compiler/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/console/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/skeleton/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+TAP version 13
+# Subtest: release preparation retimes only three source surfaces and is idempotent
+ok 1 - release preparation retimes only three source surfaces and is idempotent
+  ---
+  duration_ms: 413.151125
+  ...
+# Subtest: release preparation follows the existing classification and skips an available target
+ok 2 - release preparation follows the existing classification and skips an available target
+  ---
+  duration_ms: 682.400458
+  ...
+# Subtest: release preparation uses only the selected order's open state
+ok 3 - release preparation uses only the selected order's open state
+  ---
+  duration_ms: 4630.278959
+  ...
+# Subtest: release preparation refuses malformed or ambiguous inputs before writing
+ok 4 - release preparation refuses malformed or ambiguous inputs before writing
+  ---
+  duration_ms: 2296.641209
+  ...
+# Subtest: release preparation preserves prerelease examples when replacing the strict target
+ok 5 - release preparation preserves prerelease examples when replacing the strict target
+  ---
+  duration_ms: 184.127208
+  ...
+# Subtest: release preparation refuses wrong worktrees, escaped sources, and stale plans
+ok 6 - release preparation refuses wrong worktrees, escaped sources, and stale plans
+  ---
+  duration_ms: 433.783
+  ...
+# Subtest: release preparation recovers prior source bytes after a write failure
+ok 7 - release preparation recovers prior source bytes after a write failure
+  ---
+  duration_ms: 195.151
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8893.183375
+GitHub body profile tests passed
+TAP version 13
+# PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+# PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+# PASS contribution-signoff 2f2a75ba72d8: observed operator author; expected operator exemption (no sign-off required)
+# PASS contribution-signoff fe29cdd46056: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff dbfd85ebb7c0: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff 89bba4786a8e: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff db54e82c4d68: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff 18f2e98ad849: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# Subtest: real npm refuses every validated manifest before packing, despite ambient script suppression
+ok 1 - real npm refuses every validated manifest before packing, despite ambient script suppression
+  ---
+  duration_ms: 790.748167
+  ...
+# Subtest: root and workspace metadata refuse missing license, false/string private, and absent or substituted lifecycle guards
+ok 2 - root and workspace metadata refuse missing license, false/string private, and absent or substituted lifecycle guards
+  ---
+  duration_ms: 11.515042
+  ...
+# Subtest: every license file is byte-pinned; missing files, symlinks, and legal-record drift refuse
+ok 3 - every license file is byte-pinned; missing files, symlinks, and legal-record drift refuse
+  ---
+  duration_ms: 7494.357541
+  ...
+# Subtest: new workspaces are checked and unsupported workspace layouts fail closed
+ok 4 - new workspaces are checked and unsupported workspace layouts fail closed
+  ---
+  duration_ms: 3.00475
+  ...
+# Subtest: symlinked workspace directories refuse in both working and committed snapshots
+ok 5 - symlinked workspace directories refuse in both working and committed snapshots
+  ---
+  duration_ms: 899.448834
+  ...
+# Subtest: missing npm, unrelated failures, and success with a marker cannot masquerade as publication refusal
+ok 6 - missing npm, unrelated failures, and success with a marker cannot masquerade as publication refusal
+  ---
+  duration_ms: 123.227209
+  ...
+# Subtest: committed checks read Git blobs for metadata, hashes, and npm snapshots
+ok 7 - committed checks read Git blobs for metadata, hashes, and npm snapshots
+  ---
+  duration_ms: 3910.963292
+  ...
+# Subtest: DCO checks every new commit's author and trailer, exempts only the operator, and leaves old history alone
+ok 8 - DCO checks every new commit's author and trailer, exempts only the operator, and leaves old history alone
+  ---
+  duration_ms: 3145.792708
+  ...
+# Subtest: operator merge commits do not hide unsigned outside commits on a merged branch
+ok 9 - operator merge commits do not hide unsigned outside commits on a merged branch
+  ---
+  duration_ms: 1110.932667
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17549.333792
+PASS license-surfaces package.json workspaces: observed ["packages/*"]; expected ["packages/*"]
+PASS license-surfaces workspace count: observed 4; expected at least one
+PASS license-surfaces package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces package.json private: observed true; expected true
+PASS license-surfaces package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/compiler/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/compiler/package.json private: observed true; expected true
+PASS license-surfaces packages/compiler/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/compiler/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/console/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/console/package.json private: observed true; expected true
+PASS license-surfaces packages/console/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/console/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/kernel/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/kernel/package.json private: observed true; expected true
+PASS license-surfaces packages/kernel/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/kernel/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/skeleton/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/skeleton/package.json private: observed true; expected true
+PASS license-surfaces packages/skeleton/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/skeleton/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces LICENSE: observed sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces LICENSE-docs: observed sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces NOTICE: observed sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces docs/LEGAL.md LICENSE pin: observed cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces docs/LEGAL.md LICENSE-docs pin: observed 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces docs/LEGAL.md NOTICE pin: observed 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/compiler/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/console/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/skeleton/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS valid TMPDIR: ordinary
+PASS valid TMPDIR: spaces
+PASS valid TMPDIR: symlink
+PASS valid TMPDIR: trailing-slashes
+PASS TMPDIR fallback: unset selection failed loudly when its base was unavailable
+PASS TMPDIR fallback: empty selection failed loudly when its base was unavailable
+PASS rejected TMPDIR: nonexistent
+PASS rejected TMPDIR: not-directory
+PASS rejected TMPDIR: unwritable
+PASS rejected TMPDIR: filesystem-root
+PASS rejected TMPDIR: dot
+PASS rejected TMPDIR: dot-dot
+PASS rejected TMPDIR: relative
+PASS rejected TMPDIR: dot-dot-segment
+PASS valid TMPDIR: outward-symlink
+PASS adversarial base sentinels: trailing slash and outward symlink stayed contained
+PASS refused cleanup: empty
+PASS refused cleanup: base-itself
+PASS refused cleanup: wrong-basename
+PASS refused cleanup: unowned-same-shape
+PASS refused cleanup: different-parent
+PASS refused cleanup: symlink-root
+PASS refused cleanup: replaced-root
+PASS replacement guard: a new directory at the owned path was preserved
+PASS refused cleanup: replaced-base
+PASS replacement guard: a recreated base and child were preserved
+PASS refused cleanup: changed-marker
+PASS ownership guard: a changed marker preserved the directory
+PASS exact owned cleanup: generated root removed
+PASS ordinary EXIT trap: fixture root removed
+PASS unsafe EXIT trap: cleanup refusal forced a non-zero exit and removed nothing
+PASS INT trap: suite exited 130 with no fixture residue
+PASS TERM trap: suite exited 143 with no fixture residue
+fixture temp-root tests passed
+publication checker tests passed
+backup-intake tests passed
+time append: 10 events, all 8 types, valid host times and non-decreasing order in one process; invalid append preserved bytes
+time projection: mixed={"implementation":"unknown","verification":4000,"repair":3000,"finalReview":5000}; latest attempts, in-flight phases, activation reset, absent and backwards times checked
+time validation: 15 malformed values refuse with ordinal and preserve log/projection; valid leap day accepted
+time-blind current.md cmp: absent passed
+time-blind current.md cmp: reordered passed
+time-blind current.md cmp: backwards passed
+usage fixture: {"attempts":10,"elapsedMs":11000,"unknown":1}; 6 exact actor/phase groups; all three work-order groups and text numbers match
+usage privacy: every instrumented filesystem call avoided docs/control/local; ambient label ignored; stale projection and every segment preserved
+usage cmp: current.md, legacy log and both order segments byte-identical after both output forms and refused arguments
+usage source boundary: no subprocess or Git discovery; CLI and direct dispatcher reports agree
+account labels: 11 invalid forms, missing/duplicate flags and invalid env refused before append; a1/claude-2 accepted; env default and flag override checked through all four completion commands
+account projections: optional field stays absent in stored history; status/current render not-applicable; labelled status/current/index and report-header parity checked
+docs/control/local/account-labels.md
+usage cmp: legacy and every original order segment unchanged; local mapping ignored
+PASS synthetic interleaving: WO-901 ready-to-verify; WO-902 active
+PASS activation owns storage: legacy appends remain legacy; new orders never span segments
+PASS corrupt segments: path and ordinal reported; all 13 commands preserve every control byte
+PASS per-segment byte-prefix proof: sibling additions pass; deletions and equivalent-JSON rewrites refuse
+PASS named-order reactivation retains its segment while a sibling is open; active reactivation refuses
+PASS legacy comparison: 153 events, unchanged bytes and v0.6.0 per-order states
+PASS legacy times: byte-identical observation, 120 named local refs, original global ordinals and source labels
+beacons: every lifecycle transition matches phase/verdict/effort/time; status and next preserve inode/ctime/size/mtime
+resume tests passed
+time recovery: {"recordedAt":1,"recovered-from-local-checkpoint-ref":1,"unknown":1}, 1 ref read; byte-identical rerun, unchanged log/projection/refs, missing and mismatched refs refused
+checkpoint tests passed
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+FAIL contribution-signoff 3ab92f167fbe: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+PASS contribution-signoff e68f7c631fc4: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 033021538893: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 42b4277582f6: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+PASS contribution-signoff 12951bdc27ac: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
+worktree gh stub transcript (temporary path normalized):
+--version
+auth status --hostname github.com
+pr create --repo github.com/dotln-fixture/worktree --head wo-099 --base main --title :sparkles: fixture --body-file <committed-PR-body>
+GitHub PR target, authentication, and committed-body fixtures passed
+beacon cleanup: populated anchored projection directories removed; docs/intake/dist/x.md negative fixture preserved
+destructive finish used committed control state and preserved the hidden-live fixture
+finish refused reopened merged order and preserved its closed subject
+PASS three-worktree metadata constellation (opaque fixture addresses shortened here):
+Beacon fixture-address:fixture-address.beacon | active | unknown | unknown | host-projected | fresh | v2 | 8365 bytes | unauthenticated-legacy
+Beacon fixture-address:fixture-address.beacon | ready-to-verify | unknown | unknown | host-projected | fresh | v2 | 17597 bytes | unauthenticated-legacy
+Beacon fixture-address:fixture-address.beacon | verifying | unknown | unknown | host-projected | fresh | v2 | 26765 bytes | unauthenticated-legacy
+Group Beacon | active=1 ready-to-verify=1 verifying=1 needs-fix=0 repairing=0 verified=0 final-review=0 closed=0 | group-v1 | 55258 bytes (host cache; fresh)
+PASS unreadable garbage content still decodes; missing expected worktree beacon is absent
+PASS verifier contains only host records; two independent 256-bit names; restricted name appears only in the authorized active next briefing
+PASS anchored Beacon disposal; protected intake and lookalike/nested paths still refuse
+PASS filesystem projection failure records exactly one transition and warns without leaking restricted paths
+worktree tests passed
+local release surfaces ignored an unrelated sibling tag and passed without a remote; authoritative check still requires origin
+release preparation CLI preserved three independent control segments and all Git refs
+FAIL license-surfaces packages/kernel/package.json license: observed missing; expected "Apache-2.0"
+FAIL license-surfaces packages/kernel/package.json private: observed missing; expected true
+FAIL license-surfaces LICENSE: observed sha256:69f8372925094c8510b4924c771da1667d4b82ccf28a96713e687ca04ea70966; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+license-surfaces release preflight fixtures passed (real npm dry runs)
+release surface version and component fixtures passed
+release close surface gates ran after sync and before npm, tag, or GitHub mutation
+release influence permits only the exact root harness-settings path
+missing built kernel cadence constants refused before tag publication
+inconsistent built kernel cadence constants refused before tag publication
+reviewed subject helpers guarded their own pre-fast-forward close and cleanup
+cadence manifest evaluable: ["Once","After","Every","Gate","Until","Backoff"]
+cadence manifest deferred: ["Burst","Calendar","Window","While","Sequence","Merge","Race","Repeat"]
+assembled edition fixture sha256: f1f6a5feba06a6f718dab34e78c6cd6a6d66fc81ec8f696400e1f348f949e1ee
+release gh stub transcript (temporary paths normalized):
+--version
+auth status --hostname github.com
+release view v0.2.1 --repo github.com/dotln-fixture/edition --json body,name,isDraft,isPrerelease,assets
+release create v0.2.1 --repo github.com/dotln-fixture/edition --verify-tag --title DotLn v0.2.1 --notes-file <temporary-release-body>
+--version
+auth status --hostname github.com
+release view v0.2.1 --repo github.com/dotln-fixture/edition --json body,name,isDraft,isPrerelease,assets
+--version
+auth status --hostname github.com
+release view v0.2.0 --repo github.com/dotln-fixture/edition --json body,name,isDraft,isPrerelease,assets
+release create v0.2.0 --repo github.com/dotln-fixture/edition --verify-tag --title DotLn v0.2.0 --notes-file <temporary-release-body>
+--version
+auth status --hostname github.com
+release view v0.2.0 --repo github.com/dotln-fixture/edition --json body,name,isDraft,isPrerelease,assets
+release edition, GitHub projection, recovery, and historical backfill fixtures passed
+PASS independent real worktrees: WO-901 ready-to-verify; WO-902 verifying; sibling segment/projection byte-identical after WO-901 transition
+Resolved generated projection conflicts for wo-902: docs/control/current.md
+PASS serial partial integration preserves complete per-order states; main overview lists both; ambiguous/unknown selection refuses without mutation
+Resolved generated projection conflicts for wo-901: docs/control/current.md, docs/work-orders/README.md
+PASS worktree finish and no-publish release close select merged WO-901 while WO-902 is open; validated release then published only to fixture origin/gh stub
+Resolved generated projection conflicts for wo-903: docs/control/current.md
+PASS old-base third branch retains its segment; every first-parent append-only proof passes; index attributes WO-901 to v0.2.1 and WO-902 to v0.2.2
+Concurrent integration fixture Git log:
+*   346717a (HEAD -> main, tag: v0.2.2, origin/main) Integrate wo-902
+|\  
+| * 1cdb720 WO-902 final review pass
+| *   c3e1ed6 Integrate main
+| |\  
+| |/  
+|/|   
+* |   679e959 Integrate wo-903
+|\ \  
+| * | 036b28f (wo-903) WO-903 independent progress
+* | |   2664607 (tag: v0.2.1) Integrate wo-901
+|\ \ \  
+| * | | 9e0f867 WO-901 final review pass
+* | | |   dde7465 Integrate wo-902
+|\ \ \ \  
+| | |_|/  
+| |/| |   
+| * | | 946a80b WO-902 independent progress
+| | |/  
+| |/|   
+* | |   8b423a8 Integrate wo-901
+|\ \ \  
+| |/ /  
+|/| /   
+| |/    
+| * c0f1a83 WO-901 independent progress
+|/  
+* c31bb33 Concurrent fixture authorities
+* cf611d9 (tag: v0.2.0) fixture v0.2.0
+release tests passed
+PASS index derives release membership, no-release, unreleased, active, blocked, ready, malformed and unknown
+PASS plain-text checklist first, complete details once per file, sorted sections, safe Markdown and deterministic bytes
+PASS check is read-only; deleting a detail or editing evidence names the first differing line
+PASS sequence edits stale the generated view; malformed, missing, duplicate and unknown recommendations refuse without mutation
+PASS a new release tag preserves the recorded check; explicit refresh includes it without retroactive no-release inference
+PASS later tag time cannot turn an old source prefix into a prior release; unvalidated additional tags do not invalidate the snapshot
+PASS missing or changed recorded tag objects refuse without rewriting the index
+PASS lifecycle transitions stale the index; failed final review and a new request have distinct verdicts
+PASS unknown event and invalid time refuse at the original global ordinal
+PASS unknown headers, invalid versions, duplicate fields, body metadata and duplicate IDs never become guesses
+PASS source and destination symlinks refuse; CLI rejects unknown arguments
+PASS the sole manifest-free historical release requires its explicit record
+PASS segments retain close attribution, every open row, and tagged source inventories
+PASS work-order index fixtures
+PASS index coverage: 241/241 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 30 linked source sections match
+CURRENT software-engineer-toc.md: 45 linked source sections match
+PASS publication bootstrap checks
+PASS docs/work-orders/README.md is current
+TAP version 13
+# Subtest: WO-029 seiri: exact identity, manifest membership and independent no-BigInt FNV agreement
+ok 1 - WO-029 seiri: exact identity, manifest membership and independent no-BigInt FNV agreement
+  ---
+  duration_ms: 8.598917
+  ...
+# Subtest: WO-029 seiri: source/property/set ordering is inert; body edits are attributable
+ok 2 - WO-029 seiri: source/property/set ordering is inert; body edits are attributable
+  ---
+  duration_ms: 6.168458
+  ...
+# Subtest: WO-029 seiri: relocation changes environment-sensitive identity, not definitions
+ok 3 - WO-029 seiri: relocation changes environment-sensitive identity, not definitions
+  ---
+  duration_ms: 2.281625
+  ...
+# Subtest: WO-029 entropy-reducer: exact identity, manifest membership and independent no-BigInt FNV agreement
+ok 4 - WO-029 entropy-reducer: exact identity, manifest membership and independent no-BigInt FNV agreement
+  ---
+  duration_ms: 9.720833
+  ...
+# Subtest: WO-029 entropy-reducer: source/property/set ordering is inert; body edits are attributable
+ok 5 - WO-029 entropy-reducer: source/property/set ordering is inert; body edits are attributable
+  ---
+  duration_ms: 13.345583
+  ...
+# Subtest: WO-029 entropy-reducer: relocation changes environment-sensitive identity, not definitions
+ok 6 - WO-029 entropy-reducer: relocation changes environment-sensitive identity, not definitions
+  ---
+  duration_ms: 6.45875
+  ...
+# Subtest: WO-029 definition v1 pins the exact domain, canonical Unicode preimage and independent fixed value
+ok 7 - WO-029 definition v1 pins the exact domain, canonical Unicode preimage and independent fixed value
+  ---
+  duration_ms: 1.294709
+  ...
+# Subtest: WO-029 unequipped definitions stay outside the manifest and identity; failed compiles have no identity
+ok 8 - WO-029 unequipped definitions stay outside the manifest and identity; failed compiles have no identity
+  ---
+  duration_ms: 2.139708
+  ...
+# Subtest: WO-029 the pure compiler package-version constant names the executing package
+ok 9 - WO-029 the pure compiler package-version constant names the executing package
+  ---
+  duration_ms: 3.321542
+  ...
+# Subtest: WO-008 AC1 incompatible link emits exact SUPPORT INACTIVE diagnosis, missing capability, and concrete corrections
+ok 10 - WO-008 AC1 incompatible link emits exact SUPPORT INACTIVE diagnosis, missing capability, and concrete corrections
+  ---
+  duration_ms: 1.763333
+  ...
+# Subtest: WO-008 AC1 supplying the named capability activates the same link
+ok 11 - WO-008 AC1 supplying the named capability activates the same link
+  ---
+  duration_ms: 5.357375
+  ...
+# Subtest: WO-008 AC3 a constructed nine-way conflict exposes the safety winner and full precedence trace
+ok 12 - WO-008 AC3 a constructed nine-way conflict exposes the safety winner and full precedence trace
+  ---
+  duration_ms: 3.022292
+  ...
+# Subtest: WO-008 AC3 every adjacent precedence pair selects the higher level
+    # Subtest: safety-invariants outranks hard-permissions
+    ok 1 - safety-invariants outranks hard-permissions
+      ---
+      duration_ms: 1.152625
+      ...
+    # Subtest: hard-permissions outranks statechart-guards
+    ok 2 - hard-permissions outranks statechart-guards
+      ---
+      duration_ms: 0.558708
+      ...
+    # Subtest: statechart-guards outranks work-order-obligations
+    ok 3 - statechart-guards outranks work-order-obligations
+      ---
+      duration_ms: 1.140583
+      ...
+    # Subtest: work-order-obligations outranks resource-budgets
+    ok 4 - work-order-obligations outranks resource-budgets
+      ---
+      duration_ms: 1.211292
+      ...
+    # Subtest: resource-budgets outranks policy-scores-tensions
+    ok 5 - resource-budgets outranks policy-scores-tensions
+      ---
+      duration_ms: 0.99925
+      ...
+    # Subtest: policy-scores-tensions outranks cadence
+    ok 6 - policy-scores-tensions outranks cadence
+      ---
+      duration_ms: 0.748958
+      ...
+    # Subtest: cadence outranks voice
+    ok 7 - cadence outranks voice
+      ---
+      duration_ms: 1.144292
+      ...
+    # Subtest: voice outranks visual-skin
+    ok 8 - voice outranks visual-skin
+      ---
+      duration_ms: 0.484583
+      ...
+    1..8
+ok 13 - WO-008 AC3 every adjacent precedence pair selects the higher level
+  ---
+  duration_ms: 8.737292
+  ...
+# Subtest: WO-008 AC3 the winning authority claim governs the emitted runtime envelope
+ok 14 - WO-008 AC3 the winning authority claim governs the emitted runtime envelope
+  ---
+  duration_ms: 1.438375
+  ...
+# Subtest: WO-023 compiler v1 accepts claim-free prefix wildcards and still rejects wildcard precedence
+ok 15 - WO-023 compiler v1 accepts claim-free prefix wildcards and still rejects wildcard precedence
+  ---
+  duration_ms: 3.011417
+  ...
+# Subtest: WO-008 AC3 an unknown precedence layer rejects instead of outranking safety
+ok 16 - WO-008 AC3 an unknown precedence layer rejects instead of outranking safety
+  ---
+  duration_ms: 0.237292
+  ...
+# Subtest: WO-008 AC3 conflicting hard supports reject with both support ids and an exact explanation
+ok 17 - WO-008 AC3 conflicting hard supports reject with both support ids and an exact explanation
+  ---
+  duration_ms: 0.159292
+  ...
+# Subtest: WO-008 AC3 explicitly incompatible supports reject with concrete unequip corrections
+ok 18 - WO-008 AC3 explicitly incompatible supports reject with concrete unequip corrections
+  ---
+  duration_ms: 0.142375
+  ...
+# Subtest: WO-008 AC3 unordered non-commuting supports reject and demand an explicit pipeline
+ok 19 - WO-008 AC3 unordered non-commuting supports reject and demand an explicit pipeline
+  ---
+  duration_ms: 0.110833
+  ...
+# Subtest: WO-008 AC3 an explicit non-commuting pipeline governs transform order
+ok 20 - WO-008 AC3 an explicit non-commuting pipeline governs transform order
+  ---
+  duration_ms: 1.766375
+  ...
+# Subtest: WO-008 AC3 compiler v1 rejects pipeline-id-controlled inter-pipeline order
+ok 21 - WO-008 AC3 compiler v1 rejects pipeline-id-controlled inter-pipeline order
+  ---
+  duration_ms: 0.215333
+  ...
+# Subtest: WO-008 AC3 compiler v1 rejects undeclared transform order across link groups
+ok 22 - WO-008 AC3 compiler v1 rejects undeclared transform order across link groups
+  ---
+  duration_ms: 0.274833
+  ...
+# Subtest: WO-008 AC3 commuting support and link permutations normalize identically
+ok 23 - WO-008 AC3 commuting support and link permutations normalize identically
+  ---
+  duration_ms: 1.009625
+  ...
+# Subtest: WO-008 AC4 every compiled Seiri support emits exact mechanism, prompt-token, runtime, and extra-episode costs
+ok 24 - WO-008 AC4 every compiled Seiri support emits exact mechanism, prompt-token, runtime, and extra-episode costs
+  ---
+  duration_ms: 1.136167
+  ...
+# Subtest: WO-008 AC4 Seiri lowers to heterogeneous mechanism types
+ok 25 - WO-008 AC4 Seiri lowers to heterogeneous mechanism types
+  ---
+  duration_ms: 1.054417
+  ...
+# Subtest: WO-008 compiler reports resource-multiplier overflow as an invalid graph
+ok 26 - WO-008 compiler reports resource-multiplier overflow as an invalid graph
+  ---
+  duration_ms: 0.195125
+  ...
+# Subtest: WO-011 compiler validates the complete unit and rejects drift, duplicates, unsupported lowering and co-equipped supersession
+ok 27 - WO-011 compiler validates the complete unit and rejects drift, duplicates, unsupported lowering and co-equipped supersession
+  ---
+  duration_ms: 3.768167
+  ...
+# Subtest: WO-011 optional doctrine remains inactive when unequipped and advisory cannot become a hard denial
+ok 28 - WO-011 optional doctrine remains inactive when unequipped and advisory cannot become a hard denial
+  ---
+  duration_ms: 0.633667
+  ...
+# Subtest: WO-011 exact attribution predicate permits subjects and human coauthors but catches AI trailer variants
+ok 29 - WO-011 exact attribution predicate permits subjects and human coauthors but catches AI trailer variants
+  ---
+  duration_ms: 0.686084
+  ...
+# Subtest: WO-011 correction is pure, typed, idempotent, and monotonically tightens every semantic correction kind
+ok 30 - WO-011 correction is pure, typed, idempotent, and monotonically tightens every semantic correction kind
+  ---
+  duration_ms: 1.228292
+  ...
+# Subtest: WO-011 maturity separates controlled fixtures from live use and refuses invented or duplicate observations
+ok 31 - WO-011 maturity separates controlled fixtures from live use and refuses invented or duplicate observations
+  ---
+  duration_ms: 0.646
+  ...
+# Subtest: WO-039 pure lowering preserves inputs and semantic hashes, and verifies all file identities
+ok 32 - WO-039 pure lowering preserves inputs and semantic hashes, and verifies all file identities
+  ---
+  duration_ms: 10.481042
+  ...
+# Subtest: WO-039 one changed unit affects only files naming that unit
+ok 33 - WO-039 one changed unit affects only files naming that unit
+  ---
+  duration_ms: 5.0725
+  ...
+# Subtest: WO-039 profile observations, authority identity and bounded residue refuse unsupported assumptions
+ok 34 - WO-039 profile observations, authority identity and bounded residue refuse unsupported assumptions
+  ---
+  duration_ms: 7.423958
+  ...
+# Subtest: WO-008 public types cover the full LoadoutGraph surface while PolarAxis evaluation remains deferred
+ok 35 - WO-008 public types cover the full LoadoutGraph surface while PolarAxis evaluation remains deferred
+  ---
+  duration_ms: 7.826084
+  ...
+# Subtest: WO-008 constraint compiler is deterministic, input-immutable, I/O-free, and has zero runtime dependencies
+ok 36 - WO-008 constraint compiler is deterministic, input-immutable, I/O-free, and has zero runtime dependencies
+  ---
+  duration_ms: 21.71425
+  ...
+# Subtest: WO-022 AC1 missing Beacon mount reports SUPPORT INACTIVE with an actionable correction; grants preserve authority
+ok 37 - WO-022 AC1 missing Beacon mount reports SUPPORT INACTIVE with an actionable correction; grants preserve authority
+  ---
+  duration_ms: 4.633917
+  ...
+# SUPPORT INACTIVE: support "beacon-sight" linked to active "beacon-sweep" is missing capability "beacons.individual.metadata". Correction: provide-capability beacons.individual.metadata
+# all three active; authority unchanged; measured rendering contract: 1 context line per equipped channel, 0 prompt fragments
+# Subtest: WO-008 AC5 equipped diff renders the exact Seiri / Sort / 整理 RPG item tooltip
+ok 38 - WO-008 AC5 equipped diff renders the exact Seiri / Sort / 整理 RPG item tooltip
+  ---
+  duration_ms: 1.024041
+  ...
+# Subtest: WO-008 AC5 unequip preview is a real compiled reversal
+ok 39 - WO-008 AC5 unequip preview is a real compiled reversal
+  ---
+  duration_ms: 3.957458
+  ...
+# Subtest: WO-008 evidence prints the three equal semantic hashes verbatim
+ok 40 - WO-008 evidence prints the three equal semantic hashes verbatim
+  ---
+  duration_ms: 5.790292
+  ...
+# Subtest: WO-010 AC2 verifier compilation positively selects nested context, is pure and cannot retain implementer prose
+ok 41 - WO-010 AC2 verifier compilation positively selects nested context, is pure and cannot retain implementer prose
+  ---
+  duration_ms: 4.93025
+  ...
+# Subtest: WO-010 AC3 only complete blocking findings compile focused repair WorkOrders
+ok 42 - WO-010 AC3 only complete blocking findings compile focused repair WorkOrders
+  ---
+  duration_ms: 0.468042
+  ...
+# Subtest: WO-010 AC4 repair radius follows changed dependency surfaces and fails closed on unknown surfaces
+ok 43 - WO-010 AC4 repair radius follows changed dependency surfaces and fails closed on unknown surfaces
+  ---
+  duration_ms: 0.211666
+  ...
+# Subtest: WO-008 AC2 code DSL round-trip equals normalize
+ok 44 - WO-008 AC2 code DSL round-trip equals normalize
+  ---
+  duration_ms: 2.733958
+  ...
+# Subtest: WO-008 AC2 function table round-trip equals normalize
+ok 45 - WO-008 AC2 function table round-trip equals normalize
+  ---
+  duration_ms: 1.276083
+  ...
+# Subtest: WO-008 AC2 statechart JSON round-trip equals normalize
+ok 46 - WO-008 AC2 statechart JSON round-trip equals normalize
+  ---
+  duration_ms: 1.575083
+  ...
+# Subtest: WO-008 AC2 normalization is idempotent and canonicalizes set-like link order
+ok 47 - WO-008 AC2 normalization is idempotent and canonicalizes set-like link order
+  ---
+  duration_ms: 0.665458
+  ...
+# Subtest: WO-008 AC2 normalization makes JSON numbers round-trip safe
+ok 48 - WO-008 AC2 normalization makes JSON numbers round-trip safe
+  ---
+  duration_ms: 1.90575
+  ...
+# Subtest: WO-008 AC2 three editable views compile to the same exact semantic hash
+ok 49 - WO-008 AC2 three editable views compile to the same exact semantic hash
+  ---
+  duration_ms: 14.180958
+  ...
+# Subtest: WO-008 AC2 a semantic edit changes the hash, preventing a constant or lossy proof
+ok 50 - WO-008 AC2 a semantic edit changes the hash, preventing a constant or lossy proof
+  ---
+  duration_ms: 3.398
+  ...
+# Subtest: WO-008 AC2 equipping and unequipping changes the normalized executable program and semantic hash
+ok 51 - WO-008 AC2 equipping and unequipping changes the normalized executable program and semantic hash
+  ---
+  duration_ms: 2.197542
+  ...
+# Subtest: WO-032 AC1/6 wo009: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 52 - WO-032 AC1/6 wo009: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 111.341125
+  ...
+# Subtest: WO-032 AC1/6 selfhost: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 53 - WO-032 AC1/6 selfhost: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 158.930209
+  ...
+# Subtest: WO-032 AC1/6 control: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 54 - WO-032 AC1/6 control: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 82.626959
+  ...
+# Subtest: WO-032 AC1/6 refutations: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 55 - WO-032 AC1/6 refutations: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 133.782625
+  ...
+# Subtest: WO-032 AC1/6 missing: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 56 - WO-032 AC1/6 missing: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 3.01625
+  ...
+# Subtest: WO-032 schema refuses a different version, unknown fields, unsupported cells and unlabeled missing facts
+ok 57 - WO-032 schema refuses a different version, unknown fields, unsupported cells and unlabeled missing facts
+  ---
+  duration_ms: 54.332333
+  ...
+# Subtest: WO-032 AC2 executor, verifier attempts, authority, hashes and actual accepted episode remain distinct
+ok 58 - WO-032 AC2 executor, verifier attempts, authority, hashes and actual accepted episode remain distinct
+  ---
+  duration_ms: 51.815417
+  ...
+# Subtest: WO-032 AC2 the WO-031 operator role has recorded actions and unknown identity, authorship and presence
+ok 59 - WO-032 AC2 the WO-031 operator role has recorded actions and unknown identity, authorship and presence
+  ---
+  duration_ms: 2.019167
+  ...
+# Subtest: WO-032 AC3 all shipped exports use the compiler renderer; a new export adds a build without console edits
+ok 60 - WO-032 AC3 all shipped exports use the compiler renderer; a new export adds a build without console edits
+  ---
+  duration_ms: 78.946917
+  ...
+# Subtest: WO-032 AC4 ten mechanisms retain five counts per source; zero observations never become a rate
+ok 61 - WO-032 AC4 ten mechanisms retain five counts per source; zero observations never become a rate
+  ---
+  duration_ms: 115.781875
+  ...
+# Subtest: WO-032 AC5 control facts preserve legal actions, negative elapsed, failures, index evidence and Beacon separation
+ok 62 - WO-032 AC5 control facts preserve legal actions, negative elapsed, failures, index evidence and Beacon separation
+  ---
+  duration_ms: 1.655084
+  ...
+# Subtest: WO-032 text adapters pin formats and refuse malformed, missing or unsupported sources
+ok 63 - WO-032 text adapters pin formats and refuse malformed, missing or unsupported sources
+  ---
+  duration_ms: 1.656417
+  ...
+# Subtest: WO-032 the last manual and latest versioned refutations populate verdicts and hold state, without reevaluating the gate
+ok 64 - WO-032 the last manual and latest versioned refutations populate verdicts and hold state, without reevaluating the gate
+  ---
+  duration_ms: 3.73675
+  ...
+# Subtest: WO-032 AC5 each role's pinned answering cells exist and the questions match product 13
+ok 65 - WO-032 AC5 each role's pinned answering cells exist and the questions match product 13
+  ---
+  duration_ms: 163.884791
+  ...
+# Subtest: WO-032 AC6 hostile source text stays inert; output is local anchors and styles only
+ok 66 - WO-032 AC6 hostile source text stays inert; output is local anchors and styles only
+  ---
+  duration_ms: 637.337083
+  ...
+# Subtest: WO-032 command renders recorded sources without changing them; HTML output preserves existing files and refuses conflicting modes
+ok 67 - WO-032 command renders recorded sources without changing them; HTML output preserves existing files and refuses conflicting modes
+  ---
+  duration_ms: 2675.819584
+  ...
+# Subtest: WO-032 unavailable worker stores stay unavailable; corrupt logs do not become empty success
+ok 68 - WO-032 unavailable worker stores stay unavailable; corrupt logs do not become empty success
+  ---
+  duration_ms: 0.227041
+  ...
+# Subtest: WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store
+not ok 69 - WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store
+  ---
+  duration_ms: 86677.497875
+  location: '<repo>/packages/console/dist/test/board.test.js:522:1'
+  failureType: 'testCodeFailure'
+  error: 'release:list'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'available'
+  actual: 'unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<repo>/packages/console/dist/test/board.test.js:560:20)
+    async Test.run (node:internal/test_runner/test:825:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:533:7)
+  ...
+# Subtest: AC1 evidence: no ambient Date.now or Math.random read on either branch (poisoned globals)
+ok 70 - AC1 evidence: no ambient Date.now or Math.random read on either branch (poisoned globals)
+  ---
+  duration_ms: 0.98575
+  ...
+# Subtest: AC1 evidence: identical decisions across a simulated one-hour ambient clock gap
+ok 71 - AC1 evidence: identical decisions across a simulated one-hour ambient clock gap
+  ---
+  duration_ms: 0.261125
+  ...
+# Subtest: AC1 evidence: cancelledScheduleIds preserves caller order for multi-element schedule lists
+ok 72 - AC1 evidence: cancelledScheduleIds preserves caller order for multi-element schedule lists
+  ---
+  duration_ms: 0.192583
+  ...
+# Subtest: AC1 evidence: full-decision property across varied state, presence, now and rngState
+ok 73 - AC1 evidence: full-decision property across varied state, presence, now and rngState
+  ---
+  duration_ms: 4.675458
+  ...
+# Subtest: AC1 evidence: env.now reaches the predicate and flips the decision branch
+ok 74 - AC1 evidence: env.now reaches the predicate and flips the decision branch
+  ---
+  duration_ms: 0.216833
+  ...
+# Subtest: AC1 evidence: representative returned-path decision matches the full literal Decision
+ok 75 - AC1 evidence: representative returned-path decision matches the full literal Decision
+  ---
+  duration_ms: 0.83575
+  ...
+# Subtest: AC1 evidence: representative away-path decision is literally empty of intents and cancellations
+ok 76 - AC1 evidence: representative away-path decision is literally empty of intents and cancellations
+  ---
+  duration_ms: 0.118375
+  ...
+# Subtest: AC2 evidence: replay consults nothing outside the log — Date.now and Math.random poisoned to throw
+ok 77 - AC2 evidence: replay consults nothing outside the log — Date.now and Math.random poisoned to throw
+  ---
+  duration_ms: 1.237833
+  ...
+# Subtest: AC2 evidence: evaluateCadence, stepProgram, and authorize never read ambient time or randomness under poison
+ok 78 - AC2 evidence: evaluateCadence, stepProgram, and authorize never read ambient time or randomness under poison
+  ---
+  duration_ms: 0.68875
+  ...
+# Subtest: AC2 evidence: appendEvent edge-assigns sequential literal eventIds evt_1..evt_4
+ok 79 - AC2 evidence: appendEvent edge-assigns sequential literal eventIds evt_1..evt_4
+  ---
+  duration_ms: 0.173875
+  ...
+# Subtest: AC2 evidence: store round trip preserves correlationId, causationId, and episodeId
+ok 80 - AC2 evidence: store round trip preserves correlationId, causationId, and episodeId
+  ---
+  duration_ms: 0.086416
+  ...
+# Subtest: AC2 evidence: encodeLog ends with a newline so appendEvent after a round trip stays well-formed
+ok 81 - AC2 evidence: encodeLog ends with a newline so appendEvent after a round trip stays well-formed
+  ---
+  duration_ms: 0.158833
+  ...
+# Subtest: WO-017 store contract: partial tail refuses decode and append at the offending line
+ok 82 - WO-017 store contract: partial tail refuses decode and append at the offending line
+  ---
+  duration_ms: 0.19225
+  ...
+# Subtest: WO-017 store contract: blank interior line refuses decode and append without shifting ids
+ok 83 - WO-017 store contract: blank interior line refuses decode and append without shifting ids
+  ---
+  duration_ms: 0.122625
+  ...
+# Subtest: WO-017 store contract: whitespace-only log refuses decode and append as line one
+ok 84 - WO-017 store contract: whitespace-only log refuses decode and append as line one
+  ---
+  duration_ms: 0.068417
+  ...
+# Subtest: WO-017 store contract: a complete JSON object without its final newline refuses both boundaries
+ok 85 - WO-017 store contract: a complete JSON object without its final newline refuses both boundaries
+  ---
+  duration_ms: 0.231917
+  ...
+# Subtest: WO-017 store contract: every line must decode to a JSON object
+ok 86 - WO-017 store contract: every line must decode to a JSON object
+  ---
+  duration_ms: 1.495875
+  ...
+# Subtest: WO-017 store contract: newline-terminated invalid JSON names its physical line
+ok 87 - WO-017 store contract: newline-terminated invalid JSON names its physical line
+  ---
+  duration_ms: 0.163083
+  ...
+# Subtest: WO-017 store contract: well-formed logs retain exact bytes and count only object lines
+ok 88 - WO-017 store contract: well-formed logs retain exact bytes and count only object lines
+  ---
+  duration_ms: 0.073541
+  ...
+# Subtest: AC3 evidence: Backoff jitter yields exact dueAt and rngState for pinned rngStates with a non-binding clamp
+ok 89 - AC3 evidence: Backoff jitter yields exact dueAt and rngState for pinned rngStates with a non-binding clamp
+  ---
+  duration_ms: 0.913375
+  ...
+# Subtest: AC3 evidence: Backoff rngState chains — successive draws differ and are reproducible
+ok 90 - AC3 evidence: Backoff rngState chains — successive draws differ and are reproducible
+  ---
+  duration_ms: 0.146792
+  ...
+# Subtest: AC3 evidence: Backoff floor clamps a negative jittered delay to zero, never due before now
+ok 91 - AC3 evidence: Backoff floor clamps a negative jittered delay to zero, never due before now
+  ---
+  duration_ms: 0.060167
+  ...
+# Subtest: AC3 evidence: Backoff draws jitter from explicit rngState only — ambient Math.random and Date.now poisoned
+ok 92 - AC3 evidence: Backoff draws jitter from explicit rngState only — ambient Math.random and Date.now poisoned
+  ---
+  duration_ms: 0.12975
+  ...
+# Subtest: AC3 evidence: Every before startAt yields exactly startAt
+ok 93 - AC3 evidence: Every before startAt yields exactly startAt
+  ---
+  duration_ms: 0.095458
+  ...
+# Subtest: AC3 evidence: Every has no fixed points — grid of now/startAt/interval yields the exact next tick strictly after now
+ok 94 - AC3 evidence: Every has no fixed points — grid of now/startAt/interval yields the exact next tick strictly after now
+  ---
+  duration_ms: 0.186541
+  ...
+# Subtest: AC3 evidence: Until open path recurses into the inner cadence verbatim
+ok 95 - AC3 evidence: Until open path recurses into the inner cadence verbatim
+  ---
+  duration_ms: 0.208458
+  ...
+# Subtest: AC3 evidence: predicate registry selects the ref's version
+ok 96 - AC3 evidence: predicate registry selects the ref's version
+  ---
+  duration_ms: 0.077166
+  ...
+# Subtest: AC3 evidence: predicate registry passes ref params through to the predicate
+ok 97 - AC3 evidence: predicate registry passes ref params through to the predicate
+  ---
+  duration_ms: 0.25975
+  ...
+# Subtest: AC3 evidence: predicate registry threads the triggering event into the predicate context
+ok 98 - AC3 evidence: predicate registry threads the triggering event into the predicate context
+  ---
+  duration_ms: 0.233917
+  ...
+# Subtest: AC3 evidence: unknown predicate or unknown version throws naming the id
+ok 99 - AC3 evidence: unknown predicate or unknown version throws naming the id
+  ---
+  duration_ms: 0.264
+  ...
+# Subtest: AC3 evidence: Gate consults its predicate — false yields null dueAt, and the predicate is actually invoked
+ok 100 - AC3 evidence: Gate consults its predicate — false yields null dueAt, and the predicate is actually invoked
+  ---
+  duration_ms: 1.640333
+  ...
+# Subtest: AC4 evidence: Invoke refuses a foreign commandId — residual deep-equals pre-step program, intents empty, no re-dispatch on any unrelated event
+ok 101 - AC4 evidence: Invoke refuses a foreign commandId — residual deep-equals pre-step program, intents empty, no re-dispatch on any unrelated event
+  ---
+  duration_ms: 1.047959
+  ...
+# Subtest: AC4 evidence: Invoke ignores event type — a non-CommandResult event carrying a matching payload must not advance
+ok 102 - AC4 evidence: Invoke ignores event type — a non-CommandResult event carrying a matching payload must not advance
+  ---
+  duration_ms: 0.09175
+  ...
+# Subtest: AC4 evidence: Await ignores wrong correlationId and wrong type — residual stays the Await and the waits channel reports it
+ok 103 - AC4 evidence: Await ignores wrong correlationId and wrong type — residual stays the Await and the waits channel reports it
+  ---
+  duration_ms: 0.201833
+  ...
+# Subtest: AC4 evidence: decideProgram returns the full literal decision on the no-event dispatch path
+ok 104 - AC4 evidence: decideProgram returns the full literal decision on the no-event dispatch path
+  ---
+  duration_ms: 0.113334
+  ...
+# Subtest: AC4 evidence: decideProgram returns the full literal decision on the event path, including waits-derived cadenceEvaluations
+ok 105 - AC4 evidence: decideProgram returns the full literal decision on the event path, including waits-derived cadenceEvaluations
+  ---
+  duration_ms: 0.110375
+  ...
+# Subtest: AC4 evidence: three-step predicate-ref program round-trips losslessly at every step with a structural pre-serialization closure check
+ok 106 - AC4 evidence: three-step predicate-ref program round-trips losslessly at every step with a structural pre-serialization closure check
+  ---
+  duration_ms: 0.864958
+  ...
+# Subtest: AC4 evidence (B1 regression): prototype-key results throw No Invoke continuation and never resolve native functions
+ok 107 - AC4 evidence (B1 regression): prototype-key results throw No Invoke continuation and never resolve native functions
+  ---
+  duration_ms: 0.700834
+  ...
+# Subtest: AC5 row 1 evidence: authorize + replayOutbox reproduce a literal pending outbox keyed by the real commandId
+ok 108 - AC5 row 1 evidence: authorize + replayOutbox reproduce a literal pending outbox keyed by the real commandId
+  ---
+  duration_ms: 1.354416
+  ...
+# Subtest: AC5 row 1 evidence: a completed command is never re-dispatched — replay of persist+result leaves pendingCommands empty
+ok 109 - AC5 row 1 evidence: a completed command is never re-dispatched — replay of persist+result leaves pendingCommands empty
+  ---
+  duration_ms: 0.13275
+  ...
+# Subtest: WO-017 outbox ordering: a result before persist completes with a preceded-persist trace
+ok 110 - WO-017 outbox ordering: a result before persist completes with a preceded-persist trace
+  ---
+  duration_ms: 0.229084
+  ...
+# Subtest: AC5 row 1 evidence: persistCommand on an existing completed entry does not reset it to pending
+ok 111 - AC5 row 1 evidence: persistCommand on an existing completed entry does not reset it to pending
+  ---
+  duration_ms: 0.059959
+  ...
+# Subtest: AC5 row 3 evidence: first delivery is accepted with literal trace, duplicate deduped with state unchanged
+ok 112 - AC5 row 3 evidence: first delivery is accepted with literal trace, duplicate deduped with state unchanged
+  ---
+  duration_ms: 0.129167
+  ...
+# Subtest: AC5 row 3 evidence: prototype-key commandIds yield the unknown trace and change nothing
+ok 113 - AC5 row 3 evidence: prototype-key commandIds yield the unknown trace and change nothing
+  ---
+  duration_ms: 0.072
+  ...
+# Subtest: AC5 row 5 evidence: both presence branches produce the literal full decision
+ok 114 - AC5 row 5 evidence: both presence branches produce the literal full decision
+  ---
+  duration_ms: 0.178375
+  ...
+# Subtest: AC5 row 5 evidence: the predicate registry is really consulted, once, with the pulse as context event
+ok 115 - AC5 row 5 evidence: the predicate registry is really consulted, once, with the pulse as context event
+  ---
+  duration_ms: 0.075208
+  ...
+# Subtest: B4 regression: episode and workstream commandId namespaces cannot collide, and both commands survive replay
+ok 116 - B4 regression: episode and workstream commandId namespaces cannot collide, and both commands survive replay
+  ---
+  duration_ms: 0.305042
+  ...
+# Subtest: B4 regression: null payloads, non-object commands, and malformed commandIds replay without persisting
+ok 117 - B4 regression: null payloads, non-object commands, and malformed commandIds replay without persisting
+  ---
+  duration_ms: 0.239167
+  ...
+# Subtest: AC6 evidence: multi-element envelope lists bind past element one, refusing and authorizing
+ok 118 - AC6 evidence: multi-element envelope lists bind past element one, refusing and authorizing
+  ---
+  duration_ms: 2.109875
+  ...
+# Subtest: AC6 evidence: effect glob is prefix-anchored and exact patterns are exact
+ok 119 - AC6 evidence: effect glob is prefix-anchored and exact patterns are exact
+  ---
+  duration_ms: 0.315291
+  ...
+# Subtest: AC6 evidence: deny is evaluated before allow for an effect present in both lists
+ok 120 - AC6 evidence: deny is evaluated before allow for an effect present in both lists
+  ---
+  duration_ms: 0.112959
+  ...
+# Subtest: AC6 evidence: refusal draft and trace are structurally complete, episodeId present and absent
+ok 121 - AC6 evidence: refusal draft and trace are structurally complete, episodeId present and absent
+  ---
+  duration_ms: 0.21325
+  ...
+# Subtest: AC6 evidence: authorize never mutates the caller's envelope; decrement is copy-on-write
+ok 122 - AC6 evidence: authorize never mutates the caller's envelope; decrement is copy-on-write
+  ---
+  duration_ms: 0.135417
+  ...
+# Subtest: AC6 regression B2: non-string effect refuses with reason, never throws
+ok 123 - AC6 regression B2: non-string effect refuses with reason, never throws
+  ---
+  duration_ms: 0.188125
+  ...
+# Subtest: AC6 evidence: authorized command carries recomputed commandId and mirrors context episodeId
+ok 124 - AC6 evidence: authorized command carries recomputed commandId and mirrors context episodeId
+  ---
+  duration_ms: 0.118375
+  ...
+# Subtest: WO-017 authority expiry: expiresAt is the first excluded instant
+ok 125 - WO-017 authority expiry: expiresAt is the first excluded instant
+  ---
+  duration_ms: 0.097625
+  ...
+# Subtest: WO-017 authority precedence: every adjacent named rule is first-failing
+ok 126 - WO-017 authority precedence: every adjacent named rule is first-failing
+  ---
+  duration_ms: 1.604625
+  ...
+# Subtest: WO-017 semantic revocation: every condition sees every event, state, and the authorization clock
+ok 127 - WO-017 semantic revocation: every condition sees every event, state, and the authorization clock
+  ---
+  duration_ms: 0.492709
+  ...
+# Subtest: WO-017 semantic revocation: missing inputs, unknown refs, and predicate errors refuse rather than throw or authorize
+ok 128 - WO-017 semantic revocation: missing inputs, unknown refs, and predicate errors refuse rather than throw or authorize
+  ---
+  duration_ms: 0.229042
+  ...
+# Subtest: WO-017 semantic revocation: a prior match cannot mask a later predicate error
+ok 129 - WO-017 semantic revocation: a prior match cannot mask a later predicate error
+  ---
+  duration_ms: 0.072375
+  ...
+# Subtest: WO-017 granted trace names effect, canonical time, condition inputs, and consumed resource
+ok 130 - WO-017 granted trace names effect, canonical time, condition inputs, and consumed resource
+  ---
+  duration_ms: 0.073958
+  ...
+# Subtest: AC7 evidence: export extraction catches namespace members, export lists, and multi-declarator consts (literal fixture)
+ok 131 - AC7 evidence: export extraction catches namespace members, export lists, and multi-declarator consts (literal fixture)
+  ---
+  duration_ms: 1.512375
+  ...
+# Subtest: AC7 evidence: every export discovered from dist/src/*.d.ts appears as a README map left-column name, with no ghost rows
+ok 132 - AC7 evidence: every export discovered from dist/src/*.d.ts appears as a README map left-column name, with no ghost rows
+  ---
+  duration_ms: 2.400625
+  ...
+# Subtest: AC7 evidence: Program and Cadence namespace member surfaces match the pinned grammar exactly
+ok 133 - AC7 evidence: Program and Cadence namespace member surfaces match the pinned grammar exactly
+  ---
+  duration_ms: 0.508333
+  ...
+# Subtest: AC7 evidence: every README map row's right cell names an entry present in docs/product/02-domain-model.md
+ok 134 - AC7 evidence: every README map row's right cell names an entry present in docs/product/02-domain-model.md
+  ---
+  duration_ms: 1.233709
+  ...
+# Subtest: AC7 evidence: package export targets, @dotln/kernel import, stableHash vector, and commandId namespace equivalence
+ok 135 - AC7 evidence: package export targets, @dotln/kernel import, stableHash vector, and commandId namespace equivalence
+  ---
+  duration_ms: 1.09975
+  ...
+# Subtest: AC1 reactor purity property: kernel presence reactor repeats identical Decision and trace
+ok 136 - AC1 reactor purity property: kernel presence reactor repeats identical Decision and trace
+  ---
+  duration_ms: 3.334084
+  ...
+# Subtest: AC2 replay identity: JSONL round trip yields same state and decisions from log-derived environment
+ok 137 - AC2 replay identity: JSONL round trip yields same state and decisions from log-derived environment
+  ---
+  duration_ms: 0.387125
+  ...
+# Subtest: AC3 cadence virtual time: Every boundaries, Gate, bounded Backoff, Until, Once and After
+ok 138 - AC3 cadence virtual time: Every boundaries, Gate, bounded Backoff, Until, Once and After
+  ---
+  duration_ms: 0.35875
+  ...
+# Subtest: AC4 continuations: correlated Invoke/Await sequence serializes and resumes without closures
+ok 139 - AC4 continuations: correlated Invoke/Await sequence serializes and resumes without closures
+  ---
+  duration_ms: 0.3605
+  ...
+# Subtest: AC5 row 1: replay recovers persisted pending command for idempotent redispatch
+ok 140 - AC5 row 1: replay recovers persisted pending command for idempotent redispatch
+  ---
+  duration_ms: 0.418042
+  ...
+# Subtest: AC5 row 3: duplicate result is ignored by kernel outbox with dedup trace
+ok 141 - AC5 row 3: duplicate result is ignored by kernel outbox with dedup trace
+  ---
+  duration_ms: 0.164375
+  ...
+# Subtest: AC5 row 5: queued pulse rechecks predicate, emits NoOp trace, and cancels future pulses
+ok 142 - AC5 row 5: queued pulse rechecks predicate, emits NoOp trace, and cancels future pulses
+  ---
+  duration_ms: 0.0635
+  ...
+# Subtest: AC6 authorization guard: all refusal branches, patterns, own resources, and accounting
+ok 143 - AC6 authorization guard: all refusal branches, patterns, own resources, and accounting
+  ---
+  duration_ms: 0.354333
+  ...
+# Subtest: AC7 README maps every public export and package import target is valid
+ok 144 - AC7 README maps every public export and package import target is valid
+  ---
+  duration_ms: 4.3105
+  ...
+# Subtest: packages/kernel/dist/test/public-api.test.js
+ok 20 - packages/kernel/dist/test/public-api.test.js
+  ---
+  duration_ms: 99.42375
+  ...
+# Subtest: WO-017 evaluable-kind data: every listed Cadence and Program kind evaluates, every unlisted kind throws is deferred
+ok 146 - WO-017 evaluable-kind data: every listed Cadence and Program kind evaluates, every unlisted kind throws is deferred
+  ---
+  duration_ms: 1.723375
+  ...
+# Subtest: WO-017 Program.Sequence empty: one step is Done with no effects or waits
+ok 147 - WO-017 Program.Sequence empty: one step is Done with no effects or waits
+  ---
+  duration_ms: 0.080167
+  ...
+# Subtest: WO-017 Every finite interval: NaN and infinities are refused
+ok 148 - WO-017 Every finite interval: NaN and infinities are refused
+  ---
+  duration_ms: 0.08125
+  ...
+# Subtest: WO-017 Backoff binding: maxMs clamp determines the exact dueAt
+ok 149 - WO-017 Backoff binding: maxMs clamp determines the exact dueAt
+  ---
+  duration_ms: 0.061417
+  ...
+# Subtest: WO-017 replay environment: policy is promoted and absent rngState falls back to zero
+ok 150 - WO-017 replay environment: policy is promoted and absent rngState falls back to zero
+  ---
+  duration_ms: 0.195917
+  ...
+# Subtest: WO-029 new host equips v2, pins authority atomically, and receipts every compiled consumer with replay identity
+ok 151 - WO-029 new host equips v2, pins authority atomically, and receipts every compiled consumer with replay identity
+  ---
+  duration_ms: 79.452292
+  ...
+# Subtest: WO-029 stale graph/pin equip is durably refused; replay of a refused log does not throw or invent a WorkOrder
+ok 152 - WO-029 stale graph/pin equip is durably refused; replay of a refused log does not throw or invent a WorkOrder
+  ---
+  duration_ms: 8.582667
+  ...
+# Subtest: WO-029 every stored compiled consumer uses the same fail-closed comparison for each drift axis
+    # Subtest: compiler-contract-version
+    ok 1 - compiler-contract-version
+      ---
+      duration_ms: 18.592375
+      ...
+    # Subtest: compiler-package-version
+    ok 2 - compiler-package-version
+      ---
+      duration_ms: 17.560125
+      ...
+    # Subtest: semantic-hash
+    ok 3 - semantic-hash
+      ---
+      duration_ms: 17.43475
+      ...
+    # Subtest: component-definitions
+    ok 4 - component-definitions
+      ---
+      duration_ms: 16.653667
+      ...
+    # Subtest: compilation-environment
+    ok 5 - compilation-environment
+      ---
+      duration_ms: 16.489584
+      ...
+    # Subtest: authority-expiry
+    ok 6 - authority-expiry
+      ---
+      duration_ms: 15.989667
+      ...
+    1..6
+ok 153 - WO-029 every stored compiled consumer uses the same fail-closed comparison for each drift axis
+  ---
+  duration_ms: 106.648875
+  ...
+# Subtest: WO-029 diagnostics, malformed v2 payloads and pre-equip consumers are typed inert refusals
+ok 154 - WO-029 diagnostics, malformed v2 payloads and pre-equip consumers are typed inert refusals
+  ---
+  duration_ms: 4.218542
+  ...
+# Subtest: WO-029 historical replay keeps the frozen WO-003 trace oracle; the logged boundary prevents forward legacy consumption
+ok 155 - WO-029 historical replay keeps the frozen WO-003 trace oracle; the logged boundary prevents forward legacy consumption
+  ---
+  duration_ms: 34.313458
+  ...
+# Subtest: WO-029 host factory cannot mint or accept legacy events, and snapshots the caller's graph
+ok 156 - WO-029 host factory cannot mint or accept legacy events, and snapshots the caller's graph
+  ---
+  duration_ms: 4.177167
+  ...
+# Subtest: WO-029 recovery checks the pin before redispatch; restoring legacy or drifted history never reaches an adapter
+ok 157 - WO-029 recovery checks the pin before redispatch; restoring legacy or drifted history never reaches an adapter
+  ---
+  duration_ms: 34.099417
+  ...
+# Subtest: WO-029 unknown schedule ids have durable inert evidence; reused ids from an earlier equip remain unstamped
+ok 158 - WO-029 unknown schedule ids have durable inert evidence; reused ids from an earlier equip remain unstamped
+  ---
+  duration_ms: 5.684917
+  ...
+# Subtest: WO-029 Seiri and Entropy Reducer pins retain exact environment inputs, require re-equip on relocation, and do not authenticate rewritten pairs
+ok 159 - WO-029 Seiri and Entropy Reducer pins retain exact environment inputs, require re-equip on relocation, and do not authenticate rewritten pairs
+  ---
+  duration_ms: 68.9825
+  ...
+# Subtest: WO-029 L0 and governed raw expose canonical comparison/refusal references while cryptographic and outer-confinement claims stay absent
+ok 160 - WO-029 L0 and governed raw expose canonical comparison/refusal references while cryptographic and outer-confinement claims stay absent
+  ---
+  duration_ms: 6.562208
+  ...
+# Subtest: AC1 enumerates each consequential action class with operator and verifier questions
+ok 161 - AC1 enumerates each consequential action class with operator and verifier questions
+  ---
+  duration_ms: 1.272083
+  ...
+# Subtest: AC2 AuditRecord v1 keeps canonical references and no copied event payloads
+ok 162 - AC2 AuditRecord v1 keeps canonical references and no copied event payloads
+  ---
+  duration_ms: 67.1875
+  ...
+# Subtest: WO-017 audit: an adjacent matching grant trace is evidence for allowed authority, with safe fallback
+ok 163 - WO-017 audit: an adjacent matching grant trace is evidence for allowed authority, with safe fallback
+  ---
+  duration_ms: 0.81675
+  ...
+# Subtest: WO-017 audit: denied records attach only a complete matching v1 refusal trace
+ok 164 - WO-017 audit: denied records attach only a complete matching v1 refusal trace
+  ---
+  duration_ms: 0.329375
+  ...
+# Subtest: AC3 captures the L0 receipt, causal timeline, and governed raw JSON with fidelity links
+ok 165 - AC3 captures the L0 receipt, causal timeline, and governed raw JSON with fidelity links
+  ---
+  duration_ms: 26.345
+  ...
+# Subtest: audit source validation refuses missing canonical references instead of inventing success
+ok 166 - audit source validation refuses missing canonical references instead of inventing success
+  ---
+  duration_ms: 0.415459
+  ...
+# Subtest: causal timeline obeys causation while correlation remains an append-stable group
+ok 167 - causal timeline obeys causation while correlation remains an append-stable group
+  ---
+  duration_ms: 0.467875
+  ...
+# Subtest: projection fidelity links share one scope across mixed and context-only logs
+ok 168 - projection fidelity links share one scope across mixed and context-only logs
+  ---
+  duration_ms: 0.174833
+  ...
+# Subtest: audit associations stay scope-bound and honor explicit verification links
+ok 169 - audit associations stay scope-bound and honor explicit verification links
+  ---
+  duration_ms: 0.373375
+  ...
+# Subtest: AC4 step 9 refusal is explicit in the receipt and causal timeline
+ok 170 - AC4 step 9 refusal is explicit in the receipt and causal timeline
+  ---
+  duration_ms: 15.638416
+  ...
+# Subtest: AC5 all projection bytes are identical over live, replayed, and re-encoded logs
+ok 171 - AC5 all projection bytes are identical over live, replayed, and re-encoded logs
+  ---
+  duration_ms: 38.319292
+  ...
+# Subtest: WO-020 AC2 filesystem live/replay cmp includes bytes, exact mtime and logical size
+ok 172 - WO-020 AC2 filesystem live/replay cmp includes bytes, exact mtime and logical size
+  ---
+  duration_ms: 365.455375
+  ...
+# cmp exit=0; size=49764; mtimeNs=1200007000000; content byte-identical
+# Subtest: WO-020 AC3 metadata sweep succeeds with denied reads and garbage content
+ok 173 - WO-020 AC3 metadata sweep succeeds with denied reads and garbage content
+  ---
+  duration_ms: 2.1315
+  ...
+# readFile=EACCES at mode 000; garbage JSON at preserved size=37216; both sweeps decode verification/passed/self-reported
+# Subtest: WO-020 AC4 fake executor emits its claim before CommandResult without changing host evidence
+ok 174 - WO-020 AC4 fake executor emits its claim before CommandResult without changing host evidence
+  ---
+  duration_ms: 68.5605
+  ...
+# before CommandResult and VerificationCompleted: host=authority-decision/allowed; executor=verification/passed; host bytes and mtime unchanged
+# Subtest: WO-020 AC5 concurrent metadata observer sees only complete codewords and fixed addresses
+ok 175 - WO-020 AC5 concurrent metadata observer sees only complete codewords and fixed addresses
+  ---
+  duration_ms: 112.530459
+  ...
+# 128 atomic replacements; concurrent sweeps=3712; observed both states; zero off-lattice sizes or temporary names
+# Subtest: WO-020 edge refuses unsafe destinations and invalid records before publishing
+ok 176 - WO-020 edge refuses unsafe destinations and invalid records before publishing
+  ---
+  duration_ms: 2466.677291
+  ...
+# Subtest: WO-020 sweep labels future codebooks, malformed sizes and non-regular entries without state guesses
+ok 177 - WO-020 sweep labels future codebooks, malformed sizes and non-regular entries without state guesses
+  ---
+  duration_ms: 0.870167
+  ...
+# Subtest: WO-020/WO-029 CLI pins the new timeline, remains opt-in, and prints terminal host state last
+ok 178 - WO-020/WO-029 CLI pins the new timeline, remains opt-in, and prints terminal host state last
+  ---
+  duration_ms: 3197.389959
+  ...
+# BEACON CONSTELLATION (metadata only; size order)\\nbytes | mtime (UTC) | state | refusals | provenance | codebook | address\\n37216 | 1970-01-01T00:20:00.001Z | verification/passed | 0 | self-reported | 1 | 5e26f6fdc370650138023d91a184b3555430e5ba1d804085b0aedf13e53b0902.beacon\\n49764 | 1970-01-01T00:20:00.007Z | external-effect/observed | 1 | host-projected | 1 | 683d55846b121bd3d0200b7be3072ecda34557383fa2792081962cd4c8092bd0.beacon
+# Subtest: WO-020 normative codebook data matches the blueprint and all seven audit classes
+ok 179 - WO-020 normative codebook data matches the blueprint and all seven audit classes
+  ---
+  duration_ms: 1.195542
+  ...
+# Subtest: WO-020 AC1 exhausts all 104 v1 states and every integer through twice the maximum
+ok 180 - WO-020 AC1 exhausts all 104 v1 states and every integer through twice the maximum
+  ---
+  duration_ms: 49.130916
+  ...
+# 104 v1 states; maximum=51064; integers=0..102128; malformed=101292; future frames=733
+# Subtest: WO-020 decoder refuses bad values and never guesses an extended future payload
+ok 181 - WO-020 decoder refuses bad values and never guesses an extended future payload
+  ---
+  duration_ms: 0.483584
+  ...
+# Subtest: WO-020 AC2 live and replay encode identical records without mutating audit or events
+ok 182 - WO-020 AC2 live and replay encode identical records without mutating audit or events
+  ---
+  duration_ms: 49.10975
+  ...
+# Subtest: WO-020 fold separates episode scopes, caps cumulative refusals, and obeys append order
+ok 183 - WO-020 fold separates episode scopes, caps cumulative refusals, and obeys append order
+  ---
+  duration_ms: 14.378709
+  ...
+# Subtest: WO-020 host retains the matching L0 links when unaudited events widen projection scope
+ok 184 - WO-020 host retains the matching L0 links when unaudited events widen projection scope
+  ---
+  duration_ms: 0.201667
+  ...
+# Subtest: WO-020 record encoding preserves UTF-8, labels claims, pads with only newlines and rejects overflow
+ok 185 - WO-020 record encoding preserves UTF-8, labels claims, pads with only newlines and rejects overflow
+  ---
+  duration_ms: 0.555375
+  ...
+# Subtest: WO-016 AC8 default CLI stdout is exact
+ok 186 - WO-016 AC8 default CLI stdout is exact
+  ---
+  duration_ms: 476.277209
+  ...
+# Subtest: WO-016 AC8 --audit CLI stdout is exact and additive
+ok 187 - WO-016 AC8 --audit CLI stdout is exact and additive
+  ---
+  duration_ms: 642.643042
+  ...
+# Subtest: WO-008 AC5 --compiled-diff CLI stdout is exact
+ok 188 - WO-008 AC5 --compiled-diff CLI stdout is exact
+  ---
+  duration_ms: 574.141291
+  ...
+# Subtest: WO-008 AC5 --audit and --compiled-diff preserve deterministic section order
+ok 189 - WO-008 AC5 --audit and --compiled-diff preserve deterministic section order
+  ---
+  duration_ms: 659.125292
+  ...
+# Subtest: WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor
+ok 190 - WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor
+  ---
+  duration_ms: 9350.152375
+  ...
+# Beacon sweep refused; CommandRefused recorded; no beacon metadata read.
+# authorized CLI: unreadable garbage beacon decoded; exactly one BeaconObserved; replay succeeded; lifecycle bytes unchanged
+# Subtest: WO-021 normative v2 and phase-group data match the blueprint
+ok 191 - WO-021 normative v2 and phase-group data match the blueprint
+  ---
+  duration_ms: 1.270542
+  ...
+# Subtest: WO-021 v2 exhaustively round-trips every field, retains v1, and pins numeric bounds
+ok 192 - WO-021 v2 exhaustively round-trips every field, retains v1, and pins numeric bounds
+  ---
+  duration_ms: 3.81925
+  ...
+# v2: 288 states; MAX_V2_CODE=1150; dense bytes=81833; all 104 v1 states retain meaning
+# Subtest: WO-021 group exhaustively proves the bounded additive lattice
+ok 193 - WO-021 group exhaustively proves the bounded additive lattice
+  ---
+  duration_ms: 329.045709
+  ...
+# group: 125970 vectors, no collisions; 12 members across all 8 phases; logical maximum=192763452654
+# Subtest: WO-021 maximum dense/sparse files obey allocation bounds; unsupported sizes create nothing
+ok 194 - WO-021 maximum dense/sparse files obey allocation bounds; unsupported sizes create nothing
+  ---
+  duration_ms: 11.142125
+  ...
+# stat: v2 size=81833 blocks=160; group size=192763452654 blocks=0; filesystem block=4096
+# 12 actual member files -> group counts=2,2,2,2,1,1,1,1; group blocks=0
+# Subtest: WO-021 age retains sub-millisecond metadata at skew and cadence boundaries
+ok 195 - WO-021 age retains sub-millisecond metadata at skew and cadence boundaries
+  ---
+  duration_ms: 4.813459
+  ...
+# Subtest: WO-021 authorization precedes every beacon stat; refusals and one authorized perception replay
+ok 196 - WO-021 authorization precedes every beacon stat; refusals and one authorized perception replay
+  ---
+  duration_ms: 5.052833
+  ...
+# refused: 0 metadata reads, 1 CommandRefused, 0 BeaconObserved; authorized: 1 sweep, 1 BeaconObserved; complete decisions and glyph replay identical
+# Subtest: WO-021 observation state cannot change the same authority decision; reactor uses no ambient clock
+ok 197 - WO-021 observation state cannot change the same authority decision; reactor uses no ambient clock
+  ---
+  duration_ms: 0.250875
+  ...
+# Subtest: WO-016 identity extends to live sweep events appended to the walking skeleton
+ok 198 - WO-016 identity extends to live sweep events appended to the walking skeleton
+  ---
+  duration_ms: 39.914834
+  ...
+# Subtest: WO-023 AC3 regeneration byte-matches the sole tracked residue projection
+ok 199 - WO-023 AC3 regeneration byte-matches the sole tracked residue projection
+  ---
+  duration_ms: 9.76175
+  ...
+# Subtest: WO-023 AC3 every linked support owns exactly one generated paragraph
+ok 200 - WO-023 AC3 every linked support owns exactly one generated paragraph
+  ---
+  duration_ms: 6.878375
+  ...
+# Subtest: WO-023 AC3 unordered graph permutations preserve residue bytes
+ok 201 - WO-023 AC3 unordered graph permutations preserve residue bytes
+  ---
+  duration_ms: 8.027458
+  ...
+# Subtest: WO-023 AC3 a semantic edit to every support changes generated residue
+ok 202 - WO-023 AC3 a semantic edit to every support changes generated residue
+  ---
+  duration_ms: 36.998334
+  ...
+# Subtest: WO-023 AC3 identity, role, and active stance all flow into generated residue
+ok 203 - WO-023 AC3 identity, role, and active stance all flow into generated residue
+  ---
+  duration_ms: 9.496083
+  ...
+# Subtest: WO-023 AC3 malformed support participation cannot render a plausible residue
+ok 204 - WO-023 AC3 malformed support participation cannot render a plausible residue
+  ---
+  duration_ms: 1.425375
+  ...
+# Subtest: WO-023 AC3 residue generation is pure and cannot read the tracked projection
+ok 205 - WO-023 AC3 residue generation is pure and cannot read the tracked projection
+  ---
+  duration_ms: 1.993459
+  ...
+# Subtest: WO-023 AC7 review receipt preserves the pinned actor, exact compile inputs, and immutable subject
+ok 206 - WO-023 AC7 review receipt preserves the pinned actor, exact compile inputs, and immutable subject
+  ---
+  duration_ms: 12.515875
+  ...
+# Subtest: WO-023 AC6 refutation receipt rebuilds exactly and promotes only survived findings
+ok 207 - WO-023 AC6 refutation receipt rebuilds exactly and promotes only survived findings
+  ---
+  duration_ms: 1.80075
+  ...
+# Subtest: WO-023 AC1 compiles the complete reviewer definition through the real compiler
+ok 208 - WO-023 AC1 compiles the complete reviewer definition through the real compiler
+  ---
+  duration_ms: 28.043375
+  ...
+# Subtest: WO-023 AC1 assembles the full deferred Program and once cadence
+ok 209 - WO-023 AC1 assembles the full deferred Program and once cadence
+  ---
+  duration_ms: 8.475417
+  ...
+# Subtest: WO-023 AC2 wildcard authority grants bounded reads and traces write refusals
+ok 210 - WO-023 AC2 wildcard authority grants bounded reads and traces write refusals
+  ---
+  duration_ms: 40.403041
+  ...
+# Subtest: WO-023 AC2 threads resource ceilings and enforces expiry, stop, and report emission
+ok 211 - WO-023 AC2 threads resource ceilings and enforces expiry, stop, and report emission
+  ---
+  duration_ms: 18.933708
+  ...
+# Subtest: WO-023 AC2 validates findings and clean-room status before constructing report.emit
+ok 212 - WO-023 AC2 validates findings and clean-room status before constructing report.emit
+  ---
+  duration_ms: 0.546125
+  ...
+# Subtest: WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the four-brief ceiling
+ok 213 - WO-023 AC4 enforces every lens-brief field, no-fix, uniqueness, and the four-brief ceiling
+  ---
+  duration_ms: 9.150041
+  ...
+# Subtest: WO-023 AC5 validates ProductSuggestion packets and enforces a summary under 200 words
+ok 214 - WO-023 AC5 validates ProductSuggestion packets and enforces a summary under 200 words
+  ---
+  duration_ms: 0.65725
+  ...
+# Subtest: WO-023 AC6 selects every measured finding and reports zero denominators as not-applicable
+ok 215 - WO-023 AC6 selects every measured finding and reports zero denominators as not-applicable
+  ---
+  duration_ms: 0.289292
+  ...
+# Subtest: WO-023 AC6 examines all six-or-fewer inspection findings and deterministically stratifies larger sets
+ok 216 - WO-023 AC6 examines all six-or-fewer inspection findings and deterministically stratifies larger sets
+  ---
+  duration_ms: 0.61625
+  ...
+# Subtest: WO-023 AC6 keeps failed findings attributable but removes them from the promoted set
+ok 217 - WO-023 AC6 keeps failed findings attributable but removes them from the promoted set
+  ---
+  duration_ms: 0.618625
+  ...
+# Subtest: feedback audit pins labeled projections and keeps release-only workspace metadata stable
+ok 218 - feedback audit pins labeled projections and keeps release-only workspace metadata stable
+  ---
+  duration_ms: 1104.596125
+  ...
+# Subtest: feedback audit invalidates every declared runtime and fixture source byte
+ok 219 - feedback audit invalidates every declared runtime and fixture source byte
+  ---
+  duration_ms: 6833.258625
+  ...
+# Subtest: feedback audit keeps execution, dependency, publication, and unknown metadata in the subject
+ok 220 - feedback audit keeps execution, dependency, publication, and unknown metadata in the subject
+  ---
+  duration_ms: 4060.090917
+  ...
+# Subtest: feedback audit refuses malformed package projection inputs
+ok 221 - feedback audit refuses malformed package projection inputs
+  ---
+  duration_ms: 1938.943708
+  ...
+# Subtest: WO-011 regression anti-oscillation
+ok 222 - WO-011 regression anti-oscillation
+  ---
+  duration_ms: 12.545917
+  ...
+# Subtest: WO-011 regression correctness-over-sycophancy
+ok 223 - WO-011 regression correctness-over-sycophancy
+  ---
+  duration_ms: 6.350625
+  ...
+# Subtest: WO-011 regression fail-conservative-correction
+ok 224 - WO-011 regression fail-conservative-correction
+  ---
+  duration_ms: 4.703333
+  ...
+# Subtest: WO-011 regression verify-app-before-done
+ok 225 - WO-011 regression verify-app-before-done
+  ---
+  duration_ms: 391.325791
+  ...
+# Subtest: WO-011 regression no-attribution
+ok 226 - WO-011 regression no-attribution
+  ---
+  duration_ms: 4517.665625
+  ...
+# Subtest: WO-011 regression concurrent-work-requires-worktrees
+ok 227 - WO-011 regression concurrent-work-requires-worktrees
+  ---
+  duration_ms: 3755.60925
+  ...
+# Subtest: WO-011 regression no-lint-type-disables-as-fixes
+ok 228 - WO-011 regression no-lint-type-disables-as-fixes
+  ---
+  duration_ms: 113.319542
+  ...
+# Subtest: WO-011 regression read-your-own-output
+ok 229 - WO-011 regression read-your-own-output
+  ---
+  duration_ms: 4.355
+  ...
+# Subtest: WO-011 regression no-partial-completion
+ok 230 - WO-011 regression no-partial-completion
+  ---
+  duration_ms: 2.924667
+  ...
+# Subtest: WO-011 regression bounded-boy-scout-cleanup
+ok 231 - WO-011 regression bounded-boy-scout-cleanup
+  ---
+  duration_ms: 4.455333
+  ...
+# Subtest: WO-011 bounded Claude patch observation retains the prior version and refuses an unknown one
+ok 232 - WO-011 bounded Claude patch observation retains the prior version and refuses an unknown one
+  ---
+  duration_ms: 0.792458
+  ...
+# Subtest: WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+ok 233 - WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once
+  ---
+  duration_ms: 34916.3725
+  ...
+# Subtest: WO-011 shared reactor dispatches a pinned audit, refuses expiry, and makes semantic correction a durable diagnosis request
+ok 234 - WO-011 shared reactor dispatches a pinned audit, refuses expiry, and makes semantic correction a durable diagnosis request
+  ---
+  duration_ms: 21.281042
+  ...
+# Subtest: WO-016 AC1 one typed reactor owns every skeleton kernel decider
+ok 235 - WO-016 AC1 one typed reactor owns every skeleton kernel decider
+  ---
+  duration_ms: 7.020833
+  ...
+# Subtest: WO-016 AC3 live and replay match every complete Decision and semantic projection
+ok 236 - WO-016 AC3 live and replay match every complete Decision and semantic projection
+  ---
+  duration_ms: 41.608208
+  ...
+# Subtest: WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+ok 237 - WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+  ---
+  duration_ms: 2.10225
+  ...
+# Subtest: WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+ok 238 - WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+  ---
+  duration_ms: 15.043208
+  ...
+# Subtest: WO-008 AC2 an unequipped support changes the live reactor program
+ok 239 - WO-008 AC2 an unequipped support changes the live reactor program
+  ---
+  duration_ms: 25.509917
+  ...
+# Subtest: WO-008 AC2 the running reactor consumes compiled cadence identifiers
+ok 240 - WO-008 AC2 the running reactor consumes compiled cadence identifiers
+  ---
+  duration_ms: 12.872041
+  ...
+# Subtest: WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+ok 241 - WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+  ---
+  duration_ms: 0.972584
+  ...
+# Subtest: the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+ok 242 - the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+  ---
+  duration_ms: 12.947292
+  ...
+# Subtest: WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+ok 243 - WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+  ---
+  duration_ms: 12.615208
+  ...
+# Subtest: WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+ok 244 - WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+  ---
+  duration_ms: 12.467416
+  ...
+# Subtest: WO-016 step 12 executes the reactor's NoOp and declared cancellations
+ok 245 - WO-016 step 12 executes the reactor's NoOp and declared cancellations
+  ---
+  duration_ms: 12.405792
+  ...
+# Subtest: WO-016 AC4 semantic payload changes alter the decision at their event
+    # Subtest: CommandResult.candidates
+    ok 1 - CommandResult.candidates
+      ---
+      duration_ms: 29.978334
+      ...
+    # Subtest: VerificationCompleted.accepted
+    ok 2 - VerificationCompleted.accepted
+      ---
+      duration_ms: 29.39975
+      ...
+    # Subtest: WorkOrderEmitted.workOrder
+    ok 3 - WorkOrderEmitted.workOrder
+      ---
+      duration_ms: 24.105458
+      ...
+    # Subtest: CommandRefused.reason
+    ok 4 - CommandRefused.reason
+      ---
+      duration_ms: 24.681292
+      ...
+    # Subtest: SchedulesCancelled.scheduleIds
+    ok 5 - SchedulesCancelled.scheduleIds
+      ---
+      duration_ms: 24.84875
+      ...
+    # Subtest: CommandPersisted.command.intent.effect
+    ok 6 - CommandPersisted.command.intent.effect
+      ---
+      duration_ms: 23.972209
+      ...
+    1..6
+ok 246 - WO-016 AC4 semantic payload changes alter the decision at their event
+  ---
+  duration_ms: 169.120542
+  ...
+# Subtest: WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+ok 247 - WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+  ---
+  duration_ms: 23.060542
+  ...
+# Subtest: row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+ok 248 - row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+  ---
+  duration_ms: 39.814166
+  ...
+# Subtest: WO-022 AC9 v3 data, algebraic product bounds, all residues for representative states, malformed boundaries
+ok 249 - WO-022 AC9 v3 data, algebraic product bounds, all residues for representative states, malformed boundaries
+  ---
+  duration_ms: 450.759542
+  ...
+# v2 × epoch × authenticator = 288 × 256 × 65536 = 4831838208; MAX_V3_CODE=19327352831; MAX_V3_LOGICAL_BYTES=1236950589434; 589824 exhaustive representative residue round trips
+# Subtest: WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported hosts create no file
+ok 250 - WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported hosts create no file
+  ---
+  duration_ms: 5.519125
+  ...
+# maximum file: logical=1236950589434; blocks=8/8; blockBytes=4096; exact mtime and zero tail preserved through temp/rename; unsupported hosts: no files or directories
+# Subtest: WO-022 AC6/8/10 dynamic external keys, forged provenance, replay, unknown/rotated epochs and exhaustion
+ok 251 - WO-022 AC6/8/10 dynamic external keys, forged provenance, replay, unknown/rotated epochs and exhaustion
+  ---
+  duration_ms: 79.237292
+  ...
+# current bad residue: forged-provenance; same key/epoch replay: residue-matched; rotated and never-observed epochs: unverifiable-provenance; 255 rotations then exhaustion without key/beacon changes; no retained old-key file
+# Subtest: WO-022 AC2/3 affordance and permission guard agree; no sense or grant yields an event with zero reads
+ok 252 - WO-022 AC2/3 affordance and permission guard agree; no sense or grant yields an event with zero reads
+  ---
+  duration_ms: 5595.557833
+  ...
+# sparse twin: unequipped actions=[]; equipped actions=[{"action":"sweep","intent":{"kind":"Observe","subject":"control-beacons"}}]; nine refusal cases, zero metadata reads; envelope=fixture-verifier-envelope
+# Subtest: WO-022 legacy v1/v2 sensing is unauthenticated and pre-sense replay retains the unknown tag-3 meaning
+ok 253 - WO-022 legacy v1/v2 sensing is unauthenticated and pre-sense replay retains the unknown tag-3 meaning
+  ---
+  duration_ms: 4572.667042
+  ...
+# legacy v1/v2 fields preserved and labeled unauthenticated-legacy; pre-WO-022 tag 3 remains unknown on replay; new live input cannot select that bypass
+# Subtest: WO-022 AC4/6/7 exact metadata-only channels; search-only listing refusal and no extra names/content/xattrs
+ok 254 - WO-022 AC4/6/7 exact metadata-only channels; search-only listing refusal and no extra names/content/xattrs
+  ---
+  duration_ms: 4384.701333
+  ...
+# 0111 directory: listing=EACCES, known-name lstat=allowed; mode-000 garbage content and xattr do not affect the codeword; coarse=1 line, all senses=3 lines; one BeaconObserved; content, extra names, xattrs, paths, capability and key excluded
+# Subtest: WO-022 AC5 a mounted Beacon Sight verifier completes the skeleton with no implementer prose in its inputs
+ok 255 - WO-022 AC5 a mounted Beacon Sight verifier completes the skeleton with no implementer prose in its inputs
+  ---
+  duration_ms: 3269.299125
+  ...
+# walking skeleton VerificationCompleted accepted=true; verifier received candidate paths, independent inventory fields and Beacon perception only; implementer narrative remained in host log and was absent from every verifier input
+# Subtest: WO-022 AC8 canonical control-log re-derivation uses the same host v3 writer and key
+ok 256 - WO-022 AC8 canonical control-log re-derivation uses the same host v3 writer and key
+  ---
+  duration_ms: 6053.123166
+  ...
+# canonical control JSONL folded twice; production lifecycle emitter re-derived identical v3 state/size/mtime and residue; both sweeps matched; control log unchanged
+# Subtest: WO-010 AC1/2/3/5 claude-cli-print dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+ok 257 - WO-010 AC1/2/3/5 claude-cli-print dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+  ---
+  duration_ms: 24991.90925
+  ...
+# Subtest: WO-010 AC1/2/3/5 codex-cli-exec dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+ok 258 - WO-010 AC1/2/3/5 codex-cli-exec dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+  ---
+  duration_ms: 15612.25775
+  ...
+# Subtest: WO-010 AC2 implementer-emitted events and repair results cannot certify acceptance
+ok 259 - WO-010 AC2 implementer-emitted events and repair results cannot certify acceptance
+  ---
+  duration_ms: 2.403791
+  ...
+# Subtest: WO-010 AC2/3 claim types, evidence sources, observations, subject and result shape are host-checked
+ok 260 - WO-010 AC2/3 claim types, evidence sources, observations, subject and result shape are host-checked
+  ---
+  duration_ms: 3.271166
+  ...
+# Subtest: WO-010 AC3 each blocking finding has its own compiled repair; repair limits stop without greenwashing
+ok 261 - WO-010 AC3 each blocking finding has its own compiled repair; repair limits stop without greenwashing
+  ---
+  duration_ms: 6987.317833
+  ...
+# Subtest: WO-010 AC4/5 dotln status exposes stale evidence mid-workstream and is read-only
+ok 262 - WO-010 AC4/5 dotln status exposes stale evidence mid-workstream and is read-only
+  ---
+  duration_ms: 14478.396208
+  ...
+# Subtest: WO-010 completed-result crash recovery retains the producing verifier and invokes no duplicate effect
+ok 263 - WO-010 completed-result crash recovery retains the producing verifier and invokes no duplicate effect
+  ---
+  duration_ms: 12436.811208
+  ...
+# Subtest: WO-010 a committed repair recovers before its event without repeating the write
+ok 264 - WO-010 a committed repair recovers before its event without repeating the write
+  ---
+  duration_ms: 6367.963083
+  ...
+# Subtest: WO-010 an admitted-result prefix recovers completion status and its continuation exactly once
+ok 265 - WO-010 an admitted-result prefix recovers completion status and its continuation exactly once
+  ---
+  duration_ms: 5805.693917
+  ...
+# Subtest: WO-010 explicit human disposition holds a completed repair proposal before application
+ok 266 - WO-010 explicit human disposition holds a completed repair proposal before application
+  ---
+  duration_ms: 2.616625
+  ...
+# Subtest: WO-010 claude-cli-print killed verifier retains its command and recovers in a fresh leased episode
+ok 267 - WO-010 claude-cli-print killed verifier retains its command and recovers in a fresh leased episode
+  ---
+  duration_ms: 7927.515167
+  ...
+# Subtest: WO-010 claude-cli-print model refusal and forged passes retain pending work
+ok 268 - WO-010 claude-cli-print model refusal and forged passes retain pending work
+  ---
+  duration_ms: 6498.730375
+  ...
+# Subtest: WO-010 codex-cli-exec killed verifier retains its command and recovers in a fresh leased episode
+ok 269 - WO-010 codex-cli-exec killed verifier retains its command and recovers in a fresh leased episode
+  ---
+  duration_ms: 7120.741458
+  ...
+# Subtest: WO-010 codex-cli-exec model refusal and forged passes retain pending work
+ok 270 - WO-010 codex-cli-exec model refusal and forged passes retain pending work
+  ---
+  duration_ms: 6368.212833
+  ...
+# Subtest: WO-010 expired authority or lease quarantines acceptance and replay remains pure
+ok 271 - WO-010 expired authority or lease quarantines acceptance and replay remains pure
+  ---
+  duration_ms: 2096.447
+  ...
+# Subtest: WO-009 AC6 canonical launch shapes pin model, settings, memory, persistence, mounts and honest effort
+ok 272 - WO-009 AC6 canonical launch shapes pin model, settings, memory, persistence, mounts and honest effort
+  ---
+  duration_ms: 12.093208
+  ...
+# Subtest: WO-009 AC3 deterministic real-Git create, verified cwd/base, collision and dirty cleanup refusal
+ok 273 - WO-009 AC3 deterministic real-Git create, verified cwd/base, collision and dirty cleanup refusal
+  ---
+  duration_ms: 13086.263167
+  ...
+# Subtest: WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+ok 274 - WO-009 AC1/4 one process replaces only the executor; status is read-only and replay is identical
+  ---
+  duration_ms: 12082.300792
+  ...
+# Subtest: WO-009 row 2 crash after effect before result persist re-queries the durable receipt without double application
+ok 275 - WO-009 row 2 crash after effect before result persist re-queries the durable receipt without double application
+  ---
+  duration_ms: 6229.221125
+  ...
+# Subtest: WO-009 row 4 a result after authority expiry is persisted and quarantined without candidate state mutation
+ok 276 - WO-009 row 4 a result after authority expiry is persisted and quarantined without candidate state mutation
+  ---
+  duration_ms: 205.470125
+  ...
+# Subtest: WO-009 row 6 SIGKILL leaves a recoverable command and continuation; lease expiry admits a fresh episode
+ok 277 - WO-009 row 6 SIGKILL leaves a recoverable command and continuation; lease expiry admits a fresh episode
+  ---
+  duration_ms: 7179.788708
+  ...
+# Subtest: WO-009 AC5 missing models fail closed in both directions and both transports; diagnostics stay private
+ok 278 - WO-009 AC5 missing models fail closed in both directions and both transports; diagnostics stay private
+  ---
+  duration_ms: 10894.483958
+  ...
+# Subtest: WO-009 invalid correlation, malformed output and success-shaped nonzero exits never complete commands
+ok 279 - WO-009 invalid correlation, malformed output and success-shaped nonzero exits never complete commands
+  ---
+  duration_ms: 16771.118333
+  ...
+# Subtest: WO-009 store rejects concurrent hosts and torn logs without truncation; status creates no missing store
+ok 280 - WO-009 store rejects concurrent hosts and torn logs without truncation; status creates no missing store
+  ---
+  duration_ms: 302.476833
+  ...
+# Subtest: WO-009 incomplete envelopes retain partial evidence without applying candidates or forcing human input
+ok 281 - WO-009 incomplete envelopes retain partial evidence without applying candidates or forcing human input
+  ---
+  duration_ms: 5253.542083
+  ...
+# Subtest: WO-009 stale episode observations cannot close pending commands; duplicate admitted results are inert
+ok 282 - WO-009 stale episode observations cannot close pending commands; duplicate admitted results are inert
+  ---
+  duration_ms: 103.672625
+  ...
+# Subtest: WO-009 a legacy or drifted equip cannot reach a real transport
+ok 283 - WO-009 a legacy or drifted equip cannot reach a real transport
+  ---
+  duration_ms: 70.269583
+  ...
+# Subtest: WO-009 missed leases fence delayed heartbeats and results while authority remains valid
+ok 284 - WO-009 missed leases fence delayed heartbeats and results while authority remains valid
+  ---
+  duration_ms: 6315.560375
+  ...
+# Subtest: WO-009 recovery from a durable result prefix closes the episode and runs the demo suffix once
+ok 285 - WO-009 recovery from a durable result prefix closes the episode and runs the demo suffix once
+  ---
+  duration_ms: 7490.379542
+  ...
+# Subtest: WO-009 concurrent dead-host reclaimers admit only one writer and abandoned guards refuse
+ok 286 - WO-009 concurrent dead-host reclaimers admit only one writer and abandoned guards refuse
+  ---
+  duration_ms: 289.8325
+  ...
+1..286
+# tests 306
+# suites 0
+# pass 305
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 135150.085042
+Preparing worktree (new branch 'wo-098')
+Preparing worktree (new branch 'wo-097')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'other')
+Preparing worktree (new branch 'wo-099')
+Preparing worktree (new branch 'wo-099')
+{"checks":[{"checkId":"npm test","subject":"sha256:1c4f6dd905a100009d37fb41a779bcd607de6a8863654ff288667cb5ac38d480","exitCode":1,"executed":true,"evidenceRef":"host-check:ef315f873d513ab6a43f5099d9da8e22611a6effc2b4cf0d0d1c7a9e7f5f9b81"},{"checkId":"git diff --check","subject":"sha256:1c4f6dd905a100009d37fb41a779bcd607de6a8863654ff288667cb5ac38d480","exitCode":0,"executed":true,"evidenceRef":"host-check:c55f7d7f153c25388c744bcd2eca35112e99efafa37b46da3a2a141ce7cddd6c"}]}
+gate exit: 1

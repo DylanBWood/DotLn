@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.12.0
+# `@dotln/skeleton` 0.13.0
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on
@@ -410,7 +410,7 @@ DOTLN_LIVE_WORKERS=1 npm run dotln -- feedback-audit --store .runtime/feedback-a
 npm run evidence:feedback -- --record-selfhost .runtime/feedback-audit
 ```
 
-The current root evidence command selects the [WO-032 edition](../../docs/evidence/WO-032/README.md#feedback-evidence-edition), because adding the console workspace changes the declared lockfile projection. The published WO-011 and WO-041 reports and logs remain untouched. `scripts/feedback-evidence.mjs --edition WO-NNN` selects a new edition; writing different bytes to an existing edition refuses. The logical report label inside the pinned verification capsule is unchanged.
+The current root evidence command selects the [WO-039 edition](../../docs/evidence/WO-039/README.md), because the compiler package bump changes pinned artifact and feedback identities and the integrated console workspace changes the declared lockfile projection. WO-011, WO-041 and WO-032 receipts remain historical bytes. The [actor board](../console/README.md) reads the same edition by default and pins it as its `selfhost` fixture case, because the reactor refuses an earlier edition's verifier stream as persisted compilation drift. `scripts/feedback-evidence.mjs --edition WO-NNN` selects a new edition; writing different bytes to an existing edition refuses. The logical report label inside the pinned verification capsule is unchanged.
 
 Use an unused store for a new source revision. Reusing the same store resumes
 only the same source, policy, and verifier selection; an already saved audit or
@@ -444,3 +444,89 @@ install the hook for its selected publication boundary.
 The [WO-011 evidence receipt](../../docs/evidence/WO-011/README.md) owns the
 acceptance mapping, measured limits, and source edition. Outside an equipped
 host, the existing execution guide remains the manual rule carrier.
+
+## Contributor harness
+
+The [Contributor definition](src/loadouts/contributor.ts) equips the ten personal
+feedback units, Clean Room and the sandboxed authority envelope. Build first,
+then emit or check its project configuration:
+
+```sh
+npm run harness -- emit
+npm run harness -- check
+npm run harness -- emit --profile claude-code-2.1.263 --out /private/tmp/dotln-preview
+npm run terms -- check CLAUDE.md docs/discovery/harness-smoke-2026-09-07.md
+```
+
+The default emits both observed profiles and one shared instruction block.
+It preserves the hand-written floor, validates contained destinations before
+writing, refuses unowned stale surfaces and never edits user settings. Native
+sandbox and approval remain in force. The CLI only accepts Contributor today;
+new saved builds need explicit adapter declarations and observed profiles.
+
+Claude hooks load the reviewed built runtime and refuse if its pinned bytes
+differ. Permission checks use the shared reactor's authority owner, included in
+those runtime pins. After a runtime edit, build and regenerate the bundle before a new
+session. `npm run harness -- evidence` runs the fixed required checks and binds
+their outcomes to current source; it cannot substitute for order-specific
+acceptance evidence. Normal Stop checks require the canonical phase completion
+and current-byte output read receipts. A failed verifier may complete a failure
+report without falsely claiming passing application checks.
+
+Read receipts can combine native Read ranges verified against one file hash.
+For a file with oversized lines, invoke
+`node scripts/harness.mjs read-output <path> --offset 0 --length 8192` directly.
+Read the returned content, then continue with its `nextOffset` until it equals
+`totalBytes`. The helper delivers UTF-8 chunks of Git-visible regular files;
+it cannot create a receipt itself. Claude's PostToolUse observer verifies the
+delivered stdout against current bytes, and admits a whole-file receipt only
+after complete coverage at one hash. Missing-output refusals name every missing
+path and a count. Direct output reads do not reserve a coding writer and retain
+the native credential-path denials. This does not claim Codex hook support.
+
+Output obligations are compared with the revision at session entry, so a final
+review commit cannot hide files that still require read receipts. Bounded status
+and index commands do not reserve a coding writer. Release close starts from
+fresh `main`; its exact managed subject helper delegates to the existing guarded
+lifecycle host only after canonical closure. That delegation does not authorize
+ordinary source writes on `main` or replace the lifecycle host's effect checks.
+
+Host receipts and writer reservations live in ignored `docs/control/local/harness`.
+They are host observations, not worker-result prose or OS isolation from a
+hostile same-user process. A session's reservation records its harness process
+and is released only after the compiled completion predicates allow Stop. A
+session that ends without that release leaves its reservation behind; the next
+write dispatch reclaims it only when the recorded owner is dead, logging the
+reclaim in the session journal and `writer-events.jsonl`. The reservation is a
+`writer/` directory holding one nonce-named file. Recovery unlinks that exact
+name, removes the instance only while it is empty, and renames a prepared
+replacement only onto an absent or emptied slot, so two sessions reclaiming
+the same dead holder admit exactly one writer and the loser records a
+`retired` event when it emptied the instance but lost the placement. A
+pre-repair `writer.json` is migrated when it is the session's own and
+reclaimed when its owner is dead; it is never created. A live or unverifiable
+holder keeps the reservation and the refusal names it. `node scripts/harness.mjs
+writer --show` reports the holder without reserving; `writer --release [--force]`
+is for an operator terminal outside a governed session and refuses a live owner
+unless forced. The generated commit-message adapter
+is available for a reviewed Git-hook installation; this command does not edit
+Git configuration or install user/global hooks.
+
+The operator-maintained `docs/control/local/terms.txt` stays ignored and never
+enters a committed hash. Add known terms one per line and update the list over
+time; an exhaustive inventory is not required. With no known terms, leave the
+file absent: the screen reports `unavailable`, including in `npm test`, without
+blocking readiness by itself or claiming a passed list-based screen. A present
+but empty or malformed file refuses. The locked Clean Room boundary applies
+regardless. No term, match text or private list is echoed; a refusing check prints
+only file, line and count. Forks maintain their own list. The
+[future UI item](../../docs/product/04-interfaces.md#candidate--private-exclusion-list-management)
+covers viewing, adding and removing entries.
+
+The [WO-039 receipt](../../docs/evidence/WO-039/README.md) names live versions,
+context method, unconfirmed correction token and unavailable Codex enforcement.
+The scratch scope bounds shell routes and skill selection while the generated
+observer accounts for delivered file ranges through the final Stop. Current
+smokes observe native Read attempts without enforcing the directed ranges and
+fail on any out-of-set observed or attempted read. This is an instrument for the
+bounded smoke, not a general parser for arbitrary shell effects.

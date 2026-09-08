@@ -8,8 +8,8 @@
   "scripts": {
     "build": "tsc -b",
     "evidence:artifact": "node scripts/artifact-identity-evidence.mjs",
-    "evidence:feedback": "npm run build --silent && node scripts/feedback-evidence.mjs --edition WO-032",
-    "test": "npm run format:check --silent && node scripts/release.mjs check-surfaces --local && node --test scripts/test-release-preparation.mjs && node scripts/test-github-body.mjs && node --test scripts/test-license-surfaces.mjs && node scripts/license-surfaces.mjs && bash scripts/test-fixture-temp-root.sh && bash scripts/test-publication.sh && bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-checkpoint.sh && bash scripts/test-worktree.sh && bash scripts/test-release.sh && bash scripts/test-work-orders.sh && node scripts/check-publication.mjs && node scripts/work-orders.mjs index --check && rm -rf packages/kernel/dist packages/compiler/dist packages/skeleton/dist packages/console/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/compiler/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && ls packages/console/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/compiler/dist/test/*.test.js packages/skeleton/dist/test/*.test.js packages/console/dist/test/*.test.js && node scripts/test-plan-refutation.mjs && node --test corpus/harness/wo101-id-corpus.test.mjs && node scripts/artifact-identity-evidence.mjs --check && node scripts/verification-evidence.mjs --check && node scripts/feedback-evidence.mjs --check --edition WO-032 && npm run test:mutation --silent",
+    "evidence:feedback": "npm run build --silent && node scripts/feedback-evidence.mjs --edition WO-039",
+    "test": "npm run format:check --silent && node scripts/release.mjs check-surfaces --local && node --test scripts/test-release-preparation.mjs && node scripts/test-github-body.mjs && node --test scripts/test-license-surfaces.mjs && node scripts/license-surfaces.mjs && bash scripts/test-fixture-temp-root.sh && bash scripts/test-publication.sh && bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-checkpoint.sh && bash scripts/test-worktree.sh && bash scripts/test-release.sh && bash scripts/test-work-orders.sh && node scripts/check-publication.mjs && node scripts/work-orders.mjs index --check && rm -rf packages/kernel/dist packages/compiler/dist packages/skeleton/dist packages/console/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/compiler/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && ls packages/console/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/compiler/dist/test/*.test.js packages/skeleton/dist/test/*.test.js && node --test packages/console/dist/test/*.test.js && node --test scripts/test-harness.mjs && node scripts/harness.mjs check && node scripts/harness-context.mjs --check && node scripts/harness-evidence.mjs && node scripts/test-plan-refutation.mjs && node --test corpus/harness/wo101-id-corpus.test.mjs && node scripts/artifact-identity-evidence.mjs --check && node scripts/verification-evidence.mjs --check && node scripts/feedback-evidence.mjs --check --edition WO-039 && npm run test:mutation --silent",
     "test:mutation": "node --test corpus/mutation/wo108-selftest.test.mjs",
     "evidence:mutation": "node corpus/mutation/mutate.mjs",
     "skeleton": "npm run build --silent && node packages/skeleton/dist/src/cli.js",
@@ -30,7 +30,9 @@
     "plan": "npm run build --silent && node scripts/refute-plan.mjs",
     "console": "npm run build --silent && node packages/console/dist/src/cli.js",
     "test:console": "npm run build --silent && node --test packages/console/dist/test/*.test.js",
-    "evidence:console": "npm run build --silent && node scripts/console-fixtures.mjs"
+    "evidence:console": "npm run build --silent && node scripts/console-fixtures.mjs",
+    "harness": "npm run build --silent && node scripts/harness.mjs",
+    "terms": "node scripts/terms.mjs"
   },
   "devDependencies": {
     "@types/node": "22.20.1",

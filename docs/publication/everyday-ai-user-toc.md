@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:201fb38e2f893df2bba0978d030faf45ad774fea2425150b76f2bfd0a6d80e90`
+`sha256:e5a6c6f88126bc808b929863dbe3ef8aa6fd5430f9dc30baadab77cf39fd7bf0`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -36,7 +36,8 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
      [Actors and episodes](../product/02-domain-model.md#actors-and-episodes-the-edge),
      [Suggestion and proposal review](../product/04-interfaces.md#suggestion-and-proposal-review)
 4. **Preview, consent, and a useful “do nothing”**
-   - what you can inspect, authorize, decline, or revisit
+   - what you can inspect, authorize, decline, or revisit; proposed private
+     exclusion-list inspection and editing
    - sources:
      [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal),
      [Agent projection](../product/04-interfaces.md#agent-projection-the-sparse-twin),
@@ -81,8 +82,9 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
      [Persistence and recovery classes](../product/09-audit-resilience-privacy.md#persistence-and-recovery-classes),
      [Operator-presence policy](../product/03-architecture.md#operator-presence-policy)
 10. **Turn a correction into a reusable guard**
-    - preserved source, compiled feedback, visible maturity, and candidate
-      follow-up checks for useful changes with delayed side effects
+    - preserved source, compiled feedback, generated role skills and guards,
+      unavailable capabilities, visible maturity, and candidate follow-up checks
+      for useful changes with delayed side effects
     - sources: [Feedback](../product/02-domain-model.md#feedback),
       [Founding pattern library](../product/05-pattern-library.md#founding-pattern-library)
 

@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: WO-039 pure lowering preserves inputs and semantic hashes, and verifies all file identities
+ok 1 - WO-039 pure lowering preserves inputs and semantic hashes, and verifies all file identities
+  ---
+  duration_ms: 7.849666
+  ...
+# Subtest: WO-039 one changed unit affects only files naming that unit
+ok 2 - WO-039 one changed unit affects only files naming that unit
+  ---
+  duration_ms: 4.517875
+  ...
+# Subtest: WO-039 profile observations, authority identity and bounded residue refuse unsupported assumptions
+ok 3 - WO-039 profile observations, authority identity and bounded residue refuse unsupported assumptions
+  ---
+  duration_ms: 5.915584
+  ...
+# > test
+# > node fixture-check.mjs
+# Subtest: WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+ok 4 - WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+  ---
+  duration_ms: 8016.567209
+  ...
+# Subtest: WO-039 installed bundle detects one-byte drift and does not follow output symlinks
+ok 5 - WO-039 installed bundle detects one-byte drift and does not follow output symlinks
+  ---
+  duration_ms: 251.588292
+  ...
+# Subtest: WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+ok 6 - WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+  ---
+  duration_ms: 182.220292
+  ...
+# Subtest: WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+ok 7 - WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+  ---
+  duration_ms: 17.814667
+  ...
+# Subtest: WO-039 control observation uses the canonical read-only lifecycle command
+ok 8 - WO-039 control observation uses the canonical read-only lifecycle command
+  ---
+  duration_ms: 114.995125
+  ...
+# Subtest: WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+ok 9 - WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+  ---
+  duration_ms: 258.402417
+  ...
+# Subtest: WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+ok 10 - WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+  ---
+  duration_ms: 1547.117209
+  ...
+# Subtest: WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+ok 11 - WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+  ---
+  duration_ms: 836.08925
+  ...
+# Subtest: WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+ok 12 - WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+  ---
+  duration_ms: 522.615084
+  ...
+# Subtest: WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+ok 13 - WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+  ---
+  duration_ms: 1967.489375
+  ...
+# Subtest: WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+ok 14 - WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+  ---
+  duration_ms: 3886.951542
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17680.988208

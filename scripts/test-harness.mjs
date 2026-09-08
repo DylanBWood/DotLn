@@ -1,0 +1,2205 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { execFileSync, spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import {
+  compileFeedbackUnits,
+  applyFeedbackCorrection,
+  compileLoadout,
+  seiriLoadout,
+} from "../packages/compiler/dist/src/index.js";
+import { contributorProgram } from "../packages/skeleton/dist/src/loadouts/contributor.js";
+import { personalFeedbackUnits } from "../packages/skeleton/dist/src/loadouts/feedback.js";
+import { entropyReducerLoadout } from "../packages/skeleton/dist/src/loadouts/entropy-reducer.js";
+import {
+  feedbackBoundary,
+  FeedbackRefused,
+} from "../packages/skeleton/dist/src/feedback-boundary.js";
+import {
+  harnessControl,
+  harnessFeedbackFacts,
+  harnessHostProcess,
+  harnessOutputs,
+  harnessProcessAlive,
+  evaluateHarnessHook,
+  readHarnessOutput,
+  releaseHarnessWriter,
+  runHarnessEvidence,
+  seedHarnessWriter,
+} from "../packages/skeleton/dist/src/harness-host.js";
+import {
+  checkHarness,
+  emitHarness,
+  harnessInstallation,
+} from "./lib/harness.mjs";
+import { termsCheck } from "./terms.mjs";
+import {
+  compareObservedReads,
+  countReads,
+  directedReads,
+  scopeReadEvidence,
+} from "./lib/harness-context.mjs";
+import {
+  checkContextMeasurement,
+  measureHarnessContext,
+} from "./harness-context.mjs";
+
+const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
+// Fixtures own the harness-process identity: generated hooks record this test
+// process as the live reservation owner, and an outer session's declared
+// process cannot leak into fixture state.
+process.env.CLAUDE_PID = String(process.pid);
+const git = (root, ...args) =>
+  execFileSync("git", args, {
+    cwd: root,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  }).trim();
+const write = (root, path, contents) => {
+  mkdirSync(dirname(join(root, path)), { recursive: true });
+  writeFileSync(join(root, path), contents);
+};
+const json = (value) => JSON.stringify(value, null, 2) + "\n";
+const control = {
+  workOrder: "WO-999",
+  workOrderPath: "docs/work-orders/WO-999-fixture.md",
+  phase: "active",
+  latestVerdict: null,
+};
+function fixture() {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-harness-test-")));
+  git(root, "init", "-b", "wo-999");
+  assert.equal(realpathSync(git(root, "rev-parse", "--show-toplevel")), root);
+  for (const name of ["compiler", "skeleton", "kernel"]) {
+    cpSync(
+      join(sourceRoot, `packages/${name}/dist/src`),
+      join(root, `packages/${name}/dist/src`),
+      { recursive: true },
+    );
+    cpSync(
+      join(sourceRoot, `packages/${name}/package.json`),
+      join(root, `packages/${name}/package.json`),
+    );
+    mkdirSync(join(root, "node_modules/@dotln"), { recursive: true });
+    symlinkSync(
+      `../../packages/${name}`,
+      join(root, `node_modules/@dotln/${name}`),
+    );
+  }
+  symlinkSync(
+    join(sourceRoot, "node_modules/typescript"),
+    join(root, "node_modules/typescript"),
+  );
+  write(root, ".gitignore", "node_modules/\n**/dist/\ndocs/control/local/\n");
+  write(
+    root,
+    "CLAUDE.md",
+    "# Fixture locked floor\nKeep fixture source isolated.\n",
+  );
+  write(root, "fixture.ts", "export const value = 1;\n");
+  write(
+    root,
+    "package.json",
+    json({ private: true, scripts: { test: "node fixture-check.mjs" } }),
+  );
+  write(
+    root,
+    "fixture-check.mjs",
+    'import assert from "node:assert/strict"; import {readFileSync} from "node:fs"; assert.match(readFileSync("fixture.ts", "utf8"), /value = 1/);\n',
+  );
+  write(
+    root,
+    "scripts/resume.mjs",
+    'import {readFileSync} from "node:fs"; console.log(readFileSync("docs/control/fixture-status.json", "utf8"));\n',
+  );
+  for (const path of [
+    "scripts/harness.mjs",
+    "scripts/lib/harness.mjs",
+    "scripts/lib/terms.mjs",
+    "scripts/lib/paths.mjs",
+  ]) {
+    mkdirSync(dirname(join(root, path)), { recursive: true });
+    cpSync(join(sourceRoot, path), join(root, path));
+  }
+  write(root, "docs/control/fixture-status.json", json(control));
+  write(
+    root,
+    "docs/control/orders/WO-999.jsonl",
+    json({ type: "WorkOrderActivated", workOrderId: "WO-999" }).replace(
+      /\n\s*/g,
+      "",
+    ) + "\n",
+  );
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# Synthetic work order\nRead fixture.ts and run npm test.\n",
+  );
+  git(root, "add", ".");
+  git(
+    root,
+    "-c",
+    "user.name=Fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+    "-c",
+    "commit.gpgsign=false",
+    "commit",
+    "-m",
+    "Create fixture",
+  );
+  emitHarness(root);
+  return root;
+}
+const input = (root, event, extra = {}) => ({
+  cwd: root,
+  session_id: "synthetic-session",
+  hook_event_name: event,
+  ...extra,
+});
+const configFor = (root, name) =>
+  JSON.parse(
+    readFileSync(join(root, `.claude/hooks/${name}.mjs`), "utf8").match(
+      /await runHarnessHook\(([\s\S]*), feedbackBoundary\);/,
+    )[1],
+  );
+function invoke(root, name, payload, removed = false) {
+  let path = join(root, `.claude/hooks/${name}.mjs`);
+  if (removed) {
+    const source = readFileSync(path, "utf8");
+    const config = configFor(root, name);
+    config.policy = compileFeedbackUnits([]);
+    path = join(root, ".claude/hooks/fixture-removed.mjs");
+    writeFileSync(
+      path,
+      source.replace(
+        /await runHarnessHook\([\s\S]*, feedbackBoundary\);/,
+        `await runHarnessHook(${json(config).trim()}, feedbackBoundary);`,
+      ),
+    );
+  }
+  const run = spawnSync(process.execPath, [path], {
+    cwd: root,
+    input: JSON.stringify(payload),
+    encoding: "utf8",
+    timeout: 20_000,
+  });
+  assert.equal(
+    run.status,
+    0,
+    JSON.stringify({
+      hook: name,
+      path: payload.tool_input?.file_path?.replace(root, "<fixture>"),
+      error: run.error?.code,
+      signal: run.signal,
+      stderr: run.stderr,
+    }),
+  );
+  return JSON.parse(run.stdout);
+}
+const allowed = (result) =>
+  result.decision !== "block" &&
+  result.hookSpecificOutput?.permissionDecision !== "deny";
+const session = {
+  startingEventCount: 1,
+  reads: [],
+  expectedEvent: "ImplementationReady",
+  role: "executor",
+};
+const observations = (root, payload = input(root, "Stop")) => {
+  const key = createHash("sha256").update(payload.session_id).digest("hex");
+  return readFileSync(
+    join(root, `docs/control/local/harness/${key}.jsonl`),
+    "utf8",
+  )
+    .trim()
+    .split("\n")
+    .map(JSON.parse);
+};
+const observedSession = (root, payload = input(root, "Stop")) => {
+  const key = createHash("sha256").update(payload.session_id).digest("hex");
+  const state = JSON.parse(
+    readFileSync(join(root, `docs/control/local/harness/${key}.json`), "utf8"),
+  );
+  return {
+    ...state,
+    reads: observations(root, payload).flatMap((row) => row.receipts ?? []),
+  };
+};
+const writerEvents = (root) => {
+  const path = join(root, "docs/control/local/harness/writer-events.jsonl");
+  return existsSync(path)
+    ? readFileSync(path, "utf8").trim().split("\n").map(JSON.parse)
+    : [];
+};
+function parity(root, name, payload, expected, state = session) {
+  const config = configFor(root, name);
+  const policies =
+    config.kind === "finish"
+      ? config.policy.units.map((unit) => compileFeedbackUnits([unit]))
+      : [config.policy];
+  const requests = policies.flatMap((policy) =>
+    harnessFeedbackFacts(policy, payload, root, state).map((fact) => ({
+      policy,
+      fact,
+    })),
+  );
+  assert.ok(requests.length, "fixture must reach an eligible boundary");
+  if (name === "finish")
+    assert.deepEqual(
+      requests.map(({ fact }) => fact.kind).sort(),
+      ["application-evidence", "complete-scope", "output-review"],
+      "finish must exercise every eligible Stop unit",
+    );
+  let verdict = true;
+  try {
+    for (const { policy, fact } of requests)
+      feedbackBoundary(policy, fact, () => {});
+  } catch (error) {
+    assert.ok(error instanceof FeedbackRefused);
+    verdict = false;
+  }
+  assert.equal(verdict, expected, `${name} host fact expectation`);
+  assert.equal(
+    allowed(invoke(root, name, payload)),
+    verdict,
+    `${name} generated subprocess parity`,
+  );
+  assert.equal(
+    allowed(invoke(root, name, payload, true)),
+    true,
+    `${name} removal permits the same request`,
+  );
+}
+
+test("WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal", () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    for (const message of ["A useful change", "Generated by AI"])
+      parity(
+        root,
+        "no-attribution",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command: `git commit -m '${message}'` },
+        }),
+        message === "A useful change",
+      );
+    parity(
+      root,
+      "concurrent-work-requires-worktrees",
+      input(root, "PreToolUse", {
+        tool_name: "Edit",
+        tool_input: { file_path: join(root, "fixture.ts") },
+      }),
+      true,
+    );
+    git(root, "switch", "-c", "main");
+    parity(
+      root,
+      "concurrent-work-requires-worktrees",
+      input(root, "PreToolUse", {
+        tool_name: "Write",
+        tool_input: { file_path: join(root, "fixture.ts") },
+      }),
+      false,
+    );
+    git(root, "switch", "wo-999");
+    const before = readFileSync(join(root, "fixture.ts"), "utf8");
+    for (const after of [before, "// @ts-ignore\n" + before]) {
+      write(root, "fixture.ts", after);
+      parity(
+        root,
+        "no-lint-type-disables-as-fixes",
+        input(root, "PostToolUse", {
+          tool_name: "Edit",
+          tool_input: { file_path: join(root, "fixture.ts") },
+          tool_response: { originalFile: before },
+        }),
+        after === before,
+      );
+    }
+    write(root, "fixture.ts", before);
+    for (const name of [
+      "verify-app-before-done",
+      "no-partial-completion",
+      "read-your-own-output",
+    ])
+      parity(root, name, input(root, "Stop"), false);
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            tool_name: "Bash",
+            tool_input: { command: "ssh fixture.invalid" },
+          }),
+        ),
+      ),
+      false,
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            tool_name: "Read",
+            tool_input: { file_path: join(root, "fixture.ts") },
+          }),
+        ),
+      ),
+      true,
+    );
+    parity(root, "finish", input(root, "Stop"), false);
+    // Normal completion: executable checks, canonical event, and current-byte reads.
+    assert.ok(
+      runHarnessEvidence(root).every(
+        (run) => run.exitCode === 0 && run.executed,
+      ),
+    );
+    write(
+      root,
+      "docs/control/orders/WO-999.jsonl",
+      JSON.stringify({ type: "WorkOrderActivated", workOrderId: "WO-999" }) +
+        "\n" +
+        JSON.stringify({ type: "ImplementationReady", workOrderId: "WO-999" }) +
+        "\n",
+    );
+    for (const output of harnessOutputs(root)) {
+      const contents = readFileSync(join(root, output.path), "utf8");
+      const lines = contents.split("\n").length;
+      invoke(
+        root,
+        "read-observer",
+        input(root, "PostToolUse", {
+          tool_name: "Read",
+          tool_input: { file_path: join(root, output.path) },
+          tool_response: {
+            file: {
+              content: contents,
+              startLine: 1,
+              numLines: lines,
+              totalLines: lines,
+            },
+          },
+        }),
+      );
+    }
+    for (const name of [
+      "verify-app-before-done",
+      "no-partial-completion",
+      "read-your-own-output",
+    ])
+      assert.equal(
+        allowed(invoke(root, name, input(root, "Stop"))),
+        true,
+        `${name} completed evidence`,
+      );
+    parity(root, "finish", input(root, "Stop"), true, observedSession(root));
+    assert.equal(
+      existsSync(join(root, "docs/control/local/harness/writer")),
+      false,
+    );
+    assert.deepEqual(
+      writerEvents(root).map((row) => row.event),
+      ["acquired", "released"],
+      "one session reserves once and releases at its accepted finish",
+    );
+    write(root, "fixture.ts", before + "// changed after evidence\n");
+    assert.equal(
+      allowed(invoke(root, "verify-app-before-done", input(root, "Stop"))),
+      false,
+    );
+    assert.equal(
+      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
+      false,
+    );
+    // A refused Stop is reported once; the harness's re-entry ends the turn
+    // with the obligation recorded and never as an accepted finish.
+    const reentry = input(root, "Stop", { stop_hook_active: true });
+    for (const name of [
+      "verify-app-before-done",
+      "read-your-own-output",
+      "finish",
+    ]) {
+      assert.equal(
+        allowed(invoke(root, name, input(root, "Stop"))),
+        false,
+        `${name} refuses the first stop`,
+      );
+      assert.equal(
+        allowed(invoke(root, name, reentry)),
+        true,
+        `${name} lets the re-entered stop end`,
+      );
+    }
+    const tail = observations(root).slice(-6);
+    assert.equal(tail.filter((row) => row.stopReentry === true).length, 3);
+    assert.ok(
+      tail.every((row) => row.finished !== true),
+      "a re-entered refused stop is never an accepted finish",
+    );
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+const nativeRead = (root, path, startLine = 1, numLines, contentOverride) => {
+  const contents = readFileSync(join(root, path), "utf8");
+  const parts = contents.match(/[^\n]*\n|[^\n]+$/g) ?? [];
+  numLines ??= contents.split("\n").length;
+  return input(root, "PostToolUse", {
+    tool_name: "Read",
+    tool_input: {
+      file_path: join(root, path),
+      offset: startLine,
+      limit: numLines,
+    },
+    tool_response: {
+      file: {
+        content:
+          contentOverride ??
+          parts.slice(startLine - 1, startLine - 1 + numLines).join(""),
+        startLine,
+        numLines,
+        totalLines: contents.split("\n").length,
+      },
+    },
+  });
+};
+const observeInProcess = (root, payload) =>
+  evaluateHarnessHook(
+    configFor(root, "read-observer"),
+    payload,
+    root,
+    feedbackBoundary,
+  );
+
+test("WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries", async () => {
+  const root = fixture();
+  try {
+    write(root, "review.txt", "alpha\r\nβeta\r\nthird\nfourth\nfifth\nsixth\n");
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    for (const output of harnessOutputs(root).filter(
+      (row) => row.path !== "review.txt",
+    ))
+      await observeInProcess(root, nativeRead(root, output.path));
+    const refused = () => {
+      const result = invoke(root, "read-your-own-output", input(root, "Stop"));
+      assert.equal(allowed(result), false);
+      assert.match(
+        result.reason,
+        /1 of \d+ outputs missing current-byte reads: \["review.txt"\]/,
+      );
+      assert.match(result.reason, /read-output/);
+    };
+    refused();
+    await observeInProcess(root, nativeRead(root, "review.txt", 3, 4));
+    await observeInProcess(root, nativeRead(root, "review.txt", 3, 4));
+    await observeInProcess(
+      root,
+      nativeRead(root, "review.txt", 1, 2, "truncated"),
+    );
+    refused();
+    await observeInProcess(root, nativeRead(root, "review.txt", 1, 2));
+    assert.equal(
+      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
+      true,
+    );
+
+    write(root, "review.txt", "changed\nβeta\r\nthird\nfourth\nfifth\nsixth\n");
+    await observeInProcess(root, nativeRead(root, "review.txt", 3, 4));
+    refused();
+    await observeInProcess(root, nativeRead(root, "review.txt", 1, 2));
+    assert.equal(
+      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
+      true,
+    );
+
+    write(root, "review.txt", "");
+    refused();
+    await observeInProcess(root, nativeRead(root, "review.txt"));
+    assert.equal(
+      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
+      true,
+    );
+    write(root, "review.txt", "without\nfinal newline");
+    await observeInProcess(root, nativeRead(root, "review.txt", 2, 1));
+    refused();
+    await observeInProcess(root, nativeRead(root, "review.txt", 1, 1));
+    assert.equal(
+      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
+      true,
+    );
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-039 real-scale inherited outputs and oversized lines can complete through observed bounded deliveries", async () => {
+  const root = fixture();
+  try {
+    for (let index = 0; index < 128; index++)
+      write(
+        root,
+        "output/part-" + String(index).padStart(3, "0") + ".txt",
+        "Synthetic inherited output\n",
+      );
+    const multiline = "output/part-000.txt";
+    const singleLine = "output/part-127.txt";
+    write(
+      root,
+      multiline,
+      (
+        "Synthetic words in a ranged output " +
+        "item ".repeat(24) +
+        "\n"
+      ).repeat(3000),
+    );
+    write(root, singleLine, "αβ🙂 synthetic output ".repeat(24_000));
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          input(root, "PreToolUse", {
+            tool_name: "Edit",
+            tool_input: { file_path: join(root, "fixture.ts") },
+          }),
+        ),
+      ),
+      true,
+    );
+    const outputs = harnessOutputs(root);
+    assert.ok(outputs.length >= 128);
+    const initial = invoke(root, "read-your-own-output", input(root, "Stop"));
+    assert.equal(allowed(initial), false);
+    assert.ok(
+      initial.reason.includes(
+        outputs.length + " of " + outputs.length + " outputs",
+      ),
+    );
+    for (const output of outputs.slice(0, 12))
+      assert.ok(initial.reason.includes(output.path));
+    assert.ok(
+      !initial.reason.includes(outputs[12].path) &&
+        initial.reason.includes(` and ${outputs.length - 12} more`),
+      "a refusal names the first twelve missing paths and the remaining count",
+    );
+    assert.ok(
+      runHarnessEvidence(root).every(
+        (run) => run.executed && run.exitCode === 0,
+      ),
+    );
+    write(
+      root,
+      "docs/control/orders/WO-999.jsonl",
+      JSON.stringify({ type: "WorkOrderActivated", workOrderId: "WO-999" }) +
+        "\n" +
+        JSON.stringify({ type: "ImplementationReady", workOrderId: "WO-999" }) +
+        "\n",
+    );
+    for (const output of harnessOutputs(root).filter(
+      (row) => ![multiline, singleLine].includes(row.path),
+    ))
+      await observeInProcess(root, nativeRead(root, output.path));
+    for (let startLine = 1; startLine <= 3000; startLine += 100)
+      await observeInProcess(root, nativeRead(root, multiline, startLine, 100));
+    const command =
+      "node scripts/harness.mjs read-output " +
+      singleLine +
+      " --offset 0 --length 8192";
+    const delivery = spawnSync(
+      process.execPath,
+      [
+        "scripts/harness.mjs",
+        "read-output",
+        singleLine,
+        "--offset",
+        "0",
+        "--length",
+        "8192",
+      ],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(delivery.status, 0, delivery.stderr);
+    assert.equal(
+      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
+      false,
+      "the reader does not mint its own receipt",
+    );
+    const payload = input(root, "PostToolUse", {
+      tool_name: "Bash",
+      tool_input: { command },
+      tool_response: { stdout: delivery.stdout },
+    });
+    assert.equal(
+      allowed(
+        invoke(root, "read-observer", {
+          ...payload,
+          tool_response: { stdout: delivery.stdout.slice(0, -20) },
+        }),
+      ),
+      false,
+    );
+    const forged = JSON.parse(delivery.stdout);
+    forged.content = "Different bytes";
+    assert.equal(
+      allowed(
+        invoke(root, "read-observer", {
+          ...payload,
+          tool_response: { stdout: JSON.stringify(forged) },
+        }),
+      ),
+      false,
+    );
+    assert.equal(allowed(invoke(root, "read-observer", payload)), true);
+    let offset = JSON.parse(delivery.stdout).nextOffset;
+    let last;
+    for (;;) {
+      const chunk = readHarnessOutput(root, singleLine, offset, 8192);
+      const request = input(root, "PostToolUse", {
+        tool_name: "Bash",
+        tool_input: {
+          command:
+            "node scripts/harness.mjs read-output " +
+            singleLine +
+            " --offset " +
+            offset +
+            " --length 8192",
+        },
+        tool_response: { stdout: JSON.stringify(chunk) + "\n" },
+      });
+      if (chunk.nextOffset === chunk.totalBytes) {
+        last = request;
+        break;
+      }
+      await observeInProcess(root, request);
+      offset = chunk.nextOffset;
+    }
+    for (const name of ["read-your-own-output", "finish"]) {
+      const result = invoke(root, name, input(root, "Stop"));
+      assert.equal(allowed(result), false);
+      assert.match(
+        result.reason,
+        /1 of \d+ outputs missing current-byte reads: \["output\/part-127.txt"\]/,
+      );
+    }
+    await observeInProcess(root, last);
+    parity(root, "finish", input(root, "Stop"), true, observedSession(root));
+    assert.equal(
+      existsSync(join(root, "docs/control/local/harness/writer")),
+      false,
+    );
+    assert.throws(
+      () => readHarnessOutput(root, singleLine, 1),
+      /UTF-8 boundary/,
+    );
+    assert.throws(
+      () => readHarnessOutput(root, singleLine, 0, 100_000),
+      /Invalid output byte range/,
+    );
+    write(
+      root,
+      "docs/control/local/not-an-output.txt",
+      "Synthetic private fixture\n",
+    );
+    assert.throws(
+      () => readHarnessOutput(root, "docs/control/local/not-an-output.txt"),
+      /Git-visible/,
+    );
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement", () => {
+  const root = fixture();
+  const outside = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-harness-outside-")),
+  );
+  try {
+    assert.equal(checkHarness(root).localTerms.status, "unavailable");
+    const path = join(root, ".claude/skills/dotln-executor/SKILL.md");
+    writeFileSync(path, readFileSync(path, "utf8") + " ");
+    assert.throws(() => checkHarness(root), /harness drift/);
+    emitHarness(root);
+    assert.ok(checkHarness(root).files > 10);
+    rmSync(path);
+    assert.throws(() => checkHarness(root), /harness drift: missing/);
+    emitHarness(root);
+    const unexpected = ".claude/hooks/unowned.mjs";
+    write(root, unexpected, "// Preserve unowned content\n");
+    assert.throws(() => checkHarness(root), /harness drift: unexpected/);
+    const beforeRefusal = readFileSync(path);
+    assert.throws(
+      () => emitHarness(root),
+      /unowned harness output refuses replacement/,
+    );
+    assert.deepEqual(readFileSync(path), beforeRefusal);
+    assert.equal(
+      readFileSync(join(root, unexpected), "utf8"),
+      "// Preserve unowned content\n",
+    );
+    rmSync(join(root, unexpected));
+    const manifestPath = join(root, ".claude/harness-manifest.json");
+    const manifest = readFileSync(manifestPath, "utf8");
+    for (const mutation of ["missing", "changed"]) {
+      if (mutation === "missing") rmSync(manifestPath);
+      else writeFileSync(manifestPath, manifest + " ");
+      assert.throws(() => checkHarness(root), /harness drift: manifest/);
+      writeFileSync(manifestPath, manifest);
+    }
+    const obsolete = ".claude/hooks/obsolete.mjs";
+    write(root, obsolete, "// Previously owned output\n");
+    const previous = JSON.parse(manifest);
+    previous.installed.push({ path: obsolete });
+    writeFileSync(manifestPath, json(previous));
+    emitHarness(root);
+    assert.equal(existsSync(join(root, obsolete)), false);
+    assert.ok(checkHarness(root).files > 10);
+    write(outside, "sentinel", "preserve\n");
+    rmSync(path);
+    symlinkSync(join(outside, "sentinel"), path);
+    assert.throws(() => emitHarness(root), /symlink|regular file/);
+    assert.equal(readFileSync(join(outside, "sentinel"), "utf8"), "preserve\n");
+  } finally {
+    rmSync(root, { recursive: true });
+    rmSync(outside, { recursive: true });
+  }
+});
+
+test("WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term", () => {
+  const root = fixture();
+  try {
+    assert.equal(termsCheck(root, ["CLAUDE.md"]).status, "unavailable");
+    write(root, "docs/control/local/terms.txt", "SyntheticForbidden\n");
+    write(root, "public.md", "Ordinary text\nSYNTHETIC-forbidden\n");
+    assert.throws(
+      () => termsCheck(root, ["public.md"]),
+      (error) => {
+        assert.match(error.message, /"file":"public.md","line":2,"count":1/);
+        assert.doesNotMatch(error.message, /synthetic|forbidden/i);
+        return true;
+      },
+    );
+    assert.equal(termsCheck(root, ["CLAUDE.md"]).status, "present");
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-039 target does not change Seiri or Entropy Reducer semantic hashes", () => {
+  const baseline = JSON.parse(
+    readFileSync(
+      join(sourceRoot, "docs/evidence/WO-029/baseline.json"),
+      "utf8",
+    ),
+  );
+  for (const row of baseline.fixtures) {
+    const result = compileLoadout(
+      row.name === "seiri"
+        ? seiriLoadout
+        : entropyReducerLoadout(row.episodeEndsAt),
+      row.environment,
+    );
+    assert.equal(result.ok, true);
+    assert.equal(result.semanticHash, row.semanticHash);
+  }
+  const installation = harnessInstallation();
+  assert.equal(installation.bundles.length, 2);
+  assert.equal(
+    contributorProgram().loadout.phenotype.identityId,
+    "contributor",
+  );
+});
+
+test("WO-039 control observation uses the canonical read-only lifecycle command", () => {
+  const projection = join(sourceRoot, "docs/control/current.md");
+  const before = readFileSync(projection);
+  assert.ok(
+    [
+      "none",
+      "active",
+      "ready-to-verify",
+      "verifying",
+      "needs-fix",
+      "repairing",
+      "verified",
+      "final-review",
+      "closed",
+    ].includes(harnessControl(sourceRoot).phase),
+  );
+  assert.deepEqual(readFileSync(projection), before);
+});
+
+test("WO-039 whole-procedure context includes late directives and refuses unaccounted reads", () => {
+  const files = {
+    "late.md": "first\nsecond\n",
+    "order.md": "# Order\n",
+    "unexpected.md": "outside\n",
+  };
+  const instruction = "Read[executor]: `@skills/dotln-executor/SKILL.md`\n";
+  const skill = "Read: `@work-order`\nFinish the ordinary role procedure.\n";
+  const options = {
+    instruction,
+    skill,
+    role: "executor",
+    skillsRoot: ".claude/skills",
+    selectors: { "@work-order": ["order.md"] },
+    read: (path) => files[path],
+  };
+  const base = directedReads(options);
+  for (const surface of ["instruction", "skill"]) {
+    const changed = {
+      ...options,
+      [surface]: options[surface] + "Read: `late.md`\n",
+    };
+    const actual = directedReads(changed);
+    assert.ok(
+      actual.some((entry) => entry.path === "late.md" && entry.endLine === 2),
+    );
+    assert.equal(
+      compareObservedReads(actual, [
+        { path: "late.md", startLine: 1, endLine: 2 },
+      ]).length,
+      0,
+    );
+  }
+  assert.equal(
+    compareObservedReads(base, [{ path: "late.md", startLine: 1, endLine: 2 }])
+      .length,
+    1,
+  );
+  assert.throws(
+    () => directedReads({ ...options, skill: skill + "Read: `@missing`\n" }),
+    /Unresolved required/,
+  );
+  assert.equal(
+    countReads([{ path: "late.md", startLine: 1, endLine: 2 }], options.read)
+      .bytes,
+    13,
+  );
+  const measured = measureHarnessContext();
+  checkContextMeasurement(measured);
+  const skillPath = ".claude/skills/dotln-executor/SKILL.md";
+  const emitted = harnessInstallation().files.find(
+    (file) => file.path === skillPath,
+  ).contents;
+  const notLower = measureHarnessContext(
+    new Map([
+      [skillPath, emitted + "Read: `fixture/late-large.md`\n"],
+      ["fixture/late-large.md", "late required input\n".repeat(4000)],
+    ]),
+  );
+  assert.equal(notLower.profiles[0].lower, false);
+  assert.ok(
+    notLower.profiles[0].residue[0].files.includes("fixture/late-large.md"),
+  );
+  assert.throws(() => checkContextMeasurement(notLower), /late-large\.md/);
+});
+
+test("WO-039 generated read observer spans the session and its bounded scope closes alternate read routes", () => {
+  const root = fixture();
+  try {
+    write(
+      root,
+      "docs/control/local/harness/read-scope.json",
+      json({
+        role: "executor",
+        skill: "dotln-executor",
+        reads: [{ path: "fixture.ts", startLine: 1, endLine: 1 }],
+        commands: ["pwd"],
+      }),
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    for (const [tool_name, tool_input, expected] of [
+      ["Read", { file_path: join(root, "fixture.ts") }, true],
+      ["Read", { file_path: join(root, "package.json") }, false],
+      ["Bash", { command: "cat fixture.ts" }, false],
+      ["Bash", { command: "pwd" }, true],
+      ["Skill", { skill: "dotln-reviewer" }, false],
+      ["Grep", { pattern: ".*" }, false],
+    ])
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            input(root, "PreToolUse", { tool_name, tool_input }),
+          ),
+        ),
+        expected,
+      );
+    const observed = input(root, "PostToolUse", {
+      tool_name: "Read",
+      tool_input: { file_path: join(root, "fixture.ts") },
+      tool_response: {
+        file: {
+          content: "export const value = 1;\n",
+          startLine: 1,
+          numLines: 1,
+          totalLines: 1,
+        },
+      },
+    });
+    assert.equal(allowed(invoke(root, "read-observer", observed)), true);
+    assert.equal(
+      allowed(
+        invoke(root, "read-observer", {
+          ...observed,
+          tool_response: {
+            file: {
+              ...observed.tool_response.file,
+              numLines: 2,
+              totalLines: 2,
+            },
+          },
+        }),
+      ),
+      true,
+      "the empty line reported after a trailing newline delivers no extra bytes",
+    );
+    invoke(root, "finish", input(root, "Stop"));
+    assert.equal(
+      allowed(
+        invoke(root, "read-observer", {
+          ...observed,
+          tool_input: { file_path: join(root, "package.json") },
+        }),
+      ),
+      false,
+      "a late read still fails after a Stop attempt",
+    );
+    const directed = [{ path: "fixture.ts", startLine: 1, endLine: 1 }];
+    const enforced = scopeReadEvidence(directed, observations(root));
+    assert.equal(enforced.refusalCounts.Read, 1);
+    assert.equal(enforced.refusalCounts.Bash, 1);
+    assert.equal(enforced.refusedReads[0].path, "package.json");
+    assert.equal(enforced.unlocatedReadRefusals, 0);
+    assert.equal(enforced.attemptedOutsideDirectedSet[0].path, "package.json");
+    write(
+      root,
+      "docs/control/local/harness/read-scope.json",
+      json({
+        role: "executor",
+        skill: "dotln-executor",
+        reads: directed,
+        commands: ["pwd"],
+        mode: "observe",
+      }),
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            tool_name: "Read",
+            tool_input: { file_path: join(root, "package.json") },
+          }),
+        ),
+      ),
+      true,
+      "observe mode allows the out-of-set read to expose what the role actually loads",
+    );
+    assert.equal(
+      allowed(invoke(root, "read-observer", nativeRead(root, "package.json"))),
+      true,
+    );
+    assert.ok(
+      compareObservedReads(
+        directed,
+        observations(root).flatMap((row) => row.reads ?? []),
+      ).some((row) => row.path === "package.json"),
+    );
+    const observedScope = scopeReadEvidence(directed, observations(root));
+    assert.equal(
+      observedScope.refusalCounts.Read,
+      1,
+      "the observe-only attempt is not counted as a refused read",
+    );
+    assert.equal(
+      observedScope.attemptedOutsideDirectedSet.length,
+      2,
+      "both enforced and observed attempts remain visible",
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            tool_name: "Read",
+            tool_input: {
+              file_path: join(
+                root,
+                "docs/control/local/harness/read-scope.json",
+              ),
+            },
+          }),
+        ),
+      ),
+      false,
+      "observation never expands the compiled authority",
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            tool_name: "Read",
+            tool_input: { file_path: "/outside-fixture/synthetic.txt" },
+          }),
+        ),
+      ),
+      false,
+    );
+    const outsideAttempt = scopeReadEvidence(directed, observations(root));
+    assert.ok(
+      outsideAttempt.attemptedOutsideDirectedSet.some(
+        (read) => read.path === "<outside-worktree>",
+      ),
+    );
+    assert.equal(outsideAttempt.unlocatedReadRefusals, 0);
+    assert.ok(
+      !JSON.stringify(outsideAttempt).includes("/outside-fixture"),
+      "external attempted paths are reduced to a shape",
+    );
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping", () => {
+  const root = fixture();
+  try {
+    const program = {
+      ...contributorProgram(),
+      correctionToken: "fixture-correction:",
+    };
+    emitHarness(root, { program });
+    const hook = "fail-conservative-correction";
+    const payload = input(root, "UserPromptSubmit", {
+      prompt: "fixture-correction: synthetic signal",
+    });
+    assert.deepEqual(
+      invoke(root, hook, { ...payload, prompt: "ordinary correction wording" }),
+      {},
+    );
+    assert.deepEqual(invoke(root, hook, payload, true), {});
+    const config = configFor(root, hook);
+    const expected = applyFeedbackCorrection(
+      config.policy,
+      {
+        allowedEffects: [...program.loadout.authorityEnvelope.allowedEffects],
+        destructiveEffects: [
+          "repo.write",
+          "repo.delete",
+          "shell.run",
+          "git.local",
+          "lifecycle.run",
+        ],
+        scopeExpansionAllowed: true,
+        preserveEvidence: false,
+        diagnosisRequired: false,
+        corrections: [],
+      },
+      { type: "OperatorCorrectionReceived", eventId: "correction:0" },
+    );
+    const result = invoke(root, hook, payload);
+    const response = JSON.parse(
+      result.hookSpecificOutput.additionalContext
+        .split(": ")
+        .slice(1)
+        .join(": "),
+    );
+    assert.deepEqual(response, {
+      allowedEffects: expected.allowedEffects,
+      scopeExpansionAllowed: expected.scopeExpansionAllowed,
+      preserveEvidence: expected.preserveEvidence,
+      diagnosisRequired: expected.diagnosisRequired,
+    });
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    for (const [tool_name, expected] of [
+      ["Read", true],
+      ["Edit", false],
+    ])
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            "permissions",
+            input(root, "PreToolUse", {
+              tool_name,
+              tool_input: { file_path: join(root, "fixture.ts") },
+            }),
+          ),
+        ),
+        expected,
+      );
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects", () => {
+  const root = fixture();
+  try {
+    const path = join(root, ".claude/hooks/commit-msg.mjs");
+    for (const message of ["A useful change", "Generated by AI"]) {
+      write(root, "docs/control/local/message.txt", message);
+      const result = spawnSync(
+        process.execPath,
+        [path, "docs/control/local/message.txt"],
+        { cwd: root, encoding: "utf8" },
+      );
+      let expected = 0;
+      try {
+        feedbackBoundary(
+          compileFeedbackUnits(
+            personalFeedbackUnits.filter(
+              (unit) => unit.trigger === "attribution",
+            ),
+          ),
+          { kind: "attribution", message },
+          () => {},
+        );
+      } catch {
+        expected = 1;
+      }
+      assert.equal(result.status, expected);
+    }
+    const source = readFileSync(path, "utf8");
+    const config = JSON.parse(
+      source.match(
+        /await runCommitMessageHook\(([\s\S]*), feedbackBoundary\);/,
+      )[1],
+    );
+    config.policy = compileFeedbackUnits([]);
+    writeFileSync(
+      path,
+      source.replace(
+        /await runCommitMessageHook\([\s\S]*, feedbackBoundary\);/,
+        `await runCommitMessageHook(${json(config).trim()}, feedbackBoundary);`,
+      ),
+    );
+    assert.equal(
+      spawnSync(process.execPath, [path, "docs/control/local/message.txt"], {
+        cwd: root,
+      }).status,
+      0,
+    );
+    rmSync(join(root, "packages/skeleton/dist/src/harness-host.js"));
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            tool_name: "Read",
+            tool_input: { file_path: join(root, "fixture.ts") },
+          }),
+        ),
+      ),
+      false,
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "session",
+          input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+        ),
+      ),
+      false,
+    );
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main", () => {
+  const root = fixture();
+  try {
+    git(root, "switch", "-c", "main");
+    const payload = (command) =>
+      input(root, "PreToolUse", { tool_name: "Bash", tool_input: { command } });
+    parity(
+      root,
+      "concurrent-work-requires-worktrees",
+      payload("pwd && git rev-parse --show-toplevel"),
+      true,
+    );
+    assert.equal(
+      existsSync(join(root, "docs/control/local/harness/writer")),
+      false,
+    );
+    parity(
+      root,
+      "concurrent-work-requires-worktrees",
+      payload(
+        "node scripts/harness.mjs read-output fixture.ts --offset 0 --length 8192",
+      ),
+      true,
+    );
+    assert.equal(
+      existsSync(join(root, "docs/control/local/harness/writer")),
+      false,
+      "bounded output reads never reserve a coding writer, including on main",
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          payload("node scripts/harness.mjs read-output fixture.ts"),
+        ),
+      ),
+      true,
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          payload("node scripts/harness.mjs read-output .env"),
+        ),
+      ),
+      false,
+      "the helper retains native credential-path denial",
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          payload("node scripts/harness.mjs read-output .env && pwd"),
+        ),
+      ),
+      false,
+      "shell composition cannot bypass credential-path denial",
+    );
+    parity(
+      root,
+      "concurrent-work-requires-worktrees",
+      payload("node arbitrary-writer.mjs"),
+      false,
+    );
+    write(
+      root,
+      "docs/control/fixture-status.json",
+      json({ ...control, phase: "closed" }),
+    );
+    write(
+      root,
+      "scripts/release.mjs",
+      "throw new Error('fixture helper must never execute');\n",
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: release close" }),
+    );
+    const request = payload("node scripts/release.mjs close WO-999 --publish");
+    const config = configFor(root, "concurrent-work-requires-worktrees");
+    const facts = harnessFeedbackFacts(config.policy, request, root, {
+      ...session,
+      role: "release-close",
+      intent: "resume: release close",
+    });
+    assert.equal(facts[0].writable, false);
+    assert.doesNotThrow(() =>
+      feedbackBoundary(config.policy, facts[0], () => {}),
+    );
+    assert.equal(
+      allowed(invoke(root, "concurrent-work-requires-worktrees", request)),
+      true,
+    );
+    assert.equal(allowed(invoke(root, "permissions", request)), true);
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          payload("node scripts/release.mjs close WO-998 --publish"),
+        ),
+      ),
+      false,
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          payload(
+            "node scripts/release.mjs close WO-999 --publish && node arbitrary-writer.mjs",
+          ),
+        ),
+      ),
+      false,
+    );
+    write(root, "docs/control/fixture-status.json", json(control));
+    assert.equal(
+      allowed(invoke(root, "concurrent-work-requires-worktrees", request)),
+      false,
+      "an open lifecycle never gains the managed-close route",
+    );
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation", () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: status" }),
+    );
+    assert.equal(
+      allowed(invoke(root, "no-partial-completion", input(root, "Stop"))),
+      false,
+    );
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", {
+        prompt: "ideation: synthetic capture-only",
+      }),
+    );
+    assert.equal(
+      allowed(invoke(root, "no-partial-completion", input(root, "Stop"))),
+      false,
+    );
+    const before = git(root, "rev-parse", "HEAD");
+    for (const output of harnessOutputs(root, before)) {
+      const contents = readFileSync(join(root, output.path), "utf8");
+      invoke(
+        root,
+        "read-observer",
+        input(root, "PostToolUse", {
+          tool_name: "Read",
+          tool_input: { file_path: join(root, output.path) },
+          tool_response: {
+            file: {
+              content: contents,
+              startLine: 1,
+              numLines: contents.split("\n").length,
+              totalLines: contents.split("\n").length,
+            },
+          },
+        }),
+      );
+    }
+    git(root, "add", ".");
+    git(
+      root,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "-c",
+      "commit.gpgsign=false",
+      "commit",
+      "-m",
+      "Commit already reviewed fixture outputs",
+    );
+    assert.ok(harnessOutputs(root, before).length > 0);
+    assert.equal(harnessOutputs(root).length, 0);
+    assert.equal(
+      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
+      true,
+      "commit does not erase the session's output set",
+    );
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-039 foreign writer reservations refuse while their owner lives, reclaim with a record when it is dead, and stay inspectable", () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    const lock = join(root, "docs/control/local/harness/writer");
+    const reserve = (writer) => {
+      rmSync(lock, { recursive: true, force: true });
+      seedHarnessWriter(root, writer);
+    };
+    const current = () => {
+      const [name, ...rest] = readdirSync(lock);
+      assert.match(name ?? "", /^reservation-[0-9a-f]{32}\.json$/);
+      assert.deepEqual(rest, [], "one reservation file per instance");
+      return JSON.parse(readFileSync(join(lock, name), "utf8"));
+    };
+    const cli = (...args) =>
+      spawnSync(process.execPath, ["scripts/harness.mjs", "writer", ...args], {
+        cwd: root,
+        encoding: "utf8",
+      });
+    const reason = (payload) =>
+      invoke(root, "concurrent-work-requires-worktrees", payload)
+        .hookSpecificOutput.permissionDecisionReason;
+    const edit = input(root, "PreToolUse", {
+      tool_name: "Edit",
+      tool_input: { file_path: join(root, "fixture.ts") },
+    });
+    const command = (text) =>
+      input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: text },
+      });
+    const self = createHash("sha256").update("synthetic-session").digest("hex");
+    const foreign = createHash("sha256")
+      .update("foreign-fixture-session")
+      .digest("hex");
+    const exited = spawnSync(process.execPath, ["-e", ""]);
+    assert.equal(exited.status, 0);
+    const dead = {
+      pid: exited.pid,
+      startedAt: "Thu Jan  1 00:00:00 1970",
+      source: "CLAUDE_PID",
+    };
+    const live = { pid: process.pid, source: "CLAUDE_PID" };
+    assert.equal(harnessProcessAlive(live), true);
+    assert.equal(harnessProcessAlive(dead), false);
+    assert.equal(harnessProcessAlive({ pid: 1, source: "parent" }), false);
+    const host = harnessHostProcess();
+    assert.ok(host.pid > 1 && harnessProcessAlive(host), "live host process");
+    assert.ok(["CLAUDE_PID", "ancestor", "parent"].includes(host.source));
+
+    // A live foreign reservation refuses every write dispatch and names its holder.
+    reserve({
+      actorId: foreign,
+      worktree: root,
+      owner: live,
+      reservedAt: "2026-09-07T00:00:00.000Z",
+    });
+    parity(root, "concurrent-work-requires-worktrees", edit, false);
+    const refused = reason(edit);
+    assert.match(
+      refused,
+      /reserved by another session \(actor [0-9a-f]{12}; host process \d+ is alive\)/,
+    );
+    assert.ok(
+      refused.includes(foreign.slice(0, 12)) &&
+        refused.includes("writer --show") &&
+        refused.includes("writer --release"),
+    );
+    assert.ok(
+      !refused.includes(root) && !refused.includes(foreign.slice(12)),
+      "the refusal names no path and no full actor key",
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          input(root, "PreToolUse", {
+            tool_name: "Write",
+            tool_input: { file_path: join(root, "fixture.ts") },
+          }),
+        ),
+      ),
+      false,
+    );
+    assert.equal(
+      current().actorId,
+      foreign,
+      "a live foreign reservation is never replaced",
+    );
+    // The refused session keeps metadata and the operator view; neither reserves.
+    parity(
+      root,
+      "concurrent-work-requires-worktrees",
+      command("node scripts/harness.mjs writer --show"),
+      true,
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          command("node scripts/harness.mjs writer --show"),
+        ),
+      ),
+      true,
+    );
+    const shown = cli("--show");
+    assert.equal(shown.status, 0, shown.stderr);
+    const view = JSON.parse(shown.stdout);
+    assert.deepEqual(
+      {
+        contract: view.contract,
+        reserved: view.reserved,
+        actorId: view.actorId,
+        pid: view.owner.pid,
+        alive: view.alive,
+      },
+      {
+        contract: "harness-writer-v1",
+        reserved: true,
+        actorId: foreign,
+        pid: process.pid,
+        alive: true,
+      },
+    );
+    assert.ok(!shown.stdout.includes(root), "the view names no absolute path");
+    assert.equal(
+      current().actorId,
+      foreign,
+      "showing never reserves or releases",
+    );
+    // A governed session cannot release a live foreign reservation; an operator must force it.
+    parity(
+      root,
+      "concurrent-work-requires-worktrees",
+      command("node scripts/harness.mjs writer --release"),
+      false,
+    );
+    const declined = cli("--release");
+    assert.equal(declined.status, 1);
+    assert.match(declined.stderr, /alive/);
+    assert.equal(current().actorId, foreign);
+    const forced = cli("--release", "--force");
+    assert.equal(forced.status, 0, forced.stderr);
+    assert.equal(JSON.parse(forced.stdout).released, true);
+    assert.equal(existsSync(lock), false);
+    assert.deepEqual(
+      writerEvents(root)
+        .map((row) => row.event)
+        .slice(-1),
+      ["operator-released"],
+    );
+    // A foreign reservation without a recorded owner is honoured until an operator releases it.
+    reserve({ actorId: foreign, worktree: root });
+    parity(root, "concurrent-work-requires-worktrees", edit, false);
+    assert.match(reason(edit), /host process is not recorded/);
+    assert.equal(current().actorId, foreign);
+    assert.equal(JSON.parse(cli("--show").stdout).alive, "unknown");
+    const unknown = cli("--release");
+    assert.equal(unknown.status, 0, unknown.stderr);
+    assert.equal(JSON.parse(unknown.stdout).alive, "unknown");
+    assert.equal(existsSync(lock), false);
+    // A foreign reservation whose owner is dead is reclaimed once, with a record, and work proceeds.
+    reserve({
+      actorId: foreign,
+      worktree: root,
+      owner: dead,
+      reservedAt: "2026-09-07T00:00:00.000Z",
+    });
+    parity(root, "concurrent-work-requires-worktrees", edit, true);
+    const reclaimed = current();
+    assert.equal(reclaimed.actorId, self);
+    assert.equal(reclaimed.reclaimed.actorId, foreign);
+    assert.equal(reclaimed.reclaimed.owner.pid, exited.pid);
+    assert.ok(
+      harnessProcessAlive(reclaimed.owner),
+      "the reclaiming session records its live owner",
+    );
+    assert.ok(
+      observations(root).some(
+        (row) =>
+          row.writerReclaimed?.actorId === foreign &&
+          row.writerReclaimed.owner.pid === exited.pid,
+      ),
+    );
+    assert.ok(
+      writerEvents(root).some(
+        (row) => row.event === "reclaimed" && row.previous.actorId === foreign,
+      ),
+    );
+    assert.equal(
+      allowed(invoke(root, "concurrent-work-requires-worktrees", edit)),
+      true,
+    );
+    assert.equal(
+      current().actorId,
+      self,
+      "the reclaiming session keeps its reservation",
+    );
+    // An operator releases a dead-owner reservation without force.
+    reserve({ actorId: foreign, worktree: root, owner: dead });
+    const released = cli("--release");
+    assert.equal(released.status, 0, released.stderr);
+    assert.equal(JSON.parse(released.stdout).alive, false);
+    assert.equal(existsSync(lock), false);
+    assert.deepEqual(
+      {
+        event: writerEvents(root).at(-1).event,
+        actorId: writerEvents(root).at(-1).actorId,
+        alive: writerEvents(root).at(-1).alive,
+      },
+      { event: "operator-released", actorId: foreign, alive: false },
+      "the release journal names the reservation it judged and retired",
+    );
+    // A self-owned reservation without an owner gains one; a self-owned dead
+    // owner disables liveness for that lock instead of trusting the identity.
+    reserve({ actorId: self, worktree: root });
+    const unowned = readdirSync(lock)[0];
+    assert.equal(
+      allowed(invoke(root, "concurrent-work-requires-worktrees", edit)),
+      true,
+    );
+    assert.deepEqual(
+      { pid: current().owner.pid, source: current().owner.source },
+      { pid: process.pid, source: "CLAUDE_PID" },
+    );
+    assert.deepEqual(
+      {
+        renamed: readdirSync(lock)[0] !== unowned,
+        supersedes: current().supersedes,
+      },
+      { renamed: true, supersedes: unowned },
+      "a recorded fact is a new instance naming the one it replaced",
+    );
+    reserve({ actorId: self, worktree: root, owner: dead });
+    const distrusted = readdirSync(lock)[0];
+    assert.equal(
+      allowed(invoke(root, "concurrent-work-requires-worktrees", edit)),
+      true,
+    );
+    assert.equal(current().liveness, "unavailable");
+    assert.deepEqual(
+      {
+        renamed: readdirSync(lock)[0] !== distrusted,
+        supersedes: current().supersedes,
+      },
+      { renamed: true, supersedes: distrusted },
+    );
+    assert.ok(
+      !cli("--show").stdout.includes("supersedes"),
+      "the view never names an instance",
+    );
+    assert.ok(
+      observations(root).some(
+        (row) => row.writerLivenessUnavailable?.pid === exited.pid,
+      ),
+    );
+    reserve({ ...current(), actorId: foreign });
+    parity(root, "concurrent-work-requires-worktrees", edit, false);
+    assert.match(reason(edit), /unknown liveness/);
+    assert.equal(
+      current().actorId,
+      foreign,
+      "an untrusted owner identity never reclaims",
+    );
+    assert.equal(JSON.parse(cli("--show").stdout).alive, "unknown");
+    // Pre-repair single-file reservations are honoured while live, reclaimed
+    // when dead, and migrated when they belong to this session; none is created.
+    rmSync(lock, { recursive: true, force: true });
+    const legacy = join(root, "docs/control/local/harness/writer.json");
+    const legacyWriter = (writer) =>
+      writeFileSync(legacy, JSON.stringify(writer) + "\n");
+    legacyWriter({ actorId: foreign, worktree: root, owner: live });
+    parity(root, "concurrent-work-requires-worktrees", edit, false);
+    assert.match(reason(edit), /host process \d+ is alive/);
+    assert.equal(JSON.parse(cli("--show").stdout).actorId, foreign);
+    assert.ok(
+      existsSync(legacy) && !existsSync(lock),
+      "a live legacy holder is honoured",
+    );
+    legacyWriter({ actorId: foreign, worktree: root, owner: dead });
+    parity(root, "concurrent-work-requires-worktrees", edit, true);
+    assert.equal(
+      existsSync(legacy),
+      false,
+      "a dead legacy holder is reclaimed",
+    );
+    assert.deepEqual(
+      { actorId: current().actorId, previous: current().reclaimed.actorId },
+      { actorId: self, previous: foreign },
+    );
+    assert.equal(writerEvents(root).at(-1).event, "reclaimed");
+    rmSync(lock, { recursive: true, force: true });
+    legacyWriter({ actorId: self, worktree: root, owner: live });
+    assert.equal(
+      allowed(invoke(root, "concurrent-work-requires-worktrees", edit)),
+      true,
+    );
+    assert.equal(
+      existsSync(legacy),
+      false,
+      "this session's legacy file migrates",
+    );
+    assert.deepEqual(
+      { actorId: current().actorId, liveness: current().liveness },
+      { actorId: self, liveness: undefined },
+    );
+    assert.deepEqual(
+      writerEvents(root)
+        .slice(-2)
+        .map((row) => row.event),
+      ["migrated", "acquired"],
+    );
+    legacyWriter({ actorId: self, worktree: root, owner: dead });
+    assert.equal(
+      allowed(invoke(root, "concurrent-work-requires-worktrees", edit)),
+      true,
+    );
+    assert.ok(
+      !existsSync(legacy) && current().liveness === undefined,
+      "a stale legacy file beside a live instance is only removed",
+    );
+    rmSync(lock, { recursive: true, force: true });
+    legacyWriter({ actorId: self, worktree: root, owner: dead });
+    assert.equal(
+      allowed(invoke(root, "concurrent-work-requires-worktrees", edit)),
+      true,
+    );
+    assert.equal(
+      current().liveness,
+      "unavailable",
+      "a migrated self-distrusted identity stays untrusted",
+    );
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+// Delays one real filesystem call on the observed reservation until a barrier
+// file appears; liveness, contents, host facts and the hook verdict are untouched.
+const interleavePreload = `const fs = require("node:fs");
+const { syncBuiltinESMExports } = require("node:module");
+const stage = process.env.RACE_STAGE;
+const original = fs[stage];
+const sleeper = new Int32Array(new SharedArrayBuffer(4));
+fs[stage] = function () {
+  const lock = process.env.RACE_LOCK_DIR;
+  const under = (path) => typeof path === "string" && (path === lock || path.startsWith(lock + "/"));
+  if ([...arguments].some(under)) {
+    fs.writeFileSync(process.env.RACE_READY, "ready");
+    const deadline = Date.now() + 20000;
+    while (!fs.existsSync(process.env.RACE_GO)) {
+      if (Date.now() > deadline) throw new Error("fixture barrier timed out");
+      Atomics.wait(sleeper, 0, 0, 5);
+    }
+  }
+  return original.apply(this, arguments);
+};
+syncBuiltinESMExports();
+`;
+
+// The shared race harness: a dead holder to seed, generated-hook contenders
+// and the public operator command started under the interleaving preload,
+// barriers, and the fixture's view of the reservation and its event log.
+function raceHarness(root, children) {
+  const stateDir = join(root, "docs/control/local/harness");
+  const lock = join(stateDir, "writer");
+  const exited = spawnSync(process.execPath, ["-e", ""]);
+  assert.equal(exited.status, 0);
+  const dead = {
+    pid: exited.pid,
+    startedAt: "Thu Jan  1 00:00:00 1970",
+    source: "CLAUDE_PID",
+  };
+  const actor = (label) =>
+    createHash("sha256").update(`fixture-${label}`).digest("hex");
+  const seed = (writer) => {
+    rmSync(lock, { recursive: true, force: true });
+    seedHarnessWriter(root, {
+      worktree: root,
+      reservedAt: "2026-09-07T00:00:00.000Z",
+      ...writer,
+    });
+  };
+  const seedDead = () => seed({ actorId: actor("dead"), owner: dead });
+  const preload = join(stateDir, "interleave.cjs");
+  mkdirSync(stateDir, { recursive: true });
+  writeFileSync(preload, interleavePreload);
+  const edit = (label) =>
+    input(root, "PreToolUse", {
+      session_id: `fixture-${label}`,
+      tool_name: "Edit",
+      tool_input: { file_path: join(root, "fixture.ts") },
+    });
+  const start = (label, stage, args, payload) => {
+    const child = spawn(process.execPath, ["--require", preload, ...args], {
+      cwd: root,
+      env: {
+        ...process.env,
+        CLAUDE_PID: String(process.pid),
+        RACE_STAGE: stage,
+        RACE_LOCK_DIR: lock,
+        RACE_READY: join(stateDir, `${label}.ready`),
+        RACE_GO: join(stateDir, `${label}.go`),
+      },
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+    children.push(child);
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => (stdout += chunk));
+    child.stderr.on("data", (chunk) => (stderr += chunk));
+    const done = new Promise((resolve, reject) => {
+      child.on("error", reject);
+      child.on("close", (code) => resolve({ code, stdout, stderr }));
+    });
+    child.stdin.end(payload ? JSON.stringify(payload) : "");
+    return done;
+  };
+  const contend = (label, stage) =>
+    start(
+      label,
+      stage,
+      [".claude/hooks/concurrent-work-requires-worktrees.mjs"],
+      edit(label),
+    );
+  const operate = (label, stage, ...flags) =>
+    start(
+      label,
+      stage,
+      ["scripts/harness.mjs", "writer", "--release", ...flags],
+      null,
+    );
+  const paused = async (label) => {
+    const until = Date.now() + 20_000;
+    while (!existsSync(join(stateDir, `${label}.ready`))) {
+      if (Date.now() > until)
+        throw new Error(`${label} never reached its barrier`);
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    }
+  };
+  const release = (label) => writeFileSync(join(stateDir, `${label}.go`), "go");
+  const verdict = async (done) => {
+    const run = await done;
+    assert.equal(run.code, 0, run.stderr);
+    return JSON.parse(run.stdout);
+  };
+  const names = () => readdirSync(lock);
+  const holder = () => JSON.parse(readFileSync(join(lock, names()[0]), "utf8"));
+  const events = () => writerEvents(root).map((row) => row.event);
+  const dispatch = (label) =>
+    allowed(invoke(root, "concurrent-work-requires-worktrees", edit(label)));
+  return {
+    lock,
+    dead,
+    actor,
+    seed,
+    seedDead,
+    edit,
+    contend,
+    operate,
+    paused,
+    release,
+    verdict,
+    names,
+    holder,
+    events,
+    dispatch,
+  };
+}
+
+test("WO-039 concurrent dead-owner recovery admits exactly one writer while the first owner's work is outstanding", async () => {
+  const root = fixture();
+  const children = [];
+  try {
+    const {
+      actor,
+      seedDead,
+      edit,
+      contend,
+      paused,
+      release,
+      verdict,
+      holder,
+      events,
+      dispatch,
+    } = raceHarness(root, children);
+
+    // VER-002 F1: two contenders classify the same dead holder, pause before
+    // their first mutation, and then act in turn.
+    seedDead();
+    const b = contend("B", "unlinkSync");
+    await paused("B");
+    const a = contend("A", "unlinkSync");
+    await paused("A");
+    release("A");
+    assert.equal(allowed(await verdict(a)), true);
+    assert.deepEqual(
+      { actorId: holder().actorId, previous: holder().reclaimed.actorId },
+      { actorId: actor("A"), previous: actor("dead") },
+    );
+    assert.ok(
+      harnessProcessAlive(holder().owner),
+      "the first owner's authorized work is outstanding",
+    );
+    release("B");
+    const second = await verdict(b);
+    assert.equal(
+      allowed(second),
+      false,
+      "a second reclaimer of the same dead holder is refused",
+    );
+    assert.match(
+      second.hookSpecificOutput.permissionDecisionReason,
+      new RegExp(
+        `reserved by another session \\(actor ${actor("A").slice(0, 12)}; host process \\d+(?: started [^)]+)? is alive\\)`,
+      ),
+    );
+    assert.equal(
+      holder().actorId,
+      actor("A"),
+      "the loser preserved the winner's reservation",
+    );
+    assert.deepEqual(events(), ["reclaimed"]);
+    assert.equal(writerEvents(root)[0].previous.actorId, actor("dead"));
+    assert.deepEqual([dispatch("A"), dispatch("B")], [true, false]);
+    // The loser proceeds only after the winner's accepted finish releases.
+    releaseHarnessWriter(root, edit("A"));
+    assert.equal(dispatch("B"), true);
+    assert.equal(holder().actorId, actor("B"));
+    assert.deepEqual(events(), ["reclaimed", "released", "acquired"]);
+
+    // A contender paused after emptying the dead instance but before removing
+    // it loses to a placement over the emptied slot and records the retirement.
+    releaseHarnessWriter(root, edit("B"));
+    seedDead();
+    const c = contend("C", "rmdirSync");
+    await paused("C");
+    assert.equal(dispatch("D"), true, "an emptied instance is an open slot");
+    assert.equal(holder().actorId, actor("D"));
+    release("C");
+    assert.equal(allowed(await verdict(c)), false);
+    assert.equal(holder().actorId, actor("D"));
+    assert.deepEqual(events().slice(-3), ["released", "acquired", "retired"]);
+    assert.equal(writerEvents(root).at(-1).previous.actorId, actor("dead"));
+    assert.deepEqual([dispatch("D"), dispatch("C")], [true, false]);
+  } finally {
+    for (const child of children)
+      if (child.exitCode === null) child.kill("SIGKILL");
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts", async () => {
+  const root = fixture();
+  const children = [];
+  try {
+    const {
+      dead,
+      actor,
+      seed,
+      edit,
+      contend,
+      paused,
+      release,
+      verdict,
+      names,
+      holder,
+      events,
+      dispatch,
+    } = raceHarness(root, children);
+    // VER-003 F1: the owning session finds its recorded owner dead and records
+    // that fact while a contender that classified the previous facts as dead
+    // is paused before its unlink. The owner's authorized work is outstanding,
+    // so the contender must not remove the refreshed reservation and proceed.
+    seed({ actorId: actor("A"), owner: dead });
+    const seeded = names()[0];
+    const stale = contend("E", "unlinkSync");
+    await paused("E");
+    assert.equal(
+      dispatch("A"),
+      true,
+      "the owning session keeps its reservation",
+    );
+    assert.equal(holder().liveness, "unavailable");
+    release("E");
+    const staleVerdict = await verdict(stale);
+    assert.equal(
+      allowed(staleVerdict),
+      false,
+      "a stale reclaimer removed refreshed facts and was admitted",
+    );
+    assert.match(
+      staleVerdict.hookSpecificOutput.permissionDecisionReason,
+      new RegExp(
+        `reserved by another session \\(actor ${actor("A").slice(0, 12)}; host process \\d+(?: started [^)]+)? is of unknown liveness\\)`,
+      ),
+    );
+    assert.deepEqual(
+      {
+        actorId: holder().actorId,
+        liveness: holder().liveness,
+        supersedes: holder().supersedes,
+        renamed: names()[0] !== seeded,
+        files: names().length,
+      },
+      {
+        actorId: actor("A"),
+        liveness: "unavailable",
+        supersedes: seeded,
+        renamed: true,
+        files: 1,
+      },
+      "the refreshed facts live under a new name that names the superseded one",
+    );
+    assert.deepEqual(events(), ["liveness-unavailable"]);
+    assert.deepEqual([dispatch("A"), dispatch("E")], [true, false]);
+
+    // The other order: the reclaimer removes the previous facts and takes the
+    // slot before the owner's refresh lands, so the refresh finds the slot no
+    // longer its own, withdraws, and honours the live replacement.
+    releaseHarnessWriter(root, edit("A"));
+    seed({ actorId: actor("A"), owner: dead });
+    const owner = contend("A", "renameSync");
+    await paused("A");
+    assert.equal(dispatch("M"), true, "the reclaimer takes the emptied slot");
+    assert.deepEqual(
+      { actorId: holder().actorId, previous: holder().reclaimed.actorId },
+      { actorId: actor("M"), previous: actor("A") },
+    );
+    release("A");
+    const ownerVerdict = await verdict(owner);
+    assert.equal(allowed(ownerVerdict), false);
+    assert.match(
+      ownerVerdict.hookSpecificOutput.permissionDecisionReason,
+      new RegExp(
+        `reserved by another session \\(actor ${actor("M").slice(0, 12)}; host process \\d+(?: started [^)]+)? is alive\\)`,
+      ),
+    );
+    assert.deepEqual(
+      { actorId: holder().actorId, files: names().length },
+      { actorId: actor("M"), files: 1 },
+      "the withdrawn refresh left the replacement's instance alone",
+    );
+    assert.deepEqual(events().slice(-2), ["released", "reclaimed"]);
+    assert.deepEqual([dispatch("M"), dispatch("A")], [true, false]);
+  } finally {
+    for (const child of children)
+      if (child.exitCode === null) child.kill("SIGKILL");
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-039 an operator release judges, retires and journals one observed reservation", async () => {
+  const root = fixture();
+  const children = [];
+  try {
+    const {
+      lock,
+      actor,
+      seedDead,
+      edit,
+      operate,
+      paused,
+      release,
+      holder,
+      events,
+      dispatch,
+    } = raceHarness(root, children);
+    // VER-003 F2: a reclaimer replaces the dead holder after the public
+    // release command judged it. The unforced release judges the replacement
+    // by the same rule and, finding it alive, refuses; the replacement survives.
+    seedDead();
+    const unforced = operate("F", "unlinkSync");
+    await paused("F");
+    assert.equal(dispatch("G"), true);
+    assert.deepEqual(
+      { actorId: holder().actorId, previous: holder().reclaimed.actorId },
+      { actorId: actor("G"), previous: actor("dead") },
+    );
+    release("F");
+    const refusedRelease = await unforced;
+    assert.equal(
+      refusedRelease.code,
+      1,
+      `an unforced release removed the live replacement: ${refusedRelease.stdout}`,
+    );
+    assert.match(refusedRelease.stderr, /owner is alive/);
+    assert.equal(
+      holder().actorId,
+      actor("G"),
+      "the live replacement survives an unforced operator release",
+    );
+    assert.deepEqual(events(), ["reclaimed"]);
+    assert.deepEqual([dispatch("G"), dispatch("H")], [true, false]);
+    // A forced release binds to the holder the operator judged; once that
+    // holder changed, it refuses instead of removing the replacement.
+    releaseHarnessWriter(root, edit("G"));
+    seedDead();
+    const forced = operate("I", "unlinkSync", "--force");
+    await paused("I");
+    assert.equal(dispatch("J"), true);
+    release("I");
+    const refusedForce = await forced;
+    assert.equal(refusedForce.code, 1, refusedForce.stdout);
+    assert.match(refusedForce.stderr, /changed while releasing/);
+    assert.equal(holder().actorId, actor("J"));
+    assert.ok(!events().includes("operator-released"));
+    assert.deepEqual([dispatch("J"), dispatch("K")], [true, false]);
+    // Uncontended, the same command releases the dead holder it judged and
+    // journals that holder.
+    releaseHarnessWriter(root, edit("J"));
+    seedDead();
+    const plain = spawnSync(
+      process.execPath,
+      ["scripts/harness.mjs", "writer", "--release"],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(plain.status, 0, plain.stderr);
+    assert.deepEqual(
+      {
+        released: JSON.parse(plain.stdout).released,
+        alive: JSON.parse(plain.stdout).alive,
+        lock: existsSync(lock),
+        journaled: writerEvents(root).at(-1).actorId,
+      },
+      { released: true, alive: false, lock: false, journaled: actor("dead") },
+    );
+  } finally {
+    for (const child of children)
+      if (child.exitCode === null) child.kill("SIGKILL");
+    rmSync(root, { recursive: true });
+  }
+});

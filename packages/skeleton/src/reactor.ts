@@ -1575,6 +1575,23 @@ export function planRefutationAuthorization(
   );
 }
 
+/** Harness adapters share the skeleton's authority decider owner. */
+export function harnessAuthorization(
+  authority: AuthorityEnvelope,
+  effect: string,
+  at: number,
+) {
+  return authorize({ kind: "Act", effect, payload: {} }, authority, {
+    now: at,
+    actorId: "contributor-hook",
+    workstreamId: "contributor-session",
+    decisionIndex: 0,
+    intentIndex: 0,
+    evidence: ["resolved-worktree"],
+    revokedBy: [],
+  });
+}
+
 function dispatch(state: VerificationState): VerificationState {
   requireState(
     !state.pending &&

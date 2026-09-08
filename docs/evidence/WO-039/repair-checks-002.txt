@@ -1,0 +1,359 @@
+
+> test
+> npm run format:check --silent && node scripts/release.mjs check-surfaces --local && node --test scripts/test-release-preparation.mjs && node scripts/test-github-body.mjs && node --test scripts/test-license-surfaces.mjs && node scripts/license-surfaces.mjs && bash scripts/test-fixture-temp-root.sh && bash scripts/test-publication.sh && bash scripts/test-backup-intake.sh && bash scripts/test-resume.sh && bash scripts/test-checkpoint.sh && bash scripts/test-worktree.sh && bash scripts/test-release.sh && bash scripts/test-work-orders.sh && node scripts/check-publication.mjs && node scripts/work-orders.mjs index --check && rm -rf packages/kernel/dist packages/compiler/dist packages/skeleton/dist && tsc -b --force && ls packages/kernel/dist/test/*.test.js >/dev/null && ls packages/compiler/dist/test/*.test.js >/dev/null && ls packages/skeleton/dist/test/*.test.js >/dev/null && node --test packages/kernel/dist/test/*.test.js packages/compiler/dist/test/*.test.js packages/skeleton/dist/test/*.test.js && node --test scripts/test-harness.mjs && node scripts/harness.mjs check && node scripts/harness-context.mjs --check && node scripts/harness-evidence.mjs && node scripts/test-plan-refutation.mjs && node --test corpus/harness/wo101-id-corpus.test.mjs && node scripts/artifact-identity-evidence.mjs --check && node scripts/verification-evidence.mjs --check && node scripts/feedback-evidence.mjs --check --edition WO-039 && npm run test:mutation --silent
+
+Checking formatting...
+All matched files use Prettier code style!
+Tag observation: local ancestors of HEAD only; publication checks origin.
+PASS release-block: observed v0.15.0; expected v0.15.0 (work-order target v0.15.0; latest local tag v0.13.3)
+PASS component-version @dotln/compiler: src changed; observed 0.7.0; previous v0.13.3 0.6.0; expected a different version
+PASS component-version @dotln/kernel: src unchanged; observed 0.2.1; previous v0.13.3 0.2.1; expected no bump required
+PASS component-version @dotln/skeleton: src changed; observed 0.13.0; previous v0.13.3 0.12.1; expected a different version
+PASS github-body-profile: observed no current final-review bodies yet; expected one physical line per prose paragraph or list-item paragraph
+PASS license-surfaces package.json workspaces: observed ["packages/*"]; expected ["packages/*"]
+PASS license-surfaces workspace count: observed 3; expected at least one
+PASS license-surfaces package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces package.json private: observed true; expected true
+PASS license-surfaces package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/compiler/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/compiler/package.json private: observed true; expected true
+PASS license-surfaces packages/compiler/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/compiler/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/kernel/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/kernel/package.json private: observed true; expected true
+PASS license-surfaces packages/kernel/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/kernel/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/skeleton/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/skeleton/package.json private: observed true; expected true
+PASS license-surfaces packages/skeleton/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/skeleton/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces LICENSE: observed sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces LICENSE-docs: observed sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces NOTICE: observed sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces docs/LEGAL.md LICENSE pin: observed cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces docs/LEGAL.md LICENSE-docs pin: observed 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces docs/LEGAL.md NOTICE pin: observed 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/compiler/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/skeleton/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+TAP version 13
+# Subtest: release preparation retimes only three source surfaces and is idempotent
+ok 1 - release preparation retimes only three source surfaces and is idempotent
+  ---
+  duration_ms: 321.0215
+  ...
+# Subtest: release preparation follows the existing classification and skips an available target
+ok 2 - release preparation follows the existing classification and skips an available target
+  ---
+  duration_ms: 498.681125
+  ...
+# Subtest: release preparation uses only the selected order's open state
+ok 3 - release preparation uses only the selected order's open state
+  ---
+  duration_ms: 3378.48475
+  ...
+# Subtest: release preparation refuses malformed or ambiguous inputs before writing
+ok 4 - release preparation refuses malformed or ambiguous inputs before writing
+  ---
+  duration_ms: 1644.033875
+  ...
+# Subtest: release preparation preserves prerelease examples when replacing the strict target
+ok 5 - release preparation preserves prerelease examples when replacing the strict target
+  ---
+  duration_ms: 137.514583
+  ...
+# Subtest: release preparation refuses wrong worktrees, escaped sources, and stale plans
+ok 6 - release preparation refuses wrong worktrees, escaped sources, and stale plans
+  ---
+  duration_ms: 311.604709
+  ...
+# Subtest: release preparation recovers prior source bytes after a write failure
+ok 7 - release preparation recovers prior source bytes after a write failure
+  ---
+  duration_ms: 137.475334
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6485.567417
+GitHub body profile tests passed
+TAP version 13
+# PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+# PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+# PASS contribution-signoff bbb64fa1b2f1: observed operator author; expected operator exemption (no sign-off required)
+# PASS contribution-signoff b82be394843a: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff 2b98efdd4a8b: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff ef435a9b3d67: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff a1994136619c: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# FAIL contribution-signoff 2978a1851a10: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+# Subtest: real npm refuses every validated manifest before packing, despite ambient script suppression
+ok 1 - real npm refuses every validated manifest before packing, despite ambient script suppression
+  ---
+  duration_ms: 727.315834
+  ...
+# Subtest: root and workspace metadata refuse missing license, false/string private, and absent or substituted lifecycle guards
+ok 2 - root and workspace metadata refuse missing license, false/string private, and absent or substituted lifecycle guards
+  ---
+  duration_ms: 12.00725
+  ...
+# Subtest: every license file is byte-pinned; missing files, symlinks, and legal-record drift refuse
+ok 3 - every license file is byte-pinned; missing files, symlinks, and legal-record drift refuse
+  ---
+  duration_ms: 7075.20975
+  ...
+# Subtest: new workspaces are checked and unsupported workspace layouts fail closed
+ok 4 - new workspaces are checked and unsupported workspace layouts fail closed
+  ---
+  duration_ms: 3.684834
+  ...
+# Subtest: symlinked workspace directories refuse in both working and committed snapshots
+ok 5 - symlinked workspace directories refuse in both working and committed snapshots
+  ---
+  duration_ms: 675.555041
+  ...
+# Subtest: missing npm, unrelated failures, and success with a marker cannot masquerade as publication refusal
+ok 6 - missing npm, unrelated failures, and success with a marker cannot masquerade as publication refusal
+  ---
+  duration_ms: 126.641917
+  ...
+# Subtest: committed checks read Git blobs for metadata, hashes, and npm snapshots
+ok 7 - committed checks read Git blobs for metadata, hashes, and npm snapshots
+  ---
+  duration_ms: 3159.141417
+  ...
+# Subtest: DCO checks every new commit's author and trailer, exempts only the operator, and leaves old history alone
+ok 8 - DCO checks every new commit's author and trailer, exempts only the operator, and leaves old history alone
+  ---
+  duration_ms: 2284.836375
+  ...
+# Subtest: operator merge commits do not hide unsigned outside commits on a merged branch
+ok 9 - operator merge commits do not hide unsigned outside commits on a merged branch
+  ---
+  duration_ms: 798.139166
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14923.539833
+PASS license-surfaces package.json workspaces: observed ["packages/*"]; expected ["packages/*"]
+PASS license-surfaces workspace count: observed 3; expected at least one
+PASS license-surfaces package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces package.json private: observed true; expected true
+PASS license-surfaces package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/compiler/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/compiler/package.json private: observed true; expected true
+PASS license-surfaces packages/compiler/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/compiler/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/kernel/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/kernel/package.json private: observed true; expected true
+PASS license-surfaces packages/kernel/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/kernel/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces packages/skeleton/package.json license: observed "Apache-2.0"; expected "Apache-2.0"
+PASS license-surfaces packages/skeleton/package.json private: observed true; expected true
+PASS license-surfaces packages/skeleton/package.json prepublishOnly: observed "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""; expected "node -e \"console.error('DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision'); process.exit(1)\""
+PASS license-surfaces packages/skeleton/package.json publishConfig: observed missing; expected missing
+PASS license-surfaces LICENSE: observed sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces LICENSE-docs: observed sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected sha256:9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces NOTICE: observed sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected sha256:645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces docs/LEGAL.md LICENSE pin: observed cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30; expected cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+PASS license-surfaces docs/LEGAL.md LICENSE-docs pin: observed 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411; expected 9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411
+PASS license-surfaces docs/LEGAL.md NOTICE pin: observed 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c; expected 645cf84db4b0b544bdb8e594d7048ca4ca42da24623b251e6072287ea420d55c
+PASS license-surfaces package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/compiler/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/kernel/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS license-surfaces packages/skeleton/package.json npm publish --dry-run: observed exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED; expected exit 1; DOTLN_PACKAGE_PUBLISH_REFUSED
+PASS valid TMPDIR: ordinary
+PASS valid TMPDIR: spaces
+PASS valid TMPDIR: symlink
+PASS valid TMPDIR: trailing-slashes
+PASS TMPDIR fallback: unset selection completed the fixture lifecycle
+PASS TMPDIR fallback: empty selection completed the fixture lifecycle
+PASS rejected TMPDIR: nonexistent
+PASS rejected TMPDIR: not-directory
+PASS rejected TMPDIR: unwritable
+PASS rejected TMPDIR: filesystem-root
+PASS rejected TMPDIR: dot
+PASS rejected TMPDIR: dot-dot
+PASS rejected TMPDIR: relative
+PASS rejected TMPDIR: dot-dot-segment
+PASS valid TMPDIR: outward-symlink
+PASS adversarial base sentinels: trailing slash and outward symlink stayed contained
+PASS refused cleanup: empty
+PASS refused cleanup: base-itself
+PASS refused cleanup: wrong-basename
+PASS refused cleanup: unowned-same-shape
+PASS refused cleanup: different-parent
+PASS refused cleanup: symlink-root
+PASS refused cleanup: replaced-root
+PASS replacement guard: a new directory at the owned path was preserved
+PASS refused cleanup: replaced-base
+PASS replacement guard: a recreated base and child were preserved
+PASS refused cleanup: changed-marker
+PASS ownership guard: a changed marker preserved the directory
+PASS exact owned cleanup: generated root removed
+PASS ordinary EXIT trap: fixture root removed
+PASS unsafe EXIT trap: cleanup refusal forced a non-zero exit and removed nothing
+PASS INT trap: suite exited 130 with no fixture residue
+PASS TERM trap: suite exited 143 with no fixture residue
+fixture temp-root tests passed
+publication checker tests passed
+backup-intake tests passed
+time append: 10 events, all 8 types, valid host times and non-decreasing order in one process; invalid append preserved bytes
+time projection: mixed={"implementation":"unknown","verification":4000,"repair":3000,"finalReview":5000}; latest attempts, in-flight phases, activation reset, absent and backwards times checked
+time validation: 15 malformed values refuse with ordinal and preserve log/projection; valid leap day accepted
+time-blind current.md cmp: absent passed
+time-blind current.md cmp: reordered passed
+time-blind current.md cmp: backwards passed
+usage fixture: {"attempts":10,"elapsedMs":11000,"unknown":1}; 6 exact actor/phase groups; all three work-order groups and text numbers match
+usage privacy: every instrumented filesystem call avoided docs/control/local; ambient label ignored; stale projection and every segment preserved
+usage cmp: current.md, legacy log and both order segments byte-identical after both output forms and refused arguments
+usage source boundary: no subprocess or Git discovery; CLI and direct dispatcher reports agree
+account labels: 11 invalid forms, missing/duplicate flags and invalid env refused before append; a1/claude-2 accepted; env default and flag override checked through all four completion commands
+account projections: optional field stays absent in stored history; status/current render not-applicable; labelled status/current/index and report-header parity checked
+docs/control/local/account-labels.md
+usage cmp: legacy and every original order segment unchanged; local mapping ignored
+PASS synthetic interleaving: WO-901 ready-to-verify; WO-902 active
+PASS activation owns storage: legacy appends remain legacy; new orders never span segments
+PASS corrupt segments: path and ordinal reported; all 13 commands preserve every control byte
+PASS per-segment byte-prefix proof: sibling additions pass; deletions and equivalent-JSON rewrites refuse
+PASS named-order reactivation retains its segment while a sibling is open; active reactivation refuses
+PASS legacy comparison: 153 events, unchanged bytes and v0.6.0 per-order states
+PASS legacy times: byte-identical observation, 120 named local refs, original global ordinals and source labels
+beacons: every lifecycle transition matches phase/verdict/effort/time; status and next preserve inode/ctime/size/mtime
+resume tests passed
+time recovery: {"recordedAt":1,"recovered-from-local-checkpoint-ref":1,"unknown":1}, 1 ref read; byte-identical rerun, unchanged log/projection/refs, missing and mismatched refs refused
+checkpoint tests passed
+worktree surface refusal preserved the checker report and mutated no remote
+release-notes publish validation fixtures passed
+GitHub body profile refused wrapped PR and release-note prose before publication
+FAIL contribution-signoff dea85905e7a4: observed outside author without matching sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+PASS contribution-signoff dd233d2f0b49: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff c5579e25280d: observed operator author; expected operator exemption (no sign-off required)
+PASS contribution-signoff 51d1b091024d: observed matching author sign-off; expected Signed-off-by trailer matching the commit author (DCO 1.1)
+PASS contribution-signoff 1cd94afe1237: observed operator author; expected operator exemption (no sign-off required)
+contribution sign-off publication fixtures passed before any remote mutation
+worktree gh stub transcript (temporary path normalized):
+--version
+auth status --hostname github.com
+pr create --repo github.com/dotln-fixture/worktree --head wo-099 --base main --title :sparkles: fixture --body-file <committed-PR-body>
+GitHub PR target, authentication, and committed-body fixtures passed
+beacon cleanup: populated anchored projection directories removed; docs/intake/dist/x.md negative fixture preserved
+Preparing worktree (new branch 'wo-098')
+destructive finish used committed control state and preserved the hidden-live fixture
+Preparing worktree (new branch 'wo-097')
+finish refused reopened merged order and preserved its closed subject
+PASS three-worktree metadata constellation (opaque fixture addresses shortened here):
+Beacon fixture-address:fixture-address.beacon | active | unknown | unknown | host-projected | fresh | v2 | 8365 bytes | unauthenticated-legacy
+Beacon fixture-address:fixture-address.beacon | ready-to-verify | unknown | unknown | host-projected | fresh | v2 | 17597 bytes | unauthenticated-legacy
+Beacon fixture-address:fixture-address.beacon | verifying | unknown | unknown | host-projected | fresh | v2 | 26765 bytes | unauthenticated-legacy
+Group Beacon | active=1 ready-to-verify=1 verifying=1 needs-fix=0 repairing=0 verified=0 final-review=0 closed=0 | group-v1 | 55258 bytes (host cache; fresh)
+PASS unreadable garbage content still decodes; missing expected worktree beacon is absent
+PASS verifier contains only host records; two independent 256-bit names; restricted name appears only in the authorized active next briefing
+PASS anchored Beacon disposal; protected intake and lookalike/nested paths still refuse
+PASS filesystem projection failure records exactly one transition and warns without leaking restricted paths
+worktree tests passed
+local release surfaces ignored an unrelated sibling tag and passed without a remote; authoritative check still requires origin
+release preparation CLI preserved three independent control segments and all Git refs
+FAIL license-surfaces packages/kernel/package.json license: observed missing; expected "Apache-2.0"
+FAIL license-surfaces packages/kernel/package.json private: observed missing; expected true
+FAIL license-surfaces LICENSE: observed sha256:69f8372925094c8510b4924c771da1667d4b82ccf28a96713e687ca04ea70966; expected sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+license-surfaces release preflight fixtures passed (real npm dry runs)
+release surface version and component fixtures passed
+Preparing worktree (new branch 'wo-099')
+release close surface gates ran after sync and before npm, tag, or GitHub mutation
+release influence permits only the exact root harness-settings path
+Preparing worktree (new branch 'other')
+missing built kernel cadence constants refused before tag publication
+inconsistent built kernel cadence constants refused before tag publication
+Preparing worktree (new branch 'wo-099')
+reviewed subject helpers guarded their own pre-fast-forward close and cleanup
+Preparing worktree (new branch 'wo-099')
+cadence manifest evaluable: ["Once","After","Every","Gate","Until","Backoff"]
+cadence manifest deferred: ["Burst","Calendar","Window","While","Sequence","Merge","Race","Repeat"]
+assembled edition fixture sha256: b583cd67fa5c1757a35073ce96fae4c4ab84b59e06b625636d940b4634235931
+release gh stub transcript (temporary paths normalized):
+--version
+auth status --hostname github.com
+release view v0.2.1 --repo github.com/dotln-fixture/edition --json body,name,isDraft,isPrerelease,assets
+release create v0.2.1 --repo github.com/dotln-fixture/edition --verify-tag --title DotLn v0.2.1 --notes-file <temporary-release-body>
+--version
+auth status --hostname github.com
+release view v0.2.1 --repo github.com/dotln-fixture/edition --json body,name,isDraft,isPrerelease,assets
+--version
+auth status --hostname github.com
+release view v0.2.0 --repo github.com/dotln-fixture/edition --json body,name,isDraft,isPrerelease,assets
+release create v0.2.0 --repo github.com/dotln-fixture/edition --verify-tag --title DotLn v0.2.0 --notes-file <temporary-release-body>
+--version
+auth status --hostname github.com
+release view v0.2.0 --repo github.com/dotln-fixture/edition --json body,name,isDraft,isPrerelease,assets
+release edition, GitHub projection, recovery, and historical backfill fixtures passed
+PASS independent real worktrees: WO-901 ready-to-verify; WO-902 verifying; sibling segment/projection byte-identical after WO-901 transition
+Resolved generated projection conflicts for wo-902: docs/control/current.md
+PASS serial partial integration preserves complete per-order states; main overview lists both; ambiguous/unknown selection refuses without mutation
+Resolved generated projection conflicts for wo-901: docs/control/current.md, docs/work-orders/README.md
+PASS worktree finish and no-publish release close select merged WO-901 while WO-902 is open; validated release then published only to fixture origin/gh stub
+Resolved generated projection conflicts for wo-903: docs/control/current.md
+PASS old-base third branch retains its segment; every first-parent append-only proof passes; index attributes WO-901 to v0.2.1 and WO-902 to v0.2.2
+Concurrent integration fixture Git log:
+*   756e0ee (HEAD -> main, tag: v0.2.2, origin/main) Integrate wo-902
+|\  
+| * 98b0331 WO-902 final review pass
+| *   c2f057a Integrate main
+| |\  
+| |/  
+|/|   
+* |   7ebb768 Integrate wo-903
+|\ \  
+| * | dfb583b (wo-903) WO-903 independent progress
+* | |   7095542 (tag: v0.2.1) Integrate wo-901
+|\ \ \  
+| * | | 407cb66 WO-901 final review pass
+* | | |   623929f Integrate wo-902
+|\ \ \ \  
+| | |_|/  
+| |/| |   
+| * | | 5454a65 WO-902 independent progress
+| | |/  
+| |/|   
+* | |   9896c3d Integrate wo-901
+|\ \ \  
+| |/ /  
+|/| /   
+| |/    
+| * 2cbd50a WO-901 independent progress
+|/  
+* 71d9d77 Concurrent fixture authorities
+* 661a344 (tag: v0.2.0) fixture v0.2.0
+release tests passed
+PASS index derives release membership, no-release, unreleased, active, blocked, ready, malformed and unknown
+PASS plain-text checklist first, complete details once per file, sorted sections, safe Markdown and deterministic bytes
+PASS check is read-only; deleting a detail or editing evidence names the first differing line
+PASS sequence edits stale the generated view; malformed, missing, duplicate and unknown recommendations refuse without mutation
+PASS a new release tag preserves the recorded check; explicit refresh includes it without retroactive no-release inference
+PASS later tag time cannot turn an old source prefix into a prior release; unvalidated additional tags do not invalidate the snapshot
+PASS missing or changed recorded tag objects refuse without rewriting the index
+PASS lifecycle transitions stale the index; failed final review and a new request have distinct verdicts
+PASS unknown event and invalid time refuse at the original global ordinal
+PASS unknown headers, invalid versions, duplicate fields, body metadata and duplicate IDs never become guesses
+PASS source and destination symlinks refuse; CLI rejects unknown arguments
+PASS the sole manifest-free historical release requires its explicit record
+PASS segments retain close attribution, every open row, and tagged source inventories
+PASS work-order index fixtures
+PASS index coverage: 237/237 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+STALE everyday-ai-user-toc.md: source lock df9baa495d5c8511eddb1259391d444cef9ff09633cd83dacd4538401bb1eb17; current f1ffd0c1f514a8b2f6db5481f80cf682b7428a5930467ef50a33ed247f88a0e1
+STALE software-engineer-toc.md: source lock b611a0fe1cae42a4bb5ffc2c6144a6152a07591e0a27fc4424a4003de4db79ae; current a1b1c75f4eea487635c49d662d0c16cef5a4b47141f3a072dad4646a6411763e
+FAIL 2 edition(s) are stale

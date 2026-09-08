@@ -1,0 +1,122 @@
+TAP version 13
+# > test
+# > node fixture-check.mjs
+# > test
+# > node fixture-check.mjs
+# Subtest: WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+not ok 1 - WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+  ---
+  duration_ms: 25864.386792
+  location: '<scratch>/scripts/test-harness.mjs:290:1'
+  failureType: 'testCodeFailure'
+  error: '{"hook":"read-observer","path":"<fixture>/.claude/hooks/finish.mjs","error":"ETIMEDOUT","signal":"SIGTERM","stderr":""}'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    invoke (file://<scratch>/scripts/test-harness.mjs:202:10)
+    TestContext.<anonymous> (file://<scratch>/scripts/test-harness.mjs:393:7)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:824:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:533:18)
+    node:internal/test_runner/harness:247:12
+    node:internal/process/task_queues:140:7
+    AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+  ...
+# Subtest: WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries
+ok 2 - WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries
+  ---
+  duration_ms: 2370.590292
+  ...
+# Subtest: WO-039 real-scale inherited outputs and oversized lines can complete through observed bounded deliveries
+ok 3 - WO-039 real-scale inherited outputs and oversized lines can complete through observed bounded deliveries
+  ---
+  duration_ms: 8827.280333
+  ...
+# Subtest: WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement
+ok 4 - WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement
+  ---
+  duration_ms: 368.862083
+  ...
+# Subtest: WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+ok 5 - WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+  ---
+  duration_ms: 208.985875
+  ...
+# Subtest: WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+ok 6 - WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+  ---
+  duration_ms: 18.228917
+  ...
+# Subtest: WO-039 control observation uses the canonical read-only lifecycle command
+ok 7 - WO-039 control observation uses the canonical read-only lifecycle command
+  ---
+  duration_ms: 133.794625
+  ...
+# Subtest: WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+ok 8 - WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+  ---
+  duration_ms: 259.778833
+  ...
+# Subtest: WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+ok 9 - WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+  ---
+  duration_ms: 2106.72
+  ...
+# Subtest: WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+ok 10 - WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+  ---
+  duration_ms: 878.531458
+  ...
+# Subtest: WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+ok 11 - WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+  ---
+  duration_ms: 568.9975
+  ...
+# Subtest: WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+ok 12 - WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+  ---
+  duration_ms: 2707.208375
+  ...
+# Subtest: WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+ok 13 - WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+  ---
+  duration_ms: 3755.534583
+  ...
+# Subtest: WO-039 foreign writer reservations refuse while their owner lives, reclaim with a record when it is dead, and stay inspectable
+not ok 14 - WO-039 foreign writer reservations refuse while their owner lives, reclaim with a record when it is dead, and stay inspectable
+  ---
+  duration_ms: 5716.583375
+  location: '<scratch>/scripts/test-harness.mjs:1436:1'
+  failureType: 'testCodeFailure'
+  error: 'a migrated self-distrusted identity stays untrusted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<scratch>/scripts/test-harness.mjs:1730:12)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:824:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:533:18)
+    Test.postRun (node:internal/test_runner/test:923:19)
+    Test.run (node:internal/test_runner/test:866:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:533:7)
+  ...
+# Subtest: WO-039 concurrent dead-owner recovery admits exactly one writer while the first owner's work is outstanding
+ok 15 - WO-039 concurrent dead-owner recovery admits exactly one writer while the first owner's work is outstanding
+  ---
+  duration_ms: 1955.80275
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 13
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 55812.683833

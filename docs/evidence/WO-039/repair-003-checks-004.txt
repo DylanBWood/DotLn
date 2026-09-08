@@ -1,0 +1,193 @@
+==== node scripts/test-plan-refutation.mjs
+==== exit=0
+==== node --test corpus/harness/wo101-id-corpus.test.mjs
+TAP version 13
+# Subtest: WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+ok 1 - WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+  ---
+  duration_ms: 7.004375
+  ...
+# Subtest: WO-101 every stable-hash fixture agrees byte-for-byte across independent and shipped implementations
+ok 2 - WO-101 every stable-hash fixture agrees byte-for-byte across independent and shipped implementations
+  ---
+  duration_ms: 49.411833
+  ...
+# Subtest: WO-101 every command-id tuple agrees across the typed reference and shipped implementation
+ok 3 - WO-101 every command-id tuple agrees across the typed reference and shipped implementation
+  ---
+  duration_ms: 23.444041
+  ...
+# Subtest: WO-101 normalization pairs explicitly preserve byte-honest NFC/NFD differences
+ok 4 - WO-101 normalization pairs explicitly preserve byte-honest NFC/NFD differences
+  ---
+  duration_ms: 0.593041
+  ...
+# Subtest: WO-101 surrogate probes distinguish encoding equivalence from a hash collision
+ok 5 - WO-101 surrogate probes distinguish encoding equivalence from a hash collision
+  ---
+  duration_ms: 0.081458
+  ...
+# Subtest: WO-101 namespace pairs re-derive the swallowed-command incident with only ep:/ws: changed
+ok 6 - WO-101 namespace pairs re-derive the swallowed-command incident with only ep:/ws: changed
+  ---
+  duration_ms: 0.401792
+  ...
+# Subtest: WO-101 empty episode IDs exactly equal undefined fallback IDs
+ok 7 - WO-101 empty episode IDs exactly equal undefined fallback IDs
+  ---
+  duration_ms: 0.3585
+  ...
+# Subtest: WO-101 corpus includes empty, very long, control, colon, numeric-string, and Unicode ID families
+ok 8 - WO-101 corpus includes empty, very long, control, colon, numeric-string, and Unicode ID families
+  ---
+  duration_ms: 1.457708
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 162.434209
+==== exit=0
+==== npm run evidence:artifact -- --check
+
+> evidence:artifact
+> node scripts/artifact-identity-evidence.mjs --check
+
+Verified 4 current artifact evidence files in docs/evidence/WO-039/artifact-identity; original semantic hashes and frozen oracle unchanged.
+==== exit=0
+==== npm run evidence:verification -- --check
+
+> evidence:verification
+> node scripts/verification-evidence.mjs --check
+
+Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.
+==== exit=0
+==== npm run evidence:feedback -- --check
+
+> evidence:feedback
+> npm run build --silent && node scripts/feedback-evidence.mjs --edition WO-039 --check
+
+Verified ten passing regressions, ten removal failures, and 2393 fewer instruction bytes in the matched projection.
+==== exit=0
+==== npm run test:mutation --silent
+TAP version 13
+# Subtest: deterministic enumeration changes exactly one guarded source site
+ok 1 - deterministic enumeration changes exactly one guarded source site
+  ---
+  duration_ms: 3.322542
+  ...
+# Subtest: comments, strings, regex classes and nested template interpolations are opaque
+ok 2 - comments, strings, regex classes and nested template interpolations are opaque
+  ---
+  duration_ms: 0.292625
+  ...
+# Subtest: scratch cleanup rejects borrowed handles, changed markers and root symlinks
+ok 3 - scratch cleanup rejects borrowed handles, changed markers and root symlinks
+  ---
+  duration_ms: 3.383458
+  ...
+# Subtest: real offline builds distinguish named test kill, compile noise and planted survivor
+ok 4 - real offline builds distinguish named test kill, compile noise and planted survivor
+  ---
+  duration_ms: 1905.68875
+  ...
+# Subtest: all eight historical compiler shapes are planted known-survivable cases
+    # Subtest: seed 1
+    ok 1 - seed 1
+      ---
+      duration_ms: 507.907
+      ...
+    # Subtest: seed 2
+    ok 2 - seed 2
+      ---
+      duration_ms: 505.643875
+      ...
+    # Subtest: seed 3
+    ok 3 - seed 3
+      ---
+      duration_ms: 504.210417
+      ...
+    # Subtest: seed 4
+    ok 4 - seed 4
+      ---
+      duration_ms: 505.1875
+      ...
+    # Subtest: seed 5
+    ok 5 - seed 5
+      ---
+      duration_ms: 501.745042
+      ...
+    # Subtest: seed 6
+    ok 6 - seed 6
+      ---
+      duration_ms: 504.819375
+      ...
+    # Subtest: seed 7
+    ok 7 - seed 7
+      ---
+      duration_ms: 503.567542
+      ...
+    # Subtest: seed 8
+    ok 8 - seed 8
+      ---
+      duration_ms: 508.10175
+      ...
+    1..8
+ok 5 - all eight historical compiler shapes are planted known-survivable cases
+  ---
+  duration_ms: 4042.761708
+  ...
+# Subtest: a real red baseline refuses before any matrix row is written
+ok 6 - a real red baseline refuses before any matrix row is written
+  ---
+  duration_ms: 500.494667
+  ...
+# Subtest: fresh compilation refuses a missing package suite and cannot reuse stale dist
+ok 7 - fresh compilation refuses a missing package suite and cannot reuse stale dist
+  ---
+  duration_ms: 400.190625
+  ...
+# Subtest: timeout kills a descendant before it can write after its parent is stopped
+ok 8 - timeout kills a descendant before it can write after its parent is stopped
+  ---
+  duration_ms: 1206.478959
+  ...
+# Subtest: a compiled infinite-loop mutant is a test timeout, never a kill or survivor
+ok 9 - a compiled infinite-loop mutant is a test timeout, never a kill or survivor
+  ---
+  duration_ms: 2006.337959
+  ...
+# Subtest: rendered exact patches apply with Git and produce the same single mutation
+ok 10 - rendered exact patches apply with Git and produce the same single mutation
+  ---
+  duration_ms: 343.46425
+  ...
+# Subtest: append-only resume rechecks baseline, preserves prefix, records exact stopping point
+ok 11 - append-only resume rechecks baseline, preserves prefix, records exact stopping point
+  ---
+  duration_ms: 15.8985
+  ...
+# Subtest: session budget and statistics never turn compilation noise or timeouts into strength
+ok 12 - session budget and statistics never turn compilation noise or timeouts into strength
+  ---
+  duration_ms: 0.88625
+  ...
+# Subtest: TAP parsing retains nested named failures and refuses to infer an absent suite
+ok 13 - TAP parsing retains nested named failures and refuses to infer an absent suite
+  ---
+  duration_ms: 0.324
+  ...
+1..13
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10484.705167
+==== exit=0

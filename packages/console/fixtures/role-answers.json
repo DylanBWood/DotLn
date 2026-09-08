@@ -18,7 +18,7 @@
   {
     "role": "engineer",
     "question": "Does this composition express the behavior I mean, and what does it cost?",
-    "fixture": "wo011",
+    "fixture": "selfhost",
     "section": "saved-builds",
     "rowTitle": "Repo Gardener",
     "keys": ["tooltip", "semanticHash", "hashAgreement"]
@@ -26,7 +26,7 @@
   {
     "role": "tester",
     "question": "In this situation, does the equipped behavior do the right thing?",
-    "fixture": "wo011",
+    "fixture": "selfhost",
     "section": "compiled-mechanisms",
     "rowTitle": "anti-oscillation",
     "keys": ["desiredBehavior", "fixture.incidentsPrevented", "lastActivation"]
@@ -34,7 +34,7 @@
   {
     "role": "devops",
     "question": "Which repeated step can become a checked mechanism next?",
-    "fixture": "wo011",
+    "fixture": "selfhost",
     "section": "compiled-mechanisms",
     "rowTitle": "anti-oscillation",
     "keys": ["boundary", "rung", "nextMaturity"]

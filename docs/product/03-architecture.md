@@ -365,22 +365,32 @@ the annotated tag and its matching GitHub Release. This replaces large
 autoloaded role explanations with on-demand, versioned protocol adapters while
 preserving a CLI path for humans and runtimes that cannot load skills.
 
-Skill delivery is incremental rather than a single rewrite: first define and
-test the shared intent-to-transition contract, then package verifier and repair
-skills, then final-review and lifecycle skills, and finally measure startup
-context saved, invocation accuracy, and parity with the CLI. Until those work
-orders land, the current resume resolver and durable docs remain authoritative.
+**WO-039 implementation slice (2026-09-07).** The Contributor now compiles the
+intent-to-role contract into executor/repair, verifier, reviewer, release-close
+and separate planner/ideation skills. `resume: status` and `resume: times` share
+the executor adapter. Canonical `resume` status and transitions still own phase,
+paths and legality. The generated floor routes each intent to its one skill;
+it no longer requires the whole execution guide at every cold start.
 
-The 2026-09-06 redirect filed the first order for this section, three days
-after it was written with none: WO-039 adds the `harness-v1` compiler target
-that lowers a build into a harness profile observed by a bounded smoke, with
-the role skills generated per resume phrase from the guide's procedures, the
-hooks generated from the compiled units' declared mechanisms so that the same
-predicate runs in the hook and in the audit host, and the instruction block
-generated as marked residue with a byte count. The delivery order above
-stands; the smoke that observes what the harness can load and enforce is the
-runtime profile this section asks for, recorded before any lowering rule is
-written.
+The `harness-v1` target also emits project settings, hooks and marked residue
+from the same build. The [phase-zero observations](../discovery/harness-smoke-2026-09-07.md)
+predate lowering. Claude's observed event adapters call the existing compiled
+feedback boundary. Codex ships project skills and the shared instruction block;
+no unobserved hook becomes enforcement. Semantic judgment remains role procedure
+where the harness has no admitted host facts, and an unconfirmed correction
+token never activates from ordinary language.
+
+The [context and live receipt](../evidence/WO-039/README.md) counts all directed
+reads throughout each role, using a matched synthetic task and the activation
+instruction/guide as baseline. A generated observer audits scratch-session reads
+through the final Stop. Current smokes observe native Read attempts without
+enforcing the directed ranges; an out-of-set read or attempt fails the receipt.
+Refused shell routes remain counted, and enforced-mode fixtures record the
+attempted relative path and range. These are bounded role-entry
+and refusal observations, not full PR/release episodes or general workflow-cost
+measurements. The remaining delivery order is broader intent invocation/parity
+coverage, completed real workflows, portable profile negotiation and the starter
+export (WO-033). The protocol and CLI remain available independently of skills.
 
 #### Candidate — contributed execution pool
 

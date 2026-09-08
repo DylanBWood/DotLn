@@ -308,6 +308,57 @@ identity migration.
   races, unavailable adapters, and an explicitly preauthorized optional
   WorkOrder portfolio. The candidate includes no wildcard authority, provider
   bypass, implementation name, version, sequence position, or activation grant.
+- **Unallocated interface candidate — private exclusion-list management:**
+  expose Clean Room → Excluded terms in the build inspector, with the active
+  local list, its entries, add/remove actions and a No terms configured state.
+  Lists grow incrementally; there is no exhaustive up-front inventory. Keep
+  entries and their hashes out of public artifacts. The
+  [interface item](../product/04-interfaces.md#candidate--private-exclusion-list-management)
+  and [WO-039 receipt](../evidence/WO-039/ideation.md) preserve the operator's
+  request. UI host, layout, storage reconciliation and allocation remain open;
+  the current horizon and work-order sequence are unchanged.
+- **Unallocated evidence candidate — feedback projection for every workspace:**
+  the feedback source projection strips release-only version and license
+  labels from the lockfile root and the three workspace entries it names, so
+  a later workspace stays raw in the feedback subject and over-invalidates the
+  live edition whenever an order integrates it. Generalize the projection over
+  every workspace lockfile entry, keep the fixtures that prove external
+  dependency and resolution changes still invalidate, and record a fresh live
+  edition with the change. Named by [FINAL-001](../final-reviews/WO-039/FINAL-001.md)
+  finding F1 and the [fifth repair receipt](../evidence/WO-039/repair-005.md);
+  it grants no activation, sequence position or implementation authority.
+- **Unallocated evidence candidate — historical editions on the actor board:**
+  the reactor refuses a persisted verification capsule that no longer
+  recompiles under the current compiler, so an actor board over an earlier
+  self-hosted edition renders that edition's verifier and maturity as
+  unavailable after every compiler package bump, and the board's edition is a
+  constant beside the root evidence script's `--edition` flag. Decide whether
+  a read-only historical projection may replay an earlier compiler's capsule
+  under an explicit label, and select the current edition from one declared
+  source. Named by the [fifth repair receipt](../evidence/WO-039/repair-005.md);
+  it grants no activation, sequence position or implementation authority.
+- **Unallocated evidence candidate — console host-collection budget under
+  gate load:** the actor board's host collection runs each fixed read-only
+  command under one sixty-second budget, and under full-gate load the release
+  listing exceeded it in four full runs, one of them outside the sandbox,
+  while passing alone. By the operator's decision the fifth repair runs the
+  console suite after the other three package suites in the root gate; the
+  budget itself is unchanged.
+  Decide whether the budget scales with the host or whether the release
+  listing is shared across the gate, and keep the read-only guarantee. Named
+  by the [fifth repair receipt](../evidence/WO-039/repair-005.md); it grants
+  no activation, sequence position or implementation authority.
+- **Unallocated evidence candidate — a multi-attempt verifier fixture for the
+  actor board:** WO-032's `AC2` asserts that every recorded verifier attempt
+  other than the accepted one shows `lease-expired` and takes no acceptance-
+  matrix link, but the `selfhost` case re-pinned by the fifth repair records
+  exactly one attempt and it is the accepted one, so that assertion now
+  iterates over no rows and the string appears in no committed fixture output.
+  Restore the invariant with a fixture-local synthetic store carrying two or
+  more verifier attempts, in the manner of the hand-authored WO-009 event log;
+  it needs no live evidence and changes no behaviour. Named by
+  [FINAL-002](../final-reviews/WO-039/FINAL-002.md); it grants no activation,
+  sequence position or implementation authority.
 - **Unallocated control candidate — canonical private intake reconciliation:**
   replace worktree-relative raw-note drift with one private-store resolver and
   capture/status/reconcile operations. Require locking, contained regular

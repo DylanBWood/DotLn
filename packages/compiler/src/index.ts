@@ -8,3 +8,4 @@ export * from "./artifact-identity.js";
 export * from "./senses.js";
 export * from "./verification.js";
 export * from "./feedback.js";
+export * from "./harness.js";

@@ -16,6 +16,15 @@ import type {
 import { exportedLoadouts } from "./builds.js";
 import { array, at, available, object, string, unavailable } from "./values.js";
 
+/** The self-hosted feedback edition the board reads by default. The root
+ * evidence command selects the same edition. A compiler package bump makes an
+ * earlier edition historical: the skeleton refuses persisted compilation drift
+ * when it replays that edition's verifier stream, so the two selections move
+ * together, and the `selfhost` fixture case is re-pinned with them. */
+export const SELF_HOST_EDITION = "WO-039";
+export const selfHostEvidence = (name: string): string =>
+  `docs/evidence/${SELF_HOST_EDITION}/feedback/${name}`;
+
 function attempt<T>(ref: string, read: () => T): Source<T> {
   try {
     return available(ref, read());
@@ -159,14 +168,14 @@ export async function collectSources(
       "packages/console/fixtures/wo009.events.jsonl",
     ],
     [
-      "wo011-audit",
-      "WO-011 self-hosted executor",
-      "docs/evidence/WO-011/selfhost-audit.jsonl",
+      "selfhost-audit",
+      `${SELF_HOST_EDITION} self-hosted executor`,
+      selfHostEvidence("selfhost-audit.jsonl"),
     ],
     [
-      "wo011-verifier",
-      "WO-011 self-hosted verifier",
-      "docs/evidence/WO-011/selfhost-verification.jsonl",
+      "selfhost-verifier",
+      `${SELF_HOST_EDITION} self-hosted verifier`,
+      selfHostEvidence("selfhost-verification.jsonl"),
     ],
   ] as const;
   const stores = [
@@ -198,10 +207,10 @@ export async function collectSources(
     ),
     releases: attempt("release:list", () => command("release.mjs", ["list"])),
     maturity: attempt(
-      "docs/evidence/WO-011/feedback.json",
+      selfHostEvidence("feedback.json"),
       () =>
         JSON.parse(
-          readFile(join(root, "docs/evidence/WO-011/feedback.json")),
+          readFile(join(root, selfHostEvidence("feedback.json"))),
         ) as unknown,
     ),
     workOrderIndex: text("docs/work-orders/README.md"),

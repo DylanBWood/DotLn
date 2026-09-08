@@ -7,9 +7,9 @@ Serves: showrunner, engineer, tester
 Who is recorded, what are they equipped to do, and what evidence shows their
 work?
 
-WO-011 self-hosted executor [actors-8ecb85cf71fd36f5] — available
+WO-039 self-hosted executor [actors-d388bf69a2138223] — available
 
-feedback-host — executor [actor-4c5739a152bfae5a]
+feedback-host — executor [actor-0b226db45c9543fc]
   Actor kind: script [evidence-24]
     FeedbackAuditOpened is the fixed host executor's recorded dispatch
   Identity: feedback-host [evidence-24]
@@ -27,166 +27,71 @@ feedback-host — executor [actor-4c5739a152bfae5a]
     Not recorded by this source
   Recorded lease expiry: unknown [evidence-24]
     Not recorded by this source
-  Recorded build hash: fnv1a64:d0000feb2622b0d4 [evidence-24]
+  Recorded build hash: fnv1a64:f78e381ffafce1e9 [evidence-24]
   Hash describes: feedback-v1 policy hash [evidence-24]
   LoadoutGraph semantic hash: unknown [evidence-24]
     This actor has a compiled policy or verification capsule; the source
 records no LoadoutGraph hash
   Allowed effects: feedback.audit [evidence-24]
   Denied effects: repo.write; repo.delete; publish [evidence-24]
-  Recorded grant expiry: 1788789410896 [evidence-24]
+  Recorded grant expiry: 1788879577413 [evidence-24]
     Recorded bound only; the board does not decide current authority
   Work order: WO-011-feedback-audit [evidence-24]
-  -> Inspect recorded build [recorded-build-47e7725567e6d1e6]
-  -> feedback.audit: allowed [receipt-518b6c01831fd167]
-  -> feedback.audit: observed [receipt-85d6a3f292be89aa]
-  -> command.result: returned [receipt-6b53a8be4ef4ef22]
-  -> Independent acceptance evidence [matrix-3e4bdc81f5bf7f5c]
+  -> Inspect recorded build [recorded-build-6499f16d42559ac9]
+  -> feedback.audit: allowed [receipt-d11fc354b20b7da1]
+  -> feedback.audit: observed [receipt-afeefcba123ffcf0]
+  -> command.result: returned [receipt-79c8b4cfa798a730]
+  -> Independent acceptance evidence [matrix-1021c3ffb8a8d03a]
 
-WO-011 self-hosted verifier [actors-1fec985d965cb210] — available
+WO-039 self-hosted verifier [actors-b9a9504826d64362] — available
 
-verifier — ep_verifier_1_attempt_1 [actor-c734b501838dbcd0]
+verifier — ep_verifier_1_attempt_1 [actor-7040de0b647a5a8e]
   Actor kind: model session [evidence-30]
   Identity: unknown [evidence-31]
     Not recorded by this source
   Role: verifier [evidence-30]
   Episode: ep_verifier_1_attempt_1 [evidence-29]
-  Recorded episode phase: lease-expired [evidence-29]
-  Transport: claude-cli-print [evidence-29]
-  Selected model: claude-sonnet-5 [evidence-29]
-  Selected effort: max [evidence-29]
+  Recorded episode phase: completed [evidence-29]
+  Transport: codex-cli-exec [evidence-29]
+  Selected model: gpt-6-astra [evidence-29]
+  Selected effort: unknown [evidence-29]
+    Not recorded by this source
   Selection source: host-launch [evidence-30]
   Observed effective model: unknown [evidence-30]
     Not recorded by this source
   Observed effective effort: unknown [evidence-30]
     Not recorded by this source
-  Last host heartbeat: 1788786191887 [evidence-29]
-  Recorded lease expiry: 1788786196887 [evidence-29]
-  Recorded build hash: fnv1a64:eb312ec46e198b93 [evidence-31]
+  Last host heartbeat: 1788875999755 [evidence-29]
+  Recorded lease expiry: 1788876004755 [evidence-29]
+  Recorded build hash: fnv1a64:c9955a2344c45b3a [evidence-31]
   Hash describes: verification-v1 input hash [evidence-31]
   LoadoutGraph semantic hash: unknown [evidence-31]
     This actor has a compiled policy or verification capsule; the source
 records no LoadoutGraph hash
   Allowed effects: verification.evaluate [evidence-31]
   Denied effects: repo.write; repo.delete; repair.propose; publish [evidence-31]
-  Recorded grant expiry: 1788789415260 [evidence-31]
+  Recorded grant expiry: 1788879581480 [evidence-31]
     Recorded bound only; the board does not decide current authority
   Work order: verification_1 [evidence-31]
-  -> Inspect recorded build [recorded-build-5f14b81be1a31e12]
-  -> verification.evaluate: allowed [receipt-b475d9757e96387f]
-  -> verification.evaluate: observed [receipt-79f33205c51c1631]
-  -> command.result: returned [receipt-e7c6e352c0f86657]
+  -> Inspect recorded build [recorded-build-9df9171b916d5b7f]
+  -> Acceptance matrix: ws_feedback_audit_verification [matrix-1021c3ffb8a8d03a]
+  -> verification.evaluate: allowed [receipt-2805f0b33e6f4581]
+  -> verification.evaluate: observed [receipt-a31fa503faf4893c]
+  -> command.result: returned [receipt-deeb442b9114290c]
 
-verifier — ep_verifier_1_attempt_2 [actor-c734b801838dc1e9]
-  Actor kind: model session [evidence-33]
-  Identity: unknown [evidence-31]
+verification-host [recorded-actor-6eacb6c4a15438c4]
+  Recorded actor id: verification-host [evidence-32]
+  Actor kind: unknown [evidence-32]
     Not recorded by this source
-  Role: verifier [evidence-33]
-  Episode: ep_verifier_1_attempt_2 [evidence-32]
-  Recorded episode phase: lease-expired [evidence-32]
-  Transport: claude-cli-print [evidence-32]
-  Selected model: claude-sonnet-5 [evidence-32]
-  Selected effort: max [evidence-32]
-  Selection source: host-launch [evidence-33]
-  Observed effective model: unknown [evidence-33]
+  Role: unknown [evidence-32]
     Not recorded by this source
-  Observed effective effort: unknown [evidence-33]
+  Last event episode: unknown [evidence-32]
     Not recorded by this source
-  Last host heartbeat: 1788786880022 [evidence-32]
-  Recorded lease expiry: 1788786885022 [evidence-32]
-  Recorded build hash: fnv1a64:eb312ec46e198b93 [evidence-31]
-  Hash describes: verification-v1 input hash [evidence-31]
-  LoadoutGraph semantic hash: unknown [evidence-31]
-    This actor has a compiled policy or verification capsule; the source
-records no LoadoutGraph hash
-  Allowed effects: verification.evaluate [evidence-31]
-  Denied effects: repo.write; repo.delete; repair.propose; publish [evidence-31]
-  Recorded grant expiry: 1788789415260 [evidence-31]
-    Recorded bound only; the board does not decide current authority
-  Work order: verification_1 [evidence-31]
-  -> Inspect recorded build [recorded-build-5f14b81be1a31e12]
-  -> verification.evaluate: allowed [receipt-b475d9757e96387f]
-  -> verification.evaluate: observed [receipt-79f33205c51c1631]
-  -> command.result: returned [receipt-e7c6e352c0f86657]
-
-verifier — ep_verifier_1_attempt_3 [actor-c734b701838dc036]
-  Actor kind: model session [evidence-35]
-  Identity: unknown [evidence-31]
-    Not recorded by this source
-  Role: verifier [evidence-35]
-  Episode: ep_verifier_1_attempt_3 [evidence-34]
-  Recorded episode phase: lease-expired [evidence-34]
-  Transport: claude-cli-print [evidence-34]
-  Selected model: claude-sonnet-5 [evidence-34]
-  Selected effort: max [evidence-34]
-  Selection source: host-launch [evidence-35]
-  Observed effective model: unknown [evidence-35]
-    Not recorded by this source
-  Observed effective effort: unknown [evidence-35]
-    Not recorded by this source
-  Last host heartbeat: 1788787412686 [evidence-34]
-  Recorded lease expiry: 1788787417686 [evidence-34]
-  Recorded build hash: fnv1a64:eb312ec46e198b93 [evidence-31]
-  Hash describes: verification-v1 input hash [evidence-31]
-  LoadoutGraph semantic hash: unknown [evidence-31]
-    This actor has a compiled policy or verification capsule; the source
-records no LoadoutGraph hash
-  Allowed effects: verification.evaluate [evidence-31]
-  Denied effects: repo.write; repo.delete; repair.propose; publish [evidence-31]
-  Recorded grant expiry: 1788789415260 [evidence-31]
-    Recorded bound only; the board does not decide current authority
-  Work order: verification_1 [evidence-31]
-  -> Inspect recorded build [recorded-build-5f14b81be1a31e12]
-  -> verification.evaluate: allowed [receipt-b475d9757e96387f]
-  -> verification.evaluate: observed [receipt-79f33205c51c1631]
-  -> command.result: returned [receipt-e7c6e352c0f86657]
-
-verifier — ep_verifier_1_attempt_4 [actor-c734ba01838dc54f]
-  Actor kind: model session [evidence-37]
-  Identity: unknown [evidence-31]
-    Not recorded by this source
-  Role: verifier [evidence-37]
-  Episode: ep_verifier_1_attempt_4 [evidence-36]
-  Recorded episode phase: completed [evidence-36]
-  Transport: claude-cli-print [evidence-36]
-  Selected model: claude-sonnet-5 [evidence-36]
-  Selected effort: max [evidence-36]
-  Selection source: host-launch [evidence-37]
-  Observed effective model: unknown [evidence-37]
-    Not recorded by this source
-  Observed effective effort: unknown [evidence-37]
-    Not recorded by this source
-  Last host heartbeat: 1788788099959 [evidence-36]
-  Recorded lease expiry: 1788788104959 [evidence-36]
-  Recorded build hash: fnv1a64:eb312ec46e198b93 [evidence-31]
-  Hash describes: verification-v1 input hash [evidence-31]
-  LoadoutGraph semantic hash: unknown [evidence-31]
-    This actor has a compiled policy or verification capsule; the source
-records no LoadoutGraph hash
-  Allowed effects: verification.evaluate [evidence-31]
-  Denied effects: repo.write; repo.delete; repair.propose; publish [evidence-31]
-  Recorded grant expiry: 1788789415260 [evidence-31]
-    Recorded bound only; the board does not decide current authority
-  Work order: verification_1 [evidence-31]
-  -> Inspect recorded build [recorded-build-5f14b81be1a31e12]
-  -> Acceptance matrix: ws_feedback_audit_verification [matrix-3e4bdc81f5bf7f5c]
-  -> verification.evaluate: allowed [receipt-b475d9757e96387f]
-  -> verification.evaluate: observed [receipt-79f33205c51c1631]
-  -> command.result: returned [receipt-e7c6e352c0f86657]
-
-verification-host [recorded-actor-0bcfe5a90e1c3286]
-  Recorded actor id: verification-host [evidence-38]
-  Actor kind: unknown [evidence-38]
-    Not recorded by this source
-  Role: unknown [evidence-38]
-    Not recorded by this source
-  Last event episode: unknown [evidence-38]
-    Not recorded by this source
-  Last recorded action: VerificationContinuation [evidence-38]
-  Recorded action time: 1788788099988 [evidence-38]
-  Episode phase: unknown [evidence-38]
+  Last recorded action: VerificationContinuation [evidence-32]
+  Recorded action time: 1788876000462 [evidence-32]
+  Episode phase: unknown [evidence-32]
     An event actor id alone does not establish worker liveness
-  -> Acceptance matrix: ws_feedback_audit_verification [matrix-3e4bdc81f5bf7f5c]
+  -> Acceptance matrix: ws_feedback_audit_verification [matrix-1021c3ffb8a8d03a]
 
 People and recorded workflow actors [control-actors] — unavailable
 Source not supplied
@@ -223,10 +128,10 @@ Entropy Reducer [definition-3521c64b13265db1]
     No episode is implied by a saved build
   -> Inspect saved build [build-cd9657984091cc99]
 
-Audit receipts — WO-011 self-hosted executor [receipts-8ecb85cf71fd36f5] —
+Audit receipts — WO-039 self-hosted executor [receipts-d388bf69a2138223] —
 available
 
-feedback.audit — allowed [receipt-518b6c01831fd167]
+feedback.audit — allowed [receipt-d11fc354b20b7da1]
   Action: feedback.audit [evidence-26]
   Recorded outcome: allowed [evidence-26]
   Recorded actor: feedback-host [evidence-26]
@@ -237,7 +142,7 @@ feedback.audit — allowed [receipt-518b6c01831fd167]
     Not recorded by this source
   Canonical events: event:evt_3 [evidence-26]
 
-feedback.audit — observed [receipt-85d6a3f292be89aa]
+feedback.audit — observed [receipt-afeefcba123ffcf0]
   Action: feedback.audit [evidence-27]
   Recorded outcome: observed [evidence-27]
   Recorded actor: feedback-host [evidence-27]
@@ -249,7 +154,7 @@ feedback.audit — observed [receipt-85d6a3f292be89aa]
     Not recorded by this source
   Canonical events: event:evt_3; event:evt_5 [evidence-27]
 
-command.result — returned [receipt-6b53a8be4ef4ef22]
+command.result — returned [receipt-79c8b4cfa798a730]
   Action: command.result [evidence-28]
   Recorded outcome: returned [evidence-28]
   Recorded actor: feedback-host [evidence-28]
@@ -261,46 +166,46 @@ command.result — returned [receipt-6b53a8be4ef4ef22]
     Not recorded by this source
   Canonical events: event:evt_5 [evidence-28]
 
-Audit receipts — WO-011 self-hosted verifier [receipts-1fec985d965cb210] —
+Audit receipts — WO-039 self-hosted verifier [receipts-b9a9504826d64362] —
 available
 
-verification.evaluate — allowed [receipt-b475d9757e96387f]
-  Action: verification.evaluate [evidence-42]
-  Recorded outcome: allowed [evidence-42]
-  Recorded actor: verification-host [evidence-42]
-  Episode: unknown [evidence-42]
+verification.evaluate — allowed [receipt-2805f0b33e6f4581]
+  Action: verification.evaluate [evidence-36]
+  Recorded outcome: allowed [evidence-36]
+  Recorded actor: verification-host [evidence-36]
+  Episode: unknown [evidence-36]
     Not recorded by this source
-  Command: cmd_3b843b5108e71409 [evidence-42]
-  Authority decision: allowed [evidence-42]
-  Authority reason: unknown [evidence-42]
+  Command: cmd_3b843b5108e71409 [evidence-36]
+  Authority decision: allowed [evidence-36]
+  Authority reason: unknown [evidence-36]
     Not recorded by this source
-  Canonical events: event:evt_4 [evidence-42]
+  Canonical events: event:evt_4 [evidence-36]
 
-verification.evaluate — observed [receipt-79f33205c51c1631]
-  Action: verification.evaluate [evidence-43]
-  Recorded outcome: observed [evidence-43]
-  Recorded actor: verification-host [evidence-43]
-  Episode: unknown [evidence-43]
+verification.evaluate — observed [receipt-a31fa503faf4893c]
+  Action: verification.evaluate [evidence-37]
+  Recorded outcome: observed [evidence-37]
+  Recorded actor: verification-host [evidence-37]
+  Episode: unknown [evidence-37]
     Not recorded by this source
-  Command: cmd_3b843b5108e71409 [evidence-43]
-  Authority decision: unknown [evidence-43]
+  Command: cmd_3b843b5108e71409 [evidence-37]
+  Authority decision: unknown [evidence-37]
     Not recorded by this source
-  Authority reason: unknown [evidence-43]
+  Authority reason: unknown [evidence-37]
     Not recorded by this source
-  Canonical events: event:evt_4; event:evt_1598 [evidence-43]
+  Canonical events: event:evt_4; event:evt_26 [evidence-37]
 
-command.result — returned [receipt-e7c6e352c0f86657]
-  Action: command.result [evidence-44]
-  Recorded outcome: returned [evidence-44]
-  Recorded actor: verification-host [evidence-44]
-  Episode: unknown [evidence-44]
+command.result — returned [receipt-deeb442b9114290c]
+  Action: command.result [evidence-38]
+  Recorded outcome: returned [evidence-38]
+  Recorded actor: verification-host [evidence-38]
+  Episode: unknown [evidence-38]
     Not recorded by this source
-  Command: cmd_3b843b5108e71409 [evidence-44]
-  Authority decision: unknown [evidence-44]
+  Command: cmd_3b843b5108e71409 [evidence-38]
+  Authority decision: unknown [evidence-38]
     Not recorded by this source
-  Authority reason: unknown [evidence-44]
+  Authority reason: unknown [evidence-38]
     Not recorded by this source
-  Canonical events: event:evt_1598 [evidence-44]
+  Canonical events: event:evt_26 [evidence-38]
 
 BUILDS [builds]
 Serves: engineer
@@ -494,18 +399,18 @@ SEMANTIC HASH
     Compiler renderCompiledDiff(undefined, program); original terms remain
 primary
 
-Recorded builds — WO-011 self-hosted executor
-[recorded-builds-8ecb85cf71fd36f5] — available
+Recorded builds — WO-039 self-hosted executor
+[recorded-builds-d388bf69a2138223] — available
 
-feedback-host [recorded-build-47e7725567e6d1e6]
-  Recorded build hash: fnv1a64:d0000feb2622b0d4 [evidence-24]
+feedback-host [recorded-build-6499f16d42559ac9]
+  Recorded build hash: fnv1a64:f78e381ffafce1e9 [evidence-24]
   Hash describes: feedback-v1 policy hash [evidence-24]
   LoadoutGraph semantic hash: unknown [evidence-24]
     This actor has a compiled policy or verification capsule; the source
 records no LoadoutGraph hash
   Allowed effects: feedback.audit [evidence-24]
   Denied effects: repo.write; repo.delete; publish [evidence-24]
-  Recorded grant expiry: 1788789410896 [evidence-24]
+  Recorded grant expiry: 1788879577413 [evidence-24]
     Recorded bound only; the board does not decide current authority
   Work order: WO-011-feedback-audit [evidence-24]
   Role: executor [evidence-24]
@@ -519,18 +424,18 @@ general live prevention rates [evidence-24]
     The compiler exposes editable views for LoadoutGraph, not for this recorded
 capsule or feedback policy
 
-Recorded builds — WO-011 self-hosted verifier
-[recorded-builds-1fec985d965cb210] — available
+Recorded builds — WO-039 self-hosted verifier
+[recorded-builds-b9a9504826d64362] — available
 
-verifier [recorded-build-5f14b81be1a31e12]
-  Recorded build hash: fnv1a64:eb312ec46e198b93 [evidence-31]
+verifier [recorded-build-9df9171b916d5b7f]
+  Recorded build hash: fnv1a64:c9955a2344c45b3a [evidence-31]
   Hash describes: verification-v1 input hash [evidence-31]
   LoadoutGraph semantic hash: unknown [evidence-31]
     This actor has a compiled policy or verification capsule; the source
 records no LoadoutGraph hash
   Allowed effects: verification.evaluate [evidence-31]
   Denied effects: repo.write; repo.delete; repair.propose; publish [evidence-31]
-  Recorded grant expiry: 1788789415260 [evidence-31]
+  Recorded grant expiry: 1788879581480 [evidence-31]
     Recorded bound only; the board does not decide current authority
   Work order: verification_1 [evidence-31]
   Role: verifier [evidence-31]
@@ -553,7 +458,7 @@ Compiled mechanisms [compiled-mechanisms] — available
 
 anti-oscillation [mechanism-bbd4dc0875db2367]
   Version: 1 [evidence-4]
-  Feedback policy hash: fnv1a64:d0000feb2622b0d4 [evidence-4]
+  Feedback policy hash: fnv1a64:f78e381ffafce1e9 [evidence-4]
   Mechanism rung: 2 [evidence-4]
   Mechanism: pre-effect-guard [evidence-4]
   Host boundary: decision-lineage [evidence-4]
@@ -584,7 +489,7 @@ maturity. [evidence-4]
 
 bounded-boy-scout-cleanup [mechanism-f2da2f32510e5b43]
   Version: 1 [evidence-6]
-  Feedback policy hash: fnv1a64:d0000feb2622b0d4 [evidence-6]
+  Feedback policy hash: fnv1a64:f78e381ffafce1e9 [evidence-6]
   Mechanism rung: 2 [evidence-6]
   Mechanism: pre-effect-guard [evidence-6]
   Host boundary: cleanup-scope [evidence-6]
@@ -617,7 +522,7 @@ maturity. [evidence-6]
 
 concurrent-work-requires-worktrees [mechanism-c485b68e78cc8fd6]
   Version: 1 [evidence-8]
-  Feedback policy hash: fnv1a64:d0000feb2622b0d4 [evidence-8]
+  Feedback policy hash: fnv1a64:f78e381ffafce1e9 [evidence-8]
   Mechanism rung: 2 [evidence-8]
   Mechanism: pre-effect-guard [evidence-8]
   Host boundary: writer-isolation [evidence-8]
@@ -649,7 +554,7 @@ maturity. [evidence-8]
 
 correctness-over-sycophancy [mechanism-bdcdc07d055fb337]
   Version: 1 [evidence-10]
-  Feedback policy hash: fnv1a64:d0000feb2622b0d4 [evidence-10]
+  Feedback policy hash: fnv1a64:f78e381ffafce1e9 [evidence-10]
   Mechanism rung: 5 [evidence-10]
   Mechanism: evaluator [evidence-10]
   Host boundary: evidence-judgment [evidence-10]
@@ -682,7 +587,7 @@ maturity. [evidence-10]
 
 fail-conservative-correction [mechanism-b3f20c546f585084]
   Version: 1 [evidence-12]
-  Feedback policy hash: fnv1a64:d0000feb2622b0d4 [evidence-12]
+  Feedback policy hash: fnv1a64:f78e381ffafce1e9 [evidence-12]
   Mechanism rung: 3 [evidence-12]
   Mechanism: pure-reactor [evidence-12]
   Host boundary: semantic-correction [evidence-12]
@@ -716,7 +621,7 @@ maturity. [evidence-12]
 
 no-attribution [mechanism-4ef8cd68a9e46286]
   Version: 1 [evidence-14]
-  Feedback policy hash: fnv1a64:d0000feb2622b0d4 [evidence-14]
+  Feedback policy hash: fnv1a64:f78e381ffafce1e9 [evidence-14]
   Mechanism rung: 1 [evidence-14]
   Mechanism: script [evidence-14]
   Host boundary: attribution [evidence-14]
@@ -749,7 +654,7 @@ maturity. [evidence-14]
 
 no-lint-type-disables-as-fixes [mechanism-329e44bccddf8b10]
   Version: 1 [evidence-16]
-  Feedback policy hash: fnv1a64:d0000feb2622b0d4 [evidence-16]
+  Feedback policy hash: fnv1a64:f78e381ffafce1e9 [evidence-16]
   Mechanism rung: 1 [evidence-16]
   Mechanism: script [evidence-16]
   Host boundary: suppression-diff [evidence-16]
@@ -782,7 +687,7 @@ maturity. [evidence-16]
 
 no-partial-completion [mechanism-b3ab87cab0504ba7]
   Version: 1 [evidence-18]
-  Feedback policy hash: fnv1a64:d0000feb2622b0d4 [evidence-18]
+  Feedback policy hash: fnv1a64:f78e381ffafce1e9 [evidence-18]
   Mechanism rung: 6 [evidence-18]
   Mechanism: workflow-gate [evidence-18]
   Host boundary: complete-scope [evidence-18]
@@ -814,7 +719,7 @@ maturity. [evidence-18]
 
 read-your-own-output [mechanism-151b4607eaf02f7c]
   Version: 1 [evidence-20]
-  Feedback policy hash: fnv1a64:d0000feb2622b0d4 [evidence-20]
+  Feedback policy hash: fnv1a64:f78e381ffafce1e9 [evidence-20]
   Mechanism rung: 6 [evidence-20]
   Mechanism: workflow-gate [evidence-20]
   Host boundary: output-review [evidence-20]
@@ -847,7 +752,7 @@ maturity. [evidence-20]
 
 verify-app-before-done [mechanism-6645c7316851d019]
   Version: 1 [evidence-22]
-  Feedback policy hash: fnv1a64:d0000feb2622b0d4 [evidence-22]
+  Feedback policy hash: fnv1a64:f78e381ffafce1e9 [evidence-22]
   Mechanism rung: 6 [evidence-22]
   Mechanism: workflow-gate [evidence-22]
   Host boundary: application-evidence [evidence-22]
@@ -879,40 +784,40 @@ causal-pair convention; no activation timestamp was collected
 fixtures, including false activations and overrides, before claiming broader
 maturity. [evidence-22]
 
-Acceptance evidence — WO-011 self-hosted executor [matrices-8ecb85cf71fd36f5] —
+Acceptance evidence — WO-039 self-hosted executor [matrices-d388bf69a2138223] —
 available
 The source records no entries
 
-Acceptance evidence — WO-011 self-hosted verifier [matrices-1fec985d965cb210] —
+Acceptance evidence — WO-039 self-hosted verifier [matrices-b9a9504826d64362] —
 available
 
-ws_feedback_audit_verification [matrix-3e4bdc81f5bf7f5c]
-  Matrix phase: complete [evidence-39]
+ws_feedback_audit_verification [matrix-1021c3ffb8a8d03a]
+  Matrix phase: complete [evidence-33]
   Subject revision:
-sha256:0c7c3a8f0c96bc00122f00d094db40d26a8a15f10b5ae2a49312bf45d658e0b3
-[evidence-39]
+sha256:2d57f4277a5175b70219cc5fad4974fe40142f397b95d1f290fc2b5c9b038226
+[evidence-33]
   Acceptance criterion: All ten feedback regression episodes pass with
 mechanisms present and fail by assertion with only their mechanism removed.
-[evidence-40]
-  Acceptance status: verified [evidence-40]
-  Claim type: behavior [evidence-40]
-  Evidence source: synthetic-fixture [evidence-40]
-  Producing verifier episode: ep_verifier_1_attempt_4 [evidence-40]
-  Evidence stale: false [evidence-40]
+[evidence-34]
+  Acceptance status: verified [evidence-34]
+  Claim type: behavior [evidence-34]
+  Evidence source: synthetic-fixture [evidence-34]
+  Producing verifier episode: ep_verifier_1_attempt_1 [evidence-34]
+  Evidence stale: false [evidence-34]
   Evidence references:
-sha256:0c7c3a8f0c96bc00122f00d094db40d26a8a15f10b5ae2a49312bf45d658e0b3:AC-causa
-l-fixtures [evidence-40]
+sha256:2d57f4277a5175b70219cc5fad4974fe40142f397b95d1f290fc2b5c9b038226:AC-causa
+l-fixtures [evidence-34]
   Acceptance criterion: The matched instruction projection reduces UTF-8 bytes
 relative to the WO-004 baseline plus the ten prose equivalents; it makes no
-effective-session token claim. [evidence-41]
-  Acceptance status: verified [evidence-41]
-  Claim type: state [evidence-41]
-  Evidence source: synthetic-fixture [evidence-41]
-  Producing verifier episode: ep_verifier_1_attempt_4 [evidence-41]
-  Evidence stale: false [evidence-41]
+effective-session token claim. [evidence-35]
+  Acceptance status: verified [evidence-35]
+  Claim type: state [evidence-35]
+  Evidence source: synthetic-fixture [evidence-35]
+  Producing verifier episode: ep_verifier_1_attempt_1 [evidence-35]
+  Evidence stale: false [evidence-35]
   Evidence references:
-sha256:0c7c3a8f0c96bc00122f00d094db40d26a8a15f10b5ae2a49312bf45d658e0b3:AC-conte
-xt [evidence-41]
+sha256:2d57f4277a5175b70219cc5fad4974fe40142f397b95d1f290fc2b5c9b038226:AC-conte
+xt [evidence-35]
 
 WORK [work]
 Serves: showrunner, devops
@@ -974,13 +879,15 @@ smallest promotable increment
 SOURCES
 available: skeleton:loadout-exports
 available: packages/skeleton/src/loadouts/feedback.ts
-available: docs/evidence/WO-011/feedback.json
-available: docs/evidence/WO-011/selfhost-audit.jsonl#worker-status
-available: docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections
-available: store:wo011-audit
-available: docs/evidence/WO-011/selfhost-verification.jsonl#worker-status
-available: docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections
-available: store:wo011-verifier
+available: docs/evidence/WO-039/feedback/feedback.json
+available: docs/evidence/WO-039/feedback/selfhost-audit.jsonl#worker-status
+available: docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections
+available: store:selfhost-audit
+available:
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#worker-status
+available:
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections
+available: store:selfhost-verifier
 unavailable: control:canonical-segments — Source not supplied
 unavailable: docs/work-orders/README.md — Source not supplied
 unavailable: resume:status--json — Source not supplied
@@ -1002,86 +909,89 @@ packages/skeleton/src/loadouts/entropy-reducer.ts#entropyReducerLoadout
   loadout + explicit inspection environment
 [evidence-4] packages/skeleton/src/loadouts/feedback.ts
   unit:anti-oscillation@1
-[evidence-5] docs/evidence/WO-011/feedback.json
+[evidence-5] docs/evidence/WO-039/feedback/feedback.json
   maturity:anti-oscillation; fixtures:anti-oscillation
 [evidence-6] packages/skeleton/src/loadouts/feedback.ts
   unit:bounded-boy-scout-cleanup@1
-[evidence-7] docs/evidence/WO-011/feedback.json
+[evidence-7] docs/evidence/WO-039/feedback/feedback.json
   maturity:bounded-boy-scout-cleanup; fixtures:bounded-boy-scout-cleanup
 [evidence-8] packages/skeleton/src/loadouts/feedback.ts
   unit:concurrent-work-requires-worktrees@1
-[evidence-9] docs/evidence/WO-011/feedback.json
+[evidence-9] docs/evidence/WO-039/feedback/feedback.json
   maturity:concurrent-work-requires-worktrees;
 fixtures:concurrent-work-requires-worktrees
 [evidence-10] packages/skeleton/src/loadouts/feedback.ts
   unit:correctness-over-sycophancy@1
-[evidence-11] docs/evidence/WO-011/feedback.json
+[evidence-11] docs/evidence/WO-039/feedback/feedback.json
   maturity:correctness-over-sycophancy; fixtures:correctness-over-sycophancy
 [evidence-12] packages/skeleton/src/loadouts/feedback.ts
   unit:fail-conservative-correction@1
-[evidence-13] docs/evidence/WO-011/feedback.json
+[evidence-13] docs/evidence/WO-039/feedback/feedback.json
   maturity:fail-conservative-correction; fixtures:fail-conservative-correction
 [evidence-14] packages/skeleton/src/loadouts/feedback.ts
   unit:no-attribution@1
-[evidence-15] docs/evidence/WO-011/feedback.json
+[evidence-15] docs/evidence/WO-039/feedback/feedback.json
   maturity:no-attribution; fixtures:no-attribution
 [evidence-16] packages/skeleton/src/loadouts/feedback.ts
   unit:no-lint-type-disables-as-fixes@1
-[evidence-17] docs/evidence/WO-011/feedback.json
+[evidence-17] docs/evidence/WO-039/feedback/feedback.json
   maturity:no-lint-type-disables-as-fixes;
 fixtures:no-lint-type-disables-as-fixes
 [evidence-18] packages/skeleton/src/loadouts/feedback.ts
   unit:no-partial-completion@1
-[evidence-19] docs/evidence/WO-011/feedback.json
+[evidence-19] docs/evidence/WO-039/feedback/feedback.json
   maturity:no-partial-completion; fixtures:no-partial-completion
 [evidence-20] packages/skeleton/src/loadouts/feedback.ts
   unit:read-your-own-output@1
-[evidence-21] docs/evidence/WO-011/feedback.json
+[evidence-21] docs/evidence/WO-039/feedback/feedback.json
   maturity:read-your-own-output; fixtures:read-your-own-output
 [evidence-22] packages/skeleton/src/loadouts/feedback.ts
   unit:verify-app-before-done@1
-[evidence-23] docs/evidence/WO-011/feedback.json
+[evidence-23] docs/evidence/WO-039/feedback/feedback.json
   maturity:verify-app-before-done; fixtures:verify-app-before-done
-[evidence-24] docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections
+[evidence-24]
+docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections
   event:evt_1 (FeedbackAuditOpened)
-[evidence-25] docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections
+[evidence-25]
+docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections
   event:evt_5 (CommandResult)
-[evidence-26] docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections
+[evidence-26]
+docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections
   receipt:audit:evt_3:authority-decision; event:evt_3
-[evidence-27] docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections
+[evidence-27]
+docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections
   receipt:audit:evt_5:external-effect; event:evt_3, event:evt_5
-[evidence-28] docs/evidence/WO-011/selfhost-audit.jsonl#audit-projections
+[evidence-28]
+docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections
   receipt:audit:evt_5:result; event:evt_5
-[evidence-29] docs/evidence/WO-011/selfhost-verification.jsonl#worker-status
+[evidence-29]
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#worker-status
   episodes:ep_verifier_1_attempt_1
-[evidence-30] docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections
+[evidence-30]
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections
   event:evt_5 (WorkerAttemptStarted)
-[evidence-31] docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections
+[evidence-31]
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections
   event:evt_4 (CommandPersisted)
-[evidence-32] docs/evidence/WO-011/selfhost-verification.jsonl#worker-status
-  episodes:ep_verifier_1_attempt_2
-[evidence-33] docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections
-  event:evt_385 (WorkerAttemptStarted)
-[evidence-34] docs/evidence/WO-011/selfhost-verification.jsonl#worker-status
-  episodes:ep_verifier_1_attempt_3
-[evidence-35] docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections
-  event:evt_875 (WorkerAttemptStarted)
-[evidence-36] docs/evidence/WO-011/selfhost-verification.jsonl#worker-status
-  episodes:ep_verifier_1_attempt_4
-[evidence-37] docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections
-  event:evt_1221 (WorkerAttemptStarted)
-[evidence-38] docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections
-  event:evt_1600 (VerificationContinuation)
-[evidence-39] docs/evidence/WO-011/selfhost-verification.jsonl#worker-status
+[evidence-32]
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections
+  event:evt_28 (VerificationContinuation)
+[evidence-33]
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#worker-status
   acceptanceEvidenceMatrices:ws_feedback_audit_verification
-[evidence-40] docs/evidence/WO-011/selfhost-verification.jsonl#worker-status
+[evidence-34]
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#worker-status
   acceptanceEvidenceMatrices:ws_feedback_audit_verification/criterion:AC-causal-
 fixtures
-[evidence-41] docs/evidence/WO-011/selfhost-verification.jsonl#worker-status
+[evidence-35]
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#worker-status
   acceptanceEvidenceMatrices:ws_feedback_audit_verification/criterion:AC-context
-[evidence-42] docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections
+[evidence-36]
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections
   receipt:audit:evt_4:authority-decision; event:evt_4
-[evidence-43] docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections
-  receipt:audit:evt_1598:external-effect; event:evt_4, event:evt_1598
-[evidence-44] docs/evidence/WO-011/selfhost-verification.jsonl#audit-projections
-  receipt:audit:evt_1598:result; event:evt_1598
+[evidence-37]
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections
+  receipt:audit:evt_26:external-effect; event:evt_4, event:evt_26
+[evidence-38]
+docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections
+  receipt:audit:evt_26:result; event:evt_26

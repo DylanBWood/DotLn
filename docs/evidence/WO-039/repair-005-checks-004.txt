@@ -1,0 +1,501 @@
+# Every gate step after the four-package test run, run individually on the same integrated build right after the third full gate (checkout addresses replaced by <repo> when filed); the console suite runs alone first to separate its host-collection budget from full-gate load
+$ node --test packages/console/dist/test/*.test.js
+TAP version 13
+# Subtest: WO-032 AC1/6 wo009: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 1 - WO-032 AC1/6 wo009: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 87.962375
+  ...
+# Subtest: WO-032 AC1/6 selfhost: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 2 - WO-032 AC1/6 selfhost: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 122.522917
+  ...
+# Subtest: WO-032 AC1/6 control: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 3 - WO-032 AC1/6 control: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 82.322292
+  ...
+# Subtest: WO-032 AC1/6 refutations: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 4 - WO-032 AC1/6 refutations: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 131.248834
+  ...
+# Subtest: WO-032 AC1/6 missing: recorded JSON and both renders; pure, schema-valid, linked and bounded
+ok 5 - WO-032 AC1/6 missing: recorded JSON and both renders; pure, schema-valid, linked and bounded
+  ---
+  duration_ms: 3.104666
+  ...
+# Subtest: WO-032 schema refuses a different version, unknown fields, unsupported cells and unlabeled missing facts
+ok 6 - WO-032 schema refuses a different version, unknown fields, unsupported cells and unlabeled missing facts
+  ---
+  duration_ms: 51.371167
+  ...
+# Subtest: WO-032 AC2 executor, verifier attempts, authority, hashes and actual accepted episode remain distinct
+ok 7 - WO-032 AC2 executor, verifier attempts, authority, hashes and actual accepted episode remain distinct
+  ---
+  duration_ms: 49.599125
+  ...
+# Subtest: WO-032 AC2 the WO-031 operator role has recorded actions and unknown identity, authorship and presence
+ok 8 - WO-032 AC2 the WO-031 operator role has recorded actions and unknown identity, authorship and presence
+  ---
+  duration_ms: 1.909375
+  ...
+# Subtest: WO-032 AC3 all shipped exports use the compiler renderer; a new export adds a build without console edits
+ok 9 - WO-032 AC3 all shipped exports use the compiler renderer; a new export adds a build without console edits
+  ---
+  duration_ms: 72.366917
+  ...
+# Subtest: WO-032 AC4 ten mechanisms retain five counts per source; zero observations never become a rate
+ok 10 - WO-032 AC4 ten mechanisms retain five counts per source; zero observations never become a rate
+  ---
+  duration_ms: 108.503041
+  ...
+# Subtest: WO-032 AC5 control facts preserve legal actions, negative elapsed, failures, index evidence and Beacon separation
+ok 11 - WO-032 AC5 control facts preserve legal actions, negative elapsed, failures, index evidence and Beacon separation
+  ---
+  duration_ms: 1.716916
+  ...
+# Subtest: WO-032 text adapters pin formats and refuse malformed, missing or unsupported sources
+ok 12 - WO-032 text adapters pin formats and refuse malformed, missing or unsupported sources
+  ---
+  duration_ms: 1.673417
+  ...
+# Subtest: WO-032 the last manual and latest versioned refutations populate verdicts and hold state, without reevaluating the gate
+ok 13 - WO-032 the last manual and latest versioned refutations populate verdicts and hold state, without reevaluating the gate
+  ---
+  duration_ms: 3.959958
+  ...
+# Subtest: WO-032 AC5 each role's pinned answering cells exist and the questions match product 13
+ok 14 - WO-032 AC5 each role's pinned answering cells exist and the questions match product 13
+  ---
+  duration_ms: 153.10225
+  ...
+# Subtest: WO-032 AC6 hostile source text stays inert; output is local anchors and styles only
+ok 15 - WO-032 AC6 hostile source text stays inert; output is local anchors and styles only
+  ---
+  duration_ms: 621.540792
+  ...
+# Subtest: WO-032 command renders recorded sources without changing them; HTML output preserves existing files and refuses conflicting modes
+ok 16 - WO-032 command renders recorded sources without changing them; HTML output preserves existing files and refuses conflicting modes
+  ---
+  duration_ms: 422.702708
+  ...
+# Subtest: WO-032 unavailable worker stores stay unavailable; corrupt logs do not become empty success
+ok 17 - WO-032 unavailable worker stores stay unavailable; corrupt logs do not become empty success
+  ---
+  duration_ms: 0.192791
+  ...
+# Subtest: WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store
+ok 18 - WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store
+  ---
+  duration_ms: 17089.419959
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19110.838833
+exit=0
+$ node --test scripts/test-harness.mjs
+TAP version 13
+# > test
+# > node fixture-check.mjs
+# > test
+# > node fixture-check.mjs
+# Subtest: WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+ok 1 - WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+  ---
+  duration_ms: 11916.570208
+  ...
+# Subtest: WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries
+ok 2 - WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries
+  ---
+  duration_ms: 2409.078583
+  ...
+# Subtest: WO-039 real-scale inherited outputs and oversized lines can complete through observed bounded deliveries
+ok 3 - WO-039 real-scale inherited outputs and oversized lines can complete through observed bounded deliveries
+  ---
+  duration_ms: 9278.860542
+  ...
+# Subtest: WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement
+ok 4 - WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement
+  ---
+  duration_ms: 367.265084
+  ...
+# Subtest: WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+ok 5 - WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+  ---
+  duration_ms: 212.204416
+  ...
+# Subtest: WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+ok 6 - WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+  ---
+  duration_ms: 18.3515
+  ...
+# Subtest: WO-039 control observation uses the canonical read-only lifecycle command
+ok 7 - WO-039 control observation uses the canonical read-only lifecycle command
+  ---
+  duration_ms: 128.914625
+  ...
+# Subtest: WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+ok 8 - WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+  ---
+  duration_ms: 260.736083
+  ...
+# Subtest: WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+ok 9 - WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+  ---
+  duration_ms: 2082.430875
+  ...
+# Subtest: WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+ok 10 - WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+  ---
+  duration_ms: 916.785792
+  ...
+# Subtest: WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+ok 11 - WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+  ---
+  duration_ms: 621.5215
+  ...
+# Subtest: WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+ok 12 - WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+  ---
+  duration_ms: 2953.164625
+  ...
+# Subtest: WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+ok 13 - WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+  ---
+  duration_ms: 3751.032417
+  ...
+# Subtest: WO-039 foreign writer reservations refuse while their owner lives, reclaim with a record when it is dead, and stay inspectable
+ok 14 - WO-039 foreign writer reservations refuse while their owner lives, reclaim with a record when it is dead, and stay inspectable
+  ---
+  duration_ms: 6664.544875
+  ...
+# Subtest: WO-039 concurrent dead-owner recovery admits exactly one writer while the first owner's work is outstanding
+ok 15 - WO-039 concurrent dead-owner recovery admits exactly one writer while the first owner's work is outstanding
+  ---
+  duration_ms: 1999.443583
+  ...
+# Subtest: WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+ok 16 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+  ---
+  duration_ms: 1510.583708
+  ...
+# Subtest: WO-039 an operator release judges, retires and journals one observed reservation
+ok 17 - WO-039 an operator release judges, retires and journals one observed reservation
+  ---
+  duration_ms: 1625.552791
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 46787.374625
+exit=0
+$ node scripts/harness.mjs check
+harness check: 24 generated surfaces; local-terms list: present
+exit=0
+$ node scripts/harness-context.mjs --check
+{
+  "instruction": {
+    "before": 3878,
+    "after": 3593
+  },
+  "roles": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "beforeBytes": 71165,
+      "afterBytes": 10960,
+      "beforeLines": 994,
+      "afterLines": 144,
+      "lower": true
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "beforeBytes": 71165,
+      "afterBytes": 10526,
+      "beforeLines": 994,
+      "afterLines": 142,
+      "lower": true
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "beforeBytes": 71503,
+      "afterBytes": 13255,
+      "beforeLines": 1004,
+      "afterLines": 182,
+      "lower": true
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "beforeBytes": 71203,
+      "afterBytes": 8439,
+      "beforeLines": 993,
+      "afterLines": 130,
+      "lower": true
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "beforeBytes": 71165,
+      "afterBytes": 12125,
+      "beforeLines": 994,
+      "afterLines": 150,
+      "lower": true
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "beforeBytes": 71165,
+      "afterBytes": 11691,
+      "beforeLines": 994,
+      "afterLines": 148,
+      "lower": true
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "beforeBytes": 71503,
+      "afterBytes": 14420,
+      "beforeLines": 1004,
+      "afterLines": 188,
+      "lower": true
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "beforeBytes": 71203,
+      "afterBytes": 9604,
+      "beforeLines": 993,
+      "afterLines": 136,
+      "lower": true
+    }
+  ]
+}
+exit=0
+$ node scripts/harness-evidence.mjs
+Harness evidence: 4 current live role smokes, 2 writer-reservation smokes, 24 generated surfaces; local-terms list: present (78 surfaces checked).
+exit=0
+$ node scripts/test-plan-refutation.mjs
+PASS AC1 committed-only deterministic subject; narrative blinding; all five hash inputs
+PASS AC2 compiled identity, mask, lens, pinned questions, one-shot cadence and authority refusals
+PASS AC3 closed schema, exhaustive ids, verdict construction, row-less exclusion drift and gap deferrals
+PASS AC3/5 deferrals require a later sequence member; outside, closed, self, earlier and missing orders refuse
+PASS AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal
+PASS AC5 unanswered drift and receipt-text override refuse; captured, attributed control event discharges
+PASS AC5 pass after held criterion repair; elsewhere and whitespace edits cannot re-roll
+PASS AC5 third consecutive hold stops the pass, including changed sequence labels and pre-dispatch CLI
+PASS AC2/4 transport adapters keep fixed schema, empty cwd and no model tools; host rejects a mismatched receipt
+PASS AC5 forward-only gate, real-adapter fixture receipt, and stale committed standard refusal
+PASS receipt source symlinks refuse and CLI override retains the acting account label
+Plan gate: {"receipts":1,"passes":0,"enforcement":"2026-09-07","localTerms":"present"}
+exit=0
+$ node --test corpus/harness/wo101-id-corpus.test.mjs
+TAP version 13
+# Subtest: WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+ok 1 - WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+  ---
+  duration_ms: 7.126875
+  ...
+# Subtest: WO-101 every stable-hash fixture agrees byte-for-byte across independent and shipped implementations
+ok 2 - WO-101 every stable-hash fixture agrees byte-for-byte across independent and shipped implementations
+  ---
+  duration_ms: 50.435458
+  ...
+# Subtest: WO-101 every command-id tuple agrees across the typed reference and shipped implementation
+ok 3 - WO-101 every command-id tuple agrees across the typed reference and shipped implementation
+  ---
+  duration_ms: 23.753917
+  ...
+# Subtest: WO-101 normalization pairs explicitly preserve byte-honest NFC/NFD differences
+ok 4 - WO-101 normalization pairs explicitly preserve byte-honest NFC/NFD differences
+  ---
+  duration_ms: 0.571041
+  ...
+# Subtest: WO-101 surrogate probes distinguish encoding equivalence from a hash collision
+ok 5 - WO-101 surrogate probes distinguish encoding equivalence from a hash collision
+  ---
+  duration_ms: 0.071959
+  ...
+# Subtest: WO-101 namespace pairs re-derive the swallowed-command incident with only ep:/ws: changed
+ok 6 - WO-101 namespace pairs re-derive the swallowed-command incident with only ep:/ws: changed
+  ---
+  duration_ms: 0.399209
+  ...
+# Subtest: WO-101 empty episode IDs exactly equal undefined fallback IDs
+ok 7 - WO-101 empty episode IDs exactly equal undefined fallback IDs
+  ---
+  duration_ms: 0.320334
+  ...
+# Subtest: WO-101 corpus includes empty, very long, control, colon, numeric-string, and Unicode ID families
+ok 8 - WO-101 corpus includes empty, very long, control, colon, numeric-string, and Unicode ID families
+  ---
+  duration_ms: 1.394791
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 165.79575
+exit=0
+$ node scripts/artifact-identity-evidence.mjs --check
+Verified 4 current artifact evidence files in docs/evidence/WO-039/artifact-identity; original semantic hashes and frozen oracle unchanged.
+exit=0
+$ node scripts/verification-evidence.mjs --check
+Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.
+exit=0
+$ node scripts/feedback-evidence.mjs --check --edition WO-039
+node:fs:448
+    return binding.readFileUtf8(path, stringToFlags(options.flag));
+                   ^
+
+Error: ENOENT: no such file or directory, open '<repo>/docs/evidence/WO-039/feedback/selfhost-audit.jsonl'
+    at readFileSync (node:fs:448:20)
+    at file://<repo>/scripts/feedback-evidence.mjs:133:7
+    at ModuleJob.run (node:internal/modules/esm/module_job:262:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:475:24)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:109:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '<repo>/docs/evidence/WO-039/feedback/selfhost-audit.jsonl'
+}
+
+Node.js v22.2.0
+exit=1
+$ npm run test:mutation --silent
+TAP version 13
+# Subtest: deterministic enumeration changes exactly one guarded source site
+ok 1 - deterministic enumeration changes exactly one guarded source site
+  ---
+  duration_ms: 3.50575
+  ...
+# Subtest: comments, strings, regex classes and nested template interpolations are opaque
+ok 2 - comments, strings, regex classes and nested template interpolations are opaque
+  ---
+  duration_ms: 0.312917
+  ...
+# Subtest: scratch cleanup rejects borrowed handles, changed markers and root symlinks
+ok 3 - scratch cleanup rejects borrowed handles, changed markers and root symlinks
+  ---
+  duration_ms: 2.969041
+  ...
+# Subtest: real offline builds distinguish named test kill, compile noise and planted survivor
+ok 4 - real offline builds distinguish named test kill, compile noise and planted survivor
+  ---
+  duration_ms: 2051.666125
+  ...
+# Subtest: all eight historical compiler shapes are planted known-survivable cases
+    # Subtest: seed 1
+    ok 1 - seed 1
+      ---
+      duration_ms: 548.386209
+      ...
+    # Subtest: seed 2
+    ok 2 - seed 2
+      ---
+      duration_ms: 536.63675
+      ...
+    # Subtest: seed 3
+    ok 3 - seed 3
+      ---
+      duration_ms: 621.1155
+      ...
+    # Subtest: seed 4
+    ok 4 - seed 4
+      ---
+      duration_ms: 538.577209
+      ...
+    # Subtest: seed 5
+    ok 5 - seed 5
+      ---
+      duration_ms: 531.994792
+      ...
+    # Subtest: seed 6
+    ok 6 - seed 6
+      ---
+      duration_ms: 523.314791
+      ...
+    # Subtest: seed 7
+    ok 7 - seed 7
+      ---
+      duration_ms: 563.626542
+      ...
+    # Subtest: seed 8
+    ok 8 - seed 8
+      ---
+      duration_ms: 555.056875
+      ...
+    1..8
+ok 5 - all eight historical compiler shapes are planted known-survivable cases
+  ---
+  duration_ms: 4420.546958
+  ...
+# Subtest: a real red baseline refuses before any matrix row is written
+ok 6 - a real red baseline refuses before any matrix row is written
+  ---
+  duration_ms: 533.544041
+  ...
+# Subtest: fresh compilation refuses a missing package suite and cannot reuse stale dist
+ok 7 - fresh compilation refuses a missing package suite and cannot reuse stale dist
+  ---
+  duration_ms: 408.748667
+  ...
+# Subtest: timeout kills a descendant before it can write after its parent is stopped
+ok 8 - timeout kills a descendant before it can write after its parent is stopped
+  ---
+  duration_ms: 1206.425792
+  ...
+# Subtest: a compiled infinite-loop mutant is a test timeout, never a kill or survivor
+ok 9 - a compiled infinite-loop mutant is a test timeout, never a kill or survivor
+  ---
+  duration_ms: 2006.733791
+  ...
+# Subtest: rendered exact patches apply with Git and produce the same single mutation
+ok 10 - rendered exact patches apply with Git and produce the same single mutation
+  ---
+  duration_ms: 359.456666
+  ...
+# Subtest: append-only resume rechecks baseline, preserves prefix, records exact stopping point
+ok 11 - append-only resume rechecks baseline, preserves prefix, records exact stopping point
+  ---
+  duration_ms: 17.021583
+  ...
+# Subtest: session budget and statistics never turn compilation noise or timeouts into strength
+ok 12 - session budget and statistics never turn compilation noise or timeouts into strength
+  ---
+  duration_ms: 1.179584
+  ...
+# Subtest: TAP parsing retains nested named failures and refuses to infer an absent suite
+ok 13 - TAP parsing retains nested named failures and refuses to infer an absent suite
+  ---
+  duration_ms: 0.352083
+  ...
+1..13
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11069.507209
+exit=0

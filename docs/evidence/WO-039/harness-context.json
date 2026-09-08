@@ -1,0 +1,1625 @@
+{
+  "schemaVersion": 1,
+  "activationBase": "8b55eca3b3427146e98d34c68f67f679dc59bea5",
+  "task": "matched synthetic WO-999 closed role-entry fixture",
+  "method": "Whole activation instruction and its mandatory execution guide versus whole current instruction and generated role skill. Both sides receive identical task files. Full files or named heading subtrees are counted as UTF-8 bytes and source lines, with overlapping reads counted once. The complete role procedure is scanned, including later reads. Commands' process I/O is execution, not automatically model-loaded file content. This controlled comparison does not estimate WO-039's own changing implementation context or harness system prompts.",
+  "selectors": {
+    "@work-order": [
+      "docs/work-orders/WO-999-fixture.md"
+    ],
+    "@citations": [
+      "fixture/source.ts",
+      "fixture/source.test.mjs",
+      "fixture/contract.md"
+    ],
+    "@subject-files": [
+      "fixture/source.ts",
+      "fixture/source.test.mjs",
+      "fixture/contract.md"
+    ],
+    "@failure-report": [
+      "docs/verifications/WO-999/VER-001.md"
+    ],
+    "@verification-reports": [
+      "docs/verifications/WO-999/VER-001.md"
+    ],
+    "@final-review": [
+      "docs/final-reviews/WO-999/FINAL-001.md",
+      "docs/final-reviews/WO-999/PR.md",
+      "docs/final-reviews/WO-999/RELEASE-NOTES.md"
+    ]
+  },
+  "instruction": {
+    "before": {
+      "bytes": 3878,
+      "lines": 78,
+      "files": [
+        {
+          "path": "CLAUDE.md",
+          "startLine": 1,
+          "endLine": 9007199254740991,
+          "bytes": 3878,
+          "lines": 78
+        }
+      ]
+    },
+    "after": {
+      "bytes": 3593,
+      "lines": 64,
+      "files": [
+        {
+          "path": "CLAUDE.md",
+          "startLine": 1,
+          "endLine": 9007199254740991,
+          "bytes": 3593,
+          "lines": 64
+        }
+      ]
+    },
+    "lower": true
+  },
+  "profiles": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "before": {
+        "bytes": 71165,
+        "lines": 994,
+        "files": [
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 78,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 3878,
+            "lines": 78
+          },
+          {
+            "path": "docs/product/07-execution-guide.md",
+            "startLine": 1,
+            "endLine": 869,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 64993,
+            "lines": 869
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "after": {
+        "bytes": 10960,
+        "lines": 144,
+        "files": [
+          {
+            "path": ".claude/skills/dotln-executor/SKILL.md",
+            "startLine": 1,
+            "endLine": 33,
+            "sources": [
+              "instruction"
+            ],
+            "bytes": 5073,
+            "lines": 33
+          },
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 64,
+            "sources": [
+              "instruction-autoload"
+            ],
+            "bytes": 3593,
+            "lines": 64
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "skill:@failure-report"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "skill:@work-order"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "skill"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "lower": true,
+      "residue": []
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "before": {
+        "bytes": 71165,
+        "lines": 994,
+        "files": [
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 78,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 3878,
+            "lines": 78
+          },
+          {
+            "path": "docs/product/07-execution-guide.md",
+            "startLine": 1,
+            "endLine": 869,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 64993,
+            "lines": 869
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "after": {
+        "bytes": 10526,
+        "lines": 142,
+        "files": [
+          {
+            "path": ".claude/skills/dotln-verifier/SKILL.md",
+            "startLine": 1,
+            "endLine": 31,
+            "sources": [
+              "instruction"
+            ],
+            "bytes": 4639,
+            "lines": 31
+          },
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 64,
+            "sources": [
+              "instruction-autoload"
+            ],
+            "bytes": 3593,
+            "lines": 64
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "skill:@verification-reports"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "skill:@work-order"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "skill"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "lower": true,
+      "residue": []
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "before": {
+        "bytes": 71503,
+        "lines": 1004,
+        "files": [
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 78,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 3878,
+            "lines": 78
+          },
+          {
+            "path": "docs/final-reviews/WO-999/FINAL-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 4
+          },
+          {
+            "path": "docs/final-reviews/WO-999/PR.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 83,
+            "lines": 3
+          },
+          {
+            "path": "docs/final-reviews/WO-999/RELEASE-NOTES.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 97,
+            "lines": 3
+          },
+          {
+            "path": "docs/product/07-execution-guide.md",
+            "startLine": 1,
+            "endLine": 869,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 64993,
+            "lines": 869
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "after": {
+        "bytes": 13255,
+        "lines": 182,
+        "files": [
+          {
+            "path": ".claude/skills/dotln-reviewer/SKILL.md",
+            "startLine": 1,
+            "endLine": 33,
+            "sources": [
+              "instruction"
+            ],
+            "bytes": 5072,
+            "lines": 33
+          },
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 64,
+            "sources": [
+              "instruction-autoload"
+            ],
+            "bytes": 3593,
+            "lines": 64
+          },
+          {
+            "path": "docs/product/08-publication-compiler.md",
+            "startLine": 242,
+            "endLine": 279,
+            "sources": [
+              "skill"
+            ],
+            "bytes": 2296,
+            "lines": 38
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "skill:@verification-reports"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "skill:@work-order"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "skill"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "lower": true,
+      "residue": []
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "before": {
+        "bytes": 71203,
+        "lines": 993,
+        "files": [
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 78,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 3878,
+            "lines": 78
+          },
+          {
+            "path": "docs/final-reviews/WO-999/FINAL-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 4
+          },
+          {
+            "path": "docs/final-reviews/WO-999/PR.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 83,
+            "lines": 3
+          },
+          {
+            "path": "docs/final-reviews/WO-999/RELEASE-NOTES.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 97,
+            "lines": 3
+          },
+          {
+            "path": "docs/product/07-execution-guide.md",
+            "startLine": 1,
+            "endLine": 869,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 64993,
+            "lines": 869
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 31,
+            "lines": 1
+          }
+        ]
+      },
+      "after": {
+        "bytes": 8439,
+        "lines": 130,
+        "files": [
+          {
+            "path": ".claude/skills/dotln-release-close/SKILL.md",
+            "startLine": 1,
+            "endLine": 20,
+            "sources": [
+              "instruction"
+            ],
+            "bytes": 2514,
+            "lines": 20
+          },
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 64,
+            "sources": [
+              "instruction-autoload"
+            ],
+            "bytes": 3593,
+            "lines": 64
+          },
+          {
+            "path": "docs/final-reviews/WO-999/FINAL-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "skill:@final-review"
+            ],
+            "bytes": 158,
+            "lines": 4
+          },
+          {
+            "path": "docs/final-reviews/WO-999/PR.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@final-review"
+            ],
+            "bytes": 83,
+            "lines": 3
+          },
+          {
+            "path": "docs/final-reviews/WO-999/RELEASE-NOTES.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@final-review"
+            ],
+            "bytes": 97,
+            "lines": 3
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "skill:@work-order"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "skill:@citations"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@citations"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "skill:@citations"
+            ],
+            "bytes": 31,
+            "lines": 1
+          }
+        ]
+      },
+      "lower": true,
+      "residue": []
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "before": {
+        "bytes": 71165,
+        "lines": 994,
+        "files": [
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 78,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 3878,
+            "lines": 78
+          },
+          {
+            "path": "docs/product/07-execution-guide.md",
+            "startLine": 1,
+            "endLine": 869,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 64993,
+            "lines": 869
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "after": {
+        "bytes": 12125,
+        "lines": 150,
+        "files": [
+          {
+            "path": ".agents/skills/dotln-executor/SKILL.md",
+            "startLine": 1,
+            "endLine": 39,
+            "sources": [
+              "instruction"
+            ],
+            "bytes": 6238,
+            "lines": 39
+          },
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 64,
+            "sources": [
+              "instruction-autoload"
+            ],
+            "bytes": 3593,
+            "lines": 64
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "skill:@failure-report"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "skill:@work-order"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "skill"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "lower": true,
+      "residue": []
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "before": {
+        "bytes": 71165,
+        "lines": 994,
+        "files": [
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 78,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 3878,
+            "lines": 78
+          },
+          {
+            "path": "docs/product/07-execution-guide.md",
+            "startLine": 1,
+            "endLine": 869,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 64993,
+            "lines": 869
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "after": {
+        "bytes": 11691,
+        "lines": 148,
+        "files": [
+          {
+            "path": ".agents/skills/dotln-verifier/SKILL.md",
+            "startLine": 1,
+            "endLine": 37,
+            "sources": [
+              "instruction"
+            ],
+            "bytes": 5804,
+            "lines": 37
+          },
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 64,
+            "sources": [
+              "instruction-autoload"
+            ],
+            "bytes": 3593,
+            "lines": 64
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "skill:@verification-reports"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "skill:@work-order"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "skill"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "lower": true,
+      "residue": []
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "before": {
+        "bytes": 71503,
+        "lines": 1004,
+        "files": [
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 78,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 3878,
+            "lines": 78
+          },
+          {
+            "path": "docs/final-reviews/WO-999/FINAL-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 4
+          },
+          {
+            "path": "docs/final-reviews/WO-999/PR.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 83,
+            "lines": 3
+          },
+          {
+            "path": "docs/final-reviews/WO-999/RELEASE-NOTES.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 97,
+            "lines": 3
+          },
+          {
+            "path": "docs/product/07-execution-guide.md",
+            "startLine": 1,
+            "endLine": 869,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 64993,
+            "lines": 869
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "after": {
+        "bytes": 14420,
+        "lines": 188,
+        "files": [
+          {
+            "path": ".agents/skills/dotln-reviewer/SKILL.md",
+            "startLine": 1,
+            "endLine": 39,
+            "sources": [
+              "instruction"
+            ],
+            "bytes": 6237,
+            "lines": 39
+          },
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 64,
+            "sources": [
+              "instruction-autoload"
+            ],
+            "bytes": 3593,
+            "lines": 64
+          },
+          {
+            "path": "docs/product/08-publication-compiler.md",
+            "startLine": 242,
+            "endLine": 279,
+            "sources": [
+              "skill"
+            ],
+            "bytes": 2296,
+            "lines": 38
+          },
+          {
+            "path": "docs/verifications/WO-999/VER-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "skill:@verification-reports"
+            ],
+            "bytes": 174,
+            "lines": 4
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "skill:@work-order"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "skill:@citations",
+              "skill:@subject-files"
+            ],
+            "bytes": 31,
+            "lines": 1
+          },
+          {
+            "path": "package.json",
+            "startLine": 1,
+            "endLine": 7,
+            "sources": [
+              "skill"
+            ],
+            "bytes": 126,
+            "lines": 7
+          }
+        ]
+      },
+      "lower": true,
+      "residue": []
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "before": {
+        "bytes": 71203,
+        "lines": 993,
+        "files": [
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 78,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 3878,
+            "lines": 78
+          },
+          {
+            "path": "docs/final-reviews/WO-999/FINAL-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 4
+          },
+          {
+            "path": "docs/final-reviews/WO-999/PR.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 83,
+            "lines": 3
+          },
+          {
+            "path": "docs/final-reviews/WO-999/RELEASE-NOTES.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 97,
+            "lines": 3
+          },
+          {
+            "path": "docs/product/07-execution-guide.md",
+            "startLine": 1,
+            "endLine": 869,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 64993,
+            "lines": 869
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "activation-read-order-and-role-procedure"
+            ],
+            "bytes": 31,
+            "lines": 1
+          }
+        ]
+      },
+      "after": {
+        "bytes": 9604,
+        "lines": 136,
+        "files": [
+          {
+            "path": ".agents/skills/dotln-release-close/SKILL.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "instruction"
+            ],
+            "bytes": 3679,
+            "lines": 26
+          },
+          {
+            "path": "CLAUDE.md",
+            "startLine": 1,
+            "endLine": 64,
+            "sources": [
+              "instruction-autoload"
+            ],
+            "bytes": 3593,
+            "lines": 64
+          },
+          {
+            "path": "docs/final-reviews/WO-999/FINAL-001.md",
+            "startLine": 1,
+            "endLine": 4,
+            "sources": [
+              "skill:@final-review"
+            ],
+            "bytes": 158,
+            "lines": 4
+          },
+          {
+            "path": "docs/final-reviews/WO-999/PR.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@final-review"
+            ],
+            "bytes": 83,
+            "lines": 3
+          },
+          {
+            "path": "docs/final-reviews/WO-999/RELEASE-NOTES.md",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@final-review"
+            ],
+            "bytes": 97,
+            "lines": 3
+          },
+          {
+            "path": "docs/work-orders/WO-999-fixture.md",
+            "startLine": 1,
+            "endLine": 26,
+            "sources": [
+              "skill:@work-order"
+            ],
+            "bytes": 1475,
+            "lines": 26
+          },
+          {
+            "path": "fixture/contract.md",
+            "startLine": 1,
+            "endLine": 6,
+            "sources": [
+              "skill:@citations"
+            ],
+            "bytes": 330,
+            "lines": 6
+          },
+          {
+            "path": "fixture/source.test.mjs",
+            "startLine": 1,
+            "endLine": 3,
+            "sources": [
+              "skill:@citations"
+            ],
+            "bytes": 158,
+            "lines": 3
+          },
+          {
+            "path": "fixture/source.ts",
+            "startLine": 1,
+            "endLine": 1,
+            "sources": [
+              "skill:@citations"
+            ],
+            "bytes": 31,
+            "lines": 1
+          }
+        ]
+      },
+      "lower": true,
+      "residue": []
+    }
+  ]
+}

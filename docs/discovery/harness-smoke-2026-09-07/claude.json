@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "mode": "claude",
+  "observedAt": "2026-09-07T19:14:40.343Z",
+  "version": "2.1.263 (Claude Code)",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "observedModels": [
+    "claude-fable-5",
+    "claude-haiku-4-5-20251001"
+  ],
+  "effectiveEffort": "unobserved",
+  "exitCode": 0,
+  "timedOut": false,
+  "skillResolved": true,
+  "promptContextObserved": true,
+  "stopContinued": true,
+  "deniedFileAbsent": true,
+  "settingsDeniedFileAbsent": true,
+  "fixtureEdited": true,
+  "authenticationUnavailable": false,
+  "untrustedHooksReported": false,
+  "eventTypes": [
+    "system",
+    "rate_limit_event",
+    "assistant",
+    "user",
+    "result"
+  ],
+  "events": [
+    {
+      "event": "UserPromptSubmit",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "hook_event_name": "<string>",
+        "prompt": "<string>"
+      },
+      "decision": "observe"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "effort": {
+          "level": "<string>"
+        },
+        "hook_event_name": "<string>",
+        "tool_name": "<string>",
+        "tool_input": {
+          "skill": "<string>"
+        },
+        "tool_use_id": "<identifier-or-path>"
+      },
+      "decision": "observe",
+      "fixtureSkill": true
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Skill",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "effort": {
+          "level": "<string>"
+        },
+        "hook_event_name": "<string>",
+        "tool_name": "<string>",
+        "tool_input": {
+          "skill": "<string>"
+        },
+        "tool_response": {
+          "success": "boolean",
+          "commandName": "<string>"
+        },
+        "tool_use_id": "<identifier-or-path>",
+        "duration_ms": "number"
+      },
+      "decision": "observe",
+      "fixtureSkill": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Read",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "effort": {
+          "level": "<string>"
+        },
+        "hook_event_name": "<string>",
+        "tool_name": "<string>",
+        "tool_input": {
+          "file_path": "<path>"
+        },
+        "tool_use_id": "<identifier-or-path>"
+      },
+      "decision": "observe"
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Read",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "effort": {
+          "level": "<string>"
+        },
+        "hook_event_name": "<string>",
+        "tool_name": "<string>",
+        "tool_input": {
+          "file_path": "<path>"
+        },
+        "tool_response": {
+          "type": "<string>",
+          "file": {
+            "filePath": "<path>",
+            "content": "<string>",
+            "numLines": "number",
+            "startLine": "number",
+            "totalLines": "number"
+          }
+        },
+        "tool_use_id": "<identifier-or-path>",
+        "duration_ms": "number"
+      },
+      "decision": "observe"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Edit",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "effort": {
+          "level": "<string>"
+        },
+        "hook_event_name": "<string>",
+        "tool_name": "<string>",
+        "tool_input": {
+          "file_path": "<path>",
+          "old_string": "<string>",
+          "new_string": "<string>",
+          "replace_all": "boolean"
+        },
+        "tool_use_id": "<identifier-or-path>"
+      },
+      "decision": "observe"
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Edit",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "effort": {
+          "level": "<string>"
+        },
+        "hook_event_name": "<string>",
+        "tool_name": "<string>",
+        "tool_input": {
+          "file_path": "<path>",
+          "old_string": "<string>",
+          "new_string": "<string>",
+          "replace_all": "boolean"
+        },
+        "tool_response": {
+          "filePath": "<path>",
+          "oldString": "<string>",
+          "newString": "<string>",
+          "originalFile": "<string>",
+          "structuredPatch": [
+            {
+              "oldStart": "number",
+              "oldLines": "number",
+              "newStart": "number",
+              "newLines": "number",
+              "lines": [
+                "<string>"
+              ]
+            }
+          ],
+          "userModified": "boolean",
+          "replaceAll": "boolean"
+        },
+        "tool_use_id": "<identifier-or-path>",
+        "duration_ms": "number"
+      },
+      "decision": "observe"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "effort": {
+          "level": "<string>"
+        },
+        "hook_event_name": "<string>",
+        "tool_name": "<string>",
+        "tool_input": {
+          "command": "<string>",
+          "description": "<string>"
+        },
+        "tool_use_id": "<identifier-or-path>"
+      },
+      "decision": "deny"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "effort": {
+          "level": "<string>"
+        },
+        "hook_event_name": "<string>",
+        "tool_name": "<string>",
+        "tool_input": {
+          "command": "<string>",
+          "description": "<string>"
+        },
+        "tool_use_id": "<identifier-or-path>"
+      },
+      "decision": "observe"
+    },
+    {
+      "event": "Stop",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "effort": {
+          "level": "<string>"
+        },
+        "hook_event_name": "<string>",
+        "stop_hook_active": "boolean",
+        "last_assistant_message": "<string>",
+        "background_tasks": [],
+        "session_crons": []
+      },
+      "decision": "block",
+      "stopHookActive": false
+    },
+    {
+      "event": "Stop",
+      "fields": {
+        "session_id": "<identifier-or-path>",
+        "transcript_path": "<identifier-or-path>",
+        "cwd": "<cwd>",
+        "prompt_id": "<string>",
+        "permission_mode": "<string>",
+        "effort": {
+          "level": "<string>"
+        },
+        "hook_event_name": "<string>",
+        "stop_hook_active": "boolean",
+        "last_assistant_message": "<string>",
+        "background_tasks": [],
+        "session_crons": []
+      },
+      "decision": "observe",
+      "stopHookActive": true
+    }
+  ],
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false
+}

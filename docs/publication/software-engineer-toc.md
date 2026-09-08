@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:83c91bd2f513d539ced5154b0252c43dcb1b6331966782561881bfd2d43ddde0`
+`sha256:96341012826bba869c4c98e13b9b52c66b4c4707f9e33fd4dd123205a682435f`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -108,7 +108,8 @@ implementation-deep, lossy projection of the same
       [The Eye Dr Test](../product/05-pattern-library.md#the-eye-dr-test--pairwise-preference),
       [Candidate — Do Nothing](../product/05-pattern-library.md#candidate--do-nothing-active-and-support)
 14. **Feedback compilation and corpus policy**
-    - incident preservation, promotion gates, fixtures, and learning projections
+    - incident preservation, promotion gates, fixtures, harness target profiles,
+      generated permissions/hooks/skills, explicit residue and learning projections
     - sources: [Feedback](../product/02-domain-model.md#feedback),
       [Corpus policy](../product/03-architecture.md#corpus-policy),
       [Learning loop](../product/03-architecture.md#learning-loop)
@@ -144,7 +145,8 @@ implementation-deep, lossy projection of the same
 
 - normalized term and decision tables from the
   [Domain model](../product/02-domain-model.md#domain-model)
-- adapter and projection contract checklist from
+- adapter and projection contract checklist, including proposed private list
+  inspection and editing, from
   [Interfaces](../product/04-interfaces.md#interfaces--the-isomorphic-views)
 - mechanic compatibility matrix from
   [IR verification, lineage, and compatibility](../product/10-ir-compatibility.md#ir-verification-lineage-and-compatibility)

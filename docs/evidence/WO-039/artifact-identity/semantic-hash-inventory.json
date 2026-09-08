@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "frozenOracleSha256": "ec53d1c841de5486cf656694228c83f67e8549993d0ac63c187d10728707a173",
+  "fixtures": [
+    {
+      "fixture": "seiri",
+      "before": {
+        "compilerPackageVersion": "0.2.0",
+        "semanticHash": "fnv1a64:9ca8d0229c6bd8db"
+      },
+      "after": {
+        "compilerPackageVersion": "0.7.0",
+        "semanticHash": "fnv1a64:9ca8d0229c6bd8db"
+      },
+      "componentDefinitionCount": 6,
+      "environment": {
+        "environmentId": "skeleton.fixture",
+        "version": 1,
+        "capabilities": [
+          "fixture-repository"
+        ],
+        "repo": "packages/skeleton/fixtures/repo-tree.json",
+        "baseCommit": "fixture-base"
+      },
+      "authorityExpiresAt": 2400000,
+      "unchanged": true,
+      "independentOracle": "WO-101 referenceStableHash (32-bit pairs, no BigInt)"
+    },
+    {
+      "fixture": "entropy-reducer",
+      "before": {
+        "compilerPackageVersion": "0.2.0",
+        "semanticHash": "fnv1a64:c5ddbca75f1c4cee"
+      },
+      "after": {
+        "compilerPackageVersion": "0.7.0",
+        "semanticHash": "fnv1a64:c5ddbca75f1c4cee"
+      },
+      "componentDefinitionCount": 9,
+      "environment": {
+        "environmentId": "entropy-reducer.manual-review",
+        "version": 1,
+        "capabilities": [],
+        "repo": "/fixture/repository",
+        "baseCommit": "fixture-base"
+      },
+      "authorityExpiresAt": 11000,
+      "unchanged": true,
+      "independentOracle": "WO-101 referenceStableHash (32-bit pairs, no BigInt)"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "mode": "claude-bare",
+  "observedAt": "2026-09-07T19:15:18.342Z",
+  "version": "2.1.263 (Claude Code)",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "observedModels": [
+    "claude-fable-5"
+  ],
+  "effectiveEffort": "unobserved",
+  "exitCode": 1,
+  "timedOut": false,
+  "skillResolved": false,
+  "promptContextObserved": false,
+  "stopContinued": false,
+  "deniedFileAbsent": true,
+  "settingsDeniedFileAbsent": true,
+  "fixtureEdited": false,
+  "authenticationUnavailable": true,
+  "untrustedHooksReported": false,
+  "eventTypes": [
+    "system",
+    "assistant",
+    "result"
+  ],
+  "events": [],
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false
+}

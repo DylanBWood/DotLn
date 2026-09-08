@@ -5,11 +5,35 @@ transcript, is the shared memory. This guide is the operating contract.
 
 ## Read order for a cold start
 
-1. `CLAUDE.md` / `AGENTS.md` (same file) — boundary rules.
-2. Your assigned work order in `docs/work-orders/` — your entire task scope.
-3. The blueprint docs it cites (`docs/product/…`) — cited sections only; do not
-   bulk-load the corpus into context. The ledger and intake exist for lookup,
-   not for reading end-to-end.
+The whole `CLAUDE.md` / `AGENTS.md` instruction file is the locked floor and
+marked compiler residue. Its role dispatch loads one generated skill by name.
+`@skills` is `.claude/skills` for the observed Claude profile and `.agents/skills`
+for Codex. Run canonical `resume status --json` to resolve each selector below;
+no skill carries phase state or grants authority.
+
+| Role                                                 | Required skill                         | All directed inputs, including later procedure                                                                                                                      |
+| ---------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Executor / repair (`next`, `fix`, `status`, `times`) | `@skills/dotln-executor/SKILL.md`      | Selected work order; its cited sections; relevant subject source, tests and current changed outputs; `package.json`; the named failure report when repairing        |
+| Verifier (`verify`)                                  | `@skills/dotln-verifier/SKILL.md`      | Selected order and cited sections; subject source, tests and current outputs; `package.json`; the prior verification reports needed for the findings                |
+| Reviewer (`final review`)                            | `@skills/dotln-reviewer/SKILL.md`      | Selected order and cited sections; complete subject and numbered verification sequence; `package.json`; 08 §PRs and commits; current review/PR/release-note outputs |
+| Release close                                        | `@skills/dotln-release-close/SKILL.md` | Selected order and cited sections; the canonical final review, PR body and release notes                                                                            |
+
+The generated `Read:` and `Read[role]:` directives are binding throughout the
+procedure, not just before its first effect. Resolve `@work-order`, `@citations`,
+`@subject-files`, `@failure-report`, `@verification-reports` and `@final-review`
+from the task and canonical artifact paths. An inapplicable conditional input
+is empty; an unresolved required input is reported, never silently omitted.
+Read source and existing tests before architecture changes and review current
+output bytes before completing. Any newly discovered required source expands
+the declared scope and its accounting. The ledger/intake remain scoped lookups.
+
+The [WO-039 measurement](../evidence/WO-039/harness-context.json) scans the whole
+floor and selected skill mechanically, including late directives. It counts
+whole files or cited heading subtrees and deduplicates overlaps. Its controlled
+fixture comparison includes every role-directed input; it does not estimate a
+changing work order's eventual total context. Skills contain protocol procedure;
+this guide remains the full reference and is loaded only for explicitly cited
+sections or the separate planning/ideation dispatch.
 
 ## Operator resume phrases — how you get dispatched
 
@@ -17,6 +41,12 @@ The operator's entire instruction to you may be a single phrase of the form
 `resume: <intent>`. That phrase **is** your dispatch. Do not ask for context and
 do not ask which work order: the durable control state answers both, and the
 operator is deliberately not repeating themselves.
+
+Load the generated role skill named by the cold-start table. Its procedure is
+the session adapter to the detailed contract below. Claude's generated prompt
+hook resolves the exact phrase and reiterates the selected order path; Codex
+uses the same floor dispatch with its project skill. Keep `npm run harness --
+check` green after changing the Contributor source and regenerating the bundle.
 
 1. Run `npm run resume --silent -- status --json`. The JSON names the active work order
    and its authoritative path, the current phase, latest verification artifact
@@ -724,7 +754,16 @@ claim evidence or releases it does not have.
   update the blueprint doc in the same change.
 - **Isolation.** The main checkout is the control plane. Model-authored code
   changes happen on branches/worktrees; verify `pwd` and repo root before any
-  git operation.
+  git operation. One writer per worktree is enforced by the generated hook's
+  reservation, keyed by the session and its harness process. A session refused
+  for a foreign reservation runs `node scripts/harness.mjs writer --show` to
+  name the holder: a dead holder is reclaimed automatically at the next write
+  and two sessions racing for the same dead holder admit exactly one writer,
+  a live one must finish, and an operator releases a stuck one from a terminal
+  outside any governed session with `node scripts/harness.mjs writer --release`
+  (`--force` only for a live owner; a release acts only on the holder it
+  judged). Never widen the metadata allowlist to lifecycle commands to get
+  past it.
 - **No new dependencies** without a one-paragraph note in the relevant decision
   record. The kernel stays framework-free, period.
 - **No config mutation of safety boundaries** (git config, hooks, permissions,
