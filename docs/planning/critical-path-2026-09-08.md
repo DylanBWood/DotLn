@@ -493,5 +493,24 @@ direction and say so.
 
 The first result's evidence (revision `d1da629`, subject hash
 `sha256:22ee38d076a022c679b643341dfccfdbd10230f10a4f3b57361370e2ddc347fa`)
-stands in the ledger section. The revised pass's checks are recorded below
-the committed revision that carries them.
+stands in the ledger section. The revised pass's checks ran on the committed revision `6ab27c4`
+(subject revision `6ab27c4`, subject hash `sha256:a5576cbcf1c449fefd3d8905849d5f59a669c699bc0392b7c636870c765e571a`):
+
+- `npm run work-orders -- index` regenerated and `index --check` passed over
+  every order file; `npm run plan -- subject` built the 68-order subject
+  with 350 acceptance criteria and no parse failure; the 65 new
+  order files run from 52 to 143 lines with a median of 79.
+- The graph generator found 100 nodes, 162 edges, no dangling edge and no
+  cycle; sixteen filed orders have an empty blocking set.
+- The work-order shell suite and the plan-refutation suite's fixtures
+  passed; the plan-refutation suite then refused at its repository gate with
+  `planning pass planning-4a8993a79ee8cd05 needs a receipt`, by design; the
+  full chain's other steps were passed by the first result's run and no
+  runtime source, test, package or build configuration changed since.
+- The formatter check passed over every changed formatted file; the
+  local-terms screen ran over all seventy-six changed committed files with
+  the operator's list present and exit 0; the publication checks passed
+  (no product heading changed); `git diff --check` is clean.
+- Three of the pass's own shell commands were refused by the compiled
+  permission hook (recorded in the risk register and the ledger); no write
+  was attempted around it.
