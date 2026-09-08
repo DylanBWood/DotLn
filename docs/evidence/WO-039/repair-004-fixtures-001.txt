@@ -1,0 +1,51 @@
+# VER-003 regressions against the unrepaired runtime: a scratch build of the third-repair source with only scripts/test-harness.mjs synced from this repair
+$ node --test --test-name-pattern='refreshed reservation|operator release judges' scripts/test-harness.mjs
+TAP version 13
+# Subtest: WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+not ok 1 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+  ---
+  duration_ms: 601.075792
+  location: '<scratch>/scripts/test-harness.mjs:2025:1'
+  failureType: 'testCodeFailure'
+  error: 'a stale reclaimer removed refreshed facts and was admitted'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<scratch>/scripts/test-harness.mjs:2059:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async Test.run (node:internal/test_runner/test:825:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:533:7)
+  ...
+# Subtest: WO-039 an operator release judges, retires and journals one observed reservation
+not ok 2 - WO-039 an operator release judges, retires and journals one observed reservation
+  ---
+  duration_ms: 455.1045
+  location: '<scratch>/scripts/test-harness.mjs:2125:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    an unforced release removed the live replacement: {"contract":"harness-writer-v1","reserved":true,"actorId":"9f9339fb3018263c0707af6ba9805a6bba87fb424f6043d5a57f18bbf395980b","owner":{"pid":49669,"startedAt":"Thu Jan  1 00:00:00 1970","source":"CLAUDE_PID"},"reservedAt":"2026-09-07T00:00:00.000Z","alive":false,"released":true}
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<scratch>/scripts/test-harness.mjs:2154:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async Test.run (node:internal/test_runner/test:825:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:533:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1121.808583
+exit=1

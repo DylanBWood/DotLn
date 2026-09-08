@@ -1,0 +1,116 @@
+TAP version 13
+# > test
+# > node fixture-check.mjs
+# > test
+# > node fixture-check.mjs
+# Subtest: WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+ok 1 - WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+  ---
+  duration_ms: 9638.618084
+  ...
+# Subtest: WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries
+ok 2 - WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries
+  ---
+  duration_ms: 2244.616
+  ...
+# Subtest: WO-039 real-scale inherited outputs and oversized lines can complete through observed bounded deliveries
+not ok 3 - WO-039 real-scale inherited outputs and oversized lines can complete through observed bounded deliveries
+  ---
+  duration_ms: 1840.870083
+  location: '<repo>/scripts/test-harness.mjs:519:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    node:internal/modules/esm/resolve:260
+        throw new ERR_MODULE_NOT_FOUND(
+              ^
+    
+    Error [ERR_MODULE_NOT_FOUND]: Cannot find module '<fixture>/scripts/lib/paths.mjs' imported from <fixture>/scripts/lib/terms.mjs
+        at finalizeResolution (node:internal/modules/esm/resolve:260:11)
+        at moduleResolve (node:internal/modules/esm/resolve:920:10)
+        at defaultResolve (node:internal/modules/esm/resolve:1119:11)
+        at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+        at ModuleLoader.resolve (node:internal/modules/esm/loader:511:25)
+        at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:241:38)
+        at ModuleJob._link (node:internal/modules/esm/module_job:126:49) {
+      code: 'ERR_MODULE_NOT_FOUND',
+      url: 'file://<fixture>/scripts/lib/paths.mjs'
+    }
+    
+    Node.js v22.2.0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:260:11)
+    moduleResolve (node:internal/modules/esm/resolve:920:10)
+    defaultResolve (node:internal/modules/esm/resolve:1119:11)
+    ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:511:25)
+    ModuleLoader.getModuleJob (node:internal/modules/esm/loader:241:38)
+    ModuleJob._link (node:internal/modules/esm/module_job:126:49) {
+    TestContext.<anonymous> (file://<repo>/scripts/test-harness.mjs:605:12)
+    async Test.run (node:internal/test_runner/test:825:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:533:7)
+  ...
+# Subtest: WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement
+ok 4 - WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement
+  ---
+  duration_ms: 399.890792
+  ...
+# Subtest: WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+ok 5 - WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+  ---
+  duration_ms: 209.713416
+  ...
+# Subtest: WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+ok 6 - WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+  ---
+  duration_ms: 18.020916
+  ...
+# Subtest: WO-039 control observation uses the canonical read-only lifecycle command
+ok 7 - WO-039 control observation uses the canonical read-only lifecycle command
+  ---
+  duration_ms: 130.026125
+  ...
+# Subtest: WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+ok 8 - WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+  ---
+  duration_ms: 266.387667
+  ...
+# Subtest: WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+ok 9 - WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+  ---
+  duration_ms: 1979.874208
+  ...
+# Subtest: WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+ok 10 - WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+  ---
+  duration_ms: 856.724292
+  ...
+# Subtest: WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+ok 11 - WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+  ---
+  duration_ms: 559.87775
+  ...
+# Subtest: WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+ok 12 - WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+  ---
+  duration_ms: 2000.804958
+  ...
+# Subtest: WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+ok 13 - WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+  ---
+  duration_ms: 3691.426292
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 12
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23914.01375

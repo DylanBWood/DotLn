@@ -1,0 +1,144 @@
+WO-039 affected checks after operator correction, ideation and private seed — 2026-09-07
+Workspace and temporary paths are normalized; private list values and hashes are never printed.
+
+$ npm run format:check --silent
+Checking formatting...
+All matched files use Prettier code style!
+Exit: 0
+
+$ node scripts/check-publication.mjs
+PASS index coverage: 237/237 product headings indexed
+PASS dual-voice links: 3 identical claim links per voice
+CURRENT everyday-ai-user-toc.md: 30 linked source sections match
+CURRENT software-engineer-toc.md: 45 linked source sections match
+PASS publication bootstrap checks
+Exit: 0
+
+$ node scripts/work-orders.mjs index --check
+PASS docs/work-orders/README.md is current
+Exit: 0
+
+$ git diff --check
+Exit: 0
+
+$ node scripts/harness.mjs check
+harness check: 24 generated surfaces; local-terms list: present
+Exit: 0
+
+$ node scripts/harness-context.mjs --check
+{
+  "instruction": {
+    "before": 3878,
+    "after": 3593
+  },
+  "roles": [
+    {
+      "role": "executor",
+      "skillsRoot": ".claude/skills",
+      "beforeBytes": 71165,
+      "afterBytes": 10497,
+      "beforeLines": 994,
+      "afterLines": 143,
+      "lower": true
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".claude/skills",
+      "beforeBytes": 71165,
+      "afterBytes": 10063,
+      "beforeLines": 994,
+      "afterLines": 141,
+      "lower": true
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".claude/skills",
+      "beforeBytes": 71503,
+      "afterBytes": 12792,
+      "beforeLines": 1004,
+      "afterLines": 181,
+      "lower": true
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".claude/skills",
+      "beforeBytes": 71203,
+      "afterBytes": 8439,
+      "beforeLines": 993,
+      "afterLines": 130,
+      "lower": true
+    },
+    {
+      "role": "executor",
+      "skillsRoot": ".agents/skills",
+      "beforeBytes": 71165,
+      "afterBytes": 11662,
+      "beforeLines": 994,
+      "afterLines": 149,
+      "lower": true
+    },
+    {
+      "role": "verifier",
+      "skillsRoot": ".agents/skills",
+      "beforeBytes": 71165,
+      "afterBytes": 11228,
+      "beforeLines": 994,
+      "afterLines": 147,
+      "lower": true
+    },
+    {
+      "role": "reviewer",
+      "skillsRoot": ".agents/skills",
+      "beforeBytes": 71503,
+      "afterBytes": 13957,
+      "beforeLines": 1004,
+      "afterLines": 187,
+      "lower": true
+    },
+    {
+      "role": "release-close",
+      "skillsRoot": ".agents/skills",
+      "beforeBytes": 71203,
+      "afterBytes": 9604,
+      "beforeLines": 993,
+      "afterLines": 136,
+      "lower": true
+    }
+  ]
+}
+Exit: 0
+
+$ node scripts/harness-evidence.mjs
+Harness evidence: 4 current live role smokes, 24 generated surfaces; local-terms list: present (47 surfaces checked).
+Exit: 0
+
+$ node scripts/test-plan-refutation.mjs
+PASS AC1 committed-only deterministic subject; narrative blinding; all five hash inputs
+PASS AC2 compiled identity, mask, lens, pinned questions, one-shot cadence and authority refusals
+PASS AC3 closed schema, exhaustive ids, verdict construction, row-less exclusion drift and gap deferrals
+PASS AC3/5 deferrals require a later sequence member; outside, closed, self, earlier and missing orders refuse
+PASS AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal
+PASS AC5 unanswered drift and receipt-text override refuse; captured, attributed control event discharges
+PASS AC5 pass after held criterion repair; elsewhere and whitespace edits cannot re-roll
+PASS AC5 third consecutive hold stops the pass, including changed sequence labels and pre-dispatch CLI
+PASS AC2/4 transport adapters keep fixed schema, empty cwd and no model tools; host rejects a mismatched receipt
+PASS AC5 forward-only gate, real-adapter fixture receipt, and stale committed standard refusal
+PASS receipt source symlinks refuse and CLI override retains the acting account label
+Plan gate: {"receipts":1,"passes":0,"enforcement":"2026-09-07","localTerms":"present"}
+Exit: 0
+
+$ node scripts/artifact-identity-evidence.mjs --check
+Verified 4 current artifact evidence files in docs/evidence/WO-039/artifact-identity; original semantic hashes and frozen oracle unchanged.
+Exit: 0
+
+$ node scripts/verification-evidence.mjs --check
+Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.
+Exit: 0
+
+$ node scripts/feedback-evidence.mjs --check --edition WO-039
+Verified ten passing regressions, ten removal failures, and 2393 fewer instruction bytes in the matched projection.
+Exit: 0
+
+$ terms check [all 127 changed public regular files]
+local-terms list: present
+Exit: 0

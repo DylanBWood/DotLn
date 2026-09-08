@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "role": "executor",
+  "attempt": "002",
+  "observedAt": "2026-09-07T20:28:41.014Z",
+  "phrase": "resume: next",
+  "scope": "Closed synthetic role-entry smoke; actual canonical status and entry commands, no full phase execution or publication claimed",
+  "harnessVersion": "2.1.263 (Claude Code)",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "observedModels": [
+    "claude-fable-5",
+    "claude-haiku-4-5-20251001"
+  ],
+  "effectiveEffort": [
+    "xhigh"
+  ],
+  "compilerPackageVersion": "0.7.0",
+  "loadout": {
+    "id": "contributor",
+    "semanticHash": "fnv1a64:06245f5c581212f1",
+    "targetHash": "fnv1a64:e6cf2379cf6c0cef"
+  },
+  "runtime": {
+    "boundaryContract": "feedback-v1",
+    "files": [
+      {
+        "hash": "fnv1a64:dc9688aecc4cb056",
+        "path": "packages/compiler/dist/src/feedback.js"
+      },
+      {
+        "hash": "fnv1a64:7f0520a32e27dede",
+        "path": "packages/skeleton/dist/src/feedback-boundary.js"
+      },
+      {
+        "hash": "fnv1a64:6c6f7fcb7164891b",
+        "path": "packages/skeleton/dist/src/feedback-source-comments.js"
+      },
+      {
+        "hash": "fnv1a64:837c4b7b6be6c2cd",
+        "path": "packages/skeleton/dist/src/harness-host.js"
+      }
+    ],
+    "skeletonVersion": "0.13.0"
+  },
+  "exitCode": 0,
+  "timedOut": false,
+  "roleSkillResolved": true,
+  "deniedEffectRefused": false,
+  "fixtureCommitDidNotExecute": true,
+  "correction": {
+    "tokenConfirmed": false,
+    "reachedThroughRoleSkill": true,
+    "missingCapability": "operator.correction-token.confirmed"
+  },
+  "observerFinished": true,
+  "directedReads": [
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "startLine": 1,
+      "endLine": 31,
+      "sources": [
+        "instruction"
+      ]
+    },
+    {
+      "path": "CLAUDE.md",
+      "startLine": 1,
+      "endLine": 58,
+      "sources": [
+        "instruction-autoload"
+      ]
+    },
+    {
+      "path": "docs/verifications/WO-999/VER-001.md",
+      "startLine": 1,
+      "endLine": 4,
+      "sources": [
+        "skill:@failure-report"
+      ]
+    },
+    {
+      "path": "docs/work-orders/WO-999-fixture.md",
+      "startLine": 1,
+      "endLine": 26,
+      "sources": [
+        "skill:@work-order"
+      ]
+    },
+    {
+      "path": "fixture/contract.md",
+      "startLine": 1,
+      "endLine": 6,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "fixture/source.test.mjs",
+      "startLine": 1,
+      "endLine": 3,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "fixture/source.ts",
+      "startLine": 1,
+      "endLine": 1,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "package.json",
+      "startLine": 1,
+      "endLine": 7,
+      "sources": [
+        "skill"
+      ]
+    }
+  ],
+  "actualReads": [
+    {
+      "path": "CLAUDE.md",
+      "startLine": 1,
+      "endLine": 58
+    },
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "startLine": 1,
+      "endLine": 31
+    }
+  ],
+  "outsideDirectedSet": [],
+  "residue": [],
+  "observations": [
+    {
+      "event": "UserPromptSubmit",
+      "role": "executor",
+      "reads": [
+        {
+          "path": "CLAUDE.md",
+          "startLine": 1,
+          "endLine": 58
+        }
+      ],
+      "source": "instruction-autoload"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "effect": "repo.read",
+      "allowed": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Skill",
+      "effort": "xhigh",
+      "reads": [
+        {
+          "path": ".claude/skills/dotln-executor/SKILL.md",
+          "startLine": 1,
+          "endLine": 31
+        }
+      ],
+      "receipts": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "allowed": false,
+      "readScopeRefusal": "unobserved shell read/effect route"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "effect": "lifecycle.run",
+      "allowed": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "reads": [],
+      "receipts": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-attribution"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "effect": "lifecycle.run",
+      "allowed": true
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "concurrent-work-requires-worktrees"
+      ],
+      "allowed": true,
+      "factKinds": [
+        "writer-isolation"
+      ]
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-lint-type-disables-as-fixes"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "PostToolUse",
+      "tool": "Bash",
+      "effort": "xhigh",
+      "reads": [],
+      "receipts": []
+    },
+    {
+      "event": "Stop",
+      "effort": "xhigh",
+      "unitIds": [
+        "read-your-own-output"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "Stop",
+      "effort": "xhigh",
+      "unitIds": [
+        "no-partial-completion"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "Stop",
+      "effort": "xhigh",
+      "unitIds": [
+        "verify-app-before-done"
+      ],
+      "allowed": true,
+      "factKinds": []
+    },
+    {
+      "event": "Stop",
+      "effort": "xhigh",
+      "finished": true
+    }
+  ],
+  "passed": false,
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false
+}

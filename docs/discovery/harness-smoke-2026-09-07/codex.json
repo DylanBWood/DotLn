@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "mode": "codex",
+  "observedAt": "2026-09-07T19:16:53.144Z",
+  "version": "codex-cli 0.153.4",
+  "actor": {
+    "harness": "codex-cli",
+    "model": "gpt-6-astra",
+    "effort": "max",
+    "source": "launch-selector"
+  },
+  "observedModels": [],
+  "effectiveEffort": "unobserved",
+  "exitCode": 0,
+  "timedOut": false,
+  "skillResolved": true,
+  "promptContextObserved": false,
+  "stopContinued": false,
+  "deniedFileAbsent": false,
+  "settingsDeniedFileAbsent": false,
+  "fixtureEdited": true,
+  "authenticationUnavailable": false,
+  "untrustedHooksReported": false,
+  "eventTypes": [
+    "thread.started",
+    "turn.started",
+    "item.completed",
+    "item.started",
+    "turn.completed"
+  ],
+  "events": [],
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false
+}

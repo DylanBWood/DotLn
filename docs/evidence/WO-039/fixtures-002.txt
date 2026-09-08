@@ -1,0 +1,117 @@
+TAP version 13
+# Subtest: WO-039 pure lowering preserves inputs and semantic hashes, and verifies all file identities
+ok 1 - WO-039 pure lowering preserves inputs and semantic hashes, and verifies all file identities
+  ---
+  duration_ms: 7.689125
+  ...
+# Subtest: WO-039 one changed unit affects only files naming that unit
+ok 2 - WO-039 one changed unit affects only files naming that unit
+  ---
+  duration_ms: 4.315083
+  ...
+# Subtest: WO-039 profile observations, authority identity and bounded residue refuse unsupported assumptions
+ok 3 - WO-039 profile observations, authority identity and bounded residue refuse unsupported assumptions
+  ---
+  duration_ms: 5.89275
+  ...
+# > test
+# > node fixture-check.mjs
+# Subtest: WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+not ok 4 - WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+  ---
+  duration_ms: 24986.20075
+  location: '<repo>/scripts/test-harness.mjs:212:1'
+  failureType: 'testCodeFailure'
+  error: ''
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    invoke (file://<repo>/scripts/test-harness.mjs:177:10)
+    TestContext.<anonymous> (file://<repo>/scripts/test-harness.mjs:315:7)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:824:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:533:18)
+    node:internal/test_runner/harness:247:12
+    node:internal/process/task_queues:140:7
+    AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+  ...
+# Subtest: WO-039 installed bundle detects one-byte drift and does not follow output symlinks
+ok 5 - WO-039 installed bundle detects one-byte drift and does not follow output symlinks
+  ---
+  duration_ms: 302.357
+  ...
+# Subtest: WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+ok 6 - WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+  ---
+  duration_ms: 194.584541
+  ...
+# Subtest: WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+ok 7 - WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+  ---
+  duration_ms: 18.381917
+  ...
+# Subtest: WO-039 control observation uses the canonical read-only lifecycle command
+ok 8 - WO-039 control observation uses the canonical read-only lifecycle command
+  ---
+  duration_ms: 115.739584
+  ...
+# Subtest: WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+ok 9 - WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+  ---
+  duration_ms: 263.563417
+  ...
+# Subtest: WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+ok 10 - WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+  ---
+  duration_ms: 1651.240125
+  ...
+# Subtest: WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+ok 11 - WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+  ---
+  duration_ms: 852.274792
+  ...
+# Subtest: WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+ok 12 - WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+  ---
+  duration_ms: 538.129125
+  ...
+# Subtest: WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+ok 13 - WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+  ---
+  duration_ms: 2013.044209
+  ...
+# Subtest: WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+not ok 14 - WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+  ---
+  duration_ms: 21618.58675
+  location: '<repo>/scripts/test-harness.mjs:833:1'
+  failureType: 'testCodeFailure'
+  error: ''
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    invoke (file://<repo>/scripts/test-harness.mjs:177:10)
+    TestContext.<anonymous> (file://<repo>/scripts/test-harness.mjs:864:7)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:824:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:533:18)
+    Test.postRun (node:internal/test_runner/test:923:19)
+    Test.run (node:internal/test_runner/test:866:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:533:7)
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 12
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 52636.396708

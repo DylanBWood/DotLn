@@ -1,0 +1,17 @@
+TAP version 13
+# > test
+# > node fixture-check.mjs
+# Subtest: WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+ok 1 - WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+  ---
+  duration_ms: 8096.893833
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8163.671334

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-039",
+  "record": "docs/discovery/harness-smoke-2026-09-07.md",
+  "runs": [
+    "docs/discovery/harness-smoke-2026-09-07/claude.json",
+    "docs/discovery/harness-smoke-2026-09-07/claude-bare.json",
+    "docs/discovery/harness-smoke-2026-09-07/codex.json"
+  ],
+  "profiles": [
+    {
+      "id": "claude-code-2.1.263",
+      "version": "2.1.263",
+      "hookEvents": {"PreToolUse": "C1", "PostToolUse": "C2", "Stop": "C3", "UserPromptSubmit": "C4"},
+      "skillsRoot": ".claude/skills",
+      "skillsEvidence": "C5",
+      "settingsDenyEvidence": "C6",
+      "settingsAllow": "unavailable",
+      "instructionFile": "CLAUDE.md",
+      "instructionEvidence": "C7"
+    },
+    {
+      "id": "codex-cli-0.153.4",
+      "version": "0.153.4",
+      "hookEvents": {},
+      "hooksUnavailableEvidence": "X2",
+      "skillsRoot": ".agents/skills",
+      "skillsEvidence": "X1",
+      "settingsPermissions": "unavailable",
+      "instructionFile": "AGENTS.md",
+      "instructionEvidence": "X3"
+    }
+  ]
+}

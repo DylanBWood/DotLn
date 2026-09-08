@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "role": "executor",
+  "attempt": "001",
+  "observedAt": "2026-09-07T20:26:41.667Z",
+  "phrase": "resume: next",
+  "scope": "Closed synthetic role-entry smoke; actual canonical status and entry commands, no full phase execution or publication claimed",
+  "harnessVersion": "2.1.263 (Claude Code)",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "observedModels": [
+    "claude-fable-5"
+  ],
+  "effectiveEffort": "unobserved",
+  "compilerPackageVersion": "0.7.0",
+  "loadout": {
+    "id": "contributor",
+    "semanticHash": "fnv1a64:06245f5c581212f1",
+    "targetHash": "fnv1a64:e6cf2379cf6c0cef"
+  },
+  "runtime": {
+    "boundaryContract": "feedback-v1",
+    "files": [
+      {
+        "hash": "fnv1a64:dc9688aecc4cb056",
+        "path": "packages/compiler/dist/src/feedback.js"
+      },
+      {
+        "hash": "fnv1a64:7f0520a32e27dede",
+        "path": "packages/skeleton/dist/src/feedback-boundary.js"
+      },
+      {
+        "hash": "fnv1a64:6c6f7fcb7164891b",
+        "path": "packages/skeleton/dist/src/feedback-source-comments.js"
+      },
+      {
+        "hash": "fnv1a64:837c4b7b6be6c2cd",
+        "path": "packages/skeleton/dist/src/harness-host.js"
+      }
+    ],
+    "skeletonVersion": "0.13.0"
+  },
+  "exitCode": 0,
+  "timedOut": false,
+  "roleSkillResolved": false,
+  "deniedEffectRefused": false,
+  "fixtureCommitDidNotExecute": true,
+  "correction": {
+    "tokenConfirmed": false,
+    "reachedThroughRoleSkill": false,
+    "missingCapability": "operator.correction-token.confirmed"
+  },
+  "observerFinished": false,
+  "directedReads": [
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "startLine": 1,
+      "endLine": 31,
+      "sources": [
+        "instruction"
+      ]
+    },
+    {
+      "path": "CLAUDE.md",
+      "startLine": 1,
+      "endLine": 58,
+      "sources": [
+        "instruction-autoload"
+      ]
+    },
+    {
+      "path": "docs/verifications/WO-999/VER-001.md",
+      "startLine": 1,
+      "endLine": 4,
+      "sources": [
+        "skill:@failure-report"
+      ]
+    },
+    {
+      "path": "docs/work-orders/WO-999-fixture.md",
+      "startLine": 1,
+      "endLine": 26,
+      "sources": [
+        "skill:@work-order"
+      ]
+    },
+    {
+      "path": "fixture/contract.md",
+      "startLine": 1,
+      "endLine": 6,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "fixture/source.test.mjs",
+      "startLine": 1,
+      "endLine": 3,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "fixture/source.ts",
+      "startLine": 1,
+      "endLine": 1,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "package.json",
+      "startLine": 1,
+      "endLine": 7,
+      "sources": [
+        "skill"
+      ]
+    }
+  ],
+  "actualReads": [],
+  "outsideDirectedSet": [],
+  "residue": [],
+  "observations": [],
+  "passed": false,
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false
+}
