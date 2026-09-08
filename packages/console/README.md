@@ -1,9 +1,11 @@
 # Actor board
 
 UIFA v0 is a read-only board over recorded actors, builds, mechanisms, work,
-and blueprint evidence. It prepares application `v0.14.0` as console component
-`0.1.0`. The package uses the existing kernel, compiler and skeleton workspaces;
-it adds no external dependency, framework, bundler or asset pipeline.
+and blueprint evidence. It shipped in application `v0.14.0` as console
+component `0.1.0`; component `0.1.1` moves its default self-hosted evidence
+edition to WO-039 for application `v0.15.0`. The package uses the existing
+kernel, compiler and skeleton workspaces; it adds no external dependency,
+framework, bundler or asset pipeline.
 
 From the repository root, after the ordinary pinned install:
 
@@ -16,8 +18,15 @@ npm run console -- board --store .runtime/demo
 
 `--store` may be repeated. Each additional directory is read only through its
 `events.jsonl`; a missing store is shown as unavailable and is never created.
-The default selection includes the recorded WO-009 demonstration and original
-WO-011 audit/verifier stores. Those are historical witnesses, not live sessions.
+The default selection includes the recorded WO-009 demonstration and the
+current self-hosted feedback edition's audit/verifier stores, selected by
+`SELF_HOST_EDITION` in [collect.ts](src/collect.ts). Those are historical
+witnesses, not live sessions. The root evidence command selects the same
+edition: a compiler package bump changes the pinned policy and verification
+identities, and the skeleton refuses persisted compilation drift when it
+replays an earlier edition's verifier stream, so that edition renders
+unavailable rather than current. When the edition moves, move the constant and
+re-pin the `selfhost` fixture case together.
 Current control, worktree, release, capability, publication, roadmap and
 refutation sources are collected on each invocation. Collection has no watch
 loop. It reads no intake, account configuration or private harness settings.
@@ -86,8 +95,8 @@ attempts remain separate actors. A unique recorded `implementerEpisodeId`
 connects stores to the accepted matrix; failed attempts do not acquire the
 successful attempt's evaluations.
 
-The WO-011 executor records a `feedback-v1` policy hash and its verifier records
-a `verification-v1` input hash. They are different contract axes. Neither
+The self-hosted executor records a `feedback-v1` policy hash and its verifier
+records a `verification-v1` input hash. They are different contract axes. Neither
 records a LoadoutGraph semantic hash, so `loadoutHash` is unknown. Selected
 model/effort and their provenance remain separate from effective readback.
 An authority summary describes its recorded envelope and expiry, not a fresh
@@ -112,8 +121,8 @@ views are compiled and compared. Tooltips come from the compiler's existing
 name is not an actual exported API. The inspection expiry/environment describe
 a saved-build preview, not a current grant or an actor's equipped build.
 
-`compileFeedbackUnits` supplies all ten mechanisms. The selected WO-011 report
-already contains a maturity fold plus ten present/removal pairs. The adapter
+`compileFeedbackUnits` supplies all ten mechanisms. The selected edition's
+report already contains a maturity fold plus ten present/removal pairs. The adapter
 reconstructs only the report's documented isolated `regression_<unit>` fixture
 observations, then requires exact agreement with `feedbackMaturity` and its
 policy hash. Missing or inconsistent evidence is unavailable. The last fixture
@@ -144,8 +153,11 @@ npm test
 ```
 
 [manifest.json](fixtures/manifest.json) pins every input by SHA-256. Five cases
-cover WO-009, WO-011, control, refutations and absent sources; each pins JSON,
-terminal and HTML outputs in [expected/](fixtures/expected/). The six real
+cover WO-009, the self-hosted feedback edition (`selfhost`), control,
+refutations and absent sources; each pins JSON, terminal and HTML outputs in
+[expected/](fixtures/expected/). The `selfhost` case pins the report and both
+streams of one recorded edition; when the edition moves, update its three
+manifest inputs and regenerate the expected outputs. The six real
 2026-09-06 refutation receipts remain input alongside the later live receipt.
 Constellation addresses are explicitly replaced by fixture addresses in the
 captured text. Other fixture records retain their declared provenance.

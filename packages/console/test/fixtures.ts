@@ -99,7 +99,7 @@ export function loadFixture(name: string): BoardSources {
 
 export function combinedFixture(): BoardSources {
   const demo = loadFixture("wo009"),
-    audit = loadFixture("wo011");
+    audit = loadFixture("selfhost");
   return {
     ...demo,
     ...audit,
