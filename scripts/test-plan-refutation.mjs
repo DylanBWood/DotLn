@@ -42,6 +42,8 @@ import {
   readOverrides,
   readReceipts,
   RECEIPTS,
+  renderPlanReceipt,
+  validateReceipt,
   writePlanReceipt,
 } from "./lib/plan-receipts.mjs";
 import { checkLocalTerms } from "./lib/terms.mjs";
@@ -171,6 +173,37 @@ const writeReceipt = async (
     dispositions,
   });
 };
+const directEpisode = (result) => ({
+  kind: "direct-session",
+  harness: "codex",
+  harnessVersion: "unknown",
+  model: "unknown",
+  effort: "unknown",
+  settingsVerification: "unverified",
+  profileId: "plan-refutation-v1",
+  completedAt: new Date(now()).toISOString(),
+  resultHash: sha256(`${JSON.stringify(result, null, 2)}\n`),
+  judgmentBasis: "canonical-subject-and-protocol",
+  independence: "session-attested",
+  contextIsolation: "not-enforced",
+  modelTools: "available",
+  statement: "Synthetic direct-session attestation for deterministic fixtures.",
+  result,
+});
+const writeDirectReceipt = (repo, result = passResult, dispositions = []) => {
+  const subject = buildPlanSubject(repo);
+  return writePlanReceipt(repo, {
+    pass: passFor(repo),
+    slug: "direct-fixture",
+    subject,
+    episode: directEpisode(validatePlanResult(result(subject), subject)),
+    dispositions,
+  });
+};
+const rehash = (receipt) => {
+  const { receiptHash: _hash, ...payload } = receipt;
+  return { ...payload, receiptHash: sha256(JSON.stringify(payload)) };
+};
 const accept = (receipt) =>
   receipt.holds.map((hold) => ({
     receiptId: receipt.receiptId,
@@ -197,6 +230,242 @@ export async function fixtures() {
     process.stdout.write(`PASS ${label}\n`);
   };
   try {
+    await check(
+      "direct-session frozen result round-trips and gates without invented launch provenance",
+      async () => {
+        const repo = makeRepo(parent, "direct-pass");
+        const receipt = await writeDirectReceipt(repo);
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+        assert.equal((await checkPlanGate(repo)).passes, 1);
+        const markdown = read(repo, `${RECEIPTS}/${receipt.receiptId}.md`);
+        assert.equal(markdown, renderPlanReceipt(receipt));
+        assert.match(markdown, /direct Codex session/u);
+        assert.match(markdown, /settings verification: unverified/u);
+        assert.match(markdown, /Independence is session-attested/u);
+        assert.match(markdown, /model tools were available/u);
+        assert.doesNotMatch(markdown, /Selection source: host-launch/u);
+        assert.doesNotMatch(markdown, /Dispatched:|empty scratch/u);
+        for (const key of [
+          "transport",
+          "commandReceipt",
+          "dispatchedAt",
+          "semanticHash",
+          "selectionSource",
+        ])
+          assert.equal(key in receipt.episode, false);
+        assert.throws(
+          () =>
+            checkPassReceipt(
+              passFor(repo),
+              receipt.subject,
+              [{ ...receipt, episode: { transport: "fake" } }],
+              [],
+            ),
+          /requires an actual/u,
+        );
+        // Committed receipt bytes, including the legacy rendering in other
+        // fixtures, still pass through the same immutable-history reader.
+        commit(repo, "direct receipt");
+        write(repo, `${RECEIPTS}/${receipt.receiptId}.md`, `${markdown}\n`);
+        await assert.rejects(readReceipts(repo), /immutable Markdown/u);
+        write(repo, `${RECEIPTS}/${receipt.receiptId}.md`, markdown);
+        await assert.rejects(writeDirectReceipt(repo), /same subject/u);
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+      },
+    );
+    await check(
+      "direct-session closed provenance rejects launch claims, verified settings and changed frozen results",
+      async () => {
+        const repo = makeRepo(parent, "direct-shape");
+        const receipt = await writeDirectReceipt(repo);
+        for (const change of [
+          { kind: "other" },
+          { harness: "other" },
+          { harnessVersion: "claimed-version" },
+          { model: "claimed-model" },
+          { effort: "max" },
+          { settingsVerification: "verified" },
+          { profileId: "other" },
+          { completedAt: "not-a-timestamp" },
+          { resultHash: sha256("other") },
+          { judgmentBasis: "planner-narrative" },
+          { independence: "host-verified" },
+          { contextIsolation: "enforced" },
+          { modelTools: "disabled" },
+          { statement: "" },
+          { transport: "codex-cli-exec" },
+          { commandReceipt: { acceptedAt: now() } },
+          { dispatchedAt: new Date(now()).toISOString() },
+          { semanticHash: "invented-build" },
+          { selectionSource: "host-launch" },
+        ])
+          await assert.rejects(
+            validateReceipt(
+              repo,
+              rehash({
+                ...receipt,
+                episode: { ...receipt.episode, ...change },
+              }),
+            ),
+            /provenance/u,
+          );
+        const changed = structuredClone(receipt);
+        changed.result.orders[0].reason =
+          "A different judgment after freezing.";
+        await assert.rejects(
+          validateReceipt(repo, rehash(changed)),
+          /frozen result hash/u,
+        );
+        const forgedSubject = structuredClone(receipt);
+        forgedSubject.subject.orders[0].objective = "An uncommitted objective.";
+        await assert.rejects(
+          validateReceipt(repo, rehash(forgedSubject)),
+          /committed sources/u,
+        );
+        const incomplete = structuredClone(receipt);
+        incomplete.result.orders.pop();
+        incomplete.episode = directEpisode(incomplete.result);
+        delete incomplete.episode.result;
+        await assert.rejects(
+          validateReceipt(repo, rehash(incomplete)),
+          /one result per subject order/u,
+        );
+      },
+    );
+    await check(
+      "direct-session publication rejects dirty or stale planning subjects and screens session metadata",
+      async () => {
+        const repo = makeRepo(parent, "direct-inputs");
+        const subject = buildPlanSubject(repo);
+        const input = {
+          pass: passFor(repo),
+          slug: "direct-inputs",
+          subject,
+          episode: directEpisode(passResult(subject)),
+        };
+        write(repo, orderPath("WO-901"), `${order("WO-901")}\n`);
+        await assert.rejects(
+          writePlanReceipt(repo, input),
+          /current committed and workspace subject/u,
+        );
+        commit(repo, "changed source bytes");
+        await assert.rejects(
+          writePlanReceipt(repo, input),
+          /current committed and workspace subject/u,
+        );
+        write(repo, "docs/control/local/terms.txt", "Synthetic Forbidden\n");
+        const current = buildPlanSubject(repo);
+        await assert.rejects(
+          writePlanReceipt(repo, {
+            ...input,
+            subject: current,
+            episode: {
+              ...directEpisode(passResult(current)),
+              statement: "Synthetic Forbidden",
+            },
+          }),
+          /local-terms list present; refused/u,
+        );
+        assert.deepEqual(await readReceipts(repo), []);
+        assert.deepEqual(readdirSync(join(repo, RECEIPTS)), []);
+      },
+    );
+    await check(
+      "direct-session receipts retain structural and addressed holds and cannot freeze an omitted hold as pass",
+      async () => {
+        for (const condition of [
+          "drift",
+          "machinery",
+          "uncovered-gap",
+          "addressed-gap",
+        ]) {
+          const repo = makeRepo(parent, `direct-${condition}`);
+          const subject = buildPlanSubject(repo);
+          const result = passResult(subject);
+          if (condition === "drift") {
+            result.orders[0] = cannedPlanDrift(subject).orders[0];
+          } else if (condition === "machinery") {
+            result.orders = result.orders.map((item) => ({
+              ...item,
+              verdict: "machinery",
+              thesis: null,
+              capabilityRow: null,
+            }));
+          } else if (condition === "uncovered-gap") {
+            result.largestGap.thesis = subject.standard.theses[1].id;
+          } else {
+            result.holdReasons = [
+              {
+                workOrderId: subject.orders[0].workOrderId,
+                criterionId: subject.orders[0].criteria[0].id,
+                reason: "A concrete unresolved gap within the touched thesis.",
+              },
+            ];
+          }
+          await assert.rejects(
+            writePlanReceipt(repo, {
+              pass: passFor(repo),
+              slug: "omitted",
+              subject,
+              episode: directEpisode(result),
+            }),
+            /frozen result hash/u,
+          );
+          assert.deepEqual(await readReceipts(repo), []);
+          const receipt = await writeDirectReceipt(repo, () => result);
+          assert.equal(receipt.result.planVerdict, "hold");
+          assert.ok(receipt.holds.length > 0);
+          await assert.rejects(checkPlanGate(repo), /unanswered hold/u);
+        }
+      },
+    );
+    await check(
+      "direct-session and CLI histories share held-criterion repair and disposition requirements",
+      async () => {
+        const repo = makeRepo(parent, "direct-chain");
+        const held = await writeReceipt(repo);
+        await assert.rejects(writeDirectReceipt(repo), /same subject/u);
+        mutate(repo, orderPath("WO-902"), "useful shape", "different shape");
+        await assert.rejects(
+          writeDirectReceipt(repo, passResult, accept(held)),
+          /outside the held criteria/u,
+        );
+        mutate(repo, orderPath("WO-901"), "useful shape", "repaired shape");
+        await assert.rejects(
+          writeDirectReceipt(repo),
+          /no accepted disposition/u,
+        );
+        const repaired = await writeDirectReceipt(
+          repo,
+          passResult,
+          accept(held),
+        );
+        assert.equal(repaired.previousReceiptHash, held.receiptHash);
+        assert.equal(repaired.ordinal, 2);
+        assert.equal((await checkPlanGate(repo)).receipts, 2);
+      },
+    );
+    await check(
+      "direct-session holds retain the three-hold stop and cannot be rerolled by changing review source",
+      async () => {
+        const repo = makeRepo(parent, "direct-limit");
+        const receipts = [];
+        for (let i = 0; i < 3; i++) {
+          if (i) mutate(repo, orderPath("WO-901"), "useful", `useful-${i}`);
+          receipts.push(await writeDirectReceipt(repo, cannedPlanDrift));
+        }
+        mutate(repo, orderPath("WO-901"), "useful", "useful-final");
+        await assert.rejects(
+          writeDirectReceipt(repo, passResult, receipts.flatMap(accept)),
+          /third consecutive hold/u,
+        );
+        await assert.rejects(
+          writeReceipt(repo, passResult, receipts.flatMap(accept)),
+          /third consecutive hold/u,
+        );
+        assert.equal((await readReceipts(repo)).length, 3);
+      },
+    );
     await check(
       "AC1 committed-only deterministic subject; narrative blinding; all five hash inputs",
       async () => {

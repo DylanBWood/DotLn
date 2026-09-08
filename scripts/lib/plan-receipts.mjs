@@ -89,11 +89,17 @@ export const renderPlanReceipt = (receipt) =>
     "",
     `Pass: \`${receipt.pass.id}\` (${receipt.pass.kind}). Verdict: **${receipt.result.planVerdict}**.`,
     "",
-    `Transport: \`${receipt.episode.transport}\`; harness version: \`${receipt.episode.harnessVersion}\`; model: \`${receipt.episode.model}\`; effort: \`${receipt.episode.effort}\`. Selection source: host-launch; effective model and effort: unknown.`,
+    receipt.episode.kind === "direct-session"
+      ? "Review source: direct Codex session. Harness version, model and effort: unknown; settings verification: unverified. No CLI launch or transport acceptance is claimed."
+      : `Transport: \`${receipt.episode.transport}\`; harness version: \`${receipt.episode.harnessVersion}\`; model: \`${receipt.episode.model}\`; effort: \`${receipt.episode.effort}\`. Selection source: host-launch; effective model and effort: unknown.`,
     "",
-    `Dispatched: ${receipt.episode.dispatchedAt}. Completed: ${receipt.episode.completedAt}. Local-terms list: **${receipt.localTerms.status}**.`,
+    receipt.episode.kind === "direct-session"
+      ? `Judgment frozen: ${receipt.episode.completedAt}. Frozen result hash: \`${receipt.episode.resultHash}\`. Local-terms list: **${receipt.localTerms.status}**.`
+      : `Dispatched: ${receipt.episode.dispatchedAt}. Completed: ${receipt.episode.completedAt}. Local-terms list: **${receipt.localTerms.status}**.`,
     "",
-    "The subject was compiled from committed vision sections, the roles table, capability rows, and order title/objective/criteria/non-goals. Planner narrative, ledger, earlier verdicts, and model tools were excluded. The host created an empty scratch working directory for this one-shot episode.",
+    receipt.episode.kind === "direct-session"
+      ? `Judgment basis: canonical subject and plan-refutation-v1 protocol. Independence is session-attested; context isolation was not enforced and model tools were available. Session statement: ${receipt.episode.statement}`
+      : "The subject was compiled from committed vision sections, the roles table, capability rows, and order title/objective/criteria/non-goals. Planner narrative, ledger, earlier verdicts, and model tools were excluded. The host created an empty scratch working directory for this one-shot episode.",
     "",
     receipt.subject.orders.some(({ workOrderId }) => workOrderId === "WO-041")
       ? "Self-referential instrument: WO-041 builds this host and is also in its subject. Its order verdict is advisory, never evidence of this mechanism's correctness. Independent executable fixtures and a separate verifier judge the instrument."
@@ -177,42 +183,80 @@ export async function validateReceipt(root, receipt) {
     "hold addresses differ from validated result",
   );
   const e = receipt.episode;
-  check(
-    exact(e, [
-      "transport",
-      "harnessVersion",
-      "model",
-      "effort",
-      "selectionSource",
-      "effectiveModel",
-      "effectiveEffort",
-      "dispatchedAt",
-      "completedAt",
-      "semanticHash",
-      "commandReceipt",
-    ]) &&
-      ["fake", "claude-cli-print", "codex-cli-exec"].includes(e.transport) &&
-      text(e.harnessVersion) &&
-      /^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,99}$/u.test(e.model) &&
-      ["low", "medium", "high", "xhigh", "max", "unknown"].includes(e.effort) &&
-      e.selectionSource === "host-launch" &&
-      e.effectiveModel === "unknown" &&
-      e.effectiveEffort === "unknown" &&
-      timestamp(e.dispatchedAt) &&
-      timestamp(e.completedAt) &&
-      Date.parse(e.completedAt) >= Date.parse(e.dispatchedAt) &&
-      text(e.semanticHash),
-    "episode provenance invalid",
-  );
-  check(
-    exact(e.commandReceipt, ["commandId", "transport", "acceptedAt"]) &&
-      text(e.commandReceipt.commandId) &&
-      e.commandReceipt.transport === e.transport &&
-      Number.isFinite(e.commandReceipt.acceptedAt) &&
-      e.commandReceipt.acceptedAt >= Date.parse(e.dispatchedAt) &&
-      e.commandReceipt.acceptedAt <= Date.parse(e.completedAt),
-    "transport acceptance receipt invalid",
-  );
+  if (e?.kind === "direct-session") {
+    check(
+      exact(e, [
+        "kind",
+        "harness",
+        "harnessVersion",
+        "model",
+        "effort",
+        "settingsVerification",
+        "profileId",
+        "completedAt",
+        "resultHash",
+        "judgmentBasis",
+        "independence",
+        "contextIsolation",
+        "modelTools",
+        "statement",
+      ]) &&
+        e.harness === "codex" &&
+        e.harnessVersion === "unknown" &&
+        e.model === "unknown" &&
+        e.effort === "unknown" &&
+        e.settingsVerification === "unverified" &&
+        e.profileId === "plan-refutation-v1" &&
+        timestamp(e.completedAt) &&
+        e.resultHash ===
+          sha256(`${JSON.stringify(receipt.result, null, 2)}\n`) &&
+        e.judgmentBasis === "canonical-subject-and-protocol" &&
+        e.independence === "session-attested" &&
+        e.contextIsolation === "not-enforced" &&
+        e.modelTools === "available" &&
+        text(e.statement),
+      "direct-session provenance or frozen result hash invalid",
+    );
+  } else {
+    check(
+      exact(e, [
+        "transport",
+        "harnessVersion",
+        "model",
+        "effort",
+        "selectionSource",
+        "effectiveModel",
+        "effectiveEffort",
+        "dispatchedAt",
+        "completedAt",
+        "semanticHash",
+        "commandReceipt",
+      ]) &&
+        ["fake", "claude-cli-print", "codex-cli-exec"].includes(e.transport) &&
+        text(e.harnessVersion) &&
+        /^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,99}$/u.test(e.model) &&
+        ["low", "medium", "high", "xhigh", "max", "unknown"].includes(
+          e.effort,
+        ) &&
+        e.selectionSource === "host-launch" &&
+        e.effectiveModel === "unknown" &&
+        e.effectiveEffort === "unknown" &&
+        timestamp(e.dispatchedAt) &&
+        timestamp(e.completedAt) &&
+        Date.parse(e.completedAt) >= Date.parse(e.dispatchedAt) &&
+        text(e.semanticHash),
+      "episode provenance invalid",
+    );
+    check(
+      exact(e.commandReceipt, ["commandId", "transport", "acceptedAt"]) &&
+        text(e.commandReceipt.commandId) &&
+        e.commandReceipt.transport === e.transport &&
+        Number.isFinite(e.commandReceipt.acceptedAt) &&
+        e.commandReceipt.acceptedAt >= Date.parse(e.dispatchedAt) &&
+        e.commandReceipt.acceptedAt <= Date.parse(e.completedAt),
+      "transport acceptance receipt invalid",
+    );
+  }
   check(
     exact(receipt.localTerms, ["status"]) &&
       ["present", "unavailable"].includes(receipt.localTerms.status),
@@ -411,6 +455,15 @@ export async function writePlanReceipt(
       /^[a-z][a-z0-9-]{0,70}$/u.test(slug),
       "receipt slug must be a public lowercase label",
     );
+    if (episode.kind === "direct-session" && pass.kind === "planning") {
+      const current = buildPlanSubject(root);
+      check(
+        subject.hash === current.hash &&
+          current.hash ===
+            buildPlanSubject(root, "HEAD", { workspace: true }).hash,
+        "direct-session planning receipt requires the current committed and workspace subject",
+      );
+    }
     const history = await readReceipts(root);
     const ordinal = history.length + 1;
     const receiptId = `${episode.completedAt.slice(0, 10)}-${slug}-${String(ordinal).padStart(3, "0")}`;
@@ -641,8 +694,10 @@ export function checkPassReceipt(
     `planning pass ${pass.id} needs a receipt matching the current subject`,
   );
   check(
-    !requireLive || latest.episode.transport !== "fake",
-    "planning gate requires an actual transport",
+    !requireLive ||
+      latest.episode.kind === "direct-session" ||
+      ["claude-cli-print", "codex-cli-exec"].includes(latest.episode.transport),
+    "planning gate requires an actual CLI or direct-session review",
   );
   for (const hold of latest.holds)
     check(
