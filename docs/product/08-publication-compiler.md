@@ -247,6 +247,15 @@ Put explanations, implementation inventories, and validation in the body. Write
 from the current diff and the reader's needs; earlier titles are historical
 artifacts, not a style template. There is no fixed word count.
 
+**Operator correction (2026-09-07): no ratchet creep.** Title length crept on
+consecutive PRs twice, each title sized against the one before it: 5–10 words
+for the first sixteen merges, 98 by the twentieth after that, 12 at the
+operator's first correction, then 28 nine PRs later. The defect is the drift,
+not any word count. Size each title from the current diff and the reader's
+need, compare it with the whole merged series rather than the newest title,
+and apply the execution guide's [discipline rule](07-execution-guide.md#discipline)
+to every other authored series.
+
 Select the gitmoji with the same care as the wording. Consult the
 [full catalog](https://gitmoji.dev/) and choose a relevant, expressive match for
 the change's main purpose. Its vocabulary includes analytics, concurrency,

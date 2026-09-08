@@ -1,4 +1,4 @@
-# WO-109 — Re-mining Well: source census and first pilot draw (version assigned at activation)
+# WO-109 — Re-mining Well: source census and first pilot draw (v0.13.3)
 
 > **Operator-revised planning draft, not activation authority.** The operator
 > returned this revision on 2026-09-02. Catalog registration records the
@@ -18,13 +18,49 @@ Mechanical census, register, and capsule side routines may run at `high+`; the
 lifecycle executor and all planning-role judgments remain `xhigh+`.
 **Release classification:** assigned by the planner at activation. Expected
 class: internal research and documentation with an honest no-release close; no
-exported runtime capability.
+exported runtime capability. Completed at final review (2026-09-07): `v0.13.3`,
+strictly below published `v0.14.0`, so release close records the honest
+no-release result and creates no tag; no application or component version
+changes.
 **Nomination provenance:** the operator's 2026-09-02 request for a slow,
 methodical, shape-first re-reading of the source corpus from several scales and
 temperaments, reviewed the same day. `WO-109` is an opaque identifier, not a
 family reservation.
 **Depends on:** WO-007 merged; its shape-first rule and the `προτείνω` thesis
 are inputs. Independent of the release ladder; it never gates a rung.
+
+**Operator scope amendments, 2026-09-07:** the operator authorizes public primary
+research into the named books and interaction composition, including useful
+ideas not previously named, and read-only research fan-outs. Preserve distinct
+ideas, alternatives, uncertainty and deferred leads in detailed run records
+before summaries or ranking; the atlas card budget does not limit that separate
+research inventory. Prioritize visual temporal/interaction authoring, actor
+behavior, paired execution/path/cost comparison and portable applications.
+For mixed notes, the operator dispositions the initial source-safety stop:
+generalize each portable capability, including capabilities illustrated by
+private-system examples; remove private names, configuration, identifiers,
+code and service details instead of excluding the whole note or use case.
+No employer implementation is a design source. This replaces the blanket
+whole-note quarantine instruction below for the dispositioned source.
+The operator further authorizes a discoverable planning proposal for an easier
+concept registry and the complete path through actual app use, including a
+continuing queue delivered in recurring batches such as ten named concepts per
+work order. The run's [proposal](../lineage/remining/runs/draw-001/idea-pipeline-proposal.md)
+and detailed research records are additional deliverables; one candidate pointer
+in the planning map and this scope receipt are authorized write surfaces.
+Ledger/product promotion and runtime implementation remain later work. These
+amendments supersede the conflicting external-research and write-surface limits
+below; all other preservation, review and authority boundaries remain in force.
+
+**Operator preservation exception, 2026-09-07:** one separately created intake
+note appeared after the frozen source snapshot. The operator approves recording
+that concurrent addition outside this draw, leaving its content unread and
+finishing against the original snapshot. All 150 manifested source files must
+remain byte-identical; all draw-authored intake outputs remain confined to the
+authorized draw subtree. The exception changes only the literal assertion that
+the entire intake delta contains no other addition. The local delta receipt
+identifies the one file; the public coverage report carries safe counts.
+
 **Activation preflight:** locate the authoritative single-copy intake in the
 main checkout and refuse if a worktree holds a duplicate or divergent raw copy;
 confirm narrow access to that location; observe an original-resolution image

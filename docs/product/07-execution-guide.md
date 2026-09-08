@@ -297,7 +297,9 @@ requirements and distinguish an example from an explicit constraint. Before
 replacing an approach, check the recorded reasons for earlier rejections; neither
 repeat a rejected approach nor jump to its opposite without supporting evidence.
 For example, a complaint about paragraph-length PR titles calls for useful,
-concise titles; an earlier title's word count does not establish a length rule.
+concise titles; an earlier title's word count does not establish a length rule,
+and the one-way drift of consecutive titles is itself the defect to prevent
+(§Discipline, no ratchet creep).
 This is the manual application outside the equipped
 [WO-011 feedback host](02-domain-model.md#feedback-compiler-v1).
 
@@ -761,6 +763,33 @@ claim evidence or releases it does not have.
   separately, keeping each change's necessary tests and documentation with it.
   One work order does not imply one commit. Check the staged diff for each commit
   and confirm that the completed series contains exactly the reviewed state.
+- **No ratchet creep (operator correction, 2026-09-07).** Ratchet creep is
+  one-way drift in a soft-bounded property across consecutive artifacts (the
+  length of a title, report, PR body, or release notes; the number of sections,
+  checks, disclosures, or options; the amount of ceremony) caused by sizing each
+  new instance against its immediate predecessor plus a margin instead of
+  against its own content and the governing standard. No single step looks
+  wrong; the series does, and an operator correction only resets the level
+  before the drift restarts. Merged PR titles show the shape: 5–10 words for
+  the first sixteen, 98 by the twentieth after, 12 at the operator's first
+  correction, 28 nine PRs later. The defect is the drift, not any particular
+  size. Size every artifact from its content and the standard, never from the
+  previous instance; before writing one in a series, compare with the whole
+  series and the operator's corrections, not only the newest entry; when the
+  last three entries rose monotonically, cut below the series median instead
+  of matching the newest; an operator correction sets a permanent level,
+  measured from the corrected instance. This binds every authored series:
+  titles, commit subjects, PR bodies, release notes, verification and
+  final-review reports, checklists, receipts, and replies to the operator.
+- **A question is not a waiver (operator correction, 2026-09-07).** An
+  operator's question, confusion, or complaint about cost or time changes no
+  obligation. Answer it in plain terms, then continue the work under the
+  standard already in force; only an explicit operator decision lowers a
+  standard, drops a check, or narrows scope. Treating a question as permission
+  to stop pursuing a green gate, skip a check, or accept a weaker result is the
+  behavior this correction names, and it is the same failure whether the
+  question sounds annoyed or curious. If the standard seems wrong, say so in
+  one sentence and keep working under it until the operator decides.
 - **Return shape.** End with a compact result: what changed, evidence pointers,
   deviations from the work order, open questions. Terse; no narration theater,
   no apology theater.

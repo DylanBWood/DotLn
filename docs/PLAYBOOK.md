@@ -273,7 +273,10 @@ repository's code width; GitHub decides how the unchanged reviewed bytes wrap
 inside its own page layout.
 
 Use a concise title that identifies the change, then a summary of its effect,
-reason, and relevant validation. Link detailed reports. Follow the
+reason, and relevant validation. Link detailed reports. Size the title and
+body from this change, not from the previous PR; one-way drift across
+consecutive entries is the defect the guide's no-ratchet-creep rule names.
+Follow the
 [PR and commit guidance](product/08-publication-compiler.md#prs-and-commits),
 including separate commits for distinct coherent changes and a staged-diff check
 for each. The final reviewer commits the reviewed series; one work order does

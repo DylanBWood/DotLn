@@ -188,6 +188,17 @@ identity migration.
 
 ## Preserved unallocated candidates
 
+- **Concept registry through actual app use — operator-nominated 2026-09-07
+  during WO-109.** The [planning proposal](../lineage/remining/runs/draw-001/idea-pipeline-proposal.md)
+  connects inexpensive capture, stable concept records, relevant retrieval,
+  explicit promotion gaps, implementation evidence and actual consumer use.
+  Its recommended delivery model is a continuing queue cut into named batches,
+  such as ten authorable patterns per ordinary work order, with per-item app
+  acceptance and remaining ideas retained for later batches. The next planning
+  session should decide the minimal registry/projection, first retrieval and
+  app-use witness, and bounded order allocation. The proposal links the detailed
+  book research and the existing temporal-authoring candidate; it grants no
+  activation, selected schema, number family or implementation authority.
 - **Artifact growth and maintenance:** if a reading or upkeep problem is
   demonstrated, a bounded assessment can apply the [corpus policy](../product/03-architecture.md#corpus-policy)
   to documentation, logs, and derived views. Consider clearer organization,
