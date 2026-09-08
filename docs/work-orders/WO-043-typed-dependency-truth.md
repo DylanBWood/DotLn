@@ -109,13 +109,16 @@ labeled as such and never as a blocker.
   `blocking` is non-empty, appending nothing and naming the entry and the
   corrective action (close the named order, or change the relation in the
   authority file with a dated note, which is a reviewed edit).
-- **Forward-only migration.** Every open order (WO-014, WO-033, WO-034,
-  WO-035, WO-036, WO-037, WO-040, WO-042, WO-043, WO-102, WO-103, WO-105,
-  WO-107) receives a typed block transcribing the meaning of its `Depends on`
-  paragraph and the 2026-09-08 graph (for example WO-034 and WO-035 carry
-  `hard` on WO-033 and a `planning-deferral` naming the source-changing
-  worker candidate; WO-042 carries only satisfied entries). Closed and
-  historical orders are not edited; their rows carry the labeled token view.
+- **Forward-only migration.** Every open order (the 2026-09-08 horizon as
+  filed, WO-042 through WO-117 with their number gaps, plus WO-014, WO-036,
+  WO-102, WO-103, WO-105 and WO-107) receives a typed block transcribing the
+  meaning of its `Depends on` paragraph and the 2026-09-08 graph (for
+  example WO-052 carries `hard` on WO-049, WO-050 and WO-051; WO-084
+  carries a `planning-deferral` naming WO-053; WO-042 carries only satisfied
+  entries); the five umbrella records (WO-033, WO-034, WO-035, WO-037,
+  WO-040) receive `superseded` entries naming their children and nothing
+  that blocks. Closed and historical orders are not edited; their rows
+  carry the labeled token view.
 - **Declined alternatives, recorded:** a separate registry file (the roadmap
   keeps it unselected; the authority file remains the single source);
   waivers or supersessions as control-log events (the lifecycle log is
@@ -156,8 +159,9 @@ the write-backs below.
    the output.
 5. Every open order carries a typed block whose entries match its `Depends
    on` prose and the 2026-09-08 graph's edges for that order, recorded as a
-   comparison in the evidence receipt; WO-034 and WO-035 project `hard` on
-   WO-033; WO-042 projects no blocking entry.
+   comparison in the evidence receipt; WO-052 projects `hard` on WO-049,
+   WO-050 and WO-051; the umbrella records project `superseded` and no
+   blocking entry; WO-042 projects no blocking entry.
 6. Write-backs land: 06 §Work-order navigation and identity (the typed
    projection; which part of "Eligible now" is now computed); 07 §Operator
    resume phrases (the status field and the activation refusal); the planning

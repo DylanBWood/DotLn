@@ -1,5 +1,7 @@
 # WO-037 — Pattern workshop, compiler side: the 5S equipment set compiles as a multi-active link group with set bonuses (version assigned at activation)
 
+**Umbrella record (2026-09-08):** superseded whole by bounded children at the operator's same-day correction of the critical-path planning pass; not activatable. Its obligations are carried by WO-091 (multi-active link groups), WO-092 (the `sets` graph extension), WO-093 (the 5S mechanics as data), WO-094 (set bonuses lowered) and WO-095 (the full-set scenario and set tooltip render). The text below is preserved as the record the children cite; nothing in it grants activation.
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.

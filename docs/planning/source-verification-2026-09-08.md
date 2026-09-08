@@ -365,3 +365,30 @@ employer code, configuration, identifier or internal service.
 5. Two new risks enter the register from this pass's own observations: an
    unclassified effectful tool bypasses the writer guard, and the planning
    procedure needed a branch under the compiled build.
+
+## Addendum (2026-09-08, same day) — the briefs became orders
+
+The operator corrected the pass's first result the same day; the
+[plan](critical-path-2026-09-08.md) records the corrections and their
+consequences. For this report, the verified facts are unchanged; three
+consequences change:
+
+- Every gate named above as a brief is filed: the codecs brief as WO-045 to
+  WO-048; writing-worker harness truth as WO-044 (extended with the
+  unattended-launch rows); the target-worktree bundle as WO-049; the
+  source-changing worker as WO-050 to WO-053; blinded verification and
+  repair as WO-054 to WO-056; the browser adapter as WO-057 to WO-059;
+  SourceBundle and StoryContract as WO-060 to WO-062; the publish slice and
+  the post-PR loop as WO-063 to WO-066.
+- The audit's "Angular source-to-verified-PR vertical" (its WO-052) is not
+  adopted as an order in this repository: the operator directed that
+  target-application orders live in their forks of the starter. The core
+  proof runs the loop against a scratch target (WO-112); the operator's
+  Angular run is the fork's and enters here only as a sibling receipt
+  (WO-083). Gate H above should be read accordingly.
+- The audit had no counterpart for the predecessor's unattended behavior
+  (crons for a mission check and an "operator away" curve) and none for the
+  runtime's UI; the operator named both as the critical path. Gate R
+  (WO-067, WO-068, WO-099, WO-100, WO-110, WO-111) and Gate U (WO-114 to
+  WO-117) file them, with WO-113 for the five-surface separation the audit
+  did name.

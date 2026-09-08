@@ -143,6 +143,81 @@ rule.
     reordering the test chain now; deciding WO-034's premise against the
     vertical now; the audit's package split. Reasons and reversals are in
     the plan's NoOp register.
+- **The horizon is cut into bounded orders at the operator's same-day
+  correction** `adopted` `operator-directed`
+  - The first result filed two orders and eight briefs and deferred five
+    epics whole; the operator's correction (preserved verbatim with four
+    later messages in local-only
+    `docs/intake/notes/2026-09-08-critical-path-planning-correction.md`,
+    SHA-256 `59a854a8635eb1a553ef646f83a3b06f32a13968302801043a36461ba961c4f4`)
+    applies the audit's atomicity rule: one boundary, seam, outcome and
+    rollback unit per order, and a mandatory split above one of eight items.
+    Sixty-five orders are filed as WO-044 through WO-117 with the corpus
+    numbers skipped; WO-033, WO-034, WO-035, WO-037 and WO-040 are superseded
+    whole by their children and kept as umbrella records; the marked sequence
+    holds sixty-eight orders; the regenerated graph has 100 nodes and 162
+    edges, no cycle and no dangling edge. Durable home: the plan §The cut;
+    the map; the orders.
+- **The always-on offline runtime is the spine of the critical path**
+  `adopted` `operator-directed`
+  - The operator's predecessor runs from a harness left open with crons (a
+    mission check; an "operator away" curve that starts small, widens and
+    does 5S work); the successor is an offline application dispatching
+    agents, the two CLIs, local models, humans and scripts on richer
+    policies. Nothing in the repository ran unattended. Gate R files the
+    compiled presence policy (WO-067), the resident host with an actor
+    catalog (WO-068), the mission check with a hold (WO-099), the
+    preauthorized portfolio and work derivation (WO-100), the local-model
+    transport (WO-110) and the unattended hour (WO-111); WO-044 gains the
+    unattended-launch rows the launcher is designed from. The first
+    unattended proof needs no source change. Durable home: the plan §How
+    the new system does what the predecessor does; ADR-0007; Gate R.
+- **The starter is the vehicle; target-application orders live in the
+  forks** `adopted` `operator-directed`
+  - DotLn creates the enterprise starter and updates it progressively when
+    its orders enhance it; the operator's laptop fork plans the Angular
+    application's orders and the work fork plans work orders. The starter
+    children (WO-069 to WO-079) therefore float beside the runtime with no
+    planning deferral, which supersedes the starter half of this section's
+    entry "The first external source change precedes the starter, the
+    pilot, the migration and the workshop" (the pilot's cross-repository
+    children follow registration; the documentation, workshop and migration
+    families keep a waivable deferral). Two Angular-specific drafts written
+    during the revision were withdrawn before any commit; the core loop
+    proof runs against a scratch target (WO-112) and the fork's Angular run
+    is recorded only as a sibling receipt (WO-083). WO-034's premise that
+    the Angular repository's first change is the shell stands and is the
+    fork's to plan. Durable home: the plan; WO-073, WO-083, WO-112.
+- **Work-order files are stable contracts; the runtime's UI is contracts in
+  core and hosts in the forks** `adopted` `operator-directed`
+  - The audit's five-surface rule (work order, events, evidence,
+    verification, final review) becomes a check and a migration (WO-113).
+    The runtime's UI to author, inspect, audit and see live agent and
+    work-order status becomes the status projection (WO-114), the console
+    parity contract over a loopback surface with no second authority path
+    (WO-115), the served audit projection (WO-116) and the live text
+    console (WO-117); drag-equip authoring and the Angular shell are
+    fork-side hosts over those contracts. The product record already
+    carried these ideas; the first result had treated them as deferred
+    candidates under the dispatch's scope rules, which the operator
+    overrode. Durable home: the plan §What the operator corrected; Gate U.
+- **Two NoOps of the first result are reversed by operator direction**
+  `operator-directed`
+  - "Filing numbered orders for every later gate" and "activating WO-033
+    first or deferring the starter" are reversed with the operator's
+    messages as the explicit supersession; "deciding WO-034's premise
+    against the vertical" is dissolved because no Angular order lives here.
+    The remaining NoOps stand with their reversal conditions in the plan's
+    register.
+- **The compiled permission hook refuses commands by substring** `preserved`
+  - Three of the planner's own shell commands were refused during the
+    revision: a command that changed directory outside the repository
+    (host facts unavailable), a heredoc containing an environment-file
+    token, and a read-only search whose pattern contained remote-effect
+    tokens. The hook worked as compiled; the classifier matches text rather
+    than the command's invocation. Recorded as a map candidate and in the
+    plan's risk register; relevant before the resident dispatches `script`
+    actors whose arguments carry arbitrary text.
 
 ## 2026-09-07 independent workflows and evidence-scoped integration
 

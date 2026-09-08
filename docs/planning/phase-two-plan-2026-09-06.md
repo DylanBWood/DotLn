@@ -44,6 +44,11 @@ first-pair receipt and the NoOp register stand; the reactor-split reversal
 condition in the code table binds the source-changing worker candidate. The
 open decision below on whether source-writing workers precede the workshop is
 answered there: they precede it.
+Revised the same day: at the operator's corrections the five orders are
+superseded whole by bounded children (WO-069 to WO-098), the starter's
+children float beside the runtime spine rather than behind the proof, the
+always-on runtime (WO-067 to WO-111) is the spine, and the reactor-split
+reversal condition in the code table is honored by WO-050 as its own order.
 
 Two read-only sweeps were delegated to fresh sessions during the pass, one
 over code and one over documentation structure. Their measurements are

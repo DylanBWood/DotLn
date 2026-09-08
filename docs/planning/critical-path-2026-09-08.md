@@ -1,4 +1,4 @@
-# The critical path to the first external source change — the 2026-09-08 planning pass
+# The critical path to an always-on runtime that changes external source — the 2026-09-08 planning pass, revised the same day
 
 **Planning result:** 2026-09-08, the planning pass after the WO-039 close,
 opened by the operator with an external source-level audit appended to the
@@ -8,737 +8,490 @@ the current code to DotLn's first real external source-changing worker and on
 to an independently verified source-to-deliverable vertical. The pass ran on
 the clean `main` checkout at `33e2c25` (the merged WO-039 source, `v0.15.0`
 unpublished) on the planning branch the operator checked out for it, with
-Beware of Naive Interventionism and Do Nothing equipped. It files two
-planner-synthesized drafts,
-[WO-042](../work-orders/WO-042-authority-provenance.md) and
-[WO-043](../work-orders/WO-043-typed-dependency-truth.md), replaces the marked
-sequence, records the later gates as unfiled candidates with entry criteria,
-and grants no activation authority. The dispatch and the operator's mid-pass
-messages are preserved verbatim in local-only
-`docs/intake/notes/2026-09-08-critical-path-planning-dispatch.md`; its SHA-256
-is in the ledger section of the same date. The claim-by-claim verification is
-the sibling [source-verification report](source-verification-2026-09-08.md);
-the dependency graph is the sibling
-[`critical-path-2026-09-08.json`](critical-path-2026-09-08.json).
+Beware of Naive Interventionism and Do Nothing equipped.
 
-**Refutation status.** The pass did not run `npm run plan -- refute`. The
-refuter dispatches a model transport, which the dispatch says not to run
-automatically, and the sandboxed session cannot launch either CLI transport
-(the WO-039 receipt records three refused in-session attempts). The six
-manual receipts and the mechanized live receipt were read, and their
-validated acceptance rules were applied by hand to the two filed orders
-(§Quality gates applied). The dated planning heading this pass adds to the
-ledger makes the plan gate in `npm test` refuse until a receipt exists; the
-operator runs, from a terminal outside the sandbox after the planning subject
+Its first result filed two orders and eight unfiled briefs and deferred five
+existing orders whole. The operator corrected it the same day, in five
+messages preserved verbatim in the local-only
+`docs/intake/notes/2026-09-08-critical-path-planning-correction.md` (SHA-256
+`59a854a8635eb1a553ef646f83a3b06f32a13968302801043a36461ba961c4f4`; the
+dispatch's own capture is the sibling file whose hash the ledger records):
+the orders were too large and the audit's atomicity rule had not been acted
+on; the predecessor's crons (a mission check and an "operator away" curve
+doing 5S work) had no counterpart, and the successor is an offline
+application that dispatches several actor kinds on richer policies; the
+starter is the delivery vehicle that DotLn creates and progressively updates,
+the operator's forks plan their own target work, and no target-application
+work order belongs in this repository; the always-on runtime is the critical
+path; and the work-order file must stay a stable contract while the runtime
+carries the UI to author, inspect, audit and see live agent and work-order
+status. The revised result is this document: 65 bounded orders filed as
+[WO-044](../work-orders/WO-044-writing-worker-harness-truth.md) through
+[WO-117](../work-orders/WO-117-console-live-host.md) (numbers 101 to 109
+belong to the adjacent corpus track and are skipped), beside
+[WO-042](../work-orders/WO-042-authority-provenance.md) and
+[WO-043](../work-orders/WO-043-typed-dependency-truth.md); the five epics
+WO-033, WO-034, WO-035, WO-037 and WO-040 superseded whole by their children
+and kept as umbrella records; the marked sequence replaced; the
+[dependency graph](critical-path-2026-09-08.json) regenerated. The
+claim-by-claim verification of the audit is the sibling
+[source-verification report](source-verification-2026-09-08.md), unchanged
+except for its same-day addendum. The pass grants no activation authority.
+
+**Refutation status.** The pass did not run `npm run plan -- refute`: the
+refuter dispatches a model transport that the dispatch reserves to the
+operator's budget decision and that the sandboxed session cannot launch. The
+six manual receipts and the mechanized live receipt were read and their
+validated rules applied by hand (§Quality gates applied). The subject now
+holds sixty-eight orders, so the refuter's episode is larger than any before
+it; the operator runs, from a terminal outside the sandbox after the subject
 is committed:
 
 ```sh
 npm run plan -- refute --slug critical-path-2026-09-08
 ```
 
-The receipt may hold on the deliberately unfiled loop order (§Quality gates
-applied). If it does, the intended answer is an attributed operator override
-citing this pass's capture, not a numbered order filed to satisfy the gate.
+A hold is answered by a changed criterion and a fresh receipt, or by an
+attributed operator override event, never by the planner. The earlier note
+about a hold on a deliberately unfiled loop order no longer applies: that
+order is filed as WO-112.
+
+## What the operator corrected, and what changed
+
+| Correction (verbatim in the capture)                                                                                                                                                                                                                  | What this revision does                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| The orders are too large; the audit's split rule (one boundary, seam, outcome, rollback unit; mandatory split above one of eight items) was not acted on                                                                                              | Every later gate is filed as bounded orders instead of briefs; every existing epic is cut into children under the eight-item rule (§The cut) and superseded whole; each new order names one seam and one falsifiable outcome, and its rollback unit is its own merge.                                                                                                                                                                      |
+| The predecessor's crons: a mission check and an "operator away" curve that starts small, widens, and does 5S work; how do actors get dispatched and find work?                                                                                        | Gate R: WO-067 compiles the presence curve, WO-068 is the resident process with three actor kinds, WO-099 is the mission check with a hold, WO-100 derives bounded work from a preauthorized portfolio, WO-110 adds the local model, WO-111 proves an unattended hour. WO-044 gains the unattended-launch rows the resident's launcher is designed from.                                                                                   |
+| A harness left open 24/7 with crons; the successor is an offline app with more than a cron, using agents, the two CLIs, local models, humans and scripts                                                                                              | The resident (WO-068) is that process: offline, cadence-driven, policy-gated, with an actor catalog (`cli-worker`, `script`, `human-handoff`, then `local-model`); the harness's own scheduler is at most a launcher, decided by WO-044's rows, never the runtime.                                                                                                                                                                         |
+| DotLn creates the starter and updates it progressively; the operator's forks plan the Angular and the work-related orders; why are Angular orders in DotLn?                                                                                           | The two Angular orders drafted mid-pass were withdrawn before commit. The starter spine (WO-069 to WO-079) is no longer deferred and floats beside the runtime spine; the core loop proof runs against a scratch target (WO-112); the fork's Angular run is recorded only as a sibling receipt (WO-083); the plan's earlier contradiction about the Angular repository's first change is dissolved, because the fork decides it.           |
+| The vision's first sentence names a runtime; the runtime is the critical path                                                                                                                                                                         | Gate R starts immediately after WO-042 in its own lane; the first unattended proof (WO-099) needs no source change and can precede the first external change; the second replan point takes both receipts.                                                                                                                                                                                                                                 |
+| The work-order file must stop becoming the execution log (contract; events; evidence; verification; final review); the runtime has the UI to author, inspect, audit, and see live agent and work-order status, with temporal structures that dispatch | WO-113 makes the five-surface separation a check and migrates the open orders' dated notes; Gate U files the runtime status projection (WO-114), the console parity contract over a loopback surface (WO-115), the served audit projection (WO-116) and the live console host (WO-117); the temporal structures are WO-067's cadences evaluated by WO-068. The Angular shell and drag-equip authoring stay fork-side over these contracts. |
+
+Where the product record already held these ideas (the vision's first
+sentence, ADR-0007, product 03 §Operator-presence policy, product 04 §Plural
+UI hosts, product 09's audit projections, the map's PresencePolicy and
+console-parity candidates), the first result had treated them as deferred
+candidates under the dispatch's scope rules; the operator's corrections
+override those rules for the runtime, its UI contracts and the starter, and
+this document says so wherever it applies.
 
 ## Verdict
 
 The audit's central sentence is right and the repository already knew it: the
 2026-09-06 pass counted roughly twenty machinery orders against six runtime
 rungs and said the smallest useful loop exists for no user. What the audit did
-not know is that WO-039 has merged since its snapshot. That changes its
-roadmap materially, and the [source verification](source-verification-2026-09-08.md)
-records every consequence. In one paragraph:
+not know is that WO-039 has merged since its snapshot; the
+[source verification](source-verification-2026-09-08.md) records every
+consequence. In one paragraph:
 
 DotLn today can compile a build, lower it into the hooks and skills this
 repository's own sessions run under, refuse a session that steps outside its
 worktree, dispatch a read-only inspection worker to two real CLI harnesses,
-recover it after a kill, and run a blinded verifier over a synthetic
-repository with process doubles. It cannot edit a file in another repository:
-the real workers launch with every tool disabled and an empty writable
-surface, no source-writing profile exists, no browser evidence exists, no
-tracked-work intake exists, and no pull request has ever been produced. The
-operator's predecessor, v1, does that whole loop today because its rules ride
-along as prose. The gap between the two is the product, and the path below is
-the shortest route across it that keeps the compiled-rule bet intact.
+recover it after a kill, run a blinded verifier over a synthetic repository
+with process doubles, and render a board of its control state at rest. It
+cannot edit a file in another repository, and nothing in it runs while the
+operator is away: no process evaluates a cadence, no policy says what an
+absent operator's actor may do, no adapter observes a pull request, no
+browser evidence exists, no tracked-work intake exists, and the console is
+read-only. The operator's predecessor does the whole loop today, unattended,
+because its rules ride along as prose in a harness left open. The gap between
+the two is the product, and the path below is the shortest route across it
+that keeps the compiled-rule bet intact: the runtime first as a process with
+a policy, the source-changing primitive beside it, the starter carrying both
+to the forks, and the loop proven from core against a scratch target before
+any fork runs it against a real one.
 
 ## The destination in the operator's terms
 
-The operator's mid-pass description of v1 is the parity baseline the vertical
-is measured against, generalized under the Clean Room floor: link one or two
-stories from an enterprise tracker; the system performs the full intake and
-understanding of the requirements, creates the branch, makes the changes,
-writes proper conventional commits, writes a good pull-request title and body,
-and resolves every automated review comment on the pull request without the
-operator babysitting a harness or repeating manual steps inside it. Product
-12's replacement table already names these as behaviors to retain with
-evidence before retiring the old step; this pass makes them the exit
-checklist of Gate H, in the order the operator listed them, and adds the one
-the audit omitted: the post-PR loop.
+Three descriptions from the operator's own messages, generalized under the
+Clean Room floor, are the exit checklist:
+
+- **Parity with the predecessor's loop.** Link one or two stories from an
+  enterprise tracker; the system performs the full intake and understanding
+  of the requirements, creates the branch, makes the changes, writes proper
+  conventional commits, writes a good pull-request title and body, and
+  resolves every automated review comment without the operator babysitting a
+  harness. Measured item by item by WO-112 in core and by the fork's own run.
+- **The always-on offline application.** A local process stays resident;
+  cadences and policies decide when to look for work; a mission check asks
+  whether the work is still on goal; an "operator away" curve makes small
+  reversible changes first and widens as each verifies, doing 5S work; the
+  actors are agents, the two CLI harnesses, local models, humans and
+  scripts. Gate R with Gate U's window into it.
+- **The vehicle.** DotLn creates the enterprise starter and updates it
+  progressively when its orders enhance the starter; the operator's laptop
+  fork plans the Angular application's orders and the work fork plans work
+  orders; no target-application order lives here. Gate S, with the fork's
+  run recorded as a sibling receipt.
+
+## How the new system does what the predecessor does
+
+| Predecessor behavior                                                     | DotLn mechanism                                                                                                                                                                                                                                              | Order                              |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| A harness left open 24/7                                                 | A resident process per launchpad that folds the log, samples a recorded clock, and launches harness sessions only as actor episodes; the harness's scheduler is at most a launcher, decided by observed rows                                                 | WO-068                             |
+| A cron that asks "are we sure we understand the goal and on mission?"    | A cadence-driven read-only verifier episode over the active contract, the diff, recent decisions and the vision theses; `drift` appends a correction and holds unattended dispatch until a human or a verified repair clears it                              | WO-099                             |
+| A cron for "operator away" whose changes start small and widen, doing 5S | A compiled presence policy: phases with change-size ceilings and envelope narrowings, advance on verified success, reset on failure or at the peak, cancel on return; the Gardener's candidates derived into bounded orders inside a preauthorized portfolio | WO-067, WO-100, WO-111             |
+| Different tasks from different crons                                     | Several cadences in one policy, each firing an actor episode of a declared kind under the phase's envelope                                                                                                                                                   | WO-067, WO-068                     |
+| Agents, the two CLIs, local models, humans and scripts as actors         | The actor catalog: `cli-worker` over the two transports, `script` with a declared effect class, `human-handoff` as a decision packet, `local-model` over the probed endpoint; an unavailable kind is a NoOp, never a fallback                                | WO-068, WO-110, WO-051             |
+| Finding and creating its own work                                        | Only inside a preauthorized portfolio (mechanics, surfaces, ceilings, budget): a candidate becomes one bounded order with `host-policy` provenance; anything else becomes a suggestion or a human handoff; planning passes stay human-dispatched             | WO-100                             |
+| Completing the work                                                      | The source-change primitive in a governed worktree with a commit receipt, verification with host-run tests, bounded repair, publish under a grant, the pull-request loop                                                                                     | WO-052 to WO-056, WO-064 to WO-066 |
+| Seeing what is happening                                                 | The runtime status projection, the parity commands over loopback, the served audit projection, the live console; the fork's Angular shell over the same contracts                                                                                            | WO-114 to WO-117                   |
+| One hundred and forty rules                                              | The migration ledger and batches, lowered into hooks and skills the sessions run under; deferred behind the first external change with a waivable dated deferral                                                                                             | WO-096 to WO-098                   |
 
 ## The critical path
 
-| Gate | Order or candidate                                                                                    | Depth in this pass       | Blocking prerequisites          | Why it sits here                                                                                                                                             |
-| ---- | ----------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| A    | [WO-042](../work-orders/WO-042-authority-provenance.md) — authority provenance and monotone envelopes | fully specified, filed   | none open                       | The compiled envelope is what the lowered hooks enforce; a support can widen it today. Nothing may be emitted into a foreign worktree before that is closed. |
-| B    | [WO-043](../work-orders/WO-043-typed-dependency-truth.md) — typed dependency truth                    | fully specified, filed   | none open                       | Planning truth for everything after it; blocks nothing on the path.                                                                                          |
-| B    | [WO-036](../work-orders/WO-036-evidence-runner.md) — evidence runner                                  | existing, remains active | none open                       | Every later order pays the serial chain repeatedly; the build-first defect persists at segment 18 of 34.                                                     |
-| C1   | Runtime boundary codecs (brief)                                                                       | activation brief         | none open; floats               | Hardens the persisted and external boundaries the writing worker crosses; mandatory before H, not before D2.                                                 |
-| C2   | Writing-worker harness truth (brief)                                                                  | activation brief         | none open                       | No record observes a tool-enabled worker in a foreign worktree under that worktree's hooks. Principle 15: environment truth before architecture.             |
-| D1   | Target-worktree harness bundle (brief)                                                                | activation brief         | WO-042; C2                      | The bundle that governs the worker in the target; carved from WO-033 phase 2.                                                                                |
-| D2   | Single-repository source-changing worker (brief)                                                      | activation brief         | WO-042; C2; D1                  | The first external source change and the first user-value proof.                                                                                             |
-| E    | Blinded verification and repair over a real repository (brief)                                        | activation brief         | D2                              | WO-010's loop lifted onto a real repository with a live verifier and a planted defect.                                                                       |
-| F    | Browser evidence adapter (brief)                                                                      | activation brief         | none open; recommended after E  | Visual and network claims; the operator's "walk the app" practice.                                                                                           |
-| G    | SourceBundle to StoryContract (brief)                                                                 | activation brief         | none open; recommended after E  | The intake half of the loop; the tracker adapter stays outside core.                                                                                         |
-| H    | Angular source-to-verified-PR vertical with the target publish slice and the post-PR loop (brief)     | activation brief         | D1; E; F; G; C1; target publish | The v1 parity proof on the operator's public Angular repository.                                                                                             |
+| Gate     | Orders                                                                                                                        | Blocking prerequisites (typed graph)                                                                           | Why it sits here                                                                                                                           |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| A        | WO-042 authority provenance and monotone envelopes                                                                            | none open                                                                                                      | Unattended authority, a target bundle and a fork's overlay all need an envelope no support can widen.                                      |
+| B        | WO-043 typed dependency truth ∥ WO-036 evidence runner ∥ WO-113 stable contracts                                              | WO-113: WO-043                                                                                                 | Planning and evidence hygiene; none blocks the runtime.                                                                                    |
+| C2       | WO-044 writing-worker and unattended-launch harness truth                                                                     | none open                                                                                                      | Principle 15: the target bundle, the transport profile and the resident's launcher are designed from observed rows. R1 follows its record. |
+| C1       | WO-045 to WO-048 codecs                                                                                                       | none open                                                                                                      | Float; mandatory before the loop touches anything the operator keeps (WO-112).                                                             |
+| R        | WO-067 presence policy → WO-068 resident → WO-099 mission check; WO-100 portfolio; WO-110 local model; WO-111 unattended hour | WO-067: WO-042; WO-068: WO-067, WO-050, WO-044; WO-100: WO-052, WO-054; WO-111: WO-100, WO-099, WO-053, WO-054 | The runtime the vision's first sentence names; the first unattended proof (WO-099) needs no source change.                                 |
+| D        | WO-049 target bundle → WO-050 slices, WO-051 profile → WO-052 host → WO-053 first change                                      | WO-049: WO-042, WO-044; WO-052: WO-049, WO-050, WO-051                                                         | The source-changing primitive and the first external change; R2 follows WO-053 and WO-111.                                                 |
+| U        | WO-114 status projection → WO-115 parity contract → WO-116 audit → WO-117 live console                                        | WO-114: WO-068; WO-117: WO-099                                                                                 | The runtime's window: author, inspect, audit, live status; the fork's shell consumes the same contracts.                                   |
+| S        | WO-069, WO-070 → WO-074 → WO-075 → WO-076, WO-077, WO-078; WO-071 → WO-072, WO-073; WO-079                                    | WO-075: WO-074, WO-049, WO-042; WO-072: WO-071, WO-049                                                         | The vehicle; not deferred; the first export carries whatever runtime exists at its commit, and updates carry the rest.                     |
+| E        | WO-054 → WO-055 → WO-056                                                                                                      | WO-054: WO-052                                                                                                 | Verification and repair lifted onto a real worktree, then live.                                                                            |
+| F        | WO-057 → WO-058 → WO-059                                                                                                      | WO-059: WO-057, WO-058                                                                                         | Visual and network claims; floats until the loop proof needs it.                                                                           |
+| G        | WO-060 → WO-061, WO-062                                                                                                       | WO-061, WO-062: WO-060                                                                                         | Intake from a tracked-work artifact; the tracker adapter stays outside core.                                                               |
+| H        | WO-063 → WO-064 → WO-065 → WO-066                                                                                             | WO-064: WO-052, WO-063, WO-042; WO-066: WO-065, WO-055                                                         | Publish under a grant and the post-PR loop.                                                                                                |
+| V        | WO-112 the loop from core                                                                                                     | WO-049, WO-053, WO-056, WO-059, WO-061, WO-062, WO-064, WO-066, WO-045 to WO-048                               | The parity proof against a scratch target; R3 follows.                                                                                     |
+| P        | WO-080 → WO-081, WO-082 → WO-083 the fork's run                                                                               | WO-080: WO-071; WO-083: WO-082, WO-064, WO-076, WO-073                                                         | Workstreams and the operator-witnessed run from the fork, recorded here as a receipt.                                                      |
+| deferred | WO-084 to WO-090 docs reset; WO-091 to WO-095 workshop; WO-096 to WO-098 migration                                            | a dated `planning-deferral` on WO-053, waivable by the operator                                                | Not the product bottleneck; each child floats after the first external change or a dated waiver.                                           |
 
-Blocking chain: WO-042 → C2 → D1 → D2 → E → H, with F, G and the target
-publish slice joining before H. WO-043, WO-036 and C1 float. The earliest
-point at which DotLn changes external source code is D2's first live episode,
-the fourth order in the blocking chain after this pass, where C2 is a
-discovery order and D1 is an emit slice.
+Two blocking chains lead to the two first proofs, and both begin at WO-042:
 
-### Deviations from the audit's decomposition, and why
+- **Unattended:** WO-042 → WO-067 → WO-068 (which also waits for WO-050 and
+  WO-044's rows) → WO-099. Three orders after the floor, the resident fires
+  a mission check while the operator is away.
+- **External change:** WO-042 → WO-044 → WO-049 → WO-052 (with WO-050 and
+  WO-051) → WO-053. Four orders after the floor, a worker commits in a
+  repository outside DotLn.
 
-- **WO-044, WO-045 and WO-046 are not filed.** Harness capability truth
-  exists (the WO-039 phase-zero record plus the WO-004, WO-009, WO-011 and
-  WO-019 discovery addenda); minimum lowering exists and is live (this pass
-  was refused by it); the self-host comparison exists as WO-039 criterion 6
-  and the live role records. The one residual is C2: a writing worker in a
-  foreign worktree. WO-039 is closed evidence, not a superseded order.
-- **Codecs float.** No misdecode has been demonstrated; the worker store
-  refuses torn logs and dead locks; transport results are positively
-  validated. C1 is scoped to the boundaries that lack validation and becomes
-  mandatory before the operator's repository is touched (H), not before a
-  scratch repository is (D2).
-- **The deferral gate is D2 plus a replan, not the end of the vertical.**
-  The starter, pilot, migration and workshop decisions should be made on the
-  first real episode, not on the last one; the audit's "until WO-052 closes"
-  would hold five orders hostage to work that may itself be re-cut after D2.
-- **Two slices of WO-033 are on the path** (the target-worktree emit and the
-  target publish); the rest of WO-033 is deferred whole, with its
-  obligations mapped in §Migration map.
-- **The post-PR loop is in Gate H.** The roadmap's vertical rung already
-  names CI classification, comment triage and the source revision guard; the
-  operator's v1 description makes automatic review-comment resolution part
-  of parity.
-- **The pivotal order carries a recorded condition.** The phase-two plan's
-  code table declined the reactor split with the reversal condition "the next
-  order that adds a host branch carries the split into typed state slices as
-  its first phase". D2 adds a host branch. The brief honors the condition
-  rather than silently dropping it (§Activation briefs, D2).
+They join at WO-100 and WO-111 (unattended 5S work under the curve), and the
+loop proof WO-112 follows E, F, G and H. The starter and UI spines run beside
+them.
 
-## Permitted parallelism
+## Lanes
 
 Lane rules are the concurrent plan's, unchanged: no shared primary write
-surface in one wave; independent progress; the operator voluntarily serializes
-final review through release close.
+surface in one wave; independent progress; the operator voluntarily
+serializes final review through release close. Sixteen orders have no
+blocking prerequisite today: WO-042, WO-043, WO-044, WO-045 to WO-048,
+WO-050, WO-057, WO-058, WO-060, WO-063, WO-069, WO-070, WO-079 and WO-110.
 
 ```text
-now      WO-042 (compiler, loadout fixtures, regenerated .claude, products 02/03/04/10)
-      ∥  WO-043 (scripts/, work-order metadata, products 06/07, playbook)
-      ∥  WO-036 (scripts/test-runner.mjs, root test entry)
-next     C2 (discovery: docs/discovery, scripts/harness-probe.mjs)      ∥  C1 (kernel store/core types, worker-store, harness-host input)
-then     D1 (harness emit into a target; scripts/lib/harness.mjs)
-then     D2 (transport profile, execution environment, reactor branch, worker store)   [operator-run live episodes]
-then     E  (verification host over a real worktree)                     ∥  F  (browser adapter package)   ∥  G  (SourceBundle/StoryContract)
-then     target publish slice, then H                                     [operator-witnessed]
+now    WO-042 (compiler)  ∥ WO-043 (scripts, order metadata) ∥ WO-036 (test runner) ∥ WO-044 (probe, discovery) ∥ WO-069, WO-070 (config, beacons)
+       ∥ codecs WO-045..048 (kernel, hosts) ∥ WO-050 (reactor slices) ∥ WO-057, WO-058, WO-060, WO-063 (contracts, lint)
+then   WO-067 (presence policy)          ∥ WO-049 (target bundle)     ∥ WO-074 (export kit)   ∥ WO-113 (stable contracts)
+then   WO-068 (resident)                  ∥ WO-051 (transport profile) ∥ WO-071 (registration) ∥ WO-059, WO-061, WO-062
+then   WO-099 (mission check, unattended) ∥ WO-052 (source-change host) ∥ WO-075 (kit runtime) ∥ WO-072, WO-073
+then   WO-114 → WO-115 → WO-116 → WO-117  ∥ WO-053 (first external change) → WO-054 → WO-055 → WO-056 ∥ WO-076, WO-077, WO-078
+then   WO-100 (portfolio) → WO-111 (unattended hour)   ∥ WO-064 → WO-065 → WO-066   ∥ WO-080 → WO-081, WO-082
+then   WO-112 (the loop from core)        ∥ WO-083 (the fork's run, receipt here)
+after  the deferred families, each after WO-053 or a dated waiver
 ```
 
-WO-042 and WO-043 both touch `docs/work-orders/README.md` (regenerated) and
-the map's recommendation section; those merge as text, as the lane rules
-already allow. WO-042 and WO-036 both edit the root `package.json` `test`
-entry by one line. Version assignment stays serial: the first merger takes the
-next version above the latest published tag; the second retimes with
-`release prepare`.
-
-Where each order sits on the operator's chain (core → starter → fork →
-target → back): WO-042, WO-043, WO-036, C1 and C2 are core; D1 is the core →
-target seam; D2, E and H act in a target; F and G are core ports consumed in
-a target. The starter and fork steps are deliberately skipped for the first
-proof: exporting read-only workers to a fork ships nothing, so the first
-source change is made from core into a target, and the starter is designed
-after it.
+Version assignment stays serial: the first merger takes the next version
+above the latest published tag; the second retimes with `release prepare`.
+WO-042 and WO-036 both touch the root `test` entry by one line; several
+orders regenerate the committed bundle's pins, which merge as generated
+bytes through `harness emit`.
 
 ## Dependency graph
 
-```text
-WO-008 ─┐                              WO-026 ─┐        WO-018 ─┐
-        ├─(satisfied)─> WO-042 <─────── WO-030 ─┴─> WO-043     WO-013 ─┴─> WO-036
-WO-039 ─┘                 ▲
-                           │ hard
-WO-009 ─(satisfied)─> C2 ──┼──> D1 ──> D2 ──> E ──> H <── F (WO-010 satisfied)
-                           │       ▲        │        ▲ <── G
-                           └───────┘        │        ▲ <── target publish <── D2
-WO-105 ─(reference)─> C1 ─(reference)───────┘        ▲ <── C1 (hard)
-                                                     ▲ <── D1 (hard)
-
-WO-033 ──(planning-deferral)──> D2       WO-034 ─(hard)─> WO-033 ─┐
-WO-035 ─(hard)─> WO-033                  WO-037, WO-040 ──(planning-deferral)──> D2
-```
-
-The full edge list, with relation kinds, satisfied releases and reasons, is
-the JSON graph. Relation vocabulary: `hard` and `planning-deferral` block;
-`satisfied-by-release` and `satisfied-by-close` block only while unmet;
-`reference-only`, `historical-evidence`, `waived` and `superseded` never
-block. `planning-deferral` is added to the audit's vocabulary because a
-sequencing decision of a pass is not a missing input and must be visibly
-reversible by the operator. Supersession of a slice is a node annotation,
-never an edge. A script over the JSON found 36 nodes, 53 edges, no dangling
-edge and no cycle (the command and result are in the session result and
-summarized in the ledger section); every open order's blocking
-set is either empty (WO-042, WO-043, WO-036, WO-014, the corpus drafts) or
-names exactly the unmet nodes above (the five deferred orders).
+The machine-readable graph is [`critical-path-2026-09-08.json`](critical-path-2026-09-08.json):
+100 nodes (67 filed orders, WO-036, the five umbrella records, WO-014, four
+corpus drafts and twenty-two closed orders they cite) and 162 edges; a script
+over it found no dangling edge and no cycle. Relation vocabulary: `hard` and
+`planning-deferral` block; `satisfied-by-release` and `satisfied-by-close`
+block only while unmet; `reference-only`, `historical-evidence`, `waived` and
+`superseded` never block. Supersession of a slice is a node annotation on the
+filed order (WO-049 and WO-064 carve their halves out of WO-033); supersession
+of a whole umbrella is a node annotation naming its children. WO-043 migrates
+these edges into typed blocks in the order files.
 
 ## Stop and replan points
 
-1. **R1, mandatory, after C2's record.** If print-mode or exec-mode workers
-   do not honor the target worktree's own hooks and settings, D1's design
-   changes (the bundle cannot govern the worker from inside the target) and
-   D2's containment must come from the DotLn-side host and the harness
-   sandbox instead. Nothing after C2 is filed before this checkpoint.
-2. **R2, mandatory, after D2's first live receipt.** Decide from the
-   episode: whether the reactor split landed or needs its own order; whether
-   the worker store needs C1 before E; whether WO-033's remaining phases
-   still describe the right starter; whether WO-034's premise (the Angular
-   repository's first change is the UIFA shell) survives H's bounded issue;
-   the cost and session counts of the first real episode against the audit's
-   measures.
-3. **R3, after H.** The console framework ADR, migration batches, the starter
-   export and the cross-repository pilot are re-cut on the vertical's
-   measurements, as the audit proposes and the phase-two plan's open
-   decisions already anticipate.
+1. **R1, mandatory, after WO-044's record.** Two row families decide two
+   designs: if a target worktree's own hooks and settings do not apply to a
+   print-mode or exec-mode worker, WO-049 becomes a host-side containment
+   order; if no harness can be launched by a detached parent without an
+   interactive login, WO-068's `cli-worker` kind is unavailable until a
+   launch path exists and the resident's first proofs run with `script` and
+   `local-model` actors. Nothing after WO-044 in either chain is activated
+   before this checkpoint.
+2. **R2, mandatory, after WO-053's and WO-111's receipts.** Decide from the
+   episodes: the cost and session counts against the audit's measures; the
+   first portfolio edit toward the operator's repositories; whether the
+   starter's first export should wait for WO-100; whether the deferred
+   families are waived.
+3. **R3, after WO-112 and the fork's first run (WO-083).** The console
+   framework decision, the migration cadence, the second starter export and
+   the work fork's first orders are re-cut on the measurements.
 4. **Stop rules.** A WO-042 fixture that requires changing a committed
-   loadout's semantic hash stops that order for a decision (the hashes are
-   load-bearing). A D2 episode that writes outside its worktree stops the
-   gate until the containment is structural, not prompted. A hold from the
-   refuter is answered by a changed criterion and a fresh receipt or by an
-   operator override event, never by the planner.
+   loadout's semantic hash stops that order for a decision. A source-change
+   episode that writes outside its worktree, or a resident dispatch outside
+   its portfolio, stops its gate until the containment is structural. A hold
+   from the refuter is answered by a changed criterion and a fresh receipt or
+   by an operator override event, never by the planner.
 
-## The first external user-value proof
+## The first proofs
 
-Gate D2 is the proof: one bounded WorkOrder, compiled from a worker loadout
-whose authority comes only from its base and explicit grants, dispatched
-through the existing transports into a scratch repository outside DotLn that
-carries one wrong function, one failing test and one bounded contract; the
-worker edits, runs the focused test, reads its diff, commits, returns the
-six-field envelope and terminates; the host proves the main checkout and
-every path outside the worktree unchanged, the test red then green by its own
-runs, the commit present with no DotLn file, and a killed worker replaced
-from the continuation without a second commit. That is the primitive every
-later gate reuses, and it is the first time a session, an actor or a pattern
-does something in another repository that the operator did not do by hand.
-It is also the first point at which "disposable workers, near-empty main
-thread" becomes true rather than planned, which the 2026-09-06 priming note
-named as the phase-three destination.
+- **WO-099** is the first time DotLn does anything while the operator is
+  away: the resident fires a cadence and a live verifier judges a session
+  with a planted drift. Read-only; no source change needed.
+- **WO-053** is the first time a session, an actor or a pattern changes a
+  file in another repository that the operator did not edit by hand.
+- **WO-111** is the predecessor's "operator away" behavior made true: 5S
+  work derived, executed, verified and stopped on return, under the curve.
+- **WO-112** is the parity proof: the loop from a tracked-work artifact to a
+  verified pull request with every automated comment resolved, against a
+  scratch target.
+- **WO-083** is the operator's own proof, from the fork, against the Angular
+  repository, recorded here only as a receipt.
+
+## The cut
+
+The audit's rule: an order normally introduces one capability boundary, one
+primary integration seam, one independently falsifiable outcome and one
+rollback unit, and must be split when it holds more than one of: a new public
+contract, a new external adapter, a new persistence shape, a new compiler
+target, a new UI projection, a self-hosting migration, cross-repository
+behavior, an independent live proof. Applied to the five epics:
+
+| Umbrella                        | Items it combined                                                                                                                                                                                                                                                                | Children                                                                                                                                                                                     |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| WO-033 compiled starter export  | a configuration contract; a registration contract; a target lifecycle (cross-repository); a class and profile convention; an export command; a runtime build in the export; an overlay contract; an update command; a registry; a sync helper; the camouflage lint; a live smoke | WO-069, WO-070, WO-071, WO-072, WO-073, WO-074, WO-075, WO-076, WO-077, WO-078, WO-079; the emit and publish halves as WO-049 and WO-064; the lint as WO-063; the build-first item as WO-036 |
+| WO-034 cross-repository pilot   | a document convention and index projection; a UI projection; six fixtures; an operator-witnessed live run with a baseline attestation                                                                                                                                            | WO-080, WO-081, WO-082, WO-083                                                                                                                                                               |
+| WO-035 documentation reset      | seven independent moves each with its own check or measurement                                                                                                                                                                                                                   | WO-084, WO-085, WO-086, WO-087, WO-088, WO-089, WO-090                                                                                                                                       |
+| WO-037 5S equipment set         | a lowering change; a graph collection (public contract); five mechanic definitions; five bonus lowerings; a scenario and a render                                                                                                                                                | WO-091, WO-092, WO-093, WO-094, WO-095                                                                                                                                                       |
+| WO-040 rule migration batch one | a generated ledger with its check; twelve units with retirements; the measurement and template                                                                                                                                                                                   | WO-096, WO-097, WO-098                                                                                                                                                                       |
+
+Applied to the later gates the first result had left as briefs: the codecs
+brief held four boundaries (WO-045 to WO-048); the source-changing worker
+brief held a refactor, an adapter, a persistence shape and a live proof
+(WO-050 to WO-053); the verification brief held a host profile, a
+continuation and a live proof (WO-054 to WO-056); the browser brief held a
+discovery, a contract and an adapter (WO-057 to WO-059); the intake brief
+held a contract, a compile and an adapter (WO-060 to WO-062); the publish and
+vertical briefs held a lint, a remote adapter, an observer, a loop and a live
+proof (WO-063 to WO-066, WO-112). Every filed order names its seam in its
+placement paragraph and its outcome in its criteria; its rollback unit is its
+own merge.
+
+Sizing: the control log's recent implementation spans ran four to twelve
+hours per order, which the operator named as the problem. Each order here is
+cut to one seam and one outcome; the first three merges of the horizon are
+measured with `resume: times` at R1, and an order whose span exceeds a
+working day is split again before the next activates.
 
 ## Deferred work
 
-Preserved with number, scope and obligations; blocked by a `planning-deferral`
-edge on D2 that the operator can waive with a dated note.
+Three families carry a dated `planning-deferral` edge on WO-053 that the
+operator can waive with a dated note; nothing else is deferred.
 
-- **WO-033 — compiled starter export.** Deferred; partially superseded. The
-  target-worktree emit half of phase 2 becomes D1 and the target publish half
-  becomes H's slice; phases 1, 3 and 4, the sibling registry and the license
-  files at export stay in WO-033. The boy-scout build-first reorder is
-  carried by WO-036, which makes build-first structural. Reversal: if the
-  operator prioritizes the first external fork over the source-changing
-  proof, activate WO-033 first; that is the recorded 2026-09-06 route and an
-  operator decision, not a planner one.
-- **WO-034 — cross-repository pilot.** Deferred behind D2 and WO-033. Its
-  synthetic six demonstrations and workstream projections are retained. Its
-  premise that the Angular repository's first change is the UIFA shell may
-  conflict with H's bounded issue; that contradiction is deferred to R2, not
-  decided here.
-- **WO-035 — documentation reset.** Deferred behind WO-033. Nothing in it is
-  the product bottleneck; its obligations are retained whole.
-- **WO-037 — 5S equipment set.** Deferred behind D2. WO-042 preserves the
-  Safety piece's need to deny at `safety-invariants`.
-- **WO-040 — rule migration, batch one.** Deferred behind D2. Its observed-gap
-  sentence "no unit has a host-observed live activation" is stale since
-  WO-039's live records; its classification improves with a real external
-  episode. Its local-terms and denominator rules are unchanged.
+- **Documentation reset, WO-084 to WO-090.** Not the product bottleneck;
+  WO-113 covers the one separation the audit named for work-order files.
+- **Pattern workshop, WO-091 to WO-095.** The full 5S set widens the
+  Gardener's candidates for WO-100; the Entropy Reducer already supplies
+  Shine and Standardize, which the first portfolio uses.
+- **Rule migration, WO-096 to WO-098.** Rules are lowered into hooks and
+  skills that govern sessions; the first real external episode is a better
+  classification input than another corpus pass. The operator's statement
+  that the predecessor's value is its one hundred and forty rules is
+  recorded; if the operator waives this deferral, WO-096 has no open
+  blocker.
 
-Floating and adjacent orders are untouched: WO-014 floats; WO-102, WO-103,
-WO-105 and WO-107 keep their track, and WO-105 becomes reference evidence for
-C1.
-
-## Activation briefs
-
-Each brief carries only what the dispatch asked for. None allocates a
-number, grants activation, or fixes a version; the activating pass writes the
-full order from the brief and the evidence that exists then.
-
-### C1 — Runtime boundary codecs and the executable program split
-
-- **Objective.** Replace unchecked casts at the boundaries the source-changing
-  worker crosses with versioned positive decoders that return a typed result
-  naming the JSON path on failure: the kernel JSONL store envelope
-  (`EventEnvelope` schema 1), the worker store's stored requests, results
-  and receipts, the harness hook input, and `Program` continuations carried
-  in persisted payloads. Split `ExecutableProgramV1` (Done, Emit, Invoke,
-  Await, Guard, Sequence) from the full `Program` grammar at the type level
-  with the existing `EVALUABLE_PROGRAM_KINDS` as the single source, so an
-  unsupported kind fails at decode, not inside `stepProgram`. Give `replay`
-  an optional environment projector whose default preserves today's
-  documented `rngState` and `policy` contract byte for byte.
-- **Why it follows.** D2 persists a real external effect behind a
-  continuation; a malformed store must refuse before dispatch, and the
-  operator's repository (H) is the first place a misdecode has an external
-  cost.
-- **Entry criteria.** Any free lane; WO-042 merged is recommended so the
-  compiler version churn settles first; WO-105's crash-shape sweep, if run,
-  is reference evidence.
-- **Falsifiable exit.** Every listed boundary rejects a corpus of malformed
-  inputs (missing field, wrong schema version, non-string command id,
-  unsupported program kind, truncated line, foreign key) with a typed
-  failure naming the path; every existing kernel, skeleton and corpus test
-  and the demo replay identity pass byte-identically; the WO-101 corpus
-  enumerates the executable kinds from the new type.
-- **Primary seam.** `packages/kernel/src/store.ts` and `core.ts` (decoders
-  and the type split); `packages/skeleton/src/worker-store.ts` and
-  `harness-host.ts` (input decode).
-- **Major risk.** Scope creep into a schema library or SQLite; the kernel's
-  zero-dependency rule (self-written decoders, as FNV and canonical JSON
-  were).
-- **Non-goals.** SQLite; new event types; any change to hash preimages or
-  the compiled-program contract; a general JSON-schema dependency.
-
-### C2 — Writing-worker harness truth
-
-- **Objective.** In a scratch Git repository that is not DotLn, observe what
-  the installed harnesses do when launched non-interactively as a worker that
-  must edit files: whether the worktree's own `.claude/settings.json` deny
-  rules and generated hooks apply in print mode; which tool-allowlist form
-  admits Edit, Write and a bounded Bash; whether the sandbox confines writes
-  to the worktree; whether hooks under the target's `.claude/hooks` can import
-  a runtime by absolute path; the structured result envelope with tools
-  enabled; session persistence and kill or recovery behavior; and the Codex
-  `workspace-write` equivalent with named filesystem permissions. Record with
-  the WO-039 phase-zero shape and privacy rules: field shapes, no paths, no
-  identifiers.
-- **Why it follows.** The canonical launch shape disables every tool; no
-  record shows a governed writing worker, and D1 and D2 are designed from
-  observed rows only (Principle 15).
-- **Entry criteria.** The WO-039 record and the WO-009 addendum exist; the
-  operator runs the smokes from a terminal outside the sandbox.
-- **Falsifiable exit.** A dated `docs/discovery/writing-worker-smoke-<date>.md`
-  and JSON with observed, blocked and unavailable rows; at least one refusal
-  produced by a generated hook inside the foreign worktree, or an explicit
-  row stating it could not be produced; every capability D1 and D2 consume
-  cites a row.
-- **Primary seam.** `scripts/harness-probe.mjs` (extended) and
-  `docs/discovery/`.
-- **Major risk.** Print mode ignores project hooks in the target, which moves
-  containment to the host and sandbox and redesigns D1 (replan R1).
-- **Non-goals.** Any production emit; user settings; a Codex hook claim; a
-  writing transport in `worker-transport.ts`.
-
-### D1 — Target-worktree harness bundle
-
-- **Objective.** `harness emit --out <target-worktree> --runtime-root <launchpad>`
-  writes a bundle whose hooks import the launchpad's pinned built runtime by
-  absolute path into the target's `.claude/` and instruction block, all under
-  the target worktree's local exclude, so no DotLn file is Git-visible there;
-  `harness check --out` verifies it; removing the worktree leaves the target
-  clean. The manifest records the runtime root's hashes and, after WO-042,
-  any grant's provenance.
-- **Why it follows.** D2's writer isolation, permission denials and Stop
-  checks come from these hooks; WO-033 planned this inside a four-phase epic.
-- **Entry criteria.** WO-042 merged; C2's record shows the target's hooks
-  apply to the worker's launch mode.
-- **Falsifiable exit.** A fixture emits into a scratch non-DotLn repository;
-  `git status --porcelain` there is empty; a generated hook refuses a denied
-  effect there in an operator-run smoke; `harness check` passes and refuses a
-  one-byte drift; the receipt reduces paths to shapes.
-- **Primary seam.** `packages/compiler/src/harness.ts` (the hook text's
-  import root as a profile field) and `scripts/lib/harness.mjs`.
-- **Major risk.** Absolute paths leaking into a committed file; hook pins
-  drifting after a rebuild of the launchpad.
-- **Non-goals.** The starter export, kit manifest, overlay, registered
-  repositories, sync.
-- **Supersedes.** WO-033 phase 2, the target-worktree emit half only.
-
-### D2 — Single-repository source-changing worker
-
-- **Objective.** A new transport profile (`source-change-v1`: tools enabled,
-  cwd the assigned target worktree, base envelope allowing `repo.write` and
-  `git.local` inside the worktree and denying remote, credential, settings
-  and sandbox effects), a worker loadout compiled under WO-042's floor, and
-  the flow: WorkOrder compiled → fresh worker in the D1-governed worktree →
-  edit → focused test → read the diff → commit → six-field envelope →
-  terminate; the host records the commit identity as the effect receipt so
-  recovery is idempotent.
-- **Why it follows.** It is the primitive; nothing in the vertical exists
-  without it.
-- **Entry criteria.** WO-042 and D1 merged; C2's record; the recorded reactor
-  condition honored: this order's phase 1 splits the reactor's state into
-  typed slices with every existing trace byte-identical, or the activating
-  pass files that split as a separate bounded order and records why; the
-  operator available to run live episodes outside the sandbox.
-- **Falsifiable exit.** Main checkout hash unchanged; a sentinel tree beside
-  the worktree unchanged; the parent session's transcript grows by the
-  envelope only; harness, model and effort recorded as launch claims with
-  readback `unknown`; the test observed red by a host run before dispatch
-  and green after; the commit present in the target with no DotLn file; a
-  kill after the commit and before the result persists recovers by commit
-  identity without a second commit; a kill before the commit re-dispatches
-  exactly once; the live receipt filed from an outside terminal.
-- **Primary seam.** `worker-transport.ts` and `execution-environment.ts`
-  (the profile), `reactor.ts` (the host branch, behind the split),
-  `worker-store.ts` (the commit-identity receipt).
-- **Major risk.** The reactor's growth; a non-idempotent external effect;
-  the sandbox's inability to dispatch transports; a widened envelope (closed
-  by WO-042).
-- **Non-goals.** Pull requests, browser evidence, tracker intake, several
-  repositories, any UI, the operator's Angular repository.
-
-### E — Blinded verification and repair over a real repository
-
-- **Objective.** WO-010's loop with a live verifier over D2's repository: a
-  planted implementation that passes a superficial test and violates the
-  contract; a finding with expected, observed, reproduction and evidence
-  references; a focused repair WorkOrder executed by a fresh D2 worker
-  bounded to the declared surfaces; re-verification from the original
-  contract. The verifier receives contract, diff, tests and a repository
-  snapshot, never the implementer's narrative.
-- **Why it follows.** D2 proves change; E proves the change can be wrong and
-  caught without the implementer certifying itself.
-- **Entry criteria.** D2 merged; WO-010's contract (satisfied); the operator
-  runs the live episodes.
-- **Falsifiable exit.** The planted defect is caught by a live verifier; the
-  negative result cannot be relabeled by any implementer-emitted event
-  (matrix fold); the repair diff is bounded to the declared surfaces;
-  re-verification passes from the original contract; behavior claims carry
-  `live` evidence from host-run tests.
-- **Primary seam.** `verification-host.ts` and `verification-protocol.ts` (a
-  snapshot profile over a real worktree with test execution), the reactor's
-  verification branch.
-- **Major risk.** Live-model cost and variance; a snapshot profile that runs
-  untrusted target tests (isolation is the worktree plus sandbox, not a
-  security boundary).
-- **Non-goals.** Code-review episodes, post-PR loops, visual or network
-  claims.
-
-### F — Browser evidence adapter
-
-- **Objective.** `visual` and `network` claim types in `verification-v1`,
-  witnessed by a Playwright-driven scenario over a small synthetic local web
-  application: navigate, interact, DOM and accessibility snapshot, screenshot
-  attached to the exact criterion, network trace, console capture, trace
-  retained, browser and context closed or recovered. A DOM-only witness cannot
-  satisfy a visual criterion.
-- **Why it follows.** The operator's "walk the app" rule; WO-010 deferred these
-  claim types to their consumer; H needs them.
-- **Entry criteria.** E merged; an ADR-0002 amendment recording the Playwright
-  runtime dependency, its consumer package outside the kernel and compiler,
-  and the third-party inventory duty; browser binaries observed in the
-  environment record (they are, through the connected server, but the adapter
-  must not require the MCP server).
-- **Falsifiable exit.** Fixtures: a visual criterion with DOM-only evidence is
-  `unverified`; a screenshot witness attaches to its criterion; a network claim
-  needs request evidence; a console error is an explicit failing witness; a
-  kill fixture proves the browser closes or recovers; a replacement verifier
-  replays the saved scenario.
-- **Primary seam.** A new workspace package for the adapter and the compiler's
-  `verification-v1` extension (compiler version bump).
-- **Major risk.** The first heavy runtime dependency; flaky screenshots;
-  confusing the harness's MCP server with the product's adapter.
-- **Non-goals.** OCR, the console UI, the Angular application.
-
-### G — SourceBundle to StoryContract
-
-- **Objective.** The `SourceAdapter` port's first generic implementation from a
-  GitHub Issue: an immutable SourceBundle (rich sections, discussion, images
-  as evidence references, revisions) and a pure compiler to a StoryContract
-  whose statements carry provenance to bundle spans and are classified as
-  requirement, non-requirement, struck, example, question, answer, visual
-  annotation, current-behavior observation, inference, assumption,
-  contradiction or open decision; a source-revision guard that invalidates
-  only derived items.
-- **Why it follows.** H's contract must come from a real tracked-work
-  artifact; the enterprise tracker adapter stays outside core (ADR-0002
-  Decision 2).
-- **Entry criteria.** E merged (the criteria consumer); a personal-repository
-  issue as the fixture; nothing from any private tracker.
-- **Falsifiable exit.** Fixtures over synthetic issues: every derived
-  statement resolves to a bundle span; a material revision invalidates exactly
-  the derived items; the contract compiles into `AcceptanceCriterion`s the E
-  host accepts; secrets and resolved URLs never enter the bundle (the external
-  target binding rule); statements a model episode inferred are labeled as
-  such.
-- **Primary seam.** `packages/compiler` (pure StoryContract compile) and a
-  skeleton adapter over the GitHub CLI, read-only.
-- **Major risk.** Model-in-the-loop classification passing as deterministic.
-- **Non-goals.** The enterprise tracker; an impact map beyond a read-only
-  cartographer stub; RepoProfile authoring.
-
-### Target publish slice (with H)
-
-- **Objective.** Push the target branch and open its pull request through the
-  existing GitHub helpers with the camouflage lint, under an explicit
-  `remote` grant carrying `operator` provenance (WO-042), from the launchpad;
-  the pull-request body is generated from the contract, diff and evidence
-  matrix, never from narrative.
-- **Why it follows.** Nothing to publish exists before D2; H needs it.
-- **Entry criteria.** D2 merged; WO-042's grants.
-- **Falsifiable exit.** A fixture publishes to a scratch remote through the
-  `gh` stub with a body generated from artifacts; a deny-listed term refuses;
-  no DotLn file or vocabulary reaches the target.
-- **Primary seam.** `scripts/worktree.mjs` publish path for a target
-  repository.
-- **Major risk.** The first remote effect under compiled authority.
-- **Non-goals.** Merge, release, per-repository release policy.
-- **Supersedes.** WO-033 phase 2, the target publish half only.
-
-### H — Angular source-to-verified-PR vertical with the post-PR loop
-
-- **Objective.** One bounded issue in the operator's public Angular repository
-  travels SourceBundle → StoryContract → impact map → implementation
-  WorkOrder → D2 worker → focused tests and build → F evidence → E
-  verification and repair → conventional commits → pull request with a
-  generated title and body → the post-PR loop: CI classification, automated
-  review comments triaged and resolved by fresh bounded workers, the source
-  revision guard, until a human-controlled terminal state. Measured:
-  main-thread context, model input and output, sessions, human touch time,
-  cycle time, retries, cost, evidence coverage, review findings, operator
-  interventions, and the parity checklist above item by item.
-- **Why it follows.** Every earlier gate is a primitive; this is the loop the
-  operator has today in v1.
-- **Entry criteria.** D1, D2, E, F, G, C1 and the target publish slice merged;
-  an Angular repository profile authored by a read-only archaeology episode;
-  the operator witnesses.
-- **Falsifiable exit.** The pull request exists with a generated body; every
-  acceptance criterion is evidenced; findings are resolved through repair;
-  every automated review comment is resolved by the loop or recorded as
-  needing a human with its reason; the measures are recorded with methods;
-  no DotLn file or vocabulary is in the target.
-- **Primary seam.** The `DeliveryAdapter` and the composition of the earlier
-  gates.
-- **Major risk.** The target toolchain's build time; scope creep into console
-  v1; the tracker adapter drifting into core.
-- **Non-goals.** The UIFA shell, cross-repository workstreams, the starter
-  export, the console framework decision.
+The umbrella records WO-033, WO-034, WO-035, WO-037 and WO-040 keep their
+numbers and text as the record their children cite; each carries a dated
+umbrella note that WO-113 migrates into a typed `superseded` block. Floating
+and adjacent orders are untouched: WO-014 floats; WO-102, WO-103, WO-105 and
+WO-107 keep their track, WO-105 as reference evidence for the codecs.
 
 ## Migration map
 
-| Existing order | Relationship                   | Obligations and where they go                                                                                                                                                                                                                                     |
-| -------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| WO-036         | remains active                 | Unchanged; the WO-033 boy-scout build-first item is carried by its structural build-first rule.                                                                                                                                                                   |
-| WO-033         | partially superseded; deferred | Phase 2 target-worktree emit → D1; phase 2 target publish → H's slice; phase 1 configuration root, Beacon portability, phase 3 export, kit and overlay, phase 4 sync, sibling registry, license files at export → retained in WO-033; boy-scout reorder → WO-036. |
-| WO-034         | deferred                       | All obligations retained; the "first Angular change is the UIFA shell" premise is a recorded contradiction with H's bounded issue, decided at R2.                                                                                                                 |
-| WO-035         | deferred                       | All obligations retained.                                                                                                                                                                                                                                         |
-| WO-037         | deferred                       | All obligations retained; WO-042 preserves the `safety-invariants` deny path its Safety piece needs.                                                                                                                                                              |
-| WO-040         | deferred                       | All obligations retained; one observed-gap sentence is stale (live activations now exist) and is corrected at activation, not now.                                                                                                                                |
-| WO-039         | satisfied by existing evidence | The audit's WO-044, WO-045 and WO-046 map onto its phase-zero record, live hooks and context accounting; the residual is C2.                                                                                                                                      |
-| WO-009, WO-010 | satisfied by existing evidence | Transports, worker store, leases, recovery (D2 extends); the verification loop (E lifts).                                                                                                                                                                         |
-| WO-011         | satisfied by existing evidence | The ten units govern this repository's sessions through WO-039's lowering.                                                                                                                                                                                        |
-| WO-008         | reference only                 | The VER-001 F2 finding is WO-042's origin.                                                                                                                                                                                                                        |
-| WO-032, WO-041 | reference only                 | The board's Builds panel regenerates its render expectations under WO-042; the refuter judges this pass.                                                                                                                                                          |
-| WO-014         | reference only, floating       | Unchanged.                                                                                                                                                                                                                                                        |
-| WO-102–WO-107  | reference only, adjacent track | Unchanged; WO-105 is reference evidence for C1.                                                                                                                                                                                                                   |
+| Existing order         | Relationship                      | Obligations and where they go                                                                                                                                                                                                                                                                   |
+| ---------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| WO-036                 | remains active                    | Unchanged; carries the WO-033 build-first item.                                                                                                                                                                                                                                                 |
+| WO-033                 | superseded whole; umbrella record | Phase 1 → WO-069; Beacon portability → WO-070; phase 2 → WO-071, WO-072, WO-073, WO-049 (emit), WO-064 (publish), WO-063 (lint); phase 3 → WO-074, WO-075; kit and overlay → WO-076, WO-077; sibling registry → WO-078; phase 4 → WO-079; license files at export → WO-074; boy-scout → WO-036. |
+| WO-034                 | superseded whole; umbrella record | Workstream document and index → WO-080; board section → WO-081; six demonstrations → WO-082; real run, baseline block, priming measurement → WO-083; the Angular-first-change premise stands and is the fork's to plan.                                                                         |
+| WO-035                 | superseded whole; umbrella record | Ledger → WO-084; spec/receipt boundary → WO-085; release history → WO-086; roadmap split → WO-087; phrase table → WO-088; capability table → WO-089; cold start → WO-090.                                                                                                                       |
+| WO-037                 | superseded whole; umbrella record | Multi-active → WO-091; sets → WO-092; mechanics → WO-093; bonuses → WO-094; scenario and render → WO-095.                                                                                                                                                                                       |
+| WO-040                 | superseded whole; umbrella record | Ledger and classification → WO-096; batch one → WO-097, WO-098 (six units each); the stale live-activation sentence is corrected in the umbrella note.                                                                                                                                          |
+| WO-039                 | satisfied by existing evidence    | The audit's harness-truth, lowering and self-host orders are its record; the residual rows are WO-044.                                                                                                                                                                                          |
+| WO-009, WO-010         | satisfied by existing evidence    | Transports, worker store, leases, recovery (WO-051, WO-052 extend); the verification loop (WO-054, WO-055 lift).                                                                                                                                                                                |
+| WO-011                 | satisfied by existing evidence    | The ten units govern this repository's sessions; WO-096 to WO-098 continue them.                                                                                                                                                                                                                |
+| WO-023                 | satisfied by existing evidence    | The Entropy Reducer's candidates are WO-100's first input.                                                                                                                                                                                                                                      |
+| WO-027, WO-007, WO-041 | reference only                    | The local-inference probe (WO-110), the audit fold (WO-116), the judge shape (WO-099).                                                                                                                                                                                                          |
+| WO-008, WO-032         | reference only                    | The VER-001 F2 finding is WO-042's origin; the board's expectations regenerate under WO-042 and extend under WO-081 and WO-114.                                                                                                                                                                 |
+| WO-014                 | reference only, floating          | Unchanged.                                                                                                                                                                                                                                                                                      |
+| WO-102 to WO-107       | reference only, adjacent track    | Unchanged; WO-105 is reference evidence for WO-045 and WO-048.                                                                                                                                                                                                                                  |
 
-No existing order is declared superseded whole. The prose "Depends on"
-paragraphs of closed orders are not edited (never back-fill history); WO-043
-labels their token view.
+The prose "Depends on" paragraphs of closed orders are not edited (never
+back-fill history); WO-043 labels their token view.
 
 ## Planning-risk register
 
-| Risk                                                 | Evidence today                                                                                                                                                                                    | Mitigation on the path                                                                                                                                                                      | Trigger to revisit                                                                           |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| Authority widening                                   | Support claims and permission emissions widen the compiled envelope; the lowered hooks enforce that envelope; VER-001 F2 reproduced it; latent today.                                             | WO-042 first; grants carry provenance; the tooltip projects the envelope. Residual: provenance is reviewed text, not authenticated (the same limit WO-029 and the override record).         | Any loadout authored outside this repository (fork, community build, registered repository). |
-| Malformed persisted state                            | Store envelope and hook input are casts; the worker store refuses torn logs and dead locks; transport results are validated; no misdecode demonstrated.                                           | C1, parallel, mandatory before H; WO-105 as reference evidence.                                                                                                                             | A D2 episode whose recovery reads a state the decoder cannot classify.                       |
-| Unsupported executable grammar                       | `stepProgram` throws on deferred kinds; the subset is an exported constant and a corpus, not a type.                                                                                              | C1's type split; the corpus enumerates from the type.                                                                                                                                       | A persisted continuation of a deferred kind.                                                 |
-| Application-specific replay assumptions              | `replay` reads `rngState` and `policy` by key; documented in product 02; only one application state shape exists.                                                                                 | C1's optional projector with a byte-identical default.                                                                                                                                      | A second reactor state shape (D2's typed slices are the first candidate).                    |
-| Dependency drift                                     | The index misreports closed orders as blocked; activation reads no dependency; the map disclaims.                                                                                                 | WO-043; the JSON graph seeds it; only typed hard and deferral entries block.                                                                                                                | Any new order that cites a historical id.                                                    |
-| Integration-package growth                           | 46 skeleton files; one decider the ownership guard enforces; the recorded split condition on the next host branch.                                                                                | D2 honors the condition as phase 1 or a separate order; the audit's package split is not adopted before a seam needs it.                                                                    | R2.                                                                                          |
-| Self-hosting masking lack of external value          | The repository governs, tests, documents, visualizes and plans itself; the loop exists for no user.                                                                                               | The rule "makes an existing claim true in a real session"; machinery in this horizon limited to WO-043, WO-036, C1; D2 as the proof; H measured against v1 parity.                          | Any pass that files a machinery order without a demonstrated blocker to a real session.      |
-| Model and harness assumptions not yet verified       | No record of a tool-enabled worker in a foreign worktree; the sandbox refuses CLI transports in-session; effective effort readback unavailable; every runtime change needs a live feedback audit. | C2 before D1; operator-run live episodes; launch claims labeled; the feedback refresh candidate stays recorded.                                                                             | R1.                                                                                          |
-| Unclassified effectful tools bypass the writer guard | The guard gates Bash, Edit and Write; the permission classifier treats every other tool as a read; this pass's listing subagent ran shell commands through `Monitor` read-only.                   | Recorded as a candidate: the harness profile enumerates the tools the harness exposes and the host fails closed on an unclassified effectful tool. Not a WO-042 concern (a different seam). | Before D1 emits a bundle into a target, so the worker's governance has no known bypass.      |
-| Planning procedure under the compiled build          | "Run on the clean main checkout" needed a planning branch before the first write; the pass stalled until the operator created it.                                                                 | One-sentence correction in product 07 and the playbook (this pass).                                                                                                                         | A future compiled unit that refuses another documented procedure.                            |
-| Clean-room exposure from external material           | The audit named a tracker and the employer; generalized on every committed surface; the local-terms screen runs over new prose.                                                                   | The capture stays ignored; committed text says "enterprise tracker".                                                                                                                        | Any future dispatch that quotes private material.                                            |
-| Refutation gate cost                                 | Every pass needs an operator-run refuter episode; a deliberately unfiled loop order may draw a hold.                                                                                              | The command and the intended override route are recorded above.                                                                                                                             | A third consecutive hold, which stops the pass by rule.                                      |
+| Risk                                                 | Evidence today                                                                                                                                      | Mitigation on the path                                                                                                                                                    | Trigger to revisit                                                              |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Authority widening                                   | Support claims and permission emissions widen the compiled envelope; the lowered hooks enforce it; latent today.                                    | WO-042 first; a presence phase, a portfolio, a registration and an overlay all validate under the floor; grants carry provenance.                                         | Any loadout authored outside this repository.                                   |
+| Unattended authority                                 | No policy or process exists; the predecessor's curve is prose in a harness.                                                                         | The curve is data (WO-067) evaluated by a process whose every decision is an event (WO-068); work comes only from a portfolio (WO-100); the mission check holds (WO-099). | A resident dispatch outside its portfolio, which stops the gate.                |
+| Harness assumptions unverified                       | No record of a writing worker in a foreign worktree or of a detached launch without a login.                                                        | WO-044 before WO-049, WO-051 and WO-068; R1 decides both designs.                                                                                                         | R1.                                                                             |
+| Order size                                           | Recent implementation spans of four to twelve hours; the operator's observation.                                                                    | One seam and one outcome per order; spans measured at R1; a split rule for any order over a working day.                                                                  | The first three merges.                                                         |
+| Malformed persisted state                            | Store envelope and hook input are casts; no misdecode demonstrated.                                                                                 | WO-045 to WO-048 float; mandatory before WO-112.                                                                                                                          | A recovery that reads a state the decoder cannot classify.                      |
+| Unsupported executable grammar                       | `stepProgram` throws on deferred kinds; the subset is a constant.                                                                                   | WO-046; the resident's and repair continuations use the executable subset.                                                                                                | A persisted continuation of a deferred kind.                                    |
+| Application-specific replay assumptions              | `replay` reads reserved keys; documented.                                                                                                           | WO-047's projector; WO-050's slices consume it.                                                                                                                           | A second state shape (WO-050).                                                  |
+| Dependency drift                                     | The index misreports closed orders as blocked; activation reads no dependency.                                                                      | WO-043 with the regenerated graph as seed; WO-113 keeps order files as contracts.                                                                                         | Any new order citing a historical id.                                           |
+| Integration-package growth                           | 46 skeleton files; one decider; three new hosts on this path.                                                                                       | WO-050 splits state into slices before any new host branch; the audit's package split is not adopted before a seam needs it.                                              | R2.                                                                             |
+| A second authority path through a UI                 | The board is read-only today; a UI that can author is a new command surface.                                                                        | WO-115: every UI command is the terminal's implementation under the compiled envelope, bound to the local user's loopback.                                                | Any UI host that needs a command the terminal lacks.                            |
+| Self-hosting masking lack of external value          | The repository governs, tests, documents and plans itself; the loop exists for no user.                                                             | Two first proofs, both outside this repository's own work (WO-099 judges a session; WO-053 changes a scratch repository); the fork's run is the operator's proof.         | Any pass that files machinery without a demonstrated blocker to a real session. |
+| Target-application work drifting into core           | Two Angular orders were drafted mid-pass.                                                                                                           | Withdrawn; the rule is written into WO-073, WO-083 and WO-112: target-application profiles and orders are the fork's.                                                     | Any order here that names a target application's content.                       |
+| Unclassified effectful tools bypass the writer guard | The guard gates Bash, Edit and Write; a listing subagent obtained shell output through a monitoring tool.                                           | Recorded as a map candidate; close before WO-049 emits into a target.                                                                                                     | Before WO-049.                                                                  |
+| Permission matchers refuse commands by token         | This pass's own shell commands were refused when their text contained remote-effect tokens or an environment-file token, including read-only greps. | Recorded here and in the ledger as a candidate: the classifier should match commands, not substrings of heredoc or pattern text.                                          | Before WO-068 launches `script` actors whose commands carry arbitrary text.     |
+| Refutation gate cost                                 | The subject holds sixty-eight orders; every pass needs an operator-run episode.                                                                     | The command and the override route are recorded above.                                                                                                                    | A third consecutive hold stops the pass by rule.                                |
+| Clean-room exposure from external material           | The audit named a tracker and the employer; the operator's messages name their repositories.                                                        | Captures stay ignored; committed text says "enterprise tracker", "the operator's Angular repository", "the work fork".                                                    | Any future dispatch that quotes private material.                               |
 
 ## Lineage-preservation appendix
 
-Ideas from the 2026-09-06 priming note and the repository's own long-range
-records, with where each stays recorded and what this pass does to it. The
-note's classifications: **invariant retained**, **immediate planning gate**,
-**critical-path destination**, **deferred candidate**, **contradicted by
-current repository evidence**, or **superseded sequence with obligations
-preserved elsewhere**. The table is a register, not a backlog.
+Ideas from the 2026-09-06 priming note and the repository's long-range
+records, with where each stays recorded and what this revision does to it.
+Classifications: **invariant retained**, **immediate gate**, **critical-path
+destination**, **deferred candidate**, **fork-side**, or **superseded sequence
+with obligations preserved**.
 
-| Enduring idea                                                                                                           | Source                                                | Immediate relevance                                                                   | Activation prerequisite                      | Where it stays recorded                            | This pass                                     |
-| ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------- | --------------------------------------------- |
-| A build, not a biography                                                                                                | note §1; vision §The one-paragraph story              | WO-042 makes the build's safety layer real; D1 carries it into a target               | none                                         | vision; WO-039; this plan                          | invariant retained                            |
-| Actors are the unit, people are actors                                                                                  | note §1; product 13; WO-032                           | D2 is an actor in a target; the board shows it                                        | none                                         | product 13, 04                                     | invariant retained                            |
-| The shelf compiles                                                                                                      | note §1; vision §The differentiated interface         | WO-037 preserved; WO-042 keeps the Safety piece's deny path                           | D2 and R2                                    | WO-037; map candidates (remaining shelf)           | deferred candidate                            |
-| Evidence precedes done; implementer never verifies                                                                      | note §1; Principle 6; ADR-0006                        | E lifts WO-010 onto a real repository                                                 | D2                                           | Principles; WO-010; brief E                        | invariant retained; critical-path destination |
-| Three horizons; Horizon 3 never distorts Horizon 1                                                                      | note §1; vision                                       | The path is Horizon 1 only until H                                                    | none                                         | vision; roadmap §Post-1.0                          | invariant retained                            |
-| Six-month livability and point of view before efficiency                                                                | note §1; vision                                       | Applied to WO-036 (efficiency after the loop exists)                                  | none                                         | vision                                             | invariant retained                            |
-| The operator's chain (core → starter → fork → target → back)                                                            | note §2; ledger 2026-09-06                            | Each order's chain position is named in §Permitted parallelism                        | none                                         | ledger; product 03                                 | invariant retained                            |
-| The refuter's eleven rules                                                                                              | note §3; receipts 001–006                             | Applied to WO-042 and WO-043 in §Quality gates applied                                | none                                         | refutations/README; receipts                       | invariant retained                            |
-| The 2026-09-06 wave plan and fork-binding path                                                                          | note §4; phase-two plan                               | Replaced by the critical path                                                         | operator decision to reverse                 | phase-two plan (history); this plan §Deferred work | superseded sequence, obligations preserved    |
-| Console parity contract v1                                                                                              | note §5; map candidates                               | None until the loop exists                                                            | WO-032 and WO-037 merged; a console consumer | map candidates                                     | deferred candidate                            |
-| Intent declaration and the stranger test                                                                                | note §5; receipt 006; map candidates                  | H is the first bounded intent from a tracked artifact; the stranger test stays v1.0's | H                                            | map candidates; roadmap v1.0.0                     | deferred candidate                            |
-| Migration batches two onward                                                                                            | note §5; WO-040; map candidates                       | Deferred behind D2 with WO-040                                                        | WO-040                                       | map candidates                                     | deferred candidate                            |
-| Source-writing worker v1                                                                                                | note §5; roadmap; product 03 §Ports                   | D2                                                                                    | WO-042, C2, D1                               | brief D2                                           | critical-path destination                     |
-| Drag-equip authoring                                                                                                    | note §5; map candidates (wave 5)                      | None on the path                                                                      | WO-032, WO-037, a console shell              | map candidates                                     | deferred candidate                            |
-| Remaining shelf entries                                                                                                 | note §5; map candidates                               | None on the path                                                                      | WO-037                                       | map candidates                                     | deferred candidate                            |
-| Isomorphic views beyond three codecs; semantic zoom                                                                     | note §5; product 04                                   | None on the path                                                                      | a console consumer                           | product 04                                         | deferred candidate                            |
-| Replay scrubber and first divergence                                                                                    | note §5; roadmap §Projections & console               | None on the path                                                                      | the projections rung                         | roadmap                                            | deferred candidate                            |
-| Presence policy compiled (the resident Gardener)                                                                        | note §5; ADR-0007; roadmap candidates                 | None on the path                                                                      | D2 (a worker that can act unattended)        | ADR-0007; roadmap                                  | deferred candidate                            |
-| Browser verification adapter                                                                                            | note §5; product 03 §Ports; WO-010 non-goals          | F                                                                                     | E; ADR-0002 note                             | brief F                                            | critical-path destination                     |
-| Source-to-deliverable vertical with the post-PR loop                                                                    | note §5; roadmap rung; ADR-0002 Decision 2            | G and H                                                                               | E                                            | briefs G, H; roadmap                               | critical-path destination                     |
-| Skill pack export; bring your own agent                                                                                 | note §5; product 03 §Agent enablement skills; WO-033  | None on the path                                                                      | WO-033                                       | product 03; WO-033                                 | deferred candidate                            |
-| Phase four: v1.0.0 stranger test, real forks, owner-sovereign profile, hats, cohorts, editions                          | note §5 phase four; roadmap; ADR-0006; map candidates | None on the path                                                                      | H and a second instance                      | roadmap; ADR-0006; map candidates                  | deferred candidate                            |
-| Phase five: counterfactual runs, προτείνω, the founding catalog, Embodied Explorer, toolbox                             | note §5 phase five; product 11; roadmap §Post-1.0     | None on the path                                                                      | v1.0.0                                       | product 11; roadmap; ledger chat 005               | deferred candidate                            |
-| "The most valuable order makes an existing claim true in a real session"                                                | note §6                                               | The pass's prioritization rule                                                        | none                                         | this plan; ledger 2026-09-08                       | invariant retained                            |
-| The do-not-relitigate list (license, topology, kit and overlay, zero deps, no framework, roles, floor, correction unit) | note §6; ADRs; ledger Resolutions                     | Honored: nothing here reopens any                                                     | none                                         | decisions; ledger                                  | invariant retained                            |
-| Ask the operator only what only the operator can answer                                                                 | note §6                                               | Two items for the operator: the refuter run and the WO-034 premise at R2              | none                                         | this plan                                          | invariant retained                            |
-| A correction is a typed event                                                                                           | note §6; product 02 §Semantic correction events       | The operator's mid-pass messages were treated as a question, answered, and captured   | none                                         | product 02; the capture                            | invariant retained                            |
-| "After WO-039, core runs on its own compiled build"                                                                     | note §2                                               | Now true; this pass ran under it                                                      | none                                         | WO-039 evidence                                    | contradicted only in tense (it is done)       |
-| The unnamed secondary gap (declare intent, the stranger)                                                                | receipt 006 disposition 3                             | H names the first bounded intent; the stranger stays v1.0                             | H                                            | receipt 006; map candidates                        | deferred candidate                            |
-| Override attributable, not refusable                                                                                    | receipt 006 disposition 2; WO-041 assumption 1        | Unchanged limit; the same limit bounds WO-042's grant provenance                      | an external principal                        | WO-041; WO-042                                     | invariant retained                            |
+| Enduring idea                                                                            | Source                                | This revision                                                                                        | Where it stays recorded       |
+| ---------------------------------------------------------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------- |
+| A build, not a biography                                                                 | note §1; vision                       | invariant retained; WO-042, WO-049, WO-075 carry the build to sessions, targets and forks            | vision; WO-039                |
+| Actors are the unit, people are actors                                                   | note §1; product 13; WO-032           | critical-path destination: the actor catalog (WO-068) includes `human-handoff`                       | product 13; WO-068            |
+| The shelf compiles                                                                       | note §1; vision                       | deferred candidate: WO-091 to WO-095 after WO-053 or a waiver                                        | WO-037 umbrella; children     |
+| Evidence precedes done; the implementer never verifies                                   | note §1; Principle 6                  | invariant retained; WO-054 to WO-056, WO-099                                                         | principles; WO-010            |
+| Three horizons; Horizon 3 never distorts Horizon 1                                       | note §1; vision                       | invariant retained; the path is Horizon 1 until WO-112                                               | vision                        |
+| The operator's chain (core → starter → fork → target → back)                             | note §2; ledger 2026-09-06            | immediate gate: Gate S floats beside the runtime; WO-077 makes the chain mechanical                  | ledger; product 03            |
+| The refuter's eleven rules                                                               | note §3; receipts                     | invariant retained; applied by hand (§Quality gates applied)                                         | refutations                   |
+| The 2026-09-06 wave plan and fork-binding path                                           | note §4; phase-two plan               | superseded sequence with obligations preserved; the starter is no longer deferred                    | phase-two plan; this document |
+| Console parity contract v1                                                               | note §5; map candidate                | immediate gate: WO-115 (the contract half); drag-equip authoring is fork-side over it                | WO-115; map                   |
+| Presence policy compiled (the resident Gardener)                                         | note §5; ADR-0007; roadmap            | immediate gate: WO-067, WO-068, WO-100, WO-111                                                       | ADR-0007; Gate R              |
+| Intent declaration and the stranger test                                                 | note §5; receipt 006                  | deferred candidate; WO-115 exposes "file an intent as a draft" as a command; the stranger stays v1.0 | map candidates; roadmap       |
+| Migration batches two onward                                                             | note §5; WO-040                       | deferred candidate after WO-098                                                                      | map candidates                |
+| Source-writing worker v1                                                                 | note §5; roadmap                      | critical-path destination: WO-051 to WO-053                                                          | Gate D                        |
+| Drag-equip authoring; the Angular shell; UIFA v1                                         | note §5; WO-034                       | fork-side over WO-114 and WO-115; recorded here only as WO-083's receipt                             | WO-034 umbrella; WO-083       |
+| Isomorphic views beyond three codecs; semantic zoom                                      | note §5; product 04                   | deferred candidate                                                                                   | product 04                    |
+| Replay scrubber and first divergence                                                     | note §5; roadmap                      | deferred candidate; WO-116 serves the audit projections a scrubber would read                        | roadmap                       |
+| Browser verification adapter                                                             | note §5; product 03                   | critical-path destination: WO-057 to WO-059                                                          | Gate F                        |
+| Source-to-deliverable vertical with the post-PR loop                                     | note §5; roadmap; ADR-0002 Decision 2 | critical-path destination: WO-060 to WO-066, WO-112                                                  | Gates G, H, V                 |
+| Skill pack export; bring your own agent                                                  | note §5; product 03; WO-033           | immediate gate: WO-074, WO-075                                                                       | Gate S                        |
+| Phase four: v1.0.0 stranger test, real forks, owner-sovereign profile, cohorts, editions | note §5; roadmap; ADR-0006            | deferred candidate; the work fork is the first real fork after WO-083                                | roadmap; ADR-0006             |
+| Phase five: counterfactual runs, προτείνω, the founding catalog, Embodied Explorer       | note §5; product 11                   | deferred candidate                                                                                   | product 11                    |
+| "The most valuable order makes an existing claim true in a real session"                 | note §6                               | invariant retained; the two first proofs are chosen by it                                            | this document                 |
+| The do-not-relitigate list                                                               | note §6; ADRs; Resolutions            | honored; the browser dependency is a note under ADR-0002's own amendment path                        | decisions                     |
+| A correction is a typed event                                                            | note §6; product 02                   | invariant retained; the operator's corrections were captured and each produced a named change        | the captures; this table      |
+| Override attributable, not refusable                                                     | receipt 006; WO-041                   | invariant retained; bounds grant and portfolio provenance                                            | WO-041; WO-042; WO-100        |
 
 ## Declined candidates — the NoOp register
 
 Each entry follows the `NoOpIntent` shape: reason, evidence, reversal
-condition.
+condition. Two entries of the first result are reversed by the operator's
+direction and say so.
 
-- **Reactivating WO-040 now.** NoOp. Live activations exist since WO-039, but
-  the classification of the remaining shapes is a better decision after one
-  real external episode. Reverse after D2's receipt at R2.
-- **Activating WO-033 first (the 2026-09-06 fork-binding path).** NoOp. An
-  export of read-only workers ships no actor. Reverse if the operator
-  prioritizes the first external fork over the source-changing proof; that is
-  the operator's decision and the recorded 2026-09-06 route.
-- **Filing numbered orders for every later gate (the audit's WO-044 to
-  WO-052).** NoOp. Briefs with entry criteria only; the numbers are free and
-  stay free. Reverse per brief when its entry criteria hold.
-- **A separate dependency registry or scheduler.** NoOp. The authority file
-  stays the source; the index projects. Reverse when a second launchpad needs
-  cross-repository dependency state.
+- **Filing numbered orders for every later gate.** Reversed the same day by
+  the operator (anti-oscillation: an explicit supersession, quoted in the
+  capture); every gate is filed.
+- **Activating WO-033 first, or deferring the starter behind the proof.**
+  Superseded: the starter is the vehicle and its children float; neither
+  "first" nor "deferred" applies. Reverse never; the operator decided.
+- **Deciding WO-034's Angular-first-change premise now.** Dissolved: no
+  Angular order lives here; the fork plans the shell.
+- **A scheduler beyond compiled cadences and a presence policy.** NoOp. The
+  resident evaluates cadences the build declares; a general scheduler is a
+  new authority path. Reverse when a policy cannot express a needed rhythm.
+- **The harness's own cron as the runtime.** NoOp. The product runs offline
+  and harness-agnostic; a harness schedule is at most a launcher, decided by
+  WO-044's rows. Reverse never.
+- **A web UI in core.** NoOp. The text console is the reference host; the
+  operator's Angular shell is the second host over the same contracts.
+  Reverse if the fork's shell cannot be built on the contracts.
+- **Authenticated presence or signed grants.** NoOp. Presence signals and
+  grant provenance are reviewed text under the same limit WO-029 recorded.
+  Reverse at an external principal.
+- **A dependency registry or scheduler for planning.** NoOp. The authority
+  file stays the source; the index projects (WO-043).
 - **Running the refuter inside this pass.** NoOp. The sandbox refuses the
-  transports and the dispatch reserves the budget decision to the operator.
-  Reverse never; the operator runs it.
-- **Splitting `reactor.ts` as its own order now.** NoOp. The recorded
-  condition binds D2. Reverse if D2's activating pass finds the phase too
-  large and files the split separately.
-- **Signing or authenticating grants.** NoOp. Provenance is reviewed text
-  under the same limit WO-029 recorded. Reverse at a non-author build or an
-  external principal.
-- **Closing the unclassified-tool bypass in this pass.** NoOp. Hook behavior
-  is implementation; a candidate is recorded in the map. Reverse before D1
-  emits into a target.
-- **Product-doc write-backs beyond the one procedure sentence.** NoOp. WO-042
-  and WO-043 own their write-backs; the roadmap's rungs already describe the
-  vertical. Reverse never inside a planning pass.
-- **Editing closed orders' "Depends on" paragraphs to fix "blocked" rows.**
-  NoOp. History is not back-filled; WO-043 labels the token view.
-- **Reordering the `npm test` chain now.** NoOp. WO-036 makes build-first
-  structural.
-- **Deciding WO-034's Angular-first-change premise against H now.** NoOp. A
-  recorded contradiction for R2.
-- **Adopting the audit's package split (`runtime-contracts`,
-  `worker-runtime`, ...).** NoOp. No seam needs it yet; D2's phase 1 is the
-  first typed slice. Reverse when a second host branch lands.
+  transports and the dispatch reserves the budget decision.
+- **Closing the unclassified-tool bypass, or the token-matching refusal, in
+  this pass.** NoOp. Hook behavior is implementation; both are map
+  candidates.
+- **Product-doc write-backs beyond the one procedure sentence.** NoOp. Each
+  order owns its write-backs; the product record already carries the
+  runtime, presence and UI ideas.
+- **Editing closed orders' "Depends on" paragraphs.** NoOp. History is not
+  back-filled.
+- **Adopting the audit's package split.** NoOp. WO-050's slices are the
+  first seam; a package split follows a second host with a consumer.
+- **Renumbering the children to avoid the corpus range.** NoOp. Numbers are
+  opaque identities; the mainline skips 101 to 109 and continues at 110.
 
 ## Quality gates applied
 
-- **Acyclic.** A script over the JSON graph found no cycle across all edges
-  (command and output in the ledger section). Slice supersession is a node
-  annotation, so it cannot create one.
-- **Only unmet hard dependencies and dated planning deferrals block.** The
-  graph's relation semantics say so; WO-043 makes the machine say so; until
-  it lands, the index's token view remains a labeled observation.
-- **Independently testable criteria.** Every WO-042 and WO-043 criterion
-  names a fixture, a hash, a rendered output, a refusal or a recorded diff
-  that a fresh session can reproduce without the executor's narrative.
-- **One capability per immediate order.** WO-042 changes one contract
-  (compiled authority semantics) at one seam (the compiler's authority path);
-  its render and manifest changes are projections of that contract; its
-  bundle regeneration changes pins only. WO-043 changes one projection
-  (dependency truth) at one seam (`scripts/lib`) with one lifecycle check.
-  Neither adds an external adapter, a persistence shape, a compiler target, a
-  UI projection, self-hosting migration, cross-repository behavior or a live
-  proof.
-- **Visible and effective authority cannot diverge.** After WO-042 the
-  tooltip's GRANTS and RESTRICTIONS, the WorkOrder operation lists, the
-  envelope the hooks enforce and the bundle manifest are all projections of
-  one effective envelope; authored strings are labeled notes and reject when
-  they name an effect id against it.
-- **External source modification precedes starter export, cross-repository
-  coordination, broad rule migration and UI expansion.** D2 precedes WO-033,
-  WO-034, WO-040 and every UI candidate by the deferral edges.
-- **Contradiction scan.** WO-034's "first Angular change is the UIFA shell"
-  against H's bounded issue: recorded for R2. WO-033's assumption that the
-  export is the fork-binding order against this path: recorded as a reversal
-  condition. WO-040's stale live-activation sentence: corrected at its
-  activation. The phase-two plan's wave plan: marked superseded in part with a
-  dated note. The 2026-09-06 receipts' standing pass verdict: untouched; a
-  fresh receipt judges the new sequence. No settled decision (licenses,
-  topology, kit and overlay, zero runtime dependencies in the kernel and
-  compiler, no framework before evidence, the five roles, the floor, the
-  correction unit) is reopened; F's Playwright dependency is a note under
-  ADR-0002's own amendment path, not a relitigation.
+- **Acyclic.** The regenerated graph has no cycle and no dangling edge (the
+  script's output is in the session result and summarized in the ledger).
+- **Only unmet hard dependencies and dated planning deferrals block.**
+  Sixteen filed orders block on nothing today; every other blocking set
+  names filed orders; WO-043 makes the machine say so.
+- **Independently testable criteria.** Every criterion names a fixture, a
+  hash, a rendered output, a refusal, a recorded row or a receipt a fresh
+  session can reproduce; live rows are labeled operator-run.
+- **One capability per order.** Each order's design names one seam and its
+  non-goals name the neighbors that hold the rest; the eight-item rule is
+  applied in §The cut.
+- **Visible and effective authority cannot diverge.** After WO-042 every
+  envelope a phase, portfolio, registration, overlay or UI command uses is a
+  projection of one effective envelope; WO-115 forbids a second command
+  authority.
+- **External source modification precedes cross-repository coordination,
+  broad rule migration and target-application work.** WO-080 onward follow
+  WO-071 and the loop proof; the migration is deferred; no Angular order is
+  here. The starter and UI spines are exceptions the operator directed and
+  this document records as such.
+- **Contradiction scan.** WO-034's premise: dissolved. WO-033's fork-binding
+  assumption: now the S spine. WO-040's stale sentence: corrected in its
+  umbrella note. The phase-two plan's wave plan: superseded in sequence with
+  a dated note. The dispatch's scope exclusions (actor board, UI, starter):
+  overridden by the operator's later messages, recorded in §What the
+  operator corrected. No settled decision is reopened.
 - **Facts and recommendations kept apart.** The source-verification report
-  holds the facts with locations; the briefs are recommendations and say so.
-- **The refuter's eleven rules against the two filed orders.** Direction:
-  WO-042's hash and bundle criteria are equalities, its rejection criteria
-  name the diagnostic; WO-043's projection criteria name the blocking set.
-  Denominators: none are classified by the executor; the mutation kills are
-  reproduced by the runner. Pre-registered baselines: the four semantic hashes
-  and the activation base's bundle. Mechanism labels: no prose is retired, so
-  no removal claim. Cold-start: unaffected. Starter loadout prescription:
-  not applicable. Terms: no term list is committed; the screen runs over the
-  new prose. A person on the board: not applicable. Drift can cite §What
-  DotLn is not: both orders name their thesis surfaces (WO-042 the
-  one-paragraph story's safety layer and Principle 5; WO-043 machinery). A
-  hold is answered by the operator: recorded above. Deferrals name recorded
-  candidates: every deferral points at a brief or a map candidate. Role
-  service: WO-042 serves engineer, tester and devops through named fixtures;
-  WO-043 serves showrunner and devops through the index and the refusal.
+  holds the facts; the orders are recommendations and say so.
+- **The refuter's eleven rules.** Direction: hash and bundle criteria are
+  equalities; rejection criteria name the diagnostic; live criteria name the
+  observed field. Denominators: none classified by the executor. Baselines:
+  the four semantic hashes, the activation base's bundle, the recorded
+  traces. Mechanism labels: retired prose is mapped to units only in WO-097
+  and WO-098. Cold start: WO-073 and WO-090 measure it. Starter loadout
+  prescription: WO-076 lets a fork replace it. Terms: no list committed;
+  the screen runs over the new prose. A person on the board: WO-068's
+  `human-handoff` is an actor kind, not a board claim. Drift can cite §What
+  DotLn is not: every gate names its thesis surface. A hold is answered by
+  the operator. Deferrals name recorded candidates. Role service: showrunner
+  (WO-114, WO-117), engineer (WO-052, WO-100), tester (WO-054, WO-099),
+  devops (WO-068, WO-075), product lead (WO-061, WO-112).
 
 ## Reversal conditions for the plan
 
-- If the operator prefers the external fork first, WO-033 runs before D2 and
-  the deferral edges on WO-033 are waived with a dated note; nothing else
-  moves.
-- If C2 shows that target-worktree hooks cannot govern a print-mode worker,
-  D1 becomes a host-side containment order and D2's acceptance keeps its
-  external checks (sentinel tree, main checkout hash, commit identity).
+- If R1 shows no detached launch path for either harness, Gate R's first
+  proofs run with `script` and `local-model` actors and WO-051's profile
+  waits; the resident is not blocked.
+- If R1 shows target-worktree hooks cannot govern a print-mode worker,
+  WO-049 becomes a host-side containment order and WO-053 keeps its external
+  checks.
 - If WO-042's floor breaks a committed loadout's hash, the order stops for a
   decision rather than moving a hash.
+- If the operator waives a family's deferral with a dated note, its first
+  child has no open blocker.
 - If a third consecutive refutation hold stops this pass, the next pass
-  carries every hold forward or names the changed criterion, as the gate
-  requires.
+  carries every hold forward or names the changed criterion.
 
 ## Evidence of this pass
 
-Run on the committed planning subject (revision `d1da629`, subject hash
-`sha256:22ee38d076a022c679b643341dfccfdbd10230f10a4f3b57361370e2ddc347fa`):
-
-- `npm run work-orders -- index` regenerated and `index --check` passed; both
-  new orders parse as dependency-ready drafts with valid Model and Effort
-  lines; `npm run plan -- subject` builds the eight-order subject (WO-042
-  with nine criteria, WO-043 with seven).
-- `npm test` inside the sandbox passed every step through the harness
-  evidence gate (format, release surfaces, 7 release-preparation, 9 license,
-  every shell lifecycle suite, publication locks, the index check, the forced
-  rebuild, 288 runtime tests, 18 console tests, 17 harness tests, `harness
-check` over 24 generated surfaces with the local-terms list present, all
-  eight context rows, 4 live role smokes and 2 writer-reservation smokes) and
-  every fixture of the plan-refutation suite, then refused at that suite's
-  repository gate with `planning pass planning-4a8993a79ee8cd05 needs a
-receipt`, by design. The chain took 10 minutes 28 seconds to that point.
-- The five steps the chain skipped after the gate were run individually and
-  passed: the WO-101 corpus (8 tests), artifact-identity evidence (4 current
-  files; original hashes and frozen oracle unchanged), verification evidence
-  (4 files), feedback evidence (ten regressions, ten removal failures, 2,393
-  fewer instruction bytes), and the mutation self-test (21 tests).
-- The local-terms screen ran over every changed committed surface with the
-  operator's list present and exit 0; `git diff --check` is clean; no runtime
-  source, test, package or build configuration changed.
-
-The receipt is the one artifact of the standard set this pass could not
-produce; the command for it is at the top of this document.
+The first result's evidence (revision `d1da629`, subject hash
+`sha256:22ee38d076a022c679b643341dfccfdbd10230f10a4f3b57361370e2ddc347fa`)
+stands in the ledger section. The revised pass's checks are recorded below
+the committed revision that carries them.
