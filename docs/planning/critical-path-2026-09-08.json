@@ -1,0 +1,628 @@
+{
+  "schemaVersion": "plan-dependency-graph-v1",
+  "planningPass": "2026-09-08 critical-path planning pass",
+  "base": "33e2c25bd24a364dafa15d728a61c565ca7bf424",
+  "semantics": {
+    "edge": "an edge from X to Y means X depends on Y under the named relation",
+    "blockingRelations": ["hard", "planning-deferral"],
+    "conditionalRelations": ["satisfied-by-release", "satisfied-by-close"],
+    "nonBlockingRelations": [
+      "reference-only",
+      "historical-evidence",
+      "waived",
+      "superseded"
+    ],
+    "satisfied-by-release": "met while the named local annotated release tag is in HEAD's ancestry; blocking otherwise",
+    "satisfied-by-close": "met while the named order is control-closed; blocking otherwise",
+    "planning-deferral": "a sequencing decision of this pass, not a missing input; blocks activation until the named node is control-closed or the operator waives it with a dated note",
+    "supersedes": "node annotation, never an edge: the slice of an existing order that a candidate carves out, with the rest of that order preserved"
+  },
+  "nodes": [
+    {
+      "id": "WO-042",
+      "kind": "work-order",
+      "gate": "A",
+      "status": "filed",
+      "title": "Authority provenance and monotone envelopes"
+    },
+    {
+      "id": "WO-043",
+      "kind": "work-order",
+      "gate": "B",
+      "status": "filed",
+      "title": "Typed dependency truth"
+    },
+    {
+      "id": "WO-036",
+      "kind": "work-order",
+      "gate": "B",
+      "status": "open; remains active",
+      "title": "Evidence runner"
+    },
+    {
+      "id": "brief-runtime-boundary-codecs",
+      "kind": "brief",
+      "gate": "C1",
+      "status": "unfiled candidate",
+      "title": "Runtime boundary codecs and the executable program split"
+    },
+    {
+      "id": "brief-writing-worker-harness-truth",
+      "kind": "brief",
+      "gate": "C2",
+      "status": "unfiled candidate",
+      "title": "Writing-worker harness truth in a foreign worktree"
+    },
+    {
+      "id": "brief-target-worktree-bundle",
+      "kind": "brief",
+      "gate": "D1",
+      "status": "unfiled candidate",
+      "title": "Target-worktree harness bundle",
+      "supersedes": {
+        "workOrderId": "WO-033",
+        "scope": "phase 2, the target-worktree harness emit half"
+      }
+    },
+    {
+      "id": "brief-source-changing-worker",
+      "kind": "brief",
+      "gate": "D2",
+      "status": "unfiled candidate",
+      "title": "Single-repository source-changing worker (first external source change)"
+    },
+    {
+      "id": "brief-blinded-verification-real-repository",
+      "kind": "brief",
+      "gate": "E",
+      "status": "unfiled candidate",
+      "title": "Blinded verification and repair over a real repository"
+    },
+    {
+      "id": "brief-browser-evidence-adapter",
+      "kind": "brief",
+      "gate": "F",
+      "status": "unfiled candidate",
+      "title": "Browser evidence adapter (visual and network claims)"
+    },
+    {
+      "id": "brief-source-bundle-story-contract",
+      "kind": "brief",
+      "gate": "G",
+      "status": "unfiled candidate",
+      "title": "SourceBundle to StoryContract compilation"
+    },
+    {
+      "id": "brief-target-publish",
+      "kind": "brief",
+      "gate": "H",
+      "status": "unfiled candidate",
+      "title": "Target branch publish and pull request",
+      "supersedes": {
+        "workOrderId": "WO-033",
+        "scope": "phase 2, the target publish half"
+      }
+    },
+    {
+      "id": "brief-angular-source-to-verified-pr",
+      "kind": "brief",
+      "gate": "H",
+      "status": "unfiled candidate",
+      "title": "Angular source-to-verified-PR vertical with the post-PR loop"
+    },
+    {
+      "id": "WO-033",
+      "kind": "work-order",
+      "gate": "deferred",
+      "status": "open; partially superseded; deferred",
+      "title": "Compiled starter export"
+    },
+    {
+      "id": "WO-034",
+      "kind": "work-order",
+      "gate": "deferred",
+      "status": "open; deferred",
+      "title": "Cross-repository workstream pilot"
+    },
+    {
+      "id": "WO-035",
+      "kind": "work-order",
+      "gate": "deferred",
+      "status": "open; deferred",
+      "title": "Documentation structure reset"
+    },
+    {
+      "id": "WO-037",
+      "kind": "work-order",
+      "gate": "deferred",
+      "status": "open; deferred",
+      "title": "5S equipment set"
+    },
+    {
+      "id": "WO-040",
+      "kind": "work-order",
+      "gate": "deferred",
+      "status": "open; deferred",
+      "title": "Rule migration, batch one"
+    },
+    {
+      "id": "WO-014",
+      "kind": "work-order",
+      "gate": "floating",
+      "status": "open; reference only",
+      "title": "Approval-burden contract"
+    },
+    {
+      "id": "WO-102",
+      "kind": "work-order",
+      "gate": "adjacent",
+      "status": "open; reference only",
+      "title": "Cadence corpus"
+    },
+    {
+      "id": "WO-103",
+      "kind": "work-order",
+      "gate": "adjacent",
+      "status": "open; reference only",
+      "title": "Authority/outbox corpus"
+    },
+    {
+      "id": "WO-105",
+      "kind": "work-order",
+      "gate": "adjacent",
+      "status": "open; reference only",
+      "title": "Crash-shape corpus"
+    },
+    {
+      "id": "WO-107",
+      "kind": "work-order",
+      "gate": "adjacent",
+      "status": "open; reference only",
+      "title": "Profiling baseline"
+    },
+    {
+      "id": "WO-039",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; satisfied by existing evidence",
+      "title": "Harness lowering"
+    },
+    {
+      "id": "WO-032",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "UIFA v0 actor board"
+    },
+    {
+      "id": "WO-038",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "License posture lands"
+    },
+    {
+      "id": "WO-041",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Plan refutation mechanism"
+    },
+    {
+      "id": "WO-011",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; satisfied by existing evidence",
+      "title": "Feedback compiler v1"
+    },
+    {
+      "id": "WO-010",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; satisfied by existing evidence",
+      "title": "Independent verification"
+    },
+    {
+      "id": "WO-009",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; satisfied by existing evidence",
+      "title": "Real disposable worker"
+    },
+    {
+      "id": "WO-008",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Composition compiler v1"
+    },
+    {
+      "id": "WO-030",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Concurrent control state"
+    },
+    {
+      "id": "WO-026",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Work-order index"
+    },
+    {
+      "id": "WO-021",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Control-plane beacons"
+    },
+    {
+      "id": "WO-018",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Control-plane consolidation"
+    },
+    {
+      "id": "WO-013",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Portable fixture temp roots"
+    },
+    {
+      "id": "WO-006",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Publication bootstrap"
+    }
+  ],
+  "edges": [
+    {
+      "from": "WO-042",
+      "to": "WO-008",
+      "relation": "satisfied-by-release",
+      "release": "v0.4.0",
+      "reason": "compiler v1 is the surface this order narrows"
+    },
+    {
+      "from": "WO-042",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "the harness-v1 target and Contributor bundle this order regenerates; merged at 33e2c25"
+    },
+    {
+      "from": "WO-043",
+      "to": "WO-026",
+      "relation": "satisfied-by-release",
+      "release": "v0.5.2",
+      "reason": "the generated index this order extends"
+    },
+    {
+      "from": "WO-043",
+      "to": "WO-030",
+      "relation": "satisfied-by-release",
+      "release": "v0.7.0",
+      "reason": "per-order control segments and selection"
+    },
+    {
+      "from": "WO-036",
+      "to": "WO-018",
+      "relation": "satisfied-by-release",
+      "release": "v0.4.1",
+      "reason": "shell fixture helpers"
+    },
+    {
+      "from": "WO-036",
+      "to": "WO-013",
+      "relation": "satisfied-by-release",
+      "release": "v0.3.1",
+      "reason": "portable temp roots"
+    },
+    {
+      "from": "brief-runtime-boundary-codecs",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "the worker store and transport boundaries it hardens"
+    },
+    {
+      "from": "brief-runtime-boundary-codecs",
+      "to": "WO-105",
+      "relation": "reference-only",
+      "reason": "the crash-shape corpus draft supplies malformed-state probes"
+    },
+    {
+      "from": "brief-writing-worker-harness-truth",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "extends the phase-zero record with the writing-worker rows"
+    },
+    {
+      "from": "brief-writing-worker-harness-truth",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "the canonical launch shapes it varies"
+    },
+    {
+      "from": "brief-target-worktree-bundle",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "a bundle emitted into a target must carry an envelope that a support cannot widen and grants with provenance"
+    },
+    {
+      "from": "brief-target-worktree-bundle",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "harness emit, check and the runtime pins it extends"
+    },
+    {
+      "from": "brief-target-worktree-bundle",
+      "to": "brief-writing-worker-harness-truth",
+      "relation": "hard",
+      "reason": "the record must show that a worktree's own hooks apply to a print-mode or exec-mode worker; otherwise this slice is redesigned at the first replan checkpoint"
+    },
+    {
+      "from": "brief-source-changing-worker",
+      "to": "brief-target-worktree-bundle",
+      "relation": "hard",
+      "reason": "the worker is governed by the bundle in the target worktree"
+    },
+    {
+      "from": "brief-source-changing-worker",
+      "to": "brief-writing-worker-harness-truth",
+      "relation": "hard",
+      "reason": "the transport profile is written from observed rows, never assumed"
+    },
+    {
+      "from": "brief-source-changing-worker",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "the worker loadout's authority must come only from its base and explicit grants"
+    },
+    {
+      "from": "brief-source-changing-worker",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "transports, worker store, leases and recovery it extends"
+    },
+    {
+      "from": "brief-source-changing-worker",
+      "to": "brief-runtime-boundary-codecs",
+      "relation": "reference-only",
+      "reason": "recommended in parallel; mandatory before the Angular vertical, not before the first external change"
+    },
+    {
+      "from": "brief-source-changing-worker",
+      "to": "WO-043",
+      "relation": "reference-only",
+      "reason": "planning truth, not a runtime input"
+    },
+    {
+      "from": "brief-source-changing-worker",
+      "to": "WO-036",
+      "relation": "reference-only",
+      "reason": "a faster evidence loop helps every later order and blocks none"
+    },
+    {
+      "from": "brief-blinded-verification-real-repository",
+      "to": "brief-source-changing-worker",
+      "relation": "hard",
+      "reason": "the repair worker and the real repository come from the first external change"
+    },
+    {
+      "from": "brief-blinded-verification-real-repository",
+      "to": "WO-010",
+      "relation": "satisfied-by-release",
+      "release": "v0.12.0",
+      "reason": "the verification-v1 loop it lifts onto a real repository"
+    },
+    {
+      "from": "brief-browser-evidence-adapter",
+      "to": "WO-010",
+      "relation": "satisfied-by-release",
+      "release": "v0.12.0",
+      "reason": "the claim-typed evidence contract it extends with visual and network claims"
+    },
+    {
+      "from": "brief-browser-evidence-adapter",
+      "to": "brief-blinded-verification-real-repository",
+      "relation": "reference-only",
+      "reason": "recommended after the real-repository loop so the adapter has a consumer; may proceed in a free lane"
+    },
+    {
+      "from": "brief-source-bundle-story-contract",
+      "to": "brief-blinded-verification-real-repository",
+      "relation": "reference-only",
+      "reason": "its contract compiles into the criteria that loop consumes; may proceed in a free lane"
+    },
+    {
+      "from": "brief-target-publish",
+      "to": "brief-source-changing-worker",
+      "relation": "hard",
+      "reason": "there is nothing to publish before a worker produces a branch"
+    },
+    {
+      "from": "brief-angular-source-to-verified-pr",
+      "to": "brief-blinded-verification-real-repository",
+      "relation": "hard",
+      "reason": "independent verification of the change"
+    },
+    {
+      "from": "brief-angular-source-to-verified-pr",
+      "to": "brief-browser-evidence-adapter",
+      "relation": "hard",
+      "reason": "visual and network claims in an Angular story"
+    },
+    {
+      "from": "brief-angular-source-to-verified-pr",
+      "to": "brief-source-bundle-story-contract",
+      "relation": "hard",
+      "reason": "the contract comes from a tracked-work artifact"
+    },
+    {
+      "from": "brief-angular-source-to-verified-pr",
+      "to": "brief-target-publish",
+      "relation": "hard",
+      "reason": "the pull request and the post-PR loop"
+    },
+    {
+      "from": "brief-angular-source-to-verified-pr",
+      "to": "brief-target-worktree-bundle",
+      "relation": "hard",
+      "reason": "the Angular worktree is governed by an emitted bundle"
+    },
+    {
+      "from": "brief-angular-source-to-verified-pr",
+      "to": "brief-runtime-boundary-codecs",
+      "relation": "hard",
+      "reason": "the operator's repository is the first place a malformed persisted state has an external cost"
+    },
+    {
+      "from": "WO-033",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "the harness target and Contributor build the export carries"
+    },
+    {
+      "from": "WO-033",
+      "to": "WO-038",
+      "relation": "satisfied-by-release",
+      "release": "v0.13.2",
+      "reason": "license metadata and default license files"
+    },
+    {
+      "from": "WO-033",
+      "to": "WO-030",
+      "relation": "satisfied-by-release",
+      "release": "v0.7.0",
+      "reason": "per-order segments"
+    },
+    {
+      "from": "WO-033",
+      "to": "WO-018",
+      "relation": "satisfied-by-release",
+      "release": "v0.4.1",
+      "reason": "scripts/lib"
+    },
+    {
+      "from": "WO-033",
+      "to": "WO-026",
+      "relation": "satisfied-by-release",
+      "release": "v0.5.2",
+      "reason": "the generated index"
+    },
+    {
+      "from": "WO-033",
+      "to": "WO-021",
+      "relation": "satisfied-by-release",
+      "release": "v0.8.0",
+      "reason": "per-worktree Beacon caches"
+    },
+    {
+      "from": "WO-033",
+      "to": "brief-source-changing-worker",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "an export of read-only workers ships no actor; the starter is designed after the first external source change and the replan that follows it"
+    },
+    {
+      "from": "WO-034",
+      "to": "WO-033",
+      "relation": "hard",
+      "reason": "configuration root, registered targets, launchpad export and worktree sync (the order's own Depends on)"
+    },
+    {
+      "from": "WO-034",
+      "to": "WO-032",
+      "relation": "satisfied-by-release",
+      "release": "v0.14.0",
+      "reason": "the uifa-board-v1 view model"
+    },
+    {
+      "from": "WO-034",
+      "to": "brief-source-changing-worker",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "cross-repository coordination follows single-repository source-changing execution"
+    },
+    {
+      "from": "WO-035",
+      "to": "WO-033",
+      "relation": "hard",
+      "reason": "the configuration root names the document roots this order moves (the order's own Depends on)"
+    },
+    {
+      "from": "WO-035",
+      "to": "brief-source-changing-worker",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "documentation structure is not the product bottleneck"
+    },
+    {
+      "from": "WO-037",
+      "to": "WO-008",
+      "relation": "satisfied-by-release",
+      "release": "v0.4.0",
+      "reason": "compiler v1"
+    },
+    {
+      "from": "WO-037",
+      "to": "WO-032",
+      "relation": "satisfied-by-release",
+      "release": "v0.14.0",
+      "reason": "the board renders the set through the compiler render (recommended placement)"
+    },
+    {
+      "from": "WO-037",
+      "to": "WO-042",
+      "relation": "reference-only",
+      "reason": "its Safety piece relies on deny claims at safety-invariants remaining legal, which WO-042 preserves"
+    },
+    {
+      "from": "WO-037",
+      "to": "brief-source-changing-worker",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "Horizon 2 does not advance the missing work loop"
+    },
+    {
+      "from": "WO-040",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "the harness target and the Contributor build the batch equips into"
+    },
+    {
+      "from": "WO-040",
+      "to": "WO-011",
+      "relation": "satisfied-by-release",
+      "release": "v0.13.0",
+      "reason": "the feedback contract and the ten units"
+    },
+    {
+      "from": "WO-040",
+      "to": "brief-source-changing-worker",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "a real external episode is a better classification input than another corpus pass"
+    },
+    {
+      "from": "WO-014",
+      "to": "WO-013",
+      "relation": "satisfied-by-release",
+      "release": "v0.3.1",
+      "reason": "the order's own Depends on"
+    },
+    {
+      "from": "WO-014",
+      "to": "WO-006",
+      "relation": "satisfied-by-release",
+      "release": "v0.2.3",
+      "reason": "the order's own Depends on"
+    }
+  ]
+}

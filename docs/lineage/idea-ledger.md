@@ -23,6 +23,127 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-08 critical-path planning pass (operator-dispatched, after the WO-039 close)
+
+Source: the operator's 2026-09-08 `planning:` dispatch, which appended an
+external source-level audit and a fixed brief, plus six mid-pass messages
+(tool authorization, the planning-branch checkout, three questions about the
+interim finding that DotLn's workers are read-only, and a statement of what
+the predecessor does today), preserved verbatim in local-only
+`docs/intake/notes/2026-09-08-critical-path-planning-dispatch.md`, SHA-256
+`b17d1479741c2b97824cb70b196b1b1d0ce3602bbb0abb9ac7353441c1e82c0b`. The pass
+ran on the clean `main` checkout at `33e2c25` on a planning branch the
+operator checked out for it, with Beware of Naive Interventionism and Do
+Nothing equipped. It verified every material audit claim against the tree
+([source verification](../planning/source-verification-2026-09-08.md)), filed
+two planner-synthesized drafts (WO-042, WO-043), replaced the marked
+sequence, wrote the [critical-path plan](../planning/critical-path-2026-09-08.md)
+with its machine-readable graph, and recorded a NoOp with its reversal
+condition for every candidate it declined. Identifiers are opaque stable
+references; a recommendation records a finding and a bounded route, not
+activation authority. The clean-room screen found two employer-identifying
+terms in the audit's text; they stay in the ignored capture and appear on no
+committed surface. The pass did not run the refuter: it dispatches a model
+transport, which the dispatch reserves to the operator's budget decision, and
+the sandboxed session cannot launch either transport. The operator runs, from
+an outside terminal after the planning subject is committed,
+`npm run plan -- refute --slug critical-path-2026-09-08`; until then the plan
+gate in `npm test` refuses this heading, by design. A Node script over the
+JSON graph found 36 nodes, 53 edges, no dangling edge and no cycle. Ordering
+note: this section is inserted below the header per the declared newest-first
+rule.
+
+- **The audit read a tree that predates the WO-039 merge, and that changes
+  its roadmap** `adopted`
+  - Harness capability truth, minimum lowering and the self-host comparison
+    that the audit proposed as three new orders are delivered evidence in
+    WO-039 (the phase-zero record, the live hooks that refused this very
+    pass on `main`, the context accounting). The residual is one discovery
+    candidate: a tool-enabled worker in a foreign worktree under that
+    worktree's own hooks. Nothing supersedes closed evidence. Durable home:
+    the source-verification report §E; the plan §Deviations.
+- **The authority floor is the first gate** `adopted`
+  - The 2026-09-03 finding (WO-008 VER-001 F2) became reachable through live
+    permission decisions when WO-039 lowered the compiled envelope into the
+    hooks, and a second widening path (permission-guard emissions) sits
+    beside it. WO-042 makes a linked support monotone-narrowing, adds
+    provenance-bearing `authorityGrants` as the only widening path, and
+    projects the tooltip's GRANTS and RESTRICTIONS from the effective
+    envelope, with every committed program's semantic hash unchanged. It
+    allocates the map's claim-layer candidate. Durable home: WO-042.
+- **Typed dependency truth replaces the token view for open orders**
+  `adopted`
+  - The index marks closed orders blocked on historical ids while activation
+    reads no dependency at all. WO-043 adds a typed block per open order, one
+    projection for the index and `status --json`, and the first activation
+    refusal (an unmet hard dependency or a dated planning deferral); closed
+    orders are never edited. The pass's JSON graph seeds the migration, with
+    `planning-deferral` added to the audit's relation vocabulary because a
+    sequencing decision is not a missing input. Durable home: WO-043; the
+    graph.
+- **The first external source change precedes the starter, the pilot, the
+  migration and the workshop** `adopted` `operator-directed`
+  - WO-033, WO-040, WO-034, WO-035 and WO-037 keep their numbers, scope and
+    obligations and are deferred behind the single-repository
+    source-changing worker candidate and the mandatory replan after its
+    first live receipt; WO-033's target-worktree emit and target publish
+    halves become critical-path slices. This supersedes, in sequence only,
+    the 2026-09-06 entry "Waves re-paired; lane 0 is the first measured
+    pair" and the fork-binding path WO-038 → WO-039 → WO-033; every
+    obligation of those orders is mapped in the plan's migration table, and
+    the reversal is the operator's: activate WO-033 first if the external
+    fork outranks the proof. Durable home: the plan; the map.
+- **The most valuable order makes an existing claim true in a real session**
+  `adopted` `recovered`
+  - Synthesized from the 2026-09-06 planner's priming note in ignored intake
+    and applied as this pass's prioritization rule: machinery orders in the
+    horizon are limited to WO-043, WO-036 and the codecs candidate, each tied
+    to a demonstrated cost, and the first user-value proof is one bounded
+    task changing one file in one repository outside DotLn under compiled
+    rules. The plan's lineage appendix records every long-range idea from
+    that note with its activation prerequisite and where it stays recorded.
+- **Parity with the predecessor's loop is the vertical's exit checklist**
+  `adopted` `operator-directed`
+  - The operator's mid-pass description of the predecessor's loop (intake
+    from an enterprise tracker story, requirement understanding, branch,
+    changes, conventional commits, pull-request title and body, every
+    automated review comment resolved) is generalized under the Clean Room
+    floor and becomes the measured checklist of the Angular vertical
+    candidate, which gains the post-PR loop the audit omitted and the
+    roadmap rung already names. Product 12's replacement table is the
+    durable home; no product doc changes in this pass.
+- **A planning pass under the compiled build runs on a planning branch**
+  `adopted`
+  - The procedure said "run on the clean main checkout"; the writer-isolation
+    unit refuses every write on `main`, so the pass stalled until the
+    operator checked out a branch. One sentence each in product 07 and the
+    playbook; the unit activated correctly and the procedure was the defect.
+    Durable home: 07 §Operator-opened planning pass; the playbook.
+- **An unclassified effectful tool bypasses the writer guard** `preserved`
+  - The generated guard gates only Bash, Edit and Write, and the permission
+    classifier treats every other tool as a read; a read-only listing
+    subagent obtained shell output through a monitoring tool without touching
+    the reservation. No write was made that way. Recorded as a map candidate
+    (fail closed on unclassified effectful tools) and as a risk to close
+    before a bundle is emitted into a target worktree.
+- **Runtime boundary codecs are a parallel candidate, mandatory before the
+  operator's repository** `preserved`
+  - The audit's P0 is P1 here: no misdecode has been demonstrated, the worker
+    store refuses torn logs, transport results are validated, and the named
+    continuation deserializer has no caller outside kernel tests; the class
+    of gap (store envelope, hook input, persisted payload casts, the
+    executable-grammar type, the replay environment) is real. Durable home:
+    the plan's brief C1; the risk register.
+- **Declined candidates, each with its reversal condition** `preserved`
+  - Reactivating WO-040 now; activating WO-033 first; filing numbered orders
+    for every later gate; a dependency registry or scheduler; running the
+    refuter inside the pass; a standalone reactor split; signed grants;
+    closing the unclassified-tool bypass here; product-doc write-backs beyond
+    the procedure sentence; editing closed orders' dependency prose;
+    reordering the test chain now; deciding WO-034's premise against the
+    vertical now; the audit's package split. Reasons and reversals are in
+    the plan's NoOp register.
+
 ## 2026-09-07 independent workflows and evidence-scoped integration
 
 Source: the three operator messages captured in main's ignored `docs/intake/notes/2026-09-07-wo041-parallel-workflow-correction.md`; the [WO-041 breakout receipt](../evidence/WO-041/ideation.md) records the capture digest, clean-room screen, and expanded review subject. Ordinary source material was synthesized, not directly filed.

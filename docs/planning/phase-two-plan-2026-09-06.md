@@ -33,6 +33,18 @@ records what was superseded and why, append-only. The sweep findings, the
 six-month projection, the concurrency procedure, and most of the NoOp
 register stand unchanged.
 
+**Superseded in part (2026-09-08).** The
+[critical-path planning pass](critical-path-2026-09-08.md) replaced the wave
+plan below in sequence only: WO-042 and WO-043 lead, WO-036 stays active,
+and WO-033, WO-040, WO-034, WO-035 and WO-037 are deferred behind the first
+external source change with their scope and obligations preserved (WO-033's
+target-worktree emit and target publish halves become critical-path slices).
+The sweep findings, the six-month projection, the concurrency procedure, the
+first-pair receipt and the NoOp register stand; the reactor-split reversal
+condition in the code table binds the source-changing worker candidate. The
+open decision below on whether source-writing workers precede the workshop is
+answered there: they precede it.
+
 Two read-only sweeps were delegated to fresh sessions during the pass, one
 over code and one over documentation structure. Their measurements are
 reproduced below where they inform a decision; nothing they proposed was
