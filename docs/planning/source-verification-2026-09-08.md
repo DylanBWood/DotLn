@@ -340,8 +340,12 @@ employer code, configuration, identifier or internal service.
 
 - The reactor's concern, switch, branch and cast counts (dated sweep values,
   not re-measured).
-- The "six to ten minutes" chain duration (the plan records this pass's own
-  `npm test` wall time as one data point).
+- The "six to ten minutes" chain duration is not re-measured as a comparable
+  figure. This pass's own `npm test` on the planning branch, inside the
+  sandbox, ran 10 minutes 28 seconds from its first step to the plan gate's
+  refusal (log created 14:34:52, last written 14:45:20 local time); the five
+  steps after the gate were then run individually and passed. One data point,
+  not a baseline.
 - Any runtime behavior beyond what the cited tests and evidence receipts
   assert; this pass executed no worker, verifier or refuter episode.
 - The audit's claim that the skeleton "is becoming an integration

@@ -712,3 +712,33 @@ condition.
 - If a third consecutive refutation hold stops this pass, the next pass
   carries every hold forward or names the changed criterion, as the gate
   requires.
+
+## Evidence of this pass
+
+Run on the committed planning subject (revision `d1da629`, subject hash
+`sha256:22ee38d076a022c679b643341dfccfdbd10230f10a4f3b57361370e2ddc347fa`):
+
+- `npm run work-orders -- index` regenerated and `index --check` passed; both
+  new orders parse as dependency-ready drafts with valid Model and Effort
+  lines; `npm run plan -- subject` builds the eight-order subject (WO-042
+  with nine criteria, WO-043 with seven).
+- `npm test` inside the sandbox passed every step through the harness
+  evidence gate (format, release surfaces, 7 release-preparation, 9 license,
+  every shell lifecycle suite, publication locks, the index check, the forced
+  rebuild, 288 runtime tests, 18 console tests, 17 harness tests, `harness
+check` over 24 generated surfaces with the local-terms list present, all
+  eight context rows, 4 live role smokes and 2 writer-reservation smokes) and
+  every fixture of the plan-refutation suite, then refused at that suite's
+  repository gate with `planning pass planning-4a8993a79ee8cd05 needs a
+receipt`, by design. The chain took 10 minutes 28 seconds to that point.
+- The five steps the chain skipped after the gate were run individually and
+  passed: the WO-101 corpus (8 tests), artifact-identity evidence (4 current
+  files; original hashes and frozen oracle unchanged), verification evidence
+  (4 files), feedback evidence (ten regressions, ten removal failures, 2,393
+  fewer instruction bytes), and the mutation self-test (21 tests).
+- The local-terms screen ran over every changed committed surface with the
+  operator's list present and exit 0; `git diff --check` is clean; no runtime
+  source, test, package or build configuration changed.
+
+The receipt is the one artifact of the standard set this pass could not
+produce; the command for it is at the top of this document.
