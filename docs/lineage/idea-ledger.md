@@ -331,6 +331,27 @@ rule.
     input. Three accepted dispositions travel to the next receipt; a third
     consecutive hold would stop this pass by rule. Durable home: WO-121;
     the plan §Refutation status and its risk register.
+- **The third refutation receipt passes; the pass's refutation gate is
+  satisfied** `adopted`
+  - Receipt [004](../planning/refutations/2026-09-08-critical-path-004.md),
+    the same direct-session source, judged the subject at `b812128` with
+    the three accepted dispositions carried: forty-eight orders advance a
+    thesis, twenty-eight are machinery, none drifts, no hold, and the plan
+    gate admits this heading. WO-121 is judged thesis-advancing with its
+    negative fixtures named. The largest remaining gap is the authoring
+    journey through the live client (choose a familiar pattern, alter its
+    mechanics in the live client, inspect the normalized program and its
+    fidelity, demonstrate the behavioral change), which no order requires;
+    the receipt says it warrants no hold for this horizon, and it is
+    preserved as a map candidate with WO-117 criterion 2 as the place a
+    later pass requires or scopes it. The receipt also relabels WO-043,
+    WO-062, WO-065, WO-077 and WO-079 as machinery, which the two earlier
+    receipts had called thesis-advancing with no criterion changed; that is
+    judgment variance between sessions, recorded and not acted on. No hold
+    was overridden; every hold was answered by a changed criterion and its
+    dated disposition. The pass's output lands through the ordinary pull
+    request from this planning branch, which the operator opens. Durable
+    home: the plan §Refutation status; the map's candidates.
 
 ## 2026-09-07 independent workflows and evidence-scoped integration
 
