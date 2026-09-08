@@ -1,0 +1,20 @@
+[
+  {
+    "receiptId": "2026-09-08-critical-path-002",
+    "holdId": "hold-8efca00d9c441aa1bbc22545",
+    "kind": "accepted",
+    "date": "2026-09-08",
+    "workOrderId": "WO-123",
+    "criterionId": "criterion:1",
+    "change": "Criterion 1 now requires a resident integration fixture: from the filed intent WO-120 exposes, under a fixture portfolio entry of the intent class and admitted fixture grants, the resident admits the intent with no vertical command and no manual activation, persists the accepted contract and the continuation as events, dispatches the first step itself, runs to the terminal state with one receipt per step, and resumes across a resident restart under the same order and episode identities; an intent with no covering entry, one over the surfaces ceiling and one whose contract is NeedsHuman each stay a draft or return NeedsHuman with the reason, derive no order and dispatch nothing, asserted by negative fixtures. The command path is criterion 2."
+  },
+  {
+    "receiptId": "2026-09-08-critical-path-002",
+    "holdId": "hold-02dd92e3ca0b2b7bba8a6b1c",
+    "kind": "accepted",
+    "date": "2026-09-08",
+    "workOrderId": "WO-055",
+    "criterionId": "criterion:1",
+    "change": "Criterion 1 now binds the derived repair order to the original order's declared surfaces, named test commands and effective envelope and operation lists; a finding that names an outside path or a reproduction command the original did not permit yields NeedsHuman naming it, derives no order and changes no envelope, with negative fixtures asserting no dispatch event and a byte-identical persisted envelope; only an admitted provenance-bearing grant covering exactly that expansion derives an order, which records the grant id and stays within the grant."
+  }
+]

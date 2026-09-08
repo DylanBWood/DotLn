@@ -257,6 +257,54 @@ rule.
     `4b3a9b276ba0e3e83c0492fe7148ac394a3d07a2242361e4e193207d7d9fee23`; the hash recorded
     in the earlier entry of this section was true of the capture at that
     time.
+- **The first refutation receipt holds on two criteria; both are repaired**
+  `adopted`
+  - The operator's dispatch to address the findings is preserved verbatim
+    in local-only
+    `docs/intake/notes/2026-09-08-critical-path-refutation-response.md`,
+    SHA-256 `e510bec551972124d26f05d29d5b043f439b048882956ddd89255912c8b9ab7c`.
+    Receipt [002](../planning/refutations/2026-09-08-critical-path-002.md)
+    judged the seventy-six-order subject at `bdbe13e`: fifty-four orders
+    advance a thesis, twenty-two are machinery, none drifts; the largest
+    gap is an acceptance-tested producer for the resident-owned
+    intent-to-delivery loop; the verdict is a hold on WO-123 criterion 1 (a
+    command-only fixture could pass while WO-118's one-intent resident run
+    had no admission or scheduling path) and on WO-055 criterion 1 (a
+    derivation that takes surfaces and commands from a read-only verifier's
+    references could widen a writer's scope). Both findings were checked
+    against the orders and held. WO-123 now owns the resident's admission
+    of a filed intent under a portfolio entry of the `intent` class and
+    admitted grants: it persists the accepted contract and the continuation
+    as events, dispatches the first step itself, resumes across a resident
+    restart under the same identities, and holds unauthorized, over-ceiling
+    or ambiguous intents as drafts or `NeedsHuman`; `dotln vertical` enters
+    the same continuation by hand. WO-055's derivation is bound to the
+    original order's declared surfaces, named test commands and effective
+    envelope, hands off an outside path or command as `NeedsHuman` with
+    negative fixtures asserting no dispatch and an unchanged envelope, and
+    admits only a provenance-bearing grant as the expansion path. WO-118
+    names WO-123 as a hard input, WO-100 names the `intent` class as
+    WO-123's, and the graph gains six edges and stays acyclic. Neither hold
+    is overridden. The accepted dispositions are in
+    `docs/planning/critical-path-2026-09-08-dispositions.json` for the next
+    receipt, which the operator requests the same way; until it is filed the
+    plan gate refuses this heading, by design. Durable home: WO-123 and
+    WO-055; the plan §Refutation status and its NoOp register.
+- **A direct-session review is an admitted refutation source** `adopted`
+  `operator-directed`
+  - Neither transport had budget for the seventy-six-order episode (Claude
+    print at `max` is capped; Codex at `max` waits for WO-125), so the
+    operator requested the judgment directly in a Codex session and
+    authorized that session to change the receipt tooling so its frozen
+    judgment could be filed officially. The receipt writer, validator, gate
+    and fixtures now accept a closed `direct-session` episode with fixed
+    `unknown` provenance, a frozen result hash, session-attested
+    independence, no launch or transport claim, and the same hold,
+    disposition and three-hold rules; fake reviews still cannot pass the
+    gate. The change is the refutation session's code, not the planner's;
+    its seventeen fixtures pass, and it rides in this planning pull request
+    for final review. Durable home: the refutations README; 07
+    §Operator-opened planning pass (one sentence).
 
 ## 2026-09-07 independent workflows and evidence-scoped integration
 

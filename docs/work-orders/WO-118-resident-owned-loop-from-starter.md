@@ -23,7 +23,8 @@ portfolio); WO-120 merged (derived work as durable records); WO-124 merged
 (surfaces derived from the contract); WO-112 merged (the loop proven from
 core first); WO-111 merged (the unattended hour); WO-066 merged (the
 pull-request loop with dispositions); WO-114 and WO-117 merged (the run is
-visible through the interfaces).
+visible through the interfaces); WO-123 merged (the resident admits a filed
+intent under standing authorization and owns the vertical continuation).
 **Recommended placement:** the product exit; the third replan checkpoint
 follows its receipt together with WO-112's. It adds `docs/evidence/WO-118/`
 and any composition the instance needs that core lacks, which is then a
@@ -39,9 +40,11 @@ policy; the orders named in Depends on.
 **Objective:** Export a starter instance into a scratch directory, register
 a scratch target repository with a scratch issue, declare a portfolio and
 the standing grants, start the instance's resident, file one intent, and
-witness the runtime carry the work without further prompting: intent
-interpreted into a contract (WO-061) and surfaces (WO-124); a durable
-derived order (WO-120); an actor dispatched (WO-122) into a governed
+witness the runtime carry the work without further prompting: the intent
+admitted by the resident under the portfolio's `intent` class and the
+standing grants (WO-123); the intent interpreted into a contract (WO-061)
+and surfaces (WO-124); a durable derived order (WO-120); an actor
+dispatched (WO-122) into a governed
 worktree (WO-052); result persisted; independent verification and one
 repair (WO-054, WO-055); delivery under the grant (WO-064); the
 pull-request loop through a delayed automated comment to a terminal state

@@ -416,8 +416,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-052, WO-054.
-- References: WO-052: not control-closed; WO-054: not control-closed.
+- Dependency reference check (conservative): blocked on WO-042, WO-052, WO-054.
+- References: WO-042: not control-closed; WO-052: not control-closed; WO-054: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1286,8 +1286,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-066, WO-075, WO-076, WO-100, WO-111, WO-112, WO-114, WO-117, WO-120, WO-121, WO-122, WO-124.
-- References: WO-066: not control-closed; WO-075: not control-closed; WO-076: not control-closed; WO-100: not control-closed; WO-111: not control-closed; WO-112: not control-closed; WO-114: not control-closed; WO-117: not control-closed; WO-120: not control-closed; WO-121: not control-closed; WO-122: not control-closed; WO-124: not control-closed.
+- Dependency reference check (conservative): blocked on WO-066, WO-075, WO-076, WO-100, WO-111, WO-112, WO-114, WO-117, WO-120, WO-121, WO-122, WO-123, WO-124.
+- References: WO-066: not control-closed; WO-075: not control-closed; WO-076: not control-closed; WO-100: not control-closed; WO-111: not control-closed; WO-112: not control-closed; WO-114: not control-closed; WO-117: not control-closed; WO-120: not control-closed; WO-121: not control-closed; WO-122: not control-closed; WO-123: not control-closed; WO-124: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1357,12 +1357,12 @@ None.
 
 ### WO-123
 
-[WO-123 — &#96;dotln vertical&#96; composition: one command sequences the loop's primitives from a filed intent to a terminal pull-request state with each step's receipt, proven with doubles (version assigned at activation)](WO-123-vertical-composition.md)
+[WO-123 — &#96;dotln vertical&#96; composition: the vertical continuation sequences the loop's primitives from a filed intent to a terminal pull-request state with each step's receipt, entered by the resident under standing authorization or by one command, proven with doubles (version assigned at activation)](WO-123-vertical-composition.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-052, WO-054, WO-055, WO-059, WO-061, WO-062, WO-064, WO-065, WO-066, WO-124.
-- References: WO-052: not control-closed; WO-054: not control-closed; WO-055: not control-closed; WO-059: not control-closed; WO-061: not control-closed; WO-062: not control-closed; WO-064: not control-closed; WO-065: not control-closed; WO-066: not control-closed; WO-124: not control-closed.
+- Dependency reference check (conservative): blocked on WO-042, WO-052, WO-054, WO-055, WO-059, WO-061, WO-062, WO-064, WO-065, WO-066, WO-068, WO-100, WO-120, WO-124.
+- References: WO-042: not control-closed; WO-052: not control-closed; WO-054: not control-closed; WO-055: not control-closed; WO-059: not control-closed; WO-061: not control-closed; WO-062: not control-closed; WO-064: not control-closed; WO-065: not control-closed; WO-066: not control-closed; WO-068: not control-closed; WO-100: not control-closed; WO-120: not control-closed; WO-124: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.

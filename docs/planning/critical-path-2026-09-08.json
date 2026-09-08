@@ -333,7 +333,7 @@
       "kind": "work-order",
       "gate": "V",
       "status": "filed",
-      "title": "dotln vertical composition (doubles)"
+      "title": "dotln vertical composition: resident-admitted intent or command (doubles)"
     },
     {
       "id": "WO-124",
@@ -1093,6 +1093,12 @@
       "reason": "the source-change host that executes the repair"
     },
     {
+      "from": "WO-055",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "the effective envelope and the admitted grants the derivation is bound to"
+    },
+    {
       "from": "WO-056",
       "to": "WO-055",
       "relation": "hard",
@@ -1483,6 +1489,30 @@
       "reason": "resolution"
     },
     {
+      "from": "WO-123",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the resident that admits the intent and dispatches the first step"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-120",
+      "relation": "hard",
+      "reason": "the filed intent and the derived order's durable identity"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-100",
+      "relation": "hard",
+      "reason": "the portfolio contract the intent class extends"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "admitted grants and the effective envelope the run is bound to"
+    },
+    {
       "from": "WO-124",
       "to": "WO-061",
       "relation": "hard",
@@ -1626,6 +1656,12 @@
       "to": "WO-117",
       "relation": "hard",
       "reason": "the run is visible in the live console"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-123",
+      "relation": "hard",
+      "reason": "the resident admits a filed intent under standing authorization and owns the vertical continuation"
     },
     {
       "from": "WO-113",

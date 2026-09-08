@@ -96,7 +96,8 @@ edition.
 
 **Non-goals:** the live unattended hour (WO-111); planning passes by the
 resident; publishing (no remote grant in the first portfolio); the full 5S
-set (WO-091 to WO-095 extend the candidates).
+set (WO-091 to WO-095 extend the candidates); the `intent` admission class
+and the remote grants it needs (WO-123).
 
 **Operator-review assumptions**
 
