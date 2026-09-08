@@ -4,16 +4,82 @@
 
 ## Proposed order
 
-- [x] [WO-038] — License posture lands · **final-reviewed**
-- [x] [WO-039] — Harness lowering · **final-reviewed**
-- [ ] [WO-033] — Compiled starter export · **queued**
-- [x] [WO-041] — Plan refutation mechanism · **final-reviewed**
-- [x] [WO-032] — UIFA v0 actor board · **final-reviewed**
-- [ ] [WO-040] — Rule migration, batch one · **queued**
+- [ ] [WO-042] — Authority provenance and monotone envelopes · **queued**
+- [ ] [WO-043] — Typed dependency truth · **queued**
 - [ ] [WO-036] — Evidence runner · **queued**
-- [ ] [WO-034] — Cross-repository workstream pilot · **queued**
-- [ ] [WO-035] — Documentation structure reset · **queued**
-- [ ] [WO-037] — 5S equipment set · **queued**
+- [ ] [WO-125] — Codex effort selection · **queued**
+- [ ] [WO-044] — Writing-worker and unattended-launch harness truth · **queued**
+- [ ] [WO-067] — PresencePolicy compiled · **queued**
+- [ ] [WO-045] — Event-log and hook-input decoders · **queued**
+- [ ] [WO-046] — Executable program grammar as a type · **queued**
+- [ ] [WO-047] — Replay environment projector · **queued**
+- [ ] [WO-048] — Worker and verification hosts decode on-disk state · **queued**
+- [ ] [WO-050] — Reactor typed state slices · **queued**
+- [ ] [WO-049] — Target-worktree harness bundle · **queued**
+- [ ] [WO-068] — Resident host · **queued**
+- [ ] [WO-121] — Presence signals with origin · **queued**
+- [ ] [WO-119] — Executable discovery producer · **queued**
+- [ ] [WO-051] — Source-change writer request and transport profile · **queued**
+- [ ] [WO-122] — Actor catalog: cli-worker and human-handoff · **queued**
+- [ ] [WO-052] — Source-change host and commit receipt · **queued**
+- [ ] [WO-053] — The first external source change · **queued**
+- [ ] [WO-099] — Mission check · **queued**
+- [ ] [WO-114] — Runtime status projection · **queued**
+- [ ] [WO-069] — Configuration root · **queued**
+- [ ] [WO-070] — Beacon portability · **queued**
+- [ ] [WO-120] — Derived work identity · **queued**
+- [ ] [WO-054] — Verification over a real worktree · **queued**
+- [ ] [WO-055] — Repair continuation · **queued**
+- [ ] [WO-056] — Live blinded verification and repair · **queued**
+- [ ] [WO-100] — Preauthorized portfolio and work derivation · **queued**
+- [ ] [WO-111] — The unattended hour · **queued**
+- [ ] [WO-115] — Console parity contract · **queued**
+- [ ] [WO-116] — Audit projection served · **queued**
+- [ ] [WO-117] — Console live host · **queued**
+- [ ] [WO-074] — Launchpad export kit · **queued**
+- [ ] [WO-075] — Kit runtime and harness bundle in the export · **queued**
+- [ ] [WO-071] — Registered target repositories · **queued**
+- [ ] [WO-072] — Target worktree lifecycle · **queued**
+- [ ] [WO-073] — Repository class and profile documents · **queued**
+- [ ] [WO-076] — Instance build overlay · **queued**
+- [ ] [WO-077] — Launchpad export update · **queued**
+- [ ] [WO-078] — Sibling registry and export receipts · **queued**
+- [ ] [WO-057] — Browser runtime truth · **queued**
+- [ ] [WO-058] — Visual and network claim types · **queued**
+- [ ] [WO-059] — Playwright evidence adapter · **queued**
+- [ ] [WO-060] — SourceBundle contract · **queued**
+- [ ] [WO-061] — StoryContract compile · **queued**
+- [ ] [WO-124] — Impact surfaces derivation · **queued**
+- [ ] [WO-062] — GitHub Issue source adapter · **queued**
+- [ ] [WO-063] — Outward-artifact lint · **queued**
+- [ ] [WO-064] — Target publish · **queued**
+- [ ] [WO-065] — Pull-request state observation · **queued**
+- [ ] [WO-066] — Review-comment resolution loop · **queued**
+- [ ] [WO-123] — dotln vertical composition · **queued**
+- [ ] [WO-112] — The loop from core · **queued**
+- [ ] [WO-118] — The resident-owned loop from a starter instance · **queued**
+- [ ] [WO-113] — Work-order files are stable contracts · **queued**
+- [ ] [WO-110] — Local-model transport · **queued**
+- [ ] [WO-079] — Worktree sync · **queued**
+- [ ] [WO-080] — Workstream document and index grouping · **queued**
+- [ ] [WO-081] — Board Workstreams section · **queued**
+- [ ] [WO-082] — Synthetic pilot · **queued**
+- [ ] [WO-083] — The real run from the operator's launchpad instance · **queued**
+- [ ] [WO-096] — Migration ledger · **queued**
+- [ ] [WO-097] — Rule migration batch 1a · **queued**
+- [ ] [WO-098] — Rule migration batch 1b · **queued**
+- [ ] [WO-091] — Multi-active link groups · **queued**
+- [ ] [WO-092] — The sets graph extension · **queued**
+- [ ] [WO-093] — The 5S mechanics as data · **queued**
+- [ ] [WO-094] — Set bonuses lowered · **queued**
+- [ ] [WO-095] — Full-set scenario and set tooltip render · **queued**
+- [ ] [WO-084] — Ledger order and index · **queued**
+- [ ] [WO-085] — Spec/receipt boundary and docs-check · **queued**
+- [ ] [WO-086] — Generated release history · **queued**
+- [ ] [WO-087] — Roadmap split · **queued**
+- [ ] [WO-088] — One source for the phrase table · **queued**
+- [ ] [WO-089] — Capability table fold · **queued**
+- [ ] [WO-090] — Shorter cold start · **queued**
 
 Order and short labels come from [the planning map](../planning/work-order-map.md#recommendation-and-rationale).
 Checks mean passing final review; release evidence and its limits are below.
@@ -26,6 +92,11 @@ Edit the map's marked sequence to change the plan; do not cross off entries here
 ## Other open work
 
 - [WO-014] — Approval-burden baseline, remediation, and fresh-session acceptance (version assigned at activation)
+- [WO-033] — The starter is a compiled export: one configuration root, registered target repositories, a launchpad export that carries the saved build, and a lane-sync helper (version assigned at activation)
+- [WO-034] — Cross-repository workstream pilot: one outcome, several target repositories, driven from a launchpad fork that runs the compiled build (version assigned at activation)
+- [WO-035] — Documentation structure reset: one ledger order, a spec/receipt boundary, generated release history, and a shorter cold start (version assigned at activation)
+- [WO-037] — Pattern workshop, compiler side: the 5S equipment set compiles as a multi-active link group with set bonuses (version assigned at activation)
+- [WO-040] — Rule migration, batch one: the migration ledger and the first batch of feedback shapes compiled through the harness target (version assigned at activation)
 - [WO-102] — Cadence virtual-time grid sweep and golden vector corpus (version assigned at activation)
 - [WO-103] — Authorization guard and outbox factorial decision-table corpus (version assigned at activation)
 - [WO-105] — Crash-shape corpus: store truncation sweep, skeleton recovery sweep, golden traces, and fixture-tree families (version assigned at activation)
@@ -144,6 +215,891 @@ None.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-040-rule-migration-batch-one.md](WO-040-rule-migration-batch-one.md)
 
+### WO-042
+
+[WO-042 — Authority provenance and monotone envelopes: a linked support may only narrow a compiled build's authority, widening needs an explicit provenance-bearing grant, and the tooltip projects GRANTS and RESTRICTIONS from the effective envelope (version assigned at activation)](WO-042-authority-provenance.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-008: satisfied (closed); WO-039: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-042-authority-provenance.md](WO-042-authority-provenance.md)
+
+### WO-043
+
+[WO-043 — Typed dependency truth: work orders declare typed dependency relations, only an unmet hard dependency or planning deferral blocks activation, and the index and lifecycle status share one projection (version assigned at activation)](WO-043-typed-dependency-truth.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-026: satisfied (closed); WO-030: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-043-typed-dependency-truth.md](WO-043-typed-dependency-truth.md)
+
+### WO-044
+
+[WO-044 — Writing-worker and unattended-launch harness truth: observe what the installed harnesses do when a tool-enabled worker runs in a foreign worktree under that worktree's own hooks, and when a resident process launches them with no operator present (version assigned at activation)](WO-044-writing-worker-harness-truth.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-009: satisfied (closed); WO-039: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the probe script and the record. The live rows need the actual local harnesses (Claude Code; Codex where installed), run from a terminal outside the sandbox, and must state the harness version, model, and effort actually launched (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-044-writing-worker-harness-truth.md](WO-044-writing-worker-harness-truth.md)
+
+### WO-045
+
+[WO-045 — Positive decoders for the kernel event log and the harness hook input: malformed persisted or supplied state refuses with a typed path before anything runs (version assigned at activation)](WO-045-store-and-hook-input-decoders.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-017: satisfied (closed); WO-039: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-045-store-and-hook-input-decoders.md](WO-045-store-and-hook-input-decoders.md)
+
+### WO-046
+
+[WO-046 — The executable program grammar is a type: &#96;ExecutableProgramV1&#96; is what the stepper accepts, continuations decode against it, and a deferred kind fails at decode rather than mid-episode (version assigned at activation)](WO-046-executable-program-split.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-017: satisfied (closed); WO-101: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-046-executable-program-split.md](WO-046-executable-program-split.md)
+
+### WO-047
+
+[WO-047 — Replay takes an explicit environment projector: the kernel stops guessing where an application keeps its RNG state and policy (version assigned at activation)](WO-047-replay-environment-projector.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-016: satisfied (closed); WO-017: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-047-replay-environment-projector.md](WO-047-replay-environment-projector.md)
+
+### WO-048
+
+[WO-048 — Every on-disk value the worker and verification hosts trust is decoded positively before dispatch, and malformed state refuses without partial execution (version assigned at activation)](WO-048-worker-host-on-disk-decode.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-009: satisfied (closed); WO-010: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-048-worker-host-on-disk-decode.md](WO-048-worker-host-on-disk-decode.md)
+
+### WO-049
+
+[WO-049 — Target-worktree harness bundle: emit a governed bundle into a worktree that is not DotLn, importing the launchpad's pinned runtime by absolute path, under the target's local exclude (version assigned at activation)](WO-049-target-worktree-bundle.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-042, WO-044.
+- References: WO-039: satisfied (closed); WO-042: not control-closed; WO-044: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the emitter and fixtures. The live refusal smoke needs the actual harness, run by the operator from a terminal outside the sandbox, and must state harness version, model and effort (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-049-target-worktree-bundle.md](WO-049-target-worktree-bundle.md)
+
+### WO-050
+
+[WO-050 — The skeleton reactor's state splits into typed slices behind one decider, with every recorded trace byte-identical, so the next host branch lands in its own slice (version assigned at activation)](WO-050-reactor-typed-state-slices.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-010: satisfied (closed); WO-016: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-050-reactor-typed-state-slices.md](WO-050-reactor-typed-state-slices.md)
+
+### WO-051
+
+[WO-051 — Source-change writer request and transport profile: a separate writer request with its own validator, prompt and result beside the untouched inspection request, and a &#96;source-change-v1&#96; launch shape for both CLIs written from the observed rows (version assigned at activation)](WO-051-source-change-transport-profile.md)
+
+- State: draft.
+- Application target: malformed.
+- Dependency reference check (conservative): blocked on WO-042, WO-044.
+- References: WO-009: satisfied (closed); WO-042: not control-closed; WO-044: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the profile and fixtures; the live smoke needs the actual harnesses, run by the operator from a terminal outside the sandbox, stating harness version, model and effort (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-051-source-change-transport-profile.md](WO-051-source-change-transport-profile.md)
+
+### WO-052
+
+[WO-052 — Source-change host: a worker episode in a governed target worktree is recorded as typed events with the commit identity as its effect receipt, so recovery is idempotent (version assigned at activation)](WO-052-source-change-host.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-049, WO-050, WO-051.
+- References: WO-009: satisfied (closed); WO-049: not control-closed; WO-050: not control-closed; WO-051: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-052-source-change-host.md](WO-052-source-change-host.md)
+
+### WO-053
+
+[WO-053 — The first external source change: one live episode edits one file, turns one test green and commits in a repository outside DotLn, with every containment claim checked by the host and recorded from an outside terminal (version assigned at activation)](WO-053-first-external-source-change.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-052.
+- References: WO-052: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: the actual local harnesses, run by the operator from a terminal outside the sandbox; the receipt states the harness version, model and effort launched for each episode as launch claims (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-053-first-external-source-change.md](WO-053-first-external-source-change.md)
+
+### WO-054
+
+[WO-054 — Verification over a real worktree: the blinded verifier receives a contract, a diff and a snapshot of the target worktree, runs the target's focused tests itself, and never sees the implementer's narrative (version assigned at activation)](WO-054-verification-over-real-worktree.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-052.
+- References: WO-010: satisfied (closed); WO-052: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the profile and fixtures; the live rows in WO-056 use the actual harness. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-054-verification-over-real-worktree.md](WO-054-verification-over-real-worktree.md)
+
+### WO-055
+
+[WO-055 — Repair continuation: a failing verification compiles a bounded repair WorkOrder for a fresh source-change worker, and re-verification runs from the original contract within a declared round limit (version assigned at activation)](WO-055-repair-continuation.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-042, WO-052, WO-054.
+- References: WO-042: not control-closed; WO-052: not control-closed; WO-054: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-055-repair-continuation.md](WO-055-repair-continuation.md)
+
+### WO-056
+
+[WO-056 — Live blinded verification and repair: a planted defect in a real repository is caught by a live verifier, repaired by a fresh worker, and re-verified from the original contract, recorded from an outside terminal (version assigned at activation)](WO-056-live-verification-and-repair.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053, WO-055.
+- References: WO-053: not control-closed; WO-055: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: the actual local harnesses for the worker and verifier episodes, run by the operator from a terminal outside the sandbox; launch claims recorded per episode (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-056-live-verification-and-repair.md](WO-056-live-verification-and-repair.md)
+
+### WO-057
+
+[WO-057 — Browser runtime truth: observe whether a Playwright runtime can be installed, launched headless and killed inside a confined checkout in this environment without the harness's connected server, and record the dependency decision as an ADR-0002 amendment (version assigned at activation)](WO-057-browser-runtime-truth.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-004: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the probe; the rows need the actual host, run by the operator from a terminal outside the sandbox where network access is needed. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-057-browser-runtime-truth.md](WO-057-browser-runtime-truth.md)
+
+### WO-058
+
+[WO-058 — &#96;verification-v1&#96; gains &#96;visual&#96; and &#96;network&#96; claim types with witness rules: a DOM-only witness cannot satisfy a visual criterion, a network claim needs request evidence, and a console error is a failing witness (version assigned at activation)](WO-058-visual-and-network-claim-types.md)
+
+- State: draft.
+- Application target: malformed.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-010: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-058-visual-and-network-claim-types.md](WO-058-visual-and-network-claim-types.md)
+
+### WO-059
+
+[WO-059 — Playwright evidence adapter: a workspace package outside the kernel and compiler drives a synthetic local application and produces the visual and network witnesses, closes or recovers the browser on a kill, and replays a saved scenario (version assigned at activation)](WO-059-playwright-evidence-adapter.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-057, WO-058.
+- References: WO-057: not control-closed; WO-058: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-059-playwright-evidence-adapter.md](WO-059-playwright-evidence-adapter.md)
+
+### WO-060
+
+[WO-060 — SourceBundle v1: an immutable, positively decoded bundle of a tracked-work artifact's sections, discussion, image references and revisions, with a screen that keeps secrets and resolved URLs out (version assigned at activation)](WO-060-source-bundle-contract.md)
+
+- State: draft.
+- Application target: malformed.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-008: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-060-source-bundle-contract.md](WO-060-source-bundle-contract.md)
+
+### WO-061
+
+[WO-061 — StoryContract compile: a pure function derives classified, provenance-bearing statements and acceptance criteria from a SourceBundle, labels model-inferred statements as such, and a source revision invalidates exactly the derived items it touched (version assigned at activation)](WO-061-story-contract-compile.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-060.
+- References: WO-060: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the pure compiler; the inference slot's model episode is a labeled fixture double here. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-061-story-contract-compile.md](WO-061-story-contract-compile.md)
+
+### WO-062
+
+[WO-062 — GitHub Issue source adapter: a read-only skeleton adapter over the GitHub CLI turns one issue and its discussion into a SourceBundle with a revision id, screened before it is stored (version assigned at activation)](WO-062-github-issue-source-adapter.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-060.
+- References: WO-060: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; the live smoke is operator-run against a personal public repository. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-062-github-issue-source-adapter.md](WO-062-github-issue-source-adapter.md)
+
+### WO-063
+
+[WO-063 — Outward-artifact lint: branch names, commit messages and pull-request text must have the conventional-commit shape and carry no launchpad vocabulary or local term before any remote effect (version assigned at activation)](WO-063-outward-artifact-lint.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-039: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-063-outward-artifact-lint.md](WO-063-outward-artifact-lint.md)
+
+### WO-064
+
+[WO-064 — Target publish: push a source-change branch and open its pull request on the target repository under an explicit remote grant with operator provenance, with a title and body generated from the contract, diff and evidence, never from narrative (version assigned at activation)](WO-064-target-publish.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-042, WO-052, WO-063.
+- References: WO-042: not control-closed; WO-052: not control-closed; WO-063: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; the live smoke is operator-run against a scratch remote. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-064-target-publish.md](WO-064-target-publish.md)
+
+### WO-065
+
+[WO-065 — Pull-request state observation: a read-only adapter projects a pull request's checks and review comments into typed, classified events on demand (version assigned at activation)](WO-065-pull-request-state-observation.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-060, WO-064, WO-068.
+- References: WO-060: not control-closed; WO-064: not control-closed; WO-068: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; the live smoke is operator-run. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-065-pull-request-state-observation.md](WO-065-pull-request-state-observation.md)
+
+### WO-066
+
+[WO-066 — Review-comment resolution loop: each unresolved automated review comment or failing check derives a bounded repair, runs through a fresh worker, is pushed under the grant and re-observed, until every comment is resolved or recorded as needing a human (version assigned at activation)](WO-066-review-comment-resolution-loop.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-054, WO-055, WO-064, WO-065.
+- References: WO-054: not control-closed; WO-055: not control-closed; WO-064: not control-closed; WO-065: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; the live episodes are operator-run. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-066-review-comment-resolution-loop.md](WO-066-review-comment-resolution-loop.md)
+
+### WO-067
+
+[WO-067 — PresencePolicy compiled: a build declares how its actor behaves when the operator is away as a progressive curve over attention, scope, effect authority and external capability, lowered to cadences and per-phase envelopes that can only narrow the base (version assigned at activation)](WO-067-presence-policy-compiled.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-042.
+- References: WO-008: satisfied (closed); WO-042: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-067-presence-policy-compiled.md](WO-067-presence-policy-compiled.md)
+
+### WO-068
+
+[WO-068 — Resident host: one offline local process per launchpad folds the log, evaluates compiled cadences against a recorded clock, dispatches &#96;script&#96; actor episodes when a policy phase allows, and resumes idempotently after a restart (version assigned at activation)](WO-068-resident-host.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-044, WO-050, WO-067.
+- References: WO-009: satisfied (closed); WO-044: not control-closed; WO-050: not control-closed; WO-067: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the host and fixtures; the live rows in WO-099 use the actual harnesses. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-068-resident-host.md](WO-068-resident-host.md)
+
+### WO-069
+
+[WO-069 — Configuration root: every control-plane script resolves its document roots and repository root through one &#96;dotln.config.json&#96; loader whose absence reproduces today's layout byte for byte (version assigned at activation)](WO-069-configuration-root.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-018: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-069-configuration-root.md](WO-069-configuration-root.md)
+
+### WO-070
+
+[WO-070 — Beacon portability: the control plane emits control Beacons without the skeleton package, with one module identity for the build-free leaves and no file imported from both source and &#96;dist/&#96; (version assigned at activation)](WO-070-beacon-portability.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-021: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-070-beacon-portability.md](WO-070-beacon-portability.md)
+
+### WO-071
+
+[WO-071 — Registered target repositories: a work order may declare a repository and base, the configuration registers each repository with an authority profile, and the compiled WorkOrder inherits that profile through the monotone floor (version assigned at activation)](WO-071-registered-target-repositories.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-042, WO-069.
+- References: WO-042: not control-closed; WO-069: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-071-registered-target-repositories.md](WO-071-registered-target-repositories.md)
+
+### WO-072
+
+[WO-072 — Target worktree lifecycle: &#96;worktree start&#96; for a registered target creates the worktree from the declared base, emits the governed bundle into it, and &#96;resume&#96; commands run from that worktree select the order through the launchpad (version assigned at activation)](WO-072-target-worktree-lifecycle.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-049, WO-071.
+- References: WO-030: satisfied (closed); WO-049: not control-closed; WO-071: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-072-target-worktree-lifecycle.md](WO-072-target-worktree-lifecycle.md)
+
+### WO-073
+
+[WO-073 — Repository class and profile documents: a class is a link group of supports and checks every member equips, a profile document per registered repository is loaded on demand by the role skill, and policy layers launchpad → class → repository (version assigned at activation)](WO-073-repository-class-and-profile.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-071.
+- References: WO-071: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-073-repository-class-and-profile.md](WO-073-repository-class-and-profile.md)
+
+### WO-074
+
+[WO-074 — Launchpad export kit: &#96;launchpad export &lt;dir&gt;&#96; materializes a launchpad instance from a manifest-listed kit of scripts, suites, contracts, templates and license files, with no intake, local state, package source or evidence inside (version assigned at activation)](WO-074-launchpad-export-kit.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-069, WO-070.
+- References: WO-038: satisfied (closed); WO-069: not control-closed; WO-070: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-074-launchpad-export-kit.md](WO-074-launchpad-export-kit.md)
+
+### WO-075
+
+[WO-075 — Kit runtime and harness bundle in the export: the launchpad export carries a pinned, byte-identical runtime build and the Contributor build's compiled bundle whose hooks import that runtime, verified by &#96;harness check&#96; inside the export (version assigned at activation)](WO-075-kit-runtime-and-bundle.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-042, WO-049, WO-074.
+- References: WO-042: not control-closed; WO-049: not control-closed; WO-074: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; the recorded smoke needs the actual harness, run by the operator outside the sandbox. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-075-kit-runtime-and-bundle.md](WO-075-kit-runtime-and-bundle.md)
+
+### WO-076
+
+[WO-076 — Instance build overlay: a fork's &#96;build/overlay.json&#96; composes over the kit's Contributor build to replace the identity, unequip units, narrow the envelope, widen it only by provenance-bearing grants, or declare no build (version assigned at activation)](WO-076-instance-build-overlay.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-042, WO-075.
+- References: WO-042: not control-closed; WO-075: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-076-instance-build-overlay.md](WO-076-instance-build-overlay.md)
+
+### WO-077
+
+[WO-077 — Launchpad export update: &#96;launchpad export --update &lt;dir&gt;&#96; refreshes an existing export's kit files by manifest, refuses locally modified ones, never touches instance files, and prints the instance actions and the re-emit instruction (version assigned at activation)](WO-077-launchpad-export-update.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-074.
+- References: WO-074: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-077-launchpad-export-update.md](WO-077-launchpad-export-update.md)
+
+### WO-078
+
+[WO-078 — Sibling registry and export receipts: core tracks the starter and the Angular consumer as siblings with their kit version and build hash, and every export appends a receipt (version assigned at activation)](WO-078-sibling-registry.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-074.
+- References: WO-074: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-078-sibling-registry.md](WO-078-sibling-registry.md)
+
+### WO-079
+
+[WO-079 — Worktree sync: &#96;worktree sync WO-NNN&#96; updates an order's worktree after a sibling merges with a checkpoint, a kept stash, no rewritten commits, classified conflicts and collision retiming, and refuses its three unsafe cases (version assigned at activation)](WO-079-worktree-sync.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-030: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-079-worktree-sync.md](WO-079-worktree-sync.md)
+
+### WO-080
+
+[WO-080 — Workstream document, field and index grouping: a launchpad holds one document per outcome, member orders declare it, and the index groups members with repository, base, phase, verdict, integration state and staleness (version assigned at activation)](WO-080-workstream-document-and-index.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-071.
+- References: WO-071: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-080-workstream-document-and-index.md](WO-080-workstream-document-and-index.md)
+
+### WO-081
+
+[WO-081 — Board Workstreams section: the actor board's Work panel renders workstreams over the same data the index groups, as an additive view-model extension with regenerated fixture expectations (version assigned at activation)](WO-081-board-workstreams-section.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-080.
+- References: WO-032: satisfied (closed); WO-080: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-081-board-workstreams-section.md](WO-081-board-workstreams-section.md)
+
+### WO-082
+
+[WO-082 — Synthetic pilot: product 12's six demonstrations pass as automated fixtures over a real-Git launchpad with three target repositories (version assigned at activation)](WO-082-synthetic-pilot-six-demonstrations.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-072, WO-075, WO-080.
+- References: WO-072: not control-closed; WO-075: not control-closed; WO-080: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-082-synthetic-pilot-six-demonstrations.md](WO-082-synthetic-pilot-six-demonstrations.md)
+
+### WO-083
+
+[WO-083 — The real run: the operator's launchpad instance drives the first bounded slice of the Angular shell, planned in that fork, through executor, verifier and reviewer sessions under the fork's emitted build, with a pre-run baseline block and the four product-12 measures counted by the verifier (version assigned at activation)](WO-083-real-run-launchpad-instance.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-073, WO-082, WO-118.
+- References: WO-073: not control-closed; WO-082: not control-closed; WO-118: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: the launchpad-dispatched sessions run under the fork's own declarations and emitted bundle; the operator witnesses; launch claims recorded per session (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-083-real-run-launchpad-instance.md](WO-083-real-run-launchpad-instance.md)
+
+### WO-084
+
+[WO-084 — Ledger order and index: one insertion rule enforced by a generated index and check, Resolutions moved to their own surface, and the trailing sections relocated with a dated migration note (version assigned at activation)](WO-084-ledger-order-and-index.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053.
+- References: WO-053: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-084-ledger-order-and-index.md](WO-084-ledger-order-and-index.md)
+
+### WO-085
+
+[WO-085 — Spec/receipt boundary: dated receipts leave product documents and the map for their evidence READMEs, version banners become pointers, and a docs check refuses new receipts, banners, broken links and anchors (version assigned at activation)](WO-085-spec-receipt-boundary.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053, WO-069.
+- References: WO-053: not control-closed; WO-069: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-085-spec-receipt-boundary.md](WO-085-spec-receipt-boundary.md)
+
+### WO-086
+
+[WO-086 — Generated release history: one table from local annotated tags and work-order headers replaces the roadmap's hand-kept retiming layers, checked like the README block, with the retiming records preserved verbatim (version assigned at activation)](WO-086-generated-release-history.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053.
+- References: WO-053: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-086-generated-release-history.md](WO-086-generated-release-history.md)
+
+### WO-087
+
+[WO-087 — Roadmap split: the candidate policy sections move to &#96;14-planning-policies.md&#96; with their slugs, so the roadmap holds the ladder (version assigned at activation)](WO-087-roadmap-split.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053.
+- References: WO-053: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-087-roadmap-split.md](WO-087-roadmap-split.md)
+
+### WO-088
+
+[WO-088 — One source for the operator phrase table: &#96;resume.mjs&#96; emits it between markers in the guide, the playbook and the README, and the docs README points at it (version assigned at activation)](WO-088-phrase-table-single-source.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053.
+- References: WO-053: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-088-phrase-table-single-source.md](WO-088-phrase-table-single-source.md)
+
+### WO-089
+
+[WO-089 — Capability table fold: the dated addenda fold into the rows they reassess, the missing verification row is added, and no level exceeds what a cited passing final review supports (version assigned at activation)](WO-089-capability-table-fold.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053.
+- References: WO-053: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-089-capability-table-fold.md](WO-089-capability-table-fold.md)
+
+### WO-090
+
+[WO-090 — Shorter cold start: the execution guide keeps the executor's operating contract, the model-specific and sandbox paragraphs move with pointers, and the directed-load total per role is measured lower (version assigned at activation)](WO-090-shorter-cold-start.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053.
+- References: WO-039: satisfied (closed); WO-053: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-090-shorter-cold-start.md](WO-090-shorter-cold-start.md)
+
+### WO-091
+
+[WO-091 — Multi-active link groups: one link group may hold several active mechanics sharing linked supports, with per-active emissions, the commutativity rule per active, a visible six-link budget, and every existing hash unchanged (version assigned at activation)](WO-091-multi-active-link-groups.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053.
+- References: WO-008: satisfied (closed); WO-016: satisfied (closed); WO-023: satisfied (closed); WO-029: satisfied (closed); WO-053: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-091-multi-active-link-groups.md](WO-091-multi-active-link-groups.md)
+
+### WO-092
+
+[WO-092 — The &#96;sets&#96; graph extension: an additive collection names a set's member actives and piece-count bonuses, the three views round-trip it, and the compiled inspection lists each bonus armed or dark (version assigned at activation)](WO-092-sets-graph-extension.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-091.
+- References: WO-091: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-092-sets-graph-extension.md](WO-092-sets-graph-extension.md)
+
+### WO-093
+
+[WO-093 — The 5S mechanics as data: Seiton, Seisō, Seiketsu, Shitsuke and Safety join Seiri as typed active mechanics with their terms, seeds, envelopes and tooltip collections, compiling alone and together in one group (version assigned at activation)](WO-093-five-s-mechanics-as-data.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-091.
+- References: WO-091: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-093-five-s-mechanics-as-data.md](WO-093-five-s-mechanics-as-data.md)
+
+### WO-094
+
+[WO-094 — Set bonuses lowered: the five 5S bonuses compile to real emissions that arm at their piece counts and go dark one piece short, and the Safety gate compiles and refuses (version assigned at activation)](WO-094-set-bonuses-lowered.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-092, WO-093.
+- References: WO-092: not control-closed; WO-093: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-094-set-bonuses-lowered.md](WO-094-set-bonuses-lowered.md)
+
+### WO-095
+
+[WO-095 — Full-set scenario and set tooltip render: the Repo Gardener equips all six pieces in a second deterministic scenario with live and replay identity, and &#96;--compiled-diff --loadout&#96; renders each piece and the set with its bonuses armed or dark (version assigned at activation)](WO-095-full-set-scenario-and-render.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-094.
+- References: WO-032: satisfied (closed); WO-094: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-095-full-set-scenario-and-render.md](WO-095-full-set-scenario-and-render.md)
+
+### WO-096
+
+[WO-096 — Migration ledger and whole-set classification: every feedback shape the operator named gets a typed row or an exclusion count, the ten compiled units are marked, governance mode is derived by one rule, and the render is checked with the local-terms screen (version assigned at activation)](WO-096-migration-ledger.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053.
+- References: WO-011: satisfied (closed); WO-039: satisfied (closed); WO-053: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-096-migration-ledger.md](WO-096-migration-ledger.md)
+
+### WO-097
+
+[WO-097 — Rule migration batch 1a: six new units at rung one or two compile through the harness target into the Contributor build, each retiring its always-on sentence with the reverse mapping proven (version assigned at activation)](WO-097-rule-migration-batch-1a.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-096.
+- References: WO-096: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-097-rule-migration-batch-1a.md](WO-097-rule-migration-batch-1a.md)
+
+### WO-098
+
+[WO-098 — Rule migration batch 1b: six more units including one role-skill unit and one cadence unit complete the selection rule, the whole-set measurement is reported, and the batch template names batch two (version assigned at activation)](WO-098-rule-migration-batch-1b.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-097.
+- References: WO-097: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-098-rule-migration-batch-1b.md](WO-098-rule-migration-batch-1b.md)
+
+### WO-099
+
+[WO-099 — Mission check: a cadence-driven read-only verifier episode judges whether the active work is still inside its contract and on the vision's theses, and a drift holds unattended dispatch until a human or a repair clears it; first proven unattended (version assigned at activation)](WO-099-mission-check.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-068.
+- References: WO-010: satisfied (closed); WO-041: satisfied (closed); WO-068: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the episode contract and fixtures; the live row uses the actual harness as the verifier, operator-run. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-099-mission-check.md](WO-099-mission-check.md)
+
+### WO-100
+
+[WO-100 — Preauthorized portfolio and work derivation: the operator preauthorizes classes of unattended work with surfaces, effect ceilings per phase and a budget, and the resident derives bounded work orders from the Gardener's candidates inside it, never outside (version assigned at activation)](WO-100-preauthorized-portfolio.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-042, WO-052, WO-054, WO-068, WO-119, WO-120.
+- References: WO-042: not control-closed; WO-052: not control-closed; WO-054: not control-closed; WO-068: not control-closed; WO-119: not control-closed; WO-120: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-100-preauthorized-portfolio.md](WO-100-preauthorized-portfolio.md)
+
 ### WO-102
 
 [WO-102 — Cadence virtual-time grid sweep and golden vector corpus (version assigned at activation)](WO-102-cadence-corpus.md)
@@ -203,6 +1159,246 @@ None.
 - Model: Codex (any capable tier); any capable model may substitute. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-107-profiling-baseline.md](WO-107-profiling-baseline.md)
+
+### WO-110
+
+[WO-110 — Local-model transport: a third &#96;WorkOrderTransport&#96; over a local inference endpoint joins the actor catalog for the inspection profile, written from WO-027's probe and a fresh availability row (version assigned at activation)](WO-110-local-model-transport.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-009: satisfied (closed); WO-027: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; the live row uses the local endpoint the operator has. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-110-local-model-transport.md](WO-110-local-model-transport.md)
+
+### WO-111
+
+[WO-111 — The unattended hour: with the operator marked away, the resident derives and completes 5S work in a scratch repository under the progressive curve, verifies each change, and stops on return, recorded from an outside terminal (version assigned at activation)](WO-111-unattended-live-proof.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-053, WO-054, WO-099, WO-100, WO-119.
+- References: WO-053: not control-closed; WO-054: not control-closed; WO-099: not control-closed; WO-100: not control-closed; WO-119: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: the actual local harnesses for the worker and verifier episodes; the operator marks away and returns; launch claims recorded per episode (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-111-unattended-live-proof.md](WO-111-unattended-live-proof.md)
+
+### WO-112
+
+[WO-112 — The loop from core: one scratch issue travels from SourceBundle to a verified pull request with the post-PR loop against a scratch target, run from this launchpad and measured item by item against the predecessor's loop (version assigned at activation)](WO-112-core-run-loop-proof.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-045, WO-046, WO-047, WO-048, WO-053, WO-056, WO-123.
+- References: WO-045: not control-closed; WO-046: not control-closed; WO-047: not control-closed; WO-048: not control-closed; WO-053: not control-closed; WO-056: not control-closed; WO-123: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: the actual local harnesses for every episode, operator-witnessed from a terminal outside the sandbox; launch claims recorded per episode (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-112-core-run-loop-proof.md](WO-112-core-run-loop-proof.md)
+
+### WO-113
+
+[WO-113 — Work-order files are stable contracts: state changes live in control events, receipts in evidence directories, judgment in verifications and the release decision in final reviews, checked forward from a cutoff and migrated for the open orders (version assigned at activation)](WO-113-work-order-files-stable-contracts.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-043.
+- References: WO-026: satisfied (closed); WO-043: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-113-work-order-files-stable-contracts.md](WO-113-work-order-files-stable-contracts.md)
+
+### WO-114
+
+[WO-114 — Runtime status projection: the resident writes a &#96;runtime-status-v1&#96; view model of live actors, episodes, presence phase, cadences, holds, budget and work-order statuses on every tick, and the text console renders it (version assigned at activation)](WO-114-runtime-status-projection.md)
+
+- State: draft.
+- Application target: malformed.
+- Dependency reference check (conservative): blocked on WO-068, WO-120.
+- References: WO-032: satisfied (closed); WO-068: not control-closed; WO-120: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-114-runtime-status-projection.md](WO-114-runtime-status-projection.md)
+
+### WO-115
+
+[WO-115 — Console parity contract: every command a UI host may invoke is the same command the terminal runs, exposed through one local loopback surface the resident serves under the compiled authority, with no second authority path (version assigned at activation)](WO-115-console-parity-contract.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-068, WO-100, WO-114, WO-120.
+- References: WO-068: not control-closed; WO-100: not control-closed; WO-114: not control-closed; WO-120: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-115-console-parity-contract.md](WO-115-console-parity-contract.md)
+
+### WO-116
+
+[WO-116 — Audit projection served: the canonical audit record's projections are readable through the parity surface with fidelity labels, so a UI can audit what the runtime did without a second source (version assigned at activation)](WO-116-audit-projection-served.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-115.
+- References: WO-007: satisfied (closed); WO-115: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-116-audit-projection-served.md](WO-116-audit-projection-served.md)
+
+### WO-117
+
+[WO-117 — Console live host: the text console runs as a client of the resident, showing live agent status, work-order statuses and the audit view, and invoking the parity commands, proven in one operator-witnessed session (version assigned at activation)](WO-117-console-live-host.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-099, WO-114, WO-115, WO-116.
+- References: WO-099: not control-closed; WO-114: not control-closed; WO-115: not control-closed; WO-116: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; the witnessed session uses the real resident and harness. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-117-console-live-host.md](WO-117-console-live-host.md)
+
+### WO-118
+
+[WO-118 — The resident-owned loop from a starter instance: one initial intent and standing grants carry work through derivation, dispatch, verification, repair, delivery and the pull-request loop under the durable runtime, surviving an actor's death and a resident restart, with only material decisions returned to the operator (version assigned at activation)](WO-118-resident-owned-loop-from-starter.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-066, WO-075, WO-076, WO-100, WO-111, WO-112, WO-114, WO-117, WO-120, WO-121, WO-122, WO-123, WO-124.
+- References: WO-066: not control-closed; WO-075: not control-closed; WO-076: not control-closed; WO-100: not control-closed; WO-111: not control-closed; WO-112: not control-closed; WO-114: not control-closed; WO-117: not control-closed; WO-120: not control-closed; WO-121: not control-closed; WO-122: not control-closed; WO-123: not control-closed; WO-124: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: the actual local harnesses as actors, launched by the instance's resident; the operator witnesses from outside the sandbox; launch claims recorded per episode (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-118-resident-owned-loop-from-starter.md](WO-118-resident-owned-loop-from-starter.md)
+
+### WO-119
+
+[WO-119 — Executable discovery producer: a bounded actor episode observes a target worktree's real imperfections through the target's own commands and declared conventions and emits typed work candidates with evidence, using only the executable program subset (version assigned at activation)](WO-119-executable-discovery-producer.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-046, WO-068.
+- References: WO-023: satisfied (closed); WO-046: not control-closed; WO-068: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the producer and fixtures; the live row runs the producer as a &#96;script&#96; actor. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-119-executable-discovery-producer.md](WO-119-executable-discovery-producer.md)
+
+### WO-120
+
+[WO-120 — Derived work identity: a runtime-derived or UI-filed order becomes a durable work-order record with the same identity, authority file, lifecycle, index row and status as a hand-written one, and &#96;dotln intent&#96; files a draft the same way (version assigned at activation)](WO-120-derived-work-identity.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-043, WO-069.
+- References: WO-043: not control-closed; WO-069: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-120-derived-work-identity.md](WO-120-derived-work-identity.md)
+
+### WO-121
+
+[WO-121 — Presence signals with origin: human presence, actor liveness and task progress are distinct signals, tool activity from any session never implies the operator's return whichever process launched it, and return cancels only discretionary work (version assigned at activation)](WO-121-presence-signals-with-origin.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-044, WO-067, WO-068.
+- References: WO-044: not control-closed; WO-067: not control-closed; WO-068: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-121-presence-signals-with-origin.md](WO-121-presence-signals-with-origin.md)
+
+### WO-122
+
+[WO-122 — Actor catalog, second slice: the &#96;cli-worker&#96; kind launches a harness session through the writer profile by the observed launch path, and the &#96;human-handoff&#96; kind writes a decision packet and waits (version assigned at activation)](WO-122-actor-catalog-cli-and-human.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-044, WO-051, WO-068.
+- References: WO-044: not control-closed; WO-051: not control-closed; WO-068: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; the live row uses the actual harnesses. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-122-actor-catalog-cli-and-human.md](WO-122-actor-catalog-cli-and-human.md)
+
+### WO-123
+
+[WO-123 — &#96;dotln vertical&#96; composition: the vertical continuation sequences the loop's primitives from a filed intent to a terminal pull-request state with each step's receipt, entered by the resident under standing authorization or by one command, proven with doubles (version assigned at activation)](WO-123-vertical-composition.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-042, WO-052, WO-054, WO-055, WO-059, WO-061, WO-062, WO-064, WO-065, WO-066, WO-068, WO-100, WO-120, WO-124.
+- References: WO-042: not control-closed; WO-052: not control-closed; WO-054: not control-closed; WO-055: not control-closed; WO-059: not control-closed; WO-061: not control-closed; WO-062: not control-closed; WO-064: not control-closed; WO-065: not control-closed; WO-066: not control-closed; WO-068: not control-closed; WO-100: not control-closed; WO-120: not control-closed; WO-124: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-123-vertical-composition.md](WO-123-vertical-composition.md)
+
+### WO-124
+
+[WO-124 — Impact surfaces derivation: the implementation order's surfaces and tests are derived from the contract, the repository profile and a worktree snapshot, labeled by origin, with a confidence gate that hands off instead of guessing (version assigned at activation)](WO-124-impact-surfaces-derivation.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): blocked on WO-054, WO-061.
+- References: WO-054: not control-closed; WO-061: not control-closed.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the derivation; the inference slot is a labeled double in tests. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-124-impact-surfaces-derivation.md](WO-124-impact-surfaces-derivation.md)
+
+### WO-125
+
+[WO-125 — Codex effort selection: the Codex transport accepts the declared effort levels and forwards the reasoning-effort override to &#96;codex exec&#96;, from an observed row, so a Codex refuter or worker can be launched at &#96;max&#96; (version assigned at activation)](WO-125-codex-effort-selection.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-009: satisfied (closed); WO-019: satisfied (closed).
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model for the adapter and fixtures; the observed row needs the actual Codex CLI, run by the operator outside the sandbox. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Authority: [docs/work-orders/WO-125-codex-effort-selection.md](WO-125-codex-effort-selection.md)
 
 ## Closed
 
@@ -686,7 +1882,7 @@ None.
 - References: WO-001: not control-closed; WO-004: satisfied (closed); WO-008: satisfied (closed); WO-011: satisfied (closed); WO-029: satisfied (closed).
 - Verification: [VER-005](../../docs/verifications/WO-039/VER-005.md) (pass).
 - Final review: [FINAL-002](../../docs/final-reviews/WO-039/FINAL-002.md) (pass).
-- Release: unreleased.
+- Release: v0.15.0 (manifest workOrder.id).
 - Model: any capable model for the compiler and fixtures. The live smoke and the self-host step need the actual local harnesses (Claude Code; Codex where installed) and must state the harness version, model, and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Latest attestation: harness claude-code; version 2.1.263; model claude-opus-5&#91;1m&#93;; effort max; source self-reported; account not-applicable.
@@ -749,7 +1945,7 @@ None.
 - References: WO-007: satisfied (closed).
 - Verification: [VER-001](../../docs/verifications/WO-109/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-109/FINAL-001.md) (pass).
-- Release: no-release close (inferred: v0.13.3 below v0.14.0 before close).
+- Release: v0.15.0 (manifest changedFiles).
 - Model: any capable model for the census, source register, OCR-as-observation, and first-contact capsules. The lineage encounter, tension classification, supersession proposals, and atlas weaving are planning-role work under &#96;docs/PLAYBOOK.md&#96; §Who does what and are performed by the planning model or the operator, never by the mechanical tier. Image passes require a harness observed to inspect original-resolution images; that capability is unrecorded in &#96;docs/discovery/&#96; and is an activation preflight. Every run receipt states model, harness, attested effort, lens, prior-context visibility, and source batch.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any. Mechanical census, register, and capsule side routines may run at &#96;high+&#96;; the lifecycle executor and all planning-role judgments remain &#96;xhigh+&#96;.
 - Latest attestation: harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
@@ -797,13 +1993,13 @@ None.
 - **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose per-segment tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.
 - **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.
 
-Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`, `v0.7.0`, `v0.8.0`, `v0.9.0`, `v0.10.0`, `v0.10.1`, `v0.11.0`, `v0.12.0`, `v0.13.0`, `v0.13.1`, `v0.13.2`, `v0.13.3`, `v0.14.0`.
+Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`, `v0.7.0`, `v0.8.0`, `v0.9.0`, `v0.10.0`, `v0.10.1`, `v0.11.0`, `v0.12.0`, `v0.13.0`, `v0.13.1`, `v0.13.2`, `v0.13.3`, `v0.14.0`, `v0.15.0`.
 
 Tag observation is explicitly refreshed by `index`. Check requires every recorded tag object to remain available and unchanged; newer local release tags are reported as newer evidence, without invalidating this snapshot. This avoids making a committed source release fail its own tests immediately after tagging. Header/control changes still require regeneration after lifecycle transitions.
 
 See [the human planning map](../planning/work-order-map.md) for recommendation, rationale, tracks, and activation preflight. Dependency-ready does not grant activation or effect authority.
 
-<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.7.0","object":"064d304f0a49d3ba397173420e815b44807934d8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.8.0","object":"7b494beaac507b3369c4092598edc33d64242b67","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl"]},{"name":"v0.9.0","object":"b2720f4bb0574ca2929658e2bf7056bf40c8e5c1","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.0","object":"2cb12ddbd670e74639411cd77a98277d6b6110a6","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.1","object":"ca5d3fab28ecfa00cb7d0738d8e6a0be3018569d","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.11.0","object":"539021143175b03184fc8f3ea580a1b6491ab4ea","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.12.0","object":"3eb0fc50aaff394ccd80bbf042948ef7c2e7a015","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.0","object":"12fb52e64ea8915833cf29dac6d61412073c64db","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.1","object":"d5a0f5708ac5e13bc0d1ca2bd06d913bbc1b29b9","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.13.2","object":"0ff7063c042cede0cef863097334eb43c6da8937","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.13.3","object":"69f54e72c9b670280747d16dbf8bf9b30f0dcd63","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.14.0","object":"09e7fa2a32183a3d70a7af4388df0d24036914f0","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-032.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl"]}] -->
+<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.7.0","object":"064d304f0a49d3ba397173420e815b44807934d8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.8.0","object":"7b494beaac507b3369c4092598edc33d64242b67","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl"]},{"name":"v0.9.0","object":"b2720f4bb0574ca2929658e2bf7056bf40c8e5c1","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.0","object":"2cb12ddbd670e74639411cd77a98277d6b6110a6","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.1","object":"ca5d3fab28ecfa00cb7d0738d8e6a0be3018569d","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.11.0","object":"539021143175b03184fc8f3ea580a1b6491ab4ea","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.12.0","object":"3eb0fc50aaff394ccd80bbf042948ef7c2e7a015","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.0","object":"12fb52e64ea8915833cf29dac6d61412073c64db","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.1","object":"d5a0f5708ac5e13bc0d1ca2bd06d913bbc1b29b9","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.13.2","object":"0ff7063c042cede0cef863097334eb43c6da8937","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.13.3","object":"69f54e72c9b670280747d16dbf8bf9b30f0dcd63","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.14.0","object":"09e7fa2a32183a3d70a7af4388df0d24036914f0","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-032.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.15.0","object":"f6dd4558d361be7bc5d2236bb111f0af5a195531","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-032.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-039.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl","docs/control/orders/WO-109.jsonl"]}] -->
 
 [WO-001]: WO-001-environment-truth.md
 [WO-002]: WO-002-pure-kernel.md
@@ -846,6 +2042,65 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-039]: WO-039-harness-lowering.md
 [WO-040]: WO-040-rule-migration-batch-one.md
 [WO-041]: WO-041-plan-refutation-mechanism.md
+[WO-042]: WO-042-authority-provenance.md
+[WO-043]: WO-043-typed-dependency-truth.md
+[WO-044]: WO-044-writing-worker-harness-truth.md
+[WO-045]: WO-045-store-and-hook-input-decoders.md
+[WO-046]: WO-046-executable-program-split.md
+[WO-047]: WO-047-replay-environment-projector.md
+[WO-048]: WO-048-worker-host-on-disk-decode.md
+[WO-049]: WO-049-target-worktree-bundle.md
+[WO-050]: WO-050-reactor-typed-state-slices.md
+[WO-051]: WO-051-source-change-transport-profile.md
+[WO-052]: WO-052-source-change-host.md
+[WO-053]: WO-053-first-external-source-change.md
+[WO-054]: WO-054-verification-over-real-worktree.md
+[WO-055]: WO-055-repair-continuation.md
+[WO-056]: WO-056-live-verification-and-repair.md
+[WO-057]: WO-057-browser-runtime-truth.md
+[WO-058]: WO-058-visual-and-network-claim-types.md
+[WO-059]: WO-059-playwright-evidence-adapter.md
+[WO-060]: WO-060-source-bundle-contract.md
+[WO-061]: WO-061-story-contract-compile.md
+[WO-062]: WO-062-github-issue-source-adapter.md
+[WO-063]: WO-063-outward-artifact-lint.md
+[WO-064]: WO-064-target-publish.md
+[WO-065]: WO-065-pull-request-state-observation.md
+[WO-066]: WO-066-review-comment-resolution-loop.md
+[WO-067]: WO-067-presence-policy-compiled.md
+[WO-068]: WO-068-resident-host.md
+[WO-069]: WO-069-configuration-root.md
+[WO-070]: WO-070-beacon-portability.md
+[WO-071]: WO-071-registered-target-repositories.md
+[WO-072]: WO-072-target-worktree-lifecycle.md
+[WO-073]: WO-073-repository-class-and-profile.md
+[WO-074]: WO-074-launchpad-export-kit.md
+[WO-075]: WO-075-kit-runtime-and-bundle.md
+[WO-076]: WO-076-instance-build-overlay.md
+[WO-077]: WO-077-launchpad-export-update.md
+[WO-078]: WO-078-sibling-registry.md
+[WO-079]: WO-079-worktree-sync.md
+[WO-080]: WO-080-workstream-document-and-index.md
+[WO-081]: WO-081-board-workstreams-section.md
+[WO-082]: WO-082-synthetic-pilot-six-demonstrations.md
+[WO-083]: WO-083-real-run-launchpad-instance.md
+[WO-084]: WO-084-ledger-order-and-index.md
+[WO-085]: WO-085-spec-receipt-boundary.md
+[WO-086]: WO-086-generated-release-history.md
+[WO-087]: WO-087-roadmap-split.md
+[WO-088]: WO-088-phrase-table-single-source.md
+[WO-089]: WO-089-capability-table-fold.md
+[WO-090]: WO-090-shorter-cold-start.md
+[WO-091]: WO-091-multi-active-link-groups.md
+[WO-092]: WO-092-sets-graph-extension.md
+[WO-093]: WO-093-five-s-mechanics-as-data.md
+[WO-094]: WO-094-set-bonuses-lowered.md
+[WO-095]: WO-095-full-set-scenario-and-render.md
+[WO-096]: WO-096-migration-ledger.md
+[WO-097]: WO-097-rule-migration-batch-1a.md
+[WO-098]: WO-098-rule-migration-batch-1b.md
+[WO-099]: WO-099-mission-check.md
+[WO-100]: WO-100-preauthorized-portfolio.md
 [WO-101]: WO-101-program-and-hash-corpus.md
 [WO-102]: WO-102-cadence-corpus.md
 [WO-103]: WO-103-authority-outbox-corpus.md
@@ -853,3 +2108,19 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-107]: WO-107-profiling-baseline.md
 [WO-108]: WO-108-mutation-probe.md
 [WO-109]: WO-109-shape-first-source-remine.md
+[WO-110]: WO-110-local-model-transport.md
+[WO-111]: WO-111-unattended-live-proof.md
+[WO-112]: WO-112-core-run-loop-proof.md
+[WO-113]: WO-113-work-order-files-stable-contracts.md
+[WO-114]: WO-114-runtime-status-projection.md
+[WO-115]: WO-115-console-parity-contract.md
+[WO-116]: WO-116-audit-projection-served.md
+[WO-117]: WO-117-console-live-host.md
+[WO-118]: WO-118-resident-owned-loop-from-starter.md
+[WO-119]: WO-119-executable-discovery-producer.md
+[WO-120]: WO-120-derived-work-identity.md
+[WO-121]: WO-121-presence-signals-with-origin.md
+[WO-122]: WO-122-actor-catalog-cli-and-human.md
+[WO-123]: WO-123-vertical-composition.md
+[WO-124]: WO-124-impact-surfaces-derivation.md
+[WO-125]: WO-125-codex-effort-selection.md

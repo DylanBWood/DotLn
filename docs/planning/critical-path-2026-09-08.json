@@ -1,0 +1,2137 @@
+{
+  "schemaVersion": "plan-dependency-graph-v1",
+  "planningPass": "2026-09-08 critical-path planning pass, revised the same day at the operator's corrections (bounded orders, the resident runtime as the spine, the starter as the vehicle, no target-application orders in core, the five-surface separation, the runtime's UI contracts) and again at the external review's verified findings (the product exit through the resident from a starter instance, no closing on failure, an executable discovery producer, presence with origin, derived work identity, a separate writer request, trusted grant admission, dispositions in the pull-request loop, evidence-bearing intake relations)",
+  "base": "33e2c25bd24a364dafa15d728a61c565ca7bf424",
+  "semantics": {
+    "edge": "an edge from X to Y means X depends on Y under the named relation",
+    "blockingRelations": ["hard", "planning-deferral"],
+    "conditionalRelations": ["satisfied-by-release", "satisfied-by-close"],
+    "nonBlockingRelations": [
+      "reference-only",
+      "historical-evidence",
+      "waived",
+      "superseded"
+    ],
+    "satisfied-by-release": "met while the named local annotated release tag is in HEAD's ancestry; blocking otherwise",
+    "satisfied-by-close": "met while the named order is control-closed; blocking otherwise",
+    "planning-deferral": "a sequencing decision of this pass, not a missing input; blocks activation until the named node is control-closed or the operator waives it with a dated note",
+    "supersedes": "node annotation, never an edge: the slice of an existing order that a filed order carves out, with the rest of that order preserved",
+    "supersededBy": "node annotation on an umbrella record: the children that carry every obligation of the umbrella, which is not activatable and keeps its number and text as lineage"
+  },
+  "nodes": [
+    {
+      "id": "WO-042",
+      "kind": "work-order",
+      "gate": "A",
+      "status": "filed",
+      "title": "Authority provenance and monotone envelopes"
+    },
+    {
+      "id": "WO-043",
+      "kind": "work-order",
+      "gate": "B",
+      "status": "filed",
+      "title": "Typed dependency truth"
+    },
+    {
+      "id": "WO-036",
+      "kind": "work-order",
+      "gate": "B",
+      "status": "open; remains active",
+      "title": "Evidence runner"
+    },
+    {
+      "id": "WO-044",
+      "kind": "work-order",
+      "gate": "C2",
+      "status": "filed",
+      "title": "Writing-worker harness truth in a foreign worktree"
+    },
+    {
+      "id": "WO-045",
+      "kind": "work-order",
+      "gate": "C1",
+      "status": "filed",
+      "title": "Positive decoders for the event log and the hook input"
+    },
+    {
+      "id": "WO-046",
+      "kind": "work-order",
+      "gate": "C1",
+      "status": "filed",
+      "title": "Executable program grammar as a type; continuation decoder"
+    },
+    {
+      "id": "WO-047",
+      "kind": "work-order",
+      "gate": "C1",
+      "status": "filed",
+      "title": "Replay environment projector"
+    },
+    {
+      "id": "WO-048",
+      "kind": "work-order",
+      "gate": "C1",
+      "status": "filed",
+      "title": "Worker and verification hosts decode every on-disk value"
+    },
+    {
+      "id": "WO-049",
+      "kind": "work-order",
+      "gate": "D1",
+      "status": "filed",
+      "title": "Target-worktree harness bundle",
+      "supersedes": {
+        "workOrderId": "WO-033",
+        "scope": "phase 2, the target-worktree harness emit half"
+      }
+    },
+    {
+      "id": "WO-050",
+      "kind": "work-order",
+      "gate": "D2",
+      "status": "filed",
+      "title": "Reactor state split into typed slices (the recorded condition)"
+    },
+    {
+      "id": "WO-051",
+      "kind": "work-order",
+      "gate": "D2",
+      "status": "filed",
+      "title": "Source-change transport profile"
+    },
+    {
+      "id": "WO-052",
+      "kind": "work-order",
+      "gate": "D2",
+      "status": "filed",
+      "title": "Source-change host, events and commit receipt"
+    },
+    {
+      "id": "WO-053",
+      "kind": "work-order",
+      "gate": "D2",
+      "status": "filed",
+      "title": "The first external source change (live proof)"
+    },
+    {
+      "id": "WO-054",
+      "kind": "work-order",
+      "gate": "E",
+      "status": "filed",
+      "title": "Verification over a real worktree with host-run tests"
+    },
+    {
+      "id": "WO-055",
+      "kind": "work-order",
+      "gate": "E",
+      "status": "filed",
+      "title": "Repair continuation with a round limit"
+    },
+    {
+      "id": "WO-056",
+      "kind": "work-order",
+      "gate": "E",
+      "status": "filed",
+      "title": "Live blinded verification and repair (live proof)"
+    },
+    {
+      "id": "WO-057",
+      "kind": "work-order",
+      "gate": "F",
+      "status": "filed",
+      "title": "Browser runtime truth and the ADR-0002 dependency note"
+    },
+    {
+      "id": "WO-058",
+      "kind": "work-order",
+      "gate": "F",
+      "status": "filed",
+      "title": "verification-v1 visual and network claim types"
+    },
+    {
+      "id": "WO-059",
+      "kind": "work-order",
+      "gate": "F",
+      "status": "filed",
+      "title": "Playwright evidence adapter package"
+    },
+    {
+      "id": "WO-060",
+      "kind": "work-order",
+      "gate": "G",
+      "status": "filed",
+      "title": "SourceBundle contract"
+    },
+    {
+      "id": "WO-061",
+      "kind": "work-order",
+      "gate": "G",
+      "status": "filed",
+      "title": "StoryContract compile and the source-revision guard"
+    },
+    {
+      "id": "WO-062",
+      "kind": "work-order",
+      "gate": "G",
+      "status": "filed",
+      "title": "GitHub Issue source adapter (read-only)"
+    },
+    {
+      "id": "WO-063",
+      "kind": "work-order",
+      "gate": "H",
+      "status": "filed",
+      "title": "Outward-artifact lint: conventional commits and vocabulary camouflage"
+    },
+    {
+      "id": "WO-064",
+      "kind": "work-order",
+      "gate": "H",
+      "status": "filed",
+      "title": "Target publish: push and pull request under a remote grant",
+      "supersedes": {
+        "workOrderId": "WO-033",
+        "scope": "phase 2, the target publish half"
+      }
+    },
+    {
+      "id": "WO-065",
+      "kind": "work-order",
+      "gate": "H",
+      "status": "filed",
+      "title": "Pull-request state observation"
+    },
+    {
+      "id": "WO-066",
+      "kind": "work-order",
+      "gate": "H",
+      "status": "filed",
+      "title": "Review-comment resolution loop"
+    },
+    {
+      "id": "WO-067",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "PresencePolicy compiled (the progressive absence curve)"
+    },
+    {
+      "id": "WO-068",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "Resident host (the offline always-on process; script actors)"
+    },
+    {
+      "id": "WO-099",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "Mission check episode and hold (first unattended proof)"
+    },
+    {
+      "id": "WO-100",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "Preauthorized portfolio and work derivation"
+    },
+    {
+      "id": "WO-110",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "Local-model transport (fourth actor kind)"
+    },
+    {
+      "id": "WO-111",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "The unattended hour (live proof)"
+    },
+    {
+      "id": "WO-112",
+      "kind": "work-order",
+      "gate": "V",
+      "status": "filed",
+      "title": "The loop from core against a scratch target (live proof of WO-123's composition)"
+    },
+    {
+      "id": "WO-113",
+      "kind": "work-order",
+      "gate": "B",
+      "status": "filed",
+      "title": "Work-order files are stable contracts (five-surface separation)"
+    },
+    {
+      "id": "WO-114",
+      "kind": "work-order",
+      "gate": "U",
+      "status": "filed",
+      "title": "Runtime status projection (live agent and work-order status)"
+    },
+    {
+      "id": "WO-115",
+      "kind": "work-order",
+      "gate": "U",
+      "status": "filed",
+      "title": "Console parity contract over a loopback surface"
+    },
+    {
+      "id": "WO-116",
+      "kind": "work-order",
+      "gate": "U",
+      "status": "filed",
+      "title": "Audit projection served"
+    },
+    {
+      "id": "WO-117",
+      "kind": "work-order",
+      "gate": "U",
+      "status": "filed",
+      "title": "Console live host (witnessed session)"
+    },
+    {
+      "id": "WO-118",
+      "kind": "work-order",
+      "gate": "V",
+      "status": "filed",
+      "title": "The resident-owned loop from a starter instance (the product exit, live proof)"
+    },
+    {
+      "id": "WO-119",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "Executable discovery producer"
+    },
+    {
+      "id": "WO-120",
+      "kind": "work-order",
+      "gate": "B",
+      "status": "filed",
+      "title": "Derived work identity (runtime-derived and UI-filed orders as durable records)"
+    },
+    {
+      "id": "WO-121",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "Presence signals with origin"
+    },
+    {
+      "id": "WO-122",
+      "kind": "work-order",
+      "gate": "R",
+      "status": "filed",
+      "title": "Actor catalog: cli-worker and human-handoff kinds"
+    },
+    {
+      "id": "WO-123",
+      "kind": "work-order",
+      "gate": "V",
+      "status": "filed",
+      "title": "dotln vertical composition: resident-admitted intent or command (doubles)"
+    },
+    {
+      "id": "WO-124",
+      "kind": "work-order",
+      "gate": "G",
+      "status": "filed",
+      "title": "Impact surfaces derivation"
+    },
+    {
+      "id": "WO-125",
+      "kind": "work-order",
+      "gate": "B",
+      "status": "filed",
+      "title": "Codex effort selection"
+    },
+    {
+      "id": "WO-069",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Configuration root"
+    },
+    {
+      "id": "WO-070",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Beacon portability"
+    },
+    {
+      "id": "WO-071",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Registered target repositories and authority profiles"
+    },
+    {
+      "id": "WO-072",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Target worktree lifecycle"
+    },
+    {
+      "id": "WO-073",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Repository class and profile documents"
+    },
+    {
+      "id": "WO-074",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Launchpad export kit"
+    },
+    {
+      "id": "WO-075",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Kit runtime and harness bundle in the export"
+    },
+    {
+      "id": "WO-076",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Instance build overlay"
+    },
+    {
+      "id": "WO-077",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Launchpad export update"
+    },
+    {
+      "id": "WO-078",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Sibling registry and export receipts"
+    },
+    {
+      "id": "WO-079",
+      "kind": "work-order",
+      "gate": "S",
+      "status": "filed; child of an umbrella",
+      "title": "Worktree sync helper"
+    },
+    {
+      "id": "WO-080",
+      "kind": "work-order",
+      "gate": "P",
+      "status": "filed; child of an umbrella",
+      "title": "Workstream document, field and index grouping"
+    },
+    {
+      "id": "WO-081",
+      "kind": "work-order",
+      "gate": "P",
+      "status": "filed; child of an umbrella",
+      "title": "Board Workstreams section"
+    },
+    {
+      "id": "WO-082",
+      "kind": "work-order",
+      "gate": "P",
+      "status": "filed; child of an umbrella",
+      "title": "Synthetic pilot: the six demonstrations"
+    },
+    {
+      "id": "WO-083",
+      "kind": "work-order",
+      "gate": "P",
+      "status": "filed; child of an umbrella",
+      "title": "Real run: the Angular consumer's first member order from a launchpad instance"
+    },
+    {
+      "id": "WO-084",
+      "kind": "work-order",
+      "gate": "docs",
+      "status": "filed; child of an umbrella",
+      "title": "Ledger order and index"
+    },
+    {
+      "id": "WO-085",
+      "kind": "work-order",
+      "gate": "docs",
+      "status": "filed; child of an umbrella",
+      "title": "Spec/receipt boundary and docs-check"
+    },
+    {
+      "id": "WO-086",
+      "kind": "work-order",
+      "gate": "docs",
+      "status": "filed; child of an umbrella",
+      "title": "Generated release history"
+    },
+    {
+      "id": "WO-087",
+      "kind": "work-order",
+      "gate": "docs",
+      "status": "filed; child of an umbrella",
+      "title": "Roadmap split into planning policies"
+    },
+    {
+      "id": "WO-088",
+      "kind": "work-order",
+      "gate": "docs",
+      "status": "filed; child of an umbrella",
+      "title": "One source for the phrase table"
+    },
+    {
+      "id": "WO-089",
+      "kind": "work-order",
+      "gate": "docs",
+      "status": "filed; child of an umbrella",
+      "title": "Capability table fold"
+    },
+    {
+      "id": "WO-090",
+      "kind": "work-order",
+      "gate": "docs",
+      "status": "filed; child of an umbrella",
+      "title": "Shorter cold start"
+    },
+    {
+      "id": "WO-091",
+      "kind": "work-order",
+      "gate": "workshop",
+      "status": "filed; child of an umbrella",
+      "title": "Multi-active link groups"
+    },
+    {
+      "id": "WO-092",
+      "kind": "work-order",
+      "gate": "workshop",
+      "status": "filed; child of an umbrella",
+      "title": "The sets graph extension"
+    },
+    {
+      "id": "WO-093",
+      "kind": "work-order",
+      "gate": "workshop",
+      "status": "filed; child of an umbrella",
+      "title": "The 5S mechanics as data"
+    },
+    {
+      "id": "WO-094",
+      "kind": "work-order",
+      "gate": "workshop",
+      "status": "filed; child of an umbrella",
+      "title": "Set bonuses lowered"
+    },
+    {
+      "id": "WO-095",
+      "kind": "work-order",
+      "gate": "workshop",
+      "status": "filed; child of an umbrella",
+      "title": "Full-set scenario and set tooltip render"
+    },
+    {
+      "id": "WO-096",
+      "kind": "work-order",
+      "gate": "migration",
+      "status": "filed; child of an umbrella",
+      "title": "Migration ledger and whole-set classification"
+    },
+    {
+      "id": "WO-097",
+      "kind": "work-order",
+      "gate": "migration",
+      "status": "filed; child of an umbrella",
+      "title": "Rule migration batch 1a"
+    },
+    {
+      "id": "WO-098",
+      "kind": "work-order",
+      "gate": "migration",
+      "status": "filed; child of an umbrella",
+      "title": "Rule migration batch 1b, measurement and template"
+    },
+    {
+      "id": "WO-033",
+      "kind": "work-order",
+      "gate": "umbrella",
+      "status": "open; superseded whole by its children (umbrella record, not activatable)",
+      "title": "Compiled starter export",
+      "supersededBy": {
+        "workOrderIds": [
+          "WO-049",
+          "WO-064",
+          "WO-069",
+          "WO-070",
+          "WO-071",
+          "WO-072",
+          "WO-073",
+          "WO-074",
+          "WO-075",
+          "WO-076",
+          "WO-077",
+          "WO-078",
+          "WO-079",
+          "WO-036"
+        ],
+        "scope": "whole",
+        "date": "2026-09-08"
+      }
+    },
+    {
+      "id": "WO-034",
+      "kind": "work-order",
+      "gate": "umbrella",
+      "status": "open; superseded whole by its children (umbrella record, not activatable)",
+      "title": "Cross-repository workstream pilot",
+      "supersededBy": {
+        "workOrderIds": ["WO-080", "WO-081", "WO-082", "WO-083"],
+        "scope": "whole",
+        "date": "2026-09-08"
+      }
+    },
+    {
+      "id": "WO-035",
+      "kind": "work-order",
+      "gate": "umbrella",
+      "status": "open; superseded whole by its children (umbrella record, not activatable)",
+      "title": "Documentation structure reset",
+      "supersededBy": {
+        "workOrderIds": [
+          "WO-084",
+          "WO-085",
+          "WO-086",
+          "WO-087",
+          "WO-088",
+          "WO-089",
+          "WO-090"
+        ],
+        "scope": "whole",
+        "date": "2026-09-08"
+      }
+    },
+    {
+      "id": "WO-037",
+      "kind": "work-order",
+      "gate": "umbrella",
+      "status": "open; superseded whole by its children (umbrella record, not activatable)",
+      "title": "5S equipment set",
+      "supersededBy": {
+        "workOrderIds": ["WO-091", "WO-092", "WO-093", "WO-094", "WO-095"],
+        "scope": "whole",
+        "date": "2026-09-08"
+      }
+    },
+    {
+      "id": "WO-040",
+      "kind": "work-order",
+      "gate": "umbrella",
+      "status": "open; superseded whole by its children (umbrella record, not activatable)",
+      "title": "Rule migration, batch one",
+      "supersededBy": {
+        "workOrderIds": ["WO-096", "WO-097", "WO-098"],
+        "scope": "whole",
+        "date": "2026-09-08"
+      }
+    },
+    {
+      "id": "WO-014",
+      "kind": "work-order",
+      "gate": "floating",
+      "status": "open; reference only",
+      "title": "Approval-burden contract"
+    },
+    {
+      "id": "WO-102",
+      "kind": "work-order",
+      "gate": "adjacent",
+      "status": "open; reference only",
+      "title": "Cadence corpus"
+    },
+    {
+      "id": "WO-103",
+      "kind": "work-order",
+      "gate": "adjacent",
+      "status": "open; reference only",
+      "title": "Authority/outbox corpus"
+    },
+    {
+      "id": "WO-105",
+      "kind": "work-order",
+      "gate": "adjacent",
+      "status": "open; reference only",
+      "title": "Crash-shape corpus"
+    },
+    {
+      "id": "WO-107",
+      "kind": "work-order",
+      "gate": "adjacent",
+      "status": "open; reference only",
+      "title": "Profiling baseline"
+    },
+    {
+      "id": "WO-039",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; satisfied by existing evidence",
+      "title": "Harness lowering"
+    },
+    {
+      "id": "WO-032",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "UIFA v0 actor board"
+    },
+    {
+      "id": "WO-038",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "License posture lands"
+    },
+    {
+      "id": "WO-041",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Plan refutation mechanism"
+    },
+    {
+      "id": "WO-011",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; satisfied by existing evidence",
+      "title": "Feedback compiler v1"
+    },
+    {
+      "id": "WO-010",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; satisfied by existing evidence",
+      "title": "Independent verification"
+    },
+    {
+      "id": "WO-009",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; satisfied by existing evidence",
+      "title": "Real disposable worker"
+    },
+    {
+      "id": "WO-008",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Composition compiler v1"
+    },
+    {
+      "id": "WO-030",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Concurrent control state"
+    },
+    {
+      "id": "WO-026",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Work-order index"
+    },
+    {
+      "id": "WO-021",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Control-plane beacons"
+    },
+    {
+      "id": "WO-018",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Control-plane consolidation"
+    },
+    {
+      "id": "WO-013",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Portable fixture temp roots"
+    },
+    {
+      "id": "WO-006",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Publication bootstrap"
+    },
+    {
+      "id": "WO-016",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Skeleton reactor"
+    },
+    {
+      "id": "WO-017",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Kernel truthfulness"
+    },
+    {
+      "id": "WO-101",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Program and hash corpus"
+    },
+    {
+      "id": "WO-023",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Compile entropy reducer"
+    },
+    {
+      "id": "WO-029",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Pinned artifact identity"
+    },
+    {
+      "id": "WO-004",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Environment truth addendum"
+    },
+    {
+      "id": "WO-027",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Local inference probe"
+    },
+    {
+      "id": "WO-007",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Audit record baseline"
+    },
+    {
+      "id": "WO-019",
+      "kind": "work-order",
+      "gate": "closed",
+      "status": "closed; reference only",
+      "title": "Effort truth"
+    }
+  ],
+  "edges": [
+    {
+      "from": "WO-042",
+      "to": "WO-008",
+      "relation": "satisfied-by-release",
+      "release": "v0.4.0",
+      "reason": "compiler v1 is the surface this order narrows"
+    },
+    {
+      "from": "WO-042",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "the harness-v1 target and Contributor bundle this order regenerates; merged at 33e2c25"
+    },
+    {
+      "from": "WO-043",
+      "to": "WO-026",
+      "relation": "satisfied-by-release",
+      "release": "v0.5.2",
+      "reason": "the generated index this order extends"
+    },
+    {
+      "from": "WO-043",
+      "to": "WO-030",
+      "relation": "satisfied-by-release",
+      "release": "v0.7.0",
+      "reason": "per-order control segments and selection"
+    },
+    {
+      "from": "WO-036",
+      "to": "WO-018",
+      "relation": "satisfied-by-release",
+      "release": "v0.4.1",
+      "reason": "shell fixture helpers"
+    },
+    {
+      "from": "WO-036",
+      "to": "WO-013",
+      "relation": "satisfied-by-release",
+      "release": "v0.3.1",
+      "reason": "portable temp roots"
+    },
+    {
+      "from": "WO-044",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "extends the phase-zero record with the writing-worker rows"
+    },
+    {
+      "from": "WO-044",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "the canonical launch shapes it varies"
+    },
+    {
+      "from": "WO-045",
+      "to": "WO-017",
+      "relation": "satisfied-by-release",
+      "release": "v0.3.5",
+      "reason": "the store codec it extends"
+    },
+    {
+      "from": "WO-045",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "the hook host whose input it decodes"
+    },
+    {
+      "from": "WO-045",
+      "to": "WO-105",
+      "relation": "reference-only",
+      "reason": "the crash-shape corpus draft supplies malformed-shape families"
+    },
+    {
+      "from": "WO-046",
+      "to": "WO-101",
+      "relation": "satisfied-by-release",
+      "release": "v0.2.2",
+      "reason": "the Program corpus that enumerates the executable kinds"
+    },
+    {
+      "from": "WO-046",
+      "to": "WO-017",
+      "relation": "satisfied-by-release",
+      "release": "v0.3.5",
+      "reason": "the evaluable-kind boundaries"
+    },
+    {
+      "from": "WO-046",
+      "to": "WO-045",
+      "relation": "reference-only",
+      "reason": "shares the DecodeResult shape when both land; a local shape otherwise"
+    },
+    {
+      "from": "WO-047",
+      "to": "WO-017",
+      "relation": "satisfied-by-release",
+      "release": "v0.3.5",
+      "reason": "kernel truthfulness boundaries"
+    },
+    {
+      "from": "WO-047",
+      "to": "WO-016",
+      "relation": "satisfied-by-release",
+      "release": "v0.3.6",
+      "reason": "the single reactor replay drives"
+    },
+    {
+      "from": "WO-048",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "the worker store and host"
+    },
+    {
+      "from": "WO-048",
+      "to": "WO-010",
+      "relation": "satisfied-by-release",
+      "release": "v0.12.0",
+      "reason": "the verification host and its capsules"
+    },
+    {
+      "from": "WO-048",
+      "to": "WO-045",
+      "relation": "reference-only",
+      "reason": "the log codec is not duplicated when WO-045 lands first"
+    },
+    {
+      "from": "WO-048",
+      "to": "WO-105",
+      "relation": "reference-only",
+      "reason": "malformed-shape families"
+    },
+    {
+      "from": "WO-049",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "a bundle emitted into a target must carry an envelope no support can widen and grants with provenance"
+    },
+    {
+      "from": "WO-049",
+      "to": "WO-044",
+      "relation": "hard",
+      "reason": "the record must show that the target's hooks, settings and instruction surface apply in the worker's launch mode; otherwise this order is redesigned at R1"
+    },
+    {
+      "from": "WO-049",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "harness emit, check and the runtime pins it extends"
+    },
+    {
+      "from": "WO-050",
+      "to": "WO-016",
+      "relation": "satisfied-by-release",
+      "release": "v0.3.6",
+      "reason": "the single reactor"
+    },
+    {
+      "from": "WO-050",
+      "to": "WO-010",
+      "relation": "satisfied-by-release",
+      "release": "v0.12.0",
+      "reason": "the last host branch added"
+    },
+    {
+      "from": "WO-050",
+      "to": "WO-047",
+      "relation": "reference-only",
+      "reason": "the explicit projector reads the kernel-facing slice when it has landed"
+    },
+    {
+      "from": "WO-051",
+      "to": "WO-044",
+      "relation": "hard",
+      "reason": "the profile is written from observed rows, never assumed"
+    },
+    {
+      "from": "WO-051",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "the profile's envelope comes only from the base and explicit grants"
+    },
+    {
+      "from": "WO-051",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "the transports it extends"
+    },
+    {
+      "from": "WO-052",
+      "to": "WO-050",
+      "relation": "hard",
+      "reason": "the recorded reactor-split condition: the slice exists before the branch"
+    },
+    {
+      "from": "WO-052",
+      "to": "WO-051",
+      "relation": "hard",
+      "reason": "the transport profile it dispatches"
+    },
+    {
+      "from": "WO-052",
+      "to": "WO-049",
+      "relation": "hard",
+      "reason": "the bundle it emits into the target worktree before dispatch"
+    },
+    {
+      "from": "WO-052",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "worker store, leases and recovery"
+    },
+    {
+      "from": "WO-052",
+      "to": "WO-045",
+      "relation": "reference-only",
+      "reason": "positive payload decoding shares WO-045's shape when it has landed"
+    },
+    {
+      "from": "WO-053",
+      "to": "WO-052",
+      "relation": "hard",
+      "reason": "the host, events and receipt the episode runs through"
+    },
+    {
+      "from": "WO-054",
+      "to": "WO-052",
+      "relation": "hard",
+      "reason": "the target worktree and diff the verifier snapshots"
+    },
+    {
+      "from": "WO-054",
+      "to": "WO-010",
+      "relation": "satisfied-by-release",
+      "release": "v0.12.0",
+      "reason": "the verification-v1 loop it lifts"
+    },
+    {
+      "from": "WO-055",
+      "to": "WO-054",
+      "relation": "hard",
+      "reason": "the finding shape and capsule the loop consumes"
+    },
+    {
+      "from": "WO-055",
+      "to": "WO-052",
+      "relation": "hard",
+      "reason": "the source-change host that executes the repair"
+    },
+    {
+      "from": "WO-055",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "the effective envelope and the admitted grants the derivation is bound to"
+    },
+    {
+      "from": "WO-056",
+      "to": "WO-055",
+      "relation": "hard",
+      "reason": "the loop the episode runs"
+    },
+    {
+      "from": "WO-056",
+      "to": "WO-053",
+      "relation": "hard",
+      "reason": "the live primitive and receipt shape it extends"
+    },
+    {
+      "from": "WO-057",
+      "to": "WO-004",
+      "relation": "satisfied-by-close",
+      "reason": "the environment record it extends"
+    },
+    {
+      "from": "WO-057",
+      "to": "WO-056",
+      "relation": "reference-only",
+      "reason": "recommended after the real-repository loop so the adapter has a consumer"
+    },
+    {
+      "from": "WO-058",
+      "to": "WO-010",
+      "relation": "satisfied-by-release",
+      "release": "v0.12.0",
+      "reason": "the claim-typed evidence contract it extends"
+    },
+    {
+      "from": "WO-059",
+      "to": "WO-057",
+      "relation": "hard",
+      "reason": "the observed runtime rows and the recorded dependency decision"
+    },
+    {
+      "from": "WO-059",
+      "to": "WO-058",
+      "relation": "hard",
+      "reason": "the claim types and witness rules the adapter produces"
+    },
+    {
+      "from": "WO-060",
+      "to": "WO-008",
+      "relation": "satisfied-by-release",
+      "release": "v0.4.0",
+      "reason": "the pure compiler package that holds the contract"
+    },
+    {
+      "from": "WO-061",
+      "to": "WO-060",
+      "relation": "hard",
+      "reason": "the bundle it compiles from"
+    },
+    {
+      "from": "WO-061",
+      "to": "WO-054",
+      "relation": "reference-only",
+      "reason": "its criteria are what the verification host consumes"
+    },
+    {
+      "from": "WO-062",
+      "to": "WO-060",
+      "relation": "hard",
+      "reason": "the bundle shape it produces"
+    },
+    {
+      "from": "WO-063",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "the local-terms check it reuses"
+    },
+    {
+      "from": "WO-064",
+      "to": "WO-052",
+      "relation": "hard",
+      "reason": "a branch to publish exists only after a source-change episode"
+    },
+    {
+      "from": "WO-064",
+      "to": "WO-063",
+      "relation": "hard",
+      "reason": "every outward artifact passes the lint before the remote effect"
+    },
+    {
+      "from": "WO-064",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "the remote effect runs under an explicit grant with operator provenance"
+    },
+    {
+      "from": "WO-064",
+      "to": "WO-053",
+      "relation": "reference-only",
+      "reason": "the live branch it first publishes"
+    },
+    {
+      "from": "WO-065",
+      "to": "WO-064",
+      "relation": "hard",
+      "reason": "a pull request to observe"
+    },
+    {
+      "from": "WO-065",
+      "to": "WO-060",
+      "relation": "hard",
+      "reason": "the screen every stored comment passes"
+    },
+    {
+      "from": "WO-065",
+      "to": "WO-068",
+      "relation": "reference-only",
+      "reason": "the resident's cadence is the ordinary invoker once it exists"
+    },
+    {
+      "from": "WO-066",
+      "to": "WO-065",
+      "relation": "hard",
+      "reason": "the observed comments and checks it resolves"
+    },
+    {
+      "from": "WO-066",
+      "to": "WO-055",
+      "relation": "hard",
+      "reason": "the repair derivation and round limit it reuses"
+    },
+    {
+      "from": "WO-066",
+      "to": "WO-054",
+      "relation": "hard",
+      "reason": "verification of each repaired head before a push"
+    },
+    {
+      "from": "WO-066",
+      "to": "WO-064",
+      "relation": "hard",
+      "reason": "the grant under which the push and the disposition run"
+    },
+    {
+      "from": "WO-067",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "a phase envelope is a narrowing under the monotone floor"
+    },
+    {
+      "from": "WO-067",
+      "to": "WO-008",
+      "relation": "satisfied-by-release",
+      "release": "v0.4.0",
+      "reason": "compiler v1"
+    },
+    {
+      "from": "WO-068",
+      "to": "WO-067",
+      "relation": "hard",
+      "reason": "the policy whose cadences and phases the host evaluates"
+    },
+    {
+      "from": "WO-068",
+      "to": "WO-050",
+      "relation": "hard",
+      "reason": "the reserved slice the host's state lives in (the recorded split condition)"
+    },
+    {
+      "from": "WO-068",
+      "to": "WO-044",
+      "relation": "hard",
+      "reason": "the launcher is designed from the unattended rows, never assumed"
+    },
+    {
+      "from": "WO-068",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "the transports and worker store it dispatches through"
+    },
+    {
+      "from": "WO-068",
+      "to": "WO-027",
+      "relation": "reference-only",
+      "reason": "the local-inference probe, as the fourth actor kind's reference"
+    },
+    {
+      "from": "WO-099",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the resident that dispatches the episode on a cadence"
+    },
+    {
+      "from": "WO-099",
+      "to": "WO-041",
+      "relation": "satisfied-by-close",
+      "reason": "the judge shape over the vision theses"
+    },
+    {
+      "from": "WO-099",
+      "to": "WO-010",
+      "relation": "satisfied-by-release",
+      "release": "v0.12.0",
+      "reason": "the verifier episode contract"
+    },
+    {
+      "from": "WO-100",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the resident that derives and dispatches"
+    },
+    {
+      "from": "WO-100",
+      "to": "WO-052",
+      "relation": "hard",
+      "reason": "a derived order executes through the source-change host"
+    },
+    {
+      "from": "WO-100",
+      "to": "WO-054",
+      "relation": "hard",
+      "reason": "every derived order is verified before the curve advances"
+    },
+    {
+      "from": "WO-100",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "the derived order's authority is the portfolio's under the floor"
+    },
+    {
+      "from": "WO-100",
+      "to": "WO-119",
+      "relation": "hard",
+      "reason": "the executable discovery producer whose candidates are the input"
+    },
+    {
+      "from": "WO-100",
+      "to": "WO-120",
+      "relation": "hard",
+      "reason": "a derived order is a durable record with the same identity and lifecycle"
+    },
+    {
+      "from": "WO-110",
+      "to": "WO-027",
+      "relation": "satisfied-by-close",
+      "reason": "the probe whose endpoint shape it implements"
+    },
+    {
+      "from": "WO-110",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "the transport port"
+    },
+    {
+      "from": "WO-110",
+      "to": "WO-068",
+      "relation": "reference-only",
+      "reason": "the actor catalog it joins"
+    },
+    {
+      "from": "WO-111",
+      "to": "WO-100",
+      "relation": "hard",
+      "reason": "the portfolio and derivation"
+    },
+    {
+      "from": "WO-111",
+      "to": "WO-119",
+      "relation": "hard",
+      "reason": "discovery of the seeded imperfections"
+    },
+    {
+      "from": "WO-111",
+      "to": "WO-099",
+      "relation": "hard",
+      "reason": "the mission check runs during the hour"
+    },
+    {
+      "from": "WO-111",
+      "to": "WO-053",
+      "relation": "hard",
+      "reason": "the live source-change primitive"
+    },
+    {
+      "from": "WO-111",
+      "to": "WO-054",
+      "relation": "hard",
+      "reason": "verification of each change"
+    },
+    {
+      "from": "WO-112",
+      "to": "WO-123",
+      "relation": "hard",
+      "reason": "the composition this run executes"
+    },
+    {
+      "from": "WO-112",
+      "to": "WO-053",
+      "relation": "hard",
+      "reason": "the live source-change primitive"
+    },
+    {
+      "from": "WO-112",
+      "to": "WO-056",
+      "relation": "hard",
+      "reason": "independent verification and repair, live"
+    },
+    {
+      "from": "WO-112",
+      "to": "WO-045",
+      "relation": "hard",
+      "reason": "the codecs are mandatory before the loop runs against anything the operator keeps"
+    },
+    {
+      "from": "WO-112",
+      "to": "WO-046",
+      "relation": "hard",
+      "reason": "a persisted continuation of an unsupported kind must fail at decode"
+    },
+    {
+      "from": "WO-112",
+      "to": "WO-047",
+      "relation": "hard",
+      "reason": "the second state shape replays through an explicit projector"
+    },
+    {
+      "from": "WO-112",
+      "to": "WO-048",
+      "relation": "hard",
+      "reason": "host recovery refuses malformed state before dispatch"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-052",
+      "relation": "hard",
+      "reason": "the source-change host"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-054",
+      "relation": "hard",
+      "reason": "verification over the worktree"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-055",
+      "relation": "hard",
+      "reason": "the repair continuation"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-059",
+      "relation": "hard",
+      "reason": "browser witnesses"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-061",
+      "relation": "hard",
+      "reason": "the contract from an issue"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-062",
+      "relation": "hard",
+      "reason": "the issue adapter"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-124",
+      "relation": "hard",
+      "reason": "surfaces from the contract"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-064",
+      "relation": "hard",
+      "reason": "publish"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-065",
+      "relation": "hard",
+      "reason": "observation"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-066",
+      "relation": "hard",
+      "reason": "resolution"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the resident that admits the intent and dispatches the first step"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-120",
+      "relation": "hard",
+      "reason": "the filed intent and the derived order's durable identity"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-100",
+      "relation": "hard",
+      "reason": "the portfolio contract the intent class extends"
+    },
+    {
+      "from": "WO-123",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "admitted grants and the effective envelope the run is bound to"
+    },
+    {
+      "from": "WO-124",
+      "to": "WO-061",
+      "relation": "hard",
+      "reason": "the contract it reads"
+    },
+    {
+      "from": "WO-124",
+      "to": "WO-054",
+      "relation": "hard",
+      "reason": "the worktree snapshot shape it reads"
+    },
+    {
+      "from": "WO-119",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the producer runs as an actor episode the resident dispatches"
+    },
+    {
+      "from": "WO-119",
+      "to": "WO-023",
+      "relation": "satisfied-by-release",
+      "release": "v0.5.0",
+      "reason": "the Sort rule and candidate shape it reuses"
+    },
+    {
+      "from": "WO-119",
+      "to": "WO-046",
+      "relation": "hard",
+      "reason": "its program is checked against the executable grammar type"
+    },
+    {
+      "from": "WO-120",
+      "to": "WO-043",
+      "relation": "hard",
+      "reason": "generated authority files carry typed dependency blocks"
+    },
+    {
+      "from": "WO-120",
+      "to": "WO-069",
+      "relation": "hard",
+      "reason": "the derived root and identity range are configuration"
+    },
+    {
+      "from": "WO-121",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the resident whose presence fold this defines"
+    },
+    {
+      "from": "WO-121",
+      "to": "WO-067",
+      "relation": "hard",
+      "reason": "the discretionary-phase scope for cancellation"
+    },
+    {
+      "from": "WO-121",
+      "to": "WO-044",
+      "relation": "hard",
+      "reason": "the rows that say which hook events a scripted prompt fires in each launch mode"
+    },
+    {
+      "from": "WO-122",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the catalog"
+    },
+    {
+      "from": "WO-122",
+      "to": "WO-051",
+      "relation": "hard",
+      "reason": "the writer request and profile the cli-worker kind dispatches"
+    },
+    {
+      "from": "WO-122",
+      "to": "WO-044",
+      "relation": "hard",
+      "reason": "the detached-launch rows the launch path is designed from"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-075",
+      "relation": "hard",
+      "reason": "a starter instance with the build"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-076",
+      "relation": "hard",
+      "reason": "the instance's overlay"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-121",
+      "relation": "hard",
+      "reason": "presence with origin"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-122",
+      "relation": "hard",
+      "reason": "the cli-worker and human-handoff actors"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-100",
+      "relation": "hard",
+      "reason": "derivation inside a portfolio"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-120",
+      "relation": "hard",
+      "reason": "derived work as durable records"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-124",
+      "relation": "hard",
+      "reason": "surfaces derived from the contract"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-112",
+      "relation": "hard",
+      "reason": "the loop proven from core first"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-111",
+      "relation": "hard",
+      "reason": "the unattended hour"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-066",
+      "relation": "hard",
+      "reason": "the pull-request loop with dispositions"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-114",
+      "relation": "hard",
+      "reason": "the run is visible in the status projection"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-117",
+      "relation": "hard",
+      "reason": "the run is visible in the live console"
+    },
+    {
+      "from": "WO-118",
+      "to": "WO-123",
+      "relation": "hard",
+      "reason": "the resident admits a filed intent under standing authorization and owns the vertical continuation"
+    },
+    {
+      "from": "WO-113",
+      "to": "WO-043",
+      "relation": "hard",
+      "reason": "supersession and deferral become typed entries"
+    },
+    {
+      "from": "WO-113",
+      "to": "WO-026",
+      "relation": "satisfied-by-release",
+      "release": "v0.5.2",
+      "reason": "the index"
+    },
+    {
+      "from": "WO-114",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the resident whose slice it projects"
+    },
+    {
+      "from": "WO-114",
+      "to": "WO-120",
+      "relation": "hard",
+      "reason": "derived orders appear under the same identity"
+    },
+    {
+      "from": "WO-114",
+      "to": "WO-032",
+      "relation": "satisfied-by-release",
+      "release": "v0.14.0",
+      "reason": "the board and console host"
+    },
+    {
+      "from": "WO-115",
+      "to": "WO-068",
+      "relation": "hard",
+      "reason": "the resident serves the surface"
+    },
+    {
+      "from": "WO-115",
+      "to": "WO-114",
+      "relation": "hard",
+      "reason": "the status projection the surface reads"
+    },
+    {
+      "from": "WO-115",
+      "to": "WO-120",
+      "relation": "hard",
+      "reason": "intent and derived-order activation exist as terminal commands"
+    },
+    {
+      "from": "WO-115",
+      "to": "WO-100",
+      "relation": "hard",
+      "reason": "declaring a portfolio exists as a terminal command"
+    },
+    {
+      "from": "WO-116",
+      "to": "WO-115",
+      "relation": "hard",
+      "reason": "the surface"
+    },
+    {
+      "from": "WO-116",
+      "to": "WO-007",
+      "relation": "satisfied-by-close",
+      "reason": "the audit fold"
+    },
+    {
+      "from": "WO-117",
+      "to": "WO-114",
+      "relation": "hard",
+      "reason": "the status projection"
+    },
+    {
+      "from": "WO-117",
+      "to": "WO-115",
+      "relation": "hard",
+      "reason": "the commands"
+    },
+    {
+      "from": "WO-117",
+      "to": "WO-116",
+      "relation": "hard",
+      "reason": "the audit view"
+    },
+    {
+      "from": "WO-117",
+      "to": "WO-099",
+      "relation": "hard",
+      "reason": "a live resident with something to show"
+    },
+    {
+      "from": "WO-069",
+      "to": "WO-018",
+      "relation": "satisfied-by-release",
+      "release": "v0.4.1",
+      "reason": "scripts/lib"
+    },
+    {
+      "from": "WO-070",
+      "to": "WO-021",
+      "relation": "satisfied-by-release",
+      "release": "v0.8.0",
+      "reason": "per-worktree Beacon caches"
+    },
+    {
+      "from": "WO-071",
+      "to": "WO-069",
+      "relation": "hard",
+      "reason": "the repositories section of the configuration"
+    },
+    {
+      "from": "WO-071",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "the registered-repository grant provenance"
+    },
+    {
+      "from": "WO-072",
+      "to": "WO-071",
+      "relation": "hard",
+      "reason": "the registration it starts worktrees from"
+    },
+    {
+      "from": "WO-072",
+      "to": "WO-049",
+      "relation": "hard",
+      "reason": "the emit into the target worktree"
+    },
+    {
+      "from": "WO-072",
+      "to": "WO-030",
+      "relation": "satisfied-by-release",
+      "release": "v0.7.0",
+      "reason": "per-order segments"
+    },
+    {
+      "from": "WO-073",
+      "to": "WO-071",
+      "relation": "hard",
+      "reason": "the registration the class and profile attach to"
+    },
+    {
+      "from": "WO-074",
+      "to": "WO-069",
+      "relation": "hard",
+      "reason": "the configuration example and roots the kit carries"
+    },
+    {
+      "from": "WO-074",
+      "to": "WO-070",
+      "relation": "hard",
+      "reason": "Beacon emission without the skeleton package"
+    },
+    {
+      "from": "WO-074",
+      "to": "WO-038",
+      "relation": "satisfied-by-release",
+      "release": "v0.13.2",
+      "reason": "license metadata and the default license files"
+    },
+    {
+      "from": "WO-075",
+      "to": "WO-074",
+      "relation": "hard",
+      "reason": "the kit the runtime and bundle are placed in"
+    },
+    {
+      "from": "WO-075",
+      "to": "WO-049",
+      "relation": "hard",
+      "reason": "the import-root mechanism the exported hooks reuse"
+    },
+    {
+      "from": "WO-075",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "grants with provenance in the exported bundle"
+    },
+    {
+      "from": "WO-076",
+      "to": "WO-075",
+      "relation": "hard",
+      "reason": "the kit build the overlay composes over"
+    },
+    {
+      "from": "WO-076",
+      "to": "WO-042",
+      "relation": "hard",
+      "reason": "widening within the fork's posture is a provenance-bearing grant"
+    },
+    {
+      "from": "WO-077",
+      "to": "WO-074",
+      "relation": "hard",
+      "reason": "a prior manifest to update from"
+    },
+    {
+      "from": "WO-078",
+      "to": "WO-074",
+      "relation": "hard",
+      "reason": "the first export receipt"
+    },
+    {
+      "from": "WO-079",
+      "to": "WO-030",
+      "relation": "satisfied-by-release",
+      "release": "v0.7.0",
+      "reason": "per-order segments and checkpoints"
+    },
+    {
+      "from": "WO-080",
+      "to": "WO-071",
+      "relation": "hard",
+      "reason": "member orders name registered repositories"
+    },
+    {
+      "from": "WO-081",
+      "to": "WO-080",
+      "relation": "hard",
+      "reason": "the data it renders"
+    },
+    {
+      "from": "WO-081",
+      "to": "WO-032",
+      "relation": "satisfied-by-release",
+      "release": "v0.14.0",
+      "reason": "the board it extends"
+    },
+    {
+      "from": "WO-082",
+      "to": "WO-080",
+      "relation": "hard",
+      "reason": "the workstream the fixture exercises"
+    },
+    {
+      "from": "WO-082",
+      "to": "WO-072",
+      "relation": "hard",
+      "reason": "target worktrees from a launchpad"
+    },
+    {
+      "from": "WO-082",
+      "to": "WO-075",
+      "relation": "hard",
+      "reason": "a fixture launchpad exported with its build"
+    },
+    {
+      "from": "WO-083",
+      "to": "WO-118",
+      "relation": "hard",
+      "reason": "the resident-owned loop is proven from a starter instance before the fork runs it against a real target"
+    },
+    {
+      "from": "WO-083",
+      "to": "WO-082",
+      "relation": "hard",
+      "reason": "the synthetic pilot precedes the witnessed run"
+    },
+    {
+      "from": "WO-083",
+      "to": "WO-073",
+      "relation": "hard",
+      "reason": "the profile convention the fork's profile follows"
+    },
+    {
+      "from": "WO-084",
+      "to": "WO-053",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "documentation structure is not the product bottleneck"
+    },
+    {
+      "from": "WO-085",
+      "to": "WO-053",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "documentation structure is not the product bottleneck"
+    },
+    {
+      "from": "WO-086",
+      "to": "WO-053",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "documentation structure is not the product bottleneck"
+    },
+    {
+      "from": "WO-087",
+      "to": "WO-053",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "documentation structure is not the product bottleneck"
+    },
+    {
+      "from": "WO-088",
+      "to": "WO-053",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "documentation structure is not the product bottleneck"
+    },
+    {
+      "from": "WO-089",
+      "to": "WO-053",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "documentation structure is not the product bottleneck"
+    },
+    {
+      "from": "WO-090",
+      "to": "WO-053",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "documentation structure is not the product bottleneck"
+    },
+    {
+      "from": "WO-085",
+      "to": "WO-069",
+      "relation": "reference-only",
+      "reason": "reads document roots through the configuration root when it has landed"
+    },
+    {
+      "from": "WO-090",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "the directed-load measurement method"
+    },
+    {
+      "from": "WO-091",
+      "to": "WO-008",
+      "relation": "satisfied-by-release",
+      "release": "v0.4.0",
+      "reason": "compiler v1"
+    },
+    {
+      "from": "WO-091",
+      "to": "WO-016",
+      "relation": "satisfied-by-release",
+      "release": "v0.3.6",
+      "reason": "one reactor"
+    },
+    {
+      "from": "WO-091",
+      "to": "WO-023",
+      "relation": "satisfied-by-release",
+      "release": "v0.5.0",
+      "reason": "Shine and Standardize inside the Entropy Reducer"
+    },
+    {
+      "from": "WO-091",
+      "to": "WO-029",
+      "relation": "satisfied-by-release",
+      "release": "v0.9.0",
+      "reason": "artifact identity per component"
+    },
+    {
+      "from": "WO-091",
+      "to": "WO-053",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "Horizon 2 does not advance the missing work loop"
+    },
+    {
+      "from": "WO-092",
+      "to": "WO-091",
+      "relation": "hard",
+      "reason": "a set's members are several actives in one group"
+    },
+    {
+      "from": "WO-093",
+      "to": "WO-091",
+      "relation": "hard",
+      "reason": "the six mechanics compile in one group"
+    },
+    {
+      "from": "WO-094",
+      "to": "WO-092",
+      "relation": "hard",
+      "reason": "bonus emissions live in the sets collection"
+    },
+    {
+      "from": "WO-094",
+      "to": "WO-093",
+      "relation": "hard",
+      "reason": "the pieces the bonuses count"
+    },
+    {
+      "from": "WO-095",
+      "to": "WO-094",
+      "relation": "hard",
+      "reason": "the bonuses the scenario exercises"
+    },
+    {
+      "from": "WO-095",
+      "to": "WO-032",
+      "relation": "satisfied-by-release",
+      "release": "v0.14.0",
+      "reason": "the board renders the set through the compiler render"
+    },
+    {
+      "from": "WO-095",
+      "to": "WO-042",
+      "relation": "reference-only",
+      "reason": "the Safety piece's deny at safety-invariants remains legal"
+    },
+    {
+      "from": "WO-096",
+      "to": "WO-011",
+      "relation": "satisfied-by-release",
+      "release": "v0.13.0",
+      "reason": "the feedback contract and the ten units"
+    },
+    {
+      "from": "WO-096",
+      "to": "WO-039",
+      "relation": "satisfied-by-close",
+      "reason": "the harness target the batch lowers through"
+    },
+    {
+      "from": "WO-096",
+      "to": "WO-053",
+      "relation": "planning-deferral",
+      "date": "2026-09-08",
+      "reason": "a real external episode is a better classification input than another corpus pass"
+    },
+    {
+      "from": "WO-097",
+      "to": "WO-096",
+      "relation": "hard",
+      "reason": "the ledger rows the batch selects from"
+    },
+    {
+      "from": "WO-098",
+      "to": "WO-097",
+      "relation": "hard",
+      "reason": "the first half-batch's retirements and bookkeeping"
+    },
+    {
+      "from": "WO-125",
+      "to": "WO-009",
+      "relation": "satisfied-by-release",
+      "release": "v0.10.0",
+      "reason": "the Codex transport"
+    },
+    {
+      "from": "WO-125",
+      "to": "WO-019",
+      "relation": "satisfied-by-close",
+      "reason": "the effort declaration and launch-claim contract"
+    },
+    {
+      "from": "WO-014",
+      "to": "WO-013",
+      "relation": "satisfied-by-release",
+      "release": "v0.3.1",
+      "reason": "the order's own Depends on"
+    },
+    {
+      "from": "WO-014",
+      "to": "WO-006",
+      "relation": "satisfied-by-release",
+      "release": "v0.2.3",
+      "reason": "the order's own Depends on"
+    }
+  ]
+}

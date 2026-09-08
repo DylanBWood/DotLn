@@ -1,5 +1,7 @@
 # WO-033 — The starter is a compiled export: one configuration root, registered target repositories, a launchpad export that carries the saved build, and a lane-sync helper (version assigned at activation)
 
+**Umbrella record (2026-09-08):** superseded whole by bounded children at the operator's same-day correction of the critical-path planning pass; not activatable. Its obligations are carried by WO-049 (phase 2, the target-worktree emit), WO-064 (phase 2, the target publish), WO-069 (phase 1, the configuration root), WO-070 (Beacon portability), WO-071 (registered repositories and authority profiles), WO-072 (the target worktree lifecycle), WO-073 (repository class and profile documents), WO-074 (the export kit with the license files), WO-075 (the kit runtime and bundle in the export), WO-076 (the instance build overlay), WO-077 (export update), WO-078 (the sibling registry and receipts), WO-079 (worktree sync) and WO-036 (the build-first boy-scout item). The text below is preserved as the record the children cite; nothing in it grants activation.
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.

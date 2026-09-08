@@ -9,7 +9,7 @@ selection contract. Both record launch selections and harness version;
 effective provider model and effort readback remain unknown. `fake` is for
 fixtures and cannot satisfy a planning gate.
 
-The episode has a twenty-minute deadline; Claude print retains a $5 budget cap.
+The CLI episode has a twenty-minute deadline; Claude print retains a $5 budget cap.
 An interrupted or invalid result produces no judgment receipt and cannot pass
 the gate. A transport retry is disclosed in the executor evidence.
 
@@ -24,12 +24,58 @@ non-goals. The map's labels, planner narrative, ledger, assumptions, rationale
 and earlier verdicts are excluded. The hash includes complete order bytes even
 though their narrative is not sent.
 
-The host compiles `plan-refuter.v1` with `repo.read*` and `report.emit`, no other
+For CLI reviews, the host compiles `plan-refuter.v1` with `repo.read*` and `report.emit`, no other
 grants, explicit write/remote/settings/decision denials, and a one-shot cadence.
 An empty temporary working directory and the existing transports' disabled
 model tools prevent repository traversal. Authentication remains the CLI
 broker's responsibility. A request does not grant the model access to local
 credentials, private intake or the planner's session.
+
+An operator may instead request an independent judgment directly in the current
+Codex session. Read the canonical subject and the `plan-refutation-v1` rules,
+judge without planner explanation, earlier reviews or private intake, validate
+the result with `validatePlanResult`, and freeze it before changing receipt
+tooling. Do not launch another reviewer to file that judgment. The existing
+`writePlanReceipt(root, { pass, slug, subject, episode, dispositions })` API
+accepts this second, closed `episode` form, with the frozen `result` added when
+calling the writer:
+
+```json
+{
+  "kind": "direct-session",
+  "harness": "codex",
+  "harnessVersion": "unknown",
+  "model": "unknown",
+  "effort": "unknown",
+  "settingsVerification": "unverified",
+  "profileId": "plan-refutation-v1",
+  "completedAt": "2030-01-02T12:00:00.000Z",
+  "resultHash": "sha256:<frozen-result-digest>",
+  "judgmentBasis": "canonical-subject-and-protocol",
+  "independence": "session-attested",
+  "contextIsolation": "not-enforced",
+  "modelTools": "available",
+  "statement": "Public session attestation describing the actual review and freeze."
+}
+```
+
+`resultHash` is SHA-256 of `JSON.stringify(validatedResult, null, 2) + "\n"`.
+`completedAt` records when that judgment was frozen, not a dispatch time.
+`profileId` names the judgment rules; it does not attest execution of a compiled
+loadout. Direct-session provenance contains no transport, acceptance receipt,
+launch selections or compiled semantic hash. Independence and freeze timing
+are session attestations, not host-verified isolation or chronology. Model
+settings remain unverified; the fixed unknown fields cannot claim readback.
+
+This extends the episode alternatives within the unchanged receipt envelope
+and result schemas. Existing CLI receipt rendering stays byte-identical. A
+direct-session planning write checks both the current committed subject hash
+and workspace hash; the usual committed-snapshot validation, local-terms screen,
+append lock, immutable pair, hold addresses, disposition chain and three-hold
+stop all apply. The planning gate admits this review source and still refuses
+fake reviews, stale subjects and unanswered holds. Recording a session judgment
+neither overrides a hold nor certifies receipt-tooling changes made by that
+session.
 
 The result is the closed `plan-refutation-v1` object: `orders`, `largestGap`,
 `planVerdict`, and `holdReasons`. Every order appears exactly once, with
@@ -60,7 +106,7 @@ makes the structural exception checkable without another model judgment.
 
 Each attempt creates `<date>-<slug>-NNN.json` and `.md` with a shared immutable
 receipt hash, committed subject revision/hash, global append ordinal and prior
-receipt hash, launch provenance, validated result, stable hold addresses, and
+receipt hash, review provenance, validated result, stable hold addresses, and
 dated accepted dispositions. The JSON is canonical evidence; Markdown must
 equal its deterministic rendering. Existing files cannot be overwritten or
 deleted to reset history. `--slug <public-label>` selects the readable address.

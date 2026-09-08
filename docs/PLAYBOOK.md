@@ -133,7 +133,10 @@ locks repaired, a regenerated index, and green `npm test`. It never activates,
 implements, or publishes. It is not the Entropy Reducer, which is a separate
 review dispatch with a frozen subject and a blinded refutation step, and not
 the Repo Gardener, which is the skeleton's demo identity. Land the result as a
-`:memo:` pull request from a planning branch.
+`:memo:` pull request from a planning branch. Check that planning branch out
+in the main checkout before the pass writes anything: the compiled
+Contributor build's writer guard refuses every write on `main` (observed
+2026-09-08).
 
 ## The loop, per work order
 

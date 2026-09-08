@@ -441,6 +441,10 @@ Preconditions and inputs:
 
 1. Run on the clean main checkout. Between work orders is the normal case; an
    active order is context, never a scope fence, exactly as in ideation mode.
+   Under the compiled Contributor build, check out a planning branch in the
+   main checkout before the first write: the generated writer guard refuses
+   every write on `main`, and the pass's output lands from that branch
+   (observed 2026-09-08).
 2. Read `npm run resume --silent -- status --json`, the
    [generated index](../work-orders/README.md), the
    [human map](../planning/work-order-map.md), the candidate documents under
@@ -457,7 +461,12 @@ After drafting the orders, commit the planning subject locally and run
 `npm run plan -- refute` before preparing the pull request. The subject is
 compiled from committed files only; the command refuses dirty judged inputs.
 It uses a fresh Entropy Reducer / Contra-Auguste episode through an existing
-transport, with planner narrative and model tools excluded. Commit the immutable
+transport, with planner narrative and model tools excluded. When neither
+transport has budget, the operator may instead request the judgment directly
+in a Codex session under the receipt convention's direct-session form: its
+independence is session-attested rather than host-enforced, its provenance
+fields are fixed `unknown`, and the gate applies the same hold, disposition
+and three-hold rules to it (observed 2026-09-08). Commit the immutable
 receipt pair and run `npm test` before the pass ends. The
 [receipt convention](../planning/refutations/README.md) gives the closed result,
 criterion-bound follow-up and override commands.
@@ -487,8 +496,9 @@ Standard artifacts, all doc-only:
 - the map's planning revision: the marked sequence block, rationale, adjacent
   track, preflight, candidates, catalog rows, and provenance;
 - a blinded refutation receipt pair under `docs/planning/refutations/`,
-  produced by `npm run plan -- refute`, with all holds answered through the
-  checked disposition chain or attributed override events;
+  produced by `npm run plan -- refute` or the direct-session form, with all
+  holds answered through the checked disposition chain or attributed
+  override events;
 - zero or more planner-synthesized work-order drafts, each with `Model:` and
   three-role `Effort:` lines, provenance, a dated observed gap, acceptance
   criteria, evidence, non-goals, and operator-review assumptions;
