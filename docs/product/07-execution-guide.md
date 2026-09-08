@@ -441,6 +441,10 @@ Preconditions and inputs:
 
 1. Run on the clean main checkout. Between work orders is the normal case; an
    active order is context, never a scope fence, exactly as in ideation mode.
+   Under the compiled Contributor build, check out a planning branch in the
+   main checkout before the first write: the generated writer guard refuses
+   every write on `main`, and the pass's output lands from that branch
+   (observed 2026-09-08).
 2. Read `npm run resume --silent -- status --json`, the
    [generated index](../work-orders/README.md), the
    [human map](../planning/work-order-map.md), the candidate documents under
