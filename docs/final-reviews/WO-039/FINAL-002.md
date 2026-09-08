@@ -79,4 +79,12 @@ I did not perform the merge; the fifth repair did, and VER-005 judged its result
 
 ## What happens next
 
-The reviewed state is committed on `wo-039`, the branch is pushed, and its pull request is opened from the contained [PR body](PR.md) with the five-section [release notes](RELEASE-NOTES.md) beside it. Nothing is merged, no release is published, and no account or repository setting is changed by this review. After the operator merges the pull request, `resume: release close` from `main` runs the exact post-merge handoff the publisher prints. Every checkpoint ref, verification report, repair receipt and evidence file is preserved unchanged.
+The reviewed state is committed on `wo-039` as five coherent commits, none carrying AI attribution. `npm run worktree -- publish WO-039` then passed every preflight it owns — the committed-surface check, both publication bodies, the license surfaces, and contribution sign-off for all five commits under the operator-author exemption — and refused at the `gh` preflight before any remote mutation, because this sandbox denies reading `~/.config/gh`. The branch is therefore **not pushed and no pull request is open**: `git ls-remote --heads origin wo-039` is empty and the branch sits five commits ahead of `origin/main`. The operator completes publication by running the same command from this worktree outside the sandbox:
+
+```sh
+npm run worktree -- publish WO-039 \
+  --title ':passport_control: Compile the Contributor build into the harness configuration this repository runs on: permissions, hooks, role skills and bounded residue (WO-039, v0.15.0)' \
+  --body-file docs/final-reviews/WO-039/PR.md
+```
+
+Nothing is merged, no release is published, and no account or repository setting is changed by this review. After the operator merges the pull request, `resume: release close` from `main` runs the exact post-merge handoff the publisher prints. Every checkpoint ref, verification report, repair receipt and evidence file is preserved unchanged.
