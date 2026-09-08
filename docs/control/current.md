@@ -1,22 +1,23 @@
 # Current control state
 
-## WO-109
+## WO-039
 
-- Work order: WO-109
-- Work-order path: docs/work-orders/WO-109-shape-first-source-remine.md
+- Work order: WO-039
+- Work-order path: docs/work-orders/WO-039-harness-lowering.md
 - Phase: closed
-- Latest verification: VER-001
-- Verification path: docs/verifications/WO-109/VER-001.md
+- Latest verification: VER-005
+- Verification path: docs/verifications/WO-039/VER-005.md
 - Latest verdict: pass
-- Final review: FINAL-001
-- Final-review path: docs/final-reviews/WO-109/FINAL-001.md
-- Latest attestation: harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable
+- Final review: FINAL-002
+- Final-review path: docs/final-reviews/WO-039/FINAL-002.md
+- Latest attestation: harness claude-code; version 2.1.263; model claude-opus-5[1m]; effort max; source self-reported; account not-applicable
 - Effort drift: none
-- Latest recordedAt: 2026-09-08T01:18:26.844Z
-- Elapsed implementation: 8288738 ms
-- Elapsed verification: 1128934 ms
-- Elapsed finalReview: 1865780 ms
-- Latest checkpoint: f5080a6b17d8bda9d1ac9b43629a09e804a529e8 (restore: `git checkout refs/dotln/checkpoint/WO-109/6 -- .`)
+- Latest recordedAt: 2026-09-08T16:33:32.509Z
+- Elapsed implementation: 14225760 ms
+- Elapsed verification: 1090197 ms
+- Elapsed repair: 27103415 ms
+- Elapsed finalReview: 2205496 ms
+- Latest checkpoint: 6eaf3b2c558f999ff48dea95eb23ac4d5a3262c9 (restore: `git checkout refs/dotln/checkpoint/WO-039/26 -- .`)
 - Legal next actions: release-close, next, activate
 
 Generated from the append-only `docs/control/resume.jsonl` and `docs/control/orders/WO-NNN.jsonl` segments; do not edit this projection manually.
