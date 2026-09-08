@@ -781,6 +781,15 @@ claim evidence or releases it does not have.
   measured from the corrected instance. This binds every authored series:
   titles, commit subjects, PR bodies, release notes, verification and
   final-review reports, checklists, receipts, and replies to the operator.
+- **A question is not a waiver (operator correction, 2026-09-07).** An
+  operator's question, confusion, or complaint about cost or time changes no
+  obligation. Answer it in plain terms, then continue the work under the
+  standard already in force; only an explicit operator decision lowers a
+  standard, drops a check, or narrows scope. Treating a question as permission
+  to stop pursuing a green gate, skip a check, or accept a weaker result is the
+  behavior this correction names, and it is the same failure whether the
+  question sounds annoyed or curious. If the standard seems wrong, say so in
+  one sentence and keep working under it until the operator decides.
 - **Return shape.** End with a compact result: what changed, evidence pointers,
   deviations from the work order, open questions. Terse; no narration theater,
   no apology theater.
