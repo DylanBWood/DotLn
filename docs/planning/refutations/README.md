@@ -171,8 +171,10 @@ surface, starting line and count. Missing lists are explicitly `unavailable`,
 never a silent clean-room pass. Fixtures register only synthetic terms. This
 realizes the small shared screen needed by WO-041 ahead of its WO-039 consumers.
 
-`npm run plan -- check` and `npm test` validate the receipt chain and enforce
-dated planning headings forward from the first-parent introduction commit.
+`npm run plan -- check` validates the receipt chain and enforces dated
+planning headings forward from the first-parent introduction commit;
+`npm test` includes that check for code changes, and a planning pass runs
+the document gate only.
 Pre-existing headings and the six manual 2026-09-06 redirect receipts retain
 their original standard. Every new pass needs a receipt; the current horizon
 must match the current committed/workspace subject. Prior receipts retain their

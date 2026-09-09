@@ -1,5 +1,7 @@
 # WO-036 — Evidence runner: build first, run suites concurrently, report per case (version assigned at activation)
 
+**Umbrella record (2026-09-09):** superseded whole by [WO-126](WO-126-process-debt.md) criterion 6 at the operator's emergency process-debt pass; not activatable. That criterion carries this order's runner, its `--only` and `--serial` forms, the `node:test` conversions and the measured receipt, and adds the numeric targets this order lacked (a fast gate under 120 s beside the full gate at the lifecycle transitions). The 2026-09-06 measurement below is the baseline that criterion cites; nothing in this record grants activation.
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.

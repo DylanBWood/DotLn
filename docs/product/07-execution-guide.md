@@ -322,8 +322,16 @@ entries, or reopening an ADR or settled resolution. Apply it to material already
 inside the authorized ideation subject; surface a genuine new tension through
 the existing decision process.
 
-Apply corrections to the behavior the operator rejected. Preserve the surrounding
-requirements and distinguish an example from an explicit constraint. Before
+**Applying a correction (operator definition, 2026-09-09).** A correction
+points at a category. Two failure modes: sweeping generalization, which
+extrapolates beyond what the operator said into adjacent rules or file
+changes they never asked for; and over-literal interpretation, which strips
+the rule to its exact words and misses obvious members of the same category.
+The middle ground is judgment: identify the category the operator is
+pointing at, stay inside it, neither widen nor shrink it, ask one focused
+question when the boundary is genuinely unclear instead of guessing in
+either direction, and pause to ask before any file action that goes beyond
+the literal correction. Before
 replacing an approach, check the recorded reasons for earlier rejections; neither
 repeat a rejected approach nor jump to its opposite without supporting evidence.
 For example, a complaint about paragraph-length PR titles calls for useful,
@@ -444,7 +452,11 @@ Preconditions and inputs:
    Under the compiled Contributor build, check out a planning branch in the
    main checkout before the first write: the generated writer guard refuses
    every write on `main`, and the pass's output lands from that branch
-   (observed 2026-09-08).
+   (observed 2026-09-08). The guard's command allowlist does not include
+   the branch checkout itself, so a pass cannot create that branch through
+   the Bash tool (observed 2026-09-09); WO-126 supplies
+   `npm run plan -- start <slug>`, and until it lands the operator creates
+   the branch before dispatching the pass.
 2. Read `npm run resume --silent -- status --json`, the
    [generated index](../work-orders/README.md), the
    [human map](../planning/work-order-map.md), the candidate documents under
@@ -457,6 +469,29 @@ Preconditions and inputs:
 4. `ideation:` entries in the same dispatch run the complete ideation pipeline
    first; their synthesis is planning input.
 
+**`planning: refute` (operator dispatch, 2026-09-09).** The session that
+receives this phrase is the refuter. It performs the
+[receipt convention's direct-session form](../planning/refutations/README.md)
+itself, end to end, and asks the operator for nothing. Never launch a CLI
+transport for this phrase; `npm run plan -- refute` stays the separate
+command for an external refuter. In order: build (`npm run build --silent`)
+and confirm with `npm run plan -- subject` that the committed subject is the
+workspace subject; render the canonical refuter input from that subject with
+the built protocol's `planPrompt`, the same text a transport would send, and
+read nothing else (no map narrative, ledger bodies, earlier receipts,
+planner explanations or intake); judge every order under the
+`plan-refutation-v1` rules the input states and save the closed result;
+validate it with `validatePlanResult`, hash the frozen result, and file the
+immutable pair through `writePlanReceipt` with a direct-session episode and
+a session statement of what was and was not read; commit the pair with a
+plain subject and run `npm run plan -- check`; report the verdict and any
+holds. If `docs/planning/<pass>-<date>-dispositions.json` exists, pass its
+entries as the receipt's dispositions. Run no code suite. Until WO-126
+criterion 15 gives the phrase its own dispatch, it arrives through the
+planner role's directed reads; the session states that exposure in its
+statement, as receipt 005 did. WO-126 criterion 15 compiles these steps
+into two commands so the session runs no ad hoc code.
+
 After drafting the orders, commit the planning subject locally and run
 `npm run plan -- refute` before preparing the pull request. The subject is
 compiled from committed files only; the command refuses dirty judged inputs.
@@ -467,7 +502,9 @@ in a Codex session under the receipt convention's direct-session form: its
 independence is session-attested rather than host-enforced, its provenance
 fields are fixed `unknown`, and the gate applies the same hold, disposition
 and three-hold rules to it (observed 2026-09-08). Commit the immutable
-receipt pair and run `npm test` before the pass ends. The
+receipt pair and run the document gate (`npm run plan -- check` with the
+index, publication and format checks) before the pass ends; a pass runs no
+code suite (operator decision, 2026-09-09). The
 [receipt convention](../planning/refutations/README.md) gives the closed result,
 criterion-bound follow-up and override commands.
 
@@ -512,7 +549,11 @@ Standard artifacts, all doc-only:
   criteria, evidence, non-goals, and operator-review assumptions;
 - product-doc write-back for durable understanding, with the publication
   index and edition locks repaired in the same pass;
-- `npm run work-orders -- index` regenerated and `npm test` green.
+- `npm run work-orders -- index` regenerated and the document gate green:
+  `npm run plan -- check`, `npm run work-orders -- index --check`,
+  `npm run publication:check` and `npm run format:check`. A document-only
+  pass changes no code and never runs the code suites (operator decision,
+  2026-09-09; the mechanism is WO-126 criterion 6).
 
 A planning pass never activates, implements, tags, publishes, merges, edits
 immutable evidence, or relitigates a settled decision. A planning pass also
@@ -772,9 +813,15 @@ claim evidence or releases it does not have.
   tool with itself. Prefer instruments that fail loudly; an append-only log with
   a regenerated projection is safe to dogfood precisely because corruption shows
   rather than producing a plausible record.
-- **Settled is settled.** The idea-ledger Resolutions and `docs/decisions/`
-  close their questions. Do not relitigate; a genuine new-evidence challenge
-  becomes a new decision record proposal, never an in-place edit. Exception:
+- **Decided means sourced, not frozen (operator correction, 2026-09-09).**
+  A decision record names the operator dispatch that made it and the
+  condition that reopens it. Do not relitigate a decision for lack of new
+  material; reopen it when evidence the meter or a session records bears on
+  that condition, or when the operator says so, and reopen it as a new
+  decision record proposal, never an in-place edit. A rule that a decision
+  can never be revisited is inertia written into the repository and is
+  itself the defect; the idea-ledger Resolutions and `docs/decisions/` close
+  questions on their recorded terms, not forever. Exception:
   each ADR carries an appendable **Amendments** section for notes within the
   decided constraints (a dev-dependency, a tooling choice) — appending there is
   not an edit of the decision.
@@ -862,6 +909,39 @@ claim evidence or releases it does not have.
   behavior this correction names, and it is the same failure whether the
   question sounds annoyed or curious. If the standard seems wrong, say so in
   one sentence and keep working under it until the operator decides.
+- **Process budget (operator correction, 2026-09-09).** Every gate must be
+  cheaper than the failure it prevents, and the repository's own records
+  decide. Hard enforcement lives in the lifecycle commands, which check
+  evidence; a hook that fires at turn end advises in one line and never
+  blocks. A read obligation covers what the session wrote or regenerated,
+  minus generated artifacts and oversized files, which owe a check instead;
+  inherited bytes owe nothing. A full gate runs once per tree hash and its
+  evidence is reused by hash at every later step including the tag; the fast
+  gate is for iteration. No session writes a closeout script; if a helper
+  refuses, report the refusal. Any size, duration or count that grows from
+  one order to the next past its budget needs a dated operator acceptance,
+  or the fast gate fails. A finding that would otherwise become a
+  nomination gets a criterion in the order that found it. The standing
+  questions for every process, asked by the repository through the meter,
+  the order template, the refuter and the role skills, never by the
+  operator: how do we make this quicker; how do we make this take less
+  context; how do we make this consume fewer resources; how do we make a
+  six-step process four steps and perform as well or better. A new user
+  must never find the simplest action the most expensive in time, resources
+  or context. Data the repository generates or collects is kept when it
+  materially informs a later decision, whatever it costs to produce, and
+  cut only when nothing decides on it; cost alone never removes a record,
+  and annoyance is not the test (operator clarification, 2026-09-09). The
+  lens for the process itself is Meadows' system traps, five of which the
+  operator named as live here on 2026-09-09: rule beating, seeking the
+  wrong goal, shifting the burden to the intervenor, drift to low
+  performance, and policy resistance. Each has a signal in the repository's
+  own data and the meter reports them per order; a session that satisfies
+  a gate against its purpose, optimizes a proxy, leans on the operator,
+  sizes against the previous instance, or works around a rule is in one of
+  them. The mechanism is
+  [WO-126](../work-orders/WO-126-process-debt.md); until it lands, the rule
+  binds by hand.
 - **Return shape.** End with a compact result: what changed, evidence pointers,
   deviations from the work order, open questions. Terse; no narration theater,
   no apology theater.
