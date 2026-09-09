@@ -14,7 +14,7 @@
       "sections": [
         {
           "id": "actors-d388bf69a2138223",
-          "title": "WO-039 self-hosted executor",
+          "title": "WO-042 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -126,7 +126,7 @@
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-24"
@@ -182,7 +182,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1788879577413,
+                  "value": 1788926121728,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-24"
@@ -202,7 +202,7 @@
               "links": [
                 {
                   "label": "Inspect recorded build",
-                  "target": "recorded-build-6499f16d42559ac9"
+                  "target": "recorded-build-35f26d4503b9a313"
                 },
                 {
                   "label": "feedback.audit: allowed",
@@ -226,7 +226,7 @@
         },
         {
           "id": "actors-b9a9504826d64362",
-          "title": "WO-039 self-hosted verifier",
+          "title": "WO-042 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -348,7 +348,7 @@
                   "key": "heartbeat",
                   "label": "Last host heartbeat",
                   "status": "known",
-                  "value": 1788875999755,
+                  "value": 1788922546895,
                   "explanation": null,
                   "evidence": [
                     "evidence-29"
@@ -358,7 +358,7 @@
                   "key": "lease",
                   "label": "Recorded lease expiry",
                   "status": "known",
-                  "value": 1788876004755,
+                  "value": 1788922551895,
                   "explanation": null,
                   "evidence": [
                     "evidence-29"
@@ -368,7 +368,7 @@
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:c9955a2344c45b3a",
+                  "value": "fnv1a64:5bb660fcc70a4650",
                   "explanation": null,
                   "evidence": [
                     "evidence-31"
@@ -425,7 +425,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1788879581480,
+                  "value": 1788926125621,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-31"
@@ -445,7 +445,7 @@
               "links": [
                 {
                   "label": "Inspect recorded build",
-                  "target": "recorded-build-9df9171b916d5b7f"
+                  "target": "recorded-build-1b46c4278e7ba940"
                 },
                 {
                   "label": "Acceptance matrix: ws_feedback_audit_verification",
@@ -457,11 +457,11 @@
                 },
                 {
                   "label": "verification.evaluate: observed",
-                  "target": "receipt-a31fa503faf4893c"
+                  "target": "receipt-8759c99a7985feb9"
                 },
                 {
                   "label": "command.result: returned",
-                  "target": "receipt-deeb442b9114290c"
+                  "target": "receipt-fff0cfeeaca78dbf"
                 }
               ]
             },
@@ -523,7 +523,7 @@
                   "key": "lastActionAt",
                   "label": "Recorded action time",
                   "status": "known",
-                  "value": 1788876000462,
+                  "value": 1788922547473,
                   "explanation": null,
                   "evidence": [
                     "evidence-32"
@@ -752,7 +752,7 @@
         },
         {
           "id": "receipts-d388bf69a2138223",
-          "title": "Audit receipts — WO-039 self-hosted executor",
+          "title": "Audit receipts — WO-042 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -1028,7 +1028,7 @@
         },
         {
           "id": "receipts-b9a9504826d64362",
-          "title": "Audit receipts — WO-039 self-hosted verifier",
+          "title": "Audit receipts — WO-042 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -1122,7 +1122,7 @@
               "links": []
             },
             {
-              "id": "receipt-a31fa503faf4893c",
+              "id": "receipt-8759c99a7985feb9",
               "title": "verification.evaluate — observed",
               "cells": [
                 {
@@ -1201,7 +1201,7 @@
                   "status": "known",
                   "value": [
                     "event:evt_4",
-                    "event:evt_26"
+                    "event:evt_29"
                   ],
                   "explanation": null,
                   "evidence": [
@@ -1212,7 +1212,7 @@
               "links": []
             },
             {
-              "id": "receipt-deeb442b9114290c",
+              "id": "receipt-fff0cfeeaca78dbf",
               "title": "command.result — returned",
               "cells": [
                 {
@@ -1290,7 +1290,7 @@
                   "label": "Canonical events",
                   "status": "known",
                   "value": [
-                    "event:evt_26"
+                    "event:evt_29"
                   ],
                   "explanation": null,
                   "evidence": [
@@ -1433,7 +1433,7 @@
                   "key": "tooltip",
                   "label": "Mechanics and declared costs",
                   "status": "known",
-                  "value": "Seiri / Sort / 整理\nThe Evidence-Bound Sort — COMPILED DIFF\n\nGRANTS\n+ Inventory every fixture path\n+ Classify every fixture path\n+ Analyze references\n+ Propose deletion candidates\n\nRESTRICTIONS\n+ Do not mutate repository contents\n+ Deletion remains operator-owned\n+ Inspect only the bounded fixture repository\n\nOBLIGATION\n+ Attach inventory, classification, and reference evidence to every candidate\n+ Independently verify proposed candidates\n\nPASSIVE\n+ Active only while the operator is absent\n\nPULSE\n+ Re-evaluate every 20 virtual minutes\n\nINTERRUPT\n+ Stop on operator return; queued pulses become a traced NoOp\n\nCOST\n+ seiri.absence-cadence — statechart-gate; prompt=0 tokens; runtime=2 predicate-evaluations-per-pulse; episodes=0\n+ seiri.evidence-capture — evidence-schema; prompt=0 tokens; runtime=1 schema-validations-per-result; episodes=0\n+ seiri.independent-verification — verifier-episode; prompt=0 tokens; runtime=1 verifier-dispatches; episodes=1\n+ seiri.read-only — permission-guard; prompt=0 tokens; runtime=1 guard-checks-per-effect; episodes=0\n+ seiri.repo-scope — work-order; prompt=0 tokens; runtime=0 operations; episodes=0\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:9ca8d0229c6bd8db",
+                  "value": "Seiri / Sort / 整理\nThe Evidence-Bound Sort — COMPILED DIFF\n\nGRANTS\n+ repo.inspect\n\nRESTRICTIONS\n+ repo.delete\n+ repo.write\n\nAUTHORED NOTES (non-enforcing)\nAuthored grants\n+ Inventory every fixture path\n+ Classify every fixture path\n+ Analyze references\n+ Propose deletion candidates\nAuthored restrictions\n+ Do not mutate repository contents\n+ Deletion remains operator-owned\n+ Inspect only the bounded fixture repository\n\nOBLIGATION\n+ Attach inventory, classification, and reference evidence to every candidate\n+ Independently verify proposed candidates\n\nPASSIVE\n+ Active only while the operator is absent\n\nPULSE\n+ Re-evaluate every 20 virtual minutes\n\nINTERRUPT\n+ Stop on operator return; queued pulses become a traced NoOp\n\nCOST\n+ seiri.absence-cadence — statechart-gate; prompt=0 tokens; runtime=2 predicate-evaluations-per-pulse; episodes=0\n+ seiri.evidence-capture — evidence-schema; prompt=0 tokens; runtime=1 schema-validations-per-result; episodes=0\n+ seiri.independent-verification — verifier-episode; prompt=0 tokens; runtime=1 verifier-dispatches; episodes=1\n+ seiri.read-only — permission-guard; prompt=0 tokens; runtime=1 guard-checks-per-effect; episodes=0\n+ seiri.repo-scope — work-order; prompt=0 tokens; runtime=0 operations; episodes=0\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:9ca8d0229c6bd8db",
                   "explanation": "Compiler renderCompiledDiff(undefined, program); original terms remain primary",
                   "evidence": [
                     "evidence-1"
@@ -1560,7 +1560,7 @@
                   "key": "tooltip",
                   "label": "Mechanics and declared costs",
                   "status": "known",
-                  "value": "Seisō / Shine / 清掃\nThe Entropy-Reducing Shine — COMPILED DIFF\n\nGRANTS\n+ Read repository evidence\n+ Run bounded scratch probes\n+ Delegate up to four read-only lenses\n+ Emit a validated report\n\nRESTRICTIONS\n+ Never mutate the tracked repository or control plane\n+ Never change remotes, settings, or operator decisions\n+ At most four no-fix, read-only lens delegates\n+ The result-envelope summary stays under 200 words\n\nOBLIGATION\n+ Reproduce every finding\n+ Apply the clean-room floor\n+ Await operator disposition\n+ Tag the likely surface and intervention altitude\n+ Refute independently before promoting findings\n+ Name the cheapest executable rung for every recurring finding\n+ Separate literal defects from the analogy's useful shape\n+ Every finding carries reproduction and evidence refs\n\nPASSIVE\n+ Measure before assuming\n+ Constraint-first proposal ordering\n\nPULSE\n+ One review on explicit dispatch\n\nINTERRUPT\n+ Stop on OperatorStopRequested or episode expiry\n\nCOST\n+ entropy-reducer.altitude-tag — work-order; prompt=24 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.constraint-first-ordering — prompt-fragment; prompt=27 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.fan-out-lens — work-order; prompt=38 tokens; runtime=4 delegates-maximum; episodes=0\n+ entropy-reducer.mutation-drill — verifier-episode; prompt=28 tokens; runtime=32 scratch-probes-maximum; episodes=1\n+ entropy-reducer.seiketsu-standardize — work-order; prompt=24 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.shape-first — prompt-fragment; prompt=34 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.sparse-receipt — evidence-schema; prompt=31 tokens; runtime=1 validation-per-report; episodes=0\n+ entropy-reducer.verify-first — evidence-schema; prompt=42 tokens; runtime=1 validation-per-output; episodes=0\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:cd6f2c9b6f1c3883",
+                  "value": "Seisō / Shine / 清掃\nThe Entropy-Reducing Shine — COMPILED DIFF\n\nGRANTS\n+ repo.read*\n+ probe.run:scratch*\n+ intake.capture\n+ delegate.readonly\n+ report.emit\n\nRESTRICTIONS\n+ repo.write*\n+ git.mutate*\n+ remote.*\n+ settings.*\n+ decision.edit\n\nAUTHORED NOTES (non-enforcing)\nAuthored grants\n+ Read repository evidence\n+ Run bounded scratch probes\n+ Delegate up to four read-only lenses\n+ Emit a validated report\nAuthored restrictions\n+ Never mutate the tracked repository or control plane\n+ Never change remotes, settings, or operator decisions\n+ At most four no-fix, read-only lens delegates\n+ The result-envelope summary stays under 200 words\n\nOBLIGATION\n+ Reproduce every finding\n+ Apply the clean-room floor\n+ Await operator disposition\n+ Tag the likely surface and intervention altitude\n+ Refute independently before promoting findings\n+ Name the cheapest executable rung for every recurring finding\n+ Separate literal defects from the analogy's useful shape\n+ Every finding carries reproduction and evidence refs\n\nPASSIVE\n+ Measure before assuming\n+ Constraint-first proposal ordering\n\nPULSE\n+ One review on explicit dispatch\n\nINTERRUPT\n+ Stop on OperatorStopRequested or episode expiry\n\nCOST\n+ entropy-reducer.altitude-tag — work-order; prompt=24 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.constraint-first-ordering — prompt-fragment; prompt=27 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.fan-out-lens — work-order; prompt=38 tokens; runtime=4 delegates-maximum; episodes=0\n+ entropy-reducer.mutation-drill — verifier-episode; prompt=28 tokens; runtime=32 scratch-probes-maximum; episodes=1\n+ entropy-reducer.seiketsu-standardize — work-order; prompt=24 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.shape-first — prompt-fragment; prompt=34 tokens; runtime=0 effects; episodes=0\n+ entropy-reducer.sparse-receipt — evidence-schema; prompt=31 tokens; runtime=1 validation-per-report; episodes=0\n+ entropy-reducer.verify-first — evidence-schema; prompt=42 tokens; runtime=1 validation-per-output; episodes=0\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:cd6f2c9b6f1c3883",
                   "explanation": "Compiler renderCompiledDiff(undefined, program); original terms remain primary",
                   "evidence": [
                     "evidence-2"
@@ -1679,7 +1679,7 @@
                   "key": "tooltip",
                   "label": "Mechanics and declared costs",
                   "status": "known",
-                  "value": "Seisō / Shine / 清掃\nThe Entropy-Reducing Shine — COMPILED DIFF\n\nGRANTS\n+ Read the compiled planning subject\n+ Emit a validated refutation\n\nRESTRICTIONS\n+ No model tools, writes, remotes, settings changes or operator decisions\n\nOBLIGATION\n+ Name the vision passage behind every drift finding\n+ Preserve all unanswered holds\n+ Apply the clean-room floor\n\nPASSIVE\n+ Contra-Auguste; architecture-and-semantics lens\n\nPULSE\n+ One blinded episode on explicit planning dispatch\n\nINTERRUPT\n+ Stop at episode expiry\n\nCOST\n  (no change)\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:64f5b75b5deeb91f",
+                  "value": "Seisō / Shine / 清掃\nThe Entropy-Reducing Shine — COMPILED DIFF\n\nGRANTS\n+ repo.read*\n+ report.emit\n\nRESTRICTIONS\n+ repo.write*\n+ git.mutate*\n+ remote.*\n+ settings.*\n+ decision.*\n+ decision.edit\n\nAUTHORED NOTES (non-enforcing)\nAuthored grants\n+ Read the compiled planning subject\n+ Emit a validated refutation\nAuthored restrictions\n+ No model tools, writes, remotes, settings changes or operator decisions\n\nOBLIGATION\n+ Name the vision passage behind every drift finding\n+ Preserve all unanswered holds\n+ Apply the clean-room floor\n\nPASSIVE\n+ Contra-Auguste; architecture-and-semantics lens\n\nPULSE\n+ One blinded episode on explicit planning dispatch\n\nINTERRUPT\n+ Stop at episode expiry\n\nCOST\n  (no change)\n\nSEMANTIC HASH\n  before=none\n  after=fnv1a64:64f5b75b5deeb91f",
                   "explanation": "Compiler renderCompiledDiff(undefined, program); original terms remain primary",
                   "evidence": [
                     "evidence-3"
@@ -1692,19 +1692,19 @@
         },
         {
           "id": "recorded-builds-d388bf69a2138223",
-          "title": "Recorded builds — WO-039 self-hosted executor",
+          "title": "Recorded builds — WO-042 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
             {
-              "id": "recorded-build-6499f16d42559ac9",
+              "id": "recorded-build-35f26d4503b9a313",
               "title": "feedback-host",
               "cells": [
                 {
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-24"
@@ -1760,7 +1760,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1788879577413,
+                  "value": 1788926121728,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-24"
@@ -1840,19 +1840,19 @@
         },
         {
           "id": "recorded-builds-b9a9504826d64362",
-          "title": "Recorded builds — WO-039 self-hosted verifier",
+          "title": "Recorded builds — WO-042 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
             {
-              "id": "recorded-build-9df9171b916d5b7f",
+              "id": "recorded-build-1b46c4278e7ba940",
               "title": "verifier",
               "cells": [
                 {
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:c9955a2344c45b3a",
+                  "value": "fnv1a64:5bb660fcc70a4650",
                   "explanation": null,
                   "evidence": [
                     "evidence-31"
@@ -1909,7 +1909,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1788879581480,
+                  "value": 1788926125621,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-31"
@@ -2022,7 +2022,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-4"
@@ -2262,7 +2262,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-6"
@@ -2502,7 +2502,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-8"
@@ -2742,7 +2742,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-10"
@@ -2982,7 +2982,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-12"
@@ -3222,7 +3222,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-14"
@@ -3462,7 +3462,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-16"
@@ -3702,7 +3702,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-18"
@@ -3942,7 +3942,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-20"
@@ -4182,7 +4182,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:f78e381ffafce1e9",
+                  "value": "fnv1a64:b7415b98b50fc2ce",
                   "explanation": null,
                   "evidence": [
                     "evidence-22"
@@ -4408,14 +4408,14 @@
         },
         {
           "id": "matrices-d388bf69a2138223",
-          "title": "Acceptance evidence — WO-039 self-hosted executor",
+          "title": "Acceptance evidence — WO-042 self-hosted executor",
           "status": "available",
           "explanation": "The source records no entries",
           "rows": []
         },
         {
           "id": "matrices-b9a9504826d64362",
-          "title": "Acceptance evidence — WO-039 self-hosted verifier",
+          "title": "Acceptance evidence — WO-042 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -4437,7 +4437,7 @@
                   "key": "subject",
                   "label": "Subject revision",
                   "status": "known",
-                  "value": "sha256:2d57f4277a5175b70219cc5fad4974fe40142f397b95d1f290fc2b5c9b038226",
+                  "value": "sha256:5abd16691a8ccaf24a7e6d1bf18011715fc769f33239aa5c550136f00582bc50",
                   "explanation": null,
                   "evidence": [
                     "evidence-33"
@@ -4508,7 +4508,7 @@
                   "label": "Evidence references",
                   "status": "known",
                   "value": [
-                    "sha256:2d57f4277a5175b70219cc5fad4974fe40142f397b95d1f290fc2b5c9b038226:AC-causal-fixtures"
+                    "sha256:5abd16691a8ccaf24a7e6d1bf18011715fc769f33239aa5c550136f00582bc50:AC-causal-fixtures"
                   ],
                   "explanation": null,
                   "evidence": [
@@ -4580,7 +4580,7 @@
                   "label": "Evidence references",
                   "status": "known",
                   "value": [
-                    "sha256:2d57f4277a5175b70219cc5fad4974fe40142f397b95d1f290fc2b5c9b038226:AC-context"
+                    "sha256:5abd16691a8ccaf24a7e6d1bf18011715fc769f33239aa5c550136f00582bc50:AC-context"
                   ],
                   "explanation": null,
                   "evidence": [
@@ -4729,17 +4729,17 @@
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-039/feedback/feedback.json",
+      "ref": "docs/evidence/WO-042/feedback-002/feedback.json",
       "status": "available",
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-039/feedback/selfhost-audit.jsonl#worker-status",
+      "ref": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#worker-status",
       "status": "available",
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections",
+      "ref": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
       "status": "available",
       "explanation": null
     },
@@ -4749,12 +4749,12 @@
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#worker-status",
+      "ref": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#worker-status",
       "status": "available",
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections",
+      "ref": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
       "status": "available",
       "explanation": null
     },
@@ -4837,7 +4837,7 @@
     },
     {
       "id": "evidence-5",
-      "source": "docs/evidence/WO-039/feedback/feedback.json",
+      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
       "record": "maturity:anti-oscillation; fixtures:anti-oscillation"
     },
     {
@@ -4847,7 +4847,7 @@
     },
     {
       "id": "evidence-7",
-      "source": "docs/evidence/WO-039/feedback/feedback.json",
+      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
       "record": "maturity:bounded-boy-scout-cleanup; fixtures:bounded-boy-scout-cleanup"
     },
     {
@@ -4857,7 +4857,7 @@
     },
     {
       "id": "evidence-9",
-      "source": "docs/evidence/WO-039/feedback/feedback.json",
+      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
       "record": "maturity:concurrent-work-requires-worktrees; fixtures:concurrent-work-requires-worktrees"
     },
     {
@@ -4867,7 +4867,7 @@
     },
     {
       "id": "evidence-11",
-      "source": "docs/evidence/WO-039/feedback/feedback.json",
+      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
       "record": "maturity:correctness-over-sycophancy; fixtures:correctness-over-sycophancy"
     },
     {
@@ -4877,7 +4877,7 @@
     },
     {
       "id": "evidence-13",
-      "source": "docs/evidence/WO-039/feedback/feedback.json",
+      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
       "record": "maturity:fail-conservative-correction; fixtures:fail-conservative-correction"
     },
     {
@@ -4887,7 +4887,7 @@
     },
     {
       "id": "evidence-15",
-      "source": "docs/evidence/WO-039/feedback/feedback.json",
+      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
       "record": "maturity:no-attribution; fixtures:no-attribution"
     },
     {
@@ -4897,7 +4897,7 @@
     },
     {
       "id": "evidence-17",
-      "source": "docs/evidence/WO-039/feedback/feedback.json",
+      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
       "record": "maturity:no-lint-type-disables-as-fixes; fixtures:no-lint-type-disables-as-fixes"
     },
     {
@@ -4907,7 +4907,7 @@
     },
     {
       "id": "evidence-19",
-      "source": "docs/evidence/WO-039/feedback/feedback.json",
+      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
       "record": "maturity:no-partial-completion; fixtures:no-partial-completion"
     },
     {
@@ -4917,7 +4917,7 @@
     },
     {
       "id": "evidence-21",
-      "source": "docs/evidence/WO-039/feedback/feedback.json",
+      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
       "record": "maturity:read-your-own-output; fixtures:read-your-own-output"
     },
     {
@@ -4927,83 +4927,83 @@
     },
     {
       "id": "evidence-23",
-      "source": "docs/evidence/WO-039/feedback/feedback.json",
+      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
       "record": "maturity:verify-app-before-done; fixtures:verify-app-before-done"
     },
     {
       "id": "evidence-24",
-      "source": "docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
       "record": "event:evt_1 (FeedbackAuditOpened)"
     },
     {
       "id": "evidence-25",
-      "source": "docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
       "record": "event:evt_5 (CommandResult)"
     },
     {
       "id": "evidence-26",
-      "source": "docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
       "record": "receipt:audit:evt_3:authority-decision; event:evt_3"
     },
     {
       "id": "evidence-27",
-      "source": "docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
       "record": "receipt:audit:evt_5:external-effect; event:evt_3, event:evt_5"
     },
     {
       "id": "evidence-28",
-      "source": "docs/evidence/WO-039/feedback/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
       "record": "receipt:audit:evt_5:result; event:evt_5"
     },
     {
       "id": "evidence-29",
-      "source": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#worker-status",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#worker-status",
       "record": "episodes:ep_verifier_1_attempt_1"
     },
     {
       "id": "evidence-30",
-      "source": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
       "record": "event:evt_5 (WorkerAttemptStarted)"
     },
     {
       "id": "evidence-31",
-      "source": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
       "record": "event:evt_4 (CommandPersisted)"
     },
     {
       "id": "evidence-32",
-      "source": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections",
-      "record": "event:evt_28 (VerificationContinuation)"
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
+      "record": "event:evt_31 (VerificationContinuation)"
     },
     {
       "id": "evidence-33",
-      "source": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#worker-status",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#worker-status",
       "record": "acceptanceEvidenceMatrices:ws_feedback_audit_verification"
     },
     {
       "id": "evidence-34",
-      "source": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#worker-status",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#worker-status",
       "record": "acceptanceEvidenceMatrices:ws_feedback_audit_verification/criterion:AC-causal-fixtures"
     },
     {
       "id": "evidence-35",
-      "source": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#worker-status",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#worker-status",
       "record": "acceptanceEvidenceMatrices:ws_feedback_audit_verification/criterion:AC-context"
     },
     {
       "id": "evidence-36",
-      "source": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections",
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
       "record": "receipt:audit:evt_4:authority-decision; event:evt_4"
     },
     {
       "id": "evidence-37",
-      "source": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections",
-      "record": "receipt:audit:evt_26:external-effect; event:evt_4, event:evt_26"
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
+      "record": "receipt:audit:evt_29:external-effect; event:evt_4, event:evt_29"
     },
     {
       "id": "evidence-38",
-      "source": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl#audit-projections",
-      "record": "receipt:audit:evt_26:result; event:evt_26"
+      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
+      "record": "receipt:audit:evt_29:result; event:evt_29"
     }
   ]
 }

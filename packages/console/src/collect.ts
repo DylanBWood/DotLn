@@ -21,9 +21,10 @@ import { array, at, available, object, string, unavailable } from "./values.js";
  * earlier edition historical: the skeleton refuses persisted compilation drift
  * when it replays that edition's verifier stream, so the two selections move
  * together, and the `selfhost` fixture case is re-pinned with them. */
-export const SELF_HOST_EDITION = "WO-039";
+export const SELF_HOST_EDITION = "WO-042";
+export const SELF_HOST_REVISION = "002";
 export const selfHostEvidence = (name: string): string =>
-  `docs/evidence/${SELF_HOST_EDITION}/feedback/${name}`;
+  `docs/evidence/${SELF_HOST_EDITION}/feedback-${SELF_HOST_REVISION}/${name}`;
 
 function attempt<T>(ref: string, read: () => T): Source<T> {
   try {

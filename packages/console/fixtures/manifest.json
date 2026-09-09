@@ -1,6 +1,6 @@
 {
   "fixtureVersion": "uifa-board-fixtures-v1",
-  "capture": "2026-09-07 WO-032 executor; canonical records and source-format snapshots. Constellation checkout addresses replaced by declared fixture addresses; no liveness or human identity inferred. 2026-09-08 WO-039 integration: the self-hosted case follows the WO-039 feedback edition recorded under compiler 0.7.0, because the skeleton refuses the WO-011 edition's verifier stream as persisted compilation drift; the WO-011 edition remains historical bytes.",
+  "capture": "2026-09-07 WO-032 executor; canonical records and source-format snapshots. Constellation checkout addresses replaced by declared fixture addresses; no liveness or human identity inferred. 2026-09-08 WO-039 integration: the self-hosted case follows the WO-039 feedback edition recorded under compiler 0.7.0, because the skeleton refuses the WO-011 edition's verifier stream as persisted compilation drift; the WO-011 edition remains historical bytes. 2026-09-08 WO-042 integration: the self-hosted case follows the live WO-042 feedback edition under compiler 0.8.0; prior editions remain historical bytes. WO-042 final source: the self-hosted case and collector follow immutable feedback revision 002 after the console patch changed the declared lock projection; the earlier WO-042 feedback directory stays intact.",
   "inputs": {
     "loadouts": {
       "path": "packages/console/fixtures/inputs/loadouts.json",
@@ -69,22 +69,22 @@
       "sha256": "4f89e73d7776c7d990f9ba1cea9fcfe0192f8d6cb02f38a24379645193467029"
     },
     "selfhostAudit": {
-      "path": "docs/evidence/WO-039/feedback/selfhost-audit.jsonl",
-      "ref": "docs/evidence/WO-039/feedback/selfhost-audit.jsonl",
+      "path": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl",
+      "ref": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl",
       "format": "log",
-      "sha256": "4e6c13b39c704a5442b45664d97af92c5c4e7538cb2c5e07ac4540615defa28b"
+      "sha256": "72ce567466ae19d89638b719758d267af0a2afe28542ac51aaa7c051e588897c"
     },
     "selfhostVerifier": {
-      "path": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl",
-      "ref": "docs/evidence/WO-039/feedback/selfhost-verification.jsonl",
+      "path": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl",
+      "ref": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl",
       "format": "log",
-      "sha256": "1a2d8636e5443199308c59769c7f7aa4183cb0f9cc64bf57747be634fea12bf4"
+      "sha256": "08f7d7cfb17cae474f57b4eba5d50ed05980150a66e57859b1c22664148fddfc"
     },
     "maturity": {
-      "path": "docs/evidence/WO-039/feedback/feedback.json",
-      "ref": "docs/evidence/WO-039/feedback/feedback.json",
+      "path": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "ref": "docs/evidence/WO-042/feedback-002/feedback.json",
       "format": "json",
-      "sha256": "060f1a602ec0087cf40f2e18224065462ef7b952253da8b2f6e4c95b41bbd82a"
+      "sha256": "f10e4503bd26a1f920a1fa0eb04acf9f0f78849c24cced13c652e609f36d3381"
     },
     "controlLog": {
       "path": "docs/control/orders/WO-031.jsonl",
@@ -151,12 +151,12 @@
       "stores": [
         {
           "id": "selfhost-audit",
-          "label": "WO-039 self-hosted executor",
+          "label": "WO-042 self-hosted executor",
           "input": "selfhostAudit"
         },
         {
           "id": "selfhost-verifier",
-          "label": "WO-039 self-hosted verifier",
+          "label": "WO-042 self-hosted verifier",
           "input": "selfhostVerifier"
         }
       ],

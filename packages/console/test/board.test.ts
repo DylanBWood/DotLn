@@ -865,6 +865,19 @@ test("WO-032 host collection reads current sources and all shipped exports witho
   const before = snapshot();
   try {
     const sources = await collectSources(root, [absent]);
+    for (const id of ["selfhost-audit", "selfhost-verifier"]) {
+      const store = sources.stores?.find((entry) => entry.id === id);
+      assert.equal(
+        store?.status.status,
+        "available",
+        `${id}: current default stream must replay`,
+      );
+      assert.equal(
+        store?.audit.status,
+        "available",
+        `${id}: current default stream must project`,
+      );
+    }
     assert.deepEqual(
       snapshot(),
       before,
