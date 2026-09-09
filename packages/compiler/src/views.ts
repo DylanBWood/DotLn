@@ -21,6 +21,7 @@ const rowKindOrder: Readonly<Record<FunctionTableRow["kind"], number>> = {
   "ambient-effect": 9,
   "resource-model": 10,
   "polar-axis": 11,
+  "authority-grant": 12,
 };
 
 const compareRows = (left: FunctionTableRow, right: FunctionTableRow): number =>
@@ -118,6 +119,11 @@ export const functionTableFromLoadout = (
       key: value.polarAxisId,
       value,
     })),
+    ...(graph.authorityGrants ?? []).map((value): FunctionTableRow => ({
+      kind: "authority-grant",
+      key: value.grantId,
+      value,
+    })),
   ];
   return {
     view: "function-table",
@@ -148,6 +154,9 @@ export const loadoutFromFunctionTable = (
     ambientEffects: many(source.rows, "ambient-effect").map((row) => row.value),
     resourceModel: one(source.rows, "resource-model").value,
     polarAxes: many(source.rows, "polar-axis").map((row) => row.value),
+    authorityGrants: many(source.rows, "authority-grant").map(
+      (row) => row.value,
+    ),
   });
 };
 
@@ -166,6 +175,7 @@ export const statechartJsonFromLoadout = (
       resourceModel: graph.resourceModel,
       ambientEffects: graph.ambientEffects,
       polarAxes: graph.polarAxes,
+      authorityGrants: graph.authorityGrants ?? [],
     },
     states: {
       equipped: {
@@ -197,6 +207,7 @@ export const loadoutFromStatechartJson = (
     ambientEffects: source.context.ambientEffects,
     resourceModel: source.context.resourceModel,
     polarAxes: source.context.polarAxes,
+    authorityGrants: source.context.authorityGrants ?? [],
   });
 
 export const loadoutFromEditableView = (source: EditableView): LoadoutGraph => {

@@ -24,12 +24,19 @@ test("WO-008 AC5 equipped diff renders the exact Seiri / Sort / 整理 RPG item 
       "The Evidence-Bound Sort — COMPILED DIFF",
       "",
       "GRANTS",
+      "+ repo.inspect",
+      "",
+      "RESTRICTIONS",
+      "+ repo.delete",
+      "+ repo.write",
+      "",
+      "AUTHORED NOTES (non-enforcing)",
+      "Authored grants",
       "+ Inventory every fixture path",
       "+ Classify every fixture path",
       "+ Analyze references",
       "+ Propose deletion candidates",
-      "",
-      "RESTRICTIONS",
+      "Authored restrictions",
       "+ Do not mutate repository contents",
       "+ Deletion remains operator-owned",
       "+ Inspect only the bounded fixture repository",
@@ -76,7 +83,7 @@ test("WO-008 AC5 unequip preview is a real compiled reversal", () => {
   const tooltip = renderCompiledDiff(compilation.program, withoutScope.program);
   assert.match(
     tooltip,
-    /RESTRICTIONS\n- Inspect only the bounded fixture repository/u,
+    /Authored restrictions\n- Inspect only the bounded fixture repository/u,
   );
   assert.match(
     tooltip,

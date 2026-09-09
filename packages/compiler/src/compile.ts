@@ -7,6 +7,13 @@ import {
 import { loadoutFromEditableView } from "./views.js";
 import { deriveArtifactIdentity } from "./artifact-identity.js";
 import {
+  applyAuthorityGrants,
+  authorityDiagnostics,
+  authorityGrantRegistryHash,
+  grantEnvelopeDiagnostics,
+  inspectionAuthorityDiagnostics,
+} from "./authority.js";
+import {
   COMPOSITION_PRECEDENCE,
   type ActiveMechanic,
   type CompileCorrection,
@@ -724,8 +731,10 @@ const applyAuthorityClaims = (
   allowed: readonly string[];
   denied: readonly string[];
 }> => {
-  let allowed = [...orderedUnique(allowedSource)];
   let denied = [...orderedUnique(deniedSource)];
+  let allowed = [...orderedUnique(allowedSource)].filter(
+    (effect) => !denied.includes(effect),
+  );
   for (const claim of effectiveClaims) {
     if (!claim.target.startsWith("authority.")) continue;
     const effect = claim.target.slice("authority.".length);
@@ -799,6 +808,13 @@ const emitProgram = (
     ]),
     effectiveClaims,
   );
+  const grants = graph.authorityGrants ?? [];
+  const grantedOperations = applyAuthorityGrants(
+    claimedOperations.allowed,
+    claimedOperations.denied,
+    grants,
+    "operations",
+  );
   const workOrder: WorkOrder = {
     workOrderId: active.workOrder.workOrderId,
     objective: active.workOrder.objective,
@@ -809,8 +825,8 @@ const emitProgram = (
     nonGoals: listField("nonGoals"),
     repo: environment.repo,
     baseCommit: environment.baseCommit,
-    allowedOperations: claimedOperations.allowed,
-    prohibitedOperations: claimedOperations.denied,
+    allowedOperations: grantedOperations.allowed,
+    prohibitedOperations: grantedOperations.denied,
     requiredEvidence: orderedUnique([
       ...active.workOrder.requiredEvidence,
       ...supports.flatMap((support) => support.evidenceRequirements),
@@ -834,10 +850,16 @@ const emitProgram = (
     ]),
     effectiveClaims,
   );
+  const grantedAuthority = applyAuthorityGrants(
+    claimedAuthority.allowed,
+    claimedAuthority.denied,
+    grants,
+    "effects",
+  );
   const authorityEnvelope = {
     ...active.authorityEnvelope,
-    allowedEffects: claimedAuthority.allowed,
-    deniedEffects: claimedAuthority.denied,
+    allowedEffects: grantedAuthority.allowed,
+    deniedEffects: grantedAuthority.denied,
     requiredEvidence: orderedUnique([
       ...active.authorityEnvelope.requiredEvidence,
     ]),
@@ -885,6 +907,7 @@ const emitProgram = (
     },
     workOrder,
     authorityEnvelope,
+    ...(grants.length ? { grants } : {}),
     cadences: supports.flatMap((support) =>
       emissionsOf(support, "cadence").map((emission) => ({
         supportFacetId: support.supportFacetId,
@@ -973,6 +996,16 @@ const emitProgram = (
       ],
       precedence: COMPOSITION_PRECEDENCE,
       conflictResolutions: resolutions,
+      ...(grants.length
+        ? {
+            authorityGrants: {
+              registryHash: authorityGrantRegistryHash(
+                environment.authorityGrantRegistry ?? [],
+              ),
+              applied: grants,
+            },
+          }
+        : {}),
     },
   };
   return normalizeCompiledProgram(program);
@@ -998,6 +1031,7 @@ export const compileLoadout = (
   const claimResult = resolveClaims(graph);
   const diagnostics = [
     ...graphDiagnostics(graph),
+    ...authorityDiagnostics(graph, environment),
     ...compileLinkDiagnostics(graph, environment),
     ...conflictDiagnostics(graph),
     ...claimResult.diagnostics,
@@ -1014,6 +1048,12 @@ export const compileLoadout = (
     claimResult.resolutions,
     claimResult.effectiveClaims,
   );
+  const projectionDiagnostics = [
+    ...grantEnvelopeDiagnostics(program),
+    ...inspectionAuthorityDiagnostics(program),
+  ];
+  if (projectionDiagnostics.length)
+    return { ok: false, diagnostics: projectionDiagnostics };
   const hash = semanticHash(program);
   return {
     ok: true,

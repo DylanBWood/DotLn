@@ -285,7 +285,19 @@ test("WO-008 AC3 the winning authority claim governs the emitted runtime envelop
       },
     ],
   } as const satisfies SupportFacet;
-  const program = compiled(graphWithSupports([safety, skin]));
+  // WO-042: precedence may restore only authority already granted by the active.
+  const source = graphWithSupports([safety, skin]);
+  const program = compiled({
+    ...source,
+    activeMechanics: source.activeMechanics.map((active) => ({
+      ...active,
+      authorityEnvelope: {
+        ...active.authorityEnvelope,
+        allowedEffects: ["repo.delete"],
+      },
+      workOrder: { ...active.workOrder, allowedOperations: ["repo.delete"] },
+    })),
+  });
   assert.equal(program.effectiveClaims[0]?.supportFacetId, "support.safety");
   assert.ok(program.authorityEnvelope.allowedEffects.includes("repo.delete"));
   assert.ok(!program.authorityEnvelope.deniedEffects.includes("repo.delete"));
@@ -310,7 +322,21 @@ test("WO-023 compiler v1 accepts claim-free prefix wildcards and still rejects w
       },
     ],
   } as const satisfies SupportFacet;
-  const graph = graphWithSupports([wildcard]);
+  const source = graphWithSupports([wildcard]);
+  const graph = {
+    ...source,
+    activeMechanics: source.activeMechanics.map((active) => ({
+      ...active,
+      authorityEnvelope: {
+        ...active.authorityEnvelope,
+        allowedEffects: ["probe.run:scratch*"],
+      },
+      workOrder: {
+        ...active.workOrder,
+        allowedOperations: ["probe.run:scratch*"],
+      },
+    })),
+  };
   const result = compileLoadout(graph, seiriEnvironment());
   assert.equal(result.ok, true);
   if (!result.ok) assert.fail("claim-free wildcard authority did not compile");

@@ -1,4 +1,5 @@
 import { canonicalStringify, semanticHash } from "./normalize.js";
+import { projectAuthorityInspection } from "./authority.js";
 import type {
   CompileCorrection,
   CompileDiagnostic,
@@ -11,6 +12,8 @@ const renderCorrection = (correction: CompileCorrection): string => {
   switch (correction.kind) {
     case "provide-capability":
       return `provide capability "${correction.capability}"`;
+    case "declare-authority-grant":
+      return `declare a host-admitted authority grant for "${correction.effect}" and remove the widening support claim or emission`;
     case "unequip-support":
       return `unequip support "${correction.supportFacetId}" from link group "${correction.linkGroupId}"`;
     case "link-compatible-active":
@@ -95,6 +98,12 @@ export const renderCompiledDiff = (
     throw new Error("compiled diff requires a before or after program");
   const left = before?.inspection ?? emptyInspection(reference);
   const right = after?.inspection ?? emptyInspection(reference);
+  const leftAuthority = before
+    ? projectAuthorityInspection(before)
+    : { grants: [], restrictions: [] };
+  const rightAuthority = after
+    ? projectAuthorityInspection(after)
+    : { grants: [], restrictions: [] };
   const sections: ReadonlyArray<
     readonly [
       string,
@@ -109,8 +118,6 @@ export const renderCompiledDiff = (
       >,
     ]
   > = [
-    ["GRANTS", "grants"],
-    ["RESTRICTIONS", "restrictions"],
     ["OBLIGATION", "obligations"],
     ["PASSIVE", "passive"],
     ["PULSE", "pulse"],
@@ -119,6 +126,18 @@ export const renderCompiledDiff = (
   return [
     `${reference.originalTerm} / ${reference.translation} / ${reference.kanji}`,
     `${reference.rpgTitle} — COMPILED DIFF`,
+    "",
+    "GRANTS",
+    ...diffLines(leftAuthority.grants, rightAuthority.grants),
+    "",
+    "RESTRICTIONS",
+    ...diffLines(leftAuthority.restrictions, rightAuthority.restrictions),
+    "",
+    "AUTHORED NOTES (non-enforcing)",
+    "Authored grants",
+    ...diffLines(left.grants, right.grants),
+    "Authored restrictions",
+    ...diffLines(left.restrictions, right.restrictions),
     "",
     ...sections.flatMap(([heading, field]) => [
       heading,
