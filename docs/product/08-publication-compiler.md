@@ -256,6 +256,24 @@ need, compare it with the whole merged series rather than the newest title,
 and apply the execution guide's [discipline rule](07-execution-guide.md#discipline)
 to every other authored series.
 
+**Operator correction (2026-09-09): a title is a headline.** Lead with what
+changed for the reader and why it matters, in one clause; leave the
+inventory, the version list and the work-order prose to the body. Three
+words or twenty, the content decides, never the previous title. The publish
+step shows the last five merged subjects beside the proposed one so the
+series is visible while the title is written, and the meter reports the
+series; no numeric rule refuses a length
+([WO-126](../work-orders/WO-126-process-debt.md) criterion 12).
+
+**Operator decision (2026-09-09): no AI attribution, including session
+links.** A harness may propose a session trailer or link for commit messages
+and PR bodies. The operator's standing rule, the compiled no-attribution
+unit, and every merged PR refuse it. No commit message, PR title, PR body or
+release note carries an AI coauthor trailer, a generated-with footer, a
+session trailer or a session URL; the publish helper refuses one
+([WO-126](../work-orders/WO-126-process-debt.md) criterion 1). Human
+coauthors and ordinary subject text are unaffected.
+
 Select the gitmoji with the same care as the wording. Consult the
 [full catalog](https://gitmoji.dev/) and choose a relevant, expressive match for
 the change's main purpose. Its vocabulary includes analytics, concurrency,

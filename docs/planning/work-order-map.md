@@ -1,8 +1,10 @@
 # Work-order map — human planning judgment
 
-**Planning revision:** 2026-09-08, the critical-path planning pass after the
-WO-039 close, revised the same day at the operator's corrections (previous revisions 2026-09-06, the phase-two pass after the
-`v0.13.1` close, and 2026-09-05, after the `v0.6.0` close). The generated
+**Planning revision:** 2026-09-09, the operator's emergency process-debt pass
+after the `v0.16.0` close (previous revisions 2026-09-08, the critical-path
+planning pass after the WO-039 close, revised the same day at the operator's
+corrections; 2026-09-06, the phase-two pass after the `v0.13.1` close; and
+2026-09-05, after the `v0.6.0` close). The generated
 [work-order index](../work-orders/README.md) now owns header observations,
 control evidence, dependency-token status, and local release attribution. This
 map retains recommendations, rationale, tracks, and human activation preflight.
@@ -54,6 +56,42 @@ gains weight once target-repository sessions report approval friction.
 
 **Critical path (2026-09-08, revised the same day):** the operator's dispatch appended an external source-level audit and asked for a dependency-correct path from the current code to the first external source-changing worker and then to an independently verified source-to-deliverable vertical. The pass verified every material audit claim against `main` at `33e2c25` ([source verification](source-verification-2026-09-08.md)) and filed the [critical-path plan](critical-path-2026-09-08.md) with its [machine-readable graph](critical-path-2026-09-08.json). The operator corrected the first result the same day: the orders were too large, the always-on offline runtime with cadences and several actor kinds is the critical path, the starter is the vehicle DotLn creates and updates while the operator's forks plan their own target work, no target-application order belongs here, the work-order file must stay a stable contract, and the runtime carries the UI to author, inspect, audit and see live status. The horizon is therefore seventy-three bounded orders, WO-044 through WO-125 with the corpus numbers skipped, beside [WO-042](../work-orders/WO-042-authority-provenance.md), [WO-043](../work-orders/WO-043-typed-dependency-truth.md) and WO-036. Two chains begin at WO-042: the unattended chain (WO-067 presence policy, WO-068 resident, WO-099 mission check) and the external-change chain (WO-044 harness truth, WO-049 target bundle, WO-050 to WO-052, WO-053 the first change); they join at WO-100 and WO-111, the runtime's UI contracts (WO-114 to WO-117) and the starter (WO-069 to WO-079) run beside them, the loop is proven from core against a scratch target (WO-112), and the product exit is the resident-owned loop from a starter instance (WO-118) before the operator's fork runs it against a real one (WO-083, receipt only). An external review of the revised plan, captured in ignored intake the same day, was verified claim by claim and applied: it added WO-118 to WO-124 and corrected fourteen orders (no proof order closes on failure, a separate writer request, trusted grant admission, an executable discovery producer, presence with origin, derived work identity, dispositions in the pull-request loop, evidence-bearing intake relations). WO-033, WO-034, WO-035, WO-037 and WO-040 are superseded whole by their children (WO-069 to WO-098) and kept as umbrella records; the documentation, workshop and migration families carry a waivable dated deferral on WO-053. The first mandatory replan checkpoint follows WO-044's record. The first refutation receipt ([002](refutations/2026-09-08-critical-path-002.md), a direct-session review the operator requested in Codex because neither CLI transport had budget) held on two criteria: WO-123's command-only fixture could pass while WO-118's resident run had no admission path, and WO-055's derivation let a read-only verifier's references widen a writer's scope. The repair revision (`7e2c474`) repaired both criteria (the resident admits a filed intent under a portfolio's `intent` class and admitted grants and owns the vertical continuation; the repair derivation is bound to the original order's surfaces, named test commands and effective envelope) and named WO-123 as WO-118's hard input. The second receipt ([003](refutations/2026-09-08-critical-path-003.md), the same review source) accepted both repairs and held once more, on WO-121 criterion 1: the presence classifier made the launch path the evidence of a person's presence, so an operator-launched worker that kept working after `away` could end the away phase. The repair at `b812128` made origin a pure function of the hook event kind and the resident's stamp, made tool activity from any session actor liveness, and gave WO-044 the row that says which hook events a scripted prompt fires. The third receipt ([004](refutations/2026-09-08-critical-path-004.md), the same review source) passes with every hold answered by its dated accepted disposition; its largest remaining gap, the authoring journey through the live client at WO-117 criterion 2, warrants no hold for this horizon and is preserved below as a candidate. No hold was overridden. The 2026-09-06 wave pairing below is superseded in sequence only; its measurements, procedure and receipts stand.
 
+**Process debt (2026-09-09):** the operator opened an emergency pass after
+the `v0.16.0` close with eleven observed failures of the lifecycle machinery
+and one direction: one order, first in line, exempt from the one-seam rule.
+The pass measured the claims against the control segments and the source:
+WO-042 took 16h37m from activation to its final-review pass and WO-039
+21h32m, most of it in verification, repair and review machinery; the
+reviewer's read obligation was 135 files and 5.3 MB because the obligation
+is every change since session entry and nothing is committed before review;
+Stop hooks require the whole 37-step suite at the current tree hash before a
+turn may end; the tag manifest pins the literal `npm test`; the closeout
+classifier does not know the directory the harness writes its own state to,
+so the close hand-wrote a script; attestation degrades to `unknown` on any
+CLI patch version nobody recorded; the anti-oscillation unit does not say
+what the operator means and enforces nothing; and no mechanism compares any
+of this across orders although the events exist. The pass filed
+[WO-126](../work-orders/WO-126-process-debt.md) at the head of the sequence
+with sixteen falsifiable criteria: advisory Stop hooks with hard enforcement
+at the lifecycle commands, authorship-observed read obligations with a
+generated-artifact manifest, evidence keyed by tree hash and reused at the
+tag, a fast gate under two minutes beside a full gate at the transitions
+(WO-036 folded in with numbers and superseded whole), an automated closeout
+that owns `docs/control/local/` and reconciles intake, attestation by
+version line with an executable discovery row, the anti-oscillation prose
+rewritten to the operator's definition with the residue block removed from
+the floor, a `plan start` command and a fail-closed tool classifier (the two
+2026-09-08 harness-host nominations, allocated), a budget file, and a meter
+that prints every order's delta into the PR body and fails the gate on an
+unaccepted breach. The operator answered two questions the same day: no
+numeric title rule, because a title is a headline sized by its content and
+an invented length limit was rejected before, so criterion 12 makes the
+series visible at publish time instead; and the refutation of this pass may
+run through the automated CLI transport now, and as one dispatch phrase in
+either harness once criterion 16 lands. The one-seam and four-hour rules stand for every other order. The pass
+declined, as NoOps recorded below, removing the harness wholesale and adding
+provider cost telemetry. Its receipt is the pass's independent verification.
+
 **WO-038 source (2026-09-06):** the planning license files are present in this activation base. The missing release assignment is completed at `v0.13.2`, the next patch above published `v0.13.1`. The [executor receipt](../evidence/WO-038/README.md) records package metadata, npm refusal probes, the pinned license surfaces, contribution sign-offs, and the WO-033 export-default handoff. This source work does not discharge the critical path's merge dependencies or establish that the proposed paired wave occurred; the generated index and control fold own later lifecycle evidence.
 
 **WO-108 source (2026-09-06):** the operator selected the mutation evidence lane on published `v0.13.0` and authorized adapting its stale scope to the current repository. It prepares internal tooling/evidence patch `v0.13.1`: a complete candidate census plus a deterministic 32-site campaign over kernel, compiler, and skeleton, with all historical compiler probes remeasured. The [corpus outcome](../../corpus/mutation/README.md) owns measured results and limitations; survivors inform future evidence-hardening orders and do not authorize fixes here. Its [work-order receipt](../work-orders/WO-108-mutation-probe.md#ideation-breakout-receipt--implementation-consequences-2026-09-06) adds the implementation-consequences ideation to independent review. This supersedes the activation-preflight recommendation below for WO-108; lifecycle status still comes from the control fold.
@@ -86,9 +124,9 @@ the generator marks them rather than asking the operator to cross them off.
 
 <!-- dotln-work-order-sequence:start -->
 
+- WO-126 — Process debt
 - WO-042 — Authority provenance and monotone envelopes
 - WO-043 — Typed dependency truth
-- WO-036 — Evidence runner
 - WO-125 — Codex effort selection
 - WO-044 — Writing-worker and unattended-launch harness truth
 - WO-067 — PresencePolicy compiled
@@ -264,6 +302,23 @@ identity migration.
 
 ## Preserved unallocated candidates
 
+- **NoOps of the 2026-09-09 process-debt pass.** Weighed and declined, each
+  with its evidence and reversal condition. (1) _Remove the compiled harness
+  and return to the prose rules._ Declined: the WO-039 measurement cut the
+  executor cold start from 71,165 to 10,960 bytes, and the pre-effect guards
+  refused real bad commands during WO-042's review; the cost is in the
+  Stop-time and read-obligation design, which WO-126 changes. Reversal: if
+  the meter shows no order under budget across the three orders after
+  WO-126 closes, the operator may retire the hooks wholesale. (2) _Split the
+  process debt into bounded orders under the one-seam rule._ Declined by the
+  operator's direction; each extra order would pay the cost model it fixes.
+  Reversal: none needed; the rule stands for every other order. (3) _Add
+  provider token or cost telemetry._ Declined; the 2026-09-05 decision
+  against attention and resource telemetry stands, and the repository
+  already records the bytes, seconds and counts the meter needs. Reversal:
+  a demonstrated decision the meter cannot inform. (4) _Fix the guard's
+  allowlist in this pass._ Declined; a planning pass never implements. The
+  fix is WO-126 criterion 8, not a nomination.
 - **Critical-path candidates — recorded 2026-09-08 by the critical-path
   planning pass and allocated the same day at the operator's correction.**
   The runtime boundary codecs are WO-045 to WO-048; writing-worker harness
@@ -288,7 +343,8 @@ identity migration.
   until then the compiler results are not reported as proof of the authoring
   experience. No number, sequence position or activation authority.
 - **Harness host: the permission classifier matches commands, not substrings
-  — nominated 2026-09-08 by the critical-path planning pass.** The compiled
+  — nominated 2026-09-08 by the critical-path planning pass; allocated
+  2026-09-09 to WO-126 criterion 8.** The compiled
   permission hook refused this pass's own shell commands when their text
   contained a remote-effect token or an environment-file token inside a
   heredoc or a search pattern, including read-only searches; a bounded
@@ -296,7 +352,9 @@ identity migration.
   `script` actors (WO-068) can carry arbitrary text in arguments. No number,
   sequence position or activation authority.
 - **Harness host: fail closed on unclassified effectful tools — nominated
-  2026-09-08 by the critical-path planning pass.** The compiled writer guard
+  2026-09-08 by the critical-path planning pass; allocated 2026-09-09 to
+  WO-126 criterion 8 after the process-debt pass itself used the hole to
+  create its planning branch.** The compiled writer guard
   gates only the Bash, Edit and Write tools, and the permission classifier
   treats every other tool as a read, so a harness tool that runs shell
   commands or writes files without one of those names (a monitoring tool, a

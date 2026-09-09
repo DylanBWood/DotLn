@@ -6159,3 +6159,100 @@ existing contract; no runtime source, contract, or locked boundary changes.
 - **Weaken the documented contradiction check or rewrite VER-001** `rejected`
   - The verified failure is against the accepted contract. The repair restores
     that behavior and retains the immutable report for independent re-verification.
+
+## 2026-09-09 — Emergency planning pass: process debt (WO-126)
+
+- **Hard enforcement at the lifecycle commands; Stop hooks advise** `adopted`
+  - The operator's dispatch after the `v0.16.0` close: the WO-042 reviewer
+    could not end a turn without the whole suite recorded at the current
+    tree hash and a lifecycle transition appended, and re-announced the same
+    facts for several turns. The transition commands already refuse the same
+    conditions with evidence. A Stop hook that blocks gates nothing extra and
+    prevents a session from stopping to ask a question. WO-126 criterion 4.
+- **Read obligations are what the session wrote or regenerated** `adopted`
+  - Supersedes WO-039's first repair receipt item 3, which considered and
+    did not adopt session-only authorship. The operator's explicit
+    2026-09-09 decision: the obligation exists so a session reads back what
+    it wrote and does not take a regenerating script's word for its output;
+    it is not a license to push every inherited byte through context. The
+    WO-042 reviewer owed 135 files and 5,305,410 bytes it had already
+    reviewed as a diff. Generated and oversized outputs owe a check, not a
+    read. WO-126 criterion 3.
+- **A gate runs once per tree hash** `adopted`
+  - Four roles ran the full suite on the same tree, and the tag ran it
+    again on a fast-forwarded copy. Evidence keyed by tree hash is reused;
+    a changed byte invalidates it. The tag manifest records the gate it
+    ran or reused instead of the literal `npm test`. WO-126 criteria 5, 6.
+- **Growth needs a decision** `adopted`
+  - Every size, duration and count the operator complained about was
+    already recorded somewhere and compared to nothing. A budget file with
+    dated acceptances, a meter that prints the delta into every PR body and
+    the status line, and a gate that fails on an unaccepted breach. The PR
+    subject series (four ramps, four resets) is the microcosm. WO-126
+    criteria 10, 11.
+- **Anti-oscillation is the rule for applying a correction** `adopted`
+  - The operator's definition, stated twice in this pass: a correction
+    points at a category. Failure one is sweeping generalization,
+    extrapolating into adjacent rules and file changes never asked for.
+    Failure two is over-literal reading, shrinking the rule to its exact
+    words and missing obvious members of the category. The middle is
+    judgment: find the category, stay in it, ask one focused question when
+    the boundary is genuinely unclear, and pause before file actions beyond
+    the literal correction. The unit's text had described decision lineage
+    instead and enforced nothing while appearing as residue in the locked
+    floor. Rewritten at version 2 as prose with the worked example; the
+    residue block leaves the floor. WO-126 criterion 9.
+- **Closeout owns the harness's state and reconciles intake** `adopted`
+  - The harness writes session state to `docs/control/local/harness/` and
+    the operator's private terms list lives beside it; the closeout
+    classifier never learned the directory, so the WO-042 close hand-wrote
+    a script. The classifier learns it, `release close` reconciles intake
+    with a dry run, and the skill forbids closeout scripts. WO-126
+    criterion 7.
+- **Attestation by version line with an executable discovery row** `adopted`
+  - A CLI patch bump nobody recorded degraded the reviewer's effort to
+    `unknown` while the environment exposed the value. WO-126 criterion 2.
+- **No AI attribution, including session links** `adopted`
+  - The harness's session guidance proposes a session trailer; the
+    operator's global rule, the compiled unit and every merged PR say no.
+    The guard learns the trailer shape and the settings half is installed.
+    WO-126 criterion 1.
+- **The ledger returns to ideation** `adopted`
+  - The operator asked why entries other than `ideation:` prompts land
+    here. Every lifecycle loadout directs a ledger append and every order's
+    write-back duty names one, so 95 of 122 sections are work-order
+    decision records and the file is 615 KB. Per-order decisions move to
+    the order's evidence directory with a generated index; this section is
+    the last lifecycle-role entry the loadouts direct. WO-126 criterion 13.
+- **Corrections during this pass, logged** `adopted`
+  - Ten operator corrections in one session, each with what was misread,
+    what was meant, and where the fix lives. (1) A guard bug filed as a
+    nomination; the operator wants it fixed or owned: WO-126 criterion 8 and
+    the rule that a finding becomes a criterion. (2) Anti-oscillation
+    written as decision lineage, twice; the operator's rule is about the
+    category a correction points at: criterion 9 and 07 §Operator-opened
+    ideation mode. (3) Fixture output logged as an undiagnosed bug;
+    diagnosed, not a bug: criterion 6 stops fixtures printing as FAIL.
+    (4) The full suite run for a document-only pass, then a blocked wait:
+    the document gate in 07 §Operator-opened planning pass and criterion 6.
+    (5) The refutation run from the session when the operator wanted the
+    option to run it: the correction rule's pause before actions beyond the
+    request. (6) A seven-step manual handoff when the operator wanted
+    automation: criterion 15. (7) `resume: plan refute` named where the
+    operator said `planning: refute`: renamed. (8) The phrase read as
+    picking a CLI by harness where the operator meant the session is the
+    refuter: criterion 15 and the 07 paragraph. (9) A refused amend blamed
+    on the rebuild when the attribution hook lacked a message: the order
+    requires refusals to name their cause. (10) These corrections kept only
+    in the session: this entry, the intake capture, and criterion 13's rule
+    that a correction during any dispatch is recorded the same day in that
+    dispatch's committed record and counted by the meter.
+- **Remove the compiled harness wholesale** `rejected`
+  - The build cut the executor cold start 6.5×, and the pre-effect guards
+    catch real defects. The cost is in two design choices this order
+    changes. Reversal condition recorded in the map's NoOps.
+- **Split the debt into bounded orders** `rejected`
+  - The operator's direction; each order would pay the cost model it fixes.
+    The one-seam and four-hour rules stand for every other order.
+- **Provider token or cost telemetry** `rejected`
+  - The 2026-09-05 decision stands; the repository records enough.

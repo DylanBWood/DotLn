@@ -322,8 +322,16 @@ entries, or reopening an ADR or settled resolution. Apply it to material already
 inside the authorized ideation subject; surface a genuine new tension through
 the existing decision process.
 
-Apply corrections to the behavior the operator rejected. Preserve the surrounding
-requirements and distinguish an example from an explicit constraint. Before
+**Applying a correction (operator definition, 2026-09-09).** A correction
+points at a category. Two failure modes: sweeping generalization, which
+extrapolates beyond what the operator said into adjacent rules or file
+changes they never asked for; and over-literal interpretation, which strips
+the rule to its exact words and misses obvious members of the same category.
+The middle ground is judgment: identify the category the operator is
+pointing at, stay inside it, neither widen nor shrink it, ask one focused
+question when the boundary is genuinely unclear instead of guessing in
+either direction, and pause to ask before any file action that goes beyond
+the literal correction. Before
 replacing an approach, check the recorded reasons for earlier rejections; neither
 repeat a rejected approach nor jump to its opposite without supporting evidence.
 For example, a complaint about paragraph-length PR titles calls for useful,
@@ -444,7 +452,11 @@ Preconditions and inputs:
    Under the compiled Contributor build, check out a planning branch in the
    main checkout before the first write: the generated writer guard refuses
    every write on `main`, and the pass's output lands from that branch
-   (observed 2026-09-08).
+   (observed 2026-09-08). The guard's command allowlist does not include
+   the branch checkout itself, so a pass cannot create that branch through
+   the Bash tool (observed 2026-09-09); WO-126 supplies
+   `npm run plan -- start <slug>`, and until it lands the operator creates
+   the branch before dispatching the pass.
 2. Read `npm run resume --silent -- status --json`, the
    [generated index](../work-orders/README.md), the
    [human map](../planning/work-order-map.md), the candidate documents under
@@ -456,6 +468,25 @@ Preconditions and inputs:
    condition, in the `NoOpIntent` shape, so a later pass sees what was weighed.
 4. `ideation:` entries in the same dispatch run the complete ideation pipeline
    first; their synthesis is planning input.
+
+**`planning: refute` (operator dispatch, 2026-09-09).** The session that
+receives this phrase is the refuter. It performs the
+[receipt convention's direct-session form](../planning/refutations/README.md)
+itself, end to end, and asks the operator for nothing. Never launch a CLI
+transport for this phrase; `npm run plan -- refute` stays the separate
+command for an external refuter. In order: build (`npm run build --silent`)
+and confirm with `npm run plan -- subject` that the committed subject is the
+workspace subject; render the canonical refuter input from that subject with
+the built protocol's `planPrompt`, the same text a transport would send, and
+read nothing else (no map narrative, ledger bodies, earlier receipts,
+planner explanations or intake); judge every order under the
+`plan-refutation-v1` rules the input states and save the closed result;
+validate it with `validatePlanResult`, hash the frozen result, and file the
+immutable pair through `writePlanReceipt` with a direct-session episode and
+a session statement of what was and was not read; commit the pair with a
+plain subject and run `npm run plan -- check`; report the verdict and any
+holds. WO-126 criterion 15 compiles these steps into two commands so the
+session runs no ad hoc code.
 
 After drafting the orders, commit the planning subject locally and run
 `npm run plan -- refute` before preparing the pull request. The subject is
@@ -512,7 +543,11 @@ Standard artifacts, all doc-only:
   criteria, evidence, non-goals, and operator-review assumptions;
 - product-doc write-back for durable understanding, with the publication
   index and edition locks repaired in the same pass;
-- `npm run work-orders -- index` regenerated and `npm test` green.
+- `npm run work-orders -- index` regenerated and the document gate green:
+  `npm run plan -- check`, `npm run work-orders -- index --check`,
+  `npm run publication:check` and `npm run format:check`. A document-only
+  pass changes no code and never runs the code suites (operator decision,
+  2026-09-09; the mechanism is WO-126 criterion 6).
 
 A planning pass never activates, implements, tags, publishes, merges, edits
 immutable evidence, or relitigates a settled decision. A planning pass also
@@ -862,6 +897,21 @@ claim evidence or releases it does not have.
   behavior this correction names, and it is the same failure whether the
   question sounds annoyed or curious. If the standard seems wrong, say so in
   one sentence and keep working under it until the operator decides.
+- **Process budget (operator correction, 2026-09-09).** Every gate must be
+  cheaper than the failure it prevents, and the repository's own records
+  decide. Hard enforcement lives in the lifecycle commands, which check
+  evidence; a hook that fires at turn end advises in one line and never
+  blocks. A read obligation covers what the session wrote or regenerated,
+  minus generated artifacts and oversized files, which owe a check instead;
+  inherited bytes owe nothing. A full gate runs once per tree hash and its
+  evidence is reused by hash at every later step including the tag; the fast
+  gate is for iteration. No session writes a closeout script; if a helper
+  refuses, report the refusal. Any size, duration or count that grows from
+  one order to the next past its budget needs a dated operator acceptance,
+  or the fast gate fails. A finding that would otherwise become a
+  nomination gets a criterion in the order that found it. The mechanism is
+  [WO-126](../work-orders/WO-126-process-debt.md); until it lands, the rule
+  binds by hand.
 - **Return shape.** End with a compact result: what changed, evidence pointers,
   deviations from the work order, open questions. Terse; no narration theater,
   no apology theater.
