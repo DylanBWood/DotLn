@@ -21,7 +21,7 @@ export function checkHarnessEvidence(root) {
   const expected = harnessInstallation();
   const context = measureHarnessContext();
   checkContextMeasurement(context);
-  const directory = "docs/evidence/WO-039/harness-live";
+  const directory = "docs/evidence/WO-042/harness-live";
   const entries = readdirSync(join(root, directory));
   const names = entries
     .filter((name) =>
@@ -205,7 +205,7 @@ export function checkHarnessEvidence(root) {
     ...discovery,
     ...names.map((name) => `${directory}/${name}`),
     ...writerNames.map((name) => `${directory}/${name}`),
-    "docs/evidence/WO-039/harness-context.json",
+    "docs/evidence/WO-042/harness-context.json",
   ];
   const localTerms = termsCheck(root, surfaces);
   return {

@@ -1,11 +1,11 @@
-// Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.executor","contributor.planner","contributor.release-close","contributor.reviewer","contributor.verifier","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:06245f5c581212f1"}
+// Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.executor","contributor.planner","contributor.release-close","contributor.reviewer","contributor.verifier","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"}
 try {
 const { feedbackBoundary } = await import("../../packages/skeleton/dist/src/feedback-boundary.js");
 const { runHarnessHook } = await import("../../packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.7.0",
+  "compilerPackageVersion": "0.8.0",
   "runtime": {
-    "skeletonVersion": "0.13.0",
+    "skeletonVersion": "0.14.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -22,7 +22,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:314cebd40278b35f"
+        "hash": "fnv1a64:589298d41425851a"
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
@@ -34,7 +34,7 @@ await runHarnessHook({
   "kind": "finish",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.7.0",
+    "compilerPackageVersion": "0.8.0",
     "units": [
       {
         "unitId": "anti-oscillation",
@@ -493,7 +493,7 @@ await runHarnessHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:f78e381ffafce1e9"
+    "policyHash": "fnv1a64:b7415b98b50fc2ce"
   }
 }, feedbackBoundary);
 } catch { process.stdout.write("{\"decision\":\"block\",\"reason\":\"DOTLN_HARNESS_REFUSED: built adapter unavailable\"}"); }

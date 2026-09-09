@@ -2,6 +2,7 @@ import {
   compileLoadout,
   requireCompiled,
   type AuthorityEnvelope,
+  type CompiledProgram,
   type HarnessFacet,
   type HarnessProfile,
   type HarnessProgram,
@@ -9,6 +10,12 @@ import {
   type LoadoutGraph,
 } from "@dotln/compiler";
 import { personalFeedbackUnits } from "./feedback.js";
+import {
+  defaultExecutorSupportIds,
+  executorSupportIds,
+  executorSupports,
+  type ExecutorSupportSwitches,
+} from "./executor-supports.js";
 
 const handlers = personalFeedbackUnits.map((unit) => unit.trigger);
 const common = [
@@ -304,28 +311,140 @@ export const contributorLoadout: LoadoutGraph = {
   },
   polarAxes: [],
 };
-export const contributorProgram = (): HarnessProgram => ({
-  contractVersion: "harness-v1",
-  loadout: requireCompiled(
-    compileLoadout(contributorLoadout, {
+/** Keep the original saved build intact; equipment creates a new build. */
+export function contributorWithSupports(
+  supportIds: readonly string[] = defaultExecutorSupportIds,
+): LoadoutGraph {
+  if (
+    new Set(supportIds).size !== supportIds.length ||
+    supportIds.some(
+      (id) =>
+        !executorSupports.some((support) => support.supportFacetId === id),
+    )
+  )
+    throw new Error("unknown or duplicate Contributor executor support");
+  const equipped = executorSupports.filter(({ supportFacetId }) =>
+    supportIds.includes(supportFacetId),
+  );
+  if (!equipped.length) return contributorLoadout;
+  const links = equipped.map(({ supportFacetId }) => ({
+    linkId: supportFacetId,
+    linkGroupId: "contributor.boundaries",
+    activeMechanicId: "clean-room",
+    supportFacetId,
+  }));
+  return {
+    ...contributorLoadout,
+    containers: contributorLoadout.containers.map((container) => ({
+      ...container,
+      socketBudget: container.socketBudget + equipped.length,
+      supportFacetIds: [
+        ...container.supportFacetIds,
+        ...equipped.map(({ supportFacetId }) => supportFacetId),
+      ],
+    })),
+    supportFacets: [...contributorLoadout.supportFacets, ...equipped],
+    links: [...contributorLoadout.links, ...links],
+    linkGroups: contributorLoadout.linkGroups.map((group) => ({
+      ...group,
+      linkIds: [...group.linkIds, ...links.map(({ linkId }) => linkId)],
+    })),
+  };
+}
+
+/** Consume the compiled equipment, rather than independently authoring skill text. */
+export function contributorRolesFor(
+  program: CompiledProgram,
+): readonly HarnessRole[] {
+  const equipped = executorSupports.filter(({ supportFacetId }) =>
+    program.componentManifest.some(
+      (entry) =>
+        entry.componentKind === "support-facet" &&
+        entry.componentId === supportFacetId,
+    ),
+  );
+  const fragments = equipped.flatMap((support) => {
+    const manifest = program.componentManifest.find(
+      (entry) => entry.componentId === support.supportFacetId,
+    )!;
+    const emitted = support.emissions.flatMap((emission) =>
+      emission.kind === "prompt-fragment" ? [emission.text] : [],
+    );
+    if (
+      manifest.version !== support.version ||
+      emitted.some((fragment) => !program.promptFragments.includes(fragment))
+    )
+      throw new Error(
+        `Contributor support projection drift: ${support.supportFacetId}`,
+      );
+    return emitted;
+  });
+  if (!fragments.length) return contributorRoles;
+  const modifiers = equipped.flatMap((support) => support.semanticsModified);
+  return contributorRoles.map((role) => {
+    if (role.name !== "executor") return role;
+    return {
+      ...role,
+      procedure: role.procedure.flatMap((line) => {
+        const projected = modifiers.reduce(
+          (text, { from, to }) => text.replace(from, to),
+          line,
+        );
+        return line.startsWith("Implement the complete bounded deliverable")
+          ? [...fragments, projected]
+          : [projected];
+      }),
+    };
+  });
+}
+
+export const contributorProgram = (
+  supportIds: readonly string[] = defaultExecutorSupportIds,
+): HarnessProgram => {
+  const loadout = requireCompiled(
+    compileLoadout(contributorWithSupports(supportIds), {
       environmentId: "contributor.project",
       version: 1,
       capabilities: [],
       repo: "project",
       baseCommit: "0".repeat(40),
     }),
-  ),
-  roles: contributorRoles,
-  facets: [
-    permissions,
-    {
-      facetId: "clean-room",
-      kind: "prompt-fragment",
-      text: "Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.",
-    },
-  ],
-  correctionToken: null,
-});
+  );
+  return {
+    contractVersion: "harness-v1",
+    loadout,
+    roles: contributorRolesFor(loadout),
+    facets: [
+      permissions,
+      ...executorSupports.flatMap((support): HarnessFacet[] =>
+        supportIds.includes(support.supportFacetId)
+          ? support.emissions.flatMap((emission) =>
+              emission.kind === "prompt-fragment"
+                ? [
+                    {
+                      facetId: support.supportFacetId,
+                      kind: "role-procedure" as const,
+                      roleName: "executor",
+                      text: emission.text,
+                    },
+                  ]
+                : [],
+            )
+          : [],
+      ),
+      {
+        facetId: "clean-room",
+        kind: "prompt-fragment",
+        text: "Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.",
+      },
+    ],
+    correctionToken: null,
+  };
+};
+export const contributorConfiguredProgram = (
+  switches: ExecutorSupportSwitches = {},
+): HarnessProgram => contributorProgram(executorSupportIds(switches));
+
 const record = "docs/discovery/harness-smoke-2026-09-07.md";
 export const contributorProfiles: readonly HarnessProfile[] = [
   {
@@ -356,7 +475,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "CLAUDE.md",
     },
     refusal: "claude-command-json-v1",
-    runtime: { skeletonVersion: "0.13.0", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.14.0", boundaryContract: "feedback-v1" },
   },
   {
     profileId: "codex-cli-0.153.4",
@@ -391,6 +510,6 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "AGENTS.md",
     },
     refusal: "unavailable",
-    runtime: { skeletonVersion: "0.13.0", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.14.0", boundaryContract: "feedback-v1" },
   },
 ];

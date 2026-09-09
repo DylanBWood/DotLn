@@ -56,7 +56,7 @@ const recordName = scenario
   : `${role}-${attempt}`;
 const destination = join(
   root,
-  `docs/evidence/WO-039/harness-live/${recordName}.json`,
+  `docs/evidence/WO-042/harness-live/${recordName}.json`,
 );
 assert.ok(
   !existsSync(destination),

@@ -3,7 +3,7 @@ name: dotln-release-close
 description: "Close a merged DotLn worktree and publish its validated source tag and matching Release only on resume: release close."
 ---
 
-<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","contributor.release-close","correctness-over-sycophancy","fail-conservative-correction"],"loadoutId":"contributor","semanticHash":"fnv1a64:06245f5c581212f1"} -->
+<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","contributor.release-close","correctness-over-sycophancy","fail-conservative-correction"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"} -->
 
 Start this role from main so its installed hooks survive teardown of the reviewed worktree. Resolve cwd and Git root, then run `npm run resume --silent -- status --json`. The exact release-close phrase carries the narrow authority below; the skill itself grants none.
 Read: `@work-order`

@@ -56,5 +56,7 @@ docs/evidence/WO-032/feedback/feedback.json
 CLAUDE.md
 AGENTS.md
 docs/evidence/WO-039/**/*.json
+# WO-042 evidence generators own the exact transcript and receipt bytes.
+docs/evidence/WO-042/**/*.json
 docs/discovery/harness-smoke-2026-09-07*.json
 docs/discovery/harness-smoke-2026-09-07/*.json
