@@ -6286,6 +6286,20 @@ existing contract; no runtime source, contract, or locked boundary changes.
     to the intervenor, drift to low performance and policy resistance also
     live in the meta process. Criterion 17 makes each a meter row with a
     signal from the repository's data; 07 §Discipline names the lens.
+- **Operator override: merge on receipt 006 without re-refuting the later
+  corrections** `adopted`
+  - Receipt 006 (2026-09-09, direct Codex session) passed the whole
+    horizon with WO-126 at commit `82a3d5b`. The six commits after it are
+    the operator's own corrections to the same order (tokens and cost
+    recorded, decision provenance and reopening conditions, two refuter
+    scopes, the four questions, the system-trap rows) and touch no other
+    order. The operator judged a third whole-horizon refutation of one
+    order's corrections not worth its cost and directed the pass to close
+    and merge. The gate's own override command applies to holds only, and
+    there is no hold, so this entry is the record: the plan check reports
+    "needs a receipt" for the current subject until the next planning pass
+    or a `planning: refute` files one, and no later session treats that
+    line as a defect of this pass. Merged PR and receipt are the source.
 - **Remove the compiled harness wholesale** `rejected`
   - The build cut the executor cold start 6.5×, and the pre-effect guards
     catch real defects. The cost is in two design choices this order
