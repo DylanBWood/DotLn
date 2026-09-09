@@ -922,7 +922,11 @@ claim evidence or releases it does not have.
   context; how do we make this consume fewer resources; how do we make a
   six-step process four steps and perform as well or better. A new user
   must never find the simplest action the most expensive in time, resources
-  or context. The mechanism is
+  or context. Data the repository generates or collects is kept when it
+  materially informs a later decision, whatever it costs to produce, and
+  cut only when nothing decides on it; cost alone never removes a record,
+  and annoyance is not the test (operator clarification, 2026-09-09). The
+  mechanism is
   [WO-126](../work-orders/WO-126-process-debt.md); until it lands, the rule
   binds by hand.
 - **Return shape.** End with a compact result: what changed, evidence pointers,

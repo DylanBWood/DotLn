@@ -6259,6 +6259,11 @@ existing contract; no runtime source, contract, or locked boundary changes.
     rather than directives: criterion 16 makes the repository ask them per
     dispatch through the meter, the order template, the refuter and the
     role skills, and 07 §Discipline records them as standing doctrine.
+    (14) The cost rule read too literally as "cut what is annoying": the
+    operator's test is whether data materially informs a later decision;
+    such data is kept whatever it costs, and only data nothing decides on
+    is cut. Recorded in 07 §Discipline, which WO-126 cites, so the order's
+    executor reads it without the order's bytes changing.
 - **Remove the compiled harness wholesale** `rejected`
   - The build cut the executor cold start 6.5×, and the pre-effect guards
     catch real defects. The cost is in two design choices this order
