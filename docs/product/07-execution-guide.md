@@ -932,7 +932,14 @@ claim evidence or releases it does not have.
   materially informs a later decision, whatever it costs to produce, and
   cut only when nothing decides on it; cost alone never removes a record,
   and annoyance is not the test (operator clarification, 2026-09-09). The
-  mechanism is
+  lens for the process itself is Meadows' system traps, five of which the
+  operator named as live here on 2026-09-09: rule beating, seeking the
+  wrong goal, shifting the burden to the intervenor, drift to low
+  performance, and policy resistance. Each has a signal in the repository's
+  own data and the meter reports them per order; a session that satisfies
+  a gate against its purpose, optimizes a proxy, leans on the operator,
+  sizes against the previous instance, or works around a rule is in one of
+  them. The mechanism is
   [WO-126](../work-orders/WO-126-process-debt.md); until it lands, the rule
   binds by hand.
 - **Return shape.** End with a compact result: what changed, evidence pointers,

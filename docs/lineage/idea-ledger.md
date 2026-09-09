@@ -6280,7 +6280,12 @@ existing contract; no runtime source, contract, or locked boundary changes.
     codified as a hard rule. 07 §Discipline now reads "decided means
     sourced, not frozen"; criterion 13 gives every decision a reopening
     condition and makes the meter surface reopen candidates; the floor's
-    sentence is the operator's to change (assumption 6).
+    sentence is the operator's to change (assumption 6). (17) The pass
+    guessed which system trap the operator meant. The operator named
+    them: rule beating and seeking the wrong goal, with shifting the burden
+    to the intervenor, drift to low performance and policy resistance also
+    live in the meta process. Criterion 17 makes each a meter row with a
+    signal from the repository's data; 07 §Discipline names the lens.
 - **Remove the compiled harness wholesale** `rejected`
   - The build cut the executor cold start 6.5×, and the pre-effect guards
     catch real defects. The cost is in two design choices this order

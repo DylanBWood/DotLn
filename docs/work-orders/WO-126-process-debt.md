@@ -510,7 +510,26 @@ every criterion; the write-backs below.
     health line so the trend reaches the operator unasked. The standard is
     the operator's: a new user must never find the simplest action the
     most expensive in time, resources or context.
-17. `npm run test:full` green; `git diff --check` clean; no new dependency;
+17. **The systems-trap lens is part of the meter.** The operator's
+    2026-09-09 diagnosis names five of Meadows' traps as live in this
+    repository's process, and the meter reports one row per trap from the
+    repository's own data every order, with the previous-order delta:
+    rule beating (gates satisfied to the letter against their purpose;
+    signal: read-obligation bytes against diff bytes, Stop refusals and
+    re-announcements per session); seeking the wrong goal (the proxy of
+    green gates and receipts optimized over working software and operator
+    flow; signal: machinery share of wall-clock per order, phase durations
+    against code-change size); shifting the burden to the intervenor (the
+    system leaning on the operator's interventions; signal: operator
+    corrections, manual closeout steps and emergency passes per order);
+    drift to low performance (each artifact sized against the last; signal:
+    monotone series such as subject length, suite step count, cold-start
+    bytes, compared against the whole series); and policy resistance (each
+    rule breeding a workaround; signal: guard refusals, bypass tools used,
+    ad hoc scripts written per session). A trap row that worsens over three
+    consecutive orders is a reopen candidate under criterion 13, and the
+    refuter's cost check reads the rows. 07 §Discipline names the lens.
+18. `npm run test:full` green; `git diff --check` clean; no new dependency;
     the regenerated bundle pins; a fresh feedback evidence edition because
     runtime source changed; the receipt records this order's own phase
     durations, the reviewer's read-obligation count and bytes against
