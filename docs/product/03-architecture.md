@@ -742,9 +742,26 @@ constant:
    visual skin. Conflicting hard supports reject the composition with an
    explanation. Commutativity is checked; non-commuting pairs must be explicit
    pipelines or rejected (Principle 13).
+   WO-042 bounds every linked support to the active mechanic's base effect
+   and operation allowances, excluding base denials. A support may deny at
+   any layer; precedence may restore only a base allowance. Claims and
+   permission emissions that widen reject before emission. Explicit
+   repository-bound grants from the separate host registry apply after
+   claims, retain their provenance, and alone may widen the effective
+   envelope. Layer names confer ordering, not grant authority.
 4. Emit: WorkOrder + permissions + hooks + schemas + cadences + verification
    plan + the (small) prompt fragment residue. Per-support cost is declared:
    mechanism type, prompt tokens (usually 0), runtime cost, extra episodes.
+
+WO-042 also exercises ordinary support composition in the Contributor executor:
+five atomic supports supply adjacent-repair preference, decision receipts,
+ordered follow-up work, intent communication and a safe operator check-in.
+Pre-run boolean options select linked facets; the compiled component manifest
+and prompt fragments supply the generated role procedure. A missing or
+mismatched fragment refuses projection. This changes the equipped build's
+identity while preserving the saved Contributor graph and effective authority.
+The ignored worktree queue records actor-attested observations and required
+check results; it neither executes a fix nor authenticates chat delivery.
 
 WO-022 exercises step 2 with perception supports: Beacon Sight and Fine Spectrum
 require `beacons.individual.metadata`, and Composition requires

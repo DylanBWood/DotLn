@@ -69,7 +69,18 @@ plan, prompt residue, per-support costs, resources, ambient declarations,
 explicit pipelines, effective claims, component manifest, inspection data, and
 conflict trace. Winning `authority.<effect>` claims are applied to the emitted
 AuthorityEnvelope and WorkOrder operation lists rather than existing only as
-trace prose. Compiler v1 accepts direct terminal prefix globs only in a
+trace prose. Since WO-042, a support's `allow` must be within the active's
+base allowances and outside its base denials in both lists; permission
+emissions obey the same floor for their respective list. Optional graph
+`authorityGrants` normalize absent to `[]`, sort by `grantId`, and have a
+function-table row kind `authority-grant` and a statechart-context collection.
+Only grants admitted through the separate host registry widen after claims.
+The normalized program omits empty `grants` and omits
+`trace.authorityGrants` when no grant applies, preserving every grant-free
+program's exact semantic hash. Applied grant provenance and the registry
+receipt participate in the new program's hash. Authored `inspection` bytes
+remain unchanged by the display projection.
+Compiler v1 accepts direct terminal prefix globs only in a
 claim-free authority composition. A participating wildcard claim target or any
 direct wildcard combined with a participating `authority.*` claim rejects
 rather than let a broader pattern silently override an exact winner;
@@ -405,6 +416,31 @@ the operator chose to see and touch them.
   supports auto-activated (visual defect → visual witness; shared primitive
   touched → verify-all-consumers). The loadout surface exists for understanding
   and override, not clerical work.
+
+### Authority inspection projection
+
+WO-042's pure `projectAuthorityInspection(program)` projects GRANTS from the
+effective envelope's `allowedEffects` and RESTRICTIONS from its
+`deniedEffects`, preserving their order. An explicitly granted effect names
+every applied grant id and its provenance. `renderCompiledDiff` compares
+these projected sections; the actor board's Builds panel uses that same
+compiler render. The lists describe configured effects, not a fresh runtime
+authorization that bypasses expiry, revocation, evidence or limits.
+
+Authored `inspection.grants` and `inspection.restrictions` appear only under
+`AUTHORED NOTES (non-enforcing)`, labeled by their authored intent. They
+retain explanatory language without asserting different permissions.
+An authored restriction naming an exact allowed-effect token, or an authored
+grant naming an exact denied-effect token, rejects with `INSPECTION
+CONTRADICTION`, including notes contributed by linked supports. Match the
+complete literal effect id, preserving any punctuation within that id. Token
+boundaries are whitespace, Unicode punctuation, backticks and angle brackets.
+Dots and colons remain significant inside tokens; a trailing run of dots or
+colons is sentence punctuation only before another boundary or the end of the
+note. Thus `repo.inspect—ever` names `repo.inspect`, while
+`repo.inspect:detail`, `repo.inspect.child`, `prefixrepo.inspect` and
+`repo.inspectExtra` do not. This rule applies in both authored-note directions
+and does not infer semantic contradictions from unrestricted natural language.
 
 ## Semantic zoom
 

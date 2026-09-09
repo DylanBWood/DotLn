@@ -1,0 +1,8 @@
+$ node corpus/mutation/mutate.mjs --commit 8590be3c424920d7b93482d74e7627731f04afdf --enumerate
+Deterministic manifest: 32 selected / 3694 candidates; sha256 1b40d08e830ad94bfe5f9e8408e679a0c8028b4313c0f105323b08007ffce0ad
+$ node corpus/mutation/mutate.mjs --commit 8590be3c424920d7b93482d74e7627731f04afdf --reproduce M00001
+baseline {"verdict":"survived","phase":"test","compiled":true,"tests":328,"passed":328,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":46242}
+{"id":"M00001","verdict":"killed-by-test","phase":"test","compiled":true,"tests":328,"passed":327,"failed":1,"cancelled":0,"skipped":0,"killingTests":["WO-042 AC7 F-00001 incompatible tags reject even when every capability exists"],"durationMs":46524}
+$ node corpus/mutation/mutate.mjs --commit 8590be3c424920d7b93482d74e7627731f04afdf --reproduce M00002
+baseline {"verdict":"survived","phase":"test","compiled":true,"tests":328,"passed":328,"failed":0,"cancelled":0,"skipped":0,"killingTests":[],"durationMs":46739}
+{"id":"M00002","verdict":"killed-by-test","phase":"test","compiled":true,"tests":328,"passed":327,"failed":1,"cancelled":0,"skipped":0,"killingTests":["WO-042 AC7 F-00002 equal-precedence incompatible claims reject independent of source order"],"durationMs":46974}

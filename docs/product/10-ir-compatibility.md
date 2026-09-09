@@ -127,6 +127,37 @@ verification fixtures live under `docs/evidence/WO-011/`. The
 [feedback contract](02-domain-model.md#feedback-compiler-v1) states its host and
 judgment boundaries. No new kernel dependency or general migration is introduced.
 
+WO-042 advances compiler `0.7.0` to `0.8.0` and prepares application
+`v0.16.0`. LoadoutGraph schema `1`, compiled-program contract `"1"`,
+`harness-v1`, `feedback-v1`, `verification-v1`, the event schema and kernel
+package version stay fixed. The minor compiler change
+narrows acceptance: a graph that previously widened authority through a
+linked support now rejects with `AUTHORITY WIDENING`. No committed loadout
+used that path. Additive optional `authorityGrants`, registry admission,
+provenance, diagnostics and inspection projection supply the explicit
+replacement. Grant-free normalized programs omit `grants` and their grant
+trace; Seiri, Entropy Reducer, Contributor and plan-refuter retain their full
+program bytes and semantic hashes. Applied grants enter the preimage.
+
+The operator-expanded scope adds atomic executor supports and their role
+projection in skeleton `0.14.0`. The saved Contributor graph stays fixed;
+equipping the five default supports creates a separate semantic and target
+identity. The bundle comparison preserves the original authority-only check,
+then checks the declared executor fragments and repair modifier separately.
+Other role procedures, settings, matchers, effective envelope, host predicates
+and the marked instruction block are unchanged; their provenance headers may
+carry the new build hash. Hooks pin the new compiler and skeleton versions.
+The additive `role-procedure` facet adapter binds an equipped prompt support to
+the named role that already carries its compiled text, so its origin is recorded
+on that skill without a false missing-adapter residue. Existing target inputs
+remain valid and byte-stable. Console `0.1.2` selects the current WO-042 feedback
+edition by default, with a replay assertion for both self-hosted streams.
+The registry is instance data outside package `src/`.
+Current artifact-identity, verification and feedback evidence has a new
+edition under `docs/evidence/WO-042/`; historical editions remain unchanged.
+This acceptance narrowing under contract `"1"` is an explicit compatibility
+decision for review, not a migration of historical compiled artifacts.
+
 ## Transformation graph
 
 Schema and component changes form a directed graph of named, versioned

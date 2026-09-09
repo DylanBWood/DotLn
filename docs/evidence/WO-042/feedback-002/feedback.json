@@ -1,0 +1,533 @@
+{
+  "contractVersion": "feedback-audit-v1",
+  "policyHash": "fnv1a64:b7415b98b50fc2ce",
+  "subject": "sha256:2ccaf17f7e951c6b0a77e4227813f1f0a78f08f9c9908edfc3cc4b7a83edf9c8",
+  "fixtures": [
+    {
+      "unitId": "anti-oscillation",
+      "present": {
+        "command": "node --test --test-name-pattern=^WO-011 regression anti-oscillation$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "present",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "captured": [
+          "ok 1 - WO-011 regression anti-oscillation",
+          "# pass 1",
+          "# fail 0"
+        ]
+      },
+      "removed": {
+        "command": "node --test --test-name-pattern=^WO-011 regression anti-oscillation$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "removed",
+        "exitCode": 1,
+        "passed": 0,
+        "failed": 1,
+        "captured": [
+          "not ok 1 - WO-011 regression anti-oscillation",
+          "  code: 'ERR_ASSERTION'",
+          "  operator: 'throws'",
+          "# pass 0",
+          "# fail 1"
+        ]
+      }
+    },
+    {
+      "unitId": "bounded-boy-scout-cleanup",
+      "present": {
+        "command": "node --test --test-name-pattern=^WO-011 regression bounded-boy-scout-cleanup$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "present",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "captured": [
+          "ok 1 - WO-011 regression bounded-boy-scout-cleanup",
+          "# pass 1",
+          "# fail 0"
+        ]
+      },
+      "removed": {
+        "command": "node --test --test-name-pattern=^WO-011 regression bounded-boy-scout-cleanup$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "removed",
+        "exitCode": 1,
+        "passed": 0,
+        "failed": 1,
+        "captured": [
+          "not ok 1 - WO-011 regression bounded-boy-scout-cleanup",
+          "  code: 'ERR_ASSERTION'",
+          "  operator: 'throws'",
+          "# pass 0",
+          "# fail 1"
+        ]
+      }
+    },
+    {
+      "unitId": "concurrent-work-requires-worktrees",
+      "present": {
+        "command": "node --test --test-name-pattern=^WO-011 regression concurrent-work-requires-worktrees$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "present",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "captured": [
+          "ok 1 - WO-011 regression concurrent-work-requires-worktrees",
+          "# pass 1",
+          "# fail 0"
+        ]
+      },
+      "removed": {
+        "command": "node --test --test-name-pattern=^WO-011 regression concurrent-work-requires-worktrees$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "removed",
+        "exitCode": 1,
+        "passed": 0,
+        "failed": 1,
+        "captured": [
+          "not ok 1 - WO-011 regression concurrent-work-requires-worktrees",
+          "  code: 'ERR_ASSERTION'",
+          "  operator: 'throws'",
+          "# pass 0",
+          "# fail 1"
+        ]
+      }
+    },
+    {
+      "unitId": "correctness-over-sycophancy",
+      "present": {
+        "command": "node --test --test-name-pattern=^WO-011 regression correctness-over-sycophancy$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "present",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "captured": [
+          "ok 1 - WO-011 regression correctness-over-sycophancy",
+          "# pass 1",
+          "# fail 0"
+        ]
+      },
+      "removed": {
+        "command": "node --test --test-name-pattern=^WO-011 regression correctness-over-sycophancy$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "removed",
+        "exitCode": 1,
+        "passed": 0,
+        "failed": 1,
+        "captured": [
+          "not ok 1 - WO-011 regression correctness-over-sycophancy",
+          "  code: 'ERR_ASSERTION'",
+          "  operator: 'throws'",
+          "# pass 0",
+          "# fail 1"
+        ]
+      }
+    },
+    {
+      "unitId": "fail-conservative-correction",
+      "present": {
+        "command": "node --test --test-name-pattern=^WO-011 regression fail-conservative-correction$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "present",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "captured": [
+          "ok 1 - WO-011 regression fail-conservative-correction",
+          "# pass 1",
+          "# fail 0"
+        ]
+      },
+      "removed": {
+        "command": "node --test --test-name-pattern=^WO-011 regression fail-conservative-correction$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "removed",
+        "exitCode": 1,
+        "passed": 0,
+        "failed": 1,
+        "captured": [
+          "not ok 1 - WO-011 regression fail-conservative-correction",
+          "  code: 'ERR_ASSERTION'",
+          "  operator: 'deepStrictEqual'",
+          "# pass 0",
+          "# fail 1"
+        ]
+      }
+    },
+    {
+      "unitId": "no-attribution",
+      "present": {
+        "command": "node --test --test-name-pattern=^WO-011 regression no-attribution$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "present",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "captured": [
+          "ok 1 - WO-011 regression no-attribution",
+          "# pass 1",
+          "# fail 0"
+        ]
+      },
+      "removed": {
+        "command": "node --test --test-name-pattern=^WO-011 regression no-attribution$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "removed",
+        "exitCode": 1,
+        "passed": 0,
+        "failed": 1,
+        "captured": [
+          "not ok 1 - WO-011 regression no-attribution",
+          "  code: 'ERR_ASSERTION'",
+          "  operator: 'strictEqual'",
+          "# pass 0",
+          "# fail 1"
+        ]
+      }
+    },
+    {
+      "unitId": "no-lint-type-disables-as-fixes",
+      "present": {
+        "command": "node --test --test-name-pattern=^WO-011 regression no-lint-type-disables-as-fixes$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "present",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "captured": [
+          "ok 1 - WO-011 regression no-lint-type-disables-as-fixes",
+          "# pass 1",
+          "# fail 0"
+        ]
+      },
+      "removed": {
+        "command": "node --test --test-name-pattern=^WO-011 regression no-lint-type-disables-as-fixes$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "removed",
+        "exitCode": 1,
+        "passed": 0,
+        "failed": 1,
+        "captured": [
+          "not ok 1 - WO-011 regression no-lint-type-disables-as-fixes",
+          "  code: 'ERR_ASSERTION'",
+          "  operator: 'throws'",
+          "# pass 0",
+          "# fail 1"
+        ]
+      }
+    },
+    {
+      "unitId": "no-partial-completion",
+      "present": {
+        "command": "node --test --test-name-pattern=^WO-011 regression no-partial-completion$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "present",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "captured": [
+          "ok 1 - WO-011 regression no-partial-completion",
+          "# pass 1",
+          "# fail 0"
+        ]
+      },
+      "removed": {
+        "command": "node --test --test-name-pattern=^WO-011 regression no-partial-completion$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "removed",
+        "exitCode": 1,
+        "passed": 0,
+        "failed": 1,
+        "captured": [
+          "not ok 1 - WO-011 regression no-partial-completion",
+          "  code: 'ERR_ASSERTION'",
+          "  operator: 'throws'",
+          "# pass 0",
+          "# fail 1"
+        ]
+      }
+    },
+    {
+      "unitId": "read-your-own-output",
+      "present": {
+        "command": "node --test --test-name-pattern=^WO-011 regression read-your-own-output$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "present",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "captured": [
+          "ok 1 - WO-011 regression read-your-own-output",
+          "# pass 1",
+          "# fail 0"
+        ]
+      },
+      "removed": {
+        "command": "node --test --test-name-pattern=^WO-011 regression read-your-own-output$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "removed",
+        "exitCode": 1,
+        "passed": 0,
+        "failed": 1,
+        "captured": [
+          "not ok 1 - WO-011 regression read-your-own-output",
+          "  code: 'ERR_ASSERTION'",
+          "  operator: 'throws'",
+          "# pass 0",
+          "# fail 1"
+        ]
+      }
+    },
+    {
+      "unitId": "verify-app-before-done",
+      "present": {
+        "command": "node --test --test-name-pattern=^WO-011 regression verify-app-before-done$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "present",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "captured": [
+          "ok 1 - WO-011 regression verify-app-before-done",
+          "# pass 1",
+          "# fail 0"
+        ]
+      },
+      "removed": {
+        "command": "node --test --test-name-pattern=^WO-011 regression verify-app-before-done$ packages/skeleton/dist/test/feedback-fixtures.test.js",
+        "mechanism": "removed",
+        "exitCode": 1,
+        "passed": 0,
+        "failed": 1,
+        "captured": [
+          "not ok 1 - WO-011 regression verify-app-before-done",
+          "  code: 'ERR_ASSERTION'",
+          "  operator: 'throws'",
+          "# pass 0",
+          "# fail 1"
+        ]
+      }
+    }
+  ],
+  "context": {
+    "method": "WO-004 UTF-8 instruction-file bytes and physical lines; matched common baseline plus one task-local projection",
+    "baselineRef": "docs/discovery/environment.json#claudeCode.startupContext.files",
+    "commonBaseline": {
+      "files": 2,
+      "lines": 79,
+      "bytes": 3530
+    },
+    "proseEquivalent": {
+      "files": 1,
+      "lines": 10,
+      "bytes": 2495
+    },
+    "compiledResidue": {
+      "files": 1,
+      "lines": 1,
+      "bytes": 102
+    },
+    "beforeBytes": 6025,
+    "afterBytes": 3632,
+    "savedBytes": 2393,
+    "limits": "Counterfactual instruction projection, not effective-session tokens or total workflow cost. Verifier source/evidence context and tool schemas are outside this matched comparison."
+  },
+  "maturityMethod": "One isolated causal regression episode per unit, established by its present/removal pair. Counters describe those selected prevention episodes only; internal assertions and separate false-positive probes are not a population estimate.",
+  "maturity": [
+    {
+      "unitId": "anti-oscillation",
+      "version": 1,
+      "currentMechanism": "decision-lineage",
+      "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+      "awakened": false,
+      "fixture": {
+        "eligibleEpisodes": 1,
+        "activations": 1,
+        "incidentsPrevented": 1,
+        "falseActivations": 0,
+        "overrides": 0
+      },
+      "live": {
+        "eligibleEpisodes": 0,
+        "activations": 0,
+        "incidentsPrevented": 0,
+        "falseActivations": 0,
+        "overrides": 0
+      }
+    },
+    {
+      "unitId": "bounded-boy-scout-cleanup",
+      "version": 1,
+      "currentMechanism": "cleanup-scope",
+      "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+      "awakened": false,
+      "fixture": {
+        "eligibleEpisodes": 1,
+        "activations": 1,
+        "incidentsPrevented": 1,
+        "falseActivations": 0,
+        "overrides": 0
+      },
+      "live": {
+        "eligibleEpisodes": 0,
+        "activations": 0,
+        "incidentsPrevented": 0,
+        "falseActivations": 0,
+        "overrides": 0
+      }
+    },
+    {
+      "unitId": "concurrent-work-requires-worktrees",
+      "version": 1,
+      "currentMechanism": "writer-isolation",
+      "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+      "awakened": false,
+      "fixture": {
+        "eligibleEpisodes": 1,
+        "activations": 1,
+        "incidentsPrevented": 1,
+        "falseActivations": 0,
+        "overrides": 0
+      },
+      "live": {
+        "eligibleEpisodes": 0,
+        "activations": 0,
+        "incidentsPrevented": 0,
+        "falseActivations": 0,
+        "overrides": 0
+      }
+    },
+    {
+      "unitId": "correctness-over-sycophancy",
+      "version": 1,
+      "currentMechanism": "evidence-judgment",
+      "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+      "awakened": false,
+      "fixture": {
+        "eligibleEpisodes": 1,
+        "activations": 1,
+        "incidentsPrevented": 1,
+        "falseActivations": 0,
+        "overrides": 0
+      },
+      "live": {
+        "eligibleEpisodes": 0,
+        "activations": 0,
+        "incidentsPrevented": 0,
+        "falseActivations": 0,
+        "overrides": 0
+      }
+    },
+    {
+      "unitId": "fail-conservative-correction",
+      "version": 1,
+      "currentMechanism": "semantic-correction",
+      "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+      "awakened": false,
+      "fixture": {
+        "eligibleEpisodes": 1,
+        "activations": 1,
+        "incidentsPrevented": 1,
+        "falseActivations": 0,
+        "overrides": 0
+      },
+      "live": {
+        "eligibleEpisodes": 0,
+        "activations": 0,
+        "incidentsPrevented": 0,
+        "falseActivations": 0,
+        "overrides": 0
+      }
+    },
+    {
+      "unitId": "no-attribution",
+      "version": 1,
+      "currentMechanism": "attribution",
+      "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+      "awakened": false,
+      "fixture": {
+        "eligibleEpisodes": 1,
+        "activations": 1,
+        "incidentsPrevented": 1,
+        "falseActivations": 0,
+        "overrides": 0
+      },
+      "live": {
+        "eligibleEpisodes": 0,
+        "activations": 0,
+        "incidentsPrevented": 0,
+        "falseActivations": 0,
+        "overrides": 0
+      }
+    },
+    {
+      "unitId": "no-lint-type-disables-as-fixes",
+      "version": 1,
+      "currentMechanism": "suppression-diff",
+      "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+      "awakened": false,
+      "fixture": {
+        "eligibleEpisodes": 1,
+        "activations": 1,
+        "incidentsPrevented": 1,
+        "falseActivations": 0,
+        "overrides": 0
+      },
+      "live": {
+        "eligibleEpisodes": 0,
+        "activations": 0,
+        "incidentsPrevented": 0,
+        "falseActivations": 0,
+        "overrides": 0
+      }
+    },
+    {
+      "unitId": "no-partial-completion",
+      "version": 1,
+      "currentMechanism": "complete-scope",
+      "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+      "awakened": false,
+      "fixture": {
+        "eligibleEpisodes": 1,
+        "activations": 1,
+        "incidentsPrevented": 1,
+        "falseActivations": 0,
+        "overrides": 0
+      },
+      "live": {
+        "eligibleEpisodes": 0,
+        "activations": 0,
+        "incidentsPrevented": 0,
+        "falseActivations": 0,
+        "overrides": 0
+      }
+    },
+    {
+      "unitId": "read-your-own-output",
+      "version": 1,
+      "currentMechanism": "output-review",
+      "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+      "awakened": false,
+      "fixture": {
+        "eligibleEpisodes": 1,
+        "activations": 1,
+        "incidentsPrevented": 1,
+        "falseActivations": 0,
+        "overrides": 0
+      },
+      "live": {
+        "eligibleEpisodes": 0,
+        "activations": 0,
+        "incidentsPrevented": 0,
+        "falseActivations": 0,
+        "overrides": 0
+      }
+    },
+    {
+      "unitId": "verify-app-before-done",
+      "version": 1,
+      "currentMechanism": "application-evidence",
+      "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
+      "awakened": false,
+      "fixture": {
+        "eligibleEpisodes": 1,
+        "activations": 1,
+        "incidentsPrevented": 1,
+        "falseActivations": 0,
+        "overrides": 0
+      },
+      "live": {
+        "eligibleEpisodes": 0,
+        "activations": 0,
+        "incidentsPrevented": 0,
+        "falseActivations": 0,
+        "overrides": 0
+      }
+    }
+  ]
+}

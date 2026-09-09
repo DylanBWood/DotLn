@@ -173,6 +173,15 @@ lifecycle state, and historical absence remains valid under schema version 1.
 | **IR artifact**                   | Immutable, version-addressed configuration or behavioral definition carrying artifact kind, schema identity, provenance, and semantic hash. Application/runtime, schema, artifact, component, compiler/transformation-set, and environment-profile versions are separate axes; see 10-ir-compatibility.md.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Compatibility plan**            | Inspectable path from a source artifact and component set to a target runtime/environment. Each step names its transformation and whether execution is native, exact, adapted, lossy, emulated, inert, blocked, or unverified. The same definitions support JIT compatibility and AOT migration; neither silently overwrites the source.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
+WO-042 makes the supplied active mechanic the base of a compiled
+AuthorityEnvelope. Linked supports can narrow that authority; an `allow`
+claim can restore only a base allowance. Widening requires an explicit grant
+admitted by the compilation host, and the compiled program retains the
+grant's id, version, provenance, repository and reason. The runtime guard
+still evaluates the effective envelope; provenance does not bypass expiry,
+revocation, evidence or resource limits. This is a composition floor relative
+to the supplied active, not authentication of that definition or its host.
+
 The first perception-slot support facets are below. A sense is a compiled,
 authorized and mounted capability; the codebook is a skill/reference and grants
 nothing. A Watcher projects already admitted records, while a sense controls
@@ -219,6 +228,7 @@ type LoadoutGraphV1 = {
   ambientEffects: readonly AmbientEffectV1[];
   resourceModel: ResourceModelV1;
   polarAxes: readonly PolarAxisV1[];
+  authorityGrants?: readonly AuthorityGrant[];
 };
 
 type ContainerV1 = {
@@ -319,13 +329,67 @@ declared nine-level `PrecedenceLayer` from the composition architecture; they
 do not smuggle execution order into a link. The winner for each target is
 emitted in `CompiledProgramV1.effectiveClaims`. A target beginning
 `authority.` names the remaining effect id and accepts only `allow` or `deny`;
-the winner rewrites the emitted AuthorityEnvelope and corresponding WorkOrder
-operation lists so trace and runtime authorization cannot disagree. This
+the winner narrows the emitted AuthorityEnvelope and corresponding WorkOrder
+operation lists, or restores an allowance already present in both active base
+lists and absent from both base denial lists. A linked support's `deny` is
+legal at all nine layers. Its `allow` cannot add authority or remove a base
+denial, even at `safety-invariants`; each allowed effect or operation in a
+`permission-guard` emission must also belong to its corresponding active base
+allow list and not its base deny list. A violation rejects with `AUTHORITY
+WIDENING`, naming the support, claim or emission, effect and base list, with
+`unequip-support` and `declare-authority-grant` corrections. A declared grant
+does not excuse a widening support: remove that claim or emission and use the
+grant itself. Denial emissions remove matching exact allowances. This
 bounded compiler also accepts direct terminal prefix globs only when no linked
 `authority.*` claim participates. Participating wildcard claim targets and
 mixed wildcard/participating-authority-claim graphs reject until precedence can
 preserve safe exceptions through broader patterns; unequipped catalog
 definitions remain inert.
+
+#### Authority grants and trusted admission
+
+`AuthorityGrant` is `{ grantId, version, grantedBy, effects, operations?, repo,
+reason }`. `grantedBy` is exactly `operator`, `host-policy`, or
+`registered-repository`; effects and operations are nonempty exact ids with
+no whitespace or wildcard. The lists are set-like, and may be empty;
+`operations` is optional. The grant id, repository and explanatory reason
+must be nonempty single-line strings; version is a positive safe integer.
+Duplicate grant ids reject. Each grant's `repo` must equal the explicit
+compilation environment's repository.
+
+The optional `authorityGrants` graph collection normalizes to `[]` when
+absent and sorts by `grantId`; all three editable views carry it. The
+environment's optional `authorityGrantRegistry` is a separate host-owned
+input. A graph grant is admitted only when a registry entry matches its
+normalized `grantId`, `version`, `grantedBy`, `effects`, `operations`, and
+`repo`. Absent operations and an explicitly empty list remain distinct
+admission declarations. A missing or mismatched entry rejects with `AUTHORITY
+GRANT UNADMITTED`; a reason is required explanatory text, not admission
+authority. The compiler performs no registry I/O.
+
+The repository host adapter is
+[`compileRegisteredLoadout`](../../scripts/lib/authority-grants.mjs). It reads
+the committed instance registry
+[`packages/skeleton/loadouts/grants.json`](../../packages/skeleton/loadouts/grants.json)
+alongside the source-loadout tree, outside package `src/`, for `operator` and
+`registered-repository` entries. Optional `docs/control/local/authority-grants.json`
+is ignored and admits only `host-policy` entries. Both paths belong to the
+host, never to the submitted graph. The committed registry starts empty;
+changes are reviewed as authority changes. This local boundary is not a
+signature or hostile same-user isolation mechanism.
+
+Admitted grants apply after claims and are the only composition mechanism
+that may add an allowed effect or operation or remove an exact base denial.
+An effect grant does not implicitly grant the corresponding operation.
+Applied grants populate optional `CompiledProgram.grants` and
+`trace.authorityGrants = { applied, registryHash }`. The registry hash is
+`fnv1a64:` over canonical JSON `{ domain:
+"dotln:authority-grant-registry:v1", grants: normalizedRegistry }`; it binds
+the whole supplied registry, including reasons, as an equality receipt.
+Grant-free programs omit both fields. An exact grant that would need an
+exception to a broader wildcard denial rejects with `SEMANTICS UNSUPPORTED`:
+removing that wildcard would widen other authority, and the unchanged kernel
+cannot express that exception. No wildcard grant is admitted.
 
 The remaining graph nodes are also explicit data. `AmbientEffectV1` carries an
 id/version/name, scope, reservation-cost record, and emissions.
@@ -473,9 +537,23 @@ built runtime bytes. An unobserved capability is unavailable.
 A `HarnessBundle` contains `{ path, contents, origin, rung }` files, a manifest
 and residue. Every origin names its unit/facet IDs, loadout ID and semantic hash.
 The manifest adds compiler version, feedback policy hash, target hash and each
-file's hash. These are equality checks, not authentication. Changing one unit
+file's hash. WO-042 also records the applied `grants` and their
+`authorityGrantRegistryHash` (`null` when no grant was applied), preserving
+their provenance through a target or fork bundle. These are equality checks,
+not authentication. Changing one unit
 changes only files naming that unit; target changes leave existing Seiri and
 Entropy Reducer semantic hashes intact.
+
+WO-042's operator-expanded Contributor build adds five independently equipped
+executor supports in skeleton `0.14.0`: Adjacent Repair, Decision Receipts,
+Follow-up Queue, Intent to Act and Operator Check-In. The original saved
+Contributor graph retains its identity; equipment creates a new compiled build.
+The existing prompt-fragment emission projects those supports into the executor
+skill at rung 7. Removing a support removes its contribution; removing all five
+restores the saved graph. The envelope, host predicates, other-role procedures
+and read-only status/times behavior stay fixed. Alternative communication
+levels are mutually exclusive. The [pattern library](05-pattern-library.md#executor-supports-adjacent-repair-and-decision-receipts)
+separates these executable switches from the broader modifier policy model.
 
 | Unit or facet                                       | Claude Code lowering                                                                                   | Missing fact or capability                                                                                            |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |

@@ -24,11 +24,21 @@ const edition = editionAt < 0 ? "WO-011" : args[editionAt + 1];
 if (!/^WO-\d{3}$/u.test(edition ?? ""))
   throw new Error("expected --edition WO-NNN");
 if (editionAt >= 0) args.splice(editionAt, 2);
+const revisionAt = args.indexOf("--revision");
+const revision = revisionAt < 0 ? null : args[revisionAt + 1];
+if (
+  revision !== null &&
+  (!/^(?!000)\d{3}$/u.test(revision ?? "") || edition === "WO-011")
+)
+  throw new Error("expected --revision NNN for a numbered WO feedback edition");
+if (revisionAt >= 0) args.splice(revisionAt, 2);
 const destination = join(
   root,
   "docs/evidence",
   edition,
-  ...(edition === "WO-011" ? [] : ["feedback"]),
+  ...(edition === "WO-011"
+    ? []
+    : [revision === null ? "feedback" : `feedback-${revision}`]),
 );
 const mode = args[0];
 if (!(
@@ -36,7 +46,7 @@ if (!(
   (args.length === 2 && mode === "--record-selfhost")
 ))
   throw new Error(
-    "usage: feedback-evidence.mjs --write|--check|--record-selfhost <store> [--edition WO-NNN] (build first)",
+    "usage: feedback-evidence.mjs --write|--check|--record-selfhost <store> [--edition WO-NNN [--revision NNN]] (build first)",
   );
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 function immutableWrite(name, source) {
