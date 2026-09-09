@@ -813,9 +813,15 @@ claim evidence or releases it does not have.
   tool with itself. Prefer instruments that fail loudly; an append-only log with
   a regenerated projection is safe to dogfood precisely because corruption shows
   rather than producing a plausible record.
-- **Settled is settled.** The idea-ledger Resolutions and `docs/decisions/`
-  close their questions. Do not relitigate; a genuine new-evidence challenge
-  becomes a new decision record proposal, never an in-place edit. Exception:
+- **Decided means sourced, not frozen (operator correction, 2026-09-09).**
+  A decision record names the operator dispatch that made it and the
+  condition that reopens it. Do not relitigate a decision for lack of new
+  material; reopen it when evidence the meter or a session records bears on
+  that condition, or when the operator says so, and reopen it as a new
+  decision record proposal, never an in-place edit. A rule that a decision
+  can never be revisited is inertia written into the repository and is
+  itself the defect; the idea-ledger Resolutions and `docs/decisions/` close
+  questions on their recorded terms, not forever. Exception:
   each ADR carries an appendable **Amendments** section for notes within the
   decided constraints (a dev-dependency, a tooling choice) — appending there is
   not an edit of the decision.

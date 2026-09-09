@@ -355,8 +355,12 @@ every criterion; the write-backs below.
    section, which logs the ten corrections of that pass, as its source;
    its mechanism kind is `prose`, it claims no host
    facts, and its fixture is that every role skill carries the rule and the
-   example. Decision lineage leaves this unit; 07 §Discipline "Settled is
-   settled" keeps that rule unchanged. The three other prose-only units
+   example. Decision lineage leaves this unit; 07 §Discipline's decisions
+   rule is "decided means sourced, not frozen" (operator correction,
+   2026-09-09): a decision names its dispatch and its reopening condition,
+   and evidence or the operator reopens it as a new record; no unit or
+   skill states that a decision can never be revisited. The three other
+   prose-only units
    carry kind `prose`; the three Stop units carry enforcement `advisory`;
    every version-1 definition is retained; the compiled `CLAUDE.md` residue
    block is one line and the file is smaller than at `v0.16.0`.
@@ -420,8 +424,12 @@ every criterion; the write-backs below.
     data" sentence began as WO-028's non-goal on 2026-09-03, was carried by
     three planning passes as a settled NoOp, and reached the playbook and
     two product documents without any operator dispatch behind it; the
-    decisions index rejects an entry without a dispatch source). Transition
-    for inherited duties: an order filed before 2026-09-09 whose acceptance text names a
+    decisions index rejects an entry without a dispatch source). Every
+    decision entry also carries its reopening condition, and `npm run meta`
+    lists the decisions whose condition its data now meets as reopen
+    candidates for the next planning pass, so the repository revises its
+    own rules from evidence instead of freezing them. Transition for
+    inherited duties: an order filed before 2026-09-09 whose acceptance text names a
     ledger entry (WO-043 criterion 6, WO-045 criterion 5, WO-052 criterion
     5 and WO-089 criterion 2 among them) discharges that text with its
     decisions file and its row in the generated decisions index; its
@@ -536,3 +544,8 @@ the cost check of criterion 16 (its subject reader changes path only).
 5. The executor lands criterion 2 before recording `implementation-ready` on
    a Claude Code version outside the observed line; otherwise the `max+`
    declaration refuses the transition on the order that fixes it.
+6. The floor sentence in `CLAUDE.md`, "Preserve settled decisions and
+   rejection reasons", is operator-owned. At activation the operator
+   changes it to "Preserve decisions with their sources and reopening
+   conditions" or authorizes the executor to; the order does not edit the
+   hand-written floor on its own.

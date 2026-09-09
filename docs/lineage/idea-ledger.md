@@ -6275,7 +6275,12 @@ existing contract; no runtime source, contract, or locked boundary changes.
     non-goal, and WO-031's implementation wrote it into the playbook, 07
     and 03 as a flat prohibition. No operator dispatch said it. Criterion
     13 now requires a decision to name its dispatch and forbids restating
-    a non-goal as one.
+    a non-goal as one. (16) "Settled is settled" as an absolute, which the
+    pass had kept on purpose: the operator names it a systems trap, inertia
+    codified as a hard rule. 07 §Discipline now reads "decided means
+    sourced, not frozen"; criterion 13 gives every decision a reopening
+    condition and makes the meter surface reopen candidates; the floor's
+    sentence is the operator's to change (assumption 6).
 - **Remove the compiled harness wholesale** `rejected`
   - The build cut the executor cold start 6.5×, and the pre-effect guards
     catch real defects. The cost is in two design choices this order
