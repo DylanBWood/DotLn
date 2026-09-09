@@ -915,7 +915,14 @@ claim evidence or releases it does not have.
   refuses, report the refusal. Any size, duration or count that grows from
   one order to the next past its budget needs a dated operator acceptance,
   or the fast gate fails. A finding that would otherwise become a
-  nomination gets a criterion in the order that found it. The mechanism is
+  nomination gets a criterion in the order that found it. The standing
+  questions for every process, asked by the repository through the meter,
+  the order template, the refuter and the role skills, never by the
+  operator: how do we make this quicker; how do we make this take less
+  context; how do we make this consume fewer resources; how do we make a
+  six-step process four steps and perform as well or better. A new user
+  must never find the simplest action the most expensive in time, resources
+  or context. The mechanism is
   [WO-126](../work-orders/WO-126-process-debt.md); until it lands, the rule
   binds by hand.
 - **Return shape.** End with a compact result: what changed, evidence pointers,

@@ -72,7 +72,7 @@ CLI patch version nobody recorded; the anti-oscillation unit does not say
 what the operator means and enforces nothing; and no mechanism compares any
 of this across orders although the events exist. The pass filed
 [WO-126](../work-orders/WO-126-process-debt.md) at the head of the sequence
-with sixteen falsifiable criteria: advisory Stop hooks with hard enforcement
+with seventeen falsifiable criteria: advisory Stop hooks with hard enforcement
 at the lifecycle commands, authorship-observed read obligations with a
 generated-artifact manifest, evidence keyed by tree hash and reused at the
 tag, a fast gate under two minutes beside a full gate at the transitions

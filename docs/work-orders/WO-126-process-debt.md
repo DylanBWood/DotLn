@@ -450,14 +450,15 @@ every criterion; the write-backs below.
     canonical prompt: it loads no map, guide section or earlier receipt (on
     2026-09-09 the planner role's directed reads exposed the map narrative
     and earlier receipts before the judgment, and receipt 005 had to
-    disclose it). Its scope is the orders whose bytes changed or were added
-    since the latest receipt, plus the sequence; unchanged orders carry
-    their latest verdict forward by hash in the new receipt, and the full
-    horizon is re-judged only when a thesis, exclusion, role or capability
-    row changes or the operator asks. The receipt records wall-clock from
-    dispatch to file, and `budgets.json` holds 120 s for a pass that
-    changes one order (on 2026-09-09 the pass judged 76 orders from a
-    194 KB prompt and then ran the code suite, over thirty minutes in all).
+    disclose it). Two scopes, the operator's choice, both kept:
+    `planning: refute` judges the orders the latest planning pass created
+    or changed, plus the sequence, and carries every other order's latest
+    verdict forward by hash in the new receipt; `planning: refute full`
+    judges the whole horizon. The receipt records which scope ran and its
+    wall-clock from dispatch to file, and `budgets.json` holds 120 s for
+    the pass-scoped form (on 2026-09-09 each run judged 76 orders from a
+    194 KB prompt, and the first also ran the code suite, over thirty
+    minutes in all).
     Fixtures cover the direct route end to end, including a rejected stale
     subject, a rejected malformed result, and a carried-forward verdict. The
     external command's transport failure reports the CLI's exit code and
@@ -465,7 +466,25 @@ every criterion; the write-backs below.
     reported only `transport-failed: exit-1`; the cause was the sandbox
     refusing the CLI's app-server socket, and the nested Claude CLI had no
     login).
-16. `npm run test:full` green; `git diff --check` clean; no new dependency;
+16. **The four questions are asked by the repository, not the operator.**
+    The operator's standing questions for every process, recorded
+    2026-09-09: how do we make this quicker; how do we make this take less
+    context; how do we make this consume fewer resources; how do we make a
+    six-step process four steps and perform as well or better. The
+    mechanism: for every dispatch kind (executor, verifier, reviewer,
+    release close, planning, refutation) the meter records wall-clock,
+    bytes read into context, commands run and step count, and prints the
+    previous-order delta; every order's design section states, in those
+    units, the cost its process changes add and remove; the refuter's rules
+    hold an order that adds process cost without a stated removal or a
+    dated budget acceptance (the existing `machinery` verdict gains that
+    check); every role skill carries one line, before adding a step, read,
+    check or artifact, state what it costs and what it removes and take the
+    fewer-step path that performs as well; and `resume status` prints the
+    health line so the trend reaches the operator unasked. The standard is
+    the operator's: a new user must never find the simplest action the
+    most expensive in time, resources or context.
+17. `npm run test:full` green; `git diff --check` clean; no new dependency;
     the regenerated bundle pins; a fresh feedback evidence edition because
     runtime source changed; the receipt records this order's own phase
     durations, the reviewer's read-obligation count and bytes against
@@ -480,8 +499,8 @@ table before and after; the feedback evidence edition.
 **Non-goals:** token or cost telemetry from the provider; the kernel,
 `verification-v1` and event-schema contracts; removing the writer guard, the
 attribution guard or the permissions envelope; the rule migration batches;
-any target-repository order; the planning refutation gate's own judgment
-rules (its subject reader changes path only).
+any target-repository order; the refutation gate's judgment rules beyond
+the cost check of criterion 16 (its subject reader changes path only).
 
 **Operator-review assumptions**
 

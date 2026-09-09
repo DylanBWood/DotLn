@@ -6252,7 +6252,13 @@ existing contract; no runtime source, contract, or locked boundary changes.
     independence was exposed to the map by the planner role's directed
     reads: both sentences now name the document gate, and criterion 15
     gives the phrase its own dispatch with no read but the prompt, a scope
-    of changed orders, and a 120 s budget.
+    of changed orders, and a 120 s budget. (12) The refuter's scope swung
+    from the whole horizon to changed orders only, instead of keeping both:
+    criterion 15 names `planning: refute` and `planning: refute full`.
+    (13) The operator's four capitalized questions were treated as venting
+    rather than directives: criterion 16 makes the repository ask them per
+    dispatch through the meter, the order template, the refuter and the
+    role skills, and 07 §Discipline records them as standing doctrine.
 - **Remove the compiled harness wholesale** `rejected`
   - The build cut the executor cold start 6.5×, and the pre-effect guards
     catch real defects. The cost is in two design choices this order
