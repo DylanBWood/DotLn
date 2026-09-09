@@ -89,8 +89,9 @@ an invented length limit was rejected before, so criterion 12 makes the
 series visible at publish time instead; and the refutation of this pass may
 run through the automated CLI transport now, and as one dispatch phrase in
 either harness once criterion 16 lands. The one-seam and four-hour rules stand for every other order. The pass
-declined, as NoOps recorded below, removing the harness wholesale and adding
-provider cost telemetry. Its receipt is the pass's independent verification.
+declined, as NoOps recorded below, removing the harness wholesale and leaving
+tokens and cost unrecorded. Its receipt is the pass's independent
+verification.
 
 **WO-038 source (2026-09-06):** the planning license files are present in this activation base. The missing release assignment is completed at `v0.13.2`, the next patch above published `v0.13.1`. The [executor receipt](../evidence/WO-038/README.md) records package metadata, npm refusal probes, the pinned license surfaces, contribution sign-offs, and the WO-033 export-default handoff. This source work does not discharge the critical path's merge dependencies or establish that the proposed paired wave occurred; the generated index and control fold own later lifecycle evidence.
 
@@ -312,11 +313,13 @@ identity migration.
   WO-126 closes, the operator may retire the hooks wholesale. (2) _Split the
   process debt into bounded orders under the one-seam rule._ Declined by the
   operator's direction; each extra order would pay the cost model it fixes.
-  Reversal: none needed; the rule stands for every other order. (3) _Add
-  provider token or cost telemetry._ Declined; the 2026-09-05 decision
-  against attention and resource telemetry stands, and the repository
-  already records the bytes, seconds and counts the meter needs. Reversal:
-  a demonstrated decision the meter cannot inform. (4) _Fix the guard's
+  Reversal: none needed; the rule stands for every other order. (3) _Leave
+  tokens and cost unrecorded._ Declined on 2026-09-09 after the pass first
+  filed the opposite: the playbook's sentence that no token or cost data is
+  collected was a prior session's design note, never an operator decision,
+  and the operator requires tokens and cost recorded per dispatch so
+  context and token budgets can be set from observation; WO-126
+  criteria 10 and 11 carry it. (4) _Fix the guard's
   allowlist in this pass._ Declined; a planning pass never implements. The
   fix is WO-126 criterion 8, not a nomination.
 - **Critical-path candidates — recorded 2026-09-08 by the critical-path

@@ -251,9 +251,10 @@ fast gate on a budget breach that carries no dated operator acceptance.
   the prose rules (the compiled build measurably cut the executor cold start
   from 71,165 to 10,960 bytes and its pre-effect guards caught real defects;
   reversal condition in the map's NoOp record); a third-party test
-  orchestrator (WO-036's own rejection stands); token or cost telemetry from
-  the provider (declined by the map's 2026-09-05 decision; the meter reads
-  bytes, seconds and counts the repository already records); a nomination
+  orchestrator (WO-036's own rejection stands); leaving tokens and cost
+  unrecorded (the playbook's "no token, cost, or attention data is
+  collected" was a prior session's note, not an operator decision; the
+  operator requires them recorded per dispatch); a nomination
   for anything this order observed (the operator's 2026-09-09 direction:
   no known issue stays a nomination).
 
@@ -359,7 +360,8 @@ every criterion; the write-backs below.
    carry kind `prose`; the three Stop units carry enforcement `advisory`;
    every version-1 definition is retained; the compiled `CLAUDE.md` residue
    block is one line and the file is smaller than at `v0.16.0`.
-10. **Budget.** `docs/control/budgets.json` holds per-role cold-start bytes
+10. **Budget.** `docs/control/budgets.json` holds tokens and cost per
+    dispatch kind, per-role cold-start bytes
     (executor 16 KB, verifier 12 KB, reviewer 14 KB, release close 6 KB,
     planner 24 KB, `CLAUDE.md` included), fast-gate seconds (120), the read
     cap (64 KB), the sequence file size (8 KB) and the PR body size, each
@@ -375,7 +377,13 @@ every criterion; the write-backs below.
 11. **Meter.** `npm run meta` prints, for the last five closed orders and
     the active one, phase durations and attempts from the control fold,
     gate seconds and read-obligation counts and bytes from the evidence
-    records, per-role cold-start bytes from the context editions, unit, hook
+    records, tokens and cost per dispatch observed from the harness (the
+    CLI transports' usage and cost envelopes, the interactive session's
+    transcript usage reachable through the hook input's transcript path,
+    and Codex's equivalent) beside the compiled declared `promptTokens`,
+    so declared and observed cost sit in one row and the playbook's "no
+    token, cost, or attention data is collected" sentence is retired,
+    per-role cold-start bytes from the context editions, unit, hook
     and support counts from the manifest, the sizes of the sequence file,
     the map, the index, the ledger, `CLAUDE.md` and the skills, PR body
     bytes, and the count of operator corrections recorded for the order,
@@ -496,7 +504,7 @@ table before and after; the feedback evidence edition.
 
 **Write-back duty:** as listed in criterion 14, in the same pull request.
 
-**Non-goals:** token or cost telemetry from the provider; the kernel,
+**Non-goals:** attention or presence telemetry; the kernel,
 `verification-v1` and event-schema contracts; removing the writer guard, the
 attribution guard or the permissions envelope; the rule migration batches;
 any target-repository order; the refutation gate's judgment rules beyond

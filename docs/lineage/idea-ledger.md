@@ -6263,7 +6263,12 @@ existing contract; no runtime source, contract, or locked boundary changes.
     operator's test is whether data materially informs a later decision;
     such data is kept whatever it costs, and only data nothing decides on
     is cut. Recorded in 07 §Discipline, which WO-126 cites, so the order's
-    executor reads it without the order's bytes changing.
+    executor reads it without the order's bytes changing. (15) A prior
+    session's playbook sentence, "no token, cost, or attention data is
+    collected", was presented to the operator as the operator's own
+    decision; it never was. Tokens and cost per dispatch are required data
+    for setting context and token budgets: WO-126 criteria 10 and 11, the
+    map's NoOp corrected.
 - **Remove the compiled harness wholesale** `rejected`
   - The build cut the executor cold start 6.5×, and the pre-effect guards
     catch real defects. The cost is in two design choices this order
