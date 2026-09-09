@@ -6286,6 +6286,13 @@ existing contract; no runtime source, contract, or locked boundary changes.
     to the intervenor, drift to low performance and policy resistance also
     live in the meta process. Criterion 17 makes each a meter row with a
     signal from the repository's data; 07 §Discipline names the lens.
+    (18) Receipt 007 held on criterion 16: the cost judgment it demanded
+    had no permitted input, since criterion 15 gives the refuter only the
+    canonical prompt. Repaired: every order carries a `**Cost:**` header
+    line the subject reader includes and hashes, and the canonical input
+    carries a bounded cost table (dated acceptances and the latest meter
+    rows, refused when stale). The hold was then closed by the operator's
+    override rather than a fourth whole-horizon refutation.
 - **Operator override: merge on receipt 006 without re-refuting the later
   corrections** `adopted`
   - Receipt 006 (2026-09-09, direct Codex session) passed the whole

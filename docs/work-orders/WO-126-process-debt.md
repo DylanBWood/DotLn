@@ -16,6 +16,13 @@ and directing one order at the front of the line irrespective of the
 one-seam rule. Planner-synthesized draft; the dispatch and its two mid-turn
 messages are preserved verbatim in the pass's ignored capture. Opaque
 identifier, not a priority. Clean-room screen: no stop condition.
+**Cost:** adds one fast gate run per turn end (under 120 s), one cost line
+per order, and the meter's run per order; removes the byte reads of
+inherited and generated outputs (5,305,410 bytes at WO-042's review), the
+full suite at every turn end and at the tag, the hand-written closeout,
+the whole-map planner read (184,668 bytes) and the whole-horizon
+refutation for a one-order pass. Net: hours per order and hundreds of
+kilobytes per session removed for seconds added.
 **Depends on:** WO-042 merged (the harness bundle this order edits; satisfied
 at `v0.16.0`).
 **Recommended placement:** first, alone, before any order in the 2026-09-08
@@ -499,12 +506,20 @@ every criterion; the write-backs below.
     six-step process four steps and perform as well or better. The
     mechanism: for every dispatch kind (executor, verifier, reviewer,
     release close, planning, refutation) the meter records wall-clock,
-    bytes read into context, commands run and step count, and prints the
-    previous-order delta; every order's design section states, in those
-    units, the cost its process changes add and remove; the refuter's rules
-    hold an order that adds process cost without a stated removal or a
-    dated budget acceptance (the existing `machinery` verdict gains that
-    check); every role skill carries one line, before adding a step, read,
+    bytes read into context, commands run, tokens and step count, and
+    prints the previous-order delta; every order carries a `**Cost:**`
+    header line stating, in those units, what its process changes add and
+    remove, and the subject reader includes that line in the canonical
+    input and hash beside the objective, criteria and non-goals; the
+    canonical input also carries a bounded, subject-hashed cost table: the
+    dated acceptances from `budgets.json` and the latest meter rows for the
+    orders in the subject, refused as stale when older than the subject
+    revision; the refuter's rules hold an order whose cost line is missing
+    or adds process cost without a stated removal or a dated acceptance in
+    that table (the existing `machinery` verdict gains that check), and
+    fixtures cover a missing cost line, a dated acceptance and stale
+    evidence without opening planner narrative; every role skill carries
+    one line, before adding a step, read,
     check or artifact, state what it costs and what it removes and take the
     fewer-step path that performs as well; and `resume status` prints the
     health line so the trend reaches the operator unasked. The standard is
@@ -545,7 +560,8 @@ table before and after; the feedback evidence edition.
 `verification-v1` and event-schema contracts; removing the writer guard, the
 attribution guard or the permissions envelope; the rule migration batches;
 any target-repository order; the refutation gate's judgment rules beyond
-the cost check of criterion 16 (its subject reader changes path only).
+the cost check of criterion 16 (its subject reader changes path and gains
+the cost line and the cost table, nothing else).
 
 **Operator-review assumptions**
 
