@@ -1,0 +1,600 @@
+{
+  "schemaVersion": 4,
+  "role": "executor",
+  "attempt": "002",
+  "observedAt": "2026-09-09T02:49:55.116Z",
+  "phrase": "resume: next",
+  "scope": "Closed synthetic role-entry smoke; actual canonical status and entry commands, no full phase execution or publication claimed",
+  "harnessVersion": "2.1.263 (Claude Code)",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "observedModels": [
+    "claude-fable-5"
+  ],
+  "effectiveEffort": "unobserved",
+  "compilerPackageVersion": "0.8.0",
+  "loadout": {
+    "id": "contributor",
+    "semanticHash": "fnv1a64:709272ae4905aaa6",
+    "targetHash": "fnv1a64:6a141d340b625743"
+  },
+  "runtime": {
+    "boundaryContract": "feedback-v1",
+    "files": [
+      {
+        "hash": "fnv1a64:dc9688aecc4cb056",
+        "path": "packages/compiler/dist/src/feedback.js"
+      },
+      {
+        "hash": "fnv1a64:7f0520a32e27dede",
+        "path": "packages/skeleton/dist/src/feedback-boundary.js"
+      },
+      {
+        "hash": "fnv1a64:6c6f7fcb7164891b",
+        "path": "packages/skeleton/dist/src/feedback-source-comments.js"
+      },
+      {
+        "hash": "fnv1a64:314cebd40278b35f",
+        "path": "packages/skeleton/dist/src/harness-host.js"
+      },
+      {
+        "hash": "fnv1a64:ac4af55f5c7ef6c5",
+        "path": "packages/skeleton/dist/src/reactor.js"
+      }
+    ],
+    "skeletonVersion": "0.14.0"
+  },
+  "emittedFiles": [
+    {
+      "path": ".agents/skills/dotln-executor/SKILL.md",
+      "hash": "fnv1a64:6836c7fedf8d512e",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "adjacent-repair",
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "communication-intent",
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "correctness-over-sycophancy",
+          "decision-receipts",
+          "fail-conservative-correction",
+          "follow-up-queue",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "operator-check-in",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-planner/SKILL.md",
+      "hash": "fnv1a64:37674aafaaf641db",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.planner",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-release-close/SKILL.md",
+      "hash": "fnv1a64:0ec791586491a9a6",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.release-close",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-reviewer/SKILL.md",
+      "hash": "fnv1a64:83869718d8bca8fa",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.reviewer",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".agents/skills/dotln-verifier/SKILL.md",
+      "hash": "fnv1a64:9229d829b736052c",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/hooks/commit-msg.mjs",
+      "hash": "fnv1a64:aabee72cd40db775",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "no-attribution"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+      "hash": "fnv1a64:d6a7ad5a37990898",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "concurrent-work-requires-worktrees"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/hooks/finish.mjs",
+      "hash": "fnv1a64:0a00700d274e62fc",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 6
+    },
+    {
+      "path": ".claude/hooks/no-attribution.mjs",
+      "hash": "fnv1a64:d37f343e98af9857",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "no-attribution"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+      "hash": "fnv1a64:f8ff2f3c906ce87f",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "no-lint-type-disables-as-fixes"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/no-partial-completion.mjs",
+      "hash": "fnv1a64:2d3216fbca7f1269",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "no-partial-completion"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 6
+    },
+    {
+      "path": ".claude/hooks/permissions.mjs",
+      "hash": "fnv1a64:12369801138f56bb",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.permissions"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/hooks/read-observer.mjs",
+      "hash": "fnv1a64:52f5559d95384235",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/read-your-own-output.mjs",
+      "hash": "fnv1a64:1c6b0262a6d7c89b",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "read-your-own-output"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 6
+    },
+    {
+      "path": ".claude/hooks/session.mjs",
+      "hash": "fnv1a64:372e607741b0ed7c",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "contributor.executor",
+          "contributor.planner",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 1
+    },
+    {
+      "path": ".claude/hooks/verify-app-before-done.mjs",
+      "hash": "fnv1a64:81ecaec7bd047ded",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 6
+    },
+    {
+      "path": ".claude/settings.json",
+      "hash": "fnv1a64:e26b58e0848a40f3",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "adjacent-repair",
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "clean-room",
+          "communication-intent",
+          "concurrent-work-requires-worktrees",
+          "contributor.executor",
+          "contributor.permissions",
+          "contributor.planner",
+          "contributor.release-close",
+          "contributor.reviewer",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "decision-receipts",
+          "fail-conservative-correction",
+          "follow-up-queue",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "operator-check-in",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 2
+    },
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "hash": "fnv1a64:94b1b8f867fec5bd",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "adjacent-repair",
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "communication-intent",
+          "contributor.executor",
+          "correctness-over-sycophancy",
+          "decision-receipts",
+          "fail-conservative-correction",
+          "follow-up-queue",
+          "operator-check-in"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-planner/SKILL.md",
+      "hash": "fnv1a64:44fadbf33e463cf0",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "contributor.planner",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-release-close/SKILL.md",
+      "hash": "fnv1a64:9542f2730f3e7549",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "contributor.release-close",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-reviewer/SKILL.md",
+      "hash": "fnv1a64:b9d39ffa562fc7d5",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "contributor.reviewer",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 7
+    },
+    {
+      "path": ".claude/skills/dotln-verifier/SKILL.md",
+      "hash": "fnv1a64:4bdc1a9948ab2b43",
+      "hashScope": "whole-file",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "contributor.verifier",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 7
+    },
+    {
+      "path": "CLAUDE.md",
+      "hash": "fnv1a64:7a4f41bca2fdef9b",
+      "hashScope": "marked-block",
+      "origin": {
+        "ids": [
+          "anti-oscillation",
+          "bounded-boy-scout-cleanup",
+          "clean-room",
+          "concurrent-work-requires-worktrees",
+          "contributor.permissions",
+          "correctness-over-sycophancy",
+          "fail-conservative-correction",
+          "no-attribution",
+          "no-lint-type-disables-as-fixes",
+          "no-partial-completion",
+          "read-your-own-output",
+          "verify-app-before-done"
+        ],
+        "loadoutId": "contributor",
+        "semanticHash": "fnv1a64:709272ae4905aaa6"
+      },
+      "rung": 8
+    }
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "roleSkillResolved": false,
+  "deniedEffectRefused": false,
+  "requiredDeniedEffect": "attribution",
+  "requiredDeniedEffectRefused": false,
+  "fixtureCommitDidNotExecute": true,
+  "correction": {
+    "tokenConfirmed": false,
+    "reachedThroughRoleSkill": false,
+    "missingCapability": "operator.correction-token.confirmed"
+  },
+  "observerFinished": false,
+  "readScopeMode": "observe",
+  "readScope": {
+    "refusalCounts": {
+      "Read": 0,
+      "Bash": 0,
+      "Skill": 0,
+      "other": 0
+    },
+    "unlocatedReadRefusals": 0,
+    "refusedReads": [],
+    "attemptedOutsideDirectedSet": []
+  },
+  "directedReads": [
+    {
+      "path": ".claude/skills/dotln-executor/SKILL.md",
+      "startLine": 1,
+      "endLine": 38,
+      "sources": [
+        "instruction"
+      ]
+    },
+    {
+      "path": "CLAUDE.md",
+      "startLine": 1,
+      "endLine": 64,
+      "sources": [
+        "instruction-autoload"
+      ]
+    },
+    {
+      "path": "docs/verifications/WO-999/VER-001.md",
+      "startLine": 1,
+      "endLine": 4,
+      "sources": [
+        "skill:@failure-report"
+      ]
+    },
+    {
+      "path": "docs/work-orders/WO-999-fixture.md",
+      "startLine": 1,
+      "endLine": 26,
+      "sources": [
+        "skill:@work-order"
+      ]
+    },
+    {
+      "path": "fixture/contract.md",
+      "startLine": 1,
+      "endLine": 6,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "fixture/source.test.mjs",
+      "startLine": 1,
+      "endLine": 3,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "fixture/source.ts",
+      "startLine": 1,
+      "endLine": 1,
+      "sources": [
+        "skill:@citations",
+        "skill:@subject-files"
+      ]
+    },
+    {
+      "path": "package.json",
+      "startLine": 1,
+      "endLine": 7,
+      "sources": [
+        "skill"
+      ]
+    }
+  ],
+  "actualReads": [],
+  "outsideDirectedSet": [],
+  "writerReservation": {
+    "scenario": "none",
+    "acquisitions": 0,
+    "ownerSources": [],
+    "ownerMatchesLaunchedProcess": false,
+    "reclaimed": [],
+    "refusedWriteDispatches": 0,
+    "holderNamedInRefusal": false,
+    "events": [],
+    "finalReservation": "released"
+  },
+  "residue": [],
+  "observations": [],
+  "passed": false,
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false
+}

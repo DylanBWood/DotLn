@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-042] — Authority provenance and monotone envelopes · **queued**
+- [x] [WO-042] — Authority provenance and monotone envelopes · **final-reviewed**
 - [ ] [WO-043] — Typed dependency truth · **queued**
 - [ ] [WO-036] — Evidence runner · **queued**
 - [ ] [WO-125] — Codex effort selection · **queued**
@@ -215,21 +215,6 @@ None.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Authority: [docs/work-orders/WO-040-rule-migration-batch-one.md](WO-040-rule-migration-batch-one.md)
 
-### WO-042
-
-[WO-042 — Authority provenance and monotone envelopes: a linked support may only narrow a compiled build's authority, widening needs an explicit provenance-bearing grant, and the tooltip projects GRANTS and RESTRICTIONS from the effective envelope (version assigned at activation)](WO-042-authority-provenance.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-008: satisfied (closed); WO-039: satisfied (closed).
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Authority: [docs/work-orders/WO-042-authority-provenance.md](WO-042-authority-provenance.md)
-
 ### WO-043
 
 [WO-043 — Typed dependency truth: work orders declare typed dependency relations, only an unmet hard dependency or planning deferral blocks activation, and the index and lifecycle status share one projection (version assigned at activation)](WO-043-typed-dependency-truth.md)
@@ -326,8 +311,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-042, WO-044.
-- References: WO-039: satisfied (closed); WO-042: not control-closed; WO-044: not control-closed.
+- Dependency reference check (conservative): blocked on WO-044.
+- References: WO-039: satisfied (closed); WO-042: satisfied (closed); WO-044: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -356,8 +341,8 @@ None.
 
 - State: draft.
 - Application target: malformed.
-- Dependency reference check (conservative): blocked on WO-042, WO-044.
-- References: WO-009: satisfied (closed); WO-042: not control-closed; WO-044: not control-closed.
+- Dependency reference check (conservative): blocked on WO-044.
+- References: WO-009: satisfied (closed); WO-042: satisfied (closed); WO-044: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -416,8 +401,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-042, WO-052, WO-054.
-- References: WO-042: not control-closed; WO-052: not control-closed; WO-054: not control-closed.
+- Dependency reference check (conservative): blocked on WO-052, WO-054.
+- References: WO-042: satisfied (closed); WO-052: not control-closed; WO-054: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -551,8 +536,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-042, WO-052, WO-063.
-- References: WO-042: not control-closed; WO-052: not control-closed; WO-063: not control-closed.
+- Dependency reference check (conservative): blocked on WO-052, WO-063.
+- References: WO-042: satisfied (closed); WO-052: not control-closed; WO-063: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -596,8 +581,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-042.
-- References: WO-008: satisfied (closed); WO-042: not control-closed.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-008: satisfied (closed); WO-042: satisfied (closed).
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -656,8 +641,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-042, WO-069.
-- References: WO-042: not control-closed; WO-069: not control-closed.
+- Dependency reference check (conservative): blocked on WO-069.
+- References: WO-042: satisfied (closed); WO-069: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -716,8 +701,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-042, WO-049, WO-074.
-- References: WO-042: not control-closed; WO-049: not control-closed; WO-074: not control-closed.
+- Dependency reference check (conservative): blocked on WO-049, WO-074.
+- References: WO-042: satisfied (closed); WO-049: not control-closed; WO-074: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -731,8 +716,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-042, WO-075.
-- References: WO-042: not control-closed; WO-075: not control-closed.
+- Dependency reference check (conservative): blocked on WO-075.
+- References: WO-042: satisfied (closed); WO-075: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1091,8 +1076,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-042, WO-052, WO-054, WO-068, WO-119, WO-120.
-- References: WO-042: not control-closed; WO-052: not control-closed; WO-054: not control-closed; WO-068: not control-closed; WO-119: not control-closed; WO-120: not control-closed.
+- Dependency reference check (conservative): blocked on WO-052, WO-054, WO-068, WO-119, WO-120.
+- References: WO-042: satisfied (closed); WO-052: not control-closed; WO-054: not control-closed; WO-068: not control-closed; WO-119: not control-closed; WO-120: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1361,8 +1346,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-042, WO-052, WO-054, WO-055, WO-059, WO-061, WO-062, WO-064, WO-065, WO-066, WO-068, WO-100, WO-120, WO-124.
-- References: WO-042: not control-closed; WO-052: not control-closed; WO-054: not control-closed; WO-055: not control-closed; WO-059: not control-closed; WO-061: not control-closed; WO-062: not control-closed; WO-064: not control-closed; WO-065: not control-closed; WO-066: not control-closed; WO-068: not control-closed; WO-100: not control-closed; WO-120: not control-closed; WO-124: not control-closed.
+- Dependency reference check (conservative): blocked on WO-052, WO-054, WO-055, WO-059, WO-061, WO-062, WO-064, WO-065, WO-066, WO-068, WO-100, WO-120, WO-124.
+- References: WO-042: satisfied (closed); WO-052: not control-closed; WO-054: not control-closed; WO-055: not control-closed; WO-059: not control-closed; WO-061: not control-closed; WO-062: not control-closed; WO-064: not control-closed; WO-065: not control-closed; WO-066: not control-closed; WO-068: not control-closed; WO-100: not control-closed; WO-120: not control-closed; WO-124: not control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1903,6 +1888,22 @@ None.
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
 - Latest attestation: harness claude-code; version 2.1.263; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-041-plan-refutation-mechanism.md](WO-041-plan-refutation-mechanism.md)
+
+### WO-042
+
+[WO-042 — Authority provenance and monotone envelopes: a linked support may only narrow a compiled build's authority, widening needs an explicit provenance-bearing grant, and the tooltip projects GRANTS and RESTRICTIONS from the effective envelope (v0.16.0)](WO-042-authority-provenance.md)
+
+- State: closed.
+- Application target: v0.16.0.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-008: satisfied (closed); WO-039: satisfied (closed).
+- Verification: [VER-002](../../docs/verifications/WO-042/VER-002.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-042/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Latest attestation: harness claude-code; version 2.1.265; model claude-opus-5&#91;1m&#93;; effort unknown; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-042-authority-provenance.md](WO-042-authority-provenance.md)
 
 ### WO-101
 

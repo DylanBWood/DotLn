@@ -1,11 +1,11 @@
-// Origin: {"ids":["no-partial-completion"],"loadoutId":"contributor","semanticHash":"fnv1a64:06245f5c581212f1"}
+// Origin: {"ids":["no-partial-completion"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"}
 try {
 const { feedbackBoundary } = await import("../../packages/skeleton/dist/src/feedback-boundary.js");
 const { runHarnessHook } = await import("../../packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.7.0",
+  "compilerPackageVersion": "0.8.0",
   "runtime": {
-    "skeletonVersion": "0.13.0",
+    "skeletonVersion": "0.14.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -22,7 +22,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:314cebd40278b35f"
+        "hash": "fnv1a64:589298d41425851a"
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
@@ -34,7 +34,7 @@ await runHarnessHook({
   "kind": "feedback",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.7.0",
+    "compilerPackageVersion": "0.8.0",
     "units": [
       {
         "unitId": "no-partial-completion",
@@ -85,7 +85,7 @@ await runHarnessHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:ded06d14fb778809"
+    "policyHash": "fnv1a64:ffb67749122c4d62"
   },
   "correctionToken": null
 }, feedbackBoundary);

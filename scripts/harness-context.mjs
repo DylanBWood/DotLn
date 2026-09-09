@@ -60,12 +60,16 @@ export function measureHarnessContext(overrides = new Map()) {
   const taskRead = (path) =>
     existsSync(join(fixtureTree, path))
       ? readFileSync(join(fixtureTree, path), "utf8")
-      : snapshot.read(path);
+      : readFileSync(join(root, path), "utf8");
   const selectors = fixtureSelectors(taskRead);
   const oldInstruction = snapshot.read("CLAUDE.md");
   const oldGuide = snapshot.read("docs/product/07-execution-guide.md");
   const beforeRead = (path) =>
-    path === "CLAUDE.md" ? oldInstruction : taskRead(path);
+    path === "CLAUDE.md"
+      ? oldInstruction
+      : path === "docs/product/07-execution-guide.md"
+        ? oldGuide
+        : taskRead(path);
   const afterRead = (path) =>
     overrides.get(path) ??
     (path === "CLAUDE.md" ? instruction : (files.get(path) ?? taskRead(path)));
@@ -79,7 +83,7 @@ export function measureHarnessContext(overrides = new Map()) {
           oldGuide,
           role,
           selectors,
-          taskRead,
+          beforeRead,
         ),
         beforeRead,
       );
@@ -125,7 +129,7 @@ export function measureHarnessContext(overrides = new Map()) {
     activationBase: HARNESS_CONTEXT_BASE,
     task: "matched synthetic WO-999 closed role-entry fixture",
     method:
-      "Whole activation instruction and its mandatory execution guide versus whole current instruction and generated role skill. Both sides receive identical task files. Full files or named heading subtrees are counted as UTF-8 bytes and source lines, with overlapping reads counted once. The complete role procedure is scanned, including later reads. Commands' process I/O is execution, not automatically model-loaded file content. This controlled comparison does not estimate WO-039's own changing implementation context or harness system prompts.",
+      "Whole activation instruction and its mandatory execution guide versus whole current instruction and generated role skill. Both sides receive identical fixture task files and current shared task guidance; only the activation instruction and execution guide remain frozen. Full files or named heading subtrees are counted as UTF-8 bytes and source lines, with overlapping reads counted once. The complete role procedure is scanned, including later reads. Commands' process I/O is execution, not automatically model-loaded file content. This controlled comparison does not estimate a work order's own changing implementation context or harness system prompts.",
     selectors,
     instruction: {
       before: beforeInstruction,
@@ -154,10 +158,10 @@ if (
 ) {
   const result = measureHarnessContext();
   checkContextMeasurement(result);
-  const destination = join(root, "docs/evidence/WO-039/harness-context.json");
+  const destination = join(root, "docs/evidence/WO-042/harness-context.json");
   const text = JSON.stringify(result, null, 2) + "\n";
   if (process.argv.includes("--write")) {
-    mkdirSync(join(root, "docs/evidence/WO-039"), { recursive: true });
+    mkdirSync(join(root, "docs/evidence/WO-042"), { recursive: true });
     writeFileSync(destination, text);
   } else if (process.argv.includes("--check"))
     assert.equal(

@@ -1,10 +1,10 @@
-// Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:06245f5c581212f1"}
+// Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"}
 const { runCommitMessageHook } = await import("../../packages/skeleton/dist/src/harness-host.js");
 const { feedbackBoundary } = await import("../../packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.7.0",
+  "compilerPackageVersion": "0.8.0",
   "runtime": {
-    "skeletonVersion": "0.13.0",
+    "skeletonVersion": "0.14.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -21,7 +21,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:314cebd40278b35f"
+        "hash": "fnv1a64:589298d41425851a"
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
@@ -31,7 +31,7 @@ await runCommitMessageHook({
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.7.0",
+    "compilerPackageVersion": "0.8.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -82,6 +82,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:6cca15ba8bdf665a"
+    "policyHash": "fnv1a64:b4d28b1150ef79c5"
   }
 }, feedbackBoundary);

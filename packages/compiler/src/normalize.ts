@@ -1,6 +1,7 @@
 import type {
   ActiveMechanic,
   AmbientEffect,
+  AuthorityGrant,
   CadenceSpec,
   CompiledProgram,
   Container,
@@ -343,6 +344,70 @@ const normalizePolarAxis = (value: PolarAxis): PolarAxis => ({
   ),
 });
 
+/** Validate at the normalization boundary, including deserialized view input. */
+export const normalizeAuthorityGrants = (
+  values: readonly AuthorityGrant[],
+): readonly AuthorityGrant[] => {
+  if (!Array.isArray(values))
+    throw new Error("authorityGrants must be an array");
+  const ids = new Set<string>();
+  const grants = values.map((value, index): AuthorityGrant => {
+    const fail = (field: string): never => {
+      throw new Error(`authorityGrants[${index}] has invalid ${field}`);
+    };
+    if (value === null || typeof value !== "object" || Array.isArray(value))
+      fail("grant");
+    const text = (field: "grantId" | "repo" | "reason") => {
+      const content = value[field];
+      if (
+        typeof content !== "string" ||
+        !content.trim() ||
+        /[\u0000-\u001f\u007f\u2028\u2029]/u.test(content)
+      )
+        fail(field);
+      return content;
+    };
+    const grantId = text("grantId");
+    if (ids.has(grantId))
+      throw new Error(`authorityGrants has duplicate grantId "${grantId}"`);
+    ids.add(grantId);
+    if (!Number.isSafeInteger(value.version) || value.version < 1)
+      fail("version");
+    if (
+      !["operator", "host-policy", "registered-repository"].includes(
+        value.grantedBy,
+      )
+    )
+      fail("grantedBy");
+    const exactIds = (field: "effects" | "operations") => {
+      const entries = value[field];
+      if (
+        !Array.isArray(entries) ||
+        entries.some(
+          (entry) =>
+            typeof entry !== "string" ||
+            !entry.length ||
+            /[\s*\u0000-\u001f\u007f]/u.test(entry),
+        )
+      )
+        fail(field);
+      return sortedUnique(entries!);
+    };
+    return {
+      grantId,
+      version: value.version,
+      grantedBy: value.grantedBy,
+      effects: exactIds("effects"),
+      ...(value.operations === undefined
+        ? {}
+        : { operations: exactIds("operations") }),
+      repo: text("repo"),
+      reason: text("reason"),
+    };
+  });
+  return by(grants, (grant) => grant.grantId);
+};
+
 export const normalizeLoadoutGraph = (value: LoadoutGraph): LoadoutGraph =>
   canonicalize({
     schemaVersion: 1,
@@ -379,6 +444,7 @@ export const normalizeLoadoutGraph = (value: LoadoutGraph): LoadoutGraph =>
       value.polarAxes.map(normalizePolarAxis),
       (entry) => entry.polarAxisId,
     ),
+    authorityGrants: normalizeAuthorityGrants(value.authorityGrants ?? []),
   }) as LoadoutGraph;
 
 export const normalizeCompiledProgram = (
@@ -387,7 +453,14 @@ export const normalizeCompiledProgram = (
   // Compile output already gives every array its semantic order. This canonical
   // object-key pass makes equivalent construction orders hash identically while
   // preserving WorkOrder prose order and explicit pipeline order.
-  JSON.parse(canonicalStringify(value)) as CompiledProgram;
+  JSON.parse(
+    canonicalStringify({
+      ...value,
+      grants: value.grants?.length
+        ? normalizeAuthorityGrants(value.grants)
+        : undefined,
+    }),
+  ) as CompiledProgram;
 
 export const fnv1a64 = (value: string): string => {
   let hash = 0xcbf29ce484222325n;

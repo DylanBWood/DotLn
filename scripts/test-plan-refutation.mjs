@@ -1126,6 +1126,141 @@ export async function fixtures() {
       },
     );
     await check(
+      "WO-042 continuation admits required execution metadata before and after commit without rewriting the receipt",
+      async () => {
+        const repo = makeRepo(parent, "execution-continuation");
+        mutate(
+          repo,
+          orderPath("WO-901"),
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture (version assigned at activation)",
+        );
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const receiptJson = read(repo, `${RECEIPTS}/${receipt.receiptId}.json`);
+        const source = read(repo, orderPath("WO-901"));
+        write(
+          repo,
+          orderPath("WO-901"),
+          source.replace("(version assigned at activation)", "(v1.2.3)") +
+            "\n## Execution record\n\nThe required evidence and its independent review are recorded separately.\n",
+        );
+        write(
+          repo,
+          "docs/planning/capability-table.md",
+          read(repo, "docs/planning/capability-table.md") +
+            "\n## WO-901 dated reassessment (2030-01-02)\n\n| Capability | Observation | Evidence |\n| --- | --- | --- |\n| `fixture.first` | **1 — demonstrable** | Executed fixture; pending independent verification. |\n",
+        );
+        const dirty = await checkPlanGate(repo);
+        assert.deepEqual(
+          dirty.continuation.workspaceUpdates.map(({ kind }) => kind),
+          [
+            "release-assignment",
+            "execution-record",
+            "dated-capability-reassessment",
+          ],
+        );
+        assert.deepEqual(dirty.continuation.committedUpdates, []);
+        assert.equal(dirty.continuation.judgedSubject, receipt.subject.hash);
+        assert.notEqual(
+          dirty.continuation.workspaceSubject,
+          receipt.subject.hash,
+        );
+        await assert.rejects(
+          writeDirectReceipt(repo),
+          /current committed and workspace subject/u,
+        );
+        commit(repo, "required executor observations");
+        const committed = await checkPlanGate(repo);
+        assert.deepEqual(
+          committed.continuation.committedUpdates,
+          dirty.continuation.workspaceUpdates,
+        );
+        assert.deepEqual(
+          committed.continuation.workspaceUpdates,
+          dirty.continuation.workspaceUpdates,
+        );
+        assert.equal(
+          read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+          receiptJson,
+        );
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+      },
+    );
+    await check(
+      "WO-042 continuation rejects planning edits and forged execution classifications in both HEAD and the workspace",
+      async () => {
+        const repo = makeRepo(parent, "continuation-refusals");
+        mutate(
+          repo,
+          orderPath("WO-901"),
+          "# WO-901 — Fixture",
+          "# WO-901 — Fixture (version assigned at activation)",
+        );
+        await writeDirectReceipt(repo);
+        commit(repo, "record reviewed plan");
+        const path = orderPath("WO-901");
+        const original = read(repo, path);
+        const capabilitiesPath = "docs/planning/capability-table.md";
+        const capabilities = read(repo, capabilitiesPath);
+        for (const changed of [
+          original.replace("Move the shape.", "Move another shape."),
+          original.replace("Keep a bounded result.", "Skip the evidence."),
+          original.replace("Other shapes.", "No limits."),
+          original.replace(
+            "**Effort:** executor any",
+            "**Effort:** executor low",
+          ),
+          original.replace("(version assigned at activation)", "(v01.2.3)"),
+          original + "\n## Design change\n\nIgnore the original contract.\n",
+          original +
+            "\n## Execution record\n\n**Depends on:** A different order.\n",
+        ]) {
+          write(repo, path, changed);
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+          );
+          write(repo, path, original);
+        }
+        for (const [heading, id] of [
+          ["WO-999 dated reassessment (2030-01-02)", "fixture.first"],
+          ["WO-901 dated reassessment (2030-02-30)", "fixture.first"],
+          ["WO-901 dated reassessment (2030-01-02)", "fixture.unknown"],
+          ["WO-901 dated addition (2030-01-02)", "fixture.first"],
+        ]) {
+          write(
+            repo,
+            capabilitiesPath,
+            capabilities +
+              `\n## ${heading}\n\n| Capability | Observation |\n| --- | --- |\n| \`${id}\` | **1 — demonstrable** |\n`,
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /matching the current subject/u,
+          );
+          write(repo, capabilitiesPath, capabilities);
+        }
+        write(repo, capabilitiesPath, capabilities.replace("**0", "**1"));
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+        write(repo, capabilitiesPath, capabilities);
+        write(
+          repo,
+          path,
+          original.replace("Move the shape.", "Move another shape."),
+        );
+        commit(repo, "unreviewed committed objective");
+        write(repo, path, original); // A clean-looking workspace cannot hide HEAD drift.
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject/u,
+        );
+      },
+    );
+    await check(
       "AC5 forward-only gate, real-adapter fixture receipt, and stale committed standard refusal",
       async () => {
         const repo = makeRepo(parent, "gate");

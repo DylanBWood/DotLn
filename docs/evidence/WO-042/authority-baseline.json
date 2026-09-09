@@ -1,0 +1,216 @@
+{
+  "sourceRevision": "4ead1d0ea1f1fea049f8369d99c852da602f9278",
+  "provenance": "Executor captured these compilations from the unmodified activation source before WO-042 implementation; compiler package 0.7.0. No grant registry was supplied.",
+  "fixtures": {
+    "seiri": {
+      "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+      "programHash": "sha256:e028ecd6d6c00fb91095679f9b85fcf7c7efdaaf6ed96d48a76e04acd9cc8e12",
+      "inspectionHash": "sha256:d6fd72e5f5afa675687f6c0b7578fcf5cc2284fb4860aa940738ae2b01f6e7cc",
+      "artifactIdentity": {
+        "schemaVersion": 1,
+        "compilerContractVersion": "1",
+        "compilerPackageVersion": "0.7.0",
+        "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+        "compilationEnvironment": {
+          "baseCommit": "fixture-base",
+          "capabilities": ["fixture-repository"],
+          "environmentId": "skeleton.fixture",
+          "repo": "packages/skeleton/fixtures/repo-tree.json",
+          "version": 1
+        },
+        "authorityExpiresAt": 2400000,
+        "componentDefinitions": [
+          {
+            "componentKind": "active-mechanic",
+            "componentId": "seiri",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:a1dc633c08fe612a"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "seiri.absence-cadence",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "seiri.evidence-capture",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "seiri.independent-verification",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:0e7f7f2049db9807"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "seiri.read-only",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:e91545e6fad79347"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "seiri.repo-scope",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:d7bd95978a68a675"
+          }
+        ]
+      }
+    },
+    "entropy": {
+      "semanticHash": "fnv1a64:c5ddbca75f1c4cee",
+      "programHash": "sha256:6dc1ee044d5dad066885358501ae6fc593072b5072f0492acf3215dc79ab94be",
+      "inspectionHash": "sha256:30a972786f342b2c89a61a34d09b816a2fb47f6aa6e3cbea325796c2ec64f3af",
+      "artifactIdentity": {
+        "schemaVersion": 1,
+        "compilerContractVersion": "1",
+        "compilerPackageVersion": "0.7.0",
+        "semanticHash": "fnv1a64:c5ddbca75f1c4cee",
+        "compilationEnvironment": {
+          "baseCommit": "fixture-base",
+          "capabilities": [],
+          "environmentId": "entropy-reducer.manual-review",
+          "repo": "/fixture/repository",
+          "version": 1
+        },
+        "authorityExpiresAt": 11000,
+        "componentDefinitions": [
+          {
+            "componentKind": "active-mechanic",
+            "componentId": "seiso-shine",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:7672ecc90c8b284d"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "entropy-reducer.altitude-tag",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:cd3508ce0930ca56"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "entropy-reducer.constraint-first-ordering",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:4051bfb163f7c80b"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "entropy-reducer.fan-out-lens",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:2b916efb51a9814b"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "entropy-reducer.mutation-drill",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:6d139f1febcdc06e"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "entropy-reducer.seiketsu-standardize",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:7dfc8ab2de161f25"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "entropy-reducer.shape-first",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:392c026e031eb2aa"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "entropy-reducer.sparse-receipt",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:4743123ee141a1d7"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "entropy-reducer.verify-first",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:99c5da639f3bf63e"
+          }
+        ]
+      }
+    },
+    "contributor": {
+      "semanticHash": "fnv1a64:06245f5c581212f1",
+      "programHash": "sha256:3c83e2e2eddb5864e99ab1e9951ddc4cb8a20dc9ee526d7183f5088eefcb59b5",
+      "inspectionHash": "sha256:fb1d55d2bc46a8236b2741a4e580f5e774094471f3f6ca933c655f16f8df6da6",
+      "artifactIdentity": {
+        "schemaVersion": 1,
+        "compilerContractVersion": "1",
+        "compilerPackageVersion": "0.7.0",
+        "semanticHash": "fnv1a64:06245f5c581212f1",
+        "compilationEnvironment": {
+          "baseCommit": "0000000000000000000000000000000000000000",
+          "capabilities": [],
+          "environmentId": "contributor.project",
+          "repo": "project",
+          "version": 1
+        },
+        "authorityExpiresAt": 9007199254740991,
+        "componentDefinitions": [
+          {
+            "componentKind": "active-mechanic",
+            "componentId": "clean-room",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:49f16fc8a4a51da4"
+          },
+          {
+            "componentKind": "support-facet",
+            "componentId": "contributor.permissions",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:b442aaa76788078d"
+          }
+        ]
+      }
+    },
+    "planRefuter": {
+      "semanticHash": "fnv1a64:9e1fa511376ca7ce",
+      "programHash": "sha256:07526f7fc023453bd77c202127a436ee93726a039428ce3817cc9d4e42f61788",
+      "inspectionHash": "sha256:5e5d2de60ef0641a2cfcfd675b0204f66fb072cbf2fda86d61faa47b56df8936",
+      "artifactIdentity": {
+        "schemaVersion": 1,
+        "compilerContractVersion": "1",
+        "compilerPackageVersion": "0.7.0",
+        "semanticHash": "fnv1a64:9e1fa511376ca7ce",
+        "compilationEnvironment": {
+          "baseCommit": "fixture",
+          "capabilities": [],
+          "environmentId": "plan-refutation-v1",
+          "repo": "plan-subject",
+          "version": 1
+        },
+        "authorityExpiresAt": 1200000,
+        "componentDefinitions": [
+          {
+            "componentKind": "active-mechanic",
+            "componentId": "seiso-shine",
+            "version": 1,
+            "hashScheme": "dotln-component-definition-fnv1a64-v1",
+            "definitionHash": "fnv1a64:b43e183de1b82737"
+          }
+        ]
+      }
+    }
+  }
+}

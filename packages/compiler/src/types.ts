@@ -102,6 +102,17 @@ export interface AuthorityEnvelope {
   readonly revocationConditions?: readonly PredicateRef[];
 }
 
+/** Exact authority requested by a graph and separately admitted by its host. */
+export interface AuthorityGrant {
+  readonly grantId: string;
+  readonly version: number;
+  readonly grantedBy: "operator" | "host-policy" | "registered-repository";
+  readonly effects: readonly string[];
+  readonly operations?: readonly string[];
+  readonly repo: string;
+  readonly reason: string;
+}
+
 export interface WorkOrder {
   readonly workOrderId: string;
   readonly objective: string;
@@ -347,6 +358,7 @@ export interface LoadoutGraph {
   readonly ambientEffects: readonly AmbientEffect[];
   readonly resourceModel: ResourceModel;
   readonly polarAxes: readonly PolarAxis[];
+  readonly authorityGrants?: readonly AuthorityGrant[];
 }
 
 export interface Phenotype {
@@ -367,12 +379,17 @@ export interface CompilationEnvironment {
   readonly capabilities: readonly string[];
   readonly repo: string;
   readonly baseCommit: string;
+  /** Host-owned input. Never populate this from the submitted graph. */
+  readonly authorityGrantRegistry?: readonly AuthorityGrant[];
 }
 
 export type DiagnosticCode =
   | "ACTIVE INACTIVE"
   | "SUPPORT INACTIVE"
   | "INVALID GRAPH"
+  | "AUTHORITY WIDENING"
+  | "AUTHORITY GRANT UNADMITTED"
+  | "INSPECTION CONTRADICTION"
   | "DECLARED SUPPORT CONFLICT"
   | "HARD SUPPORT CONFLICT"
   | "AMBIGUOUS SUPPORT CONFLICT"
@@ -381,6 +398,7 @@ export type DiagnosticCode =
 
 export type CompileCorrection =
   | Readonly<{ kind: "provide-capability"; capability: string }>
+  | Readonly<{ kind: "declare-authority-grant"; effect: string }>
   | Readonly<{
       kind: "unequip-support";
       supportFacetId: string;
@@ -479,6 +497,10 @@ export interface CompileTrace {
   ];
   readonly precedence: typeof COMPOSITION_PRECEDENCE;
   readonly conflictResolutions: readonly ConflictResolution[];
+  readonly authorityGrants?: Readonly<{
+    registryHash: string;
+    applied: readonly AuthorityGrant[];
+  }>;
 }
 
 export interface CompiledProgram {
@@ -488,6 +510,8 @@ export interface CompiledProgram {
   readonly phenotype: Phenotype;
   readonly workOrder: WorkOrder;
   readonly authorityEnvelope: AuthorityEnvelope;
+  /** Omitted when empty to preserve grant-free loadout-v1 semantic bytes. */
+  readonly grants?: readonly AuthorityGrant[];
   readonly cadences: readonly CompiledCadence[];
   readonly statechartGuards: readonly CompiledStatechartGuard[];
   readonly schemas: readonly CompiledSchema[];
@@ -575,7 +599,8 @@ export type FunctionTableRow =
       key: string;
       value: ResourceModel;
     }>
-  | Readonly<{ kind: "polar-axis"; key: string; value: PolarAxis }>;
+  | Readonly<{ kind: "polar-axis"; key: string; value: PolarAxis }>
+  | Readonly<{ kind: "authority-grant"; key: string; value: AuthorityGrant }>;
 
 export interface FunctionTableView {
   readonly view: "function-table";
@@ -594,6 +619,7 @@ export interface StatechartJsonView {
     resourceModel: ResourceModel;
     ambientEffects: readonly AmbientEffect[];
     polarAxes: readonly PolarAxis[];
+    authorityGrants?: readonly AuthorityGrant[];
   }>;
   readonly states: Readonly<{
     equipped: Readonly<{

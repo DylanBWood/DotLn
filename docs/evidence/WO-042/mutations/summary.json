@@ -1,0 +1,832 @@
+{
+  "scope": "Current public worktree snapshot in isolated fixture Git; only F-00001 and F-00002 reproduced. Historical campaign unchanged. Recreate with node scripts/authority-mutation-evidence.mjs --write; snapshot id is temporary, not a source-branch commit.",
+  "activation": "4ead1d0ea1f1fea049f8369d99c852da602f9278",
+  "snapshot": "8590be3c424920d7b93482d74e7627731f04afdf",
+  "subjectFiles": [
+    {
+      "path": "corpus/mutation/enumerate.mjs",
+      "sha256": "abc212e739ad3a81b5dec430ef6a9eadf66a3a6446b81057cd8167581d45cde6"
+    },
+    {
+      "path": "corpus/mutation/mutate.mjs",
+      "sha256": "55330c79e18b54a5c93021969f4933042797cad9f22b79cc69c275efc17b3c3c"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "cedb84745902299002754d44dd3fe0912e5e36c74092792d975898c969f7bfb6"
+    },
+    {
+      "path": "package.json",
+      "sha256": "810767b48399540df82eb96f98c907959bd87dba7fa92c13546ff111834fcd87"
+    },
+    {
+      "path": "packages/compiler/README.md",
+      "sha256": "3af4107ce45945a3b9ed1cf6149e6f7e04cf762e8940e4a80b4620bfb3658cb7"
+    },
+    {
+      "path": "packages/compiler/fixtures/wo029-entropy-reducer.json",
+      "sha256": "0aee53a41288660b1f587727e3f53e5ed7fdeec338b547d6a9d5a242af3f7e27"
+    },
+    {
+      "path": "packages/compiler/fixtures/wo029-identities.json",
+      "sha256": "dfdf1443ac72f43de2e6f8009879bfe4e2b8ecaeda6b5e96a0b625583f50eef7"
+    },
+    {
+      "path": "packages/compiler/package.json",
+      "sha256": "774de59806f1dbb8d9afb8f4a2a8d24369a2a8901845397e84fc2eebc20cc6ff"
+    },
+    {
+      "path": "packages/compiler/src/artifact-identity.ts",
+      "sha256": "ecf2d27110bac5b3ed6266e1d0a71e5a6ec9b9131d76fd2d5aaec0562b17f1c1"
+    },
+    {
+      "path": "packages/compiler/src/authority.ts",
+      "sha256": "273577089ff95b3a4331922a5d611232a215b85bd37a69cf0790af0f536eb91b"
+    },
+    {
+      "path": "packages/compiler/src/compile.ts",
+      "sha256": "38ad7ee77275449484cd44ee5013e963b76f3bedcd1b02a4a226479ceba92d9d"
+    },
+    {
+      "path": "packages/compiler/src/feedback.ts",
+      "sha256": "a35a22a19337b28abeca54f505a0f0e8b04443b374324678217ab0b2e6a25acd"
+    },
+    {
+      "path": "packages/compiler/src/harness.ts",
+      "sha256": "e2e6f2279a942fe859dd0aa3568efce138d85c3f0e622cddee2e760758d63718"
+    },
+    {
+      "path": "packages/compiler/src/index.ts",
+      "sha256": "c7b1a48a2852c06002922be36d7aa559a62b5543663689adc50ff47590fb0b41"
+    },
+    {
+      "path": "packages/compiler/src/normalize.ts",
+      "sha256": "39bda965b666b495ac483239fd75a8fec24a94af35083364948e234f2112e305"
+    },
+    {
+      "path": "packages/compiler/src/render.ts",
+      "sha256": "8f9e97150266b9b810e1340095cca6e7ffeb6d2320b18eb41cd86c569a7d2430"
+    },
+    {
+      "path": "packages/compiler/src/seiri.ts",
+      "sha256": "03cd61bb54481aeed9d0ab52f6ab95ba4c16a130b796203bc1c4160791e0fdb2"
+    },
+    {
+      "path": "packages/compiler/src/senses.ts",
+      "sha256": "2125f017ea90f15fe65b5fc035b5bc8cbae45a6a05d16e806a05cf31fc6dcbdb"
+    },
+    {
+      "path": "packages/compiler/src/types.ts",
+      "sha256": "a08175ac8ab510793a54f9d7d59d8a7f5e7315822142295a3222b97d1c4b940c"
+    },
+    {
+      "path": "packages/compiler/src/verification.ts",
+      "sha256": "928a93828e85c62b1de3ea043b763970ffe3c8a6c154d9c6a37b54cff66798c4"
+    },
+    {
+      "path": "packages/compiler/src/views.ts",
+      "sha256": "9b3c36a4e9a31a6f63b68f926966db984fcc81c9c10783978a010c5f96fdd4cf"
+    },
+    {
+      "path": "packages/compiler/test/artifact-identity.test.ts",
+      "sha256": "5b1aa3a18f7ca1909f78e1ed52b5dd5f1fade252c2fd80c3d539c8ca744d5370"
+    },
+    {
+      "path": "packages/compiler/test/authority-fixture.ts",
+      "sha256": "9a8a55a4481992ce41a68ad80b805e85d2830e9edb1ba0190a5247bac4a82691"
+    },
+    {
+      "path": "packages/compiler/test/authority.test.ts",
+      "sha256": "5fa75ec41370b1bf78d6b635259b56f30a63b2f6ac639b1a9549fdc72f2b2c09"
+    },
+    {
+      "path": "packages/compiler/test/compiler.test.ts",
+      "sha256": "82d1da7b65149d25f1e035161f6cdc4c1535486af74080eb79eb4d825446aba2"
+    },
+    {
+      "path": "packages/compiler/test/feedback.test.ts",
+      "sha256": "01a5526380c98dd64ef31399eaecfaf29c82f1b0fda3c92ed05cc0e50d8648fb"
+    },
+    {
+      "path": "packages/compiler/test/harness.test.ts",
+      "sha256": "3252be2eca5af480cd43694be8290d5f6f1600ca499e4b79899d9d8bfbcd9334"
+    },
+    {
+      "path": "packages/compiler/test/public-api.test.ts",
+      "sha256": "4e0c35983af8604a583a66b7ecb2c70c653e71f9569716df97eff31341e43b63"
+    },
+    {
+      "path": "packages/compiler/test/purity.test.ts",
+      "sha256": "c55756c0cc6ae37df4aa00b28cbd934fb6adcd966e7ee8aaf6a4f9235c685dc8"
+    },
+    {
+      "path": "packages/compiler/test/senses.test.ts",
+      "sha256": "acb725ac2628049fe7061ada51302483c5573a1610a2d1240566db9fbd27bab5"
+    },
+    {
+      "path": "packages/compiler/test/tooltip.test.ts",
+      "sha256": "ae2c3a5187338f1c7f82aa0dd01deda98dbd791808b8d248bab01a4a0a913207"
+    },
+    {
+      "path": "packages/compiler/test/verification.test.ts",
+      "sha256": "3b82a1d525fefd4ffe21f1bd3f9f6dee6a25ca2f5340b8877123a23d0ea54188"
+    },
+    {
+      "path": "packages/compiler/test/views.test.ts",
+      "sha256": "60ab704e73deb888770475497df4e2fab7fc20ba2bab047d90357b2f8ab09b3e"
+    },
+    {
+      "path": "packages/compiler/tsconfig.json",
+      "sha256": "4cafd08f06d5d0c661270b7a59137909f24121983d36b7a2bbe30ad56fd1ece4"
+    },
+    {
+      "path": "packages/console/README.md",
+      "sha256": "91f33620d69d3b4e8fe77a272859a88d66a944c2e4e6ae47d4c62d31b58a4136"
+    },
+    {
+      "path": "packages/console/fixtures/capture-demo.mjs",
+      "sha256": "13edfc9252ac91b3b7358b85202b485fe4e1c6a734155b0de65e310b43fab906"
+    },
+    {
+      "path": "packages/console/fixtures/expected/control.html",
+      "sha256": "5eba727eabd24291d9b27c838fe49f4e92e6ff88c9aa2ab9fe716c53fdd2df36"
+    },
+    {
+      "path": "packages/console/fixtures/expected/control.json",
+      "sha256": "96567dcf75e709c5a8ec1d26e92855403e33f681d4b3b041daf29565b380e58c"
+    },
+    {
+      "path": "packages/console/fixtures/expected/control.txt",
+      "sha256": "5b681dab24b414106f058dcdd79be3c598cfe93ede998def34bcf446f43a277f"
+    },
+    {
+      "path": "packages/console/fixtures/expected/missing.html",
+      "sha256": "4febfcf1560dbc0b69be9ec244c7adbc204f2a32e6804e5d969acc124b111d4d"
+    },
+    {
+      "path": "packages/console/fixtures/expected/missing.json",
+      "sha256": "a9e7421bed067aab8d29e2805ea0420728aa537ccc1b4c6268726c8aa2bfb772"
+    },
+    {
+      "path": "packages/console/fixtures/expected/missing.txt",
+      "sha256": "bc3efcce3b28e1b21c68521fff1108de860a00d44a801622247e179a8b26995f"
+    },
+    {
+      "path": "packages/console/fixtures/expected/refutations.html",
+      "sha256": "10deb3ad1968bb67a781d61036905b416393bdad453ce0a8a009471def79c2a1"
+    },
+    {
+      "path": "packages/console/fixtures/expected/refutations.json",
+      "sha256": "0303db3ba897123ea11c8e1537e1983743a0c95801ac251ad846c534f94f0f3e"
+    },
+    {
+      "path": "packages/console/fixtures/expected/refutations.txt",
+      "sha256": "692de02c08ad1208b622ab423850a6f3eb8e6f7b6f9166849a4b2ff25ef58c74"
+    },
+    {
+      "path": "packages/console/fixtures/expected/selfhost.html",
+      "sha256": "efff2e7cb40eab56cd033fd1de6a922a63897bba8abf2d80de8e636c9ddfcce6"
+    },
+    {
+      "path": "packages/console/fixtures/expected/selfhost.json",
+      "sha256": "5e23506ac3f499693d4d0c7702b442afd354c557dacb3ed29272a39217e420f9"
+    },
+    {
+      "path": "packages/console/fixtures/expected/selfhost.txt",
+      "sha256": "748c0d9a9b5a03d6afc461e3d1fd8aa884bd5e7bf9e31ed7e8ca0ffba0b81189"
+    },
+    {
+      "path": "packages/console/fixtures/expected/wo009.html",
+      "sha256": "d8b06d221c691f663ed68a3662018da498842d3d73f9a0498178010f9d53a7dc"
+    },
+    {
+      "path": "packages/console/fixtures/expected/wo009.json",
+      "sha256": "15ac2de71fc5547a9cec4b67631018a2f40e00e68ef02cd5a8129aee2b715ecc"
+    },
+    {
+      "path": "packages/console/fixtures/expected/wo009.txt",
+      "sha256": "101434f69e0bd785318e6d2a941fa4aaa4f37a31c5f7b01cb15a43c02b1014b0"
+    },
+    {
+      "path": "packages/console/fixtures/inputs/capabilities.md",
+      "sha256": "a6b42c95add01b3cf6115504154246bff8aad878de9bb564d6d4e9d79d228f93"
+    },
+    {
+      "path": "packages/console/fixtures/inputs/constellation.md",
+      "sha256": "586a8718a1bbacb5c6b37dbe05611c26d33e777aea053a8fde0bc9c3082b1f3e"
+    },
+    {
+      "path": "packages/console/fixtures/inputs/controlStatus.json",
+      "sha256": "55189193af02ccab482a2b85774267e3103f83e416d9e5d17332f07b19d0a2f7"
+    },
+    {
+      "path": "packages/console/fixtures/inputs/controlUsage.json",
+      "sha256": "c908ad9d47e87e750f7ab914679fc85070651665750cf48955e0b9e01ac55d05"
+    },
+    {
+      "path": "packages/console/fixtures/inputs/feedbackUnits.json",
+      "sha256": "5a71574fbb94d44aa3c17bec893b9387f7acb02881712843b43e7a4bcac27cbc"
+    },
+    {
+      "path": "packages/console/fixtures/inputs/loadouts.json",
+      "sha256": "ffa8922c3cbb4651828a107f1b1d512f893622c33ab5876a3d8148225e364a11"
+    },
+    {
+      "path": "packages/console/fixtures/inputs/publication.md",
+      "sha256": "bade7bb8382748fcbf9f0b8c66a14dbb1fe98920c47d133bd3bc9e7817fec5b1"
+    },
+    {
+      "path": "packages/console/fixtures/inputs/releases.md",
+      "sha256": "50f90350a6d6b34b6496182f663ebb2f9bb8c3cd25a5dc307da3c781ad8a3150"
+    },
+    {
+      "path": "packages/console/fixtures/inputs/roadmap.md",
+      "sha256": "6398532a9f547060eaa8875faaa96372e60b68e8bbb076ac81e2cca7d8028673"
+    },
+    {
+      "path": "packages/console/fixtures/inputs/workOrderIndex.md",
+      "sha256": "5a250bb79498ce9c43a555e6bc0fd9161ff4b7de5ce3ccd373b39e214256d342"
+    },
+    {
+      "path": "packages/console/fixtures/manifest.json",
+      "sha256": "997202532fce8c5e1feebb3fb193b0030ad455150ebcc740b4c808dfcba2bfd2"
+    },
+    {
+      "path": "packages/console/fixtures/role-answers.json",
+      "sha256": "5657eea19c3474eb99d76ab2232b0ee476af923385221550f2cd18403c855911"
+    },
+    {
+      "path": "packages/console/fixtures/wo009.events.jsonl",
+      "sha256": "4f89e73d7776c7d990f9ba1cea9fcfe0192f8d6cb02f38a24379645193467029"
+    },
+    {
+      "path": "packages/console/package.json",
+      "sha256": "cc6e4e9e2a534de11b0404c50eb233e08370bd13ca9e73623503b69c7598e690"
+    },
+    {
+      "path": "packages/console/src/actors.ts",
+      "sha256": "041c463c40ab5222aefc752277ab22ce5c662441655a590ebffc739941afe1a7"
+    },
+    {
+      "path": "packages/console/src/blueprint.ts",
+      "sha256": "2171e68e0021fd053c6419970711f238198f7e8809a177a100890f9d6cad5f43"
+    },
+    {
+      "path": "packages/console/src/board.ts",
+      "sha256": "0ff6a5fe6440627ed7eaaecabb578a7146e173f2ef9bea912f9c5bc8ff461bff"
+    },
+    {
+      "path": "packages/console/src/builds.ts",
+      "sha256": "24b89a8bfcb508ac8691a6d3d86a436d1941982c132a2554534edd9d57888d91"
+    },
+    {
+      "path": "packages/console/src/cli.ts",
+      "sha256": "e2873d960605c8240dd5b2916e46bcfe1ac9ff19d86f6c454374de04ecf2471d"
+    },
+    {
+      "path": "packages/console/src/collect.ts",
+      "sha256": "43a08c06f94f6e595eef7750e1ddc7cfb136e7c71b0c8dc9b8ceaabe8216f53f"
+    },
+    {
+      "path": "packages/console/src/context.ts",
+      "sha256": "2a36b218748ffdbd7be0d93061ef9fb324eddad9c7581a47be079924b71f0223"
+    },
+    {
+      "path": "packages/console/src/index.ts",
+      "sha256": "882069045bab558ca3ecd0b996b00017f2fe238782609af681969450b0864294"
+    },
+    {
+      "path": "packages/console/src/render.ts",
+      "sha256": "2d2a8c5b25c15d7fb95a029860d88c5a689aa4dbe8363588dbf606077b205549"
+    },
+    {
+      "path": "packages/console/src/text-sources.ts",
+      "sha256": "1a4c8748b1ef2f37409cc836af2b043ac737a0bba990b8616d26d4c3faf4c7cb"
+    },
+    {
+      "path": "packages/console/src/types.ts",
+      "sha256": "f73cd55e9ba0a989c16dddcfa46542223db9db5d07255391a6f59e03498de769"
+    },
+    {
+      "path": "packages/console/src/values.ts",
+      "sha256": "f7731c5d182ad54643c4c31a4eea7d3eb59d1c37b92a296ba71a82b45dad430d"
+    },
+    {
+      "path": "packages/console/src/work.ts",
+      "sha256": "a5130710f9ff88f2a98d90028709c3185633a6ac1b68fffc9fefbb4127859578"
+    },
+    {
+      "path": "packages/console/test/board.test.ts",
+      "sha256": "62b0c2cda1256b94cb7994b8c9d4b7ad0125c04616072532a1d9d03ebcbaca5b"
+    },
+    {
+      "path": "packages/console/test/fixtures.ts",
+      "sha256": "1ce28babb44e6e9d0260e05e018ad93ebf70347879015041d7d9e03da014bbdb"
+    },
+    {
+      "path": "packages/console/tsconfig.json",
+      "sha256": "a26367fb2ae18fd1abca276df9eb4cecfc8e911a20a24f26b32e6e8ac78e9724"
+    },
+    {
+      "path": "packages/console/uifa-board-v1.schema.json",
+      "sha256": "7d20e785c718b4b601f45a9c351461955666ea16d49f17ae6d8fde0676629cd3"
+    },
+    {
+      "path": "packages/kernel/README.md",
+      "sha256": "cd74697c4dec0f18f772818b507e5873d835478cd4e5f7736789ee70a65c64a3"
+    },
+    {
+      "path": "packages/kernel/package.json",
+      "sha256": "b5acff2b09ade72c192a5cb91539dac6ba5a5ab17c386ba04049101f21de0373"
+    },
+    {
+      "path": "packages/kernel/src/core.ts",
+      "sha256": "273f9afe8b12a1fcc8ad015d0ea2db825377f4ca4f9af1df93bf0fe38fe3015c"
+    },
+    {
+      "path": "packages/kernel/src/index.ts",
+      "sha256": "c31086eef07729c5f0f2ae50068d8be34a3db866bd7d5afe24ea639c97f3d8f6"
+    },
+    {
+      "path": "packages/kernel/src/store.ts",
+      "sha256": "2d87d37785d02ce1aa53760017b2c650eaa21cfb29a289bd4d2bfa8e81bf923d"
+    },
+    {
+      "path": "packages/kernel/src/types.ts",
+      "sha256": "705e083d9b53c661b315df37ab5a8aa7b8ac68ae565d1238c42ad6798d0ce174"
+    },
+    {
+      "path": "packages/kernel/test/ac1-purity.test.ts",
+      "sha256": "ee90fbe080c5f8448255b8bfe99412b3c269ff3ba7d8e2a79123dc0f1cd2a817"
+    },
+    {
+      "path": "packages/kernel/test/ac2-replay-store.test.ts",
+      "sha256": "9791f3010c9b0cea8c79260d02e01ba201a8d7b4c53061f9a6c38d0e037bd163"
+    },
+    {
+      "path": "packages/kernel/test/ac3-cadence.test.ts",
+      "sha256": "8b445a686716b997d25238ce7ba8ccd0359ac266a5eca06e7109ec733ebf6a0e"
+    },
+    {
+      "path": "packages/kernel/test/ac4-continuations.test.ts",
+      "sha256": "af70f8fc2c4936b08453a628d16314a0ddc20b9d4675991f561f17c0f22e5013"
+    },
+    {
+      "path": "packages/kernel/test/ac5-failure-rows.test.ts",
+      "sha256": "577ac8f88e209861b99ae8b7847c78e27029b0ed706b00f4f6779902d3c7bd52"
+    },
+    {
+      "path": "packages/kernel/test/ac6-authorization.test.ts",
+      "sha256": "547ac72447f94b15e3dae6738317ccdcf4f9aa13c0e0f621f5f1d2fdcfec40d7"
+    },
+    {
+      "path": "packages/kernel/test/ac7-readme-map.test.ts",
+      "sha256": "8a1b2f6cd8836cfaab37a56a8b40a1b0e19148687d4c0cc4a824073f5829db79"
+    },
+    {
+      "path": "packages/kernel/test/kernel.test.ts",
+      "sha256": "72529de2cd8863e84d209448a34d68d765ed386d043ec7801f70f92f39efd273"
+    },
+    {
+      "path": "packages/kernel/test/public-api.test.ts",
+      "sha256": "f336c1290274c11a86da042b5e3c495e56bf6961dfb5164480a478a7af4479a7"
+    },
+    {
+      "path": "packages/kernel/test/wo017-evaluable-kinds.test.ts",
+      "sha256": "0899e460cecfdb239a19dba25735914fcbc7b53e135553a349288aeef92323a9"
+    },
+    {
+      "path": "packages/kernel/tsconfig.json",
+      "sha256": "4cafd08f06d5d0c661270b7a59137909f24121983d36b7a2bbe30ad56fd1ece4"
+    },
+    {
+      "path": "packages/skeleton/README.md",
+      "sha256": "5d9968c4fbee98584abea0a1b4db949da932535f8fd095599afcc3aaa48842f1"
+    },
+    {
+      "path": "packages/skeleton/fixtures/repo-tree.json",
+      "sha256": "e7a099d6f39742fe4f2eda10ca7651b6ef59dd794076f9d9c8a0c5ec83cf4d85"
+    },
+    {
+      "path": "packages/skeleton/fixtures/verification-cli.mjs",
+      "sha256": "d6866406bc8f031dc6feffb4cf88acbbd36ec19bb01fddc16bff75f9e0050edd"
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo003-decision-traces.json",
+      "sha256": "ec53d1c841de5486cf656694228c83f67e8549993d0ac63c187d10728707a173"
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo020-base-cli.txt",
+      "sha256": "cfb1c8050a8c3d3ede190a46750924a7edc3f78a0841b6d37276e719f22e4b22"
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo029-cli.txt",
+      "sha256": "c888f4bc60f5d07e84b16bf766543ff5a3f810be99aee517734bbfe806a2102d"
+    },
+    {
+      "path": "packages/skeleton/fixtures/wo029-legacy-scenario.jsonl",
+      "sha256": "9827759ee0a126e8c6f1aa14d2e3abc10cef23d9702e0b0e570157179af64829"
+    },
+    {
+      "path": "packages/skeleton/fixtures/worker-cli.mjs",
+      "sha256": "b697c4cdf4ae2e82badf1e009f783a6105829cfe92e10a1af2953cad26221ba9"
+    },
+    {
+      "path": "packages/skeleton/loadouts/grants.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "packages/skeleton/package.json",
+      "sha256": "6f570be05bebe23cb17007239da6ead64d3c66b93522369a28bbe5f1527b9625"
+    },
+    {
+      "path": "packages/skeleton/src/artifact-audit.ts",
+      "sha256": "0e5c2bc3efbc34c3cc1c94717beb181c2e4dbc198270bed3cf4e042b1a8b0e1d"
+    },
+    {
+      "path": "packages/skeleton/src/artifact-identity.ts",
+      "sha256": "fbe9dc28a5a99b93d579ff63af24673a99a066ba8a5d87025b236ebe743fe6b1"
+    },
+    {
+      "path": "packages/skeleton/src/audit.ts",
+      "sha256": "86c86a0fd3e3566e0cd02e390216a60bee5450206b9c57c3280845584414d01d"
+    },
+    {
+      "path": "packages/skeleton/src/beacon-codebook.mjs",
+      "sha256": "0b4c2a4cbac901e5d46fb0b2cb2e0ef4f17912e24148834a986ab4c8e22ff3ee"
+    },
+    {
+      "path": "packages/skeleton/src/beacon-fs.ts",
+      "sha256": "5967ddd2c8d02df00bf61c20ae7401f3f6103fe860709c1a56dfab3090491412"
+    },
+    {
+      "path": "packages/skeleton/src/beacon-io.mjs",
+      "sha256": "a2849f625fe78a265c32a91daffa8d5508d4ff7cbe2f8f6911a9afa26b4127b1"
+    },
+    {
+      "path": "packages/skeleton/src/beacon-observe.ts",
+      "sha256": "f6da9e1a8f031b431b3045b9bfdcc0a6e3a3354efd633dacdddf67fc40c6202b"
+    },
+    {
+      "path": "packages/skeleton/src/beacon-perception-fs.ts",
+      "sha256": "9baf0a64c04edf1abb0f994c2a219b7bdd9e23b36f9e4aab6105249a984d1943"
+    },
+    {
+      "path": "packages/skeleton/src/beacon-perception.ts",
+      "sha256": "6b9f6a382cf42bf28837d44289e4c51d771fa2089300b83408d9d2e483e88abb"
+    },
+    {
+      "path": "packages/skeleton/src/beacon-provenance.mjs",
+      "sha256": "f0b7f971c1decda337cf5c80d7474bb5569b9928d70e40c8fcdb819b08600c9f"
+    },
+    {
+      "path": "packages/skeleton/src/beacon-v3-codebook.mjs",
+      "sha256": "0176d624e2eef4f756f8c985f3b20ac730fbba2e88580e1440f13c527551045b"
+    },
+    {
+      "path": "packages/skeleton/src/beacon-v3-fs.mjs",
+      "sha256": "8310203f90e777dd27bd2d42673cc92ecd57e0cd8f738f8d5ca09cb48a9013cf"
+    },
+    {
+      "path": "packages/skeleton/src/beacon-verifier.ts",
+      "sha256": "548c5d2a827c24b4534433c91746b8e12f8e67a35c6088c6b49c42af24516e8c"
+    },
+    {
+      "path": "packages/skeleton/src/beacon.ts",
+      "sha256": "04d7e46f54640b121f73187c0bd2dd50fdf438964736c8f5e47a7c7348cd2abb"
+    },
+    {
+      "path": "packages/skeleton/src/cli.ts",
+      "sha256": "fc302b52bf11fbe3460f1c7e46fd71eb7bf3f78efda0ec0fb537e60e422ff2b3"
+    },
+    {
+      "path": "packages/skeleton/src/control-beacon-fs.mjs",
+      "sha256": "58ef149af96e3345e0438831986afb04d6d81407a4095abf1c6cb4ee729e6e6b"
+    },
+    {
+      "path": "packages/skeleton/src/control-beacon.ts",
+      "sha256": "885416cb99160214738a676a8ac09678e6b67ec101cffdca667a422f35f83f8e"
+    },
+    {
+      "path": "packages/skeleton/src/control-codebook.mjs",
+      "sha256": "fb416d8e67daf4092eee0cf4f34ca9b2cba320cd525e07cebd2874570e01b4f2"
+    },
+    {
+      "path": "packages/skeleton/src/dotln.ts",
+      "sha256": "01a7d67f3351b94ff39892a9566d1ca5e033cd7c5a84c95b4d63337753487761"
+    },
+    {
+      "path": "packages/skeleton/src/execution-environment.ts",
+      "sha256": "51afc7ff50834af16ff21ee0775dcc09670b8ecfe18aa0552b7d0444684133d2"
+    },
+    {
+      "path": "packages/skeleton/src/feedback-audit.ts",
+      "sha256": "bd98a384900a45b41ee2411803d636499876ee699f46612bcebfc55403bb154f"
+    },
+    {
+      "path": "packages/skeleton/src/feedback-boundary.ts",
+      "sha256": "78ca1957cb94c65e17fb80b242a0377fa090f99ddd4860678a796606c60a2418"
+    },
+    {
+      "path": "packages/skeleton/src/feedback-selfhost.ts",
+      "sha256": "22154e91263b3c4ec3eb4649c1d7cae5aa766f630e9314fc2d5014acbe09bb14"
+    },
+    {
+      "path": "packages/skeleton/src/feedback-source-comments.ts",
+      "sha256": "1b3e304443c22277e7e4bca60598f125dc0be8253930331f919cf109e6c73803"
+    },
+    {
+      "path": "packages/skeleton/src/harness-host.ts",
+      "sha256": "e417660e640f8826528e021dd556f6051af80cfd3ab6dca197235299502d505e"
+    },
+    {
+      "path": "packages/skeleton/src/loadouts/contributor.ts",
+      "sha256": "b05833d646ad86b41a7ec75a89c0bd4e1829eb14d2e7d1514e39f9426a8c90f9"
+    },
+    {
+      "path": "packages/skeleton/src/loadouts/entropy-reducer.ts",
+      "sha256": "9a3d83087d1af6de3c4f1cf24ed7fef1fc588225f0c53a96a68e527584da6a06"
+    },
+    {
+      "path": "packages/skeleton/src/loadouts/executor-supports.ts",
+      "sha256": "7fe22c1d67e7949b94e74ced7c726c2285849c9d6263d8e86333f0dfcb10f5f2"
+    },
+    {
+      "path": "packages/skeleton/src/loadouts/feedback.ts",
+      "sha256": "cdd784380e1921a35525f3af5bb888540d9a8920d832201515deb3ea0b1fd35b"
+    },
+    {
+      "path": "packages/skeleton/src/loadouts/plan-refuter.ts",
+      "sha256": "8f9608e48ece63b842e868ff7ae245c20a25bb90cec8a019ef499c0f337179a9"
+    },
+    {
+      "path": "packages/skeleton/src/plan-refutation-fake.ts",
+      "sha256": "3ef1e3fb4d9ba350f34e221849a115a9704e5b9e2b2efd82e4f9277cfb11a1a2"
+    },
+    {
+      "path": "packages/skeleton/src/plan-refutation-host.ts",
+      "sha256": "e887d38b4fc748704ef660b664088564c1ccfae3b1cbc888f3f19ef6a1c3be6a"
+    },
+    {
+      "path": "packages/skeleton/src/plan-refutation-protocol.ts",
+      "sha256": "ff131618579dee552ad6d9330553524323f4a228f7e129db6546d6a755363ebd"
+    },
+    {
+      "path": "packages/skeleton/src/reactor.ts",
+      "sha256": "d0e35900dbf05ceaee1a814fc1b6a2781a8a63f765cb4862bf59475f1efe1635"
+    },
+    {
+      "path": "packages/skeleton/src/scenario.ts",
+      "sha256": "f423075f661b4147b988af522b264e1b749dd1157425e9dc92608b8bc74ed7b4"
+    },
+    {
+      "path": "packages/skeleton/src/verification-demo.ts",
+      "sha256": "2a44fa89175645f48b4ace099b1d24fc6fc8fab92b1429526de7c26133163a96"
+    },
+    {
+      "path": "packages/skeleton/src/verification-fake.ts",
+      "sha256": "376dacc46cfe8179a5d57993f5f5bfab9eb8230038b3e88d5d99d5ec009227c1"
+    },
+    {
+      "path": "packages/skeleton/src/verification-host.ts",
+      "sha256": "019cf59bb9d07746dfab377892a2c3c0b33428798cd688ef172909393feb0c77"
+    },
+    {
+      "path": "packages/skeleton/src/verification-protocol.ts",
+      "sha256": "5f5ae63fbd2b3a9320fc7604a0743a5c65a4fc8020e5ebc61adf0d048076eb22"
+    },
+    {
+      "path": "packages/skeleton/src/verification.ts",
+      "sha256": "4e7790df5e74d499f4b168abb312743438bc2ba45cdbf8a55f63c6b4392f341e"
+    },
+    {
+      "path": "packages/skeleton/src/worker-demo.ts",
+      "sha256": "41ac5dd4ec924ce6d6367340c5ba09b66517967f001230316df0b7c7553f466f"
+    },
+    {
+      "path": "packages/skeleton/src/worker-host.ts",
+      "sha256": "181f1817fbb9ca9529fefbcfe191008e52b7d2b399e607b73c63dd832d74fa95"
+    },
+    {
+      "path": "packages/skeleton/src/worker-protocol.ts",
+      "sha256": "12c5a3f81b2229577f29416f12c03cd4fa63f30e9b25b4d170d384985b791145"
+    },
+    {
+      "path": "packages/skeleton/src/worker-status.ts",
+      "sha256": "0d0e5e3e728bf45ced5f5204ac5e59b6f40439ff7680da6d3ccec88151b68821"
+    },
+    {
+      "path": "packages/skeleton/src/worker-store.ts",
+      "sha256": "c2a95bae7f4aa751006e1c96ac280009321698fd629a0c13ac7670d5e502b676"
+    },
+    {
+      "path": "packages/skeleton/src/worker-transport.ts",
+      "sha256": "1796ad06ad5217305ad30e162268cdf76d5caad87d8a8131741659f8979d335f"
+    },
+    {
+      "path": "packages/skeleton/src/worker-worktree.ts",
+      "sha256": "3bdcd47b63589728c1fb37ad9c00d8d6b0e2094d3d094153de7ed44d741192f1"
+    },
+    {
+      "path": "packages/skeleton/test/artifact-identity.test.ts",
+      "sha256": "64cfe753704ee921527ade1e9ddc2e2165b933a7ba304581b05e600d8b4b2278"
+    },
+    {
+      "path": "packages/skeleton/test/audit.test.ts",
+      "sha256": "1a28f0be407e4a6b555baad5f97e07ca68a2cfdc55ceca018a85f1ef08e251ee"
+    },
+    {
+      "path": "packages/skeleton/test/beacon-fs.test.ts",
+      "sha256": "9ef068009c32a55e5869d720553f5f5c9a3879800cce1dc315d3651f81fb938f"
+    },
+    {
+      "path": "packages/skeleton/test/beacon-observer.ts",
+      "sha256": "40b81692f426d36b32f67a2e83ee792dc0782566ef674b44d7f304903ec7d39a"
+    },
+    {
+      "path": "packages/skeleton/test/beacon.test.ts",
+      "sha256": "3dd19537c4b01432ecb967a5ed29364734227e3ae4c277b0b85bcb9d6f17a457"
+    },
+    {
+      "path": "packages/skeleton/test/cli.test.ts",
+      "sha256": "97bb4e9ec85a5340c1785ad269ab10b8e8b491b80a8d2da10369435ba8cbcb1d"
+    },
+    {
+      "path": "packages/skeleton/test/control-beacon-cli.test.ts",
+      "sha256": "f1cbad4d2203f670bedf1626dbe3a3e051c740c15f7a0ea89d5b8470ea63880e"
+    },
+    {
+      "path": "packages/skeleton/test/control-beacon.test.ts",
+      "sha256": "17b78fb507dd579f37812bba74a406e20ceb95c0b3d3ac4b266d34aaea42ae16"
+    },
+    {
+      "path": "packages/skeleton/test/entropy-reducer-artifacts.test.ts",
+      "sha256": "e05945969aa9b54b4e94174ea2f7292f5ce5f6182607e03fbd7c8bccf833c213"
+    },
+    {
+      "path": "packages/skeleton/test/entropy-reducer.test.ts",
+      "sha256": "64db10c2114e7dc905d1c0ddc2c5df3e18d6608321bef603665dc34d28d9758b"
+    },
+    {
+      "path": "packages/skeleton/test/executor-supports.test.ts",
+      "sha256": "32415054b7e76909dbff44df02af31368e8bb448eb963764a886d7c958cca82b"
+    },
+    {
+      "path": "packages/skeleton/test/feedback-audit-source.test.ts",
+      "sha256": "949ea91fedb094765fbe12cc5776fa9c199e96876bacd5492604846c87522f65"
+    },
+    {
+      "path": "packages/skeleton/test/feedback-fixtures.test.ts",
+      "sha256": "c9081bace024df0ee732aa2453f24a59475eb02f34dab3fc867a886d40321caa"
+    },
+    {
+      "path": "packages/skeleton/test/feedback-host.test.ts",
+      "sha256": "6f25ffdd25ca023b2deb36a1bd6e1dc0e851d3974710777fc6cdac8ce9a32044"
+    },
+    {
+      "path": "packages/skeleton/test/scenario.test.ts",
+      "sha256": "3f071f9b0943f9f9bff1f8dd93528f473c0efdebed60d7d4c9e4e4f0396bcdb1"
+    },
+    {
+      "path": "packages/skeleton/test/senses-v3.test.ts",
+      "sha256": "fc4737176862cd37777f5c869bb102f231ccf600d995b975e1b9038887138f4b"
+    },
+    {
+      "path": "packages/skeleton/test/senses.test.ts",
+      "sha256": "684ca3380ccfb32a18af27f9d8bccf2f2d2b27a7dafc6ec90d1ff760cacbef68"
+    },
+    {
+      "path": "packages/skeleton/test/verification.test.ts",
+      "sha256": "a01d9dd4cb72bf73ab7afb121bc54bec00b03a552337a4e18b99adadf473ba9a"
+    },
+    {
+      "path": "packages/skeleton/test/worker.test.ts",
+      "sha256": "315e041a564fada66ec5f7b3d4fe9869ce41c14a0d42102e4058132384af40ec"
+    },
+    {
+      "path": "packages/skeleton/tsconfig.json",
+      "sha256": "6835936193928e824af930cb04d2c124af857db0d64c34e8e2ddca2a2f42f2f0"
+    },
+    {
+      "path": "scripts/authority-mutation-evidence.mjs",
+      "sha256": "5649d27e5eec5540120b56d43595c539f8fe7425e6702eb46053ba4625d1cf5a"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "835a40bb5461a531f24880946eed3a4cf7d112b68ba5da3db5977f8ae5be8e07"
+    }
+  ],
+  "policy": {
+    "schemaVersion": 1,
+    "baseCommit": "8590be3c424920d7b93482d74e7627731f04afdf",
+    "contextHash": "7dae33e4bbc41f035743344aa8e43cd411d468bb953154a4ed4df32dbfdca6a1",
+    "siteCount": 32,
+    "instrumentHash": "179369766e6b45f6e5169700434d787d37b9937ff42b9c164893762d795882c6",
+    "candidateCount": 3694,
+    "timeoutMs": 120000,
+    "runBudgetMs": 2700000,
+    "node": "v22.2.0",
+    "typescript": "5.4.5",
+    "compilerHash": "113d5ce713ec89581ed77a66c88272d8db18c1c38c97729ceb32fc461a49deaa",
+    "packages": [
+      "kernel",
+      "compiler",
+      "skeleton"
+    ],
+    "enumeration": "conservative-lexical-v1; full candidate census; templates and regexes opaque",
+    "selection": "campaign-v1: 8 historical compiler seeds, 6 kernel, 6 current compiler, 12 current skeleton; declared files, preferred operators, median eligible site; no verdict-dependent selection",
+    "snapshot": "all tracked base files; fresh dist; isolated Git refs; read-only base object lookup; local workspace links",
+    "build": "node node_modules/typescript/bin/tsc -b --force",
+    "tests": "node --test --test-reporter=tap <sorted nonempty kernel+compiler+skeleton test files>",
+    "score": "killed-by-test / (killed-by-test + survived); compile noise and timeouts separate"
+  },
+  "sites": [
+    {
+      "id": "M00001",
+      "file": "packages/compiler/src/compile.ts",
+      "line": 182,
+      "start": 5410,
+      "end": 5484,
+      "before": "support.supportedTags.some((tag) =>\n      active.tags.includes(tag),\n    )",
+      "after": "true",
+      "operator": "condition-force-true",
+      "sourceHash": "38ad7ee77275449484cd44ee5013e963b76f3bedcd1b02a4a226479ceba92d9d",
+      "claim": "WO-008 AC1: the tag half of link compatibility rejects incompatible tags.",
+      "seed": 1,
+      "candidateId": "M00001"
+    },
+    {
+      "id": "M00002",
+      "file": "packages/compiler/src/compile.ts",
+      "line": 415,
+      "start": 13880,
+      "end": 13901,
+      "before": "tied !== undefined) {",
+      "after": "tied !== undefined && Boolean(0)) {",
+      "operator": "condition-neuter",
+      "sourceHash": "38ad7ee77275449484cd44ee5013e963b76f3bedcd1b02a4a226479ceba92d9d",
+      "claim": "WO-008 AC3: equal-precedence incompatible claims are rejected.",
+      "seed": 2,
+      "candidateId": "M00002"
+    }
+  ],
+  "baselines": [
+    {
+      "verdict": "survived",
+      "phase": "test",
+      "compiled": true,
+      "tests": 328,
+      "passed": 328,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "killingTests": [],
+      "durationMs": 46242
+    },
+    {
+      "verdict": "survived",
+      "phase": "test",
+      "compiled": true,
+      "tests": 328,
+      "passed": 328,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "killingTests": [],
+      "durationMs": 46739
+    }
+  ],
+  "results": [
+    {
+      "id": "M00001",
+      "verdict": "killed-by-test",
+      "phase": "test",
+      "compiled": true,
+      "tests": 328,
+      "passed": 327,
+      "failed": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "killingTests": [
+        "WO-042 AC7 F-00001 incompatible tags reject even when every capability exists"
+      ],
+      "durationMs": 46524
+    },
+    {
+      "id": "M00002",
+      "verdict": "killed-by-test",
+      "phase": "test",
+      "compiled": true,
+      "tests": 328,
+      "passed": 327,
+      "failed": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "killingTests": [
+        "WO-042 AC7 F-00002 equal-precedence incompatible claims reject independent of source order"
+      ],
+      "durationMs": 46974
+    }
+  ],
+  "transcriptSha256": "b47729ffcadb1c9a3487451b76505e06be5f1f26c2946631ee3610d118cea4d2"
+}

@@ -21,6 +21,7 @@ import { checkLocalTerms } from "./terms.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { runGit } from "./git.mjs";
 import { validateAccountLabel } from "./control-actor.mjs";
+import { checkPlanContinuation } from "./plan-continuation.mjs";
 
 export const RECEIPTS = "docs/planning/refutations";
 export const OVERRIDES = "docs/control/plan-refutations.jsonl";
@@ -766,13 +767,10 @@ export async function checkPlanGate(root) {
   const passes = planningPasses(read(root, PLAN_LEDGER)).filter(
     ({ date, heading }) => date >= at.slice(0, 10) && !exempt.has(heading),
   );
+  let continuation = null;
   if (passes.length) {
     const subject = buildPlanSubject(root);
     const observed = buildPlanSubject(root, "HEAD", { workspace: true });
-    check(
-      subject.hash === observed.hash,
-      "planning subject has uncommitted changes; commit it before refutation",
-    );
     for (const pass of passes)
       check(
         receipts.some(
@@ -791,12 +789,23 @@ export async function checkPlanGate(root) {
       passes.some((pass) => pass.id === latest?.pass.id),
       "current horizon receipt does not name an enforced planning pass",
     );
-    checkPassReceipt(latest.pass, subject, receipts, overrides);
+    checkPassReceipt(latest.pass, latest.subject, receipts, overrides);
+    continuation = {
+      receiptId: latest.receiptId,
+      judgedSubject: latest.subject.hash,
+      committedSubject: subject.hash,
+      workspaceSubject: observed.hash,
+      committedUpdates: checkPlanContinuation(root, latest.subject, subject),
+      workspaceUpdates: checkPlanContinuation(root, latest.subject, observed, {
+        workspace: true,
+      }),
+    };
   }
   return {
     receipts: receipts.length,
     passes: passes.length,
     enforcement: at.slice(0, 10),
     localTerms,
+    continuation,
   };
 }

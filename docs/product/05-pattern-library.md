@@ -825,6 +825,139 @@ can expose leakage to outer guards, while too many can expose reflexive caution.
 Targets and credential material remain referenced or redacted rather than copied
 into the telemetry.
 
+## Executor supports: Adjacent Repair and Decision Receipts
+
+These are atomic supports, equipped on the Contributor's Clean Room active for
+executor/fixer work. Each can be removed while the others remain. The two
+original supports' separation was explicitly directed in the
+[2026-09-08 breakout](../evidence/WO-042/ideation.md).
+
+| Support               | One job                                                                                                                                                                  | Does not supply                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| **Adjacent Repair**   | Prefer a bounded repair to an encountered adjacent bug instead of deferring it merely because it predates the task or was not explicitly assigned.                       | Decision paperwork, effect authority, proof that a repair is safe, or an implementation verdict. |
+| **Decision Receipts** | Record the evidence, choice and rationale, rejected options with reasons, and the reversal condition for a deferred choice in the established durable decision surfaces. | A preference for intervention, permission to act, or a new approval ceremony.                    |
+| **Follow-up Queue**   | Retain diagnosed fixes and apply ordering, veto, scope revision, known-issue and deferral dispositions.                                                                  | Repair preference, chat delivery or an authority grant.                                          |
+| **Intent to Act**     | Announce the concrete next action in chat at the default "I intend to" communication level.                                                                              | A requirement to ask permission again within existing authority.                                 |
+| **Operator Check-In** | Provide a safe opportunity for steering and process available messages before the next queued action.                                                                    | Cancellation of an in-flight command, indefinite waiting or proof of an unobservable inbox.      |
+
+All are typed support facets using the existing `prompt-fragment` emission.
+Their compiled fragments project into the Contributor executor procedure for
+`resume: next` and `resume: fix`; status/times and the independent verification,
+review, planning and release-close roles keep their own procedures. They carry
+no allow claim, permission emission, new hook or extra model episode. The
+compiled component manifest, support costs and semantic identity expose their
+equipment. This is role instruction at rung 7, not a deterministic semantic
+enforcement claim.
+
+Compose them with the existing bounded Boy Scout guard for scope/risk, the
+permission guard for effects, and application evidence and output review for
+completion. Keep those obligations in their own supports. Beware of Naive
+Interventionism and Do Nothing remain useful counterweights: a justified
+deferral is available, but absence from the original assignment is not its
+justification. Atomicity follows the independent behavioral effect and removal
+test, not the number of sentences in an incident account.
+
+### Built-in modifier switches
+
+The operator extended this model in the same ideation: every document-producing
+behavior should have a corresponding support identity. Some are ubiquitous;
+others are optional equipment that can be turned off when documentation grows
+faster than its value. Separate the producer from the behavior it documents, so
+disabling an optional explanation does not disable the underlying repair.
+Work-contract evidence remains governed by that contract, rather than becoming
+optional merely because a presentation switch exists.
+
+The interaction is a pre-run loadout panel. A support presents its applicable
+modifiers as built-in ON/OFF options with visible defaults; the operator does
+not need to assemble another object for each ordinary toggle. The implementation
+may reuse one modifier across several supports. **Support modifier** is the
+working term for that reusable transform; its target, default and selected state
+must be explicit. Both a behavioral preference and a document producer can be
+used in this position. A default bundle can equip them together while preserving
+their independent identities and removal behavior.
+
+For example, Adjacent Repair can present Decision Receipts as an available
+modifier. A shared documentation modifier can adjust optional detail across a
+group of supports. The configured build is fixed and identified before the run;
+changing a switch produces another configured build, not a silent rewrite of
+the previous run's evidence. The game-loadout analogy supplies this interaction
+shape only; its game names and mechanics are not architecture requirements.
+
+The current Contributor implementation supplies independent ON/OFF switches for
+the atomic support facets and records their effective equipment in the
+compiled identity. General modifiers targeting arbitrary supports, a visual
+pre-run panel, and a complete migration of older document producers are the
+remaining product model, not capabilities claimed by compiler schema 1. Their
+implementation must preserve typed targets, deterministic composition,
+authority narrowing and the distinction between required and optional output.
+Do not encode that open surface as an untyped recursive instruction graph.
+
+### Intent queue and communication levels
+
+`resume: next` starts the selected work order normally. Once the executor finds
+an adjacent bug and knows a concrete fix, Follow-up Queue records the diagnosis,
+scope, required checks and priority as a next item. Intent to Act tells the
+operator in chat what the executor intends to do. The current task is completed
+or reaches a safe boundary before the queued fix begins.
+
+The operator can veto an item, change its priority or scope, mark it a known
+issue, or defer it to another work order or planning session. A scope revision
+requires a fresh intent announcement. Before selecting the next item, Operator
+Check-In uses the available asynchronous input or turn boundary to offer a
+reasonable opportunity for steering, processes available messages, and rereads
+the queue. It does not cancel an in-flight tool call to poll, invent an inbox
+readback, or wait indefinitely for a reply. A later queue change invalidates
+the previous check-in. Silence does not create authority; the action relies on
+authority already present in the selected work.
+
+The initial communication choices are **Observation**, **Recommendation**, and
+**Intent to Act**. The first reports a finding; the second proposes a course
+while leaving it queued for disposition; the default third announces an action
+the executor intends to take within existing authority. They are mutually
+exclusive supports. These are project-owned behavioral choices inspired by the
+operator's communication-level analogies, not a reproduction of another
+author's complete taxonomy.
+
+The current worktree queue is ignored operational state observed through
+`npm run adjacent -- list`. Its host helper checks revisions, priority,
+announcements, check-in freshness and completion evidence; chat and inbox
+observations are explicitly actor-attested. It is not the lifecycle log, a new
+activation, or a hard guarantee that a model will notice every message.
+
+### Orchestration and quality policies
+
+Ordinary harness options are equipment choices as well. The operator's
+same-session examples adopt these separate responsibilities:
+
+| Support or modifier      | Controlled choice                                                                       | Composition rule                                                                              |
+| ------------------------ | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| **Orchestrate**          | Low, medium, high or unbounded willingness to divide useful independent work.           | A planning preference, not spawn authority or a fixed worker count.                           |
+| **No Fan-Out**           | Never use subagents or fan-out.                                                         | Its prohibition takes precedence over orchestration preference.                               |
+| **Concurrency Cap**      | A hard maximum on simultaneously active subagents.                                      | Admit at most the lesser of the equipped cap and available host capacity.                     |
+| **Queue Capacity**       | An optional limit on waiting work.                                                      | A concurrency cap does not imply a queue-length cap.                                          |
+| **Never Degrade**        | Retain the selected quality profile.                                                    | No implicit lower-quality fallback.                                                           |
+| **Adaptive Degradation** | Select among declared variants using latency, cost, bandwidth or resource observations. | The selected variant and any loss are visible and remain above the effective minimum quality. |
+
+Unbounded orchestration adds no ceiling of its own; host capacity, authority and
+equipped concurrency limits remain. Queued work is distinct from active workers.
+Independent writers still need isolated worktrees. An adapter must prove which
+limits it enforces and expose unavailable capabilities; a prompt alone is not a
+hard concurrency cap.
+
+A quality variant declares what it preserves, what it reduces, its cost and its
+admissible conditions. The minimum is explicit at the platform, selected work
+contract or personal build that owns it. A personal option can select another
+personal policy; it cannot remove a platform restriction or silently violate
+the selected work's required outcome, effort or evidence. The responsive-image
+analogy supplies capability negotiation and variant selection, without
+prescribing a browser algorithm or a model downgrade.
+
+These are adopted portable policy models, not current cross-harness enforcement
+claims. This order does not equip fan-out, change account/tool settings, or lower
+the active work's model/effort. Their host bindings belong with the typed modifier
+and capability-admission surface; hard refusal and fallback evidence must precede
+a claim that a runtime enforces them.
+
 ## Candidate — Beware of Naive Interventionism
 
 **"Beware of naive interventionism"** is a candidate support for any active

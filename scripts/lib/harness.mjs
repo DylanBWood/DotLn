@@ -19,7 +19,7 @@ import {
   mergeHarnessFragments,
 } from "../../packages/compiler/dist/src/index.js";
 import {
-  contributorProgram,
+  contributorConfiguredProgram,
   contributorProfiles,
 } from "../../packages/skeleton/dist/src/loadouts/contributor.js";
 import { personalFeedback } from "../../packages/skeleton/dist/src/loadouts/feedback.js";
@@ -69,7 +69,8 @@ export function harnessInstallation(options = {}) {
     (profile) => !options.profile || profile.profileId === options.profile,
   );
   if (!profiles.length) throw new Error("unknown harness profile");
-  const program = options.program ?? contributorProgram();
+  const program =
+    options.program ?? contributorConfiguredProgram(options.supports);
   const feedback = options.feedback ?? personalFeedback();
   const sourceRoot = fileURLToPath(new URL("../../", import.meta.url));
   const runtimeFiles = [

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readdirSync, realpathSync } from "node:fs";
+import { mkdirSync, readdirSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { roles } from "./harness-context.mjs";
@@ -19,7 +19,8 @@ const git = spawnSync("git", ["rev-parse", "--show-toplevel"], {
 });
 assert.equal(git.status, 0);
 assert.equal(realpathSync(git.stdout.trim()), root);
-const directory = join(root, "docs/evidence/WO-039/harness-live");
+const directory = join(root, "docs/evidence/WO-042/harness-live");
+mkdirSync(directory, { recursive: true });
 // Four role entries, then the two writer-reservation scenarios that the
 // evidence gate requires alongside them.
 const runs = [

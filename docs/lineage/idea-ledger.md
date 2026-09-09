@@ -23,6 +23,131 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-08 WO-042 atomic executor supports and adjacent gate repair
+
+Source: four operator ideation/correction messages preserved in main's ignored
+`docs/intake/notes/WO-042-expanded-ideation-2026-09-08-adjacent-repair.md`,
+SHA-256 `41f7ce72d0070d67d97ead843735c76692b301d773289e166477e83922efa291`.
+The source is ordinary personal workflow feedback; the clean-room screen found
+no stop condition. Shape-First Synthesis promotes the behavior, not the incident
+wording. The [breakout receipt](../evidence/WO-042/ideation.md) carries scope,
+choices, rejected alternatives, versions and required independent review.
+
+- **Adjacent Repair** `adopted`: prefer a bounded fix to an encountered bug.
+  Existing origin or omission from the original task alone does not justify
+  deferral. The executor makes the scope judgment and continues; it does not
+  routinely return that judgment to the operator.
+- **Decision Receipts** `adopted`: independently equip the evidence-producing
+  support that records choices, reasons, rejected options and any deferral's
+  reversal condition. It does not select repair or grant authority.
+- **Combine both behaviors in one support** `superseded`: the operator explicitly
+  rejected the first combined interpretation. Composition follows independent
+  behavioral effects; existing permission, scope and verification supports keep
+  their separate duties. Global prose accumulation and manual generated-skill
+  edits were declined in favor of typed authored supports and their projection.
+- **Repair the encountered planning-gate defect in this order** `adopted`:
+  required release and capability write-backs reproduced a stale-subject refusal.
+  Preserve the original receipt and reject actual planning edits, while separately
+  admitting and reporting narrow execution records. Skipping the gate, rewriting
+  evidence, stripping required write-backs, ignoring entire files and stopping
+  for another assignment were declined for the reasons in the breakout receipt.
+- **Document producers and built-in modifiers** `adopted`: every document-producing
+  behavior needs a support identity; optional production or detail can be switched
+  off independently of the behavior it records. Applicable modifiers appear as
+  built-in pre-run options, while reusable modifiers retain separate identities.
+  The selected configuration belongs to the identified build. Arbitrary nested
+  modifiers and migration of older producers remain product-model scope, not an
+  unclaimed compiler-schema feature.
+- **Intent queue, communication levels and operator check-in** `adopted`: a known
+  fix enters a queue; the default communication support announces "I intend to"
+  and the operator can veto, reprioritize, revise scope, mark known or defer.
+  Separate queue and check-in supports provide a safe steering opportunity before
+  the next item. Observation and Recommendation are alternative communication
+  supports. Cancelling an in-flight command to poll, silently advancing the queue,
+  invented inbox observations and indefinite approval waits were declined.
+- **Orchestration, capacity and quality are separate policies** `adopted`: model
+  low/medium/high/unbounded orchestration preference separately from No Fan-Out,
+  concurrent capacity and optional queue capacity. Model Never Degrade separately
+  from explicit adaptive variants and their effective quality floor. A preference
+  is not an authority grant, and host limits require observed enforcement.
+- **Declare each support's role projection** `adopted`: a validated harness
+  adapter binds an equipped prompt support to the role carrying its compiled
+  fragment and records its origin on that skill. False missing-adapter residue
+  and global duplication were rejected; authority and host predicates stay fixed.
+- **Repair the queued actor-board edition mismatch** `adopted`: the default
+  WO-039 verifier refused replay under compiler `0.8.0`, while the current
+  WO-042 stream replayed. Align the existing default and assert both default
+  streams load, recorded as console `0.1.2`. A new discovery subsystem and
+  deferral based only on the old console exclusion were rejected. The breakout
+  receipt records queue, intent and operator-check-in provenance.
+
+Follow-up provenance is recorded in the same breakout receipt: the document
+modifiers batch (`c7cb6a95afd5ba5b16f83e7846f9c7d6dcc8b694c11ff9a7823de6a5fa59a38b`),
+intent queue batch (`0f096d4f488b381bc400991a0d3abb425aefb037768ce4d607bae1011e884357`)
+and resource policies batch (`ed34609f1af85089032a757e97521c3e04714ed55636a15d5e5fa0e1f8235f2d`)
+are each preserved in main's ignored intake and backed up. References to games,
+communication examples and responsive images were synthesized for their
+interaction shape, not imported as factual implementation requirements.
+
+Durable homes: product 05 §Executor supports: Adjacent Repair and Decision
+Receipts; product 07 §Discipline and §Operator-opened planning pass. WO-042's
+execution record adds the composed supports, gate regression checks and review
+duties without changing lifecycle legality.
+
+## 2026-09-08 WO-042 authority provenance implementation
+
+Source: the operator's `resume: next` dispatch of
+[WO-042](../work-orders/WO-042-authority-provenance.md), applied to the
+personal repository at activation source `4ead1d0`. The implementation
+derives from this project's cited compiler, fixtures and product contracts;
+no intake or external source text was imported.
+
+- **Linked supports preserve the active's authority ceiling** `adopted`
+  - Both allow claims and permission emissions now reject authority outside
+    the supplied active's base lists, including base denials. Denials remain
+    legal at every precedence layer; higher precedence may restore a base
+    allowance. Explicit admitted grants apply after claims. The old
+    precedence tests now start with an active allowance instead of proving
+    self-granting. This implements the allocated WO-008 VER-001 F2 follow-on
+    without changing the nine-level ordering or hard-conflict rule.
+- **Provenance requires a separate admission input** `adopted`
+  - The pure compiler accepts only graph grants matching the host registry's
+    declared authority-bearing fields. A committed instance registry and an
+    ignored host-policy registry feed a filesystem adapter outside the
+    compiler. The committed registry is empty and lives alongside the
+    skeleton source-loadout tree, outside package `src/`; no personal
+    allowance is added. Reasons remain explanatory text, while the receipt
+    hashes the complete normalized registry. The floor assumes the supplied
+    active and host inputs; signatures and hostile-writer isolation remain
+    outside this order.
+- **Inspection describes the effective envelope** `adopted`
+  - The tooltip's GRANTS and RESTRICTIONS now project the compiled envelope.
+    Authored grants/restrictions retain their original bytes under explicitly
+    non-enforcing notes; exact contradictory effect tokens reject. Applied
+    grant ids and provenance survive in the program, trace and harness
+    manifest. Natural-language implication detection remains unclaimed.
+- **Compatibility keeps its explicit boundary** `adopted`
+  - Compiler `0.8.0` narrows graph acceptance under compiled-program contract
+    `"1"`, while all four existing saved-build programs retain their bytes.
+    An exact grant cannot cancel a broader wildcard denial because that
+    would widen other authority under the unchanged kernel; it rejects as
+    unsupported. The Contributor regeneration changes compiler pins and
+    derived policy hashes, with its skills, settings and envelope unchanged.
+    The application target is `v0.16.0`; independent verification remains a
+    separate dispatch.
+- **Preserve the declined designs and test the known gaps** `adopted`
+  - Per-component layer whitelists, forbidding support safety-layer denials,
+    deleting authored notes, wildcard grants, signatures and deferral until
+    community builds remain declined for the reasons in WO-042. The tag
+    compatibility and equal-precedence negative fixtures address the two
+    named mutation survivors without widening the cleanup scope.
+
+Durable homes: product 02 §Identity and composition and §Authority grants and
+trusted admission; product 03 §Composition system; product 04 §Editable-view
+v1 normalization and semantic hash and §Authority inspection projection;
+product 10 §Separate version axes; the dated capability reassessment; the
+[executor evidence](../evidence/WO-042/README.md).
+
 ## 2026-09-08 critical-path planning pass (operator-dispatched, after the WO-039 close)
 
 Source: the operator's 2026-09-08 `planning:` dispatch, which appended an
@@ -6008,3 +6133,29 @@ existing contract; no runtime source, contract, or locked boundary changes.
     clears their own finding. Failing the order for it was rejected too, as
     it defeats no criterion of this order and breaks no gate; it is nominated
     on the planning map instead.
+
+## 2026-09-09 — WO-042 VER-001 F1: Unicode boundaries for authority notes
+
+- **Match a literal effect id with Unicode prose boundaries** `adopted`
+  - VER-001 F1 reproduced accepted contradictory notes followed by an em dash,
+    en dash or ellipsis. The guard's ASCII punctuation list also missed curly
+    quotes. Ten new directional fixtures failed before the repair. The guard
+    now uses Unicode punctuation, whitespace and the existing backtick/angle
+    bracket delimiters around a complete escaped effect id. Internal dots and
+    colons still extend a token, while trailing sentence punctuation is accepted.
+    Product 04's authority-inspection contract states the rule explicitly.
+  - The focused criterion-5 gate passes all 14 tests after the repair. Literal
+    ids containing hyphens, underscores, colons, plus signs and parentheses
+    remain intact; prefixed, suffixed, dotted and colon-qualified extensions
+    remain negative cases in both authored-note directions. This corrects the
+    authored-note consistency check without changing effective authority or
+    compiled inspection bytes.
+- **Grow the ASCII punctuation list one character at a time** `rejected`
+  - It would repair the reported examples while retaining the same omission
+    class for other Unicode prose punctuation.
+- **Split every punctuation character inside an effect id** `rejected`
+  - Effect ids may contain punctuation. Splitting them would lose complete ids
+    and confuse their dotted or colon-qualified extensions with exact matches.
+- **Weaken the documented contradiction check or rewrite VER-001** `rejected`
+  - The verified failure is against the accepted contract. The repair restores
+    that behavior and retains the immutable report for independent re-verification.

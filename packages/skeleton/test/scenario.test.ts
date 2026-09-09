@@ -349,7 +349,19 @@ test("WO-008 AC3 the precedence winner authorizes the emitted runtime effect", (
       ...active,
       authorityEnvelope: {
         ...active.authorityEnvelope,
+        allowedEffects: [
+          ...active.authorityEnvelope.allowedEffects,
+          "repo.delete",
+        ],
         revocationConditions: [],
+      },
+      // WO-042 permits restoration only inside the active's original authority.
+      workOrder: {
+        ...active.workOrder,
+        allowedOperations: [
+          ...active.workOrder.allowedOperations,
+          "repo.delete",
+        ],
       },
     })),
     supportFacets: loadout.supportFacets.map((support) => {

@@ -1,4 +1,4 @@
-# WO-042 — Authority provenance and monotone envelopes: a linked support may only narrow a compiled build's authority, widening needs an explicit provenance-bearing grant, and the tooltip projects GRANTS and RESTRICTIONS from the effective envelope (version assigned at activation)
+# WO-042 — Authority provenance and monotone envelopes: a linked support may only narrow a compiled build's authority, widening needs an explicit provenance-bearing grant, and the tooltip projects GRANTS and RESTRICTIONS from the effective envelope (v0.16.0)
 
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
@@ -300,3 +300,25 @@ profiles (WO-033), which are the first expected consumer of the
    was.
 4. Regenerating the committed bundle is the one project-scope configuration
    mutation this order authorizes, and only pins and hashes may change.
+
+## Execution record
+
+The operator's 2026-09-08 ideation expands the order to equip atomic Contributor
+supports for adjacent repair, decision receipts, a follow-up queue, intent
+communication and operator check-in, and repair the planning gate's refusal of
+required execution write-backs. The
+[breakout receipt](../evidence/WO-042/ideation.md) records the explicit authority,
+source provenance, decisions, rejected options, affected comparisons and added
+verification duties. It supersedes the compiler-only bundle/source constraints
+for those named supports and their projection, the planning comparison and
+queue, and the queued console edition repair recorded in the receipt. The
+original saved-program
+compatibility checks remain; the installed support overlay has its own identity
+and comparison. The executor continues through the complete evidence gate;
+the verifier and final reviewer must include the receipt and promoted documents.
+
+The 2026-09-09 [VER-001 F1 repair](../evidence/WO-042/repair-001.md) restores
+criterion 5's Unicode prose punctuation boundaries while retaining exact
+effect-id matching. It preserves the original order, the operator-expanded
+duties and the immutable verification report; the repair record carries its
+regression and renewed evidence gate.

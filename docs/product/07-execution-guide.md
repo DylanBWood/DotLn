@@ -484,9 +484,17 @@ the human's identity or let a planner supply its own authorization.
 The gate is forward-only from the mechanism's first-parent introduction/merge
 date. Earlier headings, including same-day headings already present at that
 boundary, are exempt. Every later dated planning-pass heading needs an addressed
-receipt; the latest horizon receipt must match current committed and workspace
-inputs. Earlier receipts keep their judged revisions, with unresolved holds
-carried through the receipt chain. The six manual redirect receipts are
+receipt. The latest receipt remains bound to its original committed subject.
+The continuing-work gate compares both HEAD and workspace inputs with it,
+admitting only an assigned release placeholder, appended execution-record
+sections, and appended dated reassessments of existing capability ids for
+orders in that reviewed sequence. It reports these execution updates separately;
+they are not a fresh planning verdict. Existing text and rows, objectives,
+criteria, dependencies, non-goals, sequence, vision and roles still require a
+matching refutation when changed. Producing a new receipt still requires its
+complete committed subject and an identical workspace. Earlier receipts keep
+their judged revisions, with unresolved holds carried through the receipt chain.
+The six manual redirect receipts are
 pre-mechanism evidence and are never rewritten or re-run by this gate.
 
 Standard artifacts, all doc-only:
@@ -668,10 +676,25 @@ claim evidence or releases it does not have.
 
 ## Discipline
 
-- **Work only from the current work order.** No opportunistic scope expansion;
-  adjacent cleanup only under the bounded boy-scout policy (unambiguous, low
-  risk, covered by the same verification, doesn't obscure the diff) — otherwise
-  file a candidate task.
+- **Compose adjacent repair with decision evidence (operator default,
+  2026-09-08).** The executor/fixer equips [Adjacent Repair and Decision
+  Receipts](05-pattern-library.md#executor-supports-adjacent-repair-and-decision-receipts)
+  independently. Adjacent Repair prefers a bounded fix to an encountered bug;
+  neither pre-existing origin nor omission from the original assignment is by
+  itself a reason to defer. Decision Receipts records the chosen option,
+  evidence, rationale, rejected options and reasons, plus the reversal condition
+  for a deferral. Decide and continue within the authorized effects; ordinary
+  scope judgment is not a new operator approval step. The existing bounded Boy
+  Scout, permission and verification supports retain their limits. Evidence of
+  ambiguity, excessive risk, an unrelated change or missing authority can still
+  justify a named deferral; merely noticing imperfection does not require work.
+  Follow-up Queue records a diagnosed fix as next work, Intent to Act announces
+  the concrete intended action in chat, and Operator Check-In supplies a safe
+  steering opportunity before the next queued item. Apply veto, priority, scope,
+  known-issue and deferral messages before dispatch; a queue change invalidates
+  the prior check-in. Do not cancel an in-flight tool call to poll or wait
+  indefinitely for approval. The current queue is observed with
+  `npm run adjacent -- list`; its chat and channel observations are actor-attested.
 - **Release assignment is opt-out (operator default, 2026-09-04).** Prepare
   the classified next release and update its source claim unless the operator
   specifies no release. Complete a missing activation target under

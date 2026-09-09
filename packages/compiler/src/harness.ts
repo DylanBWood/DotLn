@@ -6,7 +6,11 @@ import {
   type FeedbackHandler,
 } from "./feedback.js";
 import { canonicalStringify, fnv1a64, semanticHash } from "./normalize.js";
-import type { AuthorityEnvelope, CompiledProgram } from "./types.js";
+import type {
+  AuthorityEnvelope,
+  AuthorityGrant,
+  CompiledProgram,
+} from "./types.js";
 import { repositoryPath, verificationLine } from "./verification.js";
 
 export type HarnessEvent =
@@ -59,6 +63,12 @@ export type HarnessFacet =
       readonly facetId: string;
       readonly kind: "prompt-fragment";
       readonly text: string;
+    }
+  | {
+      readonly facetId: string;
+      readonly kind: "role-procedure";
+      readonly roleName: string;
+      readonly text: string;
     };
 /** Separate target input. It never extends or changes the loadout-v1 preimage. */
 export interface HarnessProgram {
@@ -92,6 +102,8 @@ export interface HarnessBundle {
     readonly contractVersion: "harness-v1";
     readonly compilerPackageVersion: string;
     readonly feedbackPolicyHash: string;
+    readonly grants: readonly AuthorityGrant[];
+    readonly authorityGrantRegistryHash: string | null;
     readonly profile: HarnessProfile;
     readonly loadout: {
       readonly id: string;
@@ -254,7 +266,9 @@ export function lowerToHarness(
   const seenIntents = new Set<string>();
   for (const facet of program.facets) {
     ensure(
-      ["permission-guard", "prompt-fragment"].includes(facet.kind),
+      ["permission-guard", "prompt-fragment", "role-procedure"].includes(
+        facet.kind,
+      ),
       "supported facet adapter",
     );
     if (facet.kind === "permission-guard")
@@ -267,6 +281,24 @@ export function lowerToHarness(
           ),
         "deny matchers must name a denied build effect and the observed Bash shape",
       );
+    if (facet.kind === "role-procedure") {
+      const component = program.loadout.componentManifest.find(
+        (entry) => entry.componentId === facet.facetId,
+      );
+      ensure(
+        component?.componentKind === "support-facet" &&
+          component.mechanismTypes.length === 1 &&
+          component.mechanismTypes[0] === "prompt-fragment" &&
+          verificationLine(facet.text) &&
+          program.loadout.promptFragments.includes(facet.text) &&
+          program.roles.some(
+            (role) =>
+              role.name === facet.roleName &&
+              role.procedure.includes(facet.text),
+          ),
+        "role procedure must carry an equipped prompt support's compiled fragment",
+      );
+    }
   }
   for (const role of program.roles) {
     ensure(
@@ -497,6 +529,11 @@ export function lowerToHarness(
       6,
     );
   for (const role of program.roles) {
+    const supportIds = program.facets.flatMap((facet) =>
+      facet.kind === "role-procedure" && facet.roleName === role.name
+        ? [facet.facetId]
+        : [],
+    );
     const units = feedback.units.filter((unit) => {
       const event = hookFor[unit.trigger];
       const carriedByHook =
@@ -522,7 +559,7 @@ export function lowerToHarness(
       `description: ${JSON.stringify(role.description)}`,
       "---",
       "",
-      `<!-- Origin: ${canonicalStringify(origin([role.facetId, ...units.map((unit) => unit.unitId)]))} -->`,
+      `<!-- Origin: ${canonicalStringify(origin([role.facetId, ...supportIds, ...units.map((unit) => unit.unitId)]))} -->`,
       "",
       ...role.procedure,
       "",
@@ -532,7 +569,7 @@ export function lowerToHarness(
     emit(
       `${profile.skills.root}/${name}/SKILL.md`,
       body,
-      [role.facetId, ...units.map((unit) => unit.unitId)],
+      [role.facetId, ...supportIds, ...units.map((unit) => unit.unitId)],
       7,
     );
   }
@@ -603,6 +640,9 @@ export function lowerToHarness(
     contractVersion: "harness-v1" as const,
     compilerPackageVersion: COMPILER_PACKAGE_VERSION,
     feedbackPolicyHash: feedback.policyHash,
+    grants: program.loadout.grants ?? [],
+    authorityGrantRegistryHash:
+      program.loadout.trace.authorityGrants?.registryHash ?? null,
     profile: JSON.parse(canonicalStringify(profile)) as HarnessProfile,
     loadout: {
       id: program.loadout.loadoutId,

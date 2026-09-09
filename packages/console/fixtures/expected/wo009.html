@@ -184,12 +184,19 @@
 The Evidence-Bound Sort — COMPILED DIFF
 
 GRANTS
++ repo.inspect
+
+RESTRICTIONS
++ repo.delete
++ repo.write
+
+AUTHORED NOTES (non-enforcing)
+Authored grants
 + Inventory every fixture path
 + Classify every fixture path
 + Analyze references
 + Propose deletion candidates
-
-RESTRICTIONS
+Authored restrictions
 + Do not mutate repository contents
 + Deletion remains operator-owned
 + Inspect only the bounded fixture repository
@@ -231,12 +238,26 @@ SEMANTIC HASH
 The Entropy-Reducing Shine — COMPILED DIFF
 
 GRANTS
++ repo.read*
++ probe.run:scratch*
++ intake.capture
++ delegate.readonly
++ report.emit
+
+RESTRICTIONS
++ repo.write*
++ git.mutate*
++ remote.*
++ settings.*
++ decision.edit
+
+AUTHORED NOTES (non-enforcing)
+Authored grants
 + Read repository evidence
 + Run bounded scratch probes
 + Delegate up to four read-only lenses
 + Emit a validated report
-
-RESTRICTIONS
+Authored restrictions
 + Never mutate the tracked repository or control plane
 + Never change remotes, settings, or operator decisions
 + At most four no-fix, read-only lens delegates
@@ -289,10 +310,22 @@ SEMANTIC HASH
 The Entropy-Reducing Shine — COMPILED DIFF
 
 GRANTS
-+ Read the compiled planning subject
-+ Emit a validated refutation
++ repo.read*
++ report.emit
 
 RESTRICTIONS
++ repo.write*
++ git.mutate*
++ remote.*
++ settings.*
++ decision.*
++ decision.edit
+
+AUTHORED NOTES (non-enforcing)
+Authored grants
++ Read the compiled planning subject
++ Emit a validated refutation
+Authored restrictions
 + No model tools, writes, remotes, settings changes or operator decisions
 
 OBLIGATION
