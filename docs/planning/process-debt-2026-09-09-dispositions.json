@@ -7,5 +7,14 @@
     "workOrderId": "WO-126",
     "criterionId": "criterion:13",
     "change": "Criterion 13 now defines the transition for inherited ledger duties: an order filed before 2026-09-09 whose acceptance text names a ledger entry discharges it with its decisions file and its row in the generated decisions index, checked by the verifier and marked by the work-order index, so no executor decides it alone; WO-084 is the one permitted historical migration and preserves every entry's prose byte for byte; the never-rewritten rule binds lifecycle sessions, not that migration."
+  },
+  {
+    "receiptId": "2026-09-09-process-debt-007",
+    "holdId": "hold-22e06da53175280d733ab86a",
+    "kind": "accepted",
+    "date": "2026-09-09",
+    "workOrderId": "WO-126",
+    "criterionId": "criterion:16",
+    "change": "Criterion 16 now binds its cost judgment to the blinded subject: every order carries a Cost header line that the subject reader includes and hashes beside the objective, criteria and non-goals, and the canonical input carries a bounded, subject-hashed cost table of dated budget acceptances and the latest meter rows for the orders in the subject, refused as stale when older than the subject revision; the refuter holds a missing cost line or an unremoved, unaccepted cost addition, with fixtures for a missing line, a dated acceptance and stale evidence; the non-goal no longer says the subject reader changes path only."
   }
 ]

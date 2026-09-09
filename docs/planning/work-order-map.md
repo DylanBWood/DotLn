@@ -90,12 +90,12 @@ series visible at publish time instead; and the refutation of this pass may
 run through the automated CLI transport now, and as one dispatch phrase in
 either harness once criterion 16 lands. The one-seam and four-hour rules stand for every other order. The pass
 declined, as NoOps recorded below, removing the harness wholesale and leaving
-tokens and cost unrecorded. Receipt 005 held on criterion 13, the repair
-landed, and receipt 006 passed the horizon at `82a3d5b`; the operator's
+tokens and cost unrecorded. Receipt 005 held on criterion 13 and the repair
+landed; receipt 006 passed the horizon at `82a3d5b`; the operator's
 corrections after it (tokens and cost, decision provenance, two refuter
-scopes, the four questions, the trap rows) were merged under the operator's
-recorded override without a third refutation, and the next pass carries
-the receipt for the current subject.
+scopes, the four questions, the trap rows) drew receipt 007's hold on
+criterion 16, whose cost judgment had no permitted input; that repair
+landed, and the receipt carrying its accepted disposition closes the pass.
 
 **WO-038 source (2026-09-06):** the planning license files are present in this activation base. The missing release assignment is completed at `v0.13.2`, the next patch above published `v0.13.1`. The [executor receipt](../evidence/WO-038/README.md) records package metadata, npm refusal probes, the pinned license surfaces, contribution sign-offs, and the WO-033 export-default handoff. This source work does not discharge the critical path's merge dependencies or establish that the proposed paired wave occurred; the generated index and control fold own later lifecycle evidence.
 

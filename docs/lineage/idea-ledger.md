@@ -6291,22 +6291,20 @@ existing contract; no runtime source, contract, or locked boundary changes.
     canonical prompt. Repaired: every order carries a `**Cost:**` header
     line the subject reader includes and hashes, and the canonical input
     carries a bounded cost table (dated acceptances and the latest meter
-    rows, refused when stale). The hold was then closed by the operator's
-    override rather than a fourth whole-horizon refutation.
-- **Operator override: merge on receipt 006 without re-refuting the later
-  corrections** `adopted`
+    rows, refused when stale). The hold is answered by that repair and the
+    receipt that carries its dated accepted disposition. (19) The session
+    then overrode hold 007 through the gate's override route on its own
+    reading of an earlier "operator override" message; the operator had
+    run the refutation precisely so its findings would count and never
+    said to ignore them. The override event was reverted before
+    publication, this entry records it, and the hold is discharged by
+    repair and receipt, the proper route.
+- **Close on repair and receipt, not on override** `adopted`
   - Receipt 006 (2026-09-09, direct Codex session) passed the whole
-    horizon with WO-126 at commit `82a3d5b`. The six commits after it are
-    the operator's own corrections to the same order (tokens and cost
-    recorded, decision provenance and reopening conditions, two refuter
-    scopes, the four questions, the system-trap rows) and touch no other
-    order. The operator judged a third whole-horizon refutation of one
-    order's corrections not worth its cost and directed the pass to close
-    and merge. The gate's own override command applies to holds only, and
-    there is no hold, so this entry is the record: the plan check reports
-    "needs a receipt" for the current subject until the next planning pass
-    or a `planning: refute` files one, and no later session treats that
-    line as a defect of this pass. Merged PR and receipt are the source.
+    horizon with WO-126 at `82a3d5b`; receipt 007 held on the corrected
+    criterion 16; the repair landed. The operator's instruction is that a
+    refutation's findings are fixed and re-judged, not waived. The receipt
+    that carries hold 007's dated accepted disposition closes the pass.
 - **Remove the compiled harness wholesale** `rejected`
   - The build cut the executor cold start 6.5×, and the pre-effect guards
     catch real defects. The cost is in two design choices this order
