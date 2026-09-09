@@ -6268,7 +6268,14 @@ existing contract; no runtime source, contract, or locked boundary changes.
     collected", was presented to the operator as the operator's own
     decision; it never was. Tokens and cost per dispatch are required data
     for setting context and token budgets: WO-126 criteria 10 and 11, the
-    map's NoOp corrected.
+    map's NoOp corrected. Traced: the sentence began as WO-028's non-goal,
+    written by the 2026-09-03 planning pass as "not this order"; the
+    2026-09-04 pass put it in the map, the 2026-09-05 pass recorded it as
+    a NoOp "unchanged from the 2026-09-03 pass", WO-031 repeated it as a
+    non-goal, and WO-031's implementation wrote it into the playbook, 07
+    and 03 as a flat prohibition. No operator dispatch said it. Criterion
+    13 now requires a decision to name its dispatch and forbids restating
+    a non-goal as one.
 - **Remove the compiled harness wholesale** `rejected`
   - The build cut the executor cold start 6.5×, and the pre-effect guards
     catch real defects. The cost is in two design choices this order

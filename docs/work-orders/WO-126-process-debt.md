@@ -413,8 +413,15 @@ every criterion; the write-backs below.
     during any dispatch is recorded the same day in that dispatch's
     committed record (the order's decisions file, or the pass's ledger
     section) as what was misread, what was meant, and what changed; a
-    session's private capture is not that record. Transition for inherited
-    duties: an order filed before 2026-09-09 whose acceptance text names a
+    session's private capture is not that record. A recorded decision
+    names the operator dispatch that made it; an order's non-goal is a
+    scope fence for that order alone and is never restated as a decision,
+    a NoOp or a product-doc prohibition (the "no token, cost, or attention
+    data" sentence began as WO-028's non-goal on 2026-09-03, was carried by
+    three planning passes as a settled NoOp, and reached the playbook and
+    two product documents without any operator dispatch behind it; the
+    decisions index rejects an entry without a dispatch source). Transition
+    for inherited duties: an order filed before 2026-09-09 whose acceptance text names a
     ledger entry (WO-043 criterion 6, WO-045 criterion 5, WO-052 criterion
     5 and WO-089 criterion 2 among them) discharges that text with its
     decisions file and its row in the generated decisions index; its
@@ -437,7 +444,10 @@ every criterion; the write-backs below.
     reconciliation helper and the reuse-by-hash rule), §Discipline (process
     budget); 08 §PRs and commits (attribution decision); `docs/PLAYBOOK.md`;
     `docs/planning/refutations/README.md` (the sequence file); the
-    decisions file and index; both profiles' regenerated skills.
+    decisions file and index; both profiles' regenerated skills; and the
+    retirement of the unsourced no-telemetry sentences in `docs/PLAYBOOK.md`
+    (usage), 07 §Model-specific notes and 03 (the control migration note),
+    replaced by the recorded-per-dispatch rule.
 15. **Refutation is one phrase, inside the harness.** `planning: refute`
     resolves in both profiles, beside the bare `planning:` prefix that
     opens a pass, and makes the receiving session the refuter of the latest
