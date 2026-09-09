@@ -485,8 +485,12 @@ validate it with `validatePlanResult`, hash the frozen result, and file the
 immutable pair through `writePlanReceipt` with a direct-session episode and
 a session statement of what was and was not read; commit the pair with a
 plain subject and run `npm run plan -- check`; report the verdict and any
-holds. WO-126 criterion 15 compiles these steps into two commands so the
-session runs no ad hoc code.
+holds. If `docs/planning/<pass>-<date>-dispositions.json` exists, pass its
+entries as the receipt's dispositions. Run no code suite. Until WO-126
+criterion 15 gives the phrase its own dispatch, it arrives through the
+planner role's directed reads; the session states that exposure in its
+statement, as receipt 005 did. WO-126 criterion 15 compiles these steps
+into two commands so the session runs no ad hoc code.
 
 After drafting the orders, commit the planning subject locally and run
 `npm run plan -- refute` before preparing the pull request. The subject is
@@ -498,7 +502,9 @@ in a Codex session under the receipt convention's direct-session form: its
 independence is session-attested rather than host-enforced, its provenance
 fields are fixed `unknown`, and the gate applies the same hold, disposition
 and three-hold rules to it (observed 2026-09-08). Commit the immutable
-receipt pair and run `npm test` before the pass ends. The
+receipt pair and run the document gate (`npm run plan -- check` with the
+index, publication and format checks) before the pass ends; a pass runs no
+code suite (operator decision, 2026-09-09). The
 [receipt convention](../planning/refutations/README.md) gives the closed result,
 criterion-bound follow-up and override commands.
 

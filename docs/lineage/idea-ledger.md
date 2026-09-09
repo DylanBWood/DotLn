@@ -6246,7 +6246,13 @@ existing contract; no runtime source, contract, or locked boundary changes.
     requires refusals to name their cause. (10) These corrections kept only
     in the session: this entry, the intake capture, and criterion 13's rule
     that a correction during any dispatch is recorded the same day in that
-    dispatch's committed record and counted by the meter.
+    dispatch's committed record and counted by the meter. (11) The refuter
+    ran the code suite, told to by two sentences the pass had missed (07
+    §Operator-opened planning pass, the refutations README), and its
+    independence was exposed to the map by the planner role's directed
+    reads: both sentences now name the document gate, and criterion 15
+    gives the phrase its own dispatch with no read but the prompt, a scope
+    of changed orders, and a 120 s budget.
 - **Remove the compiled harness wholesale** `rejected`
   - The build cut the executor cold start 6.5×, and the pre-effect guards
     catch real defects. The cost is in two design choices this order

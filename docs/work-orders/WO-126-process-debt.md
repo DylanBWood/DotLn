@@ -405,9 +405,22 @@ every criterion; the write-backs below.
     during any dispatch is recorded the same day in that dispatch's
     committed record (the order's decisions file, or the pass's ledger
     section) as what was misread, what was meant, and what changed; a
-    session's private capture is not that record. A fixture proves a repair
-    receipt lands in the decisions file and the index, and that the ledger
-    is byte-identical after a lifecycle run.
+    session's private capture is not that record. Transition for inherited
+    duties: an order filed before 2026-09-09 whose acceptance text names a
+    ledger entry (WO-043 criterion 6, WO-045 criterion 5, WO-052 criterion
+    5 and WO-089 criterion 2 among them) discharges that text with its
+    decisions file and its row in the generated decisions index; its
+    executor writes no ledger section, its verifier checks the decisions
+    file, and the work-order index marks the substitution on the order's
+    row, so no executor decides this alone. WO-084 is the one permitted
+    historical migration: its section moves, tag normalization and header
+    note apply to material filed before 2026-09-09 and preserve every
+    entry's prose byte for byte, as its own criterion 2 requires; the
+    never-rewritten rule above binds lifecycle sessions, not that
+    migration. A fixture proves a repair receipt lands in the decisions
+    file and the index, that an inherited ledger-entry criterion is
+    satisfied by the decisions file, and that the ledger is byte-identical
+    after a lifecycle run.
 14. **Write-backs land:** 02 §Feedback compiler v1 (advisory rung,
     authorship-observed outputs, kind `prose`); 03 §Corpus policy (the
     planning archive; `docs/control/local/` is read and written by scripts);
@@ -433,8 +446,20 @@ every criterion; the write-backs below.
     writes no ad hoc code. `npm run plan -- refute --transport <name>`
     remains the separate command for an external refuter and is not what
     the phrase means; the receipts README and 07 §Operator-opened planning
-    pass describe the phrase. Fixtures cover the direct route end to end,
-    including a rejected stale subject and a rejected malformed result. The
+    pass describe the phrase. The refuter dispatch directs no read but the
+    canonical prompt: it loads no map, guide section or earlier receipt (on
+    2026-09-09 the planner role's directed reads exposed the map narrative
+    and earlier receipts before the judgment, and receipt 005 had to
+    disclose it). Its scope is the orders whose bytes changed or were added
+    since the latest receipt, plus the sequence; unchanged orders carry
+    their latest verdict forward by hash in the new receipt, and the full
+    horizon is re-judged only when a thesis, exclusion, role or capability
+    row changes or the operator asks. The receipt records wall-clock from
+    dispatch to file, and `budgets.json` holds 120 s for a pass that
+    changes one order (on 2026-09-09 the pass judged 76 orders from a
+    194 KB prompt and then ran the code suite, over thirty minutes in all).
+    Fixtures cover the direct route end to end, including a rejected stale
+    subject, a rejected malformed result, and a carried-forward verdict. The
     external command's transport failure reports the CLI's exit code and
     stderr (on 2026-09-09, from a sandboxed session, the Codex transport
     reported only `transport-failed: exit-1`; the cause was the sandbox
