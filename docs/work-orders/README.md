@@ -6,7 +6,7 @@
 
 - [x] [WO-126] — Process debt · **final-reviewed**
 - [x] [WO-042] — Authority provenance and monotone envelopes · **final-reviewed**
-- [ ] [WO-043] — Typed dependency truth · **queued**
+- [x] [WO-043] — Typed dependency truth · **final-reviewed**
 - [ ] [WO-125] — Codex effort selection · **queued**
 - [ ] [WO-044] — Writing-worker and unattended-launch harness truth · **queued**
 - [ ] [WO-067] — PresencePolicy compiled · **queued**
@@ -117,8 +117,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-006: satisfied (closed); WO-013: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-013: satisfied-by-release (met) v0.3.1 — the order's own Depends on; WO-006: satisfied-by-release (met) v0.2.3 — the order's own Depends on.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -134,8 +134,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-018: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-030: satisfied (closed); WO-038: satisfied (closed); WO-039: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-049: superseded (non-blocking) by WO-049 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-049.; WO-064: superseded (non-blocking) by WO-064 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-064.; WO-069: superseded (non-blocking) by WO-069 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-069.; WO-070: superseded (non-blocking) by WO-070 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-070.; WO-071: superseded (non-blocking) by WO-071 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-071.; WO-072: superseded (non-blocking) by WO-072 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-072.; WO-073: superseded (non-blocking) by WO-073 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-073.; WO-074: superseded (non-blocking) by WO-074 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-074.; WO-075: superseded (non-blocking) by WO-075 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-075.; WO-076: superseded (non-blocking) by WO-076 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-076.; WO-077: superseded (non-blocking) by WO-077 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-077.; WO-078: superseded (non-blocking) by WO-078 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-078.; WO-079: superseded (non-blocking) by WO-079 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-079.; WO-036: superseded (non-blocking) by WO-036 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-036..
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -151,8 +151,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-033.
-- References: WO-032: satisfied (closed); WO-033: not control-closed.
+- Dependencies: typed; dependency-ready.
+- References: WO-080: superseded (non-blocking) by WO-080 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-080.; WO-081: superseded (non-blocking) by WO-081 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-081.; WO-082: superseded (non-blocking) by WO-082 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-082.; WO-083: superseded (non-blocking) by WO-083 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-083..
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -168,8 +168,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-033.
-- References: WO-033: not control-closed.
+- Dependencies: typed; dependency-ready.
+- References: WO-084: superseded (non-blocking) by WO-084 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-084.; WO-085: superseded (non-blocking) by WO-085 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-085.; WO-086: superseded (non-blocking) by WO-086 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-086.; WO-087: superseded (non-blocking) by WO-087 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-087.; WO-088: superseded (non-blocking) by WO-088 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-088.; WO-089: superseded (non-blocking) by WO-089 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-089.; WO-090: superseded (non-blocking) by WO-090 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-090..
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -185,8 +185,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-013: satisfied (closed); WO-018: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-126: superseded (non-blocking) by WO-126 — 2026-09-09 operator process-debt pass: WO-126 criterion 6 carries this umbrella whole..
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -202,8 +202,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-008: satisfied (closed); WO-011: satisfied (closed); WO-016: satisfied (closed); WO-023: satisfied (closed); WO-029: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-091: superseded (non-blocking) by WO-091 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-091.; WO-092: superseded (non-blocking) by WO-092 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-092.; WO-093: superseded (non-blocking) by WO-093 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-093.; WO-094: superseded (non-blocking) by WO-094 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-094.; WO-095: superseded (non-blocking) by WO-095 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-095..
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -219,8 +219,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-011: satisfied (closed); WO-039: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-096: superseded (non-blocking) by WO-096 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-096.; WO-097: superseded (non-blocking) by WO-097 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-097.; WO-098: superseded (non-blocking) by WO-098 — 2026-09-08 planning split: this umbrella's obligations are carried by WO-098..
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -230,31 +230,14 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-040/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-040-rule-migration-batch-one.md](WO-040-rule-migration-batch-one.md)
 
-### WO-043
-
-[WO-043 — Typed dependency truth: work orders declare typed dependency relations, only an unmet hard dependency or planning deferral blocks activation, and the index and lifecycle status share one projection (version assigned at activation)](WO-043-typed-dependency-truth.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-026: satisfied (closed); WO-030: satisfied (closed).
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
-- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-043/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-043-typed-dependency-truth.md](WO-043-typed-dependency-truth.md)
-
 ### WO-044
 
 [WO-044 — Writing-worker and unattended-launch harness truth: observe what the installed harnesses do when a tool-enabled worker runs in a foreign worktree under that worktree's own hooks, and when a resident process launches them with no operator present (version assigned at activation)](WO-044-writing-worker-harness-truth.md)
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-009: satisfied (closed); WO-039: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-039: satisfied-by-close (met) — extends the phase-zero record with the writing-worker rows; WO-009: satisfied-by-release (met) v0.10.0 — the canonical launch shapes it varies.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -270,8 +253,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-017: satisfied (closed); WO-039: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-017: satisfied-by-release (met) v0.3.5 — the store codec it extends; WO-039: satisfied-by-close (met) — the hook host whose input it decodes; WO-105: reference-only (non-blocking) — the crash-shape corpus draft supplies malformed-shape families.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -287,8 +270,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-017: satisfied (closed); WO-101: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-101: satisfied-by-release (met) v0.2.2 — the Program corpus that enumerates the executable kinds; WO-017: satisfied-by-release (met) v0.3.5 — the evaluable-kind boundaries; WO-045: reference-only (non-blocking) — shares the DecodeResult shape when both land; a local shape otherwise.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -304,8 +287,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-016: satisfied (closed); WO-017: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-017: satisfied-by-release (met) v0.3.5 — kernel truthfulness boundaries; WO-016: satisfied-by-release (met) v0.3.6 — the single reactor replay drives.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -321,8 +304,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-009: satisfied (closed); WO-010: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-009: satisfied-by-release (met) v0.10.0 — the worker store and host; WO-010: satisfied-by-release (met) v0.12.0 — the verification host and its capsules; WO-045: reference-only (non-blocking) — the log codec is not duplicated when WO-045 lands first; WO-105: reference-only (non-blocking) — malformed-shape families.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -338,8 +321,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-044.
-- References: WO-039: satisfied (closed); WO-042: satisfied (closed); WO-044: not control-closed.
+- Dependencies: typed; blocked on WO-044.
+- References: WO-042: hard (met) — a bundle emitted into a target must carry an envelope no support can widen and grants with provenance; WO-044: hard (unmet) — the record must show that the target's hooks, settings and instruction surface apply in the worker's launch mode; otherwise this order is redesigned at R1; WO-039: satisfied-by-close (met) — harness emit, check and the runtime pins it extends.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -355,8 +338,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-010: satisfied (closed); WO-016: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-016: satisfied-by-release (met) v0.3.6 — the single reactor; WO-010: satisfied-by-release (met) v0.12.0 — the last host branch added; WO-047: reference-only (non-blocking) — the explicit projector reads the kernel-facing slice when it has landed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -372,8 +355,8 @@ None.
 
 - State: draft.
 - Application target: malformed.
-- Dependency reference check (conservative): blocked on WO-044.
-- References: WO-009: satisfied (closed); WO-042: satisfied (closed); WO-044: not control-closed.
+- Dependencies: typed; blocked on WO-044.
+- References: WO-044: hard (unmet) — the profile is written from observed rows, never assumed; WO-042: hard (met) — the profile's envelope comes only from the base and explicit grants; WO-009: satisfied-by-release (met) v0.10.0 — the transports it extends.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -389,8 +372,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-049, WO-050, WO-051.
-- References: WO-009: satisfied (closed); WO-049: not control-closed; WO-050: not control-closed; WO-051: not control-closed.
+- Dependencies: typed; blocked on WO-050, WO-051, WO-049.
+- References: WO-050: hard (unmet) — the recorded reactor-split condition: the slice exists before the branch; WO-051: hard (unmet) — the transport profile it dispatches; WO-049: hard (unmet) — the bundle it emits into the target worktree before dispatch; WO-009: satisfied-by-release (met) v0.10.0 — worker store, leases and recovery; WO-045: reference-only (non-blocking) — positive payload decoding shares WO-045's shape when it has landed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -406,8 +389,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-052.
-- References: WO-052: not control-closed.
+- Dependencies: typed; blocked on WO-052.
+- References: WO-052: hard (unmet) — the host, events and receipt the episode runs through.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -423,8 +406,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-052.
-- References: WO-010: satisfied (closed); WO-052: not control-closed.
+- Dependencies: typed; blocked on WO-052.
+- References: WO-052: hard (unmet) — the target worktree and diff the verifier snapshots; WO-010: satisfied-by-release (met) v0.12.0 — the verification-v1 loop it lifts.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -440,8 +423,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-052, WO-054.
-- References: WO-042: satisfied (closed); WO-052: not control-closed; WO-054: not control-closed.
+- Dependencies: typed; blocked on WO-054, WO-052.
+- References: WO-054: hard (unmet) — the finding shape and capsule the loop consumes; WO-052: hard (unmet) — the source-change host that executes the repair; WO-042: hard (met) — the effective envelope and the admitted grants the derivation is bound to.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -457,8 +440,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053, WO-055.
-- References: WO-053: not control-closed; WO-055: not control-closed.
+- Dependencies: typed; blocked on WO-055, WO-053.
+- References: WO-055: hard (unmet) — the loop the episode runs; WO-053: hard (unmet) — the live primitive and receipt shape it extends.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -474,8 +457,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-004: satisfied-by-close (met) — the environment record it extends; WO-056: reference-only (non-blocking) — recommended after the real-repository loop so the adapter has a consumer.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -491,8 +474,8 @@ None.
 
 - State: draft.
 - Application target: malformed.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-010: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-010: satisfied-by-release (met) v0.12.0 — the claim-typed evidence contract it extends.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -508,8 +491,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-057, WO-058.
-- References: WO-057: not control-closed; WO-058: not control-closed.
+- Dependencies: typed; blocked on WO-057, WO-058.
+- References: WO-057: hard (unmet) — the observed runtime rows and the recorded dependency decision; WO-058: hard (unmet) — the claim types and witness rules the adapter produces.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -525,8 +508,8 @@ None.
 
 - State: draft.
 - Application target: malformed.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-008: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-008: satisfied-by-release (met) v0.4.0 — the pure compiler package that holds the contract.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -542,8 +525,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-060.
-- References: WO-060: not control-closed.
+- Dependencies: typed; blocked on WO-060.
+- References: WO-060: hard (unmet) — the bundle it compiles from; WO-054: reference-only (non-blocking) — its criteria are what the verification host consumes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -559,8 +542,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-060.
-- References: WO-060: not control-closed.
+- Dependencies: typed; blocked on WO-060.
+- References: WO-060: hard (unmet) — the bundle shape it produces.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -576,8 +559,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-039: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-039: satisfied-by-close (met) — the local-terms check it reuses.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -593,8 +576,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-052, WO-063.
-- References: WO-042: satisfied (closed); WO-052: not control-closed; WO-063: not control-closed.
+- Dependencies: typed; blocked on WO-052, WO-063.
+- References: WO-052: hard (unmet) — a branch to publish exists only after a source-change episode; WO-063: hard (unmet) — every outward artifact passes the lint before the remote effect; WO-042: hard (met) — the remote effect runs under an explicit grant with operator provenance; WO-053: reference-only (non-blocking) — the live branch it first publishes.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -610,8 +593,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-060, WO-064, WO-068.
-- References: WO-060: not control-closed; WO-064: not control-closed; WO-068: not control-closed.
+- Dependencies: typed; blocked on WO-064, WO-060.
+- References: WO-064: hard (unmet) — a pull request to observe; WO-060: hard (unmet) — the screen every stored comment passes; WO-068: reference-only (non-blocking) — the resident's cadence is the ordinary invoker once it exists.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -627,8 +610,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-054, WO-055, WO-064, WO-065.
-- References: WO-054: not control-closed; WO-055: not control-closed; WO-064: not control-closed; WO-065: not control-closed.
+- Dependencies: typed; blocked on WO-065, WO-055, WO-054, WO-064.
+- References: WO-065: hard (unmet) — the observed comments and checks it resolves; WO-055: hard (unmet) — the repair derivation and round limit it reuses; WO-054: hard (unmet) — verification of each repaired head before a push; WO-064: hard (unmet) — the grant under which the push and the disposition run.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -644,8 +627,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-008: satisfied (closed); WO-042: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-042: hard (met) — a phase envelope is a narrowing under the monotone floor; WO-008: satisfied-by-release (met) v0.4.0 — compiler v1.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -661,8 +644,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-044, WO-050, WO-067.
-- References: WO-009: satisfied (closed); WO-044: not control-closed; WO-050: not control-closed; WO-067: not control-closed.
+- Dependencies: typed; blocked on WO-067, WO-050, WO-044.
+- References: WO-067: hard (unmet) — the policy whose cadences and phases the host evaluates; WO-050: hard (unmet) — the reserved slice the host's state lives in (the recorded split condition); WO-044: hard (unmet) — the launcher is designed from the unattended rows, never assumed; WO-009: satisfied-by-release (met) v0.10.0 — the transports and worker store it dispatches through; WO-027: reference-only (non-blocking) — the local-inference probe, as the fourth actor kind's reference.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -678,8 +661,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-018: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-018: satisfied-by-release (met) v0.4.1 — scripts/lib.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -695,8 +678,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-021: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-021: satisfied-by-release (met) v0.8.0 — per-worktree Beacon caches.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -712,8 +695,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-069.
-- References: WO-042: satisfied (closed); WO-069: not control-closed.
+- Dependencies: typed; blocked on WO-069.
+- References: WO-069: hard (unmet) — the repositories section of the configuration; WO-042: hard (met) — the registered-repository grant provenance.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -729,8 +712,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-049, WO-071.
-- References: WO-030: satisfied (closed); WO-049: not control-closed; WO-071: not control-closed.
+- Dependencies: typed; blocked on WO-071, WO-049.
+- References: WO-071: hard (unmet) — the registration it starts worktrees from; WO-049: hard (unmet) — the emit into the target worktree; WO-030: satisfied-by-release (met) v0.7.0 — per-order segments.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -746,8 +729,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-071.
-- References: WO-071: not control-closed.
+- Dependencies: typed; blocked on WO-071.
+- References: WO-071: hard (unmet) — the registration the class and profile attach to.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -763,8 +746,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-069, WO-070.
-- References: WO-038: satisfied (closed); WO-069: not control-closed; WO-070: not control-closed.
+- Dependencies: typed; blocked on WO-069, WO-070.
+- References: WO-069: hard (unmet) — the configuration example and roots the kit carries; WO-070: hard (unmet) — Beacon emission without the skeleton package; WO-038: satisfied-by-release (met) v0.13.2 — license metadata and the default license files.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -780,8 +763,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-049, WO-074.
-- References: WO-042: satisfied (closed); WO-049: not control-closed; WO-074: not control-closed.
+- Dependencies: typed; blocked on WO-074, WO-049.
+- References: WO-074: hard (unmet) — the kit the runtime and bundle are placed in; WO-049: hard (unmet) — the import-root mechanism the exported hooks reuse; WO-042: hard (met) — grants with provenance in the exported bundle.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -797,8 +780,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-075.
-- References: WO-042: satisfied (closed); WO-075: not control-closed.
+- Dependencies: typed; blocked on WO-075.
+- References: WO-075: hard (unmet) — the kit build the overlay composes over; WO-042: hard (met) — widening within the fork's posture is a provenance-bearing grant.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -814,8 +797,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-074.
-- References: WO-074: not control-closed.
+- Dependencies: typed; blocked on WO-074.
+- References: WO-074: hard (unmet) — a prior manifest to update from.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -831,8 +814,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-074.
-- References: WO-074: not control-closed.
+- Dependencies: typed; blocked on WO-074.
+- References: WO-074: hard (unmet) — the first export receipt.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -848,8 +831,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-030: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-030: satisfied-by-release (met) v0.7.0 — per-order segments and checkpoints.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -865,8 +848,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-071.
-- References: WO-071: not control-closed.
+- Dependencies: typed; blocked on WO-071.
+- References: WO-071: hard (unmet) — member orders name registered repositories.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -882,8 +865,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-080.
-- References: WO-032: satisfied (closed); WO-080: not control-closed.
+- Dependencies: typed; blocked on WO-080.
+- References: WO-080: hard (unmet) — the data it renders; WO-032: satisfied-by-release (met) v0.14.0 — the board it extends.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -899,8 +882,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-072, WO-075, WO-080.
-- References: WO-072: not control-closed; WO-075: not control-closed; WO-080: not control-closed.
+- Dependencies: typed; blocked on WO-080, WO-072, WO-075.
+- References: WO-080: hard (unmet) — the workstream the fixture exercises; WO-072: hard (unmet) — target worktrees from a launchpad; WO-075: hard (unmet) — a fixture launchpad exported with its build.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -916,8 +899,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-073, WO-082, WO-118.
-- References: WO-073: not control-closed; WO-082: not control-closed; WO-118: not control-closed.
+- Dependencies: typed; blocked on WO-118, WO-082, WO-073.
+- References: WO-118: hard (unmet) — the resident-owned loop is proven from a starter instance before the fork runs it against a real target; WO-082: hard (unmet) — the synthetic pilot precedes the witnessed run; WO-073: hard (unmet) — the profile convention the fork's profile follows.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -933,8 +916,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053.
-- References: WO-053: not control-closed.
+- Dependencies: typed; blocked on WO-053.
+- References: WO-053: planning-deferral (unmet) until WO-053 dated 2026-09-08 — documentation structure is not the product bottleneck.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -950,8 +933,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053, WO-069.
-- References: WO-053: not control-closed; WO-069: not control-closed.
+- Dependencies: typed; blocked on WO-053.
+- References: WO-053: planning-deferral (unmet) until WO-053 dated 2026-09-08 — documentation structure is not the product bottleneck; WO-069: reference-only (non-blocking) — reads document roots through the configuration root when it has landed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -967,8 +950,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053.
-- References: WO-053: not control-closed.
+- Dependencies: typed; blocked on WO-053.
+- References: WO-053: planning-deferral (unmet) until WO-053 dated 2026-09-08 — documentation structure is not the product bottleneck.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -984,8 +967,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053.
-- References: WO-053: not control-closed.
+- Dependencies: typed; blocked on WO-053.
+- References: WO-053: planning-deferral (unmet) until WO-053 dated 2026-09-08 — documentation structure is not the product bottleneck.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1001,8 +984,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053.
-- References: WO-053: not control-closed.
+- Dependencies: typed; blocked on WO-053.
+- References: WO-053: planning-deferral (unmet) until WO-053 dated 2026-09-08 — documentation structure is not the product bottleneck.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1018,8 +1001,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053.
-- References: WO-053: not control-closed.
+- Dependencies: typed; blocked on WO-053.
+- References: WO-053: planning-deferral (unmet) until WO-053 dated 2026-09-08 — documentation structure is not the product bottleneck.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1035,8 +1018,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053.
-- References: WO-039: satisfied (closed); WO-053: not control-closed.
+- Dependencies: typed; blocked on WO-053.
+- References: WO-053: planning-deferral (unmet) until WO-053 dated 2026-09-08 — documentation structure is not the product bottleneck; WO-039: satisfied-by-close (met) — the directed-load measurement method.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1052,8 +1035,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053.
-- References: WO-008: satisfied (closed); WO-016: satisfied (closed); WO-023: satisfied (closed); WO-029: satisfied (closed); WO-053: not control-closed.
+- Dependencies: typed; blocked on WO-053.
+- References: WO-008: satisfied-by-release (met) v0.4.0 — compiler v1; WO-016: satisfied-by-release (met) v0.3.6 — one reactor; WO-023: satisfied-by-release (met) v0.5.0 — Shine and Standardize inside the Entropy Reducer; WO-029: satisfied-by-release (met) v0.9.0 — artifact identity per component; WO-053: planning-deferral (unmet) until WO-053 dated 2026-09-08 — Horizon 2 does not advance the missing work loop.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1069,8 +1052,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-091.
-- References: WO-091: not control-closed.
+- Dependencies: typed; blocked on WO-091.
+- References: WO-091: hard (unmet) — a set's members are several actives in one group.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1086,8 +1069,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-091.
-- References: WO-091: not control-closed.
+- Dependencies: typed; blocked on WO-091.
+- References: WO-091: hard (unmet) — the six mechanics compile in one group.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1103,8 +1086,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-092, WO-093.
-- References: WO-092: not control-closed; WO-093: not control-closed.
+- Dependencies: typed; blocked on WO-092, WO-093.
+- References: WO-092: hard (unmet) — bonus emissions live in the sets collection; WO-093: hard (unmet) — the pieces the bonuses count.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1120,8 +1103,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-094.
-- References: WO-032: satisfied (closed); WO-094: not control-closed.
+- Dependencies: typed; blocked on WO-094.
+- References: WO-094: hard (unmet) — the bonuses the scenario exercises; WO-032: satisfied-by-release (met) v0.14.0 — the board renders the set through the compiler render; WO-042: reference-only (non-blocking) — the Safety piece's deny at safety-invariants remains legal.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1137,8 +1120,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053.
-- References: WO-011: satisfied (closed); WO-039: satisfied (closed); WO-053: not control-closed.
+- Dependencies: typed; blocked on WO-053.
+- References: WO-011: satisfied-by-release (met) v0.13.0 — the feedback contract and the ten units; WO-039: satisfied-by-close (met) — the harness target the batch lowers through; WO-053: planning-deferral (unmet) until WO-053 dated 2026-09-08 — a real external episode is a better classification input than another corpus pass.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1154,8 +1137,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-096.
-- References: WO-096: not control-closed.
+- Dependencies: typed; blocked on WO-096.
+- References: WO-096: hard (unmet) — the ledger rows the batch selects from.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1171,8 +1154,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-097.
-- References: WO-097: not control-closed.
+- Dependencies: typed; blocked on WO-097.
+- References: WO-097: hard (unmet) — the first half-batch's retirements and bookkeeping.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1188,8 +1171,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-068.
-- References: WO-010: satisfied (closed); WO-041: satisfied (closed); WO-068: not control-closed.
+- Dependencies: typed; blocked on WO-068.
+- References: WO-068: hard (unmet) — the resident that dispatches the episode on a cadence; WO-041: satisfied-by-close (met) — the judge shape over the vision theses; WO-010: satisfied-by-release (met) v0.12.0 — the verifier episode contract.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1205,8 +1188,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-052, WO-054, WO-068, WO-119, WO-120.
-- References: WO-042: satisfied (closed); WO-052: not control-closed; WO-054: not control-closed; WO-068: not control-closed; WO-119: not control-closed; WO-120: not control-closed.
+- Dependencies: typed; blocked on WO-068, WO-052, WO-054, WO-119, WO-120.
+- References: WO-068: hard (unmet) — the resident that derives and dispatches; WO-052: hard (unmet) — a derived order executes through the source-change host; WO-054: hard (unmet) — every derived order is verified before the curve advances; WO-042: hard (met) — the derived order's authority is the portfolio's under the floor; WO-119: hard (unmet) — the executable discovery producer whose candidates are the input; WO-120: hard (unmet) — a derived order is a durable record with the same identity and lifecycle.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1222,8 +1205,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed); WO-101: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-004: satisfied-by-close (met) — The reviewed environment baseline is required before the corpus run.; WO-101: reference-only (non-blocking) — The corpus orders are independent, with disjoint fixture and harness filenames..
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1238,8 +1221,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed); WO-017: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-017: satisfied-by-close (met) — The reviewed kernel truthfulness boundary is the corpus baseline.; WO-004: satisfied-by-close (met) — The environment prerequisite is satisfied transitively by WO-017..
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1254,8 +1237,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed); WO-017: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-004: satisfied-by-close (met) — The reviewed environment baseline is required.; WO-017: satisfied-by-close (met) — The reviewed kernel truthfulness boundary is required before crash-shape fixtures..
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1270,8 +1253,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed); WO-005: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-004: satisfied-by-close (met) — Measurements require the reviewed environment baseline.; WO-005: reference-only (non-blocking) — The mainline efficiency non-goal does not constrain this independent measurement order..
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1286,8 +1269,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-009: satisfied (closed); WO-027: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-027: satisfied-by-close (met) — the probe whose endpoint shape it implements; WO-009: satisfied-by-release (met) v0.10.0 — the transport port; WO-068: reference-only (non-blocking) — the actor catalog it joins.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1303,8 +1286,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-053, WO-054, WO-099, WO-100, WO-119.
-- References: WO-053: not control-closed; WO-054: not control-closed; WO-099: not control-closed; WO-100: not control-closed; WO-119: not control-closed.
+- Dependencies: typed; blocked on WO-100, WO-119, WO-099, WO-053, WO-054.
+- References: WO-100: hard (unmet) — the portfolio and derivation; WO-119: hard (unmet) — discovery of the seeded imperfections; WO-099: hard (unmet) — the mission check runs during the hour; WO-053: hard (unmet) — the live source-change primitive; WO-054: hard (unmet) — verification of each change.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1320,8 +1303,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-045, WO-046, WO-047, WO-048, WO-053, WO-056, WO-123.
-- References: WO-045: not control-closed; WO-046: not control-closed; WO-047: not control-closed; WO-048: not control-closed; WO-053: not control-closed; WO-056: not control-closed; WO-123: not control-closed.
+- Dependencies: typed; blocked on WO-123, WO-053, WO-056, WO-045, WO-046, WO-047, WO-048.
+- References: WO-123: hard (unmet) — the composition this run executes; WO-053: hard (unmet) — the live source-change primitive; WO-056: hard (unmet) — independent verification and repair, live; WO-045: hard (unmet) — the codecs are mandatory before the loop runs against anything the operator keeps; WO-046: hard (unmet) — a persisted continuation of an unsupported kind must fail at decode; WO-047: hard (unmet) — the second state shape replays through an explicit projector; WO-048: hard (unmet) — host recovery refuses malformed state before dispatch.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1337,8 +1320,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-043.
-- References: WO-026: satisfied (closed); WO-043: not control-closed.
+- Dependencies: typed; dependency-ready.
+- References: WO-043: hard (met) — supersession and deferral become typed entries; WO-026: satisfied-by-release (met) v0.5.2 — the index.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1354,8 +1337,8 @@ None.
 
 - State: draft.
 - Application target: malformed.
-- Dependency reference check (conservative): blocked on WO-068, WO-120.
-- References: WO-032: satisfied (closed); WO-068: not control-closed; WO-120: not control-closed.
+- Dependencies: typed; blocked on WO-068, WO-120.
+- References: WO-068: hard (unmet) — the resident whose slice it projects; WO-120: hard (unmet) — derived orders appear under the same identity; WO-032: satisfied-by-release (met) v0.14.0 — the board and console host.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1371,8 +1354,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-068, WO-100, WO-114, WO-120.
-- References: WO-068: not control-closed; WO-100: not control-closed; WO-114: not control-closed; WO-120: not control-closed.
+- Dependencies: typed; blocked on WO-068, WO-114, WO-120, WO-100.
+- References: WO-068: hard (unmet) — the resident serves the surface; WO-114: hard (unmet) — the status projection the surface reads; WO-120: hard (unmet) — intent and derived-order activation exist as terminal commands; WO-100: hard (unmet) — declaring a portfolio exists as a terminal command.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1388,8 +1371,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-115.
-- References: WO-007: satisfied (closed); WO-115: not control-closed.
+- Dependencies: typed; blocked on WO-115.
+- References: WO-115: hard (unmet) — the surface; WO-007: satisfied-by-close (met) — the audit fold.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1405,8 +1388,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-099, WO-114, WO-115, WO-116.
-- References: WO-099: not control-closed; WO-114: not control-closed; WO-115: not control-closed; WO-116: not control-closed.
+- Dependencies: typed; blocked on WO-114, WO-115, WO-116, WO-099.
+- References: WO-114: hard (unmet) — the status projection; WO-115: hard (unmet) — the commands; WO-116: hard (unmet) — the audit view; WO-099: hard (unmet) — a live resident with something to show.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1422,8 +1405,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-066, WO-075, WO-076, WO-100, WO-111, WO-112, WO-114, WO-117, WO-120, WO-121, WO-122, WO-123, WO-124.
-- References: WO-066: not control-closed; WO-075: not control-closed; WO-076: not control-closed; WO-100: not control-closed; WO-111: not control-closed; WO-112: not control-closed; WO-114: not control-closed; WO-117: not control-closed; WO-120: not control-closed; WO-121: not control-closed; WO-122: not control-closed; WO-123: not control-closed; WO-124: not control-closed.
+- Dependencies: typed; blocked on WO-075, WO-076, WO-121, WO-122, WO-100, WO-120, WO-124, WO-112, WO-111, WO-066, WO-114, WO-117, WO-123.
+- References: WO-075: hard (unmet) — a starter instance with the build; WO-076: hard (unmet) — the instance's overlay; WO-121: hard (unmet) — presence with origin; WO-122: hard (unmet) — the cli-worker and human-handoff actors; WO-100: hard (unmet) — derivation inside a portfolio; WO-120: hard (unmet) — derived work as durable records; WO-124: hard (unmet) — surfaces derived from the contract; WO-112: hard (unmet) — the loop proven from core first; WO-111: hard (unmet) — the unattended hour; WO-066: hard (unmet) — the pull-request loop with dispositions; WO-114: hard (unmet) — the run is visible in the status projection; WO-117: hard (unmet) — the run is visible in the live console; WO-123: hard (unmet) — the resident admits a filed intent under standing authorization and owns the vertical continuation.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1439,8 +1422,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-046, WO-068.
-- References: WO-023: satisfied (closed); WO-046: not control-closed; WO-068: not control-closed.
+- Dependencies: typed; blocked on WO-068, WO-046.
+- References: WO-068: hard (unmet) — the producer runs as an actor episode the resident dispatches; WO-023: satisfied-by-release (met) v0.5.0 — the Sort rule and candidate shape it reuses; WO-046: hard (unmet) — its program is checked against the executable grammar type.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1456,8 +1439,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-043, WO-069.
-- References: WO-043: not control-closed; WO-069: not control-closed.
+- Dependencies: typed; blocked on WO-069.
+- References: WO-043: hard (met) — generated authority files carry typed dependency blocks; WO-069: hard (unmet) — the derived root and identity range are configuration.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1473,8 +1456,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-044, WO-067, WO-068.
-- References: WO-044: not control-closed; WO-067: not control-closed; WO-068: not control-closed.
+- Dependencies: typed; blocked on WO-068, WO-067, WO-044.
+- References: WO-068: hard (unmet) — the resident whose presence fold this defines; WO-067: hard (unmet) — the discretionary-phase scope for cancellation; WO-044: hard (unmet) — the rows that say which hook events a scripted prompt fires in each launch mode.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1490,8 +1473,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-044, WO-051, WO-068.
-- References: WO-044: not control-closed; WO-051: not control-closed; WO-068: not control-closed.
+- Dependencies: typed; blocked on WO-068, WO-051, WO-044.
+- References: WO-068: hard (unmet) — the catalog; WO-051: hard (unmet) — the writer request and profile the cli-worker kind dispatches; WO-044: hard (unmet) — the detached-launch rows the launch path is designed from.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1507,8 +1490,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-052, WO-054, WO-055, WO-059, WO-061, WO-062, WO-064, WO-065, WO-066, WO-068, WO-100, WO-120, WO-124.
-- References: WO-042: satisfied (closed); WO-052: not control-closed; WO-054: not control-closed; WO-055: not control-closed; WO-059: not control-closed; WO-061: not control-closed; WO-062: not control-closed; WO-064: not control-closed; WO-065: not control-closed; WO-066: not control-closed; WO-068: not control-closed; WO-100: not control-closed; WO-120: not control-closed; WO-124: not control-closed.
+- Dependencies: typed; blocked on WO-052, WO-054, WO-055, WO-059, WO-061, WO-062, WO-124, WO-064, WO-065, WO-066, WO-068, WO-120, WO-100.
+- References: WO-052: hard (unmet) — the source-change host; WO-054: hard (unmet) — verification over the worktree; WO-055: hard (unmet) — the repair continuation; WO-059: hard (unmet) — browser witnesses; WO-061: hard (unmet) — the contract from an issue; WO-062: hard (unmet) — the issue adapter; WO-124: hard (unmet) — surfaces from the contract; WO-064: hard (unmet) — publish; WO-065: hard (unmet) — observation; WO-066: hard (unmet) — resolution; WO-068: hard (unmet) — the resident that admits the intent and dispatches the first step; WO-120: hard (unmet) — the filed intent and the derived order's durable identity; WO-100: hard (unmet) — the portfolio contract the intent class extends; WO-042: hard (met) — admitted grants and the effective envelope the run is bound to.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1524,8 +1507,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): blocked on WO-054, WO-061.
-- References: WO-054: not control-closed; WO-061: not control-closed.
+- Dependencies: typed; blocked on WO-061, WO-054.
+- References: WO-061: hard (unmet) — the contract it reads; WO-054: hard (unmet) — the worktree snapshot shape it reads.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1541,8 +1524,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-009: satisfied (closed); WO-019: satisfied (closed).
+- Dependencies: typed; dependency-ready.
+- References: WO-009: satisfied-by-release (met) v0.10.0 — the Codex transport; WO-019: satisfied-by-close (met) — the effort declaration and launch-claim contract.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1560,8 +1543,8 @@ None.
 
 - State: closed.
 - Application target: v0.2.0.
-- Dependency reference check (conservative): blocked on WO-002.
-- References: WO-002: not control-closed.
+- Dependencies: conservative token view; does not block.
+- References: WO-002: not-control-closed.
 - Verification: [VER-002](../../docs/verifications/WO-003/VER-002.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-003/FINAL-001.md) (pass).
 - Release: v0.2.0 (historical record).
@@ -1576,8 +1559,8 @@ None.
 
 - State: closed.
 - Application target: v0.2.1.
-- Dependency reference check (conservative): blocked on WO-001.
-- References: WO-001: not control-closed; WO-003: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-001: not-control-closed; WO-003: control-closed.
 - Verification: [VER-002](../../docs/verifications/WO-004/VER-002.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-004/FINAL-001.md) (pass).
 - Release: v0.2.1 (manifest changedFiles).
@@ -1592,8 +1575,8 @@ None.
 
 - State: closed.
 - Application target: v0.2.2.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-004: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-005/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-005/FINAL-001.md) (pass).
 - Release: v0.2.2 (manifest workOrder.id).
@@ -1609,8 +1592,8 @@ None.
 
 - State: closed.
 - Application target: v0.2.3.
-- Dependency reference check (conservative): dependency-ready.
-- References: none named.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
 - Verification: [VER-003](../../docs/verifications/WO-006/VER-003.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-006/FINAL-001.md) (pass).
 - Release: v0.2.3 (manifest changedFiles).
@@ -1626,8 +1609,8 @@ None.
 
 - State: closed.
 - Application target: v0.3.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-003: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-003: control-closed.
 - Verification: [VER-002](../../docs/verifications/WO-007/VER-002.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-007/FINAL-001.md) (pass).
 - Release: v0.3.0 (manifest workOrder.id).
@@ -1643,8 +1626,8 @@ None.
 
 - State: closed.
 - Application target: v0.4.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-003: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-003: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-008/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-008/FINAL-001.md) (pass).
 - Release: v0.4.0 (manifest workOrder.id).
@@ -1661,8 +1644,8 @@ None.
 
 - State: closed.
 - Application target: v0.10.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed); WO-008: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-004: control-closed; WO-008: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-009/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-009/FINAL-001.md) (pass).
 - Release: v0.10.0 (manifest workOrder.id).
@@ -1679,8 +1662,8 @@ None.
 
 - State: closed.
 - Application target: v0.12.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-009: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-009: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-010/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-010/FINAL-001.md) (pass).
 - Release: v0.12.0 (manifest workOrder.id).
@@ -1697,8 +1680,8 @@ None.
 
 - State: closed.
 - Application target: v0.13.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed); WO-009: satisfied (closed); WO-010: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-004: control-closed; WO-009: control-closed; WO-010: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-011/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-011/FINAL-001.md) (pass).
 - Release: v0.13.0 (manifest workOrder.id).
@@ -1715,8 +1698,8 @@ None.
 
 - State: closed.
 - Application target: v0.2.1.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-004: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-012/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-012/FINAL-001.md) (pass).
 - Release: v0.2.1 (manifest workOrder.id).
@@ -1732,8 +1715,8 @@ None.
 
 - State: closed.
 - Application target: v0.3.1.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-006: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-006: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-013/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-013/FINAL-001.md) (pass).
 - Release: v0.3.1 (manifest workOrder.id).
@@ -1749,8 +1732,8 @@ None.
 
 - State: closed.
 - Application target: v0.2.3.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-006: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-006: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-015/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-015/FINAL-001.md) (pass).
 - Release: v0.2.3 (manifest workOrder.id).
@@ -1765,8 +1748,8 @@ None.
 
 - State: closed.
 - Application target: v0.3.6.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-007: satisfied (closed); WO-008: satisfied (closed); WO-017: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-007: control-closed; WO-008: control-closed; WO-017: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-016/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-016/FINAL-001.md) (pass).
 - Release: v0.3.6 (manifest workOrder.id).
@@ -1783,8 +1766,8 @@ None.
 
 - State: closed.
 - Application target: v0.3.5.
-- Dependency reference check (conservative): blocked on WO-105.
-- References: WO-016: satisfied (closed); WO-105: not control-closed.
+- Dependencies: conservative token view; does not block.
+- References: WO-016: control-closed; WO-105: not-control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-017/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-017/FINAL-001.md) (pass).
 - Release: v0.3.5 (manifest workOrder.id).
@@ -1800,8 +1783,8 @@ None.
 
 - State: closed.
 - Application target: v0.4.1.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-013: satisfied (closed); WO-017: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-013: control-closed; WO-017: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-018/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-018/FINAL-001.md) (pass).
 - Release: v0.4.1 (manifest workOrder.id).
@@ -1817,8 +1800,8 @@ None.
 
 - State: closed.
 - Application target: v0.3.4.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-013: satisfied (closed); WO-018: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-013: control-closed; WO-018: control-closed.
 - Verification: [VER-002](../../docs/verifications/WO-019/VER-002.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-019/FINAL-001.md) (pass).
 - Release: v0.3.4 (manifest workOrder.id).
@@ -1835,8 +1818,8 @@ None.
 
 - State: closed.
 - Application target: v0.6.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-007: satisfied (closed); WO-016: satisfied (closed); WO-017: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-007: control-closed; WO-016: control-closed; WO-017: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-020/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-020/FINAL-001.md) (pass).
 - Release: v0.6.0 (manifest workOrder.id).
@@ -1853,8 +1836,8 @@ None.
 
 - State: closed.
 - Application target: v0.8.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-009: satisfied (closed); WO-018: satisfied (closed); WO-019: satisfied (closed); WO-020: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-009: control-closed; WO-018: control-closed; WO-019: control-closed; WO-020: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-021/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-021/FINAL-001.md) (pass).
 - Release: v0.8.0 (manifest workOrder.id).
@@ -1871,8 +1854,8 @@ None.
 
 - State: closed.
 - Application target: v0.11.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-008: satisfied (closed); WO-009: satisfied (closed); WO-021: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-008: control-closed; WO-009: control-closed; WO-021: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-022/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-022/FINAL-001.md) (pass).
 - Release: v0.11.0 (manifest workOrder.id).
@@ -1889,8 +1872,8 @@ None.
 
 - State: closed.
 - Application target: v0.5.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-008: satisfied (closed); WO-019: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-008: control-closed; WO-019: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-023/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-023/FINAL-001.md) (pass).
 - Release: v0.5.0 (manifest workOrder.id).
@@ -1907,8 +1890,8 @@ None.
 
 - State: closed.
 - Application target: v0.3.2.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-013: satisfied (closed); WO-018: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-013: control-closed; WO-018: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-024/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-024/FINAL-001.md) (pass).
 - Release: v0.3.2 (manifest workOrder.id).
@@ -1923,8 +1906,8 @@ None.
 
 - State: closed.
 - Application target: v0.3.3.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-013: satisfied (closed); WO-018: satisfied (closed); WO-024: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-013: control-closed; WO-018: control-closed; WO-024: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-025/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-025/FINAL-001.md) (pass).
 - Release: v0.3.3 (manifest workOrder.id).
@@ -1939,8 +1922,8 @@ None.
 
 - State: closed.
 - Application target: v0.5.2.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-018: satisfied (closed); WO-019: satisfied (closed); WO-024: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-018: control-closed; WO-019: control-closed; WO-024: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-026/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-026/FINAL-001.md) (pass).
 - Release: v0.5.2 (manifest workOrder.id).
@@ -1957,8 +1940,8 @@ None.
 
 - State: closed.
 - Application target: v0.3.3.
-- Dependency reference check (conservative): blocked on WO-001.
-- References: WO-001: not control-closed; WO-004: satisfied (closed); WO-008: satisfied (closed); WO-009: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-001: not-control-closed; WO-004: control-closed; WO-008: control-closed; WO-009: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-027/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-027/FINAL-001.md) (pass).
 - Release: v0.3.5 (manifest changedFiles).
@@ -1975,8 +1958,8 @@ None.
 
 - State: closed.
 - Application target: v0.5.1.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-018: satisfied (closed); WO-019: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-018: control-closed; WO-019: control-closed; WO-021: control-closed; WO-026: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-028/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-028/FINAL-001.md) (pass).
 - Release: v0.5.1 (manifest workOrder.id).
@@ -1993,8 +1976,8 @@ None.
 
 - State: closed.
 - Application target: v0.9.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-008: satisfied (closed); WO-009: satisfied (closed); WO-016: satisfied (closed); WO-023: satisfied (closed); WO-101: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-008: control-closed; WO-009: control-closed; WO-016: control-closed; WO-023: control-closed; WO-101: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-029/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-029/FINAL-001.md) (pass).
 - Release: v0.9.0 (manifest workOrder.id).
@@ -2011,8 +1994,8 @@ None.
 
 - State: closed.
 - Application target: v0.7.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-018: satisfied (closed); WO-026: satisfied (closed); WO-028: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-018: control-closed; WO-026: control-closed; WO-028: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-030/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-030/FINAL-001.md) (pass).
 - Release: v0.7.0 (manifest workOrder.id).
@@ -2029,8 +2012,8 @@ None.
 
 - State: closed.
 - Application target: v0.10.1.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-019: satisfied (closed); WO-028: satisfied (closed); WO-030: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-019: control-closed; WO-028: control-closed; WO-030: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-031/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-031/FINAL-001.md) (pass).
 - Release: v0.10.1 (manifest workOrder.id).
@@ -2047,8 +2030,8 @@ None.
 
 - State: closed.
 - Application target: v0.14.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-007: satisfied (closed); WO-008: satisfied (closed); WO-009: satisfied (closed); WO-010: satisfied (closed); WO-011: satisfied (closed); WO-021: satisfied (closed); WO-026: satisfied (closed); WO-028: satisfied (closed); WO-030: satisfied (closed); WO-031: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-007: control-closed; WO-008: control-closed; WO-009: control-closed; WO-010: control-closed; WO-011: control-closed; WO-021: control-closed; WO-026: control-closed; WO-028: control-closed; WO-030: control-closed; WO-031: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-032/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-032/FINAL-001.md) (pass).
 - Release: v0.14.0 (manifest workOrder.id).
@@ -2065,8 +2048,8 @@ None.
 
 - State: closed.
 - Application target: v0.13.2.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-018: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-018: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-038/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-038/FINAL-001.md) (pass).
 - Release: v0.13.2 (manifest workOrder.id).
@@ -2083,8 +2066,8 @@ None.
 
 - State: closed.
 - Application target: v0.15.0.
-- Dependency reference check (conservative): blocked on WO-001.
-- References: WO-001: not control-closed; WO-004: satisfied (closed); WO-008: satisfied (closed); WO-011: satisfied (closed); WO-029: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-001: not-control-closed; WO-004: control-closed; WO-008: control-closed; WO-011: control-closed; WO-029: control-closed.
 - Verification: [VER-005](../../docs/verifications/WO-039/VER-005.md) (pass).
 - Final review: [FINAL-002](../../docs/final-reviews/WO-039/FINAL-002.md) (pass).
 - Release: v0.15.0 (manifest workOrder.id).
@@ -2101,8 +2084,8 @@ None.
 
 - State: closed.
 - Application target: v0.13.3.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-009: satisfied (closed); WO-010: satisfied (closed); WO-023: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-009: control-closed; WO-010: control-closed; WO-023: control-closed.
 - Verification: [VER-003](../../docs/verifications/WO-041/VER-003.md) (pass).
 - Final review: [FINAL-002](../../docs/final-reviews/WO-041/FINAL-002.md) (pass).
 - Release: v0.13.3 (manifest workOrder.id).
@@ -2119,8 +2102,8 @@ None.
 
 - State: closed.
 - Application target: v0.16.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-008: satisfied (closed); WO-039: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-008: control-closed; WO-039: control-closed.
 - Verification: [VER-002](../../docs/verifications/WO-042/VER-002.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-042/FINAL-001.md) (pass).
 - Release: v0.16.0 (manifest workOrder.id).
@@ -2131,14 +2114,32 @@ None.
 - Latest attestation: harness claude-code; version 2.1.265; model claude-opus-5&#91;1m&#93;; effort unknown; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-042-authority-provenance.md](WO-042-authority-provenance.md)
 
+### WO-043
+
+[WO-043 — Typed dependency truth: work orders declare typed dependency relations, only an unmet hard dependency or planning deferral blocks activation, and the index and lifecycle status share one projection (v0.17.1)](WO-043-typed-dependency-truth.md)
+
+- State: closed.
+- Application target: v0.17.1.
+- Dependencies: typed; activation not applicable.
+- References: WO-026: satisfied-by-release (met) v0.5.2 — the generated index this order extends; WO-030: satisfied-by-release (met) v0.7.0 — per-order control segments and selection.
+- Verification: [VER-003](../../docs/verifications/WO-043/VER-003.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-043/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-043/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness claude-code; version 2.1.268; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-043-typed-dependency-truth.md](WO-043-typed-dependency-truth.md)
+
 ### WO-101
 
 [WO-101 — Program stepper enumeration, continuation round-trip, and hash-identity corpus, v0.2.0](WO-101-program-and-hash-corpus.md)
 
 - State: closed.
 - Application target: v0.2.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed); WO-005: satisfied (closed); WO-011: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-004: control-closed; WO-005: control-closed; WO-011: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-101/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-101/FINAL-001.md) (pass).
 - Release: v0.2.2 (manifest changedFiles).
@@ -2153,8 +2154,8 @@ None.
 
 - State: closed.
 - Application target: v0.13.1.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-004: satisfied (closed); WO-008: satisfied (closed); WO-011: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-004: control-closed; WO-008: control-closed; WO-011: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-108/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-108/FINAL-001.md) (pass).
 - Release: v0.13.1 (manifest workOrder.id).
@@ -2170,8 +2171,8 @@ None.
 
 - State: closed.
 - Application target: v0.13.3.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-007: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-007: control-closed.
 - Verification: [VER-001](../../docs/verifications/WO-109/VER-001.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-109/FINAL-001.md) (pass).
 - Release: v0.15.0 (manifest changedFiles).
@@ -2187,11 +2188,11 @@ None.
 
 - State: closed.
 - Application target: v0.17.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-042: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-042: control-closed.
 - Verification: [VER-007](../../docs/verifications/WO-126/VER-007.md) (pass).
 - Final review: [FINAL-001](../../docs/final-reviews/WO-126/FINAL-001.md) (pass).
-- Release: unreleased.
+- Release: v0.17.0 (manifest changedFiles).
 - Model: Claude Fable 5.1 at max, or Codex gpt-6-astra at max, for every role; the measured gate runs on the operator's machine. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor max+; verifier xhigh+; reviewer any.
 - Cost: adds one fast gate run per turn end (under 120 s), one cost line per order, and the meter's run per order; removes the byte reads of inherited and generated outputs (5,305,410 bytes at WO-042's review), the full suite at every turn end and at the tag, the hand-written closeout, the whole-map planner read (184,668 bytes) and the whole-horizon refutation for a one-order pass. Net: hours per order and hundreds of kilobytes per session removed for seconds added.
@@ -2204,11 +2205,11 @@ None.
 
 - State: closed.
 - Application target: v0.17.0.
-- Dependency reference check (conservative): dependency-ready.
-- References: WO-126: satisfied (closed).
+- Dependencies: conservative token view; does not block.
+- References: WO-126: control-closed.
 - Verification: [VER-002](../../docs/verifications/WO-127/VER-002.md) (pass).
 - Final review: [FINAL-002](../../docs/final-reviews/WO-127/FINAL-002.md) (pass).
-- Release: unreleased.
+- Release: v0.17.0 (manifest workOrder.id).
 - Model: Codex gpt-6-astra at max or Claude Fable 5.1 at max; independent verification and final review follow the existing lifecycle.
 - Effort: executor max+; verifier xhigh+; reviewer any.
 - Cost: Adds bounded closeout enumeration and byte verification for retained local records, plus focused regression cases; removes manual archival and a full release gate that rejects unchanged planning inputs after execution commits. Focused preservation fixtures took 1517.638 ms and the planning-cost regression took 875.693 ms; retain measured observations without inventing caps.
@@ -2223,8 +2224,8 @@ None.
 
 - State: historical (time-indexed).
 - Application target: v0.0.1.
-- Dependency reference check (conservative): dependency-ready.
-- References: none named.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -2239,8 +2240,8 @@ None.
 
 - State: historical (time-indexed).
 - Application target: v0.1.0.
-- Dependency reference check (conservative): blocked on WO-001.
-- References: WO-001: not control-closed.
+- Dependencies: conservative token view; does not block.
+- References: WO-001: not-control-closed.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -2252,21 +2253,21 @@ None.
 
 ## Sources and limits
 
-- **Header observation:** each authority's H1, sole strict application version, Model, Effort, and Depends on paragraph. Unknown or malformed metadata is attributed by the Authority link; it is never guessed.
+- **Header observation:** each authority's H1, sole strict application version, Model, Effort, and leading typed dependency block (or legacy Depends on paragraph). Invalid typed declarations refuse with the authority path and offending entry; other unknown metadata is attributed by the Authority link.
 - **Proposed sequence:** the marked block in planning/sequence.md, in operator-selected order. Historical fixtures without that file use the map. Missing/malformed blocks, duplicate IDs, and IDs without an authority refuse. This is not a scheduler or proof of dependency eligibility.
 - **Control evidence:** the shared fold of legacy `docs/control/resume.jsonl` plus `docs/control/orders/WO-NNN.jsonl`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. Report verdicts come from events, not inferred report contents.
 - **Local release evidence:** the earliest numeric annotated DotLn tag whose manifest names the order or a changed final-review path. The manifest-free v0.2.0 exception uses `docs/releases/v0.2.0.md`. Other tags are not release evidence. Remote publication is not checked.
-- **Derived dependency status:** all distinct WO-NNN tokens in Depends on are compared with the control-closed set. This conservative text view includes recommended or independent references in that paragraph; human preflight interprets their meaning. An absent field is unknown; a present field with no WO tokens has no computed blocker.
+- **Derived dependency status:** the authority's typed block is projected by scripts/lib/dependencies.mjs, also used by status --json and activation. Hard and satisfied-by-close entries require control closure with a passing final-review verdict. Satisfied-by-release requires the named local annotated DotLn release in HEAD's ancestry. Planning-deferral waits for its named order's closure or remains unmet for a candidate label; a dated waiver replaces it. Historical evidence, references, waivers and supersessions never block. Without a typed block, distinct Depends on tokens retain a labeled conservative view and never block activation. Closed and historical rows do not imply reactivation work.
 - **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose per-segment tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.
 - **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.
 
-Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`, `v0.7.0`, `v0.8.0`, `v0.9.0`, `v0.10.0`, `v0.10.1`, `v0.11.0`, `v0.12.0`, `v0.13.0`, `v0.13.1`, `v0.13.2`, `v0.13.3`, `v0.14.0`, `v0.15.0`, `v0.16.0`.
+Local annotated release tags used: `v0.2.0`, `v0.2.1`, `v0.2.2`, `v0.2.3`, `v0.3.0`, `v0.3.1`, `v0.3.2`, `v0.3.3`, `v0.3.4`, `v0.3.5`, `v0.3.6`, `v0.4.0`, `v0.4.1`, `v0.5.0`, `v0.5.1`, `v0.5.2`, `v0.6.0`, `v0.7.0`, `v0.8.0`, `v0.9.0`, `v0.10.0`, `v0.10.1`, `v0.11.0`, `v0.12.0`, `v0.13.0`, `v0.13.1`, `v0.13.2`, `v0.13.3`, `v0.14.0`, `v0.15.0`, `v0.16.0`, `v0.17.0`.
 
-Tag observation is explicitly refreshed by `index`. Check requires every recorded tag object to remain available and unchanged; newer local release tags are reported as newer evidence, without invalidating this snapshot. This avoids making a committed source release fail its own tests immediately after tagging. Header/control changes still require regeneration after lifecycle transitions.
+Release attribution is explicitly refreshed by `index`. Check requires every recorded tag object to remain available and unchanged; newer local release tags are reported without invalidating that attribution snapshot. Typed release dependencies use current local ancestry in both index and status; changing a referenced release's availability can stale the dependency projection. Header/control changes still require regeneration after lifecycle transitions. No command fetches tags.
 
 See [the human planning map](../planning/work-order-map.md) for recommendation, rationale, tracks, and activation preflight. Dependency-ready does not grant activation or effect authority.
 
-<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.7.0","object":"064d304f0a49d3ba397173420e815b44807934d8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.8.0","object":"7b494beaac507b3369c4092598edc33d64242b67","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl"]},{"name":"v0.9.0","object":"b2720f4bb0574ca2929658e2bf7056bf40c8e5c1","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.0","object":"2cb12ddbd670e74639411cd77a98277d6b6110a6","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.1","object":"ca5d3fab28ecfa00cb7d0738d8e6a0be3018569d","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.11.0","object":"539021143175b03184fc8f3ea580a1b6491ab4ea","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.12.0","object":"3eb0fc50aaff394ccd80bbf042948ef7c2e7a015","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.0","object":"12fb52e64ea8915833cf29dac6d61412073c64db","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.1","object":"d5a0f5708ac5e13bc0d1ca2bd06d913bbc1b29b9","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.13.2","object":"0ff7063c042cede0cef863097334eb43c6da8937","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.13.3","object":"69f54e72c9b670280747d16dbf8bf9b30f0dcd63","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.14.0","object":"09e7fa2a32183a3d70a7af4388df0d24036914f0","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-032.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.15.0","object":"f6dd4558d361be7bc5d2236bb111f0af5a195531","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-032.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-039.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl","docs/control/orders/WO-109.jsonl"]},{"name":"v0.16.0","object":"5b200fb5239d1c46c1e68bd4b602c7a987ebe0fd","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-032.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-039.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-042.jsonl","docs/control/orders/WO-108.jsonl","docs/control/orders/WO-109.jsonl"]}] -->
+<!-- dotln-work-order-tags: [{"name":"v0.2.0","object":"aae5f069ed6731cb8071fcaccc2ed9ab95e35d3e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.1","object":"a9050e44cbf6938f32cc9cfb8c5e9f08491d21fa","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.2","object":"760c01d017f38845f3baaf4581749079af77ea5a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.2.3","object":"10a0cbe7cfa3ebfe4da984eb1298ff0676a9332e","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.0","object":"8afdcef3337eec475e96edf05903503b42905fc4","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.1","object":"4a4f0e0502d5a857bff934698b623176ebd7de03","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.2","object":"456f12046e3b527e19c6c30b1219c0be944f9773","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.3","object":"afa04750cde3e6dfd67b5abb8dc093fe20465db7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.4","object":"b466fb1e3233d157a10ac13dbae445fbd55745d6","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.5","object":"80669d87cfc306b1516cf810ca039bf1181f731a","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.3.6","object":"3aef7f45b3d563f944b48d60e7e955bb3b66a442","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.0","object":"49089ba4e3ea01d3592ea144a84c768b3a5216f7","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.4.1","object":"7dd65da91a0869ffb4756d56cb9b1378761cedc8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.0","object":"9b13a3467f5a208650f01be796128c549975a205","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.1","object":"8a079ab8ef07634e88bff1a742427d443f999fdc","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.5.2","object":"b54a8bfe3d3fdde96320fef1f30c3d83a983994c","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.6.0","object":"762620fe6ce3048e26f8e20de980b1ac0ab20c20","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.7.0","object":"064d304f0a49d3ba397173420e815b44807934d8","controlSegments":["docs/control/resume.jsonl"]},{"name":"v0.8.0","object":"7b494beaac507b3369c4092598edc33d64242b67","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl"]},{"name":"v0.9.0","object":"b2720f4bb0574ca2929658e2bf7056bf40c8e5c1","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.0","object":"2cb12ddbd670e74639411cd77a98277d6b6110a6","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl"]},{"name":"v0.10.1","object":"ca5d3fab28ecfa00cb7d0738d8e6a0be3018569d","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.11.0","object":"539021143175b03184fc8f3ea580a1b6491ab4ea","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.12.0","object":"3eb0fc50aaff394ccd80bbf042948ef7c2e7a015","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.0","object":"12fb52e64ea8915833cf29dac6d61412073c64db","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl"]},{"name":"v0.13.1","object":"d5a0f5708ac5e13bc0d1ca2bd06d913bbc1b29b9","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.13.2","object":"0ff7063c042cede0cef863097334eb43c6da8937","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.13.3","object":"69f54e72c9b670280747d16dbf8bf9b30f0dcd63","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.14.0","object":"09e7fa2a32183a3d70a7af4388df0d24036914f0","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-032.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl"]},{"name":"v0.15.0","object":"f6dd4558d361be7bc5d2236bb111f0af5a195531","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-032.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-039.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-108.jsonl","docs/control/orders/WO-109.jsonl"]},{"name":"v0.16.0","object":"5b200fb5239d1c46c1e68bd4b602c7a987ebe0fd","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-032.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-039.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-042.jsonl","docs/control/orders/WO-108.jsonl","docs/control/orders/WO-109.jsonl"]},{"name":"v0.17.0","object":"d59bad995583db8a265be738170ee13d8fbac2a1","controlSegments":["docs/control/resume.jsonl","docs/control/orders/WO-009.jsonl","docs/control/orders/WO-010.jsonl","docs/control/orders/WO-011.jsonl","docs/control/orders/WO-021.jsonl","docs/control/orders/WO-022.jsonl","docs/control/orders/WO-029.jsonl","docs/control/orders/WO-031.jsonl","docs/control/orders/WO-032.jsonl","docs/control/orders/WO-038.jsonl","docs/control/orders/WO-039.jsonl","docs/control/orders/WO-041.jsonl","docs/control/orders/WO-042.jsonl","docs/control/orders/WO-108.jsonl","docs/control/orders/WO-109.jsonl","docs/control/orders/WO-126.jsonl","docs/control/orders/WO-127.jsonl"]}] -->
 
 [WO-001]: WO-001-environment-truth.md
 [WO-002]: WO-002-pure-kernel.md
