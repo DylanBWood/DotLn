@@ -1,0 +1,463 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": "d0293dccb01d7303fe4b8e03a55dbcf1c40efd42",
+  "host": "same operator machine for before and after",
+  "before": {
+    "method": "original chain, continuing after failures to measure every declared step",
+    "startedAt": "2026-09-09T20:38:16.147Z",
+    "durationMs": 359147,
+    "results": [
+      {
+        "command": "npm run format:check --silent",
+        "exitCode": 0,
+        "durationMs": 3955
+      },
+      {
+        "command": "node scripts/release.mjs check-surfaces --local",
+        "exitCode": 0,
+        "durationMs": 1907
+      },
+      {
+        "command": "node --test scripts/test-release-preparation.mjs",
+        "exitCode": 0,
+        "durationMs": 1597
+      },
+      {
+        "command": "node scripts/test-github-body.mjs",
+        "exitCode": 0,
+        "durationMs": 65
+      },
+      {
+        "command": "node --test scripts/test-license-surfaces.mjs",
+        "exitCode": 0,
+        "durationMs": 9821
+      },
+      {
+        "command": "node scripts/license-surfaces.mjs",
+        "exitCode": 0,
+        "durationMs": 1692
+      },
+      {
+        "command": "bash scripts/test-fixture-temp-root.sh",
+        "exitCode": 0,
+        "durationMs": 444
+      },
+      {
+        "command": "bash scripts/test-publication.sh",
+        "exitCode": 0,
+        "durationMs": 842
+      },
+      {
+        "command": "bash scripts/test-backup-intake.sh",
+        "exitCode": 0,
+        "durationMs": 217
+      },
+      {
+        "command": "bash scripts/test-resume.sh",
+        "exitCode": 0,
+        "durationMs": 25310
+      },
+      {
+        "command": "bash scripts/test-checkpoint.sh",
+        "exitCode": 0,
+        "durationMs": 2020
+      },
+      {
+        "command": "bash scripts/test-worktree.sh",
+        "exitCode": 0,
+        "durationMs": 35611
+      },
+      {
+        "command": "bash scripts/test-release.sh",
+        "exitCode": 0,
+        "durationMs": 132888
+      },
+      {
+        "command": "bash scripts/test-work-orders.sh",
+        "exitCode": 0,
+        "durationMs": 10621
+      },
+      {
+        "command": "node scripts/check-publication.mjs",
+        "exitCode": 0,
+        "durationMs": 236
+      },
+      {
+        "command": "node scripts/work-orders.mjs index --check",
+        "exitCode": 0,
+        "durationMs": 2966
+      },
+      {
+        "command": "rm -rf packages/kernel/dist packages/compiler/dist packages/skeleton/dist packages/console/dist",
+        "exitCode": 0,
+        "durationMs": 19
+      },
+      {
+        "command": "tsc -b --force",
+        "exitCode": 0,
+        "durationMs": 1895
+      },
+      {
+        "command": "ls packages/kernel/dist/test/*.test.js >/dev/null",
+        "exitCode": 0,
+        "durationMs": 4
+      },
+      {
+        "command": "ls packages/compiler/dist/test/*.test.js >/dev/null",
+        "exitCode": 0,
+        "durationMs": 3
+      },
+      {
+        "command": "ls packages/skeleton/dist/test/*.test.js >/dev/null",
+        "exitCode": 0,
+        "durationMs": 3
+      },
+      {
+        "command": "ls packages/console/dist/test/*.test.js >/dev/null",
+        "exitCode": 0,
+        "durationMs": 3
+      },
+      {
+        "command": "node --test packages/kernel/dist/test/*.test.js packages/compiler/dist/test/*.test.js packages/skeleton/dist/test/*.test.js",
+        "exitCode": 0,
+        "durationMs": 20860
+      },
+      {
+        "command": "node --test packages/console/dist/test/*.test.js",
+        "exitCode": 0,
+        "durationMs": 11751
+      },
+      {
+        "command": "node --test scripts/test-adjacent-queue.mjs",
+        "exitCode": 0,
+        "durationMs": 299
+      },
+      {
+        "command": "node --test scripts/test-authority-grants.mjs",
+        "exitCode": 0,
+        "durationMs": 160
+      },
+      {
+        "command": "node scripts/authority-evidence.mjs --check",
+        "exitCode": 0,
+        "durationMs": 492
+      },
+      {
+        "command": "node --test scripts/test-harness.mjs",
+        "exitCode": 0,
+        "durationMs": 35554
+      },
+      {
+        "command": "node scripts/harness.mjs check",
+        "exitCode": 0,
+        "durationMs": 128
+      },
+      {
+        "command": "node scripts/harness-context.mjs --check",
+        "exitCode": 1,
+        "durationMs": 175
+      },
+      {
+        "command": "node scripts/harness-evidence.mjs",
+        "exitCode": 1,
+        "durationMs": 226
+      },
+      {
+        "command": "node scripts/test-plan-refutation.mjs",
+        "exitCode": 0,
+        "durationMs": 41165
+      },
+      {
+        "command": "node --test corpus/harness/wo101-id-corpus.test.mjs",
+        "exitCode": 0,
+        "durationMs": 235
+      },
+      {
+        "command": "node scripts/artifact-identity-evidence.mjs --check",
+        "exitCode": 0,
+        "durationMs": 209
+      },
+      {
+        "command": "node scripts/verification-evidence.mjs --check",
+        "exitCode": 0,
+        "durationMs": 1654
+      },
+      {
+        "command": "node scripts/feedback-evidence.mjs --check --edition WO-042 --revision 002",
+        "exitCode": 0,
+        "durationMs": 3311
+      },
+      {
+        "command": "npm run test:mutation --silent",
+        "exitCode": 0,
+        "durationMs": 10807
+      }
+    ]
+  },
+  "fast": {
+    "treeHash": "052bb06d220efd2c6608a4c76ce81b739a31b110",
+    "recordedAt": "2026-09-09T23:36:08.535Z",
+    "durationMs": 106905,
+    "exitCode": 0,
+    "suites": [
+      {
+        "checkId": "suite:build",
+        "durationMs": 2504,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:publication",
+        "durationMs": 1499,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:kernel",
+        "durationMs": 258,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:compiler",
+        "durationMs": 330,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:format",
+        "durationMs": 4793,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:harness",
+        "durationMs": 796,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:release-surfaces",
+        "durationMs": 6778,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:harness-context",
+        "durationMs": 4393,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:meta",
+        "durationMs": 9549,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:index",
+        "durationMs": 30345,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:skeleton",
+        "durationMs": 78755,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:console",
+        "durationMs": 23556,
+        "exitCode": 0
+      }
+    ]
+  },
+  "full": {
+    "treeHash": "f02476c9018a6756def4f7462cab50fdcc95bff9",
+    "recordedAt": "2026-09-09T23:47:46.483Z",
+    "durationMs": 497559,
+    "exitCode": 0,
+    "suites": [
+      {
+        "checkId": "suite:build",
+        "durationMs": 2477,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:github-body",
+        "durationMs": 164,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:release-surfaces",
+        "durationMs": 4068,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:format",
+        "durationMs": 4706,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:license-surfaces",
+        "durationMs": 2712,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:fixture-temp-root",
+        "durationMs": 3347,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:backup-intake",
+        "durationMs": 1105,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:publication-fixtures",
+        "durationMs": 3088,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:release-preparation",
+        "durationMs": 13488,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:checkpoint",
+        "durationMs": 9063,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:license-fixtures",
+        "durationMs": 24262,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:work-orders-fixtures",
+        "durationMs": 59318,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:publication",
+        "durationMs": 822,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:resume",
+        "durationMs": 86084,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:index",
+        "durationMs": 10945,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:kernel",
+        "durationMs": 276,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:compiler",
+        "durationMs": 209,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:adjacent-queue",
+        "durationMs": 2448,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:authority-grants",
+        "durationMs": 500,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:authority-evidence",
+        "durationMs": 8380,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:harness-fixtures",
+        "durationMs": 97916,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:harness",
+        "durationMs": 256,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:harness-context",
+        "durationMs": 1576,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:harness-evidence",
+        "durationMs": 1618,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:worktree",
+        "durationMs": 196625,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:artifact-corpus",
+        "durationMs": 227,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:artifact-evidence",
+        "durationMs": 177,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:verification-evidence",
+        "durationMs": 10055,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:skeleton",
+        "durationMs": 125365,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:feedback-evidence",
+        "durationMs": 5589,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:mutation",
+        "durationMs": 12718,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:runner-fixtures",
+        "durationMs": 5507,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:console",
+        "durationMs": 55499,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:meta",
+        "durationMs": 4397,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:process-debt",
+        "durationMs": 51469,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:plan-refutation",
+        "durationMs": 262264,
+        "exitCode": 0
+      },
+      {
+        "checkId": "suite:release",
+        "durationMs": 476150,
+        "exitCode": 0
+      }
+    ]
+  },
+  "notes": [
+    "Before timing measured every original command and retained two historical metadata failures; it is not a green historical gate.",
+    "Fast measurement is for its named tree; later evidence and documentation writes are covered by the final full gate.",
+    "The full measurement names its executed tree; later receipt and metadata writes are covered by the final host cache at handoff without rewriting this timing receipt to chase its own hash."
+  ]
+}

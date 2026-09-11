@@ -1,0 +1,2589 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "FUP-0001",
+      "key": "candidate:docs/planning/budget-window-work-order-ladders.md#budget-windows-and-concurrent-work-order-planning--candidate-trial",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "86d66301158fab6d87afb0a07ce0e2b7955404bbcad6ca07dcd6694f156f7631",
+          "ref": "docs/planning/budget-window-work-order-ladders.md#budget-windows-and-concurrent-work-order-planning--candidate-trial",
+          "title": "Budget windows and concurrent work-order planning — candidate trial",
+          "summary": "# Budget windows and concurrent work-order planning — candidate trial **Planning observation:** 2026-09-04 during WO-020. The operator wants to finish useful work early in available usage windows and create an uninterrupted period for other activities. Using an allowance early may also leave room to benefit from an actually observed promotion or unexpected reset. This is an exploratory strategy; faster completion, more usable capacity, and more free time are hypotheses to test. The operator subsequently clarified the enabling design: the control state machine should support **zero to many concurrent work orders, with potentially different workflow steps per order**. Two lanes are the first c",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0002",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::05f0e5487e07ad9058c35ce3852cc0e0b1f9afb699d79298cda33a147b1b4269",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ba3898adddb0c4e36929c2c85f14242d8d9932666f04190c895be2f654a803d7",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Running the refuter inside this pass.",
+          "summary": "- **Running the refuter inside this pass.** NoOp. The sandbox refuses the transports and the dispatch reserves the budget decision.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0003",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::133bc737f363cc14f437e43079947bebc0a2f5df598573279e1bd9e0fb10ce1c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "bd64c642167be6527be987ce6367efe500c2a4aa6f0b25080a9f96b8d24b8eec",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Editing closed orders' \"Depends on\" paragraphs.",
+          "summary": "- **Editing closed orders' \"Depends on\" paragraphs.** NoOp. History is not back-filled.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0004",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::16781d2134aab6d6eee7fcca9f518996fe25453fcf1fca7f9c6433479d159d5d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "caec60375a5ca920954c3bc93fcf6dfc55cd72b8b52a9595a4174b309ef28d15",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Inferring interactivity from process tables or input devices.",
+          "summary": "- **Inferring interactivity from process tables or input devices.** NoOp. Presence is never inferred; the hook event kind and the resident's stamp are the classifier's only inputs, and where a harness cannot tell a scripted prompt from a typed one the explicit commands are the only human signals. Reverse if WO-044's rows show that no harness fires an interaction event at all.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0005",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::1ed474aaf3e4f70a7d3f8f6a3a72e7f80bd8312bb5946b44dea24ad9d788507f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5ba6d24998bca2164cfcf843b71886025034362a5a6157cb8e5df84716f6a62d",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Closing the unclassified-tool bypass, or the token-matching refusal, in this pass.",
+          "summary": "- **Closing the unclassified-tool bypass, or the token-matching refusal, in this pass.** NoOp. Hook behavior is implementation; both are map candidates.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0006",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::35acc3b92660cb11404bf8feb2795eeda133c71b049f35c756941044d33a831b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2c450ce131c6430c7a12df82b7fea18fd9674126e478f38b5bb09352348b5ded",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Implementing Program.All for discovery.",
+          "summary": "- **Implementing `Program.All` for discovery.** NoOp. WO-119 expresses discovery in the executable subset; the deferred kinds wait for a consumer that needs concurrency inside one program. Reverse when one appears.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0007",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::371e4dc7c635e011cffe84b54b4e295592d29728dfba1dfc9b55abd9a9077f3c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8d1729b65e5ab3ebe4ceb8818117957dabf13c539352ed40a1a07c59c4d1e66e",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Product-doc write-backs beyond the one procedure sentence.",
+          "summary": "- **Product-doc write-backs beyond the one procedure sentence.** NoOp. Each order owns its write-backs; the product record already carries the runtime, presence and UI ideas.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0008",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::43ad123b07ef5267fc684634e2ed2f26c5737129387c354755b256229fa60460",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7459e364fd4c2d80937e3b9080d0d8446ebff8470ed8ae1a8a31b2d245fbcdcb",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Overriding the second receipt's WO-121 hold.",
+          "summary": "- **Overriding the second receipt's WO-121 hold.** NoOp. The finding held against the order: launch provenance is not evidence that a person returned. Reverse never for this hold.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0009",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::5339b7386060a56af976c08e8cdf5ae35e7afeb51eec5f8e7635fdf5d6a69387",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "276a21fa4c7299cab054d82aa0975008edd459f911dafe84cacfa552cff2ea13",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "A scheduler beyond compiled cadences and a presence policy.",
+          "summary": "- **A scheduler beyond compiled cadences and a presence policy.** NoOp. The resident evaluates cadences the build declares; a general scheduler is a new authority path. Reverse when a policy cannot express a needed rhythm.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0010",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::55fbc746ae29720db0c5c01fac38423114f3c458fd133c769f131d31e5700c2d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "66c4e96bc3ca6164641f83ee2899b3c15323158a62d6ea71c4bea3eff5eeb9e0",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Filing numbered orders for every later gate.",
+          "summary": "- **Filing numbered orders for every later gate.** Reversed the same day by the operator (anti-oscillation: an explicit supersession, quoted in the capture); every gate is filed.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0011",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::58c09970b2d3d0c5183a3c636b9e4b3c157ff8c2dd79cf216587ce906666303c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "268861007479239e35e49e2114d538718cf820657581b0683ec0644f0845b40b",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Adopting the audit's package split.",
+          "summary": "- **Adopting the audit's package split.** NoOp. WO-050's slices are the first seam; a package split follows a second host with a consumer.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0012",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::5d60584df949fd35ebfb95b2129895c75f82ffc46ab8b2e9b3012f3052b2c039",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "87f1312b80c64bdac407285de5304855c431f184d7e1dc7a88e147c316ab844b",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Overriding the first receipt's two holds.",
+          "summary": "- **Overriding the first receipt's two holds.** NoOp. Both findings held against the orders; an override records an operator instruction, not a repair. Reverse never for these two; the route stays for a hold the operator judges wrong.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0013",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::785f6f55d34ac9c9f03d5984751f751a0949e63c9d40e45a5389fc7f2319efdb",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0ec0d94a2d90655056fa129db93396686b17ddb93ca0469854a0cc50afd69052",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "A dependency registry or scheduler for planning.",
+          "summary": "- **A dependency registry or scheduler for planning.** NoOp. The authority file stays the source; the index projects (WO-043).",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0014",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::7e897877eaae1b86b215ca2c5eb47bad94a09d7acf360fb5e180da4140b9f26f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9465bfe230d54580d6ffbdda2bd5c4945941223038a5554fec2ac4256940f560",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Filing the resident's intent admission as its own order.",
+          "summary": "- **Filing the resident's intent admission as its own order.** NoOp. The hold names WO-123 criterion 1 as the repair target, and the admission composes existing contracts (the draft, the portfolio, the grants, the continuation); WO-123 stays under the eight-item rule. Reverse if its implementation span exceeds four hours at R1's measure.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0015",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::867b4eac420cbc6b24c4b11a66ae9d9e33a55bb48bc47ede3bfad2d01181e55d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "97ffe1a811a13e0b92ee51863a3ec88ac00d760fe3787e5c21c69e7fd5889a76",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Authenticated presence or signed grants.",
+          "summary": "- **Authenticated presence or signed grants.** NoOp. Presence signals and grant provenance are reviewed text under the same limit WO-029 recorded. Reverse at an external principal.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0016",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::8e5c5824ee44557b808d2cee7eaa4c0c00aff7058e72d66fd4bea61c134a72dc",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1a1d2209266f4e48f3ed6c1945e39c8d3986bdbfb6641f51d145a8ae6ca0ee25",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "The harness's own cron as the runtime.",
+          "summary": "- **The harness's own cron as the runtime.** NoOp. The product runs offline and harness-agnostic; a harness schedule is at most a launcher, decided by WO-044's rows. Reverse never.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0017",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::93a528aa6425f2be0a5eca16aa183ce011a44613fb95a4da3e9e8c63a661a786",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "815cf5d7bbd863951453ffdcb4c896b0829a19703db1c80ad9fd92f3d96b9239",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Renumbering the children to avoid the corpus range.",
+          "summary": "- **Renumbering the children to avoid the corpus range.** NoOp. Numbers are opaque identities; the mainline skips 101 to 109 and continues at 110.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0018",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::aab652b05bdfae4d31ebf252e0ff3e1f42164603b47b15367b4eaf5bcc8e7486",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "aa13fa00133b9d01ee3b70991651bca70f81ad8844b7bf7de76a1ad847a287b8",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Deciding WO-034's Angular-first-change premise now.",
+          "summary": "- **Deciding WO-034's Angular-first-change premise now.** Dissolved: no Angular order lives here; the fork plans the shell.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0019",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::ae793949e6793b3d717bcfa23abe721a55ed81508e9f4e973f38ea3c79e9b222",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "48256c59ac1bd3415060f703c0de0d915272ab71dcba5411136048aab936c1ee",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Activating WO-033 first, or deferring the starter behind the proof.",
+          "summary": "- **Activating WO-033 first, or deferring the starter behind the proof.** Superseded: the starter is the vehicle and its children float; neither \"first\" nor \"deferred\" applies. Reverse never; the operator decided.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0020",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::b41529c49b74e833d2f9a72c794804664c8eaaf132e47678a13f1ff19adc48fe",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a894d7d15fcd1285b2e372571c49ca08c79815c55f6184a1c531986e8da46302",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Requiring the authoring journey through the live client in this horizon.",
+          "summary": "- **Requiring the authoring journey through the live client in this horizon.** NoOp. Receipt 004 names it the largest remaining gap and says it warrants no hold: the equivalent-view, multi-active, set and full-5S orders advance the interface thesis and the runtime loop has its live gates. Recorded as a map candidate; reverse when WO-095 and WO-117 land or when any claim of authoring usability is made.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0021",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::c3cdf307089289fffc4346320e793388b79b8a1bdf2bf9cb2d65d274ea5e615e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8159a05900570d9e4006c12f9fcb7468a354fd97bdb377b3643e1499659e2330",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "Moving the intent class into WO-100.",
+          "summary": "- **Moving the `intent` class into WO-100.** NoOp. WO-100's first portfolio is 5S maintenance with no remote grant; the class that needs remote grants belongs with the continuation that uses them. Reverse if WO-100's contract cannot be extended by a later order.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0022",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register::eb62c1a18db22da5a8884b85f1161c63236ec31105dc573259d51dc4f99ea1f6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f3b59db1f52e050f5ef61cebdfe63ecfe91fc0ee99591c22ebdb49c69b0ea96a",
+          "ref": "docs/planning/critical-path-2026-09-08.md#declined-candidates--the-noop-register",
+          "title": "A web UI in core.",
+          "summary": "- **A web UI in core.** NoOp. The text console is the reference host; the operator's Angular shell is the second host over the same contracts. Reverse if the fork's shell cannot be built on the contracts.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0023",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#deferred-work::287b0cfb1ee77ef9b780f278729f2dec94c32e94075f255f0899f28d7a68728f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "00786126425da5c9472324cbef3acf9eca207bcbc791e8a671e1db69fc963717",
+          "ref": "docs/planning/critical-path-2026-09-08.md#deferred-work",
+          "title": "Documentation reset, WO-084 to WO-090.",
+          "summary": "- **Documentation reset, WO-084 to WO-090.** Not the product bottleneck; WO-113 covers the one separation the audit named for work-order files.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0024",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#deferred-work::a51024a5b9c3e7d37d0f1b6285b5b5be19304cd5e42c8b0897107c748df9793d",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c9b5e6e9dd3a632dcb50f0d2e93f149b8bf430b0a09fae1b40c3203256836751",
+          "ref": "docs/planning/critical-path-2026-09-08.md#deferred-work",
+          "title": "Pattern workshop, WO-091 to WO-095.",
+          "summary": "- **Pattern workshop, WO-091 to WO-095.** The full 5S set widens the Gardener's candidates for WO-100; the Entropy Reducer already supplies Shine and Standardize, which the first portfolio uses.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0025",
+      "key": "candidate:docs/planning/critical-path-2026-09-08.md#deferred-work::f1f3817dac64b3a59a3acba412bc583a3c77383103973e0da0be895fad11cd65",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "baa3d8196ec3a5650bae4f1b27bbe063d32bda6c5cacd987ac4fb634e52b1847",
+          "ref": "docs/planning/critical-path-2026-09-08.md#deferred-work",
+          "title": "Rule migration, WO-096 to WO-098.",
+          "summary": "- **Rule migration, WO-096 to WO-098.** Rules are lowered into hooks and skills that govern sessions; the first real external episode is a better classification input than another corpus pass. The operator's statement that the predecessor's value is its one hundred and forty rules is recorded; if the operator waives this deferral, WO-096 has no open blocker. The umbrella records WO-033, WO-034, WO-035, WO-037 and WO-040 keep their numbers and text as the record their children cite; each carries a dated umbrella note that WO-113 migrates into a typed `superseded` block. Floating and adjacent orders are untouched: WO-014 floats; WO-102, WO-103, WO-105 and WO-107 keep their track, WO-105 as ref",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0026",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::1d38913f77842304398cc21c61390bc080b5c6add3b06ef9ad3482b8ad356570",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8eacefde71bae992a206c7346d4d3547870c529507523bb3b50c1ebfb921b519",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Hand-writing hooks and skills for the ten units.",
+          "summary": "- **Hand-writing hooks and skills for the ten units.** NoOp. A second behavior system the compiler cannot see is the exact failure the vision names; hooks are compiler output (WO-039). Reverse never.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0027",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::1e421eaa1a225555a01b985da06b792fb55b3f59b1f63ff9c5379e10631d1393",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "abf40ffcab9c97ea8d2096adc73c97d4b3673ef71d6df216cfe60468c5377332",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "A WorkstreamOpened control event and outcome-level legality.",
+          "summary": "- **A `WorkstreamOpened` control event and outcome-level legality.** NoOp. The pilot's workstream is a document plus projections; no consumer needs legality at the outcome level. Reverse when a second launchpad or a contribution track needs an outcome-level transition.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0028",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::23e4b3f9729c0bc9741e5569a436c1bcf4d19ab816192b846e6c671c422a91c1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4d303bf816930115209404cae67342ae7fd8af64d075c7075ab51600e69a9f7a",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Migrating every remaining shape in one order.",
+          "summary": "- **Migrating every remaining shape in one order.** NoOp; the founding north star's own anti-goal. Batches of about twelve, cut from a template.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0029",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::3e41322efcc710ae0c60e7285d40b7aa2f4566638938abbba6d2fe89a8125327",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "71edbbc6893176d9d374caf00b7eb8689221ec96f0debf2d95e218261f010350",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Building the Angular console inside core.",
+          "summary": "- **Building the Angular console inside core.** NoOp. It would pull a UI toolchain into the evidence gate and pre-empt the framework decision; the pilot needs a real target repository anyway.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0030",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::559933314676fe23c41d71a5cb86b0b388e6217d4d9e5a7ecdf7634b64451ee9",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "12feb33439c44f0a6e2d9462d5c575e844130639519f5741a7a19aa18825c1a7",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Activating the pattern workshop inside the first two waves.",
+          "summary": "- **Activating the pattern workshop inside the first two waves.** NoOp. Its compiler-side slice is filed as WO-037 so the horizon shows the differentiated product's path, recommended as wave 3 once the board has merged; the drag-equip surface is console v1 work in the consumer repository. Reverse if the operator wants the shelf before the launchpad.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0031",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::66d783a269df1bdef9a96a4eed3c61d821b073ec02e0c55667345f9c6b71e7de",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "13837f614379e22afce62da30f063991afca7371906dad6c45f290dda1254d62",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Publishing @dotln/ packages so the starter's hooks can import them.",
+          "summary": "- **Publishing `@dotln/*` packages so the starter's hooks can import them.** NoOp, still. The pinned runtime build in the export is reviewable compiled output under the decided license; publication waits for its own decision and a package consumer.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0032",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::714db4f359a3faa8a817b16bc6ed2c2ef2ba61113282828d098de41818ce30a6",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e9e433d50483d4ef6c61ae7cfd0d7e8cd5c25c0db8fdeb9f0ddf62f5de587d6d",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Editing product status banners or capability rows in this pass.",
+          "summary": "- **Editing product status banners or capability rows in this pass.** NoOp; fixing them by hand repeats the growth pattern WO-035 removes. The one exception taken is the README's missing `resume: times` phrase, a factual omission on the checked front door.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0033",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::7f3053308eb50d40b5a95e1eb4911a1788d76a39fcf77c7afc393e21aca0a637",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0f7d4c34f51c6c81fa17eca3f9b4ec333714f851450f5b446107c9e3097613b1",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "A console framework decision (Angular, Nx, Babylon.js) or an ADR for it now.",
+          "summary": "- **A console framework decision (Angular, Nx, Babylon.js) or an ADR for it now.** NoOp. The roadmap defers it to representative evidence; WO-034 produces that evidence; the next pass writes the ADR. Reverse if the operator wants the Angular shell before the pilot.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0034",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::8a7dac7e1724cacf3e4c12875dfdda463b70b9c7fcf647adbfadd26069ca09d0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7c1f045d94c22ed0ca26d0df5ea7e37e105a5143b042a77e63fb800fcee54f5b",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "A numeric alignment score for plans.",
+          "summary": "- **A numeric alignment score for plans.** NoOp. A verdict naming a thesis and a capability row is inspectable; a number is not (WO-041). Reverse if a consumer needs to rank plans rather than gate them.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0035",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::8f46d94a7a01fe671501b384c18ea316a1722c9af22bfe7b44dce58431dbc6fb",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "877b402d1449fe7d61d091070b4478dcb26984eabe58a9a16e5f94474f90b76a",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "The reactor split, the release helper split, skeleton-side duplication, bash-suite rewrites.",
+          "summary": "- **The reactor split, the release helper split, skeleton-side duplication, bash-suite rewrites.** NoOp with the reversal conditions in the code table.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0036",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::91e46f78c40bdbd1bf69c87ee4ce49a4de01ad32534b74f0a141cc96b14283f5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6759357c196f7dd56cf596d59fe1f7a70d287f4ab82a4228be7a8be27ab24157",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Publishing @dotln/ packages for the starter.",
+          "summary": "- **Publishing `@dotln/*` packages for the starter.** NoOp. The license is decided but publication is a separate gate, and no consumer needs the runtime packages; the launchpad is the process kit. Reverse at the first package consumer, with WO-038's publication guard lifted deliberately.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0037",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::9d4a34b426e294071698633c675d14fd46672f192de2ed405e4c9283133652f8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ac00549f8fa6426a783ee285ee875fa8b6c0112d03d1cf12dde6b88d3ddac3eb",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "A lane generator, admission policy, tenant tracks, contribution tracks.",
+          "summary": "- **A lane generator, admission policy, tenant tracks, contribution tracks.** NoOp, unchanged from 2026-09-05; the filing conditions stand and the first measured wave is now scheduled.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0038",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::ba9b9a17da5a2b6346141aef11b3b92f35422991a4023351cb0512b4eb794f6c",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "751b550a84ecc34ab1de7b82f392d28d4ed863c373a5d2f480b0c6c1d0e09bc8",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Running the Beacon usefulness comparison inside this pass.",
+          "summary": "- **Running the Beacon usefulness comparison inside this pass.** NoOp; it is an operator trial, not a planning artifact. The board (WO-032) puts the constellation and the status surfaces on one screen, which is the cheapest way to make that comparison possible. Reverse: the operator runs the comparison after WO-032 and records the receipt.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0039",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::c6c8385cf08e25038c08138b94035be182f2b90b117e8dd8c65320226ec180f7",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b5fdd11a11cb1d9624549d49693e107d6e6bd21611ed41c57b6ee71269b10a8f",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Retiming WO-014 or the corpus drafts.",
+          "summary": "- **Retiming WO-014 or the corpus drafts.** NoOp; they float with their existing preflights.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0040",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::cdc2e91c1d8428c29fa27d2e074641dbef264f7ee5c2a76bc1939d7363951cab",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "004198c9bd0c78760060c3ec693fd8a00ec5b860f640379f7f94074498fa6b27",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "A rung-9 prose unit for a shape that resists lowering.",
+          "summary": "- **A rung-9 prose unit for a shape that resists lowering.** NoOp. Such a shape is a `reference` or a finding in the migration ledger, not a unit. Reverse if the mechanism hierarchy gains a rung between 7 and 9 with evidence.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0041",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::f0a4b23028ed46a05fe73655199898856636660c11f62cac3c0b89da18929cb8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "333df632c124a5a897ae4ea02aae6ce175b41c74d64b4ebe0c62f23fd95c9e94",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Exporting the process kit without a build.",
+          "summary": "- **Exporting the process kit without a build.** NoOp, and the first version's central error. A fork would run on prose. Reverse never; a starter without an actor is not a DotLn instance.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0042",
+      "key": "candidate:docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register::f536b39b97334e6bf8953fa86bf357ff1dc83020306021fdb841b94edd4a1bad",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ff90b613f9ec6c2ad237a5bd2d8b18b2d9d09cba104d9edb1dac2fa34b81c394",
+          "ref": "docs/planning/phase-two-plan-2026-09-06.md#declined-candidates--the-noop-register",
+          "title": "Activating WO-109 (re-mining) now.",
+          "summary": "- **Activating WO-109 (re-mining) now.** NoOp. The founding corpus is represented at the entry level; the image harness preflight is still unrecorded. Reverse when an image-capable harness is observed and the operator wants a new draw.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0043",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::136f08673bd43a9cca0525a29430b7ca0dbaedbe5214a56929f7edcbac9fea94",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3fcbbbaa0f03cf61f99a19146578360affd55d8094e46f91108fa9bf9cf20fbd",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Context Continuity support — operator ideation, 2026-09-09 during WO-126.",
+          "summary": "- **Context Continuity support — operator ideation, 2026-09-09 during WO-126.** Automatically observe context occupancy from the available host signals and verify task recovery through repeated automatic compactions, including active tools and boundary-time steering. The [support candidate](../product/05-pattern-library.md#candidate--context-continuity) names the outcome, missing/stale-state failure cases, source/availability labeling and live-host evidence boundary. The [breakout receipt](../evidence/WO-126/ideation.md) preserves scope and the observation-first budget decision. Host binding and warning cadence remain open; allocation requires observable signals and a bounded recovery fixtur",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "This map nomination points to the same Context Continuity candidate; preserve both source records under its product definition.",
+          "reopenWhen": "The map nomination acquires distinct scope.",
+          "targets": [
+            "FUP-0091"
+          ],
+          "at": "2026-09-10T00:15:09.793Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0044",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::16c2f0cd7828892d291d7012010294dd8607f0988cc8aa41b1e4ccfce92e2c6f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c51bef897f5d2cc5489ca73da587db8d3479d0c9f9372f1b67e824fb96d1db92",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated measurement candidate — presentation-surface comparison:",
+          "summary": "- **Unallocated measurement candidate — presentation-surface comparison:** once WO-009 lands two transports, a WO-107-style profiling cell compares the same order through a terminal harness, a raw API episode, and, where observable, an IDE or desktop surface, on protected outcomes, elapsed time, and accounting regime. Product 03's candidate names the axes; no surface is preferred in advance.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0045",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::1b6f04bcf84fa9b78c834b56a4098cd8ddd0229790b18d34e99dd6382cf8c94f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f289cf3d230c213315a271071c74a21125155498b98c5c184ff56ac4dfc68d2d",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Authoring journey through the live client — nominated 2026-09-08 by the critical-path pass's third refutation receipt.",
+          "summary": "- **Authoring journey through the live client — nominated 2026-09-08 by the critical-path pass's third refutation receipt.** Receipt 004's largest remaining gap: no order requires a person to choose a familiar pattern, alter its mechanics through the live client (WO-117), inspect the normalized program and its fidelity, and demonstrate the intended behavioral change; WO-091 to WO-095 prove compilation and rendering, and WO-083 leaves the shell slice to its fork. A later pass adds that proof to WO-117 criterion 2 or files a bounded order after WO-095 and WO-117 land; until then the compiler results are not reported as proof of the authoring experience. No number, sequence position or activati",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0046",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::1d22407d081ec7689791327a40cb19266fed5360ec0b344a0f0d05be910d60f0",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "41a1f34317c05aa61b40104732339181743eebf9ff12bc666a4942da510fc129",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Harness host: fail closed on unclassified effectful tools — nominated 2026-09-08 by the critical-path planning pass; allocated 2026-09-09 to WO-126 criterion 8 after the process-debt pass itself used ",
+          "summary": "- **Harness host: fail closed on unclassified effectful tools — nominated 2026-09-08 by the critical-path planning pass; allocated 2026-09-09 to WO-126 criterion 8 after the process-debt pass itself used the hole to create its planning branch.** The compiled writer guard gates only the Bash, Edit and Write tools, and the permission classifier treats every other tool as a read, so a harness tool that runs shell commands or writes files without one of those names (a monitoring tool, a notebook editor, a spawned agent's tools) bypasses the reservation and the envelope check; the pass observed a read-only listing subagent obtain shell output that way. A bounded follow-on makes the harness profil",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0047",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::2550239fe00732cf7888aff09f64d4c6459e98bc29c78f9763663039f2cdd819",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "058e5b6b9d2372d5ed3748f03c324ad9a01c2510e82262fe7c859f49027313a1",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Product candidate — profiles, PresencePolicy, and unattended portfolios: allocated 2026-09-08 for the PresencePolicy as WO-067 and the preauthorized portfolio as WO-100; the owner-sovereign profile st",
+          "summary": "- **Product candidate — profiles, PresencePolicy, and unattended portfolios: allocated 2026-09-08 for the PresencePolicy as WO-067 and the preauthorized portfolio as WO-100; the owner-sovereign profile stays unallocated.** separate the reusable platform mechanisms from saved instance doctrine; define capability declarations for intentionally absent evidence, history, and replay; and compile a four-axis PresencePolicy over attention, work scope, effect authority, and observed external capability. Representative fixtures include hold, decay, progressive authority, peak/reset/loop, return races, unavailable adapters, and an explicitly preauthorized optional WorkOrder portfolio. The candidate in",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0048",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::2631b287b87e511558d3c9ad8e16e1418059814958bae46cece1514cde6955ce",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9fc92892c258cfa4ed0c5d18aabb1ca29cda1832339e36990ecbafe9e7c6bb76",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated control candidate — canonical private intake reconciliation:",
+          "summary": "- **Unallocated control candidate — canonical private intake reconciliation:** replace worktree-relative raw-note drift with one private-store resolver and capture/status/reconcile operations. Require locking, contained regular files, atomic no-overwrite copy, same-content deduplication, divergent- collision refusal, verified owner-only backup, source removal only after a recoverable canonical copy, and a private capture-to-synthesis manifest. Storage reconciliation remains distinct from semantic ideation synthesis.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0049",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::2e81452b4a27a8ebcbda9fc7e4e0875604078fe93604b4254adbdd5a757dd20e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e6150796bd5169f2cecc9479fdafe0ec95784cb5e8331e16b91dff047647bd54",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Critical-path candidates — recorded 2026-09-08 by the critical-path planning pass and allocated the same day at the operator's correction.",
+          "summary": "- **Critical-path candidates — recorded 2026-09-08 by the critical-path planning pass and allocated the same day at the operator's correction.** The runtime boundary codecs are WO-045 to WO-048; writing-worker harness truth is WO-044 (extended with the unattended-launch rows); the target-worktree bundle is WO-049; the source-changing worker is WO-050 to WO-053; blinded verification and repair over a real repository is WO-054 to WO-056; the browser evidence adapter is WO-057 to WO-059; SourceBundle to StoryContract is WO-060 to WO-062; the target publish slice is WO-063 and WO-064 with the post-PR loop as WO-065 and WO-066; the vertical is proven from core as WO-112, and the operator's Angula",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0050",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::3938a5b90d1f9e35a72aa1964759153fc78c3656a3df7a8fad55a0fae05cc8bd",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "983c13e04839455e28745781aed94a4e089173d3019340f9b96478cf6b629d04",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Develop a synthetic pilot for the [end-user workstream application](../product/12-workstream-application.md),",
+          "summary": "- Develop a synthetic pilot for the [end-user workstream application](../product/12-workstream-application.md), with parity and reduced coordination burden as the outcome. Host topology, first integration, application identity, and work-order allocation remain open.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0051",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::3c0bd4989734d703d1b58724bb3fedbc083d6cbe78e7039aa57f5461acc6e2c9",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b19bf0cb6f52206b6949efd64dbf66beb2a54ba5df46835b2cc148d911ed9789",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Artifact growth and maintenance:",
+          "summary": "- **Artifact growth and maintenance:** if a reading or upkeep problem is demonstrated, a bounded assessment can apply the [corpus policy](../product/03-architecture.md#corpus-policy) to documentation, logs, and derived views. Consider clearer organization, explicit archives, or consolidation while preserving links and required immutable history. A healthy structure needs no change. No file quota, mandatory cleanup, selected layout, order number, or activation is assigned.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0052",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::3cf3cf72dd32ced9e598144deaf296a2a0715473a5981cd8cdad349493f2777b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "bef2ca1c9446c6adcd2cc004b89185f01644ef1ea22796235e151cc49f22dcb3",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Nominated boy-scout item for the next activation — explicit Node types:",
+          "summary": "- **Nominated boy-scout item for the next activation — explicit Node types:** add `\"types\": [\"node\"]` to the `compilerOptions` of the three package `tsconfig.json` files. TypeScript 7.0.2 (current `latest`) reports `Cannot find name 'node:test'` and the downstream `CompileResult` narrowing errors the operator saw in an editor because `@types/node` is no longer included implicitly; with `--types node` all three packages are clean, and the pinned 5.4.5 accepts the field. Unambiguous, low risk, covered by the activated order's `npm test`; record it in that order's result.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0053",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::40bfa21baefd66e2265242a3194dcfc1649da671a18d78b9c402598430cb641e",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5c768e2ba875fc4591597abb2034a03f6eaf629737a1807839fd7f0b5d1d486b",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated follow-on candidate — audit causal-association hardening:",
+          "summary": "- **Unallocated follow-on candidate — audit causal-association hardening:** in a bounded follow-on, teach the WO-007 fold to prefer valid canonical cause and correlation links while retaining an explicitly labeled, strict scope-and-time adjacency fallback only for historical logs without usable links. Adversarial fixtures should cover adjacent decoys, cross-scope links, missing links, invalid links, and the sibling decision/refusal consequences of one attempted action. This nomination has no work-order number, sequence position, release, or activation authority.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0054",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::441c323c555a5ceb99d3af789a3cea2c83ff0176ce080bb52623595a1ca243dd",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "970deb3f28295c28688634f75d44b6647ca0a86aacfe8616c31be1bdb36fac2e",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated evidence candidate — console host-collection budget under gate load:",
+          "summary": "- **Unallocated evidence candidate — console host-collection budget under gate load:** the actor board's host collection runs each fixed read-only command under one sixty-second budget, and under full-gate load the release listing exceeded it in four full runs, one of them outside the sandbox, while passing alone. By the operator's decision the fifth repair runs the console suite after the other three package suites in the root gate; the budget itself is unchanged. Decide whether the budget scales with the host or whether the release listing is shared across the gate, and keep the read-only guarantee. Named by the [fifth repair receipt](../evidence/WO-039/repair-005.md); it grants no activat",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0055",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::618bb6d0b6dcd51d0a22adc16023388bca6c28c10e7b1833e9a083108276b5fb",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7d5f32c2b6c94c61aa33ed8a70c33048c05709175a66962ee501c5ede78234a8",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "JSON forms for the index, the constellation, and release list:",
+          "summary": "- **JSON forms for the index, the constellation, and `release list`:** nominated by WO-032, which parses their pinned text so that wave 1's write surfaces stay disjoint. A bounded follow-on adds `--json` to each once a second consumer exists or the text parsers break. No number, sequence position, or activation authority.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0056",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::6d59e5d9c64f2309a730b59a83d1ca40977d420716f3063bd1f881289e150628",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c95656bd526bb018ea2770504c1f2810886bb678c4c0093321e0cb021d95c6e8",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Contributor equipment follow-on — document producers and modifiers:",
+          "summary": "- **Contributor equipment follow-on — document producers and modifiers:** the [WO-042 breakout](../evidence/WO-042/ideation.md) implements five atomic executor supports and their independent switches, a local intent queue, the execution-safe planning comparison and a bounded console edition fix. The [product model](../product/05-pattern-library.md#built-in-modifier-switches) retains arbitrary typed support modifiers, optional document-producer migration and a visual pre-run panel as future work. Orchestration preference, no-fan-out, concurrency/queue capacity and quality-variant policy need explicit host bindings and refusal evidence before enforcement is claimed. These are unallocated follo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0057",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::703b75264e4ef4c1efe0f2ef9910f14f07be4d740d6d30bd963f903ebcdca1b4",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e76bb0795d2afe69879c2013ab3f2d8f95e7314dd52e27e6213e9ece3d56a386",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Harness host: the permission classifier matches commands, not substrings — nominated 2026-09-08 by the critical-path planning pass; allocated 2026-09-09 to WO-126 criterion 8.",
+          "summary": "- **Harness host: the permission classifier matches commands, not substrings — nominated 2026-09-08 by the critical-path planning pass; allocated 2026-09-09 to WO-126 criterion 8.** The compiled permission hook refused this pass's own shell commands when their text contained a remote-effect token or an environment-file token inside a heredoc or a search pattern, including read-only searches; a bounded follow-on classifies the command's own invocation rather than its text, so `script` actors (WO-068) can carry arbitrary text in arguments. No number, sequence position or activation authority.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0058",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::78414c14245833a9072ed82a87de3825a027a63e47aeb7846c3c6c06a2cfa6ca",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5c6a7fa249f6f4033d69c8bec7ed22d0b2ab86292488a203f00c8763669c7f5c",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Support behavior beyond aggregated prose — operator steering during WO-126, 2026-09-09.",
+          "summary": "- **Support behavior beyond aggregated prose — operator steering during WO-126, 2026-09-09.** [The observed gap and proposed checks](../product/05-pattern-library.md#intent-queue-and-communication-levels) distinguish equipped text from actual entry/queue behavior and deliberate chat intent across new sessions and compaction. WO-096–098 address classification, executable migration, prose retirement and measured context reduction; explicit behavioral coverage remains unallocated. The next pass should reproduce the omission, select a mechanical or bounded-judgment remedy, and require ablation plus reduced operator intervention/context.",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "duplicate",
+          "reason": "This map nomination describes the support-behavior gap preserved by WO-126-D003; its public decision remains the deferred planning destination.",
+          "reopenWhen": "The map nomination acquires scope beyond that correction.",
+          "targets": [
+            "FUP-0130"
+          ],
+          "at": "2026-09-10T00:15:09.886Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0059",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::7ca7bb447fd0178efceccb7d12bed1eb3085cc9da8eb67906fd87542a63b3be1",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9585975c25703ffb04e69d1a788b946de972c6c9eeb1839d008b3de069edef35",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated evidence candidate — source-bound feedback refresh:",
+          "summary": "- **Unallocated evidence candidate — source-bound feedback refresh:** WO-038's [receipt](../evidence/WO-038/README.md#feedback-evidence-refresh) records a manifest-only change requiring the existing regenerate → bounded live audit → validated recording sequence. Add one resumable helper that diagnoses the changed declared inputs, reuses those existing commands, preserves prior editions, and carries explicit transport/model/effort and budget authority. Fixtures must cover unchanged-source reuse, interrupted audit recovery, and refusal to record stale or incomplete results. Include the host's full return-format contract in the verifier input and retain bounded rejection diagnostics: WO-038 obs",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0060",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::85edf24e03822d8d73182afc33ff011eeba653f9a1fd0bfdf68507dc32ef289b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ba9c68a78526df0fb788cc514574e5ed299ae532010d8f9edc4b2372b858c9d7",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated evidence candidate — a multi-attempt verifier fixture for the actor board:",
+          "summary": "- **Unallocated evidence candidate — a multi-attempt verifier fixture for the actor board:** WO-032's `AC2` asserts that every recorded verifier attempt other than the accepted one shows `lease-expired` and takes no acceptance- matrix link, but the `selfhost` case re-pinned by the fifth repair records exactly one attempt and it is the accepted one, so that assertion now iterates over no rows and the string appears in no committed fixture output. Restore the invariant with a fixture-local synthetic store carrying two or more verifier attempts, in the manner of the hand-authored WO-009 event log; it needs no live evidence and changes no behaviour. Named by [FINAL-002](../final-reviews/WO-039/F",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0061",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::8b4eeae47fe835ff899b76747d44f901670913477d6794489ebe12cf7e052096",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "cbb75dfe24e4cdffc30378ff25526c43b965b77c3dfd7c444d184253879548b7",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Console parity contract and drag-equip authoring — wave-5 candidate, named 2026-09-06 by the redirect's refutation receipt. Allocated 2026-09-08 for its contract half as WO-115; the drag-equip surface",
+          "summary": "- **Console parity contract and drag-equip authoring — wave-5 candidate, named 2026-09-06 by the redirect's refutation receipt. Allocated 2026-09-08 for its contract half as WO-115; the drag-equip surface stays a fork-side order over that contract.** The differentiated interface's authoring half (the analogies are the ways you mix and match the agents; drag a pattern card onto an actor and see the exact compiled diff) has no order after this horizon: the actor board is read-only, the 5S set is authored as data, and every build is written by the author. The next planning pass files, once WO-032 and WO-037 have merged and WO-034's shell exists: first the parity contract that names which comman",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0062",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::955996170b50dbdedf0552ebde8b8154aaac41d26351696da83752b0aa0d1336",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "43c9c8a11a2b0d517d33c55c188074c285619bc1e5d1e5390c438396cb046fef",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "The concurrent-workflow control slice shipped in WO-030 (v0.7.0); the",
+          "summary": "- The concurrent-workflow control slice shipped in WO-030 (`v0.7.0`); the first measured paired wave is phase two's lane 0 (WO-038 ∥ WO-041), and the rebase helper the plan named is filed as WO-033's `worktree sync`. The lane-plan projection, declared per-order workflows, admission policy, contribution tracks, and tenant-scoped tracks remain unfiled with the filing conditions in the [concurrent work-orders plan](concurrent-work-orders-plan.md#later-slices-unfiled).",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0063",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::9b0d3b24dc73ac7c91f62b3d8275867fea11b88904d4b3e12dec4ae5c52f2538",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a5ec84d1ee385cd5e4107ca30807c9512af58f59a77a4f48c4186674612ac79d",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Correct the compiled Entropy Reducer's Shape-First wording and regenerate its",
+          "summary": "- Correct the compiled Entropy Reducer's Shape-First wording and regenerate its residue under a bounded follow-on. The current manual usage guide records the operator's relationship-first interpretation; this observation allocates no order or priority.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0064",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::9fd1011b82198b1949f2eeae03ce285d944415652154a155eacada2a10c6eedb",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "696e7554e962e8f7aacbba54b24f388efe792c5a5d3c2ca460a6c1feb8205e46",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated interface candidate — private exclusion-list management:",
+          "summary": "- **Unallocated interface candidate — private exclusion-list management:** expose Clean Room → Excluded terms in the build inspector, with the active local list, its entries, add/remove actions and a No terms configured state. Lists grow incrementally; there is no exhaustive up-front inventory. Keep entries and their hashes out of public artifacts. The [interface item](../product/04-interfaces.md#candidate--private-exclusion-list-management) and [WO-039 receipt](../evidence/WO-039/ideation.md) preserve the operator's request. UI host, layout, storage reconciliation and allocation remain open; the current horizon and work-order sequence are unchanged.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0065",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::a501a5dd5bbf577e3fe94942e25cc846717b04d941a9ab7b75f0243e982af015",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d199ca9f9c54a2cd180fcfe8927a809b69fb40d7932024c78a554800707cad3a",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "NoOps of the 2026-09-09 process-debt pass.",
+          "summary": "- **NoOps of the 2026-09-09 process-debt pass.** Weighed and declined, each with its evidence and reversal condition. (1) _Remove the compiled harness and return to the prose rules._ Declined: the WO-039 measurement cut the executor cold start from 71,165 to 10,960 bytes, and the pre-effect guards refused real bad commands during WO-042's review; the cost is in the Stop-time and read-obligation design, which WO-126 changes. Reversal: if the meter shows no order under budget across the three orders after WO-126 closes, the operator may retire the hooks wholesale. (2) _Split the process debt into bounded orders under the one-seam rule._ Declined by the operator's direction; each extra order wo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0066",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::a925787ae85a3df4a6ce618cd34ef8d5d648ee5027d0c0117c8320d2e785e7dd",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7b35eacc9f0296d739eb7ff8f73e5452a24126b4d3a7f58b33b1d1016a503f08",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Governance candidate — licensing and distribution posture: allocated 2026-09-06.",
+          "summary": "- **Governance candidate — licensing and distribution posture: allocated 2026-09-06.** The operator decided the posture (`docs/LEGAL.md` §Decision: Apache-2.0 code, CC BY 4.0 documentation, DCO inbound, names reserved) and the license files landed with the planning pass; the executable half (workspace `license` and `private` metadata with `@dotln/kernel` the measured gap, a tested publication refusal, `CONTRIBUTING.md`) is WO-038. Third-party notices at the first bundled artifact, privacy and service review, and the brand check stay as gates in the legal record.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0067",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::abcc06c4adb8c2b495ff677b0e07fed0180abae2c2f2e82b23986628dc6cf044",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "25d71794d1d208414cf52672b96dbb2a936559fe4a5834cb8422babe89de1b7b",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Concept registry through actual app use — operator-nominated 2026-09-07 during WO-109.",
+          "summary": "- **Concept registry through actual app use — operator-nominated 2026-09-07 during WO-109.** The [planning proposal](../lineage/remining/runs/draw-001/idea-pipeline-proposal.md) connects inexpensive capture, stable concept records, relevant retrieval, explicit promotion gaps, implementation evidence and actual consumer use. Its recommended delivery model is a continuing queue cut into named batches, such as ten authorable patterns per ordinary work order, with per-item app acceptance and remaining ideas retained for later batches. The next planning session should decide the minimal registry/projection, first retrieval and app-use witness, and bounded order allocation. The proposal links the ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0068",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::b91339b47e45e95e56581166acca7cade13555d7afd5c1c1f000873e8ee7e384",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "43135d5db56066ad2d34b15f08504e911f2f19cf1bc8c65ad45619f594e9713e",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated data candidate — UIFA roles as data:",
+          "summary": "- **Unallocated data candidate — UIFA roles as data:** the five human roles are prose in product 13 until a consumer needs one as an event field; the first plausible consumer is tester-authored scenarios in WO-011.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0069",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::ba8167a27a018e1592da83a0f762a56b3f25454da721e0e166b349ffcb4a5c5b",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "10ac621608c23523498438e061bad4c653dbf93a8fb36e7bf84744dc4c32e8b4",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Rule migration, batches two onward — named 2026-09-06 by the redirect's refutation receipts.",
+          "summary": "- **Rule migration, batches two onward — named 2026-09-06 by the redirect's refutation receipts.** WO-040, now the umbrella of WO-096, WO-097 and WO-098, compiles batch one and leaves roughly 120 shapes classified but not compiled. One batch per wave from wave 4, each cut from WO-040's template, each with its candidates named in the migration ledger before it is filed, each measured by the same directional method; the migration ledger's counts are the progress record. No number until each is filed; the template is the authority.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0070",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::bf3121035aeb1a0abfd96e1d8721857ab4f35f744f32b4c44e5cca42e8e9ec61",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c16ed93d0b35e7d29cb0aa0578317a595dd69ce9b9b15518a0bcb065cc31ffef",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Sibling workflow pilot — filed 2026-09-06, redirected the same day, cut into bounded children 2026-09-08 (WO-069 to WO-083).",
+          "summary": "- **Sibling workflow pilot — filed 2026-09-06, redirected the same day, cut into bounded children 2026-09-08 (WO-069 to WO-083).** The first pass filed the launchpad export and target-repository mechanics as WO-033 and the synthetic-plus-real pilot as WO-034; the redirect made the export carry the compiled Contributor build (through WO-039) and made the Angular repository's first change a UIFA v1 shell over the actor board's view model; the route is recorded in the [phase-two plan](phase-two-plan-2026-09-06.md#the-enterprise-workflow-decision-redirected). The example may still witness implicit documentation lookup with Context7; the product must remain usable without that adapter or a paid a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0071",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::c1f19bfad285ff9863ae22ca5106405cf60c7a63bce7c8c468788b1ecc982582",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "95835f5fc819630c8f31f91eaef76fe851335a8696affd39ce10d82a8616a912",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated evidence candidate — feedback projection for every workspace:",
+          "summary": "- **Unallocated evidence candidate — feedback projection for every workspace:** the feedback source projection strips release-only version and license labels from the lockfile root and the three workspace entries it names, so a later workspace stays raw in the feedback subject and over-invalidates the live edition whenever an order integrates it. Generalize the projection over every workspace lockfile entry, keep the fixtures that prove external dependency and resolution changes still invalidate, and record a fresh live edition with the change. Named by [FINAL-001](../final-reviews/WO-039/FINAL-001.md) finding F1 and the [fifth repair receipt](../evidence/WO-039/repair-005.md); it grants no ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0072",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::cf60dc4997a175b21d49eb1d51e716aa557c7f21b0ffb6377eb388e6e969828a",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e82360cd9864a3de00d05dec72c88559d44f510123e249d54bc05bca239a7d7a",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated workflow candidate — Additional Opinion cohorts:",
+          "summary": "- **Unallocated workflow candidate — Additional Opinion cohorts:** after WO-009 provides real bounded episodes and WO-010 proves blinded independent verification, pilot two verification results over one frozen candidate and a sealed adjudication that can route only to fix or final review. Preserve raw results, duplicate provenance, minority findings, actor/model/effort attestations, and finite cost/concurrency bounds; one blocking finding cannot be outvoted. Defer mutating implementation alternatives until the evidence model works; each candidate then needs its own writer/worktree and any synthesized artifact needs fresh verification. This candidate has no work- order number, version, sequen",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0073",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::d40e8fb3fee79488bc586d3eb3f8ef742526d4ad3ab4fdfc7d70f1856a2b4b92",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "496536837c7cab94413101d281c549ef7c7456d37aa194e2c642f48d264a4d06",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Intent declaration and the stranger test — named 2026-09-06 by the redirect's final refutation receipt.",
+          "summary": "- **Intent declaration and the stranger test — named 2026-09-06 by the redirect's final refutation receipt.** The smallest useful loop's first step, declare a bounded intent in prose and receive a fire-and-forget receipt, still enters this repository as a hand-written work order through a planning pass, and the `v1.0.0` criterion (a person who has never read these docs declares one bounded intent and receives a verifiable result) has no order. After the parity contract exists, one order makes intent declaration a command over it, from prose to a compiled work order with its receipt, exercised by a non-author; the workstream application journeys in product 12 are its scenarios. No number unti",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0074",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::e2ce9d8f09f96721f59c6400b7df8e667cc835f6caf2699cc4a1585e597a9043",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b1991585037dd1a5b3167506d4c4e4cc2669a309042a999af306776623468010",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Pattern workshop v1, remaining shelf entries — named 2026-09-06 by the redirect's refutation receipts.",
+          "summary": "- **Pattern workshop v1, remaining shelf entries — named 2026-09-06 by the redirect's refutation receipts.** After WO-091 to WO-095 (WO-037's children) compile the 5S set, the Marquet ladder as a typed protocol, the mitigated-speech voice selector, Theory of Constraints, the commedia masks as a party topology, and the Algorithms-to-Live-By policies each become one compiler-side order in the shape of WO-037, in an order the pattern library's founding sequence and the console's evidence decide; no number until filed.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0075",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::e41410847ada884fe3d3951f6d506aeffb4b42b358ff1fd3f5bdf645708dfe18",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1b36cfcdeec7bdb14e2f6523b9cdba04df3e333e7b1c5a61467ea675ec7857c9",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Allocated composition candidate — claim-layer authority floor and envelope-projected inspection:",
+          "summary": "- **Allocated composition candidate — claim-layer authority floor and envelope-projected inspection:** compiler v1 lets any linked support claim the `safety-invariants` layer, so an author-supplied graph can grant itself an effect its own read-only support denies, and the tooltip's RESTRICTIONS are authored strings that do not notice (WO-008 VER-001 F2, reproduced in FINAL-001). A bounded follow-on before saved or community builds should decide which layers a support may claim and project RESTRICTIONS from the compiled envelope. **Allocated 2026-09-08 as [WO-042](../work-orders/WO-042-authority-provenance.md)** by the critical-path planning pass, after the harness lowering made the compiled ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0076",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::e631351489652814d157bf8f32d1c85bf637abcb5f4d441c85aecc5f5c52c7fc",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ac3f0597aefb2a6f0fc26a755f2f4015c28b65a27bc3b71f44e9394bcff7ef9f",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated evidence candidate — historical editions on the actor board:",
+          "summary": "- **Unallocated evidence candidate — historical editions on the actor board:** the reactor refuses a persisted verification capsule that no longer recompiles under the current compiler, so an actor board over an earlier self-hosted edition renders that edition's verifier and maturity as unavailable after every compiler package bump, and the board's edition is a constant beside the root evidence script's `--edition` flag. Decide whether a read-only historical projection may replay an earlier compiler's capsule under an explicit label, and select the current edition from one declared source. Named by the [fifth repair receipt](../evidence/WO-039/repair-005.md); it grants no activation, sequenc",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0077",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::fa6c7d659b06e6963cfbfb97358f3bfe722dfdfc3d711fd6de4e9490a4310638",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "167b5d2495f1fe782c08de9517dc4add9ad75daaca2de40e4a0712ccb10fd034",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Choose a bounded consumer, privacy profile, cadence, cost ceiling, and useful",
+          "summary": "- Choose a bounded consumer, privacy profile, cadence, cost ceiling, and useful comparison before implementing the [system baseline](../product/06-roadmap.md#candidate--bounded-system-baseline) or [success-under-growth review](../product/05-pattern-library.md#candidate--success-under-growth).",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0078",
+      "key": "candidate:docs/product/03-architecture.md#candidate--canonical-private-intake-reconciliation",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "72d6b0f4b1a109c5aeef6aae801483c7bfb155faacd194f1a51c1dbd40a69b5c",
+          "ref": "docs/product/03-architecture.md#candidate--canonical-private-intake-reconciliation",
+          "title": "Candidate — canonical private intake reconciliation",
+          "summary": "### Candidate — canonical private intake reconciliation A small intake control should resolve one canonical private store independent of the caller's worktree and expose capture, path, status, backup, and reconcile operations. The initial store can be the main checkout's ignored intake; a configured external store may later replace it without changing committed source references. Reconciliation needs a repository lock, NUL-safe enumeration, path and symlink checks, private byte hashes, atomic no-overwrite copying, identical-file deduplication, hard refusal on divergent path collisions, verified owner-only backup in a trusted configured destination, and source removal only after a recoverable",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0079",
+      "key": "candidate:docs/product/03-architecture.md#candidate--contributed-execution-pool",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b62ad8ab85760d84c14eb060b6df998f95c35ef3d0a0cdeb95bef14dc0a1bdf5",
+          "ref": "docs/product/03-architecture.md#candidate--contributed-execution-pool",
+          "title": "Candidate — contributed execution pool",
+          "summary": "#### Candidate — contributed execution pool A person may contribute otherwise-unused model capacity without lending an account or moving credentials into DotLn. The candidate would offer a bounded, model-specific WorkOrder from an already reviewed eligible queue; the participant claims it, runs it locally through their own harness and provider relationship, and returns the patch, typed result, evidence, and actor attestation through a pull request. The contribution remains untrusted input: source-revision guards, path and authority limits, automated checks, independent verification, and operator merge authority apply exactly as they do to local work. Provider eligibility and terms are enviro",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0080",
+      "key": "candidate:docs/product/03-architecture.md#candidate--isolated-execution-environments",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1217c1c42f55cb1ddff0a9c0a2aeb650df855be6f3ee419d1d91740f63baea70",
+          "ref": "docs/product/03-architecture.md#candidate--isolated-execution-environments",
+          "title": "Candidate — isolated execution environments",
+          "summary": "## Candidate — isolated execution environments DotLn may eventually select and attest an execution boundary per episode: the current worktree plus harness sandbox, a hardened container runner (Docker is one possible provider), a disposable VM or microVM, or another environment proved by discovery. `ExecutionEnvironmentProfile` is a working name for the selection record, not a pinned schema. It remains orthogonal to `RuntimePrimitiveCatalog`, `WorkOrderTransport`, and `AuthorityEnvelope`. WO-022 adds the bounded `beacon-perception-v1` specialization beside WO-009's `fixture-inspection-v1`. Both are explicit `ExecutionEnvironmentProfile` variants. A Beacon profile grants a finite set of indivi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0081",
+      "key": "candidate:docs/product/03-architecture.md#candidate--opinion-cohorts-and-sealed-adjudication",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ce2e9878f9f8c44c27785cb5146af46e3f9fa235a5227639274251f0657278ef",
+          "ref": "docs/product/03-architecture.md#candidate--opinion-cohorts-and-sealed-adjudication",
+          "title": "Candidate — opinion cohorts and sealed adjudication",
+          "summary": "### Candidate — opinion cohorts and sealed adjudication The Additional Opinion candidate is an inner controller around an episode-producing stage, not a literal replay of that stage's outer lifecycle transition. While a cohort is open, the controller may dispatch another peer episode against one immutable subject snapshot or seal the cohort and continue. Activation, authority grants, completion recording, destructive effects, publication and release close, and adjudication itself are ineligible: repeating those edges could duplicate effects or manufacture authority. Compatibility requires a frozen comparable subject, a typed result, finite resource and stop bounds, and a declared adjudicatio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0082",
+      "key": "candidate:docs/product/03-architecture.md#candidate--owner-sovereign-implementation-profile",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1513421e4036589f440c36018768197df03f39075e536edc14c967416c1f00d5",
+          "ref": "docs/product/03-architecture.md#candidate--owner-sovereign-implementation-profile",
+          "title": "Candidate — owner-sovereign implementation profile",
+          "summary": "### Candidate — owner-sovereign implementation profile “Owner-sovereign” is the working label, not a selected public name. An implementation may offer an owner-controlled profile with deliberately permissive DotLn policy. The owner can classify a rule as hard, advisory, or absent; select a strict envelope, standing grant, or owner-direct authority regime; remove repeat confirmations; accept unverified outcomes; and disable or reduce retention, audit, and replay. The profile is not required to ship preconfigured or active, and the author's personal implementation does not adopt it merely because the platform can express it. Three concerns stay separate in its eventual design. **Instance doctr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0083",
+      "key": "candidate:docs/product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "edbfcae468bf1f1d470c2094b940a8fe39c065995a5f047abba820884166fe0b",
+          "ref": "docs/product/03-architecture.md#candidate--progressive-absence-authority-and-return-readiness",
+          "title": "Candidate — progressive absence authority and return readiness",
+          "summary": "### Candidate — progressive absence authority and return readiness The author's candidate profile keeps foreground intent first while present and favors bounded housekeeping during absence because low-disruption cleanup can reduce return-time reorientation. Per-action `U(a,t) = Benefit − Risk − Disruption − OpportunityCost`, the sow/reap ratio, and Double Dutch windows can rank eligible work without silently granting it. Separately, the owner may preauthorize a progressive scope and effect-authority schedule that grows by recorded stage, peaks within a declared ceiling, and stops, resets, or loops on selected events. **Blackjack +3** is the working lens for a candidate explicit progressive-s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0084",
+      "key": "candidate:docs/product/03-architecture.md#candidate--resource-pressure-as-an-environmental-modifier",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c1cd85944bd374835864e9bd79c16685cdf1fa2904f003c13c33c1e60db4b81b",
+          "ref": "docs/product/03-architecture.md#candidate--resource-pressure-as-an-environmental-modifier",
+          "title": "Candidate — resource pressure as an environmental modifier",
+          "summary": "### Candidate — resource pressure as an environmental modifier The operator's environmental analogy contributes a relationship: surrounding conditions can make an activity harder to initiate and harder to sustain. For this implementation, pressure in a shared resource budget could progressively raise the activation requirement for routine work. This is a proposed resource and activation policy, not a physical simulation or an implemented scheduler. Keep three quantities visible: the task's base resource cost, the environment's current activation modifier or threshold, and the capacity still available within a named budget scope and window. Recorded consumption and outstanding reservations de",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0085",
+      "key": "candidate:docs/product/04-interfaces.md#candidate--exact-operator-command-vocabulary",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4de8fb8b0bbe10c661b545e878337e0a1675235956eb60ce43e03b0e4df3ac38",
+          "ref": "docs/product/04-interfaces.md#candidate--exact-operator-command-vocabulary",
+          "title": "Candidate — exact operator command vocabulary",
+          "summary": "### Candidate — exact operator command vocabulary The fourth Westworld-derived shape is a reserved vocabulary whose exact phrases put the operator in deterministic control of an interaction mode. The wording is part of the command identity, not flavor text to paraphrase. The first operator-supplied token is exactly `analysis:`. It requests an inspectable, evidence-backed analysis artifact or analysis-only episode; it does not promise disclosure of a model's private chain-of-thought. The remaining Westworld phrases stay as explicit empty slots until the operator supplies them or an authorized source pass records their exact text—remembered approximations do not compile. Each exact phrase maps",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0086",
+      "key": "candidate:docs/product/04-interfaces.md#candidate--multi-dimensional-authorship-assistance",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "627df59ebe0da45196804161c9dffebf8592c29bebcd8829779b8d4caf60eb3d",
+          "ref": "docs/product/04-interfaces.md#candidate--multi-dimensional-authorship-assistance",
+          "title": "Candidate — multi-dimensional authorship assistance",
+          "summary": "### Candidate — multi-dimensional authorship assistance The operator's open question for the [UIFA roles](13-uifa-roles.md) is what authoring feels like when it is done well: what completion or “intellisense” means in three or four dimensions, and how a person and the platform become more than the sum of the parts without the person leaving flow. The candidate answer is that completion proposes along several axes at once, and every proposal arrives as a compiled diff rather than a silent mutation: - **Structure** — which supports fit this socket, which links are valid, which combination the compiler would refuse and why. - **Time** — what fires next under this cadence, which phase the compos",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0087",
+      "key": "candidate:docs/product/04-interfaces.md#candidate--private-exclusion-list-management",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a813fe570c867de09619b3d7bd8f4ddfde0257287e7c1da82bcfc835dd5e5de0",
+          "ref": "docs/product/04-interfaces.md#candidate--private-exclusion-list-management",
+          "title": "Candidate — private exclusion-list management",
+          "summary": "### Candidate — private exclusion-list management **Open item:** expose **Clean Room → Excluded terms** in the build inspector so the operator can find and manage the private list used to screen output. The view identifies the active local list, shows its entries, and offers add and remove actions. It shows **No terms configured** when there are none; setup never requires an exhaustive inventory. Entries can accumulate as they become known, and the locked employer/secret boundary still applies after an entry is removed or while the list is unconfigured. The editor operates on the same private data as the checker. Entries, matched text and list hashes stay out of public exports and evidence. ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0088",
+      "key": "candidate:docs/product/04-interfaces.md#candidate--workstream-application",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6b1c682b73de4d0361bc616d85f66573a0a3e64cd9a0af74e4c4ec10cf8e333d",
+          "ref": "docs/product/04-interfaces.md#candidate--workstream-application",
+          "title": "Candidate — workstream application",
+          "summary": "### Candidate — workstream application The [end-user workflow candidate](12-workstream-application.md) makes this interface concrete through arriving at the desk, starting an outcome, reviewing evidence, returning after interruption, and coordinating changes across repositories. It treats the operator's successful existing workflow as a parity baseline while testing whether DotLn reduces its coordination burden. The candidate supplies synthetic adoption scenarios, not a shipped console or a deployment assertion. The workstream is the durable unit of return; repository sessions remain inspectable underneath it.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0089",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--additional-opinion",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3e3b5a63f7626eb7e0ae2605145fc93e16e0e3d79282ed73b396e6ba5830d34a",
+          "ref": "docs/product/05-pattern-library.md#candidate--additional-opinion",
+          "title": "Candidate — Additional Opinion",
+          "summary": "## Candidate — Additional Opinion **Additional Opinion** is a candidate support that keeps an eligible action available long enough to dispatch another bounded episode over one frozen subject. The operator-facing **Second Opinion** preset permits exactly one additional episode—two total—while the generalized support permits a finite batch selected by count, concurrency, deadline, cost, and marginal-value stop rules. The first implementation should be the two-opinion preset. It caps batch width, prohibits recursive opinion-of-opinion fan-out, and does not add a universal self-loop to every state. “Same move again” means the same declared comparison input, not the same event- store state or co",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0090",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--beware-of-naive-interventionism",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "3405d60b6a19a738e4d1473df8d1beb8026aecfcaf4a9a8f008014a890b45c9c",
+          "ref": "docs/product/05-pattern-library.md#candidate--beware-of-naive-interventionism",
+          "title": "Candidate — Beware of Naive Interventionism",
+          "summary": "## Candidate — Beware of Naive Interventionism **\"Beware of naive interventionism\"** is a candidate support for any active mechanic that proposes changing an existing system. It challenges the hidden premise that detecting an imperfection makes intervention net-beneficial. The support is a counterweight to action bias, novelty bias, cleanup enthusiasm, and locally correct changes that damage adaptations elsewhere. It asks for an explicit comparison between intervention and non-intervention: - What observable harm exists now, and how strong is the evidence? - What useful or compensating function might the current behavior serve? - Which consumers, equilibria, or learned workflows depend on it",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0091",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--context-continuity",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c7c63c83d6b31332dd3b362cd0582558c73581dbdf57088ae1413725f0f340a4",
+          "ref": "docs/product/05-pattern-library.md#candidate--context-continuity",
+          "title": "Candidate — Context Continuity",
+          "summary": "## Candidate — Context Continuity The operator's [2026-09-09 ideation](../evidence/WO-126/ideation.md) asks for a support that observes context use automatically and demonstrates that an actor retains its task through automatic compaction. Its outcome is continuity of the authorized work: the actor resumes the right objective, constraints, decisions and next action without losing obligations or repeating completed effects. A reassuring summary alone does not demonstrate that outcome. The operator locates the eventual framework in DotLn itself, using the future offline work queue and shared state. The queue, admitted work, authority, decisions and accepted evidence outlive a model window. Dot",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "The operator ideation during WO-126 preserves Context Continuity as an unallocated support candidate. Its host signals and compaction-recovery evidence remain to be planned.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-10T00:15:09.701Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0092",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--continuity-critical-flow-and-binary-quench",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ad204c677d727060cff6bc9efbe78763a79ab88de5615df8840792da83dd74f7",
+          "ref": "docs/product/05-pattern-library.md#candidate--continuity-critical-flow-and-binary-quench",
+          "title": "Candidate — continuity-critical flow and binary quench",
+          "summary": "## Candidate — continuity-critical flow and binary quench This candidate protects the mission's operator-flow objective without classifying the operator's emotion. It specializes the temporal-interaction candidate above and distinguishes two interaction contracts: - **Collaborative exploration:** the operator and system are shaping foundational material together; bounded misunderstanding, revision, and course correction are expected within the ordinary evidence and authority rules. - **Continuity-critical flow:** the operator is carrying a long chained idea and using the interaction to test and realize it. The system preserves the active idea and continuation, researches or removes blockers ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0093",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--default-to-true--default-to-false",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "96cdd40170f6bf89f4d7e94c31d698c43c8e231777a8befa7e57792c88a4da5a",
+          "ref": "docs/product/05-pattern-library.md#candidate--default-to-true--default-to-false",
+          "title": "Candidate — Default to True / Default to False",
+          "summary": "## Candidate — Default to True / Default to False Gladwell's **Default to True** and its explicit polar counterpart **Default to False** are candidate supports that tell a linked active how to resolve genuine uncertainty after available evidence has been considered. They set a prior or tie-break direction; they do not declare facts, create authority, or replace verification. **Leading implementation hypothesis:** no new primitive is required. Define a PolarAxis such as `provisionalAcceptance ↔ provisionalSkepticism`, then compile Default to True and Default to False as named supports contributing opposite, scoped factors to that axis. The existing `deriveBehavior(...)` path resolves identity",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0094",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--do-nothing-active-and-support",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "8d19649a4d9472977b2c38c23bad78f599f4933cdc4fcf51d44b44fc9014723e",
+          "ref": "docs/product/05-pattern-library.md#candidate--do-nothing-active-and-support",
+          "title": "Candidate — Do Nothing, active and support",
+          "summary": "## Candidate — Do Nothing, active and support **Do Nothing** exists in two socket positions with distinct semantics. Both compile to deliberate, observable non-action through the existing first-class `NoOpIntent`; neither means a crashed scheduler, an empty result, indecision, or silent abandonment. ### Active: Do Nothing As an active mechanic, Do Nothing makes restraint the episode's primary behavior. It evaluates the present state, records why action is currently negative-value or premature, preserves relevant evidence, and establishes the condition and cadence for reconsideration. Its minimum result is already shaped by the domain model: ```ts type DoNothingResult = { intent: { kind: \"NoO",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0095",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--embodied-explorer",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "bedf20d0ab876812dcd73cc1b51949abdef2e53f8dadce4421c9ab0ba4635635",
+          "ref": "docs/product/05-pattern-library.md#candidate--embodied-explorer",
+          "title": "Candidate — Embodied Explorer",
+          "summary": "## Candidate — Embodied Explorer The **Embodied Explorer** is a candidate domain role for the post-1.0 simulation laboratory, not a new canonical actor kind. Its obligation is to discover an embodiment's affordances and limits from bounded interaction: start with rudimentary observations and motor primitives, attempt small movements, and compose verified sequences into larger skills such as stabilizing, reaching, grasping, locomotion, object relocation, and tool use. “What am I?” must not collapse into Identity or model introspection. Keep these three surfaces separate even if later schemas use different names: - an authoritative, versioned **embodiment contract** describing morphology, avai",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0096",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--exact-phrasebook-voice-support",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "88ffe08ff2170ec601ac45abeca410f53ce04dfac120f04058ac6541d0db4bdb",
+          "ref": "docs/product/05-pattern-library.md#candidate--exact-phrasebook-voice-support",
+          "title": "Candidate — exact phrasebook voice support",
+          "summary": "### Candidate — exact phrasebook voice support An optional support asks output prose to use entries from an operator-selected, versioned phrasebook: exact words, phrases, sentence constructions, spellings, capitalization, and annotations are content, not hints to paraphrase. The support may attach scopes, triggers, weights, cooldowns, and do-not-use contexts without rewriting the entries themselves. It is best-effort when lowered into model instructions and deterministic only when an explicit output transform runs; the trace says which mechanism actually participated. Phrasebook style never changes `Voice`, facts, authority, or evidence, and a private or source-derived palette retains its pr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0097",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--influence-response-policies",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "4dbfb6726a411d4c1aba49ea845f1406616e98a4e2bc2866529a17900812c805",
+          "ref": "docs/product/05-pattern-library.md#candidate--influence-response-policies",
+          "title": "Candidate — influence response policies",
+          "summary": "## Candidate — influence response policies How an eligible signal participates in a decision is a policy, not a fixed personality score. Keep that policy separate from the signal's factual support, the `Voice` used to express it, and the authority that bounds the eventual effect. The operator's quantum-mechanics viewing supplies one useful contrast between qualitative bands and accumulating magnitude; it does not make a physical claim or import physics as the implementation. The first candidate inventory contains four distinct response shapes: - **band-gated:** the highest applicable semantic band controls the response; repeating a lower-band suggestion any number of times does not turn it i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0098",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--oppositional-support",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "d8dcb1811e4dc2d55a879b823d2bfcda1760cb991697941e2a647cc82bb4ed47",
+          "ref": "docs/product/05-pattern-library.md#candidate--oppositional-support",
+          "title": "Candidate — oppositional support",
+          "summary": "## Candidate — oppositional support An active mechanic may be linked to a support whose job is to make the active's declared PolarAxis relation genuinely present in the decision, rather than merely lowering a numeric score. Working name: **Oppositional Counsel**. This is an unsettled candidate, not yet a pinned `PatternDefinition`. The candidate separates three channels that must not collapse into one: - **Activation pressure** changes enthusiasm: salience, selection weight, persistence, or how strongly a branch is advocated. It is soft policy and loses to every harder composition layer. - **Critical argument** produces a typed dissent artifact naming flaws, counterevidence, failure modes, a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0099",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--snooping-footprint-reducer",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b87d2b61922e6ab490704c89b2a5279825ce8aaba39ba981f34b2375080a1425",
+          "ref": "docs/product/05-pattern-library.md#candidate--snooping-footprint-reducer",
+          "title": "Candidate — Snooping Footprint Reducer",
+          "summary": "## Candidate — Snooping Footprint Reducer The **Snooping Footprint Reducer** is a recurring maintenance active that looks for observation, collection, retention, and disclosure that no longer earn their cost. It wakes on an explicit low-frequency cadence, after a material adapter/schema change, or when a privacy incident provides bounded evidence; “occasionally” is an operator-facing posture, not an orphan timer. Its inventory stays structural whenever possible: which fields and sensors are read, which builder or adapter class resolves an external target, why each datum is needed, where it can flow, how long it persists, which evidence claim depends on it, and what capability would be lost i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0100",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--success-under-growth",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f579ebffeb33042e37c9f0547904d357fdaa581c2a000a9a67d49d064632c05c",
+          "ref": "docs/product/05-pattern-library.md#candidate--success-under-growth",
+          "title": "Candidate — success under growth",
+          "summary": "## Candidate — success under growth A solution can become a liability because it succeeds at its original job. More retained evidence can increase startup context and storage; more events can increase fold latency; stronger process can accumulate handoffs and waiting; and useful cross-references can increase the number of surfaces every change must update. These are scenarios to test, not findings that the current system has already failed or reasons to discard deliberate tradeoffs. This candidate support follows a material decision inside the existing review. It asks which useful property grows, how that growth could undermine the outcome it serves, what would reveal the crossover, and what",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0101",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--temporal-interaction-interpretation",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f6a7ccef45fb37100d718e8ab2fa55a7697325bd9652d02814150510e74e880a",
+          "ref": "docs/product/05-pattern-library.md#candidate--temporal-interaction-interpretation",
+          "title": "Candidate — temporal interaction interpretation",
+          "summary": "## Candidate — temporal interaction interpretation One message is not the whole event. This candidate treats an interaction as a time-ordered, relational stream whose derived interpretation can depend on what happened before and on evidence that arrives later: which prompt a response answers, which objective and continuation were active, whether a correction already landed, how often a behavior recurred, and whether an explicit operator declaration or applicable context event changed the interaction contract. Timing or surface/message features alone cannot establish that transition; an explicit semantic operator declaration can. Later evidence revises a projection; it never rewrites the immu",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0102",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--the-malcolm-check",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "769ef59594c47666f3934b78a8e7911877721028dc46d630491880c14e95ee1e",
+          "ref": "docs/product/05-pattern-library.md#candidate--the-malcolm-check",
+          "title": "Candidate — The Malcolm Check",
+          "summary": "## Candidate — The Malcolm Check **The Malcolm Check** is a candidate **counterweight** support for affordance-driven exploration. Its familiar mask is the boundary skeptic: when the system notices a move it can execute, the mask asks whether that move belongs to the objective and which authority permits its exact effect. A newly visible path into another trust domain is evidence about the environment, not a reason to enter it. The support targets a selection failure in which the existence of access begins to determine the plan. A candidate can promise information and look reversible yet remain irrelevant to the requested result, expose a system the operator did not put in scope, or depend o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0103",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate-extension--implementation-and-delayed-consequences",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a1d0ba48b127293b313ce841654ca63ae139753b7ebec2c62596c497919031e5",
+          "ref": "docs/product/05-pattern-library.md#candidate-extension--implementation-and-delayed-consequences",
+          "title": "Candidate extension — implementation and delayed consequences",
+          "summary": "### Candidate extension — implementation and delayed consequences A justified intervention can be implemented in a way that defeats its purpose. An executor may satisfy a work order's literal step while quietly activating another process, consuming a scarce resource, or moving a failure into the future. This extends the intervention question into execution: the reason to act can remain valid while the chosen method or its observation needs repair. It does not require reopening a settled decision merely because implementation reveals an interaction that must be handled. The motivating shape is an object moved out of a work area into an apparently secure place that also activates equipment. Th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0104",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate-role--flow-steward",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9fbf061f197d7f1925c9139cfe52c59baa25af19c780f2e447a17c262c53b70d",
+          "ref": "docs/product/05-pattern-library.md#candidate-role--flow-steward",
+          "title": "Candidate role — Flow Steward",
+          "summary": "### Candidate role — Flow Steward The **Flow Steward** is an episode/workstream-scoped support role whose product is lower observable workflow impedance while the operator retains the idea, objective, and implementation direction. It is a coordinator, metaworker, and source-preserving translator only to the extent those obligations are useful in the current contract. It is not the operator's manager, a second traffic cop, or a required approval layer. Three public essays supply inspiration rather than empirical product proof: Joel Spolsky's [“Controlling Your Environment Makes You Happy”](https://www.joelonsoftware.com/2000/04/10/controlling-your-environment-makes-you-happy/) supports attent",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0105",
+      "key": "candidate:docs/product/06-roadmap.md#candidate--beacon-usefulness-checkpoint",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "027fbc1165f2223c59615bd673cdbfcc09a660dca66bb6adb84f55e51b33b56e",
+          "ref": "docs/product/06-roadmap.md#candidate--beacon-usefulness-checkpoint",
+          "title": "Candidate — beacon usefulness checkpoint",
+          "summary": "### Candidate — beacon usefulness checkpoint WO-020's exact decoding, replay, metadata-only reading, and atomic emission can establish the local mechanism. WO-021's lifecycle integration, audiences, staleness, and group projection can establish a usable control-plane example. Neither demonstrates that all of DotLn is viable or that Protíno's simulated world is compelling. Technical feasibility, practical usefulness, and felt interest are different questions with different evidence. The [bounded comparison plan](../planning/beacon-usefulness-checkpoint.md) nominates an operator trial after WO-021: answer the same work-state questions with existing status projections and with Beacons, using no",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0106",
+      "key": "candidate:docs/product/06-roadmap.md#candidate--bounded-system-baseline",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0bdbf546265381c55c9a065157081f2f30bbbfd182a9ce81c3b92de03579c032",
+          "ref": "docs/product/06-roadmap.md#candidate--bounded-system-baseline",
+          "title": "Candidate — bounded system baseline",
+          "summary": "### Candidate — bounded system baseline Routine observation can reveal an accumulating burden before it becomes the current constraint. The useful shape is a small, repeatable baseline check and a trend, even when no optimization is underway. Public reporting uses neutral system measures such as size, latency, waiting, and maintenance cost. Daily observation is one possible owner-selected cadence; this candidate installs no job and adds no always-on collection to WO-028. Select only measurements that answer a declared question: | Question | Candidate evidence | Interpretation boundary | | ------------------------------------------------- | ----------------------------------------------------",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0107",
+      "key": "candidate:docs/product/06-roadmap.md#candidate--budget-window-work-order-ladders",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "985f5458c640b77deb098a0cf4fa9b9e20ea80da9ab6da0bdf703bba7b8d6929",
+          "ref": "docs/product/06-roadmap.md#candidate--budget-window-work-order-ladders",
+          "title": "Candidate — budget-window work-order ladders",
+          "summary": "### Candidate — budget-window work-order ladders The operator prefers concentrating useful work early in available usage windows so the remaining period can be spent on other activities. Preserve a control state machine supporting **zero to many concurrent work orders, each with its own declared workflow steps**. A single ladder and a two-ladder batch are trial capacity settings. Orders may occupy different phases and advance independently; steps and legal transitions remain governed by each order's pinned workflow and evidence contract. The initial role preference is Codex implementation, fresh Opus 5 verification, and fresh Fable final review, with one writer per worktree and model/effort ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0108",
+      "key": "candidate:docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "92e0f18178c938becb291eaab1ab2ea4cfa198cf021f2ead989ce18514c5cc43",
+          "ref": "docs/product/06-roadmap.md#candidate--unattended-work-order-portfolio",
+          "title": "Candidate — unattended work-order portfolio",
+          "summary": "### Candidate — unattended work-order portfolio The earlier operator-away scheduler was partly a workaround for supervising one prompt-bound agent and arranging recurring maintenance timers by hand. Once the work-order processor can close one order and select another, unattended autonomy should operate primarily over bounded WorkOrders rather than recreate a permanent prompt session. An opted-in portfolio has two candidate lanes. First are small eligible orders already covered by standing authority and requiring no new material decision; housekeeping often fits because it can reduce return-time reorientation. Second is a bounded set of larger-authority orders the operator explicitly preautho",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0109",
+      "key": "candidate:docs/product/06-roadmap.md#candidate--whole-or-split-work-orders-under-one-umbrella",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "a5977a5c1d7f006033d0ac5f689949f27c51dd983688d3c0febfde0835cd4a28",
+          "ref": "docs/product/06-roadmap.md#candidate--whole-or-split-work-orders-under-one-umbrella",
+          "title": "Candidate — whole or split work orders under one umbrella",
+          "summary": "### Candidate — whole or split work orders under one umbrella **2026-09-05 operator ideation:** offer a split assessment for any work order. Keep its outcome, scope, and acceptance criteria visible under one umbrella, while proposing smaller, independently reviewable increments. The purpose is to let one body of work produce several useful PRs without losing its shared intent or evidence trail. A split is optional: an already atomic order may be best left whole, and an arbitrary partition should not be recommended merely to reach a requested number of children. Before execution, the whole order and a proposed child plan are alternative routes. Both can be available to choose; their execution",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0110",
+      "key": "candidate:docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0de9a09dc7f5e950e9a656811bae79b5180f48a606e257af2e08b995c877097a",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0111",
+      "key": "candidate:docs/product/07-execution-guide.md#candidate--planner-startup-context",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0df724f82210f6d017d8adc52ede9a0c0f223f37dd18a76bd8b3e678342ed728",
+          "ref": "docs/product/07-execution-guide.md#candidate--planner-startup-context",
+          "title": "Candidate — planner startup context",
+          "summary": "### Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured",
+          "missing": false
+        },
+        {
+          "hash": "6de2a2c569debc23bf3ab2a73b0a45a43c5d55bc6147a038e42db402fddaa9d6",
+          "ref": "docs/product/07-execution-guide.md#candidate--planner-startup-context",
+          "title": "Candidate — planner startup context",
+          "summary": "## Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "The operator identified excessive planner reads and permits later assessment; measure the bounded feed first, then address any remaining purpose/orientation and candidate-selection load.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-10T00:11:02.845Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "open",
+          "reason": "The source now isolates the operator-requested planner-context comparison from refutation procedure. Measure the bounded feed first and retain any remaining orientation or candidate-selection burden.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-10T00:15:09.598Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0112",
+      "key": "candidate:docs/product/09-audit-resilience-privacy.md#candidate--minimized-incident-reporting",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "de7bea65ba916d2bd6e5f3ff40f37d7532cc368324809e6c4e58b655c8fa2f0c",
+          "ref": "docs/product/09-audit-resilience-privacy.md#candidate--minimized-incident-reporting",
+          "title": "Candidate — minimized incident reporting",
+          "summary": "## Candidate — minimized incident reporting A failure-triggered active, projected into supported runtimes as an agent skill, can turn a crash or reproducible bug into a least-necessary incident packet. It starts in the governed local lane: select only the correlated diagnostic slice, reproduction steps, affected public component and version, outcome class, and public-safe environment facts; deduplicate and classify it; apply deterministic field selection and local redaction; then preview a manifest that says what will be included, omitted, transformed, and lost. Raw local logs remain separately controlled diagnostics with short retention by default. Credentials, resolved targets, private ide",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0113",
+      "key": "candidate:docs/product/09-audit-resilience-privacy.md#candidate--model-input-exposure-plans",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6a03a61b290b76a2104e6cd9552a17494463811d953b5ac98979f51333514d1b",
+          "ref": "docs/product/09-audit-resilience-privacy.md#candidate--model-input-exposure-plans",
+          "title": "Candidate — model-input exposure plans",
+          "summary": "## Candidate — model-input exposure plans “Uses a model” is too coarse a privacy disclosure. Before a possible model invocation crosses its execution boundary, the compiler should be able to emit a **ModelInputPlan** that names the destination class—deterministic local processor, local model, or provider-hosted remote model—and every planned input edge. Each edge identifies purpose, source lineage, data class, retention class, and exposure form: verbatim content; structural shape such as schema, length, or timing; subject identity or tags; a derived summary, embedding, or inference; related or adjacent retrieved context; or material that could travel accidentally through conversation history",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0114",
+      "key": "candidate:docs/product/09-audit-resilience-privacy.md#candidate--public-git-with-a-local-private-evidence-lane",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "69a2da9858e41bd2de9b9783803af6d2301840fb4348e2aa852e148567ffcb0c",
+          "ref": "docs/product/09-audit-resilience-privacy.md#candidate--public-git-with-a-local-private-evidence-lane",
+          "title": "Candidate — public Git with a local private evidence lane",
+          "summary": "## Candidate — public Git with a local private evidence lane The personal default aims to commit nearly all durable definitions, code, decisions, and public-safe evidence to GitHub. Data that the operator wants processed, logged, or audited but not published takes an intake-shaped local lane: an operator-configured ignored store holds the governed source, pure functions derive bounded views, and a Clean Room promotion step decides whether any sanitized projection, fixture, or conclusion may enter Git. The effectful local store is separate from the pure transformation; `gitignore` is only the last anti-commit guard. A payload-free public log is not automatically harmless. Event types, orderin",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0115",
+      "key": "candidate:docs/product/10-ir-compatibility.md#candidate--external-rule-source-import-plans",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "2f07dff370a2e82e268eb70d9ad6676f0335fb9f7bd5c258a33718eeaf52e223",
+          "ref": "docs/product/10-ir-compatibility.md#candidate--external-rule-source-import-plans",
+          "title": "Candidate — external rule-source import plans",
+          "summary": "## Candidate — external rule-source import plans A user-owned or public rule system enters DotLn through an immutable versioned source reference or, when retention is allowed, an authorized snapshot. It is not presumed canonical IR and never becomes executable authority merely because it can be read. Import planning reuses the transformation graph: identify the source, characterize its semantics, propose one or more paths, and show fidelity and evidence before any materialization or live connection. Without pinning a representation, the preview should convey these concepts for every imported rule or rule family: - source identity, provenance, license or access authority, effective scope, rev",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0116",
+      "key": "candidate:docs/product/11-proteino.md#candidate--behavior-is-not-animate-only",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "043e795e1246100700c39afc599d47038276bbe0906ba08cda390c5f63a4aad3",
+          "ref": "docs/product/11-proteino.md#candidate--behavior-is-not-animate-only",
+          "title": "Candidate — behavior is not animate-only",
+          "summary": "## Candidate — behavior is not animate-only [Current section](11-protino.md#candidate--behavior-is-not-animate-only).",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0117",
+      "key": "candidate:docs/product/11-proteino.md#candidate--commander-mediated-tactical-play",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "075e3a256825ef7bce0b366d8880cdc882e7498d9c23dbeabd6a944e66cdd3ce",
+          "ref": "docs/product/11-proteino.md#candidate--commander-mediated-tactical-play",
+          "title": "Candidate — commander-mediated tactical play",
+          "summary": "## Candidate — commander-mediated tactical play [Current section](11-protino.md#candidate--commander-mediated-tactical-play).",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0118",
+      "key": "candidate:docs/product/11-proteino.md#candidate--recap-primed-resident-memory",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1f6a4005f42d0b6de07afeb83722a6db16b25d2f071ccdc022810600fae43bdf",
+          "ref": "docs/product/11-proteino.md#candidate--recap-primed-resident-memory",
+          "title": "Candidate — recap-primed resident memory",
+          "summary": "## Candidate — recap-primed resident memory [Current section](11-protino.md#candidate--recap-primed-resident-memory).",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0119",
+      "key": "candidate:docs/product/11-proteino.md#candidate--time-fidelity-and-bounded-future-reachability",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9f9ac0ec25d8d73487c179d10f72c139141aa52fe62a2e177694fbd1a1679b77",
+          "ref": "docs/product/11-proteino.md#candidate--time-fidelity-and-bounded-future-reachability",
+          "title": "Candidate — time fidelity and bounded future reachability",
+          "summary": "## Candidate — time fidelity and bounded future reachability [Current section](11-protino.md#candidate--time-fidelity-and-bounded-future-reachability).",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0120",
+      "key": "candidate:docs/product/11-proteino.md#candidate-first-evidence-slice",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "fabbfe5e588e36659eb4e5d0b58a8f170da4a40723a839dbeec9d7aa5230048b",
+          "ref": "docs/product/11-proteino.md#candidate-first-evidence-slice",
+          "title": "Candidate first evidence slice",
+          "summary": "## Candidate first evidence slice [Current section](11-protino.md#candidate-first-evidence-slice).",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0121",
+      "key": "candidate:docs/product/11-protino.md#candidate--behavior-is-not-animate-only",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "39602d536d62731fb23492a2176ca66dfcb6837354305f26c997852e363cef70",
+          "ref": "docs/product/11-protino.md#candidate--behavior-is-not-animate-only",
+          "title": "Candidate — behavior is not animate-only",
+          "summary": "## Candidate — behavior is not animate-only The intervention surface has no blanket category that exempts apparently inert props. If a world object, object class, or deliberately selected set is addressable and its declared capabilities can support an effect, the operator can propose bounded behavior for it. “Static” may describe its current motion or rendering; it is not an ontology-level ban on receiving rules. An object that cannot support the requested behavior remains selectable only if the interface can explain the incompatibility or refusal honestly. This does not anthropomorphize every prop. A resident may receive and interpret an expression; a non-cognitive object may instead receiv",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0122",
+      "key": "candidate:docs/product/11-protino.md#candidate--commander-mediated-tactical-play",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "7b12379d640987d1c24d7494e27b27c98aadc074656cf20de6dc469777ac7d0a",
+          "ref": "docs/product/11-protino.md#candidate--commander-mediated-tactical-play",
+          "title": "Candidate — commander-mediated tactical play",
+          "summary": "## Candidate — commander-mediated tactical play A later strategy sibling or purpose-built activity applies the same interaction grammar to command. The world is already advancing when the operator consults a world-situated commander. The commander offers materially different tactical alternatives from its bounded view of the situation; those alternatives can carry assumptions, tradeoffs, uncertainty, and a validity horizon without pretending the commander sees evaluator-only world truth. The menu is not a closed authoring grammar. The operator may accept an option unchanged, combine or edit alternatives, riff on one in prose, propose a new course, or decline to act. The application retains t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0123",
+      "key": "candidate:docs/product/11-protino.md#candidate--recap-primed-resident-memory",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "92c43e663df9dfe9e7f3f83f91e39c89bced8ec9c689663f302592130cce3d4b",
+          "ref": "docs/product/11-protino.md#candidate--recap-primed-resident-memory",
+          "title": "Candidate — recap-primed resident memory",
+          "summary": "## Candidate — recap-primed resident memory This scenario requires a profile with retained, accessible world history; a no-history profile declares it unavailable. It makes a resident's accessible memory an editable intervention. The operator sees the resident's recorded life as a film strip and assembles a **recap cut**: every scene, no scene, or a chosen subset, with crops, emphasis, ordering, and explicitly authored detail changes. The cut becomes the context that primes the resident at a declared scene boundary. For the declared interval, it is the resident's complete accessible autobiographical-history projection—every selected scene, all scenes, or none—rather than an additive summary ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0124",
+      "key": "candidate:docs/product/11-protino.md#candidate--time-fidelity-and-bounded-future-reachability",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "9e679a9340c3e3d984fc2c094c37d5bdc7a69c84473ab85d52a17109b8c4ba14",
+          "ref": "docs/product/11-protino.md#candidate--time-fidelity-and-bounded-future-reachability",
+          "title": "Candidate — time fidelity and bounded future reachability",
+          "summary": "## Candidate — time fidelity and bounded future reachability The frame-rate failure in a simple game carries a useful invariant for this world: modeled progress must follow declared world time and event semantics, not the speed at which the host happens to fold the log. Keep these temporal coordinates and milestones separate: - **world or virtual time:** when modeled events occur and how durations, cadence, deadlines, and motion evolve inside a branch; - **engine wall time:** how quickly the current machine can compute, persist, and project those transitions; - **observation-availability time:** when an external fact becomes observable to a live boundary; and - **record/ingest milestone and ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0125",
+      "key": "candidate:docs/product/11-protino.md#candidate-first-evidence-slice",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "c0b49e5a53e91a0de1602e90894a178bfad479e204e9f27ae70def8d7717387a",
+          "ref": "docs/product/11-protino.md#candidate-first-evidence-slice",
+          "title": "Candidate first evidence slice",
+          "summary": "## Candidate first evidence slice A small basketball squad is a promising first vertical because one setting contains several scales without pretending to model everything: individual shooting mechanics, a team offense, advice about blister prevention, game results, communication events, and declared teamwork proxies. A baseline checkpoint and a paired intervention branch could demonstrate selection, long-form input, interpretation inspection, delayed effects, direct and latent measures, first divergence, and replay in one coherent world. That scenario is a candidate, not a roadmap insertion. The first proof should be chosen for its ability to establish the loop with honest evidence and a sa",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0126",
+      "key": "candidate:docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "98e975879e252ba14ae2c64c99cc887f684322c1a096f017ab801c761f58f8d2",
+          "ref": "docs/product/12-workstream-application.md#workstream-application--end-user-workflow-candidate",
+          "title": "Workstream application — end-user workflow candidate",
+          "summary": "# Workstream application — end-user workflow candidate **Status:** operator-opened product exploration, 2026-09-04. This describes a candidate application of DotLn for everyday software work. It is not an implemented interface, a deployment claim, a new release rung, or a replacement for the separately named `προτείνω` thesis. The application identity and first deployment remain unannounced; this public design uses synthetic work only. The product question is what a person does when they sit down to work: start an outcome, make the decisions that need their judgment, inspect the result, and return later without reconstructing the process. DotLn should carry the coordination that currently li",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0127",
+      "key": "candidate:docs/product/13-uifa-roles.md#candidate--security-identity-logs-and-traceability-responsibilities",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0926d49d849d25a233f8133a9201f5d0e97e0e90eee6d8ade4ab0b5b82b4b8c9",
+          "ref": "docs/product/13-uifa-roles.md#candidate--security-identity-logs-and-traceability-responsibilities",
+          "title": "Candidate — security, identity, logs, and traceability responsibilities",
+          "summary": "## Candidate — security, identity, logs, and traceability responsibilities **2026-09-05 operator ideation:** extend the human-role vocabulary to cover security, authentication and authorization, operational logs, and traceability. These responsibilities need an accountable human perspective and useful assistance. Whether they become one additional role, several hats, or explicit responsibilities within existing roles remains open; the five confirmed names above remain the adopted set. | Concern | Human judgment | Assistance to develop | | ---------------- | -------------------------------------------------------------------------------------------------------------------- | -----------------",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0128",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3e4398b15d614e8495f46fd1493c2671d6855a80585ab6bb4a63cbf58147cca7",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d001",
+          "title": "WO-126-D001: Record observed usage and its source; keep those ceilings null until the operator selects values supported by observations.",
+          "summary": "{ \"id\": \"WO-126-D001\", \"date\": \"2026-09-09\", \"dispatch\": \"Operator answers during resume: next for WO-126 on 2026-09-09: leave token, dollar and PR-body ceilings unset and collect token usage before caps.\", \"decision\": \"Record observed usage and its source; keep those ceilings null until the operator selects values supported by observations.\", \"evidence\": [ \"docs/evidence/WO-126/ideation.md\", \"docs/work-orders/WO-126-process-debt.md#execution-record\" ], \"rejected\": [ { \"option\": \"Invent initial numeric limits\", \"reason\": \"No measured basis or operator-selected values; explicitly declined by the operator.\" } ], \"reopenWhen\": \"Usage observations support a proposed limit and the operator select",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The operator selected observation before token, dollar and PR-body caps; the implemented budget contract preserves null ceilings. No unselected numeric cap is a pending implementation task.",
+          "reopenWhen": "The operator selects caps from observed usage.",
+          "targets": [],
+          "at": "2026-09-10T00:11:03.127Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0129",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "10453c951122447b286970fa3f3a4835a79aba529d78ff7ab9aa9c5dcb4751b3",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d002",
+          "title": "WO-126-D002: The floor preserves decisions with sources and reopening conditions. Evidence or operator steering may reopen a decision through a new sourced record.",
+          "summary": "{ \"id\": \"WO-126-D002\", \"date\": \"2026-09-09\", \"dispatch\": \"Operator's resume: next for WO-126 and explicit same-session authorization of the exact floor replacement on 2026-09-09.\", \"decision\": \"The floor preserves decisions with sources and reopening conditions. Evidence or operator steering may reopen a decision through a new sourced record.\", \"evidence\": [ \"docs/work-orders/WO-126-process-debt.md\", \"CLAUDE.md\" ], \"rejected\": [ { \"option\": \"Treat every prior scope exclusion as an immutable product decision\", \"reason\": \"The no-telemetry prohibition was traced to an older work order's non-goal, without operator authority.\" } ], \"reopenWhen\": \"New evidence or operator direction changes the dec",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The operator authorized the floor amendment; it is implemented and records sources plus reopening conditions.",
+          "reopenWhen": "Evidence or operator direction changes the decision-record contract.",
+          "targets": [],
+          "at": "2026-09-10T00:11:03.218Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0130",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4fb3ae2bd87e0c9a86af970ea07514346c78b09330a8c0daf9983683634eec19",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d003",
+          "title": "WO-126-D003: Continue the original WO-126 deliverable; leave the broader support-behavior and deliberate-chat-intent repair for planning against observed operation and context reduction.",
+          "summary": "{ \"id\": \"WO-126-D003\", \"date\": \"2026-09-09\", \"dispatch\": \"Operator steering during resume: next for WO-126 on 2026-09-09: absent Intent to Act and Follow-up Queue behavior is a workflow defect. The operator confirmed the proposed activation diagnosis was correct, identified the interpretation of deliberate chat intent as a separate meta failure, required durable behavior across sessions and compaction, and permitted deferring this broader repair because WO-126 is already large.\", \"kind\": \"correction\", \"misread\": \"The first response reduced absent equipped behavior to communication discipline; a later response incorrectly treated the accepted activation diagnosis itself as another misundersta",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "reason": "The operator deferred the broader equipped-support and deliberate-chat-intent repair. WO-126 now repairs the planning handoff; it does not prove that broader support behavior.",
+          "reopenWhen": "At the next operator-opened planning pass, reproduce the observed omission and compare a durable remedy with existing rule-migration coverage.",
+          "targets": [],
+          "at": "2026-09-10T00:11:02.941Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0131",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "54446cbe0da3f39ad7db69275400c971382a59b233114b8fbcdacf90798a63ad",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d004",
+          "title": "WO-126-D004: Preserve historical receipt inputs and live harness evidence at their committed versions. Permit only the exact legacy-unavailable Cost header as the one-time WO-126 contract adoption; an",
+          "summary": "{ \"id\": \"WO-126-D004\", \"date\": \"2026-09-09\", \"dispatch\": \"Operator resume: next for WO-126, criteria 10, 13 and 16: historical evidence is preserved, every order gains a cost header, and documentation write-back must not require a new live evidence edition.\", \"kind\": \"decision\", \"decision\": \"Preserve historical receipt inputs and live harness evidence at their committed versions. Permit only the exact legacy-unavailable Cost header as the one-time WO-126 contract adoption; any substantive authority change still needs refutation. Validate current harness behavior with executable fixtures and generate a fresh feedback edition for changed runtime source.\", \"evidence\": [ \"scripts/lib/legacy-cost",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The exact legacy-header migration and preservation of historical evidence are implemented and validated in WO-126.",
+          "reopenWhen": "A substantive authority change is admitted through the narrow migration exception, or historical evidence bytes change.",
+          "targets": [],
+          "at": "2026-09-10T00:11:03.311Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0132",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bf22504d486e47e21d77b0694258f246a24bc4e530a2221b4c211c094c297cce",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d005",
+          "title": "WO-126-D005: Finish the specified file-level authored-output contract and record its remaining migration cost. Nominate change-range review with an exact unchanged-byte proof for a later planning comp",
+          "summary": "{ \"id\": \"WO-126-D005\", \"date\": \"2026-09-09\", \"dispatch\": \"Operator resume: next for WO-126, and same-session direction to use judgment on a sufficient bounded solution while documenting proposed later work.\", \"kind\": \"decision\", \"decision\": \"Finish the specified file-level authored-output contract and record its remaining migration cost. Nominate change-range review with an exact unchanged-byte proof for a later planning comparison; do not silently classify hand-written work orders as generated artifacts.\", \"evidence\": [ \"docs/evidence/WO-126/README.md#measured-scope-and-limits\", \"scripts/lib/legacy-cost.mjs\", \"packages/skeleton/src/harness-host.ts\" ], \"rejected\": [ { \"option\": \"Exempt the e",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "reason": "WO-126 measured whole-file delivery for an exact legacy-header migration; compare change-range witnesses with unchanged-byte proof before changing that contract.",
+          "reopenWhen": null,
+          "targets": [],
+          "at": "2026-09-10T00:11:03.033Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-0133",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5645621ef0774bded21347e3dafd7985d1bcc3ea2179b5a76a142cf0c052024f",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d006",
+          "title": "WO-126-D006: Retain formal public candidates and decisions in one register, surface bounded pages at planning entry, retain explicit sourced dispositions and require local deferrals to link to a publi",
+          "summary": "{ \"id\": \"WO-126-D006\", \"date\": \"2026-09-09\", \"dispatch\": \"During WO-126 the operator explicitly expanded its scope to close critical gaps in surfacing future work, emphasizing that scattered suggestions must not disappear. Subsequent steering permits later work on excessive planner context and notes that the new feed may already resolve some of it.\", \"kind\": \"decision\", \"decision\": \"Retain formal public candidates and decisions in one register, surface bounded pages at planning entry, retain explicit sourced dispositions and require local deferrals to link to a public item. Measure the feed and preserve only the remaining planner-startup context problem for later assessment.\", \"evidence\": [ ",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "reason": "This operator-authorized expansion is implemented within WO-126; the separate remaining planner-context candidate is FUP-0111. This disposition assigns scope and does not claim independent verification.",
+          "reopenWhen": "WO-126 verification fails the retention, startup or handoff evidence.",
+          "targets": [
+            "WO-126"
+          ],
+          "at": "2026-09-10T00:11:03.403Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-3e3dcc8781144d46",
+      "key": "candidate:docs/product/07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "493c401a1c1ee7d3321298afa2374705c85328c41d143095799ad8be5762fa88",
+          "ref": "docs/product/07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives",
+          "title": "Candidate — recurring review of implementation alternatives",
+          "summary": "## Candidate — recurring review of implementation alternatives The operator's 2026-09-09 ideation during WO-126 asks for useful alternatives to surface routinely, automatically or periodically, without depending on an operator first objecting to a dependency. The build comparison is the concrete case: questioning the Python prerequisite exposed a cheaper Node-only method, with a different publication guarantee that the operator explicitly selected. The general opportunity is to question the method while preserving the purpose. Avoid treating either dependency avoidance or the fastest measurement as the answer in advance. Candidate entry points are a new dependency or process step, measured c",
+          "missing": false
+        },
+        {
+          "hash": "45e5082d138e705f67848b8bc7ca1b42984fcc7d626a5b1bc2d052ea3e16f2e5",
+          "ref": "docs/product/07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives",
+          "title": "Candidate — recurring review of implementation alternatives",
+          "summary": "## Candidate — recurring review of implementation alternatives The operator's 2026-09-09 ideation during WO-126 asks for useful alternatives to surface routinely, automatically or periodically, without depending on an operator first objecting to a dependency. The build comparison is the concrete case: questioning the Python prerequisite exposed a cheaper Node-only method, with a different publication guarantee that the operator explicitly selected. The general opportunity is to question the method while preserving the purpose. Avoid treating either dependency avoidance or the fastest measurement as the answer in advance. Candidate entry points are a new dependency or process step, measured c",
+          "missing": false
+        },
+        {
+          "hash": "e90787fbd2715c9c361bd9d6bbf25616bcd06ae67223b59f4a10820c3f407d95",
+          "ref": "docs/product/07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives",
+          "title": "Candidate — recurring review of implementation alternatives",
+          "summary": "## Candidate — recurring review of implementation alternatives The operator's 2026-09-09 ideation during WO-126 asks for useful alternatives to surface routinely, automatically or periodically, without depending on an operator first objecting to a dependency. The build comparison is the concrete case: questioning the Python prerequisite exposed a cheaper Node-only method, with a different publication guarantee that the operator explicitly selected. The general opportunity is to question the method while preserving the purpose. Avoid treating either dependency avoidance or the fastest measurement as the answer in advance. Candidate entry points are a new dependency or process step, measured c",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-82c89ab60cdec1e9",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2a8d4239d3f4522fa098cb8070ab400994f1ec2e113ef6a071f47092eaeef260",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d007",
+          "title": "WO-126-D007: Compile to staging, atomically replace each complete dist file using Node, and complete the build barrier before dependent commands. Installed hooks retain an immutable pinned snapshot. A",
+          "summary": "{ \"id\": \"WO-126-D007\", \"date\": \"2026-09-09\", \"dispatch\": \"During resume: fix for WO-126, the operator selected the Node-only approach after an explanation of the differing guarantees, then explicitly requested statistics for reconsideration if Python is needed or already a dependency in future.\", \"kind\": \"decision\", \"decision\": \"Compile to staging, atomically replace each complete dist file using Node, and complete the build barrier before dependent commands. Installed hooks retain an immutable pinned snapshot. Amend criterion 6's directory exchange requirement to this boundary and retain criterion 18's no-new-dependency requirement. Preserve five paired publication samples and an optional h",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6475dfb801b20166",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8c87f8dcb767f2d5a0633bd74e38e05d3a83fd2358a02685addb3e1956f6788e",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d008",
+          "title": "WO-126-D008: Retain the file-level authorship witness, historical timing evidence and exact-tree full gate for successful handoffs; remove incidental stdout and redundant generated-output full-gate re",
+          "summary": "{ \"id\": \"WO-126-D008\", \"date\": \"2026-09-09\", \"dispatch\": \"Operator resume: fix for VER-001 findings F6, F8 and F9; preserve original evidence and account for the actual recurring machinery cost.\", \"kind\": \"correction\", \"misread\": \"The original cost estimate omitted twice-per-tool authorship snapshots; the evidence cache retained successful stdout indefinitely in its hot file; every generated output implicitly needed the whole full gate even for a failing verdict.\", \"meant\": \"Account for observer work, preserve decision-useful timings with a bounded hot lookup, and validate generated outputs through their declared generator while retaining full evidence for successful code handoffs.\", \"change",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fc4158d3207e495d",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "ecf35e33fc61a79382bdad43d9a0116614119dd8612850ccd804ae20f48e130a",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist Operator ideation during WO-126 proposes a support that biases a linked mechanic toward a small experiment on a relevant question, input, proposed answer or response. The names Tinkerer and Scientist remain alternatives. The motivating Node/Python build comparison found a useful option after a dependency objection; the desired behavior is to elicit such evidence without waiting for that objection every time. This extends product 07's [recurring-alternatives candidate](07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives). An A/B comparison is one experiment shape, alongside a targeted probe or a small prototype. State the questi",
+          "missing": false
+        },
+        {
+          "hash": "f9d03e352633a720673366959ea2db27faa90230901dd253d9bd45fb1f1aaddf",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist Operator ideation during WO-126 proposes a support that biases a linked mechanic toward a small experiment on a relevant question, input, proposed answer or response. The names Tinkerer and Scientist remain alternatives. The motivating Node/Python build comparison found a useful option after a dependency objection; the desired behavior is to elicit such evidence without waiting for that objection every time. This extends product 07's [recurring-alternatives candidate](07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives). An A/B comparison is one experiment shape, alongside a targeted probe or a small prototype. State the questi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-07f43d531e7c211e",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--historical-comparison-after-a-forced-alternative",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "5e669fc6891650d31eca577f3e554149a7ca4fcd45d9e14f680f297af955b6e1",
+          "ref": "docs/product/05-pattern-library.md#candidate--historical-comparison-after-a-forced-alternative",
+          "title": "Candidate — historical comparison after a forced alternative",
+          "summary": "## Candidate — historical comparison after a forced alternative The operator's second proposal makes the incidental benefit explicit: when a decision or constraint forces an alternative that serves roughly the same purpose, collect comparative data for history even if no further decision is pending. The selected alternative creates the comparison opportunity. This is a separate activation reason from Tinkerer / Scientist's occasional exploration of a question or proposed answer. It may run automatically or when its support is equipped; that product choice remains open. The comparison should state the common purpose, why the alternative was forced, and the outcomes and guarantees that differ.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b4fcf802f469a57f",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--emoji-shorthand-as-an-experiment",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "88558aa9579e76add927aab9b0baa049692b8ad0f6264dda5e8da6df9155c491",
+          "ref": "docs/product/05-pattern-library.md#candidate--emoji-shorthand-as-an-experiment",
+          "title": "Candidate — emoji shorthand as an experiment",
+          "summary": "## Candidate — emoji shorthand as an experiment The operator asks whether replacing a word with its representative emoji could provide a benefit. Preserve that as a testable representation choice: compare words, emoji alone and emoji with a label for visual scanning, instruction understanding, task correctness and total representation cost. Prompt/context compression and human-facing shorthand may have different winners. Include any legend and repeated explanation in the comparison; a shorter visible string does not by itself establish fewer model tokens or equal meaning. A small Node UTF-8 measurement during WO-126 found `done`/✅ at 4/3 bytes, `package`/📦 at 7/4, `test`/🧪 at 4/4 and `scie",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-224633572af570db",
+      "key": "candidate:docs/product/04-interfaces.md#candidate--browser-and-desktop-hosts-for-a-resident-3d-view",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b0b6b59af3766c9d59ed3318cd638d16075703f23a3f89b0626b85ace7efe172",
+          "ref": "docs/product/04-interfaces.md#candidate--browser-and-desktop-hosts-for-a-resident-3d-view",
+          "title": "Candidate — browser and desktop hosts for a resident 3D view",
+          "summary": "### Candidate — browser and desktop hosts for a resident 3D view The operator's 2026-09-09 ideation asks whether the always-available application could live in a browser using WebSockets, workers or WebAssembly, then asks whether Electron or another option would reach a 3D-capable application sooner. Preserve both questions: a visible web projection, a process that survives closing that projection, and work that continues while the device is asleep have different lifetime requirements. Hosting and graphics are separate choices under the existing projection contract; no new canonical state belongs in a UI. [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) carry bid",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5368790319434d5f",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--all-eight-system-traps-as-a-design-lens",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "95e7184159e60d18fdaadc6ca9629a1f1e3f7ae42a975c17938e395cbd985c50",
+          "ref": "docs/product/05-pattern-library.md#candidate--all-eight-system-traps-as-a-design-lens",
+          "title": "Candidate — all eight system traps as a design lens",
+          "summary": "### Candidate — all eight system traps as a design lens The operator's 2026-09-09 ideation supplies the complete eight-trap framework alongside the discussion of output-review overhead. Preserve the relationships that generate each trap, the possible escape, and evidence that the escape helps the whole system. This lens applies to compositions, resource allocation, simulation and the development process itself. WO-126 currently meters five named process signals; the full framework is broader than those implemented rows, and a signal is not a causal diagnosis. | Trap | Candidate application to DotLn | Escape to evaluate | | ------------------------------------- | -----------------------------",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-74f2311bd7a1acac",
+      "key": "candidate:docs/product/05-pattern-library.md#candidate--retain-unchosen-alternatives",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "948fbcf68cd6b871c8679b908930312fa39f22cae1945fd8db4eb2ab2aa3a31a",
+          "ref": "docs/product/05-pattern-library.md#candidate--retain-unchosen-alternatives",
+          "title": "Candidate — retain unchosen alternatives",
+          "summary": "## Candidate — retain unchosen alternatives The operator asks to preserve what a decision leaves undone as useful historical data across the mechanisms discussed together: rule-beating and wrong-goal judgments, Beware of Naive Interventionism, action versus NoOp, A/B and Eye Dr comparisons, Tinkerer / Scientist experiments, and forced substitutions. This extends existing Decision Receipts and comparison events; it does not depend on an experiment having a winner or on selecting an intervention. A candidate record keeps the decision question and intended outcome, relevant constraints, considered alternatives, selected result, and each unchosen alternative's disposition and reason. Link observ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1a68bdf3fa38ac5f",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "388791f7c207bd9d7ac3a0e082e8c62f4801746bff2ad18a3144e85215865af4",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d009",
+          "title": "WO-126-D009: Implement suite-input evidence reuse, bounded scheduling of independent release fixtures, reuse of immutable fixture setup with retained coverage, and named progress within long suites. K",
+          "summary": "{ \"id\": \"WO-126-D009\", \"date\": \"2026-09-09\", \"dispatch\": \"After the executor explained the measured gate bottlenecks and four efficiency improvements, the operator explicitly authorized full scope expansion to implement those improvements within WO-126 repair.\", \"kind\": \"decision\", \"decision\": \"Implement suite-input evidence reuse, bounded scheduling of independent release fixtures, reuse of immutable fixture setup with retained coverage, and named progress within long suites. Keep the exact-tree handoff aggregate and distinguish reused execution evidence from fresh checks. Measure cold and warm behavior against the executed 522.052-second baseline.\", \"evidence\": [ \"docs/evidence/WO-126/opti",
+          "missing": false
+        },
+        {
+          "hash": "accae4210922f45a1f6b8f5f8841d0f6fbd087552d0476e2ef2c5ab1ef91ab2d",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d009",
+          "title": "WO-126-D009: Use reviewed suite-input evidence reuse, bounded scheduling of 40 independent release cases, sealed fixture setup with independent writable copies and retained real npm boundary coverage,",
+          "summary": "{ \"id\": \"WO-126-D009\", \"date\": \"2026-09-09\", \"dispatch\": \"After the executor explained the measured gate bottlenecks and four efficiency improvements, the operator explicitly authorized full scope expansion to implement those improvements within WO-126 repair.\", \"kind\": \"decision\", \"decision\": \"Use reviewed suite-input evidence reuse, bounded scheduling of 40 independent release cases, sealed fixture setup with independent writable copies and retained real npm boundary coverage, and named live progress. Keep the exact-tree handoff aggregate, original execution provenance and explicit fresh/reused distinction. The 37-suite full gate passed at 278.991 seconds cold and 114.977 seconds warm agai",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-275576a7ae6a3dd1",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "77c208b3a121326280901e471b3cdc828d49e68aba92ba0aabb5295daaa39735",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d010",
+          "title": "WO-126-D010: Use first-occurrence PATH deduplication in the observed gate child environment. The controlled lookup median fell from 60.73 ms to 39.76 ms and returned to 60.47 ms when the inherited val",
+          "summary": "{ \"id\": \"WO-126-D010\", \"date\": \"2026-09-10\", \"dispatch\": \"The original resume: fix fast-gate obligation and the operator's explicit four-part efficiency expansion remain active; the required final harness check exposed a different invocation environment before repair-complete.\", \"kind\": \"correction\", \"misread\": \"The direct Node cold and warm observations were treated as sufficient timing proof for the npm gate and compared with an npm baseline without checking invocation equivalence.\", \"meant\": \"Preserve those executed observations with their actual commands, measure through the canonical npm entry points, and require the harness wrapper to pass separately under the unchanged limits.\", \"chan",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a0f4d2d47fee55d7",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0823b153aeee9d33b83f87ab7159b0d03163f28103f44a816659da9b2a10bf66",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d011",
+          "title": "WO-126-D011: Normalize supported command wrappers and command groups before matching effects, retain quoting and expansion provenance, and use those same parsed invocations to extract commit messages.",
+          "summary": "{ \"id\": \"WO-126-D011\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-002; findings F10, F11 and F12 continue WO-126 criterion 8 and its existing permissions envelope.\", \"kind\": \"decision\", \"decision\": \"Normalize supported command wrappers and command groups before matching effects, retain quoting and expansion provenance, and use those same parsed invocations to extract commit messages. Unknown wrappers with a denied invocation and dynamic effect operands refuse with a classification reason. Literal examples remain data.\", \"evidence\": [ \"docs/verifications/WO-126/VER-002.md\", \"packages/skeleton/src/harness-command.ts\", \"scripts/test-process-debt.mjs\", \"docs/evidence/W",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-894425692325a6cc",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "96c1795241106b62a1857b55490a9dd202de1cff1c5a2fed1b4667c2f37fa1c9",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d012",
+          "title": "WO-126-D012: Run hook-heavy fixtures exclusively within the shared scheduler and allow the independent console suite to overlap skeleton. Project the same reviewed inherited environment into execution",
+          "summary": "{ \"id\": \"WO-126-D012\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-002 F13, F15 and F16, under the previously authorized gate-efficiency expansion and unchanged 120-second fast-gate limit.\", \"kind\": \"decision\", \"decision\": \"Run hook-heavy fixtures exclusively within the shared scheduler and allow the independent console suite to overlap skeleton. Project the same reviewed inherited environment into execution and input fingerprints, omitting proxy variables and undeclared invocation metadata. Record selected variable names and hook process timings without values, extra hook subprocesses or per-hook session-file reads.\", \"evidence\": [ \"docs/verifications/WO-126/VER-00",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ca2fc2c0afaa2e59",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c6a6862faff18e14952cd3f3c11ef35e8e5cfecb32396385c23a9f5fd5e5396a",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d013",
+          "title": "WO-126-D013: When explicit input and running-executable environment channels are absent, inspect the hook's ancestor process chain. Use a matching versioned Claude executable's version, or probe a mat",
+          "summary": "{ \"id\": \"WO-126-D013\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-002 F14; preserve criterion 2's distinction between the running harness and an installed PATH binary.\", \"kind\": \"decision\", \"decision\": \"When explicit input and running-executable environment channels are absent, inspect the hook's ancestor process chain. Use a matching versioned Claude executable's version, or probe a matching absolute unversioned executable. Fall back to PATH only without those observations, and persist only the version and channel.\", \"evidence\": [ \"docs/verifications/WO-126/VER-002.md\", \"packages/skeleton/src/harness-host.ts\", \"scripts/test-process-debt.mjs\" ], \"rejected\": [ { \"op",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f64c4b98d465d509",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7762b2987bdcc963d64c8a791f8d4e69792efcd5a8d28f99ffd03f2cf27f6f27",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d014",
+          "title": "WO-126-D014: A role writes its report or receipt once and runs the evidence gate once; an unchecked claim and a cosmetic edit are not written.",
+          "summary": "{ \"id\": \"WO-126-D014\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator correction during resume: verify for WO-126 on 2026-09-10, after the verifier wrote VER-003, ran the composed gate, edited the report twice and re-ran the evidence gate, then re-read the whole report for its receipt.\", \"kind\": \"correction\", \"misread\": \"The verifier treated the report as editable after its measurements and the evidence gate as repeatable, so one factual correction and one cosmetic line wrap each cost another gate run and another whole-file receipt read.\", \"meant\": \"Write the report once, after every measurement it cites is in hand and every claim in it has been checked; run the evidence gate once, at the final",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e7e6b922a7529aad",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6a95b8b68a726346f6829fb07fda408d142405f49856e008b5f216733137bc80",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d015",
+          "title": "WO-126-D015: Retain pipeline inputs and distinguish interpreter programs from data arguments. An opaque interpreter route containing a literal denied invocation requires an explicit adapter. Refuse in",
+          "summary": "{ \"id\": \"WO-126-D015\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-003 F17 and F18, within criterion 8 and the existing permissions envelope.\", \"kind\": \"decision\", \"decision\": \"Retain pipeline inputs and distinguish interpreter programs from data arguments. An opaque interpreter route containing a literal denied invocation requires an explicit adapter. Refuse inline Git alias configuration; classify send-pack, mutating GitHub API methods, field-implied POST requests and the supported comment, review and issue write verbs as remote.unapproved. Preserve read methods and data-program controls.\", \"evidence\": [ \"docs/verifications/WO-126/VER-003.md\", \"packages/skeleton/s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-54b7a7412d824968",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cee9f352bcb00a7d0d689e3aad4220b436882b99c83d191dd3c898d03a045216",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d016",
+          "title": "WO-126-D016: Publish each complete host JSON record through a private temporary file and atomic rename. Retry an unparsable read once for compatibility with a legacy writer; persistent session damage ",
+          "summary": "{ \"id\": \"WO-126-D016\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-003 F19, the concurrent hook-state parse failure.\", \"kind\": \"decision\", \"decision\": \"Publish each complete host JSON record through a private temporary file and atomic rename. Retry an unparsable read once for compatibility with a legacy writer; persistent session damage refuses with a session-state diagnosis. The regression runs 400 observer and feedback evaluations across four concurrent processes, then checks the installed hook's corruption refusal.\", \"evidence\": [ \"docs/verifications/WO-126/VER-003.md\", \"packages/skeleton/src/harness-host.ts\", \"scripts/test-process-debt.mjs\" ], \"rejected\": [ { \"o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-ecd3da157c259639",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dedef9bedfa3ef358b2e6fb3b6d6e4670eb0481f9c96cc5f306eb5be4dcbfc7c",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d017",
+          "title": "WO-126-D017: Accept a bare semantic-version executable basename only when its PID equals CLAUDE_PID and is verified in the hook's ancestor chain. Preserve explicit-input and running-executable precede",
+          "summary": "{ \"id\": \"WO-126-D017\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-003 F20, reopening D013 with the observed macOS process-table shape.\", \"kind\": \"decision\", \"decision\": \"Accept a bare semantic-version executable basename only when its PID equals CLAUDE_PID and is verified in the hook's ancestor chain. Preserve explicit-input and running-executable precedence, the PATH fallback, and the persisted version/channel pair. The installed-hook fixture now uses the observed basename shape with a different version on PATH.\", \"evidence\": [ \"docs/verifications/WO-126/VER-003.md\", \"packages/skeleton/src/harness-host.ts\", \"scripts/test-process-debt.mjs\" ], \"rejected\": [ { \"optio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-52a9ce3267ea8a16",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2c3125b827c991002e363070d4edac141a7cfc3c32fb832d363ee1656c64d2ad",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d018",
+          "title": "WO-126-D018: The harness wrapper and Stop evidence consumer accept a successful full-gate record at the exact current tree for the fast-gate obligation. Return the original full-gate identity, timing ",
+          "summary": "{ \"id\": \"WO-126-D018\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-003 and the executor mechanism duty recorded in D014; queued and announced as adjacent-0005 under the existing evidence-reuse authority.\", \"kind\": \"decision\", \"decision\": \"The harness wrapper and Stop evidence consumer accept a successful full-gate record at the exact current tree for the fast-gate obligation. Return the original full-gate identity, timing and reference; do not create a fictitious fast-run record. Stale, failed and unexecuted records retain normal execution. A controlled three-entry-point experiment found no projected-environment difference, so environment handling is unchanged.\", \"e",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-5dd41f26ea5c719a",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "13ef958f0f6aa5aba5e1e8b462f80b6661f178c4ea7bec03585b651a39d7d431",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d019",
+          "title": "WO-126-D019: Treat requests for explanation as steering within the active task; pause only on an explicit pause or stop instruction.",
+          "summary": "{ \"id\": \"WO-126-D019\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator correction during resume: fix after asking for a conversation-only explanation of these repairs in the larger program, then stating that implementation had not been asked to pause.\", \"kind\": \"correction\", \"misread\": \"The executor interpreted conversation only as permission to pause the active repair and ended its turn after the explanation.\", \"meant\": \"Explain the work conversationally while continuing the authorized implementation; a question does not suspend the task.\", \"changed\": \"Resumed implementation immediately and clarified the existing question-is-not-a-waiver rule in product 07. The repair scope and evidence obligat",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b3061c8abaebf7f8",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "53a36595085b461e6761dc7693a1328285e8d74f2dca3b65ca9cab698a34077d",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d020",
+          "title": "WO-126-D020: Apply the literal denied-invocation floor to every opaque program's arguments and input, independent of interpreter names and flags. Preserve data-program controls and operand-classified ",
+          "summary": "{ \"id\": \"WO-126-D020\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-004 F21 and F22, within criterion 8 and the existing permissions envelope; reopen D015 on the reported counterexamples.\", \"kind\": \"decision\", \"decision\": \"Apply the literal denied-invocation floor to every opaque program's arguments and input, independent of interpreter names and flags. Preserve data-program controls and operand-classified effect programs. Retain all producers in a piped group and parse descriptor-duplication operators before command separators; redirected groups and process substitution require an explicit adapter. Classify gh api input bodies and the report's additional write verbs",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0f72337168be7923",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d1599d07ebb7a7a40ca7ea1827ab6d2d591be5b4279375cd9b6687431c921f5c",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d021",
+          "title": "WO-126-D021: For a verified Claude ancestor whose name does not expose a version, query only its text mappings with lsof, bounded to one second and one MiB per probe. Accept one unambiguous versioned ",
+          "summary": "{ \"id\": \"WO-126-D021\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-004 F23; reopen D017 because the live process name did not identify the executable version.\", \"kind\": \"decision\", \"decision\": \"For a verified Claude ancestor whose name does not expose a version, query only its text mappings with lsof, bounded to one second and one MiB per probe. Accept one unambiguous versioned Claude executable path and retain only the version/channel pair. Preserve explicit-input and executable precedence, fallback on unavailable evidence, and reuse a successful observation on subsequent session prompts. A controlled macOS process named claude resolved its versioned executable in ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b1790aea91323c22",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "75ac20087e8c854fec5799edbebeffe666b25cfdd3f4c75dc588b6fe0b1b558e",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d022",
+          "title": "WO-126-D022: Repair the recurring process in its canonical source and runner instead of adding another reminder, receipt format or validation command.",
+          "summary": "{ \"id\": \"WO-126-D022\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator correction during the VER-004 repair: repeated gate narration and validation contradicted this work order, and calling it an execution mistake would leave every future session repeating the same procedure. The operator requested a durable fix.\", \"kind\": \"correction\", \"misread\": \"The executor treated following overlapping role instructions and rerunning broad gates as sufficient, even though the work order exists to remove that cost.\", \"meant\": \"Change the shared instructions and executable path so later sessions inherit fewer required steps and retries retain the work already done.\", \"changed\": \"The work order no longer requi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7aef7f8bfd81be6d",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d023",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f3206af6619913da7c62e1bcd5753f7fee6fba56d7dc0cafcd129e312277d5be",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d023",
+          "title": "WO-126-D023: Classify package execution wrappers through their child command, including npm exec/x option parsing and its explicit -- boundary. Screen leading assignment values and Git configuration v",
+          "summary": "{ \"id\": \"WO-126-D023\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-005 F24 and F26; D020 reopens on the reported literal-invocation escapes.\", \"kind\": \"decision\", \"decision\": \"Classify package execution wrappers through their child command, including npm exec/x option parsing and its explicit -- boundary. Screen leading assignment values and Git configuration values before discarding their keys. Normalize executable basenames and the opaque literal screen for case-insensitive hosts, while retaining data operands. This closes the named invocation routes without executing them or inspecting ambient configuration.\", \"evidence\": [ \"docs/verifications/WO-126/VER-005.md\",",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a9b31c56dc844565",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d024",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cacecd1117b4fdb636634a2d5a9effd9a1fad3cd8cd023862fff6650851efb9a",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d024",
+          "title": "WO-126-D024: Attach one bounded refusal class to the existing hook timing row when the emitted outcome denies or blocks. Preserve event and tool, count the row through the existing meter, and exclude ",
+          "summary": "{ \"id\": \"WO-126-D024\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-005 F25, the missing criterion-17 refusal observation.\", \"kind\": \"decision\", \"decision\": \"Attach one bounded refusal class to the existing hook timing row when the emitted outcome denies or blocks. Preserve event and tool, count the row through the existing meter, and exclude advisory Stop outcomes. Classification exceptions and evaluated policy denials both participate; unavailable journal writes cannot change the guard result.\", \"evidence\": [ \"docs/verifications/WO-126/VER-005.md\", \"packages/skeleton/src/harness-host.ts\", \"scripts/lib/meta.mjs\", \"docs/evidence/WO-126/repair-005-results.json\" ], \"re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8a5265c8c8de5837",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d025",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c40dcac41ede02391e61fe73414aafb84605e567fb91f70ad49db7467b0b2aa2",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d025",
+          "title": "WO-126-D025: Keep failing case output through suite aggregation and let the existing evidence writer store it in an addressed log. Each failed case retains its outputRef; successful output is still om",
+          "summary": "{ \"id\": \"WO-126-D025\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-005 F27, lost release-case diagnostics.\", \"kind\": \"decision\", \"decision\": \"Keep failing case output through suite aggregation and let the existing evidence writer store it in an addressed log. Each failed case retains its outputRef; successful output is still omitted. Suite and case diagnostics share the same storage path and deduplication.\", \"evidence\": [ \"docs/verifications/WO-126/VER-005.md\", \"scripts/test-runner.mjs\", \"packages/skeleton/src/gate-evidence.mjs\", \"scripts/test-runner.test.mjs\" ], \"rejected\": [ { \"option\": \"Embed stdout in hot evidence metadata or rerun the failing suite for its outp",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4308ff357744ffc8",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d026",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0f379ef07902462bef24f2212fb49fdf17e66db58c63acc7aa74a363d00e22d7",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d026",
+          "title": "WO-126-D026: Declare package tests separately from fixture tasks and let them start at the existing build barrier. Fixture tasks still wait for generated preflights; any failed preflight still fails t",
+          "summary": "{ \"id\": \"WO-126-D026\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-005 F28 within the existing 120-second fast-gate criterion and D022 preflight requirement.\", \"kind\": \"decision\", \"decision\": \"Declare package tests separately from fixture tasks and let them start at the existing build barrier. Fixture tasks still wait for generated preflights; any failed preflight still fails the aggregate. Keep the concurrency cap, package serialization group, exclusive fixtures and evidence reuse rules.\", \"evidence\": [ \"docs/verifications/WO-126/VER-005.md\", \"scripts/test-runner.mjs\", \"scripts/test-runner.test.mjs\", \"docs/evidence/WO-126/repair-005-results.json\" ], \"rejected\": [ {",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-966f6f4c1e073854",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d027",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "649a7880f04b3f0c794cc2141b8d11c68082a8f8067579f57d2de44285f1eca1",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d027",
+          "title": "WO-126-D027: Apply the literal denial floor to recognized effect programs as well as opaque executables. Remove only known Git message/file and search-pattern operands; unknown subcommands, options an",
+          "summary": "{ \"id\": \"WO-126-D027\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-006 F29 within criterion 8; reopens D020 and D023 on their recorded conditions.\", \"kind\": \"decision\", \"decision\": \"Apply the literal denial floor to recognized effect programs as well as opaque executables. Remove only known Git message/file and search-pattern operands; unknown subcommands, options and their operands keep the floor. Structured classification retains precise denied effects and can add coverage. The prior repair misread recognized programs as making all remaining arguments data; VER-006 demonstrates that several are commands.\", \"evidence\": [ \"docs/verifications/WO-126/VER-006.md\", \"pac",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dc08d4089f2f9387",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d028",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b18f1c5b59c8aeb11831ef66bb3a1b3015c617abaa9698b7242b55f5ad65ad03",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d028",
+          "title": "WO-126-D028: Keep every hook outcome on its existing timing row and correlate identity-bearing refusals with a digest of session, event, tool and tool-use identity. The meter counts distinct keys, inc",
+          "summary": "{ \"id\": \"WO-126-D028\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: fix selecting VER-006 F30 within criterion 17; reopens D024 because one invocation was counted once per denying hook.\", \"kind\": \"decision\", \"decision\": \"Keep every hook outcome on its existing timing row and correlate identity-bearing refusals with a digest of session, event, tool and tool-use identity. The meter counts distinct keys, including across repeated deliveries, while separate uses and sessions remain distinct. Raw identities and command bytes are absent. Historical or identity-free rows retain their individual outcome counts and their possible overcount; missing correlation is not invented.\", \"evidence\": [ ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-004de4aa7f72bf8e",
+      "key": "decision:docs/evidence/WO-126/decisions.md#wo-126-d029",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c7c46e84d43798641198926582d9e8702924f12abf4f112ee5a3a59cea796b2b",
+          "ref": "docs/evidence/WO-126/decisions.md#wo-126-d029",
+          "title": "WO-126-D029: Pass WO-126 with VER-007's F31, F32 and F33 carried forward as sourced follow-ups rather than repaired in review. F31: several supported commit-message and search spellings are refused co",
+          "summary": "{ \"id\": \"WO-126-D029\", \"date\": \"2026-09-10\", \"dispatch\": \"Operator resume: final review for WO-126 on 2026-09-10; the reviewer records the disposition of VER-007's three open findings under that dispatch.\", \"kind\": \"decision\", \"decision\": \"Pass WO-126 with VER-007's F31, F32 and F33 carried forward as sourced follow-ups rather than repaired in review. F31: several supported commit-message and search spellings are refused conservatively and no denied route opens. F32: sed and less stay data programs, so a command-valued operand the v0.16.0 regexes refused is admitted; it does not execute on the observed macOS host and would on a host with GNU sed or an interactive less. F33: the full gate und",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    }
+  ]
+}

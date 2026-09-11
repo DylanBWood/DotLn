@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-10T02:34:52.669Z",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v22.2.0",
+    "python": "Python 3.11.7"
+  },
+  "scope": "Publication only; five alternating paired runs on copied compiled output. Compilation, copying, hashing, byte validation and version probes excluded. Each package adds one small changing canary. No live repository output is replaced.",
+  "input": {
+    "packages": [
+      "compiler",
+      "console",
+      "kernel",
+      "skeleton"
+    ],
+    "files": 254,
+    "bytes": 1845748,
+    "identity": "234765dfb1c50d7e3ff9aae9bcbd7e05f49edff701edf7e9105de7c868a39745",
+    "canaries": 4
+  },
+  "source": {
+    "nodePublisher": "scripts/build.mjs",
+    "nodePublisherSha256": "71e35cc8d5601c8ffeb891002b03cff634e55c1c11d469983df7660e7b23aff0",
+    "comparator": "VER-001 F4 historical Python/libc exchange, reproduced above"
+  },
+  "guarantees": {
+    "node-files": "Each file is replaced atomically. Ordinary dist is a changing view until the build barrier completes. Installed hooks use an immutable pinned snapshot.",
+    "python-directories": "Each package directory is exchanged atomically, with an additional Python/libc/platform prerequisite. Packages are still published sequentially."
+  },
+  "limits": "One host, five local filesystem samples; not a cross-platform benchmark or a measurement of whole-build time. Historical observations are retained if later source changes.",
+  "summaries": [
+    {
+      "implementation": "node-files",
+      "samples": 5,
+      "minMs": 27.963416999999936,
+      "medianMs": 28.240749999999935,
+      "maxMs": 29.051124999999956
+    },
+    {
+      "implementation": "python-directories",
+      "samples": 5,
+      "minMs": 341.7432080000003,
+      "medianMs": 346.463208,
+      "maxMs": 362.1284580000001
+    }
+  ],
+  "samples": [
+    {
+      "pair": 1,
+      "implementation": "node-files",
+      "durationMs": 27.965124999999972,
+      "subprocesses": 0,
+      "byteValidation": "pass"
+    },
+    {
+      "pair": 1,
+      "implementation": "python-directories",
+      "durationMs": 362.1284580000001,
+      "subprocesses": 4,
+      "byteValidation": "pass"
+    },
+    {
+      "pair": 2,
+      "implementation": "python-directories",
+      "durationMs": 346.463208,
+      "subprocesses": 4,
+      "byteValidation": "pass"
+    },
+    {
+      "pair": 2,
+      "implementation": "node-files",
+      "durationMs": 29.042958,
+      "subprocesses": 0,
+      "byteValidation": "pass"
+    },
+    {
+      "pair": 3,
+      "implementation": "node-files",
+      "durationMs": 29.051124999999956,
+      "subprocesses": 0,
+      "byteValidation": "pass"
+    },
+    {
+      "pair": 3,
+      "implementation": "python-directories",
+      "durationMs": 344.41541700000016,
+      "subprocesses": 4,
+      "byteValidation": "pass"
+    },
+    {
+      "pair": 4,
+      "implementation": "python-directories",
+      "durationMs": 347.67162499999995,
+      "subprocesses": 4,
+      "byteValidation": "pass"
+    },
+    {
+      "pair": 4,
+      "implementation": "node-files",
+      "durationMs": 27.963416999999936,
+      "subprocesses": 0,
+      "byteValidation": "pass"
+    },
+    {
+      "pair": 5,
+      "implementation": "node-files",
+      "durationMs": 28.240749999999935,
+      "subprocesses": 0,
+      "byteValidation": "pass"
+    },
+    {
+      "pair": 5,
+      "implementation": "python-directories",
+      "durationMs": 341.7432080000003,
+      "subprocesses": 4,
+      "byteValidation": "pass"
+    }
+  ]
+}

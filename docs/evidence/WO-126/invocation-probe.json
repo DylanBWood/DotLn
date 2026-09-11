@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "observation": "Nested npm PATH lookup follow-up to the direct gate observations",
+  "observedAt": "2026-09-10T04:59:55.472Z",
+  "method": {
+    "command": "npm exec --offline -- npm exec --offline -- node <local probe>",
+    "operation": "Twelve spawnSync git rev-parse --show-toplevel calls per condition, in inherited / exact-deduplication / inherited order",
+    "deduplication": "Keep the first occurrence of every exact PATH entry; do not reorder or remove any unique entry",
+    "unit": "milliseconds",
+    "node": "v22.2.0",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "pathEntryCounts": {
+    "inherited": 45,
+    "unique": 30
+  },
+  "samplesMs": {
+    "inherited": [
+      64.051875,
+      60.173625,
+      60.067999999999984,
+      62.61095800000001,
+      60.158124999999984,
+      59.993292,
+      61.40920799999998,
+      60.844375000000014,
+      60.606082999999956,
+      59.83908299999996,
+      61.46924999999999,
+      63.23195800000008
+    ],
+    "deduplicated": [
+      40.21366599999999,
+      39.060249999999996,
+      43.894791000000055,
+      45.77570800000001,
+      39.763374999999996,
+      40.01879199999996,
+      40.315667000000076,
+      39.40125000000012,
+      39.766166999999996,
+      39.31079199999999,
+      38.90625,
+      39.613207999999986
+    ],
+    "inheritedAgain": [
+      59.76583299999993,
+      61.199125000000095,
+      59.93995799999993,
+      61.30925000000002,
+      60.887500000000045,
+      60.540291000000025,
+      60.686499999999796,
+      60.34266600000001,
+      60.54487500000005,
+      60.407457999999906,
+      60.346667000000025,
+      60.12037499999997
+    ]
+  },
+  "medianMs": {
+    "inherited": 60.725228999999985,
+    "deduplicated": 39.764770999999996,
+    "inheritedAgain": 60.473874499999965
+  },
+  "wrapperFailure": {
+    "checkId": "npm test",
+    "treeHash": "49e2e16bc197733366bb63d7b016e7a918f5ca80",
+    "durationMs": 150010,
+    "exitCode": 1,
+    "executed": true,
+    "recordedAt": "2026-09-10T04:49:29.170Z"
+  },
+  "limits": [
+    "One controlled probe on this host; subprocess lookup only, not a gate benchmark.",
+    "Absolute PATH entries and environment/configuration values are not exported.",
+    "The required npm and harness gates must pass separately; this probe does not establish that outcome."
+  ]
+}

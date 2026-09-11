@@ -1,0 +1,2103 @@
+{
+  "schemaVersion": 1,
+  "observation": "After the operator-authorized four-part gate efficiency expansion",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v22.2.0",
+    "availableParallelism": 16
+  },
+  "baselineRef": "docs/evidence/WO-126/optimization-baseline.json",
+  "observations": [
+    {
+      "label": "cold-full",
+      "command": "node scripts/test-runner.mjs --full --fresh",
+      "gate": {
+        "checkId": "npm run test:full",
+        "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+        "recordedAt": "2026-09-10T04:32:40.789Z",
+        "durationMs": 278991,
+        "exitCode": 0,
+        "executed": true,
+        "evidenceRef": "host-gate:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:npm run test:full",
+        "executionMode": "forced-fresh",
+        "freshSuites": 78,
+        "reusedSuites": 0,
+        "inputObservation": [
+          {
+            "files": 1631,
+            "bytes": 206812839,
+            "commands": 12,
+            "durationMs": 582.937625
+          },
+          {
+            "files": 1631,
+            "bytes": 206812839,
+            "commands": 12,
+            "durationMs": 604.8854169999831
+          }
+        ],
+        "requiredSuites": [
+          "build",
+          "format",
+          "release-surfaces",
+          "release-preparation",
+          "github-body",
+          "license-fixtures",
+          "license-surfaces",
+          "fixture-temp-root",
+          "publication-fixtures",
+          "backup-intake",
+          "resume",
+          "checkpoint",
+          "worktree",
+          "release",
+          "work-orders-fixtures",
+          "publication",
+          "index",
+          "kernel",
+          "compiler",
+          "skeleton",
+          "console",
+          "adjacent-queue",
+          "authority-grants",
+          "authority-evidence",
+          "harness-fixtures",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "plan-refutation",
+          "artifact-corpus",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "mutation",
+          "runner-fixtures",
+          "process-debt",
+          "meta"
+        ]
+      },
+      "suites": [
+        {
+          "checkId": "suite:build",
+          "durationMs": 2000,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:format",
+          "durationMs": 4859,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:release-surfaces",
+          "durationMs": 2210,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:release-preparation",
+          "durationMs": 5742,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:github-body",
+          "durationMs": 175,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:license-fixtures",
+          "durationMs": 19522,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:license-surfaces",
+          "durationMs": 2511,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:fixture-temp-root",
+          "durationMs": 486,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:publication-fixtures",
+          "durationMs": 1421,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:backup-intake",
+          "durationMs": 283,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:resume",
+          "durationMs": 66967,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:checkpoint",
+          "durationMs": 5000,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:worktree",
+          "durationMs": 187220,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:release",
+          "durationMs": 270146,
+          "exitCode": 0,
+          "executed": true,
+          "reused": false,
+          "expectedCases": [
+            "release:prepare",
+            "release:case:preflight",
+            "release:case:surfaces",
+            "release:case:surfaces_local_snapshot",
+            "release:case:prepare_independent",
+            "release:case:license_surfaces",
+            "release:case:surfaces_committed_readme",
+            "release:case:surfaces_lower",
+            "release:case:surfaces_first",
+            "release:case:surfaces_component",
+            "release:case:surfaces_non_source",
+            "release:case:surfaces_new_component",
+            "release:case:surfaceclose",
+            "release:case:surfaceclose_linked",
+            "release:case:bodyclose",
+            "release:case:dirty",
+            "release:case:settings_scope",
+            "release:case:nonmain",
+            "release:case:divergence",
+            "release:case:malformed",
+            "release:case:missinggh",
+            "release:case:unauthenticated",
+            "release:case:splitorigin",
+            "release:case:lower",
+            "release:case:failures",
+            "release:case:cadence_missing",
+            "release:case:cadence_inconsistent",
+            "release:case:conflict",
+            "release:case:localconflict",
+            "release:case:nestedtag",
+            "release:case:prepare",
+            "release:case:missinglocalprevious",
+            "release:case:pushfail",
+            "release:case:refrecovery",
+            "release:case:createrecovery",
+            "release:case:stale_helpers",
+            "release:case:success",
+            "release:case:edition",
+            "release:case:firstrelease",
+            "release:case:cached_evidence",
+            "release:case:concurrent"
+          ],
+          "cases": [
+            {
+              "name": "release:prepare",
+              "durationMs": 1132,
+              "startedAt": "2026-09-10T04:28:04.384Z",
+              "finishedAt": "2026-09-10T04:28:05.516Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:preflight",
+              "durationMs": 249,
+              "startedAt": "2026-09-10T04:30:31.850Z",
+              "finishedAt": "2026-09-10T04:30:32.099Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:surfaces",
+              "durationMs": 8824,
+              "startedAt": "2026-09-10T04:30:32.099Z",
+              "finishedAt": "2026-09-10T04:30:40.923Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:surfaces_local_snapshot",
+              "durationMs": 1803,
+              "startedAt": "2026-09-10T04:30:40.923Z",
+              "finishedAt": "2026-09-10T04:30:42.726Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:prepare_independent",
+              "durationMs": 1688,
+              "startedAt": "2026-09-10T04:30:42.091Z",
+              "finishedAt": "2026-09-10T04:30:43.779Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:surfaces_committed_readme",
+              "durationMs": 2652,
+              "startedAt": "2026-09-10T04:30:43.780Z",
+              "finishedAt": "2026-09-10T04:30:46.432Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:surfaces_lower",
+              "durationMs": 1862,
+              "startedAt": "2026-09-10T04:30:46.432Z",
+              "finishedAt": "2026-09-10T04:30:48.294Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:license_surfaces",
+              "durationMs": 6506,
+              "startedAt": "2026-09-10T04:30:42.726Z",
+              "finishedAt": "2026-09-10T04:30:49.232Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:surfaces_first",
+              "durationMs": 1415,
+              "startedAt": "2026-09-10T04:30:48.294Z",
+              "finishedAt": "2026-09-10T04:30:49.709Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:surfaces_non_source",
+              "durationMs": 1164,
+              "startedAt": "2026-09-10T04:30:49.709Z",
+              "finishedAt": "2026-09-10T04:30:50.873Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:surfaces_new_component",
+              "durationMs": 1406,
+              "startedAt": "2026-09-10T04:30:50.873Z",
+              "finishedAt": "2026-09-10T04:30:52.279Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:surfaces_component",
+              "durationMs": 3430,
+              "startedAt": "2026-09-10T04:30:49.233Z",
+              "finishedAt": "2026-09-10T04:30:52.663Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:surfaceclose",
+              "durationMs": 3509,
+              "startedAt": "2026-09-10T04:30:52.279Z",
+              "finishedAt": "2026-09-10T04:30:55.788Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:surfaceclose_linked",
+              "durationMs": 4554,
+              "startedAt": "2026-09-10T04:30:52.663Z",
+              "finishedAt": "2026-09-10T04:30:57.217Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:dirty",
+              "durationMs": 1442,
+              "startedAt": "2026-09-10T04:30:57.218Z",
+              "finishedAt": "2026-09-10T04:30:58.660Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:settings_scope",
+              "durationMs": 1119,
+              "startedAt": "2026-09-10T04:30:58.660Z",
+              "finishedAt": "2026-09-10T04:30:59.779Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:bodyclose",
+              "durationMs": 4474,
+              "startedAt": "2026-09-10T04:30:55.789Z",
+              "finishedAt": "2026-09-10T04:31:00.263Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:nonmain",
+              "durationMs": 1017,
+              "startedAt": "2026-09-10T04:30:59.780Z",
+              "finishedAt": "2026-09-10T04:31:00.797Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:divergence",
+              "durationMs": 1568,
+              "startedAt": "2026-09-10T04:31:00.263Z",
+              "finishedAt": "2026-09-10T04:31:01.831Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:malformed",
+              "durationMs": 1902,
+              "startedAt": "2026-09-10T04:31:00.797Z",
+              "finishedAt": "2026-09-10T04:31:02.699Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:missinggh",
+              "durationMs": 4849,
+              "startedAt": "2026-09-10T04:31:01.831Z",
+              "finishedAt": "2026-09-10T04:31:06.680Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:unauthenticated",
+              "durationMs": 4472,
+              "startedAt": "2026-09-10T04:31:02.700Z",
+              "finishedAt": "2026-09-10T04:31:07.172Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:splitorigin",
+              "durationMs": 4109,
+              "startedAt": "2026-09-10T04:31:06.680Z",
+              "finishedAt": "2026-09-10T04:31:10.789Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:lower",
+              "durationMs": 4242,
+              "startedAt": "2026-09-10T04:31:07.173Z",
+              "finishedAt": "2026-09-10T04:31:11.415Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:cadence_missing",
+              "durationMs": 2940,
+              "startedAt": "2026-09-10T04:31:11.415Z",
+              "finishedAt": "2026-09-10T04:31:14.355Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:failures",
+              "durationMs": 4660,
+              "startedAt": "2026-09-10T04:31:10.789Z",
+              "finishedAt": "2026-09-10T04:31:15.449Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:conflict",
+              "durationMs": 2814,
+              "startedAt": "2026-09-10T04:31:14.355Z",
+              "finishedAt": "2026-09-10T04:31:17.169Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:localconflict",
+              "durationMs": 1876,
+              "startedAt": "2026-09-10T04:31:15.449Z",
+              "finishedAt": "2026-09-10T04:31:17.325Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:cadence_inconsistent",
+              "durationMs": 6231,
+              "startedAt": "2026-09-10T04:31:11.607Z",
+              "finishedAt": "2026-09-10T04:31:17.838Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:nestedtag",
+              "durationMs": 1146,
+              "startedAt": "2026-09-10T04:31:17.169Z",
+              "finishedAt": "2026-09-10T04:31:18.315Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:prepare",
+              "durationMs": 2190,
+              "startedAt": "2026-09-10T04:31:17.279Z",
+              "finishedAt": "2026-09-10T04:31:19.469Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:missinglocalprevious",
+              "durationMs": 2298,
+              "startedAt": "2026-09-10T04:31:17.325Z",
+              "finishedAt": "2026-09-10T04:31:19.623Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:pushfail",
+              "durationMs": 2499,
+              "startedAt": "2026-09-10T04:31:17.838Z",
+              "finishedAt": "2026-09-10T04:31:20.337Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:refrecovery",
+              "durationMs": 3384,
+              "startedAt": "2026-09-10T04:31:18.315Z",
+              "finishedAt": "2026-09-10T04:31:21.699Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:stale_helpers",
+              "durationMs": 2825,
+              "startedAt": "2026-09-10T04:31:19.623Z",
+              "finishedAt": "2026-09-10T04:31:22.448Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:firstrelease",
+              "durationMs": 2658,
+              "startedAt": "2026-09-10T04:31:22.448Z",
+              "finishedAt": "2026-09-10T04:31:25.106Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:createrecovery",
+              "durationMs": 8040,
+              "startedAt": "2026-09-10T04:31:19.469Z",
+              "finishedAt": "2026-09-10T04:31:27.509Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:success",
+              "durationMs": 7189,
+              "startedAt": "2026-09-10T04:31:20.337Z",
+              "finishedAt": "2026-09-10T04:31:27.526Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:edition",
+              "durationMs": 6157,
+              "startedAt": "2026-09-10T04:31:21.700Z",
+              "finishedAt": "2026-09-10T04:31:27.858Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:cached_evidence",
+              "durationMs": 4208,
+              "startedAt": "2026-09-10T04:31:25.106Z",
+              "finishedAt": "2026-09-10T04:31:29.314Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:concurrent",
+              "durationMs": 67021,
+              "startedAt": "2026-09-10T04:31:27.509Z",
+              "finishedAt": "2026-09-10T04:32:34.530Z",
+              "exitCode": 0,
+              "executed": true
+            }
+          ]
+        },
+        {
+          "checkId": "suite:work-orders-fixtures",
+          "durationMs": 41140,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:publication",
+          "durationMs": 612,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:index",
+          "durationMs": 9839,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:kernel",
+          "durationMs": 620,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:compiler",
+          "durationMs": 853,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:skeleton",
+          "durationMs": 90691,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:console",
+          "durationMs": 28793,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:adjacent-queue",
+          "durationMs": 631,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:authority-grants",
+          "durationMs": 183,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:authority-evidence",
+          "durationMs": 2196,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness-fixtures",
+          "durationMs": 79367,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness",
+          "durationMs": 154,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness-context",
+          "durationMs": 842,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness-evidence",
+          "durationMs": 952,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:plan-refutation",
+          "durationMs": 267154,
+          "exitCode": 0,
+          "executed": true,
+          "reused": false,
+          "expectedCases": [
+            "plan-refutation:fixtures",
+            "plan-refutation:current"
+          ],
+          "cases": [
+            {
+              "name": "plan-refutation:fixtures",
+              "durationMs": 192892,
+              "startedAt": "2026-09-10T04:28:04.387Z",
+              "finishedAt": "2026-09-10T04:31:17.279Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "plan-refutation:current",
+              "durationMs": 37922,
+              "startedAt": "2026-09-10T04:31:53.619Z",
+              "finishedAt": "2026-09-10T04:32:31.541Z",
+              "exitCode": 0,
+              "executed": true
+            }
+          ]
+        },
+        {
+          "checkId": "suite:artifact-corpus",
+          "durationMs": 266,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:artifact-evidence",
+          "durationMs": 229,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:verification-evidence",
+          "durationMs": 5812,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:feedback-evidence",
+          "durationMs": 5641,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:mutation",
+          "durationMs": 13361,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:runner-fixtures",
+          "durationMs": 22342,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:process-debt",
+          "durationMs": 38218,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:meta",
+          "durationMs": 3096,
+          "exitCode": 0,
+          "executed": true
+        }
+      ]
+    },
+    {
+      "label": "cold-fast",
+      "command": "node scripts/test-runner.mjs --fresh",
+      "gate": {
+        "checkId": "npm test",
+        "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+        "recordedAt": "2026-09-10T04:34:19.606Z",
+        "durationMs": 70332,
+        "exitCode": 0,
+        "executed": true,
+        "evidenceRef": "host-gate:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:npm test",
+        "executionMode": "forced-fresh",
+        "freshSuites": 12,
+        "reusedSuites": 0,
+        "inputObservation": [
+          {
+            "files": 1631,
+            "bytes": 206812839,
+            "commands": 12,
+            "durationMs": 552.869917
+          },
+          {
+            "files": 1631,
+            "bytes": 206812839,
+            "commands": 12,
+            "durationMs": 712.4844589999993
+          }
+        ],
+        "requiredSuites": [
+          "build",
+          "format",
+          "release-surfaces",
+          "publication",
+          "index",
+          "kernel",
+          "compiler",
+          "skeleton",
+          "console",
+          "harness",
+          "harness-context",
+          "meta"
+        ]
+      },
+      "suites": [
+        {
+          "checkId": "suite:build",
+          "durationMs": 2176,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:format",
+          "durationMs": 4878,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:release-surfaces",
+          "durationMs": 3058,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:publication",
+          "durationMs": 702,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:index",
+          "durationMs": 9555,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:kernel",
+          "durationMs": 336,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:compiler",
+          "durationMs": 502,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:skeleton",
+          "durationMs": 50182,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:console",
+          "durationMs": 15676,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness",
+          "durationMs": 155,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness-context",
+          "durationMs": 947,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:meta",
+          "durationMs": 3343,
+          "exitCode": 0,
+          "executed": true
+        }
+      ]
+    },
+    {
+      "label": "warm-full",
+      "command": "node scripts/test-runner.mjs --full",
+      "gate": {
+        "checkId": "npm run test:full",
+        "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+        "recordedAt": "2026-09-10T04:36:32.522Z",
+        "durationMs": 114977,
+        "exitCode": 0,
+        "executed": true,
+        "evidenceRef": "host-gate:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:npm run test:full",
+        "executionMode": "composed",
+        "freshSuites": 32,
+        "reusedSuites": 46,
+        "inputObservation": [
+          {
+            "files": 1631,
+            "bytes": 206812839,
+            "commands": 12,
+            "durationMs": 624.9658749999999
+          },
+          {
+            "files": 1631,
+            "bytes": 206812839,
+            "commands": 12,
+            "durationMs": 618.7460409999912
+          }
+        ],
+        "requiredSuites": [
+          "build",
+          "format",
+          "release-surfaces",
+          "release-preparation",
+          "github-body",
+          "license-fixtures",
+          "license-surfaces",
+          "fixture-temp-root",
+          "publication-fixtures",
+          "backup-intake",
+          "resume",
+          "checkpoint",
+          "worktree",
+          "release",
+          "work-orders-fixtures",
+          "publication",
+          "index",
+          "kernel",
+          "compiler",
+          "skeleton",
+          "console",
+          "adjacent-queue",
+          "authority-grants",
+          "authority-evidence",
+          "harness-fixtures",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "plan-refutation",
+          "artifact-corpus",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "mutation",
+          "runner-fixtures",
+          "process-debt",
+          "meta"
+        ]
+      },
+      "suites": [
+        {
+          "checkId": "suite:build",
+          "durationMs": 2322,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:format",
+          "durationMs": 4947,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:release-surfaces",
+          "durationMs": 3364,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:release-preparation",
+          "durationMs": 8935,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:github-body",
+          "durationMs": 163,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:license-fixtures",
+          "durationMs": 21588,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:license-surfaces",
+          "durationMs": 2627,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:fixture-temp-root",
+          "durationMs": 766,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:publication-fixtures",
+          "durationMs": 1796,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:backup-intake",
+          "durationMs": 719,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:resume",
+          "durationMs": 81524,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:checkpoint",
+          "durationMs": 7010,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:worktree",
+          "durationMs": 0,
+          "exitCode": 0,
+          "executed": false,
+          "reused": true,
+          "sourceExecution": {
+            "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+            "recordedAt": "2026-09-10T04:32:40.789Z",
+            "startedAt": "2026-09-10T04:28:04.386Z",
+            "finishedAt": "2026-09-10T04:31:11.606Z",
+            "durationMs": 187220,
+            "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:worktree",
+            "executed": true,
+            "exitCode": 0
+          }
+        },
+        {
+          "checkId": "suite:release",
+          "durationMs": 911,
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "expectedCases": [
+            "release:prepare",
+            "release:case:preflight",
+            "release:case:surfaces",
+            "release:case:surfaces_local_snapshot",
+            "release:case:prepare_independent",
+            "release:case:license_surfaces",
+            "release:case:surfaces_committed_readme",
+            "release:case:surfaces_lower",
+            "release:case:surfaces_first",
+            "release:case:surfaces_component",
+            "release:case:surfaces_non_source",
+            "release:case:surfaces_new_component",
+            "release:case:surfaceclose",
+            "release:case:surfaceclose_linked",
+            "release:case:bodyclose",
+            "release:case:dirty",
+            "release:case:settings_scope",
+            "release:case:nonmain",
+            "release:case:divergence",
+            "release:case:malformed",
+            "release:case:missinggh",
+            "release:case:unauthenticated",
+            "release:case:splitorigin",
+            "release:case:lower",
+            "release:case:failures",
+            "release:case:cadence_missing",
+            "release:case:cadence_inconsistent",
+            "release:case:conflict",
+            "release:case:localconflict",
+            "release:case:nestedtag",
+            "release:case:prepare",
+            "release:case:missinglocalprevious",
+            "release:case:pushfail",
+            "release:case:refrecovery",
+            "release:case:createrecovery",
+            "release:case:stale_helpers",
+            "release:case:success",
+            "release:case:edition",
+            "release:case:firstrelease",
+            "release:case:cached_evidence",
+            "release:case:concurrent"
+          ],
+          "cases": [
+            {
+              "name": "release:prepare",
+              "durationMs": 911,
+              "startedAt": "2026-09-10T04:34:40.497Z",
+              "finishedAt": "2026-09-10T04:34:41.408Z",
+              "exitCode": 0,
+              "executed": true
+            },
+            {
+              "name": "release:case:preflight",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:31.850Z",
+                "finishedAt": "2026-09-10T04:30:32.099Z",
+                "durationMs": 249,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:preflight",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:surfaces",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:32.099Z",
+                "finishedAt": "2026-09-10T04:30:40.923Z",
+                "durationMs": 8824,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:surfaces",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:surfaces_local_snapshot",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:40.923Z",
+                "finishedAt": "2026-09-10T04:30:42.726Z",
+                "durationMs": 1803,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:surfaces_local_snapshot",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:prepare_independent",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:42.091Z",
+                "finishedAt": "2026-09-10T04:30:43.779Z",
+                "durationMs": 1688,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:prepare_independent",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:license_surfaces",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:42.726Z",
+                "finishedAt": "2026-09-10T04:30:49.232Z",
+                "durationMs": 6506,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:license_surfaces",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:surfaces_committed_readme",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:43.780Z",
+                "finishedAt": "2026-09-10T04:30:46.432Z",
+                "durationMs": 2652,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:surfaces_committed_readme",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:surfaces_lower",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:46.432Z",
+                "finishedAt": "2026-09-10T04:30:48.294Z",
+                "durationMs": 1862,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:surfaces_lower",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:surfaces_first",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:48.294Z",
+                "finishedAt": "2026-09-10T04:30:49.709Z",
+                "durationMs": 1415,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:surfaces_first",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:surfaces_component",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:49.233Z",
+                "finishedAt": "2026-09-10T04:30:52.663Z",
+                "durationMs": 3430,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:surfaces_component",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:surfaces_non_source",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:49.709Z",
+                "finishedAt": "2026-09-10T04:30:50.873Z",
+                "durationMs": 1164,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:surfaces_non_source",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:surfaces_new_component",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:50.873Z",
+                "finishedAt": "2026-09-10T04:30:52.279Z",
+                "durationMs": 1406,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:surfaces_new_component",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:surfaceclose",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:52.279Z",
+                "finishedAt": "2026-09-10T04:30:55.788Z",
+                "durationMs": 3509,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:surfaceclose",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:surfaceclose_linked",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:52.663Z",
+                "finishedAt": "2026-09-10T04:30:57.217Z",
+                "durationMs": 4554,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:surfaceclose_linked",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:bodyclose",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:55.789Z",
+                "finishedAt": "2026-09-10T04:31:00.263Z",
+                "durationMs": 4474,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:bodyclose",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:dirty",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:57.218Z",
+                "finishedAt": "2026-09-10T04:30:58.660Z",
+                "durationMs": 1442,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:dirty",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:settings_scope",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:58.660Z",
+                "finishedAt": "2026-09-10T04:30:59.779Z",
+                "durationMs": 1119,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:settings_scope",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:nonmain",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:30:59.780Z",
+                "finishedAt": "2026-09-10T04:31:00.797Z",
+                "durationMs": 1017,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:nonmain",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:divergence",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:00.263Z",
+                "finishedAt": "2026-09-10T04:31:01.831Z",
+                "durationMs": 1568,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:divergence",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:malformed",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:00.797Z",
+                "finishedAt": "2026-09-10T04:31:02.699Z",
+                "durationMs": 1902,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:malformed",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:missinggh",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:01.831Z",
+                "finishedAt": "2026-09-10T04:31:06.680Z",
+                "durationMs": 4849,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:missinggh",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:unauthenticated",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:02.700Z",
+                "finishedAt": "2026-09-10T04:31:07.172Z",
+                "durationMs": 4472,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:unauthenticated",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:splitorigin",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:06.680Z",
+                "finishedAt": "2026-09-10T04:31:10.789Z",
+                "durationMs": 4109,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:splitorigin",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:lower",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:07.173Z",
+                "finishedAt": "2026-09-10T04:31:11.415Z",
+                "durationMs": 4242,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:lower",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:failures",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:10.789Z",
+                "finishedAt": "2026-09-10T04:31:15.449Z",
+                "durationMs": 4660,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:failures",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:cadence_missing",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:11.415Z",
+                "finishedAt": "2026-09-10T04:31:14.355Z",
+                "durationMs": 2940,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:cadence_missing",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:cadence_inconsistent",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:11.607Z",
+                "finishedAt": "2026-09-10T04:31:17.838Z",
+                "durationMs": 6231,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:cadence_inconsistent",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:conflict",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:14.355Z",
+                "finishedAt": "2026-09-10T04:31:17.169Z",
+                "durationMs": 2814,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:conflict",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:localconflict",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:15.449Z",
+                "finishedAt": "2026-09-10T04:31:17.325Z",
+                "durationMs": 1876,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:localconflict",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:nestedtag",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:17.169Z",
+                "finishedAt": "2026-09-10T04:31:18.315Z",
+                "durationMs": 1146,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:nestedtag",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:prepare",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:17.279Z",
+                "finishedAt": "2026-09-10T04:31:19.469Z",
+                "durationMs": 2190,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:prepare",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:missinglocalprevious",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:17.325Z",
+                "finishedAt": "2026-09-10T04:31:19.623Z",
+                "durationMs": 2298,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:missinglocalprevious",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:pushfail",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:17.838Z",
+                "finishedAt": "2026-09-10T04:31:20.337Z",
+                "durationMs": 2499,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:pushfail",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:refrecovery",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:18.315Z",
+                "finishedAt": "2026-09-10T04:31:21.699Z",
+                "durationMs": 3384,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:refrecovery",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:createrecovery",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:19.469Z",
+                "finishedAt": "2026-09-10T04:31:27.509Z",
+                "durationMs": 8040,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:createrecovery",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:stale_helpers",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:19.623Z",
+                "finishedAt": "2026-09-10T04:31:22.448Z",
+                "durationMs": 2825,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:stale_helpers",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:success",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:20.337Z",
+                "finishedAt": "2026-09-10T04:31:27.526Z",
+                "durationMs": 7189,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:success",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:edition",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:21.700Z",
+                "finishedAt": "2026-09-10T04:31:27.858Z",
+                "durationMs": 6157,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:edition",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:firstrelease",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:22.448Z",
+                "finishedAt": "2026-09-10T04:31:25.106Z",
+                "durationMs": 2658,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:firstrelease",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:cached_evidence",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:25.106Z",
+                "finishedAt": "2026-09-10T04:31:29.314Z",
+                "durationMs": 4208,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:cached_evidence",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "release:case:concurrent",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:31:27.509Z",
+                "finishedAt": "2026-09-10T04:32:34.530Z",
+                "durationMs": 67021,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:release:case:concurrent",
+                "executed": true,
+                "exitCode": 0
+              }
+            }
+          ]
+        },
+        {
+          "checkId": "suite:work-orders-fixtures",
+          "durationMs": 51224,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:publication",
+          "durationMs": 870,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:index",
+          "durationMs": 12163,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:kernel",
+          "durationMs": 0,
+          "exitCode": 0,
+          "executed": false,
+          "reused": true,
+          "sourceExecution": {
+            "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+            "recordedAt": "2026-09-10T04:34:19.606Z",
+            "startedAt": "2026-09-10T04:34:17.864Z",
+            "finishedAt": "2026-09-10T04:34:18.200Z",
+            "durationMs": 336,
+            "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:kernel",
+            "executed": true,
+            "exitCode": 0
+          }
+        },
+        {
+          "checkId": "suite:compiler",
+          "durationMs": 0,
+          "exitCode": 0,
+          "executed": false,
+          "reused": true,
+          "sourceExecution": {
+            "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+            "recordedAt": "2026-09-10T04:34:19.606Z",
+            "startedAt": "2026-09-10T04:34:18.200Z",
+            "finishedAt": "2026-09-10T04:34:18.702Z",
+            "durationMs": 502,
+            "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:compiler",
+            "executed": true,
+            "exitCode": 0
+          }
+        },
+        {
+          "checkId": "suite:skeleton",
+          "durationMs": 0,
+          "exitCode": 0,
+          "executed": false,
+          "reused": true,
+          "sourceExecution": {
+            "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+            "recordedAt": "2026-09-10T04:34:19.606Z",
+            "startedAt": "2026-09-10T04:33:12.005Z",
+            "finishedAt": "2026-09-10T04:34:02.187Z",
+            "durationMs": 50182,
+            "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:skeleton",
+            "executed": true,
+            "exitCode": 0
+          }
+        },
+        {
+          "checkId": "suite:console",
+          "durationMs": 31775,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:adjacent-queue",
+          "durationMs": 804,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:authority-grants",
+          "durationMs": 208,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:authority-evidence",
+          "durationMs": 2245,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness-fixtures",
+          "durationMs": 74027,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness",
+          "durationMs": 248,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness-context",
+          "durationMs": 1113,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness-evidence",
+          "durationMs": 1206,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:plan-refutation",
+          "durationMs": 41557,
+          "exitCode": 0,
+          "executed": true,
+          "reused": true,
+          "expectedCases": [
+            "plan-refutation:fixtures",
+            "plan-refutation:current"
+          ],
+          "cases": [
+            {
+              "name": "plan-refutation:fixtures",
+              "durationMs": 0,
+              "exitCode": 0,
+              "executed": false,
+              "reused": true,
+              "sourceExecution": {
+                "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+                "recordedAt": "2026-09-10T04:32:40.789Z",
+                "startedAt": "2026-09-10T04:28:04.387Z",
+                "finishedAt": "2026-09-10T04:31:17.279Z",
+                "durationMs": 192892,
+                "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:plan-refutation:fixtures",
+                "executed": true,
+                "exitCode": 0
+              }
+            },
+            {
+              "name": "plan-refutation:current",
+              "durationMs": 41557,
+              "startedAt": "2026-09-10T04:35:44.052Z",
+              "finishedAt": "2026-09-10T04:36:25.609Z",
+              "exitCode": 0,
+              "executed": true
+            }
+          ]
+        },
+        {
+          "checkId": "suite:artifact-corpus",
+          "durationMs": 306,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:artifact-evidence",
+          "durationMs": 232,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:verification-evidence",
+          "durationMs": 6033,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:feedback-evidence",
+          "durationMs": 5995,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:mutation",
+          "durationMs": 14311,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:runner-fixtures",
+          "durationMs": 24580,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:process-debt",
+          "durationMs": 0,
+          "exitCode": 0,
+          "executed": false,
+          "reused": true,
+          "sourceExecution": {
+            "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+            "recordedAt": "2026-09-10T04:32:40.789Z",
+            "startedAt": "2026-09-10T04:30:03.872Z",
+            "finishedAt": "2026-09-10T04:30:42.090Z",
+            "durationMs": 38218,
+            "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:process-debt",
+            "executed": true,
+            "exitCode": 0
+          }
+        },
+        {
+          "checkId": "suite:meta",
+          "durationMs": 2656,
+          "exitCode": 0,
+          "executed": true
+        }
+      ]
+    },
+    {
+      "label": "warm-fast",
+      "command": "node scripts/test-runner.mjs",
+      "gate": {
+        "checkId": "npm test",
+        "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+        "recordedAt": "2026-09-10T04:41:13.962Z",
+        "durationMs": 22723,
+        "exitCode": 0,
+        "executed": true,
+        "evidenceRef": "host-gate:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:npm test",
+        "executionMode": "composed",
+        "freshSuites": 9,
+        "reusedSuites": 3,
+        "inputObservation": [
+          {
+            "files": 1631,
+            "bytes": 206812839,
+            "commands": 12,
+            "durationMs": 600.3888750000001
+          },
+          {
+            "files": 1631,
+            "bytes": 206812839,
+            "commands": 12,
+            "durationMs": 709.3754169999993
+          }
+        ],
+        "requiredSuites": [
+          "build",
+          "format",
+          "release-surfaces",
+          "publication",
+          "index",
+          "kernel",
+          "compiler",
+          "skeleton",
+          "console",
+          "harness",
+          "harness-context",
+          "meta"
+        ]
+      },
+      "suites": [
+        {
+          "checkId": "suite:build",
+          "durationMs": 2190,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:format",
+          "durationMs": 4802,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:release-surfaces",
+          "durationMs": 2695,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:publication",
+          "durationMs": 621,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:index",
+          "durationMs": 7636,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:kernel",
+          "durationMs": 0,
+          "exitCode": 0,
+          "executed": false,
+          "reused": true,
+          "sourceExecution": {
+            "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+            "recordedAt": "2026-09-10T04:34:19.606Z",
+            "startedAt": "2026-09-10T04:34:17.864Z",
+            "finishedAt": "2026-09-10T04:34:18.200Z",
+            "durationMs": 336,
+            "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:kernel",
+            "executed": true,
+            "exitCode": 0
+          }
+        },
+        {
+          "checkId": "suite:compiler",
+          "durationMs": 0,
+          "exitCode": 0,
+          "executed": false,
+          "reused": true,
+          "sourceExecution": {
+            "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+            "recordedAt": "2026-09-10T04:34:19.606Z",
+            "startedAt": "2026-09-10T04:34:18.200Z",
+            "finishedAt": "2026-09-10T04:34:18.702Z",
+            "durationMs": 502,
+            "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:compiler",
+            "executed": true,
+            "exitCode": 0
+          }
+        },
+        {
+          "checkId": "suite:skeleton",
+          "durationMs": 0,
+          "exitCode": 0,
+          "executed": false,
+          "reused": true,
+          "sourceExecution": {
+            "treeHash": "0a3b6710545a7d0c311cf29cfc0e5c6bab20275a",
+            "recordedAt": "2026-09-10T04:34:19.606Z",
+            "startedAt": "2026-09-10T04:33:12.005Z",
+            "finishedAt": "2026-09-10T04:34:02.187Z",
+            "durationMs": 50182,
+            "evidenceRef": "host-suite:0a3b6710545a7d0c311cf29cfc0e5c6bab20275a:skeleton",
+            "executed": true,
+            "exitCode": 0
+          }
+        },
+        {
+          "checkId": "suite:console",
+          "durationMs": 19015,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness",
+          "durationMs": 181,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:harness-context",
+          "durationMs": 820,
+          "exitCode": 0,
+          "executed": true
+        },
+        {
+          "checkId": "suite:meta",
+          "durationMs": 2467,
+          "exitCode": 0,
+          "executed": true
+        }
+      ]
+    }
+  ],
+  "comparisons": {
+    "baselineFullMs": 522052,
+    "coldFullMs": 278991,
+    "warmFullMs": 114977,
+    "coldFullReductionPercent": 46.55877192310345,
+    "warmFullReductionPercent": 77.97594875606262,
+    "fastBudgetMs": 120000
+  },
+  "limits": [
+    "One observation per mode on one host; filesystem and operating-system caches were not cleared.",
+    "Cold means suite-evidence reuse was disabled by --fresh; warm follows the cold observations.",
+    "Changes were evaluated together; these observations do not isolate each change as a cause.",
+    "Parent suite elapsed times include scheduling gaps; overlapping task durations must not be added as gate wall time.",
+    "Input-observation counters cover explicit hashed file reads and direct probes, not subprocess-internal I/O or CPU attribution.",
+    "Environment and configuration values and their fingerprints remain local; this export includes only public tree identities and timing/count metadata.",
+    "The final handoff after this receipt is written requires its own exact-tree aggregate."
+  ]
+}

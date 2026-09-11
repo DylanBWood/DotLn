@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09",
+  "dispatches": {
+    "executor": { "tokens": null, "costUsd": null },
+    "verifier": { "tokens": null, "costUsd": null },
+    "reviewer": { "tokens": null, "costUsd": null },
+    "release-close": { "tokens": null, "costUsd": null },
+    "planner": { "tokens": null, "costUsd": null },
+    "refuter": { "tokens": null, "costUsd": null }
+  },
+  "limits": {
+    "coldStartBytes": {
+      "executor": 16384,
+      "verifier": 12288,
+      "reviewer": 14336,
+      "release-close": 6144,
+      "planner": 24576,
+      "refuter": null
+    },
+    "fastGateMs": 120000,
+    "readCapBytes": 65536,
+    "sequenceBytes": 8192,
+    "prBodyBytes": null,
+    "passRefutationMs": 120000
+  },
+  "acceptances": [],
+  "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",
+  "decision": "docs/evidence/WO-126/decisions.md#wo-126-d001"
+}

@@ -1,0 +1,17 @@
+running=0 pending=0
+ep_verifier_1_attempt_1 completed fake model=synthetic effort=unknown heartbeat=1000007 lease=1005008 mode=fresh-transport
+ep_repairer_2_attempt_1 completed fake model=synthetic effort=unknown heartbeat=1000016 lease=1005017 mode=fresh-transport
+pending commands: none
+acceptance ws_independent_verification phase=verify revision=68d2ff898395d912307a57f4c2caf12b64b41c06
+  AC-policy state stale source=synthetic-fixture evidence=19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40:policy-schema
+  AC-selection behavior stale source=synthetic-fixture evidence=19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40:exclude-referenced
+  AC-description state verified source=synthetic-fixture evidence=19e16d73c3f5d466cdfc75b7c74cc11a9a5c8f40:fixture-descriptor
+recent events:
+  evt_15 WorkerAttemptStarted 1000016
+  evt_16 CommandReceipt 1000019
+  evt_17 VerificationWorkerResultObserved 1000021
+  evt_18 CommandResult 1000021
+  evt_19 WorkerCompleted 1000021
+  evt_20 VerificationContinuation 1000021
+  evt_21 WorkerWorktreeRemoved 1000022
+  evt_22 VerificationSubjectSubmitted 1000023
