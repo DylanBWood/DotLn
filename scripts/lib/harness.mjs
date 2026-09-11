@@ -212,12 +212,21 @@ export function emitHarness(root, options = {}) {
   ]);
   preserveHarnessRuntime(root, installation);
   for (const file of writes) {
+    if (
+      existsSync(file.path) &&
+      readFileSync(file.path, "utf8") === file.contents
+    )
+      continue;
     mkdirSync(dirname(file.path), { recursive: true });
     writeFileSync(file.path, file.contents);
   }
   for (const path of obsolete) unlinkSync(contained(root, path));
   mkdirSync(dirname(manifestTarget), { recursive: true });
-  writeFileSync(manifestTarget, manifestText);
+  if (
+    !existsSync(manifestTarget) ||
+    readFileSync(manifestTarget, "utf8") !== manifestText
+  )
+    writeFileSync(manifestTarget, manifestText);
   return { files: writes.length + 1, localTerms };
 }
 

@@ -1436,7 +1436,16 @@ script.
 caches, usage observations, session state and the operator's terms list. Only
 `harness/**` is disposable at subject teardown; the rest is retained. Main's
 release-influence check permits the whole local lane. The separate
-`account-labels.md` private mapping remains unread by scripts.
+`account-labels.md` private mapping is not interpreted by control commands;
+closeout only copies and byte-verifies it as opaque retained material.
+The close helper archives the subject's non-disposable ignored control records
+under main's `docs/control/local/retained/WO-NNN/`, preserving nested and empty
+directories, verifying bytes and retaining collisions. Archived worktree state
+is never merged into main's active queue, terms list or other local records.
+The existing gate-evidence handoff remains separate. A complete read-only
+preview precedes teardown; unknown ignored material and symlink escapes still
+refuse removal. Private contents and their hashes are absent from receipts and
+Git.
 
 The current planning sequence is `docs/planning/sequence.md`, bounded at 8 KB.
 Dated map rationale older than the newest two revisions is retained byte for

@@ -87,6 +87,12 @@ try {
     }
     if (action === "evidence") {
       if (args.length) throw new Error("harness evidence accepts no overrides");
+      const { prepareHarnessEvidence } =
+        await import("./lib/evidence-preparation.mjs");
+      const preparation = prepareHarnessEvidence(root);
+      console.log(
+        `Prepared owned evidence projections in ${preparation.durationMs.toFixed(1)} ms`,
+      );
       const checks = runHarnessEvidence(root);
       console.log(JSON.stringify({ checks }));
       if (checks.some((check) => check.exitCode !== 0 || !check.executed))

@@ -75,7 +75,7 @@ const write = (repo, path, source) => {
   writeFileSync(join(repo, path), source);
 };
 const read = (repo, path) => readFileSync(join(repo, path), "utf8");
-const commit = (repo, label) => {
+const commit = (repo, label, date = "2030-01-02T00:00:00Z") => {
   runGit(repo, ["add", "--all"]);
   runGit(
     repo,
@@ -91,8 +91,8 @@ const commit = (repo, label) => {
     {
       env: {
         ...process.env,
-        GIT_AUTHOR_DATE: "2030-01-02T00:00:00Z",
-        GIT_COMMITTER_DATE: "2030-01-02T00:00:00Z",
+        GIT_AUTHOR_DATE: date,
+        GIT_COMMITTER_DATE: date,
       },
     },
   );
@@ -1634,6 +1634,86 @@ export async function fixtures() {
         const tablePath = "docs/planning/cost-table.json";
         write(repo, tablePath, JSON.stringify(table));
         commit(repo, "cost observation");
+        const observationRevision = runGit(repo, ["rev-parse", "HEAD"]);
+        const originalOrder = read(repo, orderPath("WO-901"));
+        write(
+          repo,
+          orderPath("WO-901"),
+          originalOrder + "\n## Execution record\n\nChecks passed.\n",
+        );
+        commit(repo, "later execution record", "2030-01-03T00:00:00Z");
+        assert.equal(
+          buildPlanSubject(repo).costTable.subjectSourceHash,
+          table.subjectSourceHash,
+        );
+        const branch = runGit(repo, ["branch", "--show-current"]);
+        runGit(repo, ["switch", "-c", "integration-side", observationRevision]);
+        write(repo, "integration.txt", "unrelated integration bytes\n");
+        commit(repo, "integration side", "2030-01-04T00:00:00Z");
+        runGit(repo, ["switch", branch]);
+        runGit(
+          repo,
+          [
+            "-c",
+            "user.name=Plan Fixture",
+            "-c",
+            "user.email=fixture@example.invalid",
+            "merge",
+            "--no-ff",
+            "integration-side",
+            "-m",
+            "merge unchanged cost projection",
+          ],
+          {
+            env: {
+              ...process.env,
+              GIT_AUTHOR_DATE: "2030-01-05T00:00:00Z",
+              GIT_COMMITTER_DATE: "2030-01-05T00:00:00Z",
+            },
+          },
+        );
+        assert.equal(
+          buildPlanSubject(repo).costTable.subjectSourceHash,
+          table.subjectSourceHash,
+        );
+        write(
+          repo,
+          tablePath,
+          JSON.stringify({
+            ...table,
+            acceptances: [
+              { date: "2030-01-02", reason: "mismatched acceptance" },
+            ],
+          }),
+        );
+        assert.throws(
+          () => buildPlanSubject(repo, "HEAD", { workspace: true }),
+          /stale/,
+        );
+        write(
+          repo,
+          tablePath,
+          JSON.stringify({ ...table, subjectRevision: "missing-revision" }),
+        );
+        assert.throws(
+          () => buildPlanSubject(repo, "HEAD", { workspace: true }),
+          /revision|argument|object/,
+        );
+        runGit(repo, ["switch", "-c", "unmerged-cost-revision"]);
+        write(repo, "unmerged.txt", "not an ancestor\n");
+        commit(repo, "unmerged cost revision", "2030-01-06T00:00:00Z");
+        const unmergedRevision = runGit(repo, ["rev-parse", "HEAD"]);
+        runGit(repo, ["switch", branch]);
+        write(
+          repo,
+          tablePath,
+          JSON.stringify({ ...table, subjectRevision: unmergedRevision }),
+        );
+        assert.throws(
+          () => buildPlanSubject(repo, "HEAD", { workspace: true }),
+          /ancestor|merge-base/,
+        );
+        write(repo, tablePath, JSON.stringify(table));
         let subject = buildPlanSubject(repo),
           result = validatePlanResult(passResult(subject), subject);
         assert.equal(result.planVerdict, "hold");

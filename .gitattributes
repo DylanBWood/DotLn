@@ -1,4 +1,5 @@
 /docs/work-orders/README.md dotln-generated dotln-check=suite:index
+/docs/product/03-architecture.md dotln-check=suite:publication
 /docs/lineage/decisions-index.md dotln-generated dotln-check=suite:meta
 /docs/planning/cost-table.json dotln-generated
 /docs/evidence/**/*.json dotln-generated

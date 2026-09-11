@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import {
@@ -40,12 +40,30 @@ import { compilePlanRefuter } from "../packages/skeleton/dist/src/loadouts/plan-
 import { checkHarness, harnessInstallation } from "./lib/harness.mjs";
 
 const [mode, ...extra] = process.argv.slice(2);
+const options = new Map();
+for (let index = 0; index < extra.length; index += 2) {
+  assert.ok(
+    ["--edition", "--revision"].includes(extra[index]) &&
+      extra[index + 1] &&
+      !options.has(extra[index]),
+    "Invalid authority evidence option",
+  );
+  options.set(extra[index], extra[index + 1]);
+}
+const edition = options.get("--edition") ?? "WO-126";
+const revision = options.get("--revision");
 assert.ok(
-  ["--write", "--check"].includes(mode) && !extra.length,
-  "usage: authority-evidence.mjs --write|--check (build and emit the bundle first)",
+  ["--write", "--check"].includes(mode) &&
+    /^WO-\d{3}$/.test(edition) &&
+    (revision === undefined || /^[0-9]{3}$/.test(revision)),
+  "usage: authority-evidence.mjs --write|--check [--edition WO-NNN] [--revision NNN] (build and emit the bundle first)",
 );
 const root = fileURLToPath(new URL("../", import.meta.url));
-const directory = new URL("../docs/evidence/WO-126/", import.meta.url);
+const editionLabel = `${edition}${revision ? ` revision ${revision}` : ""}`;
+const directory = new URL(
+  `../docs/evidence/${edition}/${revision ? `authority/${revision}/` : ""}`,
+  import.meta.url,
+);
 const read = (path) => readFileSync(join(root, path), "utf8");
 const baseline = JSON.parse(
   read("docs/evidence/WO-042/authority-baseline.json"),
@@ -460,8 +478,7 @@ const bundleDiff = {
   historicalEvidence,
   generatedSurfaces: installed.files,
   files: bundleFiles,
-  comparison:
-    "v0.16.0 to WO-126 unequipped build; current support-only projection compared separately",
+  comparison: `v0.16.0 to ${editionLabel} unequipped build; current support-only projection compared separately`,
   supportEquipment: {
     supportIds: defaultExecutorSupportIds,
     savedHash,
@@ -477,14 +494,15 @@ for (const [name, value] of [
   ["bundle-diff.json", bundleDiff],
 ]) {
   const contents = JSON.stringify(value, null, 2) + "\n";
-  if (mode === "--write") {
+  const path = new URL(name, directory);
+  if (mode === "--write" && !existsSync(path)) {
     mkdirSync(directory, { recursive: true });
-    writeFileSync(new URL(name, directory), contents);
+    writeFileSync(path, contents, { flag: "wx" });
   } else
     assert.equal(
-      readFileSync(new URL(name, directory), "utf8"),
+      readFileSync(path, "utf8"),
       contents,
-      `stale WO-126 evidence: ${name}`,
+      `stale ${editionLabel} evidence: ${name}; select a new edition or revision to preserve existing evidence`,
     );
 }
 console.log(

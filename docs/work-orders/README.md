@@ -2198,6 +2198,23 @@ None.
 - Latest attestation: harness claude-code; version 2.1.268; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-126-process-debt.md](WO-126-process-debt.md)
 
+### WO-127
+
+[WO-127 — Preserve retained worktree state and unblock release close (v0.17.0)](WO-127-release-close-recovery.md)
+
+- State: closed.
+- Application target: v0.17.0.
+- Dependency reference check (conservative): dependency-ready.
+- References: WO-126: satisfied (closed).
+- Verification: [VER-002](../../docs/verifications/WO-127/VER-002.md) (pass).
+- Final review: [FINAL-002](../../docs/final-reviews/WO-127/FINAL-002.md) (pass).
+- Release: unreleased.
+- Model: Codex gpt-6-astra at max or Claude Fable 5.1 at max; independent verification and final review follow the existing lifecycle.
+- Effort: executor max+; verifier xhigh+; reviewer any.
+- Cost: Adds bounded closeout enumeration and byte verification for retained local records, plus focused regression cases; removes manual archival and a full release gate that rejects unchanged planning inputs after execution commits. Focused preservation fixtures took 1517.638 ms and the planning-cost regression took 875.693 ms; retain measured observations without inventing caps.
+- Latest attestation: harness codex-cli; version 0.154.0; model gpt-6-astra; effort max; source operator-attested; account not-applicable.
+- Authority: [docs/work-orders/WO-127-release-close-recovery.md](WO-127-release-close-recovery.md)
+
 ## Historical
 
 ### WO-001
@@ -2375,3 +2392,4 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-124]: WO-124-impact-surfaces-derivation.md
 [WO-125]: WO-125-codex-effort-selection.md
 [WO-126]: WO-126-process-debt.md
+[WO-127]: WO-127-release-close-recovery.md

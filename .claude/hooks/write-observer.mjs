@@ -1,7 +1,7 @@
 // Origin: {"ids":["read-your-own-output"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"}
 try {
-const { feedbackBoundary } = await import("../../.runtime/harness/a4a65a94d36a276d/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/a4a65a94d36a276d/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/f6b4a241a99de4c0/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/f6b4a241a99de4c0/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
   "compilerPackageVersion": "0.9.0",
   "runtime": {
@@ -26,7 +26,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:7fecefc9b1846878"
+        "hash": "fnv1a64:ed54524039608488"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -45,7 +45,7 @@ await runHarnessHook({
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/a4a65a94d36a276d"
+    "snapshot": ".runtime/harness/f6b4a241a99de4c0"
   },
   "event": "PreToolUse",
   "tools": {

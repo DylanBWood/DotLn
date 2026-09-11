@@ -230,6 +230,7 @@ function invoke(root, name, payload, removed = false) {
     0,
     JSON.stringify({
       hook: name,
+      inputBytes: Buffer.byteLength(JSON.stringify(payload)),
       path: payload.tool_input?.file_path?.replace(root, "<fixture>"),
       error: run.error?.code,
       signal: run.signal,
@@ -1368,27 +1369,29 @@ test("WO-039 completion tracks outputs across commits and auxiliary prompts reta
       }),
     );
     assert.equal(readiness(root, "no-partial-completion"), false);
-    adoptOutputs(root);
+    const authored = (event) =>
+      input(root, event, {
+        tool_name: "Write",
+        tool_input: { file_path: join(root, "fixture.ts") },
+        ...(event === "PostToolUse"
+          ? { tool_response: { success: true } }
+          : {}),
+      });
+    invoke(root, "write-observer", authored("PreToolUse"));
+    write(root, "fixture.ts", "export const value = 2;\n");
+    invoke(root, "read-observer", authored("PostToolUse"));
     const before = git(root, "rev-parse", "HEAD");
-    for (const output of harnessOutputs(root, before)) {
-      const contents = readFileSync(join(root, output.path), "utf8");
-      invoke(
-        root,
-        "read-observer",
-        input(root, "PostToolUse", {
-          tool_name: "Read",
-          tool_input: { file_path: join(root, output.path) },
-          tool_response: {
-            file: {
-              content: contents,
-              startLine: 1,
-              numLines: contents.split("\n").length,
-              totalLines: contents.split("\n").length,
-            },
-          },
-        }),
-      );
-    }
+    assert.deepEqual(
+      harnessOutputObligations(root, observedSession(root)).map(
+        (row) => row.path,
+      ),
+      ["fixture.ts"],
+    );
+    assert.equal(readiness(root, "read-your-own-output"), false);
+    assert.equal(
+      allowed(invoke(root, "read-observer", nativeRead(root, "fixture.ts"))),
+      true,
+    );
     git(root, "add", ".");
     git(
       root,
@@ -1408,6 +1411,84 @@ test("WO-039 completion tracks outputs across commits and auxiliary prompts reta
       readiness(root, "read-your-own-output"),
       true,
       "commit does not erase the session's output set",
+    );
+    write(root, "fixture.ts", "export const value = 3;\n");
+    assert.equal(
+      readiness(root, "read-your-own-output"),
+      false,
+      "committed receipts cannot satisfy changed current bytes",
+    );
+    assert.equal(
+      allowed(invoke(root, "read-observer", nativeRead(root, "fixture.ts"))),
+      true,
+    );
+    assert.equal(readiness(root, "read-your-own-output"), true);
+  } finally {
+    rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated messages through generated processes", async () => {
+  const root = fixture();
+  try {
+    invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: "resume: next" }),
+    );
+    const manifest = ".claude/harness-manifest.json";
+    assert.ok(
+      Buffer.byteLength(JSON.stringify(nativeRead(root, manifest))) > 32768,
+    );
+    assert.equal(
+      allowed(invoke(root, "read-observer", nativeRead(root, manifest))),
+      true,
+    );
+    assert.ok(observedSession(root).reads.some((row) => row.path === manifest));
+    write(root, "transport.txt", "β🙂".repeat(9000));
+    const bytes = Buffer.from(
+      JSON.stringify(nativeRead(root, "transport.txt")),
+    );
+    const piped = async (bytes) => {
+      const child = spawn(
+        process.execPath,
+        [join(root, ".claude/hooks/read-observer.mjs")],
+        { cwd: root, timeout: 20_000 },
+      );
+      let stdout = "",
+        stderr = "";
+      child.stdout.on("data", (chunk) => (stdout += chunk));
+      child.stderr.on("data", (chunk) => (stderr += chunk));
+      const done = new Promise((resolve, reject) => {
+        child.on("error", reject);
+        child.on("close", (code, signal) =>
+          resolve({ code, signal, stdout, stderr }),
+        );
+      });
+      // Odd chunk boundaries deliberately split multi-byte code points. Each
+      // write callback waits for consumption so the parent respects backpressure.
+      for (let offset = 0; offset < bytes.length; offset += 997)
+        await new Promise((resolve, reject) =>
+          child.stdin.write(bytes.subarray(offset, offset + 997), (error) =>
+            error ? reject(error) : resolve(),
+          ),
+        );
+      child.stdin.end();
+      const result = await done;
+      assert.equal(
+        result.code,
+        0,
+        JSON.stringify({ signal: result.signal, stderr: result.stderr }),
+      );
+      return JSON.parse(result.stdout);
+    };
+    assert.equal(allowed(await piped(bytes)), true);
+    assert.ok(
+      observedSession(root).reads.some((row) => row.path === "transport.txt"),
+    );
+    assert.equal(
+      allowed(await piped(bytes.subarray(0, bytes.length - 1))),
+      false,
     );
   } finally {
     rmSync(root, { recursive: true });

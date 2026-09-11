@@ -486,15 +486,15 @@ export const checkIndex = (expected, actual) => {
   );
 };
 
-export const main = (args = process.argv.slice(2)) => {
+export const main = (args = process.argv.slice(2), root = toolRoot) => {
   if (
     args[0] !== "index" ||
     args.length > 2 ||
     (args.length === 2 && args[1] !== "--check")
   )
     throw new Error("usage: work-orders index [--check]");
-  const destination = join(toolRoot, indexPath);
-  if (existsSync(destination) && !containedRegularFile(destination, toolRoot))
+  const destination = join(root, indexPath);
+  if (existsSync(destination) && !containedRegularFile(destination, root))
     throw new Error(`${indexPath}: expected a contained regular file`);
   if (args.includes("--check")) {
     if (!existsSync(destination))
@@ -502,23 +502,26 @@ export const main = (args = process.argv.slice(2)) => {
         `${indexPath} is stale at line 1; run npm run work-orders -- index`,
       );
     const actual = readFileSync(destination, "utf8");
-    const releases = localReleaseRecords(toolRoot, readTagSnapshot(actual));
-    checkIndex(renderIndex(readIndex(toolRoot, releases)), actual);
+    const releases = localReleaseRecords(root, readTagSnapshot(actual));
+    checkIndex(renderIndex(readIndex(root, releases)), actual);
     const names = new Set(releases.map(({ name }) => name));
-    const newer = localReleaseTags(toolRoot).filter(
-      ({ name }) => !names.has(name),
-    );
+    const newer = localReleaseTags(root).filter(({ name }) => !names.has(name));
     if (newer.length)
       process.stdout.write(
         `NEWER local release evidence: ${newer.map(({ name }) => name).join(", ")}; additional manifests are not validated by --check; run npm run work-orders -- index to refresh the tag observation\n`,
       );
     process.stdout.write(`PASS ${indexPath} is current\n`);
   } else {
-    const expected = renderIndex(readIndex(toolRoot));
-    const temporary = `${destination}.tmp`;
-    writeFileSync(temporary, expected, { flag: "wx" });
-    renameSync(temporary, destination);
-    process.stdout.write(`Generated ${indexPath}\n`);
+    const expected = renderIndex(readIndex(root));
+    if (
+      !existsSync(destination) ||
+      readFileSync(destination, "utf8") !== expected
+    ) {
+      const temporary = `${destination}.tmp`;
+      writeFileSync(temporary, expected, { flag: "wx" });
+      renameSync(temporary, destination);
+      process.stdout.write(`Generated ${indexPath}\n`);
+    }
   }
 };
 

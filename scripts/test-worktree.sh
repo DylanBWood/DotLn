@@ -497,8 +497,49 @@ host.issueBeaconSession(root, "WO-099");
 const record = JSON.parse(readFileSync(join(host.controlBeaconDirectory(root), host.controlBeaconAddress("WO-099")), "utf8"));
 host.emitControlBeacon(root, record);
 NODE
+mkdir -p "$subject/docs/control/local/prototypes/nested" "$subject/docs/control/local/process/empty" "$main/docs/control/local"
+printf 'subject retained record\000bytes\n' >"$subject/docs/control/local/adjacent-work.jsonl"
+printf 'subject prototype\n' >"$subject/docs/control/local/prototypes/nested/source.txt"
+printf 'subject terms\n' >"$subject/docs/control/local/terms.txt"
+printf 'main active terms\n' >"$main/docs/control/local/terms.txt"
+printf 'main active queue\n' >"$main/docs/control/local/adjacent-work.jsonl"
+cp "$subject/docs/control/local/adjacent-work.jsonl" "$test_root/retained-expected.bin"
+node --input-type=module - "$subject" "$main" <<'NODE'
+import { pathToFileURL } from "node:url";
+import { join } from "node:path";
+for (const [index, root] of process.argv.slice(2).entries()) {
+  const { gateTreeHash, recordGateChecks } = await import(pathToFileURL(join(root, "scripts/lib/gate-evidence.mjs")));
+  const treeHash = gateTreeHash(root);
+  recordGateChecks(root, [{ checkId: `fixture-closeout-${index}`, treeHash, subject: treeHash, durationMs: 1, exitCode: 0, executed: true, evidenceRef: "synthetic-closeout-handoff", recordedAt: new Date().toISOString() }]);
+}
+NODE
+retained_main_refs="$(git -C "$main" show-ref)"
+retained_subject_head="$(git -C "$subject" rev-parse HEAD)"
+retained_preview="$(finish_worktree WO-099 --dry-run 2>&1)"
+grep -Fq 'docs/control/local/retained/WO-099/adjacent-work.jsonl' <<<"$retained_preview"
+grep -Fq 'docs/control/local/retained/WO-099/process/empty' <<<"$retained_preview"
+test ! -e "$main/docs/control/local/retained"
+test -f "$subject/docs/control/local/adjacent-work.jsonl"
+test "$(git -C "$main" show-ref)" = "$retained_main_refs"
+test "$(git -C "$subject" rev-parse HEAD)" = "$retained_subject_head"
 finish_worktree WO-099 >/dev/null
 test ! -e "$subject"
+cmp "$test_root/retained-expected.bin" "$main/docs/control/local/retained/WO-099/adjacent-work.jsonl"
+test -f "$main/docs/control/local/retained/WO-099/prototypes/nested/source.txt"
+test -d "$main/docs/control/local/retained/WO-099/process/empty"
+test "$(cat "$main/docs/control/local/terms.txt")" = 'main active terms'
+test "$(cat "$main/docs/control/local/adjacent-work.jsonl")" = 'main active queue'
+test "$(cat "$main/docs/control/local/retained/WO-099/terms.txt")" = 'subject terms'
+node --input-type=module - "$main" <<'NODE'
+import assert from "node:assert/strict";
+import { pathToFileURL } from "node:url";
+import { join } from "node:path";
+const root = process.argv[2];
+const { readGateChecks } = await import(pathToFileURL(join(root, "scripts/lib/gate-evidence.mjs")));
+const ids = readGateChecks(root).map(row => row.checkId);
+assert.ok(ids.includes("fixture-closeout-0"), "subject gate evidence must survive teardown");
+assert.ok(ids.includes("fixture-closeout-1"), "main gate evidence must remain intact");
+NODE
 test "$(git -C "$main" branch --list wo-099)" = ""
 test -f "$main/result.txt"
 printf 'beacon cleanup: populated anchored projection directories removed; docs/intake/dist/x.md negative fixture preserved\n'
