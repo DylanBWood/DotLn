@@ -146,7 +146,7 @@ export function writeDecisionsIndex(root, { check = false } = {}) {
   if (check) {
     if (!existsSync(path) || readFileSync(path, "utf8") !== expected)
       throw new Error("Decisions index is stale; run npm run meta");
-  } else {
+  } else if (!existsSync(path) || readFileSync(path, "utf8") !== expected) {
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, expected);
   }

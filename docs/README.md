@@ -29,7 +29,7 @@ docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
 docs/control/       legacy resume log, per-order segments, generated overview,
                     and the separate plan-refutations.jsonl override log
-docs/control/local/ ignored gate/session/usage observations and private terms; account-label mapping remains unread
+docs/control/local/ ignored gate/session/usage observations, private terms and opaque account-label meanings
 docs/evidence/      bounded executor comparisons and fixture transcripts
 docs/releases/     historical v0.2.0 records + forward tag-manifest template;
                    later immutable manifests/notes live in annotated tags
@@ -72,8 +72,11 @@ intake remains ignored rather than moved into Git.
 
 The optional account-label mapping belongs in the separate ignored
 `docs/control/local/account-labels.md`, with one line per label and its private
-meaning. No script reads it. Only the opaque label enters the public control
-attestation, using the [playbook's per-terminal setup](PLAYBOOK.md#who-does-what).
+meaning. Control commands do not interpret the mapping. Only the opaque label
+enters the public control attestation, using the
+[playbook's per-terminal setup](PLAYBOOK.md#who-does-what). Closeout copies and
+byte-verifies the file as opaque retained material; receipts omit its contents
+and content hashes.
 
 ## Dumping into intake
 
@@ -93,6 +96,14 @@ copies it into main before removal and verifies the destination bytes. A
 different-byte collision keeps both copies with a `.from-WO-NNN` suffix;
 `--dry-run` prints the plan without changing either checkout. Reconciliation
 preserves raw material; it does not synthesize it or register it for re-mining.
+
+Closeout also archives non-disposable ignored `docs/control/local/` records
+under main's `docs/control/local/retained/WO-NNN/`. It preserves nested and empty
+directories, reuses identical copies and retains both versions of collisions.
+Main's active records and terms list stay intact; gate evidence uses its
+existing handoff. The preview lists every preserved path without writes or
+private contents, and verified copies survive interrupted retries. Unknown
+ignored material and symlink escapes continue to prevent teardown.
 
 ## Backing up local intake
 
@@ -159,6 +170,8 @@ in `docs/PLAYBOOK.md`.
 ## Config log
 
 One line per `.claude/` or CLAUDE.md change (see execution guide):
+
+- 2026-09-11: WO-127 regenerates role procedures to record sourced costs, archive retained worktree control state and prepare owned projections before evidence. Generated hooks consume piped JSON asynchronously; all expensive test suites wait for preflights.
 
 - 2026-09-09: WO-126 emits version-2 prose/advisory feedback, session-authored
   output observations, attribution settings, stable runtime snapshots and the

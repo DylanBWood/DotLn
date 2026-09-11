@@ -20,7 +20,7 @@ import {
 
 const handlers = personalFeedbackUnits.map((unit) => unit.trigger);
 const processCost =
-  "Before adding a step, read, check or artifact, state its wall-clock, context bytes, commands, tokens and steps, what it removes, and take the fewer-step path that performs as well. Unknown measurements remain unknown; inspect the meter before choosing a cap.";
+  "Inspect the meter and choose the fewer-step path that performs as well. Save observed runtime, token usage and other costs with their sources in evidence. Keep missing values null; never repeat unmeasured-cost boilerplate in operator updates.";
 const common = [
   processCost,
   "Resolve physical cwd and Git root before changing files or running Git commands. Work only in the selected worktree; one writable coding agent owns it.",
@@ -34,13 +34,13 @@ const common = [
   "No branch commits before final review. Never reset, restore, clean, drop a stash, or discard intake. Preserve work through the canonical checkpoint and named recovery procedure if rollback is needed.",
   "Read: `@subject-files`",
   "Read: `package.json`",
-  "Run `npm run work-orders -- index` after dispatch and after recording a result. Refresh before the evidence gate; lifecycle commands do not regenerate that index.",
+  "Run `npm run work-orders -- index` after dispatch and after recording a result. The canonical evidence command refreshes owned projections before checking; lifecycle commands do not regenerate that index.",
   "Write durable product decisions to the cited product docs and `docs/evidence/WO-NNN/decisions.md`, naming the operator dispatch, evidence, alternatives and reopening condition. Run `npm run meta` to refresh the decisions index. The ledger is for operator ideation and planning synthesis only. For an order filed before 2026-09-09, a ledger-entry duty is discharged by its decisions file and index row; the work-order index marks this substitution. Record a correction the same day: what was misread, what was meant and what changed. Decided means sourced, not frozen; an order's non-goal fences that order alone.",
 ];
 const actor =
   "Completion flags: `--harness <harness> --harness-version <version> --model <model> --effort <level> --source <self-reported|harness-readback|operator-attested>`. Use exposed values; an unknown required effort blocks the handoff. The repository's Codex default is GPT-6 Astra at max, operator-attested unless actual readback is exposed.";
 const evidence =
-  "Finish measurements, required generation, release preparation and authored reports before completion. Run only `npm run harness -- evidence` for the final full gate and diff check; it reuses current successes. A separate fast gate is for an explicit fresh measurement, not a turn-end obligation. Diagnose failures, then retry this command; preflights stop costly suites and passing source checks are retained. A failed verification or review needs its reproduction and `git diff --check`. Review this session's authored outputs at current bytes; inherited changes add no read obligation. Generated files and files over 64 KB owe their declared generation or validation check. Use `node scripts/harness.mjs read-output <path> --offset 0 --length 8192` for bounded delivery and follow nextOffset. Claude observes tool reads; Codex uses the explicit begin/observe/delivered adapter without claiming automatic hooks. Stop gives one advisory line and releases the writer; completion commands enforce the same evidence conditions.";
+  "Finish measurements, required generation, release preparation and authored reports before completion. Run only `npm run harness -- evidence` for the final full gate and diff check. After build, it prepares the work-order index, decisions, follow-ups and generated harness before fingerprinting; unchanged outputs are not rewritten. Immutable evidence, publication locks and release targets remain explicit inputs. It reuses current successes. A separate fast gate is for an explicit fresh measurement, not a turn-end obligation. Diagnose failures, then retry this command; preflights stop costly suites and passing source checks are retained. A failed verification or review needs its reproduction and `git diff --check`. Review this session's authored outputs at current bytes; inherited changes add no read obligation. Generated files and files over 64 KB owe their declared generation or validation check. Use `node scripts/harness.mjs read-output <path> --offset 0 --length 8192` for bounded delivery and follow nextOffset. Claude observes tool reads; Codex uses the explicit begin/observe/delivered adapter without claiming automatic hooks. Stop gives one advisory line and releases the writer; completion commands enforce the same evidence conditions.";
 export const contributorRoles: readonly HarnessRole[] = [
   {
     facetId: "contributor.executor",
@@ -112,7 +112,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `@final-review`",
       "Run `npm run resume -- release-close` for the canonical command, or use worktree publish's exact handoff. Invoke it from main; after subject removal use main's helper.",
       "The helper checks merge, cleanliness, retained material, evidence and tag/Release identity before teardown. Report a refusal with its evidence; do not force teardown or repeat a recorded transition.",
-      "The close helper owns intake reconciliation and prints byte-preserving collision receipts; `--dry-run` previews without writes. Keep terms.txt and local control state. Do not write an ad hoc closeout script. If Release creation failed after tag publication, rerun the helper from updated main.",
+      "The close helper preserves intake and archives retained control state under main's ignored retained/WO-NNN lane. It verifies bytes, preserves collisions and supports retries; `--dry-run` lists the plan without writes. Keep main's terms.txt and gate-evidence handoff. Use this helper, including after partial publication.",
       "Publish only the validated source tag and reviewed Release, or report no-release. Never edit published Releases, push main, merge PRs, publish packages/binaries or change settings. Report the result and remaining obligations.",
     ],
   },

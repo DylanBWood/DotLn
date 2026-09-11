@@ -59,9 +59,11 @@ example `export DOTLN_ACCOUNT_LABEL=a1` in one and
 default; `--account-label <label>` overrides it. Use 1–16 lowercase letters,
 digits or hyphens, beginning with a letter. `unset DOTLN_ACCOUNT_LABEL` returns
 to omission; an empty value is invalid. Store any private meaning by hand, one
-line per label in ignored `docs/control/local/account-labels.md`. Scripts never
-read that file. The label itself is public, so choose no identifying content.
-An omitted label displays `not-applicable`.
+line per label in ignored `docs/control/local/account-labels.md`. Control commands
+do not interpret that file. Closeout copies and byte-verifies it as opaque
+retained material; receipts omit its contents and content hashes. The label
+itself is public, so choose no identifying content. An omitted label displays
+`not-applicable`.
 
 Run `npm run resume --silent -- usage` for elapsed-time summaries across all
 orders, or add `--json` for `totals`, `byActor`, and `byWorkOrder`. Retries remain

@@ -317,9 +317,12 @@ const main = async () => {
     const subject = resolve(item.worktree);
     ensureClean(mainPath);
     ensureClean(subject);
-    const { reconcileIntake, renderIntakeReconciliation } =
-      await import("./lib/intake-reconciliation.mjs");
-    const preview = reconcileIntake(subject, mainPath, workOrderId, {
+    const {
+      reconcileWorktreeMaterial,
+      renderIntakeReconciliation,
+      verifyPreservedMaterial,
+    } = await import("./lib/intake-reconciliation.mjs");
+    const preview = reconcileWorktreeMaterial(subject, mainPath, workOrderId, {
       dryRun: true,
     });
     ensureNoIgnoredMaterial(
@@ -332,7 +335,7 @@ const main = async () => {
     if (actionArgs.includes("--dry-run")) {
       process.stdout.write(renderIntakeReconciliation(preview));
       process.stdout.write(
-        `Dry run: would fetch main, verify merge and closed state, reconcile intake, and remove merged ${branch}. No changes made.\n`,
+        `Dry run: would fetch main, verify merge and closed state, preserve intake and retained control state, and remove merged ${branch}. No changes made.\n`,
       );
       return;
     }
@@ -356,12 +359,21 @@ const main = async () => {
     );
     if (integrated.phase !== "closed")
       throw new Error(`${workOrderId} is not closed in merged control state`);
-    const reconciliation = reconcileIntake(subject, mainPath, workOrderId);
+    const reconciliation = reconcileWorktreeMaterial(
+      subject,
+      mainPath,
+      workOrderId,
+    );
     process.stdout.write(renderIntakeReconciliation(reconciliation));
     const { readGateChecks, recordGateChecks } =
       await import("./lib/gate-evidence.mjs");
     const checks = readGateChecks(subject);
     if (checks.length) recordGateChecks(mainPath, checks);
+    ensureNoIgnoredMaterial(
+      subject,
+      new Set(reconciliation.files.map((row) => row.source)),
+    );
+    verifyPreservedMaterial(subject, mainPath, reconciliation);
     const restoreBeaconPermissions = prepareBeaconDisposal(subject);
     try {
       runGit(mainPath, ["worktree", "remove", subject]);

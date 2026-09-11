@@ -114,7 +114,7 @@ export const suites = [
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
   nodeTests("authority-grants", "scripts/test-authority-grants.mjs"),
   node("authority-evidence", "scripts/authority-evidence.mjs", {
-    args: ["--check"],
+    args: ["--check", "--edition", "WO-127", "--revision", "002"],
     needsBuild: true,
     preflight: true,
   }),
@@ -456,7 +456,7 @@ export function expandSuiteTasks(selected, repo, template) {
     ...(!row.build && row.name !== "release:prepare" && !row.reuse
       ? { reuse: "tree" }
       : {}),
-    ...(!row.build && !row.preflight && !row.packageTest && preflight.length
+    ...(!row.build && !row.preflight && preflight.length
       ? { after: [...new Set([...(row.after ?? []), ...preflight])] }
       : {}),
   }));

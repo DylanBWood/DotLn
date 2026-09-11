@@ -24,6 +24,7 @@ import {
   sep,
 } from "node:path";
 import { fileURLToPath } from "node:url";
+import { text as streamText } from "node:stream/consumers";
 import {
   applyFeedbackCorrection,
   compileFeedbackUnits,
@@ -2252,7 +2253,9 @@ export async function runHarnessHook(
   let reasonClass: string =
     config.kind === "permission" ? "authority" : config.kind;
   try {
-    const input = JSON.parse(readFileSync(0, "utf8")) as HarnessInput;
+    // Hook input arrives on a pipe. Drain it through the event loop: a traced
+    // synchronous fd-0 read stalled before evaluation under Node 22 on macOS.
+    const input = JSON.parse(await streamText(process.stdin)) as HarnessInput;
     const root = harnessRoot(input.cwd);
     const installedRoot = realpathSync(
       fileURLToPath(new URL("../../../../", import.meta.url)),

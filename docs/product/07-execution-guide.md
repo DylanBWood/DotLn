@@ -430,9 +430,9 @@ failure modes; “small script” is not an evidence exemption.
 The default capture path for ideation opened around a work order is
 `docs/intake/notes/<work-order>-expanded-ideation-<date>.md`; the naming scheme
 is a convenience, not a requirement. Today `npm run backup:intake` archives only
-the caller's checkout and does not synchronize it with main. Normal closeout
-refuses a worktree-local note, but canonical reconciliation remains manual until
-the candidate intake control in `03-architecture.md` exists.
+the caller's checkout and does not synchronize it with main. The reviewed
+closeout helper reconciles worktree-local intake before removal; the broader
+candidate intake control in `03-architecture.md` remains future work.
 
 ## Operator-opened planning pass
 
@@ -646,8 +646,19 @@ close command. It updates `main`, proves the reviewed branch is contained in
 `origin/main`, and removes only its known worktree and merged branch. Ordinary
 tracked or untracked dirt is refused by the clean-worktree gate. Ignored raw
 material under `docs/intake/` is reconciled by the reviewed helper before
-teardown: byte-verified copies, both collision versions preserved with a
-`.from-WO-NNN` suffix, a printed receipt, and no promotion into public docs.
+teardown. Non-disposable ignored files and directories under
+`docs/control/local/` are archived with their relative structure in main's
+ignored `docs/control/local/retained/WO-NNN/`, including adjacent-work records,
+feedback evidence, process measurements, prototypes and the subject's terms
+file. These records stay distinct from main's active state. Directory contents
+and empty directories survive; differing file or directory collisions use a
+`.from-WO-NNN` suffix, numbered when needed, without overwriting existing state.
+Identical copies are reused on retry. The helper validates the whole plan and
+refuses symlinks or destinations that would expose files through Git before
+copying. Exclusive copies and final byte verification leave sources intact
+until guarded teardown; an interrupted or corrupt partial copy is retained,
+and a retry preserves the complete source at a collision path. Receipts show
+paths, dispositions and byte counts, never private contents or content hashes.
 `--dry-run` prints the plan without fetching, copying, deleting, running a gate
 or publishing. Other non-disposable ignored material still refuses removal.
 Known dependency/build outputs, `.runtime/` snapshots, `.control-beacons/`,
@@ -657,8 +668,12 @@ intake protection takes precedence over build-shaped names.
 Main's release-influence guard permits `docs/intake/**`, all of
 `docs/control/local/`, the exact `.claude/settings.local.json` and disposable
 outputs. The subject's local files outside `harness/**`, and its settings file,
-remain non-disposable. The helper preserves main's terms file and other private
-state. If it refuses, report the refusal; never write a closeout script.
+remain non-disposable. The helper archives the control records and continues
+to refuse unknown ignored material, including that settings file. Main's
+terms file and active local records stay intact. Gate evidence is handed off
+through its existing merge helper, separately from archival; the retained
+sources are rechecked immediately before teardown. If it refuses, report the
+refusal; never write a closeout script.
 
 When a planner pins a tagging target above the latest published tag, updating
 the root README release block to that target is an executor deliverable, not a
@@ -1017,7 +1032,11 @@ claim evidence or releases it does not have.
   own data and the meter reports them per order; a session that satisfies
   a gate against its purpose, optimizes a proxy, leans on the operator,
   sizes against the previous instance, or works around a rule is in one of
-  them. `npm run meta` reports available observations and previous-order deltas
+  them. Save observed runtime and token usage with their source in evidence;
+  missing values remain null in the data, never recurring unmeasured-cost
+  boilerplate in operator updates (operator correction, 2026-09-11;
+  [WO-127-D003](../evidence/WO-127/decisions.md#wo-127-d003)).
+  `npm run meta` reports available observations and previous-order deltas
   for all six dispatch kinds; three consecutive worsening order deltas nominate
   a trap for reopening. Missing observations stay unavailable. The fast gate
   checks `docs/control/budgets.json`; token, dollar and PR-body ceilings remain
@@ -1051,8 +1070,16 @@ claim evidence or releases it does not have.
   correction rejects treating a recurring loop as one session's mistake:
   use `npm run harness -- evidence` as the single completion command,
   supplying full and diff evidence and retaining their actual identities.
-  Finish generators and reports first; a turn end alone does not require a
-  fast gate. Generated-file preflights stop expensive suites on failure.
+  Finish measurements, authored reports and explicit release or evidence
+  editions first; a turn end alone does not require a fast gate. The canonical
+  evidence command builds, refreshes the work-order index, decisions index,
+  follow-up register and generated harness, then fingerprints the prepared tree.
+  Those generators leave unchanged bytes and modification times alone. The
+  preparation owns no historical evidence, planning-cost observation, publication
+  source lock or release target. Their source review remains explicit. All
+  package tests and fixtures wait for successful preflights, so a preparation
+  refusal cannot start expensive tests in parallel. Direct test commands and
+  `harness check` remain validation-only ([WO-127-D007](../evidence/WO-127/decisions.md#wo-127-d007)).
   After diagnosis, retry that command and reuse passing source checks whose
   inputs are unchanged. A failed verification or review records its
   reproduction and diff evidence without seeking a green application gate
@@ -1070,6 +1097,11 @@ claim evidence or releases it does not have.
   exchange becomes necessary or Python is already a dependency. See
   [WO-126-D007](../evidence/WO-126/decisions.md#wo-126-d007) and the paired
   [publication measurements](../evidence/WO-126/build-comparison.json).
+  Generated hooks consume piped JSON asynchronously, including UTF-8 characters
+  split across chunks. WO-127's metadata trace located a stalled synchronous
+  stdin read before hook evaluation. The repair retains fail-closed parsing,
+  pinned-runtime validation and generated-process integration coverage
+  ([WO-127-D006](../evidence/WO-127/decisions.md#wo-127-d006)).
 - **Gate execution and reuse (operator decision, 2026-09-09).** The runner
   retains every suite owner and schedules 40 named release cases under the
   shared cap of four jobs, after a prepared fixture dependency. A sealed

@@ -63,6 +63,10 @@ docs/discovery/harness-smoke-2026-09-07/*.json
 
 # WO-126 generators own these exact bytes; the archive preserves historical prose.
 docs/evidence/WO-126/**/*.json
+# The authority evidence helper owns this edition's exact JSON bytes.
+docs/evidence/WO-127/authority.json
+docs/evidence/WO-127/bundle-diff.json
+docs/evidence/WO-127/authority/**/*.json
 docs/lineage/decisions-index.md
 docs/planning/archive/
 # Retained source revisions and dispositions; the follow-up checker owns encoding.

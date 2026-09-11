@@ -292,23 +292,11 @@ export function buildPlanSubject(
         costs.subjectRevision,
         committed.revision,
       ]);
-      const latestInputAt = runGit(root, [
-        "log",
-        "-1",
-        "--format=%cI",
-        committed.revision,
-        "--",
-        sequencePath,
-        budgetPath,
-        ...orders.map((order) => order.path),
-        "docs/product/00-vision.md",
-        "docs/product/13-uifa-roles.md",
-        "docs/planning/capability-table.md",
-      ]);
-      if (
-        Date.parse(costs.observedAt) <
-        Math.max(Date.parse(at), Date.parse(latestInputAt))
-      )
+      // The source hash above binds the cost-bearing projection. A later
+      // execution record or merge can touch its containing files without
+      // changing that projection. The observation must postdate its recorded
+      // revision; whole-file commit times are not planning-input freshness.
+      if (Date.parse(costs.observedAt) < Date.parse(at))
         throw new Error("Planning cost evidence predates its subject revision");
       parts.push(["cost-table", source]);
     } else

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
+  copyFileSync,
   cpSync,
   existsSync,
   mkdirSync,
@@ -12,6 +13,7 @@ import {
   realpathSync,
   rmSync,
   symlinkSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -24,7 +26,12 @@ import {
   requireGateChecks,
   gateCacheRows,
 } from "./lib/gate-evidence.mjs";
-import { reconcileIntake } from "./lib/intake-reconciliation.mjs";
+import {
+  reconcileIntake,
+  reconcileWorktreeMaterial,
+  renderIntakeReconciliation,
+  verifyPreservedMaterial,
+} from "./lib/intake-reconciliation.mjs";
 import { classifyIgnoredMaterial } from "./lib/paths.mjs";
 import {
   budgetVerdict,
@@ -41,6 +48,8 @@ import {
   trapRows,
 } from "./lib/meta.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
+import { prepareHarnessEvidence } from "./lib/evidence-preparation.mjs";
+import { main as workOrders } from "./work-orders.mjs";
 import { probeHarness, discoverHarness } from "./discover.mjs";
 import { usageObservation } from "../packages/skeleton/src/usage-observation.mjs";
 import {
@@ -465,48 +474,185 @@ test("attribution settings and all agent session forms are checked", (t) => {
   assert.throws(() => checkHarness(root), /drift|settings|different|stale/);
 });
 
-test("a failing verification validates its generated index without requiring green code", async (t) => {
+test("failed verification and review validate oversized documents, generated index and report without requiring green code", async (t) => {
   const root = repo(t, { runtime: true });
   write(
     root,
     ".gitattributes",
-    "/docs/work-orders/README.md dotln-generated dotln-check=suite:index\n",
+    readFileSync(new URL("../.gitattributes", import.meta.url), "utf8"),
   );
-  beginHarnessSession(root, "failed-verification", "verifier");
+  const roles = [
+    ["verification-result", "verifier"],
+    ["final-review-result", "reviewer"],
+  ];
   write(root, "docs/work-orders/README.md", "Generated verification status\n");
-  const session = state(root, "failed-verification");
-  session.authoredPaths = ["docs/work-orders/README.md"];
-  writeFileSync(statePath(root, "failed-verification"), json(session));
+  write(root, "docs/product/03-architecture.md", "a".repeat(65537));
+  write(root, "report.md", "FAIL: reproduced fixture failure\n");
+  for (const [, role] of roles)
+    beginHarnessSession(root, role, role, [
+      "docs/work-orders/README.md",
+      "docs/product/03-architecture.md",
+      "report.md",
+    ]);
+  const refuses = async (pattern = /Output not read or checked/) => {
+    for (const [action] of roles)
+      await assert.rejects(
+        requireLifecycleEvidence(root, action, "fail", "WO-999"),
+        pattern,
+      );
+  };
   recordGateChecks(root, [
     gate(root, "git diff --check"),
     gate(root, "npm run test:full", 1),
   ]);
-  await assert.rejects(
-    requireLifecycleEvidence(root, "verification-result", "fail", "WO-999"),
-    /Output not read or checked/,
-  );
+  await refuses();
   recordGateChecks(root, [gate(root, "suite:format")]);
-  await assert.rejects(
-    requireLifecycleEvidence(root, "verification-result", "fail", "WO-999"),
-    /Output not read or checked/,
-  );
+  await refuses();
   recordGateChecks(root, [gate(root, "suite:index")]);
-  const result = await requireLifecycleEvidence(
-    root,
-    "verification-result",
-    "fail",
-    "WO-999",
-  );
-  assert.equal(result.checkCount, 1);
-  await assert.rejects(
-    requireLifecycleEvidence(root, "verification-result", "pass", "WO-999"),
-    /npm run test:full/,
-  );
-  write(root, "docs/work-orders/README.md", "Changed after generator check\n");
+  recordGateChecks(root, [gate(root, "suite:publication", 1)]);
+  await refuses();
+  recordGateChecks(root, [gate(root, "suite:publication")]);
+  await refuses();
+  for (const [action, role] of roles) {
+    observeHarnessDelivery(
+      root,
+      role,
+      json(readHarnessOutput(root, "report.md")),
+    );
+    const result = await requireLifecycleEvidence(
+      root,
+      action,
+      "fail",
+      "WO-999",
+    );
+    assert.equal(result.checkCount, 2);
+    assert.equal(result.readCount, 1);
+    await assert.rejects(
+      requireLifecycleEvidence(root, action, "pass", "WO-999"),
+      /npm run test:full/,
+    );
+  }
+  write(root, "report.md", "FAIL: changed after delivery\n");
+  recordGateChecks(root, [
+    gate(root, "git diff --check"),
+    gate(root, "suite:index"),
+    gate(root, "suite:publication"),
+  ]);
+  await refuses();
+  for (const [, role] of roles)
+    observeHarnessDelivery(
+      root,
+      role,
+      json(readHarnessOutput(root, "report.md")),
+    );
+  write(root, "docs/product/03-architecture.md", "b".repeat(65537));
+  await refuses(/git diff --check/);
   recordGateChecks(root, [gate(root, "git diff --check")]);
-  await assert.rejects(
-    requireLifecycleEvidence(root, "verification-result", "fail", "WO-999"),
-    /Output not read or checked/,
+  await refuses();
+});
+
+test("evidence preparation repairs owned projections before fingerprinting, preserves explicit inputs and is idempotent", (t) => {
+  const root = repo(t, { runtime: true });
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — Fixture (v0.1.0)\n\n**Model:** fixture\n**Effort:** max\n**Cost:** fixture\n**Depends on:** none\n",
+  );
+  write(
+    root,
+    "docs/planning/work-order-map.md",
+    "<!-- dotln-work-order-sequence:start -->\n<!-- dotln-work-order-sequence:end -->\n",
+  );
+  const retained = [
+    [
+      "docs/evidence/WO-999/immutable.json",
+      '{"fixture":"historical observation"}\n',
+    ],
+    [
+      "docs/publication/fixture-toc.md",
+      "Source lock: intentionally unchanged review input\n",
+    ],
+    [
+      "docs/control/local/private-state.json",
+      '{"fixture":"retained control"}\n',
+    ],
+  ];
+  for (const [path, bytes] of retained) write(root, path, bytes);
+  write(
+    root,
+    "docs/product/00-fixture.md",
+    "# Fixture\n\n## Candidate — Fixture follow-up\n\nFirst source revision.\n",
+  );
+  prepareHarnessEvidence(root);
+  const originalFollowup = readFollowups(root).entries[0];
+  write(
+    root,
+    "docs/product/00-fixture.md",
+    "# Fixture\n\n## Candidate — Fixture follow-up\n\nChanged source revision.\n",
+  );
+  assert.throws(() => syncFollowups(root, { check: true }), /stale/);
+  prepareHarnessEvidence(root);
+  assert.equal(readFollowups(root).entries[0].id, originalFollowup.id);
+  assert.equal(
+    readFollowups(root).entries[0].revisions.length,
+    originalFollowup.revisions.length + 1,
+  );
+  const owned = [
+    "docs/work-orders/README.md",
+    "docs/lineage/decisions-index.md",
+    ".claude/harness-manifest.json",
+    ".agents/skills/dotln-executor/SKILL.md",
+  ];
+  const expected = new Map(
+    owned.map((path) => [path, readFileSync(join(root, path), "utf8")]),
+  );
+  for (const path of owned)
+    write(
+      root,
+      path,
+      path.endsWith(".json") ? "{}\n" : "Stale generated bytes\n",
+    );
+  assert.throws(() => workOrders(["index", "--check"], root), /stale|snapshot/);
+  prepareHarnessEvidence(root);
+  for (const [path, bytes] of expected)
+    assert.equal(readFileSync(join(root, path), "utf8"), bytes);
+  workOrders(["index", "--check"], root);
+  writeDecisionsIndex(root, { check: true });
+  syncFollowups(root, { check: true });
+  checkHarness(root);
+  const before = snapshot(root);
+  const mtimes = owned.map((path) => statSync(join(root, path)).mtimeMs);
+  const followupMtime = statSync(join(root, FOLLOWUPS)).mtimeMs;
+  prepareHarnessEvidence(root);
+  assert.deepEqual(snapshot(root), before);
+  assert.deepEqual(
+    owned.map((path) => statSync(join(root, path)).mtimeMs),
+    mtimes,
+  );
+  assert.equal(statSync(join(root, FOLLOWUPS)).mtimeMs, followupMtime);
+  for (const [path, bytes] of retained)
+    assert.equal(readFileSync(join(root, path), "utf8"), bytes);
+  const preparedTree = gateTreeHash(root);
+  const checks = runHarnessEvidence(root);
+  assert.ok(
+    checks.every(
+      (check) => check.exitCode === 0 && check.treeHash === preparedTree,
+    ),
+  );
+  // Preparation cannot turn a real application failure into a passing receipt.
+  write(
+    root,
+    "package.json",
+    json({
+      type: "module",
+      scripts: { "test:full": "node -e 'process.exit(7)'" },
+    }),
+  );
+  prepareHarnessEvidence(root);
+  assert.notEqual(
+    runHarnessEvidence(root).find((row) => row.checkId === "npm run test:full")
+      .exitCode,
+    0,
   );
 });
 
@@ -2092,6 +2238,205 @@ test("closeout preview and copy preserve collisions, harness state, terms and ev
     join(from, "docs/intake/escape"),
   );
   assert.throws(() => reconcileIntake(from, main, "WO-999"), /symlink|regular/);
+});
+
+test("closeout archives retained control files and nested directories without changing active main state", (t) => {
+  const from = repo(t),
+    main = repo(t);
+  const local = "docs/control/local",
+    archive = `${local}/retained/WO-999`;
+  const retained = [
+    "adjacent-work.jsonl",
+    "feedback-one/nested/evidence.bin",
+    "feedback-two/result.json",
+    "feedback-three/record.txt",
+    "process/measurements.json",
+    "prototypes/nested/source.txt",
+    "terms.txt",
+  ];
+  for (const path of retained)
+    write(from, `${local}/${path}`, Buffer.from([0, 255, 13, 10, 1]));
+  mkdirSync(join(from, local, "prototypes/empty"), { recursive: true });
+  write(from, `${local}/harness/state.json`, "disposable subject session");
+  write(main, `${local}/adjacent-work.jsonl`, "active main queue\n");
+  write(main, `${local}/terms.txt`, "active main terms\n");
+  write(main, `${local}/harness/state.json`, "active main session\n");
+  const before = [snapshot(from), snapshot(main)];
+  const preview = reconcileWorktreeMaterial(from, main, "WO-999", {
+    dryRun: true,
+  });
+  assert.deepEqual([snapshot(from), snapshot(main)], before);
+  assert.equal(
+    existsSync(join(main, archive)),
+    false,
+    "dry run must not create even empty archive directories",
+  );
+  assert.equal(preview.files.length, retained.length);
+  assert.ok(
+    preview.directories.some(
+      (row) => row.source === `${local}/prototypes/empty`,
+    ),
+  );
+  const rendered = renderIntakeReconciliation(preview);
+  assert.ok(
+    !/[a-f0-9]{64}/.test(JSON.stringify(preview)),
+    "receipt objects must not expose private content digests",
+  );
+  for (const path of retained)
+    assert.ok(rendered.includes(`${archive}/${path}`));
+  assert.ok(!rendered.includes("disposable subject session"));
+  assert.ok(!rendered.includes("active main terms"));
+  assert.ok(
+    !/[a-f0-9]{64}/.test(rendered),
+    "receipts must not print private content digests",
+  );
+  const applied = reconcileWorktreeMaterial(from, main, "WO-999");
+  assert.deepEqual(snapshot(from), before[0]);
+  for (const [path, hash] of Object.entries(before[1]))
+    assert.equal(snapshot(main)[path], hash);
+  for (const path of retained)
+    assert.deepEqual(
+      readFileSync(join(main, archive, path)),
+      readFileSync(join(from, local, path)),
+    );
+  assert.ok(existsSync(join(main, archive, "prototypes/empty")));
+  assert.equal(existsSync(join(main, archive, "harness")), false);
+  verifyPreservedMaterial(from, main, applied);
+  assert.equal(
+    git(main, "status", "--porcelain"),
+    "",
+    "no retained records enter Git",
+  );
+});
+
+test("closeout archive collisions and partial-copy retries retain both versions and verify bytes", (t) => {
+  const from = repo(t),
+    main = repo(t),
+    local = "docs/control/local";
+  const archive = `${local}/retained/WO-999`;
+  write(from, `${local}/a.bin`, "new-a\0\n");
+  write(from, `${local}/b.bin`, "new-b\0\n");
+  write(from, `${local}/nested/file.txt`, "nested bytes\n");
+  write(main, `${archive}/a.bin`, "existing-a\n");
+  write(main, `${archive}/a.bin.from-WO-999`, "earlier archive\n");
+  write(main, `${archive}/nested`, "existing file at directory path\n");
+  mkdirSync(join(main, archive, "b.bin"), { recursive: true });
+  let copied = 0;
+  assert.throws(
+    () =>
+      reconcileWorktreeMaterial(from, main, "WO-999", {
+        copyFile(source, destination, flags) {
+          if (++copied === 2) {
+            writeFileSync(destination, "partial bytes");
+            throw new Error("injected copy failure");
+          }
+          copyFileSync(source, destination, flags);
+        },
+      }),
+    /injected copy failure/,
+  );
+  assert.equal(readFileSync(join(from, local, "b.bin"), "utf8"), "new-b\0\n");
+  const retry = reconcileWorktreeMaterial(from, main, "WO-999");
+  verifyPreservedMaterial(from, main, retry);
+  assert.equal(
+    readFileSync(join(main, archive, "a.bin"), "utf8"),
+    "existing-a\n",
+  );
+  assert.equal(
+    readFileSync(join(main, archive, "a.bin.from-WO-999"), "utf8"),
+    "earlier archive\n",
+  );
+  assert.equal(
+    readFileSync(join(main, archive, "b.bin.from-WO-999"), "utf8"),
+    "partial bytes",
+  );
+  assert.equal(
+    readFileSync(join(main, archive, "nested"), "utf8"),
+    "existing file at directory path\n",
+  );
+  assert.equal(
+    readFileSync(join(main, archive, "nested.from-WO-999/file.txt"), "utf8"),
+    "nested bytes\n",
+  );
+  const preserved = snapshot(main);
+  assert.ok(
+    reconcileWorktreeMaterial(from, main, "WO-999").files.every(
+      (row) => row.disposition === "identical",
+    ),
+  );
+  assert.deepEqual(snapshot(main), preserved);
+  write(main, retry.files[0].destination, "corrupt preserved bytes");
+  assert.throws(() => verifyPreservedMaterial(from, main, retry), /byte proof/);
+  const repaired = reconcileWorktreeMaterial(from, main, "WO-999");
+  write(from, `${local}/new-after-copy.txt`, "late arrival");
+  assert.throws(
+    () => verifyPreservedMaterial(from, main, repaired),
+    /changed during preservation/,
+  );
+});
+
+test("closeout refuses source and destination symlinks and unignored archive paths before any copy", (t) => {
+  for (const escape of [
+    "source-file",
+    "source-directory",
+    "destination-directory",
+    "destination-file",
+    "dangling-destination",
+  ]) {
+    const from = repo(t),
+      main = repo(t),
+      outside = repo(t);
+    write(from, "docs/control/local/a.txt", "source bytes\n");
+    write(outside, "outside.txt", "outside sentinel\n");
+    const archive = "docs/control/local/retained/WO-999";
+    mkdirSync(join(main, archive), { recursive: true });
+    if (escape === "source-file")
+      symlinkSync(
+        join(outside, "outside.txt"),
+        join(from, "docs/control/local/z.txt"),
+      );
+    if (escape === "source-directory")
+      symlinkSync(outside, join(from, "docs/control/local/z"));
+    if (escape === "destination-directory")
+      symlinkSync(outside, join(main, archive, "z"));
+    if (escape === "destination-directory")
+      write(from, "docs/control/local/z/new.txt", "nested source");
+    if (escape === "destination-file")
+      symlinkSync(join(outside, "outside.txt"), join(main, archive, "a.txt"));
+    if (escape === "dangling-destination")
+      symlinkSync(join(outside, "missing.txt"), join(main, archive, "a.txt"));
+    const before = [snapshot(from), snapshot(main), snapshot(outside)];
+    for (const dryRun of [true, false])
+      assert.throws(
+        () => reconcileWorktreeMaterial(from, main, "WO-999", { dryRun }),
+        /symlink/,
+      );
+    assert.deepEqual(
+      [snapshot(from), snapshot(main), snapshot(outside)],
+      before,
+    );
+  }
+  const from = repo(t),
+    main = repo(t);
+  write(from, "docs/control/local/a.txt", "protected bytes");
+  write(main, ".gitignore", "docs/intake/\n");
+  const before = snapshot(main);
+  assert.throws(
+    () => reconcileWorktreeMaterial(from, main, "WO-999"),
+    /ignored|check-ignore/,
+  );
+  assert.deepEqual(snapshot(main), before);
+  const literalSource = repo(t),
+    literalMain = repo(t);
+  const literalPath = "docs/control/local/retained/WO-999/literal[1].txt";
+  write(literalSource, "docs/control/local/literal[1].txt", "same bytes");
+  write(literalMain, literalPath, "same bytes");
+  git(literalMain, "--literal-pathspecs", "add", "--force", "--", literalPath);
+  git(literalMain, "commit", "-qm", "Tracked archive collision fixture");
+  assert.throws(
+    () => reconcileWorktreeMaterial(literalSource, literalMain, "WO-999"),
+    /tracked in main/,
+  );
 });
 
 test("budgets keep unselected caps unset and cold-start measurement ignores product prose", (t) => {

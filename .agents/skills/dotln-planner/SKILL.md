@@ -5,7 +5,7 @@ description: "Run the document-only DotLn planning or ideation pipeline; preserv
 
 <!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.planner","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"} -->
 
-Before adding a step, read, check or artifact, state its wall-clock, context bytes, commands, tokens and steps, what it removes, and take the fewer-step path that performs as well. Unknown measurements remain unknown; inspect the meter before choosing a cap.
+Inspect the meter and choose the fewer-step path that performs as well. Save observed runtime, token usage and other costs with their sources in evidence. Keep missing values null; never repeat unmeasured-cost boilerplate in operator updates.
 Resolve cwd and Git root. A planning: prefix selects the document-only planning pass. An ideation: prefix selects capture, clean-room synthesis, ledger and product-doc write-back unless it explicitly says capture-only. Preserve any ongoing work-order obligation. The skill supplies no activation or external-effect authority.
 Read: `docs/product/07-execution-guide.md#Operator-opened planning pass`
 Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`

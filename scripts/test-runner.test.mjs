@@ -66,6 +66,10 @@ test("full inventory retains every command in the previous package test chain", 
         "--edition WO-126 --revision 002",
       )
       .replace(
+        /^node scripts\/authority-evidence\.mjs --check$/,
+        "node scripts/authority-evidence.mjs --check --edition WO-127 --revision 002",
+      )
+      .replace(
         /^node (scripts\/test-(?:github-body|plan-refutation)\.mjs)$/,
         "node --test $1",
       );
@@ -172,7 +176,7 @@ test("stale generated evidence stops the gate before expensive fixtures", async 
     false,
   );
 });
-test("package tests start before index finishes while fixtures still wait for preflights", async () => {
+test("package tests and fixtures wait for preflights and never start after a failed preflight", async () => {
   for (const indexExit of [0, 1]) {
     const selected = suites.filter((row) =>
       ["build", "skeleton", "console", "index", "resume"].includes(row.name),
@@ -192,17 +196,16 @@ test("package tests start before index finishes while fixtures still wait for pr
         };
       },
     });
-    for (const name of ["skeleton", "console"])
-      assert.ok(
-        events.indexOf(`start:${name}`) < events.indexOf("end:index"),
-        name,
-      );
-    if (indexExit) {
-      assert.ok(!events.includes("start:resume"));
-      assert.equal(rows.find((row) => row.name === "resume").executed, false);
-      assert.ok(rows.some((row) => row.exitCode !== 0));
-    } else
-      assert.ok(events.indexOf("end:index") < events.indexOf("start:resume"));
+    for (const name of ["skeleton", "console", "resume"]) {
+      if (indexExit) {
+        assert.ok(!events.includes(`start:${name}`));
+        assert.equal(rows.find((row) => row.name === name).executed, false);
+        assert.ok(rows.some((row) => row.exitCode !== 0));
+      } else
+        assert.ok(
+          events.indexOf("end:index") < events.indexOf(`start:${name}`),
+        );
+    }
   }
 });
 
