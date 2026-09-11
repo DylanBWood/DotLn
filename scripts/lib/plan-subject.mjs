@@ -5,7 +5,7 @@ import { parseHeader, parseSequence } from "../work-orders.mjs";
 import { runGit } from "./git.mjs";
 import { containedRegularFile } from "./paths.mjs";
 
-export const PLAN_MAP = "docs/planning/work-order-map.md";
+export const PLAN_MAP = "docs/planning/sequence.md";
 export const PLAN_LEDGER = "docs/lineage/idea-ledger.md";
 export const THESIS_HEADINGS = [
   ["the-one-paragraph-story", "The one-paragraph story"],
@@ -85,7 +85,12 @@ const field = (source, label) => {
   return body.join("\n").trim();
 };
 
-export const parsePlanOrder = (source, path, workOrderId) => {
+export const parsePlanOrder = (
+  source,
+  path,
+  workOrderId,
+  { includeCost = false } = {},
+) => {
   const { title } = parseHeader(source, path);
   if (!title.startsWith(`${workOrderId} — `))
     throw new Error(`order title/id mismatch: ${path}`);
@@ -105,6 +110,9 @@ export const parsePlanOrder = (source, path, workOrderId) => {
     path,
     title,
     objective: field(source, "Objective:"),
+    ...(includeCost
+      ? { cost: /^\*\*Cost:\*\*/m.test(source) ? field(source, "Cost:") : null }
+      : {}),
     criteria,
     nonGoals: field(source, "Non-goals:"),
   };
@@ -113,7 +121,7 @@ export const parsePlanOrder = (source, path, workOrderId) => {
 export function buildPlanSubject(
   root,
   revision = "HEAD",
-  { workspace = false } = {},
+  { workspace = false, costTable = true } = {},
 ) {
   const committed = committedReader(root, revision);
   const read = workspace
@@ -125,7 +133,22 @@ export function buildPlanSubject(
         return readFileSync(join(root, path), "utf8");
       }
     : committed.read;
-  const map = read(PLAN_MAP);
+  // Historical receipt identities retain the source path present at their
+  // revision. Workspace checks see a newly introduced sequence immediately.
+  const sequencePath = (
+    workspace
+      ? containedRegularFile(join(root, PLAN_MAP), root)
+      : committed.paths.includes(PLAN_MAP)
+  )
+    ? PLAN_MAP
+    : "docs/planning/work-order-map.md";
+  const map = read(sequencePath);
+  const has = (path) =>
+    workspace
+      ? containedRegularFile(join(root, path), root)
+      : committed.paths.includes(path);
+  const budgetPath = "docs/control/budgets.json";
+  const includeCost = has(budgetPath);
   const sequence = parseSequence(map);
   if (!sequence.length || sequence.length > 100)
     throw new Error("plan sequence must contain 1–100 orders");
@@ -144,7 +167,7 @@ export function buildPlanSubject(
     const path = paths[0];
     const source = read(path);
     parts.push([path, source]);
-    return parsePlanOrder(source, path, id);
+    return parsePlanOrder(source, path, id, { includeCost });
   });
   const vision = read("docs/product/00-vision.md");
   const theses = THESIS_HEADINGS.map(([id, title]) => {
@@ -206,6 +229,95 @@ export function buildPlanSubject(
       return { thesis, workOrderId: order.workOrderId, laterWorkOrderId };
     }),
   );
+  let costs;
+  if (includeCost) {
+    const budget = JSON.parse(read(budgetPath));
+    const sourceHash = hashParts([
+      block,
+      ...orders.map(({ workOrderId, objective, criteria, nonGoals, cost }) => ({
+        workOrderId,
+        objective,
+        criteria,
+        nonGoals,
+        cost,
+      })),
+      ...parts.filter(
+        ([name]) =>
+          name.startsWith("vision:") ||
+          name === "roles" ||
+          name.startsWith("capability:"),
+      ),
+    ]);
+    if (costTable) {
+      const path = "docs/planning/cost-table.json";
+      if (!has(path))
+        throw new Error(
+          "Planning cost table missing; run npm run meta -- --plan-cost after measuring the subject",
+        );
+      const source = read(path);
+      if (Buffer.byteLength(source) > 65536)
+        throw new Error("Planning cost table exceeds its bounded 64 KB input");
+      costs = JSON.parse(source);
+      if (
+        costs.schemaVersion !== 1 ||
+        !Number.isFinite(Date.parse(costs.observedAt)) ||
+        costs.subjectSourceHash !== sourceHash ||
+        JSON.stringify(costs.acceptances) !== JSON.stringify(budget.acceptances)
+      )
+        throw new Error(
+          "Planning cost evidence is stale for the subject revision or dated acceptances",
+        );
+      if (
+        !Array.isArray(costs.rows) ||
+        costs.rows.length !== orders.length ||
+        new Set(costs.rows.map((row) => row.workOrder)).size !==
+          orders.length ||
+        orders.some(
+          (order) =>
+            !costs.rows.some((row) => row.workOrder === order.workOrderId),
+        )
+      )
+        throw new Error(
+          "Planning cost table must cover exactly the subject orders",
+        );
+      const at = runGit(root, [
+        "show",
+        "-s",
+        "--format=%cI",
+        `${costs.subjectRevision}^{commit}`,
+      ]);
+      runGit(root, [
+        "merge-base",
+        "--is-ancestor",
+        costs.subjectRevision,
+        committed.revision,
+      ]);
+      const latestInputAt = runGit(root, [
+        "log",
+        "-1",
+        "--format=%cI",
+        committed.revision,
+        "--",
+        sequencePath,
+        budgetPath,
+        ...orders.map((order) => order.path),
+        "docs/product/00-vision.md",
+        "docs/product/13-uifa-roles.md",
+        "docs/planning/capability-table.md",
+      ]);
+      if (
+        Date.parse(costs.observedAt) <
+        Math.max(Date.parse(at), Date.parse(latestInputAt))
+      )
+        throw new Error("Planning cost evidence predates its subject revision");
+      parts.push(["cost-table", source]);
+    } else
+      costs = {
+        schemaVersion: 1,
+        subjectSourceHash: sourceHash,
+        acceptances: budget.acceptances,
+      };
+  }
   return {
     schemaVersion: "plan-subject-v1",
     revision: committed.revision,
@@ -218,6 +330,7 @@ export function buildPlanSubject(
     standard: { theses, exclusions, roles, rolesTable, capabilities },
     orders,
     deferrals,
+    ...(costs ? { costTable: costs } : {}),
   };
 }
 

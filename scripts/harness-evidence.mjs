@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync, realpathSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,14 +14,33 @@ import {
   roles,
 } from "./harness-context.mjs";
 import { termsCheck } from "./terms.mjs";
+import { measureColdStarts, requireBudgets } from "./lib/process-budget.mjs";
 
 export const writerScenarios = ["foreign-dead", "foreign-live"];
 
 export function checkHarnessEvidence(root) {
   const installed = checkHarness(root);
   const expected = harnessInstallation();
-  const context = measureHarnessContext();
-  checkContextMeasurement(context);
+  const coldStart = measureColdStarts(root);
+  requireBudgets(
+    coldStart.profiles.map((row) => ({ ...row, value: row.bytes })),
+  );
+  // WO-042's immutable live episodes prove their recorded edition. Later source
+  // changes cannot rewrite those observations into a new live run. Current
+  // output, runtime replacement and guards are exercised by the full fixtures.
+  const historical = JSON.parse(
+    execFileSync("git", ["show", "v0.16.0:.claude/harness-manifest.json"], {
+      cwd: root,
+      encoding: "utf8",
+      maxBuffer: 8 * 1024 * 1024,
+    }),
+  );
+  const context = JSON.parse(
+    readFileSync(
+      join(root, "docs/evidence/WO-042/harness-context.json"),
+      "utf8",
+    ),
+  );
   const directory = "docs/evidence/WO-042/harness-live";
   const entries = readdirSync(join(root, directory));
   const names = entries
@@ -40,17 +60,17 @@ export function checkHarnessEvidence(root) {
     );
     assert.deepEqual(
       record.runtime,
-      expected.bundles[0].manifest.profile.runtime,
+      historical.profiles[0].profile.runtime,
       `${label}: live runtime drift`,
     );
     assert.deepEqual(
       record.loadout,
-      expected.bundles[0].manifest.loadout,
+      historical.profiles[0].loadout,
       `${label}: live build drift`,
     );
     assert.deepEqual(
       record.emittedFiles,
-      expected.manifest.installed,
+      historical.installed,
       `${label}: live emitted files drift`,
     );
     assert.equal(record.harnessVersion, "2.1.263 (Claude Code)");
@@ -209,6 +229,8 @@ export function checkHarnessEvidence(root) {
   ];
   const localTerms = termsCheck(root, surfaces);
   return {
+    liveEdition:
+      "v0.16.0 / WO-042 (historical; no claim of a current live run)",
     installedSurfaces: installed.files,
     roles: selected,
     writers,
@@ -224,6 +246,6 @@ if (
     fileURLToPath(new URL("../", import.meta.url)),
   );
   console.log(
-    `Harness evidence: ${result.roles.length} current live role smokes, ${result.writers.length} writer-reservation smokes, ${result.installedSurfaces} generated surfaces; local-terms list: ${result.localTerms.status} (${result.checkedSurfaces} surfaces checked).`,
+    `Harness evidence: ${result.roles.length} historical live role smokes and ${result.writers.length} historical writer smokes at ${result.liveEdition}; ${result.installedSurfaces} current generated surfaces; local-terms list: ${result.localTerms.status} (${result.checkedSurfaces} surfaces checked).`,
   );
 }

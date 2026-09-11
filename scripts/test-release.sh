@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 unset DOTLN_ACCOUNT_LABEL # Fixtures declare their own actors.
+release_template=""
+selected_case=""
+prepare_template=""
+real_npm_all=0
+while (( "$#" )); do
+  case "$1" in
+    --case) selected_case="${2:?case name required}"; shift 2 ;;
+    --template) release_template="${2:?template required}"; shift 2 ;;
+    --prepare-template) prepare_template="${2:?destination required}"; shift 2 ;;
+    --real-npm) real_npm_all=1; shift ;;
+    *) printf "error: unknown release fixture argument %s\n" "$1" >&2; exit 64 ;;
+  esac
+done
+
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 source "$script_dir/test-temp-root.sh"
@@ -17,27 +31,7 @@ u202f="$(printf '\342\200\257')"
 assert_u202f() {
   "$node_bin" -e 'if (!Buffer.from(process.argv[1], "utf8").toString("hex").includes("e280af")) process.exit(1)' "$1"
 }
-test "$("$node_bin" -e 'process.stdout.write(Buffer.from(process.argv[1], "utf8").toString("hex"))' "$u202f")" = e280af
-if grep -Fq 'current.md' "$script_dir/release.mjs"; then
-  printf 'error: release lifecycle parses the Markdown control projection\n' >&2
-  exit 1
-fi
-invalid_json_path="$test_root/invalid-package.json"
-printf '{\n' >"$invalid_json_path"
-if invalid_json_output="$("$node_bin" --input-type=module -e '
-  import { pathToFileURL } from "node:url";
-  const helpers = await import(pathToFileURL(process.argv[1]).href);
-  try {
-    helpers.readJsonFile(process.argv[2]);
-  } catch (error) {
-    process.stderr.write(`${error.message}\n`);
-    process.exit(1);
-  }
-' "$script_dir/lib/paths.mjs" "$invalid_json_path" 2>&1)"; then
-  printf 'error: malformed JSON helper fixture succeeded\n' >&2
-  exit 1
-fi
-grep -Fq "invalid JSON in $invalid_json_path" <<<"$invalid_json_output"
+
 
 write_control_events() {
   local path="$1" id="$2" authority="$3"
@@ -56,6 +50,11 @@ make_repo() {
   origin="$fixture/origin.git"
   main="$fixture/project"
   mkdir -p "$fixture"
+  github_repo="dotln-fixture/$name"
+  github_origin="https://github.com/$github_repo.git"
+  if [[ -n "$release_template" ]]; then
+    "$node_bin" "$script_dir/lib/release-fixtures.mjs" copy "$release_template" "$fixture"
+  else
   git init --bare "$origin" >/dev/null
   git clone "$origin" "$main" >/dev/null 2>&1
   git -C "$main" config user.email test@example.invalid
@@ -136,8 +135,13 @@ make_repo() {
   git -C "$main" tag -a v0.2.0 -F "$fixture/v0.2.0-tag.txt"
   git -C "$main" push -u origin main >/dev/null 2>&1
   git -C "$main" push origin refs/tags/v0.2.0 >/dev/null 2>&1
+  fi
+  git -C "$main" config "url.$origin.insteadOf" "$github_origin"
+  git -C "$main" remote set-url origin "$github_origin"
   bin="$fixture/bin"
   npm_log="$fixture/npm.log"
+  real_publish="$real_npm_all"
+  if [[ "$name" == license_surfaces ]]; then real_publish=1; fi
   gh_log="$fixture/gh.log"
   gh_state="$fixture/gh-state"
   mkdir -p "$bin"
@@ -162,11 +166,14 @@ make_repo() {
     '#!/usr/bin/env bash' \
     'set -euo pipefail' \
     "real_npm='$real_npm'" \
+    "real_publish='$real_publish'" \
     'case "${1:-}" in' \
     '  --version) printf "10.8.0\\n" ;;' \
     '  publish)' \
     '    if [[ " $* " != *" --dry-run "* ]]; then exit 64; fi' \
-    '    exec "$real_npm" "$@" ;;' \
+    '    if [[ "$real_publish" == 1 ]]; then exec "$real_npm" "$@"; fi' \
+    '    printf "DOTLN_PACKAGE_PUBLISH_REFUSED: packages stay private until a separate publication decision\\n" >&2' \
+    '    exit 1 ;;' \
     '  ci)' \
     '    printf "ci\\n" >>"$DOTLN_NPM_LOG"' \
     '    if [[ "${DOTLN_FIXTURE_NPM_FAIL:-}" == "ci" ]]; then exit 7; fi' \
@@ -176,6 +183,10 @@ make_repo() {
     '    echo '\''echo Version 5.4.5'\'' >>node_modules/.bin/tsc' \
     '    chmod +x node_modules/.bin/tsc' \
     '    printf "fixture npm ci passed\\n" ;;' \
+    '  run)' \
+    '    if [[ "${2:-}" != "test:full" ]]; then exit 64; fi' \
+    '    printf "full\\n" >>"$DOTLN_NPM_LOG"' \
+    '    exec "$0" test ;;' \
     '  test)' \
     '    printf "test\\n" >>"$DOTLN_NPM_LOG"' \
     '    if [[ "${DOTLN_FIXTURE_NPM_FAIL:-}" == "test" ]]; then exit 8; fi' \
@@ -345,6 +356,31 @@ assert_surface_failure() {
   surface_failure_output="$output"
 }
 
+release_case_preflight() {
+test "$("$node_bin" -e 'process.stdout.write(Buffer.from(process.argv[1], "utf8").toString("hex"))' "$u202f")" = e280af
+if grep -Fq 'current.md' "$script_dir/release.mjs"; then
+  printf 'error: release lifecycle parses the Markdown control projection\n' >&2
+  exit 1
+fi
+invalid_json_path="$test_root/invalid-package.json"
+printf '{\n' >"$invalid_json_path"
+if invalid_json_output="$("$node_bin" --input-type=module -e '
+  import { pathToFileURL } from "node:url";
+  const helpers = await import(pathToFileURL(process.argv[1]).href);
+  try {
+    helpers.readJsonFile(process.argv[2]);
+  } catch (error) {
+    process.stderr.write(`${error.message}\n`);
+    process.exit(1);
+  }
+' "$script_dir/lib/paths.mjs" "$invalid_json_path" 2>&1)"; then
+  printf 'error: malformed JSON helper fixture succeeded\n' >&2
+  exit 1
+fi
+grep -Fq "invalid JSON in $invalid_json_path" <<<"$invalid_json_output"
+}
+
+release_case_surfaces() {
 make_repo surfaces
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -388,7 +424,9 @@ if malformed_authority="$(release_command check-surfaces 2>&1)"; then
   exit 1
 fi
 grep -Fq 'work-order heading must contain exactly one strict vX.Y.Z version' <<<"$malformed_authority"
+}
 
+release_case_surfaces_local_snapshot() {
 make_repo surfaces_local_snapshot
 commit_candidate "$main" WO-099 v0.2.1
 # A sibling's tag shares the namespace but is outside this subject's history.
@@ -410,7 +448,9 @@ if release_command check-surfaces >/dev/null 2>&1; then
   exit 1
 fi
 printf 'local release surfaces ignored an unrelated sibling tag and passed without a remote; authoritative check still requires origin\n'
+}
 
+release_case_prepare_independent() {
 make_repo prepare_independent
 git -C "$main" switch -c wo-099 >/dev/null 2>&1
 mkdir -p "$main/docs/control/orders" "$main/docs/product"
@@ -431,7 +471,9 @@ prepared_again="$(release_command prepare --local)"
 grep -Fq 'no files changed' <<<"$prepared_again"
 release_command check-surfaces --local >/dev/null
 printf 'release preparation CLI preserved three independent control segments and all Git refs\n'
+}
 
+release_case_license_surfaces() {
 make_repo license_surfaces
 commit_candidate "$main" WO-099 v0.2.1
 surface_pass="$(release_command check-surfaces)"
@@ -448,7 +490,9 @@ printf '%s\n' "$surface_failure_output" | sed -n '/FAIL license-surfaces LICENSE
 node "$script_dir/test-license-fixture.mjs" "$main"
 release_command check-surfaces >/dev/null
 printf 'license-surfaces release preflight fixtures passed (real npm dry runs)\n'
+}
 
+release_case_surfaces_committed_readme() {
 make_repo surfaces_committed_readme
 commit_candidate "$main" WO-099 v0.2.1
 write_release_block "$main" v0.2.0
@@ -459,14 +503,18 @@ git -C "$main" update-index --assume-unchanged README.md
 write_release_block "$main" v0.2.1
 release_command check-surfaces >/dev/null
 assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1' --committed
+}
 
+release_case_surfaces_lower() {
 make_repo surfaces_lower
 commit_candidate "$main" WO-099 v0.0.2 v0.2.0
 git -C "$main" push origin main >/dev/null 2>&1
 release_command check-surfaces >/dev/null
 write_release_block "$main" v0.0.2
 assert_surface_failure 'FAIL release-block: observed v0.0.2; expected exactly one v0.2.0 (work-order target v0.0.2; latest published v0.2.0)'
+}
 
+release_case_surfaces_first() {
 make_repo surfaces_first
 git -C "$main" tag -d v0.2.0 >/dev/null
 git --git-dir="$origin" update-ref -d refs/tags/v0.2.0
@@ -474,7 +522,9 @@ commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 first_surface="$(release_command check-surfaces)"
 grep -Fq 'PASS release-block: observed v0.2.1; expected v0.2.1 (work-order target v0.2.1; latest published none)' <<<"$first_surface"
+}
 
+release_case_surfaces_component() {
 make_repo surfaces_component
 printf '\n// source change\n' >>"$main/packages/kernel/src/core.ts"
 commit_candidate "$main" WO-099 v0.2.1
@@ -486,7 +536,9 @@ printf '{"name":"@dotln/kernel","version":"0.1.1"}\n' >"$main/packages/kernel/pa
 node "$script_dir/test-license-fixture.mjs" "$main"
 release_command check-surfaces >/dev/null
 assert_surface_failure 'FAIL component-version @dotln/kernel: src changed; observed 0.1.0; previous v0.2.0 0.1.0; expected a different version' --committed
+}
 
+release_case_surfaces_non_source() {
 make_repo surfaces_non_source
 mkdir -p "$main/packages/kernel/test"
 printf 'test-only change\n' >"$main/packages/kernel/test/example.test.ts"
@@ -495,7 +547,9 @@ commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 non_source_surface="$(release_command check-surfaces)"
 grep -Fq 'PASS component-version @dotln/kernel: src unchanged; observed 0.1.0; previous v0.2.0 0.1.0' <<<"$non_source_surface"
+}
 
+release_case_surfaces_new_component() {
 make_repo surfaces_new_component
 mkdir -p "$main/packages/new-component/src"
 printf 'export const first = true;\n' >"$main/packages/new-component/src/index.ts"
@@ -506,7 +560,9 @@ git -C "$main" push origin main >/dev/null 2>&1
 new_component_surface="$(release_command check-surfaces)"
 grep -Fq 'PASS component-version @dotln/new-component: src changed; observed 0.1.0; previous v0.2.0 no component with this identity; expected first-version baseline' <<<"$new_component_surface"
 printf 'release surface version and component fixtures passed\n'
+}
 
+release_case_surfaceclose() {
 make_repo surfaceclose
 git clone "$origin" "$fixture/integrator" >/dev/null 2>&1
 git -C "$fixture/integrator" config user.email test@example.invalid
@@ -527,7 +583,9 @@ test ! -e "$npm_log"
 assert_no_candidate_tag "$main" "$origin"
 assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1'
 test "$close_surface_output" = "$surface_failure_output"
+}
 
+release_case_surfaceclose_linked() {
 make_repo surfaceclose_linked
 linked_subject="$fixture/project-wo099"
 git -C "$main" worktree add "$linked_subject" -b wo-099 main >/dev/null
@@ -545,7 +603,9 @@ test ! -e "$npm_log"
 assert_no_candidate_tag "$main" "$origin"
 assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1'
 test "$linked_close_surface_output" = "$surface_failure_output"
+}
 
+release_case_bodyclose() {
 make_repo bodyclose
 commit_reviewed_candidate "$main" WO-024 v0.2.1
 "$node_bin" -e '
@@ -569,7 +629,9 @@ test ! -e "$npm_log"
 test ! -e "$gh_log"
 assert_no_candidate_tag "$main" "$origin"
 printf 'release close surface gates ran after sync and before npm, tag, or GitHub mutation\n'
+}
 
+release_case_dirty() {
 make_repo dirty
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -584,7 +646,9 @@ if ignored_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: 
 test "$ignored_output" = "error: main checkout contains ignored material that can contaminate release evidence: $foreign_path"
 test -f "$main/$foreign_path"
 assert_no_candidate_tag "$main" "$origin"
+}
 
+release_case_settings_scope() {
 make_repo settings_scope
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -596,14 +660,18 @@ test "$settings_scope_output" = 'error: main checkout contains ignored material 
 test -f "$main/.claude/other.local.json"
 assert_no_candidate_tag "$main" "$origin"
 printf 'release influence permits only the exact root harness-settings path\n'
+}
 
+release_case_nonmain() {
 make_repo nonmain
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
 git -C "$main" worktree add "$fixture/other" -b other >/dev/null
 if (cd "$fixture/other" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" close WO-099 --publish >/dev/null 2>&1); then printf 'error: non-main release close succeeded\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
+}
 
+release_case_divergence() {
 make_repo divergence
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -612,13 +680,17 @@ git -C "$main" add local.txt
 git -C "$main" commit -m 'local-only commit' >/dev/null
 if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: divergent main release close succeeded\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
+}
 
+release_case_malformed() {
 make_repo malformed
 commit_candidate "$main" WO-099 v0.2
 git -C "$main" push origin main >/dev/null 2>&1
 if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: malformed release version succeeded\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
+}
 
+release_case_missinggh() {
 make_repo missinggh
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -634,7 +706,9 @@ grep -Fq 'gh is required before tag creation' <<<"$missing_gh_output"
 if grep -Fq ' mktag' "$missing_gh_trace"; then printf 'error: missing gh reached git mktag\n' >&2; exit 1; fi
 test ! -e "$npm_log"
 assert_no_candidate_tag "$main" "$origin"
+}
 
+release_case_unauthenticated() {
 make_repo unauthenticated
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -646,7 +720,9 @@ if grep -Fq ' mktag' "$unauthenticated_trace"; then printf 'error: unauthenticat
 test ! -e "$npm_log"
 test "$(cat "$gh_log")" = $'--version\nauth status --hostname github.com'
 assert_no_candidate_tag "$main" "$origin"
+}
 
+release_case_splitorigin() {
 make_repo splitorigin
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -656,7 +732,9 @@ grep -Fq 'matching GitHub HOST/OWNER/REPO fetch and push target' <<<"$split_orig
 test ! -e "$npm_log"
 test ! -e "$gh_log"
 assert_no_candidate_tag "$main" "$origin"
+}
 
+release_case_lower() {
 make_repo lower
 commit_candidate "$main" WO-099 v0.0.2 v0.2.0
 git -C "$main" push origin main >/dev/null 2>&1
@@ -673,7 +751,9 @@ test "$(git -C "$main" status --porcelain)" = ""
 test -f "$main/$intake_path"
 test -f "$main/.claude/settings.local.json"
 assert_no_candidate_tag "$main" "$origin" v0.0.2
+}
 
+release_case_failures() {
 make_repo failures
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -681,7 +761,9 @@ if DOTLN_FIXTURE_NPM_FAIL=ci release_close WO-099 --publish >/dev/null 2>&1; the
 assert_no_candidate_tag "$main" "$origin"
 if DOTLN_FIXTURE_NPM_FAIL=test release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: evidence failure published\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
+}
 
+release_case_cadence_missing() {
 make_repo cadence_missing
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -695,7 +777,9 @@ if grep -Fq ':refs/tags/v0.2.1' "$cadence_missing_trace"; then printf 'error: mi
 test "$(git --git-dir="$origin" for-each-ref --format='%(objectname) %(refname)' | LC_ALL=C sort)" = "$cadence_missing_origin_before"
 assert_no_candidate_tag "$main" "$origin"
 printf 'missing built kernel cadence constants refused before tag publication\n'
+}
 
+release_case_cadence_inconsistent() {
 make_repo cadence_inconsistent
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -711,7 +795,9 @@ for cadence_fixture in union-only constructor-only inconsistent-evaluable; do
   assert_no_candidate_tag "$main" "$origin"
 done
 printf 'inconsistent built kernel cadence constants refused before tag publication\n'
+}
 
+release_case_conflict() {
 make_repo conflict
 base_commit="$(git -C "$main" rev-parse HEAD)"
 commit_candidate "$main" WO-099 v0.2.1
@@ -720,7 +806,9 @@ git -C "$main" tag -a v0.2.1 "$base_commit" -m 'conflicting historical tag'
 git -C "$main" push origin refs/tags/v0.2.1 >/dev/null 2>&1
 if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: conflicting tag accepted\n' >&2; exit 1; fi
 test "$(git --git-dir="$origin" rev-list -n 1 v0.2.1)" = "$base_commit"
+}
 
+release_case_localconflict() {
 make_repo localconflict
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -729,7 +817,9 @@ local_conflict_object="$(git -C "$main" rev-parse v0.2.1^{tag})"
 if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: local-only conflicting tag accepted\n' >&2; exit 1; fi
 test "$(git -C "$main" rev-parse v0.2.1^{tag})" = "$local_conflict_object"
 if git --git-dir="$origin" show-ref --verify --quiet refs/tags/v0.2.1; then printf 'error: local-only conflict reached origin\n' >&2; exit 1; fi
+}
 
+release_case_nestedtag() {
 make_repo nestedtag
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -738,7 +828,9 @@ if nested_tag_output="$(release_close WO-099 --publish 2>&1)"; then printf 'erro
 grep -Fq 'release tag v0.2.1 is blocked by nested tag v0.2.1/child' <<<"$nested_tag_output"
 test "$(git -C "$main" cat-file -t v0.2.1/child)" = tag
 assert_no_candidate_tag "$main" "$origin"
+}
 
+release_case_prepare() {
 make_repo prepare
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -747,7 +839,9 @@ grep -Fq 'Prepared and validated v0.2.1' <<<"$prepare_output"
 grep -Fq 'npm run release -- close WO-099 --publish' <<<"$prepare_output"
 assert_no_candidate_tag "$main" "$origin"
 test "$(git -C "$main" status --porcelain)" = ""
+}
 
+release_case_missinglocalprevious() {
 make_repo missinglocalprevious
 git -C "$main" tag -d v0.2.0 >/dev/null
 git -C "$main" config remote.origin.tagOpt --no-tags
@@ -757,7 +851,9 @@ missing_local_previous_output="$(release_close WO-099)"
 grep -Fq 'Prepared and validated v0.2.1' <<<"$missing_local_previous_output"
 test "$(git -C "$main" cat-file -t v0.2.0)" = tag
 assert_no_candidate_tag "$main" "$origin"
+}
 
+release_case_pushfail() {
 make_repo pushfail
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -766,7 +862,9 @@ chmod +x "$origin/hooks/update"
 if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: rejected tag push succeeded\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
 if grep -q '^release ' "$gh_log"; then printf 'error: gh release ran before a successful tag push\n' >&2; exit 1; fi
+}
 
+release_case_refrecovery() {
 make_repo refrecovery
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -784,7 +882,9 @@ test "$(grep -c '^test$' "$npm_log")" = "$((ref_recovery_tests_before + 1))"
 if grep -Fq 'ignored stale artifact executed' "$main/packages/kernel/dist/src/index.js"; then printf 'error: equal-tag recovery trusted stale ignored build output\n' >&2; exit 1; fi
 test "$(git -C "$main" cat-file -t v0.2.1)" = tag
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
+}
 
+release_case_createrecovery() {
 make_repo createrecovery
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
@@ -817,7 +917,9 @@ if mismatch_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error:
 grep -Fq 'GitHub Release body differs at line 1' <<<"$mismatch_output"
 grep -Fq 'expected "DotLn v0.2.1"' <<<"$mismatch_output"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
+}
 
+release_case_stale_helpers() {
 make_repo stale_helpers
 stale_release_marker="$fixture/stale-release.marker"
 stale_worktree_marker="$fixture/stale-worktree.marker"
@@ -846,10 +948,7 @@ git -C "$fixture/integrator" push origin main >/dev/null 2>&1
 mkdir -p "$main/.claude" "$stale_subject/docs/intake/dist"
 printf 'persistent operator settings\n' >"$main/.claude/settings.local.json"
 printf 'protected staged intake\n' >"$stale_subject/docs/intake/dist/x.md"
-if stale_intake_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_STALE_RELEASE_MARKER="$stale_release_marker" DOTLN_STALE_WORKTREE_MARKER="$stale_worktree_marker" "$node_bin" "$stale_subject/scripts/release.mjs" close WO-099 2>&1)"; then
-  printf 'error: reviewed close deleted protected intake while main helpers were stale\n' >&2
-  exit 1
-fi
+stale_intake_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_STALE_RELEASE_MARKER="$stale_release_marker" DOTLN_STALE_WORKTREE_MARKER="$stale_worktree_marker" "$node_bin" "$stale_subject/scripts/release.mjs" close WO-099 --dry-run 2>&1)"
 grep -Fq 'docs/intake/dist/x.md' <<<"$stale_intake_output"
 test -f "$main/.claude/settings.local.json"
 test -f "$stale_subject/docs/intake/dist/x.md"
@@ -857,10 +956,10 @@ test -d "$stale_subject"
 test -n "$(git -C "$main" branch --list wo-099)"
 test ! -e "$stale_release_marker"
 test ! -e "$stale_worktree_marker"
-rm -- "$stale_subject/docs/intake/dist/x.md"
-rmdir -- "$stale_subject/docs/intake/dist" "$stale_subject/docs/intake"
+test ! -e "$main/docs/intake/dist/x.md"
 stale_close_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_STALE_RELEASE_MARKER="$stale_release_marker" DOTLN_STALE_WORKTREE_MARKER="$stale_worktree_marker" "$node_bin" "$stale_subject/scripts/release.mjs" close WO-099)"
 grep -Fq 'Prepared and validated v0.2.1' <<<"$stale_close_output"
+grep -Fxq 'protected staged intake' "$main/docs/intake/dist/x.md"
 test -f "$main/.claude/settings.local.json"
 test ! -e "$stale_subject"
 test "$(git -C "$main" branch --list wo-099)" = ""
@@ -869,7 +968,9 @@ test ! -e "$stale_release_marker"
 test ! -e "$stale_worktree_marker"
 assert_no_candidate_tag "$main" "$origin"
 printf 'reviewed subject helpers guarded their own pre-fast-forward close and cleanup\n'
+}
 
+release_case_success() {
 make_repo success
 "$node_bin" -e '
   const fs = require("node:fs");
@@ -906,11 +1007,34 @@ git -C "$main" tag -a v9.9.9 -m 'unrelated local annotated tag'
 unrelated_tag_object="$(git -C "$main" rev-parse v9.9.9^{tag})"
 git -C "$main" config push.followTags true
 test ! -e "$main/node_modules"
+mkdir -p "$main/docs/control/local/harness" "$subject/docs/control/local/harness" "$main/docs/intake" "$subject/docs/intake"
+printf 'retained main terms\n' >"$main/docs/control/local/terms.txt"
+printf 'main cache\n' >"$main/docs/control/local/harness/fixture.json"
+printf 'subject cache\n' >"$subject/docs/control/local/harness/fixture.json"
+printf 'main original\n' >"$main/docs/intake/collision.md"
+printf 'subject original\n' >"$subject/docs/intake/collision.md"
+printf 'subject new note\n' >"$subject/docs/intake/new.md"
+touch "$npm_log" "$gh_log"
+preview_head="$(git -C "$main" rev-parse HEAD)"
+preview_npm="$(wc -l <"$npm_log")"
+preview_gh="$(wc -l <"$gh_log")"
+preview_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/release.mjs" close WO-099 --publish --dry-run)"
+grep -Fq 'collision.md.from-WO-099' <<<"$preview_output"
+test "$(git -C "$main" rev-parse HEAD)" = "$preview_head"
+test "$(wc -l <"$npm_log")" = "$preview_npm"
+test "$(wc -l <"$gh_log")" = "$preview_gh"
+test ! -e "$main/docs/intake/new.md"
+test -f "$subject/docs/intake/new.md"
 # Bootstrap path: main is intentionally behind the merged PR, so invoke the
 # reviewed helper from the subject while its working directory is main. The
 # helper may remove the worktree containing its own loaded source.
 success_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/release.mjs" close WO-099 --publish)"
 grep -Fq 'Published annotated v0.2.1' <<<"$success_output"
+grep -Fxq 'retained main terms' "$main/docs/control/local/terms.txt"
+grep -Fxq 'main original' "$main/docs/intake/collision.md"
+grep -Fxq 'subject original' "$main/docs/intake/collision.md.from-WO-099"
+grep -Fxq 'subject new note' "$main/docs/intake/new.md"
+
 grep -Fq 'GitHub Release created' <<<"$success_output"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
 grep -Eq '^release create v0\.2\.1 --repo github\.com/dotln-fixture/success --verify-tag --title DotLn v0\.2\.1 --notes-file .+/RELEASE\.md$' "$gh_log"
@@ -993,7 +1117,9 @@ for mutation in commit application component toolchain schema evidence cadence; 
   ' "$mutated" "$mutation"
   if PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" validate "$mutated" >/dev/null 2>&1; then printf 'error: validator accepted %s mutation\n' "$mutation" >&2; exit 1; fi
 done
+}
 
+release_case_edition() {
 make_repo edition
 commit_legacy_multicommit_candidate "$main" WO-023 v0.2.1
 commit_reviewed_candidate "$main" WO-024 v0.2.1
@@ -1102,7 +1228,9 @@ printf 'assembled edition fixture sha256: %s\n' "$edition_sha256"
 printf 'release gh stub transcript (temporary paths normalized):\n'
 sed -E 's#--notes-file [^ ]+/RELEASE\.md#--notes-file <temporary-release-body>#' "$gh_log"
 printf 'release edition, GitHub projection, recovery, and historical backfill fixtures passed\n'
+}
 
+release_case_firstrelease() {
 make_repo firstrelease
 git -C "$main" tag -d v0.2.0 >/dev/null
 git --git-dir="$origin" update-ref -d refs/tags/v0.2.0
@@ -1122,7 +1250,64 @@ PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mj
   if (!manifest.notes.changedFiles.includes(expected)) process.exit(1);
 ' "$fixture/first-release-manifest.json" "$first_release_path"
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" validate "$fixture/first-release-manifest.json" >/dev/null
+}
 
+release_case_cached_evidence() {
+make_repo cached_evidence
+"$node_bin" - "$main/package.json" <<'NODE'
+const fs = require("node:fs");
+const path = process.argv[2], value = JSON.parse(fs.readFileSync(path, "utf8"));
+value.scripts["test:full"] = "node fixture-full-gate.mjs";
+fs.writeFileSync(path, JSON.stringify(value, null, 2) + "\n");
+NODE
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+cold_output="$(release_close WO-099)"
+grep -Fq 'Running npm run test:full' <<<"$cold_output"
+test "$(grep -c '^full$' "$npm_log")" = 1
+cache_output="$(release_close WO-099 --publish)"
+grep -Fq 'Reusing npm run test:full for identical tree' <<<"$cache_output"
+test "$(grep -c '^full$' "$npm_log")" = 1
+release_command manifest-from-tag v0.2.1 >"$fixture/current-manifest.json"
+"$node_bin" - "$fixture/current-manifest.json" "$(git -C "$main" rev-parse HEAD^{tree})" <<'NODE'
+const assert = require("node:assert/strict"), fs = require("node:fs");
+const manifest = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+assert.deepEqual(manifest.evidence.map(row => row.command), ["npm run test:full", "node packages/skeleton/dist/src/cli.js", "git status --porcelain"]);
+for (const row of manifest.evidence) {assert.equal(row.treeHash, process.argv[3]); assert.ok(row.durationMs >= 0);}
+NODE
+printf 'current release manifest reused one executed full gate by exact Git tree with durations\n'
+}
+
+release_case_concurrent() {
 make_repo concurrent
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$script_dir/test-concurrent-control.mjs" "$fixture"
+}
+
+if [[ -n "$prepare_template" ]]; then
+  if [[ -n "$release_template" || -n "$selected_case" ]]; then exit 64; fi
+  make_repo template
+  "$node_bin" "$script_dir/lib/release-fixtures.mjs" save "$fixture" "$prepare_template"
+  printf 'PROGRESS release template prepared\n'
+  exit 0
+fi
+if [[ -n "$selected_case" ]]; then
+  if [[ ! "$selected_case" =~ ^[a-z][a-z0-9_]*$ ]] || ! declare -F "release_case_$selected_case" >/dev/null; then
+    printf 'error: unknown release case %s\n' "$selected_case" >&2
+    exit 64
+  fi
+  printf 'PROGRESS release case %s started\n' "$selected_case"
+  "release_case_$selected_case"
+  printf 'PROGRESS release case %s passed\n' "$selected_case"
+else
+  if [[ -z "$release_template" ]]; then
+    make_repo template
+    "$node_bin" "$script_dir/lib/release-fixtures.mjs" save "$fixture" "$test_root/template-snapshot"
+    release_template="$test_root/template-snapshot"
+  fi
+  while IFS= read -r release_case; do
+    printf 'PROGRESS release case %s started\n' "$release_case"
+    "release_case_$release_case"
+    printf 'PROGRESS release case %s passed\n' "$release_case"
+  done < <("$node_bin" "$script_dir/lib/release-fixtures.mjs" list "$script_dir/..")
+fi
 printf 'release tests passed\n'

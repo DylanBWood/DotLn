@@ -576,11 +576,11 @@ const actor = { harness: "human", harnessVersion: "not-applicable", model: "huma
 const actorArgs = ["--harness", "human", "--harness-version", "not-applicable", "--model", "human", "--effort", "unknown", "--source", "operator-attested"];
 const stdout = process.stdout.write;
 const stderr = process.stderr.write;
-const call = (args) => {
+const call = async (args) => {
   let output = "";
   process.stdout.write = (chunk) => { output += chunk; return true; };
   process.stderr.write = () => true; // This deliberately non-Git fixture cannot checkpoint.
-  try { main(args); } finally { process.stdout.write = stdout; process.stderr.write = stderr; }
+  try { await main(args); } finally { process.stdout.write = stdout; process.stderr.write = stderr; }
   return output;
 };
 const report = (kind, number) => {
@@ -591,7 +591,7 @@ const report = (kind, number) => {
 
 // Every event kind is appended by the actual command dispatcher in one process.
 const beforeSequence = Date.now();
-call(["activate", "WO-087", "docs/work-orders/WO-087-time.md"]);
+await call(["activate", "WO-087", "docs/work-orders/WO-087-time.md"]);
 const beforeBadClock = [readFileSync(log), readFileSync(current)];
 const RealDate = Date;
 globalThis.Date = class extends RealDate {
@@ -599,21 +599,21 @@ globalThis.Date = class extends RealDate {
   toISOString() { return this.fromClock ? "invalid-host-time" : super.toISOString(); }
 };
 try {
-  assert.throws(() => call(["implementation-ready", ...actorArgs]), /invalid recordedAt at append/);
+  await assert.rejects(() => call(["implementation-ready", ...actorArgs]), /invalid recordedAt at append/);
 } finally { globalThis.Date = RealDate; }
 assert.deepEqual([readFileSync(log), readFileSync(current)], beforeBadClock);
-call(["implementation-ready", ...actorArgs]);
-call(["verify"]);
+await call(["implementation-ready", ...actorArgs]);
+await call(["verify"]);
 report("VER", "001");
-call(["verification-result", "fail", ...actorArgs]);
-call(["fix"]);
-call(["repair-complete", ...actorArgs]);
-call(["verify"]);
+await call(["verification-result", "fail", ...actorArgs]);
+await call(["fix"]);
+await call(["repair-complete", ...actorArgs]);
+await call(["verify"]);
 report("VER", "002");
-call(["verification-result", "pass", ...actorArgs]);
-call(["final-review"]);
+await call(["verification-result", "pass", ...actorArgs]);
+await call(["final-review"]);
 report("FINAL", "001");
-call(["final-review-result", "pass", ...actorArgs]);
+await call(["final-review-result", "pass", ...actorArgs]);
 const afterSequence = Date.now();
 const appended = readEvents();
 assert.deepEqual([...new Set(appended.map((event) => event.type))].sort(), [
@@ -652,12 +652,12 @@ for (const [name, events] of Object.entries(variants)) {
   assert.deepEqual(fold(events), expectedState, name);
   writeEvents(events);
   const before = readFileSync(log);
-  call(["next"]); // Regenerate current.md through the legal projection path.
+  await call(["next"]); // Regenerate current.md through the legal projection path.
   assert.deepEqual(readFileSync(log), before);
   const rendered = readFileSync(current, "utf8");
   const masked = rendered.split("\n").filter((line) => !/^- (Latest recordedAt:|Elapsed )/.test(line)).join("\n");
   writeFileSync(join(evidence, `time-${name}.masked`), masked);
-  const status = JSON.parse(call(["status", "--json"]));
+  const status = JSON.parse(await call(["status", "--json"]));
   assert.equal(status.phase, "closed");
   assert.deepEqual(status.legalNextActions, ["release-close", "next", "activate"]);
   assert.equal(status.latestCheckpoint.ref, "refs/dotln/checkpoint/WO-087/10");
@@ -668,8 +668,8 @@ assert.deepEqual(statusProjection(withoutTimes).elapsed, { implementation: "unkn
 assert.deepEqual(statusProjection(reversedTimes).elapsed, { implementation: -5000, verification: -2000, repair: -3000, finalReview: -1000 });
 const mixed = baseline.map((event, index) => index === 0 ? withoutTimes[index] : event);
 writeEvents(mixed);
-call(["next"]);
-const mixedStatus = JSON.parse(call(["status", "--json"]));
+await call(["next"]);
+const mixedStatus = JSON.parse(await call(["status", "--json"]));
 assert.deepEqual(mixedStatus.elapsed, { ...expectedElapsed, implementation: "unknown" });
 assert.ok(readFileSync(current, "utf8").includes("- Elapsed implementation: unknown\n"));
 assert.ok(readFileSync(current, "utf8").includes("- Elapsed verification: 4000 ms\n"));
@@ -688,13 +688,13 @@ for (const recordedAt of invalid) {
   writeEvents(events);
   const before = [readFileSync(log), readFileSync(current)];
   for (const args of [["status"], ["status", "--json"], ["next"], ["times"]])
-    assert.throws(() => call(args), /invalid recordedAt at line 2/);
+    await assert.rejects(() => call(args), /invalid recordedAt at line 2/);
   assert.deepEqual([readFileSync(log), readFileSync(current)], before);
 }
 assert.doesNotThrow(() => fold([{ ...baseline[0], recordedAt: "2024-02-29T23:59:59.999Z" }]));
 writeEvents(mixed);
 const beforeTimes = [readFileSync(log), readFileSync(current)];
-assert.throws(() => call(["times", "--json"]), /usage: resume times/);
+await assert.rejects(() => call(["times", "--json"]), /usage: resume times/);
 assert.deepEqual([readFileSync(log), readFileSync(current)], beforeTimes);
 console.log(`time validation: ${invalid.length} malformed values refuse with ordinal and preserve log/projection; valid leap day accepted`);
 NODE
@@ -724,11 +724,11 @@ const { readControl } = await import(pathToFileURL(join(root, "scripts/lib/contr
 const { completedPhaseAttempts, controlTimeProjection } = await import(pathToFileURL(join(root, "scripts/lib/control-time.mjs")));
 const { renderIndex } = await import(pathToFileURL(join(scripts, "work-orders.mjs")));
 const stdout = process.stdout.write, stderr = process.stderr.write;
-const call = (args) => {
+const call = async (args) => {
   let output = "";
   process.stdout.write = (chunk) => { output += chunk; return true; };
   process.stderr.write = () => true;
-  try { main(args); } finally { process.stdout.write = stdout; process.stderr.write = stderr; }
+  try { await main(args); } finally { process.stdout.write = stdout; process.stderr.write = stderr; }
   return output;
 };
 const actorA = { harness: "codex-cli", harnessVersion: "fixture-1", model: "model-alpha", effort: "high", source: "self-reported", accountLabel: "a1" };
@@ -796,8 +796,8 @@ const savedSpawn = childProcess.spawnSync;
 childProcess.spawnSync = () => { throw new Error("usage attempted to launch a process"); };
 syncBuiltinESMExports();
 try {
-  usage = JSON.parse(call(["usage", "--json"]));
-  rendered = call(["usage"]);
+  usage = JSON.parse(await call(["usage", "--json"]));
+  rendered = await call(["usage"]);
 } finally { Object.assign(fs, savedFs); childProcess.spawnSync = savedSpawn; syncBuiltinESMExports(); delete process.env.DOTLN_ACCOUNT_LABEL; }
 assert.deepEqual(JSON.parse(execFileSync(process.execPath, [join(root, "scripts/resume.mjs"), "usage", "--json"], { encoding: "utf8" })), usage);
 assert.equal(execFileSync(process.execPath, [join(root, "scripts/resume.mjs"), "usage"], { encoding: "utf8" }), rendered);
@@ -842,9 +842,9 @@ assert.deepEqual(textGroups, [...expectedGroups, ...usage.byWorkOrder.flatMap((r
 assert.match(rendered, /Total: attempts=10; elapsedMs=11000; unknown=1/);
 for (const row of usage.byWorkOrder)
   assert.ok(rendered.includes(`${row.workOrder}: attempts=${row.attempts}; elapsedMs=${row.elapsedMs}; unknown=${row.unknown}`));
-assert.throws(() => call(["status", "--json"]), /ambiguous work-order selection/);
+await assert.rejects(() => call(["status", "--json"]), /ambiguous work-order selection/);
 for (const args of [["--wat"], ["--json", "--json"], ["--work-order", "WO-075"]])
-  assert.throws(() => call(["usage", ...args]), /usage: resume usage/);
+  await assert.rejects(() => call(["usage", ...args]), /usage: resume usage/);
 assert.deepEqual(paths.map((path) => fs.readFileSync(join(root, path))), before);
 for (const path of paths)
   execFileSync("cmp", [join(root, path), join(root, `${path.replace("/orders/", "/")}.before`)]);
@@ -861,7 +861,7 @@ assert.deepEqual([...completedPhaseAttempts([second[0], third[0], second[1], thi
 assert.equal([...completedPhaseAttempts([second[0], event("WO-076", "ImplementationReady", undefined, actorA)])][0].elapsedMs, "unknown");
 assert.equal([...completedPhaseAttempts([first[0], event("WO-075", "ImplementationReady", undefined, actorA)])][0].elapsedMs, "unknown");
 writeEvents(paths[0], first.map((entry) => entry.type === "ImplementationReady" ? { ...entry, actor: undefined } : entry));
-assert.equal(JSON.parse(call(["usage", "--json"])).byActor[0].harness, "unknown");
+assert.equal(JSON.parse(await call(["usage", "--json"])).byActor[0].harness, "unknown");
 writeEvents(paths[0], first);
 
 // Completion label grammar, report parity, and all downstream projections.
@@ -869,7 +869,7 @@ const id = "WO-078", authority = `docs/work-orders/${id}-fixture.md`;
 fs.mkdirSync(join(root, "docs/work-orders"), { recursive: true });
 fs.writeFileSync(join(root, authority), `# ${id} fixture\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n`);
 const selectedCall = (args) => call([...args, "--work-order", id]);
-selectedCall(["activate", id, authority]);
+await selectedCall(["activate", id, authority]);
 const actor = { harness: "human", harnessVersion: "not-applicable", model: "human", effort: "unknown", source: "operator-attested" };
 const flags = ["--harness", "human", "--harness-version", "not-applicable", "--model", "human", "--effort", "unknown", "--source", "operator-attested"];
 const labelLog = join(root, `docs/control/orders/${id}.jsonl`);
@@ -877,49 +877,49 @@ const last = () => JSON.parse(fs.readFileSync(labelLog, "utf8").trim().split("\n
 const snapshot = () => [fs.readFileSync(labelLog), fs.readFileSync(join(root, "docs/control/current.md"))];
 for (const label of ["Test", "a b", "x@y", "a".repeat(17), "a\u2028b", "a\u2029b", "a\nb", "a\n", "a\x00b", "", "1a"]) {
   const before = snapshot();
-  assert.throws(() => selectedCall(["implementation-ready", ...flags, "--account-label", label]), /invalid account label|usage: resume implementation-ready/);
+  await assert.rejects(() => selectedCall(["implementation-ready", ...flags, "--account-label", label]), /invalid account label|usage: resume implementation-ready/);
   assert.deepEqual(snapshot(), before);
 }
 for (const extra of [["--account-label"], ["--account-label", "a1", "--account-label", "claude-2"]])
-  assert.throws(() => selectedCall(["implementation-ready", ...flags, ...extra]), /usage: resume implementation-ready/);
+  await assert.rejects(() => selectedCall(["implementation-ready", ...flags, ...extra]), /usage: resume implementation-ready/);
 process.env.DOTLN_ACCOUNT_LABEL = "invalid@fixture";
 const beforeEnv = snapshot();
-assert.throws(() => selectedCall(["implementation-ready", ...flags]), /invalid account label/);
+await assert.rejects(() => selectedCall(["implementation-ready", ...flags]), /invalid account label/);
 assert.deepEqual(snapshot(), beforeEnv);
 process.env.DOTLN_ACCOUNT_LABEL = "a1";
-selectedCall(["implementation-ready", ...flags]);
+await selectedCall(["implementation-ready", ...flags]);
 assert.equal(last().actor.accountLabel, "a1");
-assert.equal(JSON.parse(selectedCall(["status", "--json"])).latestAttestation.accountLabel, "a1");
+assert.equal(JSON.parse(await selectedCall(["status", "--json"])).latestAttestation.accountLabel, "a1");
 assert.match(fs.readFileSync(join(root, "docs/control/current.md"), "utf8"), /account a1/);
-selectedCall(["verify"]);
-const report = (field, attestation) => {
-  const status = JSON.parse(selectedCall(["status", "--json"]));
+await selectedCall(["verify"]);
+const report = async (field, attestation) => {
+  const status = JSON.parse(await selectedCall(["status", "--json"]));
   const file = join(root, status[field]);
   fs.mkdirSync(join(file, ".."), { recursive: true });
   fs.writeFileSync(file, `# Fixture\n\n**Actor attestation:** ${JSON.stringify(attestation)}\n`);
 };
-report("verificationPath", actor);
+await report("verificationPath", actor);
 const beforeReport = snapshot();
-assert.throws(() => selectedCall(["verification-result", "fail", ...flags]), /actor header does not match/);
+await assert.rejects(() => selectedCall(["verification-result", "fail", ...flags]), /actor header does not match/);
 assert.deepEqual(snapshot(), beforeReport);
-report("verificationPath", { ...actor, accountLabel: "claude-2" });
+await report("verificationPath", { ...actor, accountLabel: "claude-2" });
 process.env.DOTLN_ACCOUNT_LABEL = "invalid@fixture";
-selectedCall(["verification-result", "fail", ...flags, "--account-label", "claude-2"]);
+await selectedCall(["verification-result", "fail", ...flags, "--account-label", "claude-2"]);
 assert.equal(last().actor.accountLabel, "claude-2");
-selectedCall(["fix"]);
-selectedCall(["repair-complete", ...flags, "--account-label", "a1"]);
+await selectedCall(["fix"]);
+await selectedCall(["repair-complete", ...flags, "--account-label", "a1"]);
 assert.equal(last().actor.accountLabel, "a1");
 delete process.env.DOTLN_ACCOUNT_LABEL;
-selectedCall(["verify"]);
-report("verificationPath", actor);
-selectedCall(["verification-result", "pass", ...flags]);
+await selectedCall(["verify"]);
+await report("verificationPath", actor);
+await selectedCall(["verification-result", "pass", ...flags]);
 assert.ok(!Object.hasOwn(last().actor, "accountLabel"));
-assert.equal(JSON.parse(selectedCall(["status", "--json"])).latestAttestation.accountLabel, "not-applicable");
+assert.equal(JSON.parse(await selectedCall(["status", "--json"])).latestAttestation.accountLabel, "not-applicable");
 assert.match(fs.readFileSync(join(root, "docs/control/current.md"), "utf8"), /account not-applicable/);
-selectedCall(["final-review"]);
-report("finalReviewPath", { ...actor, accountLabel: "claude-2" });
+await selectedCall(["final-review"]);
+await report("finalReviewPath", { ...actor, accountLabel: "claude-2" });
 process.env.DOTLN_ACCOUNT_LABEL = "a1";
-selectedCall(["final-review-result", "pass", ...flags, "--account-label", "claude-2"]);
+await selectedCall(["final-review-result", "pass", ...flags, "--account-label", "claude-2"]);
 delete process.env.DOTLN_ACCOUNT_LABEL;
 assert.equal(last().actor.accountLabel, "claude-2");
 const state = readControl(root).orders.get(id).state;

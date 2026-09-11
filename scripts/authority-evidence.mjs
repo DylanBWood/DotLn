@@ -37,11 +37,7 @@ import {
   executorSupports,
 } from "../packages/skeleton/dist/src/loadouts/executor-supports.js";
 import { compilePlanRefuter } from "../packages/skeleton/dist/src/loadouts/plan-refuter.js";
-import {
-  checkHarness,
-  harnessInstallation,
-  harnessInstructionBlock,
-} from "./lib/harness.mjs";
+import { checkHarness, harnessInstallation } from "./lib/harness.mjs";
 
 const [mode, ...extra] = process.argv.slice(2);
 assert.ok(
@@ -49,7 +45,7 @@ assert.ok(
   "usage: authority-evidence.mjs --write|--check (build and emit the bundle first)",
 );
 const root = fileURLToPath(new URL("../", import.meta.url));
-const directory = new URL("../docs/evidence/WO-042/", import.meta.url);
+const directory = new URL("../docs/evidence/WO-126/", import.meta.url);
 const read = (path) => readFileSync(join(root, path), "utf8");
 const baseline = JSON.parse(
   read("docs/evidence/WO-042/authority-baseline.json"),
@@ -102,7 +98,10 @@ const compatibility = Object.entries(results).map(([name, result]) => {
     before.artifactIdentity,
     `${name} only the compiler package identity changes`,
   );
-  assert.equal(result.artifactIdentity.compilerPackageVersion, "0.8.0");
+  assert.equal(
+    result.artifactIdentity.compilerPackageVersion,
+    COMPILER_PACKAGE_VERSION,
+  );
   return {
     fixture: name,
     semanticHash: result.semanticHash,
@@ -265,7 +264,7 @@ const bundlePaths = git(
   "ls-tree",
   "-r",
   "--name-only",
-  baseline.sourceRevision,
+  "v0.16.0",
   "--",
   ".agents",
   ".claude",
@@ -277,68 +276,63 @@ const savedBuild = contributorProgram([]);
 const equippedBuild = contributorProgram();
 const unequipped = harnessInstallation({ program: savedBuild });
 const equipped = harnessInstallation({ program: equippedBuild });
+const currentPaths = (installation) =>
+  [
+    ...new Set([
+      ...installation.files.map((file) => file.path),
+      ".claude/harness-manifest.json",
+    ]),
+  ].sort();
+assert.deepEqual(currentPaths(equipped), currentPaths(unequipped));
 const generated = (installation, path) =>
   path === ".claude/harness-manifest.json"
     ? JSON.stringify(installation.manifest, null, 2) + "\n"
-    : installation.files.find((file) => file.path === path).contents;
-const bundleFiles = bundlePaths.map((path) => {
-  const before = prior(path),
-    after = generated(unequipped, path);
-  if (path === "CLAUDE.md") {
-    assert.equal(harnessInstructionBlock(before), after);
-    assert.equal(
-      read(path).replace(harnessInstructionBlock(read(path)).trimEnd(), ""),
-      before.replace(harnessInstructionBlock(before).trimEnd(), ""),
-      "hand-written instruction floor",
-    );
-    return {
-      path,
-      change: "byte-identical marked block and hand-written floor",
-      hash: digest(after),
-    };
+    : (installation.files.find((file) => file.path === path)?.contents ?? null);
+// WO-042 proved its version-specific bundle migration. Retain those exact
+// observations; WO-126 intentionally changes the procedure and hook policy.
+// Current authority semantics are exercised above, and current support-only
+// projection remains an exact comparison below.
+const historicalEvidence = [
+  "authority.json",
+  "bundle-diff.json",
+  "artifact-identity/semantic-hash-inventory.json",
+  "artifact-identity/scenario.jsonl",
+  "artifact-identity/audit.json",
+  "artifact-identity/negative-transcripts.json",
+  "verification/events.jsonl",
+  "verification/matrix.json",
+  "verification/stale-status.json",
+  "verification/stale-status.txt",
+].map((name) => {
+  const path = `docs/evidence/WO-042/${name}`;
+  assert.equal(read(path), git("show", `v0.16.0:${path}`), path);
+  return { path, hash: digest(read(path)), unchanged: true };
+});
+const comparisonPaths = [
+  ...new Set([...bundlePaths, ...currentPaths(unequipped)]),
+].sort();
+const bundleFiles = comparisonPaths.map((path) => {
+  const before = bundlePaths.includes(path)
+    ? git("show", `v0.16.0:${path}`)
+    : null;
+  const after = generated(unequipped, path);
+  if (after !== null && path.startsWith(".claude/hooks/")) {
+    const { config } = parseHook(after);
+    assert.equal(config.compilerPackageVersion, COMPILER_PACKAGE_VERSION);
+    if (config.policy) assertCompiledFeedback(config.policy);
   }
-  if (before === after)
-    return { path, change: "byte-identical", hash: digest(after) };
-  if (path === ".claude/harness-manifest.json") {
-    for (const profile of JSON.parse(before).profiles)
-      assert.equal(profile.profile.runtime.skeletonVersion, "0.13.0");
-    for (const profile of unequipped.manifest.profiles)
-      assert.equal(profile.profile.runtime.skeletonVersion, "0.14.0");
-    assert.deepEqual(
-      withoutDerivedIdentities(JSON.parse(after)),
-      withoutDerivedIdentities(JSON.parse(before)),
-      "manifest semantic fields",
-    );
-    return {
-      path,
-      change:
-        "compiler/skeleton pins, derived hashes and empty grant provenance",
-      before: digest(before),
-      after: digest(after),
-    };
-  }
-  assert.ok(
-    path.startsWith(".claude/hooks/"),
-    `unexpected changed bundle surface ${path}`,
-  );
-  const left = parseHook(before),
-    right = parseHook(after);
-  assert.equal(left.wrapper, right.wrapper, `${path} hook wrapper`);
-  assert.equal(left.config.compilerPackageVersion, "0.7.0");
-  assert.equal(right.config.compilerPackageVersion, COMPILER_PACKAGE_VERSION);
-  assert.equal(left.config.runtime.skeletonVersion, "0.13.0");
-  assert.equal(right.config.runtime.skeletonVersion, "0.14.0");
-  if (right.config.policy) assertCompiledFeedback(right.config.policy);
-  assert.deepEqual(
-    withoutDerivedIdentities(right.config),
-    withoutDerivedIdentities(left.config),
-    `${path} hook semantics, matchers, envelope and policy definitions`,
-  );
   return {
     path,
-    change: "compiler/skeleton pins and derived runtime/policy hashes",
-    before: digest(before),
-    after: digest(after),
+    change:
+      before === null
+        ? "added"
+        : after === null
+          ? "removed"
+          : before === after
+            ? "unchanged"
+            : "changed",
+    before: before === null ? null : digest(before),
+    after: after === null ? null : digest(after),
   };
 });
 
@@ -366,7 +360,7 @@ const fragments = supports.flatMap((support) =>
 const savedHash = unequipped.manifest.origin.semanticHash;
 const equippedHash = equipped.manifest.origin.semanticHash;
 assert.notEqual(savedHash, equippedHash);
-const overlayFiles = bundlePaths.map((path) => {
+const overlayFiles = currentPaths(unequipped).map((path) => {
   const before = generated(unequipped, path),
     after = generated(equipped, path);
   if (path === ".claude/harness-manifest.json") {
@@ -462,11 +456,12 @@ const transcript = {
   projections,
 };
 const bundleDiff = {
-  sourceRevision: baseline.sourceRevision,
+  sourceRevision: "v0.16.0",
+  historicalEvidence,
   generatedSurfaces: installed.files,
   files: bundleFiles,
   comparison:
-    "activation to current unequipped saved build; installed equipment compared separately",
+    "v0.16.0 to WO-126 unequipped build; current support-only projection compared separately",
   supportEquipment: {
     supportIds: defaultExecutorSupportIds,
     savedHash,
@@ -489,9 +484,9 @@ for (const [name, value] of [
     assert.equal(
       readFileSync(new URL(name, directory), "utf8"),
       contents,
-      `stale WO-042 evidence: ${name}`,
+      `stale WO-126 evidence: ${name}`,
     );
 }
 console.log(
-  `${mode === "--write" ? "Recorded" : "Verified"} four unchanged programs, four widening rejections, nine runtime denials, admitted/reverted grants and ${bundlePaths.length} bundle comparisons.`,
+  `${mode === "--write" ? "Recorded" : "Verified"} four unchanged programs, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
 );

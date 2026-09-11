@@ -1,3 +1,4 @@
+import test from "node:test";
 import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -31,10 +32,7 @@ const scriptRoot = dirname(fileURLToPath(import.meta.url));
 const root = process.argv[2];
 assert.ok(root && isAbsolute(root) && realpathSync(root) === root);
 assert.ok(existsSync(join(root, ".dotln-test-root-owner")));
-const check = (label, run) => {
-  run();
-  process.stdout.write(`PASS ${label}\n`);
-};
+const check = (label, run) => test(label, run);
 const write = (repo, path, content) => {
   mkdirSync(dirname(join(repo, path)), { recursive: true });
   writeFileSync(join(repo, path), content);
@@ -204,7 +202,7 @@ commit(repo, "closed and active orders");
 const indexFile = join(repo, "docs/work-orders/README.md");
 const rows = () => new Map(readIndex(repo).rows.map((row) => [row.id, row]));
 
-check(
+await check(
   "index derives release membership, no-release, unreleased, active, blocked, ready, malformed and unknown",
   () => {
     const byId = rows();
@@ -237,7 +235,7 @@ check(
   },
 );
 
-check(
+await check(
   "plain-text checklist first, complete details once per file, sorted sections, safe Markdown and deterministic bytes",
   () => {
     cli(repo, ["index"]);
@@ -298,7 +296,7 @@ check(
   },
 );
 
-check(
+await check(
   "check is read-only; deleting a detail or editing evidence names the first differing line",
   () => {
     const original = readFileSync(indexFile, "utf8");
@@ -333,7 +331,7 @@ check(
   },
 );
 
-check(
+await check(
   "sequence edits stale the generated view; malformed, missing, duplicate and unknown recommendations refuse without mutation",
   () => {
     const plan = readFileSync(join(repo, planningPath), "utf8");
@@ -409,7 +407,7 @@ check(
   },
 );
 
-check(
+await check(
   "a new release tag preserves the recorded check; explicit refresh includes it without retroactive no-release inference",
   () => {
     const original = readFileSync(indexFile, "utf8");
@@ -433,7 +431,7 @@ check(
   },
 );
 
-check(
+await check(
   "later tag time cannot turn an old source prefix into a prior release; unvalidated additional tags do not invalidate the snapshot",
   () => {
     tag(repo, "v3.0.0", "WO-040", [], earlyCommit, "2020-01-03T00:00:00Z");
@@ -455,7 +453,7 @@ check(
   },
 );
 
-check(
+await check(
   "missing or changed recorded tag objects refuse without rewriting the index",
   () => {
     const original = readFileSync(indexFile, "utf8");
@@ -475,7 +473,7 @@ check(
   },
 );
 
-check(
+await check(
   "lifecycle transitions stale the index; failed final review and a new request have distinct verdicts",
   () => {
     const failed = completed("WO-034").slice(1);
@@ -538,7 +536,7 @@ check(
   },
 );
 
-check(
+await check(
   "unknown event and invalid time refuse at the original global ordinal",
   () => {
     const corrupt = [...events];
@@ -555,7 +553,7 @@ check(
   },
 );
 
-check(
+await check(
   "unknown headers, invalid versions, duplicate fields, body metadata and duplicate IDs never become guesses",
   () => {
     assert.equal(parseHeader("# A C# tool\n", "fixture.md").title, "A C# tool");
@@ -605,7 +603,7 @@ check(
   },
 );
 
-check(
+await check(
   "source and destination symlinks refuse; CLI rejects unknown arguments",
   () => {
     const original = readFileSync(indexFile, "utf8");
@@ -637,7 +635,7 @@ check(
   },
 );
 
-check(
+await check(
   "the sole manifest-free historical release requires its explicit record",
   () => {
     const past = makeRepo("historical");
@@ -686,7 +684,7 @@ check(
   },
 );
 
-check(
+await check(
   "segments retain close attribution, every open row, and tagged source inventories",
   () => {
     const segmented = makeRepo("segment-attribution");

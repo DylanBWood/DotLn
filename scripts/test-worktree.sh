@@ -267,6 +267,24 @@ git -C "$subject" add pr-body.md
 git -C "$subject" commit --amend --no-edit >/dev/null
 printf 'GitHub body profile refused wrapped PR and release-note prose before publication\n'
 
+clean_attribution_body="$test_root/clean-attribution-body.md"
+cp "$subject/pr-body.md" "$clean_attribution_body"
+for attribution in 'Claude-Session: fixture' 'SomeAgent-Session: fixture' 'https://claude.ai/code/session_fixture'; do
+  cp "$clean_attribution_body" "$subject/pr-body.md"
+  printf '\n%s\n' "$attribution" >>"$subject/pr-body.md"
+  git -C "$subject" add pr-body.md
+  git -C "$subject" commit --amend --no-edit >/dev/null
+  if attribution_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md 2>&1)"; then printf 'error: attributed PR body accepted\n' >&2; exit 1; fi
+  grep -Fq 'AI attribution' <<<"$attribution_output"
+  cp "$clean_attribution_body" "$subject/pr-body.md"
+  git -C "$subject" add pr-body.md
+  git -C "$subject" commit --amend --no-edit >/dev/null
+  if attribution_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title "$attribution" --body-file pr-body.md 2>&1)"; then printf 'error: attributed PR title accepted\n' >&2; exit 1; fi
+  grep -Fq 'AI attribution' <<<"$attribution_output"
+  if git --git-dir="$test_root/origin.git" show-ref --verify --quiet refs/heads/wo-099; then printf 'error: attribution reached origin\n' >&2; exit 1; fi
+done
+printf 'publication refuses agent session trailers and URLs in titles and bodies before any push\n'
+
 printf 'ignored private body\n' >"$subject/.env"
 if ignored_body_output="$(PATH="$test_root/no-gh-bin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file .env 2>&1)"; then printf 'error: publish accepted an ignored untracked PR body\n' >&2; exit 1; fi
 grep -Fq '.env: file is not tracked' <<<"$ignored_body_output"
@@ -392,8 +410,9 @@ mkdir -p "$subject/docs/intake"
 intake_path="docs/intake/raw${u202f}note.md"
 assert_u202f "$intake_path"
 printf 'raw local note\n' >"$subject/$intake_path"
-if intake_output="$(finish_worktree WO-099 2>&1)"; then printf 'error: ignored material was deleted\n' >&2; exit 1; fi
-test "$intake_output" = "error: worktree contains ignored material and will not be removed: $intake_path (run npm run backup:intake or move it, then retry)"
+intake_output="$(finish_worktree WO-099 --dry-run 2>&1)"
+grep -Fq "$intake_path" <<<"$intake_output"
+test ! -e "$main/$intake_path"
 test -f "$subject/$intake_path"
 test -d "$subject"
 test -n "$(git -C "$main" branch --list wo-099)"
@@ -402,10 +421,7 @@ rmdir -- "$subject/docs/intake"
 mkdir -p "$subject/docs/intake/dist" "$subject/docs/intake/node_modules"
 printf 'protected intake distribution note\n' >"$subject/docs/intake/dist/x.md"
 printf 'protected intake dependency note\n' >"$subject/docs/intake/node_modules/y"
-if intake_build_output="$(finish_worktree WO-099 2>&1)"; then
-  printf 'error: intake build-shaped paths were deleted\n' >&2
-  exit 1
-fi
+intake_build_output="$(finish_worktree WO-099 --dry-run 2>&1)"
 grep -Fq 'docs/intake/dist/x.md' <<<"$intake_build_output"
 test -f "$subject/docs/intake/dist/x.md"
 test -f "$subject/docs/intake/node_modules/y"
@@ -413,10 +429,7 @@ test -d "$subject"
 test -n "$(git -C "$main" branch --list wo-099)"
 rm -- "$subject/docs/intake/dist/x.md"
 rmdir -- "$subject/docs/intake/dist"
-if intake_node_output="$(finish_worktree WO-099 2>&1)"; then
-  printf 'error: intake node_modules path was deleted\n' >&2
-  exit 1
-fi
+intake_node_output="$(finish_worktree WO-099 --dry-run 2>&1)"
 grep -Fq 'docs/intake/node_modules/y' <<<"$intake_node_output"
 test -f "$subject/docs/intake/node_modules/y"
 rm -- "$subject/docs/intake/node_modules/y"

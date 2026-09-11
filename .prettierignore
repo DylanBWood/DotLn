@@ -60,3 +60,10 @@ docs/evidence/WO-039/**/*.json
 docs/evidence/WO-042/**/*.json
 docs/discovery/harness-smoke-2026-09-07*.json
 docs/discovery/harness-smoke-2026-09-07/*.json
+
+# WO-126 generators own these exact bytes; the archive preserves historical prose.
+docs/evidence/WO-126/**/*.json
+docs/lineage/decisions-index.md
+docs/planning/archive/
+# Retained source revisions and dispositions; the follow-up checker owns encoding.
+docs/planning/followups.json

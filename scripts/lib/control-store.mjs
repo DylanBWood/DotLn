@@ -44,18 +44,49 @@ export const readControl = (root, revision) => {
     )
       .split("\0")
       .filter(Boolean);
-    for (const entry of entries) {
+    const blobs = entries.map((entry) => {
       const [metadata, path] = entry.split("\t");
       const [mode, type, object] = metadata.split(" ");
       if (type !== "blob" || !["100644", "100755"].includes(mode))
         throw new Error(
           `${revision}:${path}: expected a regular control segment`,
         );
+      return { path, object };
+    });
+    // One process per committed view, not one process per order segment.
+    // Git's byte counts frame Unicode JSONL without interpreting its content.
+    const wire = blobs.length
+      ? runGit(root, ["cat-file", "--batch"], {
+          trim: false,
+          encoding: null,
+          input: blobs.map((row) => row.object).join("\n") + "\n",
+        })
+      : Buffer.alloc(0);
+    let offset = 0;
+    for (const { path, object } of blobs) {
+      const end = wire.indexOf(10, offset);
+      const header = wire.subarray(offset, end).toString("ascii").split(" ");
+      const length = Number(header[2]);
+      if (
+        end < offset ||
+        header.length !== 3 ||
+        header[0] !== object ||
+        header[1] !== "blob" ||
+        !/^\d+$/.test(header[2]) ||
+        !Number.isSafeInteger(length) ||
+        length < 0 ||
+        end + length + 1 >= wire.length ||
+        wire[end + length + 1] !== 10
+      )
+        throw new Error("Committed control batch has invalid framing");
       sources.set(
         path,
-        runGit(root, ["cat-file", "blob", object], { trim: false }),
+        wire.subarray(end + 1, end + 1 + length).toString("utf8"),
       );
+      offset = end + length + 2;
     }
+    if (offset !== wire.length)
+      throw new Error("Committed control batch has trailing bytes");
   } else {
     const read = (path) => {
       if (!containedRegularFile(join(root, path), root))

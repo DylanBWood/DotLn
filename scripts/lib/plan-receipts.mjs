@@ -91,7 +91,7 @@ export const renderPlanReceipt = (receipt) =>
     `Pass: \`${receipt.pass.id}\` (${receipt.pass.kind}). Verdict: **${receipt.result.planVerdict}**.`,
     "",
     receipt.episode.kind === "direct-session"
-      ? "Review source: direct Codex session. Harness version, model and effort: unknown; settings verification: unverified. No CLI launch or transport acceptance is claimed."
+      ? `Review source: direct ${receipt.episode.review ? "harness" : "Codex"} session. Harness version, model and effort: unknown; settings verification: unverified. No CLI launch or transport acceptance is claimed.`
       : `Transport: \`${receipt.episode.transport}\`; harness version: \`${receipt.episode.harnessVersion}\`; model: \`${receipt.episode.model}\`; effort: \`${receipt.episode.effort}\`. Selection source: host-launch; effective model and effort: unknown.`,
     "",
     receipt.episode.kind === "direct-session"
@@ -106,6 +106,12 @@ export const renderPlanReceipt = (receipt) =>
       ? "Self-referential instrument: WO-041 builds this host and is also in its subject. Its order verdict is advisory, never evidence of this mechanism's correctness. Independent executable fixtures and a separate verifier judge the instrument."
       : "This verdict evaluates a planning horizon; it does not verify implementation or confer operator decision authority.",
     "",
+    ...(receipt.episode.review
+      ? [
+          `Scope: ${receipt.episode.review.scope}; dispatch-to-file ${receipt.episode.review.durationMs} ms. Judged ${receipt.episode.review.judgedOrderIds.length} orders and the sequence; carried ${receipt.episode.review.carried.length} unchanged verdicts by order and receipt hash.`,
+          "",
+        ]
+      : []),
     "## Validated result",
     "",
     "```json",
@@ -201,8 +207,11 @@ export async function validateReceipt(root, receipt) {
         "contextIsolation",
         "modelTools",
         "statement",
+        ...(e.review ? ["review"] : []),
       ]) &&
-        e.harness === "codex" &&
+        (e.review
+          ? ["codex", "claude-code", "unknown"].includes(e.harness)
+          : e.harness === "codex") &&
         e.harnessVersion === "unknown" &&
         e.model === "unknown" &&
         e.effort === "unknown" &&
@@ -218,6 +227,52 @@ export async function validateReceipt(root, receipt) {
         text(e.statement),
       "direct-session provenance or frozen result hash invalid",
     );
+    if (e.review) {
+      const r = e.review;
+      check(
+        exact(r, [
+          "scope",
+          "judgedOrderIds",
+          "carried",
+          "dispatchedAt",
+          "durationMs",
+        ]) &&
+          ["pass", "full"].includes(r.scope) &&
+          timestamp(r.dispatchedAt) &&
+          r.durationMs ===
+            Date.parse(e.completedAt) - Date.parse(r.dispatchedAt) &&
+          r.durationMs >= 0 &&
+          Array.isArray(r.judgedOrderIds) &&
+          Array.isArray(r.carried),
+        "invalid direct scope or timing",
+      );
+      const ids = [
+        ...r.judgedOrderIds,
+        ...r.carried.map((row) => row.workOrderId),
+      ];
+      check(
+        ids.length === receipt.subject.orders.length &&
+          new Set(ids).size === ids.length &&
+          receipt.subject.orders.every((order) =>
+            ids.includes(order.workOrderId),
+          ) &&
+          (r.scope !== "full" || !r.carried.length),
+        "direct scope must cover every order exactly once",
+      );
+      for (const row of r.carried)
+        check(
+          exact(row, [
+            "workOrderId",
+            "orderHash",
+            "receiptId",
+            "receiptHash",
+          ]) &&
+            validDigest(row.orderHash) &&
+            validDigest(row.receiptHash) &&
+            validReceiptId(row.receiptId),
+          "invalid carried verdict address",
+        );
+    }
   } else {
     check(
       exact(e, [
@@ -299,6 +354,45 @@ const sequenceKey = (receipt) =>
   receipt.subject.orders.map(({ workOrderId }) => workOrderId).join(",");
 
 export function admitReceipt(receipt, history) {
+  for (const carried of receipt.episode.review?.carried ?? []) {
+    const prior = [...history]
+      .reverse()
+      .find((row) =>
+        row.subject.orders.some(
+          (order) => order.workOrderId === carried.workOrderId,
+        ),
+      );
+    const orderHash = (order) =>
+      hashParts([
+        order.workOrderId,
+        order.title,
+        order.objective,
+        order.criteria,
+        order.nonGoals,
+        ...(Object.hasOwn(order, "cost") ? [order.cost] : []),
+      ]);
+    const order = receipt.subject.orders.find(
+      (row) => row.workOrderId === carried.workOrderId,
+    );
+    const previousOrder = prior?.subject.orders.find(
+      (row) => row.workOrderId === carried.workOrderId,
+    );
+    check(
+      prior?.receiptId === carried.receiptId &&
+        prior?.receiptHash === carried.receiptHash &&
+        orderHash(order) === carried.orderHash &&
+        orderHash(previousOrder) === carried.orderHash &&
+        same(
+          receipt.result.orders.find(
+            (row) => row.workOrderId === carried.workOrderId,
+          ),
+          prior.result.orders.find(
+            (row) => row.workOrderId === carried.workOrderId,
+          ),
+        ),
+      "carried verdict must be the latest unchanged order judgment",
+    );
+  }
   const ordered = [...history].sort((a, b) => a.ordinal - b.ordinal);
   const latest = ordered.at(-1);
   check(

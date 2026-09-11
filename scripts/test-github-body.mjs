@@ -1,3 +1,4 @@
+import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import {
@@ -8,38 +9,48 @@ import {
 const prettierConfig = JSON.parse(
   await readFile(new URL("../.prettierrc.json", import.meta.url), "utf8"),
 );
-assert.deepEqual(
-  {
-    printWidth: prettierConfig.printWidth,
-    proseWrap: prettierConfig.proseWrap,
-  },
-  { printWidth: 80, proseWrap: "preserve" },
-);
+await test("GitHub prose profile case 1", () => {
+  assert.deepEqual(
+    {
+      printWidth: prettierConfig.printWidth,
+      proseWrap: prettierConfig.proseWrap,
+    },
+    { printWidth: 80, proseWrap: "preserve" },
+  );
+});
 
 const longParagraph =
   "This ordinary paragraph is intentionally longer than eighty characters so the reader, not the source author, owns its viewport wrapping.";
 const longListItem =
   "- This list-item paragraph is intentionally longer than eighty characters and remains one physical source line for responsive rendering.";
 
-assert.equal(githubBodyProfileFailures(`${longParagraph}\n`).length, 0);
-assert.equal(githubBodyProfileFailures(`${longListItem}\n`).length, 0);
+await test("GitHub prose profile case 2", () => {
+  assert.equal(githubBodyProfileFailures(`${longParagraph}\n`).length, 0);
+});
+await test("GitHub prose profile case 3", () => {
+  assert.equal(githubBodyProfileFailures(`${longListItem}\n`).length, 0);
+});
 
-assert.throws(
-  () =>
-    assertGitHubBodyProfile(
-      "This paragraph was wrapped by an author at a fixed column, even though it is one logical\nparagraph and should be left for the reader to wrap.\n",
-      "PR.md",
-    ),
-  /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
-);
-assert.throws(
-  () =>
-    assertGitHubBodyProfile(
-      "- This list item was wrapped by an author at a fixed column, even though it is one logical\n  list-item paragraph and should be left for the reader to wrap.\n",
-      "RELEASE-NOTES.md",
-    ),
-  /RELEASE-NOTES\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
-);
+await test("GitHub prose profile case 4", () => {
+  assert.throws(
+    () =>
+      assertGitHubBodyProfile(
+        "This paragraph was wrapped by an author at a fixed column, even though it is one logical\nparagraph and should be left for the reader to wrap.\n",
+        "PR.md",
+      ),
+    /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
+  );
+});
+await test("GitHub prose profile case 5", () => {
+  assert.throws(
+    () =>
+      assertGitHubBodyProfile(
+        "- This list item was wrapped by an author at a fixed column, even though it is one logical\n  list-item paragraph and should be left for the reader to wrap.\n",
+        "RELEASE-NOTES.md",
+      ),
+    /RELEASE-NOTES\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
+  );
+});
 
 const structuralMarkdown = `# Heading
 
@@ -81,55 +92,67 @@ on its own lines
     stays exempt
     \`\`\`
 `;
-assert.equal(githubBodyProfileFailures(structuralMarkdown).length, 0);
+await test("GitHub prose profile case 6", () => {
+  assert.equal(githubBodyProfileFailures(structuralMarkdown).length, 0);
+});
 
-assert.throws(
-  () =>
-    assertGitHubBodyProfile(
-      "- This list item starts on one line but its accidental continuation is hidden by indentation.\n    The continuation is still prose within the list item, not an indented code block.\n",
-      "PR.md",
-    ),
-  /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
-);
-assert.throws(
-  () =>
-    assertGitHubBodyProfile(
-      "An even pair of trailing backslashes ends in a literal backslash, not a Markdown hard break.\\\\\nThis adjacent line is therefore still a prose soft wrap.\n",
-      "PR.md",
-    ),
-  /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
-);
-assert.throws(
-  () =>
-    assertGitHubBodyProfile(
-      "This paragraph starts before a top-level pseudo-fence.\n    ```text\nThis is adjacent prose because a four-space fence cannot interrupt that paragraph.\n    ```\n",
-      "PR.md",
-    ),
-  /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
-);
-assert.throws(
-  () =>
-    assertGitHubBodyProfile(
-      "This paragraph was wrapped immediately before an autolink.\n<https://example.invalid/path>\n",
-      "PR.md",
-    ),
-  /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
-);
-assert.throws(
-  () =>
-    assertGitHubBodyProfile(
-      "> This quoted paragraph starts with an explicit quote marker.\nIts lazy continuation is still part of the quoted paragraph and must not hide a source wrap.\n",
-      "RELEASE-NOTES.md",
-    ),
-  /RELEASE-NOTES\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
-);
-assert.throws(
-  () =>
-    assertGitHubBodyProfile(
-      "A prose line may contain A | B without becoming a table.\nThis adjacent prose line must still be detected as a source wrap.\n",
-      "PR.md",
-    ),
-  /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
-);
-
-console.log("GitHub body profile tests passed");
+await test("GitHub prose profile case 7", () => {
+  assert.throws(
+    () =>
+      assertGitHubBodyProfile(
+        "- This list item starts on one line but its accidental continuation is hidden by indentation.\n    The continuation is still prose within the list item, not an indented code block.\n",
+        "PR.md",
+      ),
+    /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
+  );
+});
+await test("GitHub prose profile case 8", () => {
+  assert.throws(
+    () =>
+      assertGitHubBodyProfile(
+        "An even pair of trailing backslashes ends in a literal backslash, not a Markdown hard break.\\\\\nThis adjacent line is therefore still a prose soft wrap.\n",
+        "PR.md",
+      ),
+    /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
+  );
+});
+await test("GitHub prose profile case 9", () => {
+  assert.throws(
+    () =>
+      assertGitHubBodyProfile(
+        "This paragraph starts before a top-level pseudo-fence.\n    ```text\nThis is adjacent prose because a four-space fence cannot interrupt that paragraph.\n    ```\n",
+        "PR.md",
+      ),
+    /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
+  );
+});
+await test("GitHub prose profile case 10", () => {
+  assert.throws(
+    () =>
+      assertGitHubBodyProfile(
+        "This paragraph was wrapped immediately before an autolink.\n<https://example.invalid/path>\n",
+        "PR.md",
+      ),
+    /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
+  );
+});
+await test("GitHub prose profile case 11", () => {
+  assert.throws(
+    () =>
+      assertGitHubBodyProfile(
+        "> This quoted paragraph starts with an explicit quote marker.\nIts lazy continuation is still part of the quoted paragraph and must not hide a source wrap.\n",
+        "RELEASE-NOTES.md",
+      ),
+    /RELEASE-NOTES\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
+  );
+});
+await test("GitHub prose profile case 12", () => {
+  assert.throws(
+    () =>
+      assertGitHubBodyProfile(
+        "A prose line may contain A | B without becoming a table.\nThis adjacent prose line must still be detected as a source wrap.\n",
+        "PR.md",
+      ),
+    /PR\.md: accidental GitHub prose soft wrap between lines 1 and 2/,
+  );
+});

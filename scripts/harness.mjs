@@ -9,6 +9,9 @@ import {
   readHarnessOutput,
   releaseHarnessWriterByOperator,
   runHarnessEvidence,
+  beginHarnessSession,
+  observeHarnessSession,
+  observeHarnessDelivery,
 } from "../packages/skeleton/dist/src/harness-host.js";
 
 const usage =
@@ -16,7 +19,38 @@ const usage =
 try {
   const root = harnessRoot(process.cwd());
   const [action, ...args] = process.argv.slice(2);
-  if (action === "read-output") {
+  if (action === "begin") {
+    const [session, role, flag, file] = args;
+    if (
+      !session ||
+      !role ||
+      (flag && !["--adopt-current", "--adopt-file"].includes(flag)) ||
+      args.length > (flag === "--adopt-file" ? 4 : 3) ||
+      (flag === "--adopt-file" && !file)
+    )
+      throw new Error(
+        "usage: harness begin <session> <role> [--adopt-current|--adopt-file <authored-paths.json>]",
+      );
+    const adopted =
+      flag === "--adopt-file"
+        ? JSON.parse(readFileSync(resolve(root, file), "utf8"))
+        : flag === "--adopt-current";
+    if (flag === "--adopt-file" && !Array.isArray(adopted))
+      throw new Error("Authorship adoption must be an explicit path array");
+    console.log(
+      JSON.stringify(beginHarnessSession(root, session, role, adopted)),
+    );
+  } else if (action === "observe") {
+    if (args.length !== 1) throw new Error("usage: harness observe <session>");
+    console.log(JSON.stringify(observeHarnessSession(root, args[0])));
+  } else if (action === "delivered") {
+    if (args.length !== 1)
+      throw new Error(
+        "usage: harness delivered <session> (actual reader stdout on stdin)",
+      );
+    observeHarnessDelivery(root, args[0], readFileSync(0, "utf8"));
+    console.log("Recorded current-byte tool delivery");
+  } else if (action === "read-output") {
     const request = harnessOutputReadArgs(args);
     console.log(
       JSON.stringify(

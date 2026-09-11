@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { committedReader, sha256 } from "./plan-subject.mjs";
 import { containedRegularFile } from "./paths.mjs";
+import { LEGACY_COST_HEADER } from "./legacy-cost.mjs";
 
 const capabilityPath = "docs/planning/capability-table.md";
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -119,18 +120,62 @@ export function checkPlanContinuation(
       }
     : observed.read;
   const orderPaths = new Set(judged.orders.map(({ path }) => path));
+  // WO-126 installs missing-data declarations, not retrospective cost claims.
+  // Only that exact header and the newly bound meter input may continue an old
+  // receipt. New cost claims, criteria or sequence edits still need refutation.
+  const adoptsCost =
+    !judged.costTable &&
+    Boolean(current.costTable) &&
+    judged.orders.some(
+      (order) =>
+        order.workOrderId === "WO-126" &&
+        order.criteria.some((criterion) =>
+          criterion.text.includes("**Cost:**"),
+        ),
+    );
   const fixedInputs = (subject) =>
     subject.inputs.filter(
-      ({ name }) => !orderPaths.has(name) && !name.startsWith("capability:"),
+      ({ name }) =>
+        !orderPaths.has(name) &&
+        !name.startsWith("capability:") &&
+        !(adoptsCost && name === "cost-table"),
     );
   requireSamePlan(
     same(fixedInputs(judged), fixedInputs(current)),
     "sequence, vision, roles or order inventory changed",
   );
-  const updates = [];
+  const updates = adoptsCost
+    ? [
+        {
+          path: "docs/planning/cost-table.json",
+          kind: "cost-contract-adoption",
+          source: "WO-126 criterion 16",
+          missingData:
+            "Legacy costs remain unavailable and are judged by the next refutation",
+        },
+      ]
+    : [];
   for (const { path, workOrderId } of judged.orders) {
     const before = original.read(path);
-    const after = read(path);
+    let after = read(path);
+    if (
+      adoptsCost &&
+      !before.includes(LEGACY_COST_HEADER) &&
+      after.includes(LEGACY_COST_HEADER)
+    ) {
+      const end = after.indexOf("\n") + 1;
+      requireSamePlan(
+        after.slice(end).startsWith("\n" + LEGACY_COST_HEADER),
+        "legacy cost header must follow the title",
+      );
+      after =
+        after.slice(0, end) + after.slice(end + 1 + LEGACY_COST_HEADER.length);
+      updates.push({
+        path,
+        workOrderId,
+        kind: "unavailable-legacy-cost-declaration",
+      });
+    }
     if (before === after) continue;
     const assigned = releaseAssignment(before, after);
     if (assigned.version)
@@ -158,7 +203,9 @@ export function checkPlanContinuation(
   requireSamePlan(updates.length > 0, "unclassified subject change");
   return updates.map((update) => ({
     ...update,
-    judgedSourceHash: sha256(original.read(update.path)),
+    judgedSourceHash: original.paths.includes(update.path)
+      ? sha256(original.read(update.path))
+      : null,
     currentSourceHash: sha256(read(update.path)),
   }));
 }

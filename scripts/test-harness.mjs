@@ -24,13 +24,18 @@ import {
   seiriLoadout,
 } from "../packages/compiler/dist/src/index.js";
 import { contributorProgram } from "../packages/skeleton/dist/src/loadouts/contributor.js";
-import { personalFeedbackUnits } from "../packages/skeleton/dist/src/loadouts/feedback.js";
+import {
+  personalFeedbackUnits,
+  retainedFeedbackUnitsV1,
+} from "../packages/skeleton/dist/src/loadouts/feedback.js";
 import { entropyReducerLoadout } from "../packages/skeleton/dist/src/loadouts/entropy-reducer.js";
 import {
   feedbackBoundary,
   FeedbackRefused,
 } from "../packages/skeleton/dist/src/feedback-boundary.js";
 import {
+  beginHarnessSession,
+  harnessOutputObligations,
   harnessControl,
   harnessFeedbackFacts,
   harnessHostProcess,
@@ -115,7 +120,13 @@ function fixture() {
   write(
     root,
     "package.json",
-    json({ private: true, scripts: { test: "node fixture-check.mjs" } }),
+    json({
+      private: true,
+      scripts: {
+        test: "node fixture-check.mjs",
+        "test:full": "node fixture-check.mjs",
+      },
+    }),
   );
   write(
     root,
@@ -172,14 +183,29 @@ const input = (root, event, extra = {}) => ({
   hook_event_name: event,
   ...extra,
 });
-const configFor = (root, name) =>
-  JSON.parse(
-    readFileSync(join(root, `.claude/hooks/${name}.mjs`), "utf8").match(
-      /await runHarnessHook\(([\s\S]*), feedbackBoundary\);/,
-    )[1],
+const stopUnits = new Set([
+  "verify-app-before-done",
+  "no-partial-completion",
+  "read-your-own-output",
+]);
+const hookName = (name) => (stopUnits.has(name) ? "finish" : name);
+const configFor = (root, name) => {
+  const config = JSON.parse(
+    readFileSync(
+      join(root, `.claude/hooks/${hookName(name)}.mjs`),
+      "utf8",
+    ).match(/await runHarnessHook\(([\s\S]*), feedbackBoundary\);/)[1],
   );
+  if (stopUnits.has(name)) {
+    config.kind = "feedback";
+    config.policy = compileFeedbackUnits(
+      config.policy.units.filter((unit) => unit.unitId === name),
+    );
+  }
+  return config;
+};
 function invoke(root, name, payload, removed = false) {
-  let path = join(root, `.claude/hooks/${name}.mjs`);
+  let path = join(root, `.claude/hooks/${hookName(name)}.mjs`);
   if (removed) {
     const source = readFileSync(path, "utf8");
     const config = configFor(root, name);
@@ -247,8 +273,57 @@ const writerEvents = (root) => {
     ? readFileSync(path, "utf8").trim().split("\n").map(JSON.parse)
     : [];
 };
+const readiness = (root, name, state = observedSession(root)) => {
+  const config = configFor(root, name);
+  const policy = compileFeedbackUnits(
+    config.policy.units
+      .filter((unit) =>
+        ["application-evidence", "output-review", "complete-scope"].includes(
+          unit.trigger,
+        ),
+      )
+      .map((unit) => ({ ...unit, enforcement: "hard" })),
+  );
+  const facts =
+    name === "finish"
+      ? policy.units.flatMap((unit) =>
+          harnessFeedbackFacts(
+            compileFeedbackUnits([unit]),
+            input(root, "Stop"),
+            root,
+            state,
+          ),
+        )
+      : harnessFeedbackFacts(policy, input(root, "Stop"), root, state);
+  try {
+    for (const fact of facts) feedbackBoundary(policy, fact, () => {});
+    return true;
+  } catch (error) {
+    assert.ok(error instanceof FeedbackRefused);
+    return false;
+  }
+};
+const adoptOutputs = (root) => {
+  const state = observedSession(root);
+  const key = createHash("sha256").update("synthetic-session").digest("hex");
+  state.authoredPaths = harnessOutputs(root).map((row) => row.path);
+  writeFileSync(
+    join(root, `docs/control/local/harness/${key}.json`),
+    json(state),
+  );
+};
 function parity(root, name, payload, expected, state = session) {
   const config = configFor(root, name);
+  if (payload.hook_event_name === "Stop")
+    config.policy = compileFeedbackUnits(
+      config.policy.units
+        .filter((unit) =>
+          ["application-evidence", "output-review", "complete-scope"].includes(
+            unit.trigger,
+          ),
+        )
+        .map((unit) => ({ ...unit, enforcement: "hard" })),
+    );
   const policies =
     config.kind === "finish"
       ? config.policy.units.map((unit) => compileFeedbackUnits([unit]))
@@ -275,10 +350,11 @@ function parity(root, name, payload, expected, state = session) {
     verdict = false;
   }
   assert.equal(verdict, expected, `${name} host fact expectation`);
+  const result = invoke(root, name, payload);
   assert.equal(
-    allowed(invoke(root, name, payload)),
-    verdict,
-    `${name} generated subprocess parity`,
+    allowed(result),
+    payload.hook_event_name === "Stop" ? true : verdict,
+    `${name} generated subprocess parity: ${JSON.stringify(result)}`,
   );
   assert.equal(
     allowed(invoke(root, name, payload, true)),
@@ -345,7 +421,7 @@ test("WO-039 generated hook subprocesses agree with the existing boundaries, inc
       "no-partial-completion",
       "read-your-own-output",
     ])
-      parity(root, name, input(root, "Stop"), false);
+      parity(root, name, input(root, "Stop"), name === "read-your-own-output");
     assert.equal(
       allowed(
         invoke(
@@ -387,26 +463,11 @@ test("WO-039 generated hook subprocesses agree with the existing boundaries, inc
         JSON.stringify({ type: "ImplementationReady", workOrderId: "WO-999" }) +
         "\n",
     );
-    for (const output of harnessOutputs(root)) {
-      const contents = readFileSync(join(root, output.path), "utf8");
-      const lines = contents.split("\n").length;
-      invoke(
-        root,
-        "read-observer",
-        input(root, "PostToolUse", {
-          tool_name: "Read",
-          tool_input: { file_path: join(root, output.path) },
-          tool_response: {
-            file: {
-              content: contents,
-              startLine: 1,
-              numLines: lines,
-              totalLines: lines,
-            },
-          },
-        }),
-      );
-    }
+    assert.ok(
+      runHarnessEvidence(root).every(
+        (run) => run.executed && run.exitCode === 0,
+      ),
+    );
     for (const name of [
       "verify-app-before-done",
       "no-partial-completion",
@@ -428,38 +489,23 @@ test("WO-039 generated hook subprocesses agree with the existing boundaries, inc
       "one session reserves once and releases at its accepted finish",
     );
     write(root, "fixture.ts", before + "// changed after evidence\n");
-    assert.equal(
-      allowed(invoke(root, "verify-app-before-done", input(root, "Stop"))),
-      false,
-    );
-    assert.equal(
-      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
-      false,
-    );
-    // A refused Stop is reported once; the harness's re-entry ends the turn
-    // with the obligation recorded and never as an accepted finish.
-    const reentry = input(root, "Stop", { stop_hook_active: true });
-    for (const name of [
-      "verify-app-before-done",
-      "read-your-own-output",
+    const first = invoke(root, "finish", input(root, "Stop"));
+    const second = invoke(
+      root,
       "finish",
-    ]) {
-      assert.equal(
-        allowed(invoke(root, name, input(root, "Stop"))),
-        false,
-        `${name} refuses the first stop`,
+      input(root, "Stop", { stop_hook_active: true }),
+    );
+    for (const response of [first, second]) {
+      assert.equal(allowed(response), true);
+      assert.match(
+        response.systemMessage,
+        /^DotLn: pending .*verify-app-before-done/,
       );
-      assert.equal(
-        allowed(invoke(root, name, reentry)),
-        true,
-        `${name} lets the re-entered stop end`,
-      );
+      assert.equal(response.systemMessage.split("\n").length, 1);
     }
-    const tail = observations(root).slice(-6);
-    assert.equal(tail.filter((row) => row.stopReentry === true).length, 3);
-    assert.ok(
-      tail.every((row) => row.finished !== true),
-      "a re-entered refused stop is never an accepted finish",
+    assert.equal(
+      existsSync(join(root, "docs/control/local/harness/writer")),
+      false,
     );
   } finally {
     rmSync(root, { recursive: true });
@@ -510,14 +556,10 @@ test("WO-039 ranged receipts require complete current bytes despite gaps, duplic
       (row) => row.path !== "review.txt",
     ))
       await observeInProcess(root, nativeRead(root, output.path));
+    adoptOutputs(root);
     const refused = () => {
-      const result = invoke(root, "read-your-own-output", input(root, "Stop"));
-      assert.equal(allowed(result), false);
-      assert.match(
-        result.reason,
-        /1 of \d+ outputs missing current-byte reads: \["review.txt"\]/,
-      );
-      assert.match(result.reason, /read-output/);
+      assert.equal(readiness(root, "read-your-own-output"), false);
+      assert.equal(allowed(invoke(root, "finish", input(root, "Stop"))), true);
     };
     refused();
     await observeInProcess(root, nativeRead(root, "review.txt", 3, 4));
@@ -528,206 +570,111 @@ test("WO-039 ranged receipts require complete current bytes despite gaps, duplic
     );
     refused();
     await observeInProcess(root, nativeRead(root, "review.txt", 1, 2));
-    assert.equal(
-      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
-      true,
-    );
+    assert.equal(readiness(root, "read-your-own-output"), true);
 
     write(root, "review.txt", "changed\nβeta\r\nthird\nfourth\nfifth\nsixth\n");
     await observeInProcess(root, nativeRead(root, "review.txt", 3, 4));
     refused();
     await observeInProcess(root, nativeRead(root, "review.txt", 1, 2));
-    assert.equal(
-      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
-      true,
-    );
+    assert.equal(readiness(root, "read-your-own-output"), true);
 
     write(root, "review.txt", "");
     refused();
     await observeInProcess(root, nativeRead(root, "review.txt"));
-    assert.equal(
-      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
-      true,
-    );
+    assert.equal(readiness(root, "read-your-own-output"), true);
     write(root, "review.txt", "without\nfinal newline");
     await observeInProcess(root, nativeRead(root, "review.txt", 2, 1));
     refused();
     await observeInProcess(root, nativeRead(root, "review.txt", 1, 1));
-    assert.equal(
-      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
-      true,
-    );
+    assert.equal(readiness(root, "read-your-own-output"), true);
   } finally {
     rmSync(root, { recursive: true });
   }
 });
 
-test("WO-039 real-scale inherited outputs and oversized lines can complete through observed bounded deliveries", async () => {
+test("WO-126 inherited output corpus adds no reads; authored bounded delivery rejects gaps, truncation and stale hashes", async () => {
   const root = fixture();
   try {
     for (let index = 0; index < 128; index++)
-      write(
-        root,
-        "output/part-" + String(index).padStart(3, "0") + ".txt",
-        "Synthetic inherited output\n",
-      );
-    const multiline = "output/part-000.txt";
-    const singleLine = "output/part-127.txt";
-    write(
-      root,
-      multiline,
-      (
-        "Synthetic words in a ranged output " +
-        "item ".repeat(24) +
-        "\n"
-      ).repeat(3000),
-    );
-    write(root, singleLine, "αβ🙂 synthetic output ".repeat(24_000));
+      write(root, `output/inherited-${index}.txt`, "inherited\n".repeat(1000));
     invoke(
       root,
       "session",
       input(root, "UserPromptSubmit", { prompt: "resume: next" }),
     );
-    assert.equal(
-      allowed(
-        invoke(
-          root,
-          "concurrent-work-requires-worktrees",
-          input(root, "PreToolUse", {
-            tool_name: "Edit",
-            tool_input: { file_path: join(root, "fixture.ts") },
-          }),
-        ),
-      ),
-      true,
-    );
-    const outputs = harnessOutputs(root);
-    assert.ok(outputs.length >= 128);
-    const initial = invoke(root, "read-your-own-output", input(root, "Stop"));
-    assert.equal(allowed(initial), false);
-    assert.ok(
-      initial.reason.includes(
-        outputs.length + " of " + outputs.length + " outputs",
-      ),
-    );
-    for (const output of outputs.slice(0, 12))
-      assert.ok(initial.reason.includes(output.path));
-    assert.ok(
-      !initial.reason.includes(outputs[12].path) &&
-        initial.reason.includes(` and ${outputs.length - 12} more`),
-      "a refusal names the first twelve missing paths and the remaining count",
-    );
-    assert.ok(
-      runHarnessEvidence(root).every(
-        (run) => run.executed && run.exitCode === 0,
-      ),
-    );
-    write(
+    assert.deepEqual(harnessOutputObligations(root, observedSession(root)), []);
+    const own = "output/own.txt";
+    invoke(
       root,
-      "docs/control/orders/WO-999.jsonl",
-      JSON.stringify({ type: "WorkOrderActivated", workOrderId: "WO-999" }) +
-        "\n" +
-        JSON.stringify({ type: "ImplementationReady", workOrderId: "WO-999" }) +
-        "\n",
+      "write-observer",
+      input(root, "PreToolUse", {
+        tool_name: "Write",
+        tool_input: { file_path: join(root, own) },
+      }),
     );
-    for (const output of harnessOutputs(root).filter(
-      (row) => ![multiline, singleLine].includes(row.path),
-    ))
-      await observeInProcess(root, nativeRead(root, output.path));
-    for (let startLine = 1; startLine <= 3000; startLine += 100)
-      await observeInProcess(root, nativeRead(root, multiline, startLine, 100));
-    const command =
-      "node scripts/harness.mjs read-output " +
-      singleLine +
-      " --offset 0 --length 8192";
-    const delivery = spawnSync(
-      process.execPath,
-      [
-        "scripts/harness.mjs",
-        "read-output",
-        singleLine,
-        "--offset",
-        "0",
-        "--length",
-        "8192",
-      ],
-      { cwd: root, encoding: "utf8" },
+    write(root, own, "αβ🙂 synthetic output ".repeat(2000));
+    invoke(
+      root,
+      "read-observer",
+      input(root, "PostToolUse", {
+        tool_name: "Write",
+        tool_input: { file_path: join(root, own) },
+        tool_response: { success: true },
+      }),
     );
-    assert.equal(delivery.status, 0, delivery.stderr);
-    assert.equal(
-      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
-      false,
-      "the reader does not mint its own receipt",
-    );
-    const payload = input(root, "PostToolUse", {
-      tool_name: "Bash",
-      tool_input: { command },
-      tool_response: { stdout: delivery.stdout },
-    });
-    assert.equal(
-      allowed(
-        invoke(root, "read-observer", {
-          ...payload,
-          tool_response: { stdout: delivery.stdout.slice(0, -20) },
-        }),
+    assert.deepEqual(
+      harnessOutputObligations(root, observedSession(root)).map(
+        (row) => row.path,
       ),
-      false,
+      [own],
     );
-    const forged = JSON.parse(delivery.stdout);
-    forged.content = "Different bytes";
-    assert.equal(
-      allowed(
-        invoke(root, "read-observer", {
-          ...payload,
-          tool_response: { stdout: JSON.stringify(forged) },
-        }),
-      ),
-      false,
-    );
-    assert.equal(allowed(invoke(root, "read-observer", payload)), true);
-    let offset = JSON.parse(delivery.stdout).nextOffset;
-    let last;
+    let offset = 0;
     for (;;) {
-      const chunk = readHarnessOutput(root, singleLine, offset, 8192);
-      const request = input(root, "PostToolUse", {
+      const chunk = readHarnessOutput(root, own, offset, 8192);
+      const payload = input(root, "PostToolUse", {
         tool_name: "Bash",
         tool_input: {
-          command:
-            "node scripts/harness.mjs read-output " +
-            singleLine +
-            " --offset " +
-            offset +
-            " --length 8192",
+          command: `node scripts/harness.mjs read-output ${own} --offset ${offset} --length 8192`,
         },
         tool_response: { stdout: JSON.stringify(chunk) + "\n" },
       });
-      if (chunk.nextOffset === chunk.totalBytes) {
-        last = request;
-        break;
+      assert.equal(readiness(root, "read-your-own-output"), false);
+      if (!offset) {
+        assert.equal(
+          allowed(
+            invoke(root, "read-observer", {
+              ...payload,
+              tool_response: { stdout: JSON.stringify(chunk).slice(0, -20) },
+            }),
+          ),
+          false,
+        );
+        assert.equal(
+          allowed(
+            invoke(root, "read-observer", {
+              ...payload,
+              tool_response: {
+                stdout: JSON.stringify({
+                  ...chunk,
+                  content: "Different bytes",
+                }),
+              },
+            }),
+          ),
+          false,
+        );
       }
-      await observeInProcess(root, request);
+      await observeInProcess(root, payload);
+      if (chunk.nextOffset === chunk.totalBytes) break;
       offset = chunk.nextOffset;
     }
-    for (const name of ["read-your-own-output", "finish"]) {
-      const result = invoke(root, name, input(root, "Stop"));
-      assert.equal(allowed(result), false);
-      assert.match(
-        result.reason,
-        /1 of \d+ outputs missing current-byte reads: \["output\/part-127.txt"\]/,
-      );
-    }
-    await observeInProcess(root, last);
-    parity(root, "finish", input(root, "Stop"), true, observedSession(root));
-    assert.equal(
-      existsSync(join(root, "docs/control/local/harness/writer")),
-      false,
-    );
+    assert.equal(readiness(root, "read-your-own-output"), true);
+    write(root, own, "changed after delivery\n");
+    assert.equal(readiness(root, "read-your-own-output"), false);
+    write(root, own, "αβ🙂");
+    assert.throws(() => readHarnessOutput(root, own, 1), /UTF-8 boundary/);
     assert.throws(
-      () => readHarnessOutput(root, singleLine, 1),
-      /UTF-8 boundary/,
-    );
-    assert.throws(
-      () => readHarnessOutput(root, singleLine, 0, 100_000),
+      () => readHarnessOutput(root, own, 0, 100000),
       /Invalid output byte range/,
     );
     write(
@@ -737,7 +684,7 @@ test("WO-039 real-scale inherited outputs and oversized lines can complete throu
     );
     assert.throws(
       () => readHarnessOutput(root, "docs/control/local/not-an-output.txt"),
-      /Git-visible/,
+      /output|refus|contained/i,
     );
   } finally {
     rmSync(root, { recursive: true });
@@ -1114,7 +1061,10 @@ test("WO-039 confirmed-token adapter uses the compiled correction and survives i
       ...contributorProgram(),
       correctionToken: "fixture-correction:",
     };
-    emitHarness(root, { program });
+    emitHarness(root, {
+      program,
+      feedback: compileFeedbackUnits(retainedFeedbackUnitsV1),
+    });
     const hook = "fail-conservative-correction";
     const payload = input(root, "UserPromptSubmit", {
       prompt: "fixture-correction: synthetic signal",
@@ -1230,7 +1180,13 @@ test("WO-039 commit-message adapter has boundary parity and missing built adapte
       }).status,
       0,
     );
-    rmSync(join(root, "packages/skeleton/dist/src/harness-host.js"));
+    rmSync(
+      join(
+        root,
+        configFor(root, "permissions").runtime.snapshot,
+        "packages/skeleton/dist/src/harness-host.js",
+      ),
+    );
     assert.equal(
       allowed(
         invoke(
@@ -1403,10 +1359,7 @@ test("WO-039 completion tracks outputs across commits and auxiliary prompts reta
       "session",
       input(root, "UserPromptSubmit", { prompt: "resume: status" }),
     );
-    assert.equal(
-      allowed(invoke(root, "no-partial-completion", input(root, "Stop"))),
-      false,
-    );
+    assert.equal(readiness(root, "no-partial-completion"), false);
     invoke(
       root,
       "session",
@@ -1414,10 +1367,8 @@ test("WO-039 completion tracks outputs across commits and auxiliary prompts reta
         prompt: "ideation: synthetic capture-only",
       }),
     );
-    assert.equal(
-      allowed(invoke(root, "no-partial-completion", input(root, "Stop"))),
-      false,
-    );
+    assert.equal(readiness(root, "no-partial-completion"), false);
+    adoptOutputs(root);
     const before = git(root, "rev-parse", "HEAD");
     for (const output of harnessOutputs(root, before)) {
       const contents = readFileSync(join(root, output.path), "utf8");
@@ -1454,7 +1405,7 @@ test("WO-039 completion tracks outputs across commits and auxiliary prompts reta
     assert.ok(harnessOutputs(root, before).length > 0);
     assert.equal(harnessOutputs(root).length, 0);
     assert.equal(
-      allowed(invoke(root, "read-your-own-output", input(root, "Stop"))),
+      readiness(root, "read-your-own-output"),
       true,
       "commit does not erase the session's output set",
     );

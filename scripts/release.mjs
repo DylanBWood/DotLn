@@ -2,6 +2,7 @@
 import { createHash } from "node:crypto";
 import {
   existsSync,
+  mkdirSync,
   mkdtempSync,
   readFileSync,
   readdirSync,
@@ -67,9 +68,19 @@ import {
 } from "./lib/release-records.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+import {
+  findGateCheck,
+  gateTreeHash,
+  recordGateChecks,
+} from "./lib/gate-evidence.mjs";
 const evidenceCommands = [
   "npm ci",
   "npm test",
+  "node packages/skeleton/dist/src/cli.js",
+  "git status --porcelain",
+];
+const currentEvidenceCommands = [
+  "npm run test:full",
   "node packages/skeleton/dist/src/cli.js",
   "git status --porcelain",
 ];
@@ -1049,18 +1060,30 @@ const firstDifference = (expected, actual, path = "$") => {
   return undefined;
 };
 const validateEvidence = (evidence) => {
-  if (!Array.isArray(evidence) || evidence.length !== evidenceCommands.length)
+  const commands =
+    Array.isArray(evidence) &&
+    evidence[0]?.command === currentEvidenceCommands[0]
+      ? currentEvidenceCommands
+      : evidenceCommands;
+  if (!Array.isArray(evidence) || evidence.length !== commands.length)
     throw new Error(
       "manifest evidence rows do not match the declared release gate",
     );
   evidence.forEach((row, index) => {
     if (
-      row.command !== evidenceCommands[index] ||
+      row.command !== commands[index] ||
       row.exitCode !== 0 ||
       !/^[a-f0-9]{64}$/.test(row.outputSha256 ?? "")
     )
+      throw new Error(`invalid evidence row ${index + 1}: ${commands[index]}`);
+    if (
+      commands === currentEvidenceCommands &&
+      (!/^[a-f0-9]{40}(?:[a-f0-9]{24})?$/.test(row.treeHash ?? "") ||
+        !Number.isFinite(row.durationMs) ||
+        row.durationMs < 0)
+    )
       throw new Error(
-        `invalid evidence row ${index + 1}: ${evidenceCommands[index]}`,
+        "release evidence requires exact tree identity and duration",
       );
   });
 };
@@ -1128,6 +1151,65 @@ const evidenceRow = (root, command, executable, args) => {
   return { command, exitCode: 0, outputSha256: sha256(output) };
 };
 const runEvidence = (root) => {
+  const current = readJsonFile(join(root, "package.json")).scripts?.[
+    "test:full"
+  ];
+  if (current) {
+    ensureClean(root);
+    const treeHash = gateTreeHash(root);
+    const evidence = [];
+    for (const [command, executable, args] of [
+      [currentEvidenceCommands[0], "npm", ["run", "test:full"]],
+      [
+        currentEvidenceCommands[1],
+        process.execPath,
+        [join(root, "packages/skeleton/dist/src/cli.js")],
+      ],
+      [currentEvidenceCommands[2], "git", ["status", "--porcelain"]],
+    ]) {
+      let cached = findGateCheck(root, command, treeHash);
+      if (!cached) {
+        if (
+          command === currentEvidenceCommands[0] &&
+          !existsSync(join(root, "node_modules/typescript/bin/tsc"))
+        )
+          evidenceRow(root, "npm ci", "npm", ["ci"]);
+        if (
+          command === currentEvidenceCommands[1] &&
+          !existsSync(join(root, "packages/skeleton/dist/src/cli.js"))
+        )
+          evidenceRow(root, "npm run build", "npm", ["run", "build"]);
+        const started = Date.now();
+        const row = evidenceRow(root, command, executable, args);
+        ensureClean(root);
+        if (gateTreeHash(root) !== treeHash)
+          throw new Error("Release subject changed during evidence");
+        cached = findGateCheck(root, command, treeHash) ?? {
+          checkId: command,
+          treeHash,
+          subject: treeHash,
+          durationMs: Date.now() - started,
+          exitCode: 0,
+          executed: true,
+          evidenceRef: `release-gate:${treeHash}:${command}`,
+          recordedAt: new Date().toISOString(),
+          outputSha256: row.outputSha256,
+        };
+        recordGateChecks(root, [cached]);
+      } else
+        process.stdout.write(
+          `Reusing ${command} for identical tree ${treeHash}; original duration ${cached.durationMs} ms.\n`,
+        );
+      evidence.push({
+        command,
+        exitCode: 0,
+        outputSha256: cached.outputSha256 ?? sha256(JSON.stringify(cached)),
+        treeHash,
+        durationMs: cached.durationMs,
+      });
+    }
+    return evidence;
+  }
   const evidence = [];
   evidence.push(evidenceRow(root, evidenceCommands[0], "npm", ["ci"]));
   ensureClean(root);
@@ -1499,16 +1581,42 @@ const publishTag = (root, tag, commit, message, tagger) => {
 const close = (workOrderId, args) => {
   if (
     !/^WO-\d{3}$/.test(workOrderId ?? "") ||
-    args.some((arg) => arg !== "--publish") ||
-    args.filter((arg) => arg === "--publish").length > 1
+    args.some((arg) => !["--publish", "--dry-run"].includes(arg)) ||
+    new Set(args).size !== args.length
   )
-    throw new Error("usage: release close WO-NNN [--publish]");
+    throw new Error("usage: release close WO-NNN [--publish] [--dry-run]");
   const publish = args.includes("--publish");
   const root = findMainWorktree(toolRoot);
   if (resolve(process.cwd()) !== root)
     throw new Error(
       `release close must run from the main control-plane checkout: ${root}`,
     );
+  if (args.includes("--dry-run")) {
+    ensureClean(root);
+    ensureNoIgnoredInfluence(root);
+    const subject = parseWorktrees(root).find(
+      (item) => item.branch === `refs/heads/wo-${workOrderId.slice(3)}`,
+    );
+    if (subject?.worktree) {
+      const result = execute(
+        process.execPath,
+        [
+          join(toolRoot, "scripts/worktree.mjs"),
+          "finish",
+          workOrderId,
+          "--dry-run",
+        ],
+        { cwd: root },
+      );
+      if (result.status !== 0)
+        throw new Error(failureOf(result, "close preview failed"));
+      process.stdout.write(result.stdout);
+    }
+    process.stdout.write(
+      `Dry run: would validate merged ${workOrderId}, reuse successful evidence only at the exact tree hash, and ${publish ? "publish its validated annotated tag and matching Release" : "prepare its release"}. No changes made.\n`,
+    );
+    return;
+  }
   const finishOutput = updateMainAndFinish(root, workOrderId);
   const state = parseControlStateAt(root, "HEAD", workOrderId);
   if (state.workOrderId !== workOrderId)
@@ -1733,7 +1841,7 @@ const publishHistoricalNotes = (tag) => {
   );
 };
 
-const main = () => {
+const main = async () => {
   const [action, ...args] = process.argv.slice(2);
   if (action === "close") return close(args[0], args.slice(1));
   if (action === "prepare") {
@@ -1751,6 +1859,28 @@ const main = () => {
       new Date().toISOString().slice(0, 10),
     );
     applyReleasePreparation(plan);
+    if (existsSync(join(toolRoot, "docs/control/budgets.json"))) {
+      const { collectMeta, renderMetaTable } = await import("./lib/meta.mjs");
+      const meta = await collectMeta(toolRoot);
+      const path = join(
+        toolRoot,
+        `docs/final-reviews/${state.workOrderId}/PR.md`,
+      );
+      const begin = "<!-- dotln-process-meter:start -->",
+        end = "<!-- dotln-process-meter:end -->";
+      const block = `${begin}\n${renderMetaTable(meta)}\n${end}`;
+      const source = existsSync(path)
+        ? readFileSync(path, "utf8")
+        : `# ${state.workOrderId}\n`;
+      const next = source.includes(begin)
+        ? source.replace(
+            /<!-- dotln-process-meter:start -->[\s\S]*?<!-- dotln-process-meter:end -->/,
+            block,
+          )
+        : `${source.trimEnd()}\n\n${block}\n`;
+      mkdirSync(dirname(path), { recursive: true });
+      writeFileSync(path, next);
+    }
     process.stdout.write(
       `${plan.edits.length ? `Retimed ${state.workOrderId}: ${plan.previous} → ${plan.target}; updated its heading, README claim, and dated roadmap note.` : `${state.workOrderId} target ${plan.target} remains current; no files changed.`}\nTag observation: ${localOnly ? "local snapshot only" : "origin"}.\n`,
     );
@@ -1820,7 +1950,7 @@ const main = () => {
 };
 
 try {
-  main();
+  await main();
 } catch (error) {
   process.stderr.write(
     `error: ${error instanceof Error ? error.message : String(error)}\n`,
