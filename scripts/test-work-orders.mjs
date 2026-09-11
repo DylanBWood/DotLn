@@ -14,6 +14,12 @@ import {
 } from "node:fs";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  parseDependencies,
+  projectDependencies,
+  closedDependencySet,
+  dependencyReleaseSet,
+} from "./lib/dependencies.mjs";
 import { fold, foldWorkOrders } from "./lib/control.mjs";
 import { runGit } from "./lib/git.mjs";
 import {
@@ -223,12 +229,28 @@ await check(
     );
     assert.equal(byId.get("WO-033").disposition, "unreleased");
     assert.equal(byId.get("WO-034").section, "Active");
-    assert.equal(byId.get("WO-035").dependencyState, "blocked on WO-034");
-    assert.equal(byId.get("WO-036").dependencyState, "dependency-ready");
-    assert.deepEqual(byId.get("WO-036").dependencies, ["WO-030", "WO-031"]);
+    assert.equal(
+      byId.get("WO-035").dependencyState,
+      "conservative token view; does not block",
+    );
+    assert.equal(
+      byId.get("WO-036").dependencyState,
+      "conservative token view; does not block",
+    );
+    assert.deepEqual(
+      byId.get("WO-036").dependencies.entries.map((entry) => entry.workOrderId),
+      ["WO-030", "WO-031"],
+    );
+    assert.deepEqual(byId.get("WO-035").dependencies.blocking, []);
     assert.equal(byId.get("WO-037").version, "malformed");
-    assert.equal(byId.get("WO-038").dependencyState, "unknown");
-    assert.equal(byId.get("WO-039").dependencyState, "dependency-ready");
+    assert.equal(
+      byId.get("WO-038").dependencyState,
+      "conservative token view; does not block",
+    );
+    assert.equal(
+      byId.get("WO-039").dependencyState,
+      "conservative token view; does not block",
+    );
     assert.match(byId.get("WO-030").model, /continued model declaration/);
     assert.equal(byId.get("WO-030").finalReviewVerdict, "pass");
     assert.equal(byId.get("WO-030").state.latestVerdict, "pass");
@@ -276,7 +298,7 @@ await check(
       for (const field of [
         "State",
         "Application target",
-        "Dependency reference check (conservative)",
+        "Dependencies",
         "References",
         "Verification",
         "Final review",
@@ -307,11 +329,17 @@ await check(
     const lines = original.split("\n");
     const at = lines.findIndex((line) => line === "### WO-035");
     const dependencyAt = lines.findIndex((line) =>
-      line.includes("blocked on WO-034"),
+      line.includes("conservative token view; does not block"),
     );
     for (const [changed, changedAt] of [
       [lines.filter((_, index) => index !== at).join("\n"), at],
-      [original.replace("blocked on WO-034", "dependency-ready"), dependencyAt],
+      [
+        original.replace(
+          "conservative token view; does not block",
+          "invented dependency state",
+        ),
+        dependencyAt,
+      ],
     ]) {
       writeFileSync(indexFile, changed);
       assert.match(
@@ -769,6 +797,257 @@ await check(
           })),
         ),
       /recorded control segment snapshot differs/,
+    );
+  },
+);
+
+const typedHeader = (id, entries) =>
+  header(id, "unassigned").replace(
+    "**Objective:**",
+    `<!-- dotln-dependencies:start -->\n${JSON.stringify(entries)}\n<!-- dotln-dependencies:end -->\n\n**Objective:**`,
+  );
+const dependency = (workOrderId, relation, extra = {}) => ({
+  workOrderId,
+  relation,
+  reason: "fixture input",
+  ...extra,
+});
+
+await check(
+  "typed parser accepts all relations and refuses malformed authority entries with their source",
+  () => {
+    const entries = [
+      dependency("WO-010", "hard"),
+      dependency("WO-011", "satisfied-by-release", { release: "v1.0.0" }),
+      dependency("WO-012", "satisfied-by-close"),
+      dependency("WO-001", "historical-evidence"),
+      dependency("WO-013", "reference-only"),
+      dependency("WO-014", "waived", { date: "2026-09-08" }),
+      dependency("WO-015", "superseded", { by: "WO-016" }),
+      dependency("WO-017", "planning-deferral", {
+        until: "candidate: next horizon",
+        date: "2026-09-08",
+      }),
+    ];
+    const path = authorityPath("WO-099");
+    const parse = (value) =>
+      parseDependencies(typedHeader("WO-099", value), path);
+    assert.deepEqual(parse(entries), { source: "typed", entries });
+    for (const [entry, pattern] of [
+      [dependency("WO-010", "unknown"), /unknown relation/],
+      [dependency("WO-010", "hard", { reason: "" }), /reason/],
+      [dependency("WO-010", "hard", { reason: "two\nlines" }), /reason/],
+      [dependency("WO-099", "reference-only"), /self-reference/],
+      [dependency("WO-001", "hard"), /historical id/],
+      [dependency("WO-002", "satisfied-by-close"), /historical id/],
+      [
+        dependency("WO-001", "satisfied-by-release", { release: "v1.0.0" }),
+        /historical id/,
+      ],
+      [dependency("WO-010", "waived", { date: "2026-02-30" }), /valid date/],
+      [
+        dependency("WO-010", "satisfied-by-release", { release: "v1.0" }),
+        /strict release/,
+      ],
+      [
+        dependency("WO-010", "planning-deferral", {
+          until: "",
+          date: "2026-09-08",
+        }),
+        /until/,
+      ],
+      [dependency("WO-010", "superseded", { by: "unknown" }), /by WO-NNN/],
+      [dependency("WO-010", "hard", { until: "WO-020" }), /expected fields/],
+    ]) {
+      assert.throws(
+        () => parse([entry]),
+        (error) => {
+          assert.ok(error.message.includes(path));
+          assert.ok(error.message.includes(JSON.stringify(entry)));
+          assert.match(error.message, pattern);
+          return true;
+        },
+      );
+    }
+    const missing = dependency("WO-010", "hard");
+    delete missing.reason;
+    assert.throws(() => parse([missing]), /reason.*offending entry/);
+    assert.throws(() => parse([entries[0], entries[0]]), /duplicate id WO-010/);
+    assert.throws(() => parse({}), /JSON array.*offending entry/);
+    assert.throws(
+      () =>
+        parseDependencies(
+          typedHeader("WO-099", []).replace("[]", "[invalid]"),
+          path,
+        ),
+      /JSON array.*offending entry/,
+    );
+    for (const source of [
+      typedHeader("WO-099", []).replace("<!-- dotln-dependencies:end -->", ""),
+      typedHeader("WO-099", []).replace(
+        "<!-- dotln-dependencies:start -->",
+        "<!-- dotln-dependencies:start -->\n<!-- dotln-dependencies:start -->",
+      ),
+      header("WO-099", "unassigned") +
+        "\n<!-- dotln-dependencies:start -->\n[]\n<!-- dotln-dependencies:end -->\n",
+      typedHeader("WO-099", []).replace(
+        "\n\n<!-- dotln-dependencies:start -->",
+        "\n<!-- dotln-dependencies:start -->",
+      ),
+    ])
+      assert.throws(() => parseDependencies(source, path), /leading metadata/);
+    assert.deepEqual(
+      parseDependencies(
+        header("WO-099", "unassigned", "WO-001 and WO-050"),
+        path,
+      ).entries,
+      [{ workOrderId: "WO-001" }, { workOrderId: "WO-050" }],
+    );
+  },
+);
+
+await check(
+  "typed projection distinguishes passing closure, ancestry, deferral and non-blocking relations",
+  () => {
+    const parsed = (entries) =>
+      parseDependencies(
+        typedHeader("WO-099", entries),
+        authorityPath("WO-099"),
+      );
+    const closures = closedDependencySet({
+      orders: new Map([
+        ["WO-010", { state: { phase: "closed" }, finalReviewVerdict: "pass" }],
+        ["WO-011", { state: { phase: "closed" }, finalReviewVerdict: "fail" }],
+        ["WO-012", { state: { phase: "closed" } }],
+        ["WO-013", { state: { phase: "active" }, finalReviewVerdict: "pass" }],
+      ]),
+    });
+    for (const relation of ["hard", "satisfied-by-close"])
+      for (const id of ["WO-010", "WO-011", "WO-012", "WO-013", "WO-014"])
+        assert.equal(
+          projectDependencies(parsed([dependency(id, relation)]), closures)
+            .blocking.length,
+          id === "WO-010" ? 0 : 1,
+        );
+    for (const until of ["WO-010", "WO-013", "candidate: next horizon"])
+      assert.equal(
+        projectDependencies(
+          parsed([
+            dependency("WO-020", "planning-deferral", {
+              until,
+              date: "2026-09-08",
+            }),
+          ]),
+          closures,
+        ).blocking.length,
+        until === "WO-010" ? 0 : 1,
+      );
+    const nonblocking = parsed([
+      dependency("WO-001", "historical-evidence"),
+      dependency("WO-030", "reference-only"),
+      dependency("WO-031", "waived", { date: "2026-09-11" }),
+      dependency("WO-032", "superseded", { by: "WO-033" }),
+    ]);
+    assert.deepEqual(projectDependencies(nonblocking, closures).blocking, []);
+    assert.ok(
+      projectDependencies(nonblocking, closures).entries.every(
+        (entry) => entry.state === "non-blocking",
+      ),
+    );
+    const target = makeRepo("dependency-ancestry");
+    write(target, authorityPath("WO-099"), typedHeader("WO-099", []));
+    commit(target, "reachable release");
+    tag(target, "v1.0.0", "WO-010");
+    const unrelated = runGit(target, [
+      "commit-tree",
+      runGit(target, ["rev-parse", "HEAD^{tree}"]),
+      "-m",
+      "unrelated root",
+    ]);
+    tag(target, "v2.0.0", "WO-010", [], unrelated);
+    runGit(target, ["tag", "v3.0.0"]);
+    runGit(target, ["tag", "-a", "v4.0.0", "-m", "Unrelated tag"]);
+    const releases = dependencyReleaseSet(target);
+    assert.deepEqual([...releases], ["v1.0.0"]);
+    for (const release of ["v1.0.0", "v2.0.0", "v3.0.0", "v4.0.0", "v5.0.0"])
+      assert.equal(
+        projectDependencies(
+          parsed([dependency("WO-010", "satisfied-by-release", { release })]),
+          closures,
+          releases,
+        ).blocking.length,
+        release === "v1.0.0" ? 0 : 1,
+      );
+  },
+);
+
+await check(
+  "typed index shares status projection, stales on declaration edits, and never reopens closed or historical rows",
+  () => {
+    const target = makeRepo("typed-index");
+    cpSync(join(scriptRoot, "resume.mjs"), join(target, "scripts/resume.mjs"));
+    for (const id of ["WO-001", "WO-030", "WO-099"])
+      write(
+        target,
+        authorityPath(id),
+        id === "WO-099"
+          ? typedHeader(id, [
+              dependency("WO-030", "hard"),
+              dependency("WO-040", "reference-only"),
+            ])
+          : header(id, "unassigned", "WO-002 and WO-105"),
+      );
+    writeLog(target, [...completed("WO-030"), activation("WO-099")]);
+    commit(target, "typed index base");
+    const projection = readIndex(target);
+    const status = spawnSync(
+      process.execPath,
+      [
+        join(target, "scripts/resume.mjs"),
+        "status",
+        "--json",
+        "--work-order",
+        "WO-099",
+      ],
+      { cwd: target, encoding: "utf8" },
+    );
+    assert.equal(status.status, 0, status.stderr);
+    assert.deepEqual(
+      JSON.parse(status.stdout).dependencies,
+      projection.rows.find((row) => row.id === "WO-099").dependencies,
+    );
+    const rendered = renderIndex(projection);
+    assert.match(rendered, /WO-030: hard \(met\)/);
+    assert.match(rendered, /WO-040: reference-only \(non-blocking\)/);
+    for (const section of ["Closed", "Historical"])
+      assert.doesNotMatch(
+        rendered.split(`## ${section}\n`)[1].split(/\n## /)[0],
+        /\bblocked\b/,
+      );
+    cli(target, ["index"]);
+    write(
+      target,
+      authorityPath("WO-099"),
+      typedHeader("WO-099", [dependency("WO-040", "hard")]),
+    );
+    assert.match(cli(target, ["index", "--check"], false), /stale at line/);
+    assert.match(renderIndex(readIndex(target)), /typed; blocked on WO-040/);
+    const before = readFileSync(
+      join(target, "docs/work-orders/README.md"),
+      "utf8",
+    );
+    write(
+      target,
+      authorityPath("WO-099"),
+      typedHeader("WO-099", [dependency("WO-040", "unknown")]),
+    );
+    assert.match(
+      cli(target, ["index"], false),
+      /WO-099-fixture.md: dependencies unknown relation.*WO-040/,
+    );
+    assert.equal(
+      readFileSync(join(target, "docs/work-orders/README.md"), "utf8"),
+      before,
     );
   },
 );

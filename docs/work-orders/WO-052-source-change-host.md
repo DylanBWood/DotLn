@@ -24,6 +24,37 @@ at `v0.10.0`).
 `source-change-host.ts`, `worker-store.ts` (the receipt) and product 02. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-050",
+    "relation": "hard",
+    "reason": "the recorded reactor-split condition: the slice exists before the branch"
+  },
+  {
+    "workOrderId": "WO-051",
+    "relation": "hard",
+    "reason": "the transport profile it dispatches"
+  },
+  {
+    "workOrderId": "WO-049",
+    "relation": "hard",
+    "reason": "the bundle it emits into the target worktree before dispatch"
+  },
+  {
+    "workOrderId": "WO-009",
+    "relation": "satisfied-by-release",
+    "release": "v0.10.0",
+    "reason": "worker store, leases and recovery"
+  },
+  {
+    "workOrderId": "WO-045",
+    "relation": "reference-only",
+    "reason": "positive payload decoding shares WO-045's shape when it has landed"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 02-domain-model.md §Actors and episodes
 (WorkerDispatched, WorkerResultObserved, quarantine) and §Events and
 decisions (new types under schema 1); 03-architecture.md §Session lifecycle

@@ -1,11 +1,11 @@
-// Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.executor","contributor.planner","contributor.refuter","contributor.release-close","contributor.reviewer","contributor.verifier","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"}
+// Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.executor","contributor.planner","contributor.refuter","contributor.release-close","contributor.reviewer","contributor.verifier","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:4d9dc4e490824232"}
 try {
-const { feedbackBoundary } = await import("../../.runtime/harness/f6b4a241a99de4c0/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/f6b4a241a99de4c0/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/764dcf6868be3ccc/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/764dcf6868be3ccc/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.9.0",
+  "compilerPackageVersion": "0.9.1",
   "runtime": {
-    "skeletonVersion": "0.15.0",
+    "skeletonVersion": "0.15.1",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -26,7 +26,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:ed54524039608488"
+        "hash": "fnv1a64:0e1404a347cbbdc5"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -38,14 +38,14 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/usage-observation.mjs",
-        "hash": "fnv1a64:80e01fab579951b9"
+        "hash": "fnv1a64:63758af4d47a6236"
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/f6b4a241a99de4c0"
+    "snapshot": ".runtime/harness/764dcf6868be3ccc"
   },
   "event": "Stop",
   "tools": {
@@ -80,7 +80,7 @@ await runHarnessHook({
   "kind": "finish",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.9.0",
+    "compilerPackageVersion": "0.9.1",
     "units": [
       {
         "unitId": "anti-oscillation",
@@ -545,7 +545,7 @@ await runHarnessHook({
         "enforcement": "advisory"
       }
     ],
-    "policyHash": "fnv1a64:9bd8c3dafdfbe311"
+    "policyHash": "fnv1a64:09f5fa33d2dd26fe"
   }
 }, feedbackBoundary);
 } catch { process.stdout.write("{\"systemMessage\":\"DotLn: built adapter unavailable; lifecycle evidence remains required.\"}"); }

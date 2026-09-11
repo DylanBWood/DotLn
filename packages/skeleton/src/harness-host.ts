@@ -49,8 +49,9 @@ import {
   recordGateChecks,
 } from "./gate-evidence.mjs";
 import {
-  transcriptUsage,
+  collectSessionUsage,
   recordUsageObservation,
+  usageSessionKey,
 } from "./usage-observation.mjs";
 import {
   FeedbackRefused,
@@ -60,7 +61,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.15.0";
+export const HARNESS_HOST_VERSION = "0.15.1";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;
@@ -98,6 +99,7 @@ export interface HarnessSession {
   beforeOutputs?: Record<string, string>;
   remainingWork?: string[];
   startedAt?: string;
+  usageSessionKey?: string;
   versionWarning?: string;
   versionObservation?: { value: string; channel: string };
   workOrder?: string;
@@ -1092,6 +1094,7 @@ export function beginHarnessSession(
       ? { expectedEvent: expected }
       : {}),
     startedAt: new Date().toISOString(),
+    usageSessionKey: usageSessionKey(process.env.CODEX_THREAD_ID ?? sessionId),
     startingEventCount: localEvents(root, control.workOrder).length,
     reads: [],
     beforeOutputs: snapshot,
@@ -1109,6 +1112,54 @@ export function beginHarnessSession(
     session: sessionKey(input),
     inheritedOutputs: Object.keys(snapshot).length - adopted.length,
   };
+}
+
+/** The same mandatory collector serves explicit Codex sessions, Claude hooks
+ * and lifecycle completion. Only numeric observations leave the transcript. */
+export function measureHarnessSessionUsage(
+  root: string,
+  session: HarnessSession,
+  key: string,
+  transcriptPath?: string,
+) {
+  if (!session.role || !session.startedAt)
+    throw new Error(
+      "Token measurement requires an active role and dispatch start",
+    );
+  const sourceKey =
+    session.usageSessionKey ??
+    (process.env.CODEX_THREAD_ID
+      ? usageSessionKey(process.env.CODEX_THREAD_ID)
+      : key);
+  const observation = collectSessionUsage(root, {
+    sessionKey: sourceKey,
+    since: session.startedAt,
+    ...(transcriptPath ? { transcriptPath } : {}),
+  });
+  recordUsageObservation(root, {
+    workOrder: session.workOrder ?? null,
+    role: session.role,
+    ...(!session.workOrder
+      ? { dispatch: `session-${session.startedAt.replace(/[^0-9]/g, "")}` }
+      : {}),
+    sessionKey: sourceKey,
+    startedAt: session.startedAt,
+    durationMs: Date.now() - Date.parse(session.startedAt),
+    observation,
+  });
+  return observation;
+}
+
+export function measureHarnessUsage(root: string, sessionId: string) {
+  const input = { session_id: sessionId } as HarnessInput;
+  const session = readJson<HarnessSession | null>(
+    statePath(root, input),
+    null,
+    true,
+  );
+  if (!session)
+    throw new Error("Begin the harness session before measuring usage");
+  return measureHarnessSessionUsage(root, session, sessionKey(input));
 }
 
 export function observeHarnessSession(root: string, sessionId: string) {
@@ -1354,6 +1405,19 @@ export function runHarnessEvidence(root: string): readonly HarnessCheck[] {
 }
 
 const shellQuote = (value: string) => `'${value.replaceAll("'", `'\\''`)}'`;
+/** Usage writes only the caller's ignored observation, not repository source. */
+function managedUsageCommand(
+  input: HarnessInput,
+  session: HarnessSession,
+): boolean {
+  if (input.tool_name !== "Bash" || !session.role || !input.session_id)
+    return false;
+  const id = input.session_id;
+  const commands = [`node scripts/harness.mjs usage ${shellQuote(id)}`];
+  if (/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/.test(id))
+    commands.push(`node scripts/harness.mjs usage ${id}`);
+  return commands.includes(String(input.tool_input?.command ?? ""));
+}
 function metadataCommand(command: string): boolean {
   if (outputReadCommand(command) !== null) return true;
   if (
@@ -1463,6 +1527,7 @@ export function harnessFeedbackFacts(
     if (
       input.tool_name === "Bash" &&
       (metadataCommand(String(args.command ?? "")) ||
+        managedUsageCommand(input, session) ||
         managedReleaseCommand(input, root, session))
     )
       return [{ ...feedbackWriterFacts(root, actorId, []), writable: false }];
@@ -1959,6 +2024,7 @@ export async function evaluateHarnessHook(
         session.startingRevision = git(root, ["rev-parse", "HEAD"]).trim();
         if (control.workOrder) session.workOrder = control.workOrder;
         session.startedAt ??= new Date().toISOString();
+        session.usageSessionKey = sessionKey(input);
         session.beforeOutputs ??= outputSnapshot(root);
         session.authoredPaths ??= [];
         if (expected[intent] && control.phase !== "closed")
@@ -2099,20 +2165,19 @@ export async function evaluateHarnessHook(
       }
     } finally {
       releaseHarnessWriter(root, input);
-      if (input.transcript_path && session.workOrder && session.role) {
+      if (session.role && session.startedAt) {
         try {
-          const observation = transcriptUsage(
+          measureHarnessSessionUsage(
+            root,
+            session,
+            sessionKey(input),
             input.transcript_path,
-            session.startedAt ? { since: session.startedAt } : {},
           );
-          recordUsageObservation(root, {
-            workOrder: session.workOrder,
-            role: session.role,
-            ...(session.startedAt ? { startedAt: session.startedAt } : {}),
-            observation,
-          });
         } catch {
-          record(root, input, { usage: "unavailable" });
+          unmet.push(
+            "token measurement: repair current-session transcript collection before handoff",
+          );
+          record(root, input, { usage: "collection-failed" });
         }
       }
       const obligations = harnessOutputObligations(root, session);

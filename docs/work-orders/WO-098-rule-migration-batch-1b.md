@@ -16,6 +16,16 @@ bookkeeping).
 **Recommended placement:** after WO-097; the same surfaces. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-097",
+    "relation": "hard",
+    "reason": "the first half-batch's retirements and bookkeeping"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-040-rule-migration-batch-one.md`
 (the selection rule, the measurement, the template); `docs/evidence/WO-039/README.md`
 (criterion 6's method); `docs/work-orders/WO-097-rule-migration-batch-1a.md`.

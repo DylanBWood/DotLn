@@ -21,6 +21,27 @@ exists; it edits `packages/skeleton/src/worker-transport.ts` and the actor
 catalog. The source-change profile for this transport waits for its own
 observed rows. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-027",
+    "relation": "satisfied-by-close",
+    "reason": "the probe whose endpoint shape it implements"
+  },
+  {
+    "workOrderId": "WO-009",
+    "relation": "satisfied-by-release",
+    "release": "v0.10.0",
+    "reason": "the transport port"
+  },
+  {
+    "workOrderId": "WO-068",
+    "relation": "reference-only",
+    "reason": "the actor catalog it joins"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 03-architecture.md §Ports
 (`WorkOrderTransport`) and §Runtime primitive catalogs; `docs/discovery/local-inference.md`
 and `.json` (WO-027's rows); `packages/skeleton/src/worker-transport.ts`;

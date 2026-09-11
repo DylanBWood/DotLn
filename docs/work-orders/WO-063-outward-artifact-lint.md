@@ -22,6 +22,16 @@ closed).
 (relocated by the configuration root, WO-069, when that lands). A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-039",
+    "relation": "satisfied-by-close",
+    "reason": "the local-terms check it reuses"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 01-principles.md Principle 16 (workplace
 camouflage generalized); 03-architecture.md §Platform and instance boundary
 (a target never sees a DotLn file or term); `CLAUDE.md` §Clean Room;

@@ -24,6 +24,22 @@ satisfied at `v0.12.0`).
 and the compiler's `verification-v1` evidence kinds if a compatible extension
 is needed. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-052",
+    "relation": "hard",
+    "reason": "the target worktree and diff the verifier snapshots"
+  },
+  {
+    "workOrderId": "WO-010",
+    "relation": "satisfied-by-release",
+    "release": "v0.12.0",
+    "reason": "the verification-v1 loop it lifts"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 01-principles.md Principle 6 (the
 implementer never verifies); 02-domain-model.md §Independent verification v1 (the capsule, blinding, the acceptance matrix fold); 03-architecture.md §Ports (the verification adapter boundary); `packages/skeleton/src/verification-host.ts`,
 `verification-protocol.ts`; `packages/compiler/src/verification.ts`;

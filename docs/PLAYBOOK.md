@@ -146,7 +146,7 @@ retains its separate publication authority and does not activate an order.
 
 **1. Plan (Fable, main checkout).** Pick or refine the WO in
 `docs/work-orders/`. Consult the [generated index](work-orders/README.md) for
-header, control, dependency-token, and local release evidence; use the
+header, control, typed dependency, and local release evidence; use the
 [human map](planning/work-order-map.md) for recommendation, rationale, tracks,
 and activation preflight. Never choose by the next integer. Revalidate the
 selected row against its work order and the
@@ -163,8 +163,14 @@ on dispatch as well as at its evidence/result boundaries. The README leads
 with the operator's proposed sequence from `docs/planning/sequence.md`;
 checkboxes follow passing final review in the control log. No separate editor
 checklist is needed. Merge and release remain separately evidenced. The index
-is a text observation, so preflight still interprets recommended, independent,
-and reverse references in dependency paragraphs.
+computes dependency readiness from each open authority's typed block.
+`status --json` carries the same `dependencies` projection for its selected
+order. Activation refuses unmet typed entries before appending an event and
+names the required closure, release or dated authority edit. Unmarked legacy
+prose stays a conservative token view that does not block. Human preflight
+still checks authority, environment, exclusive resources and other prerequisites;
+the map supplies recommendations. Typed release dependencies use current local
+ancestry even when release attribution retains its recorded tag snapshot.
 
 WO-126 splits iteration from handoff. `npm test` is the fast gate (120-second
 budget); `npm run test:full` preserves the full evidence inventory through a

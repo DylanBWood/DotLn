@@ -20,6 +20,17 @@ dated planning deferral; it edits the seven build-free `.mjs` leaves under
 `scripts/lib/beacon-observe.mjs` and `scripts/resume.mjs`. A recommendation,
 not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-021",
+    "relation": "satisfied-by-release",
+    "release": "v0.8.0",
+    "reason": "per-worktree Beacon caches"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 (the Beacon portability item and its observed gap); 02-domain-model.md
 §Beacon codebook v1 through §Beacon group codebook v1; `packages/skeleton/src/beacon-codebook.mjs`,

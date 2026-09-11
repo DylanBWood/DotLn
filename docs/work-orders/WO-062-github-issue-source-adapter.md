@@ -21,6 +21,16 @@ private artifact enters the repository.
 and stub the release tooling already has. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-060",
+    "relation": "hard",
+    "reason": "the bundle shape it produces"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 03-architecture.md §Ports (`SourceAdapter`);
 ADR-0002 Decision 2; 09-audit-resilience-privacy.md §Privacy and
 minimization; `scripts/github-repository.mjs` (the GitHub helper and its stub used by `worktree publish`); `packages/compiler/src/` (the source-bundle module).

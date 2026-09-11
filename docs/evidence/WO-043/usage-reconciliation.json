@@ -1,0 +1,9 @@
+{
+  "observedAt": "2026-09-11T15:39:07.306Z",
+  "method": "Every original counter vector reproduced from one exact Claude session/worktree, then its union window was measured once. Original local records retained; public projection omits private identities and local supersession references.",
+  "replacedObservations": 7,
+  "since": "2026-09-11T14:10:36.005Z",
+  "until": "2026-09-11T15:00:22.269Z",
+  "source": "claude-transcript-message-usage",
+  "totalTokens": 10029006
+}

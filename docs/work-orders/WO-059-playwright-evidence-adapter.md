@@ -21,6 +21,21 @@ adapter produces).
 lockfile, `NOTICE` or the third-party inventory, and product 03. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-057",
+    "relation": "hard",
+    "reason": "the observed runtime rows and the recorded dependency decision"
+  },
+  {
+    "workOrderId": "WO-058",
+    "relation": "hard",
+    "reason": "the claim types and witness rules the adapter produces"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 03-architecture.md §Ports (the evidence
 adapter boundary) and §Layer diagram; ADR-0002 with WO-057's amendment;
 `docs/LEGAL.md` (the third-party material rule); 02-domain-model.md §Independent

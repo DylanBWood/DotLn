@@ -53,7 +53,10 @@ export async function requireLifecycleEvidence(
   }[action];
   const sessions = (existsSync(directory) ? readdirSync(directory) : [])
     .filter((name) => /^[a-f0-9]{64}\.json$/.test(name))
-    .map((name) => JSON.parse(readFileSync(join(directory, name), "utf8")))
+    .map((name) => ({
+      ...JSON.parse(readFileSync(join(directory, name), "utf8")),
+      sessionKey: name.slice(0, -5),
+    }))
     .filter(
       (session) =>
         session.role === role &&
@@ -91,6 +94,9 @@ export async function requireLifecycleEvidence(
     throw new Error(
       `Output not read or checked at its current bytes: ${missing.map((row) => row.path).join(", ")}`,
     );
+  const { measureHarnessSessionUsage } =
+    await import("../../packages/skeleton/dist/src/harness-host.js");
+  measureHarnessSessionUsage(root, session, session.sessionKey);
   return {
     treeHash,
     readCount: obligations.filter((row) => row.obligation === "read").length,

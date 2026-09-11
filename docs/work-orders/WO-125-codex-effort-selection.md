@@ -27,6 +27,22 @@ refuter on Codex at `max` before the horizon starts; it edits
 README and product 07 §Model-specific notes. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-009",
+    "relation": "satisfied-by-release",
+    "release": "v0.10.0",
+    "reason": "the Codex transport"
+  },
+  {
+    "workOrderId": "WO-019",
+    "relation": "satisfied-by-close",
+    "reason": "the effort declaration and launch-claim contract"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 07-execution-guide.md §Model-specific notes
 (effort declared per order; readback unknown); 01-principles.md Principle 15;
 `docs/planning/refutations/README.md` (the Codex selection sentence);

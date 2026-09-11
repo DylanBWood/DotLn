@@ -19,6 +19,23 @@ products 02, 03, 04 and 06, the map's recommendation section, the evidence
 READMEs, and adds `scripts/docs-check.mjs`. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-053",
+    "relation": "planning-deferral",
+    "date": "2026-09-08",
+    "reason": "documentation structure is not the product bottleneck",
+    "until": "WO-053"
+  },
+  {
+    "workOrderId": "WO-069",
+    "relation": "reference-only",
+    "reason": "reads document roots through the configuration root when it has landed"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-035-documentation-structure-reset.md`
 (the counts: seven bold dated paragraphs and ten parentheticals in 06, nine
 dated lines in 03, one in 02, seven receipt paragraphs in the map);

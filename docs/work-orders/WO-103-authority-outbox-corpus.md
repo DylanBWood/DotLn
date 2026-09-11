@@ -28,6 +28,21 @@ order must not be activated from an older base.
 reviewed close. WO-004 is satisfied transitively. Independent of the other
 adjacent orders.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-017",
+    "relation": "satisfied-by-close",
+    "reason": "The reviewed kernel truthfulness boundary is the corpus baseline."
+  },
+  {
+    "workOrderId": "WO-004",
+    "relation": "satisfied-by-close",
+    "reason": "The environment prerequisite is satisfied transitively by WO-017."
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 02-domain-model.md (AuthorityEnvelope, the
 structural authorization guard, semantic revocation conditions, the
 own-property resource rule, the Command outbox protocol,

@@ -1,17 +1,6 @@
 #!/usr/bin/env node
-import {
-  closeSync,
-  existsSync,
-  lstatSync,
-  mkdirSync,
-  openSync,
-  readFileSync,
-  readSync,
-  readdirSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { homedir } from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   collectMeta,
@@ -22,70 +11,12 @@ import {
 } from "./lib/meta.mjs";
 import {
   recordUsageObservation,
-  transcriptUsage,
+  collectSessionUsage,
+  usageSessionKey,
 } from "../packages/skeleton/src/usage-observation.mjs";
 import { syncFollowups } from "./lib/planning-followups.mjs";
 
 const root = resolve(fileURLToPath(new URL("../", import.meta.url)));
-export function currentCodexTranscripts(
-  repo,
-  since,
-  directory = join(
-    process.env.CODEX_HOME ?? join(homedir(), ".codex"),
-    "sessions",
-  ),
-) {
-  if (!since || !Number.isFinite(Date.parse(since)))
-    throw new Error("Usage collection needs the dispatch start time");
-  if (!existsSync(directory)) return [];
-  const paths = [];
-  const days = [];
-  const today = new Date().toISOString().slice(0, 10);
-  for (
-    let date = since.slice(0, 10);
-    date <= today;
-    date = new Date(Date.parse(`${date}T00:00:00.000Z`) + 86400000)
-      .toISOString()
-      .slice(0, 10)
-  )
-    days.push(join(directory, date.replaceAll("-", "/")));
-  for (const day of days) {
-    if (!existsSync(day)) continue;
-    for (const name of readdirSync(day)) {
-      const path = join(day, name);
-      if (
-        !name.endsWith(".jsonl") ||
-        !lstatSync(path).isFile() ||
-        lstatSync(path).isSymbolicLink()
-      )
-        continue;
-      const descriptor = openSync(path, "r");
-      const buffer = Buffer.alloc(65536);
-      let count;
-      try {
-        count = readSync(descriptor, buffer, 0, buffer.length, 0);
-      } finally {
-        closeSync(descriptor);
-      }
-      let header;
-      try {
-        header = JSON.parse(
-          buffer.subarray(0, count).toString("utf8").split("\n")[0],
-        );
-      } catch {
-        continue;
-      }
-      if (
-        header.type === "session_meta" &&
-        typeof header.payload?.cwd === "string" &&
-        resolve(header.payload.cwd) === resolve(repo)
-      )
-        paths.push(path);
-    }
-  }
-  return paths;
-}
-
 export async function metaMain(args = process.argv.slice(2), repo = root) {
   const options = {};
   for (let index = 0; index < args.length; index++) {
@@ -96,16 +27,22 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
     )
       options[flag] = true;
     else if (
-      ["--work-order", "--role", "--since", "--transcript", "--write"].includes(
-        flag,
-      ) &&
+      [
+        "--work-order",
+        "--role",
+        "--since",
+        "--transcript",
+        "--session",
+        "--dispatch",
+        "--write",
+      ].includes(flag) &&
       options[flag] === undefined &&
       args[index + 1]
     )
       options[flag] = args[++index];
     else
       throw new Error(
-        "usage: meta [--check|--json] [--write docs/evidence/WO-NNN/meta[-baseline].json] [--collect --work-order WO-NNN --role <kind> --since <UTC> [--transcript <path>]]",
+        "usage: meta [--check|--json] [--write docs/evidence/WO-NNN/meta[-baseline].json] [--collect --work-order WO-NNN --role <kind> --since <UTC> [--session <session> --transcript <path>] [--dispatch <planning-pass>]]",
       );
   }
   if (
@@ -115,22 +52,28 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
     throw new Error("meta --check is read-only");
   if (options["--collect"]) {
     const since = options["--since"];
-    const paths = options["--transcript"]
-      ? [resolve(options["--transcript"])]
-      : currentCodexTranscripts(repo, since);
-    if (!paths.length)
-      console.error(
-        "Usage unavailable: no matching transcript for this worktree and dispatch window",
+    if (!since || !Number.isFinite(Date.parse(since)))
+      throw new Error(
+        "Token measurement requires --since with the dispatch start time",
       );
-    for (const [ordinal, path] of paths.entries())
-      recordUsageObservation(repo, {
-        workOrder: options["--work-order"],
-        role: options["--role"],
-        startedAt: since,
-        durationMs: Date.now() - Date.parse(since),
-        ordinal,
-        observation: transcriptUsage(path, { since }),
-      });
+    const identity = options["--session"] ?? process.env.CODEX_THREAD_ID;
+    const key = identity ? usageSessionKey(identity) : undefined;
+    const observation = collectSessionUsage(repo, {
+      since,
+      sessionKey: key,
+      ...(options["--transcript"]
+        ? { transcriptPath: options["--transcript"] }
+        : {}),
+    });
+    recordUsageObservation(repo, {
+      workOrder: options["--work-order"] ?? null,
+      role: options["--role"],
+      ...(options["--dispatch"] ? { dispatch: options["--dispatch"] } : {}),
+      sessionKey: key,
+      startedAt: since,
+      durationMs: Date.now() - Date.parse(since),
+      observation,
+    });
   }
   writeDecisionsIndex(repo, { check: Boolean(options["--check"]) });
   syncFollowups(repo, { check: Boolean(options["--check"]) });

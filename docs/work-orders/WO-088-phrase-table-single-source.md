@@ -16,6 +16,18 @@ the operator waives it).
 `scripts/resume.mjs`, product 07, the playbook, the README and
 `docs/README.md`. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-053",
+    "relation": "planning-deferral",
+    "date": "2026-09-08",
+    "reason": "documentation structure is not the product bottleneck",
+    "until": "WO-053"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 07-execution-guide.md §Operator resume
 phrases; `docs/PLAYBOOK.md`; the README's phrase copy; `scripts/resume.mjs`
 (the phrase table).

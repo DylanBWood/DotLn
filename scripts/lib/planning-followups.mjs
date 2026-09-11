@@ -507,9 +507,15 @@ export function planningFollowups(root, { cursor = null, all = false } = {}) {
   return page;
 }
 export function requirePlanningHandoffs(root, workOrder) {
-  const deferred = readAdjacentQueue(root, workOrder).items.filter(
-    (item) => item.status === "deferred",
+  const queue = readAdjacentQueue(root, workOrder);
+  const pending = queue.items.filter((item) =>
+    ["queued", "running"].includes(item.status),
   );
+  requireFollowup(
+    pending.length === 0,
+    `unresolved adjacent work: ${pending.map((item) => `${item.id} (${item.status})`).join(", ")}; complete or explicitly dispose each item before handoff`,
+  );
+  const deferred = queue.items.filter((item) => item.status === "deferred");
   if (!deferred.length) return [];
   const state = syncFollowups(root, { check: true });
   return deferred.map((item) => {

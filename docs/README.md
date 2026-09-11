@@ -171,6 +171,7 @@ in `docs/PLAYBOOK.md`.
 
 One line per `.claude/` or CLAUDE.md change (see execution guide):
 
+- 2026-09-11: WO-043 makes scope expansion and side questions first-party session commands, and requires actual Codex/Claude token measurements, activates executor support duties at ordinary entry, and equips Process Cost and Goal Alignment across all roles.
 - 2026-09-11: WO-127 regenerates role procedures to record sourced costs, archive retained worktree control state and prepare owned projections before evidence. Generated hooks consume piped JSON asynchronously; all expensive test suites wait for preflights.
 
 - 2026-09-09: WO-126 emits version-2 prose/advisory feedback, session-authored
@@ -261,3 +262,7 @@ One line per `.claude/` or CLAUDE.md change (see execution guide):
 - 2026-09-05: CLAUDE.md — §Start here names the `planning:` prefix, resolved by
   the execution guide's new §Operator-opened planning pass. Documentation of an
   existing procedure; no safety boundary moves.
+- 2026-09-11: WO-043 VER-002 repair restores the locked floor's baseline wording
+  and puts the session-prefix contract in all generated role targets. Generated
+  release-close wording is compacted within its existing context budget;
+  helper behavior, publication controls and user settings are unchanged (D014).

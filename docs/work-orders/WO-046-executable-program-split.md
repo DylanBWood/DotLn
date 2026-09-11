@@ -25,6 +25,28 @@ sites that type continuations. Sequence it after WO-045 lands or beside it
 with a merge of the shared kernel files. A recommendation, not a dependency
 token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-101",
+    "relation": "satisfied-by-release",
+    "release": "v0.2.2",
+    "reason": "the Program corpus that enumerates the executable kinds"
+  },
+  {
+    "workOrderId": "WO-017",
+    "relation": "satisfied-by-release",
+    "release": "v0.3.5",
+    "reason": "the evaluable-kind boundaries"
+  },
+  {
+    "workOrderId": "WO-045",
+    "relation": "reference-only",
+    "reason": "shares the DecodeResult shape when both land; a local shape otherwise"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 02-domain-model.md §Events and decisions
 (the workflow grammar and the pinned Program payloads); 06-roadmap.md §v0.1.0
 (types for the full grammar, evaluation for the subset); 10-ir-compatibility.md

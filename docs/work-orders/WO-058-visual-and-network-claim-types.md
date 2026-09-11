@@ -20,6 +20,17 @@ extends; satisfied at `v0.12.0`).
 compiler's verification contract module and its fixtures and product 02. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-010",
+    "relation": "satisfied-by-release",
+    "release": "v0.12.0",
+    "reason": "the claim-typed evidence contract it extends"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 02-domain-model.md §Independent
 verification v1 (claim types, witnesses, the acceptance matrix);
 10-ir-compatibility.md §Separate version axes (compatible extension rules);

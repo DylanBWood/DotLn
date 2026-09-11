@@ -424,7 +424,13 @@ export class ClaudeCliPrintWorkOrderTransport extends CliWorkOrderTransport {
     version?: string,
     onUsage?: (observation: ReturnType<typeof usageObservation>) => void,
   ) {
-    super("claude", ["2.1.261", "2.1.263"], runner, version, onUsage);
+    super(
+      "claude",
+      ["2.1.261", "2.1.263", "2.1.268"],
+      runner,
+      version,
+      onUsage,
+    );
   }
 }
 export class CodexCliExecWorkOrderTransport extends CliWorkOrderTransport {

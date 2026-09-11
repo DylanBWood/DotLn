@@ -23,6 +23,27 @@ protocol, the event and the hold, and a `mission-check` cadence in the
 Contributor build's presence policy. A recommendation, not a dependency
 token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-068",
+    "relation": "hard",
+    "reason": "the resident that dispatches the episode on a cadence"
+  },
+  {
+    "workOrderId": "WO-041",
+    "relation": "satisfied-by-close",
+    "reason": "the judge shape over the vision theses"
+  },
+  {
+    "workOrderId": "WO-010",
+    "relation": "satisfied-by-release",
+    "release": "v0.12.0",
+    "reason": "the verifier episode contract"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 00-vision.md (the thesis headings the
 refuter judges) and §What DotLn is not; 02-domain-model.md §Independent
 verification v1 and §Feedback (semantic correction events);

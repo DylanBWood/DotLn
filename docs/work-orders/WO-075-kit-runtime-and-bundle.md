@@ -20,6 +20,26 @@ WO-042 merged (grants with provenance in the exported bundle).
 and the harness emitter's import-root handling. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-074",
+    "relation": "hard",
+    "reason": "the kit the runtime and bundle are placed in"
+  },
+  {
+    "workOrderId": "WO-049",
+    "relation": "hard",
+    "reason": "the import-root mechanism the exported hooks reuse"
+  },
+  {
+    "workOrderId": "WO-042",
+    "relation": "hard",
+    "reason": "grants with provenance in the exported bundle"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 §Phase 3 (the runtime build and the bundle); 02-domain-model.md §Harness
 compiler v1; 03-architecture.md §Agent enablement skills; `docs/LEGAL.md`

@@ -15,6 +15,21 @@ WO-093 merged (the pieces the bonuses count).
 **Recommended placement:** after WO-092 and WO-093; it edits the 5S set
 definition and compiler fixtures. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-092",
+    "relation": "hard",
+    "reason": "bonus emissions live in the sets collection"
+  },
+  {
+    "workOrderId": "WO-093",
+    "relation": "hard",
+    "reason": "the pieces the bonuses count"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 05-pattern-library.md §5S / 6S;
 04-interfaces.md §RPG view; `docs/work-orders/WO-037-five-s-equipment-set.md`
 (the five bonuses).

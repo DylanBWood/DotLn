@@ -8,7 +8,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "evidence:artifact": "node scripts/artifact-identity-evidence.mjs",
-    "evidence:feedback": "npm run build --silent && node scripts/feedback-evidence.mjs --edition WO-126 --revision 002",
+    "evidence:feedback": "npm run build --silent && node scripts/feedback-evidence.mjs",
     "test": "node scripts/test-runner.mjs",
     "test:mutation": "node --test corpus/mutation/wo108-selftest.test.mjs",
     "evidence:mutation": "node corpus/mutation/mutate.mjs",

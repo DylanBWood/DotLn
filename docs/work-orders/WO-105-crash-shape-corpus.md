@@ -24,6 +24,21 @@ map and future explicit metadata. This update changes no other scope.
 **Depends on:** WO-004 merged and WO-017 landed — branch from `origin/main`
 after the WO-017 close. Independent of the other adjacent orders.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-004",
+    "relation": "satisfied-by-close",
+    "reason": "The reviewed environment baseline is required."
+  },
+  {
+    "workOrderId": "WO-017",
+    "relation": "satisfied-by-close",
+    "reason": "The reviewed kernel truthfulness boundary is required before crash-shape fixtures."
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Scope split — 2026-09-03:** WO-017 absorbed the physical malformed-line lane
 as a product fix with root-suite tests: partial or complete unterminated tails,
 blank or whitespace-only lines, and non-object JSON values now fail closed with

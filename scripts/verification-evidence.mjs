@@ -10,6 +10,8 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { currentEvidence } from "../packages/skeleton/src/evidence-editions.mjs";
 import { decodeLog, pendingCommands, replayOutbox } from "@dotln/kernel";
 import { runVerificationDemo } from "../packages/skeleton/dist/src/verification-demo.js";
 import { FakeVerificationTransport } from "../packages/skeleton/dist/src/verification-fake.js";
@@ -24,7 +26,11 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0]))
   throw new Error(
     "usage: verification-evidence.mjs --write|--check (build first)",
   );
-const root = new URL("../docs/evidence/WO-126/verification/", import.meta.url);
+const repository = new URL("../", import.meta.url);
+const root = new URL(
+  `${currentEvidence(fileURLToPath(repository), "verification").directory}/`,
+  repository,
+);
 const directory = realpathSync(
   mkdtempSync(join(tmpdir(), "dotln-verification-evidence-")),
 );

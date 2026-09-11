@@ -30,6 +30,37 @@ slice fold, and the actor catalog with the `script` kind; presence signals
 are WO-121 and the `cli-worker` and `human-handoff` kinds are WO-122. A recommendation, not a dependency
 token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-067",
+    "relation": "hard",
+    "reason": "the policy whose cadences and phases the host evaluates"
+  },
+  {
+    "workOrderId": "WO-050",
+    "relation": "hard",
+    "reason": "the reserved slice the host's state lives in (the recorded split condition)"
+  },
+  {
+    "workOrderId": "WO-044",
+    "relation": "hard",
+    "reason": "the launcher is designed from the unattended rows, never assumed"
+  },
+  {
+    "workOrderId": "WO-009",
+    "relation": "satisfied-by-release",
+    "release": "v0.10.0",
+    "reason": "the transports and worker store it dispatches through"
+  },
+  {
+    "workOrderId": "WO-027",
+    "relation": "reference-only",
+    "reason": "the local-inference probe, as the fourth actor kind's reference"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 00-vision.md §The one-paragraph story;
 01-principles.md Principle 2 (deterministic core; time is an input) and
 Principle 15; 02-domain-model.md §Events and decisions (Cadence; `now` as

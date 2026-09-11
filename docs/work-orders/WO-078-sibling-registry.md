@@ -16,6 +16,16 @@ the siblings are the operator's public repositories.
 `docs/siblings/README.md`, `docs/evidence/siblings/` and one check. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-074",
+    "relation": "hard",
+    "reason": "the first export receipt"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 (the registry item); 03-architecture.md §Platform and instance boundary
 (the sibling-repository experiments); `docs/planning/capability-table.md`.

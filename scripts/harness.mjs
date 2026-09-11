@@ -12,10 +12,11 @@ import {
   beginHarnessSession,
   observeHarnessSession,
   observeHarnessDelivery,
+  measureHarnessUsage,
 } from "../packages/skeleton/dist/src/harness-host.js";
 
 const usage =
-  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness evidence | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness writer --show | harness writer --release [--force]";
+  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness evidence | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness writer --show | harness writer --release [--force]";
 try {
   const root = harnessRoot(process.cwd());
   const [action, ...args] = process.argv.slice(2);
@@ -40,6 +41,9 @@ try {
     console.log(
       JSON.stringify(beginHarnessSession(root, session, role, adopted)),
     );
+  } else if (action === "usage") {
+    if (args.length !== 1) throw new Error("usage: harness usage <session>");
+    console.log(JSON.stringify(measureHarnessUsage(root, args[0])));
   } else if (action === "observe") {
     if (args.length !== 1) throw new Error("usage: harness observe <session>");
     console.log(JSON.stringify(observeHarnessSession(root, args[0])));

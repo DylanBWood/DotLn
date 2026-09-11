@@ -68,12 +68,23 @@ export type HarnessFacet =
       readonly kind: "prompt-fragment";
       readonly text: string;
     }
-  | {
+  | ({
       readonly facetId: string;
       readonly kind: "role-procedure";
-      readonly roleName: string;
       readonly text: string;
-    };
+    } & (
+      | { readonly roleName: string; readonly roleNames?: never }
+      | { readonly roleNames: readonly string[]; readonly roleName?: never }
+    ));
+
+const procedureRoles = (
+  facet: Extract<HarnessFacet, { kind: "role-procedure" }>,
+): readonly string[] =>
+  Array.isArray(facet.roleNames)
+    ? facet.roleNames
+    : typeof facet.roleName === "string"
+      ? [facet.roleName]
+      : [];
 /** Separate target input. It never extends or changes the loadout-v1 preimage. */
 export interface HarnessProgram {
   readonly contractVersion: "harness-v1";
@@ -291,6 +302,7 @@ export function lowerToHarness(
         "deny matchers must name a denied build effect and the observed Bash shape",
       );
     if (facet.kind === "role-procedure") {
+      const targets = procedureRoles(facet);
       const component = program.loadout.componentManifest.find(
         (entry) => entry.componentId === facet.facetId,
       );
@@ -300,10 +312,15 @@ export function lowerToHarness(
           component.mechanismTypes[0] === "prompt-fragment" &&
           verificationLine(facet.text) &&
           program.loadout.promptFragments.includes(facet.text) &&
-          program.roles.some(
-            (role) =>
-              role.name === facet.roleName &&
-              role.procedure.includes(facet.text),
+          Object.hasOwn(facet, "roleName") !==
+            Object.hasOwn(facet, "roleNames") &&
+          targets.length > 0 &&
+          new Set(targets).size === targets.length &&
+          targets.every((name) =>
+            program.roles.some(
+              (role) =>
+                role.name === name && role.procedure.includes(facet.text),
+            ),
           ),
         "role procedure must carry an equipped prompt support's compiled fragment",
       );
@@ -556,7 +573,8 @@ export function lowerToHarness(
     );
   for (const role of program.roles) {
     const supportIds = program.facets.flatMap((facet) =>
-      facet.kind === "role-procedure" && facet.roleName === role.name
+      facet.kind === "role-procedure" &&
+      procedureRoles(facet).includes(role.name)
         ? [facet.facetId]
         : [],
     );

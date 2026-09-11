@@ -26,6 +26,27 @@ it edits `packages/skeleton/src/worker-protocol.ts`, `worker-transport.ts`
 and `execution-environment.ts` and their tests. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-044",
+    "relation": "hard",
+    "reason": "the profile is written from observed rows, never assumed"
+  },
+  {
+    "workOrderId": "WO-042",
+    "relation": "hard",
+    "reason": "the profile's envelope comes only from the base and explicit grants"
+  },
+  {
+    "workOrderId": "WO-009",
+    "relation": "satisfied-by-release",
+    "release": "v0.10.0",
+    "reason": "the transports it extends"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 03-architecture.md §Ports
 (`WorkOrderTransport`; the canonical launch shapes) and §Runtime primitive
 catalogs; 02-domain-model.md §Identity and composition (AuthorityEnvelope;

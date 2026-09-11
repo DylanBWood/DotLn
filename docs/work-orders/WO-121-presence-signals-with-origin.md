@@ -27,6 +27,26 @@ scripted prompt fires in each launch mode).
 presence fold, the generated hooks' heartbeat, and the loadout policy
 fixtures. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-068",
+    "relation": "hard",
+    "reason": "the resident whose presence fold this defines"
+  },
+  {
+    "workOrderId": "WO-067",
+    "relation": "hard",
+    "reason": "the discretionary-phase scope for cancellation"
+  },
+  {
+    "workOrderId": "WO-044",
+    "relation": "hard",
+    "reason": "the rows that say which hook events a scripted prompt fires in each launch mode"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** ADR-0007; 03-architecture.md
 §Operator-presence policy and §Candidate — progressive absence authority
 and return readiness (return races); `packages/compiler/src/harness.ts`

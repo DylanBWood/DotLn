@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:f3d880833be93276f4a63984738118ab285d099a0eb4fc6f0ac5ae97eddc6c36`
+`sha256:d836231ddd03666faaf766d122d8e47ef00a9aeadf6bfd8488cac2e54300d2d1`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -119,7 +119,8 @@ implementation-deep, lossy projection of the same
 15. **Evidence gates and workflow control**
     - dispatch, immutable verification, checkpoints, review, and release
       boundaries; executor-owned factual documentation and independent checks;
-      planned per-order workflows, concurrent progress, and release attribution
+      typed dependency projection and activation refusals; planned per-order
+      workflows, concurrent progress, and release attribution
     - sources:
       [Operator resume phrases](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched),
       [Documentation freshness and ownership](../product/07-execution-guide.md#execution-guide--for-any-model-session-working-in-this-repo),

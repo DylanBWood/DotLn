@@ -62,12 +62,8 @@ test("full inventory retains every command in the previous package test chain", 
         "node --test corpus/mutation/wo108-selftest.test.mjs",
       )
       .replace(
-        "--edition WO-042 --revision 002",
-        "--edition WO-126 --revision 002",
-      )
-      .replace(
-        /^node scripts\/authority-evidence\.mjs --check$/,
-        "node scripts/authority-evidence.mjs --check --edition WO-127 --revision 002",
+        /^(node scripts\/(?:authority|feedback)-evidence\.mjs --check) --edition WO-\d{3}(?: --revision \d{3})?$/,
+        "$1",
       )
       .replace(
         /^node (scripts\/test-(?:github-body|plan-refutation)\.mjs)$/,

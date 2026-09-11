@@ -20,6 +20,27 @@ segments; satisfied at `v0.7.0`).
 helper is reused where it fits; the executor records the sharing. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-071",
+    "relation": "hard",
+    "reason": "the registration it starts worktrees from"
+  },
+  {
+    "workOrderId": "WO-049",
+    "relation": "hard",
+    "reason": "the emit into the target worktree"
+  },
+  {
+    "workOrderId": "WO-030",
+    "relation": "satisfied-by-release",
+    "release": "v0.7.0",
+    "reason": "per-order segments"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 §Phase 2; 03-architecture.md §Session lifecycle & resilience (the operator
 worktree projection; the tool never rebases, force-deletes, auto-merges or

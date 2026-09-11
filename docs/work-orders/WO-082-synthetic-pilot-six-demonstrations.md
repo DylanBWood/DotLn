@@ -17,6 +17,26 @@ launchpad exported with its build).
 **Recommended placement:** after WO-080; it adds a real-Git fixture suite.
 A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-080",
+    "relation": "hard",
+    "reason": "the workstream the fixture exercises"
+  },
+  {
+    "workOrderId": "WO-072",
+    "relation": "hard",
+    "reason": "target worktrees from a launchpad"
+  },
+  {
+    "workOrderId": "WO-075",
+    "relation": "hard",
+    "reason": "a fixture launchpad exported with its build"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 12-workstream-application.md §What exists
 and what must be proved (the six demonstrations);
 `docs/work-orders/WO-034-cross-repository-workstream-pilot.md` (the

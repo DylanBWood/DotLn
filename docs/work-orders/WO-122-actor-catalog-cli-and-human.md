@@ -22,6 +22,26 @@ detached-launch rows the launch path is designed from).
 catalog and adds the handoff packet writer. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-068",
+    "relation": "hard",
+    "reason": "the catalog"
+  },
+  {
+    "workOrderId": "WO-051",
+    "relation": "hard",
+    "reason": "the writer request and profile the cli-worker kind dispatches"
+  },
+  {
+    "workOrderId": "WO-044",
+    "relation": "hard",
+    "reason": "the detached-launch rows the launch path is designed from"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 03-architecture.md §Runtime primitive
 catalogs; `docs/discovery/writing-worker-smoke-<date>.md` (WO-044's
 detached-launch rows); `docs/work-orders/WO-051-source-change-transport-profile.md`;

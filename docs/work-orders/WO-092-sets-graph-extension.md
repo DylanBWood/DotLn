@@ -17,6 +17,16 @@ group).
 **Recommended placement:** after WO-091; it edits the compiler's types,
 normalize, views and compile. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-091",
+    "relation": "hard",
+    "reason": "a set's members are several actives in one group"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 04-interfaces.md §RPG / Path-of-Exile
 view (set bonuses) and §Editable-view v1 normalization and semantic hash;
 10-ir-compatibility.md §Invariants; `packages/compiler/src/views.ts`,

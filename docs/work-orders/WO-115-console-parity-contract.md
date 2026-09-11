@@ -23,6 +23,31 @@ WO-100 merged (declaring a portfolio exists as a terminal command).
 loopback server to the resident and a client in `packages/console`. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-068",
+    "relation": "hard",
+    "reason": "the resident serves the surface"
+  },
+  {
+    "workOrderId": "WO-114",
+    "relation": "hard",
+    "reason": "the status projection the surface reads"
+  },
+  {
+    "workOrderId": "WO-120",
+    "relation": "hard",
+    "reason": "intent and derived-order activation exist as terminal commands"
+  },
+  {
+    "workOrderId": "WO-100",
+    "relation": "hard",
+    "reason": "declaring a portfolio exists as a terminal command"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 04-interfaces.md §Terminal first, console
 equal, §Candidate — exact operator command vocabulary and §Community build
 workshop; 03-architecture.md §Composition system (equip preview; compiled

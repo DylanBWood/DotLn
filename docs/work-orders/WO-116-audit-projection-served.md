@@ -19,6 +19,21 @@ closed).
 resident's read commands and a render to the text host. A recommendation,
 not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-115",
+    "relation": "hard",
+    "reason": "the surface"
+  },
+  {
+    "workOrderId": "WO-007",
+    "relation": "satisfied-by-close",
+    "reason": "the audit fold"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 09-audit-resilience-privacy.md §Canonical
 audit record, §Fidelity levels and §Audit projections and visualizations;
 `packages/skeleton/src/audit.ts`; `docs/work-orders/WO-007-audit-record-baseline.md`.

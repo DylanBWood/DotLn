@@ -22,6 +22,21 @@ configuration).
 `scripts/lib/derived-orders.mjs` and the `dotln intent` command. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-043",
+    "relation": "hard",
+    "reason": "generated authority files carry typed dependency blocks"
+  },
+  {
+    "workOrderId": "WO-069",
+    "relation": "hard",
+    "reason": "the derived root and identity range are configuration"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 07-execution-guide.md §Operator resume
 phrases (activation requires `WO-NNN` and an authority path);
 06-roadmap.md §Work-order navigation and identity; `scripts/resume.mjs`

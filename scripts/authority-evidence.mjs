@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
+import { evidenceArgs } from "../packages/skeleton/src/evidence-editions.mjs";
 import {
   COMPOSITION_PRECEDENCE,
   COMPILER_PACKAGE_VERSION,
@@ -39,31 +40,19 @@ import {
 import { compilePlanRefuter } from "../packages/skeleton/dist/src/loadouts/plan-refuter.js";
 import { checkHarness, harnessInstallation } from "./lib/harness.mjs";
 
-const [mode, ...extra] = process.argv.slice(2);
-const options = new Map();
-for (let index = 0; index < extra.length; index += 2) {
-  assert.ok(
-    ["--edition", "--revision"].includes(extra[index]) &&
-      extra[index + 1] &&
-      !options.has(extra[index]),
-    "Invalid authority evidence option",
-  );
-  options.set(extra[index], extra[index + 1]);
-}
-const edition = options.get("--edition") ?? "WO-126";
-const revision = options.get("--revision");
+const root = fileURLToPath(new URL("../", import.meta.url));
+const { args, selection } = evidenceArgs(
+  root,
+  "authority",
+  process.argv.slice(2),
+);
+const [mode] = args;
 assert.ok(
-  ["--write", "--check"].includes(mode) &&
-    /^WO-\d{3}$/.test(edition) &&
-    (revision === undefined || /^[0-9]{3}$/.test(revision)),
+  args.length === 1 && ["--write", "--check"].includes(mode),
   "usage: authority-evidence.mjs --write|--check [--edition WO-NNN] [--revision NNN] (build and emit the bundle first)",
 );
-const root = fileURLToPath(new URL("../", import.meta.url));
-const editionLabel = `${edition}${revision ? ` revision ${revision}` : ""}`;
-const directory = new URL(
-  `../docs/evidence/${edition}/${revision ? `authority/${revision}/` : ""}`,
-  import.meta.url,
-);
+const editionLabel = selection.label;
+const directory = new URL(`../${selection.directory}/`, import.meta.url);
 const read = (path) => readFileSync(join(root, path), "utf8");
 const baseline = JSON.parse(
   read("docs/evidence/WO-042/authority-baseline.json"),
@@ -291,7 +280,9 @@ const bundlePaths = git(
   .trim()
   .split("\n");
 const savedBuild = contributorProgram([]);
-const equippedBuild = contributorProgram();
+// Isolate the executor equipment comparison; shared role supports have their
+// own all-role projection fixtures and remain in the installed default build.
+const equippedBuild = contributorProgram(defaultExecutorSupportIds);
 const unequipped = harnessInstallation({ program: savedBuild });
 const equipped = harnessInstallation({ program: equippedBuild });
 const currentPaths = (installation) =>
@@ -419,9 +410,13 @@ const overlayFiles = currentPaths(unequipped).map((path) => {
       for (const support of supports)
         for (const modifier of support.semanticsModified)
           expected = expected.replace(modifier.from, modifier.to);
-      const anchor = "Implement the complete bounded deliverable";
-      assert.equal(expected.split(anchor).length, 2);
-      expected = expected.replace(anchor, fragments.join("\n") + "\n" + anchor);
+      const anchor = expected
+        .split("\n")
+        .find((line) =>
+          line.startsWith("Run `npm run resume --silent -- status --json`"),
+        );
+      assert.ok(anchor);
+      expected = expected.replace(anchor, anchor + "\n" + fragments.join("\n"));
     }
     assert.equal(after, expected, `${path} exact declared support projection`);
     if (path.startsWith(".claude/hooks/"))

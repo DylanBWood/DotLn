@@ -25,6 +25,27 @@ satisfied at the `33e2c25` merge).
 `packages/skeleton/src/harness-host.ts` and their tests. A recommendation,
 not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-017",
+    "relation": "satisfied-by-release",
+    "release": "v0.3.5",
+    "reason": "the store codec it extends"
+  },
+  {
+    "workOrderId": "WO-039",
+    "relation": "satisfied-by-close",
+    "reason": "the hook host whose input it decodes"
+  },
+  {
+    "workOrderId": "WO-105",
+    "relation": "reference-only",
+    "reason": "the crash-shape corpus draft supplies malformed-shape families"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 02-domain-model.md §Events and decisions
 (the pinned EventEnvelope schema 1 and the JSONL codec sentence under
 §Memory and observation); 10-ir-compatibility.md §Separate version axes and

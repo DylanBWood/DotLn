@@ -16,6 +16,18 @@ the operator waives it).
 adds 14, and moves publication index rows and locks. A recommendation, not
 a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-053",
+    "relation": "planning-deferral",
+    "date": "2026-09-08",
+    "reason": "documentation structure is not the product bottleneck",
+    "until": "WO-053"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 06-roadmap.md §Work-order navigation and
 identity through §Counterfactual profiling work orders (the candidate
 sections); `docs/publication/` (index rows and locks);

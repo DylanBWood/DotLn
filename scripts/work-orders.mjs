@@ -12,6 +12,14 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { LEGACY_CONTROL_PATH } from "./lib/control.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { renderAttestation } from "./lib/control-actor.mjs";
+import {
+  closedDependencySet,
+  dependencyHeader,
+  dependencyReleaseSet,
+  historicalDependencyIds,
+  parseDependencies,
+  projectDependencies,
+} from "./lib/dependencies.mjs";
 import { runGit, runGitPathList } from "./lib/git.mjs";
 import {
   containedRegularFile,
@@ -30,24 +38,17 @@ const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const indexPath = "docs/work-orders/README.md";
 const planningPath = "docs/planning/sequence.md";
 const snapshotPrefix = "<!-- dotln-work-order-tags: ";
-const historicalIds = new Set(["WO-001", "WO-002"]);
+const historicalIds = historicalDependencyIds;
 const compare = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
-const uniqueSorted = (values) => [...new Set(values)].sort(compare);
 
 // This is a tolerant view of existing prose, not another activation validator.
 // Unknown fields are named alongside their source path in the rendered details.
 export const parseHeader = (markdown, path) => {
-  const lines = markdown.replace(/^\uFEFF/, "").split(/\r?\n/);
-  const first = lines.findIndex((line) => line.trim());
+  const { lines, first, end } = dependencyHeader(markdown);
   const title = /^#\s+(.+?)\s*$/.exec(
     (lines[first] ?? "").replace(/[ \t]+#+[ \t]*$/, ""),
   )?.[1];
-  const boundary = lines.findIndex(
-    (line, index) =>
-      index > first &&
-      (/^#{1,6}\s/.test(line) || /^\*\*Objective:\*\*/.test(line)),
-  );
-  const header = lines.slice(first + 1, boundary < 0 ? lines.length : boundary);
+  const header = lines.slice(first + 1, end);
   const field = (label) => {
     if (!title) return undefined;
     const prefix = `**${label}:**`;
@@ -72,7 +73,6 @@ export const parseHeader = (markdown, path) => {
       : versions.length || /\bv\d/.test(title)
         ? "malformed"
         : "unassigned";
-  const depends = field("Depends on");
   return {
     path,
     title: title ?? "unknown",
@@ -86,12 +86,7 @@ export const parseHeader = (markdown, path) => {
           /\*\*Acceptance criteria[\s\S]*?(?=\*\*Non-goals:|$)/,
         )?.[0] ?? "",
       ) && !/^# WO-126\b/.test(markdown),
-    dependencies:
-      depends === undefined
-        ? undefined
-        : uniqueSorted(
-            [...depends.matchAll(/\bWO-\d{3}\b/g)].map(([id]) => id),
-          ),
+    dependencies: parseDependencies(markdown, path),
   };
 };
 
@@ -154,11 +149,8 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
       );
     return { ...release, controlSegments };
   });
-  const closed = new Set(
-    [...orders]
-      .filter(([, row]) => row.state.phase === "closed")
-      .map(([id]) => id),
-  );
+  const closed = closedDependencySet(control);
+  let dependencyReleases;
   const commitLogs = new Map();
   const prefixMatches = (prior) =>
     [...prior.sources].every(([path, source]) =>
@@ -241,15 +233,23 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
           : historical
             ? "Historical"
             : "Open";
-      const blocked = header.dependencies?.filter(
-        (dependency) => !closed.has(dependency),
+      const dependencies = projectDependencies(
+        header.dependencies,
+        closed,
+        header.dependencies.entries.some(
+          (entry) => entry.relation === "satisfied-by-release",
+        )
+          ? (dependencyReleases ??= dependencyReleaseSet(root))
+          : new Set(),
       );
       const dependencyState =
-        blocked === undefined
-          ? "unknown"
-          : blocked.length
-            ? `blocked on ${blocked.join(", ")}`
-            : "dependency-ready";
+        dependencies.source === "conservative-tokens"
+          ? "conservative token view; does not block"
+          : phase === "closed" || historical
+            ? "typed; activation not applicable"
+            : dependencies.blocking.length
+              ? `typed; blocked on ${dependencies.blocking.map((entry) => entry.workOrderId).join(", ")}`
+              : "typed; dependency-ready";
       const release = releases.find(({ workOrders }) =>
         workOrders.includes(id),
       );
@@ -270,8 +270,8 @@ export const readIndex = (root, releases = localReleaseRecords(root)) => {
         ...header,
         section,
         phase,
+        dependencies,
         dependencyState,
-        closed,
         state,
         finalReviewVerdict: evidence?.finalReviewVerdict,
         disposition,
@@ -383,8 +383,8 @@ export const renderIndex = ({ rows, releases, sequence }) => {
         "",
         `- State: ${cell(row.phase)}.`,
         `- Application target: ${cell(row.version)}.`,
-        `- Dependency reference check (conservative): ${cell(row.dependencyState)}.`,
-        `- References: ${cell(row.dependencies?.map((id) => `${id}: ${row.closed.has(id) ? "satisfied (closed)" : "not control-closed"}`).join("; ") || (row.dependencies ? "none named" : "unknown"))}.`,
+        `- Dependencies: ${cell(row.dependencyState)}.`,
+        `- References: ${cell(row.dependencies.entries.map((entry) => `${entry.workOrderId}: ${entry.relation ? `${entry.relation} (${entry.state})` : entry.state}${entry.release ? ` ${entry.release}` : ""}${entry.until ? ` until ${entry.until}` : ""}${entry.by ? ` by ${entry.by}` : ""}${entry.date ? ` dated ${entry.date}` : ""}${entry.reason ? ` — ${entry.reason}` : ""}`).join("; ") || "none declared")}.`,
         `- Verification: ${report(state?.latestVerificationId, state?.latestVerdict, state?.latestVerificationPath)}.`,
         `- Final review: ${report(state?.finalReviewId, row.finalReviewVerdict, state?.finalReviewPath)}.`,
         `- Release: ${cell(row.disposition)}.`,
@@ -416,17 +416,17 @@ const renderSources = (releases) => {
   const lines = [
     "## Sources and limits",
     "",
-    "- **Header observation:** each authority's H1, sole strict application version, Model, Effort, and Depends on paragraph. Unknown or malformed metadata is attributed by the Authority link; it is never guessed.",
+    "- **Header observation:** each authority's H1, sole strict application version, Model, Effort, and leading typed dependency block (or legacy Depends on paragraph). Invalid typed declarations refuse with the authority path and offending entry; other unknown metadata is attributed by the Authority link.",
     "- **Proposed sequence:** the marked block in planning/sequence.md, in operator-selected order. Historical fixtures without that file use the map. Missing/malformed blocks, duplicate IDs, and IDs without an authority refuse. This is not a scheduler or proof of dependency eligibility.",
     "- **Control evidence:** the shared fold of legacy `docs/control/resume.jsonl` plus `docs/control/orders/WO-NNN.jsonl`, reduced independently per work order in segment append order. Closed means a passing final review; it does not independently prove merge or publication. Report verdicts come from events, not inferred report contents.",
     "- **Local release evidence:** the earliest numeric annotated DotLn tag whose manifest names the order or a changed final-review path. The manifest-free v0.2.0 exception uses `docs/releases/v0.2.0.md`. Other tags are not release evidence. Remote publication is not checked.",
-    "- **Derived dependency status:** all distinct WO-NNN tokens in Depends on are compared with the control-closed set. This conservative text view includes recommended or independent references in that paragraph; human preflight interprets their meaning. An absent field is unknown; a present field with no WO tokens has no computed blocker.",
+    "- **Derived dependency status:** the authority's typed block is projected by scripts/lib/dependencies.mjs, also used by status --json and activation. Hard and satisfied-by-close entries require control closure with a passing final-review verdict. Satisfied-by-release requires the named local annotated DotLn release in HEAD's ancestry. Planning-deferral waits for its named order's closure or remains unmet for a candidate label; a dated waiver replaces it. Historical evidence, references, waivers and supersessions never block. Without a typed block, distinct Depends on tokens retain a labeled conservative view and never block activation. Closed and historical rows do not imply reactivation work.",
     "- **Inferred no-release close:** only an unmatched closed order with a strict H1 version below a local release whose per-segment tagged control prefix precedes its close and whose tag time is no later than the close observation. That observation is recordedAt, or the first committed close prefix for legacy events (second precision, not recovered append time). Absent evidence stays unreleased. Release inclusion can follow a no-release close; local tags do not prove their remote publication time.",
     "- **Time-indexed history:** WO-001 and WO-002 are explicit pre-control cases, never completed merely because events are absent. They do not enter the control-closed dependency set.",
     "",
     `Local annotated release tags used: ${releases.map(({ name }) => `\`${name}\``).join(", ") || "none"}.`,
     "",
-    "Tag observation is explicitly refreshed by `index`. Check requires every recorded tag object to remain available and unchanged; newer local release tags are reported as newer evidence, without invalidating this snapshot. This avoids making a committed source release fail its own tests immediately after tagging. Header/control changes still require regeneration after lifecycle transitions.",
+    "Release attribution is explicitly refreshed by `index`. Check requires every recorded tag object to remain available and unchanged; newer local release tags are reported without invalidating that attribution snapshot. Typed release dependencies use current local ancestry in both index and status; changing a referenced release's availability can stale the dependency projection. Header/control changes still require regeneration after lifecycle transitions. No command fetches tags.",
     "",
     "See [the human planning map](../planning/work-order-map.md) for recommendation, rationale, tracks, and activation preflight. Dependency-ready does not grant activation or effect authority.",
     "",

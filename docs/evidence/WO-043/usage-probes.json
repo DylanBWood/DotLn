@@ -1,0 +1,35 @@
+{
+  "observedAt": "2026-09-11T15:09:56.186Z",
+  "codex": {
+    "subject": "Current WO-043 repair session, cumulative counters",
+    "source": "codex-transcript-counter",
+    "scope": "dispatch",
+    "observedAt": "2026-09-11T15:09:40.080Z",
+    "usage": {
+      "inputTokens": 3456526,
+      "cachedInputTokens": 3297664,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 26292,
+      "reasoningOutputTokens": 8647,
+      "totalTokens": 3482818,
+      "costUsd": null
+    }
+  },
+  "claude": {
+    "subject": "VER-001 verification session",
+    "since": "2026-09-11T14:10:36.000Z",
+    "until": "2026-09-11T14:52:40.000Z",
+    "source": "claude-transcript-message-usage",
+    "scope": "dispatch",
+    "observedAt": "2026-09-11T14:52:36.076Z",
+    "usage": {
+      "inputTokens": 718,
+      "cachedInputTokens": 4846932,
+      "cacheWriteInputTokens": 300168,
+      "outputTokens": 131084,
+      "reasoningOutputTokens": null,
+      "totalTokens": 5278902,
+      "costUsd": null
+    }
+  }
+}

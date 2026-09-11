@@ -20,13 +20,15 @@ npm run console -- board --store .runtime/demo
 `events.jsonl`; a missing store is shown as unavailable and is never created.
 The default selection includes the recorded WO-009 demonstration and the
 current self-hosted feedback edition's audit/verifier stores, selected by
-`SELF_HOST_EDITION` in [collect.ts](src/collect.ts). Those are historical
+the shared [current-evidence manifest](../../docs/evidence/current.json). Those are historical
 witnesses, not live sessions. The root evidence command selects the same
 edition: a compiler package bump changes the pinned policy and verification
 identities, and the skeleton refuses persisted compilation drift when it
 replays an earlier edition's verifier stream, so that edition renders
-unavailable rather than current. When the edition moves, move the constant and
-re-pin the `selfhost` fixture case together.
+unavailable rather than current. Select replacement evidence once in the
+manifest when a relevant source change requires it. Starting another work order
+does not change this selection. Recorded fixture inputs retain their explicit
+paths and hashes so historical comparisons cannot silently follow new output.
 Current control, worktree, release, capability, publication, roadmap and
 refutation sources are collected on each invocation. Collection has no watch
 loop. It reads no intake, account configuration or private harness settings.

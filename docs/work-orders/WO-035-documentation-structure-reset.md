@@ -28,6 +28,53 @@ execution. WO-034 may run beside this order because this order must not edit
 `scripts/work-orders.mjs` or `packages/console`, which WO-034 owns. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-084",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-084.",
+    "by": "WO-084"
+  },
+  {
+    "workOrderId": "WO-085",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-085.",
+    "by": "WO-085"
+  },
+  {
+    "workOrderId": "WO-086",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-086.",
+    "by": "WO-086"
+  },
+  {
+    "workOrderId": "WO-087",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-087.",
+    "by": "WO-087"
+  },
+  {
+    "workOrderId": "WO-088",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-088.",
+    "by": "WO-088"
+  },
+  {
+    "workOrderId": "WO-089",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-089.",
+    "by": "WO-089"
+  },
+  {
+    "workOrderId": "WO-090",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-090.",
+    "by": "WO-090"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 03-architecture.md §Corpus policy (the
 maintenance constraint; archives preserve discoverability, provenance, stable
 references, and replay dependencies); 07-execution-guide.md §Read order for a

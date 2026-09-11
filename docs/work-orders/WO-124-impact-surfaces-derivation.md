@@ -20,6 +20,21 @@ worktree snapshot shape it reads).
 compiler's story-contract module and a snapshot index to the skeleton. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-061",
+    "relation": "hard",
+    "reason": "the contract it reads"
+  },
+  {
+    "workOrderId": "WO-054",
+    "relation": "hard",
+    "reason": "the worktree snapshot shape it reads"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 06-roadmap.md §Application version pending
 — Source-to-deliverable vertical (the impact map); 03-architecture.md §Ports
 (the cartographer stub); `docs/work-orders/WO-061-story-contract-compile.md`;

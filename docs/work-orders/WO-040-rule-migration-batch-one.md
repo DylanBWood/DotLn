@@ -34,6 +34,29 @@ the skeleton's loadouts, and the migration projection; WO-033 must not).
 Later batches are cut from this order's template and float into free lanes.
 A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-096",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-096.",
+    "by": "WO-096"
+  },
+  {
+    "workOrderId": "WO-097",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-097.",
+    "by": "WO-097"
+  },
+  {
+    "workOrderId": "WO-098",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-098.",
+    "by": "WO-098"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 00-vision.md §The one-paragraph story (the
 roughly 140 accumulated rules and what compiling them means) and §The core
 bet; 02-domain-model.md §Feedback (FeedbackUnit, the mechanism hierarchy, gem

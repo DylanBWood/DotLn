@@ -20,6 +20,16 @@ the harness lowering's skill render for the active order, and
 repository among them) are authored in the fork that owns them, never here.
 A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-071",
+    "relation": "hard",
+    "reason": "the registration the class and profile attach to"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 §Phase 2 (class, profile, layering); 01-principles.md Principle 17
 (repo-native authority); 03-architecture.md §Agent enablement skills (the

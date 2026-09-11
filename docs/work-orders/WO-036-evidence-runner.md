@@ -26,6 +26,17 @@ suite; that conflict is one line.
 between wave 1 and wave 2 so wave 2 registers its suites with the runner. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-126",
+    "relation": "superseded",
+    "reason": "2026-09-09 operator process-debt pass: WO-126 criterion 6 carries this umbrella whole.",
+    "by": "WO-126"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 07-execution-guide.md §Discipline (evidence
 gates over prose; "a green runner over an absent suite is not evidence";
 automate recurring procedure); 06-roadmap.md §Efficiency as a separate

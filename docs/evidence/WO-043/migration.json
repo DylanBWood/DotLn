@@ -1,0 +1,2400 @@
+{
+  "workOrder": "WO-043",
+  "observedAt": "2026-09-11T05:56:13.096Z",
+  "source": "docs/planning/critical-path-2026-09-08.json",
+  "graphNodes": 109,
+  "graphEdges": 207,
+  "migrated": 85,
+  "typedEntries": 245,
+  "unchangedClosedAndHistorical": [
+    "WO-001",
+    "WO-002",
+    "WO-003",
+    "WO-004",
+    "WO-005",
+    "WO-006",
+    "WO-007",
+    "WO-008",
+    "WO-009",
+    "WO-010",
+    "WO-011",
+    "WO-012",
+    "WO-013",
+    "WO-015",
+    "WO-016",
+    "WO-017",
+    "WO-018",
+    "WO-019",
+    "WO-020",
+    "WO-021",
+    "WO-022",
+    "WO-023",
+    "WO-024",
+    "WO-025",
+    "WO-026",
+    "WO-027",
+    "WO-028",
+    "WO-029",
+    "WO-030",
+    "WO-031",
+    "WO-032",
+    "WO-038",
+    "WO-039",
+    "WO-041",
+    "WO-042",
+    "WO-101",
+    "WO-108",
+    "WO-109",
+    "WO-126",
+    "WO-127"
+  ],
+  "wo042": {
+    "authority": "unchanged; now closed",
+    "source": "conservative-tokens",
+    "blocking": [],
+    "seedGraphProjection": {
+      "source": "typed",
+      "entries": [
+        {
+          "workOrderId": "WO-008",
+          "relation": "satisfied-by-release",
+          "release": "v0.4.0",
+          "reason": "compiler v1 is the surface this order narrows",
+          "state": "met"
+        },
+        {
+          "workOrderId": "WO-039",
+          "relation": "satisfied-by-close",
+          "reason": "the harness-v1 target and Contributor bundle this order regenerates; merged at 33e2c25",
+          "state": "met"
+        }
+      ],
+      "blocking": []
+    }
+  },
+  "rows": [
+    {
+      "workOrder": "WO-014",
+      "path": "docs/work-orders/WO-014-approval-burden-contract.md",
+      "prose": "WO-013 merged — its verified result removes the one known artificial sandbox escape so the baseline below is not dominated by an already-understood defect; WO-006 merged — the runbook, ADR-0003 through ADR-0005, and the deferral this order discharges. Branch from `origin/main` after the WO-013 close.",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-013",
+          "relation": "satisfied-by-release",
+          "release": "v0.3.1",
+          "reason": "the order's own Depends on"
+        },
+        {
+          "workOrderId": "WO-006",
+          "relation": "satisfied-by-release",
+          "release": "v0.2.3",
+          "reason": "the order's own Depends on"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-033",
+      "path": "docs/work-orders/WO-033-compiled-starter-export.md",
+      "prose": "WO-039 merged (the `harness-v1` target, the `harness` command, and the Contributor build the export carries); WO-038 merged (the license posture in package metadata and the export's default license files); WO-030 merged (per-order segments and selection; satisfied at `v0.7.0`); WO-018 merged (`scripts/lib/`; satisfied at `v0.4.1`); WO-026 merged (the generated index; satisfied at `v0.5.2`); WO-021 merged (per-worktree Beacon caches; satisfied at `v0.8.0`).",
+      "comparison": "matches graph supersededBy children and leading umbrella notice; old Depends on is retained history",
+      "proseOnlyHistoricalIds": [
+        "WO-018",
+        "WO-021",
+        "WO-026",
+        "WO-030",
+        "WO-038",
+        "WO-039"
+      ],
+      "graphOnlyContextIds": [
+        "WO-049",
+        "WO-064",
+        "WO-069",
+        "WO-070",
+        "WO-071",
+        "WO-072",
+        "WO-073",
+        "WO-074",
+        "WO-075",
+        "WO-076",
+        "WO-077",
+        "WO-078",
+        "WO-079",
+        "WO-036"
+      ],
+      "entries": [
+        {
+          "workOrderId": "WO-049",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-049.",
+          "by": "WO-049"
+        },
+        {
+          "workOrderId": "WO-064",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-064.",
+          "by": "WO-064"
+        },
+        {
+          "workOrderId": "WO-069",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-069.",
+          "by": "WO-069"
+        },
+        {
+          "workOrderId": "WO-070",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-070.",
+          "by": "WO-070"
+        },
+        {
+          "workOrderId": "WO-071",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-071.",
+          "by": "WO-071"
+        },
+        {
+          "workOrderId": "WO-072",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-072.",
+          "by": "WO-072"
+        },
+        {
+          "workOrderId": "WO-073",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-073.",
+          "by": "WO-073"
+        },
+        {
+          "workOrderId": "WO-074",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-074.",
+          "by": "WO-074"
+        },
+        {
+          "workOrderId": "WO-075",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-075.",
+          "by": "WO-075"
+        },
+        {
+          "workOrderId": "WO-076",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-076.",
+          "by": "WO-076"
+        },
+        {
+          "workOrderId": "WO-077",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-077.",
+          "by": "WO-077"
+        },
+        {
+          "workOrderId": "WO-078",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-078.",
+          "by": "WO-078"
+        },
+        {
+          "workOrderId": "WO-079",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-079.",
+          "by": "WO-079"
+        },
+        {
+          "workOrderId": "WO-036",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-036.",
+          "by": "WO-036"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-034",
+      "path": "docs/work-orders/WO-034-cross-repository-workstream-pilot.md",
+      "prose": "WO-033 merged (configuration root, registered target repositories, the launchpad export carrying the build, worktree-local harness emit, and `worktree sync`); WO-032 merged (the `uifa-board-v1` view model the Angular shell consumes).",
+      "comparison": "matches graph supersededBy children and leading umbrella notice; old Depends on is retained history",
+      "proseOnlyHistoricalIds": ["WO-032", "WO-033"],
+      "graphOnlyContextIds": ["WO-080", "WO-081", "WO-082", "WO-083"],
+      "entries": [
+        {
+          "workOrderId": "WO-080",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-080.",
+          "by": "WO-080"
+        },
+        {
+          "workOrderId": "WO-081",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-081.",
+          "by": "WO-081"
+        },
+        {
+          "workOrderId": "WO-082",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-082.",
+          "by": "WO-082"
+        },
+        {
+          "workOrderId": "WO-083",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-083.",
+          "by": "WO-083"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-035",
+      "path": "docs/work-orders/WO-035-documentation-structure-reset.md",
+      "prose": "WO-033 merged (the configuration root names the document roots this order moves and checks, and its export copies the conventions this order sets).",
+      "comparison": "matches graph supersededBy children and leading umbrella notice; old Depends on is retained history",
+      "proseOnlyHistoricalIds": ["WO-033"],
+      "graphOnlyContextIds": [
+        "WO-084",
+        "WO-085",
+        "WO-086",
+        "WO-087",
+        "WO-088",
+        "WO-089",
+        "WO-090"
+      ],
+      "entries": [
+        {
+          "workOrderId": "WO-084",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-084.",
+          "by": "WO-084"
+        },
+        {
+          "workOrderId": "WO-085",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-085.",
+          "by": "WO-085"
+        },
+        {
+          "workOrderId": "WO-086",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-086.",
+          "by": "WO-086"
+        },
+        {
+          "workOrderId": "WO-087",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-087.",
+          "by": "WO-087"
+        },
+        {
+          "workOrderId": "WO-088",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-088.",
+          "by": "WO-088"
+        },
+        {
+          "workOrderId": "WO-089",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-089.",
+          "by": "WO-089"
+        },
+        {
+          "workOrderId": "WO-090",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-090.",
+          "by": "WO-090"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-036",
+      "path": "docs/work-orders/WO-036-evidence-runner.md",
+      "prose": "WO-018 merged (the shell fixture helpers; satisfied at `v0.4.1`); WO-013 merged (portable temp roots; satisfied at `v0.3.1`). Independent of every other open order in primary surfaces except the root `package.json` `test` entry, which each order also edits to register its suite; that conflict is one line.",
+      "comparison": "later 2026-09-09 umbrella decision in the authority supersedes the seed graph's two release edges",
+      "proseOnlyHistoricalIds": ["WO-013", "WO-018"],
+      "graphOnlyContextIds": ["WO-126"],
+      "entries": [
+        {
+          "workOrderId": "WO-126",
+          "relation": "superseded",
+          "reason": "2026-09-09 operator process-debt pass: WO-126 criterion 6 carries this umbrella whole.",
+          "by": "WO-126"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-037",
+      "path": "docs/work-orders/WO-037-five-s-equipment-set.md",
+      "prose": "WO-008 merged (compiler v1; satisfied at `v0.4.0`); WO-016 merged (one reactor for live and replay; satisfied at `v0.3.6`); WO-023 merged (Shine and Standardize compiled inside the Entropy Reducer; satisfied at `v0.5.0`); WO-029 merged (artifact identity per component; satisfied at `v0.9.0`); WO-011 merged (the feedback contract beside the loadout contract; satisfied at `v0.13.0`).",
+      "comparison": "matches graph supersededBy children and leading umbrella notice; old Depends on is retained history",
+      "proseOnlyHistoricalIds": [
+        "WO-008",
+        "WO-011",
+        "WO-016",
+        "WO-023",
+        "WO-029"
+      ],
+      "graphOnlyContextIds": ["WO-091", "WO-092", "WO-093", "WO-094", "WO-095"],
+      "entries": [
+        {
+          "workOrderId": "WO-091",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-091.",
+          "by": "WO-091"
+        },
+        {
+          "workOrderId": "WO-092",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-092.",
+          "by": "WO-092"
+        },
+        {
+          "workOrderId": "WO-093",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-093.",
+          "by": "WO-093"
+        },
+        {
+          "workOrderId": "WO-094",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-094.",
+          "by": "WO-094"
+        },
+        {
+          "workOrderId": "WO-095",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-095.",
+          "by": "WO-095"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-040",
+      "path": "docs/work-orders/WO-040-rule-migration-batch-one.md",
+      "prose": "WO-039 merged (the `harness-v1` target and the Contributor build the batch is equipped into); WO-011 merged (the feedback contract and the ten units; satisfied at `v0.13.0`).",
+      "comparison": "matches graph supersededBy children and leading umbrella notice; old Depends on is retained history",
+      "proseOnlyHistoricalIds": ["WO-011", "WO-039"],
+      "graphOnlyContextIds": ["WO-096", "WO-097", "WO-098"],
+      "entries": [
+        {
+          "workOrderId": "WO-096",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-096.",
+          "by": "WO-096"
+        },
+        {
+          "workOrderId": "WO-097",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-097.",
+          "by": "WO-097"
+        },
+        {
+          "workOrderId": "WO-098",
+          "relation": "superseded",
+          "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-098.",
+          "by": "WO-098"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-043",
+      "path": "docs/work-orders/WO-043-typed-dependency-truth.md",
+      "prose": "WO-026 merged (the generated index this order extends; satisfied at `v0.5.2`); WO-030 merged (per-order control segments and selection; satisfied at `v0.7.0`). No open order is an input; the typed graph this order migrates from is `docs/planning/critical-path-2026-09-08.json`.",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-026",
+          "relation": "satisfied-by-release",
+          "release": "v0.5.2",
+          "reason": "the generated index this order extends"
+        },
+        {
+          "workOrderId": "WO-030",
+          "relation": "satisfied-by-release",
+          "release": "v0.7.0",
+          "reason": "per-order control segments and selection"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-044",
+      "path": "docs/work-orders/WO-044-writing-worker-harness-truth.md",
+      "prose": "WO-039 merged (the phase-zero record and `scripts/harness-probe.mjs` this order extends; satisfied at the `33e2c25` merge); WO-009 merged (the canonical launch shapes this order varies; satisfied at `v0.10.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-039",
+          "relation": "satisfied-by-close",
+          "reason": "extends the phase-zero record with the writing-worker rows"
+        },
+        {
+          "workOrderId": "WO-009",
+          "relation": "satisfied-by-release",
+          "release": "v0.10.0",
+          "reason": "the canonical launch shapes it varies"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-045",
+      "path": "docs/work-orders/WO-045-store-and-hook-input-decoders.md",
+      "prose": "WO-017 merged (the store codec this order extends; satisfied at `v0.3.5`); WO-039 merged (the hook host whose input this order decodes; satisfied at the `33e2c25` merge).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-105"],
+      "entries": [
+        {
+          "workOrderId": "WO-017",
+          "relation": "satisfied-by-release",
+          "release": "v0.3.5",
+          "reason": "the store codec it extends"
+        },
+        {
+          "workOrderId": "WO-039",
+          "relation": "satisfied-by-close",
+          "reason": "the hook host whose input it decodes"
+        },
+        {
+          "workOrderId": "WO-105",
+          "relation": "reference-only",
+          "reason": "the crash-shape corpus draft supplies malformed-shape families"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-046",
+      "path": "docs/work-orders/WO-046-executable-program-split.md",
+      "prose": "WO-101 merged (the Program corpus that enumerates the executable kinds; satisfied at `v0.2.2`); WO-017 merged (the evaluable-kind boundaries; satisfied at `v0.3.5`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-045"],
+      "entries": [
+        {
+          "workOrderId": "WO-101",
+          "relation": "satisfied-by-release",
+          "release": "v0.2.2",
+          "reason": "the Program corpus that enumerates the executable kinds"
+        },
+        {
+          "workOrderId": "WO-017",
+          "relation": "satisfied-by-release",
+          "release": "v0.3.5",
+          "reason": "the evaluable-kind boundaries"
+        },
+        {
+          "workOrderId": "WO-045",
+          "relation": "reference-only",
+          "reason": "shares the DecodeResult shape when both land; a local shape otherwise"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-047",
+      "path": "docs/work-orders/WO-047-replay-environment-projector.md",
+      "prose": "WO-017 merged (the kernel truthfulness boundaries; satisfied at `v0.3.5`); WO-016 merged (the single skeleton reactor that replay drives; satisfied at `v0.3.6`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-017",
+          "relation": "satisfied-by-release",
+          "release": "v0.3.5",
+          "reason": "kernel truthfulness boundaries"
+        },
+        {
+          "workOrderId": "WO-016",
+          "relation": "satisfied-by-release",
+          "release": "v0.3.6",
+          "reason": "the single reactor replay drives"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-048",
+      "path": "docs/work-orders/WO-048-worker-host-on-disk-decode.md",
+      "prose": "WO-009 merged (the worker store, host and worktree lifecycle; satisfied at `v0.10.0`); WO-010 merged (the verification host and its saved capsules; satisfied at `v0.12.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-045", "WO-105"],
+      "entries": [
+        {
+          "workOrderId": "WO-009",
+          "relation": "satisfied-by-release",
+          "release": "v0.10.0",
+          "reason": "the worker store and host"
+        },
+        {
+          "workOrderId": "WO-010",
+          "relation": "satisfied-by-release",
+          "release": "v0.12.0",
+          "reason": "the verification host and its capsules"
+        },
+        {
+          "workOrderId": "WO-045",
+          "relation": "reference-only",
+          "reason": "the log codec is not duplicated when WO-045 lands first"
+        },
+        {
+          "workOrderId": "WO-105",
+          "relation": "reference-only",
+          "reason": "malformed-shape families"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-049",
+      "path": "docs/work-orders/WO-049-target-worktree-bundle.md",
+      "prose": "WO-042 merged (a bundle emitted into a target must carry an envelope no support can widen and grants with provenance); WO-044 merged (the observed rows for hooks, settings and instruction surfaces in a foreign worktree under the worker's launch mode); WO-039 merged (`harness emit` and `check`; satisfied at the `33e2c25` merge).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-042",
+          "relation": "hard",
+          "reason": "a bundle emitted into a target must carry an envelope no support can widen and grants with provenance"
+        },
+        {
+          "workOrderId": "WO-044",
+          "relation": "hard",
+          "reason": "the record must show that the target's hooks, settings and instruction surface apply in the worker's launch mode; otherwise this order is redesigned at R1"
+        },
+        {
+          "workOrderId": "WO-039",
+          "relation": "satisfied-by-close",
+          "reason": "harness emit, check and the runtime pins it extends"
+        }
+      ],
+      "blocking": ["WO-044"]
+    },
+    {
+      "workOrder": "WO-050",
+      "path": "docs/work-orders/WO-050-reactor-typed-state-slices.md",
+      "prose": "WO-016 merged (the single reactor for live and replay; satisfied at `v0.3.6`); WO-010 merged (the verification branch, the last host branch added; satisfied at `v0.12.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-047"],
+      "entries": [
+        {
+          "workOrderId": "WO-016",
+          "relation": "satisfied-by-release",
+          "release": "v0.3.6",
+          "reason": "the single reactor"
+        },
+        {
+          "workOrderId": "WO-010",
+          "relation": "satisfied-by-release",
+          "release": "v0.12.0",
+          "reason": "the last host branch added"
+        },
+        {
+          "workOrderId": "WO-047",
+          "relation": "reference-only",
+          "reason": "the explicit projector reads the kernel-facing slice when it has landed"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-051",
+      "path": "docs/work-orders/WO-051-source-change-transport-profile.md",
+      "prose": "WO-044 merged (the observed rows this profile is written from: tool-allowlist form, sandbox containment, result envelope, kill behavior); WO-042 merged (the profile's envelope must come from the compiled build's base and explicit grants); WO-009 merged (the transports this order extends; satisfied at `v0.10.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-044",
+          "relation": "hard",
+          "reason": "the profile is written from observed rows, never assumed"
+        },
+        {
+          "workOrderId": "WO-042",
+          "relation": "hard",
+          "reason": "the profile's envelope comes only from the base and explicit grants"
+        },
+        {
+          "workOrderId": "WO-009",
+          "relation": "satisfied-by-release",
+          "release": "v0.10.0",
+          "reason": "the transports it extends"
+        }
+      ],
+      "blocking": ["WO-044"]
+    },
+    {
+      "workOrder": "WO-052",
+      "path": "docs/work-orders/WO-052-source-change-host.md",
+      "prose": "WO-050 merged (the reserved slice this branch fills; the recorded reactor-split condition); WO-051 merged (the transport profile it dispatches); WO-049 merged (the bundle it emits into the target worktree before dispatch); WO-009 merged (worker store, leases, recovery; satisfied at `v0.10.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-045"],
+      "entries": [
+        {
+          "workOrderId": "WO-050",
+          "relation": "hard",
+          "reason": "the recorded reactor-split condition: the slice exists before the branch"
+        },
+        {
+          "workOrderId": "WO-051",
+          "relation": "hard",
+          "reason": "the transport profile it dispatches"
+        },
+        {
+          "workOrderId": "WO-049",
+          "relation": "hard",
+          "reason": "the bundle it emits into the target worktree before dispatch"
+        },
+        {
+          "workOrderId": "WO-009",
+          "relation": "satisfied-by-release",
+          "release": "v0.10.0",
+          "reason": "worker store, leases and recovery"
+        },
+        {
+          "workOrderId": "WO-045",
+          "relation": "reference-only",
+          "reason": "positive payload decoding shares WO-045's shape when it has landed"
+        }
+      ],
+      "blocking": ["WO-050", "WO-051", "WO-049"]
+    },
+    {
+      "workOrder": "WO-053",
+      "path": "docs/work-orders/WO-053-first-external-source-change.md",
+      "prose": "WO-052 merged (the host, events and receipt this episode runs through).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-052",
+          "relation": "hard",
+          "reason": "the host, events and receipt the episode runs through"
+        }
+      ],
+      "blocking": ["WO-052"]
+    },
+    {
+      "workOrder": "WO-054",
+      "path": "docs/work-orders/WO-054-verification-over-real-worktree.md",
+      "prose": "WO-052 merged (the target worktree and the diff the verifier snapshots); WO-010 merged (the `verification-v1` loop this order lifts; satisfied at `v0.12.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-052",
+          "relation": "hard",
+          "reason": "the target worktree and diff the verifier snapshots"
+        },
+        {
+          "workOrderId": "WO-010",
+          "relation": "satisfied-by-release",
+          "release": "v0.12.0",
+          "reason": "the verification-v1 loop it lifts"
+        }
+      ],
+      "blocking": ["WO-052"]
+    },
+    {
+      "workOrder": "WO-055",
+      "path": "docs/work-orders/WO-055-repair-continuation.md",
+      "prose": "WO-054 merged (the finding shape and capsule this loop consumes); WO-052 merged (the source-change host that executes the repair); WO-042 merged (the effective envelope and the admitted grants the derivation is bound to).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-054",
+          "relation": "hard",
+          "reason": "the finding shape and capsule the loop consumes"
+        },
+        {
+          "workOrderId": "WO-052",
+          "relation": "hard",
+          "reason": "the source-change host that executes the repair"
+        },
+        {
+          "workOrderId": "WO-042",
+          "relation": "hard",
+          "reason": "the effective envelope and the admitted grants the derivation is bound to"
+        }
+      ],
+      "blocking": ["WO-054", "WO-052"]
+    },
+    {
+      "workOrder": "WO-056",
+      "path": "docs/work-orders/WO-056-live-verification-and-repair.md",
+      "prose": "WO-055 merged (the loop this episode runs); WO-053 merged (the live source-change primitive and the receipt shape it extends).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-055",
+          "relation": "hard",
+          "reason": "the loop the episode runs"
+        },
+        {
+          "workOrderId": "WO-053",
+          "relation": "hard",
+          "reason": "the live primitive and receipt shape it extends"
+        }
+      ],
+      "blocking": ["WO-055", "WO-053"]
+    },
+    {
+      "workOrder": "WO-057",
+      "path": "docs/work-orders/WO-057-browser-runtime-truth.md",
+      "prose": "WO-004 merged (the environment record this order extends; closed).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-056"],
+      "entries": [
+        {
+          "workOrderId": "WO-004",
+          "relation": "satisfied-by-close",
+          "reason": "the environment record it extends"
+        },
+        {
+          "workOrderId": "WO-056",
+          "relation": "reference-only",
+          "reason": "recommended after the real-repository loop so the adapter has a consumer"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-058",
+      "path": "docs/work-orders/WO-058-visual-and-network-claim-types.md",
+      "prose": "WO-010 merged (the claim-typed evidence contract this order extends; satisfied at `v0.12.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-010",
+          "relation": "satisfied-by-release",
+          "release": "v0.12.0",
+          "reason": "the claim-typed evidence contract it extends"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-059",
+      "path": "docs/work-orders/WO-059-playwright-evidence-adapter.md",
+      "prose": "WO-057 merged (the observed runtime rows and the recorded dependency decision); WO-058 merged (the claim types and witness rules this adapter produces).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-057",
+          "relation": "hard",
+          "reason": "the observed runtime rows and the recorded dependency decision"
+        },
+        {
+          "workOrderId": "WO-058",
+          "relation": "hard",
+          "reason": "the claim types and witness rules the adapter produces"
+        }
+      ],
+      "blocking": ["WO-057", "WO-058"]
+    },
+    {
+      "workOrder": "WO-060",
+      "path": "docs/work-orders/WO-060-source-bundle-contract.md",
+      "prose": "WO-008 merged (the pure compiler package that holds the contract; satisfied at `v0.4.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-008",
+          "relation": "satisfied-by-release",
+          "release": "v0.4.0",
+          "reason": "the pure compiler package that holds the contract"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-061",
+      "path": "docs/work-orders/WO-061-story-contract-compile.md",
+      "prose": "WO-060 merged (the bundle it compiles from).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-054"],
+      "entries": [
+        {
+          "workOrderId": "WO-060",
+          "relation": "hard",
+          "reason": "the bundle it compiles from"
+        },
+        {
+          "workOrderId": "WO-054",
+          "relation": "reference-only",
+          "reason": "its criteria are what the verification host consumes"
+        }
+      ],
+      "blocking": ["WO-060"]
+    },
+    {
+      "workOrder": "WO-062",
+      "path": "docs/work-orders/WO-062-github-issue-source-adapter.md",
+      "prose": "WO-060 merged (the bundle shape it produces).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-060",
+          "relation": "hard",
+          "reason": "the bundle shape it produces"
+        }
+      ],
+      "blocking": ["WO-060"]
+    },
+    {
+      "workOrder": "WO-063",
+      "path": "docs/work-orders/WO-063-outward-artifact-lint.md",
+      "prose": "WO-039 merged (the local-terms check this lint reuses; closed).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-039",
+          "relation": "satisfied-by-close",
+          "reason": "the local-terms check it reuses"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-064",
+      "path": "docs/work-orders/WO-064-target-publish.md",
+      "prose": "WO-052 merged (a branch to publish exists only after a source-change episode); WO-063 merged (every outward artifact passes the lint first); WO-042 merged (the remote effect runs under an explicit grant with `operator` provenance).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-053"],
+      "entries": [
+        {
+          "workOrderId": "WO-052",
+          "relation": "hard",
+          "reason": "a branch to publish exists only after a source-change episode"
+        },
+        {
+          "workOrderId": "WO-063",
+          "relation": "hard",
+          "reason": "every outward artifact passes the lint before the remote effect"
+        },
+        {
+          "workOrderId": "WO-042",
+          "relation": "hard",
+          "reason": "the remote effect runs under an explicit grant with operator provenance"
+        },
+        {
+          "workOrderId": "WO-053",
+          "relation": "reference-only",
+          "reason": "the live branch it first publishes"
+        }
+      ],
+      "blocking": ["WO-052", "WO-063"]
+    },
+    {
+      "workOrder": "WO-065",
+      "path": "docs/work-orders/WO-065-pull-request-state-observation.md",
+      "prose": "WO-064 merged (a pull request to observe); WO-060 merged (the screen every stored comment passes). After WO-068, the resident's `pull-request-observe` cadence is the ordinary invoker; the command stays operator-invocable.",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-064",
+          "relation": "hard",
+          "reason": "a pull request to observe"
+        },
+        {
+          "workOrderId": "WO-060",
+          "relation": "hard",
+          "reason": "the screen every stored comment passes"
+        },
+        {
+          "workOrderId": "WO-068",
+          "relation": "reference-only",
+          "reason": "the resident's cadence is the ordinary invoker once it exists"
+        }
+      ],
+      "blocking": ["WO-064", "WO-060"]
+    },
+    {
+      "workOrder": "WO-066",
+      "path": "docs/work-orders/WO-066-review-comment-resolution-loop.md",
+      "prose": "WO-065 merged (the observed comments and checks); WO-055 merged (the repair derivation and round limit it reuses); WO-054 merged (verification of each repaired head before a push); WO-064 merged (the grant under which the push and the disposition run).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-065",
+          "relation": "hard",
+          "reason": "the observed comments and checks it resolves"
+        },
+        {
+          "workOrderId": "WO-055",
+          "relation": "hard",
+          "reason": "the repair derivation and round limit it reuses"
+        },
+        {
+          "workOrderId": "WO-054",
+          "relation": "hard",
+          "reason": "verification of each repaired head before a push"
+        },
+        {
+          "workOrderId": "WO-064",
+          "relation": "hard",
+          "reason": "the grant under which the push and the disposition run"
+        }
+      ],
+      "blocking": ["WO-065", "WO-055", "WO-054", "WO-064"]
+    },
+    {
+      "workOrder": "WO-067",
+      "path": "docs/work-orders/WO-067-presence-policy-compiled.md",
+      "prose": "WO-042 merged (a phase envelope is a narrowing under the monotone floor; nothing in a presence policy may widen); WO-008 merged (compiler v1; satisfied at `v0.4.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-042",
+          "relation": "hard",
+          "reason": "a phase envelope is a narrowing under the monotone floor"
+        },
+        {
+          "workOrderId": "WO-008",
+          "relation": "satisfied-by-release",
+          "release": "v0.4.0",
+          "reason": "compiler v1"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-068",
+      "path": "docs/work-orders/WO-068-resident-host.md",
+      "prose": "WO-067 merged (the policy whose cadences and phases this host evaluates); WO-050 merged (the reserved slice this host's state lives in; the recorded reactor-split condition); WO-044 merged (the detached-launch rows the launcher is designed from); WO-009 merged (the worker store and lease rules it reuses; satisfied at `v0.10.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-027"],
+      "entries": [
+        {
+          "workOrderId": "WO-067",
+          "relation": "hard",
+          "reason": "the policy whose cadences and phases the host evaluates"
+        },
+        {
+          "workOrderId": "WO-050",
+          "relation": "hard",
+          "reason": "the reserved slice the host's state lives in (the recorded split condition)"
+        },
+        {
+          "workOrderId": "WO-044",
+          "relation": "hard",
+          "reason": "the launcher is designed from the unattended rows, never assumed"
+        },
+        {
+          "workOrderId": "WO-009",
+          "relation": "satisfied-by-release",
+          "release": "v0.10.0",
+          "reason": "the transports and worker store it dispatches through"
+        },
+        {
+          "workOrderId": "WO-027",
+          "relation": "reference-only",
+          "reason": "the local-inference probe, as the fourth actor kind's reference"
+        }
+      ],
+      "blocking": ["WO-067", "WO-050", "WO-044"]
+    },
+    {
+      "workOrder": "WO-069",
+      "path": "docs/work-orders/WO-069-configuration-root.md",
+      "prose": "WO-018 merged (`scripts/lib/`; satisfied at `v0.4.1`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-018",
+          "relation": "satisfied-by-release",
+          "release": "v0.4.1",
+          "reason": "scripts/lib"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-070",
+      "path": "docs/work-orders/WO-070-beacon-portability.md",
+      "prose": "WO-021 merged (per-worktree Beacon caches; satisfied at `v0.8.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-021",
+          "relation": "satisfied-by-release",
+          "release": "v0.8.0",
+          "reason": "per-worktree Beacon caches"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-071",
+      "path": "docs/work-orders/WO-071-registered-target-repositories.md",
+      "prose": "WO-069 merged (the `repositories` section of the configuration); WO-042 merged (the `registered-repository` grant provenance and the floor the profile narrows through).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-069",
+          "relation": "hard",
+          "reason": "the repositories section of the configuration"
+        },
+        {
+          "workOrderId": "WO-042",
+          "relation": "hard",
+          "reason": "the registered-repository grant provenance"
+        }
+      ],
+      "blocking": ["WO-069"]
+    },
+    {
+      "workOrder": "WO-072",
+      "path": "docs/work-orders/WO-072-target-worktree-lifecycle.md",
+      "prose": "WO-071 merged (the registration it starts worktrees from); WO-049 merged (the emit into the target worktree); WO-030 merged (per-order segments; satisfied at `v0.7.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-071",
+          "relation": "hard",
+          "reason": "the registration it starts worktrees from"
+        },
+        {
+          "workOrderId": "WO-049",
+          "relation": "hard",
+          "reason": "the emit into the target worktree"
+        },
+        {
+          "workOrderId": "WO-030",
+          "relation": "satisfied-by-release",
+          "release": "v0.7.0",
+          "reason": "per-order segments"
+        }
+      ],
+      "blocking": ["WO-071", "WO-049"]
+    },
+    {
+      "workOrder": "WO-073",
+      "path": "docs/work-orders/WO-073-repository-class-and-profile.md",
+      "prose": "WO-071 merged (the registration the class and profile attach to).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-071",
+          "relation": "hard",
+          "reason": "the registration the class and profile attach to"
+        }
+      ],
+      "blocking": ["WO-071"]
+    },
+    {
+      "workOrder": "WO-074",
+      "path": "docs/work-orders/WO-074-launchpad-export-kit.md",
+      "prose": "WO-069 merged (the configuration example and roots the kit carries); WO-070 merged (Beacon emission without the skeleton package); WO-038 merged (license metadata and the default license files; satisfied at `v0.13.2`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-069",
+          "relation": "hard",
+          "reason": "the configuration example and roots the kit carries"
+        },
+        {
+          "workOrderId": "WO-070",
+          "relation": "hard",
+          "reason": "Beacon emission without the skeleton package"
+        },
+        {
+          "workOrderId": "WO-038",
+          "relation": "satisfied-by-release",
+          "release": "v0.13.2",
+          "reason": "license metadata and the default license files"
+        }
+      ],
+      "blocking": ["WO-069", "WO-070"]
+    },
+    {
+      "workOrder": "WO-075",
+      "path": "docs/work-orders/WO-075-kit-runtime-and-bundle.md",
+      "prose": "WO-074 merged (the kit the runtime and bundle are placed in); WO-049 merged (the import-root mechanism the exported hooks reuse); WO-042 merged (grants with provenance in the exported bundle).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-074",
+          "relation": "hard",
+          "reason": "the kit the runtime and bundle are placed in"
+        },
+        {
+          "workOrderId": "WO-049",
+          "relation": "hard",
+          "reason": "the import-root mechanism the exported hooks reuse"
+        },
+        {
+          "workOrderId": "WO-042",
+          "relation": "hard",
+          "reason": "grants with provenance in the exported bundle"
+        }
+      ],
+      "blocking": ["WO-074", "WO-049"]
+    },
+    {
+      "workOrder": "WO-076",
+      "path": "docs/work-orders/WO-076-instance-build-overlay.md",
+      "prose": "WO-075 merged (the kit build the overlay composes over); WO-042 merged (widening within the fork's posture is a provenance-bearing grant).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-075",
+          "relation": "hard",
+          "reason": "the kit build the overlay composes over"
+        },
+        {
+          "workOrderId": "WO-042",
+          "relation": "hard",
+          "reason": "widening within the fork's posture is a provenance-bearing grant"
+        }
+      ],
+      "blocking": ["WO-075"]
+    },
+    {
+      "workOrder": "WO-077",
+      "path": "docs/work-orders/WO-077-launchpad-export-update.md",
+      "prose": "WO-074 merged (a prior manifest to update from).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-074",
+          "relation": "hard",
+          "reason": "a prior manifest to update from"
+        }
+      ],
+      "blocking": ["WO-074"]
+    },
+    {
+      "workOrder": "WO-078",
+      "path": "docs/work-orders/WO-078-sibling-registry.md",
+      "prose": "WO-074 merged (the first export receipt).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-074",
+          "relation": "hard",
+          "reason": "the first export receipt"
+        }
+      ],
+      "blocking": ["WO-074"]
+    },
+    {
+      "workOrder": "WO-079",
+      "path": "docs/work-orders/WO-079-worktree-sync.md",
+      "prose": "WO-030 merged (per-order segments and checkpoints; satisfied at `v0.7.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-030",
+          "relation": "satisfied-by-release",
+          "release": "v0.7.0",
+          "reason": "per-order segments and checkpoints"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-080",
+      "path": "docs/work-orders/WO-080-workstream-document-and-index.md",
+      "prose": "WO-071 merged (member orders name registered repositories).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-071",
+          "relation": "hard",
+          "reason": "member orders name registered repositories"
+        }
+      ],
+      "blocking": ["WO-071"]
+    },
+    {
+      "workOrder": "WO-081",
+      "path": "docs/work-orders/WO-081-board-workstreams-section.md",
+      "prose": "WO-080 merged (the data it renders); WO-032 merged (the board; satisfied at `v0.14.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-080",
+          "relation": "hard",
+          "reason": "the data it renders"
+        },
+        {
+          "workOrderId": "WO-032",
+          "relation": "satisfied-by-release",
+          "release": "v0.14.0",
+          "reason": "the board it extends"
+        }
+      ],
+      "blocking": ["WO-080"]
+    },
+    {
+      "workOrder": "WO-082",
+      "path": "docs/work-orders/WO-082-synthetic-pilot-six-demonstrations.md",
+      "prose": "WO-080 merged (the workstream the fixture exercises); WO-072 merged (target worktrees from a launchpad); WO-075 merged (a fixture launchpad exported with its build).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-080",
+          "relation": "hard",
+          "reason": "the workstream the fixture exercises"
+        },
+        {
+          "workOrderId": "WO-072",
+          "relation": "hard",
+          "reason": "target worktrees from a launchpad"
+        },
+        {
+          "workOrderId": "WO-075",
+          "relation": "hard",
+          "reason": "a fixture launchpad exported with its build"
+        }
+      ],
+      "blocking": ["WO-080", "WO-072", "WO-075"]
+    },
+    {
+      "workOrder": "WO-083",
+      "path": "docs/work-orders/WO-083-real-run-launchpad-instance.md",
+      "prose": "WO-118 merged (the resident-owned loop is proven from a starter instance before the fork runs it against a real target); WO-082 merged (the synthetic pilot precedes the witnessed run); WO-073 merged (the profile convention the fork's profile follows).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-118",
+          "relation": "hard",
+          "reason": "the resident-owned loop is proven from a starter instance before the fork runs it against a real target"
+        },
+        {
+          "workOrderId": "WO-082",
+          "relation": "hard",
+          "reason": "the synthetic pilot precedes the witnessed run"
+        },
+        {
+          "workOrderId": "WO-073",
+          "relation": "hard",
+          "reason": "the profile convention the fork's profile follows"
+        }
+      ],
+      "blocking": ["WO-118", "WO-082", "WO-073"]
+    },
+    {
+      "workOrder": "WO-084",
+      "path": "docs/work-orders/WO-084-ledger-order-and-index.md",
+      "prose": "none open (a dated planning deferral until WO-053 closes or the operator waives it).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-053",
+          "relation": "planning-deferral",
+          "date": "2026-09-08",
+          "reason": "documentation structure is not the product bottleneck",
+          "until": "WO-053"
+        }
+      ],
+      "blocking": ["WO-053"]
+    },
+    {
+      "workOrder": "WO-085",
+      "path": "docs/work-orders/WO-085-spec-receipt-boundary.md",
+      "prose": "none open (a dated planning deferral until WO-053 closes or the operator waives it; reads document roots through WO-069 when it has landed).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-053",
+          "relation": "planning-deferral",
+          "date": "2026-09-08",
+          "reason": "documentation structure is not the product bottleneck",
+          "until": "WO-053"
+        },
+        {
+          "workOrderId": "WO-069",
+          "relation": "reference-only",
+          "reason": "reads document roots through the configuration root when it has landed"
+        }
+      ],
+      "blocking": ["WO-053"]
+    },
+    {
+      "workOrder": "WO-086",
+      "path": "docs/work-orders/WO-086-generated-release-history.md",
+      "prose": "none open (a dated planning deferral until WO-053 closes or the operator waives it).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-053",
+          "relation": "planning-deferral",
+          "date": "2026-09-08",
+          "reason": "documentation structure is not the product bottleneck",
+          "until": "WO-053"
+        }
+      ],
+      "blocking": ["WO-053"]
+    },
+    {
+      "workOrder": "WO-087",
+      "path": "docs/work-orders/WO-087-roadmap-split.md",
+      "prose": "none open (a dated planning deferral until WO-053 closes or the operator waives it).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-053",
+          "relation": "planning-deferral",
+          "date": "2026-09-08",
+          "reason": "documentation structure is not the product bottleneck",
+          "until": "WO-053"
+        }
+      ],
+      "blocking": ["WO-053"]
+    },
+    {
+      "workOrder": "WO-088",
+      "path": "docs/work-orders/WO-088-phrase-table-single-source.md",
+      "prose": "none open (a dated planning deferral until WO-053 closes or the operator waives it).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-053",
+          "relation": "planning-deferral",
+          "date": "2026-09-08",
+          "reason": "documentation structure is not the product bottleneck",
+          "until": "WO-053"
+        }
+      ],
+      "blocking": ["WO-053"]
+    },
+    {
+      "workOrder": "WO-089",
+      "path": "docs/work-orders/WO-089-capability-table-fold.md",
+      "prose": "none open (a dated planning deferral until WO-053 closes or the operator waives it).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-053",
+          "relation": "planning-deferral",
+          "date": "2026-09-08",
+          "reason": "documentation structure is not the product bottleneck",
+          "until": "WO-053"
+        }
+      ],
+      "blocking": ["WO-053"]
+    },
+    {
+      "workOrder": "WO-090",
+      "path": "docs/work-orders/WO-090-shorter-cold-start.md",
+      "prose": "WO-039 merged (the directed-load measurement method, criterion 6; closed). A dated planning deferral until WO-053 closes or the operator waives it.",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-053",
+          "relation": "planning-deferral",
+          "date": "2026-09-08",
+          "reason": "documentation structure is not the product bottleneck",
+          "until": "WO-053"
+        },
+        {
+          "workOrderId": "WO-039",
+          "relation": "satisfied-by-close",
+          "reason": "the directed-load measurement method"
+        }
+      ],
+      "blocking": ["WO-053"]
+    },
+    {
+      "workOrder": "WO-091",
+      "path": "docs/work-orders/WO-091-multi-active-link-groups.md",
+      "prose": "WO-008 merged (compiler v1; satisfied at `v0.4.0`); WO-016 merged (one reactor; satisfied at `v0.3.6`); WO-023 merged (the Entropy Reducer; satisfied at `v0.5.0`); WO-029 merged (artifact identity; satisfied at `v0.9.0`). A dated planning deferral until WO-053 closes or the operator waives it.",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-008",
+          "relation": "satisfied-by-release",
+          "release": "v0.4.0",
+          "reason": "compiler v1"
+        },
+        {
+          "workOrderId": "WO-016",
+          "relation": "satisfied-by-release",
+          "release": "v0.3.6",
+          "reason": "one reactor"
+        },
+        {
+          "workOrderId": "WO-023",
+          "relation": "satisfied-by-release",
+          "release": "v0.5.0",
+          "reason": "Shine and Standardize inside the Entropy Reducer"
+        },
+        {
+          "workOrderId": "WO-029",
+          "relation": "satisfied-by-release",
+          "release": "v0.9.0",
+          "reason": "artifact identity per component"
+        },
+        {
+          "workOrderId": "WO-053",
+          "relation": "planning-deferral",
+          "date": "2026-09-08",
+          "reason": "Horizon 2 does not advance the missing work loop",
+          "until": "WO-053"
+        }
+      ],
+      "blocking": ["WO-053"]
+    },
+    {
+      "workOrder": "WO-092",
+      "path": "docs/work-orders/WO-092-sets-graph-extension.md",
+      "prose": "WO-091 merged (a set's members are several actives in one group).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-091",
+          "relation": "hard",
+          "reason": "a set's members are several actives in one group"
+        }
+      ],
+      "blocking": ["WO-091"]
+    },
+    {
+      "workOrder": "WO-093",
+      "path": "docs/work-orders/WO-093-five-s-mechanics-as-data.md",
+      "prose": "WO-091 merged (the six mechanics compile in one group).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-091",
+          "relation": "hard",
+          "reason": "the six mechanics compile in one group"
+        }
+      ],
+      "blocking": ["WO-091"]
+    },
+    {
+      "workOrder": "WO-094",
+      "path": "docs/work-orders/WO-094-set-bonuses-lowered.md",
+      "prose": "WO-092 merged (bonus emissions live in the sets collection); WO-093 merged (the pieces the bonuses count).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-092",
+          "relation": "hard",
+          "reason": "bonus emissions live in the sets collection"
+        },
+        {
+          "workOrderId": "WO-093",
+          "relation": "hard",
+          "reason": "the pieces the bonuses count"
+        }
+      ],
+      "blocking": ["WO-092", "WO-093"]
+    },
+    {
+      "workOrder": "WO-095",
+      "path": "docs/work-orders/WO-095-full-set-scenario-and-render.md",
+      "prose": "WO-094 merged (the bonuses the scenario exercises); WO-032 merged (the board renders through the compiler render; satisfied at `v0.14.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-042"],
+      "entries": [
+        {
+          "workOrderId": "WO-094",
+          "relation": "hard",
+          "reason": "the bonuses the scenario exercises"
+        },
+        {
+          "workOrderId": "WO-032",
+          "relation": "satisfied-by-release",
+          "release": "v0.14.0",
+          "reason": "the board renders the set through the compiler render"
+        },
+        {
+          "workOrderId": "WO-042",
+          "relation": "reference-only",
+          "reason": "the Safety piece's deny at safety-invariants remains legal"
+        }
+      ],
+      "blocking": ["WO-094"]
+    },
+    {
+      "workOrder": "WO-096",
+      "path": "docs/work-orders/WO-096-migration-ledger.md",
+      "prose": "WO-011 merged (the ten units; satisfied at `v0.13.0`); WO-039 merged (the local-terms check; closed). A dated planning deferral until WO-053 closes or the operator waives it.",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-011",
+          "relation": "satisfied-by-release",
+          "release": "v0.13.0",
+          "reason": "the feedback contract and the ten units"
+        },
+        {
+          "workOrderId": "WO-039",
+          "relation": "satisfied-by-close",
+          "reason": "the harness target the batch lowers through"
+        },
+        {
+          "workOrderId": "WO-053",
+          "relation": "planning-deferral",
+          "date": "2026-09-08",
+          "reason": "a real external episode is a better classification input than another corpus pass",
+          "until": "WO-053"
+        }
+      ],
+      "blocking": ["WO-053"]
+    },
+    {
+      "workOrder": "WO-097",
+      "path": "docs/work-orders/WO-097-rule-migration-batch-1a.md",
+      "prose": "WO-096 merged (the ledger rows the batch selects from).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-096",
+          "relation": "hard",
+          "reason": "the ledger rows the batch selects from"
+        }
+      ],
+      "blocking": ["WO-096"]
+    },
+    {
+      "workOrder": "WO-098",
+      "path": "docs/work-orders/WO-098-rule-migration-batch-1b.md",
+      "prose": "WO-097 merged (the first half's retirements and bookkeeping).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-097",
+          "relation": "hard",
+          "reason": "the first half-batch's retirements and bookkeeping"
+        }
+      ],
+      "blocking": ["WO-097"]
+    },
+    {
+      "workOrder": "WO-099",
+      "path": "docs/work-orders/WO-099-mission-check.md",
+      "prose": "WO-068 merged (the resident that dispatches the episode on a cadence); WO-041 merged (the judge shape over the theses; closed); WO-010 merged (the verifier episode contract; satisfied at `v0.12.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-068",
+          "relation": "hard",
+          "reason": "the resident that dispatches the episode on a cadence"
+        },
+        {
+          "workOrderId": "WO-041",
+          "relation": "satisfied-by-close",
+          "reason": "the judge shape over the vision theses"
+        },
+        {
+          "workOrderId": "WO-010",
+          "relation": "satisfied-by-release",
+          "release": "v0.12.0",
+          "reason": "the verifier episode contract"
+        }
+      ],
+      "blocking": ["WO-068"]
+    },
+    {
+      "workOrder": "WO-100",
+      "path": "docs/work-orders/WO-100-preauthorized-portfolio.md",
+      "prose": "WO-068 merged (the resident that derives and dispatches); WO-052 merged (the source-change host that executes a derived order); WO-054 merged (every derived order is verified before the curve advances); WO-042 merged (the derived order's authority is the portfolio's, as a narrowing with `host-policy` provenance, never wider); WO-119 merged (the executable discovery producer whose candidates are the input; the Entropy Reducer's manual review is not a producer); WO-120 merged (a derived order is a durable record with the same identity and lifecycle).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-068",
+          "relation": "hard",
+          "reason": "the resident that derives and dispatches"
+        },
+        {
+          "workOrderId": "WO-052",
+          "relation": "hard",
+          "reason": "a derived order executes through the source-change host"
+        },
+        {
+          "workOrderId": "WO-054",
+          "relation": "hard",
+          "reason": "every derived order is verified before the curve advances"
+        },
+        {
+          "workOrderId": "WO-042",
+          "relation": "hard",
+          "reason": "the derived order's authority is the portfolio's under the floor"
+        },
+        {
+          "workOrderId": "WO-119",
+          "relation": "hard",
+          "reason": "the executable discovery producer whose candidates are the input"
+        },
+        {
+          "workOrderId": "WO-120",
+          "relation": "hard",
+          "reason": "a derived order is a durable record with the same identity and lifecycle"
+        }
+      ],
+      "blocking": ["WO-068", "WO-052", "WO-054", "WO-119", "WO-120"]
+    },
+    {
+      "workOrder": "WO-102",
+      "path": "docs/work-orders/WO-102-cadence-corpus.md",
+      "prose": "WO-004 merged — branch from `origin/main` at or after the v0.2.1 close. Independent of WO-101 (disjoint fixture and harness filenames) and of the mainline; the two kernel-corpus orders can grind in either order.",
+      "comparison": "graph has a draft node but no outgoing edges; typed closure and independent-reference entries transcribe Depends on",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-004",
+          "relation": "satisfied-by-close",
+          "reason": "The reviewed environment baseline is required before the corpus run."
+        },
+        {
+          "workOrderId": "WO-101",
+          "relation": "reference-only",
+          "reason": "The corpus orders are independent, with disjoint fixture and harness filenames."
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-103",
+      "path": "docs/work-orders/WO-103-authority-outbox-corpus.md",
+      "prose": "WO-017 merged — branch from `origin/main` at or after its reviewed close. WO-004 is satisfied transitively. Independent of the other adjacent orders.",
+      "comparison": "graph has a draft node but no outgoing edges; typed closure and independent-reference entries transcribe Depends on",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-017",
+          "relation": "satisfied-by-close",
+          "reason": "The reviewed kernel truthfulness boundary is the corpus baseline."
+        },
+        {
+          "workOrderId": "WO-004",
+          "relation": "satisfied-by-close",
+          "reason": "The environment prerequisite is satisfied transitively by WO-017."
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-105",
+      "path": "docs/work-orders/WO-105-crash-shape-corpus.md",
+      "prose": "WO-004 merged and WO-017 landed — branch from `origin/main` after the WO-017 close. Independent of the other adjacent orders.",
+      "comparison": "graph has a draft node but no outgoing edges; typed closure and independent-reference entries transcribe Depends on",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-004",
+          "relation": "satisfied-by-close",
+          "reason": "The reviewed environment baseline is required."
+        },
+        {
+          "workOrderId": "WO-017",
+          "relation": "satisfied-by-close",
+          "reason": "The reviewed kernel truthfulness boundary is required before crash-shape fixtures."
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-107",
+      "path": "docs/work-orders/WO-107-profiling-baseline.md",
+      "prose": "WO-004 merged — branch from `origin/main` at or after the v0.2.1 close; all measurements are pinned to that base commit. Independent of the mainline (WO-005's efficiency-measurement non-goal binds WO-005's scope, not this order).",
+      "comparison": "graph has a draft node but no outgoing edges; typed closure and independent-reference entries transcribe Depends on",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-004",
+          "relation": "satisfied-by-close",
+          "reason": "Measurements require the reviewed environment baseline."
+        },
+        {
+          "workOrderId": "WO-005",
+          "relation": "reference-only",
+          "reason": "The mainline efficiency non-goal does not constrain this independent measurement order."
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-110",
+      "path": "docs/work-orders/WO-110-local-model-transport.md",
+      "prose": "WO-027 merged (the probe whose endpoint shape this transport implements; closed); WO-009 merged (the transport port; satisfied at `v0.10.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": ["WO-068"],
+      "entries": [
+        {
+          "workOrderId": "WO-027",
+          "relation": "satisfied-by-close",
+          "reason": "the probe whose endpoint shape it implements"
+        },
+        {
+          "workOrderId": "WO-009",
+          "relation": "satisfied-by-release",
+          "release": "v0.10.0",
+          "reason": "the transport port"
+        },
+        {
+          "workOrderId": "WO-068",
+          "relation": "reference-only",
+          "reason": "the actor catalog it joins"
+        }
+      ],
+      "blocking": []
+    },
+    {
+      "workOrder": "WO-111",
+      "path": "docs/work-orders/WO-111-unattended-live-proof.md",
+      "prose": "WO-100 merged (the portfolio and derivation); WO-119 merged (discovery of the seeded imperfections); WO-099 merged (the mission check runs during the hour); WO-053 merged (the live source-change primitive); WO-054 merged (verification of each change).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-100",
+          "relation": "hard",
+          "reason": "the portfolio and derivation"
+        },
+        {
+          "workOrderId": "WO-119",
+          "relation": "hard",
+          "reason": "discovery of the seeded imperfections"
+        },
+        {
+          "workOrderId": "WO-099",
+          "relation": "hard",
+          "reason": "the mission check runs during the hour"
+        },
+        {
+          "workOrderId": "WO-053",
+          "relation": "hard",
+          "reason": "the live source-change primitive"
+        },
+        {
+          "workOrderId": "WO-054",
+          "relation": "hard",
+          "reason": "verification of each change"
+        }
+      ],
+      "blocking": ["WO-100", "WO-119", "WO-099", "WO-053", "WO-054"]
+    },
+    {
+      "workOrder": "WO-112",
+      "path": "docs/work-orders/WO-112-core-run-loop-proof.md",
+      "prose": "WO-123 merged (the composition this run executes); WO-053 merged (the live primitive); WO-056 merged (live verification and repair); WO-045, WO-046, WO-047 and WO-048 merged (the codecs are mandatory before the loop runs against anything the operator keeps).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-123",
+          "relation": "hard",
+          "reason": "the composition this run executes"
+        },
+        {
+          "workOrderId": "WO-053",
+          "relation": "hard",
+          "reason": "the live source-change primitive"
+        },
+        {
+          "workOrderId": "WO-056",
+          "relation": "hard",
+          "reason": "independent verification and repair, live"
+        },
+        {
+          "workOrderId": "WO-045",
+          "relation": "hard",
+          "reason": "the codecs are mandatory before the loop runs against anything the operator keeps"
+        },
+        {
+          "workOrderId": "WO-046",
+          "relation": "hard",
+          "reason": "a persisted continuation of an unsupported kind must fail at decode"
+        },
+        {
+          "workOrderId": "WO-047",
+          "relation": "hard",
+          "reason": "the second state shape replays through an explicit projector"
+        },
+        {
+          "workOrderId": "WO-048",
+          "relation": "hard",
+          "reason": "host recovery refuses malformed state before dispatch"
+        }
+      ],
+      "blocking": [
+        "WO-123",
+        "WO-053",
+        "WO-056",
+        "WO-045",
+        "WO-046",
+        "WO-047",
+        "WO-048"
+      ]
+    },
+    {
+      "workOrder": "WO-113",
+      "path": "docs/work-orders/WO-113-work-order-files-stable-contracts.md",
+      "prose": "WO-043 merged (supersession and deferral become typed entries, so no dated prose is needed for them); WO-026 merged (the index; satisfied at `v0.5.2`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-043",
+          "relation": "hard",
+          "reason": "supersession and deferral become typed entries"
+        },
+        {
+          "workOrderId": "WO-026",
+          "relation": "satisfied-by-release",
+          "release": "v0.5.2",
+          "reason": "the index"
+        }
+      ],
+      "blocking": ["WO-043"]
+    },
+    {
+      "workOrder": "WO-114",
+      "path": "docs/work-orders/WO-114-runtime-status-projection.md",
+      "prose": "WO-068 merged (the resident whose slice this projects); WO-120 merged (derived orders appear under the same identity as hand-written ones); WO-032 merged (`uifa-board-v1` and the console host; satisfied at `v0.14.0`).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-068",
+          "relation": "hard",
+          "reason": "the resident whose slice it projects"
+        },
+        {
+          "workOrderId": "WO-120",
+          "relation": "hard",
+          "reason": "derived orders appear under the same identity"
+        },
+        {
+          "workOrderId": "WO-032",
+          "relation": "satisfied-by-release",
+          "release": "v0.14.0",
+          "reason": "the board and console host"
+        }
+      ],
+      "blocking": ["WO-068", "WO-120"]
+    },
+    {
+      "workOrder": "WO-115",
+      "path": "docs/work-orders/WO-115-console-parity-contract.md",
+      "prose": "WO-068 merged (the resident that serves the surface); WO-114 merged (the status projection the surface reads); WO-120 merged (`intent` and derived-order activation exist as terminal commands); WO-100 merged (declaring a portfolio exists as a terminal command).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-068",
+          "relation": "hard",
+          "reason": "the resident serves the surface"
+        },
+        {
+          "workOrderId": "WO-114",
+          "relation": "hard",
+          "reason": "the status projection the surface reads"
+        },
+        {
+          "workOrderId": "WO-120",
+          "relation": "hard",
+          "reason": "intent and derived-order activation exist as terminal commands"
+        },
+        {
+          "workOrderId": "WO-100",
+          "relation": "hard",
+          "reason": "declaring a portfolio exists as a terminal command"
+        }
+      ],
+      "blocking": ["WO-068", "WO-114", "WO-120", "WO-100"]
+    },
+    {
+      "workOrder": "WO-116",
+      "path": "docs/work-orders/WO-116-audit-projection-served.md",
+      "prose": "WO-115 merged (the surface); WO-007 merged (the audit fold; closed).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-115",
+          "relation": "hard",
+          "reason": "the surface"
+        },
+        {
+          "workOrderId": "WO-007",
+          "relation": "satisfied-by-close",
+          "reason": "the audit fold"
+        }
+      ],
+      "blocking": ["WO-115"]
+    },
+    {
+      "workOrder": "WO-117",
+      "path": "docs/work-orders/WO-117-console-live-host.md",
+      "prose": "WO-114 merged (the status projection); WO-115 merged (the commands); WO-116 merged (the audit view); WO-099 merged (a live resident with something to show).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-114",
+          "relation": "hard",
+          "reason": "the status projection"
+        },
+        {
+          "workOrderId": "WO-115",
+          "relation": "hard",
+          "reason": "the commands"
+        },
+        {
+          "workOrderId": "WO-116",
+          "relation": "hard",
+          "reason": "the audit view"
+        },
+        {
+          "workOrderId": "WO-099",
+          "relation": "hard",
+          "reason": "a live resident with something to show"
+        }
+      ],
+      "blocking": ["WO-114", "WO-115", "WO-116", "WO-099"]
+    },
+    {
+      "workOrder": "WO-118",
+      "path": "docs/work-orders/WO-118-resident-owned-loop-from-starter.md",
+      "prose": "WO-075 and WO-076 merged (a starter instance with the build and its overlay); WO-121 and WO-122 merged (presence with origin; the `cli-worker` and `human-handoff` actors); WO-100 merged (derivation inside a portfolio); WO-120 merged (derived work as durable records); WO-124 merged (surfaces derived from the contract); WO-112 merged (the loop proven from core first); WO-111 merged (the unattended hour); WO-066 merged (the pull-request loop with dispositions); WO-114 and WO-117 merged (the run is visible through the interfaces); WO-123 merged (the resident admits a filed intent under standing authorization and owns the vertical continuation).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-075",
+          "relation": "hard",
+          "reason": "a starter instance with the build"
+        },
+        {
+          "workOrderId": "WO-076",
+          "relation": "hard",
+          "reason": "the instance's overlay"
+        },
+        {
+          "workOrderId": "WO-121",
+          "relation": "hard",
+          "reason": "presence with origin"
+        },
+        {
+          "workOrderId": "WO-122",
+          "relation": "hard",
+          "reason": "the cli-worker and human-handoff actors"
+        },
+        {
+          "workOrderId": "WO-100",
+          "relation": "hard",
+          "reason": "derivation inside a portfolio"
+        },
+        {
+          "workOrderId": "WO-120",
+          "relation": "hard",
+          "reason": "derived work as durable records"
+        },
+        {
+          "workOrderId": "WO-124",
+          "relation": "hard",
+          "reason": "surfaces derived from the contract"
+        },
+        {
+          "workOrderId": "WO-112",
+          "relation": "hard",
+          "reason": "the loop proven from core first"
+        },
+        {
+          "workOrderId": "WO-111",
+          "relation": "hard",
+          "reason": "the unattended hour"
+        },
+        {
+          "workOrderId": "WO-066",
+          "relation": "hard",
+          "reason": "the pull-request loop with dispositions"
+        },
+        {
+          "workOrderId": "WO-114",
+          "relation": "hard",
+          "reason": "the run is visible in the status projection"
+        },
+        {
+          "workOrderId": "WO-117",
+          "relation": "hard",
+          "reason": "the run is visible in the live console"
+        },
+        {
+          "workOrderId": "WO-123",
+          "relation": "hard",
+          "reason": "the resident admits a filed intent under standing authorization and owns the vertical continuation"
+        }
+      ],
+      "blocking": [
+        "WO-075",
+        "WO-076",
+        "WO-121",
+        "WO-122",
+        "WO-100",
+        "WO-120",
+        "WO-124",
+        "WO-112",
+        "WO-111",
+        "WO-066",
+        "WO-114",
+        "WO-117",
+        "WO-123"
+      ]
+    },
+    {
+      "workOrder": "WO-119",
+      "path": "docs/work-orders/WO-119-executable-discovery-producer.md",
+      "prose": "WO-068 merged (the producer runs as an actor episode the resident dispatches); WO-023 merged (the Entropy Reducer's Sort rule and candidate shape it reuses; satisfied at `v0.5.0`); WO-046 merged (the executable grammar as a type; the producer's program is checked against it).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-068",
+          "relation": "hard",
+          "reason": "the producer runs as an actor episode the resident dispatches"
+        },
+        {
+          "workOrderId": "WO-023",
+          "relation": "satisfied-by-release",
+          "release": "v0.5.0",
+          "reason": "the Sort rule and candidate shape it reuses"
+        },
+        {
+          "workOrderId": "WO-046",
+          "relation": "hard",
+          "reason": "its program is checked against the executable grammar type"
+        }
+      ],
+      "blocking": ["WO-068", "WO-046"]
+    },
+    {
+      "workOrder": "WO-120",
+      "path": "docs/work-orders/WO-120-derived-work-identity.md",
+      "prose": "WO-043 merged (generated authority files carry typed dependency blocks); WO-069 merged (the derived root and identity range are configuration).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-043",
+          "relation": "hard",
+          "reason": "generated authority files carry typed dependency blocks"
+        },
+        {
+          "workOrderId": "WO-069",
+          "relation": "hard",
+          "reason": "the derived root and identity range are configuration"
+        }
+      ],
+      "blocking": ["WO-043", "WO-069"]
+    },
+    {
+      "workOrder": "WO-121",
+      "path": "docs/work-orders/WO-121-presence-signals-with-origin.md",
+      "prose": "WO-068 merged (the resident whose presence fold this defines); WO-067 merged (the policy's discretionary-phase scope for cancellation); WO-044 merged (the rows that say which hook events a scripted prompt fires in each launch mode).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-068",
+          "relation": "hard",
+          "reason": "the resident whose presence fold this defines"
+        },
+        {
+          "workOrderId": "WO-067",
+          "relation": "hard",
+          "reason": "the discretionary-phase scope for cancellation"
+        },
+        {
+          "workOrderId": "WO-044",
+          "relation": "hard",
+          "reason": "the rows that say which hook events a scripted prompt fires in each launch mode"
+        }
+      ],
+      "blocking": ["WO-068", "WO-067", "WO-044"]
+    },
+    {
+      "workOrder": "WO-122",
+      "path": "docs/work-orders/WO-122-actor-catalog-cli-and-human.md",
+      "prose": "WO-068 merged (the catalog); WO-051 merged (the writer request and profile the `cli-worker` kind dispatches); WO-044 merged (the detached-launch rows the launch path is designed from).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-068",
+          "relation": "hard",
+          "reason": "the catalog"
+        },
+        {
+          "workOrderId": "WO-051",
+          "relation": "hard",
+          "reason": "the writer request and profile the cli-worker kind dispatches"
+        },
+        {
+          "workOrderId": "WO-044",
+          "relation": "hard",
+          "reason": "the detached-launch rows the launch path is designed from"
+        }
+      ],
+      "blocking": ["WO-068", "WO-051", "WO-044"]
+    },
+    {
+      "workOrder": "WO-123",
+      "path": "docs/work-orders/WO-123-vertical-composition.md",
+      "prose": "WO-052 merged (the source-change host); WO-054 and WO-055 merged (verification and repair); WO-059 merged (browser witnesses); WO-061 and WO-062 merged (the contract from an issue); WO-124 merged (surfaces from the contract); WO-064, WO-065 and WO-066 merged (delivery and the pull-request loop); WO-068 merged (the resident that admits the intent and dispatches the first step); WO-120 merged (the filed intent and the derived order's durable identity); WO-100 merged (the portfolio contract the `intent` class extends); WO-042 merged (admitted grants and the effective envelope the run is bound to).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-052",
+          "relation": "hard",
+          "reason": "the source-change host"
+        },
+        {
+          "workOrderId": "WO-054",
+          "relation": "hard",
+          "reason": "verification over the worktree"
+        },
+        {
+          "workOrderId": "WO-055",
+          "relation": "hard",
+          "reason": "the repair continuation"
+        },
+        {
+          "workOrderId": "WO-059",
+          "relation": "hard",
+          "reason": "browser witnesses"
+        },
+        {
+          "workOrderId": "WO-061",
+          "relation": "hard",
+          "reason": "the contract from an issue"
+        },
+        {
+          "workOrderId": "WO-062",
+          "relation": "hard",
+          "reason": "the issue adapter"
+        },
+        {
+          "workOrderId": "WO-124",
+          "relation": "hard",
+          "reason": "surfaces from the contract"
+        },
+        {
+          "workOrderId": "WO-064",
+          "relation": "hard",
+          "reason": "publish"
+        },
+        {
+          "workOrderId": "WO-065",
+          "relation": "hard",
+          "reason": "observation"
+        },
+        {
+          "workOrderId": "WO-066",
+          "relation": "hard",
+          "reason": "resolution"
+        },
+        {
+          "workOrderId": "WO-068",
+          "relation": "hard",
+          "reason": "the resident that admits the intent and dispatches the first step"
+        },
+        {
+          "workOrderId": "WO-120",
+          "relation": "hard",
+          "reason": "the filed intent and the derived order's durable identity"
+        },
+        {
+          "workOrderId": "WO-100",
+          "relation": "hard",
+          "reason": "the portfolio contract the intent class extends"
+        },
+        {
+          "workOrderId": "WO-042",
+          "relation": "hard",
+          "reason": "admitted grants and the effective envelope the run is bound to"
+        }
+      ],
+      "blocking": [
+        "WO-052",
+        "WO-054",
+        "WO-055",
+        "WO-059",
+        "WO-061",
+        "WO-062",
+        "WO-124",
+        "WO-064",
+        "WO-065",
+        "WO-066",
+        "WO-068",
+        "WO-120",
+        "WO-100"
+      ]
+    },
+    {
+      "workOrder": "WO-124",
+      "path": "docs/work-orders/WO-124-impact-surfaces-derivation.md",
+      "prose": "WO-061 merged (the contract it reads); WO-054 merged (the worktree snapshot shape it reads).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-061",
+          "relation": "hard",
+          "reason": "the contract it reads"
+        },
+        {
+          "workOrderId": "WO-054",
+          "relation": "hard",
+          "reason": "the worktree snapshot shape it reads"
+        }
+      ],
+      "blocking": ["WO-061", "WO-054"]
+    },
+    {
+      "workOrder": "WO-125",
+      "path": "docs/work-orders/WO-125-codex-effort-selection.md",
+      "prose": "WO-009 merged (the Codex transport; satisfied at `v0.10.0`); WO-019 merged (the effort declaration and launch-claim contract; closed).",
+      "comparison": "matches graph entries, including reasons and relation-specific fields",
+      "proseOnlyHistoricalIds": [],
+      "graphOnlyContextIds": [],
+      "entries": [
+        {
+          "workOrderId": "WO-009",
+          "relation": "satisfied-by-release",
+          "release": "v0.10.0",
+          "reason": "the Codex transport"
+        },
+        {
+          "workOrderId": "WO-019",
+          "relation": "satisfied-by-close",
+          "reason": "the effort declaration and launch-claim contract"
+        }
+      ],
+      "blocking": []
+    }
+  ]
+}

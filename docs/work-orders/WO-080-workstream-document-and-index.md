@@ -17,6 +17,16 @@ priority. Clean-room screen: no stop condition.
 it edits `scripts/work-orders.mjs` and adds `docs/workstreams/`. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-071",
+    "relation": "hard",
+    "reason": "member orders name registered repositories"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 12-workstream-application.md §One
 workstream across repositories; 02-domain-model.md §Memory and observation
 (Workstream); `docs/work-orders/WO-034-cross-repository-workstream-pilot.md`

@@ -1,34 +1,5 @@
 import type { SupportFacet } from "@dotln/compiler";
-
-const promptSupport = (
-  supportFacetId: string,
-  name: string,
-  text: string,
-): SupportFacet => ({
-  supportFacetId,
-  version: 1,
-  name,
-  supportedTags: ["mutate"],
-  requiredCapabilities: [],
-  semanticsAdded: [text],
-  semanticsModified: [],
-  authorityChanges: [],
-  evidenceRequirements: [],
-  resourceMultiplier: 1,
-  conflictsWith: [],
-  preservesDeterminism: true,
-  commutativity: "commutative",
-  emissions: [{ kind: "prompt-fragment", emissionId: supportFacetId, text }],
-  claims: [],
-  cost: {
-    mechanismType: "prompt-fragment",
-    // A declared UTF-8 text/4 estimate, not an observed tokenizer count.
-    promptTokens: Math.ceil(new TextEncoder().encode(text).length / 4),
-    runtimeCost: { quantity: 0, unit: "additional-host-check" },
-    extraEpisodes: 0,
-  },
-  inspection: { passive: [name] },
-});
+import { promptSupport } from "./prompt-support.js";
 
 export const adjacentRepair: SupportFacet = {
   ...promptSupport(
@@ -88,7 +59,7 @@ export const recommendation = communication(
 export const intentToAct = communication(
   "communication-intent",
   "Intent to Act",
-  "Intent to Act: Tell the operator in chat 'I intend to' followed by the concrete next queued action, its scope and intended order before starting it. Record that actual announcement against the item's current revision. Proceed within existing authority after the current work and a reasonable steering opportunity unless the operator vetoes or redirects; do not turn the announcement into a routine permission request.",
+  "Intent to Act: On entry, tell the operator in chat 'I intend to' followed by the concrete initial action and scope. Before each next queued action, announce its scope and order and record the actual announcement against the item's current revision. Proceed within existing authority after current work and a reasonable steering opportunity unless the operator vetoes or redirects; this is not a routine permission request.",
 );
 
 export const executorSupports: readonly SupportFacet[] = [

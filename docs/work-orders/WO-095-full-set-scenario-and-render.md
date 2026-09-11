@@ -19,6 +19,27 @@ merged (the board renders through the compiler render; satisfied at
 `render.ts`. It must not edit `packages/console`. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-094",
+    "relation": "hard",
+    "reason": "the bonuses the scenario exercises"
+  },
+  {
+    "workOrderId": "WO-032",
+    "relation": "satisfied-by-release",
+    "release": "v0.14.0",
+    "reason": "the board renders the set through the compiler render"
+  },
+  {
+    "workOrderId": "WO-042",
+    "relation": "reference-only",
+    "reason": "the Safety piece's deny at safety-invariants remains legal"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `packages/skeleton/test/scenario.test.ts`
 (the frozen 13-step oracle); 04-interfaces.md §RPG view (tooltip anatomy);
 `docs/work-orders/WO-037-five-s-equipment-set.md`.

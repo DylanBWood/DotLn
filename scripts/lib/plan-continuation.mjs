@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { committedReader, sha256 } from "./plan-subject.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { LEGACY_COST_HEADER } from "./legacy-cost.mjs";
+import { dependencyMigration } from "./plan-dependency-migration.mjs";
 
 const capabilityPath = "docs/planning/capability-table.md";
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -155,6 +156,7 @@ export function checkPlanContinuation(
         },
       ]
     : [];
+  const migrateDependencies = dependencyMigration(judged, original, read);
   for (const { path, workOrderId } of judged.orders) {
     const before = original.read(path);
     let after = read(path);
@@ -185,7 +187,20 @@ export function checkPlanContinuation(
         kind: "release-assignment",
         version: assigned.version,
       });
-    if (executionAppendix(before, assigned.source))
+    const migrated = migrateDependencies(
+      before,
+      assigned.source,
+      path,
+      workOrderId,
+    );
+    if (migrated.migrated)
+      updates.push({
+        path,
+        workOrderId,
+        kind: "typed-dependency-migration",
+        source: "WO-043 criterion 5",
+      });
+    if (executionAppendix(before, migrated.source))
       updates.push({ path, workOrderId, kind: "execution-record" });
   }
   const capabilityInputs = (subject) =>

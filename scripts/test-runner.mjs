@@ -114,7 +114,7 @@ export const suites = [
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
   nodeTests("authority-grants", "scripts/test-authority-grants.mjs"),
   node("authority-evidence", "scripts/authority-evidence.mjs", {
-    args: ["--check", "--edition", "WO-127", "--revision", "002"],
+    args: ["--check"],
     needsBuild: true,
     preflight: true,
   }),
@@ -153,7 +153,7 @@ export const suites = [
     preflight: true,
   }),
   node("feedback-evidence", "scripts/feedback-evidence.mjs", {
-    args: ["--check", "--edition", "WO-126", "--revision", "002"],
+    args: ["--check"],
     needsBuild: true,
     preflight: true,
   }),

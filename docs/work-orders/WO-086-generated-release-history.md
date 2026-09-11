@@ -17,6 +17,18 @@ the operator waives it).
 dated planning receipt file. It must not edit `work-orders.mjs`. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-053",
+    "relation": "planning-deferral",
+    "date": "2026-09-08",
+    "reason": "documentation structure is not the product bottleneck",
+    "until": "WO-053"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 06-roadmap.md §Release boundary and the
 two retiming sections; 10-ir-compatibility.md §Separate version axes;
 `scripts/release.mjs` (`list`; the README block check).
