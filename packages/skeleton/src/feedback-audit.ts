@@ -13,6 +13,7 @@ export const FEEDBACK_SOURCE_PATHS = [
   "package-lock.json",
   "packages/skeleton/package.json",
   "packages/compiler/src/feedback.ts",
+  "packages/compiler/src/attribution.mjs",
   "packages/compiler/src/artifact-identity.ts",
   "packages/compiler/src/verification.ts",
   "packages/skeleton/src/loadouts/feedback.ts",
@@ -24,8 +25,10 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/verification-protocol.ts",
   "packages/skeleton/src/verification-host.ts",
   "packages/skeleton/src/worker-transport.ts",
+  "packages/skeleton/src/usage-observation.mjs",
   "packages/skeleton/src/worker-store.ts",
   "packages/skeleton/test/feedback-fixtures.test.ts",
+  "packages/skeleton/test/feedback-v2.test.ts",
   "packages/skeleton/test/feedback-audit-source.test.ts",
   "scripts/feedback-commit-msg.mjs",
 ] as const;
@@ -110,7 +113,13 @@ export function feedbackContextAccounting(
   });
   const prose =
     program.units.map((unit) => unit.proseEquivalent).join("\n") + "\n";
-  const residue = `Feedback policy ${program.policyHash} is enforced by the host; refusals identify unmet conditions.\n`;
+  const residue =
+    `Feedback policy ${program.policyHash}: executable units use host predicates; prose remains role guidance and Stop advises.\n` +
+    program.units
+      .filter((unit) => unit.mechanism.kind === "prose")
+      .map((unit) => unit.proseEquivalent)
+      .join("\n") +
+    "\n";
   const commonBaseline = {
     files: baseline.files.length,
     lines: baseline.files.reduce((sum, file) => sum + file.lines, 0),
@@ -140,13 +149,23 @@ export function runFeedbackRegressions(
   const source = readFeedbackSource(root);
   const fixture = "packages/skeleton/dist/test/feedback-fixtures.test.js";
   const run = (unitId: string, removed: boolean) => {
-    const name = `WO-011 regression ${unitId}`;
+    const unit = program.units.find((row) => row.unitId === unitId)!;
+    const name =
+      unit.version === 1
+        ? `WO-011 regression ${unitId}`
+        : `WO-126 ${unitId} version 2`;
     const env = { ...process.env };
     delete env.DOTLN_FEEDBACK_ABLATE;
     // An independent test subprocess must not inherit its parent's test-runner IPC mode.
     delete env.NODE_TEST_CONTEXT;
     if (removed) env.DOTLN_FEEDBACK_ABLATE = unitId;
-    const args = ["--test", `--test-name-pattern=^${name}$`, fixture];
+    const args = [
+      "--test",
+      `--test-name-pattern=^${name}$`,
+      unit.version === 1
+        ? fixture
+        : "packages/skeleton/dist/test/feedback-v2.test.js",
+    ];
     const result = spawnSync(process.execPath, args, {
       cwd: root,
       env,
@@ -207,7 +226,9 @@ export function runFeedbackRegressions(
     episodeId: `regression_${fixture.unitId}`,
     source: "fixture",
     activated: true,
-    prevented: true,
+    prevented:
+      program.units.find((unit) => unit.unitId === fixture.unitId)
+        ?.enforcement === "hard",
     falseActivation: false,
     overridden: false,
   }));
@@ -218,7 +239,7 @@ export function runFeedbackRegressions(
     fixtures,
     context,
     maturityMethod:
-      "One isolated causal regression episode per unit, established by its present/removal pair. Counters describe those selected prevention episodes only; internal assertions and separate false-positive probes are not a population estimate.",
+      "One isolated present/removal fixture per unit. Hard units count prevention; prose delivery and advisory violations do not claim behavioral prevention. Fixtures are not a population estimate.",
     maturity: feedbackMaturity(program, observations),
   };
 }

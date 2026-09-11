@@ -272,7 +272,17 @@ unit, and every merged PR refuse it. No commit message, PR title, PR body or
 release note carries an AI coauthor trailer, a generated-with footer, a
 session trailer or a session URL; the publish helper refuses one
 ([WO-126](../work-orders/WO-126-process-debt.md) criterion 1). Human
-coauthors and ordinary subject text are unaffected.
+coauthors and ordinary subject text are unaffected. The generated Claude
+settings contain the declared attribution block; `harness check` detects its
+absence. The same matcher screens committed PR title and body before the first
+push. `release prepare` supplies the current meter table in the reviewed PR
+body; it reports unknown observations and previous-order deltas without
+inventing limits.
+The pre-tool attribution check extracts messages from actual parsed commit
+invocations, including supported wrappers. A search or quoted example naming
+`git commit` is data; an actual commit without available literal message bytes
+gets a named classification refusal. The Git commit hook still checks the final
+message bytes independently.
 
 Select the gitmoji with the same care as the wording. Consult the
 [full catalog](https://gitmoji.dev/) and choose a relevant, expressive match for

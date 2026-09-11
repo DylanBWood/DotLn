@@ -291,6 +291,50 @@ the required contract without pretending to measure hidden human judgment.
   exemplars, compiled feedback) — and must escalate out-of-distribution work
   instead of guessing.
 
+### Candidate — all eight system traps as a design lens
+
+The operator's 2026-09-09 ideation supplies the complete eight-trap framework
+alongside the discussion of output-review overhead. Preserve the relationships
+that generate each trap, the possible escape, and evidence that the escape
+helps the whole system. This lens applies to compositions, resource allocation,
+simulation and the development process itself. WO-126 currently meters five
+named process signals; the full framework is broader than those implemented
+rows, and a signal is not a causal diagnosis.
+
+| Trap                                  | Candidate application to DotLn                                                                                                 | Escape to evaluate                                                                                                 |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Policy resistance / fixes that fail   | Roles optimize incompatible local goals and repeatedly undo each other's progress.                                             | Expose those goals and negotiate a shared outcome before adding stronger control.                                  |
+| Tragedy of the commons                | Each agent or guard takes a small benefit from shared CPU, context or attention while total use exhausts the resource.         | Make aggregate consumption and capacity visible; compare shared limits, allocation and ownership.                  |
+| Drift to low performance              | A slow or bulky recent instance becomes the next instance's acceptable baseline.                                               | Keep explicit outcome standards and the best comparable historical performance, with changed conditions disclosed. |
+| Escalation                            | Stronger constraints invite stronger workarounds, followed by still more constraints and cost.                                 | Interrupt the reinforcing response, simplify the interaction and test whether the conflict actually falls.         |
+| Success to the successful             | A previously selected model, pattern or method receives more opportunities and evidence simply because it was selected before. | Reserve fair comparison opportunities and reassess allocation under comparable conditions.                         |
+| Shifting the burden to the intervenor | Repeated operator rescue or manual patches keep work moving while the system loses the ability to recover itself.              | Build the underlying repair and recovery capacity; measure whether recurring intervention declines.                |
+| Rule beating                          | A delivery receipt or formal pass is satisfied while the review or outcome it was meant to support is absent.                  | Make the required behavior and its evidence serve the purpose, and return local failure evidence to rule design.   |
+| Seeking the wrong goal                | More receipts, bytes read or green checks become the objective while useful work and operator flow worsen.                     | Evaluate real outcomes, defect detection and retained decision value alongside time and resource cost.             |
+
+These are hypotheses and candidate escapes, not eight new mandatory checks or
+proof that every example is occurring. The operator's supplied summaries and
+links are retained in the [ideation receipt's source](../evidence/WO-126/ideation-alternatives.md).
+Meadows' primary essays
+[Dancing With Systems](https://donellameadows.org/archives/dancing-with-systems/)
+and [Leverage Points](https://donellameadows.org/archives/leverage-points-places-to-intervene-in-a-system/)
+provide the broader grounding in feedback, shared consequences, rules and goals.
+The applications above are this project's synthesis rather than quotations
+from those sources.
+
+The read-output discussion supplies a concrete experiment candidate: compare
+whole-file delivery with a design that reviews changed regions plus necessary
+context, while testing stale edits and deliberately planted review defects.
+Another is evidence reuse after documentation changes: compare total work and
+missed-invalidations before choosing a narrower subject boundary. Current
+completion guards continue to require their existing evidence; neither proposal
+is an exemption. Retain data that informs a later decision and measure its value;
+cost alone does not justify deleting it. The candidate Tinkerer / Scientist and
+historical-comparison supports can supply bounded experiments. Activation,
+diagnostic evidence, new signals and implementation remain open. Reopen with a
+representative observed loop, its actual outcome and a comparison of a proposed
+escape against the existing behavior.
+
 ## Party topology — commedia dell'arte (the masks)
 
 The commedia roles are internally called **masks** (relationship-shaped, worn
@@ -924,6 +968,25 @@ announcements, check-in freshness and completion evidence; chat and inbox
 observations are explicitly actor-attested. It is not the lifecycle log, a new
 activation, or a hard guarantee that a model will notice every message.
 
+The [WO-126 execution observation](../evidence/WO-126/decisions.md#wo-126-d003)
+found these supports equipped while the queue remained unused until operator
+intervention. The first response misread that process failure as a
+communication lapse. Emitted prompt fragments and successful queue-API fixtures
+do not establish that a session detects the right work or acts on the support.
+The operator requires durable behavior across sessions and compaction, and
+warns that aggregating fragments can recreate the original rule/context burden.
+
+This leaves a planning gap: test actual entry, diagnosed adjacent work, deliberate
+chat steering and resumed behavior from a fresh session without operator
+coaching. WO-096 classifies governance; WO-097 replaces rules with executable
+checks/hooks and removes their sentences; WO-098 requires lower context for
+every role and detects restatement. Those orders do not yet guarantee this
+behavior. The next pass should map the gap to mechanical host facts or a bounded
+judgment, require an ablation and fresh-session demonstration, and compare
+context cost and operator interventions. The separate chat-intent issue may be
+scheduled later under the operator's explicit direction. WO-126 claims no fix
+from adding another instruction or status line.
+
 ### Orchestration and quality policies
 
 Ordinary harness options are equipment choices as well. The operator's
@@ -957,6 +1020,284 @@ claims. This order does not equip fan-out, change account/tool settings, or lowe
 the active work's model/effort. Their host bindings belong with the typed modifier
 and capability-admission surface; hard refusal and fallback evidence must precede
 a claim that a runtime enforces them.
+
+## Candidate — Tinkerer / Scientist
+
+Operator ideation during WO-126 proposes a support that biases a linked mechanic
+toward a small experiment on a relevant question, input, proposed answer or
+response. The names Tinkerer and Scientist remain alternatives. The motivating
+Node/Python build comparison found a useful option after a dependency objection;
+the desired behavior is to elicit such evidence without waiting for that
+objection every time. This extends product 07's
+[recurring-alternatives candidate](07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives).
+
+An A/B comparison is one experiment shape, alongside a targeted probe or a
+small prototype. State the question, credible alternatives, observation and
+bounded cost before running it; report what the result changes and what it
+does not establish. Retaining the current answer, or declining an experiment
+whose information value does not justify its cost, must remain valid outcomes.
+Experimental preference supplies no new effect authority or guarantee waiver.
+
+A separate **support modifier**, using the existing working term, may tune its
+activation rate. The support expresses the preference to experiment; the
+modifier changes how often eligible opportunities activate it. Default-on,
+event-triggered, periodic and probabilistic selection remain candidate choices,
+not a schedule or fixed percentage. A proposed implementation should identify
+the target, effective setting, eligible versus selected opportunities, resource
+budget and evidence needed to distinguish reduced frequency from a broken
+support. If randomness is selected, its state and selection evidence must be
+explicit under the existing Controlled Randomness policy.
+
+Compare useful findings, changed decisions and unchanged controls against time,
+context, commands, tokens and operator interruptions. Test a selected experiment,
+an eligible opportunity skipped by its modifier, and an out-of-scope experiment
+that remains unauthorized. General support modifiers are still a product
+candidate beyond the compiled independent ON/OFF facets; no schema or shipped
+activation-rate control is claimed. Relationship to an A/B support, naming,
+activation policy and allocation remain open. Reopen during planning when a
+bounded observation can establish useful exploration without recurring overhead
+dominating the benefit. Source: the operator's 2026-09-09 follow-up and the
+[ideation receipt](../evidence/WO-126/ideation-alternatives.md).
+
+The operator's later follow-up proposes an adaptive version of that modifier:
+pressure grows with time since the repository's last demonstrated efficiency,
+process or other useful improvement. A recent gain creates a quiet period.
+As the interval grows, the support becomes more likely to select an experiment;
+a prolonged drought can broaden its search beyond the current work order and
+increase the novelty of hypotheses and experiments. Roughly a week is an
+illustrative threshold from the source, not a selected duration. Broader
+discovery is part of the proposal; changing another workstream or making an
+external change still depends on the authority of the selected implementation.
+
+The source's bad-luck-protection analogy supplies an accumulating counter that
+reduces long stretches without a selected opportunity. PoE's documented
+[evasion entropy mechanism](https://www.pathofexile.com/forum/view-thread/11707/filter-account-type/staff/page/10#p748465)
+is a related historical example, not a claim that the game applies one universal
+luck counter to all rewards. Here a threshold may guarantee an eligible,
+budgeted investigation, while the existence of a real improvement remains
+uncertain. The [Atomic Habits marginal-gains direction](https://jamesclear.com/continuous-improvement)
+motivates accumulating small useful changes. One percent per day is an ambition
+and analogy, not a promised measured gain, a requirement to manufacture a daily
+win, or permission to multiply unrelated efficiency measures together.
+
+Candidate state includes the last accepted improvement and its evidence,
+elapsed opportunity/time since it, current exploration pressure, recent probes
+and their outcomes, resource budget, and any quiet-period or cooldown state.
+Keep time since a gain separate from time since a probe: a no-change or failed
+experiment can justify a cooldown and preserve useful knowledge without being
+reported as an efficiency gain. Define the improvement measure and comparison
+before the experiment, account for regressions and ongoing cost, and make reset
+or decay depend on the observed outcome rather than activity, receipt count or
+a cosmetic change. Clock choice during repository inactivity, missing history,
+pressure curve, ceiling, reset policy, opportunity eligibility and operator
+controls remain open. Neither a stale clock nor unspent pressure creates
+unbounded work or a duty to interrupt the operator.
+
+Compare this adaptive proposal with a fixed cadence and a constant sampling
+rate. Cases should include a recent gain, a long drought, repeated inconclusive
+probes, an unavailable budget, broader discovery outside the current order,
+restart with retained history, and a claimed improvement later invalidated by
+evidence. Observe useful gains and retained learning against total time,
+context, tokens, commands, regressions and interruptions. This connects the
+full system-traps lens to the support's own incentives. Modifier name, defaults,
+thresholds and implementation remain unallocated; reopen with bounded evidence
+that increasing exploration pressure produces durable value without escalating
+process cost. Source: the same-day adaptive-pressure dispatch preserved in the
+[ideation receipt](../evidence/WO-126/ideation-alternatives.md).
+
+## Candidate — historical comparison after a forced alternative
+
+The operator's second proposal makes the incidental benefit explicit: when a
+decision or constraint forces an alternative that serves roughly the same
+purpose, collect comparative data for history even if no further decision is
+pending. The selected alternative creates the comparison opportunity. This is
+a separate activation reason from Tinkerer / Scientist's occasional exploration
+of a question or proposed answer. It may run automatically or when its support
+is equipped; that product choice remains open.
+
+The comparison should state the common purpose, why the alternative was forced,
+and the outcomes and guarantees that differ. Retain relevant measurements,
+environment and source identity, method, uncertainty and unavailable observations
+alongside the decision. Do not claim equivalent guarantees merely because two
+methods serve the same purpose, or require a winning option to justify keeping
+the data. Unexpected benefits, regressions and inconclusive results all provide
+historical value. The WO-126 Node/Python samples are a concrete first example:
+publication cost differs, and so does the atomicity boundary.
+
+Prefer already-collected measurements and a bounded reproducible comparison.
+If the displaced method cannot be executed within the existing authority or
+environment, record that limitation and the available evidence rather than
+inventing a counterfactual. Keep the observations linked to the decision so a
+later change in prerequisites or requirements can use them. Historical value
+is itself the intended output; immediate optimization is not required.
+
+Placement as its own support or a modifier, default equipment, measurement
+selection and resource budget remain open. Planning should test that an actual
+forced substitution creates a retained comparison, that meaningfully different
+guarantees remain visible, and that an unavailable comparator yields an honest
+partial record. This candidate grants no new effect authority and claims no
+shipped automatic instrumentation. Reopen when a bounded design can compare
+retained decision value with collection cost. Source: the operator's same-day
+follow-up and the [ideation receipt](../evidence/WO-126/ideation-alternatives.md).
+
+## Candidate — retain unchosen alternatives
+
+The operator asks to preserve what a decision leaves undone as useful historical
+data across the mechanisms discussed together: rule-beating and wrong-goal
+judgments, Beware of Naive Interventionism, action versus NoOp, A/B and Eye Dr
+comparisons, Tinkerer / Scientist experiments, and forced substitutions. This
+extends existing Decision Receipts and comparison events; it does not depend
+on an experiment having a winner or on selecting an intervention.
+
+A candidate record keeps the decision question and intended outcome, relevant
+constraints, considered alternatives, selected result, and each unchosen
+alternative's disposition and reason. Link observations, comparison context,
+uncertainty and the condition that would justify reconsideration. Distinguish
+an option rejected on evidence from one deferred, ineligible under a constraint,
+or simply not tested. A hypothesis about an untried alternative remains a
+hypothesis; selection alone does not demonstrate that every other option lost.
+Ties and inconclusive comparisons are retained outcomes too.
+
+When NoOp wins, retain the proposed intervention and why it was declined. When
+action wins, retain the NoOp baseline and the evidence that justified changing
+it. If an experiment itself is declined, record that decision without implying
+the proposed intervention was tested. In the adaptive Tinkerer, such a record
+can preserve learning or justify a cooldown; creating it does not by itself
+reset the last-demonstrated-improvement clock. Ratings remain projections of
+scoped comparisons, and the operator's outcome-first direction still applies.
+
+Later work should be able to find these alternatives by decision and context,
+see whether their reasons still apply, and append reconsideration with new
+evidence. A historical rejection is neither erased nor converted into a
+permanent prohibition. Reuse existing evidence links rather than copying full
+traces, and keep unknown observations explicit. The proposed history records
+alternatives actually considered; it does not require inventing every possible
+option or running a rejected experiment solely to fill the record.
+
+Implementation placement, retention and retrieval, record granularity and
+default activation remain open. A bounded design should exercise action and
+NoOp selections, ties, untested/deferred alternatives, constraint exclusions,
+and a later change that reopens a decision. Compare useful retrieval and avoided
+repeat investigations against recording, storage, context and review cost.
+No collector, schema change, ranking system or universal checklist is shipped
+by this ideation. Reopen in planning when those cases can establish useful
+decision memory at a proportionate cost. Source: the operator's same-day
+follow-up and the [ideation receipt](../evidence/WO-126/ideation-alternatives.md).
+
+## Candidate — emoji shorthand as an experiment
+
+The operator asks whether replacing a word with its representative emoji could
+provide a benefit. Preserve that as a testable representation choice: compare
+words, emoji alone and emoji with a label for visual scanning, instruction
+understanding, task correctness and total representation cost. Prompt/context
+compression and human-facing shorthand may have different winners. Include any
+legend and repeated explanation in the comparison; a shorter visible string
+does not by itself establish fewer model tokens or equal meaning.
+
+A small Node UTF-8 measurement during WO-126 found `done`/✅ at 4/3 bytes,
+`package`/📦 at 7/4, `test`/🧪 at 4/4 and `scientist`/👩‍🔬 at 9/11. This is
+mixed byte-size evidence only. No model tokenizer was available in the project
+for the probe; token counts and behavioral benefit are unmeasured. Relevant
+tokenization depends on the selected vocabulary and algorithm, as described in
+the [primary tokenizer documentation](https://huggingface.co/docs/transformers/tokenizer_summary).
+
+Use representative complete prompts or interfaces rather than extrapolating
+from isolated symbols. Include ambiguous meanings, repeated symbols, text-only
+fallbacks and accessible labels. Retain negative or inconclusive results as
+comparison history. The Tinkerer / Scientist candidate provides a possible
+experimental host, but neither systematic substitution nor a new tokenizer
+dependency is selected. Reopen with a specified consumer/model, an available
+tokenizer where applicable and task-level evidence. Provenance and measured
+limits are in the [ideation receipt](../evidence/WO-126/ideation-alternatives.md).
+
+## Candidate — Context Continuity
+
+The operator's [2026-09-09 ideation](../evidence/WO-126/ideation.md) asks for
+a support that observes context use automatically and demonstrates that an
+actor retains its task through automatic compaction. Its outcome is continuity
+of the authorized work: the actor resumes the right objective, constraints,
+decisions and next action without losing obligations or repeating completed
+effects. A reassuring summary alone does not demonstrate that outcome.
+
+The operator locates the eventual framework in DotLn itself, using the future
+offline work queue and shared state. The queue, admitted work, authority,
+decisions and accepted evidence outlive a model window. DotLn should assemble
+bounded context from that state, validate a returning result, and continue or
+retry from the same work identity. This is the path toward single-use inference
+calls: continuity belongs to the host's workstream, while a call receives only
+the context needed for its assigned result. A harness's recovery feature is a
+discovered adapter capability, not the owner of that shared state. Compose this
+candidate with the planned resident and work-derivation orders; it does not
+create a parallel queue or allocate another implementation order here.
+
+The support needs an observed harness capability for context consumption and
+capacity, including the measurement time, units and session/window identity.
+Report a percentage only when both operands and their meaning are available;
+label an estimate and its method, and report unavailable when the host exposes
+neither. Cumulative dispatch tokens, current-window occupancy and provider cost
+are separate measurements. Discover the host's automatic-compaction event or
+warning mechanism; do not infer a callback or a context capacity from a model
+name. Automatic sampling belongs at existing observable boundaries, with its
+own command, token and elapsed cost measured.
+
+The operator's follow-up asks for a collection outline for both harnesses and
+notes that the same percentage represents materially different absolute sizes.
+Show occupied tokens, reported capacity and percentage together. The operator
+reports a one-million-token Claude setup; discover each actual session's
+capacity rather than baking that value into the support. Prior v1 experience
+is motivation, not imported implementation or evidence of this version.
+
+Claude's [status-line payload](https://code.claude.com/docs/en/statusline)
+exposes `context_window.used_percentage`, `context_window_size`, `current_usage`
+and `transcript_path`. Prefer its reported percentage; retain the input and
+cache components and their timestamp. Codex's
+[app-server events](https://learn.chatgpt.com/docs/app-server) include
+`thread/tokenUsage/updated` and a completed context-compaction item. The local
+Codex log observed during WO-126 also contains cumulative usage, last-request
+usage and reported capacity. A last-request ratio is a labeled estimate, not
+an assertion that it equals the current display. The host adapter should
+consume a documented event when available and use a version-observed log
+projection otherwise, preserving unavailability without copying chat content.
+
+The operator identifies the experimental context-management mode with
+`[features.context_management] experimental_mode = true`; read-only inspection
+confirmed that flag on 2026-09-09. The supplied
+[public discussion](https://community.openai.com/t/experimental-context-management-compaction-in-codex/1395578)
+is a discovery lead, not an independent continuity proof. Record the enabled
+mode and observed version with a recovery run. Test the host's existing
+recovery behavior before adding another mechanism, and measure any addition
+against it. The support changes no account or harness setting by itself.
+
+Before a supported compaction boundary, retain the current objective and
+acceptance obligations, operator steering and authority, decisions with sources
+and reopening conditions, completed changes and exact evidence, outstanding
+work, pending input, running tool operations, and the next legal action. The
+record is source-addressed and refreshed as these facts change; a stale record
+must be recognizable. Recovery reconciles it with current canonical state and
+the latest operator messages before further effects. Unknown or contradictory
+state triggers a focused recovery step. Existing private-source, one-writer,
+publication and independent-verification boundaries remain in force.
+
+Evidence must include repeated compactions during one unfinished task, a
+compaction while a tool is running, and new steering near the boundary. A
+resumed actor receives only the real post-compaction inputs, then continues a
+bounded fixture. Compare its obligations, decisions, authority, pending work,
+next action and executed effects with the pre-compaction oracle. Deliberately
+missing, stale or contradictory records must be detected; duplicated completed
+effects or omitted acceptance criteria fail. Record actual harness/version,
+observed compaction events, supplied recovery inputs, outcome and added cost.
+Synthetic context replacement is useful fixture evidence but must be labeled;
+only an actual automatic-compaction run supports a live-host claim. A pass is
+bounded evidence for those runs, never a universal claim of zero information
+loss.
+
+This is a preserved support candidate, with no implementation or equipment
+claim in WO-126. It composes with the existing decision, output-review and
+application-evidence supports. Sampling cadence, host binding and warning policy
+remain open until observations select them. The operator explicitly directs
+usage measurement before token caps; this candidate sets no numeric threshold
+or automatic stop. Reopen allocation when the host can expose the required
+signals and the proposed recovery fixture can measure a useful improvement.
 
 ## Candidate — Beware of Naive Interventionism
 

@@ -60,12 +60,16 @@ export const classifyIgnoredMaterial = (candidate) => {
   const disposable =
     !intake &&
     (anchoredBuildOutput(candidate) ||
+      /^(?:\.runtime|docs\/control\/local\/harness)(?:\/|$)/.test(candidate) ||
       /^(?:\.control-beacons)(?:\/|$)/.test(candidate) ||
       basename(candidate) === ".DS_Store" ||
       candidate.endsWith(".tsbuildinfo"));
   return {
     disposable,
     releaseEvidenceAllowed:
-      intake || disposable || candidate === ".claude/settings.local.json",
+      intake ||
+      disposable ||
+      /^(?:docs\/control\/local)(?:\/|$)/.test(candidate) ||
+      candidate === ".claude/settings.local.json",
   };
 };

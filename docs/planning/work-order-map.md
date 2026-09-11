@@ -24,35 +24,7 @@ require mainline work to count upward to reach it.
 
 ## Recommendation and rationale
 
-**Phase two (2026-09-06, redirected the same day):** the 2026-09-05 horizon
-is complete and every order in it ran serially. The first phase-two pass
-filed a horizon of process machinery (a showrunner board over control state,
-a process-kit export, a workstream pilot, a documentation reset, a test
-runner, the 5S set, the license order). The operator's correction, recorded
-in the [phase-two plan](phase-two-plan-2026-09-06.md#the-redirect--second-pass-of-2026-09-06),
-turned it toward the product: a session must get a build, not a biography,
-and a fork of the starter must receive an actor. The redirected horizon
-therefore leads with the compiler target that lowers a saved build into
-enforceable harness configuration and runs this repository on its own
-compiled build (WO-039), the actor board as UIFA v0 (WO-032, rescoped), the
-starter as a compiled export that carries that build (WO-033, rescoped), the
-first batch of the rule migration through that target (WO-040), and a plan
-refuter that gates every later planning pass on the vision (WO-041). The
-pilot (WO-034, rescoped so the Angular repository's first change is a UIFA
-v1 shell), the documentation reset (WO-035), the evidence runner (WO-036),
-and the 5S set (WO-037) keep their places behind them. The wave pairing is
-in the plan: lane 0 is WO-038 ∥ WO-041, wave 1 is WO-039 ∥ WO-032, wave 2 is
-WO-033 ∥ WO-040, wave 3 is WO-034 ∥ WO-035, wave 4 is WO-037 beside the
-migration's second batch, and WO-036 floats. The serial reading order below
-puts the fork-binding critical path first: the operator's fork and the
-first external fork wait on WO-038, WO-039's first phase and self-host, and
-WO-033; if capacity is short, run those three alone. Version assignment
-follows the opt-out default at activation: the first order in a wave to
-merge takes the next version above the latest published tag, and the second
-retimes at its sync step. The license posture was decided inside the first
-pass (`docs/LEGAL.md` §Decision) with the license files landing in the
-planning pull request. The adjacent track is unchanged; WO-014 floats and
-gains weight once target-repository sessions report approval friction.
+Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 
 **Critical path (2026-09-08, revised the same day):** the operator's dispatch appended an external source-level audit and asked for a dependency-correct path from the current code to the first external source-changing worker and then to an independently verified source-to-deliverable vertical. The pass verified every material audit claim against `main` at `33e2c25` ([source verification](source-verification-2026-09-08.md)) and filed the [critical-path plan](critical-path-2026-09-08.md) with its [machine-readable graph](critical-path-2026-09-08.json). The operator corrected the first result the same day: the orders were too large, the always-on offline runtime with cadences and several actor kinds is the critical path, the starter is the vehicle DotLn creates and updates while the operator's forks plan their own target work, no target-application order belongs here, the work-order file must stay a stable contract, and the runtime carries the UI to author, inspect, audit and see live status. The horizon is therefore seventy-three bounded orders, WO-044 through WO-125 with the corpus numbers skipped, beside [WO-042](../work-orders/WO-042-authority-provenance.md), [WO-043](../work-orders/WO-043-typed-dependency-truth.md) and WO-036. Two chains begin at WO-042: the unattended chain (WO-067 presence policy, WO-068 resident, WO-099 mission check) and the external-change chain (WO-044 harness truth, WO-049 target bundle, WO-050 to WO-052, WO-053 the first change); they join at WO-100 and WO-111, the runtime's UI contracts (WO-114 to WO-117) and the starter (WO-069 to WO-079) run beside them, the loop is proven from core against a scratch target (WO-112), and the product exit is the resident-owned loop from a starter instance (WO-118) before the operator's fork runs it against a real one (WO-083, receipt only). An external review of the revised plan, captured in ignored intake the same day, was verified claim by claim and applied: it added WO-118 to WO-124 and corrected fourteen orders (no proof order closes on failure, a separate writer request, trusted grant admission, an executable discovery producer, presence with origin, derived work identity, dispositions in the pull-request loop, evidence-bearing intake relations). WO-033, WO-034, WO-035, WO-037 and WO-040 are superseded whole by their children (WO-069 to WO-098) and kept as umbrella records; the documentation, workshop and migration families carry a waivable dated deferral on WO-053. The first mandatory replan checkpoint follows WO-044's record. The first refutation receipt ([002](refutations/2026-09-08-critical-path-002.md), a direct-session review the operator requested in Codex because neither CLI transport had budget) held on two criteria: WO-123's command-only fixture could pass while WO-118's resident run had no admission path, and WO-055's derivation let a read-only verifier's references widen a writer's scope. The repair revision (`7e2c474`) repaired both criteria (the resident admits a filed intent under a portfolio's `intent` class and admitted grants and owns the vertical continuation; the repair derivation is bound to the original order's surfaces, named test commands and effective envelope) and named WO-123 as WO-118's hard input. The second receipt ([003](refutations/2026-09-08-critical-path-003.md), the same review source) accepted both repairs and held once more, on WO-121 criterion 1: the presence classifier made the launch path the evidence of a person's presence, so an operator-launched worker that kept working after `away` could end the away phase. The repair at `b812128` made origin a pure function of the hook event kind and the resident's stamp, made tool activity from any session actor liveness, and gave WO-044 the row that says which hook events a scripted prompt fires. The third receipt ([004](refutations/2026-09-08-critical-path-004.md), the same review source) passes with every hold answered by its dated accepted disposition; its largest remaining gap, the authoring journey through the live client at WO-117 criterion 2, warrants no hold for this horizon and is preserved below as a candidate. No hold was overridden. The 2026-09-06 wave pairing below is superseded in sequence only; its measurements, procedure and receipts stand.
 
@@ -97,116 +69,11 @@ scopes, the four questions, the trap rows) drew receipt 007's hold on
 criterion 16, whose cost judgment had no permitted input; that repair
 landed, and the receipt carrying its accepted disposition closes the pass.
 
-**WO-038 source (2026-09-06):** the planning license files are present in this activation base. The missing release assignment is completed at `v0.13.2`, the next patch above published `v0.13.1`. The [executor receipt](../evidence/WO-038/README.md) records package metadata, npm refusal probes, the pinned license surfaces, contribution sign-offs, and the WO-033 export-default handoff. This source work does not discharge the critical path's merge dependencies or establish that the proposed paired wave occurred; the generated index and control fold own later lifecycle evidence.
+Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 
-**WO-108 source (2026-09-06):** the operator selected the mutation evidence lane on published `v0.13.0` and authorized adapting its stale scope to the current repository. It prepares internal tooling/evidence patch `v0.13.1`: a complete candidate census plus a deterministic 32-site campaign over kernel, compiler, and skeleton, with all historical compiler probes remeasured. The [corpus outcome](../../corpus/mutation/README.md) owns measured results and limitations; survivors inform future evidence-hardening orders and do not authorize fixes here. Its [work-order receipt](../work-orders/WO-108-mutation-probe.md#ideation-breakout-receipt--implementation-consequences-2026-09-06) adds the implementation-consequences ideation to independent review. This supersedes the activation-preflight recommendation below for WO-108; lifecycle status still comes from the control fold.
+Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 
-**WO-011 source (2026-09-06):** this worktree prepares `v0.13.0` above published `v0.12.0`. The ten-unit feedback compiler and a bounded self-hosted audit are the active implementation. The [executor receipt](../evidence/WO-011/README.md) distinguishes causal fixture evidence, instruction-byte accounting, and separate verifier episodes. Independent repository verification, final review, and integration still follow the control fold. Optional sibling-repo and artifact-organization pilots remain unallocated candidates; the marked sequence is unchanged.
-
-**WO-022 source (2026-09-06):** this worktree prepares `v0.11.0` above published
-`v0.10.1`. WO-021, WO-008 and WO-009 are present in the activation base; the
-fresh sparse probe emits the entire v3 maximum within eight allocated blocks.
-The [WO-022 evidence](../evidence/WO-022/README.md) covers compiled senses,
-the host mount/profile boundary, weak provenance and deterministic verifier
-blinding. Native model verification remains WO-010, and the marked sequence
-is unchanged. The generated index and control fold own lifecycle status.
-
-**WO-031 implementation (2026-09-05):** this source prepares `v0.10.1` above
-published `v0.10.0`. The actor-usage report and opt-in labels are implemented;
-the [evidence](../evidence/WO-031/README.md) and generated index own validation
-and lifecycle status. Publication and continuation corrections from the
-[ideation receipt](../evidence/WO-031/ideation.md) join the review subject.
-The marked work-order sequence is unchanged.
-
-The operator restated this sequence during WO-020; the 2026-09-05 planning
-pass inserted WO-030 ahead of WO-021 and placed WO-031 in the free lane beside
-WO-009 (see the [concurrent work-orders plan](concurrent-work-orders-plan.md)).
-This marked list is its single editable source; the work-order README renders
-it with evidence-derived progress marks. Keep the plain one-item-per-line form
-usable in a text editor.
-Closed entries remain here until the operator changes the planning horizon;
-the generator marks them rather than asking the operator to cross them off.
-
-<!-- dotln-work-order-sequence:start -->
-
-- WO-126 — Process debt
-- WO-042 — Authority provenance and monotone envelopes
-- WO-043 — Typed dependency truth
-- WO-125 — Codex effort selection
-- WO-044 — Writing-worker and unattended-launch harness truth
-- WO-067 — PresencePolicy compiled
-- WO-045 — Event-log and hook-input decoders
-- WO-046 — Executable program grammar as a type
-- WO-047 — Replay environment projector
-- WO-048 — Worker and verification hosts decode on-disk state
-- WO-050 — Reactor typed state slices
-- WO-049 — Target-worktree harness bundle
-- WO-068 — Resident host
-- WO-121 — Presence signals with origin
-- WO-119 — Executable discovery producer
-- WO-051 — Source-change writer request and transport profile
-- WO-122 — Actor catalog: cli-worker and human-handoff
-- WO-052 — Source-change host and commit receipt
-- WO-053 — The first external source change
-- WO-099 — Mission check
-- WO-114 — Runtime status projection
-- WO-069 — Configuration root
-- WO-070 — Beacon portability
-- WO-120 — Derived work identity
-- WO-054 — Verification over a real worktree
-- WO-055 — Repair continuation
-- WO-056 — Live blinded verification and repair
-- WO-100 — Preauthorized portfolio and work derivation
-- WO-111 — The unattended hour
-- WO-115 — Console parity contract
-- WO-116 — Audit projection served
-- WO-117 — Console live host
-- WO-074 — Launchpad export kit
-- WO-075 — Kit runtime and harness bundle in the export
-- WO-071 — Registered target repositories
-- WO-072 — Target worktree lifecycle
-- WO-073 — Repository class and profile documents
-- WO-076 — Instance build overlay
-- WO-077 — Launchpad export update
-- WO-078 — Sibling registry and export receipts
-- WO-057 — Browser runtime truth
-- WO-058 — Visual and network claim types
-- WO-059 — Playwright evidence adapter
-- WO-060 — SourceBundle contract
-- WO-061 — StoryContract compile
-- WO-124 — Impact surfaces derivation
-- WO-062 — GitHub Issue source adapter
-- WO-063 — Outward-artifact lint
-- WO-064 — Target publish
-- WO-065 — Pull-request state observation
-- WO-066 — Review-comment resolution loop
-- WO-123 — dotln vertical composition
-- WO-112 — The loop from core
-- WO-118 — The resident-owned loop from a starter instance
-- WO-113 — Work-order files are stable contracts
-- WO-110 — Local-model transport
-- WO-079 — Worktree sync
-- WO-080 — Workstream document and index grouping
-- WO-081 — Board Workstreams section
-- WO-082 — Synthetic pilot
-- WO-083 — The real run from the operator's launchpad instance
-- WO-096 — Migration ledger
-- WO-097 — Rule migration batch 1a
-- WO-098 — Rule migration batch 1b
-- WO-091 — Multi-active link groups
-- WO-092 — The sets graph extension
-- WO-093 — The 5S mechanics as data
-- WO-094 — Set bonuses lowered
-- WO-095 — Full-set scenario and set tooltip render
-- WO-084 — Ledger order and index
-- WO-085 — Spec/receipt boundary and docs-check
-- WO-086 — Generated release history
-- WO-087 — Roadmap split
-- WO-088 — One source for the phrase table
-- WO-089 — Capability table fold
-- WO-090 — Shorter cold start
-
-<!-- dotln-work-order-sequence:end -->
+The proposed order is maintained in [sequence.md](sequence.md).
 
 Revalidate each selection against its authority, the index, and current
 preflight facts; this is a human recommendation, not a scheduler or an
@@ -226,67 +93,7 @@ of the 2026-09-06 horizon (WO-038, WO-039, WO-041, WO-032) keep their closed
 evidence in the generated index; their rationale is retained below for the
 record.
 
-**Operator correction (2026-09-07, WO-041):** the pairings above are opportunities
-for overlap, not phase prerequisites. Implementation and verification progress
-independently. The operator voluntarily completes each final-review-through-
-release-close window before opening another; no gate enforces it. The integrating
-actor handles routine upstream incorporation, release retiming, and projections
-within that window and requests new evidence only for affected claims. The
-[integration contract](../product/07-execution-guide.md#independent-workflows-and-integration)
-and WO-041 breakout receipt supersede the earlier automatic restart rule.
-
-The planning reasons remain: the index reduces repeated evidence gardening;
-the beacons make state and staleness legible before the external worker;
-WO-029 pins consuming artifact identities immediately before WO-009; and
-WO-022 follows the worker boundary for mount semantics. The earlier pull-forward
-of WO-023 responded to repeated manual review/planning and availability of the
-real compiler. WO-028's append-time projection can support beacon derivation
-without introducing attention or resource telemetry.
-
-WO-030 precedes WO-021 because the beacon hook and group composite assume
-per-order control state. The 2026-09-05 WO-030 source preserves independent
-states and passes its serial-integration fixture, and it passed independent
-verification and final review at this revision; operator merge remains before
-the actual paired trial. After WO-030 merges, WO-021 and WO-029 are the first paired wave
-(disjoint write surfaces), WO-009 pairs with the small read-only WO-031, and
-WO-022 pairs with WO-010 after the worker lands; WO-011 follows WO-010. The
-[concurrent work-orders plan](concurrent-work-orders-plan.md) holds the hand
-rules, the unfiled later slices, and the reversal condition (Beacons first if
-the operator prefers, with the trial one wave later).
-
-Version assignment is the operator's opt-out default. Complete an unassigned
-activation target using the roadmap classification, observed release base, and
-matching source claim. Published tags and already pinned targets keep their
-separate immutability/retiming rules. WO-026 prepared the compatible v0.5.2 patch
-above v0.5.1; the candidate application journey does not allocate a runtime rung.
-
-**WO-021 activation completion (2026-09-05):** this worktree starts from
-published `v0.7.0`, which contains WO-030. WO-021's expected minor classification
-therefore assigns `v0.8.0`; skeleton source advances independently to component
-`0.7.0`. The dated merge-pending statements above describe the planning revision,
-not this activation. This does not change the recommended sequence or claim that
-the paired trial or operator usefulness comparison has occurred. The 2026-09-05
-WO-021 source passed independent verification and final review at this
-revision and awaits operator merge; the sequence above is unchanged.
-
-After WO-021, the [proposed beacon usefulness checkpoint](beacon-usefulness-checkpoint.md)
-compares the new projection with existing status views before recommending
-further investment. The technical orders do not by themselves prove the wider
-DotLn or Protíno product thesis. This observation adds no release gate or
-automatic change to the sequence above.
-
-**WO-029 implementation (2026-09-05):** this worktree starts from published `v0.8.0`, which contains WO-021; it is not evidence that the proposed paired wave was run. Its missing activation target is completed at `v0.9.0`, with compiler `0.3.0` and skeleton `0.8.0`. The source now implements separate artifact identity, v2 equip, the logged legacy cutover, one consumer comparison, typed refusals, and L0/governed-raw receipts. The generated index owns subsequent verification and close status. WO-009 should consume the successful equip's whole-program hash and compiler axes, retain the exact compilation environment, and preserve the boundary/re-equip rule when submitting its first external work. Component-membership submissions, pulse issuance stamps, signatures, and worker-result echo remain deferred; this handoff does not expand WO-009 or authorize it to start. WO-029 passed independent verification (`VER-001`) and final review (`FINAL-001`) on 2026-09-05 at this revision and awaits operator merge; the recommended sequence and the deferred items above are unchanged.
-
-**WO-009 implementation (2026-09-05):** this checkout starts from published `v0.9.0` (`002593f`), which contains WO-029 and supersedes the earlier pending-merge observation. Activation now targets `v0.10.0`, with skeleton `0.9.0`, compiler `0.3.0` and kernel `0.2.1`. Both observed CLI transports execute one bounded inspection episode through the pinned shared reactor. The durable store, safe detached worktree lifecycle, explicit leases, read-only status, failure rows 2/4/6 and authenticated kill/recovery evidence are staged for independent verification. No deferred component-membership submission, worker identity attestation or real verifier was added. The [executor evidence](../evidence/WO-009/README.md) and generated index own subsequent evidence and lifecycle status. This execution alone does not establish that the proposed WO-009/WO-031 paired trial occurred. WO-009 passed independent verification (`VER-001`) and final review (`FINAL-001`) on 2026-09-05 at this revision and awaits operator merge; the recommended sequence and the deferred items above are unchanged.
-
-An alternative [budget-window ladder plan](budget-window-work-order-ladders.md)
-preserves the operator's proposed two-lane experiment and the original
-[Fable planning handoff](budget-window-work-order-ladders.md#fable-planning-handoff).
-That handoff was discharged on 2026-09-05 into the
-[concurrent work-orders plan](concurrent-work-orders-plan.md) and WO-030; the
-waves the sequence above implies are WO-030 → WO-021 ∥ WO-029 → WO-009 ∥
-WO-031 → WO-022 ∥ WO-010 → WO-011. Neither document is a second live status
-checklist.
+Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 
 WO-014 remains a floating option when approval friction is the constraint.
 For adjacent evidence/corpus work, **WO-107 is now the first candidate**: the
@@ -307,6 +114,24 @@ identity migration.
 
 ## Preserved unallocated candidates
 
+- **Support behavior beyond aggregated prose — operator steering during WO-126, 2026-09-09.**
+  [The observed gap and proposed checks](../product/05-pattern-library.md#intent-queue-and-communication-levels)
+  distinguish equipped text from actual entry/queue behavior and deliberate
+  chat intent across new sessions and compaction. WO-096–098 address
+  classification, executable migration, prose retirement and measured context
+  reduction; explicit behavioral coverage remains unallocated. The next pass
+  should reproduce the omission, select a mechanical or bounded-judgment
+  remedy, and require ablation plus reduced operator intervention/context.
+
+- **Context Continuity support — operator ideation, 2026-09-09 during WO-126.**
+  Automatically observe context occupancy from the available host signals and
+  verify task recovery through repeated automatic compactions, including active
+  tools and boundary-time steering. The [support candidate](../product/05-pattern-library.md#candidate--context-continuity)
+  names the outcome, missing/stale-state failure cases, source/availability
+  labeling and live-host evidence boundary. The [breakout receipt](../evidence/WO-126/ideation.md)
+  preserves scope and the observation-first budget decision. Host binding and
+  warning cadence remain open; allocation requires observable signals and a
+  bounded recovery fixture. No new cap, work-order number or sequence change.
 - **NoOps of the 2026-09-09 process-debt pass.** Weighed and declined, each
   with its evidence and reversal condition. (1) _Remove the compiled harness
   and return to the prose rules._ Declined: the WO-039 measurement cut the

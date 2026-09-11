@@ -1,0 +1,1144 @@
+{
+  "schemaVersion": 1,
+  "subjectSourceHash": "sha256:3835e7cc0abfe6c45e7c9afc92ccf07d230b81c46118341d7afa72854d09a885",
+  "acceptances": [],
+  "observedAt": "2026-09-10T00:32:07.537Z",
+  "subjectRevision": "d0293dccb01d7303fe4b8e03a55dbcf1c40efd42",
+  "rows": [
+    {
+      "workOrder": "WO-126",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": {
+        "elapsedMs": null,
+        "attempts": 0,
+        "gateMs": 1352086,
+        "fastGateMs": 106905,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": 662086,
+        "readAmplification": null,
+        "machineryShare": null,
+        "elapsedPerCodeByte": null,
+        "tokens": 80103823,
+        "costUsd": null,
+        "declaredPromptTokens": 504,
+        "coldStartBytes": 11782,
+        "subjectCharacters": 91,
+        "gateStepCount": 37,
+        "operatorCorrections": 1,
+        "guardRefusals": 0,
+        "stopRefusals": 0,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": 457370436,
+        "stepCount": null,
+        "prBodyBytes": 3158
+      }
+    },
+    {
+      "workOrder": "WO-042",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": {
+        "elapsedMs": 57675542,
+        "attempts": 5,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.7060267938184266,
+        "elapsedPerCodeByte": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": 12012,
+        "subjectCharacters": 184,
+        "gateStepCount": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": 13392
+      }
+    },
+    {
+      "workOrder": "WO-043",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-125",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-044",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-067",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-045",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-046",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-047",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-048",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-050",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-049",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-068",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-121",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-119",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-051",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-122",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-052",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-053",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-099",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-114",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-069",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-070",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-120",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-054",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-055",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-056",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-100",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-111",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-115",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-116",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-117",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-074",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-075",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-071",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-072",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-073",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-076",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-077",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-078",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-057",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-058",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-059",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-060",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-061",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-124",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-062",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-063",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-064",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-065",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-066",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-123",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-112",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-118",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-113",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-110",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-079",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-080",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-081",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-082",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-083",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-096",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-097",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-098",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-091",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-092",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-093",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-094",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-095",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-084",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-085",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-086",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-087",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-088",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-089",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    },
+    {
+      "workOrder": "WO-090",
+      "observedAt": "2026-09-10T00:32:07.537Z",
+      "metrics": null
+    }
+  ],
+  "traps": [
+    {
+      "id": "rule-beating",
+      "signal": "Read-obligation bytes against diff bytes; Stop refusals and re-announcements",
+      "metric": "readAmplification",
+      "series": [
+        {
+          "workOrder": "WO-041",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-032",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-109",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-039",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-042",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-126",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "readAmplification",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-126",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "stopRefusals",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-126",
+              "value": 0,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "reAnnouncements",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-126",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    },
+    {
+      "id": "seeking-the-wrong-goal",
+      "signal": "Machinery share of elapsed time; phase durations against code-change size",
+      "metric": "machineryShare",
+      "series": [
+        {
+          "workOrder": "WO-041",
+          "value": 0.11156935805671196,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-032",
+          "value": 0.3854667164109722,
+          "delta": 0.2738973583542602
+        },
+        {
+          "workOrder": "WO-109",
+          "value": 0.265407607530036,
+          "delta": -0.12005910888093618
+        },
+        {
+          "workOrder": "WO-039",
+          "value": 0.12872189673631745,
+          "delta": -0.13668571079371855
+        },
+        {
+          "workOrder": "WO-042",
+          "value": 0.7060267938184266,
+          "delta": 0.5773048970821091
+        },
+        {
+          "workOrder": "WO-126",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "machineryShare",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": 0.11156935805671196,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": 0.3854667164109722,
+              "delta": 0.2738973583542602
+            },
+            {
+              "workOrder": "WO-109",
+              "value": 0.265407607530036,
+              "delta": -0.12005910888093618
+            },
+            {
+              "workOrder": "WO-039",
+              "value": 0.12872189673631745,
+              "delta": -0.13668571079371855
+            },
+            {
+              "workOrder": "WO-042",
+              "value": 0.7060267938184266,
+              "delta": 0.5773048970821091
+            },
+            {
+              "workOrder": "WO-126",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "elapsedPerCodeByte",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-126",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    },
+    {
+      "id": "shifting-the-burden-to-the-intervenor",
+      "signal": "Operator corrections, manual closeout steps and emergency planning passes",
+      "metric": "operatorCorrections",
+      "series": [
+        {
+          "workOrder": "WO-041",
+          "value": 0,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-032",
+          "value": 0,
+          "delta": 0
+        },
+        {
+          "workOrder": "WO-109",
+          "value": 0,
+          "delta": 0
+        },
+        {
+          "workOrder": "WO-039",
+          "value": 0,
+          "delta": 0
+        },
+        {
+          "workOrder": "WO-042",
+          "value": 0,
+          "delta": 0
+        },
+        {
+          "workOrder": "WO-126",
+          "value": 1,
+          "delta": 1
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "operatorCorrections",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": 0,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": 0,
+              "delta": 0
+            },
+            {
+              "workOrder": "WO-109",
+              "value": 0,
+              "delta": 0
+            },
+            {
+              "workOrder": "WO-039",
+              "value": 0,
+              "delta": 0
+            },
+            {
+              "workOrder": "WO-042",
+              "value": 0,
+              "delta": 0
+            },
+            {
+              "workOrder": "WO-126",
+              "value": 1,
+              "delta": 1
+            }
+          ]
+        },
+        {
+          "metric": "manualCloseoutSteps",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-126",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "emergencyPasses",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-126",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    },
+    {
+      "id": "drift-to-low-performance",
+      "signal": "Subject length, gate step count and cold-start byte series",
+      "metric": "coldStartBytes",
+      "series": [
+        {
+          "workOrder": "WO-041",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-032",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-109",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-039",
+          "value": 9831,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-042",
+          "value": 12012,
+          "delta": 2181
+        },
+        {
+          "workOrder": "WO-126",
+          "value": 11782,
+          "delta": -230
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "coldStartBytes",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": 9831,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": 12012,
+              "delta": 2181
+            },
+            {
+              "workOrder": "WO-126",
+              "value": 11782,
+              "delta": -230
+            }
+          ]
+        },
+        {
+          "metric": "subjectCharacters",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": 167,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": 210,
+              "delta": 43
+            },
+            {
+              "workOrder": "WO-109",
+              "value": 89,
+              "delta": -121
+            },
+            {
+              "workOrder": "WO-039",
+              "value": 178,
+              "delta": 89
+            },
+            {
+              "workOrder": "WO-042",
+              "value": 184,
+              "delta": 6
+            },
+            {
+              "workOrder": "WO-126",
+              "value": 91,
+              "delta": -93
+            }
+          ]
+        },
+        {
+          "metric": "gateStepCount",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-126",
+              "value": 37,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    },
+    {
+      "id": "policy-resistance",
+      "signal": "Guard refusals, bypass tools and ad hoc scripts",
+      "metric": "guardRefusals",
+      "series": [
+        {
+          "workOrder": "WO-041",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-032",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-109",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-039",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-042",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-126",
+          "value": 0,
+          "delta": null
+        }
+      ],
+      "indicators": [
+        {
+          "metric": "guardRefusals",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-126",
+              "value": 0,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "bypassTools",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-126",
+              "value": null,
+              "delta": null
+            }
+          ]
+        },
+        {
+          "metric": "adHocScripts",
+          "series": [
+            {
+              "workOrder": "WO-041",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-032",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-109",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-039",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-042",
+              "value": null,
+              "delta": null
+            },
+            {
+              "workOrder": "WO-126",
+              "value": null,
+              "delta": null
+            }
+          ]
+        }
+      ],
+      "worsening": [],
+      "reopenCandidate": false
+    }
+  ]
+}

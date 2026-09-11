@@ -20,6 +20,8 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-126 activation completion (2026-09-09):** application `v0.17.0` is the next minor above the observed local `v0.16.0` baseline, under WO-126's declared classification and the standing opt-out default. Compiler and skeleton changes receive their own minor versions; the kernel and verification contracts stay fixed. Publication remains a separate dispatch.
+
 **WO-042 activation completion and operator breakout (2026-09-08):** application `v0.16.0` is the next minor above the observed annotated `v0.15.0` baseline. Compiler `0.8.0` adds the monotone authority floor, registry-admitted grants, envelope-projected inspection and a declared role-procedure adapter under the existing contracts. Skeleton `0.14.0` adds five atomic executor supports and their equipment projection; console `0.1.2` repairs the default feedback-edition selection. The kernel stays fixed. Instance grant files live outside package `src/`. The [breakout receipt](../evidence/WO-042/ideation.md) records the planning-gate repair, queue and bounded adjacent fix. Verification, final review and publication remain separate.
 
 **WO-032 activation assignment (2026-09-07):** the first actor-board slice targets application `v0.14.0`, the next minor above the observed annotated `v0.13.3` baseline. Its new console component is `0.1.0`; existing kernel, compiler and skeleton components retain their versions. Independent verification, final review, and publication remain separate. A sibling that consumes the same application target triggers the existing integration-retiming rule.

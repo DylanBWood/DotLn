@@ -86,30 +86,31 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 
 ## 04 — Interfaces
 
-| Section                                                                                                                               | Audiences                           | Status      |
-| ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- |
-| [Interfaces — the isomorphic views](../product/04-interfaces.md#interfaces--the-isomorphic-views)                                     | everyday-ai-user, software-engineer | planned     |
-| [Editable-view v1 normalization and semantic hash](../product/04-interfaces.md#editable-view-v1-normalization-and-semantic-hash)      | software-engineer                   | implemented |
-| [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal)                                             | everyday-ai-user, software-engineer | planned     |
-| [Candidate — workstream application](../product/04-interfaces.md#candidate--workstream-application)                                   | everyday-ai-user, software-engineer | vision      |
-| [Candidate — private exclusion-list management](../product/04-interfaces.md#candidate--private-exclusion-list-management)             | everyday-ai-user, software-engineer | vision      |
-| [Candidate — exact operator command vocabulary](../product/04-interfaces.md#candidate--exact-operator-command-vocabulary)             | everyday-ai-user, software-engineer | vision      |
-| [Candidate — multi-dimensional authorship assistance](../product/04-interfaces.md#candidate--multi-dimensional-authorship-assistance) | everyday-ai-user, software-engineer | vision      |
-| [`προτείνω` — prose as a world action](../product/04-interfaces.md#προτείνω--prose-as-a-world-action)                                 | everyday-ai-user, software-engineer | vision      |
-| [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract)                       | everyday-ai-user, software-engineer | planned     |
-| [Actor board v0](../product/04-interfaces.md#actor-board-v0)                                                                          | everyday-ai-user, software-engineer | implemented |
-| [Later console hosts](../product/04-interfaces.md#later-console-hosts)                                                                | everyday-ai-user, software-engineer | planned     |
-| [RPG / Path-of-Exile view](../product/04-interfaces.md#rpg--path-of-exile-view)                                                       | everyday-ai-user, software-engineer | planned     |
-| [Authority inspection projection](../product/04-interfaces.md#authority-inspection-projection)                                        | everyday-ai-user, software-engineer | implemented |
-| [Semantic zoom](../product/04-interfaces.md#semantic-zoom)                                                                            | everyday-ai-user, software-engineer | planned     |
-| [Community build workshop](../product/04-interfaces.md#community-build-workshop)                                                      | everyday-ai-user, software-engineer | planned     |
-| [External rule-source mapping preview](../product/04-interfaces.md#external-rule-source-mapping-preview)                              | everyday-ai-user, software-engineer | vision      |
-| [Suggestion and proposal review](../product/04-interfaces.md#suggestion-and-proposal-review)                                          | everyday-ai-user, software-engineer | planned     |
-| [Agent projection (the sparse twin)](../product/04-interfaces.md#agent-projection-the-sparse-twin)                                    | everyday-ai-user, software-engineer | planned     |
-| [Glyph system (visual prototype zero)](../product/04-interfaces.md#glyph-system-visual-prototype-zero)                                | everyday-ai-user, software-engineer | planned     |
-| [Transmog](../product/04-interfaces.md#transmog)                                                                                      | everyday-ai-user, software-engineer | planned     |
-| [Replay](../product/04-interfaces.md#replay)                                                                                          | everyday-ai-user, software-engineer | planned     |
-| [Physical channel](../product/04-interfaces.md#physical-channel)                                                                      | everyday-ai-user, software-engineer | planned     |
+| Section                                                                                                                                                 | Audiences                           | Status      |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- |
+| [Interfaces — the isomorphic views](../product/04-interfaces.md#interfaces--the-isomorphic-views)                                                       | everyday-ai-user, software-engineer | planned     |
+| [Editable-view v1 normalization and semantic hash](../product/04-interfaces.md#editable-view-v1-normalization-and-semantic-hash)                        | software-engineer                   | implemented |
+| [Terminal first, console equal](../product/04-interfaces.md#terminal-first-console-equal)                                                               | everyday-ai-user, software-engineer | planned     |
+| [Candidate — workstream application](../product/04-interfaces.md#candidate--workstream-application)                                                     | everyday-ai-user, software-engineer | vision      |
+| [Candidate — private exclusion-list management](../product/04-interfaces.md#candidate--private-exclusion-list-management)                               | everyday-ai-user, software-engineer | vision      |
+| [Candidate — exact operator command vocabulary](../product/04-interfaces.md#candidate--exact-operator-command-vocabulary)                               | everyday-ai-user, software-engineer | vision      |
+| [Candidate — multi-dimensional authorship assistance](../product/04-interfaces.md#candidate--multi-dimensional-authorship-assistance)                   | everyday-ai-user, software-engineer | vision      |
+| [`προτείνω` — prose as a world action](../product/04-interfaces.md#προτείνω--prose-as-a-world-action)                                                   | everyday-ai-user, software-engineer | vision      |
+| [Plural UI hosts, one projection contract](../product/04-interfaces.md#plural-ui-hosts-one-projection-contract)                                         | everyday-ai-user, software-engineer | planned     |
+| [Actor board v0](../product/04-interfaces.md#actor-board-v0)                                                                                            | everyday-ai-user, software-engineer | implemented |
+| [Candidate — browser and desktop hosts for a resident 3D view](../product/04-interfaces.md#candidate--browser-and-desktop-hosts-for-a-resident-3d-view) | everyday-ai-user, software-engineer | vision      |
+| [Later console hosts](../product/04-interfaces.md#later-console-hosts)                                                                                  | everyday-ai-user, software-engineer | planned     |
+| [RPG / Path-of-Exile view](../product/04-interfaces.md#rpg--path-of-exile-view)                                                                         | everyday-ai-user, software-engineer | planned     |
+| [Authority inspection projection](../product/04-interfaces.md#authority-inspection-projection)                                                          | everyday-ai-user, software-engineer | implemented |
+| [Semantic zoom](../product/04-interfaces.md#semantic-zoom)                                                                                              | everyday-ai-user, software-engineer | planned     |
+| [Community build workshop](../product/04-interfaces.md#community-build-workshop)                                                                        | everyday-ai-user, software-engineer | planned     |
+| [External rule-source mapping preview](../product/04-interfaces.md#external-rule-source-mapping-preview)                                                | everyday-ai-user, software-engineer | vision      |
+| [Suggestion and proposal review](../product/04-interfaces.md#suggestion-and-proposal-review)                                                            | everyday-ai-user, software-engineer | planned     |
+| [Agent projection (the sparse twin)](../product/04-interfaces.md#agent-projection-the-sparse-twin)                                                      | everyday-ai-user, software-engineer | planned     |
+| [Glyph system (visual prototype zero)](../product/04-interfaces.md#glyph-system-visual-prototype-zero)                                                  | everyday-ai-user, software-engineer | planned     |
+| [Transmog](../product/04-interfaces.md#transmog)                                                                                                        | everyday-ai-user, software-engineer | planned     |
+| [Replay](../product/04-interfaces.md#replay)                                                                                                            | everyday-ai-user, software-engineer | planned     |
+| [Physical channel](../product/04-interfaces.md#physical-channel)                                                                                        | everyday-ai-user, software-engineer | planned     |
 
 ## 05 — Pattern library
 
@@ -125,6 +126,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Candidate — success under growth](../product/05-pattern-library.md#candidate--success-under-growth)                                                           | everyday-ai-user, software-engineer | vision      |
 | [Candidate — influence response policies](../product/05-pattern-library.md#candidate--influence-response-policies)                                             | everyday-ai-user, software-engineer | vision      |
 | [Systems & quality](../product/05-pattern-library.md#systems--quality)                                                                                         | everyday-ai-user, software-engineer | planned     |
+| [Candidate — all eight system traps as a design lens](../product/05-pattern-library.md#candidate--all-eight-system-traps-as-a-design-lens)                     | everyday-ai-user, software-engineer | vision      |
 | [Party topology — commedia dell'arte (the masks)](../product/05-pattern-library.md#party-topology--commedia-dellarte-the-masks)                                | everyday-ai-user, software-engineer | planned     |
 | [The Eye Dr Test — pairwise preference](../product/05-pattern-library.md#the-eye-dr-test--pairwise-preference)                                                 | everyday-ai-user, software-engineer | planned     |
 | [Candidate — Additional Opinion](../product/05-pattern-library.md#candidate--additional-opinion)                                                               | everyday-ai-user, software-engineer | vision      |
@@ -138,6 +140,11 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Built-in modifier switches](../product/05-pattern-library.md#built-in-modifier-switches)                                                                      | everyday-ai-user, software-engineer | specified   |
 | [Intent queue and communication levels](../product/05-pattern-library.md#intent-queue-and-communication-levels)                                                | everyday-ai-user, software-engineer | implemented |
 | [Orchestration and quality policies](../product/05-pattern-library.md#orchestration-and-quality-policies)                                                      | everyday-ai-user, software-engineer | specified   |
+| [Candidate — Tinkerer / Scientist](../product/05-pattern-library.md#candidate--tinkerer--scientist)                                                            | everyday-ai-user, software-engineer | vision      |
+| [Candidate — historical comparison after a forced alternative](../product/05-pattern-library.md#candidate--historical-comparison-after-a-forced-alternative)   | everyday-ai-user, software-engineer | vision      |
+| [Candidate — retain unchosen alternatives](../product/05-pattern-library.md#candidate--retain-unchosen-alternatives)                                           | everyday-ai-user, software-engineer | vision      |
+| [Candidate — emoji shorthand as an experiment](../product/05-pattern-library.md#candidate--emoji-shorthand-as-an-experiment)                                   | everyday-ai-user, software-engineer | vision      |
+| [Candidate — Context Continuity](../product/05-pattern-library.md#candidate--context-continuity)                                                               | everyday-ai-user, software-engineer | vision      |
 | [Candidate — Beware of Naive Interventionism](../product/05-pattern-library.md#candidate--beware-of-naive-interventionism)                                     | software-engineer                   | vision      |
 | [Candidate extension — implementation and delayed consequences](../product/05-pattern-library.md#candidate-extension--implementation-and-delayed-consequences) | everyday-ai-user, software-engineer | vision      |
 | [Clean Room — active mechanic with contextual supports](../product/05-pattern-library.md#clean-room--active-mechanic-with-contextual-supports)                 | everyday-ai-user, software-engineer | vision      |
@@ -206,7 +213,10 @@ as a current blocked verdict.
 | [Operator-opened ideation mode](../product/07-execution-guide.md#operator-opened-ideation-mode)                                                              | software-engineer                   | specified   |
 | [Ideation breakout receipt and verification](../product/07-execution-guide.md#ideation-breakout-receipt-and-verification)                                    | software-engineer                   | specified   |
 | [Operator-opened planning pass](../product/07-execution-guide.md#operator-opened-planning-pass)                                                              | software-engineer                   | implemented |
-| [Workflow closeout and releases](../product/07-execution-guide.md#workflow-closeout-and-releases)                                                            | software-engineer                   | verified    |
+| [Retained planning follow-ups](../product/07-execution-guide.md#retained-planning-follow-ups)                                                                | software-engineer                   | implemented |
+| [Candidate — planner startup context](../product/07-execution-guide.md#candidate--planner-startup-context)                                                   | software-engineer                   | specified   |
+| [Candidate — recurring review of implementation alternatives](../product/07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives)   | everyday-ai-user, software-engineer | vision      |
+| [Workflow closeout and releases](../product/07-execution-guide.md#workflow-closeout-and-releases)                                                            | software-engineer                   | implemented |
 | [Documentation freshness and ownership](../product/07-execution-guide.md#documentation-freshness-and-ownership)                                              | everyday-ai-user, software-engineer | specified   |
 | [Discipline](../product/07-execution-guide.md#discipline)                                                                                                    | software-engineer                   | specified   |
 | [Model-specific notes](../product/07-execution-guide.md#model-specific-notes)                                                                                | software-engineer                   | specified   |

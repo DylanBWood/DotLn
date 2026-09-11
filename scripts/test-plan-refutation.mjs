@@ -1,6 +1,8 @@
 #!/usr/bin/env node
+import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  existsSync,
   mkdtempSync,
   mkdirSync,
   readFileSync,
@@ -50,6 +52,13 @@ import { checkLocalTerms } from "./lib/terms.mjs";
 import { fold, parseControlEvents } from "./lib/control.mjs";
 import { runGit } from "./lib/git.mjs";
 import { main as plan } from "./refute-plan.mjs";
+import {
+  beginDirectRefutation,
+  fileDirectRefutation,
+  planJudgmentScope,
+  latestPlanningPass,
+} from "./lib/plan-direct.mjs";
+import { LEGACY_COST_HEADER } from "./lib/legacy-cost.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const now = () => Date.parse("2030-01-02T12:00:00.000Z");
@@ -225,10 +234,7 @@ export async function fixtures() {
   const parent = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-plan-fixtures-")),
   );
-  const check = async (label, run) => {
-    await run();
-    process.stdout.write(`PASS ${label}\n`);
-  };
+  const check = (label, run) => test(label, run);
   try {
     await check(
       "direct-session frozen result round-trips and gates without invented launch provenance",
@@ -1373,6 +1379,363 @@ export async function fixtures() {
         commit(repo, "symlink fixture");
         mutate(repo, PLAN_MAP, "WO-902", "WO-903");
         assert.throws(() => buildPlanSubject(repo), /committed regular file/u);
+      },
+    );
+
+    await check(
+      "WO-126 direct command files an immutable committed receipt, rejects bad input and carries unchanged verdicts",
+      async () => {
+        const repo = makeRepo(parent, "direct-command");
+        runGit(repo, ["config", "user.name", "Direct Fixture"]);
+        runGit(repo, ["config", "user.email", "fixture@example.invalid"]);
+        const prompt = await plan(["refute", "--direct"], repo);
+        assert.ok(typeof prompt === "string");
+        assert.ok(!prompt.includes("PLANNER_NARRATIVE_SENTINEL"));
+        const subject = buildPlanSubject(repo);
+        const resultPath = "docs/control/local/result.json",
+          statementPath = "docs/control/local/statement.txt";
+        write(repo, resultPath, "{}");
+        write(
+          repo,
+          statementPath,
+          "Synthetic direct judgment; canonical prompt only.",
+        );
+        await assert.rejects(
+          plan(["receipt", resultPath, "--statement", statementPath], repo),
+          /One direct result/,
+        );
+        write(repo, resultPath, JSON.stringify(passResult(subject)));
+        write(
+          repo,
+          orderPath("WO-901"),
+          read(repo, orderPath("WO-901")).replace(
+            "useful shape",
+            "changed shape",
+          ),
+        );
+        await assert.rejects(
+          plan(["receipt", resultPath, "--statement", statementPath], repo),
+          /stale/,
+        );
+        write(repo, orderPath("WO-901"), order("WO-901"));
+        const first = await plan(
+          ["receipt", resultPath, "--statement", statementPath],
+          repo,
+        );
+        assert.equal(first.scope, "pass");
+        assert.equal(first.verdict, "pass");
+        assert.equal(runGit(repo, ["status", "--porcelain"]), "");
+        assert.match(
+          runGit(repo, ["log", "-1", "--format=%s"]),
+          /^Record planning refutation /,
+        );
+        await assert.rejects(plan(["refute", "--direct"], repo), /re-rolled/);
+        write(
+          repo,
+          PLAN_LEDGER,
+          read(repo, PLAN_LEDGER) +
+            "\n## 2030-01-03 next planning pass\n\nPLANNER_NARRATIVE_SENTINEL\n",
+        );
+        write(
+          repo,
+          orderPath("WO-901"),
+          order("WO-901").replace("useful shape", "new useful shape"),
+        );
+        commit(repo, "one-order pass");
+        const nextSubject = buildPlanSubject(repo);
+        const scope = await planJudgmentScope(
+          repo,
+          nextSubject,
+          latestPlanningPass(repo),
+        );
+        assert.deepEqual(scope.judgedOrderIds, ["WO-901"]);
+        assert.equal(scope.carried[0].workOrderId, "WO-902");
+        const secondPrompt = await plan(["refute", "--direct"], repo);
+        assert.ok(!secondPrompt.includes("PLANNER_NARRATIVE_SENTINEL"));
+        const nextResult = passResult(nextSubject);
+        nextResult.orders = nextResult.orders.filter(
+          (row) => row.workOrderId === "WO-901",
+        );
+        write(repo, resultPath, JSON.stringify(nextResult));
+        const second = await plan(
+          ["receipt", resultPath, "--statement", statementPath],
+          repo,
+        );
+        assert.equal(second.carried, 1);
+        assert.equal(second.verdict, "pass");
+        const receipts = await readReceipts(repo);
+        assert.deepEqual(
+          receipts[1].result.orders[1],
+          receipts[0].result.orders[1],
+        );
+        assert.equal(receipts[1].episode.review.scope, "pass");
+        assert.ok(receipts[1].episode.review.durationMs >= 0);
+        assert.equal((await checkPlanGate(repo)).passes, 2);
+      },
+    );
+    await check(
+      "WO-126 planning start requires clean main and full scope retains every judgment",
+      async () => {
+        const repo = makeRepo(parent, "planning-start");
+        runGit(repo, ["branch", "-M", "main"]);
+        write(repo, "dirty.txt", "uncommitted");
+        await assert.rejects(plan(["start", "fixture"], repo), /clean main/);
+        commit(repo, "fixture input");
+        const started = await plan(["start", "fixture"], repo);
+        assert.match(started.branch, /^planning\/\d{4}-\d{2}-\d{2}-fixture$/);
+        await assert.rejects(plan(["start", "second"], repo), /clean main/);
+        const prompt = await plan(
+          ["refute", "--direct", "--scope", "full"],
+          repo,
+        );
+        assert.equal(JSON.parse(prompt).subject.scope, "full");
+        const subject = buildPlanSubject(repo);
+        const scope = await planJudgmentScope(
+          repo,
+          subject,
+          latestPlanningPass(repo),
+          "full",
+        );
+        assert.deepEqual(scope.judgedOrderIds, ["WO-901", "WO-902"]);
+        assert.deepEqual(scope.carried, []);
+      },
+    );
+    await check(
+      "WO-126 legacy cost adoption preserves receipts and refuses any substantive authority edit",
+      async () => {
+        const repo = makeRepo(parent, "legacy-cost-adoption");
+        renameSync(
+          join(repo, orderPath("WO-901")),
+          join(repo, orderPath("WO-126")),
+        );
+        write(
+          repo,
+          orderPath("WO-126"),
+          read(repo, orderPath("WO-126"))
+            .replaceAll("WO-901", "WO-126")
+            .replace(
+              "Keep a bounded result.",
+              "Keep a bounded result with a **Cost:** declaration.",
+            ),
+        );
+        write(
+          repo,
+          PLAN_MAP,
+          read(repo, PLAN_MAP).replaceAll("WO-901", "WO-126"),
+        );
+        commit(repo, "legacy reviewed cost contract");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "immutable legacy judgment");
+        const receiptBytes = read(
+          repo,
+          `${RECEIPTS}/${receipt.receiptId}.json`,
+        );
+        write(
+          repo,
+          "docs/control/budgets.json",
+          read(root, "docs/control/budgets.json"),
+        );
+        for (const id of ["WO-126", "WO-902"])
+          write(
+            repo,
+            orderPath(id),
+            read(repo, orderPath(id)).replace(
+              /^(# [^\n]+\n)/,
+              `$1\n${LEGACY_COST_HEADER}`,
+            ),
+          );
+        commit(repo, "adopt unavailable cost declarations");
+        const basis = buildPlanSubject(repo, "HEAD", { costTable: false });
+        write(
+          repo,
+          "docs/planning/cost-table.json",
+          JSON.stringify({
+            schemaVersion: 1,
+            observedAt: "2030-01-02T01:00:00.000Z",
+            subjectRevision: basis.revision,
+            subjectSourceHash: basis.costTable.subjectSourceHash,
+            acceptances: [],
+            rows: basis.orders.map((order) => ({
+              workOrder: order.workOrderId,
+              metrics: null,
+            })),
+            traps: [],
+          }),
+        );
+        commit(repo, "bind current cost observation");
+        const accepted = await checkPlanGate(repo);
+        assert.ok(
+          accepted.continuation.committedUpdates.some(
+            (row) => row.kind === "cost-contract-adoption",
+          ),
+        );
+        assert.equal(
+          read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+          receiptBytes,
+        );
+        const original = read(repo, orderPath("WO-902"));
+        write(
+          repo,
+          orderPath("WO-902"),
+          original.replace(
+            "Keep a bounded result.",
+            "Skip the required evidence.",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject|stale/,
+        );
+        write(
+          repo,
+          orderPath("WO-902"),
+          original.replace(
+            LEGACY_COST_HEADER,
+            LEGACY_COST_HEADER.replace(
+              "No reduction is claimed",
+              "A reduction is claimed",
+            ),
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /matching the current subject|stale/,
+        );
+      },
+    );
+    await check(
+      "WO-126 cost input holds missing or unbalanced additions and refuses stale subject evidence",
+      async () => {
+        const repo = makeRepo(parent, "planning-cost");
+        const budgets = JSON.parse(read(root, "docs/control/budgets.json"));
+        write(repo, "docs/control/budgets.json", JSON.stringify(budgets));
+        write(
+          repo,
+          orderPath("WO-901"),
+          order("WO-901").replace(
+            "**Model:**",
+            "**Cost:** Adds one process check; removes nothing.\n\n**Model:**",
+          ),
+        );
+        commit(repo, "cost-bearing subject");
+        const basis = buildPlanSubject(repo, "HEAD", { costTable: false });
+        const table = {
+          schemaVersion: 1,
+          observedAt: "2030-01-02T01:00:00.000Z",
+          subjectRevision: basis.revision,
+          subjectSourceHash: basis.costTable.subjectSourceHash,
+          acceptances: [],
+          rows: basis.orders.map((order) => ({
+            workOrder: order.workOrderId,
+            metrics: null,
+          })),
+          traps: [],
+        };
+        const tablePath = "docs/planning/cost-table.json";
+        write(repo, tablePath, JSON.stringify(table));
+        commit(repo, "cost observation");
+        let subject = buildPlanSubject(repo),
+          result = validatePlanResult(passResult(subject), subject);
+        assert.equal(result.planVerdict, "hold");
+        assert.ok(
+          result.holdReasons.some(
+            (row) => row.workOrderId === "WO-901" && /removal/.test(row.reason),
+          ),
+        );
+        assert.ok(
+          result.holdReasons.some(
+            (row) =>
+              row.workOrderId === "WO-902" && /Missing Cost/.test(row.reason),
+          ),
+        );
+        const acceptance = {
+          date: "2030-01-02",
+          metric: "process",
+          scope: "WO-901",
+          ceiling: 1,
+          dispatch: "Synthetic operator",
+          reason: "Accepted fixture cost",
+        };
+        const accepted = {
+          ...subject,
+          costTable: { ...subject.costTable, acceptances: [acceptance] },
+          orders: subject.orders.map((row) =>
+            row.workOrderId === "WO-902"
+              ? { ...row, cost: "Adds no process." }
+              : row,
+          ),
+        };
+        assert.equal(
+          validatePlanResult(passResult(accepted), accepted).planVerdict,
+          "pass",
+        );
+        const balanced = {
+          ...subject,
+          orders: subject.orders.map((row) => ({
+            ...row,
+            cost: "Adds one check; removes two repeated commands.",
+          })),
+        };
+        assert.equal(
+          validatePlanResult(passResult(balanced), balanced).planVerdict,
+          "pass",
+        );
+        await beginDirectRefutation(repo, {
+          now: () => "2030-01-02T12:00:00.000Z",
+        });
+        const pointer = JSON.parse(
+          read(repo, "docs/control/local/plan/current-direct.json"),
+        );
+        await beginDirectRefutation(repo, {
+          now: () => "2030-01-02T12:05:00.000Z",
+        });
+        assert.equal(
+          JSON.parse(read(repo, pointer.path)).dispatchedAt,
+          "2030-01-02T12:00:00.000Z",
+          "repeating the prompt must not reset the dispatch clock",
+        );
+        write(
+          repo,
+          "docs/control/local/result.json",
+          JSON.stringify(passResult(subject)),
+        );
+        write(
+          repo,
+          "docs/control/local/statement.txt",
+          "Synthetic canonical-only judgment.",
+        );
+        await assert.rejects(
+          fileDirectRefutation(
+            repo,
+            "docs/control/local/result.json",
+            "docs/control/local/statement.txt",
+            { commit: false, now: () => "2030-01-02T12:02:00.001Z" },
+          ),
+          /exceeded 120000 ms/,
+        );
+        assert.equal(
+          (await readReceipts(repo)).length,
+          0,
+          "over-budget judgment must not file evidence",
+        );
+        write(
+          repo,
+          tablePath,
+          JSON.stringify({ ...table, observedAt: "2029-01-01T00:00:00.000Z" }),
+        );
+        commit(repo, "stale fixture date");
+        assert.throws(() => buildPlanSubject(repo), /predates/);
+        write(repo, tablePath, JSON.stringify(table));
+        write(
+          repo,
+          orderPath("WO-901"),
+          read(repo, orderPath("WO-901")).replace(
+            "Adds one process",
+            "Adds two process",
+          ),
+        );
+        commit(repo, "changed cost input");
+        assert.throws(() => buildPlanSubject(repo), /stale/);
       },
     );
   } finally {

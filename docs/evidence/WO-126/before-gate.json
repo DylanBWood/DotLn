@@ -1,0 +1,192 @@
+{
+  "method": "original chain, continuing after failures to measure every declared step",
+  "startedAt": "2026-09-09T20:38:16.147Z",
+  "durationMs": 359147,
+  "results": [
+    {
+      "command": "npm run format:check --silent",
+      "exitCode": 0,
+      "durationMs": 3955
+    },
+    {
+      "command": "node scripts/release.mjs check-surfaces --local",
+      "exitCode": 0,
+      "durationMs": 1907
+    },
+    {
+      "command": "node --test scripts/test-release-preparation.mjs",
+      "exitCode": 0,
+      "durationMs": 1597
+    },
+    {
+      "command": "node scripts/test-github-body.mjs",
+      "exitCode": 0,
+      "durationMs": 65
+    },
+    {
+      "command": "node --test scripts/test-license-surfaces.mjs",
+      "exitCode": 0,
+      "durationMs": 9821
+    },
+    {
+      "command": "node scripts/license-surfaces.mjs",
+      "exitCode": 0,
+      "durationMs": 1692
+    },
+    {
+      "command": "bash scripts/test-fixture-temp-root.sh",
+      "exitCode": 0,
+      "durationMs": 444
+    },
+    {
+      "command": "bash scripts/test-publication.sh",
+      "exitCode": 0,
+      "durationMs": 842
+    },
+    {
+      "command": "bash scripts/test-backup-intake.sh",
+      "exitCode": 0,
+      "durationMs": 217
+    },
+    {
+      "command": "bash scripts/test-resume.sh",
+      "exitCode": 0,
+      "durationMs": 25310
+    },
+    {
+      "command": "bash scripts/test-checkpoint.sh",
+      "exitCode": 0,
+      "durationMs": 2020
+    },
+    {
+      "command": "bash scripts/test-worktree.sh",
+      "exitCode": 0,
+      "durationMs": 35611
+    },
+    {
+      "command": "bash scripts/test-release.sh",
+      "exitCode": 0,
+      "durationMs": 132888
+    },
+    {
+      "command": "bash scripts/test-work-orders.sh",
+      "exitCode": 0,
+      "durationMs": 10621
+    },
+    {
+      "command": "node scripts/check-publication.mjs",
+      "exitCode": 0,
+      "durationMs": 236
+    },
+    {
+      "command": "node scripts/work-orders.mjs index --check",
+      "exitCode": 0,
+      "durationMs": 2966
+    },
+    {
+      "command": "rm -rf packages/kernel/dist packages/compiler/dist packages/skeleton/dist packages/console/dist",
+      "exitCode": 0,
+      "durationMs": 19
+    },
+    {
+      "command": "tsc -b --force",
+      "exitCode": 0,
+      "durationMs": 1895
+    },
+    {
+      "command": "ls packages/kernel/dist/test/*.test.js >/dev/null",
+      "exitCode": 0,
+      "durationMs": 4
+    },
+    {
+      "command": "ls packages/compiler/dist/test/*.test.js >/dev/null",
+      "exitCode": 0,
+      "durationMs": 3
+    },
+    {
+      "command": "ls packages/skeleton/dist/test/*.test.js >/dev/null",
+      "exitCode": 0,
+      "durationMs": 3
+    },
+    {
+      "command": "ls packages/console/dist/test/*.test.js >/dev/null",
+      "exitCode": 0,
+      "durationMs": 3
+    },
+    {
+      "command": "node --test packages/kernel/dist/test/*.test.js packages/compiler/dist/test/*.test.js packages/skeleton/dist/test/*.test.js",
+      "exitCode": 0,
+      "durationMs": 20860
+    },
+    {
+      "command": "node --test packages/console/dist/test/*.test.js",
+      "exitCode": 0,
+      "durationMs": 11751
+    },
+    {
+      "command": "node --test scripts/test-adjacent-queue.mjs",
+      "exitCode": 0,
+      "durationMs": 299
+    },
+    {
+      "command": "node --test scripts/test-authority-grants.mjs",
+      "exitCode": 0,
+      "durationMs": 160
+    },
+    {
+      "command": "node scripts/authority-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 492
+    },
+    {
+      "command": "node --test scripts/test-harness.mjs",
+      "exitCode": 0,
+      "durationMs": 35554
+    },
+    {
+      "command": "node scripts/harness.mjs check",
+      "exitCode": 0,
+      "durationMs": 128
+    },
+    {
+      "command": "node scripts/harness-context.mjs --check",
+      "exitCode": 1,
+      "durationMs": 175
+    },
+    {
+      "command": "node scripts/harness-evidence.mjs",
+      "exitCode": 1,
+      "durationMs": 226
+    },
+    {
+      "command": "node scripts/test-plan-refutation.mjs",
+      "exitCode": 0,
+      "durationMs": 41165
+    },
+    {
+      "command": "node --test corpus/harness/wo101-id-corpus.test.mjs",
+      "exitCode": 0,
+      "durationMs": 235
+    },
+    {
+      "command": "node scripts/artifact-identity-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 209
+    },
+    {
+      "command": "node scripts/verification-evidence.mjs --check",
+      "exitCode": 0,
+      "durationMs": 1654
+    },
+    {
+      "command": "node scripts/feedback-evidence.mjs --check --edition WO-042 --revision 002",
+      "exitCode": 0,
+      "durationMs": 3311
+    },
+    {
+      "command": "npm run test:mutation --silent",
+      "exitCode": 0,
+      "durationMs": 10807
+    }
+  ]
+}

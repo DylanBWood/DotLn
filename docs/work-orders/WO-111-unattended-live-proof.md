@@ -1,5 +1,7 @@
 # WO-111 — The unattended hour: with the operator marked away, the resident derives and completes 5S work in a scratch repository under the progressive curve, verifies each change, and stops on return, recorded from an outside terminal (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** the actual local harnesses for the worker and verifier episodes;
 the operator marks away and returns; launch claims recorded per episode
 (07-execution-guide.md §Model-specific notes).

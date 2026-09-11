@@ -1,5 +1,7 @@
 # WO-005 — Capability table v1, v0.2.2
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model.
 **Release classification:** `v0.2.2` patch — a reviewed inventory of existing
 evidence, not exported runtime capability. Reclassify before implementation if

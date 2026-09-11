@@ -1,5 +1,7 @@
 # WO-040 — Rule migration, batch one: the migration ledger and the first batch of feedback shapes compiled through the harness target (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Umbrella record (2026-09-08):** superseded whole by bounded children at the operator's same-day correction of the critical-path planning pass; not activatable. Its obligations are carried by WO-096 (the migration ledger and whole-set classification), WO-097 (batch 1a: six rung-1 and rung-2 units with their retirements) and WO-098 (batch 1b: six units including a skill and a cadence unit, the measurement and the batch template). Its observed-gap sentence "no unit has a host-observed live activation" is stale since WO-039's live records; the children state the current gap. The text below is preserved as the record the children cite; nothing in it grants activation.
 
 **Model:** any capable model. State the model and effort actually run in the

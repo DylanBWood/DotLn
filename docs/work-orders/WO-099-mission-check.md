@@ -1,5 +1,7 @@
 # WO-099 — Mission check: a cadence-driven read-only verifier episode judges whether the active work is still inside its contract and on the vision's theses, and a drift holds unattended dispatch until a human or a repair clears it; first proven unattended (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the episode contract and fixtures; the
 live row uses the actual harness as the verifier, operator-run. State the
 model and effort actually run (07-execution-guide.md §Model-specific notes).

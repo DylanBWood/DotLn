@@ -1,5 +1,7 @@
 # WO-035 — Documentation structure reset: one ledger order, a spec/receipt boundary, generated release history, and a shorter cold start (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Umbrella record (2026-09-08):** superseded whole by bounded children at the operator's same-day correction of the critical-path planning pass; not activatable. Its obligations are carried by WO-084 (ledger order and index), WO-085 (the spec/receipt boundary and docs-check), WO-086 (generated release history), WO-087 (the roadmap split), WO-088 (one source for the phrase table), WO-089 (the capability-table fold) and WO-090 (the shorter cold start). The text below is preserved as the record the children cite; nothing in it grants activation.
 
 **Model:** any capable model. State the model and effort actually run in the

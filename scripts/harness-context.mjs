@@ -20,6 +20,7 @@ import {
   legacyDirectedReads,
   snapshotReader,
 } from "./lib/harness-context.mjs";
+import { measureColdStarts, requireBudgets } from "./lib/process-budget.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 export const fixtureTree = join(root, "scripts/fixtures/harness-context/tree");
@@ -156,40 +157,13 @@ if (
   process.argv[1] &&
   realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
-  const result = measureHarnessContext();
-  checkContextMeasurement(result);
-  const destination = join(root, "docs/evidence/WO-042/harness-context.json");
+  const result = measureColdStarts(root);
+  requireBudgets(result.profiles);
+  const destination = join(root, "docs/evidence/WO-126/harness-context.json");
   const text = JSON.stringify(result, null, 2) + "\n";
   if (process.argv.includes("--write")) {
-    mkdirSync(join(root, "docs/evidence/WO-042"), { recursive: true });
+    mkdirSync(join(root, "docs/evidence/WO-126"), { recursive: true });
     writeFileSync(destination, text);
-  } else if (process.argv.includes("--check"))
-    assert.equal(
-      readFileSync(destination, "utf8"),
-      text,
-      "context measurement drift",
-    );
-  console.log(
-    JSON.stringify(
-      {
-        instruction: {
-          before: result.instruction.before.bytes,
-          after: result.instruction.after.bytes,
-        },
-        roles: result.profiles.map(
-          ({ role, skillsRoot, before, after, lower }) => ({
-            role,
-            skillsRoot,
-            beforeBytes: before.bytes,
-            afterBytes: after.bytes,
-            beforeLines: before.lines,
-            afterLines: after.lines,
-            lower,
-          }),
-        ),
-      },
-      null,
-      2,
-    ),
-  );
+  }
+  console.log(text.trimEnd());
 }

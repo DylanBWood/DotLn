@@ -1,16 +1,20 @@
-// Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.executor","contributor.planner","contributor.release-close","contributor.reviewer","contributor.verifier","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"}
+// Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.executor","contributor.planner","contributor.refuter","contributor.release-close","contributor.reviewer","contributor.verifier","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"}
 try {
-const { feedbackBoundary } = await import("../../packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/a4a65a94d36a276d/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/a4a65a94d36a276d/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.8.0",
+  "compilerPackageVersion": "0.9.0",
   "runtime": {
-    "skeletonVersion": "0.14.0",
+    "skeletonVersion": "0.15.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/feedback.js",
-        "hash": "fnv1a64:dc9688aecc4cb056"
+        "hash": "fnv1a64:4bdd1cdb762a966b"
+      },
+      {
+        "path": "packages/compiler/dist/src/attribution.mjs",
+        "hash": "fnv1a64:7a65d9bab4b81dda"
       },
       {
         "path": "packages/skeleton/dist/src/feedback-boundary.js",
@@ -22,34 +26,76 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:589298d41425851a"
+        "hash": "fnv1a64:7fecefc9b1846878"
+      },
+      {
+        "path": "packages/skeleton/dist/src/harness-command.js",
+        "hash": "fnv1a64:7c2aa377e24dad66"
+      },
+      {
+        "path": "packages/skeleton/dist/src/gate-evidence.mjs",
+        "hash": "fnv1a64:d75b06aeb2034085"
+      },
+      {
+        "path": "packages/skeleton/dist/src/usage-observation.mjs",
+        "hash": "fnv1a64:80e01fab579951b9"
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
-    ]
+    ],
+    "snapshot": ".runtime/harness/a4a65a94d36a276d"
   },
   "event": "Stop",
+  "tools": {
+    "Read": "read",
+    "Glob": "read",
+    "Grep": "read",
+    "WebFetch": "read",
+    "WebSearch": "read",
+    "ListMcpResourcesTool": "read",
+    "ReadMcpResourceTool": "read",
+    "ToolSearch": "read",
+    "Edit": "write",
+    "Write": "write",
+    "NotebookEdit": "write",
+    "Bash": "shell",
+    "Monitor": "shell",
+    "TaskOutput": "read",
+    "KillShell": "shell",
+    "Agent": "spawn",
+    "Task": "spawn",
+    "Skill": "interaction",
+    "TodoWrite": "interaction",
+    "AskUserQuestion": "interaction",
+    "EnterPlanMode": "interaction",
+    "ExitPlanMode": "interaction",
+    "exec_command": "shell",
+    "write_stdin": "shell",
+    "apply_patch": "write",
+    "functions.exec": "shell",
+    "collaboration.spawn_agent": "spawn"
+  },
   "kind": "finish",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.8.0",
+    "compilerPackageVersion": "0.9.0",
     "units": [
       {
         "unitId": "anti-oscillation",
-        "version": 1,
+        "version": 2,
         "incident": {
           "sourceRefs": [
-            "docs/evidence/WO-031/ideation.md",
-            "docs/lineage/idea-ledger.md"
+            "docs/lineage/idea-ledger.md#2026-09-09-emergency-process-debt-planning-pass",
+            "docs/work-orders/WO-126-process-debt.md"
           ],
           "sourceTreatment": "synthesized-from-public-lineage",
-          "summary": "The publication correction rejected verbose titles, then rejected an invented length limit without restoring the original verbosity. WO-011 also distinguishes optional organization from a mandatory cleanup project.",
+          "summary": "The operator's 2026-09-09 planning pass recorded ten category-boundary corrections. Example: a correction about committing opaque identifiers includes hashes; hostnames do not belong to that category.",
           "retainedSource": "public-reference"
         },
-        "undesiredBehavior": "Do not restore a rejected approach or turn an example into a new hard constraint when correcting behavior.",
-        "desiredBehavior": "Preserve desired outcomes and rejection reasons; replacing a rejected decision needs explicit supersession from the operator.",
+        "undesiredBehavior": "Do not answer a correction with a sweeping generalization that extrapolates beyond the category the operator named into adjacent rules or file changes they never asked for, nor with an over-literal reading that strips the rule to its exact words and excludes obvious members of the same category.",
+        "desiredBehavior": "Identify the category the operator is pointing at; stay inside it, neither widening nor shrinking it; when the boundary is genuinely unclear, ask one focused question instead of guessing in either direction; and pause to ask before any file action that goes beyond the literal correction. Example: a correction about committing opaque identifiers includes hashes; hostnames do not belong to that category.",
         "scope": [
           "equipped-feedback-host",
           "personal-profile"
@@ -57,27 +103,26 @@ await runHarnessHook({
         "trigger": "decision-lineage",
         "mechanism": {
           "handler": "decision-lineage",
-          "version": 1,
-          "rationale": "A pre-effect lineage guard compares explicit decisions; a text lint cannot decide which prior rejection applies."
+          "version": 2,
+          "kind": "prose",
+          "rationale": "Session judgment supplies this rule; it claims no executable host facts."
         },
-        "enforcement": "hard",
-        "requiredEvidence": [
-          "desired-outcomes",
-          "operator-explicit-constraints",
-          "rejected-approaches-and-reasons"
-        ],
+        "enforcement": "advisory",
+        "requiredEvidence": [],
         "regressionFixtures": [
-          "WO-011 regression anti-oscillation"
+          "WO-126 anti-oscillation version 2"
         ],
         "conflicts": [],
-        "supersedes": [],
+        "supersedes": [
+          "anti-oscillation@1"
+        ],
         "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
         "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
-        "proseEquivalent": "Do not restore a rejected approach or turn an example into a new hard constraint when correcting behavior. Preserve desired outcomes and rejection reasons; replacing a rejected decision needs explicit supersession from the operator."
+        "proseEquivalent": "Do not answer a correction with a sweeping generalization that extrapolates beyond the category the operator named into adjacent rules or file changes they never asked for, nor with an over-literal reading that strips the rule to its exact words and excludes obvious members of the same category. Identify the category the operator is pointing at; stay inside it, neither widening nor shrinking it; when the boundary is genuinely unclear, ask one focused question instead of guessing in either direction; and pause to ask before any file action that goes beyond the literal correction. Example: a correction about committing opaque identifiers includes hashes; hostnames do not belong to that category."
       },
       {
         "unitId": "bounded-boy-scout-cleanup",
-        "version": 1,
+        "version": 2,
         "incident": {
           "sourceRefs": [
             "docs/lineage/idea-ledger.md",
@@ -96,20 +141,19 @@ await runHarnessHook({
         "trigger": "cleanup-scope",
         "mechanism": {
           "handler": "cleanup-scope",
-          "version": 1,
-          "rationale": "A pre-effect gate checks a scoped host-reviewed assessment; scripts alone cannot establish semantic adjacency or risk."
+          "version": 2,
+          "kind": "prose",
+          "rationale": "Session judgment supplies this rule; it claims no executable host facts."
         },
-        "enforcement": "hard",
-        "requiredEvidence": [
-          "allowed-paths",
-          "host-reviewed-assessment",
-          "same-verification-checks"
-        ],
+        "enforcement": "advisory",
+        "requiredEvidence": [],
         "regressionFixtures": [
-          "WO-011 regression bounded-boy-scout-cleanup"
+          "WO-126 bounded-boy-scout-cleanup version 2"
         ],
         "conflicts": [],
-        "supersedes": [],
+        "supersedes": [
+          "bounded-boy-scout-cleanup@1"
+        ],
         "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
         "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
         "proseEquivalent": "Do not expand into ambiguous, risky, unrelated, unverified, or retained-evidence cleanup merely because an adjacent item was noticed. Admit only host-reviewed adjacent low-risk cleanup within named paths and shared checks that keeps the diff legible; nominate the rest separately."
@@ -154,7 +198,7 @@ await runHarnessHook({
       },
       {
         "unitId": "correctness-over-sycophancy",
-        "version": 1,
+        "version": 2,
         "incident": {
           "sourceRefs": [
             "docs/lineage/idea-ledger.md"
@@ -172,26 +216,26 @@ await runHarnessHook({
         "trigger": "evidence-judgment",
         "mechanism": {
           "handler": "evidence-judgment",
-          "version": 1,
-          "rationale": "An evidence evaluator is necessary for a claim about correctness; token or phrasing checks cannot establish truth."
+          "version": 2,
+          "kind": "prose",
+          "rationale": "Session judgment supplies this rule; it claims no executable host facts."
         },
-        "enforcement": "hard",
-        "requiredEvidence": [
-          "independent-witnesses",
-          "subject-identity"
-        ],
+        "enforcement": "advisory",
+        "requiredEvidence": [],
         "regressionFixtures": [
-          "WO-011 regression correctness-over-sycophancy"
+          "WO-126 correctness-over-sycophancy version 2"
         ],
         "conflicts": [],
-        "supersedes": [],
+        "supersedes": [
+          "correctness-over-sycophancy@1"
+        ],
         "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
         "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
         "proseEquivalent": "Do not accept a preferred answer when independent evidence contradicts it or only implementer claims support it. Judge the current subject from consistent independent evidence and preserve disagreement as a failed or unsupported claim."
       },
       {
         "unitId": "fail-conservative-correction",
-        "version": 1,
+        "version": 2,
         "incident": {
           "sourceRefs": [
             "docs/lineage/idea-ledger.md",
@@ -210,26 +254,26 @@ await runHarnessHook({
         "trigger": "semantic-correction",
         "mechanism": {
           "handler": "semantic-correction",
-          "version": 1,
-          "rationale": "A pure event reactor computes the monotone policy transition; a static guard cannot remember the correction across later effects."
+          "version": 2,
+          "kind": "prose",
+          "rationale": "Session judgment supplies this rule; it claims no executable host facts."
         },
-        "enforcement": "hard",
-        "requiredEvidence": [
-          "prior-authority",
-          "typed-correction-event"
-        ],
+        "enforcement": "advisory",
+        "requiredEvidence": [],
         "regressionFixtures": [
-          "WO-011 regression fail-conservative-correction"
+          "WO-126 fail-conservative-correction version 2"
         ],
         "conflicts": [],
-        "supersedes": [],
+        "supersedes": [
+          "fail-conservative-correction@1"
+        ],
         "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
         "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
         "proseEquivalent": "Do not infer authority or a correction solely from surface language, or discard evidence when the operator reports a regression. On a typed correction, freeze destructive effects and scope expansion, preserve evidence, and require diagnosis; a false activation only tightens behavior."
       },
       {
         "unitId": "no-attribution",
-        "version": 1,
+        "version": 2,
         "incident": {
           "sourceRefs": [
             "docs/lineage/idea-ledger.md",
@@ -239,8 +283,8 @@ await runHarnessHook({
           "summary": "The founding mapping selects attribution settings plus a commit hook as defense in depth for the no-attribution requirement.",
           "retainedSource": "public-reference"
         },
-        "undesiredBehavior": "Do not append an AI coauthor trailer or generated-with footer to a commit or publication result.",
-        "desiredBehavior": "Disable available automatic attribution in the invocation settings and reject matching AI trailers or footers at the publication boundary; preserve ordinary subject text and human coauthors.",
+        "undesiredBehavior": "Do not append AI coauthors, generated-with footers, harness-suggested session trailers or session URLs to commits, PR titles or bodies, or release notes.",
+        "desiredBehavior": "Disable automatic attribution and reject AI trailers, footers and session links at publication; preserve human coauthors and ordinary subject text.",
         "scope": [
           "equipped-feedback-host",
           "personal-profile"
@@ -248,7 +292,7 @@ await runHarnessHook({
         "trigger": "attribution",
         "mechanism": {
           "handler": "attribution",
-          "version": 1,
+          "version": 2,
           "rationale": "A deterministic footer/trailer predicate is sufficient; invocation settings reduce generation and the commit hook checks actual bytes."
         },
         "enforcement": "hard",
@@ -258,13 +302,15 @@ await runHarnessHook({
           "real-git-hook-result"
         ],
         "regressionFixtures": [
-          "WO-011 regression no-attribution"
+          "WO-126 no-attribution version 2"
         ],
         "conflicts": [],
-        "supersedes": [],
+        "supersedes": [
+          "no-attribution@1"
+        ],
         "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
         "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
-        "proseEquivalent": "Do not append an AI coauthor trailer or generated-with footer to a commit or publication result. Disable available automatic attribution in the invocation settings and reject matching AI trailers or footers at the publication boundary; preserve ordinary subject text and human coauthors."
+        "proseEquivalent": "Do not append AI coauthors, generated-with footers, harness-suggested session trailers or session URLs to commits, PR titles or bodies, or release notes. Disable automatic attribution and reject AI trailers, footers and session links at publication; preserve human coauthors and ordinary subject text."
       },
       {
         "unitId": "no-lint-type-disables-as-fixes",
@@ -306,7 +352,7 @@ await runHarnessHook({
       },
       {
         "unitId": "no-partial-completion",
-        "version": 1,
+        "version": 2,
         "incident": {
           "sourceRefs": [
             "docs/lineage/idea-ledger.md",
@@ -325,27 +371,29 @@ await runHarnessHook({
         "trigger": "complete-scope",
         "mechanism": {
           "handler": "complete-scope",
-          "version": 1,
+          "version": 2,
           "rationale": "A workflow transition gate checks the complete obligation set; a single successful check is not whole-order completion."
         },
-        "enforcement": "hard",
+        "enforcement": "advisory",
         "requiredEvidence": [
           "discharged-obligations",
           "remaining-work",
           "required-obligations"
         ],
         "regressionFixtures": [
-          "WO-011 regression no-partial-completion"
+          "WO-126 no-partial-completion version 2"
         ],
         "conflicts": [],
-        "supersedes": [],
+        "supersedes": [
+          "no-partial-completion@1"
+        ],
         "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
         "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
         "proseEquivalent": "Do not mark a partial result complete while required obligations or declared remaining work are unresolved. Only admit completed status when the required obligation set is discharged and no remaining work is reported."
       },
       {
         "unitId": "read-your-own-output",
-        "version": 1,
+        "version": 2,
         "incident": {
           "sourceRefs": [
             "docs/lineage/idea-ledger.md",
@@ -364,26 +412,28 @@ await runHarnessHook({
         "trigger": "output-review",
         "mechanism": {
           "handler": "output-review",
-          "version": 1,
+          "version": 2,
           "rationale": "A handoff gate compares read receipts and current content identities; prose cannot witness that the bytes were delivered."
         },
-        "enforcement": "hard",
+        "enforcement": "advisory",
         "requiredEvidence": [
           "current-output-identities",
           "host-read-receipts"
         ],
         "regressionFixtures": [
-          "WO-011 regression read-your-own-output"
+          "WO-126 read-your-own-output version 2"
         ],
         "conflicts": [],
-        "supersedes": [],
+        "supersedes": [
+          "read-your-own-output@1"
+        ],
         "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
         "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
         "proseEquivalent": "Do not hand off an artifact that was never read back, or that changed after it was read. Bind each required output to a host-observed read of its current bytes before handoff; this witnesses delivery to the reader, not comprehension."
       },
       {
         "unitId": "verify-app-before-done",
-        "version": 1,
+        "version": 2,
         "incident": {
           "sourceRefs": [
             "docs/lineage/idea-ledger.md",
@@ -402,20 +452,22 @@ await runHarnessHook({
         "trigger": "application-evidence",
         "mechanism": {
           "handler": "application-evidence",
-          "version": 1,
+          "version": 2,
           "rationale": "A workflow gate consumes executable evidence at completion; a one-time test alone cannot prevent a later unsupported done transition."
         },
-        "enforcement": "hard",
+        "enforcement": "advisory",
         "requiredEvidence": [
           "executed-results",
           "required-checks",
           "subject-identity"
         ],
         "regressionFixtures": [
-          "WO-011 regression verify-app-before-done"
+          "WO-126 verify-app-before-done version 2"
         ],
         "conflicts": [],
-        "supersedes": [],
+        "supersedes": [
+          "verify-app-before-done@1"
+        ],
         "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
         "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
         "proseEquivalent": "Do not call an application change done from prose, a skipped check, an old revision, or a failing executable check. Require executed passing checks for every required application check at the current subject before the completion transition."
@@ -425,16 +477,16 @@ await runHarnessHook({
       {
         "unitId": "anti-oscillation",
         "handler": "decision-lineage",
-        "kind": "pre-effect-guard",
-        "rung": 2,
-        "enforcement": "hard"
+        "kind": "prose",
+        "rung": 7,
+        "enforcement": "advisory"
       },
       {
         "unitId": "bounded-boy-scout-cleanup",
         "handler": "cleanup-scope",
-        "kind": "pre-effect-guard",
-        "rung": 2,
-        "enforcement": "hard"
+        "kind": "prose",
+        "rung": 7,
+        "enforcement": "advisory"
       },
       {
         "unitId": "concurrent-work-requires-worktrees",
@@ -446,16 +498,16 @@ await runHarnessHook({
       {
         "unitId": "correctness-over-sycophancy",
         "handler": "evidence-judgment",
-        "kind": "evaluator",
-        "rung": 5,
-        "enforcement": "hard"
+        "kind": "prose",
+        "rung": 7,
+        "enforcement": "advisory"
       },
       {
         "unitId": "fail-conservative-correction",
         "handler": "semantic-correction",
-        "kind": "pure-reactor",
-        "rung": 3,
-        "enforcement": "hard"
+        "kind": "prose",
+        "rung": 7,
+        "enforcement": "advisory"
       },
       {
         "unitId": "no-attribution",
@@ -476,24 +528,24 @@ await runHarnessHook({
         "handler": "complete-scope",
         "kind": "workflow-gate",
         "rung": 6,
-        "enforcement": "hard"
+        "enforcement": "advisory"
       },
       {
         "unitId": "read-your-own-output",
         "handler": "output-review",
         "kind": "workflow-gate",
         "rung": 6,
-        "enforcement": "hard"
+        "enforcement": "advisory"
       },
       {
         "unitId": "verify-app-before-done",
         "handler": "application-evidence",
         "kind": "workflow-gate",
         "rung": 6,
-        "enforcement": "hard"
+        "enforcement": "advisory"
       }
     ],
-    "policyHash": "fnv1a64:b7415b98b50fc2ce"
+    "policyHash": "fnv1a64:9bd8c3dafdfbe311"
   }
 }, feedbackBoundary);
-} catch { process.stdout.write("{\"decision\":\"block\",\"reason\":\"DOTLN_HARNESS_REFUSED: built adapter unavailable\"}"); }
+} catch { process.stdout.write("{\"systemMessage\":\"DotLn: built adapter unavailable; lifecycle evidence remains required.\"}"); }

@@ -14,7 +14,7 @@
       "sections": [
         {
           "id": "actors-d388bf69a2138223",
-          "title": "WO-042 self-hosted executor",
+          "title": "WO-126 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -126,7 +126,7 @@
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-24"
@@ -182,7 +182,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1788926121728,
+                  "value": 1788999387116,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-24"
@@ -202,7 +202,7 @@
               "links": [
                 {
                   "label": "Inspect recorded build",
-                  "target": "recorded-build-35f26d4503b9a313"
+                  "target": "recorded-build-67988eea6b39eff5"
                 },
                 {
                   "label": "feedback.audit: allowed",
@@ -226,7 +226,7 @@
         },
         {
           "id": "actors-b9a9504826d64362",
-          "title": "WO-042 self-hosted verifier",
+          "title": "WO-126 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -348,7 +348,7 @@
                   "key": "heartbeat",
                   "label": "Last host heartbeat",
                   "status": "known",
-                  "value": 1788922546895,
+                  "value": 1788995804396,
                   "explanation": null,
                   "evidence": [
                     "evidence-29"
@@ -358,7 +358,7 @@
                   "key": "lease",
                   "label": "Recorded lease expiry",
                   "status": "known",
-                  "value": 1788922551895,
+                  "value": 1788995809396,
                   "explanation": null,
                   "evidence": [
                     "evidence-29"
@@ -368,7 +368,7 @@
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:5bb660fcc70a4650",
+                  "value": "fnv1a64:bf0f5a76ad4e3783",
                   "explanation": null,
                   "evidence": [
                     "evidence-31"
@@ -425,7 +425,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1788926125621,
+                  "value": 1788999390171,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-31"
@@ -445,7 +445,7 @@
               "links": [
                 {
                   "label": "Inspect recorded build",
-                  "target": "recorded-build-1b46c4278e7ba940"
+                  "target": "recorded-build-c0c0103910c3d938"
                 },
                 {
                   "label": "Acceptance matrix: ws_feedback_audit_verification",
@@ -457,11 +457,11 @@
                 },
                 {
                   "label": "verification.evaluate: observed",
-                  "target": "receipt-8759c99a7985feb9"
+                  "target": "receipt-1f99f1e31fdc09c8"
                 },
                 {
                   "label": "command.result: returned",
-                  "target": "receipt-fff0cfeeaca78dbf"
+                  "target": "receipt-41fc1f45179286e8"
                 }
               ]
             },
@@ -523,7 +523,7 @@
                   "key": "lastActionAt",
                   "label": "Recorded action time",
                   "status": "known",
-                  "value": 1788922547473,
+                  "value": 1788995805301,
                   "explanation": null,
                   "evidence": [
                     "evidence-32"
@@ -752,7 +752,7 @@
         },
         {
           "id": "receipts-d388bf69a2138223",
-          "title": "Audit receipts — WO-042 self-hosted executor",
+          "title": "Audit receipts — WO-126 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -1028,7 +1028,7 @@
         },
         {
           "id": "receipts-b9a9504826d64362",
-          "title": "Audit receipts — WO-042 self-hosted verifier",
+          "title": "Audit receipts — WO-126 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -1122,7 +1122,7 @@
               "links": []
             },
             {
-              "id": "receipt-8759c99a7985feb9",
+              "id": "receipt-1f99f1e31fdc09c8",
               "title": "verification.evaluate — observed",
               "cells": [
                 {
@@ -1201,7 +1201,7 @@
                   "status": "known",
                   "value": [
                     "event:evt_4",
-                    "event:evt_29"
+                    "event:evt_22"
                   ],
                   "explanation": null,
                   "evidence": [
@@ -1212,7 +1212,7 @@
               "links": []
             },
             {
-              "id": "receipt-fff0cfeeaca78dbf",
+              "id": "receipt-41fc1f45179286e8",
               "title": "command.result — returned",
               "cells": [
                 {
@@ -1290,7 +1290,7 @@
                   "label": "Canonical events",
                   "status": "known",
                   "value": [
-                    "event:evt_29"
+                    "event:evt_22"
                   ],
                   "explanation": null,
                   "evidence": [
@@ -1692,19 +1692,19 @@
         },
         {
           "id": "recorded-builds-d388bf69a2138223",
-          "title": "Recorded builds — WO-042 self-hosted executor",
+          "title": "Recorded builds — WO-126 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
             {
-              "id": "recorded-build-35f26d4503b9a313",
+              "id": "recorded-build-67988eea6b39eff5",
               "title": "feedback-host",
               "cells": [
                 {
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-24"
@@ -1760,7 +1760,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1788926121728,
+                  "value": 1788999387116,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-24"
@@ -1840,19 +1840,19 @@
         },
         {
           "id": "recorded-builds-b9a9504826d64362",
-          "title": "Recorded builds — WO-042 self-hosted verifier",
+          "title": "Recorded builds — WO-126 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
             {
-              "id": "recorded-build-1b46c4278e7ba940",
+              "id": "recorded-build-c0c0103910c3d938",
               "title": "verifier",
               "cells": [
                 {
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:5bb660fcc70a4650",
+                  "value": "fnv1a64:bf0f5a76ad4e3783",
                   "explanation": null,
                   "evidence": [
                     "evidence-31"
@@ -1909,7 +1909,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1788926125621,
+                  "value": 1788999390171,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-31"
@@ -2012,7 +2012,7 @@
                   "key": "version",
                   "label": "Version",
                   "status": "known",
-                  "value": 1,
+                  "value": 2,
                   "explanation": null,
                   "evidence": [
                     "evidence-4"
@@ -2022,7 +2022,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-4"
@@ -2032,7 +2032,7 @@
                   "key": "rung",
                   "label": "Mechanism rung",
                   "status": "known",
-                  "value": 2,
+                  "value": 7,
                   "explanation": null,
                   "evidence": [
                     "evidence-4"
@@ -2042,7 +2042,7 @@
                   "key": "mechanism",
                   "label": "Mechanism",
                   "status": "known",
-                  "value": "pre-effect-guard",
+                  "value": "prose",
                   "explanation": null,
                   "evidence": [
                     "evidence-4"
@@ -2075,7 +2075,7 @@
                   "key": "enforcement",
                   "label": "Enforcement",
                   "status": "known",
-                  "value": "hard",
+                  "value": "advisory",
                   "explanation": null,
                   "evidence": [
                     "evidence-4"
@@ -2085,7 +2085,7 @@
                   "key": "desiredBehavior",
                   "label": "Intended behavior",
                   "status": "known",
-                  "value": "Preserve desired outcomes and rejection reasons; replacing a rejected decision needs explicit supersession from the operator.",
+                  "value": "Identify the category the operator is pointing at; stay inside it, neither widening nor shrinking it; when the boundary is genuinely unclear, ask one focused question instead of guessing in either direction; and pause to ask before any file action that goes beyond the literal correction. Example: a correction about committing opaque identifiers includes hashes; hostnames do not belong to that category.",
                   "explanation": null,
                   "evidence": [
                     "evidence-4"
@@ -2095,7 +2095,7 @@
                   "key": "rationale",
                   "label": "Why this rung",
                   "status": "known",
-                  "value": "A pre-effect lineage guard compares explicit decisions; a text lint cannot decide which prior rejection applies.",
+                  "value": "Session judgment supplies this rule; it claims no executable host facts.",
                   "explanation": null,
                   "evidence": [
                     "evidence-4"
@@ -2135,7 +2135,7 @@
                   "key": "fixture.incidentsPrevented",
                   "label": "fixture incidentsPrevented",
                   "status": "known",
-                  "value": 1,
+                  "value": 0,
                   "explanation": null,
                   "evidence": [
                     "evidence-5"
@@ -2252,7 +2252,7 @@
                   "key": "version",
                   "label": "Version",
                   "status": "known",
-                  "value": 1,
+                  "value": 2,
                   "explanation": null,
                   "evidence": [
                     "evidence-6"
@@ -2262,7 +2262,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-6"
@@ -2272,7 +2272,7 @@
                   "key": "rung",
                   "label": "Mechanism rung",
                   "status": "known",
-                  "value": 2,
+                  "value": 7,
                   "explanation": null,
                   "evidence": [
                     "evidence-6"
@@ -2282,7 +2282,7 @@
                   "key": "mechanism",
                   "label": "Mechanism",
                   "status": "known",
-                  "value": "pre-effect-guard",
+                  "value": "prose",
                   "explanation": null,
                   "evidence": [
                     "evidence-6"
@@ -2315,7 +2315,7 @@
                   "key": "enforcement",
                   "label": "Enforcement",
                   "status": "known",
-                  "value": "hard",
+                  "value": "advisory",
                   "explanation": null,
                   "evidence": [
                     "evidence-6"
@@ -2335,7 +2335,7 @@
                   "key": "rationale",
                   "label": "Why this rung",
                   "status": "known",
-                  "value": "A pre-effect gate checks a scoped host-reviewed assessment; scripts alone cannot establish semantic adjacency or risk.",
+                  "value": "Session judgment supplies this rule; it claims no executable host facts.",
                   "explanation": null,
                   "evidence": [
                     "evidence-6"
@@ -2375,7 +2375,7 @@
                   "key": "fixture.incidentsPrevented",
                   "label": "fixture incidentsPrevented",
                   "status": "known",
-                  "value": 1,
+                  "value": 0,
                   "explanation": null,
                   "evidence": [
                     "evidence-7"
@@ -2502,7 +2502,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-8"
@@ -2732,7 +2732,7 @@
                   "key": "version",
                   "label": "Version",
                   "status": "known",
-                  "value": 1,
+                  "value": 2,
                   "explanation": null,
                   "evidence": [
                     "evidence-10"
@@ -2742,7 +2742,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-10"
@@ -2752,7 +2752,7 @@
                   "key": "rung",
                   "label": "Mechanism rung",
                   "status": "known",
-                  "value": 5,
+                  "value": 7,
                   "explanation": null,
                   "evidence": [
                     "evidence-10"
@@ -2762,7 +2762,7 @@
                   "key": "mechanism",
                   "label": "Mechanism",
                   "status": "known",
-                  "value": "evaluator",
+                  "value": "prose",
                   "explanation": null,
                   "evidence": [
                     "evidence-10"
@@ -2795,7 +2795,7 @@
                   "key": "enforcement",
                   "label": "Enforcement",
                   "status": "known",
-                  "value": "hard",
+                  "value": "advisory",
                   "explanation": null,
                   "evidence": [
                     "evidence-10"
@@ -2815,7 +2815,7 @@
                   "key": "rationale",
                   "label": "Why this rung",
                   "status": "known",
-                  "value": "An evidence evaluator is necessary for a claim about correctness; token or phrasing checks cannot establish truth.",
+                  "value": "Session judgment supplies this rule; it claims no executable host facts.",
                   "explanation": null,
                   "evidence": [
                     "evidence-10"
@@ -2855,7 +2855,7 @@
                   "key": "fixture.incidentsPrevented",
                   "label": "fixture incidentsPrevented",
                   "status": "known",
-                  "value": 1,
+                  "value": 0,
                   "explanation": null,
                   "evidence": [
                     "evidence-11"
@@ -2972,7 +2972,7 @@
                   "key": "version",
                   "label": "Version",
                   "status": "known",
-                  "value": 1,
+                  "value": 2,
                   "explanation": null,
                   "evidence": [
                     "evidence-12"
@@ -2982,7 +2982,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-12"
@@ -2992,7 +2992,7 @@
                   "key": "rung",
                   "label": "Mechanism rung",
                   "status": "known",
-                  "value": 3,
+                  "value": 7,
                   "explanation": null,
                   "evidence": [
                     "evidence-12"
@@ -3002,7 +3002,7 @@
                   "key": "mechanism",
                   "label": "Mechanism",
                   "status": "known",
-                  "value": "pure-reactor",
+                  "value": "prose",
                   "explanation": null,
                   "evidence": [
                     "evidence-12"
@@ -3035,7 +3035,7 @@
                   "key": "enforcement",
                   "label": "Enforcement",
                   "status": "known",
-                  "value": "hard",
+                  "value": "advisory",
                   "explanation": null,
                   "evidence": [
                     "evidence-12"
@@ -3055,7 +3055,7 @@
                   "key": "rationale",
                   "label": "Why this rung",
                   "status": "known",
-                  "value": "A pure event reactor computes the monotone policy transition; a static guard cannot remember the correction across later effects.",
+                  "value": "Session judgment supplies this rule; it claims no executable host facts.",
                   "explanation": null,
                   "evidence": [
                     "evidence-12"
@@ -3095,7 +3095,7 @@
                   "key": "fixture.incidentsPrevented",
                   "label": "fixture incidentsPrevented",
                   "status": "known",
-                  "value": 1,
+                  "value": 0,
                   "explanation": null,
                   "evidence": [
                     "evidence-13"
@@ -3212,7 +3212,7 @@
                   "key": "version",
                   "label": "Version",
                   "status": "known",
-                  "value": 1,
+                  "value": 2,
                   "explanation": null,
                   "evidence": [
                     "evidence-14"
@@ -3222,7 +3222,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-14"
@@ -3285,7 +3285,7 @@
                   "key": "desiredBehavior",
                   "label": "Intended behavior",
                   "status": "known",
-                  "value": "Disable available automatic attribution in the invocation settings and reject matching AI trailers or footers at the publication boundary; preserve ordinary subject text and human coauthors.",
+                  "value": "Disable automatic attribution and reject AI trailers, footers and session links at publication; preserve human coauthors and ordinary subject text.",
                   "explanation": null,
                   "evidence": [
                     "evidence-14"
@@ -3462,7 +3462,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-16"
@@ -3692,7 +3692,7 @@
                   "key": "version",
                   "label": "Version",
                   "status": "known",
-                  "value": 1,
+                  "value": 2,
                   "explanation": null,
                   "evidence": [
                     "evidence-18"
@@ -3702,7 +3702,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-18"
@@ -3755,7 +3755,7 @@
                   "key": "enforcement",
                   "label": "Enforcement",
                   "status": "known",
-                  "value": "hard",
+                  "value": "advisory",
                   "explanation": null,
                   "evidence": [
                     "evidence-18"
@@ -3815,7 +3815,7 @@
                   "key": "fixture.incidentsPrevented",
                   "label": "fixture incidentsPrevented",
                   "status": "known",
-                  "value": 1,
+                  "value": 0,
                   "explanation": null,
                   "evidence": [
                     "evidence-19"
@@ -3932,7 +3932,7 @@
                   "key": "version",
                   "label": "Version",
                   "status": "known",
-                  "value": 1,
+                  "value": 2,
                   "explanation": null,
                   "evidence": [
                     "evidence-20"
@@ -3942,7 +3942,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-20"
@@ -3995,7 +3995,7 @@
                   "key": "enforcement",
                   "label": "Enforcement",
                   "status": "known",
-                  "value": "hard",
+                  "value": "advisory",
                   "explanation": null,
                   "evidence": [
                     "evidence-20"
@@ -4055,7 +4055,7 @@
                   "key": "fixture.incidentsPrevented",
                   "label": "fixture incidentsPrevented",
                   "status": "known",
-                  "value": 1,
+                  "value": 0,
                   "explanation": null,
                   "evidence": [
                     "evidence-21"
@@ -4172,7 +4172,7 @@
                   "key": "version",
                   "label": "Version",
                   "status": "known",
-                  "value": 1,
+                  "value": 2,
                   "explanation": null,
                   "evidence": [
                     "evidence-22"
@@ -4182,7 +4182,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:b7415b98b50fc2ce",
+                  "value": "fnv1a64:9bd8c3dafdfbe311",
                   "explanation": null,
                   "evidence": [
                     "evidence-22"
@@ -4235,7 +4235,7 @@
                   "key": "enforcement",
                   "label": "Enforcement",
                   "status": "known",
-                  "value": "hard",
+                  "value": "advisory",
                   "explanation": null,
                   "evidence": [
                     "evidence-22"
@@ -4295,7 +4295,7 @@
                   "key": "fixture.incidentsPrevented",
                   "label": "fixture incidentsPrevented",
                   "status": "known",
-                  "value": 1,
+                  "value": 0,
                   "explanation": null,
                   "evidence": [
                     "evidence-23"
@@ -4408,14 +4408,14 @@
         },
         {
           "id": "matrices-d388bf69a2138223",
-          "title": "Acceptance evidence — WO-042 self-hosted executor",
+          "title": "Acceptance evidence — WO-126 self-hosted executor",
           "status": "available",
           "explanation": "The source records no entries",
           "rows": []
         },
         {
           "id": "matrices-b9a9504826d64362",
-          "title": "Acceptance evidence — WO-042 self-hosted verifier",
+          "title": "Acceptance evidence — WO-126 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -4437,7 +4437,7 @@
                   "key": "subject",
                   "label": "Subject revision",
                   "status": "known",
-                  "value": "sha256:5abd16691a8ccaf24a7e6d1bf18011715fc769f33239aa5c550136f00582bc50",
+                  "value": "sha256:7d97e59fbce352b32ea0acbb8f618a4e703ec79436db1cf87a783aa22a85d074",
                   "explanation": null,
                   "evidence": [
                     "evidence-33"
@@ -4508,7 +4508,7 @@
                   "label": "Evidence references",
                   "status": "known",
                   "value": [
-                    "sha256:5abd16691a8ccaf24a7e6d1bf18011715fc769f33239aa5c550136f00582bc50:AC-causal-fixtures"
+                    "sha256:7d97e59fbce352b32ea0acbb8f618a4e703ec79436db1cf87a783aa22a85d074:AC-causal-fixtures"
                   ],
                   "explanation": null,
                   "evidence": [
@@ -4580,7 +4580,7 @@
                   "label": "Evidence references",
                   "status": "known",
                   "value": [
-                    "sha256:5abd16691a8ccaf24a7e6d1bf18011715fc769f33239aa5c550136f00582bc50:AC-context"
+                    "sha256:7d97e59fbce352b32ea0acbb8f618a4e703ec79436db1cf87a783aa22a85d074:AC-context"
                   ],
                   "explanation": null,
                   "evidence": [
@@ -4729,17 +4729,17 @@
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "ref": "docs/evidence/WO-126/feedback-002/feedback.json",
       "status": "available",
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#worker-status",
+      "ref": "docs/evidence/WO-126/feedback-002/selfhost-audit.jsonl#worker-status",
       "status": "available",
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
+      "ref": "docs/evidence/WO-126/feedback-002/selfhost-audit.jsonl#audit-projections",
       "status": "available",
       "explanation": null
     },
@@ -4749,12 +4749,12 @@
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#worker-status",
+      "ref": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#worker-status",
       "status": "available",
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
+      "ref": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#audit-projections",
       "status": "available",
       "explanation": null
     },
@@ -4833,21 +4833,21 @@
     {
       "id": "evidence-4",
       "source": "packages/skeleton/src/loadouts/feedback.ts",
-      "record": "unit:anti-oscillation@1"
+      "record": "unit:anti-oscillation@2"
     },
     {
       "id": "evidence-5",
-      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "source": "docs/evidence/WO-126/feedback-002/feedback.json",
       "record": "maturity:anti-oscillation; fixtures:anti-oscillation"
     },
     {
       "id": "evidence-6",
       "source": "packages/skeleton/src/loadouts/feedback.ts",
-      "record": "unit:bounded-boy-scout-cleanup@1"
+      "record": "unit:bounded-boy-scout-cleanup@2"
     },
     {
       "id": "evidence-7",
-      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "source": "docs/evidence/WO-126/feedback-002/feedback.json",
       "record": "maturity:bounded-boy-scout-cleanup; fixtures:bounded-boy-scout-cleanup"
     },
     {
@@ -4857,37 +4857,37 @@
     },
     {
       "id": "evidence-9",
-      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "source": "docs/evidence/WO-126/feedback-002/feedback.json",
       "record": "maturity:concurrent-work-requires-worktrees; fixtures:concurrent-work-requires-worktrees"
     },
     {
       "id": "evidence-10",
       "source": "packages/skeleton/src/loadouts/feedback.ts",
-      "record": "unit:correctness-over-sycophancy@1"
+      "record": "unit:correctness-over-sycophancy@2"
     },
     {
       "id": "evidence-11",
-      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "source": "docs/evidence/WO-126/feedback-002/feedback.json",
       "record": "maturity:correctness-over-sycophancy; fixtures:correctness-over-sycophancy"
     },
     {
       "id": "evidence-12",
       "source": "packages/skeleton/src/loadouts/feedback.ts",
-      "record": "unit:fail-conservative-correction@1"
+      "record": "unit:fail-conservative-correction@2"
     },
     {
       "id": "evidence-13",
-      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "source": "docs/evidence/WO-126/feedback-002/feedback.json",
       "record": "maturity:fail-conservative-correction; fixtures:fail-conservative-correction"
     },
     {
       "id": "evidence-14",
       "source": "packages/skeleton/src/loadouts/feedback.ts",
-      "record": "unit:no-attribution@1"
+      "record": "unit:no-attribution@2"
     },
     {
       "id": "evidence-15",
-      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "source": "docs/evidence/WO-126/feedback-002/feedback.json",
       "record": "maturity:no-attribution; fixtures:no-attribution"
     },
     {
@@ -4897,113 +4897,113 @@
     },
     {
       "id": "evidence-17",
-      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "source": "docs/evidence/WO-126/feedback-002/feedback.json",
       "record": "maturity:no-lint-type-disables-as-fixes; fixtures:no-lint-type-disables-as-fixes"
     },
     {
       "id": "evidence-18",
       "source": "packages/skeleton/src/loadouts/feedback.ts",
-      "record": "unit:no-partial-completion@1"
+      "record": "unit:no-partial-completion@2"
     },
     {
       "id": "evidence-19",
-      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "source": "docs/evidence/WO-126/feedback-002/feedback.json",
       "record": "maturity:no-partial-completion; fixtures:no-partial-completion"
     },
     {
       "id": "evidence-20",
       "source": "packages/skeleton/src/loadouts/feedback.ts",
-      "record": "unit:read-your-own-output@1"
+      "record": "unit:read-your-own-output@2"
     },
     {
       "id": "evidence-21",
-      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "source": "docs/evidence/WO-126/feedback-002/feedback.json",
       "record": "maturity:read-your-own-output; fixtures:read-your-own-output"
     },
     {
       "id": "evidence-22",
       "source": "packages/skeleton/src/loadouts/feedback.ts",
-      "record": "unit:verify-app-before-done@1"
+      "record": "unit:verify-app-before-done@2"
     },
     {
       "id": "evidence-23",
-      "source": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "source": "docs/evidence/WO-126/feedback-002/feedback.json",
       "record": "maturity:verify-app-before-done; fixtures:verify-app-before-done"
     },
     {
       "id": "evidence-24",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-audit.jsonl#audit-projections",
       "record": "event:evt_1 (FeedbackAuditOpened)"
     },
     {
       "id": "evidence-25",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-audit.jsonl#audit-projections",
       "record": "event:evt_5 (CommandResult)"
     },
     {
       "id": "evidence-26",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-audit.jsonl#audit-projections",
       "record": "receipt:audit:evt_3:authority-decision; event:evt_3"
     },
     {
       "id": "evidence-27",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-audit.jsonl#audit-projections",
       "record": "receipt:audit:evt_5:external-effect; event:evt_3, event:evt_5"
     },
     {
       "id": "evidence-28",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-audit.jsonl#audit-projections",
       "record": "receipt:audit:evt_5:result; event:evt_5"
     },
     {
       "id": "evidence-29",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#worker-status",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#worker-status",
       "record": "episodes:ep_verifier_1_attempt_1"
     },
     {
       "id": "evidence-30",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#audit-projections",
       "record": "event:evt_5 (WorkerAttemptStarted)"
     },
     {
       "id": "evidence-31",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#audit-projections",
       "record": "event:evt_4 (CommandPersisted)"
     },
     {
       "id": "evidence-32",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
-      "record": "event:evt_31 (VerificationContinuation)"
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#audit-projections",
+      "record": "event:evt_24 (VerificationContinuation)"
     },
     {
       "id": "evidence-33",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#worker-status",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#worker-status",
       "record": "acceptanceEvidenceMatrices:ws_feedback_audit_verification"
     },
     {
       "id": "evidence-34",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#worker-status",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#worker-status",
       "record": "acceptanceEvidenceMatrices:ws_feedback_audit_verification/criterion:AC-causal-fixtures"
     },
     {
       "id": "evidence-35",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#worker-status",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#worker-status",
       "record": "acceptanceEvidenceMatrices:ws_feedback_audit_verification/criterion:AC-context"
     },
     {
       "id": "evidence-36",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#audit-projections",
       "record": "receipt:audit:evt_4:authority-decision; event:evt_4"
     },
     {
       "id": "evidence-37",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
-      "record": "receipt:audit:evt_29:external-effect; event:evt_4, event:evt_29"
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#audit-projections",
+      "record": "receipt:audit:evt_22:external-effect; event:evt_4, event:evt_22"
     },
     {
       "id": "evidence-38",
-      "source": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl#audit-projections",
-      "record": "receipt:audit:evt_29:result; event:evt_29"
+      "source": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl#audit-projections",
+      "record": "receipt:audit:evt_22:result; event:evt_22"
     }
   ]
 }

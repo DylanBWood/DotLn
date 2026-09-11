@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-10T00:15:10.430Z",
+  "registerRevision": "d9fff995296c3cd723c07d9706da25aa970986352ac010691b707b8fc38321ea",
+  "records": 133,
+  "pending": 127,
+  "counts": {
+    "untriaged": 123,
+    "duplicate": 2,
+    "open": 3,
+    "settled": 3,
+    "deferred": 1,
+    "allocated": 1
+  },
+  "firstPageBytes": 4441,
+  "firstPageDurationMs": 32.741,
+  "pages": 16,
+  "pagedPendingRecords": 127,
+  "uniquePagedRecords": 127,
+  "totalPageBytes": 55589,
+  "maxPageBytes": 4441,
+  "referencedPublicDocuments": 16,
+  "referencedDocumentBytes": 936120,
+  "handoffs": [
+    {
+      "item": "adjacent-0001",
+      "followup": "FUP-0130"
+    }
+  ],
+  "coverage": "Formal candidate/follow-up/deferred headings in current product and planning documents, their top-level list items, and per-order decision records. Archive snapshots, refutation receipts, private intake and unstructured legacy prose are not claimed as reconciled.",
+  "limits": [
+    "Source-document bytes are an inventory comparison, not an observed previous planner startup.",
+    "The remaining planner-context candidate stays open until measured live evidence shows whether the feed is sufficient.",
+    "Untriaged does not assert that a historical suggestion is actionable or still unallocated."
+  ]
+}

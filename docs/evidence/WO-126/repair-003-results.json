@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-126",
+  "repairSource": "VER-003",
+  "coldFast": {
+    "checkId": "npm test",
+    "treeHash": "be8f2a20dcc1e7214eead3275bffedd64a370da0",
+    "recordedAt": "2026-09-10T15:58:09.383Z",
+    "durationMs": 102317,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:be8f2a20dcc1e7214eead3275bffedd64a370da0:npm test",
+    "executionMode": "forced-fresh",
+    "freshSuites": 12,
+    "reusedSuites": 0,
+    "inputObservation": [
+      {
+        "files": 1639,
+        "bytes": 207112041,
+        "commands": 12,
+        "durationMs": 688.3745840000001
+      },
+      {
+        "files": 1639,
+        "bytes": 207112041,
+        "commands": 12,
+        "durationMs": 728.2936249999912
+      }
+    ]
+  },
+  "focused": [
+    {
+      "command": "node --test --test-name-pattern='discovery uses|effect inventory|executable paths|interpreter programs|Git aliases|dynamic executable|commit attribution|installed permission|concurrent observers' scripts/test-process-debt.mjs",
+      "tests": 9,
+      "passed": 9,
+      "durationMs": 5955.373458,
+      "exitCode": 0
+    },
+    {
+      "command": "node --test --test-name-pattern=harness.evidence scripts/test-process-debt.mjs",
+      "tests": 1,
+      "passed": 1,
+      "durationMs": 3945.609084,
+      "exitCode": 0
+    },
+    {
+      "command": "node --test --test-name-pattern=interpreter scripts/test-process-debt.mjs",
+      "tests": 1,
+      "passed": 1,
+      "durationMs": 80.06775,
+      "exitCode": 0
+    }
+  ],
+  "limits": "Initial passing cold fast measured before the final piped-interpreter correction and final documentation/discovery write-backs. The second cold attempt exercised the final code but failed stale publication locks; it is not passing evidence. Focused runs exercised controlled fixtures. Final-tree full-gate evidence is recorded by the completion transition.",
+  "finalCodeColdAttempt": {
+    "checkId": "npm test",
+    "treeHash": "3025562a122d42f1a4982a1ea9f2d2ad468d7c11",
+    "recordedAt": "2026-09-10T16:13:03.459Z",
+    "durationMs": 104966,
+    "exitCode": 1,
+    "executed": true,
+    "evidenceRef": "host-gate:3025562a122d42f1a4982a1ea9f2d2ad468d7c11:npm test",
+    "executionMode": "forced-fresh",
+    "freshSuites": 12,
+    "reusedSuites": 0,
+    "inputObservation": [
+      {
+        "files": 1641,
+        "bytes": 207138310,
+        "commands": 12,
+        "durationMs": 719.053292
+      },
+      {
+        "files": 1641,
+        "bytes": 207138310,
+        "commands": 12,
+        "durationMs": 835.8724589999911
+      }
+    ],
+    "passedSuites": 11,
+    "failedSuites": [
+      "publication"
+    ],
+    "diagnosis": "Edition locks were stale after the final product write-back; refreshed before the full gate."
+  }
+}

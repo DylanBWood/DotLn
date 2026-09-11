@@ -484,7 +484,55 @@ and lowers them to the declared handler/rung. Its `policyHash` covers canonical
 compiled data, including retained definitions and the compiler package version.
 It is an equality key, not authentication. An empty or reduced profile leaves
 unequipped rules inactive; advisory findings do not become hard denials.
-The saved personal profile makes all ten hard at their declared boundaries.
+WO-126 equips version 2 of the personal units. Four semantic units declare
+`mechanism.kind: prose`: anti-oscillation, bounded cleanup, evidence judgment
+and semantic correction. Their skills carry the rule and its examples; the
+compiler emits no fictitious host-fact residue. The three Stop-time units are
+advisory and the finalizer always releases the writer. Writer isolation,
+attribution and permission checks retain their pre-effect boundaries. All
+version-1 definitions remain available for replay under their original policy.
+The shell adapter follows supported wrappers, literal shell/eval commands and
+command groups before matching effects. It refuses dynamic executable or
+subcommand operands and unsupported indirection with a classification reason.
+Quoted arguments to data programs remain data. Shell pipelines retain earlier
+stages as input, including every producer in a command group and heredoc bodies;
+file-descriptor redirection does not split a stage. Any program outside the
+declared data and effect adapters is opaque: a literal denied invocation in its
+arguments or input requires an explicit adapter, independent of interpreter
+name or flag spelling. Shell `-c` recursion includes `csh` and `tcsh`.
+Redirected groups and process substitution require an adapter. This conservative
+screen does not decode arbitrary programs or infer effects from script files.
+Inline Git alias configuration also requires an adapter. Git `send-pack`,
+mutating GitHub API methods, body-implied requests (`--input` and field flags)
+and the declared GitHub write verbs carry `remote.unapproved`. Explicit REST
+`GET`, `HEAD` and `OPTIONS` retain their inspection classification. GraphQL is
+classified conservatively as remote because query semantics are opaque here;
+this is not a claim that the CLI forces every GraphQL request to POST. The effect
+table also covers release upload, workflow run, secret/variable set, gist/label
+create, repository fork/sync, run cancel/rerun and PR ready, while their ordinary
+inspection commands remain reads
+([WO-126-D020](../evidence/WO-126/decisions.md#wo-126-d020)).
+Package execution wrappers also classify their child invocation: npm `exec`/`x`,
+pnpm `exec`/`dlx`, and Yarn `exec`/`npm`. The npm adapter preserves its `--`
+boundary and parses `--call`/`-c` as shell text; unsupported options require an
+explicit adapter. Leading assignment values and inline Git configuration values
+receive the literal invocation screen before they can supply a later command.
+Git commit messages and log search patterns retain their data interpretation.
+Executable basenames and the opaque literal screen are case-insensitive, while
+message bytes and subcommand operands retain their case
+([WO-126-D023](../evidence/WO-126/decisions.md#wo-126-d023)).
+The literal denial floor also covers the remaining operands and input of
+recognized effect programs. Only known Git message/file operands, log search
+patterns and grep patterns are removed from that screen; unknown options and
+subcommands retain it. Git grep's pager command is not a pattern. Structured
+classification can add denied effects, while a recognized program cannot exempt
+an unclassified command-valued argument
+([WO-126-D027](../evidence/WO-126/decisions.md#wo-126-d027)).
+Commit attribution uses those same invocations
+and literal message operands; a missing message reports its own refusal rather
+than a runtime failure ([WO-126-D011](../evidence/WO-126/decisions.md#wo-126-d011)).
+The interpreter and remote-write cases are the VER-003 repair recorded in
+[WO-126-D015](../evidence/WO-126/decisions.md#wo-126-d015).
 
 `evaluateFeedback` consumes host-derived facts for nine boundaries; the tenth,
 `applyFeedbackCorrection`, consumes typed semantic correction events. The
@@ -498,7 +546,66 @@ facts include independent witnesses, executable check results, resolved Git
 roots/writer reservations, source diffs, and reads bound to output hashes.
 Semantic assessments such as desired-outcome preservation and low-risk cleanup
 still require host/operator judgment. Worker prose cannot supply its own host
-facts. Read receipts witness delivery of bytes, not comprehension. The current
+facts. Read receipts witness delivery of bytes, not comprehension. The observer
+records only paths this session authored, by comparing before/after bytes at
+Edit, Write and Bash boundaries. Inherited dirt owes no read. The
+`dotln-generated` attribute and the 64 KB read cap convert byte reads into
+current-tree validation obligations. A generated path may declare its own
+`dotln-check=suite:<name>`; that suite or the full gate at the exact current tree
+satisfies it. Successful code handoffs still require the full gate. A failing
+verification requires its report, diff check and authored-output obligations,
+so refreshing its index does not require proving faulty code green.
+The observer records snapshot duration, files, bytes hashed and subprocesses
+in the existing journal. Claude pays two snapshots per observed writing tool;
+the explicit Codex adapter records only its actual observations. These bytes
+are filesystem work, not bytes delivered into context.
+Session records publish through a private temporary file and atomic rename,
+so concurrent hook readers see a complete record. A parse failure gets one
+retry; persistent damage is reported as unreadable session state and is never
+replaced with an empty session ([WO-126-D016](../evidence/WO-126/decisions.md#wo-126-d016)).
+The shared cache retains duration and executed failure records; any matching
+green observation may satisfy a check across sessions. Its hot metadata is
+bounded to 256 rows; older metadata is archived by tree and read on demand.
+Successful stdout is omitted, failing output has a separate addressed file,
+and split-case failures retain their own `outputRef` through aggregation and
+storage. The meter can still read historical timings. Historical disk use is not
+claimed to have a fixed total cap.
+The harness wrapper and Stop evidence consumer also accept a successful full
+gate at the exact current tree for the fast-gate obligation. They retain the
+actual full-gate identifier, duration and provenance; they do not invent a
+fresh fast run. Without current successful evidence, the wrapper executes its
+normal checks ([WO-126-D018](../evidence/WO-126/decisions.md#wo-126-d018)).
+The operator-authorized WO-126 repair adds a separate, content-addressed cache
+of executed suite successes. Reviewed scopes include every non-document
+candidate file, the suite's explicit document inputs, installed dependencies,
+built outputs, command, environment, tool identities and Git context. Unknown
+scopes and live-state checks execute conservatively. Both boundary observations
+must agree before a success can enter this cache. Each reused row names its
+original tree, time, duration and evidence reference and says it was reused;
+the runner executes the aggregate and still requires complete, unique coverage
+at the exact current handoff tree. `--fresh` bypasses suite reuse. Cold gate
+measurements remain distinct from the wall time of a composed gate, with the
+same 120-second fast-gate budget. This is a reviewed repository-test adapter,
+not general dependency inference for arbitrary programs.
+Execution and fingerprinting share a declared environment projection. Only
+the inherited variables selected by `suiteEnvironment` reach gate children; rotating
+proxy values and unrelated invocation metadata are absent from both. Evidence
+lists the selected variable names without their values. A new observable
+environment dependency must extend that projection and its invalidation tests.
+Hook timings record process uptime through evaluation in the existing journal,
+including module loading, and the meter reports count, total, mean and peak.
+Missing timing is unavailable and cannot change a guard verdict.
+A denied or blocking hook result records one bounded refusal class on that
+same timing row, alongside the event and tool. This observation contains no
+command or raw reason text. When the hook input carries a tool-use identity,
+the row includes a digest scoped to its session, event and tool; the meter
+counts distinct invocations across hooks and repeated deliveries. Raw identities
+are not retained. Historical or identity-free rows remain individual observed
+outcomes, so their counts can include multiple hooks for one command; no timing
+heuristic reconstructs missing identities. An advisory Stop message is not a
+refusal ([WO-126-D024](../evidence/WO-126/decisions.md#wo-126-d024),
+[WO-126-D028](../evidence/WO-126/decisions.md#wo-126-d028)).
+The current
 suppression check compares host-parsed comment bodies from the exactly pinned
 TypeScript parser; regex, template literals, and JSX text are distinguished from
 actual directives. The parser is a skeleton dependency, loaded only for that

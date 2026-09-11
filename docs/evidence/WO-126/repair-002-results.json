@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "dispatch": "Operator resume: fix selecting WO-126 VER-002",
+  "method": "Canonical npm entry points in one Codex session. Records retain their measured Git trees, execution modes and input-observation costs; composed timing is not cold timing. No environment values, process paths or suite stdout are copied.",
+  "baseline": {
+    "source": "docs/verifications/WO-126/VER-002.md",
+    "fastColdSeconds": [
+      115.39,
+      116.32
+    ],
+    "fullColdSeconds": 490.73,
+    "fullFailedSuite": "harness-fixtures"
+  },
+  "limits": {
+    "fastGateMs": 120000,
+    "tokens": null,
+    "costUsd": null
+  },
+  "observations": [
+    {
+      "checkId": "npm test",
+      "treeHash": "8c47abdd886da257feccb9f167c32bb769fe45f3",
+      "durationMs": 101403,
+      "exitCode": 1,
+      "recordedAt": "2026-09-10T14:07:36.977Z",
+      "executionMode": "forced-fresh",
+      "freshSuites": 12,
+      "reusedSuites": 0,
+      "inputObservation": [
+        {
+          "files": 1637,
+          "bytes": 207036607,
+          "commands": 12,
+          "durationMs": 691.196833
+        },
+        {
+          "files": 1637,
+          "bytes": 207036607,
+          "commands": 12,
+          "durationMs": 671.4502919999941
+        }
+      ],
+      "command": "npm test -- --fresh",
+      "passedSuites": 11,
+      "failedSuites": [
+        "suite:publication"
+      ],
+      "highlights": [
+        {
+          "checkId": "suite:skeleton",
+          "durationMs": 96835,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:05:58.374Z",
+          "finishedAt": "2026-09-10T14:07:35.209Z",
+          "inputHash": "f00645d1169bf9afb2b9091810633c883cf8cf2caf9739a7c43171c517ef6984"
+        },
+        {
+          "checkId": "suite:console",
+          "durationMs": 58326,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:05:58.375Z",
+          "finishedAt": "2026-09-10T14:06:56.701Z",
+          "inputHash": null
+        }
+      ]
+    },
+    {
+      "checkId": "npm run test:full",
+      "treeHash": "5a7eb699d21a24f6222ba3009d7b6fcc9538b5d7",
+      "durationMs": 499174,
+      "exitCode": 1,
+      "recordedAt": "2026-09-10T14:17:04.487Z",
+      "executionMode": "forced-fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "inputObservation": [
+        {
+          "files": 1637,
+          "bytes": 207037062,
+          "commands": 12,
+          "durationMs": 646.662084
+        },
+        {
+          "files": 1637,
+          "bytes": 207037062,
+          "commands": 12,
+          "durationMs": 620.0407499999856
+        }
+      ],
+      "command": "npm run test:full -- --fresh",
+      "passedSuites": 36,
+      "failedSuites": [
+        "suite:authority-evidence"
+      ],
+      "highlights": [
+        {
+          "checkId": "suite:skeleton",
+          "durationMs": 153192,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:10:11.331Z",
+          "finishedAt": "2026-09-10T14:12:44.523Z",
+          "inputHash": "fc19d33c3a63a566cc0492f2e0a6393ecd6390a4320c667a0569a2d1117d7357"
+        },
+        {
+          "checkId": "suite:console",
+          "durationMs": 70832,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:10:13.443Z",
+          "finishedAt": "2026-09-10T14:11:24.275Z",
+          "inputHash": null
+        },
+        {
+          "checkId": "suite:harness-fixtures",
+          "durationMs": 47951,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:08:48.000Z",
+          "finishedAt": "2026-09-10T14:09:35.951Z",
+          "inputHash": null
+        },
+        {
+          "checkId": "suite:process-debt",
+          "durationMs": 35376,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:09:35.951Z",
+          "finishedAt": "2026-09-10T14:10:11.327Z",
+          "inputHash": "3d602d459f11e1e35200048b2b85d8a33a660c30b20b2c9143139ac8b21c3282"
+        }
+      ]
+    },
+    {
+      "checkId": "npm test",
+      "treeHash": "3f228984990cd27e55caaee99689698593a94615",
+      "durationMs": 104956,
+      "exitCode": 0,
+      "recordedAt": "2026-09-10T14:21:29.452Z",
+      "executionMode": "forced-fresh",
+      "freshSuites": 12,
+      "reusedSuites": 0,
+      "inputObservation": [
+        {
+          "files": 1637,
+          "bytes": 207038645,
+          "commands": 12,
+          "durationMs": 849.8151249999996
+        },
+        {
+          "files": 1637,
+          "bytes": 207038645,
+          "commands": 12,
+          "durationMs": 647.1190829999978
+        }
+      ],
+      "command": "npm test -- --fresh",
+      "passedSuites": 12,
+      "failedSuites": [],
+      "highlights": [
+        {
+          "checkId": "suite:skeleton",
+          "durationMs": 100060,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:19:47.617Z",
+          "finishedAt": "2026-09-10T14:21:27.677Z",
+          "inputHash": "264a974220e468fdb2dae770f6eebb4b311d22ad06019b17759a10a03f9567ee"
+        },
+        {
+          "checkId": "suite:console",
+          "durationMs": 60606,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:19:47.618Z",
+          "finishedAt": "2026-09-10T14:20:48.224Z",
+          "inputHash": null
+        }
+      ]
+    },
+    {
+      "checkId": "npm run test:full",
+      "treeHash": "3f228984990cd27e55caaee99689698593a94615",
+      "durationMs": 441732,
+      "exitCode": 0,
+      "recordedAt": "2026-09-10T14:29:07.956Z",
+      "executionMode": "composed",
+      "freshSuites": 75,
+      "reusedSuites": 3,
+      "inputObservation": [
+        {
+          "files": 1637,
+          "bytes": 207038645,
+          "commands": 12,
+          "durationMs": 661.5942090000003
+        },
+        {
+          "files": 1637,
+          "bytes": 207038645,
+          "commands": 12,
+          "durationMs": 619.9295830000192
+        }
+      ],
+      "command": "npm run test:full",
+      "passedSuites": 37,
+      "failedSuites": [],
+      "highlights": [
+        {
+          "checkId": "suite:skeleton",
+          "durationMs": 0,
+          "exitCode": 0,
+          "executed": false,
+          "reused": true,
+          "inputHash": "264a974220e468fdb2dae770f6eebb4b311d22ad06019b17759a10a03f9567ee",
+          "sourceExecution": {
+            "treeHash": "3f228984990cd27e55caaee99689698593a94615",
+            "recordedAt": "2026-09-10T14:21:29.452Z",
+            "evidenceRef": "host-suite:3f228984990cd27e55caaee99689698593a94615:skeleton",
+            "durationMs": 100060,
+            "exitCode": 0,
+            "executed": true,
+            "startedAt": "2026-09-10T14:19:47.617Z",
+            "finishedAt": "2026-09-10T14:21:27.677Z"
+          }
+        },
+        {
+          "checkId": "suite:console",
+          "durationMs": 53062,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:23:15.915Z",
+          "finishedAt": "2026-09-10T14:24:08.977Z",
+          "inputHash": null
+        },
+        {
+          "checkId": "suite:harness-fixtures",
+          "durationMs": 50083,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:21:49.037Z",
+          "finishedAt": "2026-09-10T14:22:39.120Z",
+          "inputHash": null
+        },
+        {
+          "checkId": "suite:process-debt",
+          "durationMs": 36790,
+          "exitCode": 0,
+          "executed": true,
+          "startedAt": "2026-09-10T14:22:39.120Z",
+          "finishedAt": "2026-09-10T14:23:15.910Z",
+          "inputHash": "63b1476ba168e67b2ab4dd389ea62ebc7ea87e012d07d1c7cd3ec8d755eea0af"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Single-host observations do not establish a host-independent latency bound.",
+    "The first fast attempt failed only publication source locks; the first full attempt failed only generated authority bundle freshness. Both failed attempts remain recorded.",
+    "The final measured full run reuses three package suites whose inputs match the passing final-source cold fast run. Later receipt-only refreshes are bound to their own completion gate tree.",
+    "Claude ancestor detection is exercised through a generated hook with a process double, not a live Claude session. Synthetic proxy rotation tests verify both absent child variables and reusable fingerprints."
+  ]
+}

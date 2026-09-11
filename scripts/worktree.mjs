@@ -106,14 +106,18 @@ const withTemporaryBody = (body, operation) => {
     }
   }
 };
-const ensureNoIgnoredMaterial = (path) => {
+const ensureNoIgnoredMaterial = (path, reconciled = new Set()) => {
   const ignored = runGitPathList(path, [
     "ls-files",
     "-z",
     "--others",
     "--ignored",
     "--exclude-standard",
-  ]).filter((candidate) => !classifyIgnoredMaterial(candidate).disposable);
+  ]).filter(
+    (candidate) =>
+      !classifyIgnoredMaterial(candidate).disposable &&
+      !reconciled.has(candidate),
+  );
   if (ignored.length > 0)
     throw new Error(
       `worktree contains ignored material and will not be removed: ${ignored[0]} (run npm run backup:intake or move it, then retry)`,
@@ -229,6 +233,12 @@ const main = async () => {
     const bodyRelativePath = relative(subject, bodyPath);
     const body = readTrackedTextAtHead(subject, bodyRelativePath, bodyFile);
     assertGitHubBodyProfile(body, bodyFile);
+    const { hasAiAttribution } =
+      await import("../packages/compiler/src/attribution.mjs");
+    if (hasAiAttribution(title) || hasAiAttribution(body))
+      throw new Error(
+        "PR title or body contains AI attribution or a session trailer/URL",
+      );
     const releaseNotesPath = releaseNotesPathFor(workOrderId);
     const releaseNotesFile = resolve(subject, releaseNotesPath);
     if (!existsSync(releaseNotesFile))
@@ -261,6 +271,13 @@ const main = async () => {
       return;
     }
     const repository = ensureGh(subject);
+    const { mergedSubjects } = await import("./lib/meta.mjs");
+    process.stdout.write(
+      "Last five merged subjects (characters; visibility only):\n",
+    );
+    for (const row of mergedSubjects(mainPath))
+      process.stdout.write(`  ${row.characters}: ${row.title}\n`);
+    process.stdout.write(`Proposed ${[...title].length}: ${title}\n`);
     const opened = withTemporaryBody(body, (committedBodyPath) => {
       runGit(subject, ["push", "--no-follow-tags", "-u", "origin", branch]);
       return executeGh(subject, [
@@ -287,6 +304,8 @@ const main = async () => {
       `Pushed ${branch} and opened ${opened.stdout.trim()}\nAfter the operator merges the PR and authorizes resume: release close, run:\n${releaseHandoff}\n`,
     );
   } else if (action === "finish") {
+    if (actionArgs.some((arg) => arg !== "--dry-run") || actionArgs.length > 1)
+      throw new Error("usage: worktree finish WO-NNN [--dry-run]");
     if (repoRoot !== mainPath)
       throw new Error(
         `run finish from the main control-plane checkout: ${mainPath}`,
@@ -298,10 +317,25 @@ const main = async () => {
     const subject = resolve(item.worktree);
     ensureClean(mainPath);
     ensureClean(subject);
-    ensureNoIgnoredMaterial(subject);
+    const { reconcileIntake, renderIntakeReconciliation } =
+      await import("./lib/intake-reconciliation.mjs");
+    const preview = reconcileIntake(subject, mainPath, workOrderId, {
+      dryRun: true,
+    });
+    ensureNoIgnoredMaterial(
+      subject,
+      new Set(preview.files.map((row) => row.source)),
+    );
     const control = statusProjection(readControl(subject, "HEAD"), workOrderId);
     if (control?.phase !== "closed" || control.workOrder !== workOrderId)
       throw new Error(`${workOrderId} has not passed final review and closed`);
+    if (actionArgs.includes("--dry-run")) {
+      process.stdout.write(renderIntakeReconciliation(preview));
+      process.stdout.write(
+        `Dry run: would fetch main, verify merge and closed state, reconcile intake, and remove merged ${branch}. No changes made.\n`,
+      );
+      return;
+    }
     runGit(mainPath, ["fetch", "origin", "main"]);
     runGit(mainPath, ["merge", "--ff-only", "origin/main"]);
     const merged = spawnSync("git", [
@@ -322,6 +356,12 @@ const main = async () => {
     );
     if (integrated.phase !== "closed")
       throw new Error(`${workOrderId} is not closed in merged control state`);
+    const reconciliation = reconcileIntake(subject, mainPath, workOrderId);
+    process.stdout.write(renderIntakeReconciliation(reconciliation));
+    const { readGateChecks, recordGateChecks } =
+      await import("./lib/gate-evidence.mjs");
+    const checks = readGateChecks(subject);
+    if (checks.length) recordGateChecks(mainPath, checks);
     const restoreBeaconPermissions = prepareBeaconDisposal(subject);
     try {
       runGit(mainPath, ["worktree", "remove", subject]);

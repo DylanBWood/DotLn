@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { decodeLog } from "@dotln/kernel";
 import { WorkerStore } from "./worker-store.js";
 import { projectWorkerStatus, renderWorkerStatus } from "./worker-status.js";
@@ -13,6 +14,11 @@ import type { FixtureTree } from "./scenario.js";
 import { runVerificationDemo } from "./verification-demo.js";
 import { FakeVerificationTransport } from "./verification-fake.js";
 import { runFeedbackSelfhost } from "./feedback-selfhost.js";
+import { harnessControl } from "./harness-host.js";
+import {
+  recordUsageObservation,
+  type usageObservation,
+} from "./usage-observation.mjs";
 
 const args = process.argv.slice(2);
 const command = args.shift();
@@ -69,12 +75,28 @@ try {
       throw new Error(
         "live demo requires DOTLN_LIVE_WORKERS=1 on an authenticated runner that permits child CLI execution",
       );
+    const startedAt = new Date().toISOString();
+    const owner =
+      command === "feedback-audit" &&
+      existsSync(join(process.cwd(), "docs/control/budgets.json"))
+        ? harnessControl(process.cwd()).workOrder
+        : null;
+    const onUsage = owner
+      ? (observation: ReturnType<typeof usageObservation>) =>
+          recordUsageObservation(process.cwd(), {
+            workOrder: owner,
+            role: "verifier",
+            startedAt,
+            durationMs: Date.now() - Date.parse(startedAt),
+            observation,
+          })
+      : undefined;
     const transport =
       transportName === "fake"
         ? new FakeVerificationTransport()
         : transportName === "claude-cli-print"
-          ? new ClaudeCliPrintWorkOrderTransport()
-          : new CodexCliExecWorkOrderTransport();
+          ? new ClaudeCliPrintWorkOrderTransport(undefined, undefined, onUsage)
+          : new CodexCliExecWorkOrderTransport(undefined, undefined, onUsage);
     if (command === "feedback-audit") {
       const result = await runFeedbackSelfhost({
         root: process.cwd(),

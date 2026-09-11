@@ -1,5 +1,7 @@
 # WO-056 — Live blinded verification and repair: a planted defect in a real repository is caught by a live verifier, repaired by a fresh worker, and re-verified from the original contract, recorded from an outside terminal (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** the actual local harnesses for the worker and verifier episodes,
 run by the operator from a terminal outside the sandbox; launch claims
 recorded per episode (07-execution-guide.md §Model-specific notes).

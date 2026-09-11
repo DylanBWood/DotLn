@@ -1,5 +1,7 @@
 # WO-096 — Migration ledger and whole-set classification: every feedback shape the operator named gets a typed row or an exclusion count, the ten compiled units are marked, governance mode is derived by one rule, and the render is checked with the local-terms screen (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.

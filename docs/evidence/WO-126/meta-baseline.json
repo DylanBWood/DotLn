@@ -1,0 +1,1136 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-09T21:06:56.168Z",
+  "revision": "d0293dccb01d7303fe4b8e03a55dbcf1c40efd42",
+  "orders": [
+    {
+      "workOrder": "WO-041",
+      "phase": "closed",
+      "phases": [
+        {
+          "phase": "implementation",
+          "role": "executor",
+          "elapsedMs": 36409941
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1116751
+        },
+        {
+          "phase": "repair",
+          "role": "executor",
+          "elapsedMs": 1344824
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1109388
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 557663
+        },
+        {
+          "phase": "repair",
+          "role": "executor",
+          "elapsedMs": 3355985
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 923951
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 1454946
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 46273449,
+        "attempts": 8,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.11156935805671196,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": 12018
+      },
+      "usage": [],
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": null,
+        "attempts": null,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": null,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": null
+      }
+    },
+    {
+      "workOrder": "WO-032",
+      "phase": "closed",
+      "phases": [
+        {
+          "phase": "implementation",
+          "role": "executor",
+          "elapsedMs": 5155670
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 994807
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 2239093
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 8389570,
+        "attempts": 3,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.3854667164109722,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": 13562
+      },
+      "usage": [],
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": -37883879,
+        "attempts": -5,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.2738973583542602,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": 1544
+      }
+    },
+    {
+      "workOrder": "WO-109",
+      "phase": "closed",
+      "phases": [
+        {
+          "phase": "implementation",
+          "role": "executor",
+          "elapsedMs": 8288738
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1128934
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 1865780
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 11283452,
+        "attempts": 3,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.265407607530036,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": 5019
+      },
+      "usage": [],
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": 2893882,
+        "attempts": 0,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": -0.12005910888093618,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": -8543
+      }
+    },
+    {
+      "workOrder": "WO-039",
+      "phase": "closed",
+      "phases": [
+        {
+          "phase": "implementation",
+          "role": "executor",
+          "elapsedMs": 14225760
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1578960
+        },
+        {
+          "phase": "repair",
+          "role": "executor",
+          "elapsedMs": 4598548
+        },
+        {
+          "phase": "repair",
+          "role": "executor",
+          "elapsedMs": 5224316
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1120152
+        },
+        {
+          "phase": "repair",
+          "role": "executor",
+          "elapsedMs": 3654193
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 842946
+        },
+        {
+          "phase": "repair",
+          "role": "executor",
+          "elapsedMs": 6369687
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1299494
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 900834
+        },
+        {
+          "phase": "repair",
+          "role": "executor",
+          "elapsedMs": 27103415
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 1090197
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 2205496
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 70213998,
+        "attempts": 13,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.12872189673631745,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": 12052
+      },
+      "usage": [],
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": 58930546,
+        "attempts": 10,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": -0.13668571079371855,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": 7033
+      }
+    },
+    {
+      "workOrder": "WO-042",
+      "phase": "closed",
+      "phases": [
+        {
+          "phase": "implementation",
+          "role": "executor",
+          "elapsedMs": 14690100
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 34540325
+        },
+        {
+          "phase": "repair",
+          "role": "executor",
+          "elapsedMs": 2264964
+        },
+        {
+          "phase": "verification",
+          "role": "verifier",
+          "elapsedMs": 2658875
+        },
+        {
+          "phase": "finalReview",
+          "role": "reviewer",
+          "elapsedMs": 3521278
+        }
+      ],
+      "metrics": {
+        "elapsedMs": 57675542,
+        "attempts": 5,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.7060267938184266,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": 13392
+      },
+      "usage": [],
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": -12538456,
+        "attempts": -8,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": 0.5773048970821091,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": 1340
+      }
+    },
+    {
+      "workOrder": "WO-126",
+      "phase": "active",
+      "phases": [],
+      "metrics": {
+        "elapsedMs": null,
+        "attempts": 0,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": 52203,
+        "readAmplification": null,
+        "machineryShare": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": 504,
+        "coldStartBytes": 12026,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": null
+      },
+      "usage": [],
+      "source": {
+        "phases": "canonical control fold",
+        "usage": "unavailable",
+        "unobserved": "null means unavailable, never zero"
+      },
+      "delta": {
+        "elapsedMs": null,
+        "attempts": -5,
+        "gateMs": null,
+        "fastGateMs": null,
+        "readObligationCount": null,
+        "readObligationBytes": null,
+        "codeDiffBytes": null,
+        "readAmplification": null,
+        "machineryShare": null,
+        "tokens": null,
+        "costUsd": null,
+        "declaredPromptTokens": null,
+        "coldStartBytes": null,
+        "operatorCorrections": 0,
+        "guardRefusals": null,
+        "stopRefusals": null,
+        "reAnnouncements": null,
+        "manualCloseoutSteps": null,
+        "emergencyPasses": null,
+        "bypassTools": null,
+        "adHocScripts": null,
+        "commandsRun": null,
+        "bytesReadIntoContext": null,
+        "stepCount": null,
+        "prBodyBytes": null
+      }
+    }
+  ],
+  "coldStart": {
+    "schemaVersion": 2,
+    "comparisonEdition": "v0.16.0",
+    "method": "Installed CLAUDE.md plus the installed role skill only; source bytes, no task documents or estimated tokens.",
+    "instruction": {
+      "path": "CLAUDE.md",
+      "bytes": 3607,
+      "previousBytes": 3593
+    },
+    "profiles": [
+      {
+        "role": "executor",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-executor/SKILL.md",
+        "skillBytes": 7254,
+        "bytes": 10861,
+        "previousBytes": 10847,
+        "delta": 14,
+        "ceiling": 16384,
+        "metric": "coldStartBytes.executor",
+        "verdict": "within"
+      },
+      {
+        "role": "verifier",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-verifier/SKILL.md",
+        "skillBytes": 4639,
+        "bytes": 8246,
+        "previousBytes": 8232,
+        "delta": 14,
+        "ceiling": 12288,
+        "metric": "coldStartBytes.verifier",
+        "verdict": "within"
+      },
+      {
+        "role": "reviewer",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-reviewer/SKILL.md",
+        "skillBytes": 5072,
+        "bytes": 8679,
+        "previousBytes": 8665,
+        "delta": 14,
+        "ceiling": 14336,
+        "metric": "coldStartBytes.reviewer",
+        "verdict": "within"
+      },
+      {
+        "role": "release-close",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-release-close/SKILL.md",
+        "skillBytes": 2514,
+        "bytes": 6121,
+        "previousBytes": 6107,
+        "delta": 14,
+        "ceiling": 6144,
+        "metric": "coldStartBytes.release-close",
+        "verdict": "within"
+      },
+      {
+        "role": "planner",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-planner/SKILL.md",
+        "skillBytes": 1862,
+        "bytes": 5469,
+        "previousBytes": 5455,
+        "delta": 14,
+        "ceiling": 24576,
+        "metric": "coldStartBytes.planner",
+        "verdict": "within"
+      },
+      {
+        "role": "refuter",
+        "skillsRoot": ".claude/skills",
+        "path": ".claude/skills/dotln-refuter/SKILL.md",
+        "skillBytes": null,
+        "bytes": null,
+        "previousBytes": null,
+        "delta": null,
+        "ceiling": null,
+        "metric": "coldStartBytes.refuter",
+        "verdict": "unset"
+      },
+      {
+        "role": "executor",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-executor/SKILL.md",
+        "skillBytes": 8419,
+        "bytes": 12026,
+        "previousBytes": 12012,
+        "delta": 14,
+        "ceiling": 16384,
+        "metric": "coldStartBytes.executor",
+        "verdict": "within"
+      },
+      {
+        "role": "verifier",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-verifier/SKILL.md",
+        "skillBytes": 5804,
+        "bytes": 9411,
+        "previousBytes": 9397,
+        "delta": 14,
+        "ceiling": 12288,
+        "metric": "coldStartBytes.verifier",
+        "verdict": "within"
+      },
+      {
+        "role": "reviewer",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-reviewer/SKILL.md",
+        "skillBytes": 6237,
+        "bytes": 9844,
+        "previousBytes": 9830,
+        "delta": 14,
+        "ceiling": 14336,
+        "metric": "coldStartBytes.reviewer",
+        "verdict": "within"
+      },
+      {
+        "role": "release-close",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-release-close/SKILL.md",
+        "skillBytes": 3679,
+        "bytes": 7286,
+        "previousBytes": 7272,
+        "delta": 14,
+        "ceiling": 6144,
+        "metric": "coldStartBytes.release-close",
+        "verdict": "breach"
+      },
+      {
+        "role": "planner",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-planner/SKILL.md",
+        "skillBytes": 3027,
+        "bytes": 6634,
+        "previousBytes": 6620,
+        "delta": 14,
+        "ceiling": 24576,
+        "metric": "coldStartBytes.planner",
+        "verdict": "within"
+      },
+      {
+        "role": "refuter",
+        "skillsRoot": ".agents/skills",
+        "path": ".agents/skills/dotln-refuter/SKILL.md",
+        "skillBytes": null,
+        "bytes": null,
+        "previousBytes": null,
+        "delta": null,
+        "ceiling": null,
+        "metric": "coldStartBytes.refuter",
+        "verdict": "unset"
+      }
+    ]
+  },
+  "declared": {
+    "promptTokens": 504,
+    "supports": 6,
+    "units": 10,
+    "hooks": 11
+  },
+  "sizes": {
+    "docs/planning/sequence.md": null,
+    "docs/planning/work-order-map.md": 190044,
+    "docs/work-orders/README.md": 134578,
+    "docs/lineage/idea-ledger.md": 627172,
+    "CLAUDE.md": 3607,
+    ".claude/skills/dotln-executor/SKILL.md": 7254,
+    ".claude/skills/dotln-verifier/SKILL.md": 4639,
+    ".claude/skills/dotln-reviewer/SKILL.md": 5072,
+    ".claude/skills/dotln-release-close/SKILL.md": 2514,
+    ".claude/skills/dotln-planner/SKILL.md": 1862,
+    ".claude/skills/dotln-refuter/SKILL.md": null,
+    ".agents/skills/dotln-executor/SKILL.md": 8419,
+    ".agents/skills/dotln-verifier/SKILL.md": 5804,
+    ".agents/skills/dotln-reviewer/SKILL.md": 6237,
+    ".agents/skills/dotln-release-close/SKILL.md": 3679,
+    ".agents/skills/dotln-planner/SKILL.md": 3027,
+    ".agents/skills/dotln-refuter/SKILL.md": null
+  },
+  "subjects": [
+    {
+      "title": ":microscope: Add the re-mining practice and its first measured draw (WO-109, v0.13.3) #46",
+      "characters": 89
+    },
+    {
+      "title": ":passport_control: Compile the Contributor build into the harness configuration this repository runs on: permissions, hooks, role skills and bounded residue (WO-039, v0.15.0) #47",
+      "characters": 178
+    },
+    {
+      "title": ":memo: Plan the critical path to an always-on runtime that changes external source #48",
+      "characters": 86
+    },
+    {
+      "title": ":lock: Stop a compiled build from granting itself authority: supports may only narrow, host-admitted grants widen, and the tooltip projects the effective envelope (WO-042, v0.16.0) #49",
+      "characters": 184
+    },
+    {
+      "title": ":memo: Plan WO-126: cut the process debt that makes every order cost more than its code #50",
+      "characters": 91
+    }
+  ],
+  "budgets": [
+    {
+      "metric": "coldStartBytes.executor",
+      "value": 10861,
+      "ceiling": 16384,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.verifier",
+      "value": 8246,
+      "ceiling": 12288,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.reviewer",
+      "value": 8679,
+      "ceiling": 14336,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.release-close",
+      "value": 6121,
+      "ceiling": 6144,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.planner",
+      "value": 5469,
+      "ceiling": 24576,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.refuter",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "coldStartBytes.executor",
+      "value": 12026,
+      "ceiling": 16384,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.verifier",
+      "value": 9411,
+      "ceiling": 12288,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.reviewer",
+      "value": 9844,
+      "ceiling": 14336,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.release-close",
+      "value": 7286,
+      "ceiling": 6144,
+      "verdict": "breach"
+    },
+    {
+      "metric": "coldStartBytes.planner",
+      "value": 6634,
+      "ceiling": 24576,
+      "verdict": "within"
+    },
+    {
+      "metric": "coldStartBytes.refuter",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "sequenceBytes",
+      "value": null,
+      "ceiling": 8192,
+      "verdict": "unavailable"
+    },
+    {
+      "metric": "fastGateMs",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": 120000,
+      "verdict": "unavailable"
+    },
+    {
+      "metric": "prBodyBytes",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "executor.tokens",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "executor.costUsd",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "verifier.tokens",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "verifier.costUsd",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "reviewer.tokens",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "reviewer.costUsd",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "release-close.tokens",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "release-close.costUsd",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "planner.tokens",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "planner.costUsd",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "refuter.tokens",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    },
+    {
+      "metric": "refuter.costUsd",
+      "scope": "WO-126",
+      "value": null,
+      "ceiling": null,
+      "verdict": "unset"
+    }
+  ],
+  "traps": [
+    {
+      "id": "rule-beating",
+      "signal": "Read-obligation bytes against diff bytes; Stop refusals and re-announcements",
+      "metric": "readAmplification",
+      "series": [
+        {
+          "workOrder": "WO-041",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-032",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-109",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-039",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-042",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-126",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "reopenCandidate": false
+    },
+    {
+      "id": "seeking-the-wrong-goal",
+      "signal": "Machinery share of elapsed time; phase durations against code-change size",
+      "metric": "machineryShare",
+      "series": [
+        {
+          "workOrder": "WO-041",
+          "value": 0.11156935805671196,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-032",
+          "value": 0.3854667164109722,
+          "delta": 0.2738973583542602
+        },
+        {
+          "workOrder": "WO-109",
+          "value": 0.265407607530036,
+          "delta": -0.12005910888093618
+        },
+        {
+          "workOrder": "WO-039",
+          "value": 0.12872189673631745,
+          "delta": -0.13668571079371855
+        },
+        {
+          "workOrder": "WO-042",
+          "value": 0.7060267938184266,
+          "delta": 0.5773048970821091
+        },
+        {
+          "workOrder": "WO-126",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "reopenCandidate": false
+    },
+    {
+      "id": "shifting-the-burden-to-the-intervenor",
+      "signal": "Operator corrections, manual closeout steps and emergency planning passes",
+      "metric": "operatorCorrections",
+      "series": [
+        {
+          "workOrder": "WO-041",
+          "value": 0,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-032",
+          "value": 0,
+          "delta": 0
+        },
+        {
+          "workOrder": "WO-109",
+          "value": 0,
+          "delta": 0
+        },
+        {
+          "workOrder": "WO-039",
+          "value": 0,
+          "delta": 0
+        },
+        {
+          "workOrder": "WO-042",
+          "value": 0,
+          "delta": 0
+        },
+        {
+          "workOrder": "WO-126",
+          "value": 0,
+          "delta": 0
+        }
+      ],
+      "reopenCandidate": false
+    },
+    {
+      "id": "drift-to-low-performance",
+      "signal": "Subject length, gate step count and cold-start byte series",
+      "metric": "coldStartBytes",
+      "series": [
+        {
+          "workOrder": "WO-041",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-032",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-109",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-039",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-042",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-126",
+          "value": 12026,
+          "delta": null
+        }
+      ],
+      "reopenCandidate": false
+    },
+    {
+      "id": "policy-resistance",
+      "signal": "Guard refusals, bypass tools and ad hoc scripts",
+      "metric": "guardRefusals",
+      "series": [
+        {
+          "workOrder": "WO-041",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-032",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-109",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-039",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-042",
+          "value": null,
+          "delta": null
+        },
+        {
+          "workOrder": "WO-126",
+          "value": null,
+          "delta": null
+        }
+      ],
+      "reopenCandidate": false
+    }
+  ],
+  "reopenCandidates": []
+}

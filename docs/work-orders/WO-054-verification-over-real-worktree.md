@@ -1,5 +1,7 @@
 # WO-054 — Verification over a real worktree: the blinded verifier receives a contract, a diff and a snapshot of the target worktree, runs the target's focused tests itself, and never sees the implementer's narrative (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the profile and fixtures; the live rows in
 WO-056 use the actual harness. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

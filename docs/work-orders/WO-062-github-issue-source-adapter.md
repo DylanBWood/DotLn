@@ -1,5 +1,7 @@
 # WO-062 — GitHub Issue source adapter: a read-only skeleton adapter over the GitHub CLI turns one issue and its discussion into a SourceBundle with a revision id, screened before it is stored (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model; the live smoke is operator-run against a
 personal public repository. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

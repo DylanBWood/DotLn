@@ -22,6 +22,7 @@ import {
   controlUsageProjection,
   renderControlUsage,
 } from "./lib/control-usage.mjs";
+import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
 import {
   projectControlBeacon,
   restrictedBeaconBriefing,
@@ -382,14 +383,23 @@ const recordedHarnessVersions = (harness) => {
 
 const effortHarnessEvidence = (harness, harnessVersion) => {
   const evidence = harnessEvidence(harness);
-  return recordedHarnessVersions(harness).includes(harnessVersion)
+  const line = /^(\d+\.\d+)\.\d+$/.exec(harnessVersion)?.[1];
+  return recordedHarnessVersions(harness).includes(harnessVersion) ||
+    (line &&
+      evidence?.versionLines?.some(
+        (row) => row.classification === "observed" && row.line === line,
+      ))
     ? evidence
     : undefined;
 };
 
 const recordedVersionsMessage = (harness) => {
   const versions = recordedHarnessVersions(harness);
-  return `recorded observed versions: ${versions.length > 0 ? versions.join(", ") : "none"}`;
+  const lines =
+    harnessEvidence(harness)
+      ?.versionLines?.filter((row) => row.classification === "observed")
+      .map((row) => row.line) ?? [];
+  return `recorded observed versions: ${versions.length > 0 ? versions.join(", ") : "none"}; observed lines: ${[...new Set(lines)].join(", ") || "none"}`;
 };
 
 const selectorClassifications = new Set(["observed", "documented locally"]);
@@ -420,6 +430,8 @@ const hasObservedEffortReadbackValue = (harness, harnessVersion, effort) => {
   )?.effectiveEffortReadback;
   return (
     readback?.classification === "observed" &&
+    (readback.channel !== "CLAUDE_EFFORT" ||
+      process.env.CLAUDE_EFFORT === effort) &&
     (readback.value === effort ||
       (Array.isArray(readback.values) && readback.values.includes(effort)))
   );
@@ -482,7 +494,16 @@ export const parseActor = (action, args, positional = "") => {
   const supportedEffort =
     recognizedEffort &&
     hasRecordedEffortValue(harness, harnessVersion, suppliedEffort);
-  if (recognizedEffort && !supportedEffort)
+  const outsideObservedLine =
+    recognizedEffort &&
+    !supportedEffort &&
+    /^\d+\.\d+\.\d+$/.test(harnessVersion) &&
+    harnessEvidence(harness)?.versionLines?.length;
+  if (outsideObservedLine)
+    process.stderr.write(
+      `warning: ${harness} ${harnessVersion} is outside ${recordedVersionsMessage(harness)}; effort records unknown\n`,
+    );
+  if (recognizedEffort && !supportedEffort && !outsideObservedLine)
     throw new Error(
       `attested effort ${suppliedEffort} refused for ${harness} ${harnessVersion}: no matching selector or effective-readback evidence records that value (${recordedVersionsMessage(harness)}); use --effort unknown or record bounded discovery evidence`,
     );
@@ -490,7 +511,7 @@ export const parseActor = (action, args, positional = "") => {
     harness,
     harnessVersion,
     model,
-    effort: recognizedEffort ? suppliedEffort : "unknown",
+    effort: recognizedEffort && supportedEffort ? suppliedEffort : "unknown",
   };
   if (!recognizedEffort && suppliedEffort !== "unknown")
     actor.raw = suppliedEffort;
@@ -720,7 +741,7 @@ const requirePhase = (state, ...phases) => {
   );
 };
 
-export const main = (argv = process.argv.slice(2)) => {
+export const main = async (argv = process.argv.slice(2)) => {
   const [action = "status", ...rawArgs] = argv;
   const { args, workOrder } = selectionArgs(rawArgs);
   let control = readControl(repoRoot);
@@ -772,6 +793,13 @@ export const main = (argv = process.argv.slice(2)) => {
         args[0] === "--json"
           ? JSON.stringify(statusProjection(control, selected), null, 2)
           : rendered;
+      if (
+        args[0] !== "--json" &&
+        existsSync(join(repoRoot, "docs/control/budgets.json"))
+      ) {
+        const { collectMeta, metaHealth } = await import("./lib/meta.mjs");
+        message += `\n${metaHealth(await collectMeta(repoRoot))}\n`;
+      }
       break;
     }
     case "times":
@@ -812,8 +840,15 @@ export const main = (argv = process.argv.slice(2)) => {
     case "implementation-ready": {
       requirePhase(state, "active");
       const actor = completionActor(action, args, state, "executor");
+      const evidence = await requireLifecycleEvidence(
+        repoRoot,
+        action,
+        undefined,
+        state.workOrderId,
+      );
       appendTransition(action, {
         type: "ImplementationReady",
+        ...(evidence ? { evidence } : {}),
         workOrderId: state.workOrderId,
         actor,
       });
@@ -865,8 +900,15 @@ export const main = (argv = process.argv.slice(2)) => {
         actor,
         "verification",
       );
+      const evidence = await requireLifecycleEvidence(
+        repoRoot,
+        action,
+        verdict,
+        state.workOrderId,
+      );
       appendTransition(action, {
         type: "VerificationCompleted",
+        ...(evidence ? { evidence } : {}),
         workOrderId: state.workOrderId,
         verificationId: state.latestVerificationId,
         reportPath: state.latestVerificationPath,
@@ -897,8 +939,15 @@ export const main = (argv = process.argv.slice(2)) => {
     case "repair-complete": {
       requirePhase(state, "repairing");
       const actor = completionActor(action, args, state, "executor");
+      const evidence = await requireLifecycleEvidence(
+        repoRoot,
+        action,
+        undefined,
+        state.workOrderId,
+      );
       appendTransition(action, {
         type: "RepairCompleted",
+        ...(evidence ? { evidence } : {}),
         workOrderId: state.workOrderId,
         sourceVerificationId: state.latestVerificationId,
         actor,
@@ -952,8 +1001,15 @@ export const main = (argv = process.argv.slice(2)) => {
         actor,
         "final-review",
       );
+      const evidence = await requireLifecycleEvidence(
+        repoRoot,
+        action,
+        verdict,
+        state.workOrderId,
+      );
       appendTransition(action, {
         type: "FinalReviewCompleted",
+        ...(evidence ? { evidence } : {}),
         workOrderId: state.workOrderId,
         finalReviewId: state.finalReviewId,
         reportPath: state.finalReviewPath,
@@ -1023,7 +1079,7 @@ if (
   pathToFileURL(resolve(process.argv[1])).href === import.meta.url
 ) {
   try {
-    main();
+    await main();
   } catch (error) {
     process.stderr.write(
       `error: ${error instanceof Error ? error.message : String(error)}\n`,

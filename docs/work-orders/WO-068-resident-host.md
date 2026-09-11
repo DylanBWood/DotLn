@@ -1,5 +1,7 @@
 # WO-068 — Resident host: one offline local process per launchpad folds the log, evaluates compiled cadences against a recorded clock, dispatches `script` actor episodes when a policy phase allows, and resumes idempotently after a restart (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the host and fixtures; the live rows in
 WO-099 use the actual harnesses. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

@@ -5,16 +5,17 @@ description: "Close a merged DotLn worktree and publish its validated source tag
 
 <!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","contributor.release-close","correctness-over-sycophancy","fail-conservative-correction"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"} -->
 
-Start this role from main so its installed hooks survive teardown of the reviewed worktree. Resolve cwd and Git root, then run `npm run resume --silent -- status --json`. The exact release-close phrase carries the narrow authority below; the skill itself grants none.
+Before adding a step, read, check or artifact, state its wall-clock, context bytes, commands, tokens and steps, what it removes, and take the fewer-step path that performs as well. Unknown measurements remain unknown; inspect the meter before choosing a cap.
+Start from main so hooks survive teardown. Resolve cwd and Git root; run `npm run resume --silent -- status --json`. Only the exact release-close phrase grants the authority below.
 Read: `@work-order`
 Read: `@citations`
 Read: `@final-review`
-Run `npm run resume -- release-close` to obtain the canonical absolute command, or use the exact post-merge handoff already emitted by worktree publish. Run that `node <reviewed-subject>/scripts/release.mjs close <id> --publish` command from main; after subject removal use main's copy.
-The helper owns merge/clean/material gates, main synchronization, tests, worktree teardown, annotated tag validation and matching GitHub Release creation. A missing or failed gate blocks completion; retain its evidence and do not force teardown or retry a recorded lifecycle transition.
-Back up and reconcile single-copy ignored intake before teardown. Preserve any other non-disposable ignored material; never delete it to satisfy the gate. If Release creation failed after tag publication, rerun the close helper from updated main.
-Publish only the validated annotated source tag and its matching reviewed Release, or report the honest no-release result. Never edit a published Release, push main, merge a PR, publish packages/binaries, or change repository/user settings. Report the exact executable result and any remaining obligation.
+Run `npm run resume -- release-close` for the canonical command, or use worktree publish's exact handoff. Invoke it from main; after subject removal use main's helper.
+The helper checks merge, cleanliness, retained material, evidence and tag/Release identity before teardown. Report a refusal with its evidence; do not force teardown or repeat a recorded transition.
+The close helper owns intake reconciliation and prints byte-preserving collision receipts; `--dry-run` previews without writes. Keep terms.txt and local control state. Do not write an ad hoc closeout script. If Release creation failed after tag publication, rerun the helper from updated main.
+Publish only the validated source tag and reviewed Release, or report no-release. Never edit published Releases, push main, merge PRs, publish packages/binaries or change settings. Report the result and remaining obligations.
 
-anti-oscillation: Preserve desired outcomes and rejection reasons; replacing a rejected decision needs explicit supersession from the operator.
+anti-oscillation: Identify the category the operator is pointing at; stay inside it, neither widening nor shrinking it; when the boundary is genuinely unclear, ask one focused question instead of guessing in either direction; and pause to ask before any file action that goes beyond the literal correction. Example: a correction about committing opaque identifiers includes hashes; hostnames do not belong to that category.
 bounded-boy-scout-cleanup: Admit only host-reviewed adjacent low-risk cleanup within named paths and shared checks that keeps the diff legible; nominate the rest separately.
 correctness-over-sycophancy: Judge the current subject from consistent independent evidence and preserve disagreement as a failed or unsupported claim.
 fail-conservative-correction: On a typed correction, freeze destructive effects and scope expansion, preserve evidence, and require diagnosis; a false activation only tightens behavior.

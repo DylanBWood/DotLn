@@ -1,5 +1,7 @@
 # WO-108 — Mutation evidence campaign for the current kernel, compiler, and skeleton — v0.13.1
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** Codex (any capable tier); any capable model may substitute. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** internal tooling/evidence patch, application `v0.13.1`. No exported runtime, package version, or schema change. Base: published `v0.13.0`, commit `3dc19b7342ad03662172cf86663f406b96a43db4`. Publication requires the ordinary later final-review/release-close dispatches.

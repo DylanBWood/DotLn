@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-10T02:53:19.775Z",
+  "fast": {
+    "checkId": "npm test",
+    "treeHash": "175ebf23b21623d88a6f43b1c951cc05a01be30a",
+    "subject": "175ebf23b21623d88a6f43b1c951cc05a01be30a",
+    "durationMs": 108717,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:175ebf23b21623d88a6f43b1c951cc05a01be30a:npm test",
+    "recordedAt": "2026-09-10T02:51:20.386Z",
+    "workOrder": "WO-126"
+  },
+  "document": {
+    "checkId": "npm run test:docs",
+    "treeHash": "175ebf23b21623d88a6f43b1c951cc05a01be30a",
+    "subject": "175ebf23b21623d88a6f43b1c951cc05a01be30a",
+    "durationMs": 43206,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:175ebf23b21623d88a6f43b1c951cc05a01be30a:npm run test:docs",
+    "recordedAt": "2026-09-10T02:48:30.572Z",
+    "workOrder": "WO-126"
+  },
+  "limits": "Named executed subjects. Later documentation and evidence writes are covered by the final exact-tree handoff gate, without rewriting these observations to chase their own hash."
+}

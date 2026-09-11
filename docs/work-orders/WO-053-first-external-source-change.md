@@ -1,5 +1,7 @@
 # WO-053 — The first external source change: one live episode edits one file, turns one test green and commits in a repository outside DotLn, with every containment claim checked by the host and recorded from an outside terminal (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** the actual local harnesses, run by the operator from a terminal
 outside the sandbox; the receipt states the harness version, model and
 effort launched for each episode as launch claims (07-execution-guide.md

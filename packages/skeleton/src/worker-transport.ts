@@ -12,6 +12,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { feedbackClaudeSettings } from "./loadouts/feedback.js";
 import { PLAN_REFUTATION_LIMITS } from "./plan-refutation-protocol.js";
+import { decodeUsageSource, usageObservation } from "./usage-observation.mjs";
 import {
   WorkerFailure,
   WORKER_TIMEOUT_MS,
@@ -131,6 +132,7 @@ export interface TransportDispatch<T = WorkerResult> {
   readonly completed: Promise<T>;
   readonly alive: () => boolean;
   readonly kill: () => void;
+  readonly usage?: Promise<ReturnType<typeof usageObservation>>;
 }
 export interface WorkOrderTransport<
   R extends TransportRequest = WorkerRequest,
@@ -281,7 +283,9 @@ function decodeResult<R extends TransportRequest>(
       );
     throw new WorkerFailure(
       unavailable ? "model-unavailable" : "transport-failed",
-      wireDetail,
+      isPlanRequest(request)
+        ? `${wireDetail}; stderr: ${output.stderr.slice(-4000).replace(/(?:Bearer\s+|(?:api[_-]?key|token|password)\s*[=:]\s*)\S+/gi, "[redacted credential]") || "(empty)"}`
+        : wireDetail,
     );
   }
   let parsePhase = "wire-json";
@@ -341,6 +345,9 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
     observedVersions: readonly string[],
     private readonly runner: ProcessRunner = runWorkerProcess,
     version?: string,
+    private readonly onUsage?: (
+      observation: ReturnType<typeof usageObservation>,
+    ) => void,
   ) {
     const installed =
       version ??
@@ -386,11 +393,23 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         acceptedAt: now(),
       }));
       void receipt.catch(() => {});
-      const completed = process.completed
-        .then((output) => decodeResult(this.name, output, request))
+      const usage = process.completed.then((output) => {
+        const observation = usageObservation(decodeUsageSource(output.stdout));
+        this.onUsage?.(observation);
+        return observation;
+      });
+      const completed = Promise.all([process.completed, usage])
+        .then(([output]) => decodeResult(this.name, output, request))
         .finally(() => rmSync(schemaDirectory, { recursive: true }));
       void completed.catch(() => {});
-      return { receipt, completed, alive: process.alive, kill: process.kill };
+      void usage.catch(() => {});
+      return {
+        receipt,
+        completed,
+        alive: process.alive,
+        kill: process.kill,
+        usage,
+      };
     } catch (error) {
       rmSync(schemaDirectory, { recursive: true });
       throw error;
@@ -400,13 +419,21 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
 
 export class ClaudeCliPrintWorkOrderTransport extends CliWorkOrderTransport {
   readonly name = "claude-cli-print" as const;
-  constructor(runner?: ProcessRunner, version?: string) {
-    super("claude", ["2.1.261", "2.1.263"], runner, version);
+  constructor(
+    runner?: ProcessRunner,
+    version?: string,
+    onUsage?: (observation: ReturnType<typeof usageObservation>) => void,
+  ) {
+    super("claude", ["2.1.261", "2.1.263"], runner, version, onUsage);
   }
 }
 export class CodexCliExecWorkOrderTransport extends CliWorkOrderTransport {
   readonly name = "codex-cli-exec" as const;
-  constructor(runner?: ProcessRunner, version?: string) {
-    super("codex", ["0.153.4"], runner, version);
+  constructor(
+    runner?: ProcessRunner,
+    version?: string,
+    onUsage?: (observation: ReturnType<typeof usageObservation>) => void,
+  ) {
+    super("codex", ["0.153.4"], runner, version, onUsage);
   }
 }

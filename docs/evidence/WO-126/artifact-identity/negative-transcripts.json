@@ -1,0 +1,1833 @@
+{
+  "schemaVersion": 1,
+  "synthetic": true,
+  "transcripts": [
+    {
+      "name": "compiler-contract-drift",
+      "setup": "Seiri v2 equip with a synthetic stale identity axis",
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "LoadoutEquipped",
+        "DecisionRecorded",
+        "ArtifactIdentityDrift"
+      ],
+      "decision": {
+        "reactorId": "artifact-identity",
+        "reactorVersion": "1",
+        "branchPath": [
+          "LoadoutEquipped",
+          "refused",
+          "ArtifactIdentityDrift",
+          "equipped artifact differs from compilation"
+        ],
+        "envInputs": [
+          "event",
+          "equipped-artifact",
+          "logged-enforcement-boundary"
+        ],
+        "cadenceEvaluations": []
+      },
+      "refusalEvents": [
+        {
+          "schemaVersion": 1,
+          "type": "ArtifactIdentityDrift",
+          "occurredAt": 1200000,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "causationId": "evt_2",
+          "payload": {
+            "payloadVersion": 1,
+            "reason": "equipped artifact differs from compilation",
+            "sourceEventId": "evt_2",
+            "equippedEventId": null,
+            "pinnedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "future-contract",
+              "compilerPackageVersion": "0.9.0",
+              "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:a1dc633c08fe612a"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "observedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.9.0",
+              "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:a1dc633c08fe612a"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "diagnostics": [],
+            "drift": [
+              "compiler-contract-version"
+            ]
+          },
+          "eventId": "evt_4"
+        }
+      ],
+      "usableAuthority": false,
+      "comparisonReceipts": [
+        {
+          "eventId": "evt_2",
+          "eventType": "LoadoutEquipped",
+          "status": "unverified",
+          "evidenceLinks": [
+            "event:evt_2"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilerContractVersion": "future-contract",
+            "compilerPackageVersion": "0.9.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equip claim has no recorded successful comparison",
+          "drift": [],
+          "diagnosticCodes": []
+        },
+        {
+          "eventId": "evt_4",
+          "eventType": "ArtifactIdentityDrift",
+          "status": "refused",
+          "evidenceLinks": [
+            "event:evt_2",
+            "event:evt_3",
+            "event:evt_4"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilerContractVersion": "future-contract",
+            "compilerPackageVersion": "0.9.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equipped artifact differs from compilation",
+          "drift": [
+            "compiler-contract-version"
+          ],
+          "diagnosticCodes": []
+        }
+      ]
+    },
+    {
+      "name": "compiler-package-drift",
+      "setup": "Seiri v2 equip with a synthetic stale identity axis",
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "LoadoutEquipped",
+        "DecisionRecorded",
+        "ArtifactIdentityDrift"
+      ],
+      "decision": {
+        "reactorId": "artifact-identity",
+        "reactorVersion": "1",
+        "branchPath": [
+          "LoadoutEquipped",
+          "refused",
+          "ArtifactIdentityDrift",
+          "equipped artifact differs from compilation"
+        ],
+        "envInputs": [
+          "event",
+          "equipped-artifact",
+          "logged-enforcement-boundary"
+        ],
+        "cadenceEvaluations": []
+      },
+      "refusalEvents": [
+        {
+          "schemaVersion": 1,
+          "type": "ArtifactIdentityDrift",
+          "occurredAt": 1200000,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "causationId": "evt_2",
+          "payload": {
+            "payloadVersion": 1,
+            "reason": "equipped artifact differs from compilation",
+            "sourceEventId": "evt_2",
+            "equippedEventId": null,
+            "pinnedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.0.0",
+              "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:a1dc633c08fe612a"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "observedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.9.0",
+              "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:a1dc633c08fe612a"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "diagnostics": [],
+            "drift": [
+              "compiler-package-version"
+            ]
+          },
+          "eventId": "evt_4"
+        }
+      ],
+      "usableAuthority": false,
+      "comparisonReceipts": [
+        {
+          "eventId": "evt_2",
+          "eventType": "LoadoutEquipped",
+          "status": "unverified",
+          "evidenceLinks": [
+            "event:evt_2"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.0.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equip claim has no recorded successful comparison",
+          "drift": [],
+          "diagnosticCodes": []
+        },
+        {
+          "eventId": "evt_4",
+          "eventType": "ArtifactIdentityDrift",
+          "status": "refused",
+          "evidenceLinks": [
+            "event:evt_2",
+            "event:evt_3",
+            "event:evt_4"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.0.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equipped artifact differs from compilation",
+          "drift": [
+            "compiler-package-version"
+          ],
+          "diagnosticCodes": []
+        }
+      ]
+    },
+    {
+      "name": "semantic-hash-drift",
+      "setup": "Seiri v2 equip with a synthetic stale identity axis",
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "LoadoutEquipped",
+        "DecisionRecorded",
+        "ArtifactIdentityDrift"
+      ],
+      "decision": {
+        "reactorId": "artifact-identity",
+        "reactorVersion": "1",
+        "branchPath": [
+          "LoadoutEquipped",
+          "refused",
+          "ArtifactIdentityDrift",
+          "equipped artifact differs from compilation"
+        ],
+        "envInputs": [
+          "event",
+          "equipped-artifact",
+          "logged-enforcement-boundary"
+        ],
+        "cadenceEvaluations": []
+      },
+      "refusalEvents": [
+        {
+          "schemaVersion": 1,
+          "type": "ArtifactIdentityDrift",
+          "occurredAt": 1200000,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "causationId": "evt_2",
+          "payload": {
+            "payloadVersion": 1,
+            "reason": "equipped artifact differs from compilation",
+            "sourceEventId": "evt_2",
+            "equippedEventId": null,
+            "pinnedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.9.0",
+              "semanticHash": "fnv1a64:0000000000000000",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:a1dc633c08fe612a"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "observedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.9.0",
+              "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:a1dc633c08fe612a"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "diagnostics": [],
+            "drift": [
+              "semantic-hash"
+            ]
+          },
+          "eventId": "evt_4"
+        }
+      ],
+      "usableAuthority": false,
+      "comparisonReceipts": [
+        {
+          "eventId": "evt_2",
+          "eventType": "LoadoutEquipped",
+          "status": "unverified",
+          "evidenceLinks": [
+            "event:evt_2"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:0000000000000000",
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.9.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equip claim has no recorded successful comparison",
+          "drift": [],
+          "diagnosticCodes": []
+        },
+        {
+          "eventId": "evt_4",
+          "eventType": "ArtifactIdentityDrift",
+          "status": "refused",
+          "evidenceLinks": [
+            "event:evt_2",
+            "event:evt_3",
+            "event:evt_4"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:0000000000000000",
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.9.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equipped artifact differs from compilation",
+          "drift": [
+            "semantic-hash"
+          ],
+          "diagnosticCodes": []
+        }
+      ]
+    },
+    {
+      "name": "component-definition-drift",
+      "setup": "Seiri v2 equip with a synthetic stale identity axis",
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "LoadoutEquipped",
+        "DecisionRecorded",
+        "ArtifactIdentityDrift"
+      ],
+      "decision": {
+        "reactorId": "artifact-identity",
+        "reactorVersion": "1",
+        "branchPath": [
+          "LoadoutEquipped",
+          "refused",
+          "ArtifactIdentityDrift",
+          "equipped artifact differs from compilation"
+        ],
+        "envInputs": [
+          "event",
+          "equipped-artifact",
+          "logged-enforcement-boundary"
+        ],
+        "cadenceEvaluations": []
+      },
+      "refusalEvents": [
+        {
+          "schemaVersion": 1,
+          "type": "ArtifactIdentityDrift",
+          "occurredAt": 1200000,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "causationId": "evt_2",
+          "payload": {
+            "payloadVersion": 1,
+            "reason": "equipped artifact differs from compilation",
+            "sourceEventId": "evt_2",
+            "equippedEventId": null,
+            "pinnedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.9.0",
+              "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0000000000000000"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "observedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.9.0",
+              "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:a1dc633c08fe612a"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "diagnostics": [],
+            "drift": [
+              "component-definitions"
+            ]
+          },
+          "eventId": "evt_4"
+        }
+      ],
+      "usableAuthority": false,
+      "comparisonReceipts": [
+        {
+          "eventId": "evt_2",
+          "eventType": "LoadoutEquipped",
+          "status": "unverified",
+          "evidenceLinks": [
+            "event:evt_2"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.9.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equip claim has no recorded successful comparison",
+          "drift": [],
+          "diagnosticCodes": []
+        },
+        {
+          "eventId": "evt_4",
+          "eventType": "ArtifactIdentityDrift",
+          "status": "refused",
+          "evidenceLinks": [
+            "event:evt_2",
+            "event:evt_3",
+            "event:evt_4"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.9.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equipped artifact differs from compilation",
+          "drift": [
+            "component-definitions"
+          ],
+          "diagnosticCodes": []
+        }
+      ]
+    },
+    {
+      "name": "stale-pin",
+      "setup": "changed Seiri graph paired with the original v2 identity",
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "LoadoutEquipped",
+        "DecisionRecorded",
+        "ArtifactIdentityDrift"
+      ],
+      "decision": {
+        "reactorId": "artifact-identity",
+        "reactorVersion": "1",
+        "branchPath": [
+          "LoadoutEquipped",
+          "refused",
+          "ArtifactIdentityDrift",
+          "equipped artifact differs from compilation"
+        ],
+        "envInputs": [
+          "event",
+          "equipped-artifact",
+          "logged-enforcement-boundary"
+        ],
+        "cadenceEvaluations": []
+      },
+      "refusalEvents": [
+        {
+          "schemaVersion": 1,
+          "type": "ArtifactIdentityDrift",
+          "occurredAt": 1200000,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "causationId": "evt_2",
+          "payload": {
+            "payloadVersion": 1,
+            "reason": "equipped artifact differs from compilation",
+            "sourceEventId": "evt_2",
+            "equippedEventId": null,
+            "pinnedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.9.0",
+              "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:a1dc633c08fe612a"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "observedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.9.0",
+              "semanticHash": "fnv1a64:a40b35f09cc3fd94",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:c97c24e7c74c482d"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "diagnostics": [],
+            "drift": [
+              "semantic-hash",
+              "component-definitions"
+            ]
+          },
+          "eventId": "evt_4"
+        }
+      ],
+      "usableAuthority": false,
+      "comparisonReceipts": [
+        {
+          "eventId": "evt_2",
+          "eventType": "LoadoutEquipped",
+          "status": "unverified",
+          "evidenceLinks": [
+            "event:evt_2"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.9.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equip claim has no recorded successful comparison",
+          "drift": [],
+          "diagnosticCodes": []
+        },
+        {
+          "eventId": "evt_4",
+          "eventType": "ArtifactIdentityDrift",
+          "status": "refused",
+          "evidenceLinks": [
+            "event:evt_2",
+            "event:evt_3",
+            "event:evt_4"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.9.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equipped artifact differs from compilation",
+          "drift": [
+            "semantic-hash",
+            "component-definitions"
+          ],
+          "diagnosticCodes": []
+        }
+      ]
+    },
+    {
+      "name": "compile-diagnostics",
+      "setup": "Seiri with no active mechanic",
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "ArtifactCompilationRefused",
+        "DecisionRecorded"
+      ],
+      "decision": {
+        "reactorId": "seiri-reactor",
+        "reactorVersion": "1",
+        "branchPath": [
+          "ArtifactCompilationRefused",
+          "refusal-recorded"
+        ],
+        "envInputs": [
+          "event"
+        ],
+        "cadenceEvaluations": []
+      },
+      "refusalEvents": [
+        {
+          "schemaVersion": 1,
+          "type": "ArtifactCompilationRefused",
+          "occurredAt": 0,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "payload": {
+            "payloadVersion": 1,
+            "reason": "equip compilation failed",
+            "sourceEventId": null,
+            "equippedEventId": null,
+            "pinnedIdentity": null,
+            "observedIdentity": null,
+            "diagnostics": [
+              {
+                "code": "INVALID GRAPH",
+                "message": "INVALID GRAPH: container \"repo-gardener.gloves\" references missing active \"seiri\"",
+                "missingCapabilities": [],
+                "corrections": []
+              },
+              {
+                "code": "INVALID GRAPH",
+                "message": "INVALID GRAPH: link \"seiri.link.01\" references missing active \"seiri\"",
+                "missingCapabilities": [],
+                "corrections": []
+              },
+              {
+                "code": "INVALID GRAPH",
+                "message": "INVALID GRAPH: link \"seiri.link.02\" references missing active \"seiri\"",
+                "missingCapabilities": [],
+                "corrections": []
+              },
+              {
+                "code": "INVALID GRAPH",
+                "message": "INVALID GRAPH: link \"seiri.link.03\" references missing active \"seiri\"",
+                "missingCapabilities": [],
+                "corrections": []
+              },
+              {
+                "code": "INVALID GRAPH",
+                "message": "INVALID GRAPH: link \"seiri.link.04\" references missing active \"seiri\"",
+                "missingCapabilities": [],
+                "corrections": []
+              },
+              {
+                "code": "INVALID GRAPH",
+                "message": "INVALID GRAPH: link \"seiri.link.05\" references missing active \"seiri\"",
+                "missingCapabilities": [],
+                "corrections": []
+              },
+              {
+                "code": "SEMANTICS UNSUPPORTED",
+                "message": "SEMANTICS UNSUPPORTED: compiler v1 requires exactly one active mechanic; observed 0.",
+                "missingCapabilities": [],
+                "corrections": []
+              }
+            ],
+            "drift": []
+          },
+          "eventId": "evt_2"
+        }
+      ],
+      "usableAuthority": false,
+      "comparisonReceipts": [
+        {
+          "eventId": "evt_2",
+          "eventType": "ArtifactCompilationRefused",
+          "status": "refused",
+          "evidenceLinks": [
+            "event:evt_3",
+            "event:evt_2"
+          ],
+          "identity": null,
+          "reason": "equip compilation failed",
+          "drift": [],
+          "diagnosticCodes": [
+            "INVALID GRAPH",
+            "INVALID GRAPH",
+            "INVALID GRAPH",
+            "INVALID GRAPH",
+            "INVALID GRAPH",
+            "INVALID GRAPH",
+            "SEMANTICS UNSUPPORTED"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "pre-equip",
+      "setup": "primary pulse before equip",
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "CadencePulse",
+        "DecisionRecorded",
+        "ArtifactIdentityUnavailable"
+      ],
+      "decision": {
+        "reactorId": "artifact-identity",
+        "reactorVersion": "1",
+        "branchPath": [
+          "CadencePulse",
+          "refused",
+          "ArtifactIdentityUnavailable",
+          "no valid equip"
+        ],
+        "envInputs": [
+          "event",
+          "equipped-artifact",
+          "logged-enforcement-boundary"
+        ],
+        "cadenceEvaluations": []
+      },
+      "refusalEvents": [
+        {
+          "schemaVersion": 1,
+          "type": "ArtifactIdentityUnavailable",
+          "occurredAt": 1200000,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "causationId": "evt_2",
+          "payload": {
+            "payloadVersion": 1,
+            "reason": "no valid equip",
+            "sourceEventId": "evt_2",
+            "equippedEventId": null,
+            "pinnedIdentity": null,
+            "observedIdentity": null,
+            "diagnostics": [],
+            "drift": []
+          },
+          "eventId": "evt_4"
+        }
+      ],
+      "usableAuthority": false,
+      "comparisonReceipts": [
+        {
+          "eventId": "evt_4",
+          "eventType": "ArtifactIdentityUnavailable",
+          "status": "refused",
+          "evidenceLinks": [
+            "event:evt_2",
+            "event:evt_3",
+            "event:evt_4"
+          ],
+          "identity": null,
+          "reason": "no valid equip",
+          "drift": [],
+          "diagnosticCodes": []
+        }
+      ]
+    },
+    {
+      "name": "unknown-schedule",
+      "setup": "valid Seiri equip; pulse id absent from the current compilation",
+      "eventTypes": [
+        "ArtifactIdentityEnforcementStarted",
+        "LoadoutEquipped",
+        "DecisionRecorded",
+        "CadencePulse",
+        "DecisionRecorded",
+        "UnknownScheduleRefused"
+      ],
+      "decision": {
+        "reactorId": "artifact-identity",
+        "reactorVersion": "1",
+        "branchPath": [
+          "CadencePulse",
+          "refused",
+          "UnknownScheduleRefused",
+          "unknown schedule: retired.schedule"
+        ],
+        "envInputs": [
+          "event",
+          "equipped-artifact",
+          "logged-enforcement-boundary",
+          "artifactIdentity.semanticHash:fnv1a64:9ca8d0229c6bd8db",
+          "artifactIdentity.compilerContractVersion:1",
+          "artifactIdentity.compilerPackageVersion:0.9.0",
+          "artifactIdentity.equippedEventId:evt_2"
+        ],
+        "cadenceEvaluations": []
+      },
+      "refusalEvents": [
+        {
+          "schemaVersion": 1,
+          "type": "UnknownScheduleRefused",
+          "occurredAt": 1200000,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "causationId": "evt_4",
+          "payload": {
+            "payloadVersion": 1,
+            "reason": "unknown schedule: retired.schedule",
+            "sourceEventId": "evt_4",
+            "equippedEventId": "evt_2",
+            "pinnedIdentity": {
+              "schemaVersion": 1,
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.9.0",
+              "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+              "compilationEnvironment": {
+                "baseCommit": "fixture-base",
+                "capabilities": [
+                  "fixture-repository"
+                ],
+                "environmentId": "skeleton.fixture",
+                "repo": "packages/skeleton/fixtures/repo-tree.json",
+                "version": 1
+              },
+              "authorityExpiresAt": 2400000,
+              "componentDefinitions": [
+                {
+                  "componentKind": "active-mechanic",
+                  "componentId": "seiri",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:a1dc633c08fe612a"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.absence-cadence",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.evidence-capture",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.independent-verification",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:0e7f7f2049db9807"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.read-only",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:e91545e6fad79347"
+                },
+                {
+                  "componentKind": "support-facet",
+                  "componentId": "seiri.repo-scope",
+                  "version": 1,
+                  "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                  "definitionHash": "fnv1a64:d7bd95978a68a675"
+                }
+              ]
+            },
+            "observedIdentity": null,
+            "diagnostics": [],
+            "drift": []
+          },
+          "eventId": "evt_6"
+        }
+      ],
+      "usableAuthority": true,
+      "comparisonReceipts": [
+        {
+          "eventId": "evt_2",
+          "eventType": "LoadoutEquipped",
+          "status": "matched",
+          "evidenceLinks": [
+            "event:evt_2",
+            "event:evt_3"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.9.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "equip recomputation matched the pin",
+          "drift": [],
+          "diagnosticCodes": []
+        },
+        {
+          "eventId": "evt_6",
+          "eventType": "UnknownScheduleRefused",
+          "status": "refused",
+          "evidenceLinks": [
+            "event:evt_4",
+            "event:evt_2",
+            "event:evt_5",
+            "event:evt_6"
+          ],
+          "identity": {
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.9.0",
+            "componentDefinitionCount": 6
+          },
+          "reason": "unknown schedule: retired.schedule",
+          "drift": [],
+          "diagnosticCodes": []
+        }
+      ]
+    },
+    {
+      "name": "legacy-after-boundary",
+      "setup": "replay the preserved legacy fixture, start enforcement twice, then feed a pulse",
+      "eventTypes": [
+        "InspectionTaskCreated",
+        "LoadoutEquipped",
+        "OperatorPresenceChanged",
+        "DecisionRecorded",
+        "CadencePulse",
+        "WorkOrderEmitted",
+        "DecisionRecorded",
+        "CommandPersisted",
+        "CommandResult",
+        "DeletionAttempted",
+        "CommandRefused",
+        "DecisionRecorded",
+        "EpisodeTerminated",
+        "DecisionRecorded",
+        "VerificationRequested",
+        "VerificationCompleted",
+        "OperatorPresenceChanged",
+        "CadencePulse",
+        "DecisionRecorded",
+        "QueuedPulseNoOp",
+        "SchedulesCancelled",
+        "ArtifactIdentityEnforcementStarted",
+        "CadencePulse",
+        "DecisionRecorded",
+        "ArtifactIdentityUnavailable"
+      ],
+      "decision": {
+        "reactorId": "artifact-identity",
+        "reactorVersion": "1",
+        "branchPath": [
+          "CadencePulse",
+          "refused",
+          "ArtifactIdentityUnavailable",
+          "explicit v2 re-equip required"
+        ],
+        "envInputs": [
+          "event",
+          "equipped-artifact",
+          "logged-enforcement-boundary"
+        ],
+        "cadenceEvaluations": []
+      },
+      "refusalEvents": [
+        {
+          "schemaVersion": 1,
+          "type": "ArtifactIdentityUnavailable",
+          "occurredAt": 2000000,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "causationId": "evt_23",
+          "payload": {
+            "payloadVersion": 1,
+            "reason": "explicit v2 re-equip required",
+            "sourceEventId": "evt_23",
+            "equippedEventId": "evt_2",
+            "pinnedIdentity": null,
+            "observedIdentity": null,
+            "diagnostics": [],
+            "drift": []
+          },
+          "eventId": "evt_25"
+        }
+      ],
+      "usableAuthority": false,
+      "comparisonReceipts": [
+        {
+          "eventId": "evt_2",
+          "eventType": "LoadoutEquipped",
+          "status": "unavailable",
+          "evidenceLinks": [
+            "event:evt_2"
+          ],
+          "identity": null,
+          "reason": "historical artifact identity unavailable",
+          "drift": [],
+          "diagnosticCodes": []
+        },
+        {
+          "eventId": "evt_25",
+          "eventType": "ArtifactIdentityUnavailable",
+          "status": "refused",
+          "evidenceLinks": [
+            "event:evt_23",
+            "event:evt_2",
+            "event:evt_24",
+            "event:evt_25"
+          ],
+          "identity": null,
+          "reason": "explicit v2 re-equip required",
+          "drift": [],
+          "diagnosticCodes": []
+        }
+      ]
+    },
+    {
+      "name": "legacy-before-boundary",
+      "verified": true,
+      "identity": {
+        "assurance": "deterministic-content-equality-only",
+        "availability": "recorded",
+        "records": [
+          {
+            "eventId": "evt_2",
+            "eventType": "LoadoutEquipped",
+            "status": "unavailable",
+            "evidenceLinks": [
+              "event:evt_2"
+            ],
+            "identity": null,
+            "reason": "historical artifact identity unavailable",
+            "drift": [],
+            "diagnosticCodes": []
+          }
+        ],
+        "limitations": [
+          "FNV equality is not cryptographic integrity, collision resistance, or authenticity",
+          "graph and pin can be rewritten together; hidden adapter effects are not excluded",
+          "outer confinement evidence is separate and not collected by this receipt",
+          "a queued pulse has no artifact stamp; a reused schedule id does not prove its equip of origin"
+        ]
+      },
+      "frozenOracleSha256": "ec53d1c841de5486cf656694228c83f67e8549993d0ac63c187d10728707a173",
+      "canonicalBoundaryCount": 1
+    },
+    {
+      "name": "legacy-recovery-refused",
+      "adapterEffects": 0,
+      "events": [
+        {
+          "schemaVersion": 1,
+          "type": "ArtifactIdentityEnforcementStarted",
+          "occurredAt": 1200001,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "payload": {
+            "payloadVersion": 1
+          },
+          "eventId": "evt_9"
+        },
+        {
+          "schemaVersion": 1,
+          "type": "CommandRedispatchRequested",
+          "occurredAt": 1200001,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "correlationId": "cmd_5ee0c6d8e207bd25",
+          "causationId": "evt_8",
+          "payload": {
+            "commandId": "cmd_5ee0c6d8e207bd25"
+          },
+          "eventId": "evt_10"
+        },
+        {
+          "schemaVersion": 1,
+          "type": "DecisionRecorded",
+          "occurredAt": 1200001,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "correlationId": "cmd_5ee0c6d8e207bd25",
+          "causationId": "evt_10",
+          "payload": {
+            "trace": {
+              "reactorId": "artifact-identity",
+              "reactorVersion": "1",
+              "branchPath": [
+                "CommandRedispatchRequested",
+                "refused",
+                "ArtifactIdentityUnavailable",
+                "explicit v2 re-equip required"
+              ],
+              "envInputs": [
+                "event",
+                "equipped-artifact",
+                "logged-enforcement-boundary"
+              ],
+              "cadenceEvaluations": []
+            }
+          },
+          "eventId": "evt_11"
+        },
+        {
+          "schemaVersion": 1,
+          "type": "ArtifactIdentityUnavailable",
+          "occurredAt": 1200001,
+          "actorId": "repo-gardener",
+          "workstreamId": "ws_repo_garden",
+          "episodeId": "ep_seiri_1",
+          "correlationId": "cmd_5ee0c6d8e207bd25",
+          "causationId": "evt_10",
+          "payload": {
+            "payloadVersion": 1,
+            "reason": "explicit v2 re-equip required",
+            "sourceEventId": "evt_10",
+            "equippedEventId": "evt_2",
+            "pinnedIdentity": null,
+            "observedIdentity": null,
+            "diagnostics": [],
+            "drift": []
+          },
+          "eventId": "evt_12"
+        }
+      ],
+      "identity": {
+        "assurance": "deterministic-content-equality-only",
+        "availability": "recorded",
+        "records": [
+          {
+            "eventId": "evt_2",
+            "eventType": "LoadoutEquipped",
+            "status": "unavailable",
+            "evidenceLinks": [
+              "event:evt_2"
+            ],
+            "identity": null,
+            "reason": "historical artifact identity unavailable",
+            "drift": [],
+            "diagnosticCodes": []
+          },
+          {
+            "eventId": "evt_12",
+            "eventType": "ArtifactIdentityUnavailable",
+            "status": "refused",
+            "evidenceLinks": [
+              "event:evt_10",
+              "event:evt_2",
+              "event:evt_11",
+              "event:evt_12"
+            ],
+            "identity": null,
+            "reason": "explicit v2 re-equip required",
+            "drift": [],
+            "diagnosticCodes": []
+          }
+        ],
+        "limitations": [
+          "FNV equality is not cryptographic integrity, collision resistance, or authenticity",
+          "graph and pin can be rewritten together; hidden adapter effects are not excluded",
+          "outer confinement evidence is separate and not collected by this receipt",
+          "a queued pulse has no artifact stamp; a reused schedule id does not prove its equip of origin"
+        ]
+      }
+    },
+    {
+      "name": "factory-shape",
+      "rejectedLegacyInput": true,
+      "appendedEvents": []
+    },
+    {
+      "name": "rewritten-pair",
+      "accepted": true,
+      "assurance": "equality does not authenticate the writer",
+      "identity": {
+        "assurance": "deterministic-content-equality-only",
+        "availability": "recorded",
+        "records": [
+          {
+            "eventId": "evt_2",
+            "eventType": "LoadoutEquipped",
+            "status": "matched",
+            "evidenceLinks": [
+              "event:evt_2",
+              "event:evt_3"
+            ],
+            "identity": {
+              "semanticHash": "fnv1a64:8b7d0e914859f5cf",
+              "compilerContractVersion": "1",
+              "compilerPackageVersion": "0.9.0",
+              "componentDefinitionCount": 6
+            },
+            "reason": "equip recomputation matched the pin",
+            "drift": [],
+            "diagnosticCodes": []
+          }
+        ],
+        "limitations": [
+          "FNV equality is not cryptographic integrity, collision resistance, or authenticity",
+          "graph and pin can be rewritten together; hidden adapter effects are not excluded",
+          "outer confinement evidence is separate and not collected by this receipt",
+          "a queued pulse has no artifact stamp; a reused schedule id does not prove its equip of origin"
+        ]
+      }
+    },
+    {
+      "name": "relocation",
+      "setup": "change only the recorded compilation environment's repo, then explicitly re-equip",
+      "refusal": {
+        "schemaVersion": 1,
+        "type": "ArtifactIdentityDrift",
+        "occurredAt": 1200000,
+        "actorId": "repo-gardener",
+        "workstreamId": "ws_repo_garden",
+        "episodeId": "ep_seiri_1",
+        "causationId": "evt_relocation_probe",
+        "payload": {
+          "payloadVersion": 1,
+          "reason": "pinned artifact differs from compilation",
+          "sourceEventId": "evt_relocation_probe",
+          "equippedEventId": "evt_2",
+          "pinnedIdentity": {
+            "schemaVersion": 1,
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.9.0",
+            "semanticHash": "fnv1a64:9ca8d0229c6bd8db",
+            "compilationEnvironment": {
+              "baseCommit": "fixture-base",
+              "capabilities": [
+                "fixture-repository"
+              ],
+              "environmentId": "skeleton.fixture",
+              "repo": "packages/skeleton/fixtures/repo-tree.json",
+              "version": 1
+            },
+            "authorityExpiresAt": 2400000,
+            "componentDefinitions": [
+              {
+                "componentKind": "active-mechanic",
+                "componentId": "seiri",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:a1dc633c08fe612a"
+              },
+              {
+                "componentKind": "support-facet",
+                "componentId": "seiri.absence-cadence",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+              },
+              {
+                "componentKind": "support-facet",
+                "componentId": "seiri.evidence-capture",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+              },
+              {
+                "componentKind": "support-facet",
+                "componentId": "seiri.independent-verification",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:0e7f7f2049db9807"
+              },
+              {
+                "componentKind": "support-facet",
+                "componentId": "seiri.read-only",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:e91545e6fad79347"
+              },
+              {
+                "componentKind": "support-facet",
+                "componentId": "seiri.repo-scope",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:d7bd95978a68a675"
+              }
+            ]
+          },
+          "observedIdentity": {
+            "schemaVersion": 1,
+            "compilerContractVersion": "1",
+            "compilerPackageVersion": "0.9.0",
+            "semanticHash": "fnv1a64:a20fffda0d4e31e6",
+            "compilationEnvironment": {
+              "baseCommit": "fixture-base",
+              "capabilities": [
+                "fixture-repository"
+              ],
+              "environmentId": "skeleton.fixture",
+              "repo": "/relocated/repository",
+              "version": 1
+            },
+            "authorityExpiresAt": 2400000,
+            "componentDefinitions": [
+              {
+                "componentKind": "active-mechanic",
+                "componentId": "seiri",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:a1dc633c08fe612a"
+              },
+              {
+                "componentKind": "support-facet",
+                "componentId": "seiri.absence-cadence",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:3ba4c5c8c41c29ce"
+              },
+              {
+                "componentKind": "support-facet",
+                "componentId": "seiri.evidence-capture",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:2d7c14fd977ccdac"
+              },
+              {
+                "componentKind": "support-facet",
+                "componentId": "seiri.independent-verification",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:0e7f7f2049db9807"
+              },
+              {
+                "componentKind": "support-facet",
+                "componentId": "seiri.read-only",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:e91545e6fad79347"
+              },
+              {
+                "componentKind": "support-facet",
+                "componentId": "seiri.repo-scope",
+                "version": 1,
+                "hashScheme": "dotln-component-definition-fnv1a64-v1",
+                "definitionHash": "fnv1a64:d7bd95978a68a675"
+              }
+            ]
+          },
+          "diagnostics": [],
+          "drift": [
+            "semantic-hash",
+            "compilation-environment"
+          ]
+        }
+      },
+      "newEquip": {
+        "eventId": "evt_4",
+        "eventType": "LoadoutEquipped",
+        "status": "matched",
+        "evidenceLinks": [
+          "event:evt_4",
+          "event:evt_5"
+        ],
+        "identity": {
+          "semanticHash": "fnv1a64:a20fffda0d4e31e6",
+          "compilerContractVersion": "1",
+          "compilerPackageVersion": "0.9.0",
+          "componentDefinitionCount": 6
+        },
+        "reason": "equip recomputation matched the pin",
+        "drift": [],
+        "diagnosticCodes": []
+      }
+    }
+  ]
+}

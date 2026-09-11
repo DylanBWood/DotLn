@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-126",
+  "failureSource": "docs/verifications/WO-126/VER-004.md",
+  "actor": {
+    "harness": "codex-cli",
+    "harnessVersion": "0.154.0",
+    "model": "gpt-6-astra",
+    "effort": "max",
+    "source": "operator-attested"
+  },
+  "regressionBaseline": {
+    "source": "prior built runtime before rebuilding the repair",
+    "tests": 3,
+    "passed": 0,
+    "failed": 3,
+    "durationMs": 478.540084,
+    "observation": "node:test stdout"
+  },
+  "focused": {
+    "command": "node --test --test-name-pattern 'literal invocation floor|request body|ancestor text mapping|discovery uses|interpreter programs|effect inventory|Git aliases|installed permission' scripts/test-process-debt.mjs",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "durationMs": 5915.65625,
+    "observation": "node:test stdout"
+  },
+  "versionProbe": {
+    "kind": "real-os-process-surrogate",
+    "platform": "darwin",
+    "processName": "claude",
+    "observation": {
+      "value": "2.1.266",
+      "channel": "ancestor-executable-lsof"
+    },
+    "durationMs": 79.05479200000002,
+    "installedPathVersion": "2.2.9",
+    "expectedRunningVersion": "2.1.266",
+    "passed": true,
+    "limit": "A Node executable surrogate with a versioned installation path and opaque process name; not a live Claude session."
+  },
+  "fastGate": {
+    "checkId": "npm test",
+    "treeHash": "218c6f1bea8b66491c3447e798570cce1a00f7dc",
+    "subject": "218c6f1bea8b66491c3447e798570cce1a00f7dc",
+    "durationMs": 109408,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:218c6f1bea8b66491c3447e798570cce1a00f7dc:npm test",
+    "recordedAt": "2026-09-10T18:15:26.952Z",
+    "executionMode": "forced-fresh",
+    "freshSuites": 12,
+    "reusedSuites": 0,
+    "inputObservation": [
+      {
+        "files": 1642,
+        "bytes": 207197309,
+        "commands": 12,
+        "durationMs": 710.945917
+      },
+      {
+        "files": 1642,
+        "bytes": 207197309,
+        "commands": 12,
+        "durationMs": 709.9834589999955
+      }
+    ],
+    "inputEnvironmentKeys": [
+      "DOTLN_GATE_CHILD",
+      "GIT_PAGER",
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "LC_CTYPE",
+      "LC_TERMINAL",
+      "LC_TERMINAL_VERSION",
+      "npm_config_cache",
+      "npm_config_global_prefix",
+      "npm_config_globalconfig",
+      "npm_config_init_module",
+      "npm_config_local_prefix",
+      "npm_config_node_gyp",
+      "npm_config_noproxy",
+      "npm_config_npm_version",
+      "npm_config_prefix",
+      "npm_config_user_agent",
+      "npm_config_userconfig",
+      "PATH",
+      "SHELL",
+      "TMPDIR"
+    ],
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-surfaces",
+      "publication",
+      "index",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "harness",
+      "harness-context",
+      "meta"
+    ],
+    "workOrder": "WO-126"
+  },
+  "fullGate": {
+    "observation": "The final handoff aggregate is recorded by the repair-complete transition after this artifact; no earlier full run is claimed for this repair."
+  },
+  "limits": [
+    "Synthetic permission commands were classified, never executed.",
+    "The OS process probe uses a Node surrogate; a live Claude session remains an independent verification observation.",
+    "Session token and dollar totals are unavailable; the gate durations are measured wall time."
+  ]
+}

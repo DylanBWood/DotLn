@@ -1,5 +1,7 @@
 # WO-075 — Kit runtime and harness bundle in the export: the launchpad export carries a pinned, byte-identical runtime build and the Contributor build's compiled bundle whose hooks import that runtime, verified by `harness check` inside the export (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model; the recorded smoke needs the actual harness,
 run by the operator outside the sandbox. State the model and effort actually
 run (07-execution-guide.md §Model-specific notes).

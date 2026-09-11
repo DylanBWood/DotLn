@@ -33,7 +33,8 @@ export interface FeedbackUnit {
   readonly trigger: FeedbackHandler;
   readonly mechanism: {
     readonly handler: FeedbackHandler;
-    readonly version: 1;
+    readonly version: 1 | 2;
+    readonly kind?: "prose";
     readonly rationale: string;
   };
   readonly enforcement: "hard" | "soft" | "advisory";
@@ -105,7 +106,12 @@ export function compileFeedbackUnits(
       requireFeedback(
         Object.hasOwn(FEEDBACK_HANDLERS, unit.trigger) &&
           unit.mechanism.handler === unit.trigger &&
-          unit.mechanism.version === 1,
+          [1, 2].includes(unit.mechanism.version) &&
+          (unit.mechanism.kind === undefined ||
+            (unit.mechanism.kind === "prose" &&
+              unit.version >= 2 &&
+              unit.mechanism.version === 2 &&
+              unit.enforcement === "advisory")),
         "unsupported mechanism or trigger",
       );
       requireFeedback(
@@ -144,14 +150,19 @@ export function compileFeedbackUnits(
         trigger: unit.trigger,
         mechanism: {
           handler: unit.mechanism.handler,
-          version: 1,
+          version: unit.mechanism.version,
+          ...(unit.mechanism.kind ? { kind: unit.mechanism.kind } : {}),
           rationale: text(
             unit.mechanism.rationale,
             "cheapest sufficient mechanism",
           ),
         },
         enforcement: unit.enforcement,
-        requiredEvidence: strings(unit.requiredEvidence, "required evidence"),
+        requiredEvidence: strings(
+          unit.requiredEvidence,
+          "required evidence",
+          unit.mechanism.kind !== "prose",
+        ),
         regressionFixtures: strings(
           unit.regressionFixtures,
           "regression fixtures",
@@ -189,6 +200,7 @@ export function compileFeedbackUnits(
       unitId: unit.unitId,
       handler: unit.mechanism.handler,
       ...FEEDBACK_HANDLERS[unit.mechanism.handler],
+      ...(unit.mechanism.kind === "prose" ? { kind: "prose", rung: 7 } : {}),
       enforcement: unit.enforcement,
     })),
   };
@@ -309,20 +321,8 @@ export interface FeedbackVerdict {
   readonly eligibleUnits: readonly string[];
 }
 
-/** Precise footer/trailer predicate: ordinary discussion and human coauthors pass. */
-export function hasAiAttribution(message: string): boolean {
-  return message
-    .split(/\r?\n/u)
-    .some(
-      (line) =>
-        /^\s*Co-authored-by\s*:\s*(?:(?:Claude(?: Code)?|Codex|ChatGPT|OpenAI|Anthropic|AI)(?:\s|<)|[^<>]*<[^<>]*@(?:anthropic\.com|openai\.com)>)/iu.test(
-          line,
-        ) ||
-        /^\s*(?:[\p{Emoji_Presentation}]\s*)?(?:Generated|Written|Co-authored) (?:with|by) (?:\[)?(?:Claude(?: Code)?|Codex|ChatGPT|OpenAI|AI)(?:\b|\])/iu.test(
-          line,
-        ),
-    );
-}
+export { hasAiAttribution } from "./attribution.mjs";
+import { hasAiAttribution } from "./attribution.mjs";
 
 // Host-parsed comment bodies only; language parsing belongs to the adapter.
 function suppressionComments(comments: readonly string[]): readonly string[] {
@@ -339,7 +339,10 @@ const includesAll = (
   available: readonly string[],
   required: readonly string[],
 ) => required.length > 0 && required.every((id) => available.includes(id));
-function reason(request: FeedbackRequest): string | null {
+function reason(
+  request: FeedbackRequest,
+  reuseEvidence = false,
+): string | null {
   switch (request.kind) {
     case "decision-lineage":
       if (!includesAll(request.preservedOutcomes, request.requiredOutcomes))
@@ -377,7 +380,7 @@ function reason(request: FeedbackRequest): string | null {
           );
           return (
             runs.length > 0 &&
-            runs.every(
+            runs[reuseEvidence ? "some" : "every"](
               (run) =>
                 run.executed &&
                 run.exitCode === 0 &&
@@ -422,7 +425,7 @@ function reason(request: FeedbackRequest): string | null {
         ? "new lint/type suppression comment"
         : null;
     case "output-review":
-      return request.outputs.length > 0 &&
+      return (reuseEvidence || request.outputs.length > 0) &&
         request.outputs.every((output) =>
           request.reads.some(
             (read) =>
@@ -463,9 +466,16 @@ export function evaluateFeedback(
     "boundary request kind",
   );
   const mechanisms = program.mechanisms.filter(
-    (item) => item.handler === request.kind,
+    (item) => item.handler === request.kind && item.kind !== "prose",
   );
-  const violation = mechanisms.length ? reason(request) : null;
+  const violation = mechanisms.length
+    ? reason(
+        request,
+        program.units.some(
+          (unit) => unit.trigger === request.kind && unit.version >= 2,
+        ),
+      )
+    : null;
   const violations =
     violation === null
       ? []
@@ -505,7 +515,9 @@ export function applyFeedbackCorrection(
   if (
     !program.mechanisms.some(
       (item) =>
-        item.handler === "semantic-correction" && item.enforcement === "hard",
+        item.handler === "semantic-correction" &&
+        item.kind !== "prose" &&
+        item.enforcement === "hard",
     ) ||
     !SEMANTIC_CORRECTIONS.some((type) => type === event.type) ||
     state.corrections.includes(event.eventId)

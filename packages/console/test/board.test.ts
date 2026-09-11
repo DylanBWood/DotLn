@@ -479,12 +479,22 @@ test("WO-032 AC4 ten mechanisms retain five counts per source; zero observations
   assert.equal(observed?.status, "available");
   if (observed?.status !== "available") assert.fail("maturity absent");
   const report = object(observed.value);
+  const unitSource = input.feedbackUnits;
+  if (unitSource?.status !== "available") assert.fail("unit source absent");
+  assert.equal(
+    unitSource.value.filter((unit) => unit.enforcement === "hard").length,
+    3,
+  );
   for (const row of mechanisms) {
     const values = cells(row);
     assert.equal(values["fixture.observation"]!.value, "observed");
     assert.equal(values["live.observation"]!.value, "unobserved");
-    for (const key of ["eligibleEpisodes", "activations", "incidentsPrevented"])
+    for (const key of ["eligibleEpisodes", "activations"])
       assert.equal(values[`fixture.${key}`]!.value, 1);
+    assert.equal(
+      values["fixture.incidentsPrevented"]!.value,
+      values["enforcement"]!.value === "hard" ? 1 : 0,
+    );
     for (const key of ["falseActivations", "overrides"])
       assert.equal(values[`fixture.${key}`]!.value, 0);
     for (const key of [
@@ -500,9 +510,11 @@ test("WO-032 AC4 ten mechanisms retain five counts per source; zero observations
       /^fixture: regression_/u,
     );
     assert.ok(Number(values["rung"]!.value) >= 1);
-    assert.equal(values["enforcement"]!.value, "hard");
+    assert.ok(
+      ["hard", "advisory"].includes(String(values["enforcement"]!.value)),
+    );
   }
-  assert.equal(observationsFromReport(report).length, 10);
+  assert.equal(observationsFromReport(report, unitSource.value).length, 10);
   if (input.feedbackUnits?.status !== "available")
     assert.fail("unit source absent");
   const noFirstPair = {
@@ -515,7 +527,7 @@ test("WO-032 AC4 ten mechanisms retain five counts per source; zero observations
     ...noFirstPair,
     maturity: feedbackMaturity(
       compileFeedbackUnits(input.feedbackUnits.value),
-      observationsFromReport(noFirstPair),
+      observationsFromReport(noFirstPair, unitSource.value),
     ),
   };
   const zero = section(

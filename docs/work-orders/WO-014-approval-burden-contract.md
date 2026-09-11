@@ -1,5 +1,7 @@
 # WO-014 — Approval-burden baseline, remediation, and fresh-session acceptance (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model per harness for the executor; the independent
 verifier must reproduce in genuinely fresh sessions; the operator must witness
 at least one final interactive run. State the model and effort actually run

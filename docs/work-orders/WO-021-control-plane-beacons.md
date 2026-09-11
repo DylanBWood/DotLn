@@ -1,5 +1,7 @@
 # WO-021 — Beacons for the control plane: dogfood, sweep events, staleness, group composites (v0.8.0)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.
 **Release classification:** minor. Activation completion, 2026-09-05:

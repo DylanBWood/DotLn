@@ -21,9 +21,16 @@ const source = resolve(
 );
 // Bootstrap fixtures intentionally have no dependencies or ignored built output.
 export const installBeaconFixture = (root) => {
+  mkdirSync(join(root, "packages/compiler/src"), { recursive: true });
+  cpSync(
+    join(source, "../../compiler/src/attribution.mjs"),
+    join(root, "packages/compiler/src/attribution.mjs"),
+  );
   const destination = join(root, "packages/skeleton/src");
   mkdirSync(destination, { recursive: true });
   for (const name of [
+    "gate-evidence.mjs",
+    "usage-observation.mjs",
     "beacon-codebook.mjs",
     "control-codebook.mjs",
     "beacon-io.mjs",

@@ -1,10 +1,13 @@
 import {
+  cpSync,
   existsSync,
   lstatSync,
   mkdirSync,
   readFileSync,
   readdirSync,
   realpathSync,
+  renameSync,
+  symlinkSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -24,6 +27,7 @@ import {
 } from "../../packages/skeleton/dist/src/loadouts/contributor.js";
 import { personalFeedback } from "../../packages/skeleton/dist/src/loadouts/feedback.js";
 import { checkLocalTerms } from "./terms.mjs";
+import { containedRegularFile } from "./paths.mjs";
 
 const manifestPath = ".claude/harness-manifest.json";
 const hash = (text) => `fnv1a64:${fnv1a64(text)}`;
@@ -75,18 +79,27 @@ export function harnessInstallation(options = {}) {
   const sourceRoot = fileURLToPath(new URL("../../", import.meta.url));
   const runtimeFiles = [
     "packages/compiler/dist/src/feedback.js",
+    "packages/compiler/dist/src/attribution.mjs",
     "packages/skeleton/dist/src/feedback-boundary.js",
     "packages/skeleton/dist/src/feedback-source-comments.js",
     "packages/skeleton/dist/src/harness-host.js",
+    "packages/skeleton/dist/src/harness-command.js",
+    "packages/skeleton/dist/src/gate-evidence.mjs",
+    "packages/skeleton/dist/src/usage-observation.mjs",
     "packages/skeleton/dist/src/reactor.js",
   ].map((path) => ({
     path,
     hash: hash(readFileSync(join(sourceRoot, path), "utf8")),
   }));
+  const runtimeSnapshot = `.runtime/harness/${fnv1a64(JSON.stringify(runtimeFiles))}`;
   const bundles = profiles.map((profile) =>
     lowerToHarness(program, feedback, program.loadout.authorityEnvelope, {
       ...profile,
-      runtime: { ...profile.runtime, files: runtimeFiles },
+      runtime: {
+        ...profile.runtime,
+        files: runtimeFiles,
+        snapshot: runtimeSnapshot,
+      },
     }),
   );
   const files = bundles.flatMap((bundle) =>
@@ -130,7 +143,7 @@ export function harnessInstallation(options = {}) {
       ].sort(),
     },
   };
-  return { files, manifest, bundles };
+  return { files, manifest, bundles, runtimeSnapshot, runtimeFiles };
 }
 const walkOwned = (root) => {
   const paths = [];
@@ -197,6 +210,7 @@ export function emitHarness(root, options = {}) {
     })),
     { name: manifestPath, text: manifestText },
   ]);
+  preserveHarnessRuntime(root, installation);
   for (const file of writes) {
     mkdirSync(dirname(file.path), { recursive: true });
     writeFileSync(file.path, file.contents);
@@ -206,9 +220,65 @@ export function emitHarness(root, options = {}) {
   writeFileSync(manifestTarget, manifestText);
   return { files: writes.length + 1, localTerms };
 }
+
+export function preserveHarnessRuntime(
+  root,
+  installation = harnessInstallation(),
+) {
+  const snapshot = installation.runtimeSnapshot;
+  const destination = join(root, snapshot);
+  for (const path of [".runtime", ".runtime/harness", snapshot])
+    if (
+      existsSync(join(root, path)) &&
+      lstatSync(join(root, path)).isSymbolicLink()
+    )
+      throw new Error(
+        "Harness runtime snapshot must remain inside its worktree",
+      );
+  if (existsSync(destination)) {
+    for (const file of installation.runtimeFiles)
+      if (
+        hash(readFileSync(join(destination, file.path), "utf8")) !== file.hash
+      )
+        throw new Error(
+          "Installed harness snapshot differs from its pinned bytes",
+        );
+    return;
+  }
+  const source = fileURLToPath(new URL("../../", import.meta.url));
+  const staging = `${destination}.preparing-${process.pid}`;
+  mkdirSync(join(staging, "node_modules/@dotln"), { recursive: true });
+  for (const name of readdirSync(join(source, "packages"))) {
+    if (!existsSync(join(source, "packages", name, "dist"))) continue;
+    const target = join(staging, "packages", name);
+    mkdirSync(target, { recursive: true });
+    cpSync(
+      join(source, "packages", name, "package.json"),
+      join(target, "package.json"),
+    );
+    cpSync(join(source, "packages", name, "dist"), join(target, "dist"), {
+      recursive: true,
+    });
+    symlinkSync(
+      `../../packages/${name}`,
+      join(staging, "node_modules/@dotln", name),
+    );
+  }
+  renameSync(staging, destination);
+}
 export function checkHarness(root, options = {}) {
   root = realpathSync(root);
   const expected = harnessInstallation(options);
+  for (const file of expected.runtimeFiles) {
+    const path = join(root, expected.runtimeSnapshot, file.path);
+    if (
+      !containedRegularFile(path, root) ||
+      hash(readFileSync(path, "utf8")) !== file.hash
+    )
+      throw new Error(
+        `harness drift: pinned snapshot missing or changed (${file.path}); run the build bootstrap`,
+      );
+  }
   for (const file of expected.files) {
     const path = contained(root, file.path);
     if (!existsSync(path))

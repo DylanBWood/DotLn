@@ -16,6 +16,16 @@ import {
 import { containedRegularFile } from "./lib/paths.mjs";
 import { runGit } from "./lib/git.mjs";
 import { parseActor } from "./resume.mjs";
+import {
+  beginDirectRefutation,
+  fileDirectRefutation,
+} from "./lib/plan-direct.mjs";
+import {
+  planningFollowups,
+  syncFollowups,
+  disposeFollowup,
+  readFollowups,
+} from "./lib/planning-followups.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const usage =
@@ -25,7 +35,7 @@ const options = (args, allowed) => {
   for (let i = 0; i < args.length; i++) {
     const key = args[i];
     if (!allowed.includes(key) || key in out) throw new Error(usage);
-    if (key === "--evidence-only") out[key] = true;
+    if (["--evidence-only", "--direct"].includes(key)) out[key] = true;
     else {
       const value = args[++i];
       if (!value || value.startsWith("--")) throw new Error(usage);
@@ -39,8 +49,74 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   if (runGit(root, ["rev-parse", "--show-toplevel"]) !== root)
     throw new Error("plan command must use its Git root");
   const [command, ...rest] = args;
+  if (command === "followups") {
+    if (rest.length === 1 && rest[0] === "--sync") {
+      syncFollowups(root);
+      return planningFollowups(root);
+    }
+    if (rest.length === 2 && rest[0] === "--apply") {
+      const path = resolve(root, rest[1]);
+      if (!containedRegularFile(path, root))
+        throw new Error("Follow-up request must be a contained regular file");
+      return disposeFollowup(root, JSON.parse(readFileSync(path, "utf8")));
+    }
+    if (rest.length === 2 && rest[0] === "--show") {
+      syncFollowups(root, { check: true });
+      const entry = readFollowups(root).entries.find(
+        (row) => row.id === rest[1],
+      );
+      if (!entry) throw new Error("Unknown follow-up identifier");
+      return entry;
+    }
+    const all = rest[0] === "--all";
+    const flags = all ? rest.slice(1) : rest;
+    if (flags.length && !(flags.length === 2 && flags[0] === "--cursor"))
+      throw new Error(
+        "usage: plan followups [--all] [--cursor <cursor>] | --sync | --show <FUP-id> | --apply <request.json>",
+      );
+    return planningFollowups(root, { all, cursor: flags[1] ?? null });
+  }
+  if (command === "start") {
+    if (rest.length !== 1 || !/^[a-z][a-z0-9-]{0,60}$/.test(rest[0]))
+      throw new Error("usage: plan start <slug>");
+    if (
+      runGit(root, ["symbolic-ref", "--short", "HEAD"]) !== "main" ||
+      runGit(root, ["status", "--porcelain"])
+    )
+      throw new Error("plan start requires clean main");
+    const followups = planningFollowups(root);
+    const branch = `planning/${new Date().toISOString().slice(0, 10)}-${rest[0]}`;
+    runGit(root, ["switch", "-c", branch]);
+    return {
+      branch,
+      phase: "planning",
+      authority: "document-only planning dispatch",
+      followups,
+    };
+  }
+  if (command === "receipt") {
+    const [result, ...flags] = rest;
+    const opt = options(flags, ["--statement", "--dispositions"]);
+    if (!result || !opt["--statement"])
+      throw new Error(
+        "usage: plan receipt <result.json> --statement <statement.txt> [--dispositions <file>]",
+      );
+    let dispositions = [];
+    if (opt["--dispositions"]) {
+      const path = resolve(root, opt["--dispositions"]);
+      if (!containedRegularFile(path, root))
+        throw new Error("dispositions must be a contained regular file");
+      dispositions = JSON.parse(readFileSync(path, "utf8"));
+    }
+    return fileDirectRefutation(root, result, opt["--statement"], {
+      dispositions,
+    });
+  }
   if (command === "subject" && !rest.length) return buildPlanSubject(root);
-  if (command === "check" && !rest.length) return checkPlanGate(root);
+  if (command === "check" && !rest.length) {
+    syncFollowups(root, { check: true });
+    return checkPlanGate(root);
+  }
   if (command === "override") {
     const [receiptId, holdId, reason, ...flags] = rest;
     const opt = options(flags, [
@@ -83,7 +159,20 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     "--effort",
     "--dispositions",
     "--evidence-only",
+    "--direct",
+    "--scope",
   ]);
+  if (opt["--direct"]) {
+    if (Object.keys(opt).some((key) => !["--direct", "--scope"].includes(key)))
+      throw new Error(
+        "Direct refutation uses the receiving session; only --scope is accepted",
+      );
+    return beginDirectRefutation(root, { scope: opt["--scope"] ?? "pass" });
+  }
+  if (opt["--scope"] && opt["--scope"] !== "full")
+    throw new Error(
+      "Pass-scoped refutation uses --direct; the external transport judges the full horizon",
+    );
   const subject = buildPlanSubject(root);
   const passes = planningPasses(readFileSync(join(root, PLAN_LEDGER), "utf8"));
   const latest = passes.sort((a, b) => b.date.localeCompare(a.date))[0];
@@ -140,11 +229,23 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   const { FakePlanRefutationTransport } =
     await import("../packages/skeleton/dist/src/plan-refutation-fake.js");
   const name = opt["--transport"] ?? "claude-cli-print";
+  const { recordUsageObservation } =
+    await import("../packages/skeleton/src/usage-observation.mjs");
+  const startedAt = new Date().toISOString();
+  const onUsage = (observation) =>
+    recordUsageObservation(root, {
+      workOrder: null,
+      role: "refuter",
+      dispatch: pass.id,
+      startedAt,
+      durationMs: Date.now() - Date.parse(startedAt),
+      observation,
+    });
   const transport =
     name === "claude-cli-print"
-      ? new ClaudeCliPrintWorkOrderTransport()
+      ? new ClaudeCliPrintWorkOrderTransport(undefined, undefined, onUsage)
       : name === "codex-cli-exec"
-        ? new CodexCliExecWorkOrderTransport()
+        ? new CodexCliExecWorkOrderTransport(undefined, undefined, onUsage)
         : name === "fake"
           ? new FakePlanRefutationTransport()
           : null;
@@ -187,7 +288,9 @@ if (
 ) {
   main()
     .then((result) =>
-      process.stdout.write(`${JSON.stringify(result, null, 2)}\n`),
+      process.stdout.write(
+        `${typeof result === "string" ? result : JSON.stringify(result, null, 2)}\n`,
+      ),
     )
     .catch((error) => {
       // Worker failures carry sanitized codes, never raw model/CLI output.
