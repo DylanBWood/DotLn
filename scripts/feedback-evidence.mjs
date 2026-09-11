@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
+import { evidenceArgs } from "../packages/skeleton/src/evidence-editions.mjs";
 import { canonicalStringify } from "@dotln/compiler";
 import { decodeLog, replay } from "@dotln/kernel";
 import { personalFeedback } from "../packages/skeleton/dist/src/loadouts/feedback.js";
@@ -18,28 +19,12 @@ import {
 import { projectAcceptanceEvidenceMatrices } from "../packages/skeleton/dist/src/verification.js";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
-const args = process.argv.slice(2);
-const editionAt = args.indexOf("--edition");
-const edition = editionAt < 0 ? "WO-011" : args[editionAt + 1];
-if (!/^WO-\d{3}$/u.test(edition ?? ""))
-  throw new Error("expected --edition WO-NNN");
-if (editionAt >= 0) args.splice(editionAt, 2);
-const revisionAt = args.indexOf("--revision");
-const revision = revisionAt < 0 ? null : args[revisionAt + 1];
-if (
-  revision !== null &&
-  (!/^(?!000)\d{3}$/u.test(revision ?? "") || edition === "WO-011")
-)
-  throw new Error("expected --revision NNN for a numbered WO feedback edition");
-if (revisionAt >= 0) args.splice(revisionAt, 2);
-const destination = join(
+const { args, selection } = evidenceArgs(
   root,
-  "docs/evidence",
-  edition,
-  ...(edition === "WO-011"
-    ? []
-    : [revision === null ? "feedback" : `feedback-${revision}`]),
+  "feedback",
+  process.argv.slice(2),
 );
+const destination = join(root, selection.directory);
 const mode = args[0];
 if (!(
   (args.length === 1 && ["--write", "--check"].includes(mode)) ||

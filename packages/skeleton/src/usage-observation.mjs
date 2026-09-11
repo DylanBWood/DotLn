@@ -1,11 +1,18 @@
 import {
   appendFileSync,
+  closeSync,
   existsSync,
   lstatSync,
   mkdirSync,
+  openSync,
   readFileSync,
+  readdirSync,
+  readSync,
+  realpathSync,
 } from "node:fs";
-import { dirname, join } from "node:path";
+import { createHash } from "node:crypto";
+import { homedir } from "node:os";
+import { basename, dirname, join, resolve } from "node:path";
 
 /** @typedef {{inputTokens: number|null, cachedInputTokens: number|null, cacheWriteInputTokens: number|null, outputTokens: number|null, reasoningOutputTokens: number|null, totalTokens: number|null, costUsd: number|null}} Usage */
 /** @param {unknown} value @returns {number|null} */
@@ -225,8 +232,141 @@ export function transcriptUsage(path, options = {}) {
     options,
   );
 }
-/** @param {string} root @param {{workOrder: string|null, role: string, dispatch?: string, observation: ReturnType<typeof usageObservation>, startedAt?: string, durationMs?: number, ordinal?: number}} row */
+
+/** Only a one-way identity stays in local observations; never publish a
+ * transcript path, session identifier, message, or environment value.
+ * @param {string} value
+ */
+export const usageSessionKey = (value) =>
+  createHash("sha256").update(value).digest("hex");
+
+/** Local record reference; not a transcript/session identifier. @param {unknown} row */
+export const usageRecordIdentity = (row) =>
+  createHash("sha256").update(JSON.stringify(row)).digest("hex");
+
+/** @param {ReturnType<typeof usageObservation>} observation @param {string} [since] */
+export function requireMeasuredUsage(observation, since) {
+  if (
+    !/^(codex|claude)-(transcript|result)-/.test(observation.source) ||
+    ![
+      observation.usage.inputTokens,
+      observation.usage.outputTokens,
+      observation.usage.totalTokens,
+    ].every(
+      (value) => value !== null && Number.isSafeInteger(value) && value >= 0,
+    ) ||
+    (since &&
+      (!Number.isFinite(Date.parse(since)) ||
+        !observation.observedAt ||
+        !Number.isFinite(Date.parse(observation.observedAt)) ||
+        Date.parse(observation.observedAt) < Date.parse(since)))
+  )
+    throw new Error(
+      "Token measurement required: read the current Codex or Claude session counters and repair collection before handoff",
+    );
+  return observation;
+}
+
+/** @param {string} path */
+function transcriptHeader(path) {
+  const descriptor = openSync(path, "r");
+  const buffer = Buffer.alloc(65536);
+  try {
+    const length = readSync(descriptor, buffer, 0, buffer.length, 0);
+    return decodeUsageSource(buffer.subarray(0, length).toString("utf8"));
+  } finally {
+    closeSync(descriptor);
+  }
+}
+
+/** @param {string} directory @param {number} depth @returns {string[]} */
+function transcriptFiles(directory, depth) {
+  if (!existsSync(directory)) return [];
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    if (entry.isFile() && entry.name.endsWith(".jsonl")) return [path];
+    return entry.isDirectory() && depth > 0
+      ? transcriptFiles(path, depth - 1)
+      : [];
+  });
+}
+
+/** Select the actual session, never every transcript sharing a worktree.
+ * Hook inputs supply Claude identity; the explicit Codex adapter uses the
+ * running thread's environment. Directory overrides support isolated fixtures.
+ * @param {string} root
+ * @param {{sessionKey?: string, transcriptPath?: string, since?: string, until?: string, codexDirectory?: string, claudeDirectory?: string, env?: NodeJS.ProcessEnv}} [options]
+ */
+export function collectSessionUsage(root, options = {}) {
+  const env = options.env ?? process.env;
+  const key =
+    options.sessionKey ??
+    (env.CODEX_THREAD_ID ? usageSessionKey(env.CODEX_THREAD_ID) : undefined);
+  if (!key || !/^[a-f0-9]{64}$/.test(key))
+    throw new Error(
+      "Token measurement requires the current harness session identity",
+    );
+  if (options.since && !Number.isFinite(Date.parse(options.since)))
+    throw new Error("Token measurement requires a valid dispatch start time");
+  const matches = /** @param {string} path */ (path) => {
+    if (!lstatSync(path).isFile() || lstatSync(path).isSymbolicLink())
+      return false;
+    const name = basename(path, ".jsonl");
+    if (
+      usageSessionKey(name) !== key &&
+      usageSessionKey(name.slice(-36)) !== key
+    )
+      return false;
+    const rows = transcriptHeader(path);
+    const codex = rows.find((row) => row.type === "session_meta");
+    const id =
+      codex?.payload?.id ??
+      rows.find((row) => typeof row.sessionId === "string")?.sessionId ??
+      basename(path, ".jsonl");
+    const cwd =
+      codex?.payload?.cwd ??
+      rows.find((row) => typeof row.cwd === "string")?.cwd;
+    return (
+      typeof id === "string" &&
+      usageSessionKey(id) === key &&
+      typeof cwd === "string" &&
+      existsSync(cwd) &&
+      realpathSync(cwd) === realpathSync(root)
+    );
+  };
+  const files = options.transcriptPath
+    ? [resolve(options.transcriptPath)]
+    : [
+        ...transcriptFiles(
+          options.codexDirectory ??
+            join(env.CODEX_HOME ?? join(homedir(), ".codex"), "sessions"),
+          3,
+        ),
+        ...transcriptFiles(
+          options.claudeDirectory ??
+            join(
+              env.CLAUDE_CONFIG_DIR ?? join(homedir(), ".claude"),
+              "projects",
+              resolve(root).replace(/[^a-zA-Z0-9]/g, "-"),
+            ),
+          0,
+        ),
+      ];
+  const selected = files.filter((path) => existsSync(path) && matches(path));
+  const path = selected[0];
+  if (selected.length !== 1 || !path)
+    throw new Error(
+      `Token measurement requires exactly one transcript for the current session and worktree; found ${selected.length}`,
+    );
+  const observation = requireMeasuredUsage(
+    transcriptUsage(path, options),
+    options.since,
+  );
+  return observation;
+}
+/** @param {string} root @param {{workOrder: string|null, role: string, dispatch?: string, observation: ReturnType<typeof usageObservation>, startedAt?: string, durationMs?: number, ordinal?: number, sessionKey?: string, supersedes?: string[]}} row */
 export function recordUsageObservation(root, row) {
+  requireMeasuredUsage(row.observation);
   const planning =
     row.workOrder === null &&
     ["planner", "refuter"].includes(row.role) &&
@@ -250,6 +390,46 @@ export function recordUsageObservation(root, row) {
       "Usage attribution requires a work order or named planning pass and dispatch kind",
     );
   const path = join(root, "docs/control/local/process/usage.jsonl");
+  if (row.supersedes) {
+    const previous = existsSync(path)
+      ? readFileSync(path, "utf8")
+          .trim()
+          .split("\n")
+          .filter(Boolean)
+          .map((line) => JSON.parse(line))
+      : [];
+    const known = new Map(
+      previous.map((entry) => [usageRecordIdentity(entry), entry]),
+    );
+    if (
+      !row.sessionKey ||
+      !row.startedAt ||
+      !row.supersedes.length ||
+      new Set(row.supersedes).size !== row.supersedes.length ||
+      row.supersedes.some((ref) => {
+        const old = known.get(ref);
+        return (
+          !old ||
+          old.workOrder !== row.workOrder ||
+          old.role !== row.role ||
+          old.observation.source !== row.observation.source ||
+          !Number.isFinite(Date.parse(old.startedAt)) ||
+          !Number.isFinite(Date.parse(old.observation.observedAt)) ||
+          !(Date.parse(row.startedAt ?? "") <= Date.parse(old.startedAt)) ||
+          !(
+            Date.parse(row.observation.observedAt ?? "") >=
+            Date.parse(old.observation.observedAt)
+          ) ||
+          row.observation.usage.totalTokens === null ||
+          !Number.isSafeInteger(old.observation.usage.totalTokens) ||
+          row.observation.usage.totalTokens < old.observation.usage.totalTokens
+        );
+      })
+    )
+      throw new Error(
+        "Usage reconciliation requires known same-role observations inside the measured replacement window",
+      );
+  }
   mkdirSync(dirname(path), { recursive: true });
   appendFileSync(
     path,
@@ -260,6 +440,8 @@ export function recordUsageObservation(root, row) {
       ...(row.startedAt ? { startedAt: row.startedAt } : {}),
       ...(row.durationMs === undefined ? {} : { durationMs: row.durationMs }),
       ...(row.ordinal === undefined ? {} : { ordinal: row.ordinal }),
+      ...(row.sessionKey ? { sessionKey: row.sessionKey } : {}),
+      ...(row.supersedes ? { supersedes: row.supersedes } : {}),
       observation: row.observation,
       recordedAt: new Date().toISOString(),
     }) + "\n",

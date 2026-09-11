@@ -42,6 +42,16 @@ WO-003 received passing final review, its PR was merged, and the exact merged
 commit passed the full evidence gate, an annotated Git tag and immutable release
 manifest were created. Never tag the feature branch or an unreviewed commit.
 
+**WO-043 repair expansion (2026-09-11):** the operator's command-contract and
+mandatory-token-measurement correction retains application target `v0.17.1`
+and bumps skeleton to `0.15.1` and compiler to `0.9.1`. This patch repairs optional
+usage collection and completion enforcement and adds explicit shared-role
+projection for Process Cost and Goal Alignment. Lifecycle event and feedback
+schemas stay fixed. Console `0.1.4` uses the shared current-evidence selection;
+kernel remains fixed. The navigation section's
+mixed candidate status remains `planned` after VER-001 F1. See the
+[breakout receipt](../evidence/WO-043/ideation-commands-and-usage.md).
+
 ### 2026-08-31 forward retiming
 
 WO-004 through WO-011 were drafted before `v0.2.0` was published. Three belated

@@ -23,6 +23,7 @@ import {
   renderControlUsage,
 } from "./lib/control-usage.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
+import { executorEntryBriefing } from "./lib/executor-readiness.mjs";
 import { dependencyRefusal, readDependencies } from "./lib/dependencies.mjs";
 import {
   projectControlBeacon,
@@ -935,7 +936,7 @@ export const main = async (argv = process.argv.slice(2)) => {
       message = `Recorded ${state.latestVerificationId}: ${verdict}.`;
       break;
     }
-    case "fix":
+    case "fix": {
       if (
         state.phase !== "needs-fix" &&
         !(
@@ -945,14 +946,16 @@ export const main = async (argv = process.argv.slice(2)) => {
         )
       )
         requirePhase(state, "needs-fix");
+      const briefing = executorEntryBriefing(repoRoot, state.workOrderId);
       appendTransition(action, {
         type: "RepairRequested",
         workOrderId: state.workOrderId,
         sourceFindingId: state.failureSourceId,
         sourceReportPath: state.failureSourcePath,
       });
-      message = `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.`;
+      message = `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.${briefing}`;
       break;
+    }
     case "repair-complete": {
       requirePhase(state, "repairing");
       const actor = completionActor(action, args, state, "executor");
@@ -1059,7 +1062,7 @@ export const main = async (argv = process.argv.slice(2)) => {
           : undefined;
       message =
         state.phase === "active"
-          ? `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; after its evidence gate passes, run ${commandFor("implementation-ready")}.${restricted}`
+          ? `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; after its evidence gate passes, run ${commandFor("implementation-ready")}.${executorEntryBriefing(repoRoot, state.workOrderId)}${restricted}`
           : `Current work order ${state.workOrderId} is closed. ${openOrders(control).length ? `Other in-flight orders: ${openOrders(control).join(", ")}; inspect one with npm run resume -- status --work-order WO-NNN.` : "The repository is between work orders; start a valid next work order with npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md."}`;
       break;
     }

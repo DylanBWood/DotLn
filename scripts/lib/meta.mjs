@@ -10,6 +10,7 @@ import {
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
+import { usageRecordIdentity } from "../../packages/skeleton/src/usage-observation.mjs";
 import { readControl, eventsForOrder } from "./control-store.mjs";
 import { completedPhaseAttempts } from "./control-time.mjs";
 import { readGateChecks } from "./gate-evidence.mjs";
@@ -249,12 +250,15 @@ function usageRows(root, workOrder) {
     (row) => row.workOrder === workOrder,
   );
   const latest = new Map();
-  for (const row of rows)
+  const superseded = new Set(rows.flatMap((row) => row.supersedes ?? []));
+  for (const row of rows.filter(
+    (row) => !superseded.has(usageRecordIdentity(row)),
+  ))
     latest.set(
-      `${row.role}:${row.startedAt ?? "dispatch"}:${row.ordinal ?? 0}:${row.observation.source}`,
+      `${row.role}:${row.startedAt ?? "dispatch"}:${row.sessionKey ?? row.ordinal ?? 0}:${row.observation.source}`,
       row,
     );
-  return [...latest.values()];
+  return [...latest.values()].map(({ sessionKey, supersedes, ...row }) => row);
 }
 
 function authorshipCost(observations) {

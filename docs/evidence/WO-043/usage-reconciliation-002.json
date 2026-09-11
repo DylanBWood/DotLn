@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-09-11T17:36:48.569Z",
+  "method": "Independent cumulative-counter subtraction reproduced both original implementation vectors from one matching session/worktree, then the completion window matched the collector. Original local rows are retained with append-only supersession; private source identity and paths remain local.",
+  "source": "codex-transcript-counter",
+  "implementation": {
+    "since": "2026-09-11T05:49:31.124Z",
+    "handoffAt": "2026-09-11T14:08:33.644Z",
+    "observedAt": "2026-09-11T14:08:32.202Z",
+    "replacedObservations": 2,
+    "partialTotalTokens": 13319888,
+    "totalTokens": 16773516
+  },
+  "priorRepair": {
+    "since": "2026-09-11T15:02:58.012Z",
+    "observedAt": "2026-09-11T16:16:53.384Z",
+    "totalTokens": 24580001,
+    "handoffTotalTokens": 23933250
+  },
+  "previousCommittedExecutorTotalTokens": 22860785,
+  "completedHandoffTotalTokens": 40706766,
+  "completedDispatchesIncludingRecordedPostHandoffTokens": 41353517
+}

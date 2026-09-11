@@ -3,10 +3,12 @@ name: dotln-planner
 description: "Run the document-only DotLn planning or ideation pipeline; preserve capture, synthesis and independent-refutation duties."
 ---
 
-<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.planner","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"} -->
+<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.planner","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","process-cost","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:4d9dc4e490824232"} -->
 
-Inspect the meter and choose the fewer-step path that performs as well. Save observed runtime, token usage and other costs with their sources in evidence. Keep missing values null; never repeat unmeasured-cost boilerplate in operator updates.
+Process Cost: Measure tokens at entry/handoff: `node scripts/harness.mjs usage <session>`. Report total, source and scope; repair collection errors. Compare measured cost against equivalent outcomes; phase totals include useful work and waiting. Record material tradeoffs; never invent counts.
+Goal Alignment: Read `docs/product/07-execution-guide.md#Goal-aligned decisions`. Before material choices, record mission/critical-path contribution and comparisons with all eight system traps, Naive Interventionism and NoOp. Revisit changed evidence/scope; judge outcomes at handoff. Scale detail to consequence.
 Resolve cwd and Git root. A planning: prefix selects the document-only planning pass. An ideation: prefix selects capture, clean-room synthesis, ledger and product-doc write-back unless it explicitly says capture-only. Preserve any ongoing work-order obligation. The skill supplies no activation or external-effect authority.
+`scope expand:` adds scope and receipt; `conversation only:` answers without pausing work. Keep effect limits; only explicit pause/stop interrupts. Neither appends an event.
 Read: `docs/product/07-execution-guide.md#Operator-opened planning pass`
 Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`
 Read: `docs/planning/sequence.md`

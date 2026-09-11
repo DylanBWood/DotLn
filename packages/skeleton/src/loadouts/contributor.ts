@@ -17,12 +17,21 @@ import {
   executorSupports,
   type ExecutorSupportSwitches,
 } from "./executor-supports.js";
+import { processCost } from "./process-cost.js";
+import { goalAlignment } from "./goal-alignment.js";
+
+const sharedSupports = [processCost, goalAlignment];
+const sharedIds = sharedSupports.map((support) => support.supportFacetId);
+const contributorSupports = [...executorSupports, ...sharedSupports];
+export const defaultContributorSupportIds = [
+  ...defaultExecutorSupportIds,
+  ...sharedIds,
+];
+export type ContributorSupportSwitches = ExecutorSupportSwitches &
+  Readonly<{ "process-cost"?: boolean; "goal-alignment"?: boolean }>;
 
 const handlers = personalFeedbackUnits.map((unit) => unit.trigger);
-const processCost =
-  "Inspect the meter and choose the fewer-step path that performs as well. Save observed runtime, token usage and other costs with their sources in evidence. Keep missing values null; never repeat unmeasured-cost boilerplate in operator updates.";
 const common = [
-  processCost,
   "Resolve physical cwd and Git root before changing files or running Git commands. Work only in the selected worktree; one writable coding agent owns it.",
   "Run `npm run resume --silent -- status --json`; use its canonical selected order, phase, report paths, and legal actions. A stale Markdown projection is repaired only by the next legal transition.",
   "Status may name artifacts for other roles. Load a report only when this role's Read directives or the active order's citations select it; a path in status is metadata, not a read directive.",
@@ -105,15 +114,13 @@ export const contributorRoles: readonly HarnessRole[] = [
     intents: ["resume: release close"],
     feedbackHandlers: handlers,
     procedure: [
-      processCost,
-      "Start from main so hooks survive teardown. Resolve cwd and Git root; run `npm run resume --silent -- status --json`. Only the exact release-close phrase grants the authority below.",
+      "Only resume: release close authorizes this. In main, verify cwd/Git root; run `npm run resume --silent -- status --json`.",
       "Read: `@work-order`",
       "Read: `@citations`",
       "Read: `@final-review`",
-      "Run `npm run resume -- release-close` for the canonical command, or use worktree publish's exact handoff. Invoke it from main; after subject removal use main's helper.",
-      "The helper checks merge, cleanliness, retained material, evidence and tag/Release identity before teardown. Report a refusal with its evidence; do not force teardown or repeat a recorded transition.",
-      "The close helper preserves intake and archives retained control state under main's ignored retained/WO-NNN lane. It verifies bytes, preserves collisions and supports retries; `--dry-run` lists the plan without writes. Keep main's terms.txt and gate-evidence handoff. Use this helper, including after partial publication.",
-      "Publish only the validated source tag and reviewed Release, or report no-release. Never edit published Releases, push main, merge PRs, publish packages/binaries or change settings. Report the result and remaining obligations.",
+      "Run the exact `npm run resume -- release-close` or worktree-publish handoff in main; after removal use main's helper. Use it for partial-publication retries too.",
+      "The helper validates merge, cleanliness, evidence and tag/Release identity, reconciles intake and retains state/collision bytes in main's ignored retained/WO-NNN lane. Keep main's terms.txt and gate-evidence handoff. `--dry-run` previews. Report refusals; never force teardown or repeat transitions.",
+      "Publish only the validated tag/Release; report no-release or remaining work. Never edit Releases, push main, merge PRs, publish packages/binaries or change settings.",
     ],
   },
   {
@@ -124,7 +131,6 @@ export const contributorRoles: readonly HarnessRole[] = [
     intents: ["planning:", "ideation:"],
     feedbackHandlers: handlers,
     procedure: [
-      processCost,
       "Resolve cwd and Git root. A planning: prefix selects the document-only planning pass. An ideation: prefix selects capture, clean-room synthesis, ledger and product-doc write-back unless it explicitly says capture-only. Preserve any ongoing work-order obligation. The skill supplies no activation or external-effect authority.",
       "Read: `docs/product/07-execution-guide.md#Operator-opened planning pass`",
       "Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`",
@@ -140,8 +146,7 @@ export const contributorRoles: readonly HarnessRole[] = [
     intents: ["planning: refute", "planning: refute full"],
     feedbackHandlers: handlers,
     procedure: [
-      processCost,
-      "Resolve cwd and Git root. The exact phrase makes this session the independent refuter. Load no map, guide, prior receipt or other preread; the canonical prompt is the sole judgment input.",
+      "Resolve cwd and Git root. The exact phrase selects this independent refuter. The shared goal card supplies purpose; the canonical prompt is the sole subject evidence. Load no map, prior receipt or other subject preread.",
       "Run `npm run plan -- refute --direct` for planning: refute, or add `--scope full` for planning: refute full. The helper verifies that the committed subject equals the workspace and prints the canonical prompt. Pass scope judges the latest pass's changed orders and sequence; other verdicts carry by hash. Judge the prompt and save the closed JSON result and a plain statement file.",
       "Run `npm run plan -- receipt <result.json> --statement <statement.txt> [--dispositions <file>]`. The helper validates and screens against local terms, files the immutable direct-session pair, commits a plain subject and runs the plan check. Use these commands, without an ad hoc receipt script. Report scope, elapsed time and the actual result. `refute --transport <name>` is a separate external-refuter route.",
     ],
@@ -333,17 +338,17 @@ export const contributorLoadout: LoadoutGraph = {
 };
 /** Keep the original saved build intact; equipment creates a new build. */
 export function contributorWithSupports(
-  supportIds: readonly string[] = defaultExecutorSupportIds,
+  supportIds: readonly string[] = defaultContributorSupportIds,
 ): LoadoutGraph {
   if (
     new Set(supportIds).size !== supportIds.length ||
     supportIds.some(
       (id) =>
-        !executorSupports.some((support) => support.supportFacetId === id),
+        !contributorSupports.some((support) => support.supportFacetId === id),
     )
   )
-    throw new Error("unknown or duplicate Contributor executor support");
-  const equipped = executorSupports.filter(({ supportFacetId }) =>
+    throw new Error("unknown or duplicate Contributor support");
+  const equipped = contributorSupports.filter(({ supportFacetId }) =>
     supportIds.includes(supportFacetId),
   );
   if (!equipped.length) return contributorLoadout;
@@ -373,17 +378,46 @@ export function contributorWithSupports(
 }
 
 /** Consume the compiled equipment, rather than independently authoring skill text. */
+// Mandatory session instructions belong to the separately hashed harness target.
+// Keep the saved loadout-v1 policy deltas intact when adapting that target.
+const sessionCommands =
+  "`scope expand:` adds scope and receipt; `conversation only:` answers without pausing work. Keep effect limits; only explicit pause/stop interrupts. Neither appends an event.";
+const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
+  const procedure =
+    role.name === "release-close"
+      ? [
+          "Verify main's cwd/Git root; run `npm run resume --silent -- status --json`.",
+          "Read: `@work-order`",
+          "Read: `@citations`",
+          "Read: `@final-review`",
+          "Use main's exact release-close/worktree-publish handoff; use its helper after removal or partial publication.",
+          "Helper checks release prerequisites, reconciles intake and retains state/collisions in ignored retained/WO-NNN. Keep terms.txt and gate-evidence handoff. `--dry-run` previews. Report refusals; never force teardown/repeat transitions.",
+          "Publish only that tag/Release; report no-release/remaining work. No Release edits, main pushes, PR merges, package/binary publication or settings changes.",
+        ]
+      : role.procedure;
+  return {
+    ...role,
+    ...(role.name === "release-close"
+      ? {
+          description:
+            "Only resume: release close: close the merged worktree; publish its validated tag/Release.",
+        }
+      : {}),
+    procedure: [procedure[0]!, sessionCommands, ...procedure.slice(1)],
+  };
+});
+
 export function contributorRolesFor(
   program: CompiledProgram,
 ): readonly HarnessRole[] {
-  const equipped = executorSupports.filter(({ supportFacetId }) =>
+  const equipped = contributorSupports.filter(({ supportFacetId }) =>
     program.componentManifest.some(
       (entry) =>
         entry.componentKind === "support-facet" &&
         entry.componentId === supportFacetId,
     ),
   );
-  const fragments = equipped.flatMap((support) => {
+  const emissions = equipped.map((support) => {
     const manifest = program.componentManifest.find(
       (entry) => entry.componentId === support.supportFacetId,
     )!;
@@ -397,29 +431,44 @@ export function contributorRolesFor(
       throw new Error(
         `Contributor support projection drift: ${support.supportFacetId}`,
       );
-    return emitted;
+    return { support, emitted };
   });
-  if (!fragments.length) return contributorRoles;
+  if (!emissions.length) return targetRoles;
   const modifiers = equipped.flatMap((support) => support.semanticsModified);
-  return contributorRoles.map((role) => {
-    if (role.name !== "executor") return role;
+  return targetRoles.map((role) => {
+    const shared = emissions
+      .filter(({ support }) => sharedIds.includes(support.supportFacetId))
+      .flatMap(({ emitted }) => emitted);
+    const fragments =
+      role.name === "executor"
+        ? emissions
+            .filter(
+              ({ support }) => !sharedIds.includes(support.supportFacetId),
+            )
+            .flatMap(({ emitted }) => emitted)
+        : [];
+    if (!shared.length && !fragments.length) return role;
+    const procedure = role.procedure.flatMap((line) => {
+      const projected = (role.name === "executor" ? modifiers : []).reduce(
+        (text, { from, to }) => text.replace(from, to),
+        line,
+      );
+      return line.startsWith("Run `npm run resume --silent -- status --json`")
+        ? [projected, ...fragments]
+        : [projected];
+    });
     return {
       ...role,
-      procedure: role.procedure.flatMap((line) => {
-        const projected = modifiers.reduce(
-          (text, { from, to }) => text.replace(from, to),
-          line,
-        );
-        return line.startsWith("Implement the complete bounded deliverable")
-          ? [...fragments, projected]
-          : [projected];
-      }),
+      procedure:
+        role.name === "executor"
+          ? [procedure[0]!, ...shared, ...procedure.slice(1)]
+          : [...shared, ...procedure],
     };
   });
 }
 
 export const contributorProgram = (
-  supportIds: readonly string[] = defaultExecutorSupportIds,
+  supportIds: readonly string[] = defaultContributorSupportIds,
 ): HarnessProgram => {
   const loadout = requireCompiled(
     compileLoadout(contributorWithSupports(supportIds), {
@@ -436,7 +485,7 @@ export const contributorProgram = (
     roles: contributorRolesFor(loadout),
     facets: [
       permissions,
-      ...executorSupports.flatMap((support): HarnessFacet[] =>
+      ...contributorSupports.flatMap((support): HarnessFacet[] =>
         supportIds.includes(support.supportFacetId)
           ? support.emissions.flatMap((emission) =>
               emission.kind === "prompt-fragment"
@@ -444,7 +493,13 @@ export const contributorProgram = (
                     {
                       facetId: support.supportFacetId,
                       kind: "role-procedure" as const,
-                      roleName: "executor",
+                      ...(sharedIds.includes(support.supportFacetId)
+                        ? {
+                            roleNames: contributorRoles.map(
+                              (role) => role.name,
+                            ),
+                          }
+                        : { roleName: "executor" }),
                       text: emission.text,
                     },
                   ]
@@ -462,8 +517,21 @@ export const contributorProgram = (
   };
 };
 export const contributorConfiguredProgram = (
-  switches: ExecutorSupportSwitches = {},
-): HarnessProgram => contributorProgram(executorSupportIds(switches));
+  switches: ContributorSupportSwitches = {},
+): HarnessProgram => {
+  const {
+    "process-cost": cost = true,
+    "goal-alignment": goal = true,
+    ...executor
+  } = switches;
+  if (typeof cost !== "boolean" || typeof goal !== "boolean")
+    throw new Error("shared support switches require ON/OFF booleans");
+  return contributorProgram([
+    ...executorSupportIds(executor),
+    ...(cost ? [processCost.supportFacetId] : []),
+    ...(goal ? [goalAlignment.supportFacetId] : []),
+  ]);
+};
 
 const record = "docs/discovery/harness-smoke-2026-09-07.md";
 export const contributorProfiles: readonly HarnessProfile[] = [
@@ -496,7 +564,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "CLAUDE.md",
     },
     refusal: "claude-command-json-v1",
-    runtime: { skeletonVersion: "0.15.0", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.1", boundaryContract: "feedback-v1" },
   },
   {
     profileId: "codex-cli-0.153.4",
@@ -532,6 +600,6 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "AGENTS.md",
     },
     refusal: "unavailable",
-    runtime: { skeletonVersion: "0.15.0", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.1", boundaryContract: "feedback-v1" },
   },
 ];

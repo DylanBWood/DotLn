@@ -2,6 +2,8 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { currentEvidence } from "../packages/skeleton/src/evidence-editions.mjs";
 import {
   canonicalStringify,
   compileLoadout,
@@ -34,9 +36,10 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0])) {
   process.exit(2);
 }
 const root = new URL("../", import.meta.url);
-// Compiler 0.9.0 gets a new current evidence edition. Prior orders'
-// observed receipts remain historical bytes, not mutable goldens.
-const evidenceDirectory = "docs/evidence/WO-126/artifact-identity";
+const evidenceDirectory = currentEvidence(
+  fileURLToPath(root),
+  "artifact-identity",
+).directory;
 const read = (path) => readFileSync(new URL(path, root), "utf8");
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const baseline = JSON.parse(read("docs/evidence/WO-029/baseline.json"));

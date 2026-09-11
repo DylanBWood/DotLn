@@ -1678,6 +1678,13 @@
           "title": "Work-order navigation and identity (candidate)",
           "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
           "missing": false
+        },
+        {
+          "hash": "6d179f04e878360240369619bcfd14527fc09f729542a768aa3be575f9e5f1ac",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
         }
       ],
       "dispositions": []
@@ -2183,6 +2190,13 @@
           "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
           "title": "Candidate — Tinkerer / Scientist",
           "summary": "## Candidate — Tinkerer / Scientist Operator ideation during WO-126 proposes a support that biases a linked mechanic toward a small experiment on a relevant question, input, proposed answer or response. The names Tinkerer and Scientist remain alternatives. The motivating Node/Python build comparison found a useful option after a dependency objection; the desired behavior is to elicit such evidence without waiting for that objection every time. This extends product 07's [recurring-alternatives candidate](07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives). An A/B comparison is one experiment shape, alongside a targeted probe or a small prototype. State the questi",
+          "missing": false
+        },
+        {
+          "hash": "72179b365ad4208a301e3a461c45a92126a4a12102c1190c551ec3a29133d624",
+          "ref": "docs/product/05-pattern-library.md#candidate--tinkerer--scientist",
+          "title": "Candidate — Tinkerer / Scientist",
+          "summary": "## Candidate — Tinkerer / Scientist **Near-term planning request, 2026-09-11:** the operator asks to prioritize this candidate soon, including its adaptive bad-luck protection based on time since the last demonstrated application improvement. It remains unimplemented and unallocated. The operator explicitly excludes implementing it in the current WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next planning pass should select a bounded experiment and allocation, preserving the budget, evidence and reset distinctions below. Source: the [WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md). Operator ideation during WO-126 proposes a support that bia",
           "missing": false
         }
       ],
@@ -2699,6 +2713,216 @@
           "ref": "docs/evidence/WO-127/decisions.md#wo-127-d007",
           "title": "WO-127-D007: Prepare only owned mutable projections in the canonical evidence command after build and before tree identity. Keep unchanged outputs untouched and make package tests wait for preflights.",
           "summary": "{ \"id\": \"WO-127-D007\", \"date\": \"2026-09-11\", \"dispatch\": \"The operator explicitly requested fixing repeated stage failures caused by stale generated material.\", \"decision\": \"Prepare only owned mutable projections in the canonical evidence command after build and before tree identity. Keep unchanged outputs untouched and make package tests wait for preflights. Preserve explicit review inputs and immutable evidence; select a new authority revision for the repaired runtime.\", \"evidence\": [ \"scripts/lib/evidence-preparation.mjs\", \"scripts/test-process-debt.mjs\", \"scripts/test-runner.mjs\", \"scripts/test-runner.test.mjs\", \"docs/product/07-execution-guide.md#discipline\" ], \"rejected\": [ { \"option\":",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f5d1a4831f747703",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "35ec2559f39ea79b0264a2d35309978aad7585e9e1d5371006a29dbeae1789cb",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d001",
+          "title": "WO-043-D001: Keep dependency authority in the work-order header and share one parser and projection between index, selected CLI status and activation. Closure evidence retains the final-review verdict",
+          "summary": "{ \"id\": \"WO-043-D001\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator resume: next; WO-043 typed dependency design and acceptance criteria 1–4\", \"decision\": \"Keep dependency authority in the work-order header and share one parser and projection between index, selected CLI status and activation. Closure evidence retains the final-review verdict. Typed release readiness observes current local annotated DotLn tags in HEAD ancestry, independently of the index's historical release-attribution snapshot.\", \"evidence\": [ \"scripts/lib/dependencies.mjs\", \"scripts/test-work-orders.mjs: typed parser, projection, ancestry and index/status parity fixtures\", \"scripts/test-dependency-resume.mjs: refusal preser",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a5aff3bdcea3cc5b",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "018ca4efa29e7b3e82c90cabbd70304d41c60483691efb055485535e1c910b89",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d002",
+          "title": "WO-043-D002: Migrate all 85 currently open records, including WO-118 through WO-125 from the revised horizon. Preserve all 40 closed or historical authorities byte-for-byte. Transcribe the graph's ent",
+          "summary": "{ \"id\": \"WO-043-D002\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator resume: next; WO-043 forward-only migration; later dated umbrella decision in WO-036\", \"decision\": \"Migrate all 85 currently open records, including WO-118 through WO-125 from the revised horizon. Preserve all 40 closed or historical authorities byte-for-byte. Transcribe the graph's entries, supplement its four corpus nodes from their Depends on prose, and represent umbrella successors as non-blocking superseded entries. WO-036 follows its later 2026-09-09 supersession by WO-126.\", \"evidence\": [ \"docs/evidence/WO-043/migration.json: 85 prose comparisons and 245 typed entries\", \"docs/planning/critical-path-2026-09-08.json: obs",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-88b81dfaf27747c4",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "102902acd8e7a6ebc5f26e4690997832e7d4e2464c01709e2b57359eac95d922",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d003",
+          "title": "WO-043-D003: Assign application v0.17.1 above the observed local annotated v0.17.0 baseline. Keep all component versions because the deliverable changes only control-plane scripts and documents. Prepa",
+          "summary": "{ \"id\": \"WO-043-D003\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator resume: next; standing release assignment default and WO-043 patch classification\", \"decision\": \"Assign application v0.17.1 above the observed local annotated v0.17.0 baseline. Keep all component versions because the deliverable changes only control-plane scripts and documents. Prepare the release locally.\", \"evidence\": [ \"docs/product/06-roadmap.md: Release boundary\", \"docs/work-orders/WO-043-typed-dependency-truth.md: release classification\", \"npm run release -- prepare --local: target v0.17.1 remains current\" ], \"rejected\": [ \"A component bump would claim a package change that this order does not contain.\", \"Publication is",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d8a747da35460d99",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "738779ef5e352c11b1c8cbea1b03a7ff4773fdfbce3800dd7369025d9480146d",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d004",
+          "title": "WO-043-D004: Extend planning continuation only for WO-043's reviewed dependency transcription. Compare relation fields with the seed at the original judgment revision, require that seed to remain byte",
+          "summary": "{ \"id\": \"WO-043-D004\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator resume: next; WO-043 required header migration and full application gate\", \"decision\": \"Extend planning continuation only for WO-043's reviewed dependency transcription. Compare relation fields with the seed at the original judgment revision, require that seed to remain byte-identical, preserve the four corpus prose mappings and reviewed umbrella successors, and remove only the inserted metadata block before the existing byte-preservation checks. Preserve the original planning receipts and their subject hashes.\", \"evidence\": [ \"The first canonical full gate passed 35 suites and failed the console live release-list observation",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2e63a43da3de7a64",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c0e669ffd0a66079ac10143c3a195fdb99ec885d1b137122e7a5f20567180de6",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d005",
+          "title": "WO-043-D005: Restore planned for the mixed Work-order navigation and identity section and refresh the edition source locks after the repair and operator-authorized product write-backs.",
+          "summary": "{ \"id\": \"WO-043-D005\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator resume: fix against VER-001 F1\", \"decision\": \"Restore planned for the mixed Work-order navigation and identity section and refresh the edition source locks after the repair and operator-authorized product write-backs.\", \"evidence\": [ \"docs/verifications/WO-043/VER-001.md: F1\", \"docs/product/06-roadmap.md: Work-order navigation and identity retains broader candidate claims\", \"docs/publication/audience-status-index.md: least-mature mixed-section rule\" ], \"rejected\": [ \"Implemented would overclaim the remaining planning-row and scheduling design.\", \"Removing the retained candidate claims would expand the publication repair into ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f48815ada3b6ffb0",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7ee808b3a7c4a654aef82bfc2e6895917ecced0d91793e945fb9061b53ad71d7",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d006",
+          "title": "WO-043-D006: Document both prefixes in the session command contract and carry them in the shared floor and generated role instructions. Scope expand adds the stated bounded work with its durable recei",
+          "summary": "{ \"id\": \"WO-043-D006\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator ideation for first-party scope expand: and conversation only: commands, followed by the side-question clarification\", \"decision\": \"Document both prefixes in the session command contract and carry them in the shared floor and generated role instructions. Scope expand adds the stated bounded work with its durable receipt; conversation only answers a side question and continues the current work order without changing scope or requiring another resume command.\", \"evidence\": [ \"docs/evidence/WO-043/ideation-commands-and-usage.md\", \"docs/product/07-execution-guide.md: Operator resume phrases and the existing WO-126-D019 continuatio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b88c024408be28bb",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "416ef3b62521ba189be579bff4ec683fdc97838a1dc3f1ef1173156cf08bb91a",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d007",
+          "title": "WO-043-D007: Use one source-aware current-session collector for the explicit harness usage command, Claude Stop hook, meta collection and all four lifecycle completion checks. Require numeric input, o",
+          "summary": "{ \"id\": \"WO-043-D007\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator explicitly requires every future Codex and Claude session to measure and track actual tokens\", \"decision\": \"Use one source-aware current-session collector for the explicit harness usage command, Claude Stop hook, meta collection and all four lifecycle completion checks. Require numeric input, output and total counters; reject missing, stale and foreign-session evidence rather than silently storing an unmeasured handoff. Keep private source material local. Bump skeleton from 0.15.0 to 0.15.1 for this bounded repair; retain application v0.17.1 and other component versions.\", \"evidence\": [ \"packages/skeleton/src/usage-observatio",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-90daf7f479dcbd7e",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d2a96bf5660205f33f1816ba48317a2a639e54d79117694f6b118a2132ae6e76",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d008",
+          "title": "WO-043-D008: Project equipped support duties before subject reads and show installed support identities plus queue state on bare next/fix. Announce the initial action as well as each next queued actio",
+          "summary": "{ \"id\": \"WO-043-D008\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator reports Adjacent Repair and Intent to Act require explicit prompting during executor/fix\", \"decision\": \"Project equipped support duties before subject reads and show installed support identities plus queue state on bare next/fix. Announce the initial action as well as each next queued action. Refuse implementation-ready and repair-complete while an item is queued or running; retain explicit dispositions and required public deferral destinations. Keep actor-attested chat and independent support switches.\", \"evidence\": [ \"docs/product/05-pattern-library.md: Intent queue and communication levels\", \"scripts/lib/executor-readiness",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-776fda2910170e66",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "85a7a6b857d8486b68ab8259c445531e01db154500c2890dbb2d98bb10ce93b4",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d009",
+          "title": "WO-043-D009: Replace the repeated processCost role string with one compiled Process Cost support. Extend the harness role-procedure adapter additively from one roleName to an explicit roleNames set, r",
+          "summary": "{ \"id\": \"WO-043-D009\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator accepts Process Cost as a first-class support across all six Contributor phases and asks when solution comparisons are made and retained\", \"decision\": \"Replace the repeated processCost role string with one compiled Process Cost support. Extend the harness role-procedure adapter additively from one roleName to an explicit roleNames set, retaining the legacy shape and rejecting invalid targets. Keep the host meter and mandatory token collection separate from the configurable behavior. Bump compiler to 0.9.1 and skeleton to 0.15.1; retain application v0.17.1. Record comparative judgments in existing phase evidence, not a second ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1684c31c4d4f7a44",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "7eb39f23028cad28e1be946a7a18a44a703e9e1d76d30ed63cf7d033d07fd6a9",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d010",
+          "title": "WO-043-D010: Equip Goal Alignment across all six roles. Use a scoped goal card sourced from the vision, current critical-path plan and selected order. Compare material choices before selection, revisi",
+          "summary": "{ \"id\": \"WO-043-D010\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator requires every stage to understand DotLn's goal and purpose and check all decisions against goal/critical-path progress, following the all-eight-traps, Naive Interventionism and NoOp direction\", \"decision\": \"Equip Goal Alignment across all six roles. Use a scoped goal card sourced from the vision, current critical-path plan and selected order. Compare material choices before selection, revisit changed evidence or scope, and compare results at handoff. Retain the mission/path link, action-versus-NoOp rationale, intervention risks and all-eight-trap assessment in existing phase evidence. This is a compiled instruction duty, not",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-df18c0e4ef7f7942",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "f0e67cb0ff72fe9c73babbf0168ef1a56ee476e610baff4afa68447c22b24859",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d011",
+          "title": "WO-043-D011: Preserve legacy usage records and append a measured replacement referencing the superseded observations. Project the replacement once. Require known same-work-order/role references inside",
+          "summary": "{ \"id\": \"WO-043-D011\", \"date\": \"2026-09-11\", \"dispatch\": \"Equipped Adjacent Repair during the operator-authorized mandatory-token work; discovered by inspecting the final aggregate without another operator prompt\", \"decision\": \"Preserve legacy usage records and append a measured replacement referencing the superseded observations. Project the replacement once. Require known same-work-order/role references inside its measured window. Reproduce each original counter vector against the exact source session before reconciling live records. Seven older Claude observations from two overlapping start windows reproduce from one source; their union is 10,029,006 tokens, rather than the 16,938,893 sum",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f72ab30813f62382",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d67a281d4518ebbffd8290cc4f0c0718374346bf24bf6b23d7a35a3a5d0e8740",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d012",
+          "title": "WO-043-D012: Keep historical evidence immutable, select fresh current artifact/verification/authority/feedback evidence, and preserve the original executor-only removal assertion by explicitly equippi",
+          "summary": "{ \"id\": \"WO-043-D012\", \"date\": \"2026-09-11\", \"dispatch\": \"Necessary compatibility repair after the authorized shared-role and mandatory-usage implementation failed four existing evidence preflights; operator explicitly authorizes one isolated live Claude audit verifier\", \"decision\": \"Keep historical evidence immutable, select fresh current artifact/verification/authority/feedback evidence, and preserve the original executor-only removal assertion by explicitly equipping that subset. Retain the saved no-support semantic hash and independent baseline oracle. Add observed Claude CLI 2.1.268 to its exact transport profile without relaxing tools, settings, source, budget or result checks. Console",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f6522f95b0ca5123",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "83be3c102ff8405e5e431f01aebb54b4f6dcecf686e665999f00bd7f187c27ee",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d013",
+          "title": "WO-043-D013: Centralize current evidence selection in docs/evidence/current.json and one shared resolver consumed by all four evidence commands and the console. Remove current-order literals from gate",
+          "summary": "{ \"id\": \"WO-043-D013\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator challenges repeated work-order literals in scripts and requires accuracy over sycophancy across every phase; bounded repair continues under the equipped Adjacent Repair authority\", \"decision\": \"Centralize current evidence selection in docs/evidence/current.json and one shared resolver consumed by all four evidence commands and the console. Remove current-order literals from gate and package commands and their test normalization. Keep explicit historical pins and independent expected results. Starting another order does not change the manifest; relevant source drift still requires newly recorded evidence. Clarify the already-e",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7590cf6778843133",
+      "key": "decision:docs/evidence/WO-043/decisions.md#wo-043-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4dfdb46f8e5bf7380254895ad446c17660639932e4aeccec5c62f8a63e40b40f",
+          "ref": "docs/evidence/WO-043/decisions.md#wo-043-d014",
+          "title": "WO-043-D014: Carry the session-prefix contract in all generated Contributor role targets, preserve the saved loadout semantic identity, and restore the entire hand-written floor to HEAD's wording. Com",
+          "summary": "{ \"id\": \"WO-043-D014\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator resume: fix against VER-002 F2–F5\", \"decision\": \"Carry the session-prefix contract in all generated Contributor role targets, preserve the saved loadout semantic identity, and restore the entire hand-written floor to HEAD's wording. Compact only the generated release-close procedure to retain its existing context ceiling and duties. Correct product 07's directed-input table. Reproduce historical Codex usage windows before appending reconciliation records, then refresh the public meter and release preparation from measured counters.\", \"evidence\": [ \"docs/verifications/WO-043/VER-002.md: F2–F5\", \"packages/compiler/src/harness.t",
           "missing": false
         }
       ],

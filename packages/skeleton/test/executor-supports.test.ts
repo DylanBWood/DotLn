@@ -10,10 +10,10 @@ import {
 } from "@dotln/compiler";
 import {
   contributorConfiguredProgram,
+  defaultContributorSupportIds,
   contributorLoadout,
   contributorProfiles,
   contributorProgram,
-  contributorRoles,
   contributorRolesFor,
   contributorWithSupports,
 } from "../src/loadouts/contributor.js";
@@ -25,6 +25,8 @@ import {
   executorSupportIds,
   executorSupports,
 } from "../src/loadouts/executor-supports.js";
+import { processCost } from "../src/loadouts/process-cost.js";
+import { goalAlignment } from "../src/loadouts/goal-alignment.js";
 import { personalFeedback } from "../src/loadouts/feedback.js";
 
 const environment = {
@@ -84,7 +86,13 @@ test("WO-042 atomic support switches compose independently and removal restores 
     );
     assert.ok(procedure[0]!.includes("read-only command"));
     assert.ok(procedure[0]!.includes("stop"));
-    for (const role of contributorRoles.filter(
+    const firstSubjectRead = procedure.indexOf("Read: `@work-order`");
+    for (const id of ids)
+      assert.ok(
+        procedure.indexOf(text(id)) < firstSubjectRead,
+        `${id} is an entry duty`,
+      );
+    for (const role of contributorProgram([]).roles.filter(
       (role) => role.name !== "executor",
     ))
       assert.deepEqual(
@@ -113,7 +121,7 @@ test("WO-042 atomic support switches compose independently and removal restores 
   assert.equal(contributorWithSupports([]), contributorLoadout);
   assert.deepEqual(
     contributorProgram(),
-    contributorProgram(defaultExecutorSupportIds),
+    contributorProgram(defaultContributorSupportIds),
   );
   assert.deepEqual(contributorConfiguredProgram(), contributorProgram());
   assert.deepEqual(executorSupportIds(), defaultExecutorSupportIds);
@@ -131,14 +139,152 @@ test("WO-042 atomic support switches compose independently and removal restores 
   );
   assert.equal(
     semanticHash(
-      contributorConfiguredProgram(
-        Object.fromEntries(
+      contributorConfiguredProgram({
+        ...Object.fromEntries(
           Object.keys(executorSupportDefaults).map((id) => [id, false]),
         ),
-      ).loadout,
+        "process-cost": false,
+        "goal-alignment": false,
+      }).loadout,
     ),
     "fnv1a64:06245f5c581212f1",
   );
+});
+
+test("Process Cost is one compiled support projected once into every Contributor role", () => {
+  const program = contributorProgram();
+  const off = contributorConfiguredProgram({ "process-cost": false });
+  const fragment = processCost.emissions.flatMap((emission) =>
+    emission.kind === "prompt-fragment" ? [emission.text] : [],
+  )[0]!;
+  assert.equal(
+    program.loadout.componentManifest.filter(
+      (entry) => entry.componentId === "process-cost",
+    ).length,
+    1,
+  );
+  assert.deepEqual(
+    program.loadout.authorityEnvelope,
+    off.loadout.authorityEnvelope,
+  );
+  assert.deepEqual(program.loadout.workOrder, off.loadout.workOrder);
+  assert.ok(!off.loadout.promptFragments.includes(fragment));
+  assert.ok(off.loadout.promptFragments.includes(text("adjacent-repair")));
+  const goal = goalAlignment.emissions.flatMap((emission) =>
+    emission.kind === "prompt-fragment" ? [emission.text] : [],
+  )[0]!;
+  const withoutGoal = contributorConfiguredProgram({ "goal-alignment": false });
+  for (const target of [program, off, withoutGoal, contributorProgram([])])
+    for (const role of target.roles) {
+      assert.ok(
+        role.procedure.some((line) => line.includes("`scope expand:`")),
+      );
+      assert.ok(
+        role.procedure.some((line) => line.includes("`conversation only:`")),
+      );
+    }
+  for (const role of program.roles) {
+    assert.equal(
+      role.procedure.filter((line) => line === fragment).length,
+      1,
+      role.name,
+    );
+    assert.equal(
+      off.roles
+        .find((row) => row.name === role.name)!
+        .procedure.includes(fragment),
+      false,
+    );
+    assert.equal(role.procedure.filter((line) => line === goal).length, 1);
+    assert.equal(
+      withoutGoal.roles
+        .find((row) => row.name === role.name)!
+        .procedure.includes(goal),
+      false,
+    );
+    assert.ok(
+      withoutGoal.roles
+        .find((row) => row.name === role.name)!
+        .procedure.includes(fragment),
+    );
+  }
+  for (const profile of contributorProfiles) {
+    const target = {
+      ...profile,
+      runtime: {
+        ...profile.runtime,
+        files: [
+          "packages/compiler/dist/src/feedback.js",
+          "packages/skeleton/dist/src/feedback-boundary.js",
+          "packages/skeleton/dist/src/feedback-source-comments.js",
+          "packages/skeleton/dist/src/harness-host.js",
+          "packages/skeleton/dist/src/reactor.js",
+        ].map((path) => ({ path, hash: "fnv1a64:0000000000000000" })),
+      },
+    };
+    const bundle = lowerToHarness(
+      program,
+      personalFeedback(),
+      baselineEnvelope,
+      target,
+    );
+    for (const role of program.roles) {
+      const file = bundle.files.find((file) =>
+        file.path.endsWith(`dotln-${role.name}/SKILL.md`),
+      )!;
+      assert.ok(file.origin.ids.includes("process-cost"), role.name);
+      assert.ok(file.origin.ids.includes("goal-alignment"), role.name);
+      assert.ok(
+        file.origin.ids.includes("correctness-over-sycophancy"),
+        role.name,
+      );
+      assert.ok(
+        file.contents.includes(
+          "preserve disagreement as a failed or unsupported claim",
+        ),
+        role.name,
+      );
+      assert.equal(file.contents.split(fragment).length - 1, 1, role.name);
+      assert.equal(
+        file.contents.split("`scope expand:`").length - 1,
+        1,
+        role.name,
+      );
+      assert.equal(
+        file.contents.split("`conversation only:`").length - 1,
+        1,
+        role.name,
+      );
+      assert.ok(file.contents.includes("only explicit pause/stop interrupts"));
+      assert.ok(file.contents.includes("Neither appends an event"));
+    }
+    assert.ok(
+      !bundle.residue.items.some((item) => item.originId === "process-cost"),
+    );
+    for (const change of [
+      { roleNames: [] },
+      { roleNames: ["executor", "executor"] },
+      { roleNames: ["unknown"] },
+      { roleName: "executor" },
+    ]) {
+      const broken = {
+        ...program,
+        facets: program.facets.map((facet) =>
+          facet.facetId === "process-cost" ? { ...facet, ...change } : facet,
+        ),
+      };
+      assert.throws(
+        () =>
+          lowerToHarness(
+            broken as typeof program,
+            personalFeedback(),
+            baselineEnvelope,
+            target,
+          ),
+        /equipped prompt support/,
+      );
+    }
+  }
 });
 
 test("WO-042 installed role projection takes each support from compiled equipment", () => {

@@ -215,3 +215,110 @@ state.
 3. The 2026-09-08 graph seeds the migration; later planning passes maintain
    both the blocks and the graph, and the index is the projection readers
    trust.
+
+## Execution record
+
+### 2026-09-11 repair and operator expansion
+
+The operator dispatched `resume: fix` against VER-001 F1, then explicitly
+opened ideation for first-party `scope expand:` and `conversation only:`
+commands and required measured token usage for every future Codex and Claude
+session. A follow-up defines `conversation only:` as a side question that
+does not interrupt the current work order. These dispatches authorize the
+bounded expansion below; the original dependency obligations remain intact.
+
+- Restore the mixed roadmap section's publication status to `planned` and
+  refresh the affected edition lock, as required by VER-001 F1.
+- Document both command prefixes as first-party session instructions, preserve
+  ongoing work during side questions, and project the contract into the
+  Contributor's generated Codex and Claude instructions.
+- Require actual transcript/envelope token counters, attributable to the
+  current session and dispatch, before completion. Exercise both harness
+  formats, deduplication, wrong-session rejection and missing-counter refusal.
+  A collection error must be repaired, never converted to a successful
+  unmeasured handoff. Preserve privacy by retaining counters and provenance
+  rather than transcript content or private session identifiers.
+- This expansion permits bounded edits to the skeleton's Contributor,
+  harness host and usage collector, their lifecycle/meta adapters and tests;
+  it supersedes the original no-`packages/` fence only for those obligations.
+  Bump only the changed component with its compatibility impact. Existing
+  lifecycle event schemas, dependency meanings and publication authority stay
+  governed by the original order.
+
+The [breakout receipt](../evidence/WO-043/ideation-commands-and-usage.md) names
+the intake, promoted sources, review duties and validation. Independent
+re-verification must cover F1 and the expanded claims, including the actual
+Codex and Claude measurements; it is no longer limited to the publication row.
+
+### 2026-09-11 automatic executor support correction
+
+The operator reports that Adjacent Repair and Intent to Act appear only after
+being named explicitly. This authorizes a bounded repair of default executor
+entry and completion integration: move equipped support duties before subject
+work, project equipment and the current queue on ordinary `next`/`fix`, and
+refuse completion with unresolved queued/running items. Preserve opt-out
+composition, actor-attested chat/check-in evidence, and independent verification.
+Tests must enter with the ordinary dispatch rather than a support-name prompt,
+exercise pending-queue refusal and disposition, and preserve read-only status.
+This supplies mechanical entry and completion checks; it does not claim a
+model-independent guarantee that every adjacent defect will be recognized.
+
+### 2026-09-11 shared Process Cost support
+
+The operator accepts Process Cost as a first-class support equipped across
+executor/fixer, verifier, reviewer, planner, refuter and release-close. Extract
+the repeated role instruction into one compiled support and project its identity
+and fragment into each role in both harnesses. Preserve independent equipment
+switches and mandatory host measurement/completion evidence when the behavioral
+support is removed. The existing single-role harness projection needs an additive
+explicit role-set target; preserve the legacy single-role shape and reject
+empty, duplicate, unknown or ambiguous targets. This authorizes the bounded
+compiler adapter change and its patch bump to 0.9.1, alongside skeleton 0.15.1;
+application v0.17.1 and the other component versions remain assigned.
+
+The operator also asks when solutions are compared with the eight system traps,
+Naive Interventionism and NoOp. Record the current enforcement gap and this
+repair's concrete comparison in the decision receipt. Do not claim that five
+meter signals constitute an all-eight causal evaluator, or that proposed
+counterweight supports are already equipped across roles.
+
+### 2026-09-11 goal alignment in every phase
+
+The operator requires every stage to understand DotLn's goal and purpose and
+judge decisions by mission and critical-path progress. Equip a separate shared
+Goal Alignment support through the same explicit role-set adapter. Source its
+scoped goal card from product 00's mission, the current critical-path plan and
+the selected order. Include all eight trap lenses, Naive Interventionism and
+NoOp in material-decision comparison; retain reasons in existing phase evidence
+and revisit them when evidence or scope changes. Tests cover both harnesses,
+all six roles and independent removal. This instruction-level judgment duty
+does not claim deterministic observation of internal reasoning or authorize a
+new scheduler, a broader model episode or a causal trap detector.
+
+### 2026-09-11 current-evidence selection and accuracy correction
+
+The operator challenges repeated current work-order literals and requires
+accuracy over agreement across all phases. Centralize the current authority,
+artifact, verification and feedback selections in one manifest and resolver,
+including the console consumer. Preserve independently fixed historical
+fixtures and the original command inventory. Selection does not follow the
+active order and does not bless stale evidence. This necessary console change
+bumps console to `0.1.4`; the earlier component assignments otherwise hold.
+
+Add the locally observed Claude `2.1.268` to the existing restricted transport
+profile so the operator-authorized independent feedback audit can run. No
+changes to tool authority, feedback policy, result schema or budget are included.
+Correctness over Sycophancy already reaches every generated role; clarify its
+application to operator and agent premises in the goal card and preserve that
+coverage in the shared-role test. D012–D013 record evidence and alternatives.
+
+### 2026-09-11 VER-002 repair
+
+The operator's `resume: fix` dispatch selects F2–F5. Project the prefix contract
+into every generated Contributor role target, restore the entire hand-written
+floor's baseline wording, correct the cold-start table, and reconcile the
+completed executor token windows from their actual source. Preserve the saved
+loadout identity and compact only generated release-close instructions to meet
+the existing context ceiling. D014 and the [repair receipt](../evidence/WO-043/repair-002.md)
+record the correction and evidence. Application and component release assignments
+remain unchanged; independent re-verification still owns the verdict.

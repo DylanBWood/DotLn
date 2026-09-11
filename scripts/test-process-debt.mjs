@@ -48,10 +48,17 @@ import {
   trapRows,
 } from "./lib/meta.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
+import { installBeaconFixture } from "./test-beacon-fixture.mjs";
 import { prepareHarnessEvidence } from "./lib/evidence-preparation.mjs";
 import { main as workOrders } from "./work-orders.mjs";
 import { probeHarness, discoverHarness } from "./discover.mjs";
-import { usageObservation } from "../packages/skeleton/src/usage-observation.mjs";
+import {
+  collectSessionUsage,
+  recordUsageObservation,
+  usageObservation,
+  usageSessionKey,
+  usageRecordIdentity,
+} from "../packages/skeleton/src/usage-observation.mjs";
 import {
   harnessInstallation,
   emitHarness,
@@ -376,6 +383,16 @@ test("session outputs include only two observed edits; generated and oversized f
 
 test("all four completion actions demand full evidence and current reads while Stop advises and releases", async (t) => {
   const root = repo(t, { runtime: true });
+  const oldHome = process.env.CODEX_HOME,
+    oldThread = process.env.CODEX_THREAD_ID;
+  process.env.CODEX_HOME = join(root, ".runtime/codex");
+  process.env.CODEX_THREAD_ID = "fixture-usage";
+  t.after(() => {
+    if (oldHome === undefined) delete process.env.CODEX_HOME;
+    else process.env.CODEX_HOME = oldHome;
+    if (oldThread === undefined) delete process.env.CODEX_THREAD_ID;
+    else process.env.CODEX_THREAD_ID = oldThread;
+  });
   emitHarness(root);
   const actions = [
     ["implementation-ready", "executor"],
@@ -403,6 +420,39 @@ test("all four completion actions demand full evidence and current reads while S
     deliveredRoles.add(role);
     const delivered = readHarnessOutput(root, "own.txt", 0, 8192);
     observeHarnessDelivery(root, role, json(delivered));
+    if (action === "implementation-ready")
+      await assert.rejects(
+        requireLifecycleEvidence(root, action, "pass", "WO-999"),
+        /Token measurement/,
+      );
+    const timestamp = new Date().toISOString();
+    write(
+      root,
+      ".runtime/codex/sessions/fixture-usage.jsonl",
+      [
+        {
+          type: "session_meta",
+          timestamp,
+          payload: { id: "fixture-usage", cwd: root },
+        },
+        {
+          type: "event_msg",
+          timestamp,
+          payload: {
+            type: "token_count",
+            info: {
+              total_token_usage: {
+                input_tokens: 100,
+                output_tokens: 20,
+                total_tokens: 120,
+              },
+            },
+          },
+        },
+      ]
+        .map(JSON.stringify)
+        .join("\n") + "\n",
+    );
     assert.equal(
       (await requireLifecycleEvidence(root, action, "pass", "WO-999"))
         .readCount,
@@ -476,6 +526,16 @@ test("attribution settings and all agent session forms are checked", (t) => {
 
 test("failed verification and review validate oversized documents, generated index and report without requiring green code", async (t) => {
   const root = repo(t, { runtime: true });
+  const oldHome = process.env.CODEX_HOME,
+    oldThread = process.env.CODEX_THREAD_ID;
+  process.env.CODEX_HOME = join(root, ".runtime/codex");
+  process.env.CODEX_THREAD_ID = "failed-verdict-usage";
+  t.after(() => {
+    if (oldHome === undefined) delete process.env.CODEX_HOME;
+    else process.env.CODEX_HOME = oldHome;
+    if (oldThread === undefined) delete process.env.CODEX_THREAD_ID;
+    else process.env.CODEX_THREAD_ID = oldThread;
+  });
   write(
     root,
     ".gitattributes",
@@ -494,6 +554,34 @@ test("failed verification and review validate oversized documents, generated ind
       "docs/product/03-architecture.md",
       "report.md",
     ]);
+  const timestamp = new Date().toISOString();
+  write(
+    root,
+    ".runtime/codex/sessions/failed-verdict-usage.jsonl",
+    [
+      {
+        type: "session_meta",
+        timestamp,
+        payload: { id: "failed-verdict-usage", cwd: root },
+      },
+      {
+        type: "event_msg",
+        timestamp,
+        payload: {
+          type: "token_count",
+          info: {
+            total_token_usage: {
+              input_tokens: 100,
+              output_tokens: 20,
+              total_tokens: 120,
+            },
+          },
+        },
+      },
+    ]
+      .map(JSON.stringify)
+      .join("\n") + "\n",
+  );
   const refuses = async (pattern = /Output not read or checked/) => {
     for (const [action] of roles)
       await assert.rejects(
@@ -2999,4 +3087,446 @@ test("dist publication replaces whole files, removes stale outputs and refuses s
     readFileSync(join(destination, "src/main.js"), "utf8"),
     "new complete module\n",
   );
+});
+
+test("current-session token collection measures both harnesses and refuses missing, stale or foreign counters", async (t) => {
+  const root = repo(t);
+  const codexDirectory = join(root, ".runtime/codex"),
+    claudeDirectory = join(root, ".runtime/claude");
+  const since = "2026-09-11T10:00:30Z";
+  const codex = (id, cwd = root) => [
+    {
+      type: "session_meta",
+      timestamp: "2026-09-11T10:00:00Z",
+      payload: { id, cwd },
+    },
+    {
+      type: "event_msg",
+      timestamp: "2026-09-11T10:00:00Z",
+      payload: {
+        type: "token_count",
+        info: {
+          total_token_usage: {
+            input_tokens: 100,
+            cached_input_tokens: 80,
+            output_tokens: 10,
+            total_tokens: 110,
+          },
+        },
+      },
+    },
+    {
+      type: "event_msg",
+      timestamp: "2026-09-11T10:01:00Z",
+      payload: {
+        type: "token_count",
+        info: {
+          total_token_usage: {
+            input_tokens: 500,
+            cached_input_tokens: 380,
+            output_tokens: 30,
+            total_tokens: 530,
+          },
+        },
+      },
+    },
+  ];
+  const put = (path, rows) =>
+    write(root, path, rows.map(JSON.stringify).join("\n") + "\n");
+  put(".runtime/codex/current-codex.jsonl", codex("current-codex"));
+  put(".runtime/codex/earlier-codex.jsonl", codex("earlier-codex"));
+  const options = {
+    codexDirectory,
+    claudeDirectory,
+    since,
+    env: {},
+    sessionKey: usageSessionKey("current-codex"),
+  };
+  const observed = collectSessionUsage(root, options);
+  assert.equal(observed.usage.totalTokens, 420);
+  assert.equal(observed.usage.cachedInputTokens, 300);
+  assert.equal(observed.scope, "dispatch");
+  assert.equal(observed.source, "codex-transcript-counter");
+  assert.throws(
+    () =>
+      collectSessionUsage(root, {
+        ...options,
+        transcriptPath: join(codexDirectory, "earlier-codex.jsonl"),
+      }),
+    /exactly one transcript/,
+  );
+  assert.throws(
+    () =>
+      collectSessionUsage(root, { ...options, since: "2026-09-11T10:02:00Z" }),
+    /Token measurement required/,
+  );
+  assert.throws(
+    () => collectSessionUsage(root, { ...options, sessionKey: undefined }),
+    /session identity/,
+  );
+  put(
+    ".runtime/codex/current-codex.jsonl",
+    codex("current-codex", dirname(root)),
+  );
+  assert.throws(
+    () => collectSessionUsage(root, options),
+    /exactly one transcript/,
+  );
+  put(".runtime/codex/current-codex.jsonl", codex("current-codex").slice(0, 1));
+  assert.throws(
+    () => collectSessionUsage(root, options),
+    /Token measurement required/,
+  );
+  assert.throws(
+    () =>
+      recordUsageObservation(root, {
+        workOrder: "WO-999",
+        role: "executor",
+        observation: usageObservation([]),
+      }),
+    /Token measurement required/,
+  );
+  assert.equal(
+    existsSync(join(root, "docs/control/local/process/usage.jsonl")),
+    false,
+  );
+
+  const message = (id, output, timestamp = "2026-09-11T10:01:00Z") => ({
+    type: "assistant",
+    timestamp,
+    cwd: root,
+    sessionId: "current-claude",
+    message: {
+      id,
+      content: [{ type: "text", text: "PRIVATE_TRANSCRIPT_TEXT" }],
+      usage: {
+        input_tokens: 10,
+        output_tokens: output,
+        cache_read_input_tokens: 30,
+        cache_creation_input_tokens: 5,
+      },
+    },
+  });
+  put(".runtime/claude/current-claude.jsonl", [
+    message("old-message", 200, "2026-09-11T10:00:00Z"),
+    message("same-message", 1),
+    message("same-message", 2),
+    message("second-message", 3),
+  ]);
+  const claude = collectSessionUsage(root, {
+    ...options,
+    sessionKey: usageSessionKey("current-claude"),
+  });
+  assert.equal(claude.usage.totalTokens, 95);
+  assert.equal(claude.usage.inputTokens, 20);
+  assert.equal(claude.usage.cachedInputTokens, 60);
+  assert.equal(claude.usage.cacheWriteInputTokens, 10);
+  assert.equal(claude.source, "claude-transcript-message-usage");
+  assert.ok(!JSON.stringify(claude).includes("PRIVATE_TRANSCRIPT_TEXT"));
+  assert.ok(!JSON.stringify(claude).includes("current-claude"));
+  for (const total of [
+    claude,
+    { ...claude, usage: { ...claude.usage, totalTokens: 100 } },
+  ])
+    recordUsageObservation(root, {
+      workOrder: "WO-999",
+      role: "executor",
+      startedAt: since,
+      sessionKey: usageSessionKey("current-claude"),
+      observation: total,
+    });
+  const order = (await collectMeta(root)).orders.find(
+    (row) => row.workOrder === "WO-999",
+  );
+  assert.equal(order.usage.length, 1);
+  assert.equal(order.metrics.tokens, 100);
+  assert.ok(
+    !JSON.stringify(order.usage).includes(usageSessionKey("current-claude")),
+  );
+});
+
+test("conversation-only questions and scope additions preserve the running lifecycle session", async (t) => {
+  const root = repo(t, { runtime: true });
+  emitHarness(root);
+  const policy = config(root, "session");
+  await evaluateHarnessHook(
+    policy,
+    input(root, "UserPromptSubmit", "side-question", {
+      prompt: "resume: next",
+    }),
+    root,
+    feedbackBoundary,
+  );
+  const before = state(root, "side-question");
+  for (const prompt of [
+    "conversation only: why is this check needed?",
+    "scope expand: add the stated check",
+  ])
+    await evaluateHarnessHook(
+      policy,
+      input(root, "UserPromptSubmit", "side-question", { prompt }),
+      root,
+      feedbackBoundary,
+    );
+  const after = state(root, "side-question");
+  for (const key of [
+    "role",
+    "workOrder",
+    "expectedEvent",
+    "startedAt",
+    "startingEventCount",
+  ])
+    assert.equal(after[key], before[key], key);
+  assert.equal(after.role, "executor");
+  const transcript = join(root, ".runtime/side-question.jsonl");
+  write(
+    root,
+    ".runtime/side-question.jsonl",
+    JSON.stringify({
+      type: "assistant",
+      timestamp: new Date().toISOString(),
+      cwd: root,
+      sessionId: "side-question",
+      message: {
+        id: "message-one",
+        usage: {
+          input_tokens: 10,
+          output_tokens: 5,
+          cache_read_input_tokens: 20,
+          cache_creation_input_tokens: 30,
+        },
+      },
+    }) + "\n",
+  );
+  await evaluateHarnessHook(
+    config(root, "finish"),
+    input(root, "Stop", "side-question", { transcript_path: transcript }),
+    root,
+    feedbackBoundary,
+  );
+  const rows = readFileSync(
+    join(root, "docs/control/local/process/usage.jsonl"),
+    "utf8",
+  )
+    .trim()
+    .split("\n")
+    .map(JSON.parse);
+  assert.equal(rows.at(-1).observation.usage.totalTokens, 65);
+  assert.equal(
+    rows.at(-1).observation.source,
+    "claude-transcript-message-usage",
+  );
+});
+
+test("bare executor next/fix project installed defaults and completion rejects unfinished adjacent work", async (t) => {
+  const root = repo(t, { runtime: true });
+  cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  installBeaconFixture(root);
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n\n<!-- dotln-dependencies:start -->\n[]\n<!-- dotln-dependencies:end -->\n",
+  );
+  const call = (...args) =>
+    spawnSync(process.execPath, [join(root, "scripts/resume.mjs"), ...args], {
+      cwd: root,
+      encoding: "utf8",
+    });
+  emitHarness(root);
+  const next = call("next");
+  assert.equal(next.status, 0, next.stderr);
+  assert.match(next.stdout, /Adjacent Repair is equipped/);
+  assert.match(next.stdout, /Intent to Act is equipped.*'I intend to'/);
+  assert.match(next.stdout, /running none; next none/);
+  const before = snapshot(root);
+  const status = call("status", "--json");
+  assert.equal(status.status, 0, status.stderr);
+  assert.doesNotMatch(status.stdout, /Executor entry duties/);
+  assert.deepEqual(snapshot(root), before, "status remains read-only");
+  emitHarness(root, {
+    supports: { "adjacent-repair": false, "communication-intent": false },
+  });
+  const off = call("next");
+  assert.equal(off.status, 0, off.stderr);
+  assert.doesNotMatch(
+    off.stdout,
+    /Adjacent Repair is equipped|Intent to Act is equipped/,
+  );
+  assert.match(off.stdout, /Follow-up Queue is equipped/);
+  emitHarness(root);
+  const apply = (action) =>
+    applyAdjacentCommand(root, "WO-999", {
+      expectedRevision: readAdjacentQueue(root, "WO-999").revision,
+      actor: "executor",
+      action,
+    });
+  const item = apply({
+    kind: "queue",
+    item: {
+      summary: "Bounded adjacent fixture",
+      cause: "Observed defect",
+      fix: "Correct named behavior",
+      paths: ["own.txt"],
+      checks: ["fixture check"],
+      priority: 0,
+    },
+  }).items[0];
+  assert.match(
+    call("next").stdout,
+    /next adjacent-0001: Bounded adjacent fixture/,
+  );
+  const segment = "docs/control/orders/WO-999.jsonl";
+  const events = [
+    { type: "ImplementationReady" },
+    {
+      type: "VerificationRequested",
+      verificationId: "VER-001",
+      reportPath: "docs/verifications/WO-999/VER-001.md",
+    },
+    {
+      type: "VerificationCompleted",
+      verificationId: "VER-001",
+      reportPath: "docs/verifications/WO-999/VER-001.md",
+      verdict: "fail",
+    },
+  ].map((event) => ({
+    schemaVersion: 1,
+    workOrderId: "WO-999",
+    recordedAt: "2026-09-09T00:01:00.000Z",
+    ...event,
+  }));
+  write(
+    root,
+    segment,
+    readFileSync(join(root, segment), "utf8") +
+      events.map(JSON.stringify).join("\n") +
+      "\n",
+  );
+  const fix = call("fix");
+  assert.equal(fix.status, 0, fix.stderr);
+  assert.match(fix.stdout, /Repair .*Adjacent Repair is equipped/s);
+  assert.match(fix.stdout, /Intent to Act is equipped/);
+  assert.match(fix.stdout, /next adjacent-0001: Bounded adjacent fixture/);
+  for (const action of ["implementation-ready", "repair-complete"])
+    await assert.rejects(
+      requireLifecycleEvidence(root, action, undefined, "WO-999"),
+      /unresolved adjacent work.*queued/,
+    );
+  apply({
+    kind: "announce",
+    itemId: item.id,
+    itemRevision: 1,
+    level: "intent",
+    statement: "I intend to fix the bounded fixture next.",
+  });
+  apply({
+    kind: "check-in",
+    channel: "message-boundary",
+    observation: "Synthetic actor-attested steering boundary",
+  });
+  apply({ kind: "start", itemId: item.id, itemRevision: 1 });
+  assert.throws(
+    () => requirePlanningHandoffs(root, "WO-999"),
+    /unresolved adjacent work.*running/,
+  );
+  apply({
+    kind: "dispose",
+    itemId: item.id,
+    itemRevision: 1,
+    status: "known-issue",
+    reason: "Explicit fixture disposition",
+    target: null,
+  });
+  assert.deepEqual(requirePlanningHandoffs(root, "WO-999"), []);
+});
+
+test("usage measurement is available on main only for the calling role session", async (t) => {
+  const root = repo(t, { runtime: true });
+  emitHarness(root);
+  git(root, "branch", "-m", "main");
+  beginHarnessSession(root, "meter-session", "release-close");
+  const policy = config(root, "concurrent-work-requires-worktrees");
+  const invoke = (command) =>
+    evaluateHarnessHook(
+      policy,
+      input(root, "PreToolUse", "meter-session", {
+        tool_name: "Bash",
+        tool_input: { command },
+      }),
+      root,
+      feedbackBoundary,
+    );
+  const allowed = await invoke("node scripts/harness.mjs usage meter-session");
+  assert.notEqual(allowed.hookSpecificOutput?.permissionDecision, "deny");
+  assert.equal(
+    existsSync(join(root, "docs/control/local/harness/writer")),
+    false,
+  );
+  for (const command of [
+    "node scripts/harness.mjs usage other-session",
+    "node scripts/harness.mjs usage meter-session && touch own.txt",
+    "node scripts/harness.mjs usage meter-session --extra",
+  ])
+    assert.equal(
+      (await invoke(command)).hookSpecificOutput?.permissionDecision,
+      "deny",
+      command,
+    );
+});
+
+test("source-reconciled overlapping usage replaces aggregation without deleting observations", async (t) => {
+  const root = repo(t);
+  const observation = usageObservation(
+    [
+      {
+        type: "result",
+        timestamp: "2026-09-11T01:01:00Z",
+        usage: {
+          input_tokens: 30,
+          output_tokens: 10,
+          cache_read_input_tokens: 0,
+          cache_creation_input_tokens: 0,
+        },
+      },
+    ],
+    { since: "2026-09-11T01:00:00Z" },
+  );
+  const base = { workOrder: "WO-999", role: "executor", observation };
+  for (const startedAt of ["2026-09-11T01:00:00Z", "2026-09-11T01:00:02Z"])
+    recordUsageObservation(root, { ...base, startedAt });
+  const path = join(root, "docs/control/local/process/usage.jsonl");
+  const before = readFileSync(path, "utf8");
+  const refs = before
+    .trim()
+    .split("\n")
+    .map(JSON.parse)
+    .map(usageRecordIdentity);
+  const replacement = {
+    ...base,
+    startedAt: "2026-09-11T01:00:00Z",
+    sessionKey: usageSessionKey("source-verified-session"),
+    supersedes: refs,
+  };
+  for (const wrong of [
+    { supersedes: ["0".repeat(64)] },
+    { role: "verifier" },
+    { startedAt: "2026-09-11T01:00:01Z" },
+  ])
+    assert.throws(
+      () => recordUsageObservation(root, { ...replacement, ...wrong }),
+      /Usage reconciliation/,
+    );
+  assert.equal(readFileSync(path, "utf8"), before);
+  recordUsageObservation(root, replacement);
+  assert.ok(readFileSync(path, "utf8").startsWith(before));
+  const order = (await collectMeta(root)).orders.find(
+    (row) => row.workOrder === "WO-999",
+  );
+  assert.equal(order.metrics.tokens, 40);
+  assert.equal(order.usage.length, 1);
+  assert.equal(order.usage[0].supersedes, undefined);
+  assert.equal(order.usage[0].sessionKey, undefined);
 });

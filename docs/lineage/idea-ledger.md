@@ -6489,3 +6489,68 @@ existing contract; no runtime source, contract, or locked boundary changes.
     and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with a bounded
     retention/retrieval design and evidence that useful reuse and avoided
     repeated investigations justify recording, context and review cost.
+
+
+## 2026-09-11 — First-party session commands and mandatory token measurement (WO-043)
+
+- **Equip cost and goal comparison across every phase** `specified`
+  - The operator accepts Process Cost as a first-class support across the six
+    Contributor roles and asks when solutions are assessed against the eight
+    system traps, Naive Interventionism and NoOp. A final direction requires
+    every phase to understand DotLn's purpose and judge decisions by goal and
+    critical-path progress. Process Cost and separate Goal Alignment support
+    identities now carry those duties through shared role projection.
+  - The product 07 goal card sources the operator-flow mission and current
+    runtime path, requires comparison before material choices, and retains
+    rationale in existing phase evidence, revisiting changed scope/evidence.
+    Deterministic projection is distinct from judgment; generalized trap and
+    counterweight mechanics remain candidate work. No new scheduler or
+    approval loop is selected.
+  - Provenance: the same intake/receipt below, WO-043's execution record and
+    D009/D010. Reopen when a choice cannot name a supported mission/path
+    contribution or observed process overhead outweighs its benefit.
+
+- **Exercise equipped executor supports without operator coaching** `specified`
+  - The operator reports that Adjacent Repair and Intent to Act appear only
+    after being named. WO-043's dated expansion addresses late instruction
+    placement, ordinary dispatch visibility and unresolved-queue completion.
+    It retains independent switches, actual-chat attestation and bounded
+    authority; it does not claim universal model recognition of defects.
+  - Provenance: the same intake batch and breakout receipt below, with product
+    05's earlier WO-126 observation. Reopen with a fresh-session failure or an
+    ablation that identifies a smaller effective mechanism.
+
+- **Prioritize the adaptive Tinkerer in near-term planning** `candidate`
+  - The operator recalls experiment selection becoming more likely as time
+    passes without an application improvement, then excludes implementation
+    here if it remains proposed. Product 05 already specifies that candidate;
+    existing `FUP-fc4158d3207e495d` carries the request for consideration soon.
+    No new order, selected pressure curve or implementation is claimed.
+  - Provenance: the same source batch and receipt. Reopen in the next planning
+    pass to choose a bounded experiment and allocation with measured cost.
+
+- **Recognize scope additions and side questions as commands** `specified`
+  - The operator regularly uses `scope expand:` and `conversation only:` and
+    asks for first-party support. A follow-up defines the latter as a question
+    answered without interrupting the current work-order process. Product 07
+    records the command contract: the former adds the stated bounded work and
+    its receipt; the latter changes no scope, phase or obligation and needs no
+    new resume confirmation. Both preserve existing effect boundaries.
+  - Provenance: `docs/intake/notes/WO-043-expanded-ideation-2026-09-11.md` and
+    `docs/evidence/WO-043/ideation-commands-and-usage.md`. The raw capture is
+    provisional in the worktree and must reconcile to main at closeout.
+    Reopen if the operator changes either command's meaning or a concrete
+    interaction exposes ambiguity; a quoted command is not its invocation.
+
+- **Require measured Codex and Claude tokens before handoff** `specified`
+  - The operator rejects treating session tokens as absent or untracked. Both
+    harnesses already record counters; optional collection and swallowed errors
+    must give way to actual current-session measurements. Retain numeric totals,
+    source, time and scope, and repair collection errors before completion.
+    Cached-input semantics and duplicate messages require source-aware counting;
+    transcript text and raw identities remain private. Historical gaps and
+    unreported prices are not permission to omit new session token counts.
+  - Provenance: the same raw batch and receipt; product 07 and WO-043's
+    execution record carry the new duty and bounded implementation authority.
+    Reopen the collector when either harness changes its recorded format; keep
+    the measurement obligation while repairing its adapter.

@@ -903,6 +903,19 @@ test, not the number of sentences in an incident account.
 
 ### Built-in modifier switches
 
+WO-043's 2026-09-11 operator expansion adds two shared Contributor supports,
+equipped by default for executor/fixer, verifier, reviewer, planner, refuter
+and release-close: **Process Cost** measures and compares observed cost against
+equivalent outcomes; **Goal Alignment** relates material choices to the mission
+and critical path, with all-eight-trap, intervention and NoOp comparisons.
+Their identity and fragments project into each role from one compiled support
+per behavior. The additive harness adapter accepts an explicit role set while
+retaining the existing single-role target. Removing one behavioral support
+does not remove the other, the locked floor, host token collection or lifecycle
+evidence. The [goal card](07-execution-guide.md#goal-aligned-decisions) defines
+timing, scope and evidence destinations; general causal detectors and proposed
+counterweight mechanics remain outside this bounded instruction-level policy.
+
 The operator extended this model in the same ideation: every document-producing
 behavior should have a corresponding support identity. Some are ubiquitous;
 others are optional equipment that can be turned off when documentation grows
@@ -938,7 +951,8 @@ Do not encode that open surface as an untyped recursive instruction graph.
 
 ### Intent queue and communication levels
 
-`resume: next` starts the selected work order normally. Once the executor finds
+`resume: next` starts the selected work order normally. The equipped Intent to
+Act support announces the concrete initial action and scope at entry. Once the executor finds
 an adjacent bug and knows a concrete fix, Follow-up Queue records the diagnosis,
 scope, required checks and priority as a next item. Intent to Act tells the
 operator in chat what the executor intends to do. The current task is completed
@@ -987,6 +1001,18 @@ context cost and operator interventions. The separate chat-intent issue may be
 scheduled later under the operator's explicit direction. WO-126 claims no fix
 from adding another instruction or status line.
 
+The operator reopened the automatic-activation defect during WO-043 repair on
+2026-09-11. The bounded correction puts equipped duties before subject reads,
+projects installed support identities and the current queue on ordinary
+`resume: next` and `resume: fix`, and refuses implementation-ready or
+repair-complete while a queue item is queued or running. A completed item or
+an explicit disposition is required; deferrals still need a live public FUP.
+Independent support removal and read-only status/times remain intact. These
+checks establish dispatch visibility and unresolved-work enforcement. Actual
+diagnosis and chat delivery retain their judgment and actor-attested boundaries;
+the broader fresh-session and ablation question above remains open. Source:
+[WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md).
+
 ### Orchestration and quality policies
 
 Ordinary harness options are equipment choices as well. The operator's
@@ -1022,6 +1048,15 @@ and capability-admission surface; hard refusal and fallback evidence must preced
 a claim that a runtime enforces them.
 
 ## Candidate — Tinkerer / Scientist
+
+**Near-term planning request, 2026-09-11:** the operator asks to prioritize this
+candidate soon, including its adaptive bad-luck protection based on time since
+the last demonstrated application improvement. It remains unimplemented and
+unallocated. The operator explicitly excludes implementing it in the current
+WO-043 repair. Carry the request through existing `FUP-fc4158d3207e495d`; the next
+planning pass should select a bounded experiment and allocation, preserving the
+budget, evidence and reset distinctions below. Source: the
+[WO-043 breakout](../evidence/WO-043/ideation-commands-and-usage.md).
 
 Operator ideation during WO-126 proposes a support that biases a linked mechanic
 toward a small experiment on a relevant question, input, proposed answer or

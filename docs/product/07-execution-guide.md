@@ -11,14 +11,14 @@ marked compiler residue. Its role dispatch loads one generated skill by name.
 for Codex. Run canonical `resume status --json` to resolve each selector below;
 no skill carries phase state or grants authority.
 
-| Role                                                 | Required skill                         | All directed inputs, including later procedure                                                                                                                      |
-| ---------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Executor / repair (`next`, `fix`, `status`, `times`) | `@skills/dotln-executor/SKILL.md`      | Selected work order; its cited sections; relevant subject source, tests and current changed outputs; `package.json`; the named failure report when repairing        |
-| Verifier (`verify`)                                  | `@skills/dotln-verifier/SKILL.md`      | Selected order and cited sections; subject source, tests and current outputs; `package.json`; the prior verification reports needed for the findings                |
-| Reviewer (`final review`)                            | `@skills/dotln-reviewer/SKILL.md`      | Selected order and cited sections; complete subject and numbered verification sequence; `package.json`; 08 §PRs and commits; current review/PR/release-note outputs |
-| Release close                                        | `@skills/dotln-release-close/SKILL.md` | Selected order and cited sections; the canonical final review, PR body and release notes                                                                            |
-| Planner                                              | `@skills/dotln-planner/SKILL.md`       | Sequence file; this guide's planning and ideation sections; specifically addressed candidates and source lookups                                                    |
-| Refuter                                              | `@skills/dotln-refuter/SKILL.md`       | Canonical prompt from `npm run plan -- refute --direct`; no map, guide, ledger or earlier-receipt prerequisite                                                      |
+| Role                                                 | Required skill                         | All directed inputs, including later procedure                                                                                                                                                                                                 |
+| ---------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Executor / repair (`next`, `fix`, `status`, `times`) | `@skills/dotln-executor/SKILL.md`      | For `next`/`fix`: §Goal-aligned decisions; selected work order and cited sections; relevant source, tests and current authored outputs; `package.json`; named failure report for repair. `status`/`times` only report their read-only command. |
+| Verifier (`verify`)                                  | `@skills/dotln-verifier/SKILL.md`      | §Goal-aligned decisions; selected order and cited sections; subject source, tests and current outputs; `package.json`; prior verification reports needed for the findings                                                                      |
+| Reviewer (`final review`)                            | `@skills/dotln-reviewer/SKILL.md`      | §Goal-aligned decisions; selected order and cited sections; complete subject and numbered verification sequence; `package.json`; 08 §PRs and commits; current review/PR/release-note outputs                                                   |
+| Release close                                        | `@skills/dotln-release-close/SKILL.md` | §Goal-aligned decisions; selected order and cited sections; canonical final review, PR body and release notes                                                                                                                                  |
+| Planner                                              | `@skills/dotln-planner/SKILL.md`       | §Goal-aligned decisions; sequence file; this guide's planning and ideation sections; addressed candidates and source lookups                                                                                                                   |
+| Refuter                                              | `@skills/dotln-refuter/SKILL.md`       | §Goal-aligned decisions supplies purpose; the canonical prompt from `npm run plan -- refute --direct` is the sole subject evidence. No map, ledger or prior receipt is a subject preread.                                                      |
 
 The generated `Read:` and `Read[role]:` directives are binding throughout the
 procedure, not just before its first effect. Resolve `@work-order`, `@citations`,
@@ -36,6 +36,75 @@ not alter the cold-start comparison or require a new evidence edition. The
 historical [WO-039 measurement](../evidence/WO-039/harness-context.json) retains
 its original broader method.
 
+## Goal-aligned decisions
+
+The Contributor's purpose comes from [the vision](00-vision.md): DotLn is a
+local-first, model-agnostic compiler/runtime for human judgment. This personal
+implementation aims to improve operator flow by moving recurring supervision,
+coordination, recovery and verification into dependable machinery, while
+preserving correctness, authority, evidence, privacy and recoverability.
+
+The current [critical-path plan](../planning/critical-path-2026-09-08.md) targets
+the always-on runtime, its first real external source change and an independently
+verified source-to-deliverable loop. The [sequence](../planning/sequence.md) and
+selected work order determine current placement and authority. The mission is
+the outcome; the critical path is the dependency route to the next outcome.
+Useful prerequisite or risk-reduction work must name the blocked outcome it
+enables. Process activity, receipt volume and agent utilization are not progress
+by themselves. Goal alignment grants no authority to reorder or expand work.
+
+**All phases, operator direction 2026-09-11.** The default Contributor equips
+Goal Alignment and Process Cost for executor/fixer, verifier, reviewer, planner,
+refuter and release-close. Before selecting a material solution, record the
+goal and critical-path contribution, evidence of benefit, the NoOp baseline,
+and the risks of intervening in existing behavior. Compare all eight system
+traps below. Revisit that rationale when evidence or scope changes; verification
+and handoff compare observed outcomes with the promised benefit. Required legal
+or release actions retain their existing authority; NoOp is a considered
+alternative, not an ambient veto or permission to abandon authorized work.
+
+Accuracy takes priority over agreement in every phase. The already-equipped
+Correctness over Sycophancy rule applies to operator suggestions and the agent's
+own premises equally: challenge unsupported claims, distinguish observation
+from inference, state material uncertainty, and correct mistakes when evidence
+changes. A confident request or an earlier decision is not proof of correctness.
+Record material disagreement and its evidence in the same decision or phase
+receipt; do not manufacture dissent or seek approval for ordinary judgment.
+
+| Lens                                  | Decision question                                                                                         |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Policy resistance / fixes that fail   | Will local goals or guards undo one another?                                                              |
+| Tragedy of the commons                | Does the solution consume shared compute, context or operator attention without accounting for the total? |
+| Drift to low performance              | Does it improve an explicit outcome standard rather than normalize a worse baseline?                      |
+| Escalation                            | Will additional process provoke more process or workarounds?                                              |
+| Success to the successful             | Are credible alternatives excluded merely because the current mechanism already has investment?           |
+| Shifting the burden to the intervenor | Does the solution remove recurring operator rescue or depend on it?                                       |
+| Rule beating                          | Can the evidence pass without the intended behavior occurring?                                            |
+| Seeking the wrong goal                | Does it advance operator flow and the selected product outcome rather than a proxy?                       |
+
+Naive Interventionism adds the existing system's useful functions, affected
+consumers, second-order harm, reversibility and smallest useful probe. NoOp
+records what happens if nothing changes, why action or inaction wins, and the
+evidence that would reopen the choice. Scale detail to consequence: explain
+applicable risks and briefly group immaterial lenses with a reason; do not
+manufacture eight repetitive paragraphs for routine edits.
+
+Material choices and rationales go in existing phase evidence: per-order
+`docs/evidence/WO-NNN/decisions.md` and cited product sections for work-order
+decisions; planning dispositions/candidate records for planning choices; the
+independent report or refutation receipt for its judgment; retained closeout
+evidence for release decisions. The decisions index exposes per-order records.
+Reuse and link a current rationale until its assumptions change; do not create
+a parallel decision log or an extra approval ritual.
+
+The shared supports carry these duties and their compiled identity in both
+harnesses. They are instruction-level judgment, not proof that an agent applied
+every lens or a causal detector. The meter's five quantitative trap signals are
+separate. General Naive Interventionism, NoOp and adaptive Tinkerer mechanics
+retain their candidate scope; this bounded Contributor policy does not claim
+their generalized implementations. The [WO-043 receipt](../evidence/WO-043/ideation-commands-and-usage.md)
+records this promotion and its limits.
+
 ## Operator resume phrases — how you get dispatched
 
 The operator's entire instruction to you may be a single phrase of the form
@@ -48,6 +117,25 @@ the session adapter to the detailed contract below. Claude's generated prompt
 hook resolves the exact phrase and reiterates the selected order path; Codex
 uses the same floor dispatch with its project skill. Keep `npm run harness --
 check` green after changing the Contributor source and regenerating the bundle.
+
+**First-party session commands (operator direction, 2026-09-11).** These
+prefixes are part of the supported command vocabulary alongside `resume:`,
+`planning:` and `ideation:`. They do not create lifecycle events:
+
+| Operator says                   | Meaning                                                                                                                                                                                                                                                                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scope expand: <addition>`      | Authorize the stated addition to the current task. Preserve existing work and obligations, record the bounded scope expansion and its evidence/review duties, and continue under the existing effect boundaries. The prefix alone does not authorize publication, destructive effects or unrelated work.                  |
+| `conversation only: <question>` | Answer a side question briefly while continuing the active work order. The question changes no scope, phase or obligation, opens no ideation capture, and requires no repeat `resume:` instruction. Tools and changes already authorized by the work order continue. Only an explicit pause or stop interrupts that work. |
+
+Quoted examples of these prefixes are discussion, not a dispatch. A message
+actually prefixed `ideation:` still follows the ideation pipeline even when
+its subject is one of these commands. The contract is carried in the
+Contributor's generated instructions for both harnesses; this does not claim
+the separately deferred phrase-table generator in WO-088 is implemented.
+VER-002 F2–F4 corrected this placement on 2026-09-11: every generated role
+target carries the prefixes, including when optional supports are removed;
+the locked hand-written floor retains its original wording. The cold-start
+table includes the shared goal card and the refuter's separate subject boundary.
 
 1. Run `npm run resume --silent -- status --json`. The JSON names the active work order
    and its authoritative path, the current phase, latest verification artifact
@@ -830,6 +918,10 @@ claim evidence or releases it does not have.
   the prior check-in. Do not cancel an in-flight tool call to poll or wait
   indefinitely for approval. The current queue is observed with
   `npm run adjacent -- list`; its chat and channel observations are actor-attested.
+  Equipped duties run at entry, including the initial Intent to Act announcement.
+  Ordinary `next`/`fix` projects installed equipment and queue state without
+  requiring a named-support prompt. Completion refuses queued/running items;
+  complete them or record an explicit disposition, with a public FUP for deferrals.
 - **Release assignment is opt-out (operator default, 2026-09-04).** Prepare
   the classified next release and update its source claim unless the operator
   specifies no release. Complete a missing activation target under
@@ -1043,16 +1135,39 @@ claim evidence or releases it does not have.
   a gate against its purpose, optimizes a proxy, leans on the operator,
   sizes against the previous instance, or works around a rule is in one of
   them. Save observed runtime and token usage with their source in evidence;
-  missing values remain null in the data, never recurring unmeasured-cost
-  boilerplate in operator updates (operator correction, 2026-09-11;
+  never repeat unmeasured-cost boilerplate in operator updates (operator correction, 2026-09-11;
   [WO-127-D003](../evidence/WO-127/decisions.md#wo-127-d003)).
   `npm run meta` reports available observations and previous-order deltas
   for all six dispatch kinds; three consecutive worsening order deltas nominate
-  a trap for reopening. Missing observations stay unavailable. The fast gate
+  a trap for reopening. Historical gaps stay historical. The fast gate
   checks `docs/control/budgets.json`; token, dollar and PR-body ceilings remain
   unset under the operator's same-day direction to collect usage first.
   `release prepare` inserts the meter table into PR.md, and status prints one
   health line. The first WO-126 observation remains its immutable baseline.
+  The operator's later 2026-09-11 correction makes token collection mandatory:
+  both Codex and Claude record usable counters, so a new session must measure
+  them rather than report null or claim they are untracked. The explicit
+  adapter runs `node scripts/harness.mjs usage <session>` after session entry
+  and before handoff; Claude's Stop hook also reads its actual transcript.
+  The collector matches session identity and physical worktree, records numeric
+  totals with source, time and scope, and refuses absent or mismatched counters.
+  The four lifecycle completion actions recollect them before appending; a
+  missing measurement cannot produce a completed handoff. Planning, refutation
+  and release-close follow the same entry/handoff measurement duty through
+  their generated role instructions. Resolve a collection failure before
+  reporting completion. Do not substitute another session or invent zero.
+  Codex cached input is already included in its input count; Claude cache reads
+  and cache writes are added to uncached input and output. Duplicate Claude
+  message IDs count once. These totals are usage, not context-window occupancy
+  or a billing estimate. Transcript text, raw session IDs and paths stay local.
+  An unreported price may remain absent; that never excuses absent token counts.
+  VER-002 F5's 2026-09-11 correction replaces the partial implementation window
+  with its source-reproduced completion window through append-only reconciliation.
+  The two earlier executor handoffs total 40,706,766 tokens; retained post-handoff
+  readings bring those dispatches to 41,353,517. A meter snapshot must identify
+  its observation cutoff; refreshing it from partial rows does not establish
+  completed-dispatch usage. See the [reconciliation](../evidence/WO-043/usage-reconciliation-002.json).
+  See [WO-043's breakout receipt](../evidence/WO-043/ideation-commands-and-usage.md).
   The operator's later same-day ideation preserves
   [all eight system traps](05-pattern-library.md#candidate--all-eight-system-traps-as-a-design-lens)
   as a broader design lens, adding commons depletion, escalation and success to

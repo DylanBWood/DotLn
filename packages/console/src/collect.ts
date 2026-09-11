@@ -6,6 +6,7 @@ import { seiriEnvironment, type FeedbackUnit } from "@dotln/compiler";
 import { decodeLog } from "@dotln/kernel";
 import { projectWorkerStatus } from "@dotln/skeleton/dist/src/worker-status.js";
 import { projectAuditLog } from "@dotln/skeleton/dist/src/audit.js";
+import { currentEvidence } from "@dotln/skeleton/dist/src/evidence-editions.mjs";
 import type {
   BoardSources,
   DocumentSource,
@@ -15,16 +16,6 @@ import type {
 } from "./types.js";
 import { exportedLoadouts } from "./builds.js";
 import { array, at, available, object, string, unavailable } from "./values.js";
-
-/** The self-hosted feedback edition the board reads by default. The root
- * evidence command selects the same edition. A compiler package bump makes an
- * earlier edition historical: the skeleton refuses persisted compilation drift
- * when it replays that edition's verifier stream, so the two selections move
- * together, and the `selfhost` fixture case is re-pinned with them. */
-export const SELF_HOST_EDITION = "WO-126";
-export const SELF_HOST_REVISION = "002";
-export const selfHostEvidence = (name: string): string =>
-  `docs/evidence/${SELF_HOST_EDITION}/feedback-${SELF_HOST_REVISION}/${name}`;
 
 function attempt<T>(ref: string, read: () => T): Source<T> {
   try {
@@ -162,27 +153,33 @@ export async function collectSources(
       "Saved loadout exports could not be inspected",
     );
   }
+  const feedback = attempt("docs/evidence/current.json#feedback", () =>
+    currentEvidence(root, "feedback"),
+  );
+  const selfhostStores = ["audit", "verifier"].map((role): StoreSource => {
+    const id = `selfhost-${role}`;
+    if (feedback.status === "unavailable")
+      return storeFromLog(id, `Self-hosted ${role}`, feedback);
+    const name =
+      role === "audit" ? "selfhost-audit.jsonl" : "selfhost-verification.jsonl";
+    return storeFromLog(
+      id,
+      `${feedback.value.workOrder} self-hosted ${role === "audit" ? "executor" : "verifier"}`,
+      text(`${feedback.value.directory}/${name}`),
+    );
+  });
   const defaultStores = [
     [
       "wo009-demo",
       "WO-009 demonstration (recorded fixture)",
       "packages/console/fixtures/wo009.events.jsonl",
     ],
-    [
-      "selfhost-audit",
-      `${SELF_HOST_EDITION} self-hosted executor`,
-      selfHostEvidence("selfhost-audit.jsonl"),
-    ],
-    [
-      "selfhost-verifier",
-      `${SELF_HOST_EDITION} self-hosted verifier`,
-      selfHostEvidence("selfhost-verification.jsonl"),
-    ],
   ] as const;
   const stores = [
     ...defaultStores.map(([id, label, ref]) =>
       storeFromLog(id, label, text(ref)),
     ),
+    ...selfhostStores,
     ...requestedStores.map((directory, index) =>
       storeFromLog(
         `requested-${index + 1}`,
@@ -207,13 +204,16 @@ export async function collectSources(
       command("worktree.mjs", ["constellation"]),
     ),
     releases: attempt("release:list", () => command("release.mjs", ["list"])),
-    maturity: attempt(
-      selfHostEvidence("feedback.json"),
-      () =>
-        JSON.parse(
-          readFile(join(root, selfHostEvidence("feedback.json"))),
-        ) as unknown,
-    ),
+    maturity:
+      feedback.status === "unavailable"
+        ? feedback
+        : attempt(
+            `${feedback.value.directory}/feedback.json`,
+            () =>
+              JSON.parse(
+                readFile(join(root, feedback.value.directory, "feedback.json")),
+              ) as unknown,
+          ),
     workOrderIndex: text("docs/work-orders/README.md"),
     capabilities: text("docs/planning/capability-table.md"),
     publication: text("docs/publication/audience-status-index.md"),

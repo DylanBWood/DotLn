@@ -208,6 +208,7 @@ as a current blocked verdict.
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- | ----------- |
 | [Execution guide — for any model session working in this repo](../product/07-execution-guide.md#execution-guide--for-any-model-session-working-in-this-repo) | software-engineer                   | implemented |
 | [Read order for a cold start](../product/07-execution-guide.md#read-order-for-a-cold-start)                                                                  | software-engineer                   | implemented |
+| [Goal-aligned decisions](../product/07-execution-guide.md#goal-aligned-decisions)                                                                            | software-engineer                   | specified   |
 | [Operator resume phrases — how you get dispatched](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched)                         | software-engineer                   | implemented |
 | [Independent workflows and integration](../product/07-execution-guide.md#independent-workflows-and-integration)                                              | software-engineer                   | implemented |
 | [Operator-opened ideation mode](../product/07-execution-guide.md#operator-opened-ideation-mode)                                                              | software-engineer                   | specified   |
