@@ -36,6 +36,35 @@ model the Angular shell consumes).
 order edits the index generator and `packages/console`; WO-035 must not). A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-080",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-080.",
+    "by": "WO-080"
+  },
+  {
+    "workOrderId": "WO-081",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-081.",
+    "by": "WO-081"
+  },
+  {
+    "workOrderId": "WO-082",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-082.",
+    "by": "WO-082"
+  },
+  {
+    "workOrderId": "WO-083",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-083.",
+    "by": "WO-083"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 12-workstream-application.md in full,
 especially §One workstream across repositories, §What exists and what must be
 proved (the six demonstrations), and §Open product choices;

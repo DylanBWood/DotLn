@@ -27,6 +27,26 @@ derivation is bound to).
 (the verification and source-change slices' continuation), a new
 `repair.ts`, and product 02. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-054",
+    "relation": "hard",
+    "reason": "the finding shape and capsule the loop consumes"
+  },
+  {
+    "workOrderId": "WO-052",
+    "relation": "hard",
+    "reason": "the source-change host that executes the repair"
+  },
+  {
+    "workOrderId": "WO-042",
+    "relation": "hard",
+    "reason": "the effective envelope and the admitted grants the derivation is bound to"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 02-domain-model.md §Independent verification v1 (findings; re-verification from the original contract) and §Events and decisions (the
 executable program subset: Sequence, Guard, Await); 03-architecture.md
 §Session lifecycle & resilience; `packages/kernel/src/core.ts`

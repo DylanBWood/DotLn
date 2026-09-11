@@ -22,6 +22,22 @@ satisfied at `v0.5.2`).
 the evidence READMEs that receive them. A recommendation, not a dependency
 token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-043",
+    "relation": "hard",
+    "reason": "supersession and deferral become typed entries"
+  },
+  {
+    "workOrderId": "WO-026",
+    "relation": "satisfied-by-release",
+    "release": "v0.5.2",
+    "reason": "the index"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 07-execution-guide.md §Discipline
 (forward-only enforcement; never back-fill history) and §Documentation
 freshness and ownership; 09-audit-resilience-privacy.md §Canonical audit

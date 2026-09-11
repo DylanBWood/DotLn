@@ -37,6 +37,41 @@ reactor) are disjoint from WO-033, WO-034, WO-035, and WO-040's feedback
 module; it must not edit `packages/console`. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-091",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-091.",
+    "by": "WO-091"
+  },
+  {
+    "workOrderId": "WO-092",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-092.",
+    "by": "WO-092"
+  },
+  {
+    "workOrderId": "WO-093",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-093.",
+    "by": "WO-093"
+  },
+  {
+    "workOrderId": "WO-094",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-094.",
+    "by": "WO-094"
+  },
+  {
+    "workOrderId": "WO-095",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-095.",
+    "by": "WO-095"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 05-pattern-library.md §Founding pattern
 library (deeply implement a small number of patterns; a pattern is not a
 prompt snippet) and §5S / 6S — the maintenance organism; 02-domain-model.md

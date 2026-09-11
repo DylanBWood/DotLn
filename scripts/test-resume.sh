@@ -10,6 +10,7 @@ test_root_prefix="dotln-resume-test"
 create_test_temp_root "$tmp_base" "$test_root_prefix"
 test_root="$test_temp_root_result"
 install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
+node "$script_dir/test-dependency-resume.mjs" "$test_root"
 fixture_repo="$test_root/repo"
 active_log="$fixture_repo/docs/control/orders/WO-099.jsonl"
 u2028="$(printf '\342\200\250')"
@@ -71,6 +72,7 @@ const expected = [
   "recordedAt",
   "elapsed",
   "orders",
+  "dependencies",
 ].sort();
 const observed = Object.keys(status).sort();
 if (JSON.stringify(observed) !== JSON.stringify(expected)) {
@@ -89,7 +91,7 @@ assert_status_json() {
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const [actualPath, expectedSource] = process.argv.slice(2);
-const { recordedAt, elapsed, orders, ...actual } = JSON.parse(fs.readFileSync(actualPath, "utf8"));
+const { recordedAt, elapsed, orders, dependencies, ...actual } = JSON.parse(fs.readFileSync(actualPath, "utf8"));
 assert.equal(typeof recordedAt, "string");
 assert.equal(typeof elapsed, "object");
 assert.deepStrictEqual(
@@ -423,7 +425,7 @@ grep -Fq 'warning: docs/control/current.md disagrees with the canonical fold' "$
 node - "$test_root/status-drift.json" <<'NODE'
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
-const { recordedAt, elapsed, orders, ...status } = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
+const { recordedAt, elapsed, orders, dependencies, ...status } = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
 assert.equal(typeof recordedAt, "string");
 assert.deepStrictEqual(Object.keys(elapsed).sort(), ["finalReview", "implementation", "repair", "verification"]);
 assert.deepStrictEqual(status, {
@@ -923,7 +925,7 @@ await selectedCall(["final-review-result", "pass", ...flags, "--account-label", 
 delete process.env.DOTLN_ACCOUNT_LABEL;
 assert.equal(last().actor.accountLabel, "claude-2");
 const state = readControl(root).orders.get(id).state;
-const index = renderIndex({ rows: [{ id, path: authority, title: "Fixture", phase: "closed", section: "Closed", model: "any", effort: "any", dependencies: [], closed: new Set(), state }], sequence: [], releases: [] });
+const index = renderIndex({ rows: [{ id, path: authority, title: "Fixture", phase: "closed", section: "Closed", model: "any", effort: "any", dependencies: { source: "conservative-tokens", entries: [], blocking: [] }, state }], sequence: [], releases: [] });
 assert.match(index, /Latest attestation: harness human;.*account claude-2/);
 console.log("account labels: 11 invalid forms, missing/duplicate flags and invalid env refused before append; a1/claude-2 accepted; env default and flag override checked through all four completion commands");
 console.log("account projections: optional field stays absent in stored history; status/current render not-applicable; labelled status/current/index and report-header parity checked");

@@ -26,6 +26,26 @@ triggers; it edits `packages/compiler/src/harness.ts`, `scripts/lib/harness.mjs`
 `scripts/harness.mjs` and their fixtures. A recommendation, not a dependency
 token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-042",
+    "relation": "hard",
+    "reason": "a bundle emitted into a target must carry an envelope no support can widen and grants with provenance"
+  },
+  {
+    "workOrderId": "WO-044",
+    "relation": "hard",
+    "reason": "the record must show that the target's hooks, settings and instruction surface apply in the worker's launch mode; otherwise this order is redesigned at R1"
+  },
+  {
+    "workOrderId": "WO-039",
+    "relation": "satisfied-by-close",
+    "reason": "harness emit, check and the runtime pins it extends"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 02-domain-model.md §Harness compiler v1;
 03-architecture.md §Platform and instance boundary (a target never sees a
 DotLn file in a commit) and §Agent enablement skills; 01-principles.md

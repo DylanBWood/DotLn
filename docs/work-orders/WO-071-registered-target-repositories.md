@@ -21,6 +21,21 @@ and the floor the profile narrows through).
 `scripts/resume.mjs` (the activation event's repository fields). A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-069",
+    "relation": "hard",
+    "reason": "the repositories section of the configuration"
+  },
+  {
+    "workOrderId": "WO-042",
+    "relation": "hard",
+    "reason": "the registered-repository grant provenance"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 §Phase 2 (the umbrella's wording); 02-domain-model.md §Identity and
 composition (AuthorityEnvelope; a registered repository's profile is one;

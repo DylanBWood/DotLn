@@ -21,6 +21,42 @@ the operator waives it.
 `packages/compiler/src/compile.ts` and its fixtures. A recommendation, not
 a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-008",
+    "relation": "satisfied-by-release",
+    "release": "v0.4.0",
+    "reason": "compiler v1"
+  },
+  {
+    "workOrderId": "WO-016",
+    "relation": "satisfied-by-release",
+    "release": "v0.3.6",
+    "reason": "one reactor"
+  },
+  {
+    "workOrderId": "WO-023",
+    "relation": "satisfied-by-release",
+    "release": "v0.5.0",
+    "reason": "Shine and Standardize inside the Entropy Reducer"
+  },
+  {
+    "workOrderId": "WO-029",
+    "relation": "satisfied-by-release",
+    "release": "v0.9.0",
+    "reason": "artifact identity per component"
+  },
+  {
+    "workOrderId": "WO-053",
+    "relation": "planning-deferral",
+    "date": "2026-09-08",
+    "reason": "Horizon 2 does not advance the missing work loop",
+    "until": "WO-053"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 02-domain-model.md §LoadoutGraph v1
 payload contract ("exactly one active mechanic, at most one participating
 link group"); 03-architecture.md §Composition system (precedence,

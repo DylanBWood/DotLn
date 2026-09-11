@@ -41,6 +41,95 @@ binds: WO-038, then WO-039 phase 1 and its self-host, then this order, is the
 critical path; if capacity is short, run those three alone and let the rest
 float. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-049",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-049.",
+    "by": "WO-049"
+  },
+  {
+    "workOrderId": "WO-064",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-064.",
+    "by": "WO-064"
+  },
+  {
+    "workOrderId": "WO-069",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-069.",
+    "by": "WO-069"
+  },
+  {
+    "workOrderId": "WO-070",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-070.",
+    "by": "WO-070"
+  },
+  {
+    "workOrderId": "WO-071",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-071.",
+    "by": "WO-071"
+  },
+  {
+    "workOrderId": "WO-072",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-072.",
+    "by": "WO-072"
+  },
+  {
+    "workOrderId": "WO-073",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-073.",
+    "by": "WO-073"
+  },
+  {
+    "workOrderId": "WO-074",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-074.",
+    "by": "WO-074"
+  },
+  {
+    "workOrderId": "WO-075",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-075.",
+    "by": "WO-075"
+  },
+  {
+    "workOrderId": "WO-076",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-076.",
+    "by": "WO-076"
+  },
+  {
+    "workOrderId": "WO-077",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-077.",
+    "by": "WO-077"
+  },
+  {
+    "workOrderId": "WO-078",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-078.",
+    "by": "WO-078"
+  },
+  {
+    "workOrderId": "WO-079",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-079.",
+    "by": "WO-079"
+  },
+  {
+    "workOrderId": "WO-036",
+    "relation": "superseded",
+    "reason": "2026-09-08 planning split: this umbrella's obligations are carried by WO-036.",
+    "by": "WO-036"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 00-vision.md §Common substrate, local
 doctrine (the same legos, not the same finished organization) and §The
 one-paragraph story; 03-architecture.md §Platform and instance boundary (the

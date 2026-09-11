@@ -32,6 +32,76 @@ follows its receipt together with WO-112's. It adds `docs/evidence/WO-118/`
 and any composition the instance needs that core lacks, which is then a
 core order. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-075",
+    "relation": "hard",
+    "reason": "a starter instance with the build"
+  },
+  {
+    "workOrderId": "WO-076",
+    "relation": "hard",
+    "reason": "the instance's overlay"
+  },
+  {
+    "workOrderId": "WO-121",
+    "relation": "hard",
+    "reason": "presence with origin"
+  },
+  {
+    "workOrderId": "WO-122",
+    "relation": "hard",
+    "reason": "the cli-worker and human-handoff actors"
+  },
+  {
+    "workOrderId": "WO-100",
+    "relation": "hard",
+    "reason": "derivation inside a portfolio"
+  },
+  {
+    "workOrderId": "WO-120",
+    "relation": "hard",
+    "reason": "derived work as durable records"
+  },
+  {
+    "workOrderId": "WO-124",
+    "relation": "hard",
+    "reason": "surfaces derived from the contract"
+  },
+  {
+    "workOrderId": "WO-112",
+    "relation": "hard",
+    "reason": "the loop proven from core first"
+  },
+  {
+    "workOrderId": "WO-111",
+    "relation": "hard",
+    "reason": "the unattended hour"
+  },
+  {
+    "workOrderId": "WO-066",
+    "relation": "hard",
+    "reason": "the pull-request loop with dispositions"
+  },
+  {
+    "workOrderId": "WO-114",
+    "relation": "hard",
+    "reason": "the run is visible in the status projection"
+  },
+  {
+    "workOrderId": "WO-117",
+    "relation": "hard",
+    "reason": "the run is visible in the live console"
+  },
+  {
+    "workOrderId": "WO-123",
+    "relation": "hard",
+    "reason": "the resident admits a filed intent under standing authorization and owns the vertical continuation"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 00-vision.md §The one-paragraph story and
 §What DotLn is not (the reference implementation is not finished when it
 works for its author); 12-workstream-application.md §One outcome from

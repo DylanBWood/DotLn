@@ -74,6 +74,16 @@ check` green after changing the Contributor source and regenerating the bundle.
    latest verdict, append time, and elapsed phases. Status observes segments in
    this checkout, not unmerged changes in sibling worktrees. The Markdown
    projection lists all non-closed orders followed by the latest closed one.
+   The additive `dependencies` field projects the selected authority through
+   `scripts/lib/dependencies.mjs`: `{ source, entries, blocking }`, with source
+   `typed` or `conservative-tokens` and a state on every entry. It is `null`
+   when no order is selected. `resume activate` refuses before any event or
+   checkpoint when a typed entry is unmet, naming its reason and corrective
+   action: obtain the required passing closure or ancestor release, resolve
+   the planning deferral, or edit the authority with a dated reviewed note.
+   This computes dependency eligibility; legal transitions and recommended
+   next work remain separate answers. Unmarked prose tokens never refuse
+   activation. Closed and historical files are not backfilled.
 2. Run the matching transition and follow the paths it prints — they are
    authoritative, and they are the whole briefing:
 

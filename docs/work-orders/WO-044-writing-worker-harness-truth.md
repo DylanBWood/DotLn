@@ -26,6 +26,22 @@ lane; it edits only `scripts/harness-probe.mjs` and `docs/discovery/`. The
 first mandatory replan checkpoint follows its record. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-039",
+    "relation": "satisfied-by-close",
+    "reason": "extends the phase-zero record with the writing-worker rows"
+  },
+  {
+    "workOrderId": "WO-009",
+    "relation": "satisfied-by-release",
+    "release": "v0.10.0",
+    "reason": "the canonical launch shapes it varies"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 01-principles.md Principle 15 (environment
 truth before architecture; epistemic labels); 03-architecture.md §Runtime
 primitive catalogs (harness, orchestration, transport and execution

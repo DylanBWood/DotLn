@@ -25,6 +25,21 @@ adapter has a consumer, but nothing blocks it. It edits `docs/discovery/`,
 `docs/LEGAL.md` (one dated observation). A recommendation, not a dependency
 token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-004",
+    "relation": "satisfied-by-close",
+    "reason": "the environment record it extends"
+  },
+  {
+    "workOrderId": "WO-056",
+    "relation": "reference-only",
+    "reason": "recommended after the real-repository loop so the adapter has a consumer"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 01-principles.md Principle 15; ADR-0002
 (the zero-dependency posture of the kernel and compiler; consumers may carry
 adapters); `docs/LEGAL.md` (the third-party material rule); `docs/discovery/environment.md` (the record shape and its

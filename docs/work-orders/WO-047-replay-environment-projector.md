@@ -23,6 +23,23 @@ satisfied at `v0.3.6`).
 (`replay`), kernel tests, the skeleton's replay call sites, and product 02.
 A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-017",
+    "relation": "satisfied-by-release",
+    "release": "v0.3.5",
+    "reason": "kernel truthfulness boundaries"
+  },
+  {
+    "workOrderId": "WO-016",
+    "relation": "satisfied-by-release",
+    "release": "v0.3.6",
+    "reason": "the single reactor replay drives"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 02-domain-model.md §Events and decisions
 (the Reactor row: "`replay` projects `env` from state by reserved key");
 01-principles.md Principle 2 (deterministic core; `env` is a projection of

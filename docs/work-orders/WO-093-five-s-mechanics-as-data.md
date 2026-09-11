@@ -17,6 +17,16 @@ screen: no stop condition.
 `packages/skeleton/src/loadouts/`. A recommendation, not a dependency
 token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-091",
+    "relation": "hard",
+    "reason": "the six mechanics compile in one group"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 05-pattern-library.md §5S / 6S — the
 maintenance organism; `packages/skeleton/src/loadouts/entropy-reducer.ts`
 (the compiled Shine and Standardize to reuse); `packages/compiler/src/seiri.ts`.

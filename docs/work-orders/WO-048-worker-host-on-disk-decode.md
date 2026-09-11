@@ -24,6 +24,33 @@ codec is not duplicated; it edits `packages/skeleton/src/worker-store.ts`,
 `worker-host.ts`, `verification-host.ts` and their tests. A recommendation,
 not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-009",
+    "relation": "satisfied-by-release",
+    "release": "v0.10.0",
+    "reason": "the worker store and host"
+  },
+  {
+    "workOrderId": "WO-010",
+    "relation": "satisfied-by-release",
+    "release": "v0.12.0",
+    "reason": "the verification host and its capsules"
+  },
+  {
+    "workOrderId": "WO-045",
+    "relation": "reference-only",
+    "reason": "the log codec is not duplicated when WO-045 lands first"
+  },
+  {
+    "workOrderId": "WO-105",
+    "relation": "reference-only",
+    "reason": "malformed-shape families"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 03-architecture.md §Session lifecycle &
 resilience (the disposable inspection host paragraph: fsynced appends, one
 exclusive host lock, immutable result receipts, torn-log refusal) and the

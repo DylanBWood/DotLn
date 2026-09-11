@@ -21,6 +21,26 @@ operator-invocable.
 (a new pull-request observer) and reuses the `gh` helper and stub. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-064",
+    "relation": "hard",
+    "reason": "a pull request to observe"
+  },
+  {
+    "workOrderId": "WO-060",
+    "relation": "hard",
+    "reason": "the screen every stored comment passes"
+  },
+  {
+    "workOrderId": "WO-068",
+    "relation": "reference-only",
+    "reason": "the resident's cadence is the ordinary invoker once it exists"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 06-roadmap.md §Application version pending
 — Source-to-deliverable vertical (CI classification and comment triage);
 03-architecture.md §Ports; 09-audit-resilience-privacy.md §Privacy and

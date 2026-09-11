@@ -24,6 +24,31 @@ with `operator` provenance).
 edits `scripts/worktree.mjs` (a target publish path), `scripts/github-body.mjs` (the body generator) and their fixtures. A recommendation, not a dependency
 token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-052",
+    "relation": "hard",
+    "reason": "a branch to publish exists only after a source-change episode"
+  },
+  {
+    "workOrderId": "WO-063",
+    "relation": "hard",
+    "reason": "every outward artifact passes the lint before the remote effect"
+  },
+  {
+    "workOrderId": "WO-042",
+    "relation": "hard",
+    "reason": "the remote effect runs under an explicit grant with operator provenance"
+  },
+  {
+    "workOrderId": "WO-053",
+    "relation": "reference-only",
+    "reason": "the live branch it first publishes"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 02-domain-model.md §Identity and
 composition (AuthorityEnvelope; `repo.push`; grants with provenance after
 WO-042); 03-architecture.md §Platform and instance boundary;

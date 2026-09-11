@@ -16,6 +16,16 @@ force.
 module, the skeleton's loadouts, the always-on prose it retires, and the
 regenerated bundle. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-096",
+    "relation": "hard",
+    "reason": "the ledger rows the batch selects from"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-040-rule-migration-batch-one.md`
 (the unit shape, the retirement and reverse-mapping rules, the measurement
 method); `docs/evidence/WO-011/README.md`; `packages/compiler/src/feedback.ts`;

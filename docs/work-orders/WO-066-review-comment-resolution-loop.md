@@ -22,6 +22,31 @@ grant under which the push and the disposition run).
 (the loop continuation) and product 06. A recommendation, not a dependency
 token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-065",
+    "relation": "hard",
+    "reason": "the observed comments and checks it resolves"
+  },
+  {
+    "workOrderId": "WO-055",
+    "relation": "hard",
+    "reason": "the repair derivation and round limit it reuses"
+  },
+  {
+    "workOrderId": "WO-054",
+    "relation": "hard",
+    "reason": "verification of each repaired head before a push"
+  },
+  {
+    "workOrderId": "WO-064",
+    "relation": "hard",
+    "reason": "the grant under which the push and the disposition run"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 06-roadmap.md §Application version pending
 — Source-to-deliverable vertical (comment triage; a human-controlled
 terminal state); 02-domain-model.md §Independent verification v1;

@@ -20,6 +20,21 @@ the target is the WO-053 scratch repository.
 `docs/evidence/WO-056/` and a receipt-shape fixture. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-055",
+    "relation": "hard",
+    "reason": "the loop the episode runs"
+  },
+  {
+    "workOrderId": "WO-053",
+    "relation": "hard",
+    "reason": "the live primitive and receipt shape it extends"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 01-principles.md Principle 6;
 02-domain-model.md §Independent verification v1; `docs/evidence/WO-053/README.md` (the
 receipt shape); `docs/work-orders/WO-054-verification-over-real-worktree.md`

@@ -27,6 +27,28 @@ and the state types the hosts read. Sequence it beside WO-047 with a merge of
 the shared replay call sites, or after it. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-016",
+    "relation": "satisfied-by-release",
+    "release": "v0.3.6",
+    "reason": "the single reactor"
+  },
+  {
+    "workOrderId": "WO-010",
+    "relation": "satisfied-by-release",
+    "release": "v0.12.0",
+    "reason": "the last host branch added"
+  },
+  {
+    "workOrderId": "WO-047",
+    "relation": "reference-only",
+    "reason": "the explicit projector reads the kernel-facing slice when it has landed"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 03-architecture.md §Layer diagram (one decider; the ownership guard) and §Session lifecycle & resilience;
 02-domain-model.md §Events and decisions (Reactor; state is a fold of the
 log); `docs/planning/phase-two-plan-2026-09-06.md` §Code table (the declined

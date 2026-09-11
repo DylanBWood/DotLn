@@ -57,8 +57,10 @@ WO-030 → WO-021 ∥ WO-029.
 
 ## Lane rules the showrunner can apply by hand
 
-1. **Eligible:** every `Depends on` token is control-closed, the activation
-   preflight in the map is satisfied, and the environment preflight holds.
+1. **Eligible:** the index's typed dependency projection has no unmet entry,
+   the activation preflight in the map is satisfied, and the environment
+   preflight holds. Unmarked prose tokens are a conservative observation and
+   never an activation blocker (WO-043, 2026-09-11).
 2. **No shared write surface in one wave:** two orders whose “primary affected
    surfaces” intersect in the map's catalog do not run concurrently. Product
    docs, the map, and the ledger are not conflicts; they merge as ordinary text

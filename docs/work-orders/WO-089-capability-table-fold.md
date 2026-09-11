@@ -18,6 +18,18 @@ the operator waives it).
 subject reads the table's rows, so the fold changes the subject hash. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-053",
+    "relation": "planning-deferral",
+    "date": "2026-09-08",
+    "reason": "documentation structure is not the product bottleneck",
+    "until": "WO-053"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/planning/capability-table.md` (the
 rows and the seven addenda); `docs/final-reviews/` (the verdicts that bound
 each level); `scripts/lib/plan-subject.mjs` (the capability cells).

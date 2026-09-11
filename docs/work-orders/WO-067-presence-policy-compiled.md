@@ -29,6 +29,22 @@ harness-truth record; it edits `packages/compiler` (types, compile,
 normalize, render), skeleton loadout fixtures and products 02, 03 and 04. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-042",
+    "relation": "hard",
+    "reason": "a phase envelope is a narrowing under the monotone floor"
+  },
+  {
+    "workOrderId": "WO-008",
+    "relation": "satisfied-by-release",
+    "release": "v0.4.0",
+    "reason": "compiler v1"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** ADR-0007; 03-architecture.md
 §Operator-presence policy and §Candidate — progressive absence authority
 and return readiness; 02-domain-model.md §Events and decisions (Cadence;

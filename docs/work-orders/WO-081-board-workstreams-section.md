@@ -16,6 +16,22 @@ board; satisfied at `v0.14.0`).
 **Recommended placement:** after WO-080; it edits `packages/console` only.
 A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-080",
+    "relation": "hard",
+    "reason": "the data it renders"
+  },
+  {
+    "workOrderId": "WO-032",
+    "relation": "satisfied-by-release",
+    "release": "v0.14.0",
+    "reason": "the board it extends"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 04-interfaces.md §Plural UI hosts, one
 projection contract and §Actor board v0; 13-uifa-roles.md §UIFA showrunner;
 `packages/console/README.md`.

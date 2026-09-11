@@ -22,6 +22,27 @@ WO-038 merged (license metadata and the default license files; satisfied at
 deferral; it adds `scripts/launchpad.mjs` and the kit manifest generator. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-069",
+    "relation": "hard",
+    "reason": "the configuration example and roots the kit carries"
+  },
+  {
+    "workOrderId": "WO-070",
+    "relation": "hard",
+    "reason": "Beacon emission without the skeleton package"
+  },
+  {
+    "workOrderId": "WO-038",
+    "relation": "satisfied-by-release",
+    "release": "v0.13.2",
+    "reason": "license metadata and the default license files"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 §Phase 3 and §License files at export (the umbrella's wording);
 03-architecture.md §Platform and instance boundary (the fork is of the

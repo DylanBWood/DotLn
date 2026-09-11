@@ -1194,6 +1194,227 @@ export async function fixtures() {
       },
     );
     await check(
+      "WO-043 continuation admits only the reviewed dependency transcription and preserves receipt bytes",
+      async () => {
+        const repo = makeRepo(parent, "dependency-continuation");
+        renameSync(
+          join(repo, orderPath("WO-901")),
+          join(repo, orderPath("WO-043")),
+        );
+        write(
+          repo,
+          orderPath("WO-043"),
+          read(repo, orderPath("WO-043"))
+            .replaceAll("WO-901", "WO-043")
+            .replace(
+              "Keep a bounded result.",
+              "Every open order carries a typed block matching docs/planning/critical-path-2026-09-08.json.",
+            ),
+        );
+        write(
+          repo,
+          PLAN_MAP,
+          read(repo, PLAN_MAP)
+            .replace("WO-901", "WO-043")
+            .replace(
+              "<!-- dotln-work-order-sequence:end -->",
+              "- WO-033 — Umbrella\n- WO-036 — Later umbrella\n- WO-102 — Corpus\n<!-- dotln-work-order-sequence:end -->",
+            ),
+        );
+        const metadata = (source, value) =>
+          source.replace("**Objective:**", `${value}\n\n**Objective:**`);
+        write(
+          repo,
+          orderPath("WO-033"),
+          metadata(
+            order("WO-033"),
+            "**Umbrella record (2026-09-08):** superseded whole by WO-902; not activatable. WO-039 supplied earlier evidence.",
+          ),
+        );
+        write(
+          repo,
+          orderPath("WO-036"),
+          metadata(
+            order("WO-036"),
+            "**Umbrella record (2026-09-09):** superseded whole by WO-126 criterion 6; not activatable.",
+          ),
+        );
+        write(
+          repo,
+          orderPath("WO-102"),
+          metadata(
+            order("WO-102"),
+            "**Depends on:** WO-004 merged; independent of WO-101.",
+          ),
+        );
+        const seedPath = "docs/planning/critical-path-2026-09-08.json";
+        const seed = JSON.stringify({
+          nodes: [{ id: "WO-033", supersededBy: { workOrderIds: ["WO-902"] } }],
+          edges: [
+            {
+              from: "WO-902",
+              to: "WO-043",
+              relation: "hard",
+              reason: "Required baseline.",
+            },
+            {
+              from: "WO-036",
+              to: "WO-018",
+              relation: "satisfied-by-release",
+              release: "v0.4.1",
+              reason: "Earlier baseline.",
+            },
+          ],
+        });
+        write(repo, seedPath, seed);
+        commit(repo, "reviewed dependency migration authority");
+        const receipt = await writeDirectReceipt(repo);
+        commit(repo, "record reviewed dependency plan");
+        const receiptBytes = read(
+          repo,
+          `${RECEIPTS}/${receipt.receiptId}.json`,
+        );
+        const entries = new Map([
+          ["WO-043", []],
+          [
+            "WO-902",
+            [
+              {
+                workOrderId: "WO-043",
+                relation: "hard",
+                reason: "Required baseline.",
+              },
+            ],
+          ],
+          [
+            "WO-033",
+            [
+              {
+                workOrderId: "WO-902",
+                relation: "superseded",
+                by: "WO-902",
+                reason: "Reviewed umbrella successor.",
+              },
+            ],
+          ],
+          [
+            "WO-036",
+            [
+              {
+                workOrderId: "WO-126",
+                relation: "superseded",
+                by: "WO-126",
+                reason: "Later reviewed successor.",
+              },
+            ],
+          ],
+          [
+            "WO-102",
+            [
+              {
+                workOrderId: "WO-004",
+                relation: "satisfied-by-close",
+                reason: "Merged baseline.",
+              },
+              {
+                workOrderId: "WO-101",
+                relation: "reference-only",
+                reason: "Independent corpus.",
+              },
+            ],
+          ],
+        ]);
+        const originals = new Map(
+          [...entries.keys()].map((id) => [id, read(repo, orderPath(id))]),
+        );
+        const migrate = (id, relations) =>
+          metadata(
+            originals.get(id),
+            `<!-- dotln-dependencies:start -->\n${JSON.stringify(relations, null, 2)}\n<!-- dotln-dependencies:end -->`,
+          );
+        for (const [id, relations] of entries)
+          write(repo, orderPath(id), migrate(id, relations));
+        const dirty = await checkPlanGate(repo);
+        assert.equal(dirty.continuation.workspaceUpdates.length, entries.size);
+        assert.ok(
+          dirty.continuation.workspaceUpdates.every(
+            ({ kind }) => kind === "typed-dependency-migration",
+          ),
+        );
+        for (const relations of [
+          [],
+          [
+            {
+              workOrderId: "WO-043",
+              relation: "reference-only",
+              reason: "Required baseline.",
+            },
+          ],
+          [
+            {
+              workOrderId: "WO-043",
+              relation: "waived",
+              date: "2030-01-02",
+              reason: "Unreviewed waiver.",
+            },
+          ],
+        ]) {
+          write(repo, orderPath("WO-902"), migrate("WO-902", relations));
+          await assert.rejects(
+            checkPlanGate(repo),
+            /does not transcribe the reviewed relations/u,
+          );
+        }
+        write(
+          repo,
+          orderPath("WO-902"),
+          migrate("WO-902", entries.get("WO-902")).replace(
+            "Move the shape.",
+            "Change the objective.",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /existing work-order bytes changed/u,
+        );
+        write(
+          repo,
+          orderPath("WO-902"),
+          migrate("WO-902", entries.get("WO-902")),
+        );
+        write(repo, seedPath, seed + "\n");
+        await assert.rejects(checkPlanGate(repo), /changed its reviewed seed/u);
+        write(repo, seedPath, seed);
+        commit(repo, "transcribe reviewed dependencies");
+        const committed = await checkPlanGate(repo);
+        assert.deepEqual(
+          committed.continuation.committedUpdates,
+          dirty.continuation.workspaceUpdates,
+        );
+        assert.equal(
+          read(repo, `${RECEIPTS}/${receipt.receiptId}.json`),
+          receiptBytes,
+        );
+        assert.deepEqual(await readReceipts(repo), [receipt]);
+
+        const unrelated = makeRepo(parent, "dependency-without-authority");
+        await writeDirectReceipt(unrelated);
+        commit(unrelated, "record unrelated reviewed plan");
+        write(
+          unrelated,
+          orderPath("WO-902"),
+          metadata(
+            read(unrelated, orderPath("WO-902")),
+            "<!-- dotln-dependencies:start -->\n[]\n<!-- dotln-dependencies:end -->",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(unrelated),
+          /existing work-order bytes changed/u,
+        );
+      },
+    );
+    await check(
       "WO-042 continuation rejects planning edits and forged execution classifications in both HEAD and the workspace",
       async () => {
         const repo = makeRepo(parent, "continuation-refusals");

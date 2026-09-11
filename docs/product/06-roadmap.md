@@ -20,6 +20,8 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-043 activation completion (2026-09-11):** application `v0.17.1` is the next patch above the observed local annotated `v0.17.0` baseline. Typed dependency declarations, their shared projection and activation refusal change control-plane scripts and documentation only. Component versions stay fixed. The [decision receipt](../evidence/WO-043/decisions.md) records the assignment; publication remains a separate dispatch.
+
 **WO-126 activation completion (2026-09-09):** application `v0.17.0` is the next minor above the observed local `v0.16.0` baseline, under WO-126's declared classification and the standing opt-out default. Compiler and skeleton changes receive their own minor versions; the kernel and verification contracts stay fixed. Publication remains a separate dispatch.
 
 **WO-042 activation completion and operator breakout (2026-09-08):** application `v0.16.0` is the next minor above the observed annotated `v0.15.0` baseline. Compiler `0.8.0` adds the monotone authority floor, registry-admitted grants, envelope-projected inspection and a declared role-procedure adapter under the existing contracts. Skeleton `0.14.0` adds five atomic executor supports and their equipment projection; console `0.1.2` repairs the default feedback-edition selection. The kernel stays fixed. Instance grant files live outside package `src/`. The [breakout receipt](../evidence/WO-042/ideation.md) records the planning-gate repair, queue and bounded adjacent fix. Verification, final review and publication remain separate.
@@ -321,17 +323,33 @@ control-closed orders, and time-indexed history. Closed means the applicable
 passing final review, not independent proof of merge or remote publication.
 
 The index is the evidence-state answer; the [human map](../planning/work-order-map.md)
-keeps recommendation, rationale, tracks, and activation preflight. Dependency
-status is a conservative observation of every WO token in the Depends on
-paragraph against the control-closed set. It does not parse natural-language
-recommendations or reverse references into a scheduling policy. The dated
-[activation comparison](../planning/work-order-index-activation-2026-09-04.md)
-explains the differences from the pilot's hand-written cells.
+keeps recommendation, rationale, tracks, and activation preflight.
+**2026-09-11 typed dependency migration (WO-043):** a marked JSON array in
+each open authority's leading metadata declares dependency relations and
+one-line reasons. `scripts/lib/dependencies.mjs` supplies the same projection
+to the index, selected `status --json`, and activation. Hard and
+satisfied-by-close entries require closure with a passing final review;
+satisfied-by-release requires a local annotated DotLn release in HEAD's
+ancestry. A planning deferral waits for the named order's closure, or remains
+unmet for a candidate label until replaced by a dated waiver. Historical
+evidence, references, waivers and supersessions never block.
+
+This computes the dependency part of **Eligible now**. Authority, environment,
+exclusive resources and other activation prerequisites still need preflight;
+the operator or planning policy supplies **Recommended next**. Closed and
+historical authorities retain their bytes. Without a typed block, their
+Depends on tokens are labeled **conservative token view; does not block**.
+The [migration comparison](../evidence/WO-043/migration.json) preserves the
+seed graph and prose comparison, including later supersession decisions.
+The earlier [activation comparison](../planning/work-order-index-activation-2026-09-04.md)
+remains a dated observation of the token view.
 
 `npm run work-orders -- index` explicitly refreshes the generated view.
 `index --check`, included in `npm test`, checks current headers/control against
 the recorded tag-object snapshot; missing or changed recorded tags refuse, and
-additional local release tags are reported as newer evidence. The operator
+additional local release tags are reported as newer attribution evidence.
+Typed release dependencies observe current local ancestry, so a referenced
+tag becoming available or unreachable can stale their projection. The operator
 selected this snapshot rule so tagging a reviewed commit does not invalidate
 its own reproducible evidence. No command fetches tags. Refresh after lifecycle
 transitions before running evidence; lifecycle helpers do not regenerate the

@@ -20,6 +20,21 @@ no stop condition.
 (a new story-contract module), its tests and product 12. A recommendation,
 not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-060",
+    "relation": "hard",
+    "reason": "the bundle it compiles from"
+  },
+  {
+    "workOrderId": "WO-054",
+    "relation": "reference-only",
+    "reason": "its criteria are what the verification host consumes"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 12-workstream-application.md §One outcome
 from request to return and §Replacing a successful but costly workflow (the
 replacement table's intake behaviors); 06-roadmap.md §Application version

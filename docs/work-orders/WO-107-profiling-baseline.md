@@ -25,6 +25,21 @@ v0.2.1 close; all measurements are pinned to that base commit. Independent of
 the mainline (WO-005's efficiency-measurement non-goal binds WO-005's scope,
 not this order).
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-004",
+    "relation": "satisfied-by-close",
+    "reason": "Measurements require the reviewed environment baseline."
+  },
+  {
+    "workOrderId": "WO-005",
+    "relation": "reference-only",
+    "reason": "The mainline efficiency non-goal does not constrain this independent measurement order."
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 06-roadmap.md §Counterfactual profiling work
 orders (the full measurement contract: immutable pinned baseline, exact
 commands, environment/toolchain profile, warm-up/repetition/run-order rules,

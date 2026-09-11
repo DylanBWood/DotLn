@@ -25,6 +25,27 @@ it).
 `packages/skeleton/src/discovery.ts` and a `WorkCandidate` contract. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-068",
+    "relation": "hard",
+    "reason": "the producer runs as an actor episode the resident dispatches"
+  },
+  {
+    "workOrderId": "WO-023",
+    "relation": "satisfied-by-release",
+    "release": "v0.5.0",
+    "reason": "the Sort rule and candidate shape it reuses"
+  },
+  {
+    "workOrderId": "WO-046",
+    "relation": "hard",
+    "reason": "its program is checked against the executable grammar type"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 05-pattern-library.md §5S / 6S (Sort,
 Shine); `packages/skeleton/src/loadouts/entropy-reducer.ts` (the
 `operator-mediated-manual` boundary and the candidate shape);

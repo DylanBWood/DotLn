@@ -18,6 +18,23 @@ operator waives it.
 product 07, `docs/AI-HARNESS-SECURITY.md` and the playbook. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-053",
+    "relation": "planning-deferral",
+    "date": "2026-09-08",
+    "reason": "documentation structure is not the product bottleneck",
+    "until": "WO-053"
+  },
+  {
+    "workOrderId": "WO-039",
+    "relation": "satisfied-by-close",
+    "reason": "the directed-load measurement method"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 07-execution-guide.md §Read order for a
 cold start and §Model-specific notes; `docs/AI-HARNESS-SECURITY.md`;
 `docs/PLAYBOOK.md`; `docs/evidence/WO-039/README.md` (criterion 6's

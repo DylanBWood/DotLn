@@ -6,7 +6,7 @@ planning pass after the WO-039 close, revised the same day at the operator's
 corrections; 2026-09-06, the phase-two pass after the `v0.13.1` close; and
 2026-09-05, after the `v0.6.0` close). The generated
 [work-order index](../work-orders/README.md) now owns header observations,
-control evidence, dependency-token status, and local release attribution. This
+control evidence, typed dependency status, and local release attribution. This
 map retains recommendations, rationale, tracks, and human activation preflight.
 The catalog's manually maintained evidence, hard-dependency, and model/effort
 columns were removed on this date; their drift is documented in the
@@ -14,9 +14,10 @@ columns were removed on this date; their drift is documented in the
 
 For the selected order's legal action, use `npm run resume --silent -- status
 --json`. For authority, read the selected work order. The index's computed
-readiness is only a conservative token view: recommendations, independent
-orders, oracle references, and reverse references inside a Depends on paragraph
-need human interpretation. No view chooses or authorizes the next order.
+readiness uses each open authority's typed dependency block. Authorities
+without a block retain a conservative token view that never blocks activation.
+Dependency eligibility, workflow legality and recommendations remain distinct.
+No view chooses or authorizes the next order.
 
 Work-order numbers are stable opaque identities. They are not a queue, priority,
 roadmap position, or family code. The adjacent evidence/corpus track does not
@@ -534,17 +535,22 @@ restriction, preserved in the same correction capture.
 The [index](../work-orders/README.md) defines its evidence labels. Control
 closure, repository integration, and release inclusion are distinct boundaries.
 A historical order is explicitly time-indexed; absence of events is not proof
-of completion. A dependency-ready row still needs human preflight and selection.
-In particular, all tokens in a dependency paragraph are observations, not a
-semantic declaration that every reference is a hard prerequisite.
+of completion. Dependency state belongs to the index's typed projection,
+shared with selected lifecycle JSON status (WO-043, 2026-09-11). Unmet hard,
+closure, release or planning-deferral entries refuse activation; references,
+historical evidence, waivers and supersessions do not. Unmarked authorities
+keep a labeled conservative token view that does not block. A dependency-ready
+row still needs human preflight and selection.
 
 ## Catalog — human preflight and scope notes
 
-Consult each linked authority for current Model, Effort, dependency wording,
-and acceptance. The retained rows are planning context; they do not maintain a
-second completion ledger.
+Consult each linked authority for current Model, Effort, typed dependencies,
+and acceptance. In every row, the activation-preflight column carries human
+prerequisites and placement context; dependency readiness is read from the
+[generated index](../work-orders/README.md), never asserted by this catalog.
+Retained dependency wording is dated planning context, not a second state source.
 
-| Work order                                                            | Purpose / track                                                                                                                                                                                                                                                                                | Activation preflight                                                                                                                                                                                                       | Execution role                                                                                            | Environment / capability preflight                                                                                                                                    | Primary affected surfaces                                                                                                                                                                                        |
+| Work order                                                            | Purpose / track                                                                                                                                                                                                                                                                                | Human activation preflight (dependency state: index)                                                                                                                                                                       | Execution role                                                                                            | Environment / capability preflight                                                                                                                                    | Primary affected surfaces                                                                                                                                                                                        |
 | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [WO-001](../work-orders/WO-001-environment-truth.md)                  | discovery — bounded host truth                                                                                                                                                                                                                                                                 | not applicable; historical evidence input                                                                                                                                                                                  | bounded environment investigator                                                                          | read-only host inspection                                                                                                                                             | `docs/discovery/`                                                                                                                                                                                                |
 | [WO-002](../work-orders/WO-002-pure-kernel.md)                        | core runtime — pure kernel                                                                                                                                                                                                                                                                     | not applicable                                                                                                                                                                                                             | pure-kernel implementer                                                                                   | deterministic build/test harness                                                                                                                                      | `packages/kernel/`                                                                                                                                                                                               |

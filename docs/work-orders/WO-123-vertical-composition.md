@@ -31,6 +31,81 @@ WO-120; it adds the continuation, the admission decision and its events,
 the `intent` portfolio class, the command, and fixtures with doubles and a
 fake clock. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-052",
+    "relation": "hard",
+    "reason": "the source-change host"
+  },
+  {
+    "workOrderId": "WO-054",
+    "relation": "hard",
+    "reason": "verification over the worktree"
+  },
+  {
+    "workOrderId": "WO-055",
+    "relation": "hard",
+    "reason": "the repair continuation"
+  },
+  {
+    "workOrderId": "WO-059",
+    "relation": "hard",
+    "reason": "browser witnesses"
+  },
+  {
+    "workOrderId": "WO-061",
+    "relation": "hard",
+    "reason": "the contract from an issue"
+  },
+  {
+    "workOrderId": "WO-062",
+    "relation": "hard",
+    "reason": "the issue adapter"
+  },
+  {
+    "workOrderId": "WO-124",
+    "relation": "hard",
+    "reason": "surfaces from the contract"
+  },
+  {
+    "workOrderId": "WO-064",
+    "relation": "hard",
+    "reason": "publish"
+  },
+  {
+    "workOrderId": "WO-065",
+    "relation": "hard",
+    "reason": "observation"
+  },
+  {
+    "workOrderId": "WO-066",
+    "relation": "hard",
+    "reason": "resolution"
+  },
+  {
+    "workOrderId": "WO-068",
+    "relation": "hard",
+    "reason": "the resident that admits the intent and dispatches the first step"
+  },
+  {
+    "workOrderId": "WO-120",
+    "relation": "hard",
+    "reason": "the filed intent and the derived order's durable identity"
+  },
+  {
+    "workOrderId": "WO-100",
+    "relation": "hard",
+    "reason": "the portfolio contract the intent class extends"
+  },
+  {
+    "workOrderId": "WO-042",
+    "relation": "hard",
+    "reason": "admitted grants and the effective envelope the run is bound to"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 12-workstream-application.md §One outcome
 from request to return; 03-architecture.md §Operator-presence policy (the
 resident's dispatch rules); `docs/work-orders/WO-100-preauthorized-portfolio.md`

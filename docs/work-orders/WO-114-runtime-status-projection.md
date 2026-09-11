@@ -23,6 +23,27 @@ adds the contract to `packages/compiler` or `packages/console` (the
 executor records which and why) and the writer to the resident. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-068",
+    "relation": "hard",
+    "reason": "the resident whose slice it projects"
+  },
+  {
+    "workOrderId": "WO-120",
+    "relation": "hard",
+    "reason": "derived orders appear under the same identity"
+  },
+  {
+    "workOrderId": "WO-032",
+    "relation": "satisfied-by-release",
+    "release": "v0.14.0",
+    "reason": "the board and console host"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 04-interfaces.md §Plural UI hosts, one
 projection contract, §Actor board v0 and §Later console hosts;
 13-uifa-roles.md §UIFA showrunner and §Actor board role service;

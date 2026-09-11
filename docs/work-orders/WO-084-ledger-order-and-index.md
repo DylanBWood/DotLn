@@ -19,6 +19,18 @@ the operator waives it).
 `docs/lineage/README.md`, and edits `CLAUDE.md` §Start here. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-053",
+    "relation": "planning-deferral",
+    "date": "2026-09-08",
+    "reason": "documentation structure is not the product bottleneck",
+    "until": "WO-053"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-035-documentation-structure-reset.md`
 (the umbrella's wording and measurements); 01-principles.md Principle 12
 (append-only; superseding names what it supersedes);

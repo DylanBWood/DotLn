@@ -20,6 +20,21 @@ grant).
 `scripts/lib/harness.mjs` and the export's client README. A recommendation,
 not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-075",
+    "relation": "hard",
+    "reason": "the kit build the overlay composes over"
+  },
+  {
+    "workOrderId": "WO-042",
+    "relation": "hard",
+    "reason": "widening within the fork's posture is a provenance-bearing grant"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 (the overlay item); 00-vision.md §Common substrate, local doctrine;
 ADR-0006 Decisions 1 and 7 and §Amendments; 02-domain-model.md

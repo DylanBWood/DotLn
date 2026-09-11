@@ -1,4 +1,4 @@
-# WO-043 — Typed dependency truth: work orders declare typed dependency relations, only an unmet hard dependency or planning deferral blocks activation, and the index and lifecycle status share one projection (version assigned at activation)
+# WO-043 — Typed dependency truth: work orders declare typed dependency relations, only an unmet hard dependency or planning deferral blocks activation, and the index and lifecycle status share one projection (v0.17.1)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -29,6 +29,23 @@ edits `scripts/work-orders.mjs`, `scripts/resume.mjs`, a new
 `scripts/lib/dependencies.mjs`, the open work-order files' leading metadata,
 and products 06 and 07; WO-042 edits the compiler; WO-036 edits the test
 runner). A recommendation, not a dependency token.
+
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-026",
+    "relation": "satisfied-by-release",
+    "release": "v0.5.2",
+    "reason": "the generated index this order extends"
+  },
+  {
+    "workOrderId": "WO-030",
+    "relation": "satisfied-by-release",
+    "release": "v0.7.0",
+    "reason": "per-order control segments and selection"
+  }
+]
+<!-- dotln-dependencies:end -->
 
 **Cites (read these sections):** 06-roadmap.md §Work-order navigation and
 identity (candidate; "Eligible now"; hard dependency graph as a distinct

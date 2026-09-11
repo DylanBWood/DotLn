@@ -26,6 +26,16 @@ replan checkpoint follows its receipt. It edits only `docs/evidence/WO-053/`
 and a fixture that pins the receipt's shape. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-052",
+    "relation": "hard",
+    "reason": "the host, events and receipt the episode runs through"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 00-vision.md §The one-paragraph story;
 01-principles.md Principles 6 and 15; 06-roadmap.md §Application version
 pending — Source-to-deliverable vertical (the rung this proof opens);

@@ -23,6 +23,26 @@ the fork's own planning pass and never filed here; this order records only
 the receipt under `docs/evidence/WO-083/`. A
 recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-118",
+    "relation": "hard",
+    "reason": "the resident-owned loop is proven from a starter instance before the fork runs it against a real target"
+  },
+  {
+    "workOrderId": "WO-082",
+    "relation": "hard",
+    "reason": "the synthetic pilot precedes the witnessed run"
+  },
+  {
+    "workOrderId": "WO-073",
+    "relation": "hard",
+    "reason": "the profile convention the fork's profile follows"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 12-workstream-application.md §Replacing a
 successful but costly workflow (the four measures) and §One workstream
 across repositories; `docs/work-orders/WO-034-cross-repository-workstream-pilot.md`

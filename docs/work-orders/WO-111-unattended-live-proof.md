@@ -23,6 +23,36 @@ source-change primitive); WO-054 merged (verification of each change).
 replan checkpoint follows its receipt together with WO-053's. It adds
 `docs/evidence/WO-111/`. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-100",
+    "relation": "hard",
+    "reason": "the portfolio and derivation"
+  },
+  {
+    "workOrderId": "WO-119",
+    "relation": "hard",
+    "reason": "discovery of the seeded imperfections"
+  },
+  {
+    "workOrderId": "WO-099",
+    "relation": "hard",
+    "reason": "the mission check runs during the hour"
+  },
+  {
+    "workOrderId": "WO-053",
+    "relation": "hard",
+    "reason": "the live source-change primitive"
+  },
+  {
+    "workOrderId": "WO-054",
+    "relation": "hard",
+    "reason": "verification of each change"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 00-vision.md §The one-paragraph story;
 03-architecture.md §Operator-presence policy; `docs/evidence/WO-053/README.md`
 (the receipt shape); the orders named in Depends on.

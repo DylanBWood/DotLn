@@ -23,6 +23,7 @@ import {
   renderControlUsage,
 } from "./lib/control-usage.mjs";
 import { requireLifecycleEvidence } from "./lib/lifecycle-evidence.mjs";
+import { dependencyRefusal, readDependencies } from "./lib/dependencies.mjs";
 import {
   projectControlBeacon,
   restrictedBeaconBriefing,
@@ -662,7 +663,7 @@ const projectOrder = (state, events) => {
   };
 };
 
-export const statusProjection = (input, workOrder) => {
+export const statusProjection = (input, workOrder, dependencies = null) => {
   const control = Array.isArray(input)
     ? controlFromSources(
         new Map([[LEGACY_CONTROL_PATH, input.map(JSON.stringify).join("\n")]]),
@@ -678,6 +679,7 @@ export const statusProjection = (input, workOrder) => {
   const state = control.orders.get(id)?.state ?? fold([]);
   return {
     ...projectOrder(state, eventsForOrder(control, id)),
+    dependencies,
     orders: [...control.orders].map(([order, row]) => ({
       workOrder: order,
       phase: row.state.phase,
@@ -791,7 +793,15 @@ export const main = async (argv = process.argv.slice(2)) => {
       warnIfProjectionDisagrees(rendered);
       message =
         args[0] === "--json"
-          ? JSON.stringify(statusProjection(control, selected), null, 2)
+          ? JSON.stringify(
+              statusProjection(
+                control,
+                selected,
+                readDependencies(repoRoot, state, control),
+              ),
+              null,
+              2,
+            )
           : rendered;
       if (
         args[0] !== "--json" &&
@@ -828,6 +838,13 @@ export const main = async (argv = process.argv.slice(2)) => {
           "usage: resume activate WO-NNN docs/work-orders/<file>.md",
         );
       workOrderDeclaration(workOrderPath, { workOrderId });
+      const dependencies = readDependencies(
+        repoRoot,
+        { workOrderId, workOrderPath },
+        control,
+      );
+      if (dependencies.blocking.length)
+        throw new Error(dependencyRefusal(workOrderPath, dependencies));
       appendTransition(action, {
         type: "WorkOrderActivated",
         workOrderId,

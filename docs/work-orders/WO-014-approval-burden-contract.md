@@ -33,6 +33,23 @@ already-understood defect; WO-006 merged — the runbook, ADR-0003 through
 ADR-0005, and the deferral this order discharges. Branch from `origin/main`
 after the WO-013 close.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-013",
+    "relation": "satisfied-by-release",
+    "release": "v0.3.1",
+    "reason": "the order's own Depends on"
+  },
+  {
+    "workOrderId": "WO-006",
+    "relation": "satisfied-by-release",
+    "release": "v0.2.3",
+    "reason": "the order's own Depends on"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 04-interfaces.md §Terminal first, console
 equal — the interruption policy (interruptions arrive only as decision packets
 under six materiality conditions; the never-ask list) and the candidate

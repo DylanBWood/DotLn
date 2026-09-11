@@ -16,6 +16,17 @@ at `v0.7.0`).
 **Recommended placement:** any free lane under the dated planning deferral;
 it edits `scripts/worktree.mjs`. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-030",
+    "relation": "satisfied-by-release",
+    "release": "v0.7.0",
+    "reason": "per-order segments and checkpoints"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 §Phase 4 (the umbrella's wording, including the 2026-09-07 correction);
 `docs/planning/concurrent-work-orders-plan.md` (lane rules; the helper as a

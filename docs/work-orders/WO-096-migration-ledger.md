@@ -20,6 +20,29 @@ until WO-053 closes or the operator waives it.
 `docs/lineage/feedback-migration.md`. A recommendation, not a dependency
 token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-011",
+    "relation": "satisfied-by-release",
+    "release": "v0.13.0",
+    "reason": "the feedback contract and the ten units"
+  },
+  {
+    "workOrderId": "WO-039",
+    "relation": "satisfied-by-close",
+    "reason": "the harness target the batch lowers through"
+  },
+  {
+    "workOrderId": "WO-053",
+    "relation": "planning-deferral",
+    "date": "2026-09-08",
+    "reason": "a real external episode is a better classification input than another corpus pass",
+    "until": "WO-053"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-040-rule-migration-batch-one.md`
 (the umbrella's ledger rules, verbatim the authority for the row shape);
 02-domain-model.md §Feedback; `scripts/feedback-evidence.mjs`;

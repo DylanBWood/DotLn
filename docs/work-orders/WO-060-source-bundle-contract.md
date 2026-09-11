@@ -21,6 +21,17 @@ contract; satisfied at `v0.4.0`).
 (a new source-bundle module), its tests and product 03. A recommendation,
 not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-008",
+    "relation": "satisfied-by-release",
+    "release": "v0.4.0",
+    "reason": "the pure compiler package that holds the contract"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 03-architecture.md §Ports (`SourceAdapter`;
 the external target binding rule); 12-workstream-application.md §One outcome
 from request to return (the artifact's sections and discussion);

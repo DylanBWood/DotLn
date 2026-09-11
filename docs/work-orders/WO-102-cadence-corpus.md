@@ -24,6 +24,21 @@ map and future explicit metadata. This update changes no other scope.
 v0.2.1 close. Independent of WO-101 (disjoint fixture and harness filenames)
 and of the mainline; the two kernel-corpus orders can grind in either order.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-004",
+    "relation": "satisfied-by-close",
+    "reason": "The reviewed environment baseline is required before the corpus run."
+  },
+  {
+    "workOrderId": "WO-101",
+    "relation": "reference-only",
+    "reason": "The corpus orders are independent, with disjoint fixture and harness filenames."
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** packages/kernel/README.md (evaluation limited
 to Cadence `Once, After, Every, Until, Gate, Backoff`); 02-domain-model.md
 (Cadence temporal algebra, virtual-time evaluation, conditions-as-data);

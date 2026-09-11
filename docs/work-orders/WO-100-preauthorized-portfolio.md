@@ -27,6 +27,41 @@ durable record with the same identity and lifecycle).
 configuration schema, adds `packages/skeleton/src/portfolio.ts`, and the
 resident's activation path. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-068",
+    "relation": "hard",
+    "reason": "the resident that derives and dispatches"
+  },
+  {
+    "workOrderId": "WO-052",
+    "relation": "hard",
+    "reason": "a derived order executes through the source-change host"
+  },
+  {
+    "workOrderId": "WO-054",
+    "relation": "hard",
+    "reason": "every derived order is verified before the curve advances"
+  },
+  {
+    "workOrderId": "WO-042",
+    "relation": "hard",
+    "reason": "the derived order's authority is the portfolio's under the floor"
+  },
+  {
+    "workOrderId": "WO-119",
+    "relation": "hard",
+    "reason": "the executable discovery producer whose candidates are the input"
+  },
+  {
+    "workOrderId": "WO-120",
+    "relation": "hard",
+    "reason": "a derived order is a durable record with the same identity and lifecycle"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 06-roadmap.md §Candidate — unattended
 work-order portfolio and §Candidate — budget-window work-order ladders;
 03-architecture.md §Candidate — progressive absence authority and return

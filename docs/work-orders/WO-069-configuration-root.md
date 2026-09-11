@@ -20,6 +20,17 @@ operator waives it); it edits every `scripts/*.mjs` and `scripts/lib/*.mjs`
 root literal and adds `scripts/lib/config.mjs`. A recommendation, not a
 dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-018",
+    "relation": "satisfied-by-release",
+    "release": "v0.4.1",
+    "reason": "scripts/lib"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 §Phase 1 (the umbrella's wording); 10-ir-compatibility.md §Separate version
 axes (a configuration schema is its own axis); 07-execution-guide.md

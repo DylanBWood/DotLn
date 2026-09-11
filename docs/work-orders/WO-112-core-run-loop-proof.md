@@ -27,6 +27,46 @@ the loop runs against anything the operator keeps).
 checkpoint follows its receipt. It adds the composition command and
 `docs/evidence/WO-112/`. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-123",
+    "relation": "hard",
+    "reason": "the composition this run executes"
+  },
+  {
+    "workOrderId": "WO-053",
+    "relation": "hard",
+    "reason": "the live source-change primitive"
+  },
+  {
+    "workOrderId": "WO-056",
+    "relation": "hard",
+    "reason": "independent verification and repair, live"
+  },
+  {
+    "workOrderId": "WO-045",
+    "relation": "hard",
+    "reason": "the codecs are mandatory before the loop runs against anything the operator keeps"
+  },
+  {
+    "workOrderId": "WO-046",
+    "relation": "hard",
+    "reason": "a persisted continuation of an unsupported kind must fail at decode"
+  },
+  {
+    "workOrderId": "WO-047",
+    "relation": "hard",
+    "reason": "the second state shape replays through an explicit projector"
+  },
+  {
+    "workOrderId": "WO-048",
+    "relation": "hard",
+    "reason": "host recovery refuses malformed state before dispatch"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 00-vision.md §The one-paragraph story;
 06-roadmap.md §Application version pending — Source-to-deliverable vertical
 (the rung's exit criteria and measures); 12-workstream-application.md

@@ -20,6 +20,31 @@ with something to show).
 **Recommended placement:** after WO-116; it edits `packages/console` and
 adds `docs/evidence/WO-117/`. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-114",
+    "relation": "hard",
+    "reason": "the status projection"
+  },
+  {
+    "workOrderId": "WO-115",
+    "relation": "hard",
+    "reason": "the commands"
+  },
+  {
+    "workOrderId": "WO-116",
+    "relation": "hard",
+    "reason": "the audit view"
+  },
+  {
+    "workOrderId": "WO-099",
+    "relation": "hard",
+    "reason": "a live resident with something to show"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** 04-interfaces.md §Terminal first, console
 equal and §Later console hosts; 13-uifa-roles.md §UIFA showrunner;
 `packages/console/README.md`.

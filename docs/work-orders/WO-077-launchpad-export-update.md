@@ -16,6 +16,16 @@ priority. Clean-room screen: no stop condition.
 **Recommended placement:** after WO-074, in a free lane; it edits
 `scripts/launchpad.mjs`. A recommendation, not a dependency token.
 
+<!-- dotln-dependencies:start -->
+[
+  {
+    "workOrderId": "WO-074",
+    "relation": "hard",
+    "reason": "a prior manifest to update from"
+  }
+]
+<!-- dotln-dependencies:end -->
+
 **Cites (read these sections):** `docs/work-orders/WO-033-compiled-starter-export.md`
 (the update item and the instance-actions note); 03-architecture.md
 §Platform and instance boundary; ADR-0006 Decision 7.
