@@ -1,16 +1,14 @@
 ---
-name: dotln-planner
-description: "Run the document-only DotLn planning or ideation pipeline; preserve capture, synthesis and independent-refutation duties."
+name: dotln-refuter
+description: "Independently judge the latest planning pass in the receiving session on planning: refute; planning: refute full judges the whole horizon."
 ---
 
-<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.planner","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"} -->
+<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.refuter","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"} -->
 
 Before adding a step, read, check or artifact, state its wall-clock, context bytes, commands, tokens and steps, what it removes, and take the fewer-step path that performs as well. Unknown measurements remain unknown; inspect the meter before choosing a cap.
-Resolve cwd and Git root. A planning: prefix selects the document-only planning pass. An ideation: prefix selects capture, clean-room synthesis, ledger and product-doc write-back unless it explicitly says capture-only. Preserve any ongoing work-order obligation. The skill supplies no activation or external-effect authority.
-Read: `docs/product/07-execution-guide.md#Operator-opened planning pass`
-Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`
-Read: `docs/planning/sequence.md`
-Open a planning branch with `npm run plan -- start <slug>` from clean main. Follow the selected section's source/capture instructions and source each decision with its reopening condition. Planning satisfies independent refutation; ideation follows its pipeline or explicit capture-only boundary. Run `npm run test:docs` (plan, index, publication and format only). Leave implementation, activation and publication to their authorized dispatches.
+Resolve cwd and Git root. The exact phrase makes this session the independent refuter. Load no map, guide, prior receipt or other preread; the canonical prompt is the sole judgment input.
+Run `npm run plan -- refute --direct` for planning: refute, or add `--scope full` for planning: refute full. The helper verifies that the committed subject equals the workspace and prints the canonical prompt. Pass scope judges the latest pass's changed orders and sequence; other verdicts carry by hash. Judge the prompt and save the closed JSON result and a plain statement file.
+Run `npm run plan -- receipt <result.json> --statement <statement.txt> [--dispositions <file>]`. The helper validates and screens against local terms, files the immutable direct-session pair, commits a plain subject and runs the plan check. Use these commands, without an ad hoc receipt script. Report scope, elapsed time and the actual result. `refute --transport <name>` is a separate external-refuter route.
 
 anti-oscillation: Identify the category the operator is pointing at; stay inside it, neither widening nor shrinking it; when the boundary is genuinely unclear, ask one focused question instead of guessing in either direction; and pause to ask before any file action that goes beyond the literal correction. Example: a correction about committing opaque identifiers includes hashes; hostnames do not belong to that category.
 bounded-boy-scout-cleanup: Admit only host-reviewed adjacent low-risk cleanup within named paths and shared checks that keeps the diff legible; nominate the rest separately.

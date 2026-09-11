@@ -1,4 +1,4 @@
-// Origin: {"ids":["contributor.permissions"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"}
+// Origin: {"ids":["read-your-own-output"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"}
 try {
 const { feedbackBoundary } = await import("../../.runtime/harness/a4a65a94d36a276d/packages/skeleton/dist/src/feedback-boundary.js");
 const { runHarnessHook } = await import("../../.runtime/harness/a4a65a94d36a276d/packages/skeleton/dist/src/harness-host.js");
@@ -77,57 +77,6 @@ await runHarnessHook({
     "functions.exec": "shell",
     "collaboration.spawn_agent": "spawn"
   },
-  "kind": "permission",
-  "envelope": {
-    "allowedEffects": [
-      "repo.read",
-      "repo.write",
-      "shell.run",
-      "git.local",
-      "lifecycle.run"
-    ],
-    "authorityEnvelopeId": "contributor.sandboxed",
-    "deniedEffects": [
-      "credentials.access",
-      "transport.ssh",
-      "settings.user",
-      "sandbox.disable",
-      "remote.unapproved",
-      "package.publish"
-    ],
-    "expiresAt": 9007199254740991,
-    "requiredEvidence": [
-      "resolved-worktree"
-    ],
-    "resourceLimits": {
-      "writers": 1
-    },
-    "revocationConditions": [],
-    "revocationEventTypes": []
-  },
-  "facets": [
-    {
-      "facetId": "contributor.permissions",
-      "kind": "permission-guard",
-      "matchers": [
-        {
-          "effect": "transport.ssh",
-          "deny": "Bash(ssh *)"
-        },
-        {
-          "effect": "transport.ssh",
-          "deny": "Bash(scp *)"
-        },
-        {
-          "effect": "transport.ssh",
-          "deny": "Bash(sftp *)"
-        },
-        {
-          "effect": "package.publish",
-          "deny": "Bash(npm publish *)"
-        }
-      ]
-    }
-  ]
+  "kind": "observe"
 }, feedbackBoundary);
 } catch { process.stdout.write("{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"DOTLN_HARNESS_REFUSED: built adapter unavailable\"}}"); }

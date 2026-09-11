@@ -1,15 +1,19 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:709272ae4905aaa6"}
-const { runCommitMessageHook } = await import("../../packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/a4a65a94d36a276d/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/a4a65a94d36a276d/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.8.0",
+  "compilerPackageVersion": "0.9.0",
   "runtime": {
-    "skeletonVersion": "0.14.0",
+    "skeletonVersion": "0.15.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/feedback.js",
-        "hash": "fnv1a64:dc9688aecc4cb056"
+        "hash": "fnv1a64:4bdd1cdb762a966b"
+      },
+      {
+        "path": "packages/compiler/dist/src/attribution.mjs",
+        "hash": "fnv1a64:7a65d9bab4b81dda"
       },
       {
         "path": "packages/skeleton/dist/src/feedback-boundary.js",
@@ -21,21 +25,34 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:589298d41425851a"
+        "hash": "fnv1a64:7fecefc9b1846878"
+      },
+      {
+        "path": "packages/skeleton/dist/src/harness-command.js",
+        "hash": "fnv1a64:7c2aa377e24dad66"
+      },
+      {
+        "path": "packages/skeleton/dist/src/gate-evidence.mjs",
+        "hash": "fnv1a64:d75b06aeb2034085"
+      },
+      {
+        "path": "packages/skeleton/dist/src/usage-observation.mjs",
+        "hash": "fnv1a64:80e01fab579951b9"
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
-    ]
+    ],
+    "snapshot": ".runtime/harness/a4a65a94d36a276d"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.8.0",
+    "compilerPackageVersion": "0.9.0",
     "units": [
       {
         "unitId": "no-attribution",
-        "version": 1,
+        "version": 2,
         "incident": {
           "sourceRefs": [
             "docs/lineage/idea-ledger.md",
@@ -45,8 +62,8 @@ await runCommitMessageHook({
           "summary": "The founding mapping selects attribution settings plus a commit hook as defense in depth for the no-attribution requirement.",
           "retainedSource": "public-reference"
         },
-        "undesiredBehavior": "Do not append an AI coauthor trailer or generated-with footer to a commit or publication result.",
-        "desiredBehavior": "Disable available automatic attribution in the invocation settings and reject matching AI trailers or footers at the publication boundary; preserve ordinary subject text and human coauthors.",
+        "undesiredBehavior": "Do not append AI coauthors, generated-with footers, harness-suggested session trailers or session URLs to commits, PR titles or bodies, or release notes.",
+        "desiredBehavior": "Disable automatic attribution and reject AI trailers, footers and session links at publication; preserve human coauthors and ordinary subject text.",
         "scope": [
           "equipped-feedback-host",
           "personal-profile"
@@ -54,7 +71,7 @@ await runCommitMessageHook({
         "trigger": "attribution",
         "mechanism": {
           "handler": "attribution",
-          "version": 1,
+          "version": 2,
           "rationale": "A deterministic footer/trailer predicate is sufficient; invocation settings reduce generation and the commit hook checks actual bytes."
         },
         "enforcement": "hard",
@@ -64,13 +81,15 @@ await runCommitMessageHook({
           "real-git-hook-result"
         ],
         "regressionFixtures": [
-          "WO-011 regression no-attribution"
+          "WO-126 no-attribution version 2"
         ],
         "conflicts": [],
-        "supersedes": [],
+        "supersedes": [
+          "no-attribution@1"
+        ],
         "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
         "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
-        "proseEquivalent": "Do not append an AI coauthor trailer or generated-with footer to a commit or publication result. Disable available automatic attribution in the invocation settings and reject matching AI trailers or footers at the publication boundary; preserve ordinary subject text and human coauthors."
+        "proseEquivalent": "Do not append AI coauthors, generated-with footers, harness-suggested session trailers or session URLs to commits, PR titles or bodies, or release notes. Disable automatic attribution and reject AI trailers, footers and session links at publication; preserve human coauthors and ordinary subject text."
       }
     ],
     "mechanisms": [
@@ -82,6 +101,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:b4d28b1150ef79c5"
+    "policyHash": "fnv1a64:33b32ba218b22f10"
   }
 }, feedbackBoundary);
