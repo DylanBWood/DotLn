@@ -10,6 +10,7 @@ import {
   type LoadoutGraph,
 } from "@dotln/compiler";
 import { personalFeedbackUnits } from "./feedback.js";
+import { harnessToolEffects } from "../harness-command.js";
 import {
   defaultExecutorSupportIds,
   executorSupportIds,
@@ -18,7 +19,10 @@ import {
 } from "./executor-supports.js";
 
 const handlers = personalFeedbackUnits.map((unit) => unit.trigger);
+const processCost =
+  "Before adding a step, read, check or artifact, state its wall-clock, context bytes, commands, tokens and steps, what it removes, and take the fewer-step path that performs as well. Unknown measurements remain unknown; inspect the meter before choosing a cap.";
 const common = [
+  processCost,
   "Resolve physical cwd and Git root before changing files or running Git commands. Work only in the selected worktree; one writable coding agent owns it.",
   "Run `npm run resume --silent -- status --json`; use its canonical selected order, phase, report paths, and legal actions. A stale Markdown projection is repaired only by the next legal transition.",
   "Status may name artifacts for other roles. Load a report only when this role's Read directives or the active order's citations select it; a path in status is metadata, not a read directive.",
@@ -31,12 +35,12 @@ const common = [
   "Read: `@subject-files`",
   "Read: `package.json`",
   "Run `npm run work-orders -- index` after dispatch and after recording a result. Refresh before the evidence gate; lifecycle commands do not regenerate that index.",
-  "Keep durable decisions in the cited product docs and append changed ideas to the ledger. Preserve settled outcomes and rejection reasons; use only original personal source material.",
+  "Write durable product decisions to the cited product docs and `docs/evidence/WO-NNN/decisions.md`, naming the operator dispatch, evidence, alternatives and reopening condition. Run `npm run meta` to refresh the decisions index. The ledger is for operator ideation and planning synthesis only. For an order filed before 2026-09-09, a ledger-entry duty is discharged by its decisions file and index row; the work-order index marks this substitution. Record a correction the same day: what was misread, what was meant and what changed. Decided means sourced, not frozen; an order's non-goal fences that order alone.",
 ];
 const actor =
   "Completion flags: `--harness <harness> --harness-version <version> --model <model> --effort <level> --source <self-reported|harness-readback|operator-attested>`. Use exposed values; an unknown required effort blocks the handoff. The repository's Codex default is GPT-6 Astra at max, operator-attested unless actual readback is exposed.";
 const evidence =
-  "Run the order's evidence gate and `npm test`, then `git diff --check`. Read every changed output at its current bytes. Claude's observer combines verified Read ranges; for oversized lines use `node scripts/harness.mjs read-output <path> --offset 0 --length 8192`, continuing at each returned nextOffset until totalBytes. Receipts require the observed delivery of every byte at one file hash. `npm run harness -- evidence` executes the fixed required checks and records host evidence for the installed Claude completion hooks; it never replaces work-order acceptance evidence.";
+  "Finish measurements, required generation, release preparation and authored reports before completion. Run only `npm run harness -- evidence` for the final full gate and diff check; it reuses current successes. A separate fast gate is for an explicit fresh measurement, not a turn-end obligation. Diagnose failures, then retry this command; preflights stop costly suites and passing source checks are retained. A failed verification or review needs its reproduction and `git diff --check`. Review this session's authored outputs at current bytes; inherited changes add no read obligation. Generated files and files over 64 KB owe their declared generation or validation check. Use `node scripts/harness.mjs read-output <path> --offset 0 --length 8192` for bounded delivery and follow nextOffset. Claude observes tool reads; Codex uses the explicit begin/observe/delivered adapter without claiming automatic hooks. Stop gives one advisory line and releases the writer; completion commands enforce the same evidence conditions.";
 export const contributorRoles: readonly HarnessRole[] = [
   {
     facetId: "contributor.executor",
@@ -88,7 +92,7 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `docs/product/08-publication-compiler.md#PRs and commits`",
       evidence,
       actor,
-      "Prepare the contained PR.md and five-section RELEASE-NOTES.md beside the report, using the current publication contract; use one physical line per prose paragraph. A relevant gitmoji shortcode belongs in the PR title; commit subjects stay plain and contain no AI attribution.",
+      "Prepare the contained PR.md and five-section RELEASE-NOTES.md beside the report, using the current publication contract; use one physical line per prose paragraph. Write the PR title as a headline: one clause saying what changed for the reader and why it matters, the lede first, sized by its content and never by the previous title, with no implementation inventory, version list or repeated work-order prose. A relevant gitmoji shortcode belongs in the PR title; commit subjects stay plain and contain no AI attribution.",
       "Use exactly one `**Actor attestation:** {<normalized actor JSON>}` header matching the flags, then record `npm run resume -- final-review-result pass|fail <actor-flags>`, refresh the index and reread updated outputs in `@subject-files`. On failure, stop with findings. On pass, inspect each staged diff and commit coherent reviewed changes, then run `npm run worktree -- publish <id> --title <reviewed-title> --body-file <contained-committed-PR.md>`.",
       "The operator's final-review phrase authorizes only committing reviewed state, pushing its WO branch, and opening its PR. Never merge, push main, publish a release, change account settings, or publish packages. Return the helper's exact post-merge release-close handoff.",
     ],
@@ -101,14 +105,15 @@ export const contributorRoles: readonly HarnessRole[] = [
     intents: ["resume: release close"],
     feedbackHandlers: handlers,
     procedure: [
-      "Start this role from main so its installed hooks survive teardown of the reviewed worktree. Resolve cwd and Git root, then run `npm run resume --silent -- status --json`. The exact release-close phrase carries the narrow authority below; the skill itself grants none.",
+      processCost,
+      "Start from main so hooks survive teardown. Resolve cwd and Git root; run `npm run resume --silent -- status --json`. Only the exact release-close phrase grants the authority below.",
       "Read: `@work-order`",
       "Read: `@citations`",
       "Read: `@final-review`",
-      "Run `npm run resume -- release-close` to obtain the canonical absolute command, or use the exact post-merge handoff already emitted by worktree publish. Run that `node <reviewed-subject>/scripts/release.mjs close <id> --publish` command from main; after subject removal use main's copy.",
-      "The helper owns merge/clean/material gates, main synchronization, tests, worktree teardown, annotated tag validation and matching GitHub Release creation. A missing or failed gate blocks completion; retain its evidence and do not force teardown or retry a recorded lifecycle transition.",
-      "Back up and reconcile single-copy ignored intake before teardown. Preserve any other non-disposable ignored material; never delete it to satisfy the gate. If Release creation failed after tag publication, rerun the close helper from updated main.",
-      "Publish only the validated annotated source tag and its matching reviewed Release, or report the honest no-release result. Never edit a published Release, push main, merge a PR, publish packages/binaries, or change repository/user settings. Report the exact executable result and any remaining obligation.",
+      "Run `npm run resume -- release-close` for the canonical command, or use worktree publish's exact handoff. Invoke it from main; after subject removal use main's helper.",
+      "The helper checks merge, cleanliness, retained material, evidence and tag/Release identity before teardown. Report a refusal with its evidence; do not force teardown or repeat a recorded transition.",
+      "The close helper owns intake reconciliation and prints byte-preserving collision receipts; `--dry-run` previews without writes. Keep terms.txt and local control state. Do not write an ad hoc closeout script. If Release creation failed after tag publication, rerun the helper from updated main.",
+      "Publish only the validated source tag and reviewed Release, or report no-release. Never edit published Releases, push main, merge PRs, publish packages/binaries or change settings. Report the result and remaining obligations.",
     ],
   },
   {
@@ -119,11 +124,26 @@ export const contributorRoles: readonly HarnessRole[] = [
     intents: ["planning:", "ideation:"],
     feedbackHandlers: handlers,
     procedure: [
+      processCost,
       "Resolve cwd and Git root. A planning: prefix selects the document-only planning pass. An ideation: prefix selects capture, clean-room synthesis, ledger and product-doc write-back unless it explicitly says capture-only. Preserve any ongoing work-order obligation. The skill supplies no activation or external-effect authority.",
       "Read: `docs/product/07-execution-guide.md#Operator-opened planning pass`",
       "Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`",
-      "Read: `docs/planning/work-order-map.md`",
-      "Follow the selected section's source/capture instructions. Planning must satisfy its independent refutation gate; ideation follows its complete pipeline or explicit capture-only boundary. Preserve settled decisions and leave implementation, activation and publication for their authorized dispatches.",
+      "Read: `docs/planning/sequence.md`",
+      "Open a planning branch with `npm run plan -- start <slug>` from clean main. Follow the selected section's source/capture instructions and source each decision with its reopening condition. Planning satisfies independent refutation; ideation follows its pipeline or explicit capture-only boundary. Run `npm run test:docs` (plan, index, publication and format only). Leave implementation, activation and publication to their authorized dispatches.",
+    ],
+  },
+  {
+    facetId: "contributor.refuter",
+    name: "refuter",
+    description:
+      "Independently judge the latest planning pass in the receiving session on planning: refute; planning: refute full judges the whole horizon.",
+    intents: ["planning: refute", "planning: refute full"],
+    feedbackHandlers: handlers,
+    procedure: [
+      processCost,
+      "Resolve cwd and Git root. The exact phrase makes this session the independent refuter. Load no map, guide, prior receipt or other preread; the canonical prompt is the sole judgment input.",
+      "Run `npm run plan -- refute --direct` for planning: refute, or add `--scope full` for planning: refute full. The helper verifies that the committed subject equals the workspace and prints the canonical prompt. Pass scope judges the latest pass's changed orders and sequence; other verdicts carry by hash. Judge the prompt and save the closed JSON result and a plain statement file.",
+      "Run `npm run plan -- receipt <result.json> --statement <statement.txt> [--dispositions <file>]`. The helper validates and screens against local terms, files the immutable direct-session pair, commits a plain subject and runs the plan check. Use these commands, without an ad hoc receipt script. Report scope, elapsed time and the actual result. `refute --transport <name>` is a separate external-refuter route.",
     ],
   },
 ];
@@ -451,6 +471,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
     profileId: "claude-code-2.1.263",
     harness: "claude-code",
     observedVersion: "2.1.263",
+    tools: harnessToolEffects,
     events: {
       PreToolUse: { available: true, evidence: `${record}#C1` },
       PostToolUse: { available: true, evidence: `${record}#C2` },
@@ -475,12 +496,13 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "CLAUDE.md",
     },
     refusal: "claude-command-json-v1",
-    runtime: { skeletonVersion: "0.14.0", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.0", boundaryContract: "feedback-v1" },
   },
   {
     profileId: "codex-cli-0.153.4",
     harness: "codex-cli",
     observedVersion: "0.153.4",
+    tools: harnessToolEffects,
     events: Object.fromEntries(
       ["PreToolUse", "PostToolUse", "Stop", "UserPromptSubmit"].map((event) => [
         event,
@@ -510,6 +532,6 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "AGENTS.md",
     },
     refusal: "unavailable",
-    runtime: { skeletonVersion: "0.14.0", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.0", boundaryContract: "feedback-v1" },
   },
 ];

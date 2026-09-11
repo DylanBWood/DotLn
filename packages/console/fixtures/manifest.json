@@ -1,6 +1,6 @@
 {
   "fixtureVersion": "uifa-board-fixtures-v1",
-  "capture": "2026-09-07 WO-032 executor; canonical records and source-format snapshots. Constellation checkout addresses replaced by declared fixture addresses; no liveness or human identity inferred. 2026-09-08 WO-039 integration: the self-hosted case follows the WO-039 feedback edition recorded under compiler 0.7.0, because the skeleton refuses the WO-011 edition's verifier stream as persisted compilation drift; the WO-011 edition remains historical bytes. 2026-09-08 WO-042 integration: the self-hosted case follows the live WO-042 feedback edition under compiler 0.8.0; prior editions remain historical bytes. WO-042 final source: the self-hosted case and collector follow immutable feedback revision 002 after the console patch changed the declared lock projection; the earlier WO-042 feedback directory stays intact.",
+  "capture": "2026-09-07 WO-032 executor; canonical records and source-format snapshots. Constellation checkout addresses replaced by declared fixture addresses; no liveness or human identity inferred. 2026-09-08 WO-039 integration: the self-hosted case follows the WO-039 feedback edition recorded under compiler 0.7.0, because the skeleton refuses the WO-011 edition's verifier stream as persisted compilation drift; the WO-011 edition remains historical bytes. 2026-09-08 WO-042 integration: the self-hosted case follows the live WO-042 feedback edition under compiler 0.8.0; prior editions remain historical bytes. WO-042 final source: the self-hosted case and collector follow immutable feedback revision 002 after the console patch changed the declared lock projection; the earlier WO-042 feedback directory stays intact. 2026-09-09 WO-126 integration: self-hosted input follows feedback revision 002 under compiler 0.9.0; the current v2 unit snapshot distinguishes prose/advice from prevented incidents. Prior source editions and the v1 unit snapshot remain intact.",
   "inputs": {
     "loadouts": {
       "path": "packages/console/fixtures/inputs/loadouts.json",
@@ -69,22 +69,22 @@
       "sha256": "4f89e73d7776c7d990f9ba1cea9fcfe0192f8d6cb02f38a24379645193467029"
     },
     "selfhostAudit": {
-      "path": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl",
-      "ref": "docs/evidence/WO-042/feedback-002/selfhost-audit.jsonl",
+      "path": "docs/evidence/WO-126/feedback-002/selfhost-audit.jsonl",
+      "ref": "docs/evidence/WO-126/feedback-002/selfhost-audit.jsonl",
       "format": "log",
-      "sha256": "72ce567466ae19d89638b719758d267af0a2afe28542ac51aaa7c051e588897c"
+      "sha256": "004dc4908d25ec8c4ba2093ced8f37603976ef90256b223e09d89a3fd1007137"
     },
     "selfhostVerifier": {
-      "path": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl",
-      "ref": "docs/evidence/WO-042/feedback-002/selfhost-verification.jsonl",
+      "path": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl",
+      "ref": "docs/evidence/WO-126/feedback-002/selfhost-verification.jsonl",
       "format": "log",
-      "sha256": "08f7d7cfb17cae474f57b4eba5d50ed05980150a66e57859b1c22664148fddfc"
+      "sha256": "89855582a77e00c13f1f56427ad9de7bb44a15d3a216a6f4fdbaed990af11ac3"
     },
     "maturity": {
-      "path": "docs/evidence/WO-042/feedback-002/feedback.json",
-      "ref": "docs/evidence/WO-042/feedback-002/feedback.json",
+      "path": "docs/evidence/WO-126/feedback-002/feedback.json",
+      "ref": "docs/evidence/WO-126/feedback-002/feedback.json",
       "format": "json",
-      "sha256": "f10e4503bd26a1f920a1fa0eb04acf9f0f78849c24cced13c652e609f36d3381"
+      "sha256": "371d462bac85db9a4d1eabd5870169332c20ae5802684a40b9347f87aa6ed71e"
     },
     "controlLog": {
       "path": "docs/control/orders/WO-031.jsonl",
@@ -133,6 +133,12 @@
       "ref": "docs/planning/refutations/2026-09-07-wo041-live-001.json",
       "format": "json",
       "sha256": "049fd2cd4be7cdc3fa8e700d9dc3bf0aeae7420c4497322536f43940dda17ea9"
+    },
+    "feedbackUnitsWo126": {
+      "path": "packages/console/fixtures/inputs/feedbackUnits-wo126.json",
+      "ref": "packages/skeleton/src/loadouts/feedback.ts",
+      "format": "json",
+      "sha256": "3f6091643c9d2620d3de50eece05de0e4c2a6a93ff5e83dc08274b6be8091c6d"
     }
   },
   "cases": {
@@ -151,16 +157,16 @@
       "stores": [
         {
           "id": "selfhost-audit",
-          "label": "WO-042 self-hosted executor",
+          "label": "WO-126 self-hosted executor",
           "input": "selfhostAudit"
         },
         {
           "id": "selfhost-verifier",
-          "label": "WO-042 self-hosted verifier",
+          "label": "WO-126 self-hosted verifier",
           "input": "selfhostVerifier"
         }
       ],
-      "feedbackUnits": "feedbackUnits",
+      "feedbackUnits": "feedbackUnitsWo126",
       "maturity": "maturity"
     },
     "control": {

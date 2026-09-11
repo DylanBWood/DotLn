@@ -14,7 +14,15 @@ import {
   unlinkSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import {
+  basename,
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   applyFeedbackCorrection,
@@ -28,6 +36,22 @@ import {
 } from "@dotln/compiler";
 import { harnessAuthorization } from "./reactor.js";
 import {
+  HarnessCommandRefused,
+  harnessToolEffects,
+  invocationEffects,
+  commitMessageInputs,
+} from "./harness-command.js";
+import {
+  gateTreeHash,
+  findGateCheck,
+  readGateChecks,
+  recordGateChecks,
+} from "./gate-evidence.mjs";
+import {
+  transcriptUsage,
+  recordUsageObservation,
+} from "./usage-observation.mjs";
+import {
   FeedbackRefused,
   feedbackContentHash,
   feedbackWriterFacts,
@@ -35,16 +59,19 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.14.0";
+export const HARNESS_HOST_VERSION = "0.15.0";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;
+  readonly transcript_path?: string;
   readonly session_id: string;
   readonly tool_name?: string;
+  readonly tool_use_id?: string;
   readonly tool_input?: Record<string, unknown>;
   readonly tool_response?: Record<string, unknown>;
   readonly prompt?: string;
   readonly effort?: { readonly level?: string };
+  readonly harness_version?: string;
   /** Claude sets this when it re-enters Stop because a Stop hook refused. */
   readonly stop_hook_active?: boolean;
 }
@@ -54,6 +81,8 @@ export interface HarnessCheck {
   readonly exitCode: number;
   readonly executed: boolean;
   readonly evidenceRef: string;
+  readonly treeHash?: string;
+  readonly durationMs?: number;
 }
 export interface HarnessSession {
   role?: string;
@@ -64,6 +93,13 @@ export interface HarnessSession {
   reads: { path: string; hash: string; evidenceRef: string }[];
   byteReads?: HarnessByteRead[];
   correction?: CorrectionState;
+  authoredPaths?: string[];
+  beforeOutputs?: Record<string, string>;
+  remainingWork?: string[];
+  startedAt?: string;
+  versionWarning?: string;
+  versionObservation?: { value: string; channel: string };
+  workOrder?: string;
 }
 interface HarnessByteRead {
   readonly path: string;
@@ -76,6 +112,7 @@ interface HookConfig {
   readonly runtime: {
     readonly skeletonVersion: string;
     readonly boundaryContract: "feedback-v1";
+    readonly snapshot?: string;
     readonly files?: readonly {
       readonly path: string;
       readonly hash: string;
@@ -92,6 +129,9 @@ interface HookConfig {
     readonly intents: readonly string[];
   }[];
   readonly instructionFile?: string;
+  readonly tools?: Readonly<
+    Record<string, "read" | "write" | "shell" | "spawn" | "interaction">
+  >;
 }
 interface ControlView {
   readonly workOrder: string | null;
@@ -188,17 +228,41 @@ const contained = (root: string, candidate: string) => {
     throw new Error("Path resolves outside the worktree");
   return path;
 };
-const readJson = <T>(path: string, fallback: T): T => {
-  if (!existsSync(path)) return fallback;
-  if (!lstatSync(path).isFile())
-    throw new Error("Host record is not a regular file");
-  return JSON.parse(readFileSync(path, "utf8")) as T;
+class HarnessStateUnreadable extends Error {}
+const readJson = <T>(path: string, fallback: T, sessionState = false): T => {
+  try {
+    if (!existsSync(path)) return fallback;
+    if (!lstatSync(path).isFile())
+      throw new Error("Host record is not a regular file");
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return JSON.parse(readFileSync(path, "utf8")) as T;
+      } catch (error) {
+        // One retry also tolerates a legacy writer's truncate/write window.
+        // Persistent damage remains a refusal, never a fresh empty session.
+        if (attempt !== 0 || !(error instanceof SyntaxError)) throw error;
+      }
+    }
+  } catch (error) {
+    if (sessionState)
+      throw new HarnessStateUnreadable("session state unreadable");
+    throw error;
+  }
 };
 const writeJson = (path: string, value: unknown) => {
   mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
   if (existsSync(path) && !lstatSync(path).isFile())
     throw new Error("Host record is not a regular file");
-  writeFileSync(path, JSON.stringify(value) + "\n", { mode: 0o600 });
+  const temporary = `${path}.${process.pid}.${randomBytes(12).toString("hex")}.tmp`;
+  try {
+    writeFileSync(temporary, JSON.stringify(value) + "\n", {
+      mode: 0o600,
+      flag: "wx",
+    });
+    renameSync(temporary, path);
+  } finally {
+    unlinkIfPresent(temporary);
+  }
 };
 const localEvents = (
   root: string,
@@ -251,6 +315,7 @@ const record = (
   appendFileSync(
     path,
     JSON.stringify({
+      recordedAt: new Date().toISOString(),
       event: input.hook_event_name,
       ...(input.tool_name ? { tool: input.tool_name } : {}),
       ...(input.effort?.level &&
@@ -305,6 +370,91 @@ function processTable(): readonly ProcessRow[] {
         ]
       : [];
   });
+}
+/** The running process can retain an older executable than PATH. Process-table
+ * observations stay local; persist only the version and its observation channel.
+ */
+export function observeSessionHarnessVersion(
+  inputVersion?: string,
+  env: NodeJS.ProcessEnv = process.env,
+  parent = process.ppid,
+  table?: readonly ProcessRow[],
+): { value: string; channel: string } | undefined {
+  if (inputVersion) return { value: inputVersion, channel: "harness_version" };
+  let executable = env.CLAUDE_CODE_EXECPATH;
+  let channel = executable ? "CLAUDE_CODE_EXECPATH" : "PATH";
+  if (!executable) {
+    const rows = new Map(
+      (table ?? processTable()).map((row) => [row.pid, row]),
+    );
+    const visited = new Set<number>();
+    for (
+      let pid = parent;
+      validPid(pid) && visited.size < 32 && !visited.has(pid);
+    ) {
+      visited.add(pid);
+      const row = rows.get(pid);
+      if (!row) break;
+      const version =
+        /\/claude\/versions\/(\d+\.\d+\.\d+)$/.exec(row.command)?.[1] ??
+        (/^\d+$/.test(env.CLAUDE_PID ?? "") &&
+        row.pid === Number(env.CLAUDE_PID) &&
+        /^\d+\.\d+\.\d+$/.test(row.command)
+          ? row.command
+          : undefined);
+      if (version) return { value: version, channel: "ancestor-executable" };
+      if (
+        row.pid === Number(env.CLAUDE_PID) ||
+        basename(row.command) === "claude"
+      ) {
+        // macOS comm can retain argv[0] rather than the executable's pathname.
+        // Inspect only this verified ancestor's text mapping; never a PID supplied
+        // without ancestry or arbitrary open files, and persist no process paths.
+        const mapped = spawnSync(
+          "lsof",
+          ["-a", "-p", String(row.pid), "-d", "txt", "-Fn"],
+          {
+            encoding: "utf8",
+            timeout: 1000,
+            maxBuffer: 1024 * 1024,
+            env,
+          },
+        );
+        const versions =
+          mapped.status === 0
+            ? [
+                ...new Set(
+                  mapped.stdout.split("\n").flatMap((line) => {
+                    const value =
+                      /^n.*\/claude\/versions\/(\d+\.\d+\.\d+)$/.exec(
+                        line,
+                      )?.[1];
+                    return value ? [value] : [];
+                  }),
+                ),
+              ]
+            : [];
+        if (versions.length === 1)
+          return { value: versions[0]!, channel: "ancestor-executable-lsof" };
+      }
+      if (isAbsolute(row.command) && /\/claude$/.test(row.command)) {
+        executable = row.command;
+        channel = "ancestor-executable";
+        break;
+      }
+      pid = row.ppid;
+    }
+  }
+  const probe = spawnSync(executable || "claude", ["--version"], {
+    encoding: "utf8",
+    timeout: 5000,
+    env,
+  });
+  const value =
+    probe.status === 0
+      ? probe.stdout.match(/\b\d+\.\d+\.\d+\b/)?.[0]
+      : undefined;
+  return value ? { value, channel } : undefined;
 }
 /**
  * The harness process owning this hook invocation: the declared pid when it is
@@ -770,38 +920,12 @@ function reserveHarnessWriter(
   }
   throw new Error("Writer reservation recovery exceeded its retry budget");
 }
-export function harnessSubject(root: string): string {
-  const paths = git(root, [
-    "ls-files",
-    "-z",
-    "--cached",
-    "--others",
-    "--exclude-standard",
-  ])
-    .split("\0")
-    .filter(Boolean);
-  const current = [...new Set(paths)]
-    .sort()
-    .filter(
-      (path) =>
-        !path.startsWith("docs/control/") &&
-        path !== "docs/work-orders/README.md" &&
-        !path.startsWith("docs/verifications/") &&
-        !path.startsWith("docs/final-reviews/"),
-    );
-  return feedbackContentHash(
-    current
-      .map((path) => {
-        const absolute = contained(root, path);
-        return `${path}\0${existsSync(absolute) && lstatSync(absolute).isFile() ? feedbackContentHash(readFileSync(absolute)) : "absent-or-link"}`;
-      })
-      .join("\n"),
-  );
-}
+export const harnessSubject = gateTreeHash;
+
 export function harnessOutputs(
   root: string,
   since = "HEAD",
-): readonly { path: string; hash: string }[] {
+): readonly { path: string; hash: string; bytes: number }[] {
   const changed = [
     ...git(
       root,
@@ -814,9 +938,245 @@ export function harnessOutputs(
   ].filter(Boolean);
   return [...new Set(changed)].sort().flatMap((path) => {
     const absolute = contained(root, path);
-    return existsSync(absolute) && lstatSync(absolute).isFile()
-      ? [{ path, hash: feedbackContentHash(readFileSync(absolute)) }]
+    if (!existsSync(absolute) || !lstatSync(absolute).isFile()) return [];
+    const bytes = readFileSync(absolute);
+    return [{ path, hash: feedbackContentHash(bytes), bytes: bytes.length }];
+  });
+}
+
+export function harnessOutputObligations(
+  root: string,
+  session: HarnessSession,
+) {
+  const budget = readJson<{ limits?: { readCapBytes?: number } }>(
+    join(root, "docs/control/budgets.json"),
+    {},
+  );
+  const cap = budget.limits?.readCapBytes ?? 65_536;
+  const paths = [...new Set(session.authoredPaths ?? [])].sort();
+  const attributes = paths.length
+    ? git(root, [
+        "check-attr",
+        "-z",
+        "dotln-generated",
+        "dotln-check",
+        "--",
+        ...paths,
+      ]).split("\0")
+    : [];
+  const generated = new Set<string>();
+  const checks = new Map<string, string>();
+  for (let i = 0; i + 2 < attributes.length; i += 3) {
+    const value = attributes[i + 2]!;
+    if (
+      attributes[i + 1] === "dotln-generated" &&
+      !["unspecified", "unset"].includes(value)
+    )
+      generated.add(attributes[i]!);
+    if (
+      attributes[i + 1] === "dotln-check" &&
+      /^suite:[a-z][a-z0-9-]*$/.test(value)
+    )
+      checks.set(attributes[i]!, value);
+  }
+  return paths.flatMap((path) => {
+    const absolute = contained(root, path);
+    if (!existsSync(absolute) || !lstatSync(absolute).isFile()) return [];
+    const bytes = readFileSync(absolute);
+    return [
+      {
+        path,
+        hash: feedbackContentHash(bytes),
+        bytes: bytes.length,
+        ...(checks.has(path) ? { checkId: checks.get(path)! } : {}),
+        obligation:
+          generated.has(path) || bytes.length > cap
+            ? ("check" as const)
+            : ("read" as const),
+      },
+    ];
+  });
+}
+const outputSnapshot = (root: string) =>
+  Object.fromEntries(
+    harnessOutputs(root).map(({ path, hash }) => [path, hash]),
+  );
+function observeAuthorship(
+  input: HarnessInput,
+  root: string,
+  session: HarnessSession,
+) {
+  if (
+    !["Edit", "Write", "Bash", "NotebookEdit"].includes(input.tool_name ?? "")
+  )
+    return;
+  const started = performance.now();
+  const outputs = harnessOutputs(root);
+  const snapshot = Object.fromEntries(
+    outputs.map(({ path, hash }) => [path, hash]),
+  );
+  if (input.hook_event_name === "PreToolUse") session.beforeOutputs = snapshot;
+  else {
+    if (!session.beforeOutputs)
+      throw new Error("Output authorship lacks a before-tool observation");
+    const changed = Object.keys(snapshot).filter(
+      (path) => snapshot[path] !== session.beforeOutputs![path],
+    );
+    session.authoredPaths = [
+      ...new Set([...(session.authoredPaths ?? []), ...changed]),
+    ];
+    session.beforeOutputs = snapshot;
+  }
+  return {
+    durationMs: performance.now() - started,
+    files: outputs.length,
+    bytes: outputs.reduce((total, output) => total + output.bytes, 0),
+    commands: 2,
+  };
+}
+
+/** Explicit entry for harnesses without automatic hooks. Existing dirt is a
+ * baseline, unless a mid-upgrade session explicitly adopts its current outputs.
+ */
+export function beginHarnessSession(
+  root: string,
+  sessionId: string,
+  role: string,
+  adoptCurrent: boolean | readonly string[] = false,
+) {
+  if (
+    ![
+      "executor",
+      "verifier",
+      "reviewer",
+      "release-close",
+      "planner",
+      "refuter",
+    ].includes(role) ||
+    !sessionId
+  )
+    throw new Error("Invalid harness session");
+  const input: HarnessInput = {
+    cwd: root,
+    session_id: sessionId,
+    hook_event_name: "UserPromptSubmit",
+  };
+  if (existsSync(statePath(root, input)))
+    throw new Error("Session already began; do not erase its observations");
+  const snapshot = outputSnapshot(root);
+  const adopted = Array.isArray(adoptCurrent)
+    ? [...new Set(adoptCurrent)]
+    : adoptCurrent
+      ? Object.keys(snapshot)
       : [];
+  if (adopted.some((path) => typeof path !== "string" || !(path in snapshot)))
+    throw new Error(
+      "Adopted outputs must name current changed files; inherited paths are not inferred",
+    );
+  const control = harnessControl(root);
+  const expected =
+    role === "executor"
+      ? control.phase === "repairing"
+        ? "RepairCompleted"
+        : "ImplementationReady"
+      : role === "verifier"
+        ? "VerificationCompleted"
+        : role === "reviewer"
+          ? "FinalReviewCompleted"
+          : null;
+  const session: HarnessSession = {
+    role,
+    ...(control.workOrder ? { workOrder: control.workOrder } : {}),
+    ...(expected && control.phase !== "closed"
+      ? { expectedEvent: expected }
+      : {}),
+    startedAt: new Date().toISOString(),
+    startingEventCount: localEvents(root, control.workOrder).length,
+    reads: [],
+    beforeOutputs: snapshot,
+    authoredPaths: adopted,
+  };
+  writeJson(statePath(root, input), session);
+  record(root, input, {
+    role,
+    source: adopted.length
+      ? "actor-attested-upgrade-authorship"
+      : "explicit-session-entry",
+    adoptedPaths: adopted,
+  });
+  return {
+    session: sessionKey(input),
+    inheritedOutputs: Object.keys(snapshot).length - adopted.length,
+  };
+}
+
+export function observeHarnessSession(root: string, sessionId: string) {
+  const input: HarnessInput = {
+    cwd: root,
+    session_id: sessionId,
+    hook_event_name: "PostToolUse",
+    tool_name: "Bash",
+  };
+  const session = readJson<HarnessSession | null>(
+    statePath(root, input),
+    null,
+    true,
+  );
+  if (!session)
+    throw new Error("Begin the harness session before observing outputs");
+  const authorship = observeAuthorship(input, root, session);
+  record(root, input, {
+    role: session.role,
+    source: "explicit-authorship-observation",
+    authorship,
+  });
+  writeJson(statePath(root, input), session);
+  return harnessOutputObligations(root, session);
+}
+
+/** The explicit adapter consumes the actual bounded reader's delivered stdout. */
+export function observeHarnessDelivery(
+  root: string,
+  sessionId: string,
+  delivered: string,
+) {
+  const value = JSON.parse(delivered) as {
+    path: string;
+    offset: number;
+    nextOffset: number;
+  };
+  const expected = readHarnessOutput(
+    root,
+    value.path,
+    value.offset,
+    Math.max(4, value.nextOffset - value.offset),
+  );
+  if (JSON.stringify(JSON.parse(delivered)) !== JSON.stringify(expected))
+    throw new Error("Delivered output differs from current bytes");
+  const input: HarnessInput = {
+    cwd: root,
+    session_id: sessionId,
+    hook_event_name: "PostToolUse",
+    tool_name: "Bash",
+  };
+  const session = readJson<HarnessSession | null>(
+    statePath(root, input),
+    null,
+    true,
+  );
+  if (!session) throw new Error("Missing output-reader session");
+  admitReadBytes(
+    session,
+    expected.path,
+    readFileSync(contained(root, expected.path)),
+    expected.offset,
+    expected.nextOffset,
+  );
+  writeJson(statePath(root, input), session);
+  record(root, input, {
+    source: "explicit-tool-delivery",
+    receipts: session.reads,
+    byteReads: session.byteReads,
   });
 }
 
@@ -941,41 +1301,66 @@ function admitReadBytes(
 }
 
 export function runHarnessEvidence(root: string): readonly HarnessCheck[] {
-  const subject = harnessSubject(root);
+  const treeHash = gateTreeHash(root);
   const commands = [
-    { checkId: "npm test", executable: "npm", args: ["test"] },
+    {
+      checkId: "npm run test:full",
+      executable: "npm",
+      args: ["run", "test:full"],
+    },
     {
       checkId: "git diff --check",
       executable: "git",
       args: ["diff", "--check"],
     },
   ];
-  const runs = commands.map(({ checkId, executable, args }): HarnessCheck => {
+  const runs = commands.map(({ checkId, executable, args }) => {
+    const cached = findGateCheck(root, checkId, treeHash);
+    if (cached) return cached;
+    const started = Date.now();
     const run = spawnSync(executable, args, {
       cwd: root,
       encoding: "utf8",
-      timeout: 900_000,
+      timeout: checkId === "npm run test:full" ? 900_000 : 150_000,
       maxBuffer: 32 * 1024 * 1024,
     });
     process.stdout.write(run.stdout ?? "");
     process.stderr.write(run.stderr ?? "");
+    const durationMs = Date.now() - started;
+    if (run.error)
+      process.stderr.write(
+        `Suite ${checkId} failed after ${durationMs} ms: ${run.error.message}\n`,
+      );
+    if (run.status === 0) {
+      const recorded = findGateCheck(root, checkId, treeHash);
+      if (recorded) return recorded;
+    }
     return {
       checkId,
-      subject,
+      subject: treeHash,
+      treeHash,
+      durationMs,
       exitCode: run.status ?? 1,
-      executed: !run.error,
-      evidenceRef: `host-check:${digest(checkId + subject)}`,
+      executed: true,
+      evidenceRef: `host-check:${digest(checkId + treeHash)}`,
+      recordedAt: new Date().toISOString(),
     };
   });
-  if (harnessSubject(root) !== subject)
+  if (gateTreeHash(root) !== treeHash)
     throw new Error("Source changed during required checks");
-  writeJson(join(harnessStateDirectory(root), "checks.json"), runs);
+  recordGateChecks(root, runs);
   return runs;
 }
 
 const shellQuote = (value: string) => `'${value.replaceAll("'", `'\\''`)}'`;
 function metadataCommand(command: string): boolean {
   if (outputReadCommand(command) !== null) return true;
+  if (
+    /^(?:npm run plan --|node scripts\/refute-plan\.mjs) start [a-z][a-z0-9-]*$/.test(
+      command,
+    )
+  )
+    return true;
   const commands = command.split(/\s*(?:&&|\n)\s*/).map((part) => part.trim());
   return (
     commands.length > 0 &&
@@ -1045,31 +1430,33 @@ export function harnessFeedbackFacts(
 ): readonly FeedbackBoundaryRequest[] {
   const handler = policy.units[0]?.trigger;
   const args = input.tool_input ?? {};
-  if (handler === "attribution" && input.tool_name === "Bash") {
+  if (
+    handler === "attribution" &&
+    ["Bash", "exec_command"].includes(input.tool_name ?? "")
+  ) {
     const command = typeof args.command === "string" ? args.command : "";
-    if (!/\bgit\s+(?:[^\n;]*\s)?commit\b/.test(command)) return [];
-    const messages = [
-      ...command.matchAll(
-        /(?:^|\s)(?:-m|--message)(?:=|\s+)(?:'([^']*)'|"([^"$`]*)")/g,
-      ),
-    ].map((match) => match[1] ?? match[2]!);
-    const file =
-      /(?:^|\s)(?:-F|--file)(?:=|\s+)(?:'([^']+)'|"([^"$`]+)"|([^\s;&|]+))/.exec(
-        command,
-      );
-    if (file)
-      messages.push(
-        readFileSync(contained(root, file[1] ?? file[2] ?? file[3]!), "utf8"),
-      );
-    if (!messages.length)
-      throw new Error(
-        "Commit message bytes unavailable; use an explicit message file",
-      );
-    return [{ kind: "attribution", message: messages.join("\n\n") }];
+    return commitMessageInputs(command).map(({ messages, files }) => {
+      try {
+        return {
+          kind: "attribution" as const,
+          message: [
+            ...messages,
+            ...files.map((file) => readFileSync(contained(root, file), "utf8")),
+          ].join("\n\n"),
+        };
+      } catch {
+        throw new HarnessCommandRefused(
+          "Commit message file bytes unavailable; use a readable contained file",
+        );
+      }
+    });
   }
   if (
     handler === "writer-isolation" &&
-    ["Bash", "Edit", "Write"].includes(input.tool_name ?? "")
+    ["shell", "write", "spawn"].includes(
+      harnessToolEffects[input.tool_name as keyof typeof harnessToolEffects] ??
+        "write",
+    )
   ) {
     const actorId = sessionKey(input);
     if (
@@ -1133,23 +1520,29 @@ export function harnessFeedbackFacts(
     ["verifier", "reviewer"].includes(session.role ?? "")
   )
     return [];
-  if (handler === "application-evidence")
+  if (handler === "application-evidence") {
+    const subject = harnessSubject(root);
     return [
       {
         kind: "application-evidence",
-        subject: harnessSubject(root),
-        requiredChecks: ["npm test", "git diff --check"],
-        runs: readJson<HarnessCheck[]>(
-          join(harnessStateDirectory(root), "checks.json"),
-          [],
-        ),
+        subject,
+        requiredChecks: [
+          findGateCheck(root, "npm run test:full", subject)
+            ? "npm run test:full"
+            : "npm test",
+          "git diff --check",
+        ],
+        runs: readGateChecks(root),
       },
     ];
+  }
   if (handler === "output-review")
     return [
       {
         kind: "output-review",
-        outputs: harnessOutputs(root, session.startingRevision),
+        outputs: harnessOutputObligations(root, session).filter(
+          (output) => output.obligation === "read",
+        ),
         reads: session.reads,
       },
     ];
@@ -1388,9 +1781,18 @@ function feedbackRefusalReason(
     ". Read all ranges of each file. For oversized lines, run node scripts/harness.mjs read-output <path> --offset 0 --length 8192 and continue at nextOffset until totalBytes."
   );
 }
-function permissionEffect(input: HarnessInput, root: string): string {
+export function permissionEffect(
+  input: HarnessInput,
+  root: string,
+  tools: HookConfig["tools"] = harnessToolEffects,
+): string {
   const args = input.tool_input ?? {};
-  const path = typeof args.file_path === "string" ? args.file_path : "";
+  const path =
+    typeof args.file_path === "string"
+      ? args.file_path
+      : typeof args.notebook_path === "string"
+        ? args.notebook_path
+        : "";
   if (path) {
     if (/(?:^|[\\/])\.ssh(?:[\\/]|$)|(?:^|[\\/])\.env(?:\.|$)/.test(path))
       return "credentials.access";
@@ -1402,10 +1804,21 @@ function permissionEffect(input: HarnessInput, root: string): string {
     const local = relative(root, contained(root, path));
     if (local.startsWith("docs/control/local/harness/")) return "settings.user";
   }
-  if (input.tool_name !== "Bash")
-    return ["Edit", "Write"].includes(input.tool_name ?? "")
-      ? "repo.write"
-      : "repo.read";
+  const tool = tools?.[input.tool_name ?? ""];
+  if (!tool)
+    throw new Error(
+      `Unclassified effectful tool: ${input.tool_name ?? "unknown"}`,
+    );
+  if (tool === "spawn")
+    throw new Error(
+      "Spawned-agent effects require a separate registered worktree adapter",
+    );
+  if (tool === "write" && !path)
+    throw new Error("Write tool requires a classified path adapter");
+  if (tool !== "shell") return tool === "write" ? "repo.write" : "repo.read";
+  if (input.tool_name !== "Bash" && typeof args.command !== "string")
+    throw new Error("Opaque shell tool requires a classified command adapter");
+
   const command = typeof args.command === "string" ? args.command : "";
   const outputRead = outputReadCommand(command);
   if (outputRead)
@@ -1418,38 +1831,12 @@ function permissionEffect(input: HarnessInput, root: string): string {
       root,
     );
   if (metadataCommand(command)) return "repo.read";
-  if (/(?:^|[;&|]\s*)cd\s|\bgit\s+(?:-C|--git-dir|--work-tree)\b/.test(command))
-    throw new Error(
-      "Shell working-directory override needs a separately reviewed host adapter",
-    );
-  if (/(?:^|[\s;&|])(ssh|scp|sftp)(?:\s|$)/.test(command))
-    return "transport.ssh";
-  if (/\b(?:npm|pnpm|yarn)\s+publish\b/.test(command)) return "package.publish";
-  if (
-    /--dangerously-(?:skip|bypass)|bypassPermissions|danger-full-access|sandbox\.enabled\s*[:=]\s*false/.test(
-      command,
-    )
-  )
-    return "sandbox.disable";
-  if (/\.ssh(?:[\/\s]|$)|\.env(?:[\s.]|$)/.test(command))
-    return "credentials.access";
-  if (
-    /docs\/control\/local\/harness|~\/\.(?:claude|codex|agents)/.test(command)
-  )
-    return "settings.user";
-  if (
-    /\bgit\s+push\b|\bgh\s+(?:pr|release|repo)\s+(?:create|merge|edit|delete)/.test(
-      command,
-    )
-  )
-    return "remote.unapproved";
-  if (
-    /\b(?:npm run resume|node scripts\/resume\.mjs|npm run worktree|npm run release)\b/.test(
-      command,
-    )
-  )
-    return "lifecycle.run";
-  return "shell.run";
+  const effects = invocationEffects(command);
+  return (
+    effects.find(
+      (effect) => !["shell.run", "lifecycle.run", "repo.read"].includes(effect),
+    ) ?? (effects.includes("lifecycle.run") ? "lifecycle.run" : "shell.run")
+  );
 }
 /**
  * A refused Stop is reported once. Claude then re-enters Stop with
@@ -1468,7 +1855,9 @@ const protocolRefusal = (event: HarnessEvent, reason: string) =>
           permissionDecisionReason: reason,
         },
       }
-    : { decision: "block", reason };
+    : event === "Stop"
+      ? { systemMessage: `DotLn: ${reason.replace(/\s+/g, " ")}` }
+      : { decision: "block", reason };
 
 function assertHarnessRuntime(
   config: Pick<HookConfig, "compilerPackageVersion" | "runtime">,
@@ -1486,7 +1875,7 @@ function assertHarnessRuntime(
     !config.runtime.files?.length ||
     config.runtime.files.some(
       (file) =>
-        `fnv1a64:${fnv1a64(readFileSync(contained(root, file.path), "utf8"))}` !==
+        `fnv1a64:${fnv1a64(readFileSync(contained(root, config.runtime.snapshot ? `${config.runtime.snapshot}/${file.path}` : file.path), "utf8"))}` !==
         file.hash,
     )
   )
@@ -1501,7 +1890,7 @@ export async function evaluateHarnessHook(
   assertHarnessRuntime(config, root);
   if (input.hook_event_name !== config.event || !input.session_id)
     throw new Error("Hook input contract mismatch");
-  const session = readJson(statePath(root, input), initialSession());
+  const session = readJson(statePath(root, input), initialSession(), true);
   const correctionPath = join(
     harnessStateDirectory(root),
     `${sessionKey(input)}.correction.json`,
@@ -1534,18 +1923,20 @@ export async function evaluateHarnessHook(
   if (config.kind === "session") {
     let additionalContext: string | undefined;
     const intent = input.prompt?.trim() ?? "";
-    const role = config.roles?.find(
-      (role) =>
-        role.intents.includes(intent) ||
-        role.intents.some(
-          (prefix) =>
-            ["planning:", "ideation:"].includes(prefix) &&
-            intent.startsWith(prefix),
-        ),
-    );
+    const role =
+      config.roles?.find((role) => role.intents.includes(intent)) ??
+      config.roles?.find(
+        (role) =>
+          role.intents.includes(intent) ||
+          role.intents.some(
+            (prefix) =>
+              ["planning:", "ideation:"].includes(prefix) &&
+              intent.startsWith(prefix),
+          ),
+      );
     if (role) {
       const auxiliary =
-        role.name === "planner" ||
+        ["planner", "refuter"].includes(role.name) ||
         ["resume: status", "resume: times"].includes(intent);
       const control = auxiliary
         ? { workOrder: null, workOrderPath: null, phase: "none" }
@@ -1565,6 +1956,10 @@ export async function evaluateHarnessHook(
           control.workOrder,
         ).length;
         session.startingRevision = git(root, ["rev-parse", "HEAD"]).trim();
+        if (control.workOrder) session.workOrder = control.workOrder;
+        session.startedAt ??= new Date().toISOString();
+        session.beforeOutputs ??= outputSnapshot(root);
+        session.authoredPaths ??= [];
         if (expected[intent] && control.phase !== "closed")
           session.expectedEvent = expected[intent]!;
         else delete session.expectedEvent;
@@ -1582,17 +1977,75 @@ export async function evaluateHarnessHook(
         source: "instruction-autoload",
       });
     }
+    // Version is a bounded CLI observation, never the session's launch claim.
+    // The input override is a harness-owned observation channel for adapters.
+    let warning: string | undefined;
+    const discovery = join(root, "docs/discovery/environment.json");
+    if (
+      existsSync(discovery) &&
+      !session.versionWarning &&
+      (!session.versionObservation ||
+        (input.harness_version &&
+          input.harness_version !== session.versionObservation.value))
+    ) {
+      const observation = observeSessionHarnessVersion(input.harness_version);
+      const version = observation?.value;
+      if (observation) session.versionObservation = observation;
+      const observed = readJson<{
+        effortReadbackProbe?: {
+          harnesses?: Record<
+            string,
+            {
+              versionLines?: { classification: string; line: string }[];
+              versions?: { classification: string; value: string }[];
+            }
+          >;
+        };
+      }>(discovery, {});
+      const harness = observed.effortReadbackProbe?.harnesses?.["claude-code"];
+      const lines = [
+        ...new Set([
+          ...(harness?.versionLines ?? [])
+            .filter((row) => row.classification === "observed")
+            .map((row) => row.line),
+          ...(harness?.versions ?? [])
+            .filter((row) => row.classification === "observed")
+            .map((row) => row.value.split(".").slice(0, 2).join(".")),
+        ]),
+      ];
+      if (
+        version &&
+        !lines.includes(version.split(".").slice(0, 2).join("."))
+      ) {
+        warning = `DotLn: harness ${version} leaves observed lines ${lines.join(", ") || "none"}; run npm run discover -- harness.`;
+        session.versionWarning = version;
+      }
+    }
     writeJson(statePath(root, input), session);
     return additionalContext
       ? {
+          ...(warning ? { systemMessage: warning } : {}),
           hookSpecificOutput: {
             hookEventName: "UserPromptSubmit",
             additionalContext,
           },
         }
-      : {};
+      : warning
+        ? { systemMessage: warning }
+        : {};
   }
   if (config.kind === "observe") {
+    const authorship = observeAuthorship(input, root, session);
+    if (input.hook_event_name === "PreToolUse") {
+      record(root, input, {
+        role: session.role,
+        ...(authorship ? { authorship } : {}),
+        toolStep: true,
+        commandRun: ["Bash", "exec_command"].includes(input.tool_name ?? ""),
+      });
+      writeJson(statePath(root, input), session);
+      return {};
+    }
     const before = session.reads.length;
     const rangesBefore = session.byteReads?.length ?? 0;
     const paths = observeRead(input, root, session);
@@ -1609,10 +2062,13 @@ export async function evaluateHarnessHook(
       : [];
     record(root, input, {
       reads: paths,
+      role: session.role,
+      ...(authorship ? { authorship } : {}),
       receipts: session.reads.slice(before),
       byteReads: session.byteReads?.slice(rangesBefore) ?? [],
       ...(outside.length ? { outsideDirectedSet: outside } : {}),
     });
+    writeJson(statePath(root, input), session);
     if (outside.length && scope?.mode !== "observe")
       return protocolRefusal(
         config.event,
@@ -1622,28 +2078,59 @@ export async function evaluateHarnessHook(
   }
   if (config.kind === "finish") {
     if (!config.policy) throw new Error("Missing compiled finish policy");
-    let currentFacts: readonly FeedbackBoundaryRequest[] = [];
+    const unmet: string[] = [];
     try {
       for (const unit of config.policy.units) {
-        const policy = compileFeedbackUnits([unit]);
-        currentFacts = harnessFeedbackFacts(policy, input, root, session);
-        for (const fact of currentFacts) boundary(policy, fact, () => {});
+        if (
+          !["application-evidence", "output-review", "complete-scope"].includes(
+            unit.trigger,
+          )
+        )
+          continue;
+        const policy = compileFeedbackUnits([{ ...unit, enforcement: "hard" }]);
+        const facts = harnessFeedbackFacts(policy, input, root, session);
+        try {
+          for (const fact of facts) boundary(policy, fact, () => {});
+        } catch (error) {
+          if (!(error instanceof FeedbackRefused)) throw error;
+          unmet.push(unit.unitId);
+        }
       }
+    } finally {
       releaseHarnessWriter(root, input);
-      record(root, input, { finished: true });
-      return {};
-    } catch (error) {
-      if (!(error instanceof FeedbackRefused)) throw error;
-      if (stopReentry(input)) {
-        record(root, input, { finished: false, stopReentry: true });
-        return {};
+      if (input.transcript_path && session.workOrder && session.role) {
+        try {
+          const observation = transcriptUsage(
+            input.transcript_path,
+            session.startedAt ? { since: session.startedAt } : {},
+          );
+          recordUsageObservation(root, {
+            workOrder: session.workOrder,
+            role: session.role,
+            ...(session.startedAt ? { startedAt: session.startedAt } : {}),
+            observation,
+          });
+        } catch {
+          record(root, input, { usage: "unavailable" });
+        }
       }
-      record(root, input, { finished: false });
-      return protocolRefusal(
-        config.event,
-        `DOTLN_HARNESS_REFUSED: ${feedbackRefusalReason(error, currentFacts, root)}`,
-      );
+      const obligations = harnessOutputObligations(root, session);
+      record(root, input, {
+        finished: true,
+        completionReady: unmet.length === 0,
+        advisory: unmet,
+        outputCount: obligations.filter((row) => row.obligation === "read")
+          .length,
+        outputBytes: obligations
+          .filter((row) => row.obligation === "read")
+          .reduce((sum, row) => sum + row.bytes, 0),
+      });
     }
+    return unmet.length
+      ? {
+          systemMessage: `DotLn: pending ${unmet.join(", ")}; lifecycle completion still requires evidence.`,
+        }
+      : {};
   }
   if (config.kind === "permission") {
     if (!config.envelope) throw new Error("Missing compiled authority");
@@ -1670,7 +2157,7 @@ export async function evaluateHarnessHook(
     }
     const effect = managedReleaseCommand(input, root, session)
       ? "lifecycle.run"
-      : permissionEffect(input, root);
+      : permissionEffect(input, root, config.tools);
     const decision = harnessAuthorization(
       session.correction
         ? {
@@ -1760,27 +2247,82 @@ export async function runHarnessHook(
   config: HookConfig,
   boundary: typeof feedbackBoundary,
 ): Promise<void> {
+  let observed: { root: string; input: HarnessInput } | undefined;
+  let response: Record<string, unknown> = {};
+  let reasonClass: string =
+    config.kind === "permission" ? "authority" : config.kind;
   try {
     const input = JSON.parse(readFileSync(0, "utf8")) as HarnessInput;
     const root = harnessRoot(input.cwd);
     const installedRoot = realpathSync(
       fileURLToPath(new URL("../../../../", import.meta.url)),
     );
-    if (installedRoot !== root)
+    if (
+      installedRoot !== realpathSync(join(root, config.runtime.snapshot ?? "."))
+    )
       throw new Error("Hook and worktree roots disagree");
-    process.stdout.write(
-      JSON.stringify(await evaluateHarnessHook(config, input, root, boundary)),
+    observed = { root, input };
+    response = await evaluateHarnessHook(config, input, root, boundary);
+  } catch (error) {
+    reasonClass =
+      error instanceof HarnessCommandRefused
+        ? "command-classification"
+        : error instanceof HarnessStateUnreadable
+          ? "unreadable-state"
+          : "runtime-unavailable";
+    response = protocolRefusal(
+      config.event,
+      error instanceof HarnessCommandRefused
+        ? `DOTLN_HARNESS_REFUSED: command classification: ${error.message}`
+        : error instanceof HarnessStateUnreadable
+          ? `DOTLN_HARNESS_REFUSED: ${error.message}`
+          : "DOTLN_HARNESS_REFUSED: host facts or pinned runtime unavailable",
     );
-  } catch {
-    process.stdout.write(
-      JSON.stringify(
-        protocolRefusal(
-          config.event,
-          "DOTLN_HARNESS_REFUSED: host facts or pinned runtime unavailable",
-        ),
-      ),
-    );
+  } finally {
+    if (observed) {
+      try {
+        const { root, input } = observed;
+        const permission = response.hookSpecificOutput as
+          { permissionDecision?: string } | undefined;
+        const refused =
+          response.decision === "block" ||
+          permission?.permissionDecision === "deny";
+        record(root, input, {
+          // Retain each hook outcome but correlate denials of the same tool use.
+          // Raw tool/session identities and command bytes stay out of the row.
+          ...(refused
+            ? {
+                refusal: {
+                  reasonClass,
+                  ...(typeof input.tool_use_id === "string" && input.tool_use_id
+                    ? {
+                        invocationKey: digest(
+                          JSON.stringify([
+                            input.session_id,
+                            input.hook_event_name,
+                            input.tool_name ?? null,
+                            input.tool_use_id,
+                          ]),
+                        ),
+                      }
+                    : {}),
+                },
+              }
+            : {}),
+          hookTiming: {
+            kind: config.kind,
+            // A generated hook owns this Node process. Its uptime includes module
+            // loading and evaluation, ending immediately before this journal append.
+            durationMs: performance.now(),
+            gateChild: process.env.DOTLN_GATE_CHILD === "1",
+          },
+        });
+      } catch {
+        // Missing optional observation never changes the guard verdict.
+      }
+    }
   }
+  process.stdout.write(JSON.stringify(response));
 }
 export async function runCommitMessageHook(
   config: Pick<HookConfig, "compilerPackageVersion" | "runtime"> & {

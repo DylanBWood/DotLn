@@ -10,6 +10,7 @@ import {
   statechartJsonFromLoadout,
   type CompilationEnvironment,
   type FeedbackObservation,
+  type FeedbackUnit,
   type LoadoutGraph,
 } from "@dotln/compiler";
 import type {
@@ -187,6 +188,7 @@ export function projectBuilds(
  * and prove equality with that fold; never turn a self-host run into live counts. */
 export function observationsFromReport(
   value: unknown,
+  units?: readonly FeedbackUnit[],
 ): readonly FeedbackObservation[] {
   const report = object(value);
   if (report["contractVersion"] !== "feedback-audit-v1")
@@ -213,7 +215,9 @@ export function observationsFromReport(
       episodeId: `regression_${unitId}`,
       source: "fixture",
       activated: true,
-      prevented: true,
+      prevented: units
+        ? units.find((unit) => unit.unitId === unitId)?.enforcement === "hard"
+        : true,
       falseActivation: false,
       overridden: false,
     };
@@ -246,7 +250,7 @@ export function projectMechanisms(
           : "Maturity report does not match the compiled policy and recorded observations";
       if (maturity.status === "available") {
         try {
-          observations = observationsFromReport(maturity.value);
+          observations = observationsFromReport(maturity.value, units);
           folded = feedbackMaturity(program, observations);
           if (
             at(maturity.value, "policyHash") !== program.policyHash ||

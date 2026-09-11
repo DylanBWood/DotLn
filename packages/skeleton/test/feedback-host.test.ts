@@ -17,8 +17,11 @@ import {
   type AuthorityEnvelope,
   type EventDraft,
 } from "@dotln/kernel";
-import { compileFeedbackAudit } from "@dotln/compiler";
-import { personalFeedback } from "../src/loadouts/feedback.js";
+import { compileFeedbackAudit, compileFeedbackUnits } from "@dotln/compiler";
+import {
+  personalFeedback,
+  retainedFeedbackUnitsV1,
+} from "../src/loadouts/feedback.js";
 import { runFeedbackSelfhost } from "../src/feedback-selfhost.js";
 import { FakeVerificationTransport } from "../src/verification-fake.js";
 import {
@@ -162,7 +165,7 @@ test("WO-011 selfhost executes the real repository audit, recovers its saved res
 });
 
 test("WO-011 shared reactor dispatches a pinned audit, refuses expiry, and makes semantic correction a durable diagnosis request", () => {
-  const program = personalFeedback();
+  const program = compileFeedbackUnits(retainedFeedbackUnitsV1);
   const workOrder = compileFeedbackAudit(
     program,
     "fixture",

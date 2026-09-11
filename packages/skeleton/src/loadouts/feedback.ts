@@ -43,7 +43,7 @@ function unit(
 }
 
 /** Exactly WO-011's ten units. Source accounts stay at their canonical references. */
-export const personalFeedbackUnits: readonly FeedbackUnit[] = [
+export const retainedFeedbackUnitsV1: readonly FeedbackUnit[] = [
   unit(
     "anti-oscillation",
     "decision-lineage",
@@ -150,8 +150,88 @@ export const personalFeedbackUnits: readonly FeedbackUnit[] = [
   ),
 ];
 
+const proseHandlers = new Set<FeedbackHandler>([
+  "decision-lineage",
+  "evidence-judgment",
+  "semantic-correction",
+  "cleanup-scope",
+]);
+const stopHandlers = new Set<FeedbackHandler>([
+  "application-evidence",
+  "output-review",
+  "complete-scope",
+]);
+const correctionUndesired =
+  "Do not answer a correction with a sweeping generalization that extrapolates beyond the category the operator named into adjacent rules or file changes they never asked for, nor with an over-literal reading that strips the rule to its exact words and excludes obvious members of the same category.";
+const correctionDesired =
+  "Identify the category the operator is pointing at; stay inside it, neither widening nor shrinking it; when the boundary is genuinely unclear, ask one focused question instead of guessing in either direction; and pause to ask before any file action that goes beyond the literal correction.";
+export const correctionExample =
+  "Example: a correction about committing opaque identifiers includes hashes; hostnames do not belong to that category.";
+
+/** Version-one values above remain available for replay, never co-equipped. */
+export const personalFeedbackUnits: readonly FeedbackUnit[] =
+  retainedFeedbackUnitsV1.map((unit): FeedbackUnit => {
+    const prose = proseHandlers.has(unit.trigger);
+    const advisory = prose || stopHandlers.has(unit.trigger);
+    const attribution = unit.trigger === "attribution";
+    if (!advisory && !attribution) return unit;
+    const undesiredBehavior =
+      unit.trigger === "decision-lineage"
+        ? correctionUndesired
+        : attribution
+          ? "Do not append AI coauthors, generated-with footers, harness-suggested session trailers or session URLs to commits, PR titles or bodies, or release notes."
+          : unit.undesiredBehavior;
+    const desiredBehavior =
+      unit.trigger === "decision-lineage"
+        ? `${correctionDesired} ${correctionExample}`
+        : attribution
+          ? "Disable automatic attribution and reject AI trailers, footers and session links at publication; preserve human coauthors and ordinary subject text."
+          : unit.desiredBehavior;
+    return {
+      ...unit,
+      version: 2,
+      undesiredBehavior,
+      desiredBehavior,
+      incident:
+        unit.trigger === "decision-lineage"
+          ? {
+              ...unit.incident,
+              sourceRefs: [
+                lineage + "#2026-09-09-emergency-process-debt-planning-pass",
+                "docs/work-orders/WO-126-process-debt.md",
+              ],
+              summary: `The operator's 2026-09-09 planning pass recorded ten category-boundary corrections. ${correctionExample}`,
+            }
+          : unit.incident,
+      mechanism: {
+        ...unit.mechanism,
+        version: 2,
+        ...(prose
+          ? {
+              kind: "prose" as const,
+              rationale:
+                "Session judgment supplies this rule; it claims no executable host facts.",
+            }
+          : {}),
+      },
+      enforcement: advisory ? "advisory" : unit.enforcement,
+      requiredEvidence: prose ? [] : unit.requiredEvidence,
+      regressionFixtures: [`WO-126 ${unit.unitId} version 2`],
+      supersedes: [`${unit.unitId}@1`],
+      proseEquivalent: `${undesiredBehavior} ${desiredBehavior}`,
+    };
+  });
+
 export const personalFeedback = () =>
   compileFeedbackUnits(personalFeedbackUnits);
+
+/** Lifecycle boundaries retain hard evidence checks; Stop only advises. */
+export const lifecycleFeedback = () =>
+  compileFeedbackUnits(
+    personalFeedbackUnits
+      .filter((unit) => stopHandlers.has(unit.trigger))
+      .map((unit) => ({ ...unit, enforcement: "hard" })),
+  );
 
 /** Command-scoped settings only. No user, account, or repository setting is installed. */
 export const feedbackClaudeSettings = {

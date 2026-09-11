@@ -14,7 +14,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { applyFeedbackCorrection, compileFeedbackUnits } from "@dotln/compiler";
 import {
-  personalFeedbackUnits,
+  retainedFeedbackUnitsV1 as personalFeedbackUnits,
   feedbackClaudeSettings,
 } from "../src/loadouts/feedback.js";
 import {

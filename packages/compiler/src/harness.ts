@@ -24,6 +24,9 @@ export interface HarnessProfile {
   readonly profileId: string;
   readonly harness: "claude-code" | "codex-cli";
   readonly observedVersion: string;
+  readonly tools?: Readonly<
+    Record<string, "read" | "write" | "shell" | "spawn" | "interaction">
+  >;
   readonly events: Readonly<Record<HarnessEvent, HarnessObservation>>;
   readonly skills: HarnessObservation & { readonly root: string };
   readonly settings: HarnessObservation & {
@@ -36,6 +39,7 @@ export interface HarnessProfile {
   readonly runtime: {
     readonly skeletonVersion: string;
     readonly boundaryContract: "feedback-v1";
+    readonly snapshot?: string;
     readonly files?: readonly {
       readonly path: string;
       readonly hash: string;
@@ -211,9 +215,14 @@ export function assertHarnessProfile(profile: HarnessProfile): void {
     "pinned runtime",
   );
   ensure(
+    profile.runtime.snapshot === undefined ||
+      /^\.runtime\/harness\/[a-f0-9]{16}$/.test(profile.runtime.snapshot),
+    "contained immutable runtime snapshot",
+  );
+  ensure(
     (profile.runtime.files ?? []).every(
       (file) =>
-        /^packages\/(?:compiler|skeleton)\/dist\/src\/[a-z-]+\.js$/.test(
+        /^packages\/(?:compiler|skeleton)\/dist\/src\/[a-z-]+\.(?:js|mjs)$/.test(
           file.path,
         ) && /^fnv1a64:[a-f0-9]{16}$/.test(file.hash),
     ),
@@ -371,20 +380,29 @@ export function lowerToHarness(
                 "DOTLN_HARNESS_REFUSED: built adapter unavailable",
             },
           }
-        : {
-            decision: "block",
-            reason: "DOTLN_HARNESS_REFUSED: built adapter unavailable",
-          };
+        : event === "Stop"
+          ? {
+              systemMessage:
+                "DotLn: built adapter unavailable; lifecycle evidence remains required.",
+            }
+          : {
+              decision: "block",
+              reason: "DOTLN_HARNESS_REFUSED: built adapter unavailable",
+            };
     emit(
       path,
-      `${header}try {\nconst { feedbackBoundary } = await import("../../packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, ...(config as object) }).trim()}, feedbackBoundary);\n} catch { process.stdout.write(${JSON.stringify(JSON.stringify(unavailable))}); }\n`,
+      `${header}try {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, ...(config as object) }).trim()}, feedbackBoundary);\n} catch { process.stdout.write(${JSON.stringify(JSON.stringify(unavailable))}); }\n`,
       names,
       rung,
     );
     hookPaths.set(event, [...(hookPaths.get(event) ?? []), path]);
   };
   for (const unit of feedback.units) {
+    if (unit.mechanism.kind === "prose") continue;
     const event = hookFor[unit.trigger];
+    // The finalizer carries every Stop unit. Do not install unused per-unit
+    // files that would still be hashed, pinned and counted as live hooks.
+    if (event === "Stop" && profile.events.Stop.available) continue;
     if (
       event &&
       profile.events[event].available &&
@@ -412,7 +430,7 @@ export function lowerToHarness(
       if (unit.trigger === "attribution") {
         emit(
           `${hookRoot}/commit-msg.mjs`,
-          `// Origin: ${canonicalStringify(origin([unit.unitId]))}\nconst { runCommitMessageHook } = await import("../../packages/skeleton/dist/src/harness-host.js");\nconst { feedbackBoundary } = await import("../../packages/skeleton/dist/src/feedback-boundary.js");\nawait runCommitMessageHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, policy: compileFeedbackUnits([unit]) }).trim()}, feedbackBoundary);\n`,
+          `// Origin: ${canonicalStringify(origin([unit.unitId]))}\nconst { runCommitMessageHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nawait runCommitMessageHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, policy: compileFeedbackUnits([unit]) }).trim()}, feedbackBoundary);\n`,
           [unit.unitId],
           1,
         );
@@ -478,6 +496,14 @@ export function lowerToHarness(
           missingCapabilities: ["hooks.PreToolUse", "settings.permissions"],
         });
   }
+  if (profile.events.PreToolUse.available)
+    hook(
+      "write-observer",
+      "PreToolUse",
+      { kind: "observe" },
+      ["read-your-own-output"],
+      1,
+    );
   if (profile.events.PostToolUse.available)
     hook(
       "read-observer",
@@ -537,6 +563,7 @@ export function lowerToHarness(
     const units = feedback.units.filter((unit) => {
       const event = hookFor[unit.trigger];
       const carriedByHook =
+        unit.mechanism.kind !== "prose" &&
         event &&
         profile.events[event].available &&
         (unit.trigger !== "semantic-correction" ||
@@ -603,6 +630,9 @@ export function lowerToHarness(
     const settings = {
       $schema: "https://json.schemastore.org/claude-code-settings.json",
       autoMemoryEnabled: false,
+      ...(feedback.units.some((unit) => unit.trigger === "attribution")
+        ? { attribution: { commit: "", pr: "", sessionUrl: false } }
+        : {}),
       permissions: { deny: [...new Set(deny)].sort() },
       hooks: Object.fromEntries(
         [...hookPaths].map(([event, paths]) => [
@@ -684,13 +714,6 @@ export function verifyHarnessBundle(bundle: HarnessBundle): boolean {
 export function mergeHarnessFragments(
   bundles: readonly HarnessBundle[],
 ): string {
-  const contents = bundles
-    .flatMap((bundle) =>
-      bundle.residue.items.map(
-        (item) =>
-          `${bundle.manifest.profile.profileId}/${item.originId}: ${item.text ?? `unavailable ${item.missingCapabilities.join(", ")}.`}`,
-      ),
-    )
-    .join("\n");
-  return `${HARNESS_START}\nResidue: ${new TextEncoder().encode(contents).length} UTF-8 bytes.\n${contents}${contents ? "\n" : ""}${HARNESS_END}\n`;
+  ensure(bundles.length > 0, "profile manifest required");
+  return `${HARNESS_START}\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter.\n${HARNESS_END}\n`;
 }
