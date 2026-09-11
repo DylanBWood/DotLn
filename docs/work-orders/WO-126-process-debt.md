@@ -1,4 +1,4 @@
-# WO-126 — Process debt: the lifecycle machinery costs more than the code it guards; one order demotes the theater, automates the closeout, and installs the meter (version assigned at activation)
+# WO-126 — Process debt: the lifecycle machinery costs more than the code it guards; one order demotes the theater, automates the closeout, and installs the meter (v0.17.0)
 
 **Model:** Claude Fable 5.1 at max, or Codex gpt-6-astra at max, for every
 role; the measured gate runs on the operator's machine. State the model and
@@ -584,3 +584,166 @@ the cost line and the cost table, nothing else).
    changes it to "Preserve decisions with their sources and reopening
    conditions" or authorizes the executor to; the order does not edit the
    hand-written floor on its own.
+
+## Execution record
+
+The operator's same-session `ideation:` dispatch authorizes capture, synthesis,
+ledger/product write-back and the [breakout receipt](../evidence/WO-126/ideation.md).
+Context Continuity remains an unallocated support candidate; it does not add
+runtime implementation to this order's eighteen criteria. The operator also
+explicitly leaves the unspecified token, dollar and PR-body ceilings unset:
+collect token usage before choosing caps. The meter must preserve availability
+and source, and the budget file must represent these limits as unset. The
+verifier and final reviewer include the receipt and its promoted sections in
+their review. The existing execution and evidence obligations continue.
+
+The operator subsequently expanded this order to close critical gaps between
+recording future work and surfacing it in a later planning session, specifically
+the loss of suggestions scattered across repository documents. The bounded
+addition is a retained public follow-up register, automatic collection of formal
+candidate and decision sources, a paged feed at planning entry, explicit sourced
+dispositions, and a checked link from local executor deferrals. Source removal or
+changed scope must remain visible; allocation and rejection preserve reasons.
+Executable fixtures cover retention, stale edits, paging, planning entry and
+the local-to-public handoff. No work-order allocation is authorized by the feed.
+
+The operator also identified excessive planner context needed to understand
+the repository's purpose and choose work. Evaluate the bounded feed's effect;
+preserve any remaining startup-context problem as a visible follow-up. That
+broader redesign need not be implemented in this order. The verifier and final
+reviewer include this expansion and its evidence alongside the eighteen criteria.
+
+During `resume: fix` on 2026-09-09, the operator selected the Node-only build
+after discussing the different publication guarantees, then requested retained
+statistics for a future decision if Python becomes necessary or already present.
+This explicitly amends criterion 6's directory-level atomic replacement:
+compile to staging, atomically replace each complete `dist` file, and complete
+the build barrier before dependent application commands. Ordinary `dist` is a
+changing view during that interval. Installed hooks continue using an immutable
+pinned runtime snapshot published as a complete directory. Criterion 18's
+no-new-dependency requirement stands. The optional historical Python comparator
+is a benchmark only, never a build or gate prerequisite. See
+[WO-126-D007](../evidence/WO-126/decisions.md#wo-126-d007) and the
+[repair evidence](../evidence/WO-126/repair-001.md).
+
+Cost correction for the original header (VER-001 F6, 2026-09-09): the planned
+removals stand, but the added authorship observer also hashes changed and
+untracked files twice per Claude writing-tool call, using four Git subprocesses
+in total. VER-001 measured 6,937,496 bytes and about 137 ms per snapshot warm:
+approximately 13.9 MB hashed and 274 ms for the pair, excluding hook startup
+and other guards. These are that verifier's measurements, not a constant or a
+claim that all dispatches use Claude hooks. The repair adds duration, byte,
+file and subprocess observations to the existing journal and meter; explicit
+Codex observations report their actual batch count. It adds no context delivery,
+external dependency, extra hook or operator step for this accounting. Token
+cost remains unavailable. The original planning estimate remains above as
+history; this execution correction supplies the previously omitted cost.
+
+The subsequent same-day `ideation:` dispatch authorizes document-only synthesis
+of recurring review of implementation alternatives. Its
+[breakout receipt](../evidence/WO-126/ideation-alternatives.md), appended ledger
+entry and product 07 candidate join the verifier and final review subject.
+Trigger and cadence remain candidate choices; the dispatch adds no automatic
+runtime review or work-order allocation. The original repair continues.
+The follow-up adds the candidate Tinkerer / Scientist experimental support and
+its possible activation-rate support modifier in product 05 to that receipt's
+required review, with the same document-only boundary.
+The second follow-up separately preserves historical comparison whenever a
+decision forces a similar-purpose alternative, whether automatic or equipped;
+its product 05 candidate and ledger entry join the same review subject.
+The later emoji-substitution question adds a product 05 experiment candidate,
+ledger entry and bounded byte-size observation to that receipt. Model-token
+savings and behavioral benefit remain unmeasured; no substitution is implemented.
+The browser-runtime and Electron/3D follow-ups add product 04's resident-host
+comparison candidate and two ledger entries to the same receipt and required
+review. Preserve the distinction between UI, process lifetime and graphics, and
+label the development-speed preference as an unmeasured executor hypothesis.
+No desktop host or new dependency is selected or implemented by this breakout.
+The later eight-system-traps ideation expands the product 05 design lens beyond
+the five meter signals already implemented. Its appended ledger entry and
+receipt join required review, including the difference between observed cost,
+causal diagnosis and candidate escapes. Output-review and evidence-reuse
+experiments remain proposals; this breakout changes no completion guard.
+The adaptive Tinkerer follow-up extends the existing product 05 candidate with
+pressure since the last demonstrated improvement, quiet periods, broader and
+more inventive exploration after a drought, and small-gain compounding as an
+aspiration. Its ledger entry and receipt join required review. A week and one
+percent are examples, not adopted thresholds or guaranteed outcomes; no new
+scheduler, authority grant or background experiment is implemented here.
+The unchosen-alternatives follow-up adds a shared product 05 history candidate,
+ledger entry and receipt to required review across the named comparison and
+intervention mechanisms. Preserve the difference between rejection, deferral,
+constraint exclusion and an untested option, including the opposite branch of
+action/NoOp decisions. Retention, retrieval and implementation remain open;
+this document-only addition creates no new collector or completion gate.
+
+The operator then explicitly expanded the repair on 2026-09-09 after a measured
+gate-efficiency walkthrough. Authorized implementation covers all four proposed
+improvements: reuse successful evidence when a suite's declared inputs are
+unchanged; divide independent release fixtures under the existing shared
+concurrency budget; reduce repeated immutable fixture setup and redundant
+expensive boundary coverage while preserving consequential cases; and expose
+named progress within long suites. The successful pre-expansion full gate took
+522.052 seconds, with 37 suites; release fixtures took 499.958 seconds and
+created 39 repositories. Preserve that observation in
+[optimization-baseline.json](../evidence/WO-126/optimization-baseline.json).
+
+This authority amends the whole-tree-only reuse implementation in criteria 5
+and 6: the final full-gate receipt still identifies the exact handoff tree, but
+may compose executed evidence whose complete declared inputs remain unchanged.
+Reused evidence must retain its original execution identity and timing and be
+distinguished from a fresh run. Changes to relevant source, tests, shared
+helpers, configuration, dependencies or environment must invalidate it;
+undeclared/unsupported scopes must use conservative execution. Preserve the
+existing inventory and effective case coverage, build and isolation barriers,
+failure/timeout behavior, and the 120-second fast-gate limit. Tests must prove
+invalidation, honest composition, case coverage, bounded concurrency, isolated
+fixture reuse and live progress. Measure cold execution separately from warm
+reuse and document the result, added fingerprint/cache cost, remaining limits
+and reversal conditions. The work remains part of this repair and its
+independent verification subject; publication still requires its own dispatch.
+
+The expansion's [measurement receipt](../evidence/WO-126/optimization.md) records
+all four implementations, retained case coverage and nineteen passing focused
+regressions. On the same host the full cold gate passed all 37 suites in
+278.991 seconds versus the preserved 522.052-second baseline; warm composition
+took 114.977 seconds with 46 reused and 32 fresh tasks. The fast cold gate
+passed in 70.332 seconds under the unchanged 120-second limit, and warm fast
+took 22.723 seconds. The receipt distinguishes original executions, scheduling
+gaps, measured fingerprint overhead, an excluded intermediate trial and
+unmeasured costs. These observations describe their named tree; final handoff
+evidence must cover the current tree after the receipt and write-backs.
+
+The final harness check subsequently exposed an invocation confound in those
+initial direct Node timings: its nested npm fast run timed out after 150.010
+seconds. [WO-126-D010](../evidence/WO-126/decisions.md#wo-126-d010) retains the
+failure and controlled lookup comparison, and records exact duplicate `PATH`
+removal in gate children. Executable precedence, relative/current-directory
+entries and paths created later remain covered by a new passing regression.
+The required comparison uses canonical npm commands, and the harness wrapper
+must pass separately; the initial direct observations remain historical data.
+
+The corrected [canonical npm observations](../evidence/WO-126/invocation-results.json)
+passed: cold full 476.255 seconds (37 suites, 78 fresh tasks, all forty release
+cases); warm full 189.470 seconds (32 fresh and 46 reused tasks); cold fast
+110.852 seconds (all twelve suites fresh, below 120 seconds). The comparable
+cold reduction against 522.052 seconds is 8.8%, replacing the confounded 46.6%
+direct-invocation comparison. All twenty focused regressions pass. The receipt
+also records that rerunning live and unreviewed checks costs more than the old
+aggregate-only hit on an identical tree; reuse across document changes is the
+targeted benefit. The final handoff aggregate follows these write-backs.
+
+The operator's 2026-09-10 correction during the VER-004 repair supersedes the
+turn-end gate requirement in the original Cost header, the Two gates design,
+criterion 6, and the separate-wrapper procedure above. The current completion
+entry point is only `npm run harness -- evidence`, supplying the full gate and
+diff check. Iteration uses affected checks; ending a turn adds no gate. Finish
+measurements, required generation, release preparation, reports and output
+review before that completion command. Its runner checks generated evidence
+before expensive fixtures and retains passing source checks at unchanged
+declared inputs; fixture preparation and live local-state guards execute as
+needed. A failed verification or review requires its reproduction and diff
+evidence. The shared executor, verifier and reviewer instructions and product
+07 carry this procedure. [WO-126-D022](../evidence/WO-126/decisions.md#wo-126-d022)
+records the correction and executable regressions. This execution amendment
+preserves the approved planning subject and its historical measurements.

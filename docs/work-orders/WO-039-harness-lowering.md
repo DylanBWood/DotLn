@@ -1,5 +1,7 @@
 # WO-039 — Harness lowering: compile a saved build into enforceable harness configuration, and run this repository on its own compiled build (v0.15.0)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the compiler and fixtures. The live smoke and
 the self-host step need the actual local harnesses (Claude Code; Codex where
 installed) and must state the harness version, model, and effort actually run

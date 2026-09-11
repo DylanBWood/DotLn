@@ -1,5 +1,7 @@
 # WO-012 — Release-gate path quoting fix, v0.2.1
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model.
 **Release classification:** `v0.2.1` patch — it repairs the release gate that
 blocked `v0.2.1` itself. This work order closes the same roadmap rung WO-004

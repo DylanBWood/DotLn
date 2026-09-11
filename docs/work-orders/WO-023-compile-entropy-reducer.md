@@ -1,5 +1,7 @@
 # WO-023 — Compile the Entropy Reducer: identity, role, loadout, envelope, Program, and generated residue, v0.5.0
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the implementation. The loadout it compiles
 pins its own actor: Claude Fable 5.1 at `max` effort for review episodes
 (Principle 8; a substitute is a different reviewer and must be attested as

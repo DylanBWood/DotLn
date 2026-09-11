@@ -1,5 +1,7 @@
 # WO-109 — Re-mining Well: source census and first pilot draw (v0.13.3)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 > **Operator-revised planning draft, not activation authority.** The operator
 > returned this revision on 2026-09-02. Catalog registration records the
 > candidate; activation still requires its explicit preflight and authority.

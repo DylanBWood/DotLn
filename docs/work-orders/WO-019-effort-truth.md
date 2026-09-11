@@ -1,5 +1,7 @@
 # WO-019 — Effort truth: declared in the work order, attested in the control log, v0.3.4
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model.
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any. Until this order
 lands, these values are self-reported in the result. The final reviewer must

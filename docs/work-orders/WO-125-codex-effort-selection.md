@@ -1,5 +1,7 @@
 # WO-125 — Codex effort selection: the Codex transport accepts the declared effort levels and forwards the reasoning-effort override to `codex exec`, from an observed row, so a Codex refuter or worker can be launched at `max` (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the adapter and fixtures; the observed row
 needs the actual Codex CLI, run by the operator outside the sandbox. State
 the model and effort actually run (07-execution-guide.md §Model-specific

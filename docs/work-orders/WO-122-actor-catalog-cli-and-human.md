@@ -1,5 +1,7 @@
 # WO-122 — Actor catalog, second slice: the `cli-worker` kind launches a harness session through the writer profile by the observed launch path, and the `human-handoff` kind writes a decision packet and waits (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model; the live row uses the actual harnesses. State
 the model and effort actually run (07-execution-guide.md §Model-specific
 notes).

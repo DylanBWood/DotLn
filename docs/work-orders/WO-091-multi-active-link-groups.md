@@ -1,5 +1,7 @@
 # WO-091 — Multi-active link groups: one link group may hold several active mechanics sharing linked supports, with per-active emissions, the commutativity rule per active, a visible six-link budget, and every existing hash unchanged (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.

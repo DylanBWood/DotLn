@@ -1,5 +1,7 @@
 # WO-050 — The skeleton reactor's state splits into typed slices behind one decider, with every recorded trace byte-identical, so the next host branch lands in its own slice (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.

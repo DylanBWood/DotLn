@@ -1,5 +1,7 @@
 # WO-083 — The real run: the operator's launchpad instance drives the first bounded slice of the Angular shell, planned in that fork, through executor, verifier and reviewer sessions under the fork's emitted build, with a pre-run baseline block and the four product-12 measures counted by the verifier (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** the launchpad-dispatched sessions run under the fork's own
 declarations and emitted bundle; the operator witnesses; launch claims
 recorded per session (07-execution-guide.md §Model-specific notes).

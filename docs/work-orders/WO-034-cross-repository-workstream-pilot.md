@@ -1,5 +1,7 @@
 # WO-034 — Cross-repository workstream pilot: one outcome, several target repositories, driven from a launchpad fork that runs the compiled build (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Umbrella record (2026-09-08):** superseded whole by bounded children at the operator's same-day correction of the critical-path planning pass; not activatable. Its obligations are carried by WO-080 (the workstream document, field and index grouping), WO-081 (the board's Workstreams section), WO-082 (the synthetic pilot's six demonstrations) and WO-083 (the operator-witnessed real run with the pre-run baseline block); its Angular-first-change premise stands, and the shell's work orders are planned in the operator's fork of the starter, never in this repository (the operator's 2026-09-08 direction). The text below is preserved as the record the children cite; nothing in it grants activation.
 
 **Model:** any capable model for the implementation and fixtures. The real

@@ -1,5 +1,7 @@
 # WO-049 — Target-worktree harness bundle: emit a governed bundle into a worktree that is not DotLn, importing the launchpad's pinned runtime by absolute path, under the target's local exclude (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the emitter and fixtures. The live refusal
 smoke needs the actual harness, run by the operator from a terminal outside
 the sandbox, and must state harness version, model and effort

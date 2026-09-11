@@ -1,5 +1,7 @@
 # WO-112 — The loop from core: one scratch issue travels from SourceBundle to a verified pull request with the post-PR loop against a scratch target, run from this launchpad and measured item by item against the predecessor's loop (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** the actual local harnesses for every episode, operator-witnessed
 from a terminal outside the sandbox; launch claims recorded per episode
 (07-execution-guide.md §Model-specific notes).

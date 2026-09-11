@@ -1,5 +1,7 @@
 # WO-037 — Pattern workshop, compiler side: the 5S equipment set compiles as a multi-active link group with set bonuses (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Umbrella record (2026-09-08):** superseded whole by bounded children at the operator's same-day correction of the critical-path planning pass; not activatable. Its obligations are carried by WO-091 (multi-active link groups), WO-092 (the `sets` graph extension), WO-093 (the 5S mechanics as data), WO-094 (set bonuses lowered) and WO-095 (the full-set scenario and set tooltip render). The text below is preserved as the record the children cite; nothing in it grants activation.
 
 **Model:** any capable model. State the model and effort actually run in the

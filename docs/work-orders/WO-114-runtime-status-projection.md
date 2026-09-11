@@ -1,5 +1,7 @@
 # WO-114 — Runtime status projection: the resident writes a `runtime-status-v1` view model of live actors, episodes, presence phase, cadences, holds, budget and work-order statuses on every tick, and the text console renders it (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.

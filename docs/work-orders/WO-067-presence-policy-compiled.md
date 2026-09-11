@@ -1,5 +1,7 @@
 # WO-067 — PresencePolicy compiled: a build declares how its actor behaves when the operator is away as a progressive curve over attention, scope, effect authority and external capability, lowered to cadences and per-phase envelopes that can only narrow the base (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model. State the model and effort actually run in the
 result (07-execution-guide.md §Model-specific notes).
 **Effort:** executor xhigh+; verifier xhigh+; reviewer any.

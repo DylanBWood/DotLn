@@ -1,5 +1,7 @@
 # WO-118 — The resident-owned loop from a starter instance: one initial intent and standing grants carry work through derivation, dispatch, verification, repair, delivery and the pull-request loop under the durable runtime, surviving an actor's death and a resident restart, with only material decisions returned to the operator (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** the actual local harnesses as actors, launched by the instance's
 resident; the operator witnesses from outside the sandbox; launch claims
 recorded per episode (07-execution-guide.md §Model-specific notes).

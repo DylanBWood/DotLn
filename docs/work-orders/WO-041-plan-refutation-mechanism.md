@@ -1,5 +1,7 @@
 # WO-041 — Plan refutation as a mechanism: a blinded episode that gates every planning pass on the vision (v0.13.3)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the script and fixtures. The refuter episode
 runs on the actual local transports and must state harness version, model,
 and effort (07-execution-guide.md §Model-specific notes).

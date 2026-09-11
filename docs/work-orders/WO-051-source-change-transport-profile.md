@@ -1,5 +1,7 @@
 # WO-051 — Source-change writer request and transport profile: a separate writer request with its own validator, prompt and result beside the untouched inspection request, and a `source-change-v1` launch shape for both CLIs written from the observed rows (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the profile and fixtures; the live smoke
 needs the actual harnesses, run by the operator from a terminal outside the
 sandbox, stating harness version, model and effort (07-execution-guide.md

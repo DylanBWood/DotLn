@@ -1,5 +1,7 @@
 # WO-015 — Release-manifest cadence parser repair, v0.2.3
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model. The executor and independent verifier must record
 the model, effort, and harness they actually use (07-execution-guide.md
 §Model-specific notes).

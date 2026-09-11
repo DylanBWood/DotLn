@@ -1,5 +1,7 @@
 # WO-119 — Executable discovery producer: a bounded actor episode observes a target worktree's real imperfections through the target's own commands and declared conventions and emits typed work candidates with evidence, using only the executable program subset (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the producer and fixtures; the live row
 runs the producer as a `script` actor. State the model and effort actually
 run (07-execution-guide.md §Model-specific notes).

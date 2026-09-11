@@ -1,5 +1,7 @@
 # WO-124 — Impact surfaces derivation: the implementation order's surfaces and tests are derived from the contract, the repository profile and a worktree snapshot, labeled by origin, with a confidence gate that hands off instead of guessing (version assigned at activation)
 
+**Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+
 **Model:** any capable model for the derivation; the inference slot is a
 labeled double in tests. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).
