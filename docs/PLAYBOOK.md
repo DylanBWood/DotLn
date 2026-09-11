@@ -68,7 +68,11 @@ orders, or add `--json` for `totals`, `byActor`, and `byWorkOrder`. Retries rema
 separate completed attempts. `elapsedMs` sums known signed spans; `unknown`
 counts attempts with a missing endpoint. These are wall-clock spans including
 waiting and interruptions, attributed to the completion actor. Overlapping work
-orders can overlap in the sums. No token, cost, or attention data is collected.
+orders can overlap in the sums. `npm run meta` adds observed tokens and cost
+per dispatch from usage envelopes and interactive counters, with declared
+prompt costs beside them. Unknown observations remain unavailable; it records
+no raw transcript text. Unspecified token, dollar and PR-body caps remain
+unset while usage is collected.
 
 ## Harness safety baseline
 
@@ -125,18 +129,16 @@ resolves that checkout before source lookup and capture; a worktree's relative
 Prefix a message with `planning:` (or ask for a planning session) on the clean
 main checkout to run the pass described in
 [07 §Operator-opened planning pass](product/07-execution-guide.md#operator-opened-planning-pass).
-It reads status, the generated index, the human map, the candidate plans, and
-the newest ledger sections; equips Beware of Naive Interventionism and Do
-Nothing; and returns doc-only artifacts: a ledger section, a map revision, any
-planner-synthesized drafts, product write-back with the publication index and
-locks repaired, a regenerated index, and green `npm test`. It never activates,
-implements, or publishes. It is not the Entropy Reducer, which is a separate
-review dispatch with a frozen subject and a blinded refutation step, and not
-the Repo Gardener, which is the skeleton's demo identity. Land the result as a
-`:memo:` pull request from a planning branch. Check that planning branch out
-in the main checkout before the pass writes anything: the compiled
-Contributor build's writer guard refuses every write on `main` (observed
-2026-09-08).
+Run `npm run plan -- start <slug>` to create the planning branch from clean
+main before writing. The planner reads the sequence and the guide's planning
+and ideation sections, then scopes candidate and source lookups. It returns
+synthesized docs, the sequence and map changes, Cost-bearing order drafts and
+a fresh subject-hashed cost table. Commit that subject before refutation.
+`planning: refute` loads the dedicated direct refuter for the latest pass;
+`planning: refute full` judges the whole horizon. The refuter reads only the
+canonical prompt, and the receipt helper validates and files the judgment.
+Finish with `npm run test:docs`, which runs no build or code suite. Planning
+retains its separate publication authority and does not activate an order.
 
 ## The loop, per work order
 
@@ -156,11 +158,22 @@ changed recorded ones. Refresh after lifecycle dispatch/result transitions and
 before evidence runs, including after executor readiness and final review.
 The control helpers do not update it automatically. The executor refreshes it
 on dispatch as well as at its evidence/result boundaries. The README leads
-with the operator's proposed sequence from the marked block in the human map;
+with the operator's proposed sequence from `docs/planning/sequence.md`;
 checkboxes follow passing final review in the control log. No separate editor
 checklist is needed. Merge and release remain separately evidenced. The index
 is a text observation, so preflight still interprets recommended, independent,
 and reverse references in dependency paragraphs.
+
+WO-126 splits iteration from handoff. `npm test` is the fast gate (120-second
+budget); `npm run test:full` preserves the full evidence inventory through a
+bounded concurrent runner. Both report suite timings. A successful full gate
+is reused only for the exact current Git tree across sessions and release
+close. The build atomically replaces output while installed hooks retain
+pinned runtime snapshots. Stop advises once and releases the writer; lifecycle
+completion commands enforce evidence, remaining-work and authored-output duties.
+Generated and over-64-KB outputs owe validation; inherited dirt owes no byte
+read. Decisions and corrections go to the order's decisions file and generated
+index; the ledger stays with ideation and planning.
 
 **2. Implement (Codex, fresh session, own worktree).**
 
@@ -314,20 +327,20 @@ resume: release close
 That phrase is explicit authority for the agent to run the guarded close from
 the main checkout with tag publication enabled. The command proves the PR is
 merged, fast-forwards `main`, removes the known merged worktree/branch, and then
-checks the work order's application release target. Before dependency install,
-the same release-surface preflight checks the README claim, source-triggered
-component versions, and current committed GitHub bodies. At a new boundary it
-runs `npm ci`, full release evidence, manifest/notes generation and validation,
-and pushes only the annotated tag, then creates the matching GitHub Release from
+checks the work order's application release target. The release-surface
+preflight checks the README claim, source-triggered component versions, and
+current committed GitHub bodies. At a new boundary it reuses a passing
+`npm run test:full` result for the exact Git tree, or runs that gate when no
+matching result exists. It validates the manifest and notes, pushes only the
+annotated tag, then creates the matching GitHub Release from
 the same reviewed human layer. A strictly lower target records an honest
 no-release close; an equal target succeeds only when the existing validated tag
 names the exact commit, otherwise it refuses. If Release creation fails after
 the tag push, leave the tag untouched and rerun the same close command: the
 equal-version path creates the missing projection or refuses a body mismatch
-without editing it. The retry always reproduces release evidence before
-validating the tagged compatibility fields, even when ignored built output
-already exists, so stale or untrusted disposable bytes are replaced before the
-compatibility import.
+without editing it. Modern retries reuse the same tree-bound evidence and
+rebuild before importing compatibility fields. Historical tags retain their
+original evidence contract and are validated under that contract.
 Either successful path leaves clean `main` in the closed, between-work-orders
 state. WO-004 was the first scripted `v0.2.1` patch.
 
@@ -342,24 +355,26 @@ release command at all, but the reviewed-helper rule applies to every close.
 After the subject has already been removed, a recoverable rerun uses the updated
 main checkout's ordinary `npm run release -- close WO-NNN --publish` command.
 
-Closeout refuses rather than deleting non-disposable ignored material —
-`docs/intake` notes, `.env`, or anything else hidden by `.gitignore`. If that
-happens, run `npm run backup:intake` in the subject worktree, reconcile the raw
-material into surviving trusted storage, and repeat the phrase. Disposable
+Closeout reconciles subject intake into main with byte verification before
+teardown. Different-byte collisions keep both copies with a `.from-WO-NNN`
+suffix, and `--dry-run` prints the plan without changing either checkout.
+Harness state under `docs/control/local/harness/` is disposable; other local
+control material is preserved in main. Unknown non-disposable ignored material
+still refuses removal. Report that refusal; do not write a closeout script.
+Disposable
 outputs may leave only from root `node_modules/` or `dist/`, from
 `packages/<name>/node_modules/` or `packages/<name>/dist/`, by a `.DS_Store`
 basename, or by a `.tsbuildinfo` suffix. A matching directory segment elsewhere
 is protected, and `docs/intake/**` protection wins even when its descendants are
-named `dist` or `node_modules`. Backup alone does not clear the refusal or make
-the note visible from main: it only archives the checkout where it ran. Until a
-checked reconciliation helper exists, verify the destination bytes in main's
-canonical intake before removing the staged worktree copy. A failed release
+named `dist` or `node_modules`. The separate backup command archives the
+checkout where it ran; it does not replace reconciliation. A failed release
 evidence gate creates no tag and must become a patch work order.
 
 The main checkout's exact `.claude/settings.local.json` is persistent local
 harness state, not release evidence. Main-checkout release close permits that
-one root path, protected `docs/intake/**`, and the anchored disposable outputs
-above. This is deliberately asymmetric: a copy in the subject worktree remains
+one root path, protected `docs/intake/**`, `docs/control/local/**`, and the
+anchored disposable outputs above. This is deliberately asymmetric: a local
+settings copy in the subject worktree remains
 non-disposable and must block removal so the close path cannot erase operator
 settings. Do not generalize the exception to `.claude/**`, and do not copy or
 inspect the local file as part of closeout.

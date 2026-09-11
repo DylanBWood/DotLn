@@ -23,6 +23,49 @@ file. Two standing reference surfaces sit at the very bottom because they are
 founding-era: **Resolutions of known tensions** (settled contradictions — do
 not relitigate them) and the founding chat/notes/image corpus.
 
+## 2026-09-09 WO-126 ideation — context continuity and observation before caps
+
+Source: the operator's context warning, explicit ideation dispatch and two
+budget answers, preserved unedited in ignored
+`docs/intake/notes/WO-126-expanded-ideation-2026-09-09-context-continuity.md`,
+SHA-256 `f8457865bed5b49c4708359afd874bdeef731f2a0b6d9cac29577de8b2855741`.
+The [breakout receipt](../evidence/WO-126/ideation.md) records clean-room
+synthesis, provisional worktree-local capture and pending reconciliation.
+
+- **Context Continuity** `preserved`: an equipable support should observe
+  context occupancy automatically and test whether actors retain the objective,
+  decisions, constraints, evidence, remaining work and correct next action
+  through repeated automatic compactions. A live claim needs observed events
+  and resumed behavior; summary production alone is insufficient. Durable home:
+  product 05 §Candidate — Context Continuity and product 03's runtime projection.
+- **Measure usage before setting caps** `adopted`: leave the unspecified token,
+  dollar and PR-body ceilings unset while collecting usage. A percentage of a
+  context window is distinct from cumulative tokens for a dispatch. The source
+  and availability of each measurement stay visible; invented estimates and
+  arbitrary caps are rejected. Reopen numeric limits after observations support
+  a decision and the operator selects them. This supersedes the emergency-pass
+  entry's unsourced final rejection of provider token/cost telemetry; that old
+  entry remains as history. WO-126's specified performance/read budgets retain
+  their own sources.
+
+Follow-up synthesis in the same 2026-09-09 batch adds the observed host-capacity
+comparison and enabled experimental recovery mode; these remain observations,
+not continuity proofs. Durable work belongs in DotLn's existing planned offline
+queue/shared state, toward bounded single-use calls. The
+[receipt](../evidence/WO-126/ideation.md) identifies both follow-up captures and
+their hashes. No v1 material is imported.
+
+The support-behavior follow-up is `preserved` as an unallocated gap. The operator
+requires intended behavior without repeated coaching, durable across sessions
+and compaction, and warns that fragmenting prose can recreate the original
+rule/context burden. WO-096–098 cover classification, executable migration and
+context reduction, but do not explicitly prove queue activation or recognition
+of deliberate chat intent. Product 05 records proposed fresh-session and
+ablation checks. WO-126 continues its original mechanical reductions; the
+operator permits later allocation of this broader problem. The session's
+correction and chosen disposition live in its decisions file rather than being
+mistaken for a new ledger rule.
+
 ## 2026-09-08 WO-042 atomic executor supports and adjacent gate repair
 
 Source: four operator ideation/correction messages preserved in main's ignored
@@ -6314,3 +6357,135 @@ existing contract; no runtime source, contract, or locked boundary changes.
     The one-seam and four-hour rules stand for every other order.
 - **Provider token or cost telemetry** `rejected`
   - The 2026-09-05 decision stands; the repository records enough.
+
+## 2026-09-09 — recurring questions that expose simpler alternatives
+
+- **Surface useful alternatives without waiting for an objection** `preserved`
+  - During WO-126 repair, the operator observed that refusing a new Python
+    prerequisite prompted a useful implementation comparison, then asked for a
+    method that asks such questions by default, automatically or occasionally.
+    The shape is routine scrutiny of a method's necessity and cost while keeping
+    its intended outcome and explicit guarantees visible. Dependency avoidance
+    is one trigger, not the universal objective.
+  - Product 07 §Candidate — recurring review of implementation alternatives
+    preserves default, event-triggered and periodic possibilities. Compare the
+    existing four questions, meter and Entropy Reducer before introducing a new
+    recurring cost. Retain useful measurements, no-change outcomes and reopening
+    conditions. Cadence and implementation remain unallocated.
+  - Provenance: `docs/intake/notes/WO-126-recurring-alternative-review-2026-09-09.md`,
+    the operator's same-session `ideation:` dispatch, and
+    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen in planning when a
+    bounded comparison can test discovery benefit against review overhead.
+
+- **Tinkerer / Scientist with an activation-rate modifier** `preserved`
+  - The operator's same-day follow-up proposes an experimental bias applied to
+    a related question/input or answer/response, similar to A/B testing but
+    activated only sometimes. Product 05 preserves the candidate support and
+    uses the already-established term Support modifier for the separate rate
+    control. Naming, relation to A/B testing, eligibility, cadence and rate
+    policy remain open; general support modifiers are not claimed as shipped.
+  - Provenance: `docs/intake/notes/WO-126-experiment-support-followup-2026-09-09.md`
+    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen in planning with
+    evidence of useful experimental findings, valid skipped opportunities,
+    authority preservation and measured cost.
+
+- **Retain comparative data when a decision forces a similar-purpose alternative** `preserved`
+  - The operator separately asks for comparisons as historical data whenever a
+    decision forces another method serving roughly the same purpose, activated
+    automatically or through equipped support. Product 05 preserves that trigger
+    separately from occasional experimental exploration. Historical evidence is
+    a useful output even when the decision is already settled; differences in
+    guarantees and unavailable counterfactuals remain explicit.
+  - Provenance: `docs/intake/notes/WO-126-historical-comparison-followup-2026-09-09.md`
+    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen in planning for a
+    bounded collection design, default/equipment choice and measured comparison
+    of retained decision value against collection cost.
+
+- **Measure possible benefits of emoji substitutions** `preserved`
+  - The operator asks whether an emoji can beneficially replace its represented
+    word. Product 05 preserves word/emoji/labeled comparisons for scanning and
+    prompt meaning, with byte size, model tokens and behavior kept distinct.
+    A four-pair Node measurement gave two byte savings, one tie and one increase;
+    token and correctness benefits remain unmeasured. No substitution policy or
+    tokenizer dependency is selected.
+  - Provenance: `docs/intake/notes/WO-126-emoji-substitution-2026-09-09.md` and
+    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with a concrete
+    consumer/model, representative examples and measurable task outcomes.
+
+- **Separate a browser projection from unattended runtime lifetime** `preserved`
+  - The operator asks whether an always-available app can be a webpage using
+    WebSockets, workers or WebAssembly. Product 04 preserves a browser-hosted
+    option while distinguishing communication, computation and process lifetime.
+    Browser background facilities do not establish a continuously running
+    resident; a separate local or remote host and suspension/recovery remain
+    candidate designs under the same canonical projection contract.
+  - Provenance: `docs/intake/notes/WO-126-browser-runtime-2026-09-09.md` and
+    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with explicit work
+    requirements for closed windows, stopped processes and sleeping devices,
+    followed by an observed lifecycle comparison.
+
+- **Compare desktop delivery speed and 3D behavior independently** `preserved`
+  - The operator follows with Electron and the fastest option that permits 3D.
+    Product 04's shared candidate distinguishes implementation effort, startup
+    and rendering speed. Electron is an executor hypothesis for quickest
+    resident desktop delivery with existing TypeScript/Node; browser plus a
+    companion and Tauri remain comparisons. The proposed Babylon.js projection
+    stays separate from wrapper choice. No host or new dependency is selected.
+  - Provenance: `docs/intake/notes/WO-126-desktop-3d-runtime-2026-09-09.md` and
+    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with the same scene and
+    background task, measurements of effort, footprint, frame times and recovery,
+    and the operator's actual meaning of fastest.
+
+- **Use the full eight-system-traps framework beyond the current five signals** `preserved`
+  - The operator supplies eight traps and possible escapes while discussing
+    the review process: policy resistance, commons depletion, downward standards,
+    escalation, compounding winner advantage, dependence on intervention, rule
+    beating and proxy-goal optimization. Product 05 preserves the whole lens
+    across compositions, resources and development; product 07 links it to the
+    five existing meter rows without claiming the other three are implemented.
+  - Project examples and escapes are hypotheses requiring an observed feedback
+    loop and an outcome comparison. Whole-file delivery versus useful review,
+    repeated operator rescue, shared budgets and evidence invalidation are
+    candidate investigations. The current guards remain active; no new meter
+    row, automatic trap verdict or mandatory checklist is introduced.
+  - Provenance: `docs/intake/notes/WO-126-eight-system-traps-2026-09-09.md` and
+    `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with a representative
+    loop, an explicit shared outcome, a bounded proposed escape and measured
+    benefit including retained decision value and the cost of intervention.
+
+- **Let an improvement drought increase experimental initiative** `preserved`
+  - The operator combines an accumulating bad-luck counter with small gains
+    that compound. The proposed Tinkerer modifier observes the last demonstrated
+    repository improvement, stays quiet after a recent gain, then increases
+    activation pressure, search breadth and experiment novelty as the gap grows.
+    A prolonged drought may prompt exploration outside the current work order.
+    A week and one percent per day are illustrative, not selected thresholds.
+  - Product 05 retains this adaptive variant beside fixed and probabilistic
+    activation. It distinguishes a selected investigation from a guaranteed
+    improvement, a recent probe from a real gain, and broader discovery from
+    authority to change other work. Missing history, inactive time, cooldowns,
+    pressure bounds, reset evidence and avoidance of cosmetic wins remain open.
+    PoE's historical evasion entropy and Atomic Habits supply source shapes;
+    no game-wide luck rule or universal performance compounding is asserted.
+  - Provenance: `docs/intake/notes/WO-126-adaptive-improvement-pressure-2026-09-09.md`
+    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with comparable
+    fixed/adaptive activation cases, meaningful gains or retained learning,
+    total cost, interruption rate and evidence that the modifier does not reward
+    proxy improvement or escalate work without bound.
+
+- **Retain the alternatives a decision leaves undone** `preserved`
+  - The operator asks for useful history of unchosen options across system-trap
+    judgments, naive-interventionism review, action/NoOp, A/B and Eye Dr
+    comparisons, Tinkerer experiments and forced substitutions. Product 05
+    preserves a shared record of considered alternatives, dispositions,
+    rationale, evidence, uncertainty and reconsideration conditions, building
+    on existing decision receipts and comparison events.
+  - Rejected, deferred, constrained and untested options remain distinct. A
+    NoOp result retains the declined action; an action result retains the NoOp
+    baseline. Ties, inconclusive findings and a decision not to experiment also
+    carry useful history. Selection is not evidence against every untried
+    alternative, and a record alone is not a demonstrated improvement.
+  - Provenance: `docs/intake/notes/WO-126-unchosen-alternatives-2026-09-09.md`
+    and `docs/evidence/WO-126/ideation-alternatives.md`. Reopen with a bounded
+    retention/retrieval design and evidence that useful reuse and avoided
+    repeated investigations justify recording, context and review cost.

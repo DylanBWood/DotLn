@@ -1,6 +1,6 @@
 # Plan-refutation receipts
 
-`npm run plan -- refute` asks a fresh refuter whether the marked planning
+`npm run plan -- refute --transport <name>` asks a fresh external refuter whether the marked planning
 horizon serves the vision. It defaults to the Entropy Reducer identity,
 Contra-Auguste mask, architecture-and-semantics lens, and Claude Code's existing
 print transport with `claude-fable-5-1` at `max`. `--transport codex-cli-exec`
@@ -10,17 +10,20 @@ effective provider model and effort readback remain unknown. `fake` is for
 fixtures and cannot satisfy a planning gate.
 
 The CLI episode has a twenty-minute deadline; Claude print retains a $5 budget cap.
-An interrupted or invalid result produces no judgment receipt and cannot pass
+A transport failure reports its actual CLI exit code and stderr. An
+interrupted or invalid result produces no judgment receipt and cannot pass
 the gate. A transport retry is disclosed in the executor evidence.
 
 Run `npm run plan -- subject` to inspect the committed-only input. Commit the
-draft subject before refuting it. The host reads Git blobs for the map's marked
-sequence and every listed order. It hashes those exact bytes plus the five
+draft subject before refuting it. The host reads Git blobs for `docs/planning/sequence.md` and every listed
+order. Historical receipts retain the map path that existed at their revision. It hashes those exact bytes plus the five
 vision thesis subtrees, exclusions, role table, and capability identifier/scope
 and level cells. Dated capability assessments remain in source order. The
 refuter receives only the thesis and exclusion passages, roles, capability ids
-and levels, and each order's title, objective, numbered acceptance criteria and
-non-goals. The map's labels, planner narrative, ledger, assumptions, rationale
+and levels, and each order's title, objective, Cost header, numbered acceptance criteria
+and non-goals. A bounded subject-hashed cost table carries dated acceptances,
+latest meter rows and trap signals. It refuses stale evidence; missing cost or
+added process without a removal or dated acceptance is a structural hold. The map's labels, planner narrative, ledger, assumptions, rationale
 and earlier verdicts are excluded. The hash includes complete order bytes even
 though their narrative is not sent.
 
@@ -31,14 +34,27 @@ model tools prevent repository traversal. Authentication remains the CLI
 broker's responsibility. A request does not grant the model access to local
 credentials, private intake or the planner's session.
 
-An operator may instead request an independent judgment directly in the current
-Codex session. Read the canonical subject and the `plan-refutation-v1` rules,
-judge without planner explanation, earlier reviews or private intake, validate
-the result with `validatePlanResult`, and freeze it before changing receipt
-tooling. Do not launch another reviewer to file that judgment. The existing
-`writePlanReceipt(root, { pass, slug, subject, episode, dispositions })` API
-accepts this second, closed `episode` form, with the frozen `result` added when
-calling the writer:
+`planning: refute` loads the dedicated refuter skill in either harness and
+makes the receiving session the refuter. `planning: refute full` selects the
+whole horizon; the default pass scope judges orders created or changed by the
+latest dated pass plus the sequence, carrying each other order's latest verdict
+by hash. The refuter directs no prerequisite read beyond its canonical prompt.
+
+Run `npm run plan -- refute --direct` (add `--scope full` for full scope).
+The helper checks committed/workspace equality and prints the same canonical
+prompt a transport receives. Save the closed result and a public statement of
+what was actually read, then run
+`npm run plan -- receipt <result.json> --statement <statement.txt>` with any
+required `--dispositions <file>`. It validates, screens, files and commits only
+the immutable pair with a plain subject, then runs the plan check. It refuses
+unrelated staged changes. The pass budget is 120 seconds from first dispatch
+to filing; restarting the same pending subject does not reset the clock.
+The receipt records scope, elapsed time and each carried source hash.
+
+The following historical direct-session episode remains valid. New helper
+receipts also carry a checked `review` object for scope, judged IDs, carried
+verdicts and dispatch timing. Neither form claims host-enforced context
+isolation or effective model/effort readback:
 
 ```json
 {
@@ -173,8 +189,8 @@ realizes the small shared screen needed by WO-041 ahead of its WO-039 consumers.
 
 `npm run plan -- check` validates the receipt chain and enforces dated
 planning headings forward from the first-parent introduction commit;
-`npm test` includes that check for code changes, and a planning pass runs
-the document gate only.
+`npm run test:full` includes that check for code changes, and a planning pass
+runs `npm run test:docs` without building or running code suites.
 Pre-existing headings and the six manual 2026-09-06 redirect receipts retain
 their original standard. Every new pass needs a receipt; the current horizon
 must match the current committed/workspace subject. Prior receipts retain their

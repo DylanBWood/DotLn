@@ -1139,8 +1139,10 @@ This repository deliberately publishes timing in its public control profile,
 as it already publishes commit dates. The optional field lets a stricter
 profile omit timing or derive a bucketed/delayed public observation with that
 loss of fidelity disclosed; emitted values must still satisfy the timestamp
-contract. This migration adds no token, cost, attention, or other private-lane
-telemetry and does not backfill old events.
+contract. WO-126 separately records observed tokens and cost per dispatch from
+CLI envelopes and interactive transcript counters, with unavailable values
+explicit. That observation does not backfill control events or turn elapsed
+wall-clock into model time. Attention telemetry is outside WO-126.
 
 The operator surface also needs an always-legible runtime projection: remaining
 context budget, active and completed delegated episodes, current phase, blocked
@@ -1149,6 +1151,22 @@ agent drawer, CLI status view, and future console are projections of the same
 typed state, not separate sources of truth. If a host cannot expose exact
 context remaining or subagent telemetry, it must label the value unavailable or
 estimated instead of implying continuous observability.
+
+The [Context Continuity candidate](05-pattern-library.md#candidate--context-continuity)
+adds automatic observation and an explicit recovery test across compaction.
+Current-window occupancy and cumulative dispatch token usage are separate
+fields with source and availability. The operator's 2026-09-09 clarification
+requires collecting usage before selecting token caps; unspecified token,
+dollar and PR-body ceilings remain unset. A context warning supplies an
+observation, never proof that recovery preserved the work or authority to add
+a cap. The candidate's host binding and live compaction evidence remain open.
+The same follow-up places the durable framework in DotLn's planned offline work
+queue and shared state: the host retains admitted work, authority and accepted
+results across windows and supplies bounded context to each call. That
+continuation contract is the path toward single-use inference calls. Harness
+compaction remains a discovered adapter capability; it does not replace the
+resident's queue, shared state or evidence admission. The candidate composes
+with that future work and creates no second queue in WO-126.
 
 The operator worktree projection automates the reversible control-plane edges
 around that state: start from a clean `main`, fetch and fast-forward the base,
@@ -1406,9 +1424,25 @@ For the current repository workflow, the main control-plane checkout's ignored
 inside a work-order worktree exists only there: Git, checkpoints, stashes, and
 the PR do not carry it. `npm run backup:intake` archives only the checkout where
 it runs and provides a local snapshot, not reconciliation or later
-discoverability. Until a helper exists, such a staged note must be backed up and
-manually reconciled into the main intake before its worktree can be removed;
-normal closeout refuses rather than deleting it.
+discoverability. WO-126's reviewed closeout helper reconciles staged intake
+before teardown. It copies to the same relative path, verifies bytes, and keeps
+a different-byte collision under a `.from-WO-NNN` suffix; further collisions
+receive distinct names. The source survives until the verified worktree
+teardown. `release close --dry-run` prints the plan without changing either
+checkout. A refusal is reported through the helper; sessions write no closeout
+script.
+
+`docs/control/local/` is an ignored lane read and written by scripts: gate
+caches, usage observations, session state and the operator's terms list. Only
+`harness/**` is disposable at subject teardown; the rest is retained. Main's
+release-influence check permits the whole local lane. The separate
+`account-labels.md` private mapping remains unread by scripts.
+
+The current planning sequence is `docs/planning/sequence.md`, bounded at 8 KB.
+Dated map rationale older than the newest two revisions is retained byte for
+byte in `docs/planning/archive/work-order-map-2026-09-09.md`, with a link
+concordance. The map retains current rationale and navigation; the planner's
+startup input is the sequence rather than the archive or whole map.
 
 Storage reconciliation and semantic reconciliation are different. Moving raw
 bytes into the surviving store does not update the ledger or blueprint. The

@@ -318,6 +318,57 @@ contracts must permit an Angular shell and Babylon.js canvas to coexist,
 exchange selection and command intents, and render the same underlying state
 without either owning the other.
 
+### Candidate — browser and desktop hosts for a resident 3D view
+
+The operator's 2026-09-09 ideation asks whether the always-available application
+could live in a browser using WebSockets, workers or WebAssembly, then asks
+whether Electron or another option would reach a 3D-capable application sooner.
+Preserve both questions: a visible web projection, a process that survives
+closing that projection, and work that continues while the device is asleep
+have different lifetime requirements. Hosting and graphics are separate choices
+under the existing projection contract; no new canonical state belongs in a UI.
+
+[WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
+carry bidirectional messages;
+[workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
+move computation off the UI thread; and
+[WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly) is a compiled
+execution format. None alone supplies an unattended process lifetime. A PWA can
+handle supported background events, but browsers may stop service workers,
+including unfinished work, as described in
+[MDN's background-operation guide](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Offline_and_background_operation).
+A browser UI can also connect to a separately hosted resident; browser-only
+execution remains suitable where suspension and later recovery meet the need.
+
+The executor's provisional development-speed hypothesis is a web scene for the
+first visual prototype and Electron for the first resident desktop package,
+because the project already uses TypeScript and Node. This is an inference, not
+a measured winner or an operator selection.
+[Electron's process model](https://www.electronjs.org/docs/latest/tutorial/process-model)
+keeps the main process distinct from web renderers, and its
+[tray lifecycle](https://www.electronjs.org/docs/latest/tutorial/tray) can keep
+the application running after its windows close. Closing the application,
+process failure and device sleep still require an explicit recovery design;
+work required during device sleep needs an independently running host.
+[Tauri](https://tauri.app/concept/architecture/) is an alternative using a
+Rust-based host and the OS webview, with smaller distribution as a candidate
+benefit. Compare its build prerequisites, webview variation and integration of
+the existing Node runtime rather than assuming a smaller package means faster
+delivery or rendering.
+
+[WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) supports
+hardware-accelerated 3D in web canvases on capable devices. The already-proposed
+Babylon.js view can therefore be evaluated independently of a desktop wrapper;
+device, graphics API, driver and scene limits still require evidence. Compare
+the same representative scene and resident task across a browser with a local
+companion, Electron and a viable Tauri configuration. Record development effort,
+dependencies, package size, cold start, idle memory/CPU, frame-time distribution,
+background task progress and close/sleep/restart recovery. Distinguish fastest
+to build, fastest to start and fastest to render. No runtime, dependency, always-on
+service, benchmark helper or work order is selected by this document-only pass.
+Reopen the choice with that bounded evidence and a stated unattended-work
+requirement. See the [ideation receipt](../evidence/WO-126/ideation-alternatives.md).
+
 ### Actor board v0
 
 The 2026-09-06 planning pass, as redirected the same day, fixes the first

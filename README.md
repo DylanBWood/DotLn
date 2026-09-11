@@ -84,7 +84,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.16.0`. Compiler `0.8.0` keeps linked supports within the active mechanic’s base authority, admits explicit grants through a host-owned registry, and projects the tooltip from the effective envelope. The [Contributor build](packages/skeleton/src/loadouts/contributor.ts) lowers saved rules into project permissions, generated hooks, role skills and a marked instruction residue through `harness-v1`. `npm run harness -- check` refuses drift. Claude's observed hooks reuse the compiled feedback predicates; Codex receives project skills and the shared instruction block, with unavailable enforcement stated explicitly. Skeleton `0.14.0` equips five independent executor supports for adjacent repair, decision receipts, a follow-up queue, intent communication and operator check-in. The [executor receipt](docs/evidence/WO-042/README.md) separates saved-build compatibility, support equipment, live role-entry smokes, context accounting and limits. The [actor board](packages/console/README.md), [plan refuter](docs/planning/refutations/README.md), [independent workflow](docs/product/07-execution-guide.md#independent-workflows-and-integration), mutation corpus, inspection workers, verification matrices, Beacon senses and actor-usage reports remain available. General source-writing workers and portable starter export remain later work. Package publication controls are in [CONTRIBUTING.md](CONTRIBUTING.md); published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases).
+This source prepares DotLn `v0.17.0`. Compiler `0.9.0` and skeleton `0.15.0` lower the [Contributor build](packages/skeleton/src/loadouts/contributor.ts) into project permissions, hooks and role skills. Hard lifecycle commands enforce authored-output and application evidence; Stop gives advice. `npm test` is the fast gate, while `npm run test:full` supplies evidence reusable by the exact Git tree. The build preserves installed hook runtimes, and release close owns intake reconciliation. The [WO-126 receipt](docs/evidence/WO-126/README.md) records the checks, measured costs and limits. `npm run meta` reports available per-dispatch usage and process trends. Prose-only rules claim instruction delivery, and Codex uses an explicit observation adapter without claiming automatic hooks. Console `0.1.3` reads the current feedback evidence and distinguishes advice from prevention. The [actor board](packages/console/README.md), [plan refuter](docs/planning/refutations/README.md), [independent workflow](docs/product/07-execution-guide.md#independent-workflows-and-integration), mutation corpus, inspection workers, verification matrices and Beacon senses remain available. General source-writing workers and portable starter export remain later work. Package publication controls are in [CONTRIBUTING.md](CONTRIBUTING.md); published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases).
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
@@ -136,10 +136,10 @@ and the [fresh host probe](docs/discovery/beacon-probe-2026-09-04.md).
 
 The test suite feeds that log through the same pure reactor used by the live
 host and compares complete decisions and semantic projections, including a
-negative verifier outcome. `npm test` runs the configured root evidence suite:
-kernel, compiler, skeleton, publication freshness, intake backup, resume control,
-recovery checkpoints, real-Git worktree lifecycle, and guarded release close,
-including the GitHub-body profile; frozen corpus lanes remain separate.
+negative verifier outcome. `npm test` runs the bounded fast gate: the package suites, build, format,
+harness, index, publication and process-budget checks. `npm run test:full`
+also runs lifecycle, planning, evidence and mutation checks.
+`npm run test:docs` checks document-only planning and ideation dispatches.
 Evidence was recorded with Node 22 on macOS; the shell suites use macOS
 utilities and fail loudly elsewhere. See the
 [release index](docs/releases/README.md),
@@ -447,8 +447,8 @@ explicit: typed mechanisms are meant to progressively absorb the prose. The
 - [`docs/LEGAL.md`](docs/LEGAL.md) — the 2026-09-06 license decision
   (Apache-2.0 code, CC BY 4.0 documentation, DCO inbound, names reserved) and
   the gates that remain open.
-- [`docs/decisions/`](docs/decisions/) — settled questions. Do not relitigate
-  them.
+- [`docs/decisions/`](docs/decisions/) — historical decision records; preserve their sources
+  and append a sourced reopening when evidence or operator direction changes them.
 - [`docs/releases/`](docs/releases/) — release evidence and the tag-manifest
   template.
 - [`docs/publication/`](docs/publication/) — the same blueprint compiled for

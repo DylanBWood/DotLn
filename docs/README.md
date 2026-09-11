@@ -29,7 +29,7 @@ docs/verifications/ immutable numbered verifier reports, grouped by work order
 docs/final-reviews/ immutable numbered closeout reports and PR handoffs
 docs/control/       legacy resume log, per-order segments, generated overview,
                     and the separate plan-refutations.jsonl override log
-docs/control/local/ ignored operator-maintained account-label meanings; never read by scripts
+docs/control/local/ ignored gate/session/usage observations and private terms; account-label mapping remains unread
 docs/evidence/      bounded executor comparisons and fixture transcripts
 docs/releases/     historical v0.2.0 records + forward tag-manifest template;
                    later immutable manifests/notes live in annotated tags
@@ -88,9 +88,11 @@ The intended surviving location is the main control-plane checkout's ignored
 directory, not another view of main. Resolve main with
 `git worktree list --porcelain` before looking up original sources as well as
 before capturing new material. If access constraints require a provisional
-capture there, keep the worktree, back the note up, and reconcile it into main
-before removal. The current tooling protects such notes by refusing normal
-worktree cleanup but does not perform that reconciliation automatically.
+capture there, keep the worktree and back the note up. The closeout helper
+copies it into main before removal and verifies the destination bytes. A
+different-byte collision keeps both copies with a `.from-WO-NNN` suffix;
+`--dry-run` prints the plan without changing either checkout. Reconciliation
+preserves raw material; it does not synthesize it or register it for re-mining.
 
 ## Backing up local intake
 
@@ -157,6 +159,12 @@ in `docs/PLAYBOOK.md`.
 ## Config log
 
 One line per `.claude/` or CLAUDE.md change (see execution guide):
+
+- 2026-09-09: WO-126 emits version-2 prose/advisory feedback, session-authored
+  output observations, attribution settings, stable runtime snapshots and the
+  direct-refuter skill. The authorized floor edit preserves decisions with
+  sources and reopening conditions; one manifest line replaces fact residue.
+  Pre-effect writer, permission and attribution guards remain enforced.
 
 - 2026-09-08: WO-039 fourth repair regenerates the project hook runtime pins.
   Reservation instances are immutable: a session recording a new fact about
