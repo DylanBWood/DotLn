@@ -818,9 +818,27 @@
           "title": "Unallocated evidence candidate — console host-collection budget under gate load:",
           "summary": "- **Unallocated evidence candidate — console host-collection budget under gate load:** the actor board's host collection runs each fixed read-only command under one sixty-second budget, and under full-gate load the release listing exceeded it in four full runs, one of them outside the sandbox, while passing alone. By the operator's decision the fifth repair runs the console suite after the other three package suites in the root gate; the budget itself is unchanged. Decide whether the budget scales with the host or whether the release listing is shared across the gate, and keep the read-only guarantee. Named by the [fifth repair receipt](../evidence/WO-039/repair-005.md); it grants no activat",
           "missing": false
+        },
+        {
+          "hash": null,
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Unallocated evidence candidate — console host-collection budget under gate load:",
+          "summary": "- **Unallocated evidence candidate — console host-collection budget under gate load:** the actor board's host collection runs each fixed read-only command under one sixty-second budget, and under full-gate load the release listing exceeded it in four full runs, one of them outside the sandbox, while passing alone. By the operator's decision the fifth repair runs the console suite after the other three package suites in the root gate; the budget itself is unchanged. Decide whether the budget scales with the host or whether the release listing is shared across the gate, and keep the read-only guarantee. Named by the [fifth repair receipt](../evidence/WO-039/repair-005.md); it grants no activat",
+          "missing": true
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "targets": [
+            "FUP-2de0cadfd1038991"
+          ],
+          "reason": "The 2026-09-12 planning pass rewrote this map bullet to record its allocation to WO-128 criterion 2; the new item carries the same candidate and its history.",
+          "reopenWhen": "If the new item is removed from the map or its allocation to WO-128 is reversed.",
+          "at": "2026-09-12T16:40:35.984Z"
+        }
+      ]
     },
     {
       "id": "FUP-0055",
@@ -2037,6 +2055,14 @@
           "reopenWhen": "At the next operator-opened planning pass, reproduce the observed omission and compare a durable remedy with existing rule-migration coverage.",
           "targets": [],
           "at": "2026-09-10T00:11:02.941Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "deferred",
+          "targets": [],
+          "reason": "The 2026-09-12 planning pass could not reproduce the omission: a planning session has no executor supports to observe. The operator deferral is carried unchanged in substance.",
+          "reopenWhen": "At the next executor dispatch that records a support-behavior omission in its evidence, or at the next planning pass that finds such a record.",
+          "at": "2026-09-12T16:40:36.192Z"
         }
       ]
     },
@@ -3002,6 +3028,71 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-19014370f2f92586",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::7ff094b457aaf9d2ffad1575bbab533245896a34bb89d598906f1f3d26e78585",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "42194b87e3ac23479f841083a5485172c70c18368a860425e50fd90043e93b78",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "NoOps of the 2026-09-12 proof-carrying-gates pass.",
+          "summary": "- **NoOps of the 2026-09-12 proof-carrying-gates pass.** Weighed and declined, each with its evidence and reversal condition. (1) _Change the lifecycle predicate to accept composed evidence._ Declined: it already does; `requireLifecycleEvidence` finds the aggregate at the exact tree and the runner composes that aggregate from reused suite rows (WO-126-D009, D014; the 41–47 s identical-tree reruns of 2026-09-12). Reopen only if an aggregate is ever refused for being composed. (2) _Remove the global preflight barrier._ Declined: WO-127-D007 restored the wait because a stale preparation once wasted the expensive suites, and the preflights end at 16 s of a 475 s gate. Reverse when a recorded tra",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2de0cadfd1038991",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::ebf2e6752fd5f117c53ffda4920d6584633e5bc107b366b2beec7eeea1e68cd8",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "b30bfbd4e84b11f73c096cdfc7f614f47dd81cea16b6e0e163d7e95914cdabff",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "Evidence candidate — console host-collection budget under gate load: allocated 2026-09-12 to WO-128 criterion 2, after six fresh full gates of 2026-09-11/12 failed on its 60 s bound under load (VER-00",
+          "summary": "- **Evidence candidate — console host-collection budget under gate load: allocated 2026-09-12 to WO-128 criterion 2, after six fresh full gates of 2026-09-11/12 failed on its 60 s bound under load (VER-001 O6, VER-003 O3, VER-004 AC5 and FINAL-001 item 3 of WO-125).** The nomination text stays as history: the actor board's host collection runs each fixed read-only command under one sixty-second budget, and under full-gate load the release listing exceeded it in four full runs, one of them outside the sandbox, while passing alone. By the operator's decision the fifth repair runs the console suite after the other three package suites in the root gate; the budget itself is unchanged. Decide whe",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "allocated",
+          "targets": [
+            "WO-128"
+          ],
+          "reason": "Six fresh full gates of 2026-09-11/12 failed on the console collector 60 s bound under gate load (WO-125 VER-001 O6, VER-003 O3, VER-004 AC5, FINAL-001 item 3); WO-128 criterion 2 makes the bound load-derived or protects the suite with a scheduler load class while keeping the read-only guarantee.",
+          "reopenWhen": "WO-128 closes without the console collector bound repaired, or a fresh full gate fails on it after WO-128 closes.",
+          "at": "2026-09-12T16:40:36.057Z"
+        }
+      ]
+    },
+    {
+      "id": "FUP-b8a329d9970b8206",
+      "key": "candidate:docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "f4b34a3ea54b10804338543f95e2eeaf8155dde305d8873ac833b635bcbb66d3",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. The cuts, each measured before allocation: copy-on-write clones of the sealed release template and other pre",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Nominated by the 2026-09-12 planning pass as the unallocated remainder of the relayed proof-carrying-gates plan; its entry evidence is WO-128 per-task concurrency trace, which does not exist yet.",
+          "reopenWhen": null,
+          "at": "2026-09-12T16:40:36.124Z"
+        }
+      ]
     }
   ]
 }

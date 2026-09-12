@@ -1,7 +1,8 @@
 # Work-order map — human planning judgment
 
-**Planning revision:** 2026-09-09, the operator's emergency process-debt pass
-after the `v0.16.0` close (previous revisions 2026-09-08, the critical-path
+**Planning revision:** 2026-09-12, the proof-carrying-gates pass after the
+`v0.17.2` close (previous revisions 2026-09-09, the operator's emergency
+process-debt pass after the `v0.16.0` close; 2026-09-08, the critical-path
 planning pass after the WO-039 close, revised the same day at the operator's
 corrections; 2026-09-06, the phase-two pass after the `v0.13.1` close; and
 2026-09-05, after the `v0.6.0` close). The generated
@@ -69,6 +70,60 @@ corrections after it (tokens and cost, decision provenance, two refuter
 scopes, the four questions, the trap rows) drew receipt 007's hold on
 criterion 16, whose cost judgment had no permitted input; that repair
 landed, and the receipt carrying its accepted disposition closes the pass.
+
+**Gate cost (2026-09-12):** the operator opened a planning pass after the
+`v0.17.2` close with a second model's plan for proof-carrying gates and full
+authority to veto or alter it. The pass verified the plan's claims against
+`scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`,
+`scripts/lib/gate-evidence.mjs`, `scripts/lib/lifecycle-evidence.mjs` and the
+host's retained gate rows, and measured WO-125's gates: 21 `npm run test:full`
+records over 18 transitions, 10 fresh runs of 613–839 s (8 failed), 9
+composed runs of 41–419 s (all passed) and 2 preflight refusals, 9,443 s of
+gate wall-clock in an order whose latest phase attempts sum to 8,275 s. Three
+findings order the work. First, the largest waste is not reuse: twelve fresh
+full gates across WO-043, WO-125 and WO-127 failed on fixed wall-clock
+deadlines under load (`console` six, `plan-refutation:current` two,
+`harness-fixtures` two, `runner-fixtures` one) or on a tree changed during
+the run (two), 8,387 s in total, each followed by a passing rerun; the relayed
+plan does not mention it, and WO-125's FINAL-001 named this pass the owner.
+Second, the plan's central claim holds: the shared suite key hashes every
+ref, `HEAD`, the checkout path and the CPU count, so each transition's
+checkpoint ref made the next gate run all 78 tasks fresh (five of WO-125's
+ten fresh runs, 3,876 s, followed a transition with no source change), and
+the per-worktree cache leaves the release close on main with nothing to
+reuse. Third, the plan's lifecycle claim does not hold: the lifecycle already
+accepts the composed exact-tree aggregate (WO-126-D009, D014) and
+identical-tree reruns compose in 41–47 s; what stays fresh after a document
+change is the whole-tree class of about 25 suites (243–419 s), because only
+six suites and the release cases declare their documents. The pass files
+three bounded orders at the head of the sequence, serial because they share
+the runner: [WO-128](../work-orders/WO-128-fresh-gates-pass-first-time.md)
+(deadlines that survive load, per-task concurrency in the gate row,
+exclusivity re-measured),
+[WO-129](../work-orders/WO-129-suite-evidence-input-identity.md) (a key of
+declared inputs, the cache shared across worktrees, explained misses) and
+[WO-130](../work-orders/WO-130-declared-suite-inputs-replica.md) (declared
+inputs for every reusable suite, validated by replica execution). Each obeys
+the one-seam and four-hour rules; none changes the lifecycle predicate, the
+exact-tree aggregate or a test. Goal alignment: the mission's operator-flow
+outcome is the operator's waiting and the visible reruns, and the critical
+path is every remaining order paying these gates per phase; the NoOp baseline
+is WO-125's 2 h 37 min of gates for 30 min of implementation, repeated per
+order; the risk of intervening is a stale green from an incomplete
+declaration, held by the fail-closed defaults, the replica validation and the
+miss explanations; the traps weighed are rule beating (a cache an agent could
+write, refused by the hooks), drift to low performance (deadlines raised by
+constants, declined), shifting the burden to the intervenor (operator reruns,
+removed) and policy resistance (D012's exclusivity workaround against the
+load it was meant to absorb); the other four lenses are immaterial to a
+runner change and are not argued. The cold-gate structural cuts the plan
+proposes (copy-on-write fixture clones, split shell suites, pure policy
+extraction, model checking, sharding) are recorded as a product-07 candidate
+whose entry evidence is WO-128's concurrency trace; the preflight barrier
+stays (WO-127-D007; the preflights end at 16 s of a 475 s gate). The
+dispatch is captured verbatim in ignored intake (SHA-256
+`4eb2c26a6530687e67c05781f2f153233d90b340b7365c1bd0cbb96f4b101993`); the
+refutation is the operator's next dispatch, `planning: refute`.
 
 Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 
@@ -152,6 +207,42 @@ identity migration.
   criteria 10 and 11 carry it. (4) _Fix the guard's
   allowlist in this pass._ Declined; a planning pass never implements. The
   fix is WO-126 criterion 8, not a nomination.
+- **NoOps of the 2026-09-12 proof-carrying-gates pass.** Weighed and
+  declined, each with its evidence and reversal condition. (1) _Change the
+  lifecycle predicate to accept composed evidence._ Declined: it already
+  does; `requireLifecycleEvidence` finds the aggregate at the exact tree and
+  the runner composes that aggregate from reused suite rows (WO-126-D009,
+  D014; the 41–47 s identical-tree reruns of 2026-09-12). Reopen only if an
+  aggregate is ever refused for being composed. (2) _Remove the global
+  preflight barrier._ Declined: WO-127-D007 restored the wait because a stale
+  preparation once wasted the expensive suites, and the preflights end at
+  16 s of a 475 s gate. Reverse when a recorded trace shows the barrier on
+  the critical path. (3) _Doubled shadow gates, a fresh gate after every
+  composed one._ Declined: it restores the cost the orders remove; WO-130
+  proves declaration completeness by replica execution once per declaration
+  change and by a mutation matrix. Reverse if a replica ever passes a
+  declaration that a fresh gate refutes. (4) _Time-based expiry of
+  evidence._ Declined: a content-addressed success does not become false
+  with age; the operator's `--fresh` remains. (5) _Bazel, Nx or Turborepo._
+  Declined, as the relayed plan itself advised: the difficult inputs are Git
+  state, host tools and fixture repositories, and the runner carries the same
+  model. Reverse at a second machine or a package graph the runner cannot
+  express. (6) _Deleting or merging tests._ Declined: no test is removed by
+  these orders; the mutation corpus (WO-108) is the instrument for that
+  question. (7) _The cold-gate structural cuts now._ Declined: measure first;
+  WO-128's per-task concurrency trace is the entry evidence, and the
+  candidate is recorded in product 07 §Candidate — cold-gate structural cuts.
+  Reverse when the trace names the node that bounds the gate after the
+  exclusivity decision. (8) _Choosing FUP-0091 (Context Continuity), FUP-0111
+  (planner startup context) or FUP-0132 (change-range output review) in this
+  pass._ Declined: every remaining order pays the gate per phase, so the gate
+  orders precede them, and FUP-0111 is not settled by one pass whose reads
+  were dominated by its subject. Reverse at the next pass with two more
+  entry measurements, or at a compaction incident. (9) _Reproducing the
+  support-behavior omission of FUP-0130 here._ Declined: a planning session
+  has no executor supports to observe; the deferral is carried with a
+  sharper condition. Reverse at the next executor dispatch that records an
+  omission.
 - **Critical-path candidates — recorded 2026-09-08 by the critical-path
   planning pass and allocated the same day at the operator's correction.**
   The runtime boundary codecs are WO-045 to WO-048; writing-worker harness
@@ -355,8 +446,11 @@ identity migration.
   under an explicit label, and select the current edition from one declared
   source. Named by the [fifth repair receipt](../evidence/WO-039/repair-005.md);
   it grants no activation, sequence position or implementation authority.
-- **Unallocated evidence candidate — console host-collection budget under
-  gate load:** the actor board's host collection runs each fixed read-only
+- **Evidence candidate — console host-collection budget under gate load:
+  allocated 2026-09-12 to WO-128 criterion 2, after six fresh full gates of
+  2026-09-11/12 failed on its 60 s bound under load (VER-001 O6, VER-003 O3,
+  VER-004 AC5 and FINAL-001 item 3 of WO-125).** The nomination text stays as
+  history: the actor board's host collection runs each fixed read-only
   command under one sixty-second budget, and under full-gate load the release
   listing exceeded it in four full runs, one of them outside the sandbox,
   while passing alone. By the operator's decision the fifth repair runs the
@@ -668,6 +762,9 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-123](../work-orders/WO-123-vertical-composition.md)               | delivery — the vertical continuation from a filed intent to a terminal state with per-step receipts, entered by the resident under a portfolio's `intent` class and admitted grants or by `dotln vertical`, proven with doubles                                                                | the named primitives, WO-068, WO-100, WO-120 and WO-042 merged; assign version at activation (minor)                                                                                                                       | skeleton implementer, then independent verifier                                                           | doubles and a fake clock                                                                                                                                              | the continuation, the admission, the command, products 07 and 03                                                                                                                                                 |
 | [WO-124](../work-orders/WO-124-impact-surfaces-derivation.md)         | intake — surfaces and tests derived from the contract, the profile and a snapshot, labeled by origin, with a confidence gate                                                                                                                                                                   | WO-061 and WO-054 merged; assign version at activation (minor)                                                                                                                                                             | compiler/skeleton implementer, then independent verifier                                                  | fixtures                                                                                                                                                              | the story-contract module, a snapshot index reader, products 03 and 06                                                                                                                                           |
 | [WO-125](../work-orders/WO-125-codex-effort-selection.md)             | worker transport — the Codex adapter accepts the declared effort levels and forwards the reasoning-effort override from an observed row                                                                                                                                                        | no open input; the operator runs the probe row outside the sandbox; assign version at activation (patch); first if the Codex refuter is wanted at max                                                                      | skeleton implementer, then independent verifier                                                           | the actual Codex CLI for the row; doubles in tests                                                                                                                    | `packages/skeleton/src/worker-transport.ts`, the refutations README, product 07, `environment.md`                                                                                                                |
+| [WO-128](../work-orders/WO-128-fresh-gates-pass-first-time.md)        | test infrastructure — load-derived deadlines, scheduler load classes, per-task concurrency in the gate row, the exclusivity workaround re-measured                                                                                                                                             | first of the three gate orders, alone in its lane; assign version at activation (patch); the operator runs five fresh gates outside the sandbox                                                                            | runner and fixture implementer, then independent verifier                                                 | the operator's host for the fresh-gate series; slow doubles in fixtures                                                                                               | `scripts/test-runner.mjs`, `packages/console/src/collect.ts`, `scripts/test-harness.mjs`, `scripts/test-plan-refutation.mjs`, `scripts/test-runner.test.mjs`, product 07                                         |
+| [WO-129](../work-orders/WO-129-suite-evidence-input-identity.md)      | test infrastructure — the suite key of declared inputs, the cache shared across worktrees under the Git common directory, explained misses                                                                                                                                                     | after WO-128 in the same lane; assign version at activation (patch); the operator records one composed gate after a transition                                                                                             | runner and fixture implementer, then independent verifier                                                 | two-worktree fixtures; generated hooks for the cache-path refusal                                                                                                     | `scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/test-suite-evidence.mjs`, `scripts/test-process-debt.mjs`, product 07                                                                      |
+| [WO-130](../work-orders/WO-130-declared-suite-inputs-replica.md)      | test infrastructure — input declarations for every reusable suite, validated by replica execution; document-only gates compose                                                                                                                                                                 | after WO-129 in the same lane; assign version at activation (patch); the operator records one composed document-only gate                                                                                                  | runner and fixture implementer, then independent verifier                                                 | clone-on-write replicas where supported; no new dependency                                                                                                            | `scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/test-suite-evidence.mjs`, `scripts/test-process-debt.mjs`, product 07                                                                      |
 | [WO-101](../work-orders/WO-101-program-and-hash-corpus.md)            | evidence/corpus — Program and identity regression floor                                                                                                                                                                                                                                        | not applicable                                                                                                                                                                                                             | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | `corpus/harness/`, fixtures, manifests                                                                                                                                                                           |
 | [WO-102](../work-orders/WO-102-cadence-corpus.md)                     | evidence/corpus — cadence boundary sweep                                                                                                                                                                                                                                                       | assign version and close disposition; pin suitable base/deps and governed closeout path                                                                                                                                    | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | cadence fixtures and manifests                                                                                                                                                                                   |
 | [WO-103](../work-orders/WO-103-authority-outbox-corpus.md)            | evidence/corpus — authority/outbox decision table                                                                                                                                                                                                                                              | assign version and close disposition; pin the landed WO-017 base and governed closeout path                                                                                                                                | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | authority/outbox fixtures and manifests                                                                                                                                                                          |

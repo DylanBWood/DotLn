@@ -6554,3 +6554,85 @@ existing contract; no runtime source, contract, or locked boundary changes.
     execution record carry the new duty and bounded implementation authority.
     Reopen the collector when either harness changes its recorded format; keep
     the measurement obligation while repairing its adapter.
+
+## 2026-09-12 — Planning pass: proof-carrying gates (WO-128 to WO-130)
+
+- **The relayed plan's central claim holds; its lifecycle claim does not** `adopted`
+  - The operator opened the pass after the `v0.17.2` close with a second
+    model's plan for proof-carrying gates and full authority to veto or alter
+    it. Verified against `scripts/lib/suite-evidence.mjs`,
+    `scripts/test-runner.mjs`, `scripts/lib/gate-evidence.mjs` and
+    `scripts/lib/lifecycle-evidence.mjs`: the shared suite key hashes every
+    ref, `HEAD`, the checkout path, the CPU count and the whole configuration
+    listing, the cache is per worktree, and only six suites and the release
+    cases declare their documents. Not verified: the lifecycle already accepts
+    the composed exact-tree aggregate (WO-126-D009, D014), so no predicate
+    changes; and the plan's "20-second composed gates" omit the build,
+    preparation and seven live checks that always execute (41–47 s observed at
+    an identical tree).
+  - Provenance: the dispatch, captured verbatim in ignored intake
+    (`docs/intake/notes/2026-09-12-proof-carrying-gates-planning.md`, SHA-256
+    `4eb2c26a6530687e67c05781f2f153233d90b340b7365c1bd0cbb96f4b101993`); the
+    map's gate-cost rationale. Reopen if a composed aggregate is refused by a
+    lifecycle command, or if a suite is found to read repository-global state
+    the key no longer carries.
+- **The largest measured waste is the failed fresh gate, not reuse** `adopted`
+  - From the host's retained gate rows: twelve fresh full gates across
+    WO-043, WO-125 and WO-127 on 2026-09-11/12 failed on fixed wall-clock
+    deadlines under load (`console` six, `plan-refutation:current` two,
+    `harness-fixtures` two, `runner-fixtures` one) or on a tree changed during
+    the run (two), 8,387 s in total, each followed by a passing rerun of
+    41–419 s. WO-125's FINAL-001 item 3 named this pass the owner of the
+    console nomination. WO-128 carries it, with the gate row's per-task
+    concurrency trace and the re-measurement of WO-126-D012's exclusive
+    scheduling, which held the 2026-09-12T16:08Z fresh gate at concurrency
+    one for 206 of 475 s.
+  - Provenance: `docs/control/local/harness/checks.json` and its history on
+    the operator's host; VER-001 O6, VER-003 O3, VER-004 AC5 and FINAL-001
+    item 3 of WO-125; FUP-0054 allocated. Reopen if five consecutive fresh
+    gates pass before WO-128 changes anything, which would make the order a
+    NoOp.
+- **A suite's evidence identity is its declared inputs** `adopted`
+  - After each of WO-125's eighteen transitions the next full gate ran all 78
+    tasks fresh (613–839 s); five of its ten fresh runs (3,876 s) followed a
+    transition with no source change. A checkpoint ref that no suite reads
+    must not invalidate a suite. WO-129 moves the key to declared inputs,
+    shares the cache under the Git common directory and names the changed
+    input class on every miss; WO-130 declares inputs for the whole-tree
+    class of about 25 suites and validates each declaration by executing the
+    suite in a replica that holds only those inputs, so a document-only
+    change composes the gate (243–419 s today against 41–47 s at an identical
+    tree). No test is removed; the fail-closed defaults stay.
+  - Provenance: the same rows and the WO-125 control segment; the relayed
+    plan's phase-one items, lowered without a sandbox, syscall tracing or
+    doubled shadow gates. Reopen if a replica ever passes a declaration that a
+    fresh gate refutes, or if the miss explanations show a declaration class
+    that cannot be named.
+- **Cold-gate structural cuts wait for a recorded critical path** `candidate`
+  - Copy-on-write fixture clones, split shell suites, pure policy extraction
+    with a model-based lifecycle check, and sharding are recorded as product
+    07 §Candidate — cold-gate structural cuts, entered by WO-128's concurrency
+    trace. The preflight barrier stays (WO-127-D007; preflights end at 16 s of
+    a 475 s gate). Bazel, Nx and Turborepo are declined as the plan itself
+    advised. Reopen when a trace names the node that bounds the gate after the
+    exclusivity decision.
+- **Corrections during this pass, logged** `adopted`
+  - None from the operator. Two self-corrections: the first shell command on
+    `main` was refused by the writer guard for an unlisted metadata command,
+    and the pass switched to the listed forms before opening the branch with
+    `plan start`; a shell substitution was refused by the command classifier
+    and replaced by explicit reads. Neither changed a file.
+- **Process cost of this pass** `adopted`
+  - Entry measurement (`node scripts/harness.mjs usage`, scope dispatch,
+    source claude-transcript-message-usage, 2026-09-12T16:12Z): 567,803 total
+    tokens (164 input, 450,131 cached input, 110,499 cache write, 7,009
+    output). The reads were dominated by verifying the dispatch's claims in
+    the runner, cache and lifecycle source, which no feed replaces; orientation
+    used the follow-up feed's first page, the sequence, the map's rationale
+    and the critical-path plan. The handoff measurement is recorded at the
+    final commit. Tradeoff recorded: the pass ran no code suite and no
+    refutation transport; the operator's `planning: refute` supplies the
+    independent judgment.
+- **Doubled shadow gates, time-based expiry, deleting tests, choosing FUP-0091/0111/0132 here** `rejected`
+  - Each with its evidence and reversal condition in the map's NoOps of the
+    2026-09-12 pass.
