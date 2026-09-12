@@ -6629,8 +6629,10 @@ existing contract; no runtime source, contract, or locked boundary changes.
     output). The reads were dominated by verifying the dispatch's claims in
     the runner, cache and lifecycle source, which no feed replaces; orientation
     used the follow-up feed's first page, the sequence, the map's rationale
-    and the critical-path plan. The handoff measurement is recorded at the
-    final commit. Tradeoff recorded: the pass ran no code suite and no
+    and the critical-path plan. The handoff measurement before the final commit
+    (2026-09-12T16:41Z, same source and scope): 11,146,806 total tokens (996
+    input, 10,539,221 cached input, 462,570 cache write, 144,019 output) over
+    105 steps and 56 commands. Tradeoff recorded: the pass ran no code suite and no
     refutation transport; the operator's `planning: refute` supplies the
     independent judgment.
 - **Doubled shadow gates, time-based expiry, deleting tests, choosing FUP-0091/0111/0132 here** `rejected`
