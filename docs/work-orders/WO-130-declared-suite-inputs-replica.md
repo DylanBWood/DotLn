@@ -8,9 +8,10 @@ operator's machine. State the model and effort actually run
 evidence: a declaration table, a validation mode and a runner refusal; no
 exported runtime capability or contract changes. Assigned at activation under
 the standing opt-out default.
-**Cost:** adds one replica execution per declared suite whenever its
-declaration, the validator or the suite's own source changes (bounded to that
-suite's duration, never per gate) and one declaration line per suite. Removes
+**Cost:** adds two replica executions per declared suite whenever its
+declaration, the validator, the suite's own source or another input that
+selects its read paths changes (bounded to twice that suite's duration, never
+per gate) and one declaration line per suite. Removes
 the whole-tree suite executions from every document-only gate: on
 2026-09-11/12 the composed gates after a report write ran 32 fresh tasks in
 243–419 s while identical-tree reruns ran 10 fresh tasks in 41–47 s; with
@@ -22,7 +23,10 @@ per-suite dependencies" and "hermetic or observed execution" defenses this
 order lowers into a declaration table checked by replica execution rather
 than a sandbox, syscall tracing or doubled shadow gates; WO-126-D009, which
 chose conservative whole-tree reuse for unknown scopes because no mechanism
-checked a declaration's completeness. Planner-synthesized draft; the dispatch
+checked a declaration's completeness; refutation receipt 009 of 2026-09-12,
+whose hold on criterion 2 showed that a replica which merely omits undeclared
+files cannot see an optional conditional read, and which shaped the two-sided
+replica below. Planner-synthesized draft; the dispatch
 is preserved verbatim in the pass's ignored capture. Opaque identifier, not a
 priority. Clean-room screen: no stop condition.
 **Depends on:** WO-129 merged (the per-suite key model, the shared cache and
@@ -55,10 +59,11 @@ a replica seal); `docs/evidence/WO-126/decisions.md` (D009);
 **Objective:** Every task the runner may reuse declares the candidate paths
 (documents and source) and the Git state it reads, or retains whole-tree
 scope with a recorded reason. A validation mode executes each declared suite
-in a replica checkout that holds only its declared inputs, the installed roots
-and its declared Git state; a suite that fails there has an invalid
-declaration, and the runner refuses to reuse it until the declaration
-changes. A document-only change, such as a verification report with its
+in two replica checkouts beside its declared inputs, the installed roots and
+its declared Git state: one where every undeclared candidate path is absent
+and one where each is present but unreadable; a suite that fails either has
+an invalid declaration, and the runner refuses to reuse it until the
+declaration changes. A document-only change, such as a verification report with its
 control event, checkpoint and regenerated index, composes the full gate from
 prior successes and re-executes only the build, preparation, the live checks
 and the document checks whose declared inputs changed.
@@ -96,14 +101,26 @@ and the document checks whose declared inputs changed.
   paths too (a kernel test that never reads `scripts/`), but only where the
   replica proves it.
 - The validation mode, `npm run test:full -- --validate-inputs [--only <suite>]`,
-  builds a replica per declared suite: the declared candidate paths and the
+  builds two replicas per declared suite: the declared candidate paths and the
   installed roots copied with clone-on-write where the filesystem supports it
   (`COPYFILE_FICLONE`, ordinary copy otherwise; no new dependency), and the
-  declared Git state in a repository the suite can read; the suite runs there
-  with the reviewed environment projection. A pass records the validated
-  declaration keyed by declaration, validator and suite source, so it re-runs
-  only on change; a failure marks the declaration invalid and the runner
+  declared Git state in a repository the suite can read. In the first replica
+  every undeclared candidate path is absent; in the second each is present
+  but unreadable, a directory standing in the file's place, so an existence
+  check answers both ways and any read of an undeclared file fails. The suite
+  runs in both with the reviewed environment projection, and a declaration
+  is valid only when it passes in both. A pass records the validated
+  declaration keyed by the declaration, the validator, the suite's own source,
+  the environment projection, the toolchain and the installed runtime, the
+  classes that select a suite's read paths, so it re-runs on any such change;
+  a failure in either replica marks the declaration invalid and the runner
   refuses reuse for that suite, naming it, until the declaration changes.
+- What the two replicas establish, and what they do not: the validated run's
+  outcome depended on no undeclared candidate file's presence or readability.
+  They do not enumerate every content-dependent path a suite could take, which
+  is why declarations name directories where a suite computes its reads, why
+  the mutation matrix and the miss explanations stay in force, and why a
+  declaration with no current validation record never narrows scope.
 - A mutation matrix fixture changes one input at a time and asserts that
   exactly the expected suites miss; it extends WO-129's Git-state fixture to
   documents and source.
@@ -127,16 +144,27 @@ operator-host measurement; the write-backs.
    reason; the four document checks and the four evidence checks may retain
    whole-tree scope or declare directories.
 2. `npm run test:full -- --validate-inputs [--only <suite>]` executes each
-   declared suite in a replica holding only its declared inputs, the installed
-   roots and its declared Git state; a suite that fails there marks its
-   declaration invalid, the runner refuses reuse for it until the declaration
-   changes and names the suite, and the validator's record is keyed by
-   declaration, validator and suite source so it re-runs only on change; a
-   fixture with a suite that reads an undeclared file proves the invalidation.
+   declared suite in two replicas: one in which every undeclared candidate
+   path is absent, and one in which every undeclared candidate path is
+   present but unreadable, a directory standing in the file's place, so an
+   existence check answers both ways and any read of an undeclared file
+   fails; a declaration is valid only when the suite passes in both. A
+   fixture suite that checks for an optional undeclared file, reads and
+   validates it when present and passes when absent is refused, as is a
+   fixture suite whose outcome depends on an undeclared file's existence
+   alone; a suite that fails either replica keeps whole-tree scope, the
+   runner refuses reuse for it and names the suite until its declaration
+   changes, and a declaration with no current validation record never
+   narrows scope. The validation record is keyed by the declaration, the
+   validator, the suite's own source, the environment projection, the
+   toolchain and the installed runtime, the classes that select a suite's
+   read paths, so a change in any of them re-runs the validation.
 3. A mutation matrix fixture changes, one at a time, a declared document, an
    undeclared document, a declared source file, a source file outside a
    narrowed declaration, a declared ref and an environment key, and asserts
-   that exactly the expected suites miss.
+   that exactly the expected suites miss; the optional-read fixture suite of
+   criterion 2 is in the matrix with its optional file changed, and its
+   success is never reused because its declaration is refused.
 4. In the WO-129 three-role fixture, the gates after the verification report
    and after the final-review report re-execute only the build, preparation,
    the live checks and the document checks whose declared inputs changed; the

@@ -6632,9 +6632,31 @@ existing contract; no runtime source, contract, or locked boundary changes.
     and the critical-path plan. The handoff measurement before the final commit
     (2026-09-12T16:41Z, same source and scope): 11,146,806 total tokens (996
     input, 10,539,221 cached input, 462,570 cache write, 144,019 output) over
-    105 steps and 56 commands. Tradeoff recorded: the pass ran no code suite and no
+    105 steps and 56 commands. After receipt 009's holds were repaired
+    (2026-09-12T17:41Z, same source and scope): 17,904,001 total tokens
+    (1,382 input, 17,201,927 cached input, 525,030 cache write, 175,662
+    output) over 126 steps and 73 commands. Tradeoff recorded: the pass ran no code suite and no
     refutation transport; the operator's `planning: refute` supplies the
     independent judgment.
+- **Receipt 009's two holds, answered by repair and receipt** `adopted`
+  - The direct-session refutation held WO-130 criterion 2: a replica that
+    omits undeclared files validates a declaration even when the suite checks
+    for an optional undeclared file, reads and validates it when present and
+    passes when absent, so a changed optional file could fail a fresh run
+    while its cached success is reused. Repaired with a two-sided replica
+    (undeclared paths absent, then present but unreadable), the counterexample
+    as a fixture, refusal of any declaration without a current validation
+    record, and validation keyed by every input that selects a read path. It
+    also held WO-078 criterion 1 under the added-process cost rule: the
+    registry and receipts added recurring bookkeeping with no removal or dated
+    acceptance. Repaired by generating the registry from receipts written
+    inside the existing export step, naming the removed manual lookup, and
+    replacing the legacy Cost declaration. Both are answered through the
+    disposition chain, never by override.
+  - Provenance: `docs/planning/refutations/2026-09-12-planning-dc998fb93c27e337-009.md`;
+    `docs/planning/proof-carrying-gates-2026-09-12-dispositions.json`. Reopen
+    if a replica ever passes a declaration that a fresh gate refutes, or if
+    WO-078's generator needs a hand-maintained field.
 - **Doubled shadow gates, time-based expiry, deleting tests, choosing FUP-0091/0111/0132 here** `rejected`
   - Each with its evidence and reversal condition in the map's NoOps of the
     2026-09-12 pass.

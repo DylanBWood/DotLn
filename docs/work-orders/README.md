@@ -824,7 +824,7 @@ None.
 - Release: none recorded.
 - Model: any capable model. State the model and effort actually run in the result (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+- Cost: adds one receipt written inside the existing export and update commands (bytes on disk; no step, command or prompt) and one generated table with a check, in the manner of the work-order index; the fixture records the generator's wall-clock and the table's bytes. Removes the manual lookup of each sibling's kit manifest version and build hash in its own checkout before every update, planning pass or receipt that names the sibling, one checkout read per sibling per occasion, and the risk that the recorded version is memory. No recurring bookkeeping is added: the once-per-sibling declaration is written at registration, not per export. Revised 2026-09-12 at refutation receipt 009's hold; the legacy declaration is superseded.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-078/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-078-sibling-registry.md](WO-078-sibling-registry.md)
 
@@ -1568,7 +1568,7 @@ None.
 - Release: none recorded.
 - Model: any capable model; the measured composed gate runs on the operator's machine. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: adds one replica execution per declared suite whenever its declaration, the validator or the suite's own source changes (bounded to that suite's duration, never per gate) and one declaration line per suite. Removes the whole-tree suite executions from every document-only gate: on 2026-09-11/12 the composed gates after a report write ran 32 fresh tasks in 243–419 s while identical-tree reruns ran 10 fresh tasks in 41–47 s; with WO-129 the gate after every transition joins this class (five of WO-125's ten fresh runs, 3,876 s). Steps, commands and tokens per phase are unchanged.
+- Cost: adds two replica executions per declared suite whenever its declaration, the validator, the suite's own source or another input that selects its read paths changes (bounded to twice that suite's duration, never per gate) and one declaration line per suite. Removes the whole-tree suite executions from every document-only gate: on 2026-09-11/12 the composed gates after a report write ran 32 fresh tasks in 243–419 s while identical-tree reruns ran 10 fresh tasks in 41–47 s; with WO-129 the gate after every transition joins this class (five of WO-125's ten fresh runs, 3,876 s). Steps, commands and tokens per phase are unchanged.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-130/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-130-declared-suite-inputs-replica.md](WO-130-declared-suite-inputs-replica.md)
 

@@ -123,7 +123,20 @@ whose entry evidence is WO-128's concurrency trace; the preflight barrier
 stays (WO-127-D007; the preflights end at 16 s of a 475 s gate). The
 dispatch is captured verbatim in ignored intake (SHA-256
 `4eb2c26a6530687e67c05781f2f153233d90b340b7365c1bd0cbb96f4b101993`); the
-refutation is the operator's next dispatch, `planning: refute`.
+refutation was the operator's next dispatch, `planning: refute`. Receipt 009
+(a direct session judging the full horizon) held on WO-130 criterion 2,
+because a replica that merely omits undeclared files cannot see an optional
+conditional read, and on WO-078 criterion 1, because that order added
+recurring bookkeeping with no named removal or dated acceptance. The pass
+repaired both criteria: WO-130 validates a declaration in two replicas, one
+with every undeclared path absent and one with each present but unreadable,
+with the optional-read counterexample as a fixture and the validation keyed
+by every input that selects a read path; WO-078's registry is generated from
+receipts written inside the existing export step, its Cost line names the
+removed lookup, and no recurring bookkeeping remains. The dated accepted
+dispositions are in
+[proof-carrying-gates-2026-09-12-dispositions.json](proof-carrying-gates-2026-09-12-dispositions.json);
+the receipt that carries them closes the pass.
 
 Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 
