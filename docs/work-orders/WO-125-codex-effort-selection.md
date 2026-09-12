@@ -1,4 +1,4 @@
-# WO-125 — Codex effort selection: the Codex transport accepts the declared effort levels and forwards the reasoning-effort override to `codex exec`, from an observed row, so a Codex refuter or worker can be launched at `max` (version assigned at activation)
+# WO-125 — Codex effort selection: the Codex transport accepts the declared effort levels and forwards the reasoning-effort override to `codex exec`, from an observed row, so a Codex refuter or worker can be launched at `max` (v0.17.2)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
