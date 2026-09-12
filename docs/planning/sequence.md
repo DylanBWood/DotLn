@@ -17,7 +17,8 @@ pointers and continuation command; untouched items persist across passes.
 - WO-125 — Codex effort selection
 - WO-128 — Fresh gates pass first time
 - WO-129 — Suite evidence keyed by declared inputs
-- WO-130 — Declared suite inputs validated by replica
+- WO-130 — Suites execute in a replica of declared inputs
+- WO-131 — Remaining suites declared under replica execution
 - WO-044 — Writing-worker and unattended-launch harness truth
 - WO-067 — PresencePolicy compiled
 - WO-045 — Event-log and hook-input decoders

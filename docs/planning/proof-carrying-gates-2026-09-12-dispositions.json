@@ -61,5 +61,23 @@
     "workOrderId": "WO-078",
     "criterionId": "criterion:1",
     "change": "Criterion 1 now makes the registry generated, never hand-maintained: the export and update commands write the receipt inside their existing manifest step with no separate bookkeeping command or edit, the generator rebuilds the registry from the receipts, the kit manifests and a once-per-sibling declaration with a check form in the manner of the work-order index, a hand-edited or stale entry is refused, and the fixture records the generator's wall-clock and the table's bytes; it names the removed work, the manual lookup of a sibling's kit manifest version and build hash in its own checkout before every update, planning pass or receipt that names the sibling, and requires the execution record to name that lookup and its cost. The Cost header replaces the legacy declaration with those additions and removals."
+  },
+  {
+    "receiptId": "2026-09-12-planning-dc998fb93c27e337-010",
+    "holdId": "hold-cd590b781457b750f23857bb",
+    "kind": "accepted",
+    "date": "2026-09-12",
+    "workOrderId": "WO-130",
+    "criterionId": "criterion:2",
+    "change": "Criterion 2 no longer validates a declaration by probing replicas; WO-130 was rebuilt so that a narrowed suite executes inside a replica of its declared inputs at every run, fresh or reused, with the installed roots linked from a per-gate copy and no path into the candidate tree in its working directory, arguments or projected environment. Criterion 2 now requires four fixture suites that read an undeclared file unconditionally, after an existence check, after a regular-file check, and after reading a declared flag that selects the read: the first fails the gate naming the path, the other three produce the same outcome and the same key whether the file is absent, present, present as a directory or changed in the candidate tree, and flipping the declared flag changes the key while the fresh replica run still never sees the file; a fifth fixture refuses narrowing for a symlink whose target leaves the replica. There is no validation record to keep current: the declaration is enforced by construction, its key is the declared bytes, the installed roots, the toolchain, the environment, the command and the mechanism version (criterion 4), and a replica failure fails the gate loudly with no fallback (criterion 5). The remaining declarations moved to WO-131."
+  },
+  {
+    "receiptId": "2026-09-12-planning-dc998fb93c27e337-010",
+    "holdId": "hold-e61644d192162e16415690e7",
+    "kind": "accepted",
+    "date": "2026-09-12",
+    "workOrderId": "WO-130",
+    "criterionId": "criterion:2",
+    "change": "Criterion 2 no longer validates a declaration by probing replicas; WO-130 was rebuilt so that a narrowed suite executes inside a replica of its declared inputs at every run, fresh or reused, with the installed roots linked from a per-gate copy and no path into the candidate tree in its working directory, arguments or projected environment. Criterion 2 now requires four fixture suites that read an undeclared file unconditionally, after an existence check, after a regular-file check, and after reading a declared flag that selects the read: the first fails the gate naming the path, the other three produce the same outcome and the same key whether the file is absent, present, present as a directory or changed in the candidate tree, and flipping the declared flag changes the key while the fresh replica run still never sees the file; a fifth fixture refuses narrowing for a symlink whose target leaves the replica. There is no validation record to keep current: the declaration is enforced by construction, its key is the declared bytes, the installed roots, the toolchain, the environment, the command and the mechanism version (criterion 4), and a replica failure fails the gate loudly with no fallback (criterion 5). The remaining declarations moved to WO-131."
   }
 ]

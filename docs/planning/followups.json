@@ -3040,6 +3040,13 @@
           "title": "NoOps of the 2026-09-12 proof-carrying-gates pass.",
           "summary": "- **NoOps of the 2026-09-12 proof-carrying-gates pass.** Weighed and declined, each with its evidence and reversal condition. (1) _Change the lifecycle predicate to accept composed evidence._ Declined: it already does; `requireLifecycleEvidence` finds the aggregate at the exact tree and the runner composes that aggregate from reused suite rows (WO-126-D009, D014; the 41–47 s identical-tree reruns of 2026-09-12). Reopen only if an aggregate is ever refused for being composed. (2) _Remove the global preflight barrier._ Declined: WO-127-D007 restored the wait because a stale preparation once wasted the expensive suites, and the preflights end at 16 s of a 475 s gate. Reverse when a recorded tra",
           "missing": false
+        },
+        {
+          "hash": "2cc5e9c0bae203110c3332e547b7bb2f541eb2cae03c8e9a7d0cacf0ef160d55",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "NoOps of the 2026-09-12 proof-carrying-gates pass.",
+          "summary": "- **NoOps of the 2026-09-12 proof-carrying-gates pass.** Weighed and declined, each with its evidence and reversal condition. (1) _Change the lifecycle predicate to accept composed evidence._ Declined: it already does; `requireLifecycleEvidence` finds the aggregate at the exact tree and the runner composes that aggregate from reused suite rows (WO-126-D009, D014; the 41–47 s identical-tree reruns of 2026-09-12). Reopen only if an aggregate is ever refused for being composed. (2) _Remove the global preflight barrier._ Declined: WO-127-D007 restored the wait because a stale preparation once wasted the expensive suites, and the preflights end at 16 s of a 475 s gate. Reverse when a recorded tra",
+          "missing": false
         }
       ],
       "dispositions": []

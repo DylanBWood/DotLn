@@ -1349,8 +1349,10 @@ claim evidence or releases it does not have.
   followed by a passing rerun. WO-128 to WO-130 carry the repairs: deadlines
   that survive load with D012's exclusivity re-measured, a suite key of
   declared inputs shared across sibling worktrees with explained misses, and
-  declared inputs for every reusable suite validated by replica execution.
-  Until they land, the identity rule above is unchanged. WO-127-D007 later
+  execution of every narrowed suite inside a replica of its declared inputs,
+  so that an undeclared file cannot influence any run (WO-130 and WO-131;
+  validation by probing replicas was withdrawn at receipts 009 and 010 of
+  the same pass). Until they land, the identity rule above is unchanged. WO-127-D007 later
   made every package test wait for the preflights again; the runner's
   dependency table, not the D026 sentence above, is the authority.
 - **Return shape.** End with a compact result: what changed, evidence pointers,

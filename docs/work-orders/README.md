@@ -10,7 +10,8 @@
 - [x] [WO-125] — Codex effort selection · **final-reviewed**
 - [ ] [WO-128] — Fresh gates pass first time · **queued**
 - [ ] [WO-129] — Suite evidence keyed by declared inputs · **queued**
-- [ ] [WO-130] — Declared suite inputs validated by replica · **queued**
+- [ ] [WO-130] — Suites execute in a replica of declared inputs · **queued**
+- [ ] [WO-131] — Remaining suites declared under replica execution · **queued**
 - [ ] [WO-044] — Writing-worker and unattended-launch harness truth · **queued**
 - [ ] [WO-067] — PresencePolicy compiled · **queued**
 - [ ] [WO-045] — Event-log and hook-input decoders · **queued**
@@ -1534,7 +1535,7 @@ None.
 - Release: none recorded.
 - Model: any capable model for the runner, the collector budget and the fixtures; the measurement series runs on the operator's machine. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: adds one operator-run measurement series inside the order (five fresh full gates at the 2026-09-12 durations of 476–839 s, once) and one diagnostic record per deadline hit (bytes on disk, no context read); adds no step to any phase. Removes the failed fresh full gate and its rerun: on 2026-09-11/12 twelve fresh full gates across WO-043, WO-125 and WO-127 failed on a load-sensitive deadline or on a tree changed during the run, 8,387 s in total, and each was followed by a passing rerun of 41–419 s. If the exclusivity re-measurement passes, it also removes up to 206 s of concurrency-one time per fresh gate, the &#96;harness-fixtures&#96; and &#96;process-debt&#96; spans measured at 2026-09-12T16:08Z. Context bytes, commands and tokens per gate are unchanged; gate runs per phase drop from two to one.
+- Cost: adds one operator-run measurement series inside the order (five fresh full gates at the 2026-09-12 durations of 476–839 s, once, or twice if the shared-cap series fails and the retained configuration is measured again) and one diagnostic record per deadline hit (bytes on disk, no context read); adds no step to any phase. Removes the failed fresh full gate and its rerun: on 2026-09-11/12 twelve fresh full gates across WO-043, WO-125 and WO-127 failed on a load-sensitive deadline or on a tree changed during the run, 8,387 s in total, and each was followed by a passing rerun of 41–419 s. If the exclusivity re-measurement passes, it also removes up to 206 s of concurrency-one time per fresh gate, the &#96;harness-fixtures&#96; and &#96;process-debt&#96; spans measured at 2026-09-12T16:08Z. Context bytes, commands and tokens per gate are unchanged; gate runs per phase drop from two to one.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-128/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-128-fresh-gates-pass-first-time.md](WO-128-fresh-gates-pass-first-time.md)
 
@@ -1557,20 +1558,37 @@ None.
 
 ### WO-130
 
-[WO-130 — Every reusable suite declares the inputs it reads, validated by executing it in a replica that holds only those inputs, so a document-only change composes the full gate from prior successes (version assigned at activation)](WO-130-declared-suite-inputs-replica.md)
+[WO-130 — Narrowed suites execute inside a replica of their declared inputs, so an undeclared file cannot influence any run, and the package suites stop re-executing for source they never read (version assigned at activation)](WO-130-declared-suite-inputs-replica.md)
 
 - State: draft.
 - Application target: unassigned.
 - Dependencies: typed; blocked on WO-129.
-- References: WO-129: hard (unmet) — the per-suite key model, the shared cache and the miss explanations that the declarations and the validator build on.
+- References: WO-129: hard (unmet) — the per-suite key model, the shared cache and the miss explanations that the replica key and its diagnostics build on.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any capable model; the measured gates run on the operator's machine. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds one plain copy of the installed roots per fresh gate (43 MB of &#96;node_modules&#96;, 2.5 MB of package builds and 10 MB of the pinned harness snapshot, about 1,400 files, measured 2026-09-12) and one copy of each narrowed suite's declared paths per fresh execution of that suite, in ignored scratch; no step, command or prompt. Removes the re-execution of the package suites after changes to source they never read: today every reusable suite's key selects every non-document candidate file, so a change under &#96;scripts/&#96;, &#96;corpus/&#96; or a fixture re-executes &#96;kernel&#96;, &#96;compiler&#96; and &#96;skeleton&#96; (89–162 s for &#96;skeleton&#96; alone on 2026-09-12) although a declaration covering only their built packages and declared documents would reuse them. The post-transition class is WO-129's removal and the document-only class is WO-131's; neither is counted here.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-130/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-130-declared-suite-inputs-replica.md](WO-130-declared-suite-inputs-replica.md)
+
+### WO-131
+
+[WO-131 — Every remaining reusable suite is declared and executed in its replica or retained with a reason, so a document-only change composes the full gate to the build, preparation, the live checks and the current-tree checks (version assigned at activation)](WO-131-remaining-suites-under-replica.md)
+
+- State: draft.
+- Application target: unassigned.
+- Dependencies: typed; blocked on WO-130.
+- References: WO-130: hard (unmet) — replica execution, the declaration table and the loud failure that this order's declarations rely on.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
 - Model: any capable model; the measured composed gate runs on the operator's machine. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
 - Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: adds two replica executions per declared suite whenever its declaration, the validator, the suite's own source or another input that selects its read paths changes (bounded to twice that suite's duration, never per gate) and one declaration line per suite. Removes the whole-tree suite executions from every document-only gate: on 2026-09-11/12 the composed gates after a report write ran 32 fresh tasks in 243–419 s while identical-tree reruns ran 10 fresh tasks in 41–47 s; with WO-129 the gate after every transition joins this class (five of WO-125's ten fresh runs, 3,876 s). Steps, commands and tokens per phase are unchanged.
-- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-130/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-130-declared-suite-inputs-replica.md](WO-130-declared-suite-inputs-replica.md)
+- Cost: adds one declaration per suite and, where the host permits a kernel sandbox, one availability probe per gate; nothing per gate beyond WO-130's replica copies. Removes the whole-tree executions from every document-only gate: on 2026-09-11/12 the composed gates after a report write ran 32 fresh tasks in 243–419 s while identical-tree reruns ran 10 fresh tasks in 41–47 s; the difference is the whole-tree class re-executing for bytes it never read. The current-tree checks (&#96;format&#96;, &#96;index&#96;, &#96;publication&#96;, &#96;plan&#96; and the evidence checks that read the real repository) and the live checks always execute, so the measured target is the build, preparation and those checks; the &#96;plan&#96; check alone took 33–35 s on 2026-09-12. The post-transition class is WO-129's removal and is not counted here.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-131/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-131-remaining-suites-under-replica.md](WO-131-remaining-suites-under-replica.md)
 
 ## Closed
 
@@ -2452,3 +2470,4 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-128]: WO-128-fresh-gates-pass-first-time.md
 [WO-129]: WO-129-suite-evidence-input-identity.md
 [WO-130]: WO-130-declared-suite-inputs-replica.md
+[WO-131]: WO-131-remaining-suites-under-replica.md

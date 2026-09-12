@@ -102,8 +102,11 @@ the runner: [WO-128](../work-orders/WO-128-fresh-gates-pass-first-time.md)
 exclusivity re-measured),
 [WO-129](../work-orders/WO-129-suite-evidence-input-identity.md) (a key of
 declared inputs, the cache shared across worktrees, explained misses) and
-[WO-130](../work-orders/WO-130-declared-suite-inputs-replica.md) (declared
-inputs for every reusable suite, validated by replica execution). Each obeys
+[WO-130](../work-orders/WO-130-declared-suite-inputs-replica.md) (narrowed
+suites execute inside a replica of their declared inputs) and
+[WO-131](../work-orders/WO-131-remaining-suites-under-replica.md) (the
+remaining suites declared under replica execution, and a kernel denial where
+the host permits one). Each obeys
 the one-seam and four-hour rules; none changes the lifecycle predicate, the
 exact-tree aggregate or a test. Goal alignment: the mission's operator-flow
 outcome is the operator's waiting and the visible reruns, and the critical
@@ -136,7 +139,26 @@ receipts written inside the existing export step, its Cost line names the
 removed lookup, and no recurring bookkeeping remains. The dated accepted
 dispositions are in
 [proof-carrying-gates-2026-09-12-dispositions.json](proof-carrying-gates-2026-09-12-dispositions.json);
-the receipt that carries them closes the pass.
+Receipt 010 held WO-130 criterion 2 twice more: a replica that substitutes
+a directory is skipped by a regular-file check, and a validation record keyed
+without the declared inputs that select read paths stays current after a
+declared flag flips. The pass took the general lesson rather than a third
+probe: no finite probe set validates a declaration against an arbitrary
+guard, so validation of a real-tree run was withdrawn and replaced by
+execution inside a replica of the declared inputs at every run, where an
+undeclared file does not exist and no guard can find it. Before choosing
+that mechanism the pass probed the host from a sandboxed session on
+2026-09-12: a read-denying `sandbox-exec` profile is refused there
+(`sandbox_apply: Operation not permitted`), which rules out a kernel sandbox
+as the mechanism for gates inside sessions and keeps it as an addition where
+the host permits it; forced clone-on-write is refused (`ENOSYS`); the
+installed roots are 55 MB in about 1,400 files, so plain copies are cheap.
+The remaining declarations and the document-only measurement were split into
+WO-131 under the four-hour rule. WO-128's objective now admits a host load
+outside the declared class as a named non-defect, and its two measurement
+series collapse into one when the shared-cap series passes. The dispositions
+file carries both receipts' holds; the receipt that carries them closes the
+pass.
 
 Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 
@@ -255,7 +277,19 @@ identity migration.
   support-behavior omission of FUP-0130 here._ Declined: a planning session
   has no executor supports to observe; the deferral is carried with a
   sharper condition. Reverse at the next executor dispatch that records an
-  omission.
+  omission. (10) _A kernel sandbox as the mechanism that keeps undeclared
+  inputs invisible._ Declined after observation: `sandbox-exec` is refused
+  inside a sandboxed role session, where most gates run; kept as an
+  addition where the host permits it (WO-131). Reverse if the harness
+  sandbox admits nested profiles. (11) _An observation preload as the sole
+  basis for narrowing._ Declined: it covers Node processes only; the shell
+  suites and Git children are unobservable without privileges. Reverse at a
+  privileged host observer. (12) _Validation of real-tree runs by probing
+  replicas._ Declined by receipts 009 and 010: no finite probe set survives
+  an arbitrary guard; replaced by execution inside the replica. Reverse
+  never; the counterexamples are recorded. (13) _Access-time tracking._
+  Declined: it cannot capture a probe of an absent path. Reverse never for
+  that reason.
 - **Critical-path candidates — recorded 2026-09-08 by the critical-path
   planning pass and allocated the same day at the operator's correction.**
   The runtime boundary codecs are WO-045 to WO-048; writing-worker harness
@@ -777,7 +811,8 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-125](../work-orders/WO-125-codex-effort-selection.md)             | worker transport — the Codex adapter accepts the declared effort levels and forwards the reasoning-effort override from an observed row                                                                                                                                                        | no open input; the operator runs the probe row outside the sandbox; assign version at activation (patch); first if the Codex refuter is wanted at max                                                                      | skeleton implementer, then independent verifier                                                           | the actual Codex CLI for the row; doubles in tests                                                                                                                    | `packages/skeleton/src/worker-transport.ts`, the refutations README, product 07, `environment.md`                                                                                                                |
 | [WO-128](../work-orders/WO-128-fresh-gates-pass-first-time.md)        | test infrastructure — load-derived deadlines, scheduler load classes, per-task concurrency in the gate row, the exclusivity workaround re-measured                                                                                                                                             | first of the three gate orders, alone in its lane; assign version at activation (patch); the operator runs five fresh gates outside the sandbox                                                                            | runner and fixture implementer, then independent verifier                                                 | the operator's host for the fresh-gate series; slow doubles in fixtures                                                                                               | `scripts/test-runner.mjs`, `packages/console/src/collect.ts`, `scripts/test-harness.mjs`, `scripts/test-plan-refutation.mjs`, `scripts/test-runner.test.mjs`, product 07                                         |
 | [WO-129](../work-orders/WO-129-suite-evidence-input-identity.md)      | test infrastructure — the suite key of declared inputs, the cache shared across worktrees under the Git common directory, explained misses                                                                                                                                                     | after WO-128 in the same lane; assign version at activation (patch); the operator records one composed gate after a transition                                                                                             | runner and fixture implementer, then independent verifier                                                 | two-worktree fixtures; generated hooks for the cache-path refusal                                                                                                     | `scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/test-suite-evidence.mjs`, `scripts/test-process-debt.mjs`, product 07                                                                      |
-| [WO-130](../work-orders/WO-130-declared-suite-inputs-replica.md)      | test infrastructure — input declarations for every reusable suite, validated by replica execution; document-only gates compose                                                                                                                                                                 | after WO-129 in the same lane; assign version at activation (patch); the operator records one composed document-only gate                                                                                                  | runner and fixture implementer, then independent verifier                                                 | clone-on-write replicas where supported; no new dependency                                                                                                            | `scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/test-suite-evidence.mjs`, `scripts/test-process-debt.mjs`, product 07                                                                      |
+| [WO-130](../work-orders/WO-130-declared-suite-inputs-replica.md)      | test infrastructure — narrowed suites execute inside a replica of their declared inputs; the six reviewed scopes migrate; package suites stop re-executing for source they never read                                                                                                          | after WO-129 in the same lane; assign version at activation (patch); the operator records one fresh gate and one composed source change                                                                                    | runner and fixture implementer, then independent verifier                                                 | plain copies in ignored scratch; no new dependency                                                                                                                    | `scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/test-suite-evidence.mjs`, `scripts/test-process-debt.mjs`, product 07                                                                      |
+| [WO-131](../work-orders/WO-131-remaining-suites-under-replica.md)     | test infrastructure — the remaining suites declared and executed in replicas or retained with a reason; document-only gates compose; a kernel denial where the host permits it                                                                                                                 | after WO-130 in the same lane; assign version at activation (patch); the operator records one composed document-only gate and the terminal probe                                                                           | runner and fixture implementer, then independent verifier                                                 | replica execution from WO-130; `sandbox-exec` only where available, never required                                                                                    | `scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/test-suite-evidence.mjs`, `scripts/test-process-debt.mjs`, product 07                                                                      |
 | [WO-101](../work-orders/WO-101-program-and-hash-corpus.md)            | evidence/corpus — Program and identity regression floor                                                                                                                                                                                                                                        | not applicable                                                                                                                                                                                                             | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | `corpus/harness/`, fixtures, manifests                                                                                                                                                                           |
 | [WO-102](../work-orders/WO-102-cadence-corpus.md)                     | evidence/corpus — cadence boundary sweep                                                                                                                                                                                                                                                       | assign version and close disposition; pin suitable base/deps and governed closeout path                                                                                                                                    | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | cadence fixtures and manifests                                                                                                                                                                                   |
 | [WO-103](../work-orders/WO-103-authority-outbox-corpus.md)            | evidence/corpus — authority/outbox decision table                                                                                                                                                                                                                                              | assign version and close disposition; pin the landed WO-017 base and governed closeout path                                                                                                                                | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | authority/outbox fixtures and manifests                                                                                                                                                                          |

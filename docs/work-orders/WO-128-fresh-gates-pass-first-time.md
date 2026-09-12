@@ -9,7 +9,9 @@ collector bound; no exported runtime capability or contract changes; the gate
 row gains additive fields. Assigned at activation under the standing opt-out
 default.
 **Cost:** adds one operator-run measurement series inside the order (five
-fresh full gates at the 2026-09-12 durations of 476–839 s, once) and one
+fresh full gates at the 2026-09-12 durations of 476–839 s, once, or twice
+if the shared-cap series fails and the retained configuration is measured
+again) and one
 diagnostic record per deadline hit (bytes on disk, no context read); adds no
 step to any phase. Removes the failed fresh full gate and its rerun: on
 2026-09-11/12 twelve fresh full gates across WO-043, WO-125 and WO-127 failed
@@ -76,7 +78,8 @@ barriers); `scripts/test-runner.test.mjs` (the timeout case);
 console host-collection candidate).
 
 **Objective:** A fresh full gate on the operator's host fails only for a real
-defect. Every wall-clock deadline a gate child can reach is either derived from
+defect or for a host load outside the declared load class, and its diagnostic
+says which. Every wall-clock deadline a gate child can reach is either derived from
 that suite's own measured baseline through a load factor the scheduler
 declares, or protected by a scheduler load class that bounds its concurrent
 peers; a deadline hit names the deadline, the measured duration and the tasks
@@ -178,13 +181,17 @@ sites and their fixtures; the exclusivity measurement; the write-backs below.
 4. Exclusivity re-measured: with criterion 2 in place, `harness-fixtures` and
    `process-debt` run under the shared cap in five consecutive
    `npm run test:full -- --fresh` runs on the operator's host; if all five
-   pass, the exclusive flags are removed and the wall-clock is recorded beside
-   the 2026-09-12T16:08Z run; if any fails on load, the flags stay and the
-   failure is recorded. Either outcome closes the criterion.
+   pass, the exclusive flags are removed, the wall-clock is recorded beside
+   the 2026-09-12T16:08Z run and that series is the series of criterion 5;
+   if any fails on load, the flags stay, the failure is recorded, and
+   criterion 5's series runs in the retained configuration. Either outcome
+   closes the criterion.
 5. Five consecutive `npm run test:full -- --fresh` runs on the operator's host,
    run outside the sandbox and recorded in the evidence directory, pass first
-   time; a run that fails for a defect unrelated to load is a repair finding,
-   not a retry.
+   time in the configuration criterion 4 keeps; a run that fails for a defect
+   unrelated to load is a repair finding, not a retry, and a run that fails
+   for a load outside the declared class is recorded with its diagnostic and
+   restarts the count.
 6. Write-backs land: 07 §Discipline (the gate execution and reuse bullet),
    `docs/evidence/WO-128/decisions.md` with dispatch sources and reopening
    conditions, the decisions index, FUP-0054's disposition and this order's

@@ -6602,7 +6602,8 @@ existing contract; no runtime source, contract, or locked boundary changes.
     class of about 25 suites and validates each declaration by executing the
     suite in a replica that holds only those inputs, so a document-only
     change composes the gate (243–419 s today against 41–47 s at an identical
-    tree). No test is removed; the fail-closed defaults stay.
+    tree). No test is removed; the fail-closed defaults stay. (The validation
+    half of this entry was withdrawn at receipt 010; see the entry below.)
   - Provenance: the same rows and the WO-125 control segment; the relayed
     plan's phase-one items, lowered without a sandbox, syscall tracing or
     doubled shadow gates. Reopen if a replica ever passes a declaration that a
@@ -6635,7 +6636,10 @@ existing contract; no runtime source, contract, or locked boundary changes.
     105 steps and 56 commands. After receipt 009's holds were repaired
     (2026-09-12T17:41Z, same source and scope): 17,904,001 total tokens
     (1,382 input, 17,201,927 cached input, 525,030 cache write, 175,662
-    output) over 126 steps and 73 commands. Tradeoff recorded: the pass ran no code suite and no
+    output) over 126 steps and 73 commands. After receipt 010's holds were repaired
+    (2026-09-12T18:20Z, same source and scope): 25,715,183 total tokens
+    (1,768 input, 24,856,792 cached input, 606,939 cache write, 249,684
+    output) over 144 steps and 91 commands. Tradeoff recorded: the pass ran no code suite and no
     refutation transport; the operator's `planning: refute` supplies the
     independent judgment.
 - **Receipt 009's two holds, answered by repair and receipt** `adopted`
@@ -6657,6 +6661,30 @@ existing contract; no runtime source, contract, or locked boundary changes.
     `docs/planning/proof-carrying-gates-2026-09-12-dispositions.json`. Reopen
     if a replica ever passes a declaration that a fresh gate refutes, or if
     WO-078's generator needs a hand-maintained field.
+- **Receipt 010: validation withdrawn, execution inside the replica adopted** `adopted`
+  - The second refutation held WO-130 criterion 2 twice more (a regular-file
+    check skips a directory stand-in; a validation record keyed without the
+    declared inputs that select read paths stays current after a flag
+    flips). The general fact is that no finite probe set validates a
+    declaration against an arbitrary guard. The pass withdrew validation of
+    real-tree runs and made the declaration the suite's world: a narrowed
+    suite executes inside a replica of its declared inputs at every run, so an
+    undeclared file does not exist for it and no guard can find it; a suite
+    that needs an undeclared file fails loudly; there is no validation record
+    to keep current. Host probes from the sandboxed session fixed the
+    mechanism's limits: nested `sandbox-exec` is refused, so a kernel denial
+    is an addition where the host permits it, never a condition of reuse;
+    forced clone-on-write is refused, so replicas are plain copies of 55 MB
+    of installed roots plus each suite's declared paths. The remaining
+    declarations and the document-only measurement moved to WO-131 under the
+    four-hour rule; WO-128's objective admits a host load outside the declared
+    class as a named non-defect and its two series collapse into one on a
+    pass.
+  - Provenance: `docs/planning/refutations/2026-09-12-planning-dc998fb93c27e337-010.md`;
+    the pass's host probes of 2026-09-12; the dispositions file. Reopen if the
+    harness sandbox admits nested profiles (then the denial can become a
+    condition), or if a narrowed suite is found reading the candidate tree by
+    an absolute path the runner did not project.
 - **Doubled shadow gates, time-based expiry, deleting tests, choosing FUP-0091/0111/0132 here** `rejected`
   - Each with its evidence and reversal condition in the map's NoOps of the
     2026-09-12 pass.
