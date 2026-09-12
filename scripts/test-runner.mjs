@@ -10,7 +10,11 @@ import {
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { gateTreeHash, recordGateChecks } from "./lib/gate-evidence.mjs";
+import {
+  beginGateRun,
+  gateTreeHash,
+  recordGateChecks,
+} from "./lib/gate-evidence.mjs";
 import { readBudgets, budgetVerdict } from "./lib/process-budget.mjs";
 import {
   createReleaseFixtureContext,
@@ -503,6 +507,15 @@ export function aggregateSuiteRows(selected, tasks, rows) {
 }
 
 export async function runGate(args = process.argv.slice(2), repo = root) {
+  const active = beginGateRun(repo, "scripts/test-runner.mjs");
+  try {
+    return await runGateChecks(args, repo);
+  } finally {
+    active.release();
+  }
+}
+
+async function runGateChecks(args, repo) {
   let full = false,
     document = false,
     serial = false,

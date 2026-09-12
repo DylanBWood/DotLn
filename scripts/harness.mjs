@@ -2,6 +2,7 @@
 import { mkdirSync, readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import { emitHarness, checkHarness } from "./lib/harness.mjs";
+import { beginGateRun } from "../packages/skeleton/dist/src/gate-evidence.mjs";
 import {
   harnessRoot,
   harnessOutputReadArgs,
@@ -91,16 +92,21 @@ try {
     }
     if (action === "evidence") {
       if (args.length) throw new Error("harness evidence accepts no overrides");
-      const { prepareHarnessEvidence } =
-        await import("./lib/evidence-preparation.mjs");
-      const preparation = prepareHarnessEvidence(root);
-      console.log(
-        `Prepared owned evidence projections in ${preparation.durationMs.toFixed(1)} ms`,
-      );
-      const checks = runHarnessEvidence(root);
-      console.log(JSON.stringify({ checks }));
-      if (checks.some((check) => check.exitCode !== 0 || !check.executed))
-        process.exitCode = 1;
+      const active = beginGateRun(root, "node scripts/harness.mjs evidence");
+      try {
+        const { prepareHarnessEvidence } =
+          await import("./lib/evidence-preparation.mjs");
+        const preparation = prepareHarnessEvidence(root);
+        console.log(
+          `Prepared owned evidence projections in ${preparation.durationMs.toFixed(1)} ms`,
+        );
+        const checks = runHarnessEvidence(root);
+        console.log(JSON.stringify({ checks }));
+        if (checks.some((check) => check.exitCode !== 0 || !check.executed))
+          process.exitCode = 1;
+      } finally {
+        active.release();
+      }
     } else {
       if (!["emit", "check"].includes(action)) throw new Error(usage);
       const out = resolve(root, options.out ?? ".");

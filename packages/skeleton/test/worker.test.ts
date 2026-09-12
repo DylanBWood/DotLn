@@ -52,6 +52,7 @@ import {
   parseWorkerResult,
   type WorkerRequest,
   type WorkerResult,
+  type WorkerEffort,
 } from "../src/worker-protocol.js";
 import { WorkerStore } from "../src/worker-store.js";
 import { WorkerHost } from "../src/worker-host.js";
@@ -175,7 +176,7 @@ test("WO-009 AC6 canonical launch shapes pin model, settings, memory, persistenc
     assert.equal(b[b.indexOf(disabled) - 1], "--disable");
   }
   assert.throws(
-    () => canonicalWorkerArgs("codex-cli-exec", request, "/schema"),
+    () => canonicalWorkerArgs("codex-cli-exec", request, "/schema", "0.153.4"),
     WorkerFailure,
   );
   assert.throws(
@@ -211,6 +212,160 @@ test("WO-009 AC6 canonical launch shapes pin model, settings, memory, persistenc
         "/schema",
       ),
     WorkerFailure,
+  );
+});
+
+test("WO-125 unknown Codex arguments retain the pre-change bytes on both observed versions", () => {
+  const driver = new LiveReactorDriver();
+  startScenario(driver);
+  const request = { ...stateRequest(driver), effort: "unknown" as const };
+  const before = readFileSync(
+    new URL("../../fixtures/codex-unknown-args.json", import.meta.url),
+    "utf8",
+  );
+  for (const version of ["0.153.4", "0.154.0"])
+    assert.equal(
+      JSON.stringify(
+        canonicalWorkerArgs("codex-cli-exec", request, "/schema.json", version),
+        null,
+        2,
+      ) + "\n",
+      before,
+    );
+});
+
+test("WO-125 observed efforts reach the process and durable launch claim without effective readback", async () => {
+  const observed = JSON.parse(
+    readFileSync(
+      new URL(
+        "../../../../docs/discovery/codex-effort-2026-09-11.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  ) as {
+    harnessVersion: string;
+    rows: { effort: WorkerEffort; accepted: boolean; command: string[] }[];
+  };
+  assert.deepEqual(
+    observed.rows.map((row) => row.effort),
+    ["low", "medium", "high", "xhigh", "max"],
+  );
+  for (const row of observed.rows) {
+    assert.equal(row.accepted, true);
+    const root = temporary();
+    const launches: WorkerLaunch[] = [];
+    const transport = new CodexCliExecWorkOrderTransport(
+      cliRunner("codex-cli-exec", "success", launches),
+      observed.harnessVersion,
+    );
+    try {
+      const result = await runWorkerDemo({
+        directory: root,
+        fixture,
+        transport,
+        model: "gpt-6-astra",
+        effort: row.effort,
+      });
+      assert.equal(result.envelope.status, "completed");
+      assert.equal(launches.length, 1);
+      const launch = launches[0]!;
+      const schema = launch.args[launch.args.indexOf("--output-schema") + 1];
+      assert.deepEqual(
+        [
+          "codex",
+          ...launch.args.map((arg) =>
+            arg === launch.cwd
+              ? "<temporary-git-root>"
+              : arg === schema
+                ? "<schema.json>"
+                : arg,
+          ),
+        ],
+        row.command,
+      );
+      const claims = decodeLog(new WorkerStore(root).read()).filter(
+        (event) => event.type === "WorkerAttemptStarted",
+      );
+      assert.equal(claims.length, 1);
+      const claim = claims[0]!.payload as Record<string, JsonValue>;
+      assert.equal(claim.effort, row.effort);
+      assert.equal(claim.selectionSource, "host-launch");
+      assert.equal(claim.effectiveEffort, "unknown");
+      assert.equal(claim.effectiveModel, "unknown");
+    } finally {
+      rmSync(root, { recursive: true });
+    }
+  }
+});
+
+test("WO-125 unobserved version/effort pairs refuse before process launch and name discovery", () => {
+  const driver = new LiveReactorDriver();
+  startScenario(driver);
+  const transport = new CodexCliExecWorkOrderTransport(() => {
+    throw new Error("unexpected process launch");
+  }, "0.153.4");
+  for (const effort of ["low", "medium", "high", "xhigh", "max"] as const)
+    assert.throws(
+      () => transport.dispatch({ ...stateRequest(driver), effort }, Date.now),
+      /profile-refused.*docs\/discovery\/codex-effort-2026-09-11\.json/,
+    );
+});
+
+test("WO-125 F1 rejects unobserved runtime effort values before process launch", () => {
+  const driver = new LiveReactorDriver();
+  startScenario(driver);
+  let launches = 0;
+  const transport = new CodexCliExecWorkOrderTransport(() => {
+    launches++;
+    throw new Error("unexpected process launch");
+  }, "0.154.0");
+  for (const effort of [
+    "minimal",
+    "none",
+    "MAX",
+    'max"\nsandbox_mode="danger-full-access',
+    "",
+    null,
+    undefined,
+    5,
+  ])
+    assert.throws(
+      () =>
+        transport.dispatch(
+          { ...stateRequest(driver), effort: effort as WorkerEffort },
+          Date.now,
+        ),
+      /profile-refused.*docs\/discovery\/codex-effort-2026-09-11\.json/s,
+    );
+  assert.equal(launches, 0);
+});
+
+test("WO-125 F2 an omitted version cannot authorize explicit effort", () => {
+  const driver = new LiveReactorDriver();
+  startScenario(driver);
+  for (const effort of ["low", "medium", "high", "xhigh", "max"] as const)
+    assert.throws(
+      () =>
+        canonicalWorkerArgs(
+          "codex-cli-exec",
+          { ...stateRequest(driver), effort },
+          "/schema.json",
+        ),
+      /profile-refused.*unknown.*docs\/discovery\/codex-effort-2026-09-11\.json/,
+    );
+  assert.deepEqual(
+    canonicalWorkerArgs(
+      "codex-cli-exec",
+      { ...stateRequest(driver), effort: "unknown" },
+      "/schema.json",
+    ),
+    JSON.parse(
+      readFileSync(
+        new URL("../../fixtures/codex-unknown-args.json", import.meta.url),
+        "utf8",
+      ),
+    ),
   );
 });
 

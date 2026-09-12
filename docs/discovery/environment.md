@@ -562,3 +562,23 @@ scanner defect. The final feedback profile records a ten-minute deadline and
 $3 Claude cap; other profiles keep their existing limits. Canonical final
 events and the source pins are linked from the feedback receipt above. This is
 a live verifier over controlled fixture evidence, not a field-performance claim.
+
+## WO-125 explicit Codex effort addendum (2026-09-11)
+
+Codex CLI `0.154.0` accepted all five declared effort values through
+`-c 'model_reasoning_effort="<level>"'` with `--ignore-user-config`,
+`--strict-config`, `--ephemeral` and the existing restricted worker arguments.
+The operator-approved launches ran outside the parent sandbox and requested
+`gpt-6-astra`; each returned exit 0, schema-valid `{"ok":true}` and
+`turn.completed`. The [runtime-map table](codex-runtime-map.md#wo-125-explicit-reasoning-effort--2026-09-11)
+and [complete sanitized rows](codex-effort-2026-09-11.json) record `low`, `medium`,
+`high`, `xhigh` and `max` separately. No effort field appeared in any stream;
+effective model and effort remain `unknown`, and requested values are launch
+claims only. Earlier observations are retained. No user settings were read or
+changed by this probe; CLI authentication was reused without copying it.
+
+The adapter admits explicit effort only on the observed `0.154.0` version.
+The historical `0.153.4` profile retains `unknown`; that value always requests
+no override. `scripts/probe-codex-effort.mjs` reproduces the five rows with a
+new destination. Re-probe on a version change or provider rejection before
+expanding the admitted version/level set.

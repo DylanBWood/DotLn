@@ -1,4 +1,4 @@
-# WO-125 — Codex effort selection: the Codex transport accepts the declared effort levels and forwards the reasoning-effort override to `codex exec`, from an observed row, so a Codex refuter or worker can be launched at `max` (version assigned at activation)
+# WO-125 — Codex effort selection: the Codex transport accepts the declared effort levels and forwards the reasoning-effort override to `codex exec`, from an observed row, so a Codex refuter or worker can be launched at `max` (v0.17.2)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -115,3 +115,29 @@ the row shows; a third transport (WO-110).
 
 1. The operator runs the probe row outside the sandbox before the adapter
    changes.
+
+## Execution record
+
+Authorized repair expansion, recorded 2026-09-11.
+
+Operator `resume: fix` selects [VER-001](../verifications/WO-125/VER-001.md).
+F1 requires runtime effort membership before process launch; the adjacent F2
+repair makes an omitted builder version non-admitting. The operator explicitly
+added F3, then clarified that the active gate protects only files whose changes
+invalidate the run. Frequent CLI upgrades are a reopening condition for the
+version compatibility policy, distinct from runtime effort membership.
+
+F3 adds the runner, evidence entry, generated pre-tool host, shared gate-input
+inventory and bounded shell-destination classifier to this order:
+`scripts/test-runner.mjs`, `scripts/harness-entry.mjs`, `scripts/harness.mjs`,
+`package.json`, `packages/skeleton/src/harness-host.ts`, `gate-evidence.mjs`
+and `harness-command.ts` in the same source directory,
+`scripts/lib/suite-evidence.mjs`, and their runner/generated-hook fixtures.
+Live runs refuse agent Write/Edit and write-classified shell commands that
+could change protected gate inputs, with the active run named. Ignored scratch
+writes outside the input set remain eligible under existing authority. A dead
+run's marker cannot strand writes. Fixtures must execute attempted writes
+through generated hooks, prove refusal and unchanged gate inputs, and prove
+excluded writes and dead-owner recovery. Product 07 and
+[WO-125-D003](../evidence/WO-125/decisions.md#wo-125-d003) retain the decision
+and its limits. The existing final input comparison remains in place.

@@ -90,6 +90,35 @@ for step 4 is now observed, but the reusable fixture and steps 2–3 remain. Tha
 is enough scope to test the compiler-target idea without prematurely building a
 marketplace or a full coordination universe.
 
+## WO-125 explicit reasoning effort — 2026-09-11
+
+The operator-approved probe ran five synthetic, schema-bound launches outside
+the parent sandbox on CLI `0.154.0`, requesting `gpt-6-astra`. Each retained the
+existing worker's ignored user configuration, ephemeral mode, strict config,
+read-only permissions, disabled network for model commands, disabled tools,
+memory, project instructions and MCP. Authentication stayed with the CLI.
+
+| Requested effort | Added command arguments                | Classification     | Exit | Final result  | Effort readback          |
+| ---------------- | -------------------------------------- | ------------------ | ---- | ------------- | ------------------------ |
+| `low`            | `-c 'model_reasoning_effort="low"'`    | observed, accepted | 0    | `{"ok":true}` | no effort field; unknown |
+| `medium`         | `-c 'model_reasoning_effort="medium"'` | observed, accepted | 0    | `{"ok":true}` | no effort field; unknown |
+| `high`           | `-c 'model_reasoning_effort="high"'`   | observed, accepted | 0    | `{"ok":true}` | no effort field; unknown |
+| `xhigh`          | `-c 'model_reasoning_effort="xhigh"'`  | observed, accepted | 0    | `{"ok":true}` | no effort field; unknown |
+| `max`            | `-c 'model_reasoning_effort="max"'`    | observed, accepted | 0    | `{"ok":true}` | no effort field; unknown |
+
+The [sanitized rows](codex-effort-2026-09-11.json) retain each complete argument
+shape, event types, exit, bounded result, elapsed time and numeric usage. All
+five streams ended in `turn.completed`; no effective model or effort is inferred
+from the request or output. These are acceptance observations for this CLI/model,
+not comparative reasoning-quality measurements or guarantees for other models.
+
+Reproduce after building with
+`node scripts/probe-codex-effort.mjs --out docs/discovery/<new-public-record>.json`
+on an authenticated runner outside the parent sandbox. The command refuses an
+existing destination; retain old observations. An unavailable or blocked row
+must not enable that version/level pair. CLI `0.153.4` retains its earlier
+`unknown`-only observation. `unknown` adds no override on either admitted version.
+
 ## Sources
 
 - Local measurements: [`environment.md`](environment.md), especially the Codex

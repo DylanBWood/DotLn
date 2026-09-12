@@ -175,6 +175,7 @@ export function canonicalWorkerArgs(
   name: WorkerTransportName,
   request: TransportRequest,
   schemaPath: string,
+  harnessVersion = "unknown",
 ): readonly string[] {
   validateTransportRequest(request);
   if (name === "fake") throw new WorkerFailure("profile-refused");
@@ -217,7 +218,17 @@ export function canonicalWorkerArgs(
           : "1.00",
     ];
   }
-  if (request.effort !== "unknown") throw new WorkerFailure("profile-refused");
+  // WO-125: docs/discovery/codex-effort-2026-09-11.json observed all five
+  // declared levels on 0.154.0. Older rows establish only the unknown launch.
+  if (
+    request.effort !== "unknown" &&
+    (harnessVersion !== "0.154.0" ||
+      !["low", "medium", "high", "xhigh", "max"].includes(request.effort))
+  )
+    throw new WorkerFailure(
+      "profile-refused",
+      `Codex effort ${request.effort} unavailable for ${harnessVersion}; see docs/discovery/codex-effort-2026-09-11.json`,
+    );
   return [
     "exec",
     "--ephemeral",
@@ -251,6 +262,9 @@ export function canonicalWorkerArgs(
     "-c",
     'shell_environment_policy.inherit="none"',
     ...codexDisabled.flatMap((name) => ["--disable", name]),
+    ...(request.effort === "unknown"
+      ? []
+      : ["-c", `model_reasoning_effort="${request.effort}"`]),
     "-",
   ];
 }
@@ -368,7 +382,12 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
     const schemaDirectory = mkdtempSync(join(tmpdir(), "dotln-worker-schema-"));
     try {
       const schemaPath = join(schemaDirectory, "result.json");
-      const args = canonicalWorkerArgs(this.name, request, schemaPath);
+      const args = canonicalWorkerArgs(
+        this.name,
+        request,
+        schemaPath,
+        this.harnessVersion,
+      );
       writeFileSync(
         schemaPath,
         JSON.stringify(transportResultSchema(request)),
@@ -440,6 +459,6 @@ export class CodexCliExecWorkOrderTransport extends CliWorkOrderTransport {
     version?: string,
     onUsage?: (observation: ReturnType<typeof usageObservation>) => void,
   ) {
-    super("codex", ["0.153.4"], runner, version, onUsage);
+    super("codex", ["0.153.4", "0.154.0"], runner, version, onUsage);
   }
 }

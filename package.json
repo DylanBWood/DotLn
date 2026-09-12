@@ -31,7 +31,7 @@
     "console": "npm run build --silent && node packages/console/dist/src/cli.js",
     "test:console": "npm run build --silent && node --test packages/console/dist/test/*.test.js",
     "evidence:console": "npm run build --silent && node scripts/console-fixtures.mjs",
-    "harness": "npm run build --silent && node scripts/harness.mjs",
+    "harness": "node scripts/harness-entry.mjs",
     "terms": "node scripts/terms.mjs",
     "adjacent": "node scripts/adjacent-work.mjs",
     "test:full": "node scripts/test-runner.mjs --full",

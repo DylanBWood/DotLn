@@ -2927,6 +2927,81 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-53fd89c9fbb23c9f",
+      "key": "decision:docs/evidence/WO-125/decisions.md#wo-125-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b550f2592ac9bfb592a0065485d9c62a86e9e2c76ed5cbecbeb24a8ddc604d97",
+          "ref": "docs/evidence/WO-125/decisions.md#wo-125-d001",
+          "title": "WO-125-D001: Probe five explicit Codex effort overrides before enabling only observed version/level pairs; preserve unknown arguments and host-launch epistemic limits.",
+          "summary": "{ \"id\": \"WO-125-D001\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator resume: next; WO-125 observation-first design and acceptance criteria 1–3\", \"decision\": \"Probe five explicit Codex effort overrides before enabling only observed version/level pairs; preserve unknown arguments and host-launch epistemic limits.\", \"evidence\": [ \"packages/skeleton/src/worker-transport.ts: previous unknown-only guard\", \"docs/discovery/codex-effort-2026-09-11.json: five accepted 0.154.0 launches, no effort fields\", \"packages/skeleton/fixtures/codex-unknown-args.json: captured pre-change arguments\" ], \"rejected\": [ \"NoOp leaves the requested max launch impossible.\", \"Reading personal settings makes selection depend",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9bba5473aa0c13dc",
+      "key": "decision:docs/evidence/WO-125/decisions.md#wo-125-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1848b018015be061bb9c6915e482b4f3fb5fe65b9b463f490a530f63de3834d7",
+          "ref": "docs/evidence/WO-125/decisions.md#wo-125-d002",
+          "title": "WO-125-D002: Complete the omitted activation assignment at application v0.17.2 and skeleton 0.15.2, regenerate runtime pins and record a fresh feedback edition.",
+          "summary": "{ \"id\": \"WO-125-D002\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator resume: next; WO-125 patch classification and standing release default\", \"decision\": \"Complete the omitted activation assignment at application v0.17.2 and skeleton 0.15.2, regenerate runtime pins and record a fresh feedback edition.\", \"evidence\": [ \"Local annotated release baseline v0.17.1\", \"docs/product/06-roadmap.md: WO-125 activation completion\", \"packages/skeleton/src/worker-transport.ts: bounded adapter correction\" ], \"rejected\": [ \"NoOp leaves release metadata and source-pinned evidence stale.\", \"Bumping unchanged components overstates compatibility impact.\" ], \"reopenWhen\": \"A release collision consumes the applicati",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b62d4562a3a3e1bc",
+      "key": "decision:docs/evidence/WO-125/decisions.md#wo-125-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b624db7a3517c9100dff84c875436d98a22bbec1347cf617dae99ce75bdd0493",
+          "ref": "docs/evidence/WO-125/decisions.md#wo-125-d003",
+          "title": "WO-125-D003: Repair F1 and adjacent F2 with runtime membership and an unknown default version; repair F3 with process-owned gate markers and pre-tool write refusal for the gate lifetime.",
+          "summary": "{ \"id\": \"WO-125-D003\", \"date\": \"2026-09-11\", \"dispatch\": \"Operator resume: fix and scope expand: Fix VER-001 F3 in this repair\", \"decision\": \"Repair F1 and adjacent F2 with runtime membership and an unknown default version; repair F3 with process-owned gate markers and pre-tool write refusal for the gate lifetime.\", \"evidence\": [ \"docs/verifications/WO-125/VER-001.md: F1, F2 and operator-directed F3\", \"packages/skeleton/src/worker-transport.ts: version-only admission and optimistic default\", \"scripts/test-runner.mjs: input changes detected only after suites finish\", \"packages/skeleton/src/harness-host.ts: pre-tool boundaries lack active gate facts\" ], \"rejected\": [ \"NoOp retains unsupported ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fbe3b283967b5e4d",
+      "key": "decision:docs/evidence/WO-125/decisions.md#wo-125-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ce9da348dad2988fc4091c53b23c69cc3d0aec4ccd4ad6f19b8d4929070e4357",
+          "ref": "docs/evidence/WO-125/decisions.md#wo-125-d004",
+          "title": "WO-125-D004: Resolve physical write destinations component by component, preserve shell symlink traversal, and let the test release held gate stages instead of racing a fixed hold deadline.",
+          "summary": "{ \"id\": \"WO-125-D004\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: fix; failure source VER-002\", \"decision\": \"Resolve physical write destinations component by component, preserve shell symlink traversal, and let the test release held gate stages instead of racing a fixed hold deadline.\", \"evidence\": [ \"docs/verifications/WO-125/VER-002.md: F1-F3\", \"Local classification reproduces admitted NODE_MODULES and package/dist case aliases on this case-insensitive volume.\", \"packages/skeleton/src/harness-host.ts: shell destinations lose symlink/parent traversal through resolve before classification.\", \"scripts/test-harness.mjs: a 30-second hold competes with the generated-hook attempt matrix.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-498c18613501db74",
+      "key": "decision:docs/evidence/WO-125/decisions.md#wo-125-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "26f7211ede0cb1f667b3e1d260f261ef4c48c7edc160a2972415fdd65218f44f",
+          "ref": "docs/evidence/WO-125/decisions.md#wo-125-d005",
+          "title": "WO-125-D005: Protect existing non-directory destinations with multiple hard links during live gates, preserving ordinary scratch writes.",
+          "summary": "{ \"id\": \"WO-125-D005\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: fix; VER-003 F1; operator permits a straightforward DevEx repair and directs wrapping up\", \"decision\": \"Protect existing non-directory destinations with multiple hard links during live gates, preserving ordinary scratch writes.\", \"evidence\": [ \"docs/verifications/WO-125/VER-003.md: F1 in-place writes through a pre-existing hard link change tracked inputs\", \"scripts/test-runner.test.mjs: new VER-003 regression fails against inherited code\" ], \"rejected\": [ \"NoOp or a known-issue exception leaves an avoidable gate-invalidating write that one link-count check prevents.\", \"Scanning the filesystem for every inode alias add",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
