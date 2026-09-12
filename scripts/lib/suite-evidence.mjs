@@ -22,6 +22,7 @@ import {
   resolve,
 } from "node:path";
 import { availableParallelism, release } from "node:os";
+import { gateInstalledInputRoots } from "./gate-evidence.mjs";
 
 const version = 2;
 const digest = (value) => createHash("sha256").update(value).digest("hex");
@@ -197,10 +198,7 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
         visit(`${path}/${name}`);
     } else installed.push([path, file(join(repo, path))]);
   };
-  visit("node_modules");
-  if (existsSync(join(repo, "packages")))
-    for (const name of readdirSync(join(repo, "packages")).sort())
-      visit(`packages/${name}/dist`);
+  for (const path of gateInstalledInputRoots(repo)) visit(path);
   const toolchain = [];
   let npmExecutable;
   const versionedTools = new Set(["node", "git", "npm", "bash", "sh"]);

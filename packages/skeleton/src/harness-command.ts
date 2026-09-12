@@ -292,6 +292,66 @@ function shellWords(source: string): ShellInvocation[] {
 export function shellInvocations(source: string): string[][] {
   return shellWords(source).map(({ words }) => words.map((word) => word.value));
 }
+
+/** Bounded destination adapter for gate admission. null means the destinations
+ * are opaque, never an empty write set. Keep expansion/quotation provenance;
+ * arbitrary scripts and interpreters need their own reviewed path adapter.
+ */
+export function shellWritePaths(source: string): readonly string[] | null {
+  try {
+    const paths: string[] = [];
+    for (const invocation of shellWords(source)) {
+      if (invocation.stdin.length) return null;
+      const words = invocation.words;
+      const command: string[] = [];
+      for (let index = 0; index < words.length; index++) {
+        const word = words[index]!;
+        // Whole-word quotation does not prove every character was quoted.
+        // Mixed/escaped wildcard forms stay opaque to this bounded adapter.
+        if (word.dynamic || /[*?\[\]{}~]/.test(word.value)) return null;
+        if (/^(?:\d*[<>]&\d+)$/.test(word.value) && !word.quoted) continue;
+        const redirect = /^(?:\d*>>?|&>>?)(.*)$/.exec(word.value);
+        if (redirect && !word.quoted) {
+          const target = redirect[1]
+            ? { ...word, value: redirect[1] }
+            : words[++index];
+          if (!target || target.dynamic || /[*?\[\]{}~<>]/.test(target.value))
+            return null;
+          paths.push(target.value);
+        } else {
+          // Mixed quoted/unquoted redirects and embedded redirects are opaque.
+          if (/[<>]/.test(word.value)) return null;
+          command.push(word.value);
+        }
+      }
+      const [program, ...args] = command;
+      if (!program) continue;
+      if (["echo", "printf", "cat", "pwd", "true", "false"].includes(program))
+        continue;
+      const flags: Record<string, RegExp> = {
+        touch: /^-(?:[acmh]+|-)/,
+        mkdir: /^-(?:p|-)/,
+        tee: /^-(?:[ai]+|-)/,
+        rm: /^-(?:[rf]+|-)/,
+      };
+      if (!flags[program]) return null;
+      let operands = false;
+      for (const arg of args) {
+        if (!operands && arg === "--") {
+          operands = true;
+          continue;
+        }
+        if (!operands && arg.startsWith("-")) {
+          if (!flags[program]!.test(arg) || !/^-([acmhpirf]+)$/.test(arg))
+            return null;
+        } else paths.push(arg);
+      }
+    }
+    return paths;
+  } catch {
+    return null;
+  }
+}
 const requireLiteral = (word: ShellWord | undefined, position: string) => {
   if (!word || word.dynamic)
     throw new HarnessCommandRefused(

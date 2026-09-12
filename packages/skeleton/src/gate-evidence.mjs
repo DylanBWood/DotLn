@@ -7,11 +7,254 @@ import {
   readFileSync,
   readdirSync,
   readlinkSync,
+  realpathSync,
   renameSync,
   rmdirSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join } from "node:path";
+import {
+  dirname,
+  isAbsolute,
+  join,
+  parse,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
+
+/** Shared with the suite fingerprint: ignored installation bytes are inputs.
+ * @param {string} root */
+export function gateInstalledInputRoots(root) {
+  return [
+    "node_modules",
+    ...(existsSync(join(root, "packages"))
+      ? readdirSync(join(root, "packages"))
+          .sort()
+          .map((name) => `packages/${name}/dist`)
+      : []),
+  ];
+}
+/** Walk before normalizing parents: the kernel follows a directory symlink
+ * before applying `..`, and follows a dangling final link when creating a file.
+ * Native realpath retains on-disk case for every existing component.
+ * @param {string} path @returns {string} */
+function prospectiveRealpath(path) {
+  let physical = parse(path).root;
+  const pending = path.slice(physical.length).split(sep);
+  let links = 0;
+  while (pending.length) {
+    const part = pending.shift();
+    if (!part || part === ".") continue;
+    if (part === "..") {
+      physical = dirname(physical);
+      continue;
+    }
+    const next = join(physical, part);
+    let info;
+    try {
+      info = lstatSync(next);
+    } catch (error) {
+      if (/** @type {NodeJS.ErrnoException} */ (error).code !== "ENOENT")
+        throw error;
+      physical = next;
+      continue;
+    }
+    if (info.isSymbolicLink()) {
+      if (++links > 40)
+        throw new Error("Gate input symlink traversal unavailable");
+      const target = readlinkSync(next);
+      if (isAbsolute(target)) physical = parse(target).root;
+      pending.unshift(
+        ...target.slice(isAbsolute(target) ? physical.length : 0).split(sep),
+      );
+    } else physical = realpathSync.native(next);
+  }
+  return physical;
+}
+/** Protect candidate-tree and installed-suite inputs, including possible inode
+ * aliases. Ordinary ignored scratch is excluded; tracked files stay protected.
+ * @param {string} root @param {string} path */
+export function gateInputPath(root, path) {
+  root = realpathSync.native(root);
+  const lexical = resolve(root, path);
+  const physical = prospectiveRealpath(
+    isAbsolute(path) ? path : `${root}${sep}${path}`,
+  );
+  // A hard link can share an input's inode without sharing any path component.
+  // Other names are unknown, so only single-link scratch is provably excluded.
+  const destination = lstatSync(physical, { throwIfNoEntry: false });
+  if (destination && !destination.isDirectory() && destination.nlink > 1)
+    return true;
+  const caseConfig = spawnSync(
+    "git",
+    ["config", "--bool", "--get", "core.ignorecase"],
+    {
+      cwd: root,
+      encoding: "utf8",
+    },
+  );
+  if (caseConfig.status !== 0 && caseConfig.status !== 1)
+    throw new Error("Gate input case classification unavailable");
+  const ignoreCase = caseConfig.stdout.trim() === "true";
+  /** @param {string} value */
+  const spelling = (value) => (ignoreCase ? value.toLowerCase() : value);
+  const installed = gateInstalledInputRoots(root).map(spelling);
+  return [...new Set([lexical, physical])].some((absolute) => {
+    const local = relative(root, absolute);
+    if (local === ".." || local.startsWith(`..${sep}`) || isAbsolute(local))
+      return false;
+    const matched = spelling(local);
+    if (!local || matched === ".git" || matched.startsWith(`.git${sep}`))
+      return true;
+    const packageName = /^packages\/([^/]+)/.exec(matched)?.[1];
+    if (packageName && !existsSync(join(root, "packages", packageName)))
+      return true;
+    if (/^packages\/[^/]+\/dist(?:\/|$)/.test(matched)) return true;
+    if (
+      installed.some(
+        (input) =>
+          matched === input ||
+          matched.startsWith(`${input}/`) ||
+          input.startsWith(`${matched}/`),
+      )
+    )
+      return true;
+    // Git refuses pathspecs below a symlink. Judge that lexical link entry
+    // here; the physical destination is independently checked above.
+    let gitPath = local;
+    let ancestor = root;
+    for (const part of local.split(sep)) {
+      ancestor = join(ancestor, part);
+      const info = lstatSync(ancestor, { throwIfNoEntry: false });
+      if (!info) break;
+      if (info.isSymbolicLink()) {
+        gitPath = relative(root, ancestor);
+        break;
+      }
+    }
+    if (
+      git(root, [
+        "ls-files",
+        "--cached",
+        "-z",
+        "--",
+        `:(${ignoreCase ? "icase," : ""}literal)${gitPath}`,
+      ]).length
+    )
+      return true;
+    const ignored = spawnSync("git", ["check-ignore", "-q", "--", gitPath], {
+      cwd: root,
+    });
+    if (ignored.status !== 0 && ignored.status !== 1)
+      throw new Error("Gate input classification unavailable");
+    return ignored.status !== 0;
+  });
+}
+
+/** @typedef {{contract: "gate-run-v1", runId: string, command: string, pid: number, startedAt: string, processStartedAt: string|null}} GateRun */
+/** @param {string} root */
+const gateRunsDirectory = (root) =>
+  join(realpathSync(root), "docs/control/local/harness/active-gates");
+/** A PID birth observation prevents reuse from reviving an old marker when ps
+ * is available. Signal zero still distinguishes an exited owner in a sandbox.
+ * @param {number} pid */
+function gateProcessStart(pid) {
+  const result = spawnSync("ps", ["-p", String(pid), "-o", "lstart="], {
+    encoding: "utf8",
+    timeout: 1000,
+  });
+  return result.status === 0 ? result.stdout.trim() || null : null;
+}
+/** @param {GateRun} run */
+function gateOwnerAlive(run) {
+  try {
+    process.kill(run.pid, 0);
+  } catch (error) {
+    if (/** @type {NodeJS.ErrnoException} */ (error).code === "ESRCH")
+      return false;
+  }
+  const started = run.processStartedAt && gateProcessStart(run.pid);
+  return !started || started === run.processStartedAt;
+}
+/** Read only: dead markers never lock the tree and never let a stale observer
+ * delete a newer run. Each run owns a unique, atomically published marker.
+ * @param {string} root @returns {GateRun[]} */
+export function activeGateRuns(root) {
+  const directory = gateRunsDirectory(root);
+  let names;
+  try {
+    names = readdirSync(directory);
+  } catch (error) {
+    if (/** @type {NodeJS.ErrnoException} */ (error).code === "ENOENT")
+      return [];
+    throw error;
+  }
+  return names
+    .filter((name) => name.endsWith(".json"))
+    .flatMap((name) => {
+      let run;
+      try {
+        run = JSON.parse(readFileSync(join(directory, name), "utf8"));
+      } catch (error) {
+        if (/** @type {NodeJS.ErrnoException} */ (error).code === "ENOENT")
+          return [];
+        throw error;
+      }
+      if (
+        run.contract !== "gate-run-v1" ||
+        !/^[a-f0-9-]{36}$/.test(run.runId) ||
+        name !== `${run.runId}.json` ||
+        !Number.isSafeInteger(run.pid) ||
+        run.pid <= 1 ||
+        typeof run.command !== "string" ||
+        !/^[a-zA-Z0-9 :./-]{1,160}$/.test(run.command) ||
+        !Number.isFinite(Date.parse(run.startedAt)) ||
+        !(
+          run.processStartedAt === null ||
+          typeof run.processStartedAt === "string"
+        )
+      )
+        throw new Error("Malformed active gate marker");
+      return gateOwnerAlive(run) ? [run] : [];
+    });
+}
+/** Gate-owned writes (build, preparation and evidence) are internal operations;
+ * this marker fences new agent tool dispatches, not the gate's subprocesses.
+ * @param {string} root @param {string} command */
+export function beginGateRun(root, command) {
+  if (!/^[a-zA-Z0-9 :./-]{1,160}$/.test(command))
+    throw new Error("Gate command must be a bounded public label");
+  const directory = gateRunsDirectory(root);
+  mkdirSync(directory, { recursive: true });
+  /** @type {GateRun} */
+  const run = {
+    contract: "gate-run-v1",
+    runId: randomUUID(),
+    command,
+    pid: process.pid,
+    startedAt: new Date().toISOString(),
+    processStartedAt: gateProcessStart(process.pid),
+  };
+  const path = join(directory, `${run.runId}.json`);
+  const prepared = `${path}.prepare`;
+  writeFileSync(prepared, JSON.stringify(run) + "\n", {
+    flag: "wx",
+    mode: 0o600,
+  });
+  renameSync(prepared, path);
+  const release = () => {
+    process.removeListener("exit", release);
+    try {
+      unlinkSync(path);
+    } catch (error) {
+      if (/** @type {NodeJS.ErrnoException} */ (error).code !== "ENOENT")
+        throw error;
+    }
+  };
+  process.once("exit", release);
+  return { run, release };
+}
 
 /** @typedef {{exitCode: number, executed: boolean, output?: string, outputRef?: string, cases?: GateDiagnostic[]}} GateDiagnostic */
 /** @typedef {GateDiagnostic & {checkId: string, treeHash: string, subject: string, durationMs: number, evidenceRef: string, recordedAt: string}} GateCheck */

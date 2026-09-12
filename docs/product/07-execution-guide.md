@@ -1205,6 +1205,34 @@ claim evidence or releases it does not have.
   package tests and fixtures wait for successful preflights, so a preparation
   refusal cannot start expensive tests in parallel. Direct test commands and
   `harness check` remain validation-only ([WO-127-D007](../evidence/WO-127/decisions.md#wo-127-d007)).
+  **Gate input protection (operator clarification, 2026-09-11):** live gate
+  markers fence agent writes only where they could invalidate the run: the
+  candidate Git tree, including tracked and non-ignored reports, and the
+  installed dependencies and package build outputs included in suite snapshots.
+  Ignored scratch and local observation writes outside those inputs remain
+  eligible under existing authority. Generated pre-tool hooks refuse Write,
+  Edit and shell writes targeting protected inputs before dispatch, naming the
+  active command and run. Shell destinations that cannot be classified remain
+  conservatively refused; bounded ignored destinations and metadata reads stay
+  available. The package evidence command marks its build, preparation and
+  checks; direct runner and evidence calls mark their own lifetimes. Nested
+  runs own independent markers, normal completion releases them, and an exited
+  owner cannot block writes through a stale marker. PID birth observations
+  distinguish reuse where the process table is available. The existing final
+  input comparison remains necessary for unhooked edits and tool-boundary races
+  ([WO-125-D003](../evidence/WO-125/decisions.md#wo-125-d003)).
+  The VER-002 repair resolves physical path components, including dangling
+  symlink targets and parent traversal after directory symlinks. Installed-root
+  comparisons follow Git's case-insensitive setting, with native on-disk spelling
+  for existing components. Shell destinations and working directories retain
+  their traversal order. Link entries and physical targets are both checked, so
+  ignored links into ignored scratch remain eligible. Held-stage fixtures use
+  test-owned release and timeout cleanup instead of an expiring stage deadline
+  ([WO-125-D004](../evidence/WO-125/decisions.md#wo-125-d004)).
+  The VER-003 repair also protects existing non-directory destinations with
+  multiple hard links: their other names may alias gate inputs. This deliberately
+  includes multiply-linked scratch files; ordinary scratch remains eligible
+  ([WO-125-D005](../evidence/WO-125/decisions.md#wo-125-d005)).
   After diagnosis, retry that command and reuse passing source checks whose
   inputs are unchanged. A failed verification or review records its
   reproduction and diff evidence without seeking a green application gate

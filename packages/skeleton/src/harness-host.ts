@@ -40,9 +40,13 @@ import {
   HarnessCommandRefused,
   harnessToolEffects,
   invocationEffects,
+  shellWritePaths,
   commitMessageInputs,
 } from "./harness-command.js";
 import {
+  activeGateRuns,
+  beginGateRun,
+  gateInputPath,
   gateTreeHash,
   findGateCheck,
   readGateChecks,
@@ -61,7 +65,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.15.1";
+export const HARNESS_HOST_VERSION = "0.15.2";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;
@@ -1353,6 +1357,15 @@ function admitReadBytes(
 }
 
 export function runHarnessEvidence(root: string): readonly HarnessCheck[] {
+  const active = beginGateRun(root, "harness evidence checks");
+  try {
+    return runHarnessEvidenceChecks(root);
+  } finally {
+    active.release();
+  }
+}
+
+function runHarnessEvidenceChecks(root: string): readonly HarnessCheck[] {
   const treeHash = gateTreeHash(root);
   const commands = [
     {
@@ -1418,9 +1431,10 @@ function managedUsageCommand(
     commands.push(`node scripts/harness.mjs usage ${id}`);
   return commands.includes(String(input.tool_input?.command ?? ""));
 }
-function metadataCommand(command: string): boolean {
-  if (outputReadCommand(command) !== null) return true;
+function metadataCommand(command: string, repositoryCommands = true): boolean {
+  if (repositoryCommands && outputReadCommand(command) !== null) return true;
   if (
+    repositoryCommands &&
     /^(?:npm run plan --|node scripts\/refute-plan\.mjs) start [a-z][a-z0-9-]*$/.test(
       command,
     )
@@ -1439,11 +1453,14 @@ function metadataCommand(command: string): boolean {
           "git status --short --branch",
           "git diff --check",
           "git worktree list --porcelain",
-          "node scripts/harness.mjs writer --show",
+          ...(repositoryCommands
+            ? ["node scripts/harness.mjs writer --show"]
+            : []),
         ].includes(part) ||
-        /^(?:node scripts\/resume\.mjs|npm run resume(?: --silent)? --) (?:status(?: --json)?|times|usage(?: --json)?|next|release-close)$/.test(
-          part,
-        ),
+        (repositoryCommands &&
+          /^(?:node scripts\/resume\.mjs|npm run resume(?: --silent)? --) (?:status(?: --json)?|times|usage(?: --json)?|next|release-close)$/.test(
+            part,
+          )),
     )
   );
 }
@@ -1925,6 +1942,68 @@ const protocolRefusal = (event: HarnessEvent, reason: string) =>
       ? { systemMessage: `DotLn: ${reason.replace(/\s+/g, " ")}` }
       : { decision: "block", reason };
 
+/** All generated pre-tool boundaries share this guard. There is no agent-
+ * supplied gate-child bypass; gate-owned subprocess writes do not dispatch tools.
+ */
+function activeGateWriteRefusal(
+  input: HarnessInput,
+  root: string,
+  tools: HookConfig["tools"],
+  session: HarnessSession,
+): string | null {
+  if (input.hook_event_name !== "PreToolUse") return null;
+  const inventory: HookConfig["tools"] = tools ?? harnessToolEffects;
+  const tool = inventory[input.tool_name ?? ""];
+  if (tool !== "write" && tool !== "shell" && tool !== "spawn") return null;
+  const runs = activeGateRuns(root);
+  if (!runs.length) return null;
+  const args = input.tool_input ?? {};
+  if (tool === "write") {
+    const path = args.file_path ?? args.notebook_path;
+    if (typeof path === "string" && !gateInputPath(root, path)) return null;
+  }
+  if (tool === "shell") {
+    const command = args.command ?? args.cmd;
+    const requestedDirectory = args.workdir ?? args.cwd ?? root;
+    let directory: string | null = null;
+    try {
+      if (typeof requestedDirectory === "string")
+        directory = realpathSync.native(
+          isAbsolute(requestedDirectory)
+            ? requestedDirectory
+            : `${root}/${requestedDirectory}`,
+        );
+      // Repository helpers are reviewed at the root, not at a same-named script
+      // below an arbitrary tool cwd. Built-in metadata reads remain usable.
+      if (directory === root && managedUsageCommand(input, session))
+        return null;
+      if (
+        directory &&
+        permissionEffect(input, root, tools) === "repo.read" &&
+        (directory === root ||
+          (typeof command === "string" && metadataCommand(command, false)))
+      )
+        return null;
+    } catch {
+      // An opaque or unclassifiable shell cannot establish that it is read-only.
+    }
+    const paths = typeof command === "string" ? shellWritePaths(command) : null;
+    if (
+      directory &&
+      paths &&
+      paths.every(
+        (path) =>
+          !gateInputPath(
+            root,
+            isAbsolute(path) ? path : `${directory}/${path}`,
+          ),
+      )
+    )
+      return null;
+  }
+  return `DOTLN_HARNESS_REFUSED: write may change gate inputs during active gate ${runs.map((run) => `${run.command} (run ${run.runId}, pid ${run.pid})`).join("; ")}`;
+}
+
 function assertHarnessRuntime(
   config: Pick<HookConfig, "compilerPackageVersion" | "runtime">,
   root: string,
@@ -1957,6 +2036,13 @@ export async function evaluateHarnessHook(
   if (input.hook_event_name !== config.event || !input.session_id)
     throw new Error("Hook input contract mismatch");
   const session = readJson(statePath(root, input), initialSession(), true);
+  const gateRefusal = activeGateWriteRefusal(
+    input,
+    root,
+    config.tools,
+    session,
+  );
+  if (gateRefusal) return protocolRefusal(config.event, gateRefusal);
   const correctionPath = join(
     harnessStateDirectory(root),
     `${sessionKey(input)}.correction.json`,

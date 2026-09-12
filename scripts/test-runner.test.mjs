@@ -2,11 +2,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
+  existsSync,
+  linkSync,
   mkdtempSync,
   mkdirSync,
   readFileSync,
   writeFileSync,
   rmSync,
+  symlinkSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -20,7 +23,13 @@ import {
   expandSuiteTasks,
   aggregateSuiteRows,
 } from "./test-runner.mjs";
-import { recordGateChecks, readGateChecks } from "./lib/gate-evidence.mjs";
+import {
+  activeGateRuns,
+  beginGateRun,
+  gateInputPath,
+  recordGateChecks,
+  readGateChecks,
+} from "./lib/gate-evidence.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const barrier = { name: "build", command: ["build"], build: true };
@@ -404,9 +413,129 @@ test("only and document CLI selection execute their declared checks without a co
       5,
     );
     await assert.rejects(runGate(["--only", "unknown"], repo), /Unknown suite/);
+    assert.deepEqual(
+      activeGateRuns(repo),
+      [],
+      "normal and throwing runs release their markers",
+    );
   } finally {
     rmSync(repo, { recursive: true, force: true });
   }
+});
+
+test("WO-125 nested gate markers remain independent and local to their worktree", (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-markers-"));
+  const other = mkdtempSync(join(tmpdir(), "dotln-gate-other-"));
+  t.after(() => {
+    rmSync(repo, { recursive: true, force: true });
+    rmSync(other, { recursive: true, force: true });
+  });
+  const first = beginGateRun(repo, "outer evidence fixture");
+  const second = beginGateRun(repo, "inner runner fixture");
+  try {
+    assert.equal(activeGateRuns(repo).length, 2);
+    assert.deepEqual(activeGateRuns(other), []);
+    first.release();
+    assert.deepEqual(
+      activeGateRuns(repo).map((run) => run.runId),
+      [second.run.runId],
+    );
+  } finally {
+    first.release();
+    second.release();
+  }
+  assert.deepEqual(activeGateRuns(repo), []);
+});
+
+test("WO-125 gate inputs include tracked ignored files and new installed roots, excluding scratch", (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-inputs-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execFileSync("git", ["init", "-q"], { cwd: repo });
+  mkdirSync(join(repo, "scratch"));
+  writeFileSync(join(repo, ".gitignore"), "scratch/\nnode_modules/\ndist/\n");
+  writeFileSync(join(repo, "scratch/retained.txt"), "tracked\n");
+  execFileSync("git", ["add", "-f", "scratch/retained.txt"], { cwd: repo });
+  assert.equal(gateInputPath(repo, "scratch/new.txt"), false);
+  assert.equal(gateInputPath(repo, "scratch/retained.txt"), true);
+  assert.equal(gateInputPath(repo, "new-source.ts"), true);
+  assert.equal(
+    gateInputPath(repo, "node_modules/new-dependency/index.js"),
+    true,
+  );
+  assert.equal(gateInputPath(repo, "packages/new-package/dist/index.js"), true);
+});
+
+test("WO-125 VER-002 installed input case aliases include prospective roots", (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-case-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execFileSync("git", ["init", "-q"], { cwd: repo });
+  mkdirSync(join(repo, "node_modules"));
+  mkdirSync(join(repo, "packages/skeleton/dist"), { recursive: true });
+  mkdirSync(join(repo, "packages/future"));
+  writeFileSync(join(repo, ".gitignore"), "node_modules/\ndist/\n");
+  if (!existsSync(join(repo, "NODE_MODULES"))) {
+    t.skip("requires a case-insensitive filesystem");
+    return;
+  }
+  for (const path of [
+    "NODE_MODULES/probe.js",
+    "Node_Modules/probe.js",
+    "Packages/skeleton/dist/probe.js",
+    "packages/skeleton/DIST/probe.js",
+    "packages/future/DIST/probe.js",
+  ])
+    assert.equal(gateInputPath(repo, path), true, path);
+});
+
+test("WO-125 VER-002 resolves dangling links and physical parent traversal", (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-symlink-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execFileSync("git", ["init", "-q"], { cwd: repo });
+  mkdirSync(join(repo, "scratch"));
+  mkdirSync(join(repo, "packages/skeleton"), { recursive: true });
+  writeFileSync(join(repo, ".gitignore"), "scratch/\n");
+  symlinkSync("../new-input.md", join(repo, "scratch/dangling.md"));
+  symlinkSync("dangling.md", join(repo, "scratch/chained.md"));
+  symlinkSync("../packages/skeleton", join(repo, "scratch/dirlink"));
+  symlinkSync("dirlink/../linked.md", join(repo, "scratch/parent.md"));
+  for (const path of [
+    "scratch/dangling.md",
+    "scratch/chained.md",
+    "scratch/parent.md",
+    "scratch/dirlink/../probe-new.md",
+    "scratch/dirlink/../../new-input.md",
+  ])
+    assert.equal(gateInputPath(repo, path), true, path);
+  symlinkSync("new-scratch.md", join(repo, "scratch/local.md"));
+  symlinkSync(".", join(repo, "scratch/local-dir"));
+  assert.equal(gateInputPath(repo, "scratch/local.md"), false);
+  assert.equal(gateInputPath(repo, "scratch/local-dir/new.md"), false);
+  symlinkSync("cycle.md", join(repo, "scratch/cycle.md"));
+  assert.throws(() => gateInputPath(repo, "scratch/cycle.md"));
+});
+
+test("WO-125 VER-003 protects pre-existing hard links while ordinary scratch stays writable", (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-hardlink-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  execFileSync("git", ["init", "-q"], { cwd: repo });
+  mkdirSync(join(repo, "scratch"));
+  writeFileSync(join(repo, ".gitignore"), "scratch/\n");
+  writeFileSync(join(repo, "input.ts"), "export const value = 1;\n");
+  execFileSync("git", ["add", "input.ts"], { cwd: repo });
+  linkSync(join(repo, "input.ts"), join(repo, "scratch/input-link.ts"));
+  symlinkSync("input-link.ts", join(repo, "scratch/via-symlink.ts"));
+  for (const path of ["scratch/input-link.ts", "scratch/via-symlink.ts"])
+    assert.equal(gateInputPath(repo, path), true, path);
+
+  writeFileSync(join(repo, "scratch/local.txt"), "scratch\n");
+  assert.equal(gateInputPath(repo, "scratch/local.txt"), false);
+  assert.equal(gateInputPath(repo, "scratch/new.txt"), false);
+  assert.equal(gateInputPath(repo, "scratch"), false);
+  linkSync(
+    join(repo, "scratch/local.txt"),
+    join(repo, "scratch/local-link.txt"),
+  );
+  assert.equal(gateInputPath(repo, "scratch/local-link.txt"), true);
 });
 
 test("release cases share the global cap, wait for preparation and require complete coverage", async () => {

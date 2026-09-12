@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import {
   cpSync,
   existsSync,
+  linkSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
@@ -15,7 +16,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, isAbsolute, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   compileFeedbackUnits,
@@ -63,6 +64,7 @@ import {
   checkContextMeasurement,
   measureHarnessContext,
 } from "./harness-context.mjs";
+import { activeGateRuns, gateTreeHash } from "./lib/gate-evidence.mjs";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
 // Fixtures own the harness-process identity: generated hooks record this test
@@ -242,6 +244,489 @@ function invoke(root, name, payload, removed = false) {
 const allowed = (result) =>
   result.decision !== "block" &&
   result.hookSpecificOutput?.permissionDecision !== "deny";
+
+for (const mode of ["runner", "evidence", "entry"])
+  test(
+    `WO-125 F3 ${mode} refuses generated-hook writes throughout the gate and releases on exit`,
+    { timeout: 300000 },
+    async (t) => {
+      const root = fixture();
+      const local = "docs/control/local";
+      let child;
+      let finished;
+      const release = () => {
+        for (const stage of ["build", "checks"])
+          write(root, `${local}/${stage}.go`, "go");
+        if (child && child.exitCode === null) child.kill("SIGTERM");
+      };
+      t.signal.addEventListener("abort", release, { once: true });
+      try {
+        write(
+          root,
+          ".gitignore",
+          readFileSync(join(root, ".gitignore"), "utf8") +
+            "\nscratch/*\n!scratch/protected.txt\n",
+        );
+        write(root, "scratch/protected.txt", "protected by ignore exception\n");
+        write(root, `nested/${local}/scratch.txt`, "protected in nested cwd\n");
+        write(
+          root,
+          "nested/scripts/harness.mjs",
+          'import {writeFileSync} from "node:fs"; writeFileSync("../fixture.ts", "changed\\n");\n',
+        );
+        write(root, `${local}/tracked.ts`, "tracked despite ignore\n");
+        git(root, "add", "-f", `${local}/tracked.ts`);
+        symlinkSync(
+          join(root, "fixture.ts"),
+          join(root, local, "input-link.ts"),
+        );
+        symlinkSync("../../../new-input.md", join(root, local, "dangling.md"));
+        symlinkSync("dangling.md", join(root, local, "chained.md"));
+        symlinkSync("../../../packages/skeleton", join(root, local, "dirlink"));
+        symlinkSync("new-scratch.md", join(root, local, "scratch-link.md"));
+        linkSync(join(root, "fixture.ts"), join(root, local, "hardlink.ts"));
+        const packageScripts = JSON.parse(
+          readFileSync(join(sourceRoot, "package.json")),
+        ).scripts;
+        write(
+          root,
+          "package.json",
+          json({
+            scripts: {
+              "format:check": "node hold-gate.mjs checks",
+              "test:full": "node hold-gate.mjs checks",
+              build: "node hold-gate.mjs build",
+              harness: packageScripts.harness,
+            },
+          }),
+        );
+        write(
+          root,
+          "hold-gate.mjs",
+          `import {existsSync, writeFileSync} from "node:fs";
+import {setTimeout} from "node:timers/promises";
+import {activeGateRuns} from "./packages/skeleton/dist/src/gate-evidence.mjs";
+const stage = process.argv[2];
+if (!activeGateRuns(process.cwd()).length) throw new Error("gate marker missing in " + stage);
+writeFileSync("${local}/" + stage + ".ready", "ready");
+while (!existsSync("${local}/" + stage + ".go")) {
+  await setTimeout(10);
+}
+`,
+        );
+        if (mode === "entry") {
+          cpSync(
+            join(sourceRoot, "scripts/harness-entry.mjs"),
+            join(root, "scripts/harness-entry.mjs"),
+          );
+          write(
+            root,
+            "scripts/lib/gate-evidence.mjs",
+            'export * from "../../packages/skeleton/dist/src/gate-evidence.mjs";\n',
+          );
+          write(
+            root,
+            "scripts/harness.mjs",
+            'process.argv[2] = "checks"; await import("../hold-gate.mjs");\n',
+          );
+        }
+        const program =
+          mode === "runner"
+            ? `const {runGate} = await import(${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)}); process.exitCode = (await runGate(["--only", "format"], process.cwd())).exitCode;`
+            : 'const {runHarnessEvidence} = await import("./packages/skeleton/dist/src/harness-host.js"); const checks = runHarnessEvidence(process.cwd()); if (checks.some(row => row.exitCode !== 0)) process.exitCode = 1;';
+        const before = gateTreeHash(root);
+        child =
+          mode === "entry"
+            ? spawn("npm", ["run", "harness", "--", "evidence"], {
+                cwd: root,
+                stdio: ["ignore", "pipe", "pipe"],
+              })
+            : spawn(process.execPath, ["--input-type=module", "-e", program], {
+                cwd: root,
+                stdio: ["ignore", "pipe", "pipe"],
+              });
+        let output = "";
+        child.stdout.on("data", (chunk) => {
+          output += chunk;
+        });
+        child.stderr.on("data", (chunk) => {
+          output += chunk;
+        });
+        finished = new Promise((resolve, reject) => {
+          child.once("error", reject);
+          child.once("close", (code) => resolve(code));
+        });
+        for (const stage of mode === "entry"
+          ? ["build", "checks"]
+          : ["checks"]) {
+          while (!existsSync(join(root, local, `${stage}.ready`))) {
+            t.signal.throwIfAborted();
+            assert.equal(child.exitCode, null, output);
+            await new Promise((resolve) => setTimeout(resolve, 10));
+          }
+          const runs = activeGateRuns(root);
+          assert.ok(runs.length > 0);
+          const pathAttempts = [
+            `${local}/hardlink.ts`,
+            `${local}/dangling.md`,
+            `${local}/chained.md`,
+            `${local}/dirlink/../probe-new.md`,
+            ...(existsSync(join(root, "NODE_MODULES"))
+              ? [
+                  "NODE_MODULES/probe.js",
+                  "Packages/skeleton/dist/probe.js",
+                  "packages/skeleton/DIST/probe.js",
+                ]
+              : []),
+          ].flatMap((path) => [
+            {
+              tool_name: "Write",
+              tool_input: { file_path: path, content: "changed\n" },
+            },
+            {
+              tool_name: "Bash",
+              tool_input: { command: `printf changed > ${path}` },
+            },
+            { tool_name: "Bash", tool_input: { command: `touch ${path}` } },
+          ]);
+          const attempts = [
+            {
+              tool_name: "Write",
+              tool_input: {
+                file_path: join(root, "fixture.ts"),
+                content: "changed\n",
+              },
+            },
+            {
+              tool_name: "Edit",
+              tool_input: {
+                file_path: join(root, "fixture.ts"),
+                old_string: "1",
+                new_string: "2",
+              },
+            },
+            {
+              tool_name: "Bash",
+              tool_input: { command: "printf changed > fixture.ts" },
+            },
+            {
+              tool_name: "Bash",
+              tool_input: { command: "git status --short && touch fixture.ts" },
+            },
+            {
+              tool_name: "exec_command",
+              tool_input: { command: "touch fixture.ts" },
+            },
+            {
+              tool_name: "apply_patch",
+              tool_input: { patch: "opaque write adapter" },
+            },
+            {
+              tool_name: "Write",
+              tool_input: {
+                file_path: `${local}/tracked.ts`,
+                content: "changed\n",
+              },
+            },
+            {
+              tool_name: "Write",
+              tool_input: {
+                file_path: `${local}/input-link.ts`,
+                content: "changed\n",
+              },
+            },
+            {
+              tool_name: "Write",
+              tool_input: {
+                file_path: "packages/skeleton/dist/new-input.js",
+                content: "changed\n",
+              },
+            },
+            {
+              tool_name: "Bash",
+              tool_input: {
+                command: `printf scratch > ${local}/scratch.txt && touch fixture.ts`,
+              },
+            },
+            {
+              tool_name: "Bash",
+              tool_input: { command: 'rm scratch/"protect"*' },
+            },
+            {
+              tool_name: "Bash",
+              tool_input: { command: 'printf changed > scratch/"protect"*' },
+            },
+            {
+              tool_name: "exec_command",
+              tool_input: {
+                command: `printf changed > ${local}/scratch.txt`,
+                workdir: join(root, "nested"),
+              },
+            },
+            {
+              tool_name: "exec_command",
+              tool_input: {
+                command: "node scripts/harness.mjs writer --show",
+                workdir: join(root, "nested"),
+              },
+            },
+          ];
+          for (const hook of [
+            "permissions",
+            "concurrent-work-requires-worktrees",
+            "write-observer",
+          ])
+            for (const attempt of [
+              ...attempts,
+              // All entry points share the classifier; exercise its path matrix
+              // once, while retaining every hook/stage lifetime control above.
+              ...(mode === "runner" && hook === "permissions"
+                ? [
+                    ...pathAttempts,
+                    {
+                      tool_name: "Edit",
+                      tool_input: {
+                        file_path: `${local}/hardlink.ts`,
+                        old_string: "1",
+                        new_string: "2",
+                      },
+                    },
+                    ...[">", ">>", "| tee"].map((operator) => ({
+                      tool_name: "exec_command",
+                      tool_input: {
+                        command: `printf changed ${operator} ${local}/hardlink.ts`,
+                      },
+                    })),
+                    {
+                      tool_name: "exec_command",
+                      tool_input: {
+                        command: "printf changed > cwd-input.md",
+                        workdir: `${root}/${local}/dirlink/..`,
+                      },
+                    },
+                  ]
+                : []),
+            ]) {
+              const verdict = invoke(
+                root,
+                hook,
+                input(root, "PreToolUse", attempt),
+              );
+              if (allowed(verdict)) {
+                if (typeof attempt.tool_input.command === "string")
+                  assert.equal(
+                    spawnSync("sh", ["-c", attempt.tool_input.command], {
+                      cwd: attempt.tool_input.workdir ?? root,
+                    }).status,
+                    0,
+                  );
+                else {
+                  const path = attempt.tool_input.file_path ?? "fixture.ts";
+                  writeFileSync(
+                    isAbsolute(path) ? path : `${root}/${path}`,
+                    "changed\n",
+                  );
+                }
+              }
+              assert.equal(
+                gateTreeHash(root),
+                before,
+                `${hook} admitted ${attempt.tool_name} during ${stage}`,
+              );
+              assert.equal(allowed(verdict), false);
+              for (const path of [
+                "node_modules/probe.js",
+                "packages/skeleton/dist/probe.js",
+              ])
+                assert.equal(existsSync(join(root, path)), false, path);
+              const reason =
+                verdict.hookSpecificOutput.permissionDecisionReason;
+              assert.match(reason, /active gate/);
+              assert.ok(
+                runs.some(
+                  (run) =>
+                    reason.includes(run.runId) && reason.includes(run.command),
+                ),
+              );
+            }
+          for (const hook of [
+            "permissions",
+            "concurrent-work-requires-worktrees",
+            "write-observer",
+          ])
+            for (const attempt of [
+              {
+                tool_name: "Write",
+                tool_input: {
+                  file_path: `${local}/scratch-link.md`,
+                  content: "local only\n",
+                },
+              },
+              {
+                tool_name: "Write",
+                tool_input: {
+                  file_path: `${local}/scratch.txt`,
+                  content: "local only\n",
+                },
+              },
+              {
+                tool_name: "Edit",
+                tool_input: {
+                  file_path: `${local}/scratch.txt`,
+                  old_string: "local",
+                  new_string: "scratch",
+                },
+              },
+              {
+                tool_name: "Bash",
+                tool_input: {
+                  command: `printf scratch > ${local}/scratch.txt`,
+                },
+              },
+              {
+                tool_name: "Bash",
+                tool_input: { command: `touch ${local}/scratch.txt` },
+              },
+              {
+                tool_name: "exec_command",
+                tool_input: {
+                  command: "printf scratch > scratch.txt",
+                  workdir: join(root, local),
+                },
+              },
+            ]) {
+              const verdict = invoke(
+                root,
+                hook,
+                input(root, "PreToolUse", attempt),
+              );
+              assert.equal(
+                allowed(verdict),
+                true,
+                `${hook} unnecessarily locked ignored scratch: ${JSON.stringify(verdict)}`,
+              );
+              if (typeof attempt.tool_input.command === "string")
+                assert.equal(
+                  spawnSync("sh", ["-c", attempt.tool_input.command], {
+                    cwd: attempt.tool_input.workdir ?? root,
+                  }).status,
+                  0,
+                );
+              else
+                writeFileSync(
+                  `${root}/${attempt.tool_input.file_path}`,
+                  "local only\n",
+                );
+              assert.equal(gateTreeHash(root), before);
+            }
+          for (const attempt of [
+            {
+              tool_name: "Read",
+              tool_input: { file_path: join(root, "fixture.ts") },
+            },
+            {
+              tool_name: "Bash",
+              tool_input: { command: "git status --short" },
+            },
+            {
+              tool_name: "exec_command",
+              tool_input: {
+                command: "git status --short",
+                workdir: join(root, "nested"),
+              },
+            },
+          ])
+            assert.equal(
+              allowed(
+                invoke(root, "permissions", input(root, "PreToolUse", attempt)),
+              ),
+              true,
+            );
+          write(root, `${local}/${stage}.go`, "go");
+        }
+        assert.equal(await finished, 0, output);
+        assert.deepEqual(activeGateRuns(root), []);
+        assert.equal(gateTreeHash(root), before);
+        assert.equal(
+          allowed(
+            invoke(
+              root,
+              "permissions",
+              input(root, "PreToolUse", {
+                tool_name: "Write",
+                tool_input: {
+                  file_path: join(root, "fixture.ts"),
+                  content: "after gate\n",
+                },
+              }),
+            ),
+          ),
+          true,
+        );
+      } finally {
+        t.signal.removeEventListener("abort", release);
+        release();
+        if (finished) await finished;
+        rmSync(root, { recursive: true, force: true });
+      }
+    },
+  );
+
+test("WO-125 F3 a marker left by a killed gate owner does not block writes", async () => {
+  const root = fixture();
+  const markerDirectory = join(root, "docs/control/local/harness/active-gates");
+  const child = spawn(
+    process.execPath,
+    [
+      "--input-type=module",
+      "-e",
+      'import {beginGateRun} from "./packages/skeleton/dist/src/gate-evidence.mjs"; beginGateRun(process.cwd(), "crashed gate fixture"); process.stdout.write("ready"); setInterval(() => {}, 1000);',
+    ],
+    { cwd: root, stdio: ["ignore", "pipe", "pipe"] },
+  );
+  const exited = new Promise((resolve) => child.once("close", resolve));
+  try {
+    await new Promise((resolve, reject) => {
+      child.stdout.once("data", resolve);
+      child.once("error", reject);
+      child.once("exit", () => reject(new Error("gate exited before ready")));
+    });
+    assert.equal(activeGateRuns(root).length, 1);
+    child.kill("SIGKILL");
+    await exited;
+    assert.equal(
+      readdirSync(markerDirectory).filter((name) => name.endsWith(".json"))
+        .length,
+      1,
+    );
+    assert.deepEqual(activeGateRuns(root), []);
+    for (const hook of [
+      "permissions",
+      "concurrent-work-requires-worktrees",
+      "write-observer",
+    ])
+      assert.equal(
+        allowed(
+          invoke(
+            root,
+            hook,
+            input(root, "PreToolUse", {
+              tool_name: "Write",
+              tool_input: {
+                file_path: join(root, "fixture.ts"),
+                content: "after crash\n",
+              },
+            }),
+          ),
+        ),
+        true,
+      );
+  } finally {
+    if (child.exitCode === null) child.kill("SIGKILL");
+    await exited;
+    rmSync(root, { recursive: true, force: true });
+  }
+});
 const session = {
   startingEventCount: 1,
   reads: [],
