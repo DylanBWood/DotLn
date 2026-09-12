@@ -111,16 +111,21 @@ record; the declaration is enforced by the replica at every execution.
 **Design (scope discipline):**
 
 - Replica construction. Once per fresh gate the runner copies the installed
-  roots into gate-owned ignored scratch. For each fresh execution of a
-  narrowed suite it builds a replica root holding the declared candidate
-  paths (regular files with their modes; a symlink inside the declared set is
+  roots into gate-owned scratch outside the candidate tree, verifies the copy
+  against the observed installed roots and makes it read-only. For each
+  fresh execution of a narrowed suite it builds, under a nonce-named
+  directory whose parent the suite cannot list, a replica root holding the
+  declared candidate paths (regular files with their modes; a symlink inside the declared set is
   recreated only when its target is inside the replica, otherwise the suite
   is not narrowed for that run) and links `node_modules`, each
   `packages/<name>/dist` and `.runtime/harness` to the per-gate copy, never
   to the candidate tree. A declaration's `git: replica-repo` initializes the
-  replica as a repository with the declared files committed, for suites that
-  need a repository root and nothing from the real history; `git: none` is
-  the default.
+  replica as a repository with the declared files committed under a fixed
+  identity and timestamp, for suites that need a repository root and nothing
+  from the real history; `git: none` is the default. Nothing outside the
+  replica is reachable by walking up from it except the read-only per-gate
+  copy: the scratch parent is not listable and sibling replicas are
+  nonce-named.
 - Execution. The suite runs with the replica as its working directory; test
   globs expand in the replica; the projected environment replaces `PATH`
   entries inside the candidate tree with their replica counterparts and
@@ -168,12 +173,15 @@ fixtures named below; the write-backs.
 
 1. For each narrowed suite, a fresh execution runs inside a replica
    containing exactly the declared candidate paths, the installed roots
-   linked from one per-gate copy and, when declared, an initialized
-   repository of those files; the replica's working directory, the suite's
-   arguments and its projected environment contain no path into the
-   candidate tree, or the suite is not narrowed for that run; a fixture
-   proves the replica's contents and the absence of the candidate tree path
-   from the working directory, the arguments and the environment.
+   linked from one read-only per-gate copy verified against the observed
+   installed roots and, when declared, an initialized repository of those
+   files; the replica and the per-gate copy live outside the candidate tree
+   under a nonce-named directory whose parent the suite cannot list; the
+   replica's working directory, the suite's arguments and its projected
+   environment contain no path into the candidate tree, or the suite is not
+   narrowed for that run; a fixture proves the replica's contents, the
+   read-only copy, the unlistable parent and the absence of the candidate
+   tree path from the working directory, the arguments and the environment.
 2. Four fixture suites read an undeclared candidate file unconditionally,
    after an existence check, after a regular-file check, and after reading a
    declared flag that selects the read. Under replica execution the first
@@ -221,8 +229,9 @@ exclusivity (WO-128); an observation runtime; deleting or merging tests.
 
 **Operator-review assumptions**
 
-1. Replicas and the per-gate installed copy live in ignored scratch, are
-   disposable and are removed when the gate ends.
+1. Replicas and the per-gate installed copy live in scratch outside the
+   candidate tree, never under the repository root, are disposable and are
+   removed when the gate ends.
 2. The absolute-path residual is accepted as the limit the reviewed scopes
    already carry, with in-repository review as its control until WO-131's
    kernel denial applies where the host permits it.
