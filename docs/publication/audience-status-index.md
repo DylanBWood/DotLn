@@ -217,6 +217,8 @@ as a current blocked verdict.
 | [Retained planning follow-ups](../product/07-execution-guide.md#retained-planning-follow-ups)                                                                | software-engineer                   | implemented |
 | [Candidate — planner startup context](../product/07-execution-guide.md#candidate--planner-startup-context)                                                   | software-engineer                   | specified   |
 | [Candidate — recurring review of implementation alternatives](../product/07-execution-guide.md#candidate--recurring-review-of-implementation-alternatives)   | everyday-ai-user, software-engineer | vision      |
+| [Candidate — cold-gate structural cuts](../product/07-execution-guide.md#candidate--cold-gate-structural-cuts)                                               | software-engineer                   | vision      |
+| [Candidate — refutation pass worth its cost](../product/07-execution-guide.md#candidate--refutation-pass-worth-its-cost)                                     | software-engineer                   | vision      |
 | [Workflow closeout and releases](../product/07-execution-guide.md#workflow-closeout-and-releases)                                                            | software-engineer                   | implemented |
 | [Documentation freshness and ownership](../product/07-execution-guide.md#documentation-freshness-and-ownership)                                              | everyday-ai-user, software-engineer | specified   |
 | [Discipline](../product/07-execution-guide.md#discipline)                                                                                                    | software-engineer                   | specified   |

@@ -6554,3 +6554,162 @@ existing contract; no runtime source, contract, or locked boundary changes.
     execution record carry the new duty and bounded implementation authority.
     Reopen the collector when either harness changes its recorded format; keep
     the measurement obligation while repairing its adapter.
+
+## 2026-09-12 — Planning pass: proof-carrying gates (WO-128 to WO-130)
+
+- **The relayed plan's central claim holds; its lifecycle claim does not** `adopted`
+  - The operator opened the pass after the `v0.17.2` close with a second
+    model's plan for proof-carrying gates and full authority to veto or alter
+    it. Verified against `scripts/lib/suite-evidence.mjs`,
+    `scripts/test-runner.mjs`, `scripts/lib/gate-evidence.mjs` and
+    `scripts/lib/lifecycle-evidence.mjs`: the shared suite key hashes every
+    ref, `HEAD`, the checkout path, the CPU count and the whole configuration
+    listing, the cache is per worktree, and only six suites and the release
+    cases declare their documents. Not verified: the lifecycle already accepts
+    the composed exact-tree aggregate (WO-126-D009, D014), so no predicate
+    changes; and the plan's "20-second composed gates" omit the build,
+    preparation and seven live checks that always execute (41–47 s observed at
+    an identical tree).
+  - Provenance: the dispatch, captured verbatim in ignored intake
+    (`docs/intake/notes/2026-09-12-proof-carrying-gates-planning.md`, SHA-256
+    `4eb2c26a6530687e67c05781f2f153233d90b340b7365c1bd0cbb96f4b101993`); the
+    map's gate-cost rationale. Reopen if a composed aggregate is refused by a
+    lifecycle command, or if a suite is found to read repository-global state
+    the key no longer carries.
+- **The largest measured waste is the failed fresh gate, not reuse** `adopted`
+  - From the host's retained gate rows: twelve fresh full gates across
+    WO-043, WO-125 and WO-127 on 2026-09-11/12 failed on fixed wall-clock
+    deadlines under load (`console` six, `plan-refutation:current` two,
+    `harness-fixtures` two, `runner-fixtures` one) or on a tree changed during
+    the run (two), 8,387 s in total, each followed by a passing rerun of
+    41–419 s. WO-125's FINAL-001 item 3 named this pass the owner of the
+    console nomination. WO-128 carries it, with the gate row's per-task
+    concurrency trace and the re-measurement of WO-126-D012's exclusive
+    scheduling, which held the 2026-09-12T16:08Z fresh gate at concurrency
+    one for 206 of 475 s.
+  - Provenance: `docs/control/local/harness/checks.json` and its history on
+    the operator's host; VER-001 O6, VER-003 O3, VER-004 AC5 and FINAL-001
+    item 3 of WO-125; FUP-0054 allocated. Reopen if five consecutive fresh
+    gates pass before WO-128 changes anything, which would make the order a
+    NoOp.
+- **A suite's evidence identity is its declared inputs** `adopted`
+  - After each of WO-125's eighteen transitions the next full gate ran all 78
+    tasks fresh (613–839 s); five of its ten fresh runs (3,876 s) followed a
+    transition with no source change. A checkpoint ref that no suite reads
+    must not invalidate a suite. WO-129 moves the key to declared inputs,
+    shares the cache under the Git common directory and names the changed
+    input class on every miss; WO-130 declares inputs for the whole-tree
+    class of about 25 suites and validates each declaration by executing the
+    suite in a replica that holds only those inputs, so a document-only
+    change composes the gate (243–419 s today against 41–47 s at an identical
+    tree). No test is removed; the fail-closed defaults stay. (The validation
+    half of this entry was withdrawn at receipt 010; see the entry below.)
+  - Provenance: the same rows and the WO-125 control segment; the relayed
+    plan's phase-one items, lowered without a sandbox, syscall tracing or
+    doubled shadow gates. Reopen if a replica ever passes a declaration that a
+    fresh gate refutes, or if the miss explanations show a declaration class
+    that cannot be named.
+- **Cold-gate structural cuts wait for a recorded critical path** `candidate`
+  - Copy-on-write fixture clones, split shell suites, pure policy extraction
+    with a model-based lifecycle check, and sharding are recorded as product
+    07 §Candidate — cold-gate structural cuts, entered by WO-128's concurrency
+    trace. The preflight barrier stays (WO-127-D007; preflights end at 16 s of
+    a 475 s gate). Bazel, Nx and Turborepo are declined as the plan itself
+    advised. Reopen when a trace names the node that bounds the gate after the
+    exclusivity decision.
+- **Corrections during this pass, logged** `adopted`
+  - None from the operator. Two self-corrections: the first shell command on
+    `main` was refused by the writer guard for an unlisted metadata command,
+    and the pass switched to the listed forms before opening the branch with
+    `plan start`; a shell substitution was refused by the command classifier
+    and replaced by explicit reads. Neither changed a file.
+- **Process cost of this pass** `adopted`
+  - Entry measurement (`node scripts/harness.mjs usage`, scope dispatch,
+    source claude-transcript-message-usage, 2026-09-12T16:12Z): 567,803 total
+    tokens (164 input, 450,131 cached input, 110,499 cache write, 7,009
+    output). The reads were dominated by verifying the dispatch's claims in
+    the runner, cache and lifecycle source, which no feed replaces; orientation
+    used the follow-up feed's first page, the sequence, the map's rationale
+    and the critical-path plan. The handoff measurement before the final commit
+    (2026-09-12T16:41Z, same source and scope): 11,146,806 total tokens (996
+    input, 10,539,221 cached input, 462,570 cache write, 144,019 output) over
+    105 steps and 56 commands. After receipt 009's holds were repaired
+    (2026-09-12T17:41Z, same source and scope): 17,904,001 total tokens
+    (1,382 input, 17,201,927 cached input, 525,030 cache write, 175,662
+    output) over 126 steps and 73 commands. After receipt 010's holds were repaired
+    (2026-09-12T18:20Z, same source and scope): 25,715,183 total tokens
+    (1,768 input, 24,856,792 cached input, 606,939 cache write, 249,684
+    output) over 144 steps and 91 commands. At the closing commit after the
+    operator's override (2026-09-12T18:56Z, same source and scope):
+    32,929,366 total tokens (2,060 input, 32,008,097 cached input, 645,211
+    cache write, 273,998 output) over 162 steps and 109 commands. Tradeoff recorded: the pass ran no code suite and no
+    refutation transport; the operator's `planning: refute` supplies the
+    independent judgment.
+- **Receipt 009's two holds, answered by repair and receipt** `adopted`
+  - The direct-session refutation held WO-130 criterion 2: a replica that
+    omits undeclared files validates a declaration even when the suite checks
+    for an optional undeclared file, reads and validates it when present and
+    passes when absent, so a changed optional file could fail a fresh run
+    while its cached success is reused. Repaired with a two-sided replica
+    (undeclared paths absent, then present but unreadable), the counterexample
+    as a fixture, refusal of any declaration without a current validation
+    record, and validation keyed by every input that selects a read path. It
+    also held WO-078 criterion 1 under the added-process cost rule: the
+    registry and receipts added recurring bookkeeping with no removal or dated
+    acceptance. Repaired by generating the registry from receipts written
+    inside the existing export step, naming the removed manual lookup, and
+    replacing the legacy Cost declaration. Both are answered through the
+    disposition chain, never by override.
+  - Provenance: `docs/planning/refutations/2026-09-12-planning-dc998fb93c27e337-009.md`;
+    `docs/planning/proof-carrying-gates-2026-09-12-dispositions.json`. Reopen
+    if a replica ever passes a declaration that a fresh gate refutes, or if
+    WO-078's generator needs a hand-maintained field.
+- **Receipt 010: validation withdrawn, execution inside the replica adopted** `adopted`
+  - The second refutation held WO-130 criterion 2 twice more (a regular-file
+    check skips a directory stand-in; a validation record keyed without the
+    declared inputs that select read paths stays current after a flag
+    flips). The general fact is that no finite probe set validates a
+    declaration against an arbitrary guard. The pass withdrew validation of
+    real-tree runs and made the declaration the suite's world: a narrowed
+    suite executes inside a replica of its declared inputs at every run, so an
+    undeclared file does not exist for it and no guard can find it; a suite
+    that needs an undeclared file fails loudly; there is no validation record
+    to keep current. Host probes from the sandboxed session fixed the
+    mechanism's limits: nested `sandbox-exec` is refused, so a kernel denial
+    is an addition where the host permits it, never a condition of reuse;
+    forced clone-on-write is refused, so replicas are plain copies of 55 MB
+    of installed roots plus each suite's declared paths. The remaining
+    declarations and the document-only measurement moved to WO-131 under the
+    four-hour rule; WO-128's objective admits a host load outside the declared
+    class as a named non-defect and its two series collapse into one on a
+    pass.
+  - Provenance: `docs/planning/refutations/2026-09-12-planning-dc998fb93c27e337-010.md`;
+    the pass's host probes of 2026-09-12; the dispositions file. Reopen if the
+    harness sandbox admits nested profiles (then the denial can become a
+    condition), or if a narrowed suite is found reading the candidate tree by
+    an absolute path the runner did not project.
+- **Operator override of receipt 011's hold; the refutation pass must earn its cost** `adopted`
+  - Receipt 011 (pass scope, 333 s dispatch-to-file) held WO-130 criterion 1
+    on a fixture that hard-codes an absolute path into the candidate tree, the
+    residual the design already names. The operator's correction, captured
+    verbatim in ignored intake (SHA-256
+    `5d5985d3d0d078ca2a3be9b17f77c53ec71dcb59a1020e1830c6555bbc6e10e6`): the
+    point is to create a platform, not to solve every constructible example
+    now; the hold is a known issue to revisit when it becomes applicable or
+    bites; three refutations of one pass, all holds, at 2,454 s, 833 s and
+    333 s of recorded dispatch-to-file and more of operator time, helped
+    nothing. Misread: the pass treated each counterexample as a contract
+    defect to close before filing. Meant: file bounded orders whose known
+    residuals are recorded with reopening conditions, and stop the loop.
+    Changed: the hold is overridden through the gate's attributed route (a
+    `PlanHoldOverridden` event with actor and capture hash in the planning
+    control log), WO-130's execution record carries the known issue and its
+    reopening conditions, and product 07 gains the candidate that directs the
+    next pass to measure the refuter's yield against its cost and change the
+    mechanism, its scope or its budget before another pass pays it.
+  - Provenance: the capture; the override event; receipts 009 to 011. The
+    known issue reopens on the observations WO-130's execution record names;
+    the candidate reopens at the next planning pass.
+- **Doubled shadow gates, time-based expiry, deleting tests, choosing FUP-0091/0111/0132 here** `rejected`
+  - Each with its evidence and reversal condition in the map's NoOps of the
+    2026-09-12 pass.

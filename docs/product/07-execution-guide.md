@@ -736,6 +736,64 @@ purpose, retain comparable observations even if the immediate choice is settled.
 Automatic activation versus optional equipment remains open. This records the
 benefit obtained incidentally in WO-126 as an intentional future behavior.
 
+## Candidate — cold-gate structural cuts
+
+The 2026-09-12 planning pass declined to allocate the structural cuts that
+the relayed proof-carrying-gates plan proposed for the one fresh full gate,
+because their benefit is unmeasured until the gate's critical path is
+recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over
+1,229 s of task time: the two exclusive suites held it at concurrency one for
+206 s, and perfect packing over the cap of four would take 307 s. WO-128
+records each task's concurrent peers in the gate row; that trace is the entry
+evidence for this candidate.
+
+The cuts, each measured before allocation: copy-on-write clones of the sealed
+release template and other prepared fixtures where the filesystem supports
+them (`scripts/lib/release-fixtures.mjs` copies two repositories into forty
+case directories today; the copy time is unmeasured); splitting the
+`worktree`, `resume`, `skeleton` and `plan-refutation:fixtures` tasks into
+schedulable cases with their own temporary roots, as WO-126 did for the
+release cases; extracting pure decision logic from the lifecycle, release and
+worktree shells so each policy permutation stops paying for a fixture
+repository, with a model-based check of the lifecycle's legal and illegal
+sequences and a retained black-box Git conformance set; and sharding across
+machines, which does not reduce total compute and cannot help an indivisible
+task. Removing tests is not a cut: a test is removable only when a stronger
+instrument subsumes its unique detections, which the mutation corpus
+(WO-108) measures.
+
+Reopen at a planning pass when a recorded trace names the node that bounds
+the gate after WO-128's exclusivity decision, or when the meter reports three
+consecutive worsening gate deltas. No order, number, sequence position or
+activation authority is allocated here.
+
+## Candidate — refutation pass worth its cost
+
+The 2026-09-12 planning pass paid three direct-session refutations of one
+subject, all holds: 2,454 s, 833 s and 333 s of recorded dispatch-to-file,
+and more of operator wall-clock, with the third hold overridden by the
+operator as a known issue. The holds were logically valid counterexamples to
+contract wording; none changed the platform the orders build. The operator's
+direction is recorded: the point is to create a platform, not to prove every
+constructible case before filing, and the refutation pass must be made worth
+its cost before a later pass pays it again.
+
+The next planning pass measures the refuter's yield against its cost from the
+receipts and the meter (dispatch-to-file, tokens, holds whose repairs changed
+a criterion an executor later relied on, holds overridden) and selects one of:
+a bounded refuter scope that judges an order's platform claims and cost
+declarations rather than adversarial completeness of every contract sentence;
+a hold budget per pass after which findings are recorded as known issues with
+reopening conditions instead of stopping the pass; a refuter prompt that
+carries the operator's platform-first standard; or retiring the pass-scoped
+refutation in favour of the full-scope one at release boundaries. Any change
+to the refuter's rules or the gate needs its own order; this candidate
+allocates none.
+
+Reopen at the next planning pass, or when a refutation's third consecutive
+hold stops a pass again. No order, number, sequence position or activation
+authority is allocated here.
+
 ## Workflow closeout and releases
 
 Final review prepares and publishes a clean PR; the operator retains merge
@@ -1306,6 +1364,24 @@ claim evidence or releases it does not have.
   from timestamps. Advisory Stop messages do not increment the signal
   ([WO-126-D024](../evidence/WO-126/decisions.md#wo-126-d024),
   [WO-126-D028](../evidence/WO-126/decisions.md#wo-126-d028)).
+  **Measured 2026-09-12 (planning pass).** From the host's retained gate rows:
+  after every lifecycle transition the next full gate executed all 78 tasks
+  fresh, because the shared input key hashes every ref, `HEAD`, the checkout
+  path and the CPU count, so a checkpoint ref invalidates suites that never
+  read it; a document-only change still re-executes the whole-tree class of
+  suites (243–419 s) while an identical tree composes in 41–47 s; and twelve
+  fresh full gates failed on fixed wall-clock deadlines under load (`console`
+  six, `plan-refutation:current` two, `harness-fixtures` two,
+  `runner-fixtures` one) or on a tree changed during the run (two), each
+  followed by a passing rerun. WO-128 to WO-130 carry the repairs: deadlines
+  that survive load with D012's exclusivity re-measured, a suite key of
+  declared inputs shared across sibling worktrees with explained misses, and
+  execution of every narrowed suite inside a replica of its declared inputs,
+  so that an undeclared file cannot influence any run (WO-130 and WO-131;
+  validation by probing replicas was withdrawn at receipts 009 and 010 of
+  the same pass). Until they land, the identity rule above is unchanged. WO-127-D007 later
+  made every package test wait for the preflights again; the runner's
+  dependency table, not the D026 sentence above, is the authority.
 - **Return shape.** End with a compact result: what changed, evidence pointers,
   deviations from the work order, open questions. Terse; no narration theater,
   no apology theater.

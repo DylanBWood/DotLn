@@ -24,7 +24,16 @@
     "prBodyBytes": null,
     "passRefutationMs": 120000
   },
-  "acceptances": [],
+  "acceptances": [
+    {
+      "date": "2026-09-12",
+      "metric": "passRefutationMs",
+      "scope": "planning-dc998fb93c27e337",
+      "dispatch": "refuter",
+      "ceiling": 1800000,
+      "reason": "Operator accepted the timing overrun for this planning pass and authorized filing its completed one-hold review. This acceptance covers the original review, repeated canonical prompt generation after truncated output, receipt filing, and waiting within a 30-minute ceiling. It applies to this pass only and does not change the default 120-second limit or authorize broader review scope."
+    }
+  ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",
   "decision": "docs/evidence/WO-126/decisions.md#wo-126-d001"
 }
