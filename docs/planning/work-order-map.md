@@ -157,8 +157,20 @@ The remaining declarations and the document-only measurement were split into
 WO-131 under the four-hour rule. WO-128's objective now admits a host load
 outside the declared class as a named non-defect, and its two measurement
 series collapse into one when the shared-cap series passes. The dispositions
-file carries both receipts' holds; the receipt that carries them closes the
-pass.
+file carries both receipts' holds. Receipt 011 (pass scope, 333 s
+dispatch-to-file) held WO-130 criterion 1: a declared fixture can hard-code
+an absolute path into the candidate tree, the residual the order's design
+already names. The operator overrode that hold through the gate's attributed
+route (a `PlanHoldOverridden` event in the planning control log naming the
+actor and the capture's SHA-256 `5d5985d3d0d078ca2a3be9b17f77c53ec71dcb59a1020e1830c6555bbc6e10e6`)
+with the direction that the pass plans a platform, that the hold is a known
+issue to revisit when it becomes applicable or bites, and that a future
+planning pass must make the refutation pass worth its cost: three
+refutations of this one pass, all holds, cost 2,454 s, 833 s and 333 s of
+recorded dispatch-to-file and more of operator time. WO-130's execution
+record carries the known issue and its reopening conditions; product 07
+§Candidate — refutation pass worth its cost carries the direction for the
+next pass. The pass closes on receipt 011 with its hold overridden.
 
 Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 

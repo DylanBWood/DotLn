@@ -3100,6 +3100,30 @@
           "at": "2026-09-12T16:40:36.124Z"
         }
       ]
+    },
+    {
+      "id": "FUP-baa0ea5df1f8e6a9",
+      "key": "candidate:docs/product/07-execution-guide.md#candidate--refutation-pass-worth-its-cost",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "90979156db4bd6c2f15f108b0372bc38d0636053c7416dd26a5e03ae3f254add",
+          "ref": "docs/product/07-execution-guide.md#candidate--refutation-pass-worth-its-cost",
+          "title": "Candidate — refutation pass worth its cost",
+          "summary": "## Candidate — refutation pass worth its cost The 2026-09-12 planning pass paid three direct-session refutations of one subject, all holds: 2,454 s, 833 s and 333 s of recorded dispatch-to-file, and more of operator wall-clock, with the third hold overridden by the operator as a known issue. The holds were logically valid counterexamples to contract wording; none changed the platform the orders build. The operator's direction is recorded: the point is to create a platform, not to prove every constructible case before filing, and the refutation pass must be made worth its cost before a later pass pays it again. The next planning pass measures the refuter's yield against its cost from the rece",
+          "missing": false
+        }
+      ],
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "open",
+          "targets": [],
+          "reason": "Operator direction 2026-09-12 after three held refutations of one pass: the next planning pass measures the refuter yield against its cost and changes the mechanism, its scope or its budget before another pass pays it.",
+          "reopenWhen": null,
+          "at": "2026-09-12T18:57:44.080Z"
+        }
+      ]
     }
   ]
 }

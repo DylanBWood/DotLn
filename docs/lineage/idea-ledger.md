@@ -6639,7 +6639,10 @@ existing contract; no runtime source, contract, or locked boundary changes.
     output) over 126 steps and 73 commands. After receipt 010's holds were repaired
     (2026-09-12T18:20Z, same source and scope): 25,715,183 total tokens
     (1,768 input, 24,856,792 cached input, 606,939 cache write, 249,684
-    output) over 144 steps and 91 commands. Tradeoff recorded: the pass ran no code suite and no
+    output) over 144 steps and 91 commands. At the closing commit after the
+    operator's override (2026-09-12T18:56Z, same source and scope):
+    32,929,366 total tokens (2,060 input, 32,008,097 cached input, 645,211
+    cache write, 273,998 output) over 162 steps and 109 commands. Tradeoff recorded: the pass ran no code suite and no
     refutation transport; the operator's `planning: refute` supplies the
     independent judgment.
 - **Receipt 009's two holds, answered by repair and receipt** `adopted`
@@ -6685,6 +6688,28 @@ existing contract; no runtime source, contract, or locked boundary changes.
     harness sandbox admits nested profiles (then the denial can become a
     condition), or if a narrowed suite is found reading the candidate tree by
     an absolute path the runner did not project.
+- **Operator override of receipt 011's hold; the refutation pass must earn its cost** `adopted`
+  - Receipt 011 (pass scope, 333 s dispatch-to-file) held WO-130 criterion 1
+    on a fixture that hard-codes an absolute path into the candidate tree, the
+    residual the design already names. The operator's correction, captured
+    verbatim in ignored intake (SHA-256
+    `5d5985d3d0d078ca2a3be9b17f77c53ec71dcb59a1020e1830c6555bbc6e10e6`): the
+    point is to create a platform, not to solve every constructible example
+    now; the hold is a known issue to revisit when it becomes applicable or
+    bites; three refutations of one pass, all holds, at 2,454 s, 833 s and
+    333 s of recorded dispatch-to-file and more of operator time, helped
+    nothing. Misread: the pass treated each counterexample as a contract
+    defect to close before filing. Meant: file bounded orders whose known
+    residuals are recorded with reopening conditions, and stop the loop.
+    Changed: the hold is overridden through the gate's attributed route (a
+    `PlanHoldOverridden` event with actor and capture hash in the planning
+    control log), WO-130's execution record carries the known issue and its
+    reopening conditions, and product 07 gains the candidate that directs the
+    next pass to measure the refuter's yield against its cost and change the
+    mechanism, its scope or its budget before another pass pays it.
+  - Provenance: the capture; the override event; receipts 009 to 011. The
+    known issue reopens on the observations WO-130's execution record names;
+    the candidate reopens at the next planning pass.
 - **Doubled shadow gates, time-based expiry, deleting tests, choosing FUP-0091/0111/0132 here** `rejected`
   - Each with its evidence and reversal condition in the map's NoOps of the
     2026-09-12 pass.

@@ -235,3 +235,21 @@ exclusivity (WO-128); an observation runtime; deleting or merging tests.
 2. The absolute-path residual is accepted as the limit the reviewed scopes
    already carry, with in-repository review as its control until WO-131's
    kernel denial applies where the host permits it.
+
+## Execution record
+
+Known issue, operator override 2026-09-12. Refutation receipt 011 held
+criterion 1: a declared fixture can contain an absolute path into the
+candidate tree in its own source and read it without that path appearing in
+its working directory, arguments or environment, so the replica does not
+establish a universal execution boundary; the residual paragraph in the design
+already names this case. The operator overrode the hold rather than reworking
+the contract a third time: the pass plans a platform, and the residual is the
+same one the reviewed scopes of WO-126 carry today. Treat it as a known issue
+with review of narrowed suites as its control. Reopen when it becomes
+applicable or bites: a narrowed suite is observed reading the candidate tree
+through an absolute path the runner did not project, or a reused success is
+contradicted by a fresh run of the same suite at the same key. Either
+observation returns this order's criterion 1 to planning as a new decision
+proposal. The override event, its actor and the capture's SHA-256 are in
+`docs/control/plan-refutations.jsonl`.

@@ -767,6 +767,33 @@ the gate after WO-128's exclusivity decision, or when the meter reports three
 consecutive worsening gate deltas. No order, number, sequence position or
 activation authority is allocated here.
 
+## Candidate — refutation pass worth its cost
+
+The 2026-09-12 planning pass paid three direct-session refutations of one
+subject, all holds: 2,454 s, 833 s and 333 s of recorded dispatch-to-file,
+and more of operator wall-clock, with the third hold overridden by the
+operator as a known issue. The holds were logically valid counterexamples to
+contract wording; none changed the platform the orders build. The operator's
+direction is recorded: the point is to create a platform, not to prove every
+constructible case before filing, and the refutation pass must be made worth
+its cost before a later pass pays it again.
+
+The next planning pass measures the refuter's yield against its cost from the
+receipts and the meter (dispatch-to-file, tokens, holds whose repairs changed
+a criterion an executor later relied on, holds overridden) and selects one of:
+a bounded refuter scope that judges an order's platform claims and cost
+declarations rather than adversarial completeness of every contract sentence;
+a hold budget per pass after which findings are recorded as known issues with
+reopening conditions instead of stopping the pass; a refuter prompt that
+carries the operator's platform-first standard; or retiring the pass-scoped
+refutation in favour of the full-scope one at release boundaries. Any change
+to the refuter's rules or the gate needs its own order; this candidate
+allocates none.
+
+Reopen at the next planning pass, or when a refutation's third consecutive
+hold stops a pass again. No order, number, sequence position or activation
+authority is allocated here.
+
 ## Workflow closeout and releases
 
 Final review prepares and publishes a clean PR; the operator retains merge
