@@ -1284,6 +1284,22 @@ claim evidence or releases it does not have.
 
 ## Model-specific notes
 
+**Codex transport selection (WO-125, 2026-09-11):** the five
+[observed CLI 0.154.0 rows](../discovery/codex-effort-2026-09-11.json)
+accept `low`, `medium`, `high`, `xhigh` and `max` through
+`-c model_reasoning_effort="<level>"`. The worker and plan-refuter transport
+forwards the explicit request while ignoring user configuration. `unknown`
+adds no effort override and preserves the existing launch. CLI `0.153.4`
+remains eligible only for that historical `unknown` selection. The adapter
+checks runtime membership in the five observed levels and requires an explicit
+observed version; an omitted builder version is `unknown`. Unsupported effort
+values and explicit levels on `0.153.4` refuse before launch with the discovery
+record named. A CLI version outside the admitted profiles refuses at transport
+construction ([WO-125-D003](../evidence/WO-125/decisions.md#wo-125-d003)).
+No probe returned an effort field: the requested level is a `host-launch`
+claim, with effective effort and model still `unknown`. This transport rule
+does not change the separately sourced completion-actor attestations below.
+
 WO-011's equipped feedback host absorbs the executable checks for decision
 lineage, evidence-backed judgments, semantic correction, application checks,
 attribution, writer isolation, suppression diffs, output reads, complete scope,

@@ -4,8 +4,13 @@
 horizon serves the vision. It defaults to the Entropy Reducer identity,
 Contra-Auguste mask, architecture-and-semantics lens, and Claude Code's existing
 print transport with `claude-fable-5-1` at `max`. `--transport codex-cli-exec`
-uses `gpt-6-astra` with effort `unknown`, the bounded transport's observed
-selection contract. Both record launch selections and harness version;
+uses `gpt-6-astra` and defaults to effort `unknown` (no override).
+On observed Codex CLI `0.154.0`, `--effort low|medium|high|xhigh|max`
+forwards an explicit `model_reasoning_effort` configuration override; for
+example, `npm run plan -- refute --transport codex-cli-exec --model gpt-6-astra --effort max`.
+The [five discovery rows](../../discovery/codex-effort-2026-09-11.json)
+record accepted launches, with user configuration ignored. CLI `0.153.4`
+retains its `unknown`-only observation. Both transports record launch selections and harness version;
 effective provider model and effort readback remain unknown. `fake` is for
 fixtures and cannot satisfy a planning gate.
 

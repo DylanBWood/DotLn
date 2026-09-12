@@ -1132,6 +1132,78 @@ export async function fixtures() {
       },
     );
     await check(
+      "WO-125 plan CLI accepts Codex GPT-6 Astra/max and records only a launch claim",
+      async () => {
+        const repo = makeRepo(parent, "codex-effort-cli");
+        const subject = buildPlanSubject(repo);
+        const bin = join(repo, "bin");
+        mkdirSync(bin);
+        const argsPath = join(repo, "codex-args.json");
+        const wire =
+          [
+            {
+              type: "item.completed",
+              item: {
+                type: "agent_message",
+                text: JSON.stringify(passResult(subject)),
+              },
+            },
+            {
+              type: "turn.completed",
+              usage: { input_tokens: 10, output_tokens: 5 },
+            },
+          ]
+            .map((row) => JSON.stringify(row))
+            .join("\n") + "\n";
+        writeFileSync(
+          join(bin, "codex"),
+          `#!/usr/bin/env node
+const fs = require("node:fs");
+if (process.argv[2] === "--version") console.log("codex-cli 0.154.0");
+else {
+  fs.readFileSync(0, "utf8");
+  fs.writeFileSync(${JSON.stringify(argsPath)}, JSON.stringify(process.argv.slice(2)));
+  process.stdout.write(${JSON.stringify(wire)});
+}
+`,
+          { mode: 0o755 },
+        );
+        const previousPath = process.env.PATH;
+        try {
+          process.env.PATH = `${bin}:${previousPath ?? ""}`;
+          const result = await plan(
+            [
+              "refute",
+              "--transport",
+              "codex-cli-exec",
+              "--model",
+              "gpt-6-astra",
+              "--effort",
+              "max",
+            ],
+            repo,
+          );
+          assert.equal(result.verdict, "pass");
+        } finally {
+          if (previousPath === undefined) delete process.env.PATH;
+          else process.env.PATH = previousPath;
+        }
+        const args = JSON.parse(readFileSync(argsPath, "utf8"));
+        assert.equal(args[args.indexOf("--model") + 1], "gpt-6-astra");
+        assert.deepEqual(args.slice(-3), [
+          "-c",
+          'model_reasoning_effort="max"',
+          "-",
+        ]);
+        assert.ok(args.includes("--ignore-user-config"));
+        const receipt = (await readReceipts(repo))[0];
+        assert.equal(receipt.episode.model, "gpt-6-astra");
+        assert.equal(receipt.episode.effort, "max");
+        assert.equal(receipt.episode.selectionSource, "host-launch");
+        assert.equal(receipt.episode.effectiveEffort, "unknown");
+      },
+    );
+    await check(
       "WO-042 continuation admits required execution metadata before and after commit without rewriting the receipt",
       async () => {
         const repo = makeRepo(parent, "execution-continuation");
