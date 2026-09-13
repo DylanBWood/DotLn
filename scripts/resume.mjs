@@ -1104,7 +1104,13 @@ export const main = async (argv = process.argv.slice(2)) => {
       } catch {
         // A non-Git fixture can still exercise the command projection.
       }
-      message = `After the operator merges the PR, run the reviewed helper with main as its working checkout: cd ${shellQuote(mainPath)} && ${shellQuote(process.execPath)} ${shellQuote(join(repoRoot, "scripts/release.mjs"))} close ${state.workOrderId} --publish. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main.`;
+      // Main's copy of the helper is the reviewed one once the order is merged,
+      // and it survives the removal of the subject worktree the helper performs.
+      const helper = `${shellQuote(process.execPath)} ${shellQuote(join(mainPath, "scripts/release.mjs"))} close ${state.workOrderId} --publish`;
+      message =
+        resolve(mainPath) === resolve(repoRoot)
+          ? `After the operator merges the PR, run the reviewed helper from this main checkout: ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main.`
+          : `After the operator merges the PR, start a session in the main checkout and run the reviewed helper there: cd ${shellQuote(mainPath)} && ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main.`;
       break;
     }
     default:
