@@ -1,7 +1,17 @@
 # Plan-refutation receipts
 
-`npm run plan -- refute --transport <name>` asks a fresh external refuter whether the marked planning
-horizon serves the vision. It defaults to the Entropy Reducer identity,
+`npm run plan -- refute` prints the canonical prompt and closed result schema
+for one fresh background refuter in the current harness. The parent starts that
+worker without inherited conversation, supplies only the prompt and shared goal
+card, and remains the sole repository writer. The worker returns its frozen
+judgment and a truthful single-line public statement of at most 4000 characters.
+The parent files them with the canonical receipt helper. `--direct` remains an
+alias and `--scope full` requests the whole horizon. External CLI review is used
+only when the operator explicitly requests a transport; worker failure does not
+trigger an automatic CLI fallback.
+
+`npm run plan -- refute --transport <name>` selects that explicit external route.
+It uses the Entropy Reducer identity,
 Contra-Auguste mask, architecture-and-semantics lens, and Claude Code's existing
 print transport with `claude-fable-5-1` at `max`. `--transport codex-cli-exec`
 uses `gpt-6-astra` and defaults to effort `unknown` (no override).
@@ -40,15 +50,17 @@ broker's responsibility. A request does not grant the model access to local
 credentials, private intake or the planner's session.
 
 `planning: refute` loads the dedicated refuter skill in either harness and
-makes the receiving session the refuter. `planning: refute full` selects the
+dispatches one fresh background worker. `planning: refute full` selects the
 whole horizon; the default pass scope judges orders created or changed by the
 latest dated pass plus the sequence, carrying each other order's latest verdict
 by hash. The refuter directs no prerequisite read beyond its canonical prompt.
 
-Run `npm run plan -- refute --direct` (add `--scope full` for full scope).
-The helper checks committed/workspace equality and prints the same canonical
-prompt a transport receives. Save the closed result and a public statement of
-what was actually read, then run
+Run `npm run plan -- refute` (add `--scope full` for full scope).
+The helper checks committed/workspace equality and prints the canonical
+prompt plus the closed JSON schema. Give the worker no planner narrative or
+prior receipts. A worker already holding that prompt judges it directly instead
+of dispatching another worker. Save its closed result and public statement of
+what was actually read in ignored local files, then run
 `npm run plan -- receipt <result.json> --statement <statement.txt>` with any
 required `--dispositions <file>`. It validates, screens, files and commits only
 the immutable pair with a plain subject, then runs the plan check. It refuses
@@ -153,9 +165,11 @@ is an array such as:
 ```
 
 Keep input disposition files outside this receipt directory. Every prior hold
+without an attributed operator override recorded before the new receipt
 must appear either in a dated accepted disposition naming a changed criterion
-or as the exact same hold in the new result. At least one held criterion must
-change relative to each earlier held subject; whitespace-only changes and
+or as the exact same hold in the new result. Unless all holds in an earlier
+receipt are overridden, at least one of its held criteria must change;
+whitespace-only changes and
 edits elsewhere cannot re-roll a verdict. These are text-boundary checks, not
 proof that a textual edit fixes the product judgment. A third consecutive hold
 over the same ordered ids stops that pass, even if labels change. A subsequent
@@ -180,6 +194,11 @@ and the acting session's account label. The gate reads only that attributed,
 timestamped log. Receipt prose never supplies authority. The committed tree
 cannot authenticate the person behind a captured instruction; attribution
 exposes a planner that writes its own override, it does not prove human consent.
+Receipt admission also reads this log. An override answers only its named
+receipt hash and hold, so later planning can proceed without changing an
+already accepted order. An override recorded after a receipt cannot authorize
+that earlier receipt, and a new hold still needs its own disposition. All prior
+receipts and their findings remain immutable.
 
 Before writing, the host runs the shared local-terms screen over result,
 metadata and rendered receipt. The optional operator list is

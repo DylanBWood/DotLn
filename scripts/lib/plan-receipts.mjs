@@ -353,7 +353,7 @@ const meaningful = (value) =>
 const sequenceKey = (receipt) =>
   receipt.subject.orders.map(({ workOrderId }) => workOrderId).join(",");
 
-export function admitReceipt(receipt, history) {
+export function admitReceipt(receipt, history, overrides = []) {
   for (const carried of receipt.episode.review?.carried ?? []) {
     const prior = [...history]
       .reverse()
@@ -424,16 +424,27 @@ export function admitReceipt(receipt, history) {
     "same subject cannot be re-rolled",
   );
   const used = new Set();
+  const overridden = (old, hold) =>
+    overrides.some(
+      (event) =>
+        event.receiptId === old.receiptId &&
+        event.receiptHash === old.receiptHash &&
+        event.holdId === hold.id &&
+        event.recordedAt >= old.episode.completedAt &&
+        event.recordedAt <= receipt.episode.completedAt,
+    );
   for (const old of prior.filter(
     (item) => item.result.planVerdict === "hold",
   )) {
+    const unresolved = old.holds.filter((hold) => !overridden(old, hold));
     check(
-      old.holds.some(
-        (hold) =>
-          meaningful(criterion(old.subject, hold)) !==
-            meaningful(criterion(receipt.subject, hold)) &&
-          criterion(receipt.subject, hold) !== undefined,
-      ),
+      !unresolved.length ||
+        old.holds.some(
+          (hold) =>
+            meaningful(criterion(old.subject, hold)) !==
+              meaningful(criterion(receipt.subject, hold)) &&
+            criterion(receipt.subject, hold) !== undefined,
+        ),
       "fresh receipt changed only outside the held criteria",
     );
     for (const hold of old.holds) {
@@ -457,7 +468,8 @@ export function admitReceipt(receipt, history) {
         used.add(key);
       } else
         check(
-          receipt.holds.some((current) => same(current, hold)),
+          overridden(old, hold) ||
+            receipt.holds.some((current) => same(current, hold)),
           `prior hold has no accepted disposition or exact repetition: ${key}`,
         );
     }
@@ -505,8 +517,9 @@ export async function readReceipts(root) {
     receipts.push(receipt);
   }
   const seen = [];
+  const overrides = readOverrides(root);
   for (const receipt of receipts.sort((a, b) => a.ordinal - b.ordinal)) {
-    admitReceipt(receipt, seen);
+    admitReceipt(receipt, seen, overrides);
     seen.push(receipt);
   }
   return seen;
@@ -590,7 +603,7 @@ export async function writePlanReceipt(
       receiptHash: sha256(JSON.stringify(payload)),
     };
     await validateReceipt(root, receipt);
-    admitReceipt(receipt, history);
+    admitReceipt(receipt, history, readOverrides(root));
     const md = renderPlanReceipt(receipt);
     // Includes copied standard/order prose as well as validated model text.
     checkLocalTerms(root, [

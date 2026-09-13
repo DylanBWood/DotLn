@@ -602,11 +602,18 @@ Preconditions and inputs:
    first; their synthesis is planning input.
 
 **`planning: refute` and `planning: refute full`.** These exact phrases load
-the dedicated refuter skill in either harness. The receiving session runs
-`npm run plan -- refute --direct` (add `--scope full` for the whole horizon).
-The command verifies the committed subject equals the workspace and prints
-the canonical prompt. It performs no external CLI launch and directs no
-other read. Save the closed judgment and a truthful public session statement,
+the dedicated refuter skill in either harness. The parent runs
+`npm run plan -- refute` (add `--scope full` for the whole horizon; `--direct`
+remains an alias). The command verifies the committed subject equals the
+workspace and prints the canonical prompt and closed JSON schema. The parent
+spawns one fresh background worker without inherited conversation, supplying
+only that prompt and the shared goal card. In Codex this uses `spawn_agent`
+with `fork_turns: none`; in Claude it uses a fresh background agent. The worker
+judges the supplied prompt directly, returns its frozen JSON and a truthful
+single-line statement of at most 4000 characters, and makes no repository or
+Git writes. The parent remains the sole writer and can finish independent
+closeout work while waiting without changing the frozen subject. Save the
+worker's judgment and statement in ignored local files,
 then run `npm run plan -- receipt <result.json> --statement <statement.txt>`
 with any required `--dispositions <file>`. The helper validates, screens,
 files and commits the immutable pair with a plain subject and runs the plan
@@ -619,9 +626,13 @@ wall-clock. The pass budget is 120 seconds unless a dated acceptance applies.
 Full scope judges every order. Independence remains session-attested; no
 unknown model setting becomes readback.
 
-After drafting, commit the planning subject locally. An external refuter is
-still available through `npm run plan -- refute --transport <name>`; its
-transport failure includes the CLI exit code and stderr. Direct and external
+After drafting, commit the planning subject locally and use this background
+worker workflow for independent refutation. External review through
+`npm run plan -- refute --transport <name>` requires an explicit operator
+request; never fall back to it automatically. If background workers are
+unavailable, preserve the pending review and report the limitation. Repair a
+worker's result formatting with that same worker without rerolling its judgment.
+An explicitly requested transport's failure includes its CLI exit code and stderr. Direct and external
 judgments retain the same hold and disposition rules. Finish with
 `npm run test:docs`: index, publication, formatting and plan checks, with no
 build or code suites. The [receipt convention](../planning/refutations/README.md)
