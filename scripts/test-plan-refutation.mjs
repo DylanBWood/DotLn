@@ -1095,8 +1095,8 @@ export async function fixtures() {
           const transport = new Transport(
             runner,
             Transport === ClaudeCliPrintWorkOrderTransport
-              ? "2.1.263"
-              : "0.153.4",
+              ? "2.1.270"
+              : "0.154.0",
           );
           const output = await runPlanRefutation(
             subject,
@@ -1581,7 +1581,7 @@ else {
         });
         const output = await runPlanRefutation(
           subject,
-          new ClaudeCliPrintWorkOrderTransport(runner, "2.1.263"),
+          new ClaudeCliPrintWorkOrderTransport(runner, "2.1.270"),
           "fixture-model",
           "max",
           now,

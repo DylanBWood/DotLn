@@ -39,18 +39,18 @@ const root = fileURLToPath(new URL("../../../../", import.meta.url)).replace(
   /\/$/u,
   "",
 );
-test("WO-011 bounded Claude patch observation retains the prior version and refuses an unknown one", () => {
+test("WO-129 Claude upgrades retain version observations above the supported minimum", () => {
   assert.equal(
-    new ClaudeCliPrintWorkOrderTransport(undefined, "2.1.261").harnessVersion,
-    "2.1.261",
+    new ClaudeCliPrintWorkOrderTransport(undefined, "2.1.271").harnessVersion,
+    "2.1.271",
   );
   assert.equal(
-    new ClaudeCliPrintWorkOrderTransport(undefined, "2.1.263").harnessVersion,
-    "2.1.263",
+    new ClaudeCliPrintWorkOrderTransport(undefined, "2.1.270").harnessVersion,
+    "2.1.270",
   );
-  assert.throws(
-    () => new ClaudeCliPrintWorkOrderTransport(undefined, "99.0.0"),
-    /profile-refused/,
+  assert.equal(
+    new ClaudeCliPrintWorkOrderTransport(undefined, "99.0.0").harnessVersion,
+    "99.0.0",
   );
 });
 test("WO-011 selfhost executes the real repository audit, recovers its saved result, and independently verifies once", async () => {
@@ -84,7 +84,7 @@ test("WO-011 selfhost executes the real repository audit, recovers its saved res
     const refused = new ClaudeCliPrintWorkOrderTransport((launch) => {
       timeout = launch.timeoutMs;
       throw new Error("fixture stops before a process launch");
-    }, "2.1.263");
+    }, "2.1.270");
     assert.throws(
       () =>
         refused.dispatch(

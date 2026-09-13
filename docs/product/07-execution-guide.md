@@ -1332,9 +1332,31 @@ claim evidence or releases it does not have.
   refusal double. Planning fixtures and the current planning check remain
   separate required tasks. Live progress names the running suite/case and
   elapsed time, with bounded line count and length. Reviewed input scopes may
-  reuse executed successes across unrelated document edits. Other declared
-  source checks can reuse the complete candidate tree, environment and runtime
-  when all are unchanged. Build, fixture preparation and checks of live local
+  reuse executed successes across unrelated document edits. WO-129 keys each
+  suite by its declared candidate paths, declared Git state, projected
+  environment, toolchain and installed roots. Every inventoried suite declares
+  Git state: none by default; the index reads `HEAD` and `refs/tags/*`, and the
+  current planning checks read `HEAD`. `authority-evidence` reads
+  `refs/tags/v0.16.0` for its historical comparisons. Unknown suite names cannot
+  grant themselves reuse. Other declared source checks retain complete candidate-tree
+  coverage until narrower scopes are reviewed. Checkpoint refs, unrelated
+  branches and committing identical bytes leave suites without those Git inputs
+  reusable. Configuration affecting Git tree reads remains keyed; unmodelled
+  hooks, filters and attribute/exclude adapters still force execution.
+  Sealed version-3 successes live once per repository under
+  `<git common dir>/dotln/suite-success`; version-2 records are ignored and
+  never migrated. Matching sibling worktrees share successes. Checkout-local
+  executable search paths and npm's checkout-local `npm_config_local_prefix`
+  use relative identity, with actual execution values preserved. External npm
+  prefixes and other projected environment differences still invalidate reuse.
+  The real-npm sibling regression and tag invalidation correction are recorded
+  in [WO-129-D005](../evidence/WO-129/decisions.md#wo-129-d005).
+  Physical checkout, CPU count and OS release are execution observations. Each
+  fresh task reports changed
+  input classes against its newest prior success, with bounded source/document
+  paths, or no prior success. Forced/live execution is also identified. See
+  [WO-129-D003](../evidence/WO-129/decisions.md#wo-129-d003).
+  Build, fixture preparation and checks of live local
   terms, installed hooks or the meter still execute; unknown callers have no
   reuse grant. The original execution tree, time and duration remain visible.
   `npm run test:full -- --fresh` and `npm test -- --fresh` measure cold execution
@@ -1422,18 +1444,27 @@ claim evidence or releases it does not have.
 
 ## Model-specific notes
 
-**Codex transport selection (WO-125, 2026-09-11):** the five
+**CLI compatibility (WO-129, operator correction 2026-09-13):** the latest
+observed baselines are minimum versions: Claude Code `2.1.270` and Codex CLI
+`0.154.0`. Numeric patch, minor and major upgrades are admitted without an
+upper bound or another allowlist edit. Older or unparseable versions refuse
+with the required minimum. These are deliberately maintained baselines, not
+floors silently raised by each invocation. The requested model (including
+Fable), restricted launch profile and result validation remain unchanged;
+actual CLI incompatibility fails the invocation without model fallback.
+See [WO-129-D002](../evidence/WO-129/decisions.md#wo-129-d002).
+
+**Codex transport selection (WO-125, updated by WO-129):** the five
 [observed CLI 0.154.0 rows](../discovery/codex-effort-2026-09-11.json)
 accept `low`, `medium`, `high`, `xhigh` and `max` through
 `-c model_reasoning_effort="<level>"`. The worker and plan-refuter transport
 forwards the explicit request while ignoring user configuration. `unknown`
-adds no effort override and preserves the existing launch. CLI `0.153.4`
-remains eligible only for that historical `unknown` selection. The adapter
-checks runtime membership in the five observed levels and requires an explicit
-observed version; an omitted builder version is `unknown`. Unsupported effort
-values and explicit levels on `0.153.4` refuse before launch with the discovery
-record named. A CLI version outside the admitted profiles refuses at transport
-construction ([WO-125-D003](../evidence/WO-125/decisions.md#wo-125-d003)).
+adds no effort override and preserves the historical argument bytes. The adapter
+checks runtime membership in the five observed levels and the same numeric
+minimum version used by the transport; an omitted builder version is `unknown`.
+Unsupported effort values and explicit levels below `0.154.0` refuse before
+launch with the discovery record named. Historical `0.153.4` observations remain
+evidence of that older launch, not current transport admission.
 No probe returned an effort field: the requested level is a `host-launch`
 claim, with effective effort and model still `unknown`. This transport rule
 does not change the separately sourced completion-actor attestations below.

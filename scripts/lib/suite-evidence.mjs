@@ -22,9 +22,15 @@ import {
   resolve,
 } from "node:path";
 import { availableParallelism, release } from "node:os";
-import { gateInstalledInputRoots } from "./gate-evidence.mjs";
+import { fileURLToPath } from "node:url";
+import {
+  gateInstalledInputRoots,
+  suiteSuccessDirectory,
+} from "./gate-evidence.mjs";
+import { releaseCases } from "./release-fixtures.mjs";
 
-const version = 2;
+const version = 3;
+const declarationVersion = 1;
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const jsonHash = (value) => digest(JSON.stringify(value));
 export function suiteEnvironment(env = process.env, gateContext) {
@@ -97,25 +103,92 @@ const inside = (root, path) => {
 // generated harness declarations all invalidate them. The listed documents
 // are real inputs read by these suites. Other declared checks may reuse the
 // complete candidate tree; unknown callers still execute conservatively.
-const scopes = {
+const documentScopes = {
   kernel: ["docs/product/02-domain-model.md"],
   compiler: [],
   skeleton: [
     "docs/product/02-domain-model.md",
     "docs/instance/entropy-reducer/",
     "docs/discovery/environment.json",
+    "docs/discovery/codex-effort-2026-09-11.json",
   ],
   worktree: ["docs/LEGAL.md"],
   "plan-refutation:fixtures": ["docs/control/budgets.json"],
   "process-debt": ["docs/control/budgets.json"],
 };
+const scopes = Object.fromEntries(
+  [
+    "format",
+    "build",
+    "document-barrier",
+    "release-surfaces",
+    "release-preparation",
+    "github-body",
+    "license-fixtures",
+    "license-surfaces",
+    "fixture-temp-root",
+    "publication-fixtures",
+    "backup-intake",
+    "resume",
+    "checkpoint",
+    "worktree",
+    "release",
+    "release:prepare",
+    "work-orders-fixtures",
+    "publication",
+    "index",
+    "kernel",
+    "compiler",
+    "skeleton",
+    "console",
+    "adjacent-queue",
+    "authority-grants",
+    "authority-evidence",
+    "harness-fixtures",
+    "harness",
+    "harness-context",
+    "harness-evidence",
+    "plan-refutation",
+    "plan-refutation:fixtures",
+    "plan-refutation:current",
+    "artifact-corpus",
+    "artifact-evidence",
+    "verification-evidence",
+    "feedback-evidence",
+    "mutation",
+    "runner-fixtures",
+    "process-debt",
+    "meta",
+    "plan",
+    ...releaseCases(fileURLToPath(new URL("../../", import.meta.url))).map(
+      (name) => `release:case:${name}`,
+    ),
+  ].map((name) => [
+    name,
+    {
+      version: declarationVersion,
+      documents: name.startsWith("release:case:")
+        ? ["docs/LEGAL.md", "docs/releases/tag-manifest.template.json"]
+        : (documentScopes[name] ?? null),
+      git:
+        name === "index"
+          ? ["HEAD", "refs/tags/*"]
+          : name === "authority-evidence"
+            ? ["refs/tags/v0.16.0"]
+            : ["plan", "plan-refutation:current"].includes(name)
+              ? "HEAD"
+              : "none",
+    },
+  ]),
+);
+export function suiteDeclaration(row) {
+  return Object.hasOwn(scopes, row.name) ? scopes[row.name] : null;
+}
 export function suiteScope(row) {
-  if (row.name.startsWith("release:case:"))
-    return ["docs/LEGAL.md", "docs/releases/tag-manifest.template.json"];
-  return scopes[row.name] ?? null;
+  return suiteDeclaration(row)?.documents ?? null;
 }
 
-function git(repo, args, meter, env) {
+function git(repo, args, meter, env, allowMissing = false) {
   meter.commands++;
   const result = spawnSync("git", args, {
     cwd: repo,
@@ -123,7 +196,7 @@ function git(repo, args, meter, env) {
     encoding: "utf8",
     maxBuffer: 32 * 1024 * 1024,
   });
-  if (result.status !== 0)
+  if (result.status !== 0 && !(allowMissing && result.status === 1))
     throw new Error("Suite input Git observation unavailable");
   return result.stdout;
 }
@@ -134,6 +207,12 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
   const started = performance.now();
   const meter = { files: 0, bytes: 0, commands: 0, durationMs: 0 };
   const physical = realpathSync(repo);
+  const pathIdentity = (path) =>
+    inside(physical, path)
+      ? `<worktree>/${relative(physical, path)}`
+      : inside(resolve(repo), path)
+        ? `<worktree>/${relative(resolve(repo), path)}`
+        : path;
   let reusable = !["NODE_OPTIONS", "NODE_PATH", "BASH_ENV", "ENV"].some(
     (key) => env[key],
   );
@@ -256,7 +335,7 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
     // Tool identities are digests, never local paths or config values in evidence.
     toolchain.push([
       name,
-      digest(realpathSync(executable)),
+      digest(pathIdentity(realpathSync(executable))),
       hashFile(executable),
     ]);
     if (name === "npm") npmExecutable = executable;
@@ -275,9 +354,22 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
       digest((probe.stdout ?? "") + (probe.stderr ?? "")),
     ]);
   }
-  const environment = Object.entries(env).sort(([a], [b]) =>
-    a.localeCompare(b),
-  );
+  // npm supplies the checkout directory to script children as local_prefix.
+  // Like PATH, its checkout-relative meaning is stable across worktrees; keep
+  // the real value in execution and retain distinct external prefix identities.
+  const environment = Object.entries(env)
+    .map(([name, value]) => [
+      name,
+      name === "PATH"
+        ? value
+            .split(delimiter)
+            .map((path) => (isAbsolute(path) ? pathIdentity(path) : path))
+            .join(delimiter)
+        : name.toLowerCase() === "npm_config_local_prefix" && isAbsolute(value)
+          ? pathIdentity(value)
+          : value,
+    ])
+    .sort(([a], [b]) => a.localeCompare(b));
   const localGitInputs = ["info/exclude", "info/attributes"].map((name) => {
     const path = resolve(
       repo,
@@ -333,9 +425,15 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
   // Until their complete inputs have an adapter, do not reuse scoped evidence.
   const config = git(
     repo,
-    ["config", "--null", "--list", "--show-origin"],
+    [
+      "config",
+      "--null",
+      "--get-regexp",
+      "^(core\\.|filter\\.|init\\.templatedir$|extensions\\.worktreeconfig$)",
+    ],
     meter,
     env,
+    true,
   );
   if (
     /(?:core\.(?:excludesfile|attributesfile|hookspath|fsmonitor)|init\.templatedir|filter\.[^\n]+)\n/i.test(
@@ -343,41 +441,56 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
     )
   )
     reusable = false;
-  const context = jsonHash([
-    process.versions,
-    process.platform,
-    process.arch,
-    release(),
-    availableParallelism(),
-    digest(physical),
-    environment,
-    toolchain,
-    git(repo, ["rev-parse", "HEAD"], meter, env),
-    git(
-      repo,
-      ["for-each-ref", "--format=%(refname) %(objectname)"],
-      meter,
-      env,
+  // Observe declared state once, without folding it into every suite's key.
+  const gitState = {};
+  for (const input of new Set(
+    Object.values(scopes).flatMap((scope) =>
+      scope.git === "none" ? [] : [].concat(scope.git),
     ),
-    config,
-    localGitInputs,
-  ]);
+  )) {
+    gitState[input] = jsonHash(
+      git(
+        repo,
+        input === "HEAD"
+          ? ["rev-parse", "HEAD"]
+          : ["for-each-ref", "--format=%(refname) %(objectname)", input],
+        meter,
+        env,
+      ),
+    );
+  }
+  const context = {
+    environment: jsonHash(environment),
+    toolchain: jsonHash([
+      process.versions,
+      process.platform,
+      process.arch,
+      toolchain,
+    ]),
+    git: jsonHash([config, localGitInputs]),
+  };
   const runtime = jsonHash(installed);
   meter.durationMs = performance.now() - started;
   return {
     entries,
     context,
+    gitState,
     runtime,
     reusable,
     meter,
     environmentKeys: environment.map(([key]) => key),
+    executionFacts: {
+      checkout: digest(physical),
+      cpus: availableParallelism(),
+      osRelease: release(),
+    },
   };
 }
 
-export function suiteInputHash(row, snapshot) {
-  const documents = suiteScope(row);
-  if (!snapshot.reusable || (documents === null && row.reuse !== "tree"))
-    return null;
+export function suiteInputIdentity(row, snapshot) {
+  const declaration = suiteDeclaration(row);
+  if (!snapshot || !declaration) return null;
+  const { documents } = declaration;
   const selected = snapshot.entries.filter(
     ([path]) =>
       documents === null ||
@@ -386,33 +499,85 @@ export function suiteInputHash(row, snapshot) {
         input.endsWith("/") ? path.startsWith(input) : path === input,
       ),
   );
-  return jsonHash({
-    version,
-    name: row.name,
-    command: row.inputCommand ?? [...row.command, ...(row.args ?? [])],
-    loadPolicy: row.loadPolicy ?? null,
-    documents,
-    selected,
-    context: snapshot.context,
+  const paths = Object.fromEntries(
+    selected.map(([path, value]) => [path, jsonHash(value)]),
+  );
+  const digests = {
+    source: jsonHash(selected.filter(([path]) => !path.startsWith("docs/"))),
+    documents: jsonHash(selected.filter(([path]) => path.startsWith("docs/"))),
+    git: jsonHash([
+      snapshot.context.git,
+      declaration.git === "none"
+        ? []
+        : []
+            .concat(declaration.git)
+            .map((input) => [input, snapshot.gitState[input]]),
+    ]),
+    environment: snapshot.context.environment,
+    toolchain: snapshot.context.toolchain,
     runtime: snapshot.runtime,
-  });
+    declaration: jsonHash({
+      ...declaration,
+      command: row.inputCommand ?? [...row.command, ...(row.args ?? [])],
+      loadPolicy: row.loadPolicy ?? null,
+    }),
+  };
+  return {
+    inputHash: jsonHash({ version, name: row.name, digests }),
+    digests,
+    paths,
+  };
 }
 
-function cachePath(repo, name, inputHash) {
-  return join(
-    repo,
-    "docs/control/local/harness/suite-success",
-    digest(name),
-    `${inputHash}.json`,
-  );
+export function suiteInputHash(row, snapshot) {
+  if (
+    !snapshot?.reusable ||
+    row.build ||
+    row.reuse === "live" ||
+    row.name === "release:prepare"
+  )
+    return null;
+  return suiteInputIdentity(row, snapshot)?.inputHash ?? null;
 }
+
+export function suiteCacheDirectory(repo, name) {
+  return join(suiteSuccessDirectory(repo), ...(name ? [digest(name)] : []));
+}
+function cachePath(repo, name, inputHash) {
+  return join(suiteCacheDirectory(repo, name), `${inputHash}.json`);
+}
+const inputClasses = [
+  "source",
+  "documents",
+  "git",
+  "environment",
+  "toolchain",
+  "runtime",
+  "declaration",
+];
+const hashPattern = /^[a-f0-9]{64}$/;
 function valid(record, name, inputHash) {
   if (
     !record ||
     record.version !== version ||
     record.name !== name ||
     record.inputHash !== inputHash ||
-    !/^[a-f0-9]{64}$/.test(inputHash)
+    !hashPattern.test(inputHash) ||
+    !record.digests ||
+    Object.keys(record.digests).sort().join() !==
+      [...inputClasses].sort().join() ||
+    !inputClasses.every((key) => hashPattern.test(record.digests[key])) ||
+    inputHash !== jsonHash({ version, name, digests: record.digests }) ||
+    !record.paths ||
+    typeof record.paths !== "object" ||
+    Array.isArray(record.paths) ||
+    !Object.entries(record.paths).every(
+      ([path, hash]) =>
+        path &&
+        !isAbsolute(path) &&
+        !path.split("/").includes("..") &&
+        hashPattern.test(hash),
+    )
   )
     return false;
   const { seal, ...body } = record;
@@ -429,25 +594,109 @@ function valid(record, name, inputHash) {
     Number.isFinite(Date.parse(source.recordedAt))
   );
 }
-export function loadSuiteSuccess(repo, name, inputHash) {
-  if (!inputHash) return null;
+function readSuccess(path, name, inputHash) {
   try {
-    const path = cachePath(repo, name, inputHash);
     const stat = lstatSync(path);
-    if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 8192)
+    if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 4 * 1024 * 1024)
       return null;
     const record = JSON.parse(readFileSync(path, "utf8"));
-    return valid(record, name, inputHash) ? record.source : null;
+    return valid(record, name, inputHash) ? record : null;
   } catch {
     return null;
   }
 }
-export function saveSuiteSuccess(repo, row, inputHash, source) {
-  if (!inputHash) return false;
+export function loadSuiteSuccess(repo, name, inputHash) {
+  if (!inputHash) return null;
+  try {
+    const path = cachePath(repo, name, inputHash);
+    return readSuccess(path, name, inputHash)?.source ?? null;
+  } catch {
+    return null;
+  }
+}
+export function explainSuiteFresh(repo, row, identity, policy) {
+  let prior = null;
+  if (identity) {
+    const directory = suiteCacheDirectory(repo, row.name);
+    if (existsSync(directory))
+      for (const file of readdirSync(directory).sort()) {
+        if (!/^[a-f0-9]{64}\.json$/.test(file)) continue;
+        const record = readSuccess(
+          join(directory, file),
+          row.name,
+          file.slice(0, -5),
+        );
+        if (
+          record &&
+          (!prior ||
+            Date.parse(record.source.recordedAt) >=
+              Date.parse(prior.source.recordedAt))
+        )
+          prior = record;
+      }
+  }
+  const changes = prior
+    ? inputClasses
+        .filter((key) => prior.digests[key] !== identity.digests[key])
+        .map((inputClass) => {
+          const paths = ["source", "documents"].includes(inputClass)
+            ? [
+                ...new Set([
+                  ...Object.keys(prior.paths),
+                  ...Object.keys(identity.paths),
+                ]),
+              ]
+                .filter(
+                  (path) =>
+                    path.startsWith("docs/") === (inputClass === "documents") &&
+                    prior.paths[path] !== identity.paths[path],
+                )
+                .sort()
+            : [];
+          return {
+            inputClass,
+            paths: paths
+              .slice(0, 5)
+              .map((path) =>
+                path.replace(/[\u0000-\u001f\u007f]/g, "?").slice(0, 180),
+              ),
+            omittedPaths: Math.max(0, paths.length - 5),
+          };
+        })
+    : [];
+  return {
+    reason: prior
+      ? changes.length
+        ? "inputs changed"
+        : "inputs unchanged"
+      : "no prior success",
+    ...(policy ? { policy } : {}),
+    changes,
+  };
+}
+export function formatSuiteFresh(reason) {
+  return [
+    reason.policy,
+    reason.changes.length
+      ? reason.changes
+          .map(
+            (change) =>
+              `${change.inputClass}${change.paths.length ? `: ${change.paths.join(", ")}${change.omittedPaths ? ` (+${change.omittedPaths} more)` : ""}` : ""}`,
+          )
+          .join("; ")
+      : reason.reason,
+  ]
+    .filter(Boolean)
+    .join("; ");
+}
+export function saveSuiteSuccess(repo, row, inputHash, source, identity) {
+  if (!inputHash || identity?.inputHash !== inputHash) return false;
   const body = {
     version,
     name: row.name,
     inputHash,
+    digests: identity.digests,
+    paths: identity.paths,
     source: {
       treeHash: source.treeHash,
       recordedAt: source.recordedAt,

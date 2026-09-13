@@ -1,11 +1,11 @@
 // Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","concurrent-work-requires-worktrees","contributor.executor","contributor.planner","contributor.refuter","contributor.release-close","contributor.reviewer","contributor.verifier","correctness-over-sycophancy","fail-conservative-correction","no-attribution","no-lint-type-disables-as-fixes","no-partial-completion","read-your-own-output","verify-app-before-done"],"loadoutId":"contributor","semanticHash":"fnv1a64:4d9dc4e490824232"}
 try {
-const { feedbackBoundary } = await import("../../.runtime/harness/de21c0a913b9dd91/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/de21c0a913b9dd91/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/df7daacfd946b3ed/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/df7daacfd946b3ed/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
   "compilerPackageVersion": "0.9.1",
   "runtime": {
-    "skeletonVersion": "0.15.3",
+    "skeletonVersion": "0.15.4",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -26,7 +26,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:00e76ceaeec15695"
+        "hash": "fnv1a64:ab1f04a1f488b8ed"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -34,7 +34,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
-        "hash": "fnv1a64:d319c8eeadc7c4b2"
+        "hash": "fnv1a64:d52b125a24776533"
       },
       {
         "path": "packages/skeleton/dist/src/gate-deadlines.mjs",
@@ -49,7 +49,7 @@ await runHarnessHook({
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/de21c0a913b9dd91"
+    "snapshot": ".runtime/harness/df7daacfd946b3ed"
   },
   "event": "Stop",
   "tools": {

@@ -98,6 +98,9 @@ import {
   readAdjacentQueue,
 } from "./lib/adjacent-queue.mjs";
 import { main as planMain } from "./refute-plan.mjs";
+import { runGate, suites } from "./test-runner.mjs";
+import { releaseCases } from "./lib/release-fixtures.mjs";
+import { readControl } from "./lib/control-store.mjs";
 const source = resolve(import.meta.dirname, "..");
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const write = (root, path, value) => {
@@ -207,6 +210,144 @@ const statePath = (root, session = "fixture") =>
     root,
     `docs/control/local/harness/${createHash("sha256").update(session).digest("hex")}.json`,
   );
+
+test("WO-129 three-role full gates compose through lifecycle transitions at each exact tree", async (t) => {
+  const root = repo(t);
+  write(
+    root,
+    "package.json",
+    json({ type: "module", scripts: { "format:check": "node checks.mjs" } }),
+  );
+  write(root, "checks.mjs", "// Synthetic successful check.\n");
+  for (const suite of suites) {
+    for (const path of suite.command.filter((part) =>
+      part.startsWith("scripts/"),
+    ))
+      write(
+        root,
+        path,
+        path.endsWith(".sh")
+          ? "#!/bin/sh\nexit 0\n"
+          : "// Synthetic successful check.\n",
+      );
+  }
+  for (const path of [
+    "scripts/test-suite-evidence.mjs",
+    "scripts/test-release-fixtures.mjs",
+    "scripts/test-gate-deadlines.mjs",
+    "corpus/harness/wo101-id-corpus.test.mjs",
+    "corpus/mutation/wo108-selftest.test.mjs",
+  ])
+    write(root, path, "// Synthetic successful check.\n");
+  write(
+    root,
+    "scripts/test-release.sh",
+    releaseCases(source)
+      .map((name) => `release_case_${name}() {\n  :\n}\n`)
+      .join("\n"),
+  );
+  write(
+    root,
+    "scripts/build.mjs",
+    `import {mkdirSync,writeFileSync} from 'node:fs';
+for(const name of ['kernel','compiler','skeleton','console']) {
+  const dir='packages/'+name+'/dist/test'; mkdirSync(dir,{recursive:true});
+  writeFileSync(dir+'/fixture.test.js',"import test from 'node:test'; test('synthetic',()=>{});\\n");
+}\n`,
+  );
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "Synthetic full gate inventory");
+  const first = await runGate(["--full"], root);
+  assert.equal(first.exitCode, 0);
+  assert.equal(first.freshSuites, 78);
+  assert.equal(first.reusedSuites, 0);
+  const segment = "docs/control/orders/WO-999.jsonl";
+  let ordinal = 1;
+  const transition = (type, extra = {}) => {
+    write(
+      root,
+      segment,
+      readFileSync(join(root, segment), "utf8") +
+        JSON.stringify({
+          schemaVersion: 1,
+          recordedAt: new Date().toISOString(),
+          type,
+          workOrderId: "WO-999",
+          ...extra,
+        }) +
+        "\n",
+    );
+    git(
+      root,
+      "update-ref",
+      `refs/dotln/checkpoint/WO-999/${++ordinal}`,
+      "HEAD",
+    );
+    return readControl(root).orders.get("WO-999").state;
+  };
+  const actor = {
+    harness: "human",
+    harnessVersion: "not-applicable",
+    model: "human",
+    effort: "max",
+    source: "operator-attested",
+  };
+  const measured = [];
+  const composed = async () => {
+    const expected = gateTreeHash(root);
+    const result = await runGate(["--full"], root);
+    assert.equal(result.exitCode, 0);
+    assert.equal(result.executionMode, "composed");
+    assert.equal(result.freshSuites, 32);
+    assert.equal(result.reusedSuites, 46);
+    assert.equal(result.treeHash, expected);
+    assert.ok(
+      ![first, ...measured].some((prior) => prior.treeHash === expected),
+    );
+    assert.equal(result.freshReasons.length, 32);
+    const retained = findGateCheck(root, "npm run test:full", expected);
+    assert.equal(retained.reusedSuites, 46);
+    measured.push(result);
+  };
+  assert.equal(
+    transition("ImplementationReady", { actor }).phase,
+    "ready-to-verify",
+  );
+  await composed();
+  const reportPath = "docs/verifications/WO-999/VER-001.md";
+  transition("VerificationRequested", {
+    verificationId: "VER-001",
+    reportPath,
+  });
+  write(root, reportPath, "# Synthetic verification\nPASS\n");
+  assert.equal(
+    transition("VerificationCompleted", {
+      verificationId: "VER-001",
+      reportPath,
+      verdict: "pass",
+      actor,
+    }).phase,
+    "verified",
+  );
+  await composed();
+  const finalPath = "docs/final-reviews/WO-999/FINAL-001.md";
+  transition("FinalReviewRequested", {
+    finalReviewId: "FINAL-001",
+    throughVerificationId: "VER-001",
+    reportPath: finalPath,
+  });
+  write(root, finalPath, "# Synthetic final review\nPASS\n");
+  assert.equal(
+    transition("FinalReviewCompleted", {
+      finalReviewId: "FINAL-001",
+      reportPath: finalPath,
+      verdict: "pass",
+      actor,
+    }).phase,
+    "closed",
+  );
+  await composed();
+});
 const state = (root, session = "fixture") =>
   JSON.parse(readFileSync(statePath(root, session), "utf8"));
 const gate = (root, checkId = "npm run test:full", exitCode = 0) => ({

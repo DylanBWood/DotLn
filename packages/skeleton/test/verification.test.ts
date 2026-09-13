@@ -95,11 +95,11 @@ const transport = (
   name === "claude-cli-print"
     ? new ClaudeCliPrintWorkOrderTransport(
         runner(name, behavior, launches),
-        "2.1.261",
+        "2.1.270",
       )
     : new CodexCliExecWorkOrderTransport(
         runner(name, behavior, launches),
-        "0.153.4",
+        "0.154.0",
       );
 const effort = (name: string) =>
   name === "claude-cli-print" ? ("high" as const) : ("unknown" as const);

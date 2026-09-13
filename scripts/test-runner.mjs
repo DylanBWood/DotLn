@@ -32,6 +32,10 @@ import {
   suiteInputHash,
   suiteScope,
   suiteEnvironment,
+  suiteDeclaration,
+  suiteInputIdentity,
+  explainSuiteFresh,
+  formatSuiteFresh,
 } from "./lib/suite-evidence.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -172,7 +176,7 @@ export const suites = [
     reuse: "live",
   }),
   node("plan", "scripts/refute-plan.mjs", { args: ["check"], document: true }),
-];
+].map((row) => ({ ...row, git: suiteDeclaration(row)?.git }));
 
 export function validateSuites(table) {
   if (
@@ -542,6 +546,7 @@ export function expandSuiteTasks(selected, repo, template) {
   const preflight = tasks.filter((row) => row.preflight).map((row) => row.name);
   return tasks.map((row) => ({
     ...row,
+    git: suiteDeclaration(row)?.git,
     // Checks can reuse their complete inputs even when no narrower document
     // scope is known. Preparation has effects needed by this invocation.
     ...(!row.build && row.name !== "release:prepare" && !row.reuse
@@ -706,6 +711,24 @@ async function runGateChecks(args, repo) {
           row.build || !before ? null : suiteInputHash(row, before);
         const cached = !fresh && loadSuiteSuccess(repo, row.name, inputHash);
         if (cached) return reusableResult(row, cached, inputHash);
+        const identity = suiteInputIdentity(row, before);
+        const freshReason = explainSuiteFresh(
+          repo,
+          row,
+          identity,
+          fresh
+            ? "forced fresh"
+            : row.build || row.name === "release:prepare"
+              ? "preparation"
+              : row.reuse === "live"
+                ? "live check"
+                : !suiteDeclaration(row)
+                  ? "undeclared suite"
+                  : before && !before.reusable
+                    ? "unreusable snapshot"
+                    : undefined,
+        );
+        console.log(`FRESH ${row.name} (${formatSuiteFresh(freshReason)})`);
         const result = await executeSuite(
           row,
           cwd,
@@ -715,7 +738,7 @@ async function runGateChecks(args, repo) {
               `PROGRESS [${name}] ${(elapsedMs / 1000).toFixed(1)} s ${message}`,
             ),
         );
-        return { ...result, inputHash };
+        return { ...result, inputHash, freshReason };
       },
       onResult(row) {
         if (row.name === "document-barrier") return;
@@ -759,10 +782,14 @@ async function runGateChecks(args, repo) {
         : "fresh",
     freshSuites: taskRows.filter((row) => row.executed).length,
     reusedSuites: taskRows.filter((row) => row.reused).length,
+    freshReasons: taskRows
+      .filter((row) => row.executed && row.name !== "document-barrier")
+      .map((row) => ({ name: row.name, ...row.freshReason })),
     inputObservation: [before, after]
       .filter(Boolean)
       .map((snapshot) => snapshot.meter),
     ...(before ? { inputEnvironmentKeys: before.environmentKeys } : {}),
+    ...(before ? { executionFacts: before.executionFacts } : {}),
     requiredSuites: selected.map((row) => row.name),
     loadClass: {
       sharedCap: concurrency,
@@ -840,8 +867,13 @@ async function runGateChecks(args, repo) {
       : 1;
   // Only the runner records its own successful completion; a subprocess cannot
   // supply a green aggregate. Preserve timed-out/failed attempts as executed.
-  const { taskTimeline, criticalPath, deadlineDiagnostics, ...suiteMetadata } =
-    check;
+  const {
+    taskTimeline,
+    criticalPath,
+    deadlineDiagnostics,
+    freshReasons,
+    ...suiteMetadata
+  } = check;
   recordGateChecks(repo, [
     ...rows
       .filter((row) => row.name !== "document-barrier")
@@ -857,11 +889,20 @@ async function runGateChecks(args, repo) {
   // survive an unrelated document edit; the aggregate still requires exact tree.
   for (const row of taskRows)
     if (row.executed && row.exitCode === 0 && row.inputHash)
-      saveSuiteSuccess(repo, row, row.inputHash, {
-        ...check,
-        ...row,
-        evidenceRef: `host-suite:${treeHash}:${row.name}`,
-      });
+      saveSuiteSuccess(
+        repo,
+        row,
+        row.inputHash,
+        {
+          ...check,
+          ...row,
+          evidenceRef: `host-suite:${treeHash}:${row.name}`,
+        },
+        suiteInputIdentity(
+          tasks.find((task) => task.name === row.name),
+          before,
+        ),
+      );
   console.log(
     `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh / ${check.reusedSuites} reused tasks${unchanged ? "" : "; tree changed"}${withinBudget ? "" : "; fast gate exceeds 120 s budget"}`,
   );
