@@ -67,7 +67,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.15.8";
+export const HARNESS_HOST_VERSION = "0.15.9";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;
@@ -1676,7 +1676,10 @@ function managedReleaseCommand(
   if (input.tool_name !== "Bash" || session.intent !== "resume: release close")
     return false;
   const command = input.tool_input?.command;
-  if (typeof command !== "string" || !command.includes("scripts/release.mjs"))
+  if (
+    typeof command !== "string" ||
+    !/scripts\/release\.mjs|npm run release --/.test(command)
+  )
     return false;
   const control = harnessControl(root);
   if (control.phase !== "closed" || !control.workOrder) return false;
@@ -1687,23 +1690,52 @@ function managedReleaseCommand(
       path: /^worktree (.+)$/m.exec(block)?.[1],
       branch: /^branch refs\/heads\/(.+)$/m.exec(block)?.[1],
     }));
-  // The ordinary post-merge handoff starts a fresh session on main, so the
-  // installed hooks survive deletion of the reviewed subject worktree.
+  // The post-merge handoff runs in the main checkout. Main's copy of the helper
+  // is the reviewed one once the order is merged, and it survives the removal
+  // of the subject worktree the helper performs; the subject's own copy stays
+  // admitted while that worktree exists.
   const main = worktrees.find((tree) => tree.branch === "main");
   if (!main?.path || realpathSync(main.path) !== root) return false;
-  const subject =
-    worktrees.find((tree) => tree.branch === control.workOrder!.toLowerCase())
-      ?.path ?? root;
-  const script = join(realpathSync(subject), "scripts/release.mjs");
-  if (!existsSync(script) || !lstatSync(script).isFile()) return false;
-  const suffix = `${shellQuote(script)} close ${control.workOrder} --publish`;
-  return [
-    `${shellQuote(process.execPath)} ${suffix}`,
-    `node ${suffix}`,
-    ...(subject === root
-      ? [`node scripts/release.mjs close ${control.workOrder} --publish`]
-      : []),
-  ].includes(command.trim());
+  const subject = worktrees.find(
+    (tree) => tree.branch === control.workOrder!.toLowerCase(),
+  )?.path;
+  const scripts = [join(root, "scripts/release.mjs")];
+  if (subject) {
+    try {
+      scripts.push(join(realpathSync(subject), "scripts/release.mjs"));
+    } catch {
+      // A worktree entry whose directory is gone names no helper.
+    }
+  }
+  const helpers = scripts.filter(
+    (script) => existsSync(script) && lstatSync(script).isFile(),
+  );
+  if (!helpers.length) return false;
+  const order = control.workOrder;
+  // Every spelling the lifecycle prints or names is admitted, with the
+  // read-only preview beside the publication; nothing else is.
+  const admitted = [
+    "--publish",
+    "--dry-run",
+    "--publish --dry-run",
+    "--dry-run --publish",
+  ].flatMap((flags) => [
+    ...helpers.flatMap((script) =>
+      [shellQuote(process.execPath), "node"].map(
+        (node) => `${node} ${shellQuote(script)} close ${order} ${flags}`,
+      ),
+    ),
+    `node scripts/release.mjs close ${order} ${flags}`,
+    `npm run release -- close ${order} ${flags}`,
+  ]);
+  // The printed handoff may lead with a change into the main checkout the
+  // session already occupies; that prefix is a no-op here, not a cwd override.
+  const bare = [`cd ${shellQuote(root)} && `, `cd ${root} && `].reduce(
+    (value, prefix) =>
+      value.startsWith(prefix) ? value.slice(prefix.length) : value,
+    command.trim(),
+  );
+  return admitted.includes(bare);
 }
 
 /**

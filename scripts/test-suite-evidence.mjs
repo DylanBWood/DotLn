@@ -1003,6 +1003,87 @@ console.log(JSON.stringify({cwd:process.cwd(),argv:process.argv,env:process.env,
   assert.equal(context.measurements.suites.length, 2);
 });
 
+test("WO-131 an installed bin link resolves through a copied workspace link, and a failed installed copy leaves nothing for later suites to collide with", (t) => {
+  const { root } = declaredFixture(t);
+  // npm links a workspace package's bin lexically through the workspace link;
+  // only the physical target is an inventory entry.
+  write(root, "packages/skeleton/dist/src/dotln.js", "// bin\n");
+  write(
+    root,
+    "packages/skeleton/package.json",
+    '{"name":"@dotln/skeleton","bin":{"dotln":"dist/src/dotln.js"}}\n',
+  );
+  mkdirSync(join(root, "node_modules/@dotln"), { recursive: true });
+  symlinkSync(
+    "../../packages/skeleton",
+    join(root, "node_modules/@dotln/skeleton"),
+  );
+  mkdirSync(join(root, "node_modules/.bin"), { recursive: true });
+  symlinkSync(
+    "../@dotln/skeleton/dist/src/dotln.js",
+    join(root, "node_modules/.bin/dotln"),
+  );
+  const environment = (repo) => ({
+    ...process.env,
+    PATH: `${repo}/node_modules/.bin${delimiter}${process.env.PATH}`,
+    npm_config_local_prefix: repo,
+  });
+  const snapshot = observeSuiteInputs(root, { env: environment(root) });
+  const context = createReplicaContext(root);
+  t.after(() => context.cleanup());
+  const task = {
+    name: "kernel",
+    command: [process.execPath, "-e", "process.exit(0)"],
+  };
+  const replica = context.create(task, suiteDeclaration(task), snapshot);
+  assert.ok(replica?.root, replica?.refusal);
+  t.after(() => replica.cleanup());
+  const link = join(replica.root, "node_modules/.bin/dotln");
+  assert.equal(fs.readlinkSync(link), "../@dotln/skeleton/dist/src/dotln.js");
+  assert.equal(readFileSync(link, "utf8"), "// bin\n");
+  assert.ok(
+    !realpathSync(link).startsWith(realpathSync(root)),
+    "the bin resolves inside the copy, never into the candidate tree",
+  );
+  assert.ok(context.measurements.installedCopy.verified);
+
+  // A link inside the repository but outside the copied graph still refuses,
+  // and the refusal leaves no partial copy: later suites name the same cause.
+  const failing = declaredFixture(t);
+  write(failing.root, "docs/outside.txt", "outside the installed roots\n");
+  symlinkSync(
+    "../docs/outside.txt",
+    join(failing.root, "node_modules/outside"),
+  );
+  const failingSnapshot = observeSuiteInputs(failing.root, {
+    env: environment(failing.root),
+  });
+  const failingContext = createReplicaContext(failing.root);
+  t.after(() => failingContext.cleanup());
+  const attempt = () =>
+    failingContext.create(task, suiteDeclaration(task), failingSnapshot);
+  assert.throws(
+    attempt,
+    /^Error: Installed link leaves the copied graph: node_modules\/outside$/,
+  );
+  assert.throws(
+    attempt,
+    /^Error: Installed copy failed earlier in this gate: Installed link leaves the copied graph: node_modules\/outside$/,
+  );
+  chmodSync(failingContext.directory, 0o700);
+  try {
+    assert.deepEqual(
+      readdirSync(failingContext.directory).filter((name) =>
+        name.startsWith("installed-"),
+      ),
+      [],
+    );
+  } finally {
+    chmodSync(failingContext.directory, 0o300);
+  }
+  assert.equal(failingContext.measurements.installedCopy, null);
+});
+
 test("WO-130 existence, regular-file and declared-flag guards never see undeclared candidate inputs", async (t) => {
   const { root } = declaredFixture(t);
   const path = join(root, "undeclared.txt");
