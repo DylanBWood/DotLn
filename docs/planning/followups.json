@@ -3439,6 +3439,259 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-696a83cf4f553b1c",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "efc6d54bec40f5bee44ea856242b454404bd5a7578e33dd4fb11241f7133a4d7",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d001",
+          "title": "WO-130-D001: Execute reviewed scopes in declared-input replicas on every fresh run. Keep a verified read-only installed copy per gate, preserve Node's replica-relative module paths, and key only the d",
+          "summary": "{ \"id\": \"WO-130-D001\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: next selects WO-130, including the recorded criterion-1 absolute-path override.\", \"decision\": \"Execute reviewed scopes in declared-input replicas on every fresh run. Keep a verified read-only installed copy per gate, preserve Node's replica-relative module paths, and key only the declaration, selected candidate entries, installed inputs, command, toolchain and projected environment. An unsafe link or projected candidate path refuses narrowing before cache lookup; a failure after replica dispatch fails the gate without retrying in the candidate tree.\", \"evidence\": [ \"docs/work-orders/WO-130-declared-suite-inputs-replic",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-09ced3b33f7c31b0",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "dddd5a0c38bb93e69798e7f4082362ea6a62a47edc8e9c126ecd32218bc5e781",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d002",
+          "title": "WO-130-D002: Declare package source, tests, manifests and fixtures as candidate inputs, with the corpus helpers and lifecycle scripts actually read by compiler and skeleton. Include workspace manifest",
+          "summary": "{ \"id\": \"WO-130-D002\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: next; replica migration exposed package-resolution and fixture-setup requirements within WO-130.\", \"decision\": \"Declare package source, tests, manifests and fixtures as candidate inputs, with the corpus helpers and lifecycle scripts actually read by compiler and skeleton. Include workspace manifests in the shared installed copy as verified declaration-owned link support. Preserve Node module symlink paths in replica children, rebind npm's cwd-derived local prefix, and give skeleton a deterministic replica repository. Repair the beacon destination test's reliance on an ambient ignored intake directory using its own syn",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f5309e90dde5d567",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2ebff6f4471d4f585b6010e081fbb63600ddb88ad8146a7602772695e48f9b1e",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d003",
+          "title": "WO-130-D003: Treat adjacent-0001's pass claim as invalid, keep its evidence, and require the corrected executed result. Separate result inspection from completion mutation.",
+          "summary": "{ \"id\": \"WO-130-D003\", \"date\": \"2026-09-13\", \"dispatch\": \"Executor correction during the operator's resume: next dispatch.\", \"kind\": \"correction\", \"misread\": \"The executor submitted adjacent-0001's completion with exitCode 0 in a batch before inspecting the focused test result. The actual result was exit 1.\", \"meant\": \"A queued repair completes only after the required command has executed successfully and its result has been inspected.\", \"changed\": \"Preserved the false actor-attested row and opened adjacent-0002 to correct it. The remaining test failure is macOS temporary-directory spelling: canonicalDestination returns /private/var while the fixture expected /var. Resolve the test-owned roo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3171a3832915f378",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e95069cdf1a21142d91e10cceb02ae2e34ab6cb0ad0034a4e232a20d95f9b433",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d004",
+          "title": "WO-130-D004: Declare skeleton's two beacon benchmark scripts. Run release template preparation in the same declared replica world as its cases, so preparation cannot import an undeclared guarded read.",
+          "summary": "{ \"id\": \"WO-130-D004\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: next; the fresh full migration run identified missing declarations and fixture assumptions.\", \"decision\": \"Declare skeleton's two beacon benchmark scripts. Run release template preparation in the same declared replica world as its cases, so preparation cannot import an undeclared guarded read. Preserve Node's main-module symlinks for the package tests that enter through dist mounts; other replica suites preserve imported-module symlinks while keeping normal executable entry resolution for npm. Copy process-debt's fixture runtime by value and make only that fixture-owned copy writable. Refuse narrow reuse when toolchai",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-a8ae1ccf9d885ab8",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9d71e24699586ca942a726466079fa461db885ba46e39fb58a4ea833e7bf1553",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d005",
+          "title": "WO-130-D005: Tolerate ENOENT only while deleting already-owned replica entries. Convert other per-suite cleanup errors into failed suite evidence so the scheduler can finish active children. Make cont",
+          "summary": "{ \"id\": \"WO-130-D005\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: next; diagnose the third fresh full attempt before claiming migration success.\", \"decision\": \"Tolerate ENOENT only while deleting already-owned replica entries. Convert other per-suite cleanup errors into failed suite evidence so the scheduler can finish active children. Make context cleanup idempotent and complete it before publishing gate success or caching suite results.\", \"evidence\": [ \"The third fresh full attempt exited 1 without an aggregate. The first unhandled error was scandir ENOENT in a release replica's Git object directory during cleanup; the resulting outer cleanup removed a planning fixture root while ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7b7aa82148bde9ae",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1573ccbaf690a64004cef0860eade6b74bde3949f36c743b15ba0c6ba904b899",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d006",
+          "title": "WO-130-D006: Admit all six reviewed scopes, release preparation and all 40 release cases as replica executions. Retain the remaining suites whole-tree. Preserve the fresh host measurement and the one-",
+          "summary": "{ \"id\": \"WO-130-D006\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: next, with approval of all bounded adjacent repairs; prepare the measured implementation for independent verification.\", \"decision\": \"Admit all six reviewed scopes, release preparation and all 40 release cases as replica executions. Retain the remaining suites whole-tree. Preserve the fresh host measurement and the one-source-change comparison, and require the canonical full evidence command before the implementation-ready transition.\", \"evidence\": [ \"docs/evidence/WO-130/replica-measurements.json\", \"docs/evidence/WO-130/fixture-transcript.txt\", \"The fresh full gate passed 37 aggregate suites and 78 executed tasks in ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6e879d8d3d360b48",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "309ab68d4799fcdb3d11ec4c5a9f4bc17254f3c883febbecc0e5c9874ea0250b",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d007",
+          "title": "WO-130-D007: Treat a harness session's injected Git configuration (GIT_CONFIG_COUNT, GIT_CONFIG_KEY_, GIT_CONFIG_VALUE_, GIT_CONFIG_PARAMETERS) as invocation metadata: drop it from the reviewed enviro",
+          "summary": "{ \"id\": \"WO-130-D007\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: fix selecting VER-001 (verdict fail; F1 blocking, F2 non-blocking, observations O1 to O7).\", \"decision\": \"Treat a harness session's injected Git configuration (GIT_CONFIG_COUNT, GIT_CONFIG_KEY_*, GIT_CONFIG_VALUE_*, GIT_CONFIG_PARAMETERS) as invocation metadata: drop it from the reviewed environment projection in execution and key alike, so it never refuses narrowing. Key a refused narrowing under the whole-tree contract these scopes had before this order (every non-document candidate file plus the declared documents) instead of returning no key; name the refusal in the fresh explanation and on the recorded task row; ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-764d289c1693acb4",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "342d17a63e66e7c58c50c59ed285ff6179963c2f0503ac1287382c2740e5d9f4",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d008",
+          "title": "WO-130-D008: The format gate formats code only. .prettierignore excludes .md, .json and .jsonl and otherwise lists only local material, build output, recorded fixture bytes and generated harness code;",
+          "summary": "{ \"id\": \"WO-130-D008\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator scope expand: 2026-09-13 during resume: fix: remove Prettier from Markdown, and from JSON unless a reason to keep it exists, together with anything non-code that adds process without value.\", \"decision\": \"The format gate formats code only. .prettierignore excludes *.md, *.json and *.jsonl and otherwise lists only local material, build output, recorded fixture bytes and generated harness code; the Markdown- and JSON-specific ignore entries that the new rules make redundant are removed. No generator, check or fixture reads .prettierignore, so nothing else changes.\", \"evidence\": [ \".prettierrc.json sets proseWrap preserve, so on",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-307660be8b9bd0a7",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9a19267842a61f1781bb14d33c8fdcc9fa0167584d4947f9a3e6ae2aec9b6098",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d009",
+          "title": "WO-130-D009: Keep the remaining non-code gate tasks: in the main checkout's 202 recorded gates they cost 0.2 to 19 seconds each as parallel fillers, and publication (3), index (3), plan (7) and author",
+          "summary": "{ \"id\": \"WO-130-D009\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator direction 2026-09-13 during resume: fix: a process check must further the mission by catching issues early and theater is removed without asking; the operator also asked how often the self read-back has caught an issue and why gate cost across phases has not fallen.\", \"decision\": \"Keep the remaining non-code gate tasks: in the main checkout's 202 recorded gates they cost 0.2 to 19 seconds each as parallel fillers, and publication (3), index (3), plan (7) and authority-evidence (2) have independent catches. Record the self read-back obligation as unproven: fifteen correction records across WO-126 to WO-130 and every recent rep",
+          "missing": false
+        },
+        {
+          "hash": "424d76c7f63ac834e91472e31494da6039a2c58c631e1fd4c39207dfbe1d8512",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d009",
+          "title": "WO-130-D009: Keep the remaining non-code gate tasks: in the main checkout's 202 recorded gates they cost 0.2 to 19 seconds each as parallel fillers, except the current-planning check at 43 seconds, an",
+          "summary": "{ \"id\": \"WO-130-D009\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator direction 2026-09-13 during resume: fix: a process check must further the mission by catching issues early and theater is removed without asking; the operator also asked how often the self read-back has caught an issue and why gate cost across phases has not fallen.\", \"decision\": \"Keep the remaining non-code gate tasks: in the main checkout's 202 recorded gates they cost 0.2 to 19 seconds each as parallel fillers, except the current-planning check at 43 seconds, and publication (3), index (3), plan (7) and authority-evidence (2) have independent catches. Record the self read-back obligation as unproven: fifteen correction rec",
+          "missing": false
+        },
+        {
+          "hash": "1e3ecef1bbac4fb6c70aec11b967c3313243539ce9e99b497b1d4e6f930972e4",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d009",
+          "title": "WO-130-D009: Keep the remaining non-code gate tasks: in the main checkout's 202 recorded gates they cost 0.2 to 19 seconds each as parallel fillers, except the current-planning check at 43 seconds, an",
+          "summary": "{ \"id\": \"WO-130-D009\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator direction 2026-09-13 during resume: fix: a process check must further the mission by catching issues early and theater is removed without asking; the operator also asked how often the self read-back has caught an issue and why gate cost across phases has not fallen.\", \"decision\": \"Keep the remaining non-code gate tasks: in the main checkout's 202 recorded gates they cost 0.2 to 19 seconds each as parallel fillers, except the current-planning check at 43 seconds, and publication (3), index (3), plan (7) and authority-evidence (2) have independent catches. Record the self read-back obligation as unproven: fifteen correction rec",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e513ddca3cfbe398",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8b353dd8ae6652aa3976ec3feb9696cecbcbf9b4739a09b6d1fe295c69628c8e",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d010",
+          "title": "WO-130-D010: A resume dispatch is recorded before any repair work. The operator's question about the missing intent announcement is answered by this omission, not by a support that failed to load: the",
+          "summary": "{ \"id\": \"WO-130-D010\", \"date\": \"2026-09-13\", \"dispatch\": \"Executor correction during the operator's resume: fix dispatch.\", \"kind\": \"correction\", \"misread\": \"The executor read the failure report and began the repair without first recording the dispatch with npm run resume -- fix, so the lifecycle stayed in needs-fix, the harness's dispatch briefing that names the equipped supports (Intent to Act among them) was never printed, and the transition's control-store append landed after the first passing final gate instead of before it.\", \"meant\": \"The state-changing dispatch command is recorded at entry: its briefing is the operator-visible delivery of the equipped supports, and every later transi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-330f0f12b3208e1b",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "20ea35d65cf507cce59e21e8e4f6dc722aa75ab1025143875340633d7dddc1d0",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d011",
+          "title": "WO-130-D011: The generated Claude session hook records the operator's dispatch itself. When the canonical status lists the phrase's action (next, fix, verify, final-review) among the legal next action",
+          "summary": "{ \"id\": \"WO-130-D011\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator direction 2026-09-13 during resume: fix, after D010: make a skipped dispatch impossible rather than forbidden.\", \"decision\": \"The generated Claude session hook records the operator's dispatch itself. When the canonical status lists the phrase's action (next, fix, verify, final-review) among the legal next actions, the hook runs that resume command, records the transition and delivers the command's briefing as session context before any procedure loads; a phrase whose dispatch is already recorded passes with a note; a phrase that is not legal in the current phase is refused with the lifecycle's legal actions; a lifecycle that ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b5dcd0b3370f70e5",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "de5a197783c0c0a2a52eabb39c23c19fe225cbb94b2f0803e2641b579751550d",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d012",
+          "title": "WO-130-D012: A prompt dispatch is admitted exactly as the ordinary npm run resume -- <action> command it replaces. The session hook models the dispatch as that Bash invocation and, before the lifecycl",
+          "summary": "{ \"id\": \"WO-130-D012\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: fix selecting VER-002 (verdict fail; F1 blocking: the automatic prompt dispatch bypassed writer ownership and active-gate protection).\", \"decision\": \"A prompt dispatch is admitted exactly as the ordinary npm run resume -- <action> command it replaces. The session hook models the dispatch as that Bash invocation and, before the lifecycle runs, applies the same active-gate refusal the permission hook applies and the same compiled writer-isolation unit the writer hook applies, wrapping the lifecycle spawn as the boundary's effect. A live evidence gate or another session's live reservation refuses the dispatch with the re",
+          "missing": false
+        },
+        {
+          "hash": "be73b8dd3d0de951c62d9718d43aa4b5715c788cd12b753da5248bdcf5eb7144",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d012",
+          "title": "WO-130-D012: A prompt dispatch is admitted exactly as the ordinary npm run resume -- <action> command it replaces. The session hook models the dispatch as that Bash invocation and, before the lifecycl",
+          "summary": "{ \"id\": \"WO-130-D012\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: fix selecting VER-002 (verdict fail; F1 blocking: the automatic prompt dispatch bypassed writer ownership and active-gate protection).\", \"decision\": \"A prompt dispatch is admitted exactly as the ordinary npm run resume -- <action> command it replaces. The session hook models the dispatch as that Bash invocation and, before the lifecycle runs, applies the same active-gate refusal the permission hook applies and the same compiled writer-isolation unit the writer hook applies, wrapping the lifecycle spawn as the boundary's effect. A live evidence gate or another session's live reservation refuses the dispatch with the re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3a6e3d734d493650",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e428e6cb9344549ba74375811c4837a6de3b5cd951f0bca15ba98a594198161d",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d013",
+          "title": "WO-130-D013: The terminal receipt and the intent instruction are harness-owned in the session hook, so no session depends on the role remembering them. Chat text is not hook-observable, so the harness",
+          "summary": "{ \"id\": \"WO-130-D013\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator direction 2026-09-13 during resume: fix after VER-002: the intent line and the equipped supports are still not visible in the terminal, and the fix must hold for every session, not this one.\", \"kind\": \"correction\", \"misread\": \"D011 treated delivery of the dispatch briefing to the model as delivery to the operator. Claude Code shows a hook's additionalContext only to the model; the operator sees a hook's systemMessage, the role's chat text and its tool calls. The briefing that names the equipped supports therefore never reached the terminal, and this session's own intent line sat between progress notes.\", \"meant\": \"The operato",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-784da76c833041ab",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e5d943c450d473f5609405b9e264a42f19c64f16a2facc077f47fcd55e79af87",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d014",
+          "title": "WO-130-D014: Keep the compiler at 0.9.1 and record only the authority edition the regenerated bundle needs. D012's rejected list and reopening condition are corrected in place.",
+          "summary": "{ \"id\": \"WO-130-D014\", \"date\": \"2026-09-13\", \"dispatch\": \"Executor correction during the operator's resume: fix dispatch, after the first canonical gate at the D012 bytes.\", \"kind\": \"correction\", \"misread\": \"The executor first shipped D012 through a compiler patch (0.9.1 to 0.9.2) that emitted the writer unit's policy into the session hook, judging its cost as version pins and one authority edition. The compiled policy hash embeds the compiler version, so the bump made the selected artifact-identity, verification and feedback editions stale; the feedback edition's self-host streams are recorded with a live model verifier, which costs the operator money and a launch environment.\", \"meant\": \"A",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-15b77e3c2f8b4475",
+      "key": "decision:docs/evidence/WO-130/decisions.md#wo-130-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0ee26fd6261d1975a869cafe0514a0d6790d50bcf36016ead392e7f317ec53ce",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d015",
+          "title": "WO-130-D015: A resumed dispatch is delivered like a recorded one. The lifecycle gains the read-only command npm run resume -- briefing, which prints the recorded dispatch's briefing for the selected o",
+          "summary": "{ \"id\": \"WO-130-D015\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: fix selecting VER-003 (verdict fail; F1 blocking: a new session resuming an already-recorded repair received neither the support list nor the opening-intent instruction).\", \"decision\": \"A resumed dispatch is delivered like a recorded one. The lifecycle gains the read-only command npm run resume -- briefing, which prints the recorded dispatch's briefing for the selected order's current phase (the execution briefing in active, the repair briefing in repairing, the allocated verification report in verifying, the allocated final-review report in final-review) from the same builders the transitions print; it appends no eve",
+          "missing": false
+        },
+        {
+          "hash": "a387ee8ae604cc7a108a0d656ba32bd6219137881773f6c82b68fea4f9ad446d",
+          "ref": "docs/evidence/WO-130/decisions.md#wo-130-d015",
+          "title": "WO-130-D015: A resumed dispatch is delivered like a recorded one. The lifecycle gains the read-only command npm run resume -- briefing, which prints the recorded dispatch's briefing for the selected o",
+          "summary": "{ \"id\": \"WO-130-D015\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: fix selecting VER-003 (verdict fail; F1 blocking: a new session resuming an already-recorded repair received neither the support list nor the opening-intent instruction).\", \"decision\": \"A resumed dispatch is delivered like a recorded one. The lifecycle gains the read-only command npm run resume -- briefing, which prints the recorded dispatch's briefing for the selected order's current phase (the execution briefing in active, the repair briefing in repairing, the allocated verification report in verifying, the allocated final-review report in final-review) from the same builders the transitions print; it appends no eve",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

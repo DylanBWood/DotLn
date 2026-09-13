@@ -1,0 +1,655 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-130",
+  "provenance": "Executed operator-host gate observations, copied from the local gate evidence store after inspecting each successful command result. Absolute checkout and scratch paths and environment values are omitted. Repair measurement after VER-001, taken in a Claude Code session whose shell exported the harness-injected Git configuration family (GIT_CONFIG_COUNT, GIT_CONFIG_KEY_*, GIT_CONFIG_VALUE_* and GIT_CONFIG_PARAMETERS) that VER-001 F1 identified.",
+  "host": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v22.2.0",
+    "availableParallelism": 16,
+    "osRelease": "24.6.0"
+  },
+  "session": {
+    "harness": "claude-code",
+    "harnessVersion": "2.1.270",
+    "injectedGitConfigurationPresent": true,
+    "replicaMechanismVersion": 2,
+    "narrowingRefusals": 0,
+    "projectedEnvironmentKeys": [
+      "CLAUDE_CODE_EXECPATH",
+      "CLAUDE_EFFORT",
+      "CLAUDE_PID",
+      "DOTLN_GATE_CHILD",
+      "GIT_EDITOR",
+      "GIT_SSH_COMMAND",
+      "HOME",
+      "LANG",
+      "LC_TERMINAL",
+      "LC_TERMINAL_VERSION",
+      "npm_config_cache",
+      "npm_config_global_prefix",
+      "npm_config_globalconfig",
+      "npm_config_init_module",
+      "npm_config_local_prefix",
+      "npm_config_node_gyp",
+      "npm_config_noproxy",
+      "npm_config_npm_version",
+      "npm_config_prefix",
+      "npm_config_user_agent",
+      "npm_config_userconfig",
+      "PATH",
+      "SHELL",
+      "TMPDIR"
+    ]
+  },
+  "freshFull": {
+    "command": "npm run test:full -- --fresh",
+    "checkId": "npm run test:full",
+    "treeHash": "5f536a4972af8c5db59b197ea3861d2edf8409eb",
+    "recordedAt": "2026-09-13T16:21:14.172Z",
+    "durationMs": 798414,
+    "exitCode": 0,
+    "executionMode": "forced-fresh",
+    "freshTasks": 78,
+    "reusedTasks": 0,
+    "loadPolicy": {
+      "sharedCap": 4,
+      "factorPerSlot": 2,
+      "maxHostLoadPerCpu": 2
+    },
+    "installedCopy": {
+      "durationMs": 240.34833399999843,
+      "files": 1099,
+      "bytes": 50685411,
+      "verified": true,
+      "readonly": true
+    },
+    "replicaSetupMsExcludingInstalledCopy": 22665.919705000517,
+    "replicaExecutions": 47,
+    "replicaScopes": [
+      {
+        "name": "process-debt",
+        "setupMs": 418.17462499999965,
+        "candidateFiles": 308,
+        "git": "replica-repo"
+      },
+      {
+        "name": "release:prepare",
+        "setupMs": 489.369917,
+        "candidateFiles": 309,
+        "git": "replica-repo"
+      },
+      {
+        "name": "worktree",
+        "setupMs": 710.2447089999987,
+        "candidateFiles": 308,
+        "git": "replica-repo"
+      },
+      {
+        "name": "plan-refutation:fixtures",
+        "setupMs": 622.9678749999985,
+        "candidateFiles": 308,
+        "git": "replica-repo"
+      },
+      {
+        "name": "skeleton",
+        "setupMs": 634.8682079999708,
+        "candidateFiles": 242,
+        "git": "replica-repo"
+      },
+      {
+        "name": "kernel",
+        "setupMs": 28.39383399998769,
+        "candidateFiles": 187,
+        "git": "none"
+      },
+      {
+        "name": "compiler",
+        "setupMs": 31.824374999967404,
+        "candidateFiles": 188,
+        "git": "none"
+      }
+    ],
+    "inputObservation": [
+      {
+        "files": 2361,
+        "bytes": 222020182,
+        "commands": 14,
+        "durationMs": 867.0774590000001
+      },
+      {
+        "files": 2361,
+        "bytes": 222020182,
+        "commands": 14,
+        "durationMs": 930.3258750000969
+      }
+    ],
+    "tasks": [
+      {
+        "name": "build",
+        "exitCode": 0,
+        "durationMs": 2236,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "format",
+        "exitCode": 0,
+        "durationMs": 2565,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "release-surfaces",
+        "exitCode": 0,
+        "durationMs": 4304,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "release-preparation",
+        "exitCode": 0,
+        "durationMs": 8830,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "github-body",
+        "exitCode": 0,
+        "durationMs": 123,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "license-fixtures",
+        "exitCode": 0,
+        "durationMs": 22593,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "license-surfaces",
+        "exitCode": 0,
+        "durationMs": 3151,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "fixture-temp-root",
+        "exitCode": 0,
+        "durationMs": 794,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "publication-fixtures",
+        "exitCode": 0,
+        "durationMs": 1986,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "backup-intake",
+        "exitCode": 0,
+        "durationMs": 816,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "resume",
+        "exitCode": 0,
+        "durationMs": 123571,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "checkpoint",
+        "exitCode": 0,
+        "durationMs": 10510,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "worktree",
+        "exitCode": 0,
+        "durationMs": 292198,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:prepare",
+        "exitCode": 0,
+        "durationMs": 2333,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:preflight",
+        "exitCode": 0,
+        "durationMs": 387,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:surfaces",
+        "exitCode": 0,
+        "durationMs": 12409,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:surfaces_local_snapshot",
+        "exitCode": 0,
+        "durationMs": 4066,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:prepare_independent",
+        "exitCode": 0,
+        "durationMs": 4466,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:license_surfaces",
+        "exitCode": 0,
+        "durationMs": 15963,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:surfaces_committed_readme",
+        "exitCode": 0,
+        "durationMs": 6952,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:surfaces_lower",
+        "exitCode": 0,
+        "durationMs": 3637,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:surfaces_first",
+        "exitCode": 0,
+        "durationMs": 2550,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:surfaces_non_source",
+        "exitCode": 0,
+        "durationMs": 1833,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:surfaces_new_component",
+        "exitCode": 0,
+        "durationMs": 2014,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:surfaces_component",
+        "exitCode": 0,
+        "durationMs": 5517,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:surfaceclose",
+        "exitCode": 0,
+        "durationMs": 4813,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:bodyclose",
+        "exitCode": 0,
+        "durationMs": 3512,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:surfaceclose_linked",
+        "exitCode": 0,
+        "durationMs": 5555,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:dirty",
+        "exitCode": 0,
+        "durationMs": 2073,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:settings_scope",
+        "exitCode": 0,
+        "durationMs": 1802,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:nonmain",
+        "exitCode": 0,
+        "durationMs": 1780,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:divergence",
+        "exitCode": 0,
+        "durationMs": 2385,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:malformed",
+        "exitCode": 0,
+        "durationMs": 2505,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:unauthenticated",
+        "exitCode": 0,
+        "durationMs": 2225,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:missinggh",
+        "exitCode": 0,
+        "durationMs": 4510,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:splitorigin",
+        "exitCode": 0,
+        "durationMs": 2442,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:lower",
+        "exitCode": 0,
+        "durationMs": 1550,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:failures",
+        "exitCode": 0,
+        "durationMs": 2082,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:cadence_missing",
+        "exitCode": 0,
+        "durationMs": 2098,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:conflict",
+        "exitCode": 0,
+        "durationMs": 1851,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:localconflict",
+        "exitCode": 0,
+        "durationMs": 1384,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:nestedtag",
+        "exitCode": 0,
+        "durationMs": 1444,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:cadence_inconsistent",
+        "exitCode": 0,
+        "durationMs": 4038,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:prepare",
+        "exitCode": 0,
+        "durationMs": 2505,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:missinglocalprevious",
+        "exitCode": 0,
+        "durationMs": 2349,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:pushfail",
+        "exitCode": 0,
+        "durationMs": 2757,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:refrecovery",
+        "exitCode": 0,
+        "durationMs": 3653,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:stale_helpers",
+        "exitCode": 0,
+        "durationMs": 3198,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:firstrelease",
+        "exitCode": 0,
+        "durationMs": 2716,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:createrecovery",
+        "exitCode": 0,
+        "durationMs": 8804,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:edition",
+        "exitCode": 0,
+        "durationMs": 6572,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:success",
+        "exitCode": 0,
+        "durationMs": 8465,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:cached_evidence",
+        "exitCode": 0,
+        "durationMs": 11286,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "release:case:concurrent",
+        "exitCode": 0,
+        "durationMs": 114236,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "work-orders-fixtures",
+        "exitCode": 0,
+        "durationMs": 92138,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "publication",
+        "exitCode": 0,
+        "durationMs": 1337,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "index",
+        "exitCode": 0,
+        "durationMs": 19354,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "kernel",
+        "exitCode": 0,
+        "durationMs": 635,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "compiler",
+        "exitCode": 0,
+        "durationMs": 868,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "skeleton",
+        "exitCode": 0,
+        "durationMs": 198386,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "console",
+        "exitCode": 0,
+        "durationMs": 110196,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "adjacent-queue",
+        "exitCode": 0,
+        "durationMs": 1193,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "authority-grants",
+        "exitCode": 0,
+        "durationMs": 184,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "authority-evidence",
+        "exitCode": 0,
+        "durationMs": 4973,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "harness-fixtures",
+        "exitCode": 0,
+        "durationMs": 517783,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "harness",
+        "exitCode": 0,
+        "durationMs": 321,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "harness-context",
+        "exitCode": 0,
+        "durationMs": 1950,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "harness-evidence",
+        "exitCode": 0,
+        "durationMs": 2223,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "plan-refutation:fixtures",
+        "exitCode": 0,
+        "durationMs": 534742,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "plan-refutation:current",
+        "exitCode": 0,
+        "durationMs": 112327,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "artifact-corpus",
+        "exitCode": 0,
+        "durationMs": 315,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "artifact-evidence",
+        "exitCode": 0,
+        "durationMs": 236,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "verification-evidence",
+        "exitCode": 0,
+        "durationMs": 9426,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "feedback-evidence",
+        "exitCode": 0,
+        "durationMs": 7205,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "mutation",
+        "exitCode": 0,
+        "durationMs": 13043,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "runner-fixtures",
+        "exitCode": 0,
+        "durationMs": 179496,
+        "executionRoot": "candidate"
+      },
+      {
+        "name": "process-debt",
+        "exitCode": 0,
+        "durationMs": 268003,
+        "executionRoot": "replica"
+      },
+      {
+        "name": "meta",
+        "exitCode": 0,
+        "durationMs": 2683,
+        "executionRoot": "candidate"
+      }
+    ]
+  },
+  "sourceChange": {
+    "command": "npm test",
+    "path": "scripts/wo130-reuse-probe.mjs",
+    "contents": "// Temporary WO-130 source-change measurement outside package declarations.\n",
+    "restoredTreeHash": "5f536a4972af8c5db59b197ea3861d2edf8409eb",
+    "change": "Added a temporary regular source file containing only a comment, outside all three package declarations. Removed only that owned probe after capture; the tree hash returned to the fresh measurement's value.",
+    "checkId": "npm test",
+    "treeHash": "30cfc0353c39137f6d09c2813f3aadb6a25f017c",
+    "recordedAt": "2026-09-13T16:23:08.162Z",
+    "durationMs": 51917,
+    "exitCode": 0,
+    "executionMode": "composed",
+    "freshTasks": 9,
+    "reusedTasks": 3,
+    "installedCopy": null,
+    "replicaExecutions": 0,
+    "packages": [
+      {
+        "name": "kernel",
+        "inputHash": "7554cac653e3fbc2d1024db56df60a7ded3b321538338ef90347d118792fdc88",
+        "reused": true,
+        "executed": false,
+        "freshDurationMs": 635,
+        "sourceTreeHash": "5f536a4972af8c5db59b197ea3861d2edf8409eb",
+        "sourceEvidenceRef": "host-suite:5f536a4972af8c5db59b197ea3861d2edf8409eb:kernel",
+        "executionRoot": "replica"
+      },
+      {
+        "name": "compiler",
+        "inputHash": "53658f20620415aa5a2593d1a9e420aaf6987725b3541a1c29e241b3bc61f85a",
+        "reused": true,
+        "executed": false,
+        "freshDurationMs": 868,
+        "sourceTreeHash": "5f536a4972af8c5db59b197ea3861d2edf8409eb",
+        "sourceEvidenceRef": "host-suite:5f536a4972af8c5db59b197ea3861d2edf8409eb:compiler",
+        "executionRoot": "replica"
+      },
+      {
+        "name": "skeleton",
+        "inputHash": "326ea6260b9c910b4fc57508cb4c723d467c53a49eec383511ba397cc84f778f",
+        "reused": true,
+        "executed": false,
+        "freshDurationMs": 198386,
+        "sourceTreeHash": "5f536a4972af8c5db59b197ea3861d2edf8409eb",
+        "sourceEvidenceRef": "host-suite:5f536a4972af8c5db59b197ea3861d2edf8409eb:skeleton",
+        "executionRoot": "replica"
+      }
+    ],
+    "avoidedPackageExecutionMs": 199889
+  },
+  "limits": [
+    "The full gate and the fast gate have different inventories; their total durations are not a speedup ratio.",
+    "Avoided package execution is the sum of measured package durations, not a claim about elapsed time saved under parallel scheduling.",
+    "The runner under review collected these measurements. Separate verification and final review remain required.",
+    "The accepted unprojected absolute-path and same-user residual remains; replicas are not a kernel security sandbox.",
+    "This gate ran every task fresh although the previous session's successes existed: the projected environment still carries per-session values (CLAUDE_PID, GIT_SSH_COMMAND and the harness-specific TMPDIR), so no role reuses another role's work. That limit is recorded in WO-130-D009 for planning."
+  ]
+}

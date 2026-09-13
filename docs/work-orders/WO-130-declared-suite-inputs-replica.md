@@ -1,4 +1,4 @@
-# WO-130 — Narrowed suites execute inside a replica of their declared inputs, so an undeclared file cannot influence any run, and the package suites stop re-executing for source they never read (version assigned at activation)
+# WO-130 — Narrowed suites execute inside a replica of their declared inputs, so an undeclared file cannot influence any run, and the package suites stop re-executing for source they never read (v0.17.5)
 
 **Model:** any capable model; the measured gates run on the operator's
 machine. State the model and effort actually run (07-execution-guide.md
@@ -253,3 +253,159 @@ contradicted by a fresh run of the same suite at the same key. Either
 observation returns this order's criterion 1 to planning as a new decision
 proposal. The override event, its actor and the capture's SHA-256 are in
 `docs/control/plan-refutations.jsonl`.
+
+## Execution record
+
+2026-09-13 executor result, prepared for independent verification. The fresh
+operator-host full gate passed all 37 aggregate suites and 78 tasks in 805.284
+seconds. Kernel, compiler, skeleton, worktree, plan-refutation:fixtures and
+process-debt each executed successfully in a replica. Release preparation and
+all 40 release cases also passed in replicas. No required scope was retained
+whole-tree; the remaining suite scopes keep their existing whole-tree policy.
+
+The gate created 47 replicas, using one verified read-only installed copy of
+50,685,411 bytes in 1,099 files. That copy took 242.173 ms; per-replica setup
+totalled 24,402.857 ms. A single temporary source file under scripts, outside
+the three package declarations, then produced a green npm test in 48.063
+seconds with kernel, compiler and skeleton reused at unchanged keys. Their
+source executions totalled 210.411 seconds. Removing only that probe restored
+the fresh measurement's exact candidate tree. Full and fast durations are
+different inventories, not a speedup ratio.
+
+The [execution evidence](../evidence/WO-130/README.md),
+[per-task host rows](../evidence/WO-130/replica-measurements.json),
+[nine-case fixture transcript](../evidence/WO-130/fixture-transcript.txt) and
+[decisions and corrections](../evidence/WO-130/decisions.md) record the
+outcomes, sources, tradeoffs and reopening conditions. Local release v0.17.5
+patches skeleton to 0.15.5 without a new dependency or exported contract change.
+The accepted absolute-path residual remains. The canonical harness evidence
+gate is required before the implementation-ready transition.
+
+## Execution record
+
+2026-09-13 repair after VER-001, prepared for independent verification. F1
+had one cause: this host's Claude Code sessions export a harness-injected Git
+configuration family (`GIT_CONFIG_COUNT` with four `safe.directory` entries
+naming the checkouts, and `GIT_CONFIG_PARAMETERS`), the replica projection
+refused to narrow on it, and a refusal left every declared suite without any
+key. The repair drops that family from the reviewed projection in execution
+and key alike, keys a refused narrowing under the pre-order whole-tree
+contract with the refusal named on the task row and a key distinct from any
+replica key, bounds Git discovery in a `git: none` replica to its unlistable
+parent, and makes every fixture assert replica creation (F2) and a non-null
+baseline before comparing keys. The replica mechanism version is 2.
+
+Measured in this Claude Code session with the injected configuration present:
+`npm run test:full -- --fresh` passed all 37 aggregate suites and 78 tasks in
+798.414 seconds, 47 in replicas with zero narrowing refusals, using one
+verified read-only installed copy of 50,685,411 bytes in 1,099 files
+(240.348 ms; per-replica setup 22,665.920 ms in total). The source-change
+probe under `scripts/` then composed `npm test` in 51.917 seconds with kernel,
+compiler and skeleton reused at unchanged keys (199.889 seconds of package
+execution avoided) and no replica; removing the probe restored the fresh
+tree hash. The eleven WO-130 fixtures and the collapsed WO-129 Git case pass
+at the final bytes.
+
+Operator scope expansions during the repair: the format gate covers code only
+(Markdown, JSON and event logs are no longer formatter input), and the
+operator's mission test for process checks was applied from recorded gate
+history to the remaining non-code gate tasks and to the self read-back
+obligation. The [repair evidence](../evidence/WO-130/README.md),
+[measurement rows](../evidence/WO-130/replica-measurements.json),
+[fixture transcript](../evidence/WO-130/fixture-transcript.txt) and
+[decisions D007 to D009](../evidence/WO-130/decisions.md) record the outcomes,
+verdicts, sources and reopening conditions. No package changed in the repair;
+the local release target remains v0.17.5 with skeleton 0.15.5. Cross-role reuse
+is still prevented by per-session environment values; that limit is recorded
+for planning in D009 rather than repaired here.
+
+Two corrections followed in the same dispatch. The session had begun without
+recording its `fix` dispatch, so the lifecycle stayed in `needs-fix` and the
+harness briefing never printed; recording it after the first passing gate moved
+the tree and cost a second composed canonical gate (D010). At the operator's
+direction the generated Claude session hook now records the dispatch named by
+the `resume:` phrase itself, delivers the command's briefing, passes an
+already-recorded dispatch and refuses one that is not legal in the current
+phase; a process-debt fixture proves each behaviour and skeleton is 0.15.6 in
+the unchanged v0.17.5 target (D011).
+
+## Execution record
+
+2026-09-13 repair after VER-002, prepared for independent verification. F1 had
+one cause: the D011 prompt dispatch ran the lifecycle as soon as the canonical
+status allowed it, without the writer-isolation boundary and the active-gate
+refusal that reject the same ordinary tool command. The repair admits the
+dispatch exactly as that command: the session hook models it as the equivalent
+Bash invocation, the active-gate refusal judges it first, and the
+writer-isolation boundary runs the lifecycle spawn as its guarded effect with
+the same compiled unit the writer hook carries. A live gate or another
+session's live reservation refuses the dispatch with the pre-tool hook's
+reason before any event, checkpoint or control projection changes and reserves
+nothing; an admitted dispatch holds the reservation the session's first write
+would take; `next` stays the metadata command it is on the tool path; the
+already-recorded, illegal and read-only paths are unchanged. The host
+compiles that unit from the loadout inventory it ships with and refuses when
+the emitted manifest records another feedback policy hash, so the admission
+policy is the writer hook's policy at the same hash; skeleton 0.15.7 stays
+within the v0.17.5 patch target and the compiler is unchanged (a compiler
+route was tried and reverted, D014).
+
+A new process-debt fixture drives the generated hook files against the real
+lifecycle for both guarded cases, the uncontended dispatch and `next`; the
+D011 fixture asserts the host's dispatch policy equals the writer hook's
+policy and that a manifest recording another policy hash refuses. At the
+repaired bytes the focused process-debt session-hook cases passed 9 of 9, the
+harness writer fixtures 16 of 16 and the compiler tests 97 of 97, and VER-002's
+own real-lifecycle probe passes with its assertions inverted to require refusal
+and no mutation. The [evidence](../evidence/WO-130/README.md) and
+[decisions D012 and D013](../evidence/WO-130/decisions.md) record the sources,
+rejected designs and reopening conditions.
+
+Operator direction during the repair (D013): the dispatch briefing reaches
+only the model, so the session hook now also prints a one-line terminal
+receipt naming the recorded command, work order, role and equipped supports on
+every dispatch in every session, and the delivered context requires the reply
+to open with the `I intend to` line before any tool call. Bundle
+regeneration writes `.claude/hooks` and `.claude/skills`, which this
+session's sandbox denies; the operator ran the emit outside the sandbox, and
+the canonical harness evidence gate then passed inside it: 37 aggregate suites
+and 78 tasks, all fresh, in 780.37 seconds at tree `7b6d6248`, after a first
+attempt at the reverted compiler-route bytes stopped at its evidence preflights
+(D014).
+
+## Execution record
+
+2026-09-13 repair after VER-003, prepared for independent verification. F1 had
+one cause: the already-recorded branch of the session hook's dispatch returned
+a continuation note and a short receipt without obtaining the equipment
+briefing, so a session resuming a recorded repair started without the support
+list and the intent instruction the recording session received. The repair
+gives the lifecycle a read-only `npm run resume -- briefing` command that
+projects the recorded dispatch's briefing for the current phase from the same
+builders the transitions print, and routes the already-recorded branch through
+the one delivery the recorded path uses: the context carries the briefing and
+the intent instruction, the terminal receipt names the equipped supports, the
+lifecycle stays byte-identical and no reservation is taken. A lifecycle that
+exposes legal actions but cannot project the briefing refuses the resumed
+phrase naming the failure. Skeleton 0.15.8 within the unchanged v0.17.5
+target; the compiler is unchanged (D015).
+
+At the repaired bytes the two WO-130 process-debt dispatch fixtures pass
+against the lifecycle stub and the real lifecycle through the generated hook
+files, including a resumed `fix` after the recording session released the
+worktree; the WO-129 three-role lifecycle composition passes; the resume
+shell suite passes 8 of 8; the whole harness suite passes 23 of 23 with the
+new command classified as metadata; and VER-003's reproduction
+with its two missing-delivery assertions inverted passes with five supports
+and the instruction on both sessions, unchanged lifecycle bytes and no
+reservation. The [evidence](../evidence/WO-130/README.md),
+[transcript](../evidence/WO-130/fixture-transcript.txt) and
+[decision D015](../evidence/WO-130/decisions.md) record the sources, rejected
+designs and reopening conditions. Bundle regeneration writes `.claude/hooks`
+and `.claude/skills`, which this session's sandbox denies; the operator ran
+`npm run harness -- emit` outside the sandbox, after which authority edition
+004 was recorded and selected and the canonical harness evidence gate passed
+all 37 aggregate suites and 78 tasks in 793.47 seconds, all fresh, at tree
+`3ab76ea9`. Its first attempt stopped at the publication preflight until the
+software-engineer edition's source lock was re-pinned to the two updated 07
+sections.
