@@ -8,9 +8,11 @@ operator's machine. State the model and effort actually run
 evidence: declarations for the remaining suites and one optional kernel
 denial; no exported runtime capability or contract changes. Assigned at
 activation under the standing opt-out default.
-**Cost:** adds one declaration per suite and, where the host permits a kernel
-sandbox, one availability probe per gate; nothing per gate beyond WO-130's
-replica copies. Removes the whole-tree executions from every document-only
+**Cost:** adds path and environment declarations per narrowed suite and, where
+the host permits a kernel sandbox, one availability probe per gate; no added
+prompt, command or operator step per gate beyond WO-130's replica copies.
+The release-close and installed-link repairs add bounded regression fixtures.
+Removes the whole-tree executions from every document-only
 gate: on 2026-09-11/12 the composed gates after a report write ran 32 fresh
 tasks in 243–419 s while identical-tree reruns ran 10 fresh tasks in
 41–47 s; the difference is the whole-tree class re-executing for bytes it
@@ -18,7 +20,10 @@ never read. The current-tree checks (`format`, `index`, `publication`,
 `plan` and the evidence checks that read the real repository) and the live
 checks always execute, so the measured target is the build, preparation and
 those checks; the `plan` check alone took 33–35 s on 2026-09-12. The
-post-transition class is WO-129's removal and is not counted here.
+post-transition class is WO-129's removal and is not counted here. Criteria 7,
+10 and 11 also remove repeated declared-suite execution across role and
+release-close sessions; their host rows must measure the wall-clock removal,
+with token and context changes reported as observed or unavailable.
 **Nomination provenance:** the operator's 2026-09-12 planning dispatch
 relaying a second model's plan for proof-carrying gates; the same pass's
 refutation receipts 009 and 010, after which the declaration mechanism was
@@ -219,8 +224,8 @@ and the gate row records which tasks ran under it.
 available with its probe; the composition fixture; the operator-host
 measurement; the per-suite environment declaration with its cross-role
 measurement; the release-close admission repair with its fixture; the replica
-copier repair with its fixture; the release-close reuse fixture and the WO-130
-recovery close as its first live row; the measured gate rows of criterion 11;
+copier repair with its fixture; the release-close reuse fixture and this
+order's assigned release close as its first live row; the measured gate rows of criterion 11;
 the write-backs.
 
 **Acceptance criteria (all required)**
@@ -283,10 +288,11 @@ the write-backs.
     environment. A release-close fixture merges a reviewed order, hands off
     its evidence, closes from main under a different session environment and
     asserts that only the build, preparation, the live checks and the
-    current-tree checks ran fresh. The first live row is the close that
-    publishes v0.17.5 from a session started in main: the WO-130 recovery
-    command `npm run release -- close WO-130 --publish`, or the close of the
-    order that lands criteria 8 and 9 at the v0.17.5 target.
+    current-tree checks ran fresh. The first live row is this order's close
+    from a session started in main, publishing the version assigned at
+    activation after criteria 8 and 9 have landed. The already-published
+    WO-130 release remains historical failure and recovery evidence; it is
+    not republished to satisfy this criterion.
 11. Measured on the operator's host and recorded in `docs/evidence/WO-131/`
     beside the WO-128 to WO-130 rows: the fresh full gate is no slower than
     WO-130's 780–805 s; a document-only or post-transition change composes
@@ -317,7 +323,31 @@ only which recorded successes its evidence step can reuse).
    answers are on record; the sandboxed answer is already observed.
 2. A suite retained whole-tree with a reason is an accepted outcome of this
    order, not a defect.
-3. v0.17.5 is published by a close run from a session started in main once
-   criteria 8 and 9 have landed, whether the WO-130 recovery command or the
-   close of the order that carries them at the v0.17.5 target; no tag is
-   created by hand.
+3. The first live release-close measurement uses this order's version
+   assigned at activation and a session started in main; no tag is created
+   by hand. The release-close row is collected by the authorized closeout
+   role after merge; the pre-merge verifier checks the release-close fixture
+   and the remaining host rows, and the closeout receipt records the live
+   result before claiming the release-close measurement complete.
+
+**Planning completion, 2026-09-13:** The operator directed completion of this
+branch so the next work order can start. The public
+[v0.17.5 release](https://github.com/DylanBWood/DotLn/releases/tag/v0.17.5)
+was published at 22:40:57 UTC on this date, after the failure captured above.
+The live-row target therefore follows this order's assigned release, while
+the earlier failure remains evidence. The generated cost evidence and index
+are refreshed for the reviewed subject.
+
+This repair enables the next gate-reuse order on the route to the resident
+runtime and the independently verified external-change loop. NoOp would leave
+an already-published release as a new acceptance target and keep the branch
+behind stale evidence. Policy resistance and rule beating are addressed by
+preserving the independent verdict, declared-input checks and measured bands;
+drift to low performance and seeking the wrong goal are addressed by keeping
+the operator-host outcomes as the standard. Commons cost, escalation and
+shifting the burden favor one generated refresh and one independent review
+over another operator repair cycle. Success to the successful supplies no
+reason to retain the obsolete release target. Under Naive Interventionism,
+the useful release history, review gates and sequence stay intact; the bounded
+document correction is reversible. Reopen if release allocation or the live
+closeout evidence contradicts these assumptions.
