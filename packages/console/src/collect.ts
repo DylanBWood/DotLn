@@ -1,4 +1,5 @@
-import { execFileSync } from "node:child_process";
+import { observedExecFileSync as execFileSync } from "@dotln/skeleton/dist/src/gate-deadlines.mjs";
+import { deadlineLimit } from "@dotln/skeleton/dist/src/gate-deadlines.mjs";
 import { lstatSync, readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -75,7 +76,9 @@ export async function collectSources(
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
       maxBuffer: 8_000_000,
-      timeout: 60_000,
+      // WO-125 VER-003 measured release:list at 17.2 s alone. The scheduler
+      // declares the load factor; ordinary collection keeps its 60 s bound.
+      timeout: deadlineLimit(17_200, 60_000),
       env: { ...process.env, GIT_OPTIONAL_LOCKS: "0" },
     });
   const text = (ref: string) => attempt(ref, () => readFile(join(root, ref)));

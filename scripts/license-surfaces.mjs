@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { createHash } from "node:crypto";
-import { spawnSync } from "node:child_process";
+import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
 import {
   existsSync,
   lstatSync,

@@ -64,6 +64,7 @@ test("WO-021 agent constellation CLI persists permission/refusal and one metadat
     "beacon-v3-codebook.mjs",
     "beacon-v3-fs.mjs",
     "beacon-provenance.mjs",
+    "gate-deadlines.mjs",
   ])
     cpSync(
       join(repository, "packages/skeleton/src", name),

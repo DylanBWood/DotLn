@@ -6,10 +6,13 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
+  renameSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
+import { gateCriticalPath } from "./lib/gate-timeline.mjs";
 import {
   beginGateRun,
   gateTreeHash,
@@ -122,9 +125,7 @@ export const suites = [
     needsBuild: true,
     preflight: true,
   }),
-  nodeTests("harness-fixtures", "scripts/test-harness.mjs", {
-    exclusive: true,
-  }),
+  nodeTests("harness-fixtures", "scripts/test-harness.mjs"),
   node("harness", "scripts/harness.mjs", {
     args: ["check"],
     fast: true,
@@ -163,9 +164,7 @@ export const suites = [
   }),
   nodeTests("mutation", "corpus/mutation/wo108-selftest.test.mjs"),
   nodeTests("runner-fixtures", "scripts/test-runner.test.mjs"),
-  nodeTests("process-debt", "scripts/test-process-debt.mjs", {
-    exclusive: true,
-  }),
+  nodeTests("process-debt", "scripts/test-process-debt.mjs"),
   node("meta", "scripts/meta.mjs", {
     args: ["--check"],
     fast: true,
@@ -216,6 +215,8 @@ export function executeSuite(
   onProgress = () => {},
 ) {
   const started = Date.now();
+  const env = suiteEnvironment(process.env, row.gateContext);
+  const deadline = startDeadline(`suite:${row.name}`, timeoutMs, { env });
   onProgress({ name: row.name, message: "started", elapsedMs: 0 });
   let command;
   try {
@@ -233,7 +234,7 @@ export function executeSuite(
     const child = spawn(command[0], command.slice(1), {
       cwd: repo,
       stdio: ["ignore", "pipe", "pipe"],
-      env: suiteEnvironment(),
+      env,
     });
     let output = "";
     let timedOut = false;
@@ -241,6 +242,7 @@ export function executeSuite(
     let killTimer;
     const timer = setTimeout(() => {
       timedOut = true;
+      deadline.finish(true);
       child.kill("SIGTERM");
       killTimer = setTimeout(() => child.kill("SIGKILL"), 1000);
     }, timeoutMs);
@@ -290,12 +292,13 @@ export function executeSuite(
       clearTimeout(killTimer);
       clearInterval(heartbeat);
       const durationMs = Date.now() - started;
+      deadline.finish();
       resolveRun({
         name: row.name,
         durationMs,
         startedAt: new Date(started).toISOString(),
         finishedAt: new Date().toISOString(),
-        exitCode: code ?? 1,
+        exitCode: timedOut ? 1 : (code ?? 1),
         executed: true,
         output: `${output}${failure ? `\n${failure}` : ""}${timedOut ? `\nSuite ${row.name} timed out after ${durationMs} ms` : ""}`,
       });
@@ -314,18 +317,69 @@ export async function scheduleSuites(
     ),
     execute = executeSuite,
     onResult = () => {},
+    onActiveChange = () => {},
+    diagnosticContext = {},
   } = {},
 ) {
   validateSuites(table);
   if (!Number.isInteger(concurrency) || concurrency < 1)
     throw new Error("Concurrency must be a positive integer");
+  if (concurrency > 4)
+    throw new Error("Declared gate load caps concurrency at four");
   const build = table.find((row) => row.build);
   const results = [];
+  const active = new Map();
+  const lanes = Array.from({ length: concurrency }, () => ({
+    active: null,
+    previous: null,
+  }));
+  const executeTask = async (
+    row,
+    laneIndexes,
+    predecessors,
+    observation = {
+      startedAt: new Date().toISOString(),
+      concurrentAtStart: [...active.keys()],
+    },
+  ) => {
+    const { startedAt, concurrentAtStart } = observation;
+    const isolated = row.build || row.exclusive || row.loadClass === "isolated";
+    const gateContext = {
+      ...diagnosticContext,
+      task: row.name,
+      loadClass: isolated ? "isolated" : "shared",
+      concurrency: isolated ? 1 : concurrency,
+      loadFactor: (isolated ? 1 : concurrency) * 2,
+    };
+    const result = await execute({ ...row, gateContext }, repo);
+    const finishedAt = new Date().toISOString();
+    return {
+      ...result,
+      startedAt,
+      finishedAt,
+      concurrentAtStart,
+      predecessors: [...new Set(predecessors.filter(Boolean))],
+      schedulerDurationMs: Date.parse(finishedAt) - Date.parse(startedAt),
+      loadClass: gateContext.loadClass,
+      loadFactor: gateContext.loadFactor,
+      peerCap: gateContext.concurrency - 1,
+      lanes: laneIndexes,
+    };
+  };
   const finish = (result) => {
     results.push(result);
     onResult(result);
   };
-  finish(await execute(build, repo));
+  onActiveChange([build.name]);
+  finish(
+    await executeTask(
+      build,
+      lanes.map((_, index) => index),
+      [],
+    ),
+  );
+  onActiveChange([]);
+  for (const lane of lanes) lane.previous = build.name;
   if (results[0].exitCode !== 0) return results;
   const pending = table.filter((row) => row !== build);
   for (const row of pending)
@@ -334,7 +388,6 @@ export async function scheduleSuites(
         throw new Error(`Missing dependency: ${dependency}`);
   if (concurrency > 1)
     pending.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
-  const active = new Map();
   const groups = new Set();
   let exclusive = false;
   while (pending.length || active.size) {
@@ -359,7 +412,8 @@ export async function scheduleSuites(
       const index = pending.findIndex(
         (row) =>
           (!row.group || !groups.has(row.group)) &&
-          (!row.exclusive || active.size === 0) &&
+          (!(row.exclusive || row.loadClass === "isolated") ||
+            active.size === 0) &&
           (row.after ?? []).every((name) =>
             results.some(
               (result) => result.name === name && result.exitCode === 0,
@@ -368,17 +422,49 @@ export async function scheduleSuites(
       );
       if (index < 0) break;
       const [row] = pending.splice(index, 1);
-      if (row.exclusive) exclusive = true;
+      const isolated = row.exclusive || row.loadClass === "isolated";
+      if (isolated) exclusive = true;
       if (row.group) groups.add(row.group);
+      const laneIndexes = isolated
+        ? lanes.map((_, index) => index)
+        : [lanes.findIndex((lane) => lane.active === null)];
+      const predecessors = [
+        build.name,
+        ...(row.after ?? []),
+        ...laneIndexes.map((index) => lanes[index].previous),
+        // A task skipped for a failed dependency never started, so it is not
+        // a timeline edge (VER-001 F1).
+        ...results
+          .filter(
+            (result) =>
+              result.startedAt &&
+              table.find((task) => task.name === result.name)?.group ===
+                row.group &&
+              row.group,
+          )
+          .slice(-1)
+          .map((result) => result.name),
+      ];
+      for (const index of laneIndexes) lanes[index].active = row.name;
+      const observation = {
+        startedAt: new Date().toISOString(),
+        concurrentAtStart: [...active.keys()],
+      };
       const task = Promise.resolve()
-        .then(() => execute(row, repo))
+        .then(() => executeTask(row, laneIndexes, predecessors, observation))
         .then((result) => {
           finish(result);
           active.delete(row.name);
-          if (row.exclusive) exclusive = false;
+          for (const index of laneIndexes) {
+            lanes[index].active = null;
+            lanes[index].previous = row.name;
+          }
+          onActiveChange([...active.keys()]);
+          if (isolated) exclusive = false;
           if (row.group) groups.delete(row.group);
         });
       active.set(row.name, task);
+      onActiveChange([...active.keys()]);
     }
     if (active.size) await Promise.race(active.values());
     else if (pending.length)
@@ -447,6 +533,7 @@ export function expandSuiteTasks(selected, repo, template) {
           args: [
             "scripts/test-suite-evidence.mjs",
             "scripts/test-release-fixtures.mjs",
+            "scripts/test-gate-deadlines.mjs",
           ],
         },
       ];
@@ -564,7 +651,33 @@ async function runGateChecks(args, repo) {
   const fixture = selected.some((row) => row.name === "release")
     ? createReleaseFixtureContext()
     : null;
-  const tasks = expandSuiteTasks(selected, repo, fixture?.template);
+  const concurrency = serial
+    ? 1
+    : Math.max(1, Math.min(4, Math.floor(availableParallelism() / 2)));
+  const tasks = expandSuiteTasks(selected, repo, fixture?.template).map(
+    (row) => ({
+      ...row,
+      loadPolicy: {
+        loadClass:
+          row.build || row.exclusive || row.loadClass === "isolated"
+            ? "isolated"
+            : "shared",
+        concurrency:
+          row.build || row.exclusive || row.loadClass === "isolated"
+            ? 1
+            : concurrency,
+        version: 1,
+      },
+    }),
+  );
+  const diagnosticRoot = join(
+    repo,
+    "docs/control/local/harness/deadlines",
+    `${Date.now()}-${process.pid}`,
+  );
+  mkdirSync(diagnosticRoot, { recursive: true });
+  const peerFile = join(diagnosticRoot, "active.json");
+  const deadlineLog = join(diagnosticRoot, "deadlines.jsonl");
   const scoped = tasks.some(
     (task) => task.reuse === "tree" || suiteScope(task) !== null,
   );
@@ -573,6 +686,11 @@ async function runGateChecks(args, repo) {
   try {
     taskRows = await scheduleSuites(tasks, {
       repo,
+      diagnosticContext: { peerFile, deadlineLog },
+      onActiveChange(names) {
+        writeFileSync(`${peerFile}.tmp`, JSON.stringify({ tasks: names }));
+        renameSync(`${peerFile}.tmp`, peerFile);
+      },
       ...(serial ? { concurrency: 1 } : {}),
       execute: async (row, cwd) => {
         if (row.name === "document-barrier")
@@ -646,7 +764,50 @@ async function runGateChecks(args, repo) {
       .map((snapshot) => snapshot.meter),
     ...(before ? { inputEnvironmentKeys: before.environmentKeys } : {}),
     requiredSuites: selected.map((row) => row.name),
+    loadClass: {
+      sharedCap: concurrency,
+      factorPerSlot: 2,
+      maxHostLoadPerCpu: 2,
+    },
+    taskTimeline: taskRows
+      .filter((row) => row.startedAt)
+      .map(
+        ({
+          name,
+          startedAt,
+          finishedAt,
+          concurrentAtStart,
+          predecessors,
+          schedulerDurationMs,
+          executed,
+          reused,
+          loadClass,
+          loadFactor,
+          peerCap,
+        }) => ({
+          name,
+          startedAt,
+          finishedAt,
+          concurrentAtStart,
+          predecessors,
+          schedulerDurationMs,
+          executed,
+          reused: Boolean(reused),
+          loadClass,
+          loadFactor,
+          peerCap,
+        }),
+      ),
+    deadlineDiagnostics: existsSync(deadlineLog)
+      ? readFileSync(deadlineLog, "utf8")
+          .trim()
+          .split("\n")
+          .filter(Boolean)
+          .map(JSON.parse)
+          .filter((row) => row.hit)
+      : [],
   };
+  check.criticalPath = gateCriticalPath(check);
   try {
     const { readControl } = await import("./lib/control-store.mjs");
     const control = readControl(repo);
@@ -679,11 +840,13 @@ async function runGateChecks(args, repo) {
       : 1;
   // Only the runner records its own successful completion; a subprocess cannot
   // supply a green aggregate. Preserve timed-out/failed attempts as executed.
+  const { taskTimeline, criticalPath, deadlineDiagnostics, ...suiteMetadata } =
+    check;
   recordGateChecks(repo, [
     ...rows
       .filter((row) => row.name !== "document-barrier")
       .map((row) => ({
-        ...check,
+        ...suiteMetadata,
         ...row,
         checkId: `suite:${row.name}`,
         exitCode: unchanged ? row.exitCode : 1,

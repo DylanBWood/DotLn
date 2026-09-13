@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
 import {
   lstatSync,
   mkdirSync,
@@ -68,6 +69,7 @@ if (!isMainThread) {
   const round = async (fixture, members, readers, kind) => {
     const workers = [];
     let deadline;
+    const observation = startDeadline("beacon-contention:reader-round", 30000);
     try {
       const ready = [];
       const results = [];
@@ -115,10 +117,10 @@ if (!isMainThread) {
       const completed = Promise.all(results);
       completed.catch(() => {});
       const timeout = new Promise((_, reject) => {
-        deadline = setTimeout(
-          () => reject(new Error("bounded reader case exceeded 30 seconds")),
-          30000,
-        );
+        deadline = setTimeout(() => {
+          observation.finish(true);
+          reject(new Error("bounded reader case exceeded 30 seconds"));
+        }, 30000);
       });
       await Promise.race([Promise.all(ready), timeout]);
       const cpu = process.cpuUsage();
@@ -153,6 +155,7 @@ if (!isMainThread) {
       };
     } finally {
       clearTimeout(deadline);
+      observation.finish();
       await Promise.allSettled(workers.map((worker) => worker.terminate()));
     }
   };

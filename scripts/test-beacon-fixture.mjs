@@ -29,6 +29,7 @@ export const installBeaconFixture = (root) => {
   const destination = join(root, "packages/skeleton/src");
   mkdirSync(destination, { recursive: true });
   for (const name of [
+    "gate-deadlines.mjs",
     "gate-evidence.mjs",
     "usage-observation.mjs",
     "beacon-codebook.mjs",

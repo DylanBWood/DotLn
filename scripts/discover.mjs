@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { spawnSync } from "node:child_process";
+import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { readFileSync, writeFileSync, realpathSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";

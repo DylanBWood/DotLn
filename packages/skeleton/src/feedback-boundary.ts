@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { readFileSync, realpathSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
 import {
   evaluateFeedback,
   type CompiledFeedback,

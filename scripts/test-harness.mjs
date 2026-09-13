@@ -1,6 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync, spawn, spawnSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
+import {
+  observedSpawnSync as spawnSync,
+  observedSpawn as spawn,
+} from "../packages/skeleton/src/gate-deadlines.mjs";
+import {
+  deadlineLimit,
+  startDeadline,
+} from "../packages/skeleton/src/gate-deadlines.mjs";
 import { createHash } from "node:crypto";
 import {
   cpSync,
@@ -225,7 +233,7 @@ function invoke(root, name, payload, removed = false) {
     cwd: root,
     input: JSON.stringify(payload),
     encoding: "utf8",
-    timeout: 20_000,
+    timeout: deadlineLimit(1000, 20_000),
   });
   assert.equal(
     run.status,
@@ -250,6 +258,11 @@ for (const mode of ["runner", "evidence", "entry"])
     `WO-125 F3 ${mode} refuses generated-hook writes throughout the gate and releases on exit`,
     { timeout: 300000 },
     async (t) => {
+      const testDeadline = startDeadline("harness:gate-guard-test", 300000);
+      t.signal.addEventListener("abort", () => testDeadline.finish(true), {
+        once: true,
+      });
+      t.after(() => testDeadline.finish());
       const root = fixture();
       const local = "docs/control/local";
       let child;
@@ -1938,7 +1951,7 @@ test("WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated mess
       const child = spawn(
         process.execPath,
         [join(root, ".claude/hooks/read-observer.mjs")],
-        { cwd: root, timeout: 20_000 },
+        { cwd: root, timeout: deadlineLimit(1000, 20_000) },
       );
       let stdout = "",
         stderr = "";
@@ -2326,8 +2339,9 @@ test("WO-039 foreign writer reservations refuse while their owner lives, reclaim
 
 // Delays one real filesystem call on the observed reservation until a barrier
 // file appears; liveness, contents, host facts and the hook verdict are untouched.
-const interleavePreload = `const fs = require("node:fs");
-const { syncBuiltinESMExports } = require("node:module");
+const interleavePreload = `import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
+import { deadlineLimit, startDeadline } from ${JSON.stringify(new URL("../packages/skeleton/src/gate-deadlines.mjs", import.meta.url).href)};
 const stage = process.env.RACE_STAGE;
 const original = fs[stage];
 const sleeper = new Int32Array(new SharedArrayBuffer(4));
@@ -2336,11 +2350,12 @@ fs[stage] = function () {
   const under = (path) => typeof path === "string" && (path === lock || path.startsWith(lock + "/"));
   if ([...arguments].some(under)) {
     fs.writeFileSync(process.env.RACE_READY, "ready");
-    const deadline = Date.now() + 20000;
+    const deadline = startDeadline("harness:held-barrier", deadlineLimit(1000, 20000));
     while (!fs.existsSync(process.env.RACE_GO)) {
-      if (Date.now() > deadline) throw new Error("fixture barrier timed out");
+      deadline.check();
       Atomics.wait(sleeper, 0, 0, 5);
     }
+    deadline.finish();
   }
   return original.apply(this, arguments);
 };
@@ -2371,7 +2386,7 @@ function raceHarness(root, children) {
     });
   };
   const seedDead = () => seed({ actorId: actor("dead"), owner: dead });
-  const preload = join(stateDir, "interleave.cjs");
+  const preload = join(stateDir, "interleave.mjs");
   mkdirSync(stateDir, { recursive: true });
   writeFileSync(preload, interleavePreload);
   const edit = (label) =>
@@ -2381,7 +2396,7 @@ function raceHarness(root, children) {
       tool_input: { file_path: join(root, "fixture.ts") },
     });
   const start = (label, stage, args, payload) => {
-    const child = spawn(process.execPath, ["--require", preload, ...args], {
+    const child = spawn(process.execPath, ["--import", preload, ...args], {
       cwd: root,
       env: {
         ...process.env,
@@ -2420,12 +2435,15 @@ function raceHarness(root, children) {
       null,
     );
   const paused = async (label) => {
-    const until = Date.now() + 20_000;
+    const deadline = startDeadline(
+      "harness:await-barrier",
+      deadlineLimit(1000, 20_000),
+    );
     while (!existsSync(join(stateDir, `${label}.ready`))) {
-      if (Date.now() > until)
-        throw new Error(`${label} never reached its barrier`);
+      deadline.check();
       await new Promise((resolve) => setTimeout(resolve, 5));
     }
+    deadline.finish();
   };
   const release = (label) => writeFileSync(join(stateDir, `${label}.go`), "go");
   const verdict = async (done) => {

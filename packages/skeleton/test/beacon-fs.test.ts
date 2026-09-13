@@ -1,4 +1,5 @@
 import test, { type TestContext } from "node:test";
+import { startDeadline } from "../src/gate-deadlines.mjs";
 import assert from "node:assert/strict";
 import { once } from "node:events";
 import { spawnSync } from "node:child_process";
@@ -183,6 +184,11 @@ test(
   "WO-020 AC5 concurrent metadata observer sees only complete codewords and fixed addresses",
   { timeout: 15000 },
   async (t) => {
+    const deadline = startDeadline("beacon:observer-test", 15000);
+    t.signal.addEventListener("abort", () => deadline.finish(true), {
+      once: true,
+    });
+    t.after(() => deadline.finish());
     const root = temporary(t);
     const writer = createBeaconWriter(join(root, "beacons"), repository);
     const alternate = { ...claim, outcome: "failed", refusalCount: 3 };
@@ -206,11 +212,13 @@ test(
       for (let index = 0; index < 128; index++) {
         writer.claim(index % 2 === 0 ? alternate : claim);
         const previous = Atomics.load(control, 1);
-        assert.notEqual(
-          Atomics.wait(control, 1, previous, 2000),
-          "timed-out",
-          "observer overlaps each emission",
+        const acknowledgement = startDeadline(
+          "beacon:observer-acknowledgement",
+          2000,
         );
+        const waited = Atomics.wait(control, 1, previous, 2000);
+        acknowledgement.finish(waited === "timed-out");
+        assert.notEqual(waited, "timed-out", "observer overlaps each emission");
         assert.equal(
           Atomics.load(control, 0),
           0,

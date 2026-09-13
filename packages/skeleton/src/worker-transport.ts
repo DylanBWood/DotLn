@@ -1,4 +1,6 @@
-import { spawn, execFileSync } from "node:child_process";
+import { spawn } from "node:child_process";
+import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
+import { startDeadline } from "./gate-deadlines.mjs";
 import {
   closeSync,
   fstatSync,
@@ -54,6 +56,10 @@ export type ProcessRunner = (launch: WorkerLaunch) => RunningProcess;
 
 /** No shell interpolation; raw harness output is private, bounded and discarded. */
 export const runWorkerProcess: ProcessRunner = (launch) => {
+  const observation = startDeadline(
+    "worker-transport:process",
+    launch.timeoutMs,
+  );
   const capture = mkdtempSync(join(tmpdir(), "dotln-worker-output-"));
   const file = join(capture, "stdout");
   const fd = openSync(file, "wx", 0o600);
@@ -82,6 +88,7 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
   void accepted.catch(() => {});
   const completed = new Promise<ProcessResult>((resolve, reject) => {
     const deadline = setTimeout(() => {
+      observation.finish(true);
       failure = new WorkerFailure("deadline-exceeded");
       kill();
     }, launch.timeoutMs);
@@ -107,6 +114,7 @@ export const runWorkerProcess: ProcessRunner = (launch) => {
       live = false;
     });
     child.once("close", (exitCode, signal) => {
+      observation.finish();
       live = false;
       clearTimeout(deadline);
       clearInterval(bound);

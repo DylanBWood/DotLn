@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
 import { createHash, randomBytes } from "node:crypto";
 import {
   appendFileSync,
@@ -65,7 +65,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.15.2";
+export const HARNESS_HOST_VERSION = "0.15.3";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;

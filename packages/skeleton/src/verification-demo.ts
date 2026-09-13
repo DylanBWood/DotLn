@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process";
+import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
 import {
   existsSync,
   lstatSync,

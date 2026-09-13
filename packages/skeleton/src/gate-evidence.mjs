@@ -1,4 +1,5 @@
-import { spawnSync } from "node:child_process";
+import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
+import { startDeadline } from "./gate-deadlines.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import {
   existsSync,
@@ -468,19 +469,18 @@ export function recordGateChecks(root, additions) {
   // Concurrent suites and sessions share this cache. Serialize the short
   // read/replace transaction so one successful record cannot erase another.
   const lock = `${path}.lock`;
-  const deadline = Date.now() + 5000;
+  const deadline = startDeadline("gate-evidence:record-lock", 5000);
   for (;;) {
     try {
       mkdirSync(lock);
+      deadline.finish();
       break;
     } catch (error) {
-      if (
-        /** @type {NodeJS.ErrnoException} */ (error).code !== "EEXIST" ||
-        Date.now() >= deadline
-      )
+      if (/** @type {NodeJS.ErrnoException} */ (error).code !== "EEXIST")
         throw new Error(
           "Host gate evidence lock unavailable; no evidence overwritten",
         );
+      deadline.check();
       Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10);
     }
   }
