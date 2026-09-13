@@ -744,6 +744,30 @@ const requirePhase = (state, ...phases) => {
   );
 };
 
+/**
+ * The briefing each dispatch prints. `briefing` projects the recorded
+ * dispatch's briefing read-only for the current phase, so a session that
+ * resumes a recorded repair, verification or final review receives what the
+ * recording session received, without a second transition.
+ */
+const executionBriefing = (state) => {
+  const declaration = activeWorkOrderDeclaration(state);
+  return `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; after its evidence gate passes, run ${commandFor("implementation-ready")}.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
+};
+const repairBriefing = (state) =>
+  `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
+const verificationBriefing = (state, reportPath) =>
+  `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}.`;
+const finalReviewBriefing = (state, reportPath) =>
+  `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}.`;
+const recordedBriefings = {
+  active: executionBriefing,
+  repairing: repairBriefing,
+  verifying: (state) =>
+    verificationBriefing(state, state.latestVerificationPath),
+  "final-review": (state) => finalReviewBriefing(state, state.finalReviewPath),
+};
+
 export const main = async (argv = process.argv.slice(2)) => {
   const [action = "status", ...rawArgs] = argv;
   const { args, workOrder } = selectionArgs(rawArgs);
@@ -831,6 +855,17 @@ export const main = async (argv = process.argv.slice(2)) => {
         message = recoverControlTimes(repoRoot, events, locations);
       }
       break;
+    case "briefing": {
+      if (args.length)
+        throw new Error("usage: resume briefing [--work-order WO-NNN]");
+      const recorded = recordedBriefings[state.phase];
+      if (!recorded)
+        throw new Error(
+          `no dispatch is recorded in phase ${state.phase}; run: ${legalActions(state).map(commandFor).join(" or ") || "no command is currently legal"}`,
+        );
+      message = recorded(state);
+      break;
+    }
     case "activate": {
       requirePhase(state, "none", "closed");
       const [workOrderId, workOrderPath] = args;
@@ -883,7 +918,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         verificationId,
         reportPath,
       });
-      message = `Verify ${state.workOrderPath}; write the immutable report to ${reportPath}.`;
+      message = verificationBriefing(state, reportPath);
       break;
     }
     case "verification-result": {
@@ -946,14 +981,13 @@ export const main = async (argv = process.argv.slice(2)) => {
         )
       )
         requirePhase(state, "needs-fix");
-      const briefing = executorEntryBriefing(repoRoot, state.workOrderId);
+      message = repairBriefing(state);
       appendTransition(action, {
         type: "RepairRequested",
         workOrderId: state.workOrderId,
         sourceFindingId: state.failureSourceId,
         sourceReportPath: state.failureSourcePath,
       });
-      message = `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.${briefing}`;
       break;
     }
     case "repair-complete": {
@@ -986,7 +1020,7 @@ export const main = async (argv = process.argv.slice(2)) => {
         finalReviewId,
         reportPath,
       });
-      message = `Final-review ${state.workOrderPath}, the complete verification sequence, and ideation receipt; write ${reportPath}.`;
+      message = finalReviewBriefing(state, reportPath);
       break;
     }
     case "final-review-result": {
@@ -1056,13 +1090,9 @@ export const main = async (argv = process.argv.slice(2)) => {
           );
         restricted = `\n${restrictedBeaconBriefing(repoRoot, state.workOrderId, args[1])}`;
       }
-      const declaration =
-        state.phase === "active"
-          ? activeWorkOrderDeclaration(state)
-          : undefined;
       message =
         state.phase === "active"
-          ? `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; after its evidence gate passes, run ${commandFor("implementation-ready")}.${executorEntryBriefing(repoRoot, state.workOrderId)}${restricted}`
+          ? `${executionBriefing(state)}${restricted}`
           : `Current work order ${state.workOrderId} is closed. ${openOrders(control).length ? `Other in-flight orders: ${openOrders(control).join(", ")}; inspect one with npm run resume -- status --work-order WO-NNN.` : "The repository is between work orders; start a valid next work order with npm run worktree -- start WO-NNN docs/work-orders/WO-NNN-name.md."}`;
       break;
     }
@@ -1081,7 +1111,7 @@ export const main = async (argv = process.argv.slice(2)) => {
       throw new Error(`unknown resume action: ${action}`);
   }
 
-  if (!["status", "times", "usage"].includes(action)) {
+  if (!["status", "times", "usage", "briefing"].includes(action)) {
     control = readControl(repoRoot);
     latestClosed = latestClosedOrder(
       control,

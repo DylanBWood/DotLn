@@ -36,6 +36,7 @@ import {
   type HarnessEvent,
 } from "@dotln/compiler";
 import { harnessAuthorization } from "./reactor.js";
+import { personalFeedback } from "./loadouts/feedback.js";
 import {
   HarnessCommandRefused,
   harnessToolEffects,
@@ -66,7 +67,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.15.4";
+export const HARNESS_HOST_VERSION = "0.15.8";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;
@@ -146,6 +147,7 @@ interface ControlView {
   readonly workOrderPath: string | null;
   readonly phase: string;
   readonly latestVerdict: string | null;
+  readonly legalNextActions?: readonly string[];
 }
 interface ReadRange {
   readonly path: string;
@@ -311,6 +313,206 @@ const initialSession = (): HarnessSession => ({
   startingEventCount: 0,
   reads: [],
 });
+/**
+ * The operator's phrase is the dispatch. Claude's session hook records the
+ * matching lifecycle transition itself, so no role can begin work without it:
+ * a legal action runs and its briefing is delivered, an already-recorded one
+ * passes with the same briefing projected read-only from the current phase,
+ * and anything else refuses with the lifecycle's own legal actions. A
+ * lifecycle that exposes no legal actions (a fixture stub or an older status
+ * projection) leaves the command to the role, as before.
+ */
+const phraseDispatches: Readonly<
+  Record<string, { readonly action: string; readonly active?: string }>
+> = {
+  "resume: next": { action: "next" },
+  "resume: fix": { action: "fix", active: "repairing" },
+  "resume: verify": { action: "verify", active: "verifying" },
+  "resume: final review": { action: "final-review", active: "final-review" },
+};
+/**
+ * A prompt dispatch stands in for the ordinary `npm run resume -- <action>`
+ * tool invocation and is admitted exactly as that command would be: the same
+ * active-gate refusal and the same compiled writer-isolation unit judge the
+ * equivalent invocation before the lifecycle runs, so a live evidence gate or
+ * another session's live reservation refuses the dispatch before any event,
+ * checkpoint or control projection can change. `next` remains the metadata
+ * command it is for the tool path, and the reservation an admitted dispatch
+ * takes is the one the session's first write would take.
+ */
+const dispatchInvocation = (
+  input: HarnessInput,
+  action: string,
+): HarnessInput => ({
+  ...input,
+  hook_event_name: "PreToolUse",
+  tool_name: "Bash",
+  tool_input: { command: `npm run resume -- ${action}` },
+});
+/**
+ * The dispatch is judged by the writer unit the installed writer hook
+ * carries. The host compiles that unit from the loadout inventory it ships
+ * with and refuses when the inventory's compiled policy is not the one the
+ * emitted bundle's manifest recorded, so an inventory that drifted from the
+ * bundle cannot admit a dispatch. A bundle without the unit has no writer
+ * boundary on the tool path either, so the dispatch takes none.
+ */
+export function dispatchAdmissionPolicy(root: string): CompiledFeedback | null {
+  const program = personalFeedback();
+  const manifest = readJson<{
+    profiles?: readonly { feedbackPolicyHash?: string }[];
+  } | null>(contained(root, ".claude/harness-manifest.json"), null);
+  const recorded = manifest?.profiles?.map(
+    (profile) => profile.feedbackPolicyHash,
+  );
+  if (!recorded?.length || recorded.some((hash) => hash !== program.policyHash))
+    throw new Error(
+      "Installed harness manifest does not record this feedback policy",
+    );
+  const units = program.units.filter(
+    (unit) =>
+      unit.trigger === "writer-isolation" && unit.mechanism.kind !== "prose",
+  );
+  return units.length ? compileFeedbackUnits(units) : null;
+}
+/** Support names the briefing declares equipped, for the operator's terminal receipt. */
+const equippedSupports = (briefing: string): readonly string[] => [
+  ...new Set(
+    [...briefing.matchAll(/^(.+?) is equipped\b/gm)].map((match) => match[1]!),
+  ),
+];
+/**
+ * The briefing reaches only the model; the receipt is the operator's terminal
+ * evidence that it was delivered. A recorded dispatch and a resumed one share
+ * this delivery, so neither path can omit the supports or the intent line.
+ */
+const briefingDelivery = (
+  note: string,
+  receipt: string,
+  briefing: string,
+): { context: string; receipt: string } => {
+  const supports = equippedSupports(briefing);
+  return {
+    context: `${note}${supports.includes("Intent to Act") ? " Open the reply with one line that begins 'I intend to' and names the concrete initial action, before any tool call." : ""}\n${briefing}`,
+    receipt: `${receipt}; equipped supports: ${supports.join(", ") || "none named by the briefing"}.`,
+  };
+};
+/** Read-only projection of the recorded dispatch's briefing for the current phase. */
+const recordedBriefing = (root: string) =>
+  spawnSync(process.execPath, [join(root, "scripts/resume.mjs"), "briefing"], {
+    cwd: root,
+    encoding: "utf8",
+    timeout: 10_000,
+    maxBuffer: 4 * 1024 * 1024,
+  });
+function recordDispatch(
+  root: string,
+  input: HarnessInput,
+  control: ControlView,
+  intent: string,
+  role: string,
+  tools: HookConfig["tools"],
+  session: HarnessSession,
+  boundary: typeof feedbackBoundary,
+):
+  | { context: string; receipt: string; control: ControlView }
+  | { refusal: string }
+  | null {
+  const dispatch = phraseDispatches[intent];
+  if (!dispatch || !Array.isArray(control.legalNextActions)) return null;
+  const legal = control.legalNextActions;
+  const order = control.workOrder ?? "the selected order";
+  if (legal.includes(dispatch.action)) {
+    const invocation = dispatchInvocation(input, dispatch.action);
+    const gate = activeGateWriteRefusal(invocation, root, tools, session);
+    if (gate) {
+      record(root, input, {
+        dispatch: {
+          action: dispatch.action,
+          recorded: false,
+          refused: "active-gate",
+        },
+      });
+      return { refusal: gate };
+    }
+    const policy = dispatchAdmissionPolicy(root);
+    const facts = policy
+      ? writerIsolationFacts(root, invocation, session, input)
+      : null;
+    const lifecycle = () =>
+      spawnSync(
+        process.execPath,
+        [join(root, "scripts/resume.mjs"), dispatch.action],
+        {
+          cwd: root,
+          encoding: "utf8",
+          timeout: 12_000,
+          maxBuffer: 4 * 1024 * 1024,
+        },
+      );
+    let run: ReturnType<typeof lifecycle>;
+    try {
+      run = policy && facts ? boundary(policy, facts, lifecycle) : lifecycle();
+    } catch (error) {
+      if (!(error instanceof FeedbackRefused) || !facts) throw error;
+      record(root, input, {
+        dispatch: {
+          action: dispatch.action,
+          recorded: false,
+          refused: "writer-isolation",
+        },
+      });
+      return {
+        refusal: `DOTLN_HARNESS_REFUSED: ${feedbackRefusalReason(error, [facts], root)}`,
+      };
+    }
+    const output = `${run.stdout ?? ""}${run.stderr ?? ""}`.trim();
+    record(root, input, {
+      dispatch: { action: dispatch.action, recorded: run.status === 0 },
+    });
+    if (run.status !== 0)
+      return {
+        refusal: `DOTLN_HARNESS_REFUSED: dispatch ${dispatch.action} failed: ${output.slice(0, 600) || run.error?.message || "lifecycle unavailable"}`,
+      };
+    return {
+      ...briefingDelivery(
+        `Dispatch recorded by the harness: npm run resume -- ${dispatch.action}. Never repeat it.`,
+        `DotLn: recorded npm run resume -- ${dispatch.action} for ${order} (${role})`,
+        output,
+      ),
+      control: harnessControl(root),
+    };
+  }
+  if (dispatch.active && control.phase === dispatch.active) {
+    // A resumed session receives the recorded dispatch's briefing from the
+    // lifecycle's read-only projection: no event, checkpoint or reservation.
+    const run = recordedBriefing(root);
+    const briefing = `${run.stdout ?? ""}${run.stderr ?? ""}`.trim();
+    record(root, input, {
+      dispatch: {
+        action: dispatch.action,
+        recorded: false,
+        existing: true,
+        briefed: run.status === 0,
+      },
+    });
+    if (run.status !== 0)
+      return {
+        refusal: `DOTLN_HARNESS_REFUSED: dispatch ${dispatch.action} is already recorded (phase ${control.phase}) but its briefing is unavailable: ${briefing.slice(0, 600) || run.error?.message || "lifecycle unavailable"}`,
+      };
+    return {
+      ...briefingDelivery(
+        `Dispatch ${dispatch.action} is already recorded (phase ${control.phase}); continue without repeating it.`,
+        `DotLn: dispatch ${dispatch.action} is already recorded for ${order} (${role}); continuing in phase ${control.phase}`,
+        briefing,
+      ),
+      control,
+    };
+  }
+  return {
+    refusal: `DOTLN_HARNESS_REFUSED: ${intent} is not a legal dispatch in phase ${control.phase}; legal actions: ${legal.join(", ") || "none"}`,
+  };
+}
 const record = (
   root: string,
   input: HarnessInput,
@@ -1459,7 +1661,7 @@ function metadataCommand(command: string, repositoryCommands = true): boolean {
             : []),
         ].includes(part) ||
         (repositoryCommands &&
-          /^(?:node scripts\/resume\.mjs|npm run resume(?: --silent)? --) (?:status(?: --json)?|times|usage(?: --json)?|next|release-close)$/.test(
+          /^(?:node scripts\/resume\.mjs|npm run resume(?: --silent)? --) (?:status(?: --json)?|times|usage(?: --json)?|briefing|next|release-close)$/.test(
             part,
           )),
     )
@@ -1504,6 +1706,34 @@ function managedReleaseCommand(
   ].includes(command.trim());
 }
 
+/**
+ * Writer facts for one tool invocation. Metadata, managed-usage and managed
+ * release commands are read-only and reserve nothing; any other invocation
+ * reserves or refreshes this session's writer and reports every holder. The
+ * reservation journals under the observed event, so a prompt dispatch admitted
+ * through its equivalent invocation records its acquisition against the prompt.
+ */
+function writerIsolationFacts(
+  root: string,
+  invocation: HarnessInput,
+  session: HarnessSession,
+  observed: HarnessInput = invocation,
+): Extract<FeedbackBoundaryRequest, { readonly kind: "writer-isolation" }> {
+  const actorId = sessionKey(observed);
+  const command = String(invocation.tool_input?.command ?? "");
+  if (
+    invocation.tool_name === "Bash" &&
+    (metadataCommand(command) ||
+      managedUsageCommand(invocation, session) ||
+      managedReleaseCommand(invocation, root, session))
+  )
+    return { ...feedbackWriterFacts(root, actorId, []), writable: false };
+  return feedbackWriterFacts(
+    root,
+    actorId,
+    reserveHarnessWriter(root, observed, actorId),
+  );
+}
 /** Host fact collection is separate from the sole compiled feedback predicate. */
 export function harnessFeedbackFacts(
   policy: CompiledFeedback,
@@ -1540,23 +1770,8 @@ export function harnessFeedbackFacts(
       harnessToolEffects[input.tool_name as keyof typeof harnessToolEffects] ??
         "write",
     )
-  ) {
-    const actorId = sessionKey(input);
-    if (
-      input.tool_name === "Bash" &&
-      (metadataCommand(String(args.command ?? "")) ||
-        managedUsageCommand(input, session) ||
-        managedReleaseCommand(input, root, session))
-    )
-      return [{ ...feedbackWriterFacts(root, actorId, []), writable: false }];
-    return [
-      feedbackWriterFacts(
-        root,
-        actorId,
-        reserveHarnessWriter(root, input, actorId),
-      ),
-    ];
-  }
+  )
+    return [writerIsolationFacts(root, input, session)];
   if (
     handler === "suppression-diff" &&
     ["Edit", "Write"].includes(input.tool_name ?? "")
@@ -2097,6 +2312,7 @@ export async function evaluateHarnessHook(
   }
   if (config.kind === "session") {
     let additionalContext: string | undefined;
+    let receipt: string | undefined;
     const intent = input.prompt?.trim() ?? "";
     const role =
       config.roles?.find((role) => role.intents.includes(intent)) ??
@@ -2113,10 +2329,33 @@ export async function evaluateHarnessHook(
       const auxiliary =
         ["planner", "refuter"].includes(role.name) ||
         ["resume: status", "resume: times"].includes(intent);
-      const control = auxiliary
-        ? { workOrder: null, workOrderPath: null, phase: "none" }
+      let control: ControlView = auxiliary
+        ? {
+            workOrder: null,
+            workOrderPath: null,
+            phase: "none",
+            latestVerdict: null,
+          }
         : harnessControl(root);
-      additionalContext = `DotLn resolved role ${role.name}. Load the dotln-${role.name} skill.${control.workOrderPath ? ` Read the selected work order ${control.workOrderPath} before interpreting the phase, including a closed phase.` : " Follow its requested observation or planning/ideation procedure."} A skill grants no authority.`;
+      const dispatched = auxiliary
+        ? null
+        : recordDispatch(
+            root,
+            input,
+            control,
+            intent,
+            role.name,
+            config.tools,
+            session,
+            boundary,
+          );
+      if (dispatched && "refusal" in dispatched)
+        return protocolRefusal(config.event, dispatched.refusal);
+      if (dispatched) {
+        control = dispatched.control;
+        receipt = dispatched.receipt;
+      }
+      additionalContext = `DotLn resolved role ${role.name}. Load the dotln-${role.name} skill.${control.workOrderPath ? ` Read the selected work order ${control.workOrderPath} before interpreting the phase, including a closed phase.` : " Follow its requested observation or planning/ideation procedure."} A skill grants no authority.${dispatched ? `\n${dispatched.context}` : ""}`;
       const expected: Record<string, string> = {
         "resume: next": "ImplementationReady",
         "resume: fix": "RepairCompleted",
@@ -2198,16 +2437,19 @@ export async function evaluateHarnessHook(
       }
     }
     writeJson(statePath(root, input), session);
+    // The receipt is the operator's only terminal evidence of the dispatch;
+    // the briefing itself reaches the model alone.
+    const notices = [receipt, warning].filter(Boolean).join("\n");
     return additionalContext
       ? {
-          ...(warning ? { systemMessage: warning } : {}),
+          ...(notices ? { systemMessage: notices } : {}),
           hookSpecificOutput: {
             hookEventName: "UserPromptSubmit",
             additionalContext,
           },
         }
-      : warning
-        ? { systemMessage: warning }
+      : notices
+        ? { systemMessage: notices }
         : {};
   }
   if (config.kind === "observe") {
