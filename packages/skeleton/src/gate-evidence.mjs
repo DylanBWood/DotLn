@@ -153,6 +153,35 @@ export function gateInputPath(root, path) {
   });
 }
 
+const suiteDirectories = new Map();
+/** One disposable suite cache per Git common directory, including linked trees.
+ * @param {string} root */
+export function suiteSuccessDirectory(root) {
+  root = realpathSync(root);
+  if (!suiteDirectories.has(root)) {
+    const common = git(root, ["rev-parse", "--git-common-dir"]).trim();
+    suiteDirectories.set(
+      root,
+      join(realpathSync(resolve(root, common)), "dotln/suite-success"),
+    );
+  }
+  return suiteDirectories.get(root);
+}
+/** Recognize literal destinations and physical aliases of trusted suite records.
+ * @param {string} root
+ * @param {string} path */
+export function suiteSuccessPath(root, path) {
+  const cache = prospectiveRealpath(suiteSuccessDirectory(root));
+  const target = prospectiveRealpath(
+    isAbsolute(path) ? path : `${root}${sep}${path}`,
+  );
+  const part = relative(cache, target);
+  return (
+    part === "" ||
+    (part !== ".." && !part.startsWith(`..${sep}`) && !isAbsolute(part))
+  );
+}
+
 /** @typedef {{contract: "gate-run-v1", runId: string, command: string, pid: number, startedAt: string, processStartedAt: string|null}} GateRun */
 /** @param {string} root */
 const gateRunsDirectory = (root) =>

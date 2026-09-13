@@ -47,6 +47,7 @@ import {
   activeGateRuns,
   beginGateRun,
   gateInputPath,
+  suiteSuccessPath,
   gateTreeHash,
   findGateCheck,
   readGateChecks,
@@ -65,7 +66,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.15.3";
+export const HARNESS_HOST_VERSION = "0.15.4";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;
@@ -1955,9 +1956,31 @@ function activeGateWriteRefusal(
   const inventory: HookConfig["tools"] = tools ?? harnessToolEffects;
   const tool = inventory[input.tool_name ?? ""];
   if (tool !== "write" && tool !== "shell" && tool !== "spawn") return null;
+  const args = input.tool_input ?? {};
+  const directory = args.workdir ?? args.cwd ?? root;
+  const command = args.command ?? args.cmd;
+  const destinations =
+    tool === "write"
+      ? [args.file_path ?? args.notebook_path]
+      : tool === "shell" && typeof command === "string"
+        ? shellWritePaths(command)
+        : null;
+  if (
+    typeof directory === "string" &&
+    destinations?.some(
+      (path) =>
+        typeof path === "string" &&
+        suiteSuccessPath(
+          root,
+          isAbsolute(path)
+            ? path
+            : `${isAbsolute(directory) ? directory : `${root}/${directory}`}/${path}`,
+        ),
+    )
+  )
+    return "DOTLN_HARNESS_REFUSED: suite-success cache is runner-owned Git metadata";
   const runs = activeGateRuns(root);
   if (!runs.length) return null;
-  const args = input.tool_input ?? {};
   if (tool === "write") {
     const path = args.file_path ?? args.notebook_path;
     if (typeof path === "string" && !gateInputPath(root, path)) return null;

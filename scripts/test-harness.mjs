@@ -253,6 +253,48 @@ const allowed = (result) =>
   result.decision !== "block" &&
   result.hookSpecificOutput?.permissionDecision !== "deny";
 
+test("WO-129 generated hooks refuse writes to a linked worktree's shared suite cache", (t) => {
+  const root = fixture();
+  const sibling = realpathSync(
+    mkdtempSync(join(tmpdir(), "dotln-cache-hook-")),
+  );
+  t.after(() => rmSync(sibling, { recursive: true, force: true }));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  git(root, "worktree", "add", "--detach", sibling, "HEAD");
+  for (const path of ["packages", "node_modules"])
+    cpSync(join(root, path), join(sibling, path), { recursive: true });
+  emitHarness(sibling);
+  const cache = join(root, ".git/dotln/suite-success/fixture/record.json");
+  for (const attempt of [
+    {
+      tool_name: "Write",
+      tool_input: { file_path: cache, content: "forged\n" },
+    },
+    {
+      tool_name: "Edit",
+      tool_input: {
+        file_path: cache,
+        old_string: "success",
+        new_string: "forged",
+      },
+    },
+    {
+      tool_name: "Bash",
+      tool_input: {
+        command: `mkdir -p '${dirname(cache)}' && printf forged > '${cache}'`,
+      },
+    },
+  ]) {
+    const result = invoke(
+      sibling,
+      "permissions",
+      input(sibling, "PreToolUse", attempt),
+    );
+    assert.equal(allowed(result), false);
+    assert.equal(existsSync(cache), false);
+  }
+});
+
 for (const mode of ["runner", "evidence", "entry"])
   test(
     `WO-125 F3 ${mode} refuses generated-hook writes throughout the gate and releases on exit`,
@@ -456,6 +498,20 @@ while (!existsSync("${local}/" + stage + ".go")) {
               },
             },
             {
+              tool_name: "Write",
+              tool_input: {
+                file_path: ".git/dotln/suite-success/fixture/record.json",
+                content: "changed\n",
+              },
+            },
+            {
+              tool_name: "Bash",
+              tool_input: {
+                command:
+                  "mkdir -p .git/dotln/suite-success/fixture && printf changed > .git/dotln/suite-success/fixture/record.json",
+              },
+            },
+            {
               tool_name: "Bash",
               tool_input: {
                 command: `printf scratch > ${local}/scratch.txt && touch fixture.ts`,
@@ -554,12 +610,14 @@ while (!existsSync("${local}/" + stage + ".go")) {
                 assert.equal(existsSync(join(root, path)), false, path);
               const reason =
                 verdict.hookSpecificOutput.permissionDecisionReason;
-              assert.match(reason, /active gate/);
+              assert.match(reason, /active gate|suite-success cache/);
               assert.ok(
-                runs.some(
-                  (run) =>
-                    reason.includes(run.runId) && reason.includes(run.command),
-                ),
+                reason.includes("suite-success cache") ||
+                  runs.some(
+                    (run) =>
+                      reason.includes(run.runId) &&
+                      reason.includes(run.command),
+                  ),
               );
             }
           for (const hook of [

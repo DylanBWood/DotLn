@@ -291,7 +291,8 @@ test("reuse keys distinguish the declared load policy without transient peer or 
   const snapshot = {
     reusable: true,
     entries: [],
-    context: "fixture",
+    context: { git: "fixture", environment: "fixture", toolchain: "fixture" },
+    gitState: {},
     runtime: "fixture",
   };
   const task = {
