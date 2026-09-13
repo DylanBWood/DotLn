@@ -4,12 +4,14 @@ unset DOTLN_ACCOUNT_LABEL # Fixtures declare their own actors.
 release_template=""
 selected_case=""
 prepare_template=""
+signal_probe_ready=""
 real_npm_all=0
 while (( "$#" )); do
   case "$1" in
     --case) selected_case="${2:?case name required}"; shift 2 ;;
     --template) release_template="${2:?template required}"; shift 2 ;;
     --prepare-template) prepare_template="${2:?destination required}"; shift 2 ;;
+    --signal-probe-ready) signal_probe_ready="${2:?ready file required}"; shift 2 ;;
     --real-npm) real_npm_all=1; shift ;;
     *) printf "error: unknown release fixture argument %s\n" "$1" >&2; exit 64 ;;
   esac
@@ -25,6 +27,16 @@ create_test_temp_root "$tmp_base" "$test_root_prefix"
 test_root="$test_temp_root_result"
 install_test_temp_root_traps "$tmp_base" "$test_root" "$test_root_prefix"
 node_bin="$(command -v node)"
+if [[ -n "$signal_probe_ready" ]]; then
+  # Signal tests enter the real suite after its cleanup traps are installed.
+  # A waiting foreground child makes shell-only signal delivery fail reliably.
+  "$node_bin" --input-type=module -e '
+    import fs from "node:fs";
+    fs.writeFileSync(process.argv[1], "ready\n", { flag: "wx" });
+    setInterval(() => {}, 1000);
+  ' "$signal_probe_ready"
+  exit 1
+fi
 real_git="$(command -v git)"
 real_npm="$(command -v npm)"
 u202f="$(printf '\342\200\257')"
