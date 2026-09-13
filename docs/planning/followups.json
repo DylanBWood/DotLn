@@ -837,6 +837,16 @@
           "reason": "The 2026-09-12 planning pass rewrote this map bullet to record its allocation to WO-128 criterion 2; the new item carries the same candidate and its history.",
           "reopenWhen": "If the new item is removed from the map or its allocation to WO-128 is reversed.",
           "at": "2026-09-12T16:40:35.984Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "duplicate",
+          "targets": [
+            "FUP-2de0cadfd1038991"
+          ],
+          "reason": "Preserve the planning allocation rewrite and original nomination lineage. Its replacement FUP-2de0cadfd1038991 is now settled by WO-128; see docs/evidence/WO-128/README.md and decisions.md D008.",
+          "reopenWhen": "A diagnosed collector deadline failure within the declared load class, a new read-only command with a materially different baseline, or a changed host or scheduler policy invalidates WO-128 measurements.",
+          "at": "2026-09-12T22:16:41.578Z"
         }
       ]
     },
@@ -3074,6 +3084,14 @@
           "reason": "Six fresh full gates of 2026-09-11/12 failed on the console collector 60 s bound under gate load (WO-125 VER-001 O6, VER-003 O3, VER-004 AC5, FINAL-001 item 3); WO-128 criterion 2 makes the bound load-derived or protects the suite with a scheduler load class while keeping the read-only guarantee.",
           "reopenWhen": "WO-128 closes without the console collector bound repaired, or a fresh full gate fails on it after WO-128 closes.",
           "at": "2026-09-12T16:40:36.057Z"
+        },
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "targets": [],
+          "reason": "WO-128 derives the read-only collector bound from the measured 17.2 s baseline and declared scheduler factor. Five consecutive fresh full shared gates pass all 78 tasks with zero reuse; the largest collector observation is 61,751.335 ms under the 137,600 ms bound. Evidence: docs/evidence/WO-128/README.md and docs/evidence/WO-128/deadline-comparison.json.",
+          "reopenWhen": "A diagnosed collector deadline failure within the declared load class, a new read-only command with a materially different baseline, or a changed host or scheduler policy invalidates WO-128 measurements.",
+          "at": "2026-09-12T22:16:41.458Z"
         }
       ]
     },
@@ -3087,6 +3105,13 @@
           "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
           "title": "Candidate — cold-gate structural cuts",
           "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. The cuts, each measured before allocation: copy-on-write clones of the sealed release template and other pre",
+          "missing": false
+        },
+        {
+          "hash": "d6b2844f6ce835e2183d6f4eea0241f52d483a47582120f1a24e227846a02743",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
           "missing": false
         }
       ],
@@ -3124,6 +3149,206 @@
           "at": "2026-09-12T18:57:44.080Z"
         }
       ]
+    },
+    {
+      "id": "FUP-65163c0865d7ae13",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e525e3c49012e652e214aca394893ac2fc45131b4532527a60d982b623bff993",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d001",
+          "title": "WO-128-D001: Diagnose the twelve nominated gates from retained rows and cited reports, then measure isolated deadlines and shared-cap execution before selecting bounds or removing exclusivity. Include",
+          "summary": "{ \"id\": \"WO-128-D001\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next selected WO-128 in its dedicated worktree.\", \"decision\": \"Diagnose the twelve nominated gates from retained rows and cited reports, then measure isolated deadlines and shared-cap execution before selecting bounds or removing exclusivity. Include reachable shared host helpers in the deadline inventory. Missing historical logs remain unknown.\", \"evidence\": [ \"docs/work-orders/WO-128-fresh-gates-pass-first-time.md\", \"docs/verifications/WO-125/VER-003.md#observations\", \"docs/evidence/WO-126/decisions.md#wo-126-d012\", \"scripts/test-runner.mjs\" ], \"rejected\": [ { \"option\": \"Leave the current deadlines and exclusivity u",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1ac7aa065f5e24ff",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "20adde3fed092cbf799adb53b5324c7adebdeaf4043b31fc53c8ffdf77db2877",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d002",
+          "title": "WO-128-D002: Give the two planning cost fixtures explicitly empty synthetic budget acceptances. Their cost tables already declare no acceptances, while the copied live budget now contains an operator ",
+          "summary": "{ \"id\": \"WO-128-D002\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next, followed by Continue with the bounded fixture repair after the executor's asynchronous check-in.\", \"decision\": \"Give the two planning cost fixtures explicitly empty synthetic budget acceptances. Their cost tables already declare no acceptances, while the copied live budget now contains an operator exception. Preserve the stale-evidence assertions and the production validator.\", \"evidence\": [ \"scripts/test-plan-refutation.mjs\", \"docs/control/budgets.json\", \"docs/control/local/wo128-baseline/plan-refutation-fixtures.log\" ], \"rejected\": [ { \"option\": \"Change the production freshness check or retry the unchanged fix",
+          "missing": false
+        },
+        {
+          "hash": "730ef79da9060c3e2826feb60c49b82ddcfab54a152ab4df8ab4a8f3a58eea4d",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d002",
+          "title": "WO-128-D002: Give the two planning cost fixtures explicitly empty synthetic budget acceptances. Their cost tables already declare no acceptances, while the copied live budget now contains an operator ",
+          "summary": "{ \"id\": \"WO-128-D002\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next, followed by Continue with the bounded fixture repair after the executor's asynchronous check-in.\", \"decision\": \"Give the two planning cost fixtures explicitly empty synthetic budget acceptances. Their cost tables already declare no acceptances, while the copied live budget now contains an operator exception. Preserve the stale-evidence assertions and the production validator.\", \"evidence\": [ \"scripts/test-plan-refutation.mjs\", \"docs/control/budgets.json\", \"docs/evidence/WO-128/fixture-results.md\" ], \"rejected\": [ { \"option\": \"Change the production freshness check or retry the unchanged fixtures\", \"reason\": \"The ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-135f8ce7a2ca1c7b",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6c76eb9c094098ad4dea22007faa96dbd22a5e4c1426f04cce7ad8358c0d8991",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d003",
+          "title": "WO-128-D003: Withdraw the neutral-instrument claim and retain the unknown-startup-adapter refusal; use explicit deadline observation instead.",
+          "summary": "{ \"id\": \"WO-128-D003\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next; diagnosis-first requirement in WO-128.\", \"kind\": \"correction\", \"decision\": \"Withdraw the neutral-instrument claim and retain the unknown-startup-adapter refusal; use explicit deadline observation instead.\", \"misread\": \"A temporary NODE_OPTIONS preload was treated as a neutral timing instrument for the runner fixtures.\", \"meant\": \"Unknown startup adapters deliberately disable reusable suite evidence, so that probe changes an input the reuse fixtures judge.\", \"changed\": \"Retained the failed probe separately; it is not a product failure or a passing baseline. Use explicit deadline wrappers in the shipped code and o",
+          "missing": false
+        },
+        {
+          "hash": "80603a0615d29f6ec8f765940a35f2dced4923f6b33f4add19585f4b8294417d",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d003",
+          "title": "WO-128-D003: Withdraw the neutral-instrument claim and retain the unknown-startup-adapter refusal; use explicit deadline observation instead.",
+          "summary": "{ \"id\": \"WO-128-D003\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next; diagnosis-first requirement in WO-128.\", \"kind\": \"correction\", \"decision\": \"Withdraw the neutral-instrument claim and retain the unknown-startup-adapter refusal; use explicit deadline observation instead.\", \"misread\": \"A temporary NODE_OPTIONS preload was treated as a neutral timing instrument for the runner fixtures.\", \"meant\": \"Unknown startup adapters deliberately disable reusable suite evidence, so that probe changes an input the reuse fixtures judge.\", \"changed\": \"Retained the failed probe separately; it is not a product failure or a passing baseline. Use explicit deadline wrappers in the shipped code and o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f18217238c2adec7",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1738ec02150afd770fc364d2b9daa0fb187a6409e71db4d7bf423fb8313cce00",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d004",
+          "title": "WO-128-D004: Declare shared scheduling at at most four slots and isolated scheduling at one slot. Pass twice the slot count as the load factor, using measured solo baselines with the existing standalo",
+          "summary": "{ \"id\": \"WO-128-D004\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next selecting the complete deadline and exclusivity deliverable.\", \"decision\": \"Declare shared scheduling at at most four slots and isolated scheduling at one slot. Pass twice the slot count as the load factor, using measured solo baselines with the existing standalone bound as a floor. Preserve fixed bounds whose measured work fits the declared peer cap. Instrument timed subprocesses through explicit imports, and instrument manual barriers and watchdogs directly. Record current peers, numeric duration and host load on a hit; do not infer a defect from elapsed time alone. Add task intervals, start peers and scheduler",
+          "missing": false
+        },
+        {
+          "hash": "19c6425227527ce5ea22fd08990da7ce874fec254f4b97b70a4319b32378eb32",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d004",
+          "title": "WO-128-D004: Declare shared scheduling at at most four slots and isolated scheduling at one slot. Pass twice the slot count as the load factor, using measured solo baselines with the existing standalo",
+          "summary": "{ \"id\": \"WO-128-D004\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next selecting the complete deadline and exclusivity deliverable.\", \"decision\": \"Declare shared scheduling at at most four slots and isolated scheduling at one slot. Pass twice the slot count as the load factor, using measured solo baselines with the existing standalone bound as a floor. Preserve fixed bounds whose measured work fits the declared peer cap. Instrument timed subprocesses through explicit imports, and instrument manual barriers and watchdogs directly. Record current peers, numeric duration and host load on a hit; do not infer a defect from elapsed time alone. Add task intervals, start peers and scheduler",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-bc8ffa80aa578fe7",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8139fa5983eb70d5701dca59d59d597cec4ec42a976ef615d576d02b46f98b13",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d005",
+          "title": "WO-128-D005: Complete the missing activation target as application v0.17.3 above the observed local v0.17.2 tag. Patch skeleton to 0.15.3 for internal deadline observation and console to 0.1.5 for the",
+          "summary": "{ \"id\": \"WO-128-D005\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next and the standing classified-release opt-out default.\", \"decision\": \"Complete the missing activation target as application v0.17.3 above the observed local v0.17.2 tag. Patch skeleton to 0.15.3 for internal deadline observation and console to 0.1.5 for the load-derived collector bound. Preserve compiler, kernel, exported contracts, package privacy and publication controls.\", \"evidence\": [ \"docs/work-orders/WO-128-fresh-gates-pass-first-time.md\", \"docs/product/06-roadmap.md#release-boundary\", \"packages/skeleton/package.json\", \"packages/console/package.json\" ], \"rejected\": [ { \"option\": \"Bump unchanged components or",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c19af109f0ec4eb6",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e86b8e70580a8bcadb0f37eec8a0eda42c98fff7ba5069f1f2a6aa827aed773a",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d006",
+          "title": "WO-128-D006: Include the beacon contention smoke-test timer and the discovery helper in the scoped inventory. Pin the new internal deadline helper with the frozen harness runtime and include it in the",
+          "summary": "{ \"id\": \"WO-128-D006\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next; complete deadline inventory and current evidence required by WO-128.\", \"decision\": \"Include the beacon contention smoke-test timer and the discovery helper in the scoped inventory. Pin the new internal deadline helper with the frozen harness runtime and include it in the feedback source snapshot. Regenerate authority and source-pinned feedback evidence in new WO-128 editions, preserving historical editions and the existing live read-only feedback audit protocol.\", \"evidence\": [ \"scripts/benchmark-beacon-contention.mjs\", \"scripts/discover.mjs\", \"packages/skeleton/src/feedback-audit.ts\", \"scripts/lib/harness.mjs\",",
+          "missing": false
+        },
+        {
+          "hash": "1dde7dcebb64a1215d4681ff5b01d255682c0ebe4498b3914adc7eff1984c553",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d006",
+          "title": "WO-128-D006: Include the beacon contention smoke-test timer and the discovery helper in the scoped inventory. Pin the new internal deadline helper with the frozen harness runtime and include it in the",
+          "summary": "{ \"id\": \"WO-128-D006\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next; complete deadline inventory and current evidence required by WO-128.\", \"decision\": \"Include the beacon contention smoke-test timer and the discovery helper in the scoped inventory. Pin the new internal deadline helper with the frozen harness runtime and include it in the feedback source snapshot. Regenerate authority and source-pinned feedback evidence in new WO-128 editions, preserving historical editions and the existing live read-only feedback audit protocol.\", \"evidence\": [ \"scripts/benchmark-beacon-contention.mjs\", \"scripts/discover.mjs\", \"scripts/test-beacon-fixture.mjs\", \"packages/skeleton/src/feedback-au",
+          "missing": false
+        },
+        {
+          "hash": "65d2b4d9b23d981ce1fde13a07a6c9dd04cb2e3425748e450b2e886e567e441d",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d006",
+          "title": "WO-128-D006: Include the beacon contention smoke-test timer and the discovery helper in the scoped inventory. Pin the new internal deadline helper with the frozen harness runtime and include it in the",
+          "summary": "{ \"id\": \"WO-128-D006\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next; complete deadline inventory and current evidence required by WO-128.\", \"decision\": \"Include the beacon contention smoke-test timer and the discovery helper in the scoped inventory. Pin the new internal deadline helper with the frozen harness runtime and include it in the feedback source snapshot. Regenerate authority and source-pinned feedback evidence in new WO-128 editions, preserving historical editions and the existing live read-only feedback audit protocol.\", \"evidence\": [ \"scripts/benchmark-beacon-contention.mjs\", \"scripts/discover.mjs\", \"scripts/test-beacon-fixture.mjs\", \"packages/skeleton/test/control-be",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-397d7cff1442647f",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6deabafe0aa590a18933ecfb2928650a4ea7ad24e7acffd4c8bb0a4c38f0e20b",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d007",
+          "title": "WO-128-D007: Repair the signal-cleanup fixture protocol. Start the real release-suite shell in its own process group, wait for a foreground child to acknowledge that the real cleanup traps are install",
+          "summary": "{ \"id\": \"WO-128-D007\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next; diagnose and repair a non-load defect found by the required five-run series before restarting its count.\", \"decision\": \"Repair the signal-cleanup fixture protocol. Start the real release-suite shell in its own process group, wait for a foreground child to acknowledge that the real cleanup traps are installed, and signal that owned group. Keep the 15-second deadline and both exit-status and residue assertions. Preserve the failed first series and restart five fresh gates on the repaired source under the shared cap.\", \"evidence\": [ \"docs/evidence/WO-128/shared-series-001.json\", \"docs/evidence/WO-128/signal-cleanup",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-979489f62a89bb7d",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0bcd133da40ae5ab8da9727b19e6239acf1ea467a13dcd63a415af705065eeb2",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d008",
+          "title": "WO-128-D008: Keep harness-fixtures and process-debt under the shared cap after five consecutive fresh full passes, all 78 tasks executed with zero reuse on unchanged source. Retain the diagnosed faile",
+          "summary": "{ \"id\": \"WO-128-D008\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next, including the approved bounded planning fixture repair; all six WO-128 acceptance criteria remain in scope.\", \"decision\": \"Keep harness-fixtures and process-debt under the shared cap after five consecutive fresh full passes, all 78 tasks executed with zero reuse on unchanged source. Retain the diagnosed failed first series. Record the measured wall-clock beside the exact prior gate and settle the console collection follow-up through its preserved FUP-0054 lineage.\", \"evidence\": [ \"docs/evidence/WO-128/shared-series-002.json\", \"docs/evidence/WO-128/shared-series-001.json\", \"docs/evidence/WO-128/deadline-compariso",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6ce3dc9286b49cad",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "aa59c09737a162dc96d7643a504bb79db2e6ed6cd9e32513ea2c65e7fa6462ff",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d009",
+          "title": "WO-128-D009: Use the existing literal Execution record heading and move its date into the body. Preserve the planning-continuation validator and all work-order authority bytes except the permitted rel",
+          "summary": "{ \"id\": \"WO-128-D009\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: next; correct the executor-authored write-back rejected by the final canonical gate.\", \"kind\": \"correction\", \"decision\": \"Use the existing literal Execution record heading and move its date into the body. Preserve the planning-continuation validator and all work-order authority bytes except the permitted release assignment and execution appendix.\", \"misread\": \"A dated Execution record heading was treated as the allowed execution appendix.\", \"meant\": \"The existing continuation contract requires the exact heading ## Execution record, followed by a blank line and body text.\", \"changed\": \"Corrected the heading and retaine",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0035fdeaed589733",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "248526a19ba0fdeab60f21500638e2d0c9cc2e8bc651e465bcc094b160ad735b",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d010",
+          "title": "WO-128-D010: Record the measured cost of shared scheduling in the diagnosis, the README and product 07, keep the flags removed as criterion 4 prescribes, and leave restoring them as an open operator d",
+          "summary": "{ \"id\": \"WO-128-D010\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: final review; VER-001 F2 against the order's Cost line and objective.\", \"kind\": \"correction\", \"decision\": \"Record the measured cost of shared scheduling in the diagnosis, the README and product 07, keep the flags removed as criterion 4 prescribes, and leave restoring them as an open operator decision.\", \"misread\": \"The order's Cost line predicted that removing exclusivity would save up to 206 s of concurrency-one time per fresh gate, and the diagnosis called the removal a measured benefit.\", \"meant\": \"Criterion 4 prescribes removal after five shared passes and asks for the wall-clock beside the prior gate; only a same",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fd68f5ad9621b93a",
+      "key": "decision:docs/evidence/WO-128/decisions.md#wo-128-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4a8fdfe097c0c8ea6744e49e0f976ea042d2c0e3f16f60068dcdbbd32196566e",
+          "ref": "docs/evidence/WO-128/decisions.md#wo-128-d011",
+          "title": "WO-128-D011: A task skipped for a failed dependency is never a scheduler predecessor. The group edge considers only started tasks, and a fixture schedules the F1 table serially and computes the critic",
+          "summary": "{ \"id\": \"WO-128-D011\", \"date\": \"2026-09-12\", \"dispatch\": \"Operator resume: final review; VER-001 F1.\", \"decision\": \"A task skipped for a failed dependency is never a scheduler predecessor. The group edge considers only started tasks, and a fixture schedules the F1 table serially and computes the critical path over the started rows.\", \"evidence\": [ \"docs/verifications/WO-128/VER-001.md#findings\", \"scripts/test-runner.mjs\", \"scripts/test-gate-deadlines.mjs\" ], \"rejected\": [ { \"option\": \"Nominate the crash for a later order\", \"reason\": \"The gate would exit without recording its failed suites. The repair is one predicate under the existing runner fixtures, and today's single group escapes it onl",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
