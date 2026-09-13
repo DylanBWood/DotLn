@@ -89,12 +89,12 @@ const cliRunner =
 const claude = (behavior = "success", launches: WorkerLaunch[] = []) =>
   new ClaudeCliPrintWorkOrderTransport(
     cliRunner("claude-cli-print", behavior, launches),
-    "2.1.261",
+    "2.1.270",
   );
 const codex = (behavior = "success", launches: WorkerLaunch[] = []) =>
   new CodexCliExecWorkOrderTransport(
     cliRunner("codex-cli-exec", behavior, launches),
-    "0.153.4",
+    "0.154.0",
   );
 const stateRequest = (driver: LiveReactorDriver): WorkerRequest => ({
   command: commandFromState(driver.state),
@@ -180,7 +180,7 @@ test("WO-009 AC6 canonical launch shapes pin model, settings, memory, persistenc
     WorkerFailure,
   );
   assert.throws(
-    () => new CodexCliExecWorkOrderTransport(undefined, "0.999.0"),
+    () => new CodexCliExecWorkOrderTransport(undefined, "0.153.4"),
     WorkerFailure,
   );
   assert.throws(
@@ -299,17 +299,91 @@ test("WO-125 observed efforts reach the process and durable launch claim without
   }
 });
 
-test("WO-125 unobserved version/effort pairs refuse before process launch and name discovery", () => {
+test("WO-129 versions below the Codex effort minimum refuse and name discovery", () => {
   const driver = new LiveReactorDriver();
   startScenario(driver);
-  const transport = new CodexCliExecWorkOrderTransport(() => {
-    throw new Error("unexpected process launch");
-  }, "0.153.4");
   for (const effort of ["low", "medium", "high", "xhigh", "max"] as const)
     assert.throws(
-      () => transport.dispatch({ ...stateRequest(driver), effort }, Date.now),
+      () =>
+        canonicalWorkerArgs(
+          "codex-cli-exec",
+          { ...stateRequest(driver), effort },
+          "/schema",
+          "0.153.4",
+        ),
       /profile-refused.*docs\/discovery\/codex-effort-2026-09-11\.json/,
     );
+});
+
+test("WO-129 minimum versions admit upgrades and preserve the requested Fable launch", async () => {
+  for (const [Transport, name, versions, older] of [
+    [
+      ClaudeCliPrintWorkOrderTransport,
+      "claude-cli-print",
+      ["2.1.270", "2.1.271", "2.2.0", "2.10.0", "3.0.0"],
+      ["2.1.269", "2.1.99", "1.99.999"],
+    ],
+    [
+      CodexCliExecWorkOrderTransport,
+      "codex-cli-exec",
+      ["0.154.0", "0.154.1", "0.155.0", "0.1000.0", "1.0.0"],
+      ["0.153.99", "0.99.999"],
+    ],
+  ] as const) {
+    for (const version of [...older, "unknown", "invalid"]) {
+      assert.throws(
+        () => new Transport(undefined, version),
+        /profile-refused.*requires version >=/,
+      );
+    }
+    for (const version of versions) {
+      const launches: WorkerLaunch[] = [];
+      const transport = new Transport(
+        cliRunner(name, "success", launches),
+        version,
+      );
+      const driver = new LiveReactorDriver();
+      startScenario(driver);
+      const model =
+        name === "claude-cli-print" ? "claude-fable-5-1" : "gpt-6-astra";
+      const cwd = temporary();
+      const request = stateRequest(driver);
+      const result = transport.dispatch(
+        {
+          ...request,
+          cwd,
+          profile: {
+            ...request.profile,
+            mounts: [{ path: cwd, access: "read" }],
+          },
+          model,
+          effort: "max",
+        },
+        Date.now,
+      );
+      try {
+        await result.receipt;
+        await result.completed;
+        assert.equal(transport.harnessVersion, version);
+        assert.equal(launches.length, 1);
+        const args = launches[0]!.args;
+        assert.equal(args[args.indexOf("--model") + 1], model);
+        assert.ok(!args.includes("--fallback-model"));
+        if (name === "claude-cli-print") {
+          assert.ok(args.includes("--safe-mode"));
+          assert.equal(args[args.indexOf("--tools") + 1], "");
+          assert.equal(args[args.indexOf("--effort") + 1], "max");
+        } else {
+          assert.ok(args.includes('model_reasoning_effort="max"'));
+          assert.ok(
+            args.includes("permissions.dotln-worker.network.enabled=false"),
+          );
+        }
+      } finally {
+        rmSync(cwd, { recursive: true });
+      }
+    }
+  }
 });
 
 test("WO-125 F1 rejects unobserved runtime effort values before process launch", () => {
@@ -479,7 +553,7 @@ test("WO-009 AC1/4 one process replaces only the executor; status is read-only a
         fixture,
         transport: new ClaudeCliPrintWorkOrderTransport(() => {
           throw new Error("unexpected dispatch");
-        }, "2.1.261"),
+        }, "2.1.270"),
         model: "required-model",
         effort: "high",
       }).catch((error) => {
@@ -526,7 +600,7 @@ test("WO-009 row 2 crash after effect before result persist re-queries the durab
     now += LEASE_MS + 1;
     const recovery = new ClaudeCliPrintWorkOrderTransport(() => {
       throw new Error("recovery must query, never dispatch");
-    }, "2.1.261");
+    }, "2.1.270");
     const result = await runWorkerDemo({
       directory: root,
       fixture,
@@ -574,7 +648,7 @@ test("WO-009 row 4 a result after authority expiry is persisted and quarantined 
     const host = new WorkerHost({
       store,
       driver,
-      transport: new ClaudeCliPrintWorkOrderTransport(runner, "2.1.261"),
+      transport: new ClaudeCliPrintWorkOrderTransport(runner, "2.1.270"),
       now: () => now,
     });
     await assert.rejects(
@@ -922,7 +996,7 @@ test("WO-009 a legacy or drifted equip cannot reach a real transport", async () 
       const transport = new ClaudeCliPrintWorkOrderTransport(() => {
         launches++;
         throw new Error("adapter must remain unreachable");
-      }, "2.1.261");
+      }, "2.1.270");
       const host = new WorkerHost({
         store,
         driver,
@@ -964,7 +1038,7 @@ test("WO-009 missed leases fence delayed heartbeats and results while authority 
         runWorkerDemo({
           directory: root,
           fixture,
-          transport: new ClaudeCliPrintWorkOrderTransport(runner, "2.1.261"),
+          transport: new ClaudeCliPrintWorkOrderTransport(runner, "2.1.270"),
           model: "required-model",
           effort: "high",
           now: () => now,
@@ -1022,7 +1096,7 @@ test("WO-009 recovery from a durable result prefix closes the episode and runs t
     writeFileSync(store.logPath, encodeLog(events.slice(0, resultIndex + 1)));
     const recovery = new ClaudeCliPrintWorkOrderTransport(() => {
       throw new Error("unexpected redispatch");
-    }, "2.1.261");
+    }, "2.1.270");
     const recovered = await runWorkerDemo({ ...options, transport: recovery });
     assert.deepEqual(recovered.envelope, first.envelope);
     assert.ok(recovered.scenario.verified);

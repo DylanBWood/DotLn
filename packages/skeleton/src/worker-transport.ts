@@ -179,6 +179,24 @@ const codexDisabled = [
   "unified_exec",
 ];
 
+export const MINIMUM_CLI_VERSIONS = {
+  claude: "2.1.270",
+  codex: "0.154.0",
+} as const;
+
+/** Version observations establish a floor, never an upper bound for upgrades. */
+function meetsMinimumVersion(version: string, minimum: string): boolean {
+  if (!/^\d+\.\d+\.\d+$/u.test(version)) return false;
+  const actual = version.split(".").map(Number);
+  const required = minimum.split(".").map(Number);
+  if (!actual.every(Number.isSafeInteger)) return false;
+  for (let index = 0; index < required.length; index++) {
+    if (actual[index]! > required[index]!) return true;
+    if (actual[index]! < required[index]!) return false;
+  }
+  return true;
+}
+
 export function canonicalWorkerArgs(
   name: WorkerTransportName,
   request: TransportRequest,
@@ -226,16 +244,15 @@ export function canonicalWorkerArgs(
           : "1.00",
     ];
   }
-  // WO-125: docs/discovery/codex-effort-2026-09-11.json observed all five
-  // declared levels on 0.154.0. Older rows establish only the unknown launch.
+  // WO-125 observed these five levels; WO-129 makes its version a minimum.
   if (
     request.effort !== "unknown" &&
-    (harnessVersion !== "0.154.0" ||
+    (!meetsMinimumVersion(harnessVersion, MINIMUM_CLI_VERSIONS.codex) ||
       !["low", "medium", "high", "xhigh", "max"].includes(request.effort))
   )
     throw new WorkerFailure(
       "profile-refused",
-      `Codex effort ${request.effort} unavailable for ${harnessVersion}; see docs/discovery/codex-effort-2026-09-11.json`,
+      `Codex effort ${request.effort} unavailable for ${harnessVersion}; requires CLI >= ${MINIMUM_CLI_VERSIONS.codex} and a declared effort; see docs/discovery/codex-effort-2026-09-11.json`,
     );
   return [
     "exec",
@@ -364,7 +381,7 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
   readonly harnessVersion: string;
   constructor(
     private readonly binary: string,
-    observedVersions: readonly string[],
+    minimumVersion: string,
     private readonly runner: ProcessRunner = runWorkerProcess,
     version?: string,
     private readonly onUsage?: (
@@ -380,8 +397,11 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
       });
     this.harnessVersion =
       installed.match(/\b\d+\.\d+\.\d+\b/u)?.[0] ?? "unknown";
-    if (!observedVersions.includes(this.harnessVersion))
-      throw new WorkerFailure("profile-refused");
+    if (!meetsMinimumVersion(this.harnessVersion, minimumVersion))
+      throw new WorkerFailure(
+        "profile-refused",
+        `${binary} CLI ${this.harnessVersion} requires version >= ${minimumVersion}`,
+      );
   }
   dispatch<R extends TransportRequest>(
     request: R,
@@ -451,13 +471,7 @@ export class ClaudeCliPrintWorkOrderTransport extends CliWorkOrderTransport {
     version?: string,
     onUsage?: (observation: ReturnType<typeof usageObservation>) => void,
   ) {
-    super(
-      "claude",
-      ["2.1.261", "2.1.263", "2.1.268"],
-      runner,
-      version,
-      onUsage,
-    );
+    super("claude", MINIMUM_CLI_VERSIONS.claude, runner, version, onUsage);
   }
 }
 export class CodexCliExecWorkOrderTransport extends CliWorkOrderTransport {
@@ -467,6 +481,6 @@ export class CodexCliExecWorkOrderTransport extends CliWorkOrderTransport {
     version?: string,
     onUsage?: (observation: ReturnType<typeof usageObservation>) => void,
   ) {
-    super("codex", ["0.153.4", "0.154.0"], runner, version, onUsage);
+    super("codex", MINIMUM_CLI_VERSIONS.codex, runner, version, onUsage);
   }
 }
