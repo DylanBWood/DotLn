@@ -20,6 +20,14 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-129 activation completion (2026-09-13):** application `v0.17.4` is the
+next patch above local annotated `v0.17.3`. Skeleton `0.15.4` repairs transport
+version admission and protects the shared suite cache. Minimum CLI versions
+are Claude Code `2.1.270` and Codex `0.154.0`, with newer versions admitted.
+Compiler, kernel and console remain unchanged. Suite-success records advance
+to version 3 without migration; the exact-tree aggregate and lifecycle evidence
+contract remain fixed. See [WO-129 decisions](../evidence/WO-129/decisions.md).
+
 **WO-128 activation completion (2026-09-12):** application `v0.17.3` is the
 next patch above the observed local annotated `v0.17.2` baseline. Skeleton
 `0.15.3` adds bounded gate-deadline observation; console `0.1.5` derives its
