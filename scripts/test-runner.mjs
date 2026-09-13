@@ -37,6 +37,7 @@ import {
   explainSuiteFresh,
   formatSuiteFresh,
 } from "./lib/suite-evidence.mjs";
+import { createReplicaContext, replicaPlan } from "./lib/suite-replica.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const node = (name, file, options = {}) => ({
@@ -219,7 +220,10 @@ export function executeSuite(
   onProgress = () => {},
 ) {
   const started = Date.now();
-  const env = suiteEnvironment(process.env, row.gateContext);
+  const env = suiteEnvironment(
+    row.executionEnvironment ?? process.env,
+    row.gateContext,
+  );
   const deadline = startDeadline(`suite:${row.name}`, timeoutMs, { env });
   onProgress({ name: row.name, message: "started", elapsedMs: 0 });
   let command;
@@ -675,21 +679,16 @@ async function runGateChecks(args, repo) {
       },
     }),
   );
-  const diagnosticRoot = join(
-    repo,
-    "docs/control/local/harness/deadlines",
-    `${Date.now()}-${process.pid}`,
-  );
-  mkdirSync(diagnosticRoot, { recursive: true });
-  const peerFile = join(diagnosticRoot, "active.json");
-  const deadlineLog = join(diagnosticRoot, "deadlines.jsonl");
-  const scoped = tasks.some(
-    (task) => task.reuse === "tree" || suiteScope(task) !== null,
-  );
-  let before;
-  let taskRows;
+  const replicas = createReplicaContext(repo);
   try {
-    taskRows = await scheduleSuites(tasks, {
+    const diagnosticRoot = replicas.diagnostics;
+    const peerFile = join(diagnosticRoot, "active.json");
+    const deadlineLog = join(diagnosticRoot, "deadlines.jsonl");
+    const scoped = tasks.some(
+      (task) => task.reuse === "tree" || suiteScope(task) !== null,
+    );
+    let before;
+    const taskRows = await scheduleSuites(tasks, {
       repo,
       diagnosticContext: { peerFile, deadlineLog },
       onActiveChange(names) {
@@ -707,10 +706,18 @@ async function runGateChecks(args, repo) {
             output: "",
           };
         if (scoped && !row.build && !before) before = observeSuiteInputs(repo);
+        const declaration = suiteDeclaration(row);
+        const plan =
+          before && !row.build ? replicaPlan(row, declaration, before) : null;
         const inputHash =
           row.build || !before ? null : suiteInputHash(row, before);
         const cached = !fresh && loadSuiteSuccess(repo, row.name, inputHash);
-        if (cached) return reusableResult(row, cached, inputHash);
+        if (cached)
+          return {
+            ...reusableResult(row, cached, inputHash),
+            executionRoot: plan && !plan.refusal ? "replica" : "candidate",
+            ...(plan?.refusal ? { narrowingRefusal: plan.refusal } : {}),
+          };
         const identity = suiteInputIdentity(row, before);
         const freshReason = explainSuiteFresh(
           repo,
@@ -726,19 +733,56 @@ async function runGateChecks(args, repo) {
                   ? "undeclared suite"
                   : before && !before.reusable
                     ? "unreusable snapshot"
-                    : undefined,
+                    : plan?.refusal,
         );
         console.log(`FRESH ${row.name} (${formatSuiteFresh(freshReason)})`);
-        const result = await executeSuite(
-          row,
-          cwd,
-          900_000,
-          ({ name, message, elapsedMs }) =>
-            console.log(
-              `PROGRESS [${name}] ${(elapsedMs / 1000).toFixed(1)} s ${message}`,
-            ),
-        );
-        return { ...result, inputHash, freshReason };
+        let replica;
+        let completed;
+        try {
+          if (plan && !plan.refusal)
+            replica = replicas.create(row, declaration, before);
+          const result = await executeSuite(
+            replica ? { ...row, executionEnvironment: replica.env } : row,
+            replica?.root ?? cwd,
+            900_000,
+            ({ name, message, elapsedMs }) =>
+              console.log(
+                `PROGRESS [${name}] ${(elapsedMs / 1000).toFixed(1)} s ${message}`,
+              ),
+          );
+          if (replica && result.exitCode !== 0) {
+            const missing =
+              /(?:ENOENT[^\n]*|Cannot find (?:module|package)[^\n]*|[^\n]*No such file or directory[^\n]*)/.exec(
+                result.output,
+              )?.[0];
+            result.output = `Replica suite ${row.name} failed${missing ? `; first unreadable path: ${missing}` : "; no missing-path diagnostic reported"}. No candidate-tree fallback.\n${result.output}`;
+          }
+          completed = {
+            ...result,
+            inputHash,
+            freshReason,
+            executionRoot: replica ? "replica" : "candidate",
+            ...(replica ? { replica: replica.measurement } : {}),
+            ...(plan?.refusal ? { narrowingRefusal: plan.refusal } : {}),
+          };
+        } catch (error) {
+          completed = {
+            name: row.name,
+            exitCode: 1,
+            durationMs: 0,
+            executed: false,
+            inputHash,
+            freshReason,
+            output: `Replica setup for ${row.name} failed: ${error.message}. No candidate-tree fallback.`,
+          };
+        }
+        try {
+          replica?.cleanup();
+        } catch (error) {
+          completed.exitCode = 1;
+          completed.output += `\nReplica cleanup for ${row.name} failed: ${error.message}`;
+        }
+        return completed;
       },
       onResult(row) {
         if (row.name === "document-barrier") return;
@@ -750,163 +794,172 @@ async function runGateChecks(args, repo) {
             console.log(`  [${row.name}] ${line}`);
       },
     });
+    const after = before ? observeSuiteInputs(repo) : null;
+    for (const row of taskRows) {
+      const task = tasks.find((task) => task.name === row.name);
+      if (row.inputHash && row.inputHash !== suiteInputHash(task, after)) {
+        row.exitCode = 1;
+        row.output += "\nSuite inputs changed during the gate";
+      }
+    }
+    const rows = aggregateSuiteRows(selected, tasks, taskRows);
+    const unchanged = gateTreeHash(repo) === treeHash;
+    const durationMs = Date.now() - started;
+    let withinBudget;
+    const recordedAt = new Date().toISOString();
+    const check = {
+      checkId: only ? `suite:${only}` : checkId,
+      treeHash,
+      subject: treeHash,
+      durationMs,
+      exitCode: 1,
+      executed: true,
+      evidenceRef: `host-gate:${treeHash}:${only ?? checkId}`,
+      recordedAt,
+      executionMode: fresh
+        ? "forced-fresh"
+        : taskRows.some((row) => row.reused)
+          ? "composed"
+          : "fresh",
+      freshSuites: taskRows.filter((row) => row.executed).length,
+      reusedSuites: taskRows.filter((row) => row.reused).length,
+      freshReasons: taskRows
+        .filter((row) => row.executed && row.name !== "document-barrier")
+        .map((row) => ({ name: row.name, ...row.freshReason })),
+      inputObservation: [before, after]
+        .filter(Boolean)
+        .map((snapshot) => snapshot.meter),
+      ...(before ? { inputEnvironmentKeys: before.environmentKeys } : {}),
+      ...(before ? { executionFacts: before.executionFacts } : {}),
+      replicaSetup: replicas.measurements,
+      requiredSuites: selected.map((row) => row.name),
+      loadClass: {
+        sharedCap: concurrency,
+        factorPerSlot: 2,
+        maxHostLoadPerCpu: 2,
+      },
+      taskTimeline: taskRows
+        .filter((row) => row.startedAt)
+        .map(
+          ({
+            name,
+            startedAt,
+            finishedAt,
+            concurrentAtStart,
+            predecessors,
+            schedulerDurationMs,
+            executed,
+            reused,
+            loadClass,
+            loadFactor,
+            peerCap,
+          }) => ({
+            name,
+            startedAt,
+            finishedAt,
+            concurrentAtStart,
+            predecessors,
+            schedulerDurationMs,
+            executed,
+            reused: Boolean(reused),
+            loadClass,
+            loadFactor,
+            peerCap,
+          }),
+        ),
+      deadlineDiagnostics: existsSync(deadlineLog)
+        ? readFileSync(deadlineLog, "utf8")
+            .trim()
+            .split("\n")
+            .filter(Boolean)
+            .map(JSON.parse)
+            .filter((row) => row.hit)
+        : [],
+    };
+    // All children have settled and diagnostics have been read. Finish owned
+    // cleanup before publishing a successful gate or caching suite results.
+    replicas.cleanup();
+    check.criticalPath = gateCriticalPath(check);
+    try {
+      const { readControl } = await import("./lib/control-store.mjs");
+      const control = readControl(repo);
+      const active = [...control.orders].filter(
+        ([, row]) => row.state.phase !== "closed",
+      );
+      if (active.length === 1) check.workOrder = active[0][0];
+    } catch {
+      /* Isolated runner fixtures may have no lifecycle store. */
+    }
+    const budgets = readBudgets(repo);
+    withinBudget = Boolean(
+      full ||
+      document ||
+      only ||
+      budgetVerdict(
+        budgets,
+        "fastGateMs",
+        durationMs,
+        budgets?.limits.fastGateMs ?? 120_000,
+        check.workOrder,
+      ) !== "breach",
+    );
+    check.exitCode =
+      completeCoverage(tasks, taskRows) &&
+      rows.every((row) => row.exitCode === 0) &&
+      unchanged &&
+      withinBudget
+        ? 0
+        : 1;
+    // Only the runner records its own successful completion; a subprocess cannot
+    // supply a green aggregate. Preserve timed-out/failed attempts as executed.
+    const {
+      taskTimeline,
+      criticalPath,
+      deadlineDiagnostics,
+      freshReasons,
+      replicaSetup,
+      ...suiteMetadata
+    } = check;
+    recordGateChecks(repo, [
+      ...rows
+        .filter((row) => row.name !== "document-barrier")
+        .map((row) => ({
+          ...suiteMetadata,
+          ...row,
+          checkId: `suite:${row.name}`,
+          exitCode: unchanged ? row.exitCode : 1,
+        })),
+      check,
+    ]);
+    // Preserve only executed successes at matching before/after inputs. These can
+    // survive an unrelated document edit; the aggregate still requires exact tree.
+    for (const row of taskRows)
+      if (row.executed && row.exitCode === 0 && row.inputHash)
+        saveSuiteSuccess(
+          repo,
+          row,
+          row.inputHash,
+          {
+            ...check,
+            ...row,
+            evidenceRef: `host-suite:${treeHash}:${row.name}`,
+          },
+          suiteInputIdentity(
+            tasks.find((task) => task.name === row.name),
+            before,
+          ),
+        );
+    console.log(
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh / ${check.reusedSuites} reused tasks${unchanged ? "" : "; tree changed"}${withinBudget ? "" : "; fast gate exceeds 120 s budget"}`,
+    );
+    return check;
   } finally {
-    fixture?.cleanup();
-  }
-  const after = before ? observeSuiteInputs(repo) : null;
-  for (const row of taskRows) {
-    const task = tasks.find((task) => task.name === row.name);
-    if (row.inputHash && row.inputHash !== suiteInputHash(task, after)) {
-      row.exitCode = 1;
-      row.output += "\nSuite inputs changed during the gate";
+    try {
+      fixture?.cleanup();
+    } finally {
+      replicas.cleanup();
     }
   }
-  const rows = aggregateSuiteRows(selected, tasks, taskRows);
-  const unchanged = gateTreeHash(repo) === treeHash;
-  const durationMs = Date.now() - started;
-  let withinBudget;
-  const recordedAt = new Date().toISOString();
-  const check = {
-    checkId: only ? `suite:${only}` : checkId,
-    treeHash,
-    subject: treeHash,
-    durationMs,
-    exitCode: 1,
-    executed: true,
-    evidenceRef: `host-gate:${treeHash}:${only ?? checkId}`,
-    recordedAt,
-    executionMode: fresh
-      ? "forced-fresh"
-      : taskRows.some((row) => row.reused)
-        ? "composed"
-        : "fresh",
-    freshSuites: taskRows.filter((row) => row.executed).length,
-    reusedSuites: taskRows.filter((row) => row.reused).length,
-    freshReasons: taskRows
-      .filter((row) => row.executed && row.name !== "document-barrier")
-      .map((row) => ({ name: row.name, ...row.freshReason })),
-    inputObservation: [before, after]
-      .filter(Boolean)
-      .map((snapshot) => snapshot.meter),
-    ...(before ? { inputEnvironmentKeys: before.environmentKeys } : {}),
-    ...(before ? { executionFacts: before.executionFacts } : {}),
-    requiredSuites: selected.map((row) => row.name),
-    loadClass: {
-      sharedCap: concurrency,
-      factorPerSlot: 2,
-      maxHostLoadPerCpu: 2,
-    },
-    taskTimeline: taskRows
-      .filter((row) => row.startedAt)
-      .map(
-        ({
-          name,
-          startedAt,
-          finishedAt,
-          concurrentAtStart,
-          predecessors,
-          schedulerDurationMs,
-          executed,
-          reused,
-          loadClass,
-          loadFactor,
-          peerCap,
-        }) => ({
-          name,
-          startedAt,
-          finishedAt,
-          concurrentAtStart,
-          predecessors,
-          schedulerDurationMs,
-          executed,
-          reused: Boolean(reused),
-          loadClass,
-          loadFactor,
-          peerCap,
-        }),
-      ),
-    deadlineDiagnostics: existsSync(deadlineLog)
-      ? readFileSync(deadlineLog, "utf8")
-          .trim()
-          .split("\n")
-          .filter(Boolean)
-          .map(JSON.parse)
-          .filter((row) => row.hit)
-      : [],
-  };
-  check.criticalPath = gateCriticalPath(check);
-  try {
-    const { readControl } = await import("./lib/control-store.mjs");
-    const control = readControl(repo);
-    const active = [...control.orders].filter(
-      ([, row]) => row.state.phase !== "closed",
-    );
-    if (active.length === 1) check.workOrder = active[0][0];
-  } catch {
-    /* Isolated runner fixtures may have no lifecycle store. */
-  }
-  const budgets = readBudgets(repo);
-  withinBudget = Boolean(
-    full ||
-    document ||
-    only ||
-    budgetVerdict(
-      budgets,
-      "fastGateMs",
-      durationMs,
-      budgets?.limits.fastGateMs ?? 120_000,
-      check.workOrder,
-    ) !== "breach",
-  );
-  check.exitCode =
-    completeCoverage(tasks, taskRows) &&
-    rows.every((row) => row.exitCode === 0) &&
-    unchanged &&
-    withinBudget
-      ? 0
-      : 1;
-  // Only the runner records its own successful completion; a subprocess cannot
-  // supply a green aggregate. Preserve timed-out/failed attempts as executed.
-  const {
-    taskTimeline,
-    criticalPath,
-    deadlineDiagnostics,
-    freshReasons,
-    ...suiteMetadata
-  } = check;
-  recordGateChecks(repo, [
-    ...rows
-      .filter((row) => row.name !== "document-barrier")
-      .map((row) => ({
-        ...suiteMetadata,
-        ...row,
-        checkId: `suite:${row.name}`,
-        exitCode: unchanged ? row.exitCode : 1,
-      })),
-    check,
-  ]);
-  // Preserve only executed successes at matching before/after inputs. These can
-  // survive an unrelated document edit; the aggregate still requires exact tree.
-  for (const row of taskRows)
-    if (row.executed && row.exitCode === 0 && row.inputHash)
-      saveSuiteSuccess(
-        repo,
-        row,
-        row.inputHash,
-        {
-          ...check,
-          ...row,
-          evidenceRef: `host-suite:${treeHash}:${row.name}`,
-        },
-        suiteInputIdentity(
-          tasks.find((task) => task.name === row.name),
-          before,
-        ),
-      );
-  console.log(
-    `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh / ${check.reusedSuites} reused tasks${unchanged ? "" : "; tree changed"}${withinBudget ? "" : "; fast gate exceeds 120 s budget"}`,
-  );
-  return check;
 }
 if (
   process.argv[1] &&

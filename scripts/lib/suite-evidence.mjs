@@ -28,9 +28,18 @@ import {
   suiteSuccessDirectory,
 } from "./gate-evidence.mjs";
 import { releaseCases } from "./release-fixtures.mjs";
+import {
+  declaredPath,
+  replicaMechanismVersion,
+  replicaNodeOptions,
+  replicaMainNodeOptions,
+  supportedReplicaNodeOptions,
+  replicaPlan,
+  replicaSupportPaths,
+} from "./suite-replica.mjs";
 
 const version = 3;
-const declarationVersion = 1;
+const declarationVersion = 2;
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const jsonHash = (value) => digest(JSON.stringify(value));
 export function suiteEnvironment(env = process.env, gateContext) {
@@ -65,7 +74,11 @@ export function suiteEnvironment(env = process.env, gateContext) {
           /^(?:LC_|NODE_|npm_config_|NPM_CONFIG_|DOTLN_|GIT_|XDG_)/.test(
             name,
           )) &&
-        !/(?:^|_)proxy(?:_|$)/i.test(name),
+        !/(?:^|_)proxy(?:_|$)/i.test(name) &&
+        // A harness session injects Git configuration for its own checkouts
+        // (safe.directory entries, transport settings). That is invocation
+        // metadata, not a suite input: absent from execution and the key alike.
+        !/^GIT_CONFIG_(?:COUNT|PARAMETERS|KEY_\d+|VALUE_\d+)$/.test(name),
     ),
   );
   child.DOTLN_GATE_CHILD = "1";
@@ -98,23 +111,49 @@ const inside = (root, path) => {
   );
 };
 
-// Reviewed scopes include every non-doc candidate file, not just production
-// source: tests, shared helpers, configs, lockfiles, root/package Markdown and
-// generated harness declarations all invalidate them. The listed documents
-// are real inputs read by these suites. Other declared checks may reuse the
-// complete candidate tree; unknown callers still execute conservatively.
-const documentScopes = {
-  kernel: ["docs/product/02-domain-model.md"],
-  compiler: [],
+// Candidate declarations are the replica's complete world. Installed roots are
+// separate, shared inputs; package metadata closes their workspace links.
+const packagePaths = [...replicaSupportPaths, "packages/"];
+const fixturePaths = [
+  ...packagePaths,
+  "scripts/",
+  ".gitignore",
+  ".gitattributes",
+  "CLAUDE.md",
+  "LICENSE",
+  "LICENSE-docs",
+  "NOTICE",
+  "tsconfig.json",
+  "package-lock.json",
+];
+const replicaScopes = {
+  kernel: [...packagePaths, "docs/product/02-domain-model.md"],
+  compiler: [
+    ...packagePaths,
+    "corpus/harness/id-corpus-lib.mjs",
+    "corpus/harness/wo101-support.mjs",
+  ],
   skeleton: [
+    ...packagePaths,
+    ".gitignore",
+    "package-lock.json",
+    "scripts/resume.mjs",
+    "scripts/worktree.mjs",
+    "scripts/github-body.mjs",
+    "scripts/github-repository.mjs",
+    "scripts/release-notes.mjs",
+    "scripts/lib/",
+    "scripts/feedback-commit-msg.mjs",
+    "scripts/benchmark-beacon.mjs",
+    "scripts/benchmark-beacon-contention.mjs",
     "docs/product/02-domain-model.md",
     "docs/instance/entropy-reducer/",
     "docs/discovery/environment.json",
     "docs/discovery/codex-effort-2026-09-11.json",
   ],
-  worktree: ["docs/LEGAL.md"],
-  "plan-refutation:fixtures": ["docs/control/budgets.json"],
-  "process-debt": ["docs/control/budgets.json"],
+  worktree: [...fixturePaths, "docs/LEGAL.md"],
+  "plan-refutation:fixtures": [...fixturePaths, "docs/control/budgets.json"],
+  "process-debt": [...fixturePaths, "docs/control/budgets.json"],
 };
 const scopes = Object.fromEntries(
   [
@@ -167,17 +206,34 @@ const scopes = Object.fromEntries(
     name,
     {
       version: declarationVersion,
-      documents: name.startsWith("release:case:")
-        ? ["docs/LEGAL.md", "docs/releases/tag-manifest.template.json"]
-        : (documentScopes[name] ?? null),
+      paths:
+        name.startsWith("release:case:") || name === "release:prepare"
+          ? [
+              ...fixturePaths,
+              "docs/LEGAL.md",
+              "docs/releases/tag-manifest.template.json",
+            ]
+          : (replicaScopes[name] ?? null),
       git:
-        name === "index"
-          ? ["HEAD", "refs/tags/*"]
-          : name === "authority-evidence"
-            ? ["refs/tags/v0.16.0"]
-            : ["plan", "plan-refutation:current"].includes(name)
-              ? "HEAD"
-              : "none",
+        [
+          "skeleton",
+          "worktree",
+          "process-debt",
+          "plan-refutation:fixtures",
+        ].includes(name) ||
+        name.startsWith("release:case:") ||
+        name === "release:prepare"
+          ? "replica-repo"
+          : name === "index"
+            ? ["HEAD", "refs/tags/*"]
+            : name === "authority-evidence"
+              ? ["refs/tags/v0.16.0"]
+              : ["plan", "plan-refutation:current"].includes(name)
+                ? "HEAD"
+                : "none",
+      nodeOptions: ["kernel", "compiler", "skeleton"].includes(name)
+        ? replicaMainNodeOptions
+        : replicaNodeOptions,
     },
   ]),
 );
@@ -185,7 +241,7 @@ export function suiteDeclaration(row) {
   return Object.hasOwn(scopes, row.name) ? scopes[row.name] : null;
 }
 export function suiteScope(row) {
-  return suiteDeclaration(row)?.documents ?? null;
+  return suiteDeclaration(row)?.paths ?? null;
 }
 
 function git(repo, args, meter, env, allowMissing = false) {
@@ -213,9 +269,9 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
       : inside(resolve(repo), path)
         ? `<worktree>/${relative(resolve(repo), path)}`
         : path;
-  let reusable = !["NODE_OPTIONS", "NODE_PATH", "BASH_ENV", "ENV"].some(
-    (key) => env[key],
-  );
+  let reusable =
+    !["NODE_PATH", "BASH_ENV", "ENV"].some((key) => env[key]) &&
+    supportedReplicaNodeOptions(env.NODE_OPTIONS);
   const hashFile = (path) => {
     const bytes = readFileSync(path);
     meter.files++;
@@ -245,7 +301,9 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
       }
       if (
         lstatSync(target).isDirectory() &&
-        !/^packages\/[^/]+$/.test(relative(physical, target))
+        !/^(?:\.runtime\/harness\/[^/]+\/)?packages\/[^/]+$/.test(
+          relative(physical, target),
+        )
       )
         reusable = false;
       return [
@@ -254,6 +312,7 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
         target && lstatSync(target).isFile() ? file(target) : null,
       ];
     }
+    if (stat.isDirectory()) return ["directory", stat.mode & 0o777];
     if (!stat.isFile()) {
       reusable = false;
       return ["unsupported"];
@@ -270,9 +329,26 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
       .split("\0")
       .filter(Boolean),
   );
+  const installedRoots = gateInstalledInputRoots(repo);
+  const isInstalled = (path) =>
+    installedRoots.some((root) => path === root || path.startsWith(`${root}/`));
+  for (const path of [...candidates]) {
+    if (isInstalled(path)) {
+      candidates.delete(path);
+      continue;
+    }
+    for (let parent = dirname(path); parent !== "."; parent = dirname(parent))
+      candidates.add(parent);
+  }
+  for (const declaration of Object.values(scopes))
+    for (const path of declaration.paths ?? [])
+      if (!isInstalled(path.replace(/\/$/, "")))
+        candidates.add(path.replace(/\/$/, ""));
   const entries = [...candidates]
     .sort()
     .map((path) => [path, file(join(repo, path))]);
+  const candidateReusable = reusable;
+  reusable = true;
   const installed = [];
   const visit = (path) => {
     if (!existsSync(join(repo, path))) {
@@ -286,8 +362,12 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
         visit(`${path}/${name}`);
     } else installed.push([path, file(join(repo, path))]);
   };
-  for (const path of gateInstalledInputRoots(repo)) visit(path);
+  for (const path of installedRoots) visit(path);
+  const installedReusable = reusable;
+  reusable &&= candidateReusable;
   const toolchain = [];
+  let toolchainReusable = true;
+  const candidateTools = [];
   let npmExecutable;
   const versionedTools = new Set(["node", "git", "npm", "bash", "sh"]);
   for (const name of [
@@ -329,9 +409,12 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
       });
     if (!executable) {
       reusable = false;
+      toolchainReusable = false;
       toolchain.push([name, "missing"]);
       continue;
     }
+    if (inside(physical, realpathSync(executable)))
+      candidateTools.push(relative(physical, realpathSync(executable)));
     // Tool identities are digests, never local paths or config values in evidence.
     toolchain.push([
       name,
@@ -347,7 +430,10 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
       encoding: "utf8",
       timeout: 5000,
     });
-    if (probe.status !== 0 && name !== "sh") reusable = false;
+    if (probe.status !== 0 && name !== "sh") {
+      reusable = false;
+      toolchainReusable = false;
+    }
     toolchain.push([
       name,
       probe.status,
@@ -377,10 +463,11 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
     );
     return [name, existsSync(path) ? hashFile(path) : "absent"];
   });
+  const hostInputs = [];
   const gitUserConfig =
     env.XDG_CONFIG_HOME ?? (env.HOME ? join(env.HOME, ".config") : null);
   for (const name of ["ignore", "attributes"])
-    localGitInputs.push([
+    hostInputs.push([
       `user-${name}`,
       gitUserConfig && existsSync(join(gitUserConfig, "git", name))
         ? hashFile(join(gitUserConfig, "git", name))
@@ -395,7 +482,7 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
     env.NPM_CONFIG_GLOBALCONFIG,
     env.npm_config_globalconfig,
   ].filter(Boolean))
-    localGitInputs.push([
+    hostInputs.push([
       digest(path),
       existsSync(path) ? hashFile(path) : "absent",
     ]);
@@ -412,10 +499,11 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
       !path ||
       !isAbsolute(path) ||
       path.includes("\n")
-    )
+    ) {
       reusable = false;
-    else
-      localGitInputs.push([
+      toolchainReusable = false;
+    } else
+      hostInputs.push([
         "npm-global-config",
         digest(path),
         existsSync(path) ? hashFile(path) : "absent",
@@ -445,7 +533,7 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
   const gitState = {};
   for (const input of new Set(
     Object.values(scopes).flatMap((scope) =>
-      scope.git === "none" ? [] : [].concat(scope.git),
+      ["none", "replica-repo"].includes(scope.git) ? [] : [].concat(scope.git),
     ),
   )) {
     gitState[input] = jsonHash(
@@ -459,6 +547,17 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
       ),
     );
   }
+  const globalConfig = git(
+    repo,
+    ["config", "--global", "--null", "--get-regexp", ".*"],
+    meter,
+    env,
+    true,
+  );
+  const replicaHostReusable =
+    !/(?:core\.(?:excludesfile|attributesfile|hookspath|fsmonitor)|init\.templatedir|filter\.[^\n]+)\n/i.test(
+      globalConfig,
+    );
   const context = {
     environment: jsonHash(environment),
     toolchain: jsonHash([
@@ -467,12 +566,22 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
       process.arch,
       toolchain,
     ]),
-    git: jsonHash([config, localGitInputs]),
+    git: jsonHash([config, localGitInputs, hostInputs]),
+    replicaGit: jsonHash([globalConfig, hostInputs]),
   };
   const runtime = jsonHash(installed);
   meter.durationMs = performance.now() - started;
   return {
     entries,
+    repo: resolve(repo),
+    physical,
+    env,
+    installed,
+    installedRoots,
+    installedReusable,
+    replicaHostReusable,
+    toolchainReusable,
+    candidateTools,
     context,
     gitState,
     runtime,
@@ -490,15 +599,20 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
 export function suiteInputIdentity(row, snapshot) {
   const declaration = suiteDeclaration(row);
   if (!snapshot || !declaration) return null;
-  const { documents } = declaration;
-  const selected = snapshot.entries.filter(
-    ([path]) =>
-      documents === null ||
-      !path.startsWith("docs/") ||
-      documents.some((input) =>
-        input.endsWith("/") ? path.startsWith(input) : path === input,
-      ),
-  );
+  const replica = replicaPlan(row, declaration, snapshot);
+  const narrowed = Boolean(replica && !replica.refusal);
+  // A refused narrowing executes in the candidate tree under the whole-tree
+  // contract: every non-document candidate entry plus the declared documents.
+  // Its key never coincides with a replica key: the declaration digest names
+  // the execution root, and only replica runs carry the mechanism version.
+  const selected = narrowed
+    ? replica.entries
+    : snapshot.entries.filter(
+        ([path]) =>
+          !declaration.paths ||
+          !path.startsWith("docs/") ||
+          declaredPath(declaration.paths, path),
+      );
   const paths = Object.fromEntries(
     selected.map(([path, value]) => [path, jsonHash(value)]),
   );
@@ -506,18 +620,26 @@ export function suiteInputIdentity(row, snapshot) {
     source: jsonHash(selected.filter(([path]) => !path.startsWith("docs/"))),
     documents: jsonHash(selected.filter(([path]) => path.startsWith("docs/"))),
     git: jsonHash([
-      snapshot.context.git,
-      declaration.git === "none"
+      narrowed ? snapshot.context.replicaGit : snapshot.context.git,
+      ["none", "replica-repo"].includes(declaration.git)
         ? []
         : []
             .concat(declaration.git)
             .map((input) => [input, snapshot.gitState[input]]),
     ]),
-    environment: snapshot.context.environment,
+    environment: narrowed
+      ? jsonHash(
+          Object.entries(replica.environment).sort(([a], [b]) =>
+            a.localeCompare(b),
+          ),
+        )
+      : snapshot.context.environment,
     toolchain: snapshot.context.toolchain,
     runtime: snapshot.runtime,
     declaration: jsonHash({
       ...declaration,
+      execution: narrowed ? "replica" : "candidate",
+      ...(narrowed ? { replicaMechanismVersion } : {}),
       command: row.inputCommand ?? [...row.command, ...(row.args ?? [])],
       loadPolicy: row.loadPolicy ?? null,
     }),
@@ -531,12 +653,16 @@ export function suiteInputIdentity(row, snapshot) {
 
 export function suiteInputHash(row, snapshot) {
   if (
-    !snapshot?.reusable ||
+    !snapshot ||
     row.build ||
     row.reuse === "live" ||
     row.name === "release:prepare"
   )
     return null;
+  // A narrowed suite is keyed by its replica plan alone. A refused narrowing
+  // falls back to the whole-tree contract, which needs a reusable snapshot.
+  const replica = replicaPlan(row, suiteDeclaration(row), snapshot);
+  if (!(replica && !replica.refusal) && !snapshot.reusable) return null;
   return suiteInputIdentity(row, snapshot)?.inputHash ?? null;
 }
 

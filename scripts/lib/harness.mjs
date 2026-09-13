@@ -268,6 +268,8 @@ export function preserveHarnessRuntime(
     );
     cpSync(join(source, "packages", name, "dist"), join(target, "dist"), {
       recursive: true,
+      // Installed roots may be replica mounts; snapshots own their bytes.
+      dereference: true,
     });
     symlinkSync(
       `../../packages/${name}`,

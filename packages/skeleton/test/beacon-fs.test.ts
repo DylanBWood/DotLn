@@ -11,6 +11,7 @@ import {
   mkdtempSync,
   readFileSync,
   readdirSync,
+  realpathSync,
   rmSync,
   symlinkSync,
   writeFileSync,
@@ -248,7 +249,12 @@ test(
 );
 
 test("WO-020 edge refuses unsafe destinations and invalid records before publishing", (t) => {
-  const root = temporary(t);
+  const root = realpathSync(temporary(t));
+  const repository = join(root, "repository");
+  mkdirSync(join(repository, "docs/intake"), { recursive: true });
+  writeFileSync(join(repository, ".gitignore"), "docs/intake/\n.beacons/\n");
+  const initialized = spawnSync("git", ["init", "-q"], { cwd: repository });
+  assert.equal(initialized.status, 0, initialized.stderr?.toString());
   assert.throws(() => validateBeaconDirectory("", repository), /requires/);
   assert.throws(
     () =>
