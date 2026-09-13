@@ -1,0 +1,6458 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-129",
+  "criterion": 7,
+  "outcome": "pass",
+  "provenance": "Executed operator-host gate rows; suite input observation and the gate recorder are instruments under review, not independent WO-129 verification.",
+  "transition": {
+    "schemaVersion": 1,
+    "recordedAt": "2026-09-13T02:11:36.804Z",
+    "type": "ImplementationReady",
+    "evidence": {
+      "treeHash": "942ffdee2a3c75e9cac77b3abd8e1ee3580c6871",
+      "readCount": 20,
+      "readBytes": 313082,
+      "checkCount": 25
+    },
+    "workOrderId": "WO-129",
+    "actor": {
+      "harness": "codex-cli",
+      "harnessVersion": "0.154.0",
+      "model": "gpt-6-astra",
+      "effort": "max",
+      "source": "operator-attested"
+    },
+    "checkpointSha": "70903ec1bc906719bec1c70649880818771e8851",
+    "checkpointRef": "refs/dotln/checkpoint/WO-129/2"
+  },
+  "inputComparison": {
+    "beforeObservedAt": "2026-09-13T02:11:26.848Z",
+    "afterObservedAt": "2026-09-13T02:19:01.076Z",
+    "sourceHash": "9d13b7af24a4314b71266d5beaef68905eea38a5dfd114bb606ff8fc9cad6d08",
+    "runtimeHash": "4886a0a9b4f890995f5d052c76567f74e77818df76532663f91bb98f17862b78",
+    "sourceAndRuntimeUnchanged": true,
+    "changedDocuments": [
+      "docs/control/current.md",
+      "docs/control/orders/WO-129.jsonl",
+      "docs/work-orders/README.md"
+    ]
+  },
+  "fastGate": {
+    "checkId": "npm test",
+    "treeHash": "c303c477e870cbbf611cb5097bacd7d4c31e4acf",
+    "subject": "c303c477e870cbbf611cb5097bacd7d4c31e4acf",
+    "durationMs": 47147,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:c303c477e870cbbf611cb5097bacd7d4c31e4acf:npm test",
+    "recordedAt": "2026-09-13T01:59:50.990Z",
+    "executionMode": "composed",
+    "freshSuites": 9,
+    "reusedSuites": 3,
+    "freshReasons": [
+      {
+        "name": "build",
+        "reason": "no prior success",
+        "policy": "preparation",
+        "changes": []
+      },
+      {
+        "name": "publication",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "harness",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "harness-context",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "release-surfaces",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "format",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/evidence/WO-129/decisions.md",
+              "docs/evidence/WO-129/feedback-001/selfhost-audit.jsonl",
+              "docs/evidence/WO-129/feedback-001/selfhost-verification.jsonl",
+              "docs/evidence/WO-129/fixture-transcripts.txt",
+              "docs/final-reviews/WO-129/PR.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "meta",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "index",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/evidence/WO-129/decisions.md",
+              "docs/evidence/WO-129/feedback-001/selfhost-audit.jsonl",
+              "docs/evidence/WO-129/feedback-001/selfhost-verification.jsonl",
+              "docs/evidence/WO-129/fixture-transcripts.txt",
+              "docs/final-reviews/WO-129/PR.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "console",
+        "reason": "no prior success",
+        "changes": []
+      }
+    ],
+    "inputObservation": [
+      {
+        "files": 1805,
+        "bytes": 217648632,
+        "commands": 12,
+        "durationMs": 704.6169999999997
+      },
+      {
+        "files": 1805,
+        "bytes": 217648632,
+        "commands": 12,
+        "durationMs": 659.9018750000032
+      }
+    ],
+    "inputEnvironmentKeys": [
+      "DOTLN_GATE_CHILD",
+      "GIT_PAGER",
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "LC_CTYPE",
+      "LC_TERMINAL",
+      "LC_TERMINAL_VERSION",
+      "npm_config_cache",
+      "npm_config_global_prefix",
+      "npm_config_globalconfig",
+      "npm_config_init_module",
+      "npm_config_local_prefix",
+      "npm_config_node_gyp",
+      "npm_config_noproxy",
+      "npm_config_npm_version",
+      "npm_config_prefix",
+      "npm_config_user_agent",
+      "npm_config_userconfig",
+      "PATH",
+      "SHELL",
+      "TMPDIR"
+    ],
+    "executionFacts": {
+      "checkout": "6fa2c5183386a98e9b7d179cab4447f2bcba1d0fe96e2426eddbe21879f59b5e",
+      "cpus": 16,
+      "osRelease": "24.6.0"
+    },
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-surfaces",
+      "publication",
+      "index",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "harness",
+      "harness-context",
+      "meta"
+    ],
+    "loadClass": {
+      "sharedCap": 4,
+      "factorPerSlot": 2,
+      "maxHostLoadPerCpu": 2
+    },
+    "taskTimeline": [
+      {
+        "name": "build",
+        "startedAt": "2026-09-13T01:59:03.843Z",
+        "finishedAt": "2026-09-13T01:59:05.966Z",
+        "concurrentAtStart": [],
+        "predecessors": [],
+        "schedulerDurationMs": 2123,
+        "executed": true,
+        "reused": false,
+        "loadClass": "isolated",
+        "loadFactor": 2,
+        "peerCap": 0
+      },
+      {
+        "name": "publication",
+        "startedAt": "2026-09-13T01:59:05.967Z",
+        "finishedAt": "2026-09-13T01:59:08.167Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 2200,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "harness",
+        "startedAt": "2026-09-13T01:59:08.167Z",
+        "finishedAt": "2026-09-13T01:59:08.392Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "index"
+        ],
+        "predecessors": [
+          "build",
+          "publication"
+        ],
+        "schedulerDurationMs": 225,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "harness-context",
+        "startedAt": "2026-09-13T01:59:08.392Z",
+        "finishedAt": "2026-09-13T01:59:09.926Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "index"
+        ],
+        "predecessors": [
+          "build",
+          "harness"
+        ],
+        "schedulerDurationMs": 1534,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release-surfaces",
+        "startedAt": "2026-09-13T01:59:05.967Z",
+        "finishedAt": "2026-09-13T01:59:10.790Z",
+        "concurrentAtStart": [
+          "format"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 4823,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "format",
+        "startedAt": "2026-09-13T01:59:05.966Z",
+        "finishedAt": "2026-09-13T01:59:11.906Z",
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 5940,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "meta",
+        "startedAt": "2026-09-13T01:59:09.926Z",
+        "finishedAt": "2026-09-13T01:59:12.114Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "index"
+        ],
+        "predecessors": [
+          "build",
+          "harness-context"
+        ],
+        "schedulerDurationMs": 2188,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "index",
+        "startedAt": "2026-09-13T01:59:05.967Z",
+        "finishedAt": "2026-09-13T01:59:20.483Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "publication"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 14516,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "skeleton",
+        "startedAt": "2026-09-13T01:59:20.483Z",
+        "finishedAt": "2026-09-13T01:59:20.494Z",
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "publication",
+          "index",
+          "harness",
+          "harness-context",
+          "meta"
+        ],
+        "schedulerDurationMs": 11,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "kernel",
+        "startedAt": "2026-09-13T01:59:20.494Z",
+        "finishedAt": "2026-09-13T01:59:20.496Z",
+        "concurrentAtStart": [
+          "console"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "publication",
+          "index",
+          "harness",
+          "harness-context",
+          "meta",
+          "skeleton"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "compiler",
+        "startedAt": "2026-09-13T01:59:20.496Z",
+        "finishedAt": "2026-09-13T01:59:20.498Z",
+        "concurrentAtStart": [
+          "console"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "publication",
+          "index",
+          "harness",
+          "harness-context",
+          "meta",
+          "kernel"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "console",
+        "startedAt": "2026-09-13T01:59:20.484Z",
+        "finishedAt": "2026-09-13T01:59:50.025Z",
+        "concurrentAtStart": [
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "publication",
+          "index",
+          "harness",
+          "harness-context",
+          "meta"
+        ],
+        "schedulerDurationMs": 29541,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      }
+    ],
+    "deadlineDiagnostics": [],
+    "criticalPath": {
+      "tasks": [
+        "build",
+        "index",
+        "console"
+      ],
+      "workMs": 46180,
+      "waitMs": 2,
+      "durationMs": 46182
+    },
+    "workOrder": "WO-129"
+  },
+  "beforeTransition": {
+    "checkId": "npm run test:full",
+    "treeHash": "942ffdee2a3c75e9cac77b3abd8e1ee3580c6871",
+    "subject": "942ffdee2a3c75e9cac77b3abd8e1ee3580c6871",
+    "durationMs": 647838,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:942ffdee2a3c75e9cac77b3abd8e1ee3580c6871:npm run test:full",
+    "recordedAt": "2026-09-13T02:11:14.650Z",
+    "executionMode": "composed",
+    "freshSuites": 75,
+    "reusedSuites": 3,
+    "freshReasons": [
+      {
+        "name": "build",
+        "reason": "no prior success",
+        "policy": "preparation",
+        "changes": []
+      },
+      {
+        "name": "publication",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "license-surfaces",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "release-surfaces",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "harness",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "format",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/evidence/WO-129/fixture-transcripts.txt"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "harness-context",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "artifact-evidence",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "harness-evidence",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "authority-evidence",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "meta",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "feedback-evidence",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "verification-evidence",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "index",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/evidence/WO-129/fixture-transcripts.txt"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "release:prepare",
+        "reason": "no prior success",
+        "policy": "preparation",
+        "changes": []
+      },
+      {
+        "name": "process-debt",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "worktree",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "console",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/evidence/WO-129/fixture-transcripts.txt"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "release:case:preflight",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:surfaces",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:surfaces_local_snapshot",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:prepare_independent",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:license_surfaces",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:surfaces_committed_readme",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:surfaces_lower",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:surfaces_first",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:surfaces_component",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:surfaces_non_source",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:surfaces_new_component",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:surfaceclose",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "resume",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:surfaceclose_linked",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:bodyclose",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:dirty",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:settings_scope",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:nonmain",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:divergence",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:malformed",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:missinggh",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:unauthenticated",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:splitorigin",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:lower",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:cadence_missing",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:failures",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:conflict",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:localconflict",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:cadence_inconsistent",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:nestedtag",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:prepare",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:missinglocalprevious",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "plan-refutation:fixtures",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:pushfail",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "harness-fixtures",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:refrecovery",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:stale_helpers",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:firstrelease",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:createrecovery",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:edition",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:success",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "github-body",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:cached_evidence",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "fixture-temp-root",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release-preparation",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "backup-intake",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "publication-fixtures",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "checkpoint",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "adjacent-queue",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "authority-grants",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "license-fixtures",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "artifact-corpus",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "mutation",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "work-orders-fixtures",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "release:case:concurrent",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "plan-refutation:current",
+        "reason": "no prior success",
+        "changes": []
+      },
+      {
+        "name": "runner-fixtures",
+        "reason": "no prior success",
+        "changes": []
+      }
+    ],
+    "inputObservation": [
+      {
+        "files": 1805,
+        "bytes": 217648939,
+        "commands": 12,
+        "durationMs": 700.0509999999999
+      },
+      {
+        "files": 1805,
+        "bytes": 217648939,
+        "commands": 12,
+        "durationMs": 673.4488330000313
+      }
+    ],
+    "inputEnvironmentKeys": [
+      "DOTLN_GATE_CHILD",
+      "GIT_PAGER",
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "LC_CTYPE",
+      "LC_TERMINAL",
+      "LC_TERMINAL_VERSION",
+      "npm_config_cache",
+      "npm_config_global_prefix",
+      "npm_config_globalconfig",
+      "npm_config_init_module",
+      "npm_config_local_prefix",
+      "npm_config_node_gyp",
+      "npm_config_noproxy",
+      "npm_config_npm_version",
+      "npm_config_prefix",
+      "npm_config_user_agent",
+      "npm_config_userconfig",
+      "PATH",
+      "SHELL",
+      "TMPDIR"
+    ],
+    "executionFacts": {
+      "checkout": "6fa2c5183386a98e9b7d179cab4447f2bcba1d0fe96e2426eddbe21879f59b5e",
+      "cpus": 16,
+      "osRelease": "24.6.0"
+    },
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-surfaces",
+      "release-preparation",
+      "github-body",
+      "license-fixtures",
+      "license-surfaces",
+      "fixture-temp-root",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "checkpoint",
+      "worktree",
+      "release",
+      "work-orders-fixtures",
+      "publication",
+      "index",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "adjacent-queue",
+      "authority-grants",
+      "authority-evidence",
+      "harness-fixtures",
+      "harness",
+      "harness-context",
+      "harness-evidence",
+      "plan-refutation",
+      "artifact-corpus",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "mutation",
+      "runner-fixtures",
+      "process-debt",
+      "meta"
+    ],
+    "loadClass": {
+      "sharedCap": 4,
+      "factorPerSlot": 2,
+      "maxHostLoadPerCpu": 2
+    },
+    "taskTimeline": [
+      {
+        "name": "build",
+        "startedAt": "2026-09-13T02:00:26.813Z",
+        "finishedAt": "2026-09-13T02:00:29.003Z",
+        "concurrentAtStart": [],
+        "predecessors": [],
+        "schedulerDurationMs": 2190,
+        "executed": true,
+        "reused": false,
+        "loadClass": "isolated",
+        "loadFactor": 2,
+        "peerCap": 0
+      },
+      {
+        "name": "publication",
+        "startedAt": "2026-09-13T02:00:29.005Z",
+        "finishedAt": "2026-09-13T02:00:31.153Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "license-surfaces"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 2148,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "license-surfaces",
+        "startedAt": "2026-09-13T02:00:29.005Z",
+        "finishedAt": "2026-09-13T02:00:32.776Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 3771,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release-surfaces",
+        "startedAt": "2026-09-13T02:00:29.004Z",
+        "finishedAt": "2026-09-13T02:00:33.876Z",
+        "concurrentAtStart": [
+          "format"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 4872,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "harness",
+        "startedAt": "2026-09-13T02:00:33.876Z",
+        "finishedAt": "2026-09-13T02:00:34.150Z",
+        "concurrentAtStart": [
+          "format",
+          "index",
+          "authority-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "release-surfaces"
+        ],
+        "schedulerDurationMs": 274,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "format",
+        "startedAt": "2026-09-13T02:00:29.004Z",
+        "finishedAt": "2026-09-13T02:00:34.914Z",
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 5910,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "harness-context",
+        "startedAt": "2026-09-13T02:00:34.151Z",
+        "finishedAt": "2026-09-13T02:00:36.012Z",
+        "concurrentAtStart": [
+          "format",
+          "index",
+          "authority-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "harness"
+        ],
+        "schedulerDurationMs": 1861,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "artifact-evidence",
+        "startedAt": "2026-09-13T02:00:36.012Z",
+        "finishedAt": "2026-09-13T02:00:36.294Z",
+        "concurrentAtStart": [
+          "index",
+          "authority-evidence",
+          "harness-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "harness-context"
+        ],
+        "schedulerDurationMs": 282,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "harness-evidence",
+        "startedAt": "2026-09-13T02:00:34.914Z",
+        "finishedAt": "2026-09-13T02:00:37.344Z",
+        "concurrentAtStart": [
+          "index",
+          "authority-evidence",
+          "harness-context"
+        ],
+        "predecessors": [
+          "build",
+          "format"
+        ],
+        "schedulerDurationMs": 2430,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "authority-evidence",
+        "startedAt": "2026-09-13T02:00:32.777Z",
+        "finishedAt": "2026-09-13T02:00:37.839Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "index"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces"
+        ],
+        "schedulerDurationMs": 5062,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "meta",
+        "startedAt": "2026-09-13T02:00:37.839Z",
+        "finishedAt": "2026-09-13T02:00:40.330Z",
+        "concurrentAtStart": [
+          "index",
+          "verification-evidence",
+          "feedback-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence"
+        ],
+        "schedulerDurationMs": 2491,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "feedback-evidence",
+        "startedAt": "2026-09-13T02:00:37.344Z",
+        "finishedAt": "2026-09-13T02:00:44.304Z",
+        "concurrentAtStart": [
+          "index",
+          "authority-evidence",
+          "verification-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "harness-evidence"
+        ],
+        "schedulerDurationMs": 6960,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "verification-evidence",
+        "startedAt": "2026-09-13T02:00:36.295Z",
+        "finishedAt": "2026-09-13T02:00:45.414Z",
+        "concurrentAtStart": [
+          "index",
+          "authority-evidence",
+          "harness-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "artifact-evidence"
+        ],
+        "schedulerDurationMs": 9119,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "index",
+        "startedAt": "2026-09-13T02:00:31.154Z",
+        "finishedAt": "2026-09-13T02:00:49.617Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "license-surfaces"
+        ],
+        "predecessors": [
+          "build",
+          "publication"
+        ],
+        "schedulerDurationMs": 18463,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:prepare",
+        "startedAt": "2026-09-13T02:00:49.618Z",
+        "finishedAt": "2026-09-13T02:00:51.123Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "process-debt"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 1505,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "process-debt",
+        "startedAt": "2026-09-13T02:00:49.618Z",
+        "finishedAt": "2026-09-13T02:04:56.434Z",
+        "concurrentAtStart": [
+          "harness-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 246816,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "skeleton",
+        "startedAt": "2026-09-13T02:04:56.435Z",
+        "finishedAt": "2026-09-13T02:04:56.436Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "worktree",
+          "plan-refutation:fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "process-debt"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "worktree",
+        "startedAt": "2026-09-13T02:00:49.618Z",
+        "finishedAt": "2026-09-13T02:05:36.874Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "process-debt",
+          "release:prepare"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 287256,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "console",
+        "startedAt": "2026-09-13T02:04:56.437Z",
+        "finishedAt": "2026-09-13T02:06:21.224Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "worktree",
+          "plan-refutation:fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "skeleton"
+        ],
+        "schedulerDurationMs": 84787,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:preflight",
+        "startedAt": "2026-09-13T02:06:21.225Z",
+        "finishedAt": "2026-09-13T02:06:21.678Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "console"
+        ],
+        "schedulerDurationMs": 453,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces",
+        "startedAt": "2026-09-13T02:06:21.679Z",
+        "finishedAt": "2026-09-13T02:06:36.077Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:preflight"
+        ],
+        "schedulerDurationMs": 14398,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_local_snapshot",
+        "startedAt": "2026-09-13T02:06:36.077Z",
+        "finishedAt": "2026-09-13T02:06:40.085Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces"
+        ],
+        "schedulerDurationMs": 4008,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:prepare_independent",
+        "startedAt": "2026-09-13T02:06:40.085Z",
+        "finishedAt": "2026-09-13T02:06:44.554Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_local_snapshot"
+        ],
+        "schedulerDurationMs": 4469,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:license_surfaces",
+        "startedAt": "2026-09-13T02:06:44.555Z",
+        "finishedAt": "2026-09-13T02:06:57.770Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:prepare_independent"
+        ],
+        "schedulerDurationMs": 13215,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_committed_readme",
+        "startedAt": "2026-09-13T02:06:57.770Z",
+        "finishedAt": "2026-09-13T02:07:05.514Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:license_surfaces"
+        ],
+        "schedulerDurationMs": 7744,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_lower",
+        "startedAt": "2026-09-13T02:07:05.515Z",
+        "finishedAt": "2026-09-13T02:07:10.819Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_committed_readme"
+        ],
+        "schedulerDurationMs": 5304,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_first",
+        "startedAt": "2026-09-13T02:07:10.820Z",
+        "finishedAt": "2026-09-13T02:07:14.579Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_lower"
+        ],
+        "schedulerDurationMs": 3759,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_component",
+        "startedAt": "2026-09-13T02:07:14.579Z",
+        "finishedAt": "2026-09-13T02:07:25.300Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_first"
+        ],
+        "schedulerDurationMs": 10721,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_non_source",
+        "startedAt": "2026-09-13T02:07:25.300Z",
+        "finishedAt": "2026-09-13T02:07:28.235Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_component"
+        ],
+        "schedulerDurationMs": 2935,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_new_component",
+        "startedAt": "2026-09-13T02:07:28.235Z",
+        "finishedAt": "2026-09-13T02:07:30.930Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_non_source"
+        ],
+        "schedulerDurationMs": 2695,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaceclose",
+        "startedAt": "2026-09-13T02:07:30.931Z",
+        "finishedAt": "2026-09-13T02:07:38.855Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_new_component"
+        ],
+        "schedulerDurationMs": 7924,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "resume",
+        "startedAt": "2026-09-13T02:05:36.875Z",
+        "finishedAt": "2026-09-13T02:07:43.202Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "console"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "worktree"
+        ],
+        "schedulerDurationMs": 126327,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaceclose_linked",
+        "startedAt": "2026-09-13T02:07:38.855Z",
+        "finishedAt": "2026-09-13T02:07:46.271Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaceclose"
+        ],
+        "schedulerDurationMs": 7416,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:bodyclose",
+        "startedAt": "2026-09-13T02:07:43.203Z",
+        "finishedAt": "2026-09-13T02:07:48.288Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:surfaceclose_linked"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "resume"
+        ],
+        "schedulerDurationMs": 5085,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:dirty",
+        "startedAt": "2026-09-13T02:07:46.271Z",
+        "finishedAt": "2026-09-13T02:07:48.665Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:bodyclose"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaceclose_linked"
+        ],
+        "schedulerDurationMs": 2394,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:settings_scope",
+        "startedAt": "2026-09-13T02:07:48.289Z",
+        "finishedAt": "2026-09-13T02:07:50.324Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:dirty"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:bodyclose"
+        ],
+        "schedulerDurationMs": 2035,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:nonmain",
+        "startedAt": "2026-09-13T02:07:48.666Z",
+        "finishedAt": "2026-09-13T02:07:50.971Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:settings_scope"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:dirty"
+        ],
+        "schedulerDurationMs": 2305,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:divergence",
+        "startedAt": "2026-09-13T02:07:50.324Z",
+        "finishedAt": "2026-09-13T02:07:52.992Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:nonmain"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:settings_scope"
+        ],
+        "schedulerDurationMs": 2668,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:malformed",
+        "startedAt": "2026-09-13T02:07:50.971Z",
+        "finishedAt": "2026-09-13T02:07:53.952Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:divergence"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:nonmain"
+        ],
+        "schedulerDurationMs": 2981,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:missinggh",
+        "startedAt": "2026-09-13T02:07:52.993Z",
+        "finishedAt": "2026-09-13T02:08:00.018Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:malformed"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:divergence"
+        ],
+        "schedulerDurationMs": 7025,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:unauthenticated",
+        "startedAt": "2026-09-13T02:07:53.953Z",
+        "finishedAt": "2026-09-13T02:08:00.209Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:missinggh"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:malformed"
+        ],
+        "schedulerDurationMs": 6256,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:splitorigin",
+        "startedAt": "2026-09-13T02:08:00.018Z",
+        "finishedAt": "2026-09-13T02:08:05.280Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:unauthenticated"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:missinggh"
+        ],
+        "schedulerDurationMs": 5262,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:lower",
+        "startedAt": "2026-09-13T02:08:00.209Z",
+        "finishedAt": "2026-09-13T02:08:05.459Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:splitorigin"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:unauthenticated"
+        ],
+        "schedulerDurationMs": 5250,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:cadence_missing",
+        "startedAt": "2026-09-13T02:08:05.460Z",
+        "finishedAt": "2026-09-13T02:08:11.890Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:failures"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:lower"
+        ],
+        "schedulerDurationMs": 6430,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:failures",
+        "startedAt": "2026-09-13T02:08:05.281Z",
+        "finishedAt": "2026-09-13T02:08:15.262Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:lower"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:splitorigin"
+        ],
+        "schedulerDurationMs": 9981,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:conflict",
+        "startedAt": "2026-09-13T02:08:15.262Z",
+        "finishedAt": "2026-09-13T02:08:21.322Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:cadence_inconsistent"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:failures"
+        ],
+        "schedulerDurationMs": 6060,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:localconflict",
+        "startedAt": "2026-09-13T02:08:21.322Z",
+        "finishedAt": "2026-09-13T02:08:26.824Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:cadence_inconsistent"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:conflict"
+        ],
+        "schedulerDurationMs": 5502,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:cadence_inconsistent",
+        "startedAt": "2026-09-13T02:08:11.891Z",
+        "finishedAt": "2026-09-13T02:08:28.096Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:failures"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:cadence_missing"
+        ],
+        "schedulerDurationMs": 16205,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:nestedtag",
+        "startedAt": "2026-09-13T02:08:26.824Z",
+        "finishedAt": "2026-09-13T02:08:32.638Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:cadence_inconsistent"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:localconflict"
+        ],
+        "schedulerDurationMs": 5814,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:prepare",
+        "startedAt": "2026-09-13T02:08:28.096Z",
+        "finishedAt": "2026-09-13T02:08:39.453Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:nestedtag"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:cadence_inconsistent"
+        ],
+        "schedulerDurationMs": 11357,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:missinglocalprevious",
+        "startedAt": "2026-09-13T02:08:32.638Z",
+        "finishedAt": "2026-09-13T02:08:44.771Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:prepare"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:nestedtag"
+        ],
+        "schedulerDurationMs": 12133,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "plan-refutation:fixtures",
+        "startedAt": "2026-09-13T02:00:51.123Z",
+        "finishedAt": "2026-09-13T02:08:45.919Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "process-debt",
+          "worktree"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:prepare"
+        ],
+        "schedulerDurationMs": 474796,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:pushfail",
+        "startedAt": "2026-09-13T02:08:39.454Z",
+        "finishedAt": "2026-09-13T02:08:47.609Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:missinglocalprevious"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:prepare"
+        ],
+        "schedulerDurationMs": 8155,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "harness-fixtures",
+        "startedAt": "2026-09-13T02:00:49.618Z",
+        "finishedAt": "2026-09-13T02:08:48.364Z",
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 478746,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:refrecovery",
+        "startedAt": "2026-09-13T02:08:44.771Z",
+        "finishedAt": "2026-09-13T02:08:49.808Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "plan-refutation:fixtures",
+          "release:case:pushfail"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:missinglocalprevious"
+        ],
+        "schedulerDurationMs": 5037,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:stale_helpers",
+        "startedAt": "2026-09-13T02:08:47.610Z",
+        "finishedAt": "2026-09-13T02:08:50.933Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "release:case:refrecovery",
+          "release:case:createrecovery"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:pushfail"
+        ],
+        "schedulerDurationMs": 3323,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:firstrelease",
+        "startedAt": "2026-09-13T02:08:50.934Z",
+        "finishedAt": "2026-09-13T02:08:53.681Z",
+        "concurrentAtStart": [
+          "release:case:createrecovery",
+          "release:case:success",
+          "release:case:edition"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:stale_helpers"
+        ],
+        "schedulerDurationMs": 2747,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:createrecovery",
+        "startedAt": "2026-09-13T02:08:45.920Z",
+        "finishedAt": "2026-09-13T02:08:55.225Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "release:case:pushfail",
+          "release:case:refrecovery"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "plan-refutation:fixtures"
+        ],
+        "schedulerDurationMs": 9305,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:edition",
+        "startedAt": "2026-09-13T02:08:49.808Z",
+        "finishedAt": "2026-09-13T02:08:56.046Z",
+        "concurrentAtStart": [
+          "release:case:createrecovery",
+          "release:case:stale_helpers",
+          "release:case:success"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:refrecovery"
+        ],
+        "schedulerDurationMs": 6238,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:success",
+        "startedAt": "2026-09-13T02:08:48.365Z",
+        "finishedAt": "2026-09-13T02:08:56.570Z",
+        "concurrentAtStart": [
+          "release:case:refrecovery",
+          "release:case:createrecovery",
+          "release:case:stale_helpers"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "harness-fixtures"
+        ],
+        "schedulerDurationMs": 8205,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "github-body",
+        "startedAt": "2026-09-13T02:08:56.571Z",
+        "finishedAt": "2026-09-13T02:08:56.703Z",
+        "concurrentAtStart": [
+          "release:case:cached_evidence",
+          "release:case:concurrent",
+          "release-preparation"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:success"
+        ],
+        "schedulerDurationMs": 132,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:cached_evidence",
+        "startedAt": "2026-09-13T02:08:53.681Z",
+        "finishedAt": "2026-09-13T02:09:02.821Z",
+        "concurrentAtStart": [
+          "release:case:createrecovery",
+          "release:case:success",
+          "release:case:edition"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:firstrelease"
+        ],
+        "schedulerDurationMs": 9140,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "fixture-temp-root",
+        "startedAt": "2026-09-13T02:09:02.821Z",
+        "finishedAt": "2026-09-13T02:09:05.171Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "release-preparation",
+          "license-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:cached_evidence"
+        ],
+        "schedulerDurationMs": 2350,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release-preparation",
+        "startedAt": "2026-09-13T02:08:56.046Z",
+        "finishedAt": "2026-09-13T02:09:05.176Z",
+        "concurrentAtStart": [
+          "release:case:success",
+          "release:case:cached_evidence",
+          "release:case:concurrent"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:edition"
+        ],
+        "schedulerDurationMs": 9130,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "backup-intake",
+        "startedAt": "2026-09-13T02:09:05.176Z",
+        "finishedAt": "2026-09-13T02:09:05.625Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "publication-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release-preparation"
+        ],
+        "schedulerDurationMs": 449,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "publication-fixtures",
+        "startedAt": "2026-09-13T02:09:05.172Z",
+        "finishedAt": "2026-09-13T02:09:07.519Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "release-preparation",
+          "license-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "fixture-temp-root"
+        ],
+        "schedulerDurationMs": 2347,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "checkpoint",
+        "startedAt": "2026-09-13T02:09:05.626Z",
+        "finishedAt": "2026-09-13T02:09:15.438Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "publication-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "backup-intake"
+        ],
+        "schedulerDurationMs": 9812,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "kernel",
+        "startedAt": "2026-09-13T02:09:15.438Z",
+        "finishedAt": "2026-09-13T02:09:15.439Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "checkpoint",
+          "skeleton"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "compiler",
+        "startedAt": "2026-09-13T02:09:15.440Z",
+        "finishedAt": "2026-09-13T02:09:15.441Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "kernel"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "adjacent-queue",
+        "startedAt": "2026-09-13T02:09:15.441Z",
+        "finishedAt": "2026-09-13T02:09:16.685Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "compiler"
+        ],
+        "schedulerDurationMs": 1244,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "authority-grants",
+        "startedAt": "2026-09-13T02:09:16.686Z",
+        "finishedAt": "2026-09-13T02:09:16.915Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "adjacent-queue"
+        ],
+        "schedulerDurationMs": 229,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "license-fixtures",
+        "startedAt": "2026-09-13T02:08:56.703Z",
+        "finishedAt": "2026-09-13T02:09:20.448Z",
+        "concurrentAtStart": [
+          "release:case:cached_evidence",
+          "release:case:concurrent",
+          "release-preparation"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "github-body"
+        ],
+        "schedulerDurationMs": 23745,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "artifact-corpus",
+        "startedAt": "2026-09-13T02:09:20.448Z",
+        "finishedAt": "2026-09-13T02:09:20.751Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "license-fixtures"
+        ],
+        "schedulerDurationMs": 303,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "mutation",
+        "startedAt": "2026-09-13T02:09:20.752Z",
+        "finishedAt": "2026-09-13T02:09:33.639Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "artifact-corpus"
+        ],
+        "schedulerDurationMs": 12887,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "work-orders-fixtures",
+        "startedAt": "2026-09-13T02:09:07.519Z",
+        "finishedAt": "2026-09-13T02:10:34.112Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "checkpoint"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "publication-fixtures"
+        ],
+        "schedulerDurationMs": 86593,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:concurrent",
+        "startedAt": "2026-09-13T02:08:55.226Z",
+        "finishedAt": "2026-09-13T02:10:42.583Z",
+        "concurrentAtStart": [
+          "release:case:success",
+          "release:case:edition",
+          "release:case:cached_evidence"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:createrecovery"
+        ],
+        "schedulerDurationMs": 107357,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "plan-refutation:current",
+        "startedAt": "2026-09-13T02:09:16.915Z",
+        "finishedAt": "2026-09-13T02:11:02.865Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "authority-grants"
+        ],
+        "schedulerDurationMs": 105950,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "runner-fixtures",
+        "startedAt": "2026-09-13T02:09:33.640Z",
+        "finishedAt": "2026-09-13T02:11:13.491Z",
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "mutation"
+        ],
+        "schedulerDurationMs": 99851,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      }
+    ],
+    "deadlineDiagnostics": [
+      {
+        "site": "mutation:process",
+        "task": "mutation",
+        "timeoutMs": 200,
+        "durationMs": 202.56687500000044,
+        "startedAt": "2026-09-13T02:09:29.574Z",
+        "finishedAt": "2026-09-13T02:09:29.776Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "release:case:concurrent",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.26409912109375,
+        "classification": "deadline-hit-cause-unestablished"
+      },
+      {
+        "site": "suite:slow-fixture",
+        "task": "runner-fixtures",
+        "timeoutMs": 35,
+        "durationMs": 37.24837499999995,
+        "startedAt": "2026-09-13T02:09:34.202Z",
+        "finishedAt": "2026-09-13T02:09:34.240Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "release:case:concurrent",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.272979736328125,
+        "classification": "deadline-hit-cause-unestablished"
+      },
+      {
+        "site": "scripts/test-gate-deadlines.mjs:spawn:50",
+        "task": "runner-fixtures",
+        "timeoutMs": 50,
+        "durationMs": 55.73824999999988,
+        "startedAt": "2026-09-13T02:09:34.910Z",
+        "finishedAt": "2026-09-13T02:09:34.966Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "release:case:concurrent",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.272979736328125,
+        "classification": "deadline-hit-cause-unestablished"
+      },
+      {
+        "site": "scripts/test-gate-deadlines.mjs:spawnSync:50",
+        "task": "runner-fixtures",
+        "timeoutMs": 50,
+        "durationMs": 51.61758299999997,
+        "startedAt": "2026-09-13T02:09:34.967Z",
+        "finishedAt": "2026-09-13T02:09:35.019Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "release:case:concurrent",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.272979736328125,
+        "classification": "deadline-hit-cause-unestablished"
+      }
+    ],
+    "criticalPath": {
+      "tasks": [
+        "build",
+        "publication",
+        "index",
+        "harness-fixtures",
+        "release:case:success",
+        "github-body",
+        "license-fixtures",
+        "artifact-corpus",
+        "mutation",
+        "runner-fixtures"
+      ],
+      "workMs": 646670,
+      "waitMs": 8,
+      "durationMs": 646678
+    },
+    "workOrder": "WO-129"
+  },
+  "firstAfterTransition": {
+    "checkId": "npm run test:full",
+    "treeHash": "6e0aa8bbea0aeef12c87eda23b50c12d42c71306",
+    "subject": "6e0aa8bbea0aeef12c87eda23b50c12d42c71306",
+    "durationMs": 390062,
+    "exitCode": 0,
+    "executed": true,
+    "evidenceRef": "host-gate:6e0aa8bbea0aeef12c87eda23b50c12d42c71306:npm run test:full",
+    "recordedAt": "2026-09-13T02:18:36.081Z",
+    "executionMode": "composed",
+    "freshSuites": 32,
+    "reusedSuites": 46,
+    "freshReasons": [
+      {
+        "name": "build",
+        "reason": "no prior success",
+        "policy": "preparation",
+        "changes": []
+      },
+      {
+        "name": "publication",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "license-surfaces",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "release-surfaces",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "harness",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "format",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "harness-context",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "artifact-evidence",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "harness-evidence",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "authority-evidence",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "meta",
+        "reason": "no prior success",
+        "policy": "live check",
+        "changes": []
+      },
+      {
+        "name": "feedback-evidence",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "verification-evidence",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "index",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "release:prepare",
+        "reason": "no prior success",
+        "policy": "preparation",
+        "changes": []
+      },
+      {
+        "name": "release-preparation",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "github-body",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "license-fixtures",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "fixture-temp-root",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "publication-fixtures",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "backup-intake",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "checkpoint",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "console",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "adjacent-queue",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "authority-grants",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "resume",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "artifact-corpus",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "mutation",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "work-orders-fixtures",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "plan-refutation:current",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "runner-fixtures",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      },
+      {
+        "name": "harness-fixtures",
+        "reason": "inputs changed",
+        "changes": [
+          {
+            "inputClass": "documents",
+            "paths": [
+              "docs/control/current.md",
+              "docs/control/orders/WO-129.jsonl",
+              "docs/work-orders/README.md"
+            ],
+            "omittedPaths": 0
+          }
+        ]
+      }
+    ],
+    "inputObservation": [
+      {
+        "files": 1805,
+        "bytes": 217649704,
+        "commands": 12,
+        "durationMs": 701.4129170000001
+      },
+      {
+        "files": 1805,
+        "bytes": 217649704,
+        "commands": 12,
+        "durationMs": 762.7255829999922
+      }
+    ],
+    "inputEnvironmentKeys": [
+      "DOTLN_GATE_CHILD",
+      "GIT_PAGER",
+      "HOME",
+      "LANG",
+      "LC_ALL",
+      "LC_CTYPE",
+      "LC_TERMINAL",
+      "LC_TERMINAL_VERSION",
+      "npm_config_cache",
+      "npm_config_global_prefix",
+      "npm_config_globalconfig",
+      "npm_config_init_module",
+      "npm_config_local_prefix",
+      "npm_config_node_gyp",
+      "npm_config_noproxy",
+      "npm_config_npm_version",
+      "npm_config_prefix",
+      "npm_config_user_agent",
+      "npm_config_userconfig",
+      "PATH",
+      "SHELL",
+      "TMPDIR"
+    ],
+    "executionFacts": {
+      "checkout": "6fa2c5183386a98e9b7d179cab4447f2bcba1d0fe96e2426eddbe21879f59b5e",
+      "cpus": 16,
+      "osRelease": "24.6.0"
+    },
+    "requiredSuites": [
+      "build",
+      "format",
+      "release-surfaces",
+      "release-preparation",
+      "github-body",
+      "license-fixtures",
+      "license-surfaces",
+      "fixture-temp-root",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "checkpoint",
+      "worktree",
+      "release",
+      "work-orders-fixtures",
+      "publication",
+      "index",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "adjacent-queue",
+      "authority-grants",
+      "authority-evidence",
+      "harness-fixtures",
+      "harness",
+      "harness-context",
+      "harness-evidence",
+      "plan-refutation",
+      "artifact-corpus",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "mutation",
+      "runner-fixtures",
+      "process-debt",
+      "meta"
+    ],
+    "loadClass": {
+      "sharedCap": 4,
+      "factorPerSlot": 2,
+      "maxHostLoadPerCpu": 2
+    },
+    "taskTimeline": [
+      {
+        "name": "build",
+        "startedAt": "2026-09-13T02:12:06.021Z",
+        "finishedAt": "2026-09-13T02:12:08.294Z",
+        "concurrentAtStart": [],
+        "predecessors": [],
+        "schedulerDurationMs": 2273,
+        "executed": true,
+        "reused": false,
+        "loadClass": "isolated",
+        "loadFactor": 2,
+        "peerCap": 0
+      },
+      {
+        "name": "publication",
+        "startedAt": "2026-09-13T02:12:08.295Z",
+        "finishedAt": "2026-09-13T02:12:10.399Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "license-surfaces"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 2104,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "license-surfaces",
+        "startedAt": "2026-09-13T02:12:08.295Z",
+        "finishedAt": "2026-09-13T02:12:12.119Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 3824,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release-surfaces",
+        "startedAt": "2026-09-13T02:12:08.295Z",
+        "finishedAt": "2026-09-13T02:12:13.218Z",
+        "concurrentAtStart": [
+          "format"
+        ],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 4923,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "harness",
+        "startedAt": "2026-09-13T02:12:13.219Z",
+        "finishedAt": "2026-09-13T02:12:13.493Z",
+        "concurrentAtStart": [
+          "format",
+          "index",
+          "authority-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "release-surfaces"
+        ],
+        "schedulerDurationMs": 274,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "format",
+        "startedAt": "2026-09-13T02:12:08.295Z",
+        "finishedAt": "2026-09-13T02:12:14.196Z",
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build"
+        ],
+        "schedulerDurationMs": 5901,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "harness-context",
+        "startedAt": "2026-09-13T02:12:13.494Z",
+        "finishedAt": "2026-09-13T02:12:15.431Z",
+        "concurrentAtStart": [
+          "format",
+          "index",
+          "authority-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "harness"
+        ],
+        "schedulerDurationMs": 1937,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "artifact-evidence",
+        "startedAt": "2026-09-13T02:12:15.431Z",
+        "finishedAt": "2026-09-13T02:12:15.735Z",
+        "concurrentAtStart": [
+          "index",
+          "authority-evidence",
+          "harness-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "harness-context"
+        ],
+        "schedulerDurationMs": 304,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "harness-evidence",
+        "startedAt": "2026-09-13T02:12:14.197Z",
+        "finishedAt": "2026-09-13T02:12:16.414Z",
+        "concurrentAtStart": [
+          "index",
+          "authority-evidence",
+          "harness-context"
+        ],
+        "predecessors": [
+          "build",
+          "format"
+        ],
+        "schedulerDurationMs": 2217,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "authority-evidence",
+        "startedAt": "2026-09-13T02:12:12.120Z",
+        "finishedAt": "2026-09-13T02:12:17.107Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "index"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces"
+        ],
+        "schedulerDurationMs": 4987,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "meta",
+        "startedAt": "2026-09-13T02:12:17.107Z",
+        "finishedAt": "2026-09-13T02:12:19.648Z",
+        "concurrentAtStart": [
+          "index",
+          "verification-evidence",
+          "feedback-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "authority-evidence"
+        ],
+        "schedulerDurationMs": 2541,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "feedback-evidence",
+        "startedAt": "2026-09-13T02:12:16.415Z",
+        "finishedAt": "2026-09-13T02:12:23.307Z",
+        "concurrentAtStart": [
+          "index",
+          "authority-evidence",
+          "verification-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "harness-evidence"
+        ],
+        "schedulerDurationMs": 6892,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "verification-evidence",
+        "startedAt": "2026-09-13T02:12:15.736Z",
+        "finishedAt": "2026-09-13T02:12:24.617Z",
+        "concurrentAtStart": [
+          "index",
+          "authority-evidence",
+          "harness-evidence"
+        ],
+        "predecessors": [
+          "build",
+          "artifact-evidence"
+        ],
+        "schedulerDurationMs": 8881,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "index",
+        "startedAt": "2026-09-13T02:12:10.399Z",
+        "finishedAt": "2026-09-13T02:12:28.875Z",
+        "concurrentAtStart": [
+          "format",
+          "release-surfaces",
+          "license-surfaces"
+        ],
+        "predecessors": [
+          "build",
+          "publication"
+        ],
+        "schedulerDurationMs": 18476,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "process-debt",
+        "startedAt": "2026-09-13T02:12:28.876Z",
+        "finishedAt": "2026-09-13T02:12:28.894Z",
+        "concurrentAtStart": [
+          "harness-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 18,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "worktree",
+        "startedAt": "2026-09-13T02:12:28.876Z",
+        "finishedAt": "2026-09-13T02:12:28.894Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "process-debt",
+          "release:prepare"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 18,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "plan-refutation:fixtures",
+        "startedAt": "2026-09-13T02:12:28.895Z",
+        "finishedAt": "2026-09-13T02:12:28.898Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "release:prepare"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "process-debt"
+        ],
+        "schedulerDurationMs": 3,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "skeleton",
+        "startedAt": "2026-09-13T02:12:28.895Z",
+        "finishedAt": "2026-09-13T02:12:28.898Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "release:prepare",
+          "plan-refutation:fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "worktree"
+        ],
+        "schedulerDurationMs": 3,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:prepare",
+        "startedAt": "2026-09-13T02:12:28.876Z",
+        "finishedAt": "2026-09-13T02:12:30.269Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "process-debt"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 1393,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:preflight",
+        "startedAt": "2026-09-13T02:12:30.269Z",
+        "finishedAt": "2026-09-13T02:12:30.271Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces",
+        "startedAt": "2026-09-13T02:12:30.272Z",
+        "finishedAt": "2026-09-13T02:12:30.273Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:preflight"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_local_snapshot",
+        "startedAt": "2026-09-13T02:12:30.273Z",
+        "finishedAt": "2026-09-13T02:12:30.275Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:prepare_independent",
+        "startedAt": "2026-09-13T02:12:30.275Z",
+        "finishedAt": "2026-09-13T02:12:30.276Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_local_snapshot"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:license_surfaces",
+        "startedAt": "2026-09-13T02:12:30.276Z",
+        "finishedAt": "2026-09-13T02:12:30.278Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:prepare_independent"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_committed_readme",
+        "startedAt": "2026-09-13T02:12:30.278Z",
+        "finishedAt": "2026-09-13T02:12:30.280Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:license_surfaces"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_lower",
+        "startedAt": "2026-09-13T02:12:30.280Z",
+        "finishedAt": "2026-09-13T02:12:30.281Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_committed_readme"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_first",
+        "startedAt": "2026-09-13T02:12:30.281Z",
+        "finishedAt": "2026-09-13T02:12:30.282Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_lower"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_component",
+        "startedAt": "2026-09-13T02:12:30.283Z",
+        "finishedAt": "2026-09-13T02:12:30.284Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_first"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_non_source",
+        "startedAt": "2026-09-13T02:12:30.284Z",
+        "finishedAt": "2026-09-13T02:12:30.285Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_component"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaces_new_component",
+        "startedAt": "2026-09-13T02:12:30.285Z",
+        "finishedAt": "2026-09-13T02:12:30.287Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_non_source"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaceclose",
+        "startedAt": "2026-09-13T02:12:30.287Z",
+        "finishedAt": "2026-09-13T02:12:30.289Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaces_new_component"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:surfaceclose_linked",
+        "startedAt": "2026-09-13T02:12:30.289Z",
+        "finishedAt": "2026-09-13T02:12:30.290Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaceclose"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:bodyclose",
+        "startedAt": "2026-09-13T02:12:30.290Z",
+        "finishedAt": "2026-09-13T02:12:30.291Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:surfaceclose_linked"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:dirty",
+        "startedAt": "2026-09-13T02:12:30.292Z",
+        "finishedAt": "2026-09-13T02:12:30.293Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:bodyclose"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:settings_scope",
+        "startedAt": "2026-09-13T02:12:30.293Z",
+        "finishedAt": "2026-09-13T02:12:30.295Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:dirty"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:nonmain",
+        "startedAt": "2026-09-13T02:12:30.295Z",
+        "finishedAt": "2026-09-13T02:12:30.296Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:settings_scope"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:divergence",
+        "startedAt": "2026-09-13T02:12:30.296Z",
+        "finishedAt": "2026-09-13T02:12:30.297Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:nonmain"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:malformed",
+        "startedAt": "2026-09-13T02:12:30.298Z",
+        "finishedAt": "2026-09-13T02:12:30.299Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:divergence"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:missinggh",
+        "startedAt": "2026-09-13T02:12:30.299Z",
+        "finishedAt": "2026-09-13T02:12:30.300Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:malformed"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:unauthenticated",
+        "startedAt": "2026-09-13T02:12:30.301Z",
+        "finishedAt": "2026-09-13T02:12:30.302Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:missinggh"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:splitorigin",
+        "startedAt": "2026-09-13T02:12:30.302Z",
+        "finishedAt": "2026-09-13T02:12:30.303Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:unauthenticated"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:lower",
+        "startedAt": "2026-09-13T02:12:30.304Z",
+        "finishedAt": "2026-09-13T02:12:30.305Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:splitorigin"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:failures",
+        "startedAt": "2026-09-13T02:12:30.305Z",
+        "finishedAt": "2026-09-13T02:12:30.306Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:lower"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:cadence_missing",
+        "startedAt": "2026-09-13T02:12:30.307Z",
+        "finishedAt": "2026-09-13T02:12:30.308Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:failures"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:cadence_inconsistent",
+        "startedAt": "2026-09-13T02:12:30.308Z",
+        "finishedAt": "2026-09-13T02:12:30.309Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:cadence_missing"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:conflict",
+        "startedAt": "2026-09-13T02:12:30.309Z",
+        "finishedAt": "2026-09-13T02:12:30.310Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:cadence_inconsistent"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:localconflict",
+        "startedAt": "2026-09-13T02:12:30.310Z",
+        "finishedAt": "2026-09-13T02:12:30.311Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:conflict"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:nestedtag",
+        "startedAt": "2026-09-13T02:12:30.312Z",
+        "finishedAt": "2026-09-13T02:12:30.313Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:localconflict"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:prepare",
+        "startedAt": "2026-09-13T02:12:30.313Z",
+        "finishedAt": "2026-09-13T02:12:30.314Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:nestedtag"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:missinglocalprevious",
+        "startedAt": "2026-09-13T02:12:30.314Z",
+        "finishedAt": "2026-09-13T02:12:30.316Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:prepare"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:pushfail",
+        "startedAt": "2026-09-13T02:12:30.316Z",
+        "finishedAt": "2026-09-13T02:12:30.317Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:missinglocalprevious"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:refrecovery",
+        "startedAt": "2026-09-13T02:12:30.317Z",
+        "finishedAt": "2026-09-13T02:12:30.318Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:pushfail"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:createrecovery",
+        "startedAt": "2026-09-13T02:12:30.319Z",
+        "finishedAt": "2026-09-13T02:12:30.320Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:refrecovery"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:stale_helpers",
+        "startedAt": "2026-09-13T02:12:30.320Z",
+        "finishedAt": "2026-09-13T02:12:30.321Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:createrecovery"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:success",
+        "startedAt": "2026-09-13T02:12:30.321Z",
+        "finishedAt": "2026-09-13T02:12:30.322Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:stale_helpers"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:edition",
+        "startedAt": "2026-09-13T02:12:30.322Z",
+        "finishedAt": "2026-09-13T02:12:30.323Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:success"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:firstrelease",
+        "startedAt": "2026-09-13T02:12:30.323Z",
+        "finishedAt": "2026-09-13T02:12:30.324Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:edition"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:cached_evidence",
+        "startedAt": "2026-09-13T02:12:30.325Z",
+        "finishedAt": "2026-09-13T02:12:30.326Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:firstrelease"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release:case:concurrent",
+        "startedAt": "2026-09-13T02:12:30.326Z",
+        "finishedAt": "2026-09-13T02:12:30.328Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:cached_evidence"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "release-preparation",
+        "startedAt": "2026-09-13T02:12:30.328Z",
+        "finishedAt": "2026-09-13T02:12:46.108Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release:case:concurrent"
+        ],
+        "schedulerDurationMs": 15780,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "github-body",
+        "startedAt": "2026-09-13T02:12:46.109Z",
+        "finishedAt": "2026-09-13T02:12:46.260Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "release-preparation"
+        ],
+        "schedulerDurationMs": 151,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "license-fixtures",
+        "startedAt": "2026-09-13T02:12:46.261Z",
+        "finishedAt": "2026-09-13T02:13:19.546Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "github-body"
+        ],
+        "schedulerDurationMs": 33285,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "fixture-temp-root",
+        "startedAt": "2026-09-13T02:13:19.547Z",
+        "finishedAt": "2026-09-13T02:13:23.627Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "license-fixtures"
+        ],
+        "schedulerDurationMs": 4080,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "publication-fixtures",
+        "startedAt": "2026-09-13T02:13:23.627Z",
+        "finishedAt": "2026-09-13T02:13:27.679Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "fixture-temp-root"
+        ],
+        "schedulerDurationMs": 4052,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "backup-intake",
+        "startedAt": "2026-09-13T02:13:27.679Z",
+        "finishedAt": "2026-09-13T02:13:29.421Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "publication-fixtures"
+        ],
+        "schedulerDurationMs": 1742,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "checkpoint",
+        "startedAt": "2026-09-13T02:13:29.422Z",
+        "finishedAt": "2026-09-13T02:13:42.903Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "backup-intake"
+        ],
+        "schedulerDurationMs": 13481,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "console",
+        "startedAt": "2026-09-13T02:12:28.899Z",
+        "finishedAt": "2026-09-13T02:13:44.451Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "release:prepare"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "plan-refutation:fixtures"
+        ],
+        "schedulerDurationMs": 75552,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "kernel",
+        "startedAt": "2026-09-13T02:13:44.451Z",
+        "finishedAt": "2026-09-13T02:13:44.453Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "resume",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "console",
+          "skeleton"
+        ],
+        "schedulerDurationMs": 2,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "compiler",
+        "startedAt": "2026-09-13T02:13:44.454Z",
+        "finishedAt": "2026-09-13T02:13:44.455Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "resume",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "kernel"
+        ],
+        "schedulerDurationMs": 1,
+        "executed": false,
+        "reused": true,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "adjacent-queue",
+        "startedAt": "2026-09-13T02:13:44.456Z",
+        "finishedAt": "2026-09-13T02:13:45.962Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "resume",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "compiler"
+        ],
+        "schedulerDurationMs": 1506,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "authority-grants",
+        "startedAt": "2026-09-13T02:13:45.962Z",
+        "finishedAt": "2026-09-13T02:13:46.163Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "resume",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "adjacent-queue"
+        ],
+        "schedulerDurationMs": 201,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "resume",
+        "startedAt": "2026-09-13T02:12:28.899Z",
+        "finishedAt": "2026-09-13T02:14:50.333Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "release:prepare",
+          "console"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "skeleton"
+        ],
+        "schedulerDurationMs": 141434,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "artifact-corpus",
+        "startedAt": "2026-09-13T02:14:50.333Z",
+        "finishedAt": "2026-09-13T02:14:50.634Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "resume"
+        ],
+        "schedulerDurationMs": 301,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "mutation",
+        "startedAt": "2026-09-13T02:14:50.634Z",
+        "finishedAt": "2026-09-13T02:15:05.211Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "artifact-corpus"
+        ],
+        "schedulerDurationMs": 14577,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "work-orders-fixtures",
+        "startedAt": "2026-09-13T02:13:42.903Z",
+        "finishedAt": "2026-09-13T02:15:37.153Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "console",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "checkpoint"
+        ],
+        "schedulerDurationMs": 114250,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "plan-refutation:current",
+        "startedAt": "2026-09-13T02:13:46.163Z",
+        "finishedAt": "2026-09-13T02:16:14.234Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "resume",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "authority-grants"
+        ],
+        "schedulerDurationMs": 148071,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "runner-fixtures",
+        "startedAt": "2026-09-13T02:15:05.212Z",
+        "finishedAt": "2026-09-13T02:16:57.656Z",
+        "concurrentAtStart": [
+          "harness-fixtures",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta",
+          "mutation"
+        ],
+        "schedulerDurationMs": 112444,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      },
+      {
+        "name": "harness-fixtures",
+        "startedAt": "2026-09-13T02:12:28.875Z",
+        "finishedAt": "2026-09-13T02:18:34.834Z",
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build",
+          "format",
+          "release-surfaces",
+          "license-surfaces",
+          "publication",
+          "index",
+          "authority-evidence",
+          "harness",
+          "harness-context",
+          "harness-evidence",
+          "artifact-evidence",
+          "verification-evidence",
+          "feedback-evidence",
+          "meta"
+        ],
+        "schedulerDurationMs": 365959,
+        "executed": true,
+        "reused": false,
+        "loadClass": "shared",
+        "loadFactor": 8,
+        "peerCap": 3
+      }
+    ],
+    "deadlineDiagnostics": [
+      {
+        "site": "mutation:process",
+        "task": "mutation",
+        "timeoutMs": 200,
+        "durationMs": 200.6910000000007,
+        "startedAt": "2026-09-13T02:15:00.859Z",
+        "finishedAt": "2026-09-13T02:15:01.059Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "harness-fixtures",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.258544921875,
+        "classification": "deadline-hit-cause-unestablished"
+      },
+      {
+        "site": "suite:slow-fixture",
+        "task": "runner-fixtures",
+        "timeoutMs": 35,
+        "durationMs": 37.164917,
+        "startedAt": "2026-09-13T02:15:05.929Z",
+        "finishedAt": "2026-09-13T02:15:05.967Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "harness-fixtures",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.252838134765625,
+        "classification": "deadline-hit-cause-unestablished"
+      },
+      {
+        "site": "scripts/test-gate-deadlines.mjs:spawn:50",
+        "task": "runner-fixtures",
+        "timeoutMs": 50,
+        "durationMs": 51.83637499999986,
+        "startedAt": "2026-09-13T02:15:06.614Z",
+        "finishedAt": "2026-09-13T02:15:06.666Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "harness-fixtures",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.252838134765625,
+        "classification": "deadline-hit-cause-unestablished"
+      },
+      {
+        "site": "scripts/test-gate-deadlines.mjs:spawnSync:50",
+        "task": "runner-fixtures",
+        "timeoutMs": 50,
+        "durationMs": 50.68354199999999,
+        "startedAt": "2026-09-13T02:15:06.667Z",
+        "finishedAt": "2026-09-13T02:15:06.718Z",
+        "hit": true,
+        "loadClass": "shared",
+        "concurrency": 4,
+        "loadFactor": 8,
+        "concurrentTasks": [
+          "harness-fixtures",
+          "work-orders-fixtures",
+          "plan-refutation:current"
+        ],
+        "peerObservation": "scheduler-current",
+        "hostLoadPerCpu": 0.252838134765625,
+        "classification": "deadline-hit-cause-unestablished"
+      }
+    ],
+    "criticalPath": {
+      "tasks": [
+        "build",
+        "publication",
+        "index",
+        "harness-fixtures"
+      ],
+      "workMs": 388812,
+      "waitMs": 1,
+      "durationMs": 388813
+    },
+    "workOrder": "WO-129"
+  }
+}

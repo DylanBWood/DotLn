@@ -3349,6 +3349,96 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-089fb3471c2137cf",
+      "key": "decision:docs/evidence/WO-129/decisions.md#wo-129-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "641db22a4512ffd34a911af8d295dfa4e6912f81c0584e52a3b4219121b34359",
+          "ref": "docs/evidence/WO-129/decisions.md#wo-129-d001",
+          "title": "WO-129-D001: Remove exact CLI-version admission from both worker transports and Codex effort selection. Version remains observed metadata. Requests retain validated effort values, explicit model selec",
+          "summary": "{ \"id\": \"WO-129-D001\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: next; subsequent scope expand directs fixing model launch refusal after a harness update, specifically Fable.\", \"decision\": \"Remove exact CLI-version admission from both worker transports and Codex effort selection. Version remains observed metadata. Requests retain validated effort values, explicit model selection, restricted launch arguments, bounded execution and validated results; an actual CLI refusal remains a failure without fallback.\", \"evidence\": [ \"packages/skeleton/src/worker-transport.ts\", \"packages/skeleton/test/worker.test.ts\", \"Installed Claude Code 2.1.270; constructing its transport before this repair",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b73b00174d8e2990",
+      "key": "decision:docs/evidence/WO-129/decisions.md#wo-129-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "87a57993bbf9278426c72775724b963d9c5243e18dbe021a105665dfd028403c",
+          "ref": "docs/evidence/WO-129/decisions.md#wo-129-d002",
+          "title": "WO-129-D002: Use one named minimum per transport and reuse the Codex minimum for explicit effort; never compare versions lexically or enumerate exact admitted releases.",
+          "summary": "{ \"id\": \"WO-129-D002\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator correction during execution: make the last seen Codex or Claude version the minimum required rather than the maximum.\", \"kind\": \"correction\", \"misread\": \"D001 selected removal of version admission altogether.\", \"meant\": \"Retain a minimum supported CLI version and admit newer versions without an upper bound.\", \"changed\": \"Before transport edits, selected numeric minimums Codex 0.154.0 and Claude Code 2.1.270, observed locally in this dispatch. Older or unparseable versions refuse with the required minimum. Newer patch, minor and major versions can launch the requested model.\", \"decision\": \"Use one named minimum per transport a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4dda10b383f24841",
+      "key": "decision:docs/evidence/WO-129/decisions.md#wo-129-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "653b1edc15d98d5606b7f090a62903f30989239cee6f0c64cc1611cf708dd1cc",
+          "ref": "docs/evidence/WO-129/decisions.md#wo-129-d003",
+          "title": "WO-129-D003: Declare Git inputs for every inventoried suite, retain conservative whole-tree document scopes, and store sealed version-3 successes under the Git common directory. Hash input classes sep",
+          "summary": "{ \"id\": \"WO-129-D003\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: next selects the full WO-129 suite-input deliverable.\", \"decision\": \"Declare Git inputs for every inventoried suite, retain conservative whole-tree document scopes, and store sealed version-3 successes under the Git common directory. Hash input classes separately and retain hashed path inventories for bounded miss explanations. Normalize checkout-local executable search paths relative to the checkout, while preserving external tool identity and the projected execution environment.\", \"evidence\": [ \"docs/work-orders/WO-129-suite-evidence-input-identity.md\", \"scripts/lib/suite-evidence.mjs\", \"scripts/test-runner.mjs\", \"s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1b85c878d390a1fa",
+      "key": "decision:docs/evidence/WO-129/decisions.md#wo-129-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "664ba83ce48c06376bd05d46aea3499b3484856bd865d0b3605430ada438502c",
+          "ref": "docs/evidence/WO-129/decisions.md#wo-129-d004",
+          "title": "WO-129-D004: Share the physical Git-common cache locator with the generated pre-tool guard and refuse classified direct or shell destinations into that cache, including from linked worktrees. Assign a",
+          "summary": "{ \"id\": \"WO-129-D004\", \"date\": \"2026-09-13\", \"dispatch\": \"WO-129 criterion 3 requires generated-hook protection for the Git-common suite cache; operator scope expansion additionally repairs CLI version admission.\", \"decision\": \"Share the physical Git-common cache locator with the generated pre-tool guard and refuse classified direct or shell destinations into that cache, including from linked worktrees. Assign application v0.17.4 above local v0.17.3 and skeleton 0.15.4; retain other component versions and publication controls.\", \"evidence\": [ \"scripts/test-harness.mjs: linked-worktree cache regression failed before the shared locator guard and passed after it\", \"scripts/test-suite-evidence.m",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-def043a0caf43292",
+      "key": "decision:docs/evidence/WO-129/decisions.md#wo-129-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "511ce25e56738774ffb46e333e493a08df02df42a43f330a760b3269e2940414",
+          "ref": "docs/evidence/WO-129/decisions.md#wo-129-d005",
+          "title": "WO-129-D005: Extend the existing path identity narrowly to npm's local prefix, including its uppercase spelling. Preserve external prefixes, other configuration values and the reviewed execution envir",
+          "summary": "{ \"id\": \"WO-129-D005\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: fix selecting VER-001 F1 and F2.\", \"kind\": \"correction\", \"misread\": \"D003 treated checkout-local PATH normalization and a same-process sibling fixture as sufficient for cross-worktree reuse; authority-evidence was declared to read no Git state.\", \"meant\": \"Canonical npm invocations must share successes at equivalent declared inputs, and every mutable Git reference actually read must participate in identity.\", \"changed\": \"Give npm_config_local_prefix a checkout-relative identity while retaining the actual value in execution; declare authority-evidence's refs/tags/v0.16.0 input. Exercise real npm children in separate wo",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-14d4d866911e2175",
+      "key": "decision:docs/evidence/WO-129/decisions.md#wo-129-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "50a56e8780efd0802870b2b38f5dd36fd75437b0e975c77d92247e6035e4fa28",
+          "ref": "docs/evidence/WO-129/decisions.md#wo-129-d006",
+          "title": "WO-129-D006: Pass the review without a runner change and carry F1 as a follow-up whose first step is a diagnosis of that invocation's write context. Every other gate in the WO-129 series persisted, in",
+          "summary": "{ \"id\": \"WO-129-D006\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator resume: final review; VER-002 F1: the repair's passing full gate at 2026-09-13T03:20:31Z persisted none of its 69 keyed suite successes, and the runner cannot tell.\", \"kind\": \"decision\", \"decision\": \"Pass the review without a runner change and carry F1 as a follow-up whose first step is a diagnosis of that invocation's write context. Every other gate in the WO-129 series persisted, including two later Claude Code gates; the identity, cache and explanation logic under review are correct, and the criteria do not require retention accounting.\", \"evidence\": [ \"docs/verifications/WO-129/VER-002.md#findings\", \"Shared cache census a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

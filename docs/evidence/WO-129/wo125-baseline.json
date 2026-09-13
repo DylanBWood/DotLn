@@ -1,0 +1,105 @@
+{
+  "source": "Retained operator-host gate archive, readGateChecks(main); all WO-125 full rows with 78 fresh tasks, including failures",
+  "rows": [
+    {
+      "treeHash": "0dc9933d6371a00a21305f28c75aa7f72e1b14c3",
+      "recordedAt": "2026-09-11T20:40:31.819Z",
+      "durationMs": 613102,
+      "executionMode": "fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "exitCode": 0,
+      "evidenceRef": "host-gate:0dc9933d6371a00a21305f28c75aa7f72e1b14c3:npm run test:full"
+    },
+    {
+      "treeHash": "705c77f679360e117aef463c84e12c76412e1d34",
+      "recordedAt": "2026-09-11T22:52:32.755Z",
+      "durationMs": 651645,
+      "executionMode": "fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "exitCode": 1,
+      "evidenceRef": "host-gate:705c77f679360e117aef463c84e12c76412e1d34:npm run test:full"
+    },
+    {
+      "treeHash": "e05b244e73d20df7d295276ffb195053c100bc30",
+      "recordedAt": "2026-09-12T02:25:15.344Z",
+      "durationMs": 704342,
+      "executionMode": "fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "exitCode": 1,
+      "evidenceRef": "host-gate:e05b244e73d20df7d295276ffb195053c100bc30:npm run test:full"
+    },
+    {
+      "treeHash": "aa90b97811e1de074153e60e3c2062fcd6f878a2",
+      "recordedAt": "2026-09-12T02:43:38.413Z",
+      "durationMs": 734235,
+      "executionMode": "fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "exitCode": 0,
+      "evidenceRef": "host-gate:aa90b97811e1de074153e60e3c2062fcd6f878a2:npm run test:full"
+    },
+    {
+      "treeHash": "b798f4149012781fb7704b531d1b2422bb384a11",
+      "recordedAt": "2026-09-12T03:29:35.258Z",
+      "durationMs": 738556,
+      "executionMode": "fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "exitCode": 1,
+      "evidenceRef": "host-gate:b798f4149012781fb7704b531d1b2422bb384a11:npm run test:full"
+    },
+    {
+      "treeHash": "f0d80cad65c410220f8b818e8991f361e47557c9",
+      "recordedAt": "2026-09-12T12:48:55.959Z",
+      "durationMs": 804855,
+      "executionMode": "fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "exitCode": 1,
+      "evidenceRef": "host-gate:f0d80cad65c410220f8b818e8991f361e47557c9:npm run test:full"
+    },
+    {
+      "treeHash": "4d47297fba745c2fd6a1180830460b1a4c734bbc",
+      "recordedAt": "2026-09-12T13:29:59.972Z",
+      "durationMs": 811495,
+      "executionMode": "fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "exitCode": 1,
+      "evidenceRef": "host-gate:4d47297fba745c2fd6a1180830460b1a4c734bbc:npm run test:full"
+    },
+    {
+      "treeHash": "44ad8e41c89b11111b2aa0bb5b5d44a454dfd848",
+      "recordedAt": "2026-09-12T14:10:29.960Z",
+      "durationMs": 793878,
+      "executionMode": "fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "exitCode": 1,
+      "evidenceRef": "host-gate:44ad8e41c89b11111b2aa0bb5b5d44a454dfd848:npm run test:full"
+    },
+    {
+      "treeHash": "b5ac6bd98064f0c3401995f5ce8eeebfb0dcfb9d",
+      "recordedAt": "2026-09-12T14:51:29.993Z",
+      "durationMs": 838969,
+      "executionMode": "fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "exitCode": 1,
+      "evidenceRef": "host-gate:b5ac6bd98064f0c3401995f5ce8eeebfb0dcfb9d:npm run test:full"
+    },
+    {
+      "treeHash": "3ac75d3a39c2c10087b8aa0d28096bc3eed14bfe",
+      "recordedAt": "2026-09-12T15:39:37.060Z",
+      "durationMs": 835516,
+      "executionMode": "fresh",
+      "freshSuites": 78,
+      "reusedSuites": 0,
+      "exitCode": 1,
+      "evidenceRef": "host-gate:3ac75d3a39c2c10087b8aa0d28096bc3eed14bfe:npm run test:full"
+    }
+  ]
+}

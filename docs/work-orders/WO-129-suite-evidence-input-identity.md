@@ -1,4 +1,4 @@
-# WO-129 — Suite evidence keyed by declared inputs: a lifecycle transition, a commit of unchanged bytes or a sibling worktree no longer invalidates suites that did not read what changed, and every miss names what did (version assigned at activation)
+# WO-129 — Suite evidence keyed by declared inputs: a lifecycle transition, a commit of unchanged bytes or a sibling worktree no longer invalidates suites that did not read what changed, and every miss names what did (v0.17.4)
 
 **Model:** any capable model; the measured composed gate runs on the
 operator's machine. State the model and effort actually run
@@ -204,3 +204,19 @@ lifecycle predicate or the exact-tree aggregate; deleting or merging tests.
 2. The release close on main composes from the reviewed worktree's successes
    when its suites' inputs match; the operator may still run `--fresh` at any
    close, and the tag manifest keeps recording the gate it ran or reused.
+
+## Execution record
+
+The operator's execution-time scope expansion also requires worker transports
+to admit routine CLI upgrades. The subsequent correction selects minimums
+Claude Code `2.1.270` and Codex CLI `0.154.0`, without upper bounds, preserving
+explicit model selection, effort validation, restricted launches and validated
+results. [D001 and D002](../evidence/WO-129/decisions.md#wo-129-d002) record the
+dispatch and correction; the worker, feedback-host, verification and planning
+fixtures cover the affected consumers. The original acceptance criteria remain.
+
+The `resume: fix` dispatch for [VER-001](../verifications/WO-129/VER-001.md)
+repairs npm's checkout prefix in suite identity and declares the historical tag
+read by `authority-evidence`. Real npm children in sibling worktrees must reuse
+the same executed suite, while changed source or the declared tag must invalidate
+it. [D005](../evidence/WO-129/decisions.md#wo-129-d005) records this correction.
