@@ -20,6 +20,14 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-128 activation completion (2026-09-12):** application `v0.17.3` is the
+next patch above the observed local annotated `v0.17.2` baseline. Skeleton
+`0.15.3` adds bounded gate-deadline observation; console `0.1.5` derives its
+collector bound from the declared scheduler load. Compiler and kernel remain
+unchanged. The gate retains its required suites, exact-tree evidence and
+publication controls. The [decision receipt](../evidence/WO-128/decisions.md)
+records the classification and its measurement conditions.
+
 **WO-125 activation completion (2026-09-11):** application `v0.17.2` is the next patch above the observed local annotated `v0.17.1` baseline. Skeleton `0.15.2` accepts observed explicit Codex effort overrides while preserving the `unknown` launch, isolation and existing contracts. Compiler, kernel and console versions stay fixed. The [decision receipt](../evidence/WO-125/decisions.md) records the evidence and reopening conditions.
 
 **WO-043 activation completion (2026-09-11):** application `v0.17.1` is the next patch above the observed local annotated `v0.17.0` baseline. Typed dependency declarations, their shared projection and activation refusal change control-plane scripts and documentation only. Component versions stay fixed. The [decision receipt](../evidence/WO-043/decisions.md) records the assignment; publication remains a separate dispatch.

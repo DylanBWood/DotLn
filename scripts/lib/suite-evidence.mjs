@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { observedSpawnSync as spawnSync } from "../../packages/skeleton/src/gate-deadlines.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import {
   accessSync,
@@ -27,7 +27,7 @@ import { gateInstalledInputRoots } from "./gate-evidence.mjs";
 const version = 2;
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const jsonHash = (value) => digest(JSON.stringify(value));
-export function suiteEnvironment(env = process.env) {
+export function suiteEnvironment(env = process.env, gateContext) {
   // This is both the execution environment and the fingerprinted environment.
   // Offline repository suites cannot see rotating proxy credentials or unrelated
   // invocation metadata. New environment-dependent coverage must extend this
@@ -72,6 +72,15 @@ export function suiteEnvironment(env = process.env) {
   // A runner fixture may itself execute under node --test. Its private worker
   // marker would make a nested --test invocation silently omit discovered tests.
   delete child.NODE_TEST_CONTEXT;
+  if (gateContext) {
+    child.DOTLN_GATE_LOAD_CLASS = gateContext.loadClass;
+    child.DOTLN_GATE_CONCURRENCY = String(gateContext.concurrency);
+    child.DOTLN_GATE_LOAD_FACTOR = String(gateContext.loadFactor);
+    child.DOTLN_GATE_TASK = gateContext.task;
+    if (gateContext.peerFile) child.DOTLN_GATE_PEER_FILE = gateContext.peerFile;
+    if (gateContext.deadlineLog)
+      child.DOTLN_GATE_DEADLINE_LOG = gateContext.deadlineLog;
+  }
   return child;
 }
 const inside = (root, path) => {
@@ -381,6 +390,7 @@ export function suiteInputHash(row, snapshot) {
     version,
     name: row.name,
     command: row.inputCommand ?? [...row.command, ...(row.args ?? [])],
+    loadPolicy: row.loadPolicy ?? null,
     documents,
     selected,
     context: snapshot.context,

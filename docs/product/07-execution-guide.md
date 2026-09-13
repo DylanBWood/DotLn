@@ -747,6 +747,16 @@ recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over
 records each task's concurrent peers in the gate row; that trace is the entry
 evidence for this candidate.
 
+WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json)
+now supplies that evidence: 689.520 s wall-clock, 2674.262 s
+of task time, and a 688.383 s observed scheduler chain. Its
+largest chain node is `plan-refutation:fixtures` at 523.842 s;
+the [complete offline trace](../evidence/WO-128/diagnosis.md#accepted-shared-series-and-deadline-comparison)
+retains every edge and visible wait. Five shared passes keep the exclusive
+flags removed, but their median 694.561 s exceeds the exact earlier
+476.304 s gate. This is reliability evidence and a measured entry point for
+planning, not an allocation or a demonstrated structural speedup.
+
 The cuts, each measured before allocation: copy-on-write clones of the sealed
 release template and other prepared fixtures where the filesystem supports
 them (`scripts/lib/release-fixtures.mjs` copies two repositories into forty
@@ -1338,9 +1348,33 @@ claim evidence or releases it does not have.
   wrapper separately; a direct runner observation is not automatically an npm
   timing observation. See [WO-126-D009](../evidence/WO-126/decisions.md#wo-126-d009)
   and the [invocation correction](../evidence/WO-126/decisions.md#wo-126-d010).
-  VER-002's repair gives `harness-fixtures` and `process-debt` exclusive runs
-  within the gate, while the independent console suite may overlap skeleton.
-  It retains the same suite inventory, file-concurrency limit and global cap.
+  WO-128 removes VER-002's exclusive scheduling of `harness-fixtures` and
+  `process-debt` after [five consecutive fresh full passes](../evidence/WO-128/shared-series-002.json)
+  on the operator's host, with all 78 tasks executed and zero reuse in each.
+  The [earlier failed series and signal-fixture repair](../evidence/WO-128/decisions.md#wo-128-d007)
+  remain recorded. Reopen the shared choice when a diagnosed failure invalidates
+  its load class or measured baseline; see [D008](../evidence/WO-128/decisions.md#wo-128-d008).
+  [VER-001 F2](../verifications/WO-128/VER-001.md#findings) measured the shared
+  choice at about 204 s more per fresh gate than exclusive scheduling on the
+  same source (462.3 s against 666.5 s); restoring the two flags is an open
+  operator decision recorded in [WO-128-D010](../evidence/WO-128/decisions.md#wo-128-d010).
+  The same suite
+  inventory, file-concurrency limit and global cap remain. Each task receives
+  a declared shared cap of at most four slots or an isolated cap of one, with
+  a load factor of twice the slot count. The console's read-only command bound
+  is the larger of its existing 60-second floor and its measured 17.2-second
+  baseline multiplied by that factor. Other inventoried finite bounds remain
+  protected by the peer cap; semantic timeout fixtures retain their values.
+  Deadline hits record the site, elapsed duration, current peers and host load.
+  Missing observations and unestablished causes remain explicit. A host-load
+  observation is not a causal diagnosis and never triggers an automatic retry.
+  Task start/end, start peers and scheduler predecessors accompany the gate
+  row, supporting an offline critical-path trace. These are additive fields;
+  reused results retain their original execution provenance. The declared load
+  policy participates in reuse validity; transient diagnostic file identities
+  do not change the task policy. See the [deadline inventory and measurement
+  procedure](../evidence/WO-128/diagnosis.md) and
+  [WO-128-D004](../evidence/WO-128/decisions.md#wo-128-d004).
   Gate children and input fingerprints now share a declared environment;
   unknown variables and rotating proxy credentials are absent from both.
   Selected names, never values, accompany the input observations. This removes

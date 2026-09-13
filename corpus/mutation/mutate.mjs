@@ -18,6 +18,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { execFileSync, spawn } from "node:child_process";
+import { startDeadline } from "../../packages/skeleton/src/gate-deadlines.mjs";
 import { randomUUID } from "node:crypto";
 import { tmpdir } from "node:os";
 import {
@@ -108,6 +109,7 @@ export function runProcess(
   { cwd, timeoutMs, env = process.env },
 ) {
   if (!(timeoutMs > 0)) fail("positive process timeout required");
+  const observation = startDeadline("mutation:process", timeoutMs, { env });
   return new Promise((accept, reject) => {
     const started = performance.now();
     let output = "",
@@ -136,6 +138,7 @@ export function runProcess(
     child.stdout.on("data", capture);
     child.stderr.on("data", capture);
     const timer = setTimeout(() => {
+      observation.finish(true);
       timedOut = true;
       kill();
     }, timeoutMs);
@@ -144,6 +147,7 @@ export function runProcess(
       reject(error);
     });
     child.on("close", (code, signal) => {
+      observation.finish();
       clearTimeout(timer);
       if (overflow) {
         reject(new Error("child output overflow; no verdict recorded"));

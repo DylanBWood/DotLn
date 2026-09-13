@@ -1826,7 +1826,11 @@ else {
         write(
           repo,
           "docs/control/budgets.json",
-          read(root, "docs/control/budgets.json"),
+          JSON.stringify({
+            ...JSON.parse(read(root, "docs/control/budgets.json")),
+            // This synthetic history has no operator budget exceptions.
+            acceptances: [],
+          }),
         );
         for (const id of ["WO-126", "WO-902"])
           write(
@@ -1900,7 +1904,10 @@ else {
       "WO-126 cost input holds missing or unbalanced additions and refuses stale subject evidence",
       async () => {
         const repo = makeRepo(parent, "planning-cost");
-        const budgets = JSON.parse(read(root, "docs/control/budgets.json"));
+        const budgets = {
+          ...JSON.parse(read(root, "docs/control/budgets.json")),
+          acceptances: [],
+        };
         write(repo, "docs/control/budgets.json", JSON.stringify(budgets));
         write(
           repo,

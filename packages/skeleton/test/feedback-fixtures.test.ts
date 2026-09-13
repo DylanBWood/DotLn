@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync, spawnSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
+import { observedExecFileSync as execFileSync } from "../src/gate-deadlines.mjs";
 import {
   chmodSync,
   mkdtempSync,

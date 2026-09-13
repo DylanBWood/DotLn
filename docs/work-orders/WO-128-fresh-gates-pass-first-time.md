@@ -1,4 +1,4 @@
-# WO-128 — Fresh gates pass first time: every wall-clock deadline a gate child can hit survives the full gate's load, and the exclusive-suite workaround is re-measured (version assigned at activation)
+# WO-128 — Fresh gates pass first time: every wall-clock deadline a gate child can hit survives the full gate's load, and the exclusive-suite workaround is re-measured (v0.17.3)
 
 **Model:** any capable model for the runner, the collector budget and the
 fixtures; the measurement series runs on the operator's machine. State the
@@ -219,3 +219,31 @@ cold-gate structural cuts); a runner-level automatic retry.
    constant unchanged by the operator's decision, and this order records the
    change as a new decision with the measured evidence rather than editing
    that record.
+
+## Execution record
+
+2026-09-12: implemented under `resume: next`, with the operator's explicit approval of
+the bounded two-fixture planning repair. [Execution evidence](../evidence/WO-128/README.md)
+maps all six acceptance criteria. [D001–D009](../evidence/WO-128/decisions.md)
+record sources, corrections, measured costs, alternatives and reopening conditions.
+
+The retained configuration uses the shared cap of four. Five consecutive
+outside-sandbox fresh full gates pass all 78 tasks with zero reuse:
+689,520, 692,702, 694,561, 697,079, 699,430 ms. The earlier series's fifth failure was
+diagnosed with a quiet-host signal negative control, repaired at the fixture
+protocol, and the count restarted. Its failed evidence remains immutable.
+The accepted median 694,561 ms exceeds the exact prior 476,304 ms gate;
+no speedup is claimed. Product 07 now contains the observed cold-gate trace.
+
+The collector retains read-only operations with a finite load-derived bound;
+all reachable deadline families and missing historical observations are
+documented. Planning freshness checks and semantic test timers remain intact.
+The fresh fast gate passes 12/12 (113,874 ms); the canonical final evidence
+command and lifecycle transition enforce current full/diff evidence and output
+review. FUP-0054's duplicate lineage points to the settled console collection
+candidate. No new dependency is introduced. Prepared local target: v0.17.3
+(skeleton 0.15.3, console 0.1.5), preserving publication controls.
+
+Actor: Codex CLI 0.154.0, gpt-6-astra, max, operator-attested. Usage comes from
+the canonical transcript-counter dispatch observations, not an inferred total.
+Formal verification and final review remain their separately dispatched roles.

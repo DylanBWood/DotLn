@@ -254,7 +254,7 @@ test("failed split-case diagnostics survive aggregate evidence as addressed logs
       .every((row) => !row.outputRef),
   );
 });
-test("hook fixtures run alone while console can overlap skeleton under the shared cap", async () => {
+test("hook fixtures and console share the cap while explicit isolated tasks stay alone", async () => {
   const selected = suites.filter((row) =>
     [
       "build",
@@ -269,10 +269,13 @@ test("hook fixtures run alone while console can overlap skeleton under the share
   const rows = await scheduleSuites(expandSuiteTasks(selected, root), {
     concurrency: 4,
     execute: async (row) => {
-      if (row.name === "harness-fixtures" || row.name === "process-debt")
-        assert.equal(active.size, 0);
-      assert.ok(!active.has("harness-fixtures") && !active.has("process-debt"));
+      assert.equal(
+        row.gateContext.loadClass,
+        row.build ? "isolated" : "shared",
+      );
       active.add(row.name);
+      if (active.has("harness-fixtures") && active.has("process-debt"))
+        overlap.add("hooks");
       if (active.has("skeleton") && active.has("console"))
         overlap.add("packages");
       await new Promise((done) => setTimeout(done, 10));
@@ -282,6 +285,7 @@ test("hook fixtures run alone while console can overlap skeleton under the share
   });
   assert.equal(rows.length, selected.length);
   assert.ok(overlap.has("packages"));
+  assert.ok(overlap.has("hooks"));
   for (const concurrency of [1, 2, 4]) {
     await scheduleSuites(
       [
@@ -401,7 +405,7 @@ test("only and document CLI selection execute their declared checks without a co
     assert.equal(observed.length, 4);
     assert.ok(!observed.some((row) => row[0].includes("build")));
     assert.deepEqual(observed.at(-1).slice(1), ["check"]);
-    const repeated = await runGate(["--document"], repo);
+    const repeated = await runGate(["--document", "--serial"], repo);
     assert.equal(
       repeated.reusedSuites,
       3,

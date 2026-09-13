@@ -1,0 +1,4024 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    "all-isolated-baselines.json",
+    "signal-cleanup.json",
+    "shared-series-002.json"
+  ],
+  "method": "Join by task and source-family deadline site; remove only the trailing numeric subprocess bound from the join key so a derived bound can be compared. Preserve each original site and bound in its source row. No missing sample is imputed.",
+  "acceptance": {
+    "runs": 5,
+    "durationsMs": [
+      689520,
+      692702,
+      694561,
+      697079,
+      699430
+    ],
+    "allPassedFirstTime": true
+  },
+  "sites": [
+    {
+      "task": "adjacent-queue",
+      "site": "suite:adjacent-queue",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 435.01183299999684,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        1333.5355840000557,
+        1365.766791000031,
+        1356.3995000000577,
+        1388.1990839999635,
+        1354.4926249999553
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.627838134765625
+    },
+    {
+      "task": "artifact-corpus",
+      "site": "suite:artifact-corpus",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 206.36787499999627,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        315.38991600007284,
+        312.9474169999594,
+        310.08270899998024,
+        303.5244999999413,
+        309.80858300009277
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.61297607421875
+    },
+    {
+      "task": "artifact-evidence",
+      "site": "suite:artifact-evidence",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 172.86658299999544,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        275.97970800000076,
+        239.63545800000065,
+        311.87683300000026,
+        199.04441699999916,
+        237.69066700000076
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "authority-evidence",
+      "site": "suite:authority-evidence",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1160.8984169999894,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        5002.918417,
+        4937.717542,
+        4814.918583000001,
+        4926.280167,
+        4949.598625
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "authority-grants",
+      "site": "suite:authority-grants",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 128.16962499998044,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        201.15974999999162,
+        234.08766700001433,
+        230.83983299997635,
+        221.87637499999255,
+        199.74137499998324
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.627838134765625
+    },
+    {
+      "task": "backup-intake",
+      "site": "suite:backup-intake",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 223.38387499999953,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        435.4216669999296,
+        432.79837500001304,
+        450.6367499999469,
+        452.1671670000069,
+        420.015625
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.485260009765625
+    },
+    {
+      "task": "beacon-contention-smoke",
+      "site": "beacon-contention:reader-round",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 4,
+      "standaloneMaxMs": 27.610457999999998,
+      "sharedBoundsMs": [],
+      "sharedSamples": 0,
+      "sharedMaxMsByRun": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": null,
+      "sharedMaxHostLoadPerCpu": null
+    },
+    {
+      "task": "beacon-contention-smoke",
+      "site": "suite:beacon-contention-smoke",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 140.3939170000085,
+      "sharedBoundsMs": [],
+      "sharedSamples": 0,
+      "sharedMaxMsByRun": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": null,
+      "sharedMaxHostLoadPerCpu": null
+    },
+    {
+      "task": "build",
+      "site": "suite:build",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 2451.274416,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2193.983584,
+        2250.50375,
+        2239.0460409999996,
+        2235.862917,
+        2333.93875
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 0,
+      "sharedMaxHostLoadPerCpu": 0.42327880859375
+    },
+    {
+      "task": "checkpoint",
+      "site": "suite:checkpoint",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 2903.192458000005,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        9820.916708000004,
+        10175.161250000005,
+        9726.462999999989,
+        9599.502915999969,
+        10066.961332999985
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.611785888671875
+    },
+    {
+      "task": "compiler",
+      "site": "suite:compiler",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 492.3341670000227,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        772.110875000013,
+        914.5793330000015,
+        859.8869580000173,
+        785.2845409999136,
+        857.3745000000345
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.627838134765625
+    },
+    {
+      "task": "console",
+      "site": "packages/console/src/collect.ts:execFileSync",
+      "standaloneBoundsMs": [
+        60000
+      ],
+      "standaloneSamples": 44,
+      "standaloneMaxMs": 10480.516208000001,
+      "sharedBoundsMs": [
+        137600
+      ],
+      "sharedSamples": 220,
+      "sharedMaxMsByRun": [
+        60409.73212500001,
+        60615.058375,
+        61751.33487499999,
+        60719.87362499999,
+        60688.986667
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.55059814453125
+    },
+    {
+      "task": "console",
+      "site": "suite:console",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 19226.677209,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        96842.49820799998,
+        96665.82400000002,
+        98412.78508300002,
+        97470.281792,
+        96869.68145899998
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.46307373046875
+    },
+    {
+      "task": "discovery-probe",
+      "site": "scripts/discover.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 2,
+      "standaloneMaxMs": 31.3775,
+      "sharedBoundsMs": [],
+      "sharedSamples": 0,
+      "sharedMaxMsByRun": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": null,
+      "sharedMaxHostLoadPerCpu": null
+    },
+    {
+      "task": "discovery-probe",
+      "site": "suite:discovery-probe",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 98.03420899997582,
+      "sharedBoundsMs": [],
+      "sharedSamples": 0,
+      "sharedMaxMsByRun": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": null,
+      "sharedMaxHostLoadPerCpu": null
+    },
+    {
+      "task": "feedback-evidence",
+      "site": "packages/skeleton/src/feedback-audit.ts:execFileSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 4,
+      "standaloneMaxMs": 59.553833000000395,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 20,
+      "sharedMaxMsByRun": [
+        101.611041,
+        107.06079200000022,
+        117.23633299999983,
+        108.389625,
+        115.92258300000049
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "feedback-evidence",
+      "site": "packages/skeleton/src/feedback-audit.ts:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 20,
+      "standaloneMaxMs": 387.79383300000006,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 100,
+      "sharedMaxMsByRun": [
+        1555.8826660000002,
+        1618.0527499999998,
+        1575.9145,
+        1606.5230000000001,
+        1603.908334
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "feedback-evidence",
+      "site": "packages/skeleton/src/feedback-boundary.ts:execFileSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 10,
+      "standaloneMaxMs": 27.162290999999996,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 50,
+      "sharedMaxMsByRun": [
+        147.0680420000001,
+        157.09908299999995,
+        154.315917,
+        157.86533400000008,
+        157.2572500000001
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "feedback-evidence",
+      "site": "packages/skeleton/test/feedback-fixtures.test.ts:execFileSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 5,
+      "standaloneMaxMs": 55.529042,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 25,
+      "sharedMaxMsByRun": [
+        248.026375,
+        263.172042,
+        263.886083,
+        269.31666700000005,
+        266.122916
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "feedback-evidence",
+      "site": "suite:feedback-evidence",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 3302.38629200001,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        7009.164542,
+        7082.204125000002,
+        6942.480124999998,
+        7164.314833,
+        7173.175499999999
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 2,
+      "sharedMaxHostLoadPerCpu": 0.596527099609375
+    },
+    {
+      "task": "fixture-temp-root",
+      "site": "fixture-temp-root:await-release-root",
+      "standaloneBoundsMs": [
+        15000
+      ],
+      "standaloneSamples": 2,
+      "standaloneMaxMs": 73.618875,
+      "sharedBoundsMs": [],
+      "sharedSamples": 0,
+      "sharedMaxMsByRun": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": null,
+      "sharedMaxHostLoadPerCpu": null
+    },
+    {
+      "task": "fixture-temp-root",
+      "site": "fixture-temp-root:signal-cleanup",
+      "standaloneBoundsMs": [
+        15000
+      ],
+      "standaloneSamples": 2,
+      "standaloneMaxMs": 49.029542,
+      "sharedBoundsMs": [
+        15000
+      ],
+      "sharedSamples": 10,
+      "sharedMaxMsByRun": [
+        98.63874999999999,
+        134.72175,
+        137.499042,
+        172.406667,
+        170.787417
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.485260009765625
+    },
+    {
+      "task": "fixture-temp-root",
+      "site": "suite:fixture-temp-root",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 429.7327500000247,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2460.7976659999695,
+        1652.4802500000224,
+        818.0828329999931,
+        2484.1393749999115,
+        1025.1339999999618
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.485260009765625
+    },
+    {
+      "task": "format",
+      "site": "suite:format",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 4850.81825,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        5220.2489590000005,
+        5212.731667000001,
+        5128.206791,
+        5152.074709,
+        5249.548084000001
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "github-body",
+      "site": "suite:github-body",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 97.93291700000009,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        131.25041700003203,
+        135.74862500000745,
+        123.54004200000782,
+        119.66270800004713,
+        126.3094160000328
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4840087890625
+    },
+    {
+      "task": "harness-context",
+      "site": "suite:harness-context",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 401.01645900000585,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        1830.580332999999,
+        1854.5097500000002,
+        1867.608875,
+        1923.4089999999987,
+        1881.4357909999999
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "harness-evidence",
+      "site": "suite:harness-evidence",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 496.50929200000246,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2085.482749999999,
+        2275.034167,
+        2205.6520419999997,
+        2283.1468750000004,
+        2271.5840829999997
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "gate-evidence:record-lock",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 4,
+      "standaloneMaxMs": 0.10570899999947869,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 20,
+      "sharedMaxMsByRun": [
+        0.10112499998649582,
+        1.093375000054948,
+        0.10345799999777228,
+        0.11216699999931734,
+        0.11820799997076392
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4818115234375
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "harness:await-barrier",
+      "standaloneBoundsMs": [
+        20000
+      ],
+      "standaloneSamples": 7,
+      "standaloneMaxMs": 119.1126249999943,
+      "sharedBoundsMs": [
+        20000
+      ],
+      "sharedSamples": 35,
+      "sharedMaxMsByRun": [
+        259.33941600000253,
+        249.5755829999689,
+        271.9149579999503,
+        249.98004200001014,
+        251.13120900001377
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.54376220703125
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "harness:gate-guard-test",
+      "standaloneBoundsMs": [
+        300000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 41475.186167,
+      "sharedBoundsMs": [
+        300000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        197139.514166,
+        197296.896542,
+        198495.39391700004,
+        198883.25029099997,
+        199995.62554100002
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.524993896484375
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "harness:held-barrier",
+      "standaloneBoundsMs": [
+        20000
+      ],
+      "standaloneSamples": 7,
+      "standaloneMaxMs": 252.483292,
+      "sharedBoundsMs": [
+        20000
+      ],
+      "sharedSamples": 35,
+      "sharedMaxMsByRun": [
+        584.300375,
+        706.958125,
+        809.81075,
+        687.935333,
+        649.352875
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.54376220703125
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "packages/skeleton/src/feedback-boundary.ts:execFileSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 180,
+      "standaloneMaxMs": 61.87887499999488,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 900,
+      "sharedMaxMsByRun": [
+        183.58112500000016,
+        191.41570899999988,
+        182.26762499999995,
+        202.71466699999996,
+        203.62024999999994
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.608062744140625
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "packages/skeleton/src/gate-evidence.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        1000
+      ],
+      "standaloneSamples": 288,
+      "standaloneMaxMs": 88.951042,
+      "sharedBoundsMs": [
+        1000
+      ],
+      "sharedSamples": 1440,
+      "sharedMaxMsByRun": [
+        242.25895900000003,
+        193.27541699999998,
+        202.253667,
+        200.60554100000002,
+        193.33925
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.656524658203125
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "packages/skeleton/src/harness-host.ts:spawnSync",
+      "standaloneBoundsMs": [
+        10000,
+        150000,
+        5000,
+        900000
+      ],
+      "standaloneSamples": 802,
+      "standaloneMaxMs": 20521.010375,
+      "sharedBoundsMs": [
+        10000,
+        150000,
+        5000,
+        900000
+      ],
+      "sharedSamples": 4010,
+      "sharedMaxMsByRun": [
+        73454.762541,
+        74629.082625,
+        76108.180459,
+        78528.230375,
+        74218.143583
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.656524658203125
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "scripts/lib/suite-evidence.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 12,
+      "standaloneMaxMs": 93.59720800000287,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 60,
+      "sharedMaxMsByRun": [
+        169.12566700000025,
+        212.06566700000258,
+        173.9982919999893,
+        172.0137500000128,
+        240.40033299999777
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.637115478515625
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "scripts/test-harness.mjs:spawn",
+      "standaloneBoundsMs": [
+        20000
+      ],
+      "standaloneSamples": 2,
+      "standaloneMaxMs": 104.9665410000016,
+      "sharedBoundsMs": [
+        20000
+      ],
+      "sharedSamples": 10,
+      "sharedMaxMsByRun": [
+        164.01170900004217,
+        199.5339999999851,
+        256.25225000001956,
+        194.33754199999385,
+        192.02899999998044
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.462371826171875
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "scripts/test-harness.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        20000
+      ],
+      "standaloneSamples": 419,
+      "standaloneMaxMs": 482.6278750000056,
+      "sharedBoundsMs": [
+        20000
+      ],
+      "sharedSamples": 2095,
+      "sharedMaxMsByRun": [
+        1726.4619170000078,
+        1754.230458999984,
+        1862.7094999999972,
+        1693.750040999992,
+        1841.3938749999797
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.656524658203125
+    },
+    {
+      "task": "harness-fixtures",
+      "site": "suite:harness-fixtures",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 133696.738125,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        497061.397166,
+        498671.656417,
+        502461.944333,
+        506779.1120830001,
+        503168.2895
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.47479248046875
+    },
+    {
+      "task": "harness",
+      "site": "packages/skeleton/src/harness-host.ts:spawnSync",
+      "standaloneBoundsMs": [
+        10000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 30.172542,
+      "sharedBoundsMs": [
+        10000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        81.89808400000001,
+        118.967625,
+        119.59033300000002,
+        121.25120799999999,
+        119.199625
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.562042236328125
+    },
+    {
+      "task": "harness",
+      "site": "suite:harness",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 140.3202910000109,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        244.4517909999995,
+        276.7102500000001,
+        276.1282919999994,
+        280.6699580000004,
+        275.9020840000003
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.562042236328125
+    },
+    {
+      "task": "index",
+      "site": "suite:index",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 6053.765249999997,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        18430.846792,
+        18861.835791,
+        18645.505375,
+        18953.241083,
+        18716.41475
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 0,
+      "sharedMaxHostLoadPerCpu": 0.637115478515625
+    },
+    {
+      "task": "kernel",
+      "site": "suite:kernel",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 338.56495800000266,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        705.9722090000287,
+        649.330040999921,
+        699.4795419999864,
+        643.2735000000102,
+        698.139499999932
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.611785888671875
+    },
+    {
+      "task": "license-fixtures",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 32,
+      "standaloneMaxMs": 461.798917,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 160,
+      "sharedMaxMsByRun": [
+        527.9777080000003,
+        523.8741250000003,
+        501.8256660000002,
+        496.50470900000073,
+        642.8431669999991
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.611785888671875
+    },
+    {
+      "task": "license-fixtures",
+      "site": "suite:license-fixtures",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 12001.443708000006,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        24889.52916699997,
+        24476.573209000053,
+        24776.69883300003,
+        24099.99216699996,
+        24119.37391600001
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.61297607421875
+    },
+    {
+      "task": "license-surfaces",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 5,
+      "standaloneMaxMs": 351.003541,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 25,
+      "sharedMaxMsByRun": [
+        603.975417,
+        614.046666,
+        633.550958,
+        717.900167,
+        720.050834
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.562042236328125
+    },
+    {
+      "task": "license-surfaces",
+      "site": "suite:license-surfaces",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1722.7297080000008,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        3033.061,
+        3064.0154999999995,
+        3062.1072080000004,
+        3142.2022910000005,
+        3198.6951249999997
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.562042236328125
+    },
+    {
+      "task": "meta",
+      "site": "suite:meta",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 730.2828330000048,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        3101.204834,
+        3073.9372920000005,
+        3169.1747080000005,
+        3076.1969169999993,
+        3076.2780410000014
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.596527099609375
+    },
+    {
+      "task": "mutation",
+      "site": "mutation:process",
+      "standaloneBoundsMs": [
+        200
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 200.7314579999993,
+      "sharedBoundsMs": [
+        200
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        202.73025000000052,
+        201.73949999999968,
+        202.10479199999827,
+        201.65654200000063,
+        201.5682080000006
+      ],
+      "sharedHits": 5,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.66302490234375
+    },
+    {
+      "task": "mutation",
+      "site": "suite:mutation",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 10444.820499999973,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        13281.05249999999,
+        13065.682292000041,
+        12810.637624999974,
+        12771.063042000053,
+        12873.426333000069
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.71282958984375
+    },
+    {
+      "task": "plan-refutation:current",
+      "site": "suite:plan-refutation:current",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 29951.416957999987,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        106463.52537500008,
+        105919.73545799998,
+        105370.33245800005,
+        104631.13708299992,
+        106726.64304200001
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 0,
+      "sharedMaxHostLoadPerCpu": 0.53753662109375
+    },
+    {
+      "task": "plan-refutation:fixtures",
+      "site": "packages/skeleton/src/worker-transport.ts:execFileSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 138.6187079999945,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        374.34379199997056,
+        307.62087500002235,
+        197.37641700002132,
+        418.66279200004647,
+        388.5148749999935
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.397064208984375
+    },
+    {
+      "task": "plan-refutation:fixtures",
+      "site": "suite:plan-refutation:fixtures",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 114155.23329100001,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        523832.17145799997,
+        526547.501625,
+        529403.010791,
+        533645.938917,
+        531772.829792
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.42022705078125
+    },
+    {
+      "task": "plan-refutation:fixtures",
+      "site": "worker-transport:process",
+      "standaloneBoundsMs": [
+        1200000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 39.43987500000367,
+      "sharedBoundsMs": [
+        1200000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        224.81137499999022,
+        196.14012499997625,
+        270.63166700000875,
+        209.74833400000352,
+        115.6890419999836
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.397064208984375
+    },
+    {
+      "task": "process-debt",
+      "site": "gate-evidence:record-lock",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 24,
+      "standaloneMaxMs": 0.7323750000000011,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 120,
+      "sharedMaxMsByRun": [
+        0.7694580000000002,
+        0.8187500000000014,
+        0.836292000000002,
+        0.7897919999999985,
+        0.7840000000000025
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.637115478515625
+    },
+    {
+      "task": "process-debt",
+      "site": "packages/skeleton/src/feedback-boundary.ts:execFileSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 18,
+      "standaloneMaxMs": 35.07037500000001,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 90,
+      "sharedMaxMsByRun": [
+        139.161792,
+        144.70295899999996,
+        180.30533400000002,
+        139.30629099998623,
+        166.16712500000722
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.492584228515625
+    },
+    {
+      "task": "process-debt",
+      "site": "packages/skeleton/src/gate-evidence.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        1000
+      ],
+      "standaloneSamples": 6,
+      "standaloneMaxMs": 2.7175419999985024,
+      "sharedBoundsMs": [
+        1000
+      ],
+      "sharedSamples": 30,
+      "sharedMaxMsByRun": [
+        123.44666600000346,
+        125.23116700000537,
+        125.64329099998577,
+        124.02099999997881,
+        127.02462499999092
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.632232666015625
+    },
+    {
+      "task": "process-debt",
+      "site": "packages/skeleton/src/harness-host.ts:spawnSync",
+      "standaloneBoundsMs": [
+        1000,
+        10000,
+        150000,
+        5000,
+        900000
+      ],
+      "standaloneSamples": 344,
+      "standaloneMaxMs": 225.8082499999946,
+      "sharedBoundsMs": [
+        1000,
+        10000,
+        150000,
+        5000,
+        900000
+      ],
+      "sharedSamples": 1676,
+      "sharedMaxMsByRun": [
+        534.3249999999971,
+        547.3482499999809,
+        575.0713329999999,
+        577.7959170000104,
+        490.34141599999566
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.656524658203125
+    },
+    {
+      "task": "process-debt",
+      "site": "scripts/test-process-debt.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        10000
+      ],
+      "standaloneSamples": 10,
+      "standaloneMaxMs": 129.76016600000003,
+      "sharedBoundsMs": [
+        10000
+      ],
+      "sharedSamples": 50,
+      "sharedMaxMsByRun": [
+        326.16445800001384,
+        365.96474999998463,
+        338.35270899999887,
+        312.69395899999654,
+        373.1593330000178
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.460357666015625
+    },
+    {
+      "task": "process-debt",
+      "site": "suite:process-debt",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 64394.98475000003,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        217542.855666,
+        221894.029833,
+        222620.78470800002,
+        225695.88025,
+        220601.542667
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4189453125
+    },
+    {
+      "task": "publication-fixtures",
+      "site": "suite:publication-fixtures",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1129.0454579999987,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2101.8657090000343,
+        1924.5037500000326,
+        2102.214957999997,
+        2290.297583000036,
+        2058.4907080000266
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.5399169921875
+    },
+    {
+      "task": "publication",
+      "site": "suite:publication",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 375.3454999999958,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        1383.3183749999998,
+        1422.369834,
+        1410.9752500000004,
+        1388.8994580000003,
+        1411.2586250000004
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.562042236328125
+    },
+    {
+      "task": "release-preparation",
+      "site": "suite:release-preparation",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 3748.280458000001,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        8871.16954100004,
+        8816.528875000076,
+        8782.76333300001,
+        8682.77800000005,
+        9305.227791000041
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.485260009765625
+    },
+    {
+      "task": "release-surfaces",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 5,
+      "standaloneMaxMs": 423.668708,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 25,
+      "sharedMaxMsByRun": [
+        599.2578750000002,
+        597.1757499999999,
+        604.3810830000002,
+        594.493958,
+        614.4617499999999
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.562042236328125
+    },
+    {
+      "task": "release-surfaces",
+      "site": "suite:release-surfaces",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 2132.2514999999994,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        4154.8150000000005,
+        4133.672541,
+        4128.165584,
+        4212.061333,
+        4309.557708
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.562042236328125
+    },
+    {
+      "task": "release:case:bodyclose",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 124.72841700000004,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        168.9832919999999,
+        250.50141699999995,
+        211.50620800000024,
+        201.42162499999995,
+        173.86012500000015
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.456787109375
+    },
+    {
+      "task": "release:case:bodyclose",
+      "site": "suite:release:case:bodyclose",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1320.8460829999967,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        4970.504416999989,
+        4728.333208000055,
+        5154.769749999978,
+        3902.9528329999885,
+        4184.9224580000155
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.450225830078125
+    },
+    {
+      "task": "release:case:cached_evidence",
+      "site": "gate-evidence:record-lock",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 0.13858399999992344,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        0.2802090000000135,
+        0.1468329999999014,
+        0.12379200000009405,
+        0.13854200000002947,
+        0.1528329999999869
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4935302734375
+    },
+    {
+      "task": "release:case:cached_evidence",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 6,
+      "standaloneMaxMs": 131.14591700000005,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 30,
+      "sharedMaxMsByRun": [
+        125.93229200000002,
+        127.99175000000002,
+        128.88754100000006,
+        127.38770899999997,
+        125.07050000000004
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4935302734375
+    },
+    {
+      "task": "release:case:cached_evidence",
+      "site": "suite:release:case:cached_evidence",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 3162.9937079999945,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        9225.734417000087,
+        10030.161709000007,
+        11314.241665999987,
+        8822.92429200001,
+        11648.887165999971
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.470245361328125
+    },
+    {
+      "task": "release:case:cadence_inconsistent",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 9,
+      "standaloneMaxMs": 133.827542,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 45,
+      "sharedMaxMsByRun": [
+        141.54816600000004,
+        212.9457080000002,
+        178.75070800000026,
+        166.51529200000004,
+        219.9566249999998
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.43505859375
+    },
+    {
+      "task": "release:case:cadence_inconsistent",
+      "site": "suite:release:case:cadence_inconsistent",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 2429.12729199999,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        8816.74437500001,
+        9313.62175000005,
+        8845.671750000096,
+        9299.793125000084,
+        9567.85704199993
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.42022705078125
+    },
+    {
+      "task": "release:case:cadence_missing",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 140.18004099999996,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        162.73525000000018,
+        138.67154200000004,
+        166.55383299999994,
+        177.88808300000028,
+        194.3064999999997
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.43505859375
+    },
+    {
+      "task": "release:case:cadence_missing",
+      "site": "suite:release:case:cadence_missing",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1335.4408750000002,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        4597.745540999924,
+        4532.927334000007,
+        4411.15633300005,
+        4934.64154099999,
+        4876.332209000015
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.43505859375
+    },
+    {
+      "task": "release:case:concurrent",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 9,
+      "standaloneMaxMs": 132.653708,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 45,
+      "sharedMaxMsByRun": [
+        178.2302920000002,
+        265.27675,
+        165.2326669999993,
+        253.07345799999985,
+        262.2762500000008
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.654815673828125
+    },
+    {
+      "task": "release:case:concurrent",
+      "site": "suite:release:case:concurrent",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 11689.53016699999,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        111794.40962499997,
+        111193.08516699995,
+        111040.21400000004,
+        111377.97891600011,
+        113665.05179200007
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 2,
+      "sharedMaxHostLoadPerCpu": 0.66595458984375
+    },
+    {
+      "task": "release:case:conflict",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 131.48174999999998,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        169.93187500000022,
+        182.23095799999965,
+        167.35404100000005,
+        150.8123340000002,
+        191.558
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.42022705078125
+    },
+    {
+      "task": "release:case:conflict",
+      "site": "suite:release:case:conflict",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1237.2667499999952,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        4621.62812499993,
+        4844.902292000013,
+        4834.930500000017,
+        4949.371000000043,
+        5021.870583000011
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.42022705078125
+    },
+    {
+      "task": "release:case:createrecovery",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 21,
+      "standaloneMaxMs": 132.13475,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 105,
+      "sharedMaxMsByRun": [
+        109.74462499999993,
+        109.17112500000007,
+        107.38675,
+        112.61820799999992,
+        158.36191699999995
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4935302734375
+    },
+    {
+      "task": "release:case:createrecovery",
+      "site": "suite:release:case:createrecovery",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 7292.115042000005,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        8284.38300000003,
+        8214.800167000038,
+        8321.753542000079,
+        7979.628041999997,
+        8603.051165999961
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4935302734375
+    },
+    {
+      "task": "release:case:dirty",
+      "site": "suite:release:case:dirty",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 645.53216599999,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2473.660457999911,
+        2402.1981660000747,
+        2421.442000000039,
+        2291.702750000055,
+        2267.6545410000253
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.450225830078125
+    },
+    {
+      "task": "release:case:divergence",
+      "site": "suite:release:case:divergence",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 604.9749159999919,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2004.793374999892,
+        2127.181332999957,
+        1911.8329999999842,
+        2308.3055000000168,
+        2030.3579590000445
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.450225830078125
+    },
+    {
+      "task": "release:case:edition",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 6,
+      "standaloneMaxMs": 138.931333,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 30,
+      "sharedMaxMsByRun": [
+        137.11766599999999,
+        167.73154200000005,
+        171.76216600000004,
+        169.20020900000003,
+        152.94154200000003
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4935302734375
+    },
+    {
+      "task": "release:case:edition",
+      "site": "suite:release:case:edition",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 5258.674083999998,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        6230.262375000049,
+        6204.945041999919,
+        6204.915042000008,
+        6035.129874999984,
+        6306.968791999971
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4935302734375
+    },
+    {
+      "task": "release:case:failures",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 6,
+      "standaloneMaxMs": 131.82437499999997,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 30,
+      "sharedMaxMsByRun": [
+        187.58529100000032,
+        143.5049170000002,
+        143.2314590000001,
+        204.71008299999994,
+        178.26783400000022
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.43505859375
+    },
+    {
+      "task": "release:case:failures",
+      "site": "suite:release:case:failures",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1492.3057499999995,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        6902.6268329999875,
+        6674.11962500005,
+        6886.884457999957,
+        6970.7635419999715,
+        7096.168709000107
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.43505859375
+    },
+    {
+      "task": "release:case:firstrelease",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 132.080583,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        109.41670799999997,
+        110.03762499999993,
+        126.23641700000002,
+        110.63704200000001,
+        127.86424999999997
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4935302734375
+    },
+    {
+      "task": "release:case:firstrelease",
+      "site": "suite:release:case:firstrelease",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 2511.9280829999916,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2794.2250830000266,
+        2687.8815000000177,
+        2809.1805000000168,
+        2705.606000000029,
+        2854.119209000026
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4935302734375
+    },
+    {
+      "task": "release:case:license_surfaces",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 9,
+      "standaloneMaxMs": 431.783375,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 45,
+      "sharedMaxMsByRun": [
+        974.237458,
+        699.0066659999999,
+        816.0527500000001,
+        904.1605,
+        827.5492499999998
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.37750244140625
+    },
+    {
+      "task": "release:case:license_surfaces",
+      "site": "suite:release:case:license_surfaces",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 4501.633209,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        12378.913750000007,
+        12548.100416000001,
+        12582.657832999947,
+        12147.19199999998,
+        12547.79358300002
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.37750244140625
+    },
+    {
+      "task": "release:case:localconflict",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 131.36916699999995,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        178.49970800000028,
+        264.4745829999997,
+        175.07341600000018,
+        166.10783300000003,
+        146.2755830000001
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.42022705078125
+    },
+    {
+      "task": "release:case:localconflict",
+      "site": "suite:release:case:localconflict",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 990.2676670000073,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        3997.707124999957,
+        3840.299875000026,
+        3911.080624999944,
+        3996.993291999912,
+        3999.3689590001013
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.42022705078125
+    },
+    {
+      "task": "release:case:lower",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 132.732083,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        156.39604099999997,
+        167.55016699999987,
+        141.24529200000006,
+        137.32404099999985,
+        173.1515830000003
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.43505859375
+    },
+    {
+      "task": "release:case:lower",
+      "site": "suite:release:case:lower",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1020.4510840000003,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        3939.5282919999445,
+        4141.01324999996,
+        4026.6716669999296,
+        4232.626624999917,
+        4436.578290999983
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.43505859375
+    },
+    {
+      "task": "release:case:malformed",
+      "site": "suite:release:case:malformed",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 655.8067500000034,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2188.027374999947,
+        2029.5799159999005,
+        2137.3437080000294,
+        2009.4480829999084,
+        2056.4749999999767
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.450225830078125
+    },
+    {
+      "task": "release:case:missinggh",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 304.776333,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        374.717584,
+        447.0572080000002,
+        458.92087500000025,
+        342.2457919999997,
+        344.26695800000016
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.444183349609375
+    },
+    {
+      "task": "release:case:missinggh",
+      "site": "suite:release:case:missinggh",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1774.0212909999973,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        4990.334749999922,
+        5087.1365839999635,
+        4910.3935409999685,
+        4418.98675000004,
+        4547.55224999995
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.444183349609375
+    },
+    {
+      "task": "release:case:missinglocalprevious",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 137.39350000000002,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        115.18320899999992,
+        166.96795799999995,
+        198.41920900000002,
+        142.34020899999996,
+        255.400667
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:missinglocalprevious",
+      "site": "suite:release:case:missinglocalprevious",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1749.747915999993,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2422.155458000023,
+        2404.6081669999985,
+        2527.035042000003,
+        2204.9489579999354,
+        2495.88304100011
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:nestedtag",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 131.630625,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        147.14916599999992,
+        109.21570800000006,
+        108.94904199999996,
+        120.37987500000003,
+        111.71162500000003
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.42022705078125
+    },
+    {
+      "task": "release:case:nestedtag",
+      "site": "suite:release:case:nestedtag",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 952.9419170000037,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        1460.8223749999888,
+        1632.0671249999432,
+        1726.53116699995,
+        1232.794750000001,
+        1833.1297920000507
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:nonmain",
+      "site": "suite:release:case:nonmain",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 547.4121659999946,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        1563.5639589999337,
+        1657.6127080000006,
+        1549.9990830000024,
+        1681.873750000028,
+        1853.2904169999529
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.450225830078125
+    },
+    {
+      "task": "release:case:preflight",
+      "site": "suite:release:case:preflight",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 144.874791000002,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        548.8107079999754,
+        425.122166999965,
+        714.5594580000034,
+        529.4823750000214,
+        392.56366699998034
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.379364013671875
+    },
+    {
+      "task": "release:case:prepare_independent",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 130.67241700000002,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        191.99304199999995,
+        196.40754200000003,
+        165.54979200000002,
+        228.36074999999994,
+        207.81441599999994
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.37066650390625
+    },
+    {
+      "task": "release:case:prepare_independent",
+      "site": "suite:release:case:prepare_independent",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1079.2107499999984,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        3879.9595410000184,
+        3934.1407079999917,
+        3926.9483330000076,
+        3670.632833999989,
+        4307.814499999979
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.37066650390625
+    },
+    {
+      "task": "release:case:prepare",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 132.54987500000004,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        128.00420800000006,
+        143.62025000000006,
+        141.24870799999997,
+        151.72795799999994,
+        219.872708
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:prepare",
+      "site": "suite:release:case:prepare",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1674.7017919999926,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2101.8511659998912,
+        2325.3528749999823,
+        2244.273458999931,
+        2113.088374999934,
+        2516.5701250000857
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:pushfail",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 131.17870799999997,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        177.22533299999998,
+        191.59050000000002,
+        115.65245800000002,
+        122.76066600000001,
+        211.800541
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:pushfail",
+      "site": "suite:release:case:pushfail",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 2020.1492080000025,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2630.511000000057,
+        2662.301959000062,
+        2395.2246659999946,
+        2491.052291000029,
+        2567.596750000026
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:refrecovery",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 6,
+      "standaloneMaxMs": 128.712291,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 30,
+      "sharedMaxMsByRun": [
+        170.714292,
+        112.32204199999995,
+        109.47391599999997,
+        169.09112499999992,
+        114.31704200000001
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:refrecovery",
+      "site": "suite:release:case:refrecovery",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 2732.646875000006,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        3342.639542000019,
+        3246.8300000000745,
+        3517.3374170000898,
+        3310.80845900008,
+        3495.153249999974
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:settings_scope",
+      "site": "suite:release:case:settings_scope",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 573.1892499999958,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        1493.9905410000356,
+        1620.232250000001,
+        1360.1803749999963,
+        1902.3684999999823,
+        2125.326000000001
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.450225830078125
+    },
+    {
+      "task": "release:case:splitorigin",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 134.077875,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        167.89895899999965,
+        164.774042,
+        184.53129199999967,
+        183.87495799999988,
+        193.11341700000003
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.418609619140625
+    },
+    {
+      "task": "release:case:splitorigin",
+      "site": "suite:release:case:splitorigin",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1075.906833000001,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        4459.474334000028,
+        4203.61258299998,
+        4424.505790999974,
+        4319.959875000059,
+        4338.729334000032
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.43505859375
+    },
+    {
+      "task": "release:case:stale_helpers",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 131.867708,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        126.827583,
+        164.46412499999997,
+        186.137333,
+        111.44158400000003,
+        159.0123749999999
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:stale_helpers",
+      "site": "suite:release:case:stale_helpers",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 2562.1121249999997,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        3036.214208999998,
+        3045.7002090000315,
+        3118.446707999916,
+        2789.427833999973,
+        3050.057250000071
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.476654052734375
+    },
+    {
+      "task": "release:case:success",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 6,
+      "standaloneMaxMs": 130.97024999999996,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 30,
+      "sharedMaxMsByRun": [
+        110.71616700000004,
+        109.99658399999998,
+        273.275167,
+        147.47475000000009,
+        168.97066700000005
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4935302734375
+    },
+    {
+      "task": "release:case:success",
+      "site": "suite:release:case:success",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 6937.271374999997,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        8715.573875000002,
+        8740.836333999992,
+        8762.34383300005,
+        8155.215291999979,
+        8788.808582999976
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4840087890625
+    },
+    {
+      "task": "release:case:surfaceclose_linked",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 6,
+      "standaloneMaxMs": 132.32158300000003,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 30,
+      "sharedMaxMsByRun": [
+        174.6435409999999,
+        178.27529099999992,
+        175.90149999999994,
+        166.6477920000002,
+        174.4291250000001
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.456787109375
+    },
+    {
+      "task": "release:case:surfaceclose_linked",
+      "site": "suite:release:case:surfaceclose_linked",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1385.6656669999938,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        6540.130707999982,
+        6825.543415999971,
+        6581.581166999997,
+        6305.454207999981,
+        6964.306083000032
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.456787109375
+    },
+    {
+      "task": "release:case:surfaceclose",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 6,
+      "standaloneMaxMs": 130.94712499999997,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 30,
+      "sharedMaxMsByRun": [
+        179.84912499999973,
+        170.58970799999952,
+        179.9602079999995,
+        164.8637090000002,
+        203.66041700000005
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.47479248046875
+    },
+    {
+      "task": "release:case:surfaceclose",
+      "site": "suite:release:case:surfaceclose",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1263.0687909999979,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        9139.178291000018,
+        8628.705457999953,
+        8643.636625000043,
+        9363.572458000039,
+        9818.090417
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.456787109375
+    },
+    {
+      "task": "release:case:surfaces_committed_readme",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 6,
+      "standaloneMaxMs": 103.63045800000003,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 30,
+      "sharedMaxMsByRun": [
+        220.85008300000004,
+        158.8890409999999,
+        232.87324999999998,
+        193.54099999999994,
+        187.61329100000012
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.530426025390625
+    },
+    {
+      "task": "release:case:surfaces_committed_readme",
+      "site": "suite:release:case:surfaces_committed_readme",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1039.215250000001,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        7147.210291000025,
+        6414.238332999987,
+        7201.337541999994,
+        6811.815207999956,
+        7609.433499999985
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.530426025390625
+    },
+    {
+      "task": "release:case:surfaces_component",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 12,
+      "standaloneMaxMs": 103.54358299999998,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 60,
+      "sharedMaxMsByRun": [
+        156.24291699999992,
+        213.47475000000009,
+        213.6557499999999,
+        154.113333,
+        247.2685419999999
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.569366455078125
+    },
+    {
+      "task": "release:case:surfaces_component",
+      "site": "suite:release:case:surfaces_component",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1416.1172499999957,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        9960.165667000052,
+        9944.88629200001,
+        10353.645791999996,
+        9479.142915999983,
+        9550.88079200004
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.54376220703125
+    },
+    {
+      "task": "release:case:surfaces_first",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 103.18124999999998,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        185.73037499999998,
+        189.918583,
+        198.95858400000003,
+        203.709292,
+        235.7176669999999
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.608062744140625
+    },
+    {
+      "task": "release:case:surfaces_first",
+      "site": "suite:release:case:surfaces_first",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 768.338291,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        3188.368749999965,
+        2859.8406250000116,
+        2742.11370799999,
+        2962.6490420000046,
+        2817.6476249999832
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.608062744140625
+    },
+    {
+      "task": "release:case:surfaces_local_snapshot",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 103.38933400000002,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        204.8438329999999,
+        197.70945900000004,
+        172.28099999999995,
+        190.227667,
+        204.13933300000008
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.37030029296875
+    },
+    {
+      "task": "release:case:surfaces_local_snapshot",
+      "site": "suite:release:case:surfaces_local_snapshot",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 912.9400410000017,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        3677.8439159999834,
+        3511.4575830000103,
+        3278.0942919999943,
+        3509.521624999994,
+        3585.7522499999614
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.37030029296875
+    },
+    {
+      "task": "release:case:surfaces_lower",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 6,
+      "standaloneMaxMs": 103.50675000000001,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 30,
+      "sharedMaxMsByRun": [
+        210.267875,
+        241.90220900000008,
+        209.86699999999996,
+        260.926292,
+        160.35124999999994
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.530426025390625
+    },
+    {
+      "task": "release:case:surfaces_lower",
+      "site": "suite:release:case:surfaces_lower",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 940.5355839999975,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        4315.919790999964,
+        4298.130332999979,
+        4096.031416999991,
+        4231.59479199996,
+        4193.599457999982
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.530426025390625
+    },
+    {
+      "task": "release:case:surfaces_new_component",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 4,
+      "standaloneMaxMs": 105.60562499999997,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 20,
+      "sharedMaxMsByRun": [
+        185.24766699999986,
+        182.650625,
+        248.9207919999999,
+        246.71520800000008,
+        293.36812499999996
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.494384765625
+    },
+    {
+      "task": "release:case:surfaces_new_component",
+      "site": "suite:release:case:surfaces_new_component",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 807.3709579999995,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        4368.670041000005,
+        4370.948709000018,
+        4417.270874999987,
+        4405.302874999994,
+        4445.5234579999815
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.494384765625
+    },
+    {
+      "task": "release:case:surfaces_non_source",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 103.98762499999998,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        187.16766699999994,
+        194.54991700000005,
+        144.25033299999996,
+        186.74195800000007,
+        195.84525000000008
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.510223388671875
+    },
+    {
+      "task": "release:case:surfaces_non_source",
+      "site": "suite:release:case:surfaces_non_source",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 784.598957999995,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        3973.5405829999945,
+        3832.487792,
+        3735.623707999999,
+        3908.2045830000425,
+        3811.138917000033
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.510223388671875
+    },
+    {
+      "task": "release:case:surfaces",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 27,
+      "standaloneMaxMs": 103.95308299999999,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 135,
+      "sharedMaxMsByRun": [
+        195.60179100000005,
+        203.26370799999995,
+        200.64337499999988,
+        200.00487499999997,
+        238.891167
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.379364013671875
+    },
+    {
+      "task": "release:case:surfaces",
+      "site": "suite:release:case:surfaces",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 2336.2891660000023,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        13076.390208000026,
+        13229.145375000022,
+        13884.581666000013,
+        13444.834333000006,
+        13036.440332999977
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.3638916015625
+    },
+    {
+      "task": "release:case:unauthenticated",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 134.181625,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        205.39908400000013,
+        153.1058750000002,
+        167.32904099999996,
+        202.36912500000017,
+        177.44145900000012
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.444183349609375
+    },
+    {
+      "task": "release:case:unauthenticated",
+      "site": "suite:release:case:unauthenticated",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 1161.715292000008,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        4481.746874999953,
+        4259.016541000106,
+        4496.490874999901,
+        4464.6389999999665,
+        4283.54908399994
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.444183349609375
+    },
+    {
+      "task": "release:prepare",
+      "site": "suite:release:prepare",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 625.1580419999955,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        2137.887708000002,
+        2212.8429170000018,
+        2239.0006250000006,
+        2222.6325829999987,
+        2180.691500000001
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.637115478515625
+    },
+    {
+      "task": "resume",
+      "site": "suite:resume",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 36840.115084000005,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        113073.77620799997,
+        111675.66654199996,
+        113251.561583,
+        115051.01691699994,
+        115120.69212500006
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.444183349609375
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "gate-evidence:record-lock",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 12,
+      "standaloneMaxMs": 0.09250000000000114,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 60,
+      "sharedMaxMsByRun": [
+        0.13391699999999673,
+        0.10754199999999514,
+        0.12729200000001129,
+        0.22804200000064156,
+        0.11879200000021228
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.71282958984375
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "inline:spawn",
+      "standaloneBoundsMs": [
+        50
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 51.83299999999997,
+      "sharedBoundsMs": [],
+      "sharedSamples": 0,
+      "sharedMaxMsByRun": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": null,
+      "sharedMaxHostLoadPerCpu": null
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "packages/skeleton/src/gate-evidence.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        1000
+      ],
+      "standaloneSamples": 17,
+      "standaloneMaxMs": 2.766082999999526,
+      "sharedBoundsMs": [
+        1000
+      ],
+      "sharedSamples": 85,
+      "sharedMaxMsByRun": [
+        163.26054099999965,
+        166.25474999999983,
+        134.81120799999917,
+        162.48679100000118,
+        129.65787499999715
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.702178955078125
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "scripts/lib/suite-evidence.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 336,
+      "standaloneMaxMs": 132.17958400000043,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 1680,
+      "sharedMaxMsByRun": [
+        386.4442089999975,
+        316.67520800000057,
+        306.96770800000013,
+        410.02808300000106,
+        308.36837500000183
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.75531005859375
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "scripts/test-gate-deadlines.mjs:spawn",
+      "standaloneBoundsMs": [],
+      "standaloneSamples": 0,
+      "standaloneMaxMs": null,
+      "sharedBoundsMs": [
+        50
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        52.79425000000015,
+        51.82212500000003,
+        51.86175000000003,
+        53.202792000000045,
+        50.90645800000004
+      ],
+      "sharedHits": 5,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.71282958984375
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "scripts/test-gate-deadlines.mjs:spawnSync",
+      "standaloneBoundsMs": [],
+      "standaloneSamples": 0,
+      "standaloneMaxMs": null,
+      "sharedBoundsMs": [
+        50
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        51.684083999999984,
+        50.80279099999984,
+        51.707374999999956,
+        51.984042000000045,
+        51.747082999999975
+      ],
+      "sharedHits": 5,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.690765380859375
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "suite:bounded",
+      "standaloneBoundsMs": [
+        1000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 41.902791000000434,
+      "sharedBoundsMs": [
+        1000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        60.096332999997685,
+        101.9654159999991,
+        103.41675000000032,
+        62.94337500000256,
+        135.07887499999924
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.60040283203125
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "suite:environment-observer",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 54.6987909999998,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        185.25824999999895,
+        119.26358300000174,
+        116.27229099999931,
+        127.06754100000035,
+        72.33100000000013
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.698699951171875
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "suite:plan-refutation:current",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 52.17162499999995,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        120.30516699999862,
+        90.19333299999926,
+        89.32104199999958,
+        116.82487499999843,
+        88.25887499999953
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.62548828125
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "suite:plan-refutation:fixtures",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 53.98908399999982,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        106.41116599999805,
+        99.40679100000125,
+        113.07837499999732,
+        100.45062500000131,
+        100.25754199999938
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.62548828125
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "suite:progress",
+      "standaloneBoundsMs": [
+        1000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 145.6252089999998,
+      "sharedBoundsMs": [
+        1000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        224.55816699999923,
+        220.86324999999852,
+        185.24316700000054,
+        215.18008399999962,
+        214.61112499999945
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.60040283203125
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "suite:runner-fixtures",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 31171.00158299999,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        80027.24324999994,
+        80315.46991700004,
+        78992.31804199994,
+        79605.57920799998,
+        80896.70554200001
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 1,
+      "sharedMaxHostLoadPerCpu": 0.64263916015625
+    },
+    {
+      "task": "runner-fixtures",
+      "site": "suite:slow-fixture",
+      "standaloneBoundsMs": [
+        35
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 37.174667,
+      "sharedBoundsMs": [
+        35
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        38.17025000000001,
+        36.269334000000015,
+        36.203750000000014,
+        37.255375000000015,
+        37.19237499999997
+      ],
+      "sharedHits": 5,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.71282958984375
+    },
+    {
+      "task": "skeleton",
+      "site": "beacon-contention:reader-round",
+      "standaloneBoundsMs": [],
+      "standaloneSamples": 0,
+      "standaloneMaxMs": null,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 20,
+      "sharedMaxMsByRun": [
+        22.874875,
+        22.215834000000005,
+        23.035833,
+        22.362,
+        23.848125
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.478607177734375
+    },
+    {
+      "task": "skeleton",
+      "site": "beacon:observer-acknowledgement",
+      "standaloneBoundsMs": [
+        2000
+      ],
+      "standaloneSamples": 128,
+      "standaloneMaxMs": 0.12120799999999576,
+      "sharedBoundsMs": [
+        2000
+      ],
+      "sharedSamples": 640,
+      "sharedMaxMsByRun": [
+        0.24395800000002055,
+        0.15666600000002973,
+        0.1618750000000091,
+        0.14383400000002666,
+        0.19762500000001637
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4189453125
+    },
+    {
+      "task": "skeleton",
+      "site": "beacon:observer-test",
+      "standaloneBoundsMs": [
+        15000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 81.84087499999998,
+      "sharedBoundsMs": [
+        15000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        89.86029099999999,
+        89.522708,
+        94.837458,
+        86.33766700000001,
+        90.04670799999997
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4189453125
+    },
+    {
+      "task": "skeleton",
+      "site": "packages/skeleton/src/feedback-audit.ts:execFileSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 47,
+      "standaloneMaxMs": 45.458875,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 240,
+      "sharedMaxMsByRun": [
+        255.05983300000025,
+        236.08441600000015,
+        204.33899999999994,
+        233.47958300000028,
+        251.49191599999995
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.540374755859375
+    },
+    {
+      "task": "skeleton",
+      "site": "packages/skeleton/src/feedback-audit.ts:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 20,
+      "standaloneMaxMs": 474.14237500000013,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 100,
+      "sharedMaxMsByRun": [
+        1963.2850829999998,
+        1666.2935419999994,
+        1726.7416669999993,
+        1827.402833,
+        1811.8349580000004
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.540374755859375
+    },
+    {
+      "task": "skeleton",
+      "site": "packages/skeleton/src/feedback-boundary.ts:execFileSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 16,
+      "standaloneMaxMs": 41.75629100000003,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 80,
+      "sharedMaxMsByRun": [
+        201.67670800000002,
+        207.63087499999995,
+        196.14162500000003,
+        238.01712500000008,
+        234.34725000000003
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.540374755859375
+    },
+    {
+      "task": "skeleton",
+      "site": "packages/skeleton/src/feedback-selfhost.ts:execFileSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 63,
+      "standaloneMaxMs": 41.69429200000013,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 315,
+      "sharedMaxMsByRun": [
+        196.9869579999995,
+        247.54508299999998,
+        202.95616700000028,
+        214.7211669999997,
+        236.03208300000006
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.540374755859375
+    },
+    {
+      "task": "skeleton",
+      "site": "packages/skeleton/src/verification-demo.ts:execFileSync",
+      "standaloneBoundsMs": [
+        15000,
+        5000
+      ],
+      "standaloneSamples": 604,
+      "standaloneMaxMs": 64.80845800000043,
+      "sharedBoundsMs": [
+        15000,
+        5000
+      ],
+      "sharedSamples": 3020,
+      "sharedMaxMsByRun": [
+        336.08604199999536,
+        345.24474999999984,
+        357.1655830000018,
+        401.01470800000243,
+        353.57195800000045
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.598663330078125
+    },
+    {
+      "task": "skeleton",
+      "site": "packages/skeleton/src/worker-demo.ts:execFileSync",
+      "standaloneBoundsMs": [
+        15000
+      ],
+      "standaloneSamples": 175,
+      "standaloneMaxMs": 67.72470799999974,
+      "sharedBoundsMs": [
+        15000
+      ],
+      "sharedSamples": 875,
+      "sharedMaxMsByRun": [
+        338.2880839999998,
+        345.67612499999814,
+        410.400791,
+        425.04083299999184,
+        374.8200830000005
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.55059814453125
+    },
+    {
+      "task": "skeleton",
+      "site": "packages/skeleton/src/worker-worktree.ts:execFileSync",
+      "standaloneBoundsMs": [
+        15000
+      ],
+      "standaloneSamples": 833,
+      "standaloneMaxMs": 69.21995799999968,
+      "sharedBoundsMs": [
+        15000
+      ],
+      "sharedSamples": 4165,
+      "sharedMaxMsByRun": [
+        382.799417000002,
+        371.35233300000255,
+        380.88637500000186,
+        417.5099579999951,
+        382.661500000002
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.598663330078125
+    },
+    {
+      "task": "skeleton",
+      "site": "packages/skeleton/test/feedback-fixtures.test.ts:execFileSync",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 11,
+      "standaloneMaxMs": 65.98437500000001,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 55,
+      "sharedMaxMsByRun": [
+        362.58291699999995,
+        339.742875,
+        303.472875,
+        260.11812499999996,
+        272.287375
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.540374755859375
+    },
+    {
+      "task": "skeleton",
+      "site": "suite:skeleton",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 47804.14258299999,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        207356.953209,
+        207191.72762499997,
+        207824.951875,
+        209659.35862500002,
+        210381.516875
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.390655517578125
+    },
+    {
+      "task": "skeleton",
+      "site": "worker-transport:process",
+      "standaloneBoundsMs": [
+        180000
+      ],
+      "standaloneSamples": 53,
+      "standaloneMaxMs": 1012.4757910000008,
+      "sharedBoundsMs": [
+        180000
+      ],
+      "sharedSamples": 265,
+      "sharedMaxMsByRun": [
+        1013.3808329999883,
+        1012.8862090000039,
+        1014.2938330000034,
+        1013.9626660000067,
+        1013.4804589999985
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.57073974609375
+    },
+    {
+      "task": "verification-evidence",
+      "site": "packages/skeleton/src/verification-demo.ts:execFileSync",
+      "standaloneBoundsMs": [
+        15000,
+        5000
+      ],
+      "standaloneSamples": 43,
+      "standaloneMaxMs": 55.634083000000004,
+      "sharedBoundsMs": [
+        15000,
+        5000
+      ],
+      "sharedSamples": 215,
+      "sharedMaxMsByRun": [
+        257.733,
+        270.81575000000004,
+        266.07141600000006,
+        264.632834,
+        266.82408399999997
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "verification-evidence",
+      "site": "packages/skeleton/src/worker-worktree.ts:execFileSync",
+      "standaloneBoundsMs": [
+        15000
+      ],
+      "standaloneSamples": 43,
+      "standaloneMaxMs": 105.66995899999995,
+      "sharedBoundsMs": [
+        15000
+      ],
+      "sharedSamples": 215,
+      "sharedMaxMsByRun": [
+        218.2175830000001,
+        228.72983299999987,
+        262.6272079999999,
+        260.5987909999999,
+        261.09533299999975
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.63214111328125
+    },
+    {
+      "task": "verification-evidence",
+      "site": "suite:verification-evidence",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 2763.8616660000116,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        9207.743709,
+        9522.415582999998,
+        9420.591334,
+        9411.978583000002,
+        9311.263459
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 1,
+      "sharedMaxHostLoadPerCpu": 0.583770751953125
+    },
+    {
+      "task": "work-orders-fixtures",
+      "site": "suite:work-orders-fixtures",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 1,
+      "standaloneMaxMs": 23028.767999999982,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        90072.538375,
+        90332.70849999995,
+        89797.26420799992,
+        88647.56054099998,
+        90212.88345900003
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.616424560546875
+    },
+    {
+      "task": "worktree",
+      "site": "gate-evidence:record-lock",
+      "standaloneBoundsMs": [
+        5000
+      ],
+      "standaloneSamples": 3,
+      "standaloneMaxMs": 0.12774999999999181,
+      "sharedBoundsMs": [
+        5000
+      ],
+      "sharedSamples": 15,
+      "sharedMaxMsByRun": [
+        0.1542500000000473,
+        0.16150000000016007,
+        0.14812499999970896,
+        0.16016700000000128,
+        0.19670799999994415
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.4852294921875
+    },
+    {
+      "task": "worktree",
+      "site": "scripts/license-surfaces.mjs:spawnSync",
+      "standaloneBoundsMs": [
+        30000
+      ],
+      "standaloneSamples": 74,
+      "standaloneMaxMs": 399.331417,
+      "sharedBoundsMs": [
+        30000
+      ],
+      "sharedSamples": 370,
+      "sharedMaxMsByRun": [
+        888.8179579999996,
+        821.1436669999998,
+        767.9187919999999,
+        910.6334999999999,
+        829.3662090000007
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.656524658203125
+    },
+    {
+      "task": "worktree",
+      "site": "suite:worktree",
+      "standaloneBoundsMs": [
+        900000
+      ],
+      "standaloneSamples": 2,
+      "standaloneMaxMs": 49307.4985,
+      "sharedBoundsMs": [
+        900000
+      ],
+      "sharedSamples": 5,
+      "sharedMaxMsByRun": [
+        302715.203959,
+        307299.186708,
+        306211.86925,
+        310477.316166,
+        308369.789042
+      ],
+      "sharedHits": 0,
+      "sharedMaxPeers": 3,
+      "sharedMaxHostLoadPerCpu": 0.44793701171875
+    }
+  ]
+}

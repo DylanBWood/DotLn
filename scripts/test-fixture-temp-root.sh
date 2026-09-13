@@ -310,43 +310,51 @@ exercise_suite_signal() {
   local signal_output
 
   mkdir -p -- "$signal_base"
-  signal_output="$(TMPDIR="$signal_base" "$node_bin" -e '
-    const fs = require("node:fs");
-    const { spawn } = require("node:child_process");
-    const [suite, base, signal, expectedText] = process.argv.slice(1);
+  signal_output="$(TMPDIR="$signal_base" "$node_bin" --input-type=module -e '
+    import fs from "node:fs";
+    import { spawn } from "node:child_process";
+    const [suite, base, signal, expectedText, deadlineModule] = process.argv.slice(1);
+    const { startDeadline } = await import(deadlineModule);
     const expected = Number(expectedText);
-    const child = spawn("/bin/bash", [suite], {
+    const ready = `${base}/signal-ready`;
+    const child = spawn("/bin/bash", [suite, "--signal-probe-ready", ready], {
       env: { ...process.env, TMPDIR: base },
+      detached: true,
       stdio: "ignore",
     });
+    const signalGroup = (kind) => {
+      try { process.kill(-child.pid, kind); }
+      catch (error) { if (error.code !== "ESRCH") throw error; }
+    };
     let foundRoot = false;
     let sent = false;
-    const deadline = Date.now() + 15000;
+    const deadline = startDeadline("fixture-temp-root:signal-cleanup", 15000);
     const poll = setInterval(() => {
-      if (Date.now() > deadline) {
+      try { deadline.check(); } catch (error) {
         clearInterval(poll);
-        child.kill("SIGKILL");
-        process.stderr.write("timed out waiting for release-suite fixture root\n");
+        signalGroup("SIGKILL");
+        process.stderr.write(`timed out waiting for release-suite signal cleanup: root=${foundRoot} sent=${sent}\n`);
         process.exitCode = 1;
         return;
       }
       const entries = fs.readdirSync(base);
       foundRoot ||= entries.some((entry) => /^dotln-release-test\.[^/]{6}$/.test(entry));
-      if (foundRoot && !sent) {
+      if (foundRoot && fs.existsSync(ready) && !sent) {
         sent = true;
-        setTimeout(() => child.kill(signal), 50);
+        signalGroup(signal);
       }
     }, 10);
     child.on("exit", (code, exitSignal) => {
+      deadline.finish();
       clearInterval(poll);
-      if (!foundRoot || code !== expected || exitSignal !== null) {
+      if (!foundRoot || !sent || code !== expected || exitSignal !== null) {
         process.stderr.write(`unexpected ${signal} result: root=${foundRoot} code=${code} signal=${exitSignal}\n`);
         process.exitCode = 1;
         return;
       }
       process.stdout.write(`status=${code}\n`);
     });
-  ' "$script_dir/test-release.sh" "$signal_base" "SIG$signal" "$expected_status")"
+  ' "$script_dir/test-release.sh" "$signal_base" "SIG$signal" "$expected_status" "$script_dir/../packages/skeleton/src/gate-deadlines.mjs")"
   grep -Fq "status=$expected_status" <<<"$signal_output"
   if find "$signal_base" -mindepth 1 -maxdepth 1 -type d -name 'dotln-release-test.??????' | grep -q .; then
     printf 'error: %s left release-suite fixture residue\n' "$signal" >&2

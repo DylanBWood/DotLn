@@ -1,0 +1,372 @@
+{
+  "source": "Retained main-worktree gate metadata, read only, 2026-09-12; cited WO-125 reports provide isolated console evidence",
+  "gates": [
+    {
+      "recordedAt": "2026-09-11T03:20:02.676Z",
+      "workOrder": "WO-127",
+      "durationMs": 475604,
+      "classification": "failed-task; cause not established by retained log",
+      "failures": [
+        {
+          "task": "runner-fixtures",
+          "durationMs": 58381,
+          "deadlineSite": "unknown: detailed failure log disposed",
+          "historicalAloneMs": null,
+          "aloneSource": "No per-site isolated duration retained; current isolated probes are separate evidence",
+          "startedAt": "2026-09-11T03:17:14.075Z",
+          "finishedAt": "2026-09-11T03:18:12.456Z",
+          "concurrentTasks": [
+            "release:case:concurrent",
+            "work-orders-fixtures",
+            "plan-refutation:current"
+          ],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-09-11T03:56:28.443Z",
+      "workOrder": "WO-127",
+      "durationMs": 495380,
+      "classification": "failed-task; cause not established by retained log",
+      "failures": [
+        {
+          "task": "harness-fixtures",
+          "durationMs": 62373,
+          "deadlineSite": "unknown: detailed failure log disposed",
+          "historicalAloneMs": null,
+          "aloneSource": "No per-site isolated duration retained; current isolated probes are separate evidence",
+          "startedAt": "2026-09-11T03:54:22.114Z",
+          "finishedAt": "2026-09-11T03:55:24.487Z",
+          "concurrentTasks": [],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-09-11T06:08:28.167Z",
+      "workOrder": "WO-043",
+      "durationMs": 626644,
+      "classification": "failed-task; cause not established by retained log",
+      "failures": [
+        {
+          "task": "console",
+          "durationMs": 86568,
+          "deadlineSite": "collectSources command budget: consistent with 60000 ms timeout; historical timeout not explicitly logged",
+          "historicalAloneMs": 17200,
+          "aloneSource": "release:list command in docs/verifications/WO-125/VER-003.md O3; whole host-collection test approximately 23.2-25.5 s in cited reports; task and command durations are distinct.",
+          "startedAt": "2026-09-11T06:00:50.815Z",
+          "finishedAt": "2026-09-11T06:02:17.383Z",
+          "concurrentTasks": [
+            "worktree",
+            "skeleton",
+            "plan-refutation:fixtures"
+          ],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        },
+        {
+          "task": "plan-refutation:current",
+          "durationMs": 100197,
+          "deadlineSite": "unknown: detailed failure log disposed",
+          "historicalAloneMs": null,
+          "aloneSource": "No per-site isolated duration retained; current isolated probes are separate evidence",
+          "startedAt": "2026-09-11T06:06:45.180Z",
+          "finishedAt": "2026-09-11T06:08:25.377Z",
+          "concurrentTasks": [
+            "license-fixtures",
+            "release:case:concurrent",
+            "work-orders-fixtures",
+            "artifact-corpus",
+            "mutation",
+            "runner-fixtures"
+          ],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-09-11T17:19:03.905Z",
+      "workOrder": "WO-043",
+      "durationMs": 608853,
+      "classification": "tree-changed",
+      "failures": [],
+      "invalidatedTasks": [
+        "build",
+        "format",
+        "release-surfaces",
+        "release-preparation",
+        "github-body",
+        "license-fixtures",
+        "license-surfaces",
+        "fixture-temp-root",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "checkpoint",
+        "worktree",
+        "work-orders-fixtures",
+        "publication",
+        "index",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "adjacent-queue",
+        "authority-grants",
+        "authority-evidence",
+        "harness-fixtures",
+        "harness",
+        "harness-context",
+        "harness-evidence",
+        "plan-refutation:current",
+        "artifact-corpus",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "mutation",
+        "runner-fixtures",
+        "process-debt",
+        "meta"
+      ],
+      "treeChangeDeadlineSite": "not a deadline: before/after input identity changed",
+      "note": "Tree identity failure overwrote suite statuses; retained metadata does not establish another failing task."
+    },
+    {
+      "recordedAt": "2026-09-11T22:52:32.755Z",
+      "workOrder": "WO-125",
+      "durationMs": 651645,
+      "classification": "tree-changed",
+      "failures": [
+        {
+          "task": "console",
+          "durationMs": 89925,
+          "deadlineSite": "collectSources command budget: consistent with 60000 ms timeout; historical timeout not explicitly logged",
+          "historicalAloneMs": 17200,
+          "aloneSource": "release:list command in docs/verifications/WO-125/VER-003.md O3; whole host-collection test approximately 23.2-25.5 s in cited reports; task and command durations are distinct.",
+          "startedAt": "2026-09-11T22:44:36.837Z",
+          "finishedAt": "2026-09-11T22:46:06.762Z",
+          "concurrentTasks": [
+            "worktree",
+            "skeleton",
+            "plan-refutation:fixtures"
+          ],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false,
+          "failureSource": "docs/verifications/WO-125/VER-001.md, O6; separate from overwritten suite statuses"
+        }
+      ],
+      "invalidatedTasks": [
+        "build",
+        "format",
+        "release-surfaces",
+        "release-preparation",
+        "github-body",
+        "license-fixtures",
+        "license-surfaces",
+        "fixture-temp-root",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "checkpoint",
+        "worktree",
+        "work-orders-fixtures",
+        "publication",
+        "index",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "adjacent-queue",
+        "authority-grants",
+        "authority-evidence",
+        "harness-fixtures",
+        "harness",
+        "harness-context",
+        "harness-evidence",
+        "plan-refutation:current",
+        "artifact-corpus",
+        "artifact-evidence",
+        "verification-evidence",
+        "feedback-evidence",
+        "mutation",
+        "runner-fixtures",
+        "process-debt",
+        "meta"
+      ],
+      "treeChangeDeadlineSite": "not a deadline: before/after input identity changed"
+    },
+    {
+      "recordedAt": "2026-09-12T02:25:15.344Z",
+      "workOrder": "WO-125",
+      "durationMs": 704342,
+      "classification": "failed-task; cause not established by retained log",
+      "failures": [
+        {
+          "task": "plan-refutation:current",
+          "durationMs": 104257,
+          "deadlineSite": "unknown: detailed failure log disposed",
+          "historicalAloneMs": null,
+          "aloneSource": "No per-site isolated duration retained; current isolated probes are separate evidence",
+          "startedAt": "2026-09-12T02:23:29.840Z",
+          "finishedAt": "2026-09-12T02:25:14.097Z",
+          "concurrentTasks": [
+            "release:case:concurrent",
+            "work-orders-fixtures",
+            "plan-refutation:fixtures",
+            "artifact-corpus",
+            "mutation",
+            "runner-fixtures"
+          ],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-09-12T03:29:35.258Z",
+      "workOrder": "WO-125",
+      "durationMs": 738556,
+      "classification": "failed-task; cause not established by retained log",
+      "failures": [
+        {
+          "task": "harness-fixtures",
+          "durationMs": 142452,
+          "deadlineSite": "unknown: detailed failure log disposed",
+          "historicalAloneMs": null,
+          "aloneSource": "No per-site isolated duration retained; current isolated probes are separate evidence",
+          "startedAt": "2026-09-12T03:17:41.265Z",
+          "finishedAt": "2026-09-12T03:20:03.717Z",
+          "concurrentTasks": [],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-09-12T12:48:55.959Z",
+      "workOrder": "WO-125",
+      "durationMs": 804855,
+      "classification": "failed-task; cause not established by retained log",
+      "failures": [
+        {
+          "task": "console",
+          "durationMs": 92421,
+          "deadlineSite": "collectSources command budget: consistent with 60000 ms timeout; historical timeout not explicitly logged",
+          "historicalAloneMs": 17200,
+          "aloneSource": "release:list command in docs/verifications/WO-125/VER-003.md O3; whole host-collection test approximately 23.2-25.5 s in cited reports; task and command durations are distinct.",
+          "startedAt": "2026-09-12T12:40:44.844Z",
+          "finishedAt": "2026-09-12T12:42:17.265Z",
+          "concurrentTasks": [
+            "worktree",
+            "skeleton",
+            "plan-refutation:fixtures"
+          ],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-09-12T13:29:59.972Z",
+      "workOrder": "WO-125",
+      "durationMs": 811495,
+      "classification": "failed-task; cause not established by retained log",
+      "failures": [
+        {
+          "task": "console",
+          "durationMs": 91398,
+          "deadlineSite": "collectSources command budget: consistent with 60000 ms timeout; historical timeout not explicitly logged",
+          "historicalAloneMs": 17200,
+          "aloneSource": "release:list command in docs/verifications/WO-125/VER-003.md O3; whole host-collection test approximately 23.2-25.5 s in cited reports; task and command durations are distinct.",
+          "startedAt": "2026-09-12T13:21:56.414Z",
+          "finishedAt": "2026-09-12T13:23:27.812Z",
+          "concurrentTasks": [
+            "worktree",
+            "skeleton",
+            "plan-refutation:fixtures"
+          ],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-09-12T14:10:29.960Z",
+      "workOrder": "WO-125",
+      "durationMs": 793878,
+      "classification": "failed-task; cause not established by retained log",
+      "failures": [
+        {
+          "task": "console",
+          "durationMs": 91994,
+          "deadlineSite": "collectSources command budget: consistent with 60000 ms timeout; historical timeout not explicitly logged",
+          "historicalAloneMs": 17200,
+          "aloneSource": "release:list command in docs/verifications/WO-125/VER-003.md O3; whole host-collection test approximately 23.2-25.5 s in cited reports; task and command durations are distinct.",
+          "startedAt": "2026-09-12T14:02:20.938Z",
+          "finishedAt": "2026-09-12T14:03:52.932Z",
+          "concurrentTasks": [
+            "worktree",
+            "skeleton",
+            "plan-refutation:fixtures"
+          ],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-09-12T14:51:29.993Z",
+      "workOrder": "WO-125",
+      "durationMs": 838969,
+      "classification": "failed-task; cause not established by retained log",
+      "failures": [
+        {
+          "task": "console",
+          "durationMs": 92059,
+          "deadlineSite": "collectSources command budget: consistent with 60000 ms timeout; historical timeout not explicitly logged",
+          "historicalAloneMs": 17200,
+          "aloneSource": "release:list command in docs/verifications/WO-125/VER-003.md O3; whole host-collection test approximately 23.2-25.5 s in cited reports; task and command durations are distinct.",
+          "startedAt": "2026-09-12T14:43:13.403Z",
+          "finishedAt": "2026-09-12T14:44:45.462Z",
+          "concurrentTasks": [
+            "skeleton",
+            "plan-refutation:fixtures",
+            "worktree"
+          ],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        }
+      ]
+    },
+    {
+      "recordedAt": "2026-09-12T15:39:37.060Z",
+      "workOrder": "WO-125",
+      "durationMs": 835516,
+      "classification": "failed-task; cause not established by retained log",
+      "failures": [
+        {
+          "task": "console",
+          "durationMs": 91688,
+          "deadlineSite": "collectSources command budget: consistent with 60000 ms timeout; historical timeout not explicitly logged",
+          "historicalAloneMs": 17200,
+          "aloneSource": "release:list command in docs/verifications/WO-125/VER-003.md O3; whole host-collection test approximately 23.2-25.5 s in cited reports; task and command durations are distinct.",
+          "startedAt": "2026-09-12T15:31:22.678Z",
+          "finishedAt": "2026-09-12T15:32:54.366Z",
+          "concurrentTasks": [
+            "worktree",
+            "skeleton",
+            "plan-refutation:fixtures"
+          ],
+          "concurrencySource": "interval overlap inferred from retained task start/end; not an original scheduler readback",
+          "diagnosticAvailable": false
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 1,
+  "failedGateTotalMs": 8385737
+}

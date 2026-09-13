@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "sourceSeries": "shared-series-001.json",
+  "classification": "fixture signal-delivery protocol defect reproduced without gate load",
+  "failedDeadline": {
+    "site": "fixture-temp-root:await-release-root",
+    "task": "fixture-temp-root",
+    "timeoutMs": 15000,
+    "durationMs": 15005.139667,
+    "startedAt": "2026-09-12T21:08:19.179Z",
+    "finishedAt": "2026-09-12T21:08:34.185Z",
+    "hit": true,
+    "loadClass": "shared",
+    "concurrency": 4,
+    "loadFactor": 8,
+    "concurrentTasks": [
+      "release:case:concurrent",
+      "work-orders-fixtures",
+      "adjacent-queue"
+    ],
+    "peerObservation": "scheduler-current",
+    "hostLoadPerCpu": 0.49835205078125,
+    "classification": "deadline-hit-cause-unestablished"
+  },
+  "reproduction": {
+    "parentOnlyExitedAfter250Ms": false,
+    "processGroupExitCode": 130,
+    "processGroupExitMs": 1.7189590000000408
+  },
+  "negativeControl": {
+    "mutation": "signalGroup(signal) replaced by child.kill(signal); readiness and group timeout cleanup unchanged",
+    "exitCode": 1,
+    "timeoutMs": 15000,
+    "rootFound": true,
+    "signalSent": true,
+    "finalSignal": "SIGKILL"
+  },
+  "repairedStandalone": {
+    "execution": "outside sandbox after the negative control completed; actor-attested",
+    "exitCode": 0,
+    "signals": [
+      "SIGINT",
+      "SIGTERM"
+    ],
+    "deadlineRecords": [
+      {
+        "site": "fixture-temp-root:signal-cleanup",
+        "task": "fixture-temp-root",
+        "timeoutMs": 15000,
+        "durationMs": 49.029542,
+        "startedAt": "2026-09-12T21:14:16.668Z",
+        "finishedAt": "2026-09-12T21:14:16.717Z",
+        "hit": false,
+        "loadClass": "standalone",
+        "concurrency": 1,
+        "loadFactor": 1,
+        "concurrentTasks": [],
+        "peerObservation": "unavailable",
+        "hostLoadPerCpu": 0.25848388671875,
+        "classification": "completed"
+      },
+      {
+        "site": "fixture-temp-root:signal-cleanup",
+        "task": "fixture-temp-root",
+        "timeoutMs": 15000,
+        "durationMs": 48.324792,
+        "startedAt": "2026-09-12T21:14:16.766Z",
+        "finishedAt": "2026-09-12T21:14:16.814Z",
+        "hit": false,
+        "loadClass": "standalone",
+        "concurrency": 1,
+        "loadFactor": 1,
+        "concurrentTasks": [],
+        "peerObservation": "unavailable",
+        "hostLoadPerCpu": 0.25848388671875,
+        "classification": "completed"
+      }
+    ]
+  }
+}

@@ -1,0 +1,231 @@
+Transcript 1: planning-repair.log
+TAP version 13
+# Subtest: direct-session frozen result round-trips and gates without invented launch provenance
+ok 1 - direct-session frozen result round-trips and gates without invented launch provenance
+# Subtest: direct-session closed provenance rejects launch claims, verified settings and changed frozen results
+ok 2 - direct-session closed provenance rejects launch claims, verified settings and changed frozen results
+# Subtest: direct-session publication rejects dirty or stale planning subjects and screens session metadata
+ok 3 - direct-session publication rejects dirty or stale planning subjects and screens session metadata
+# Subtest: direct-session receipts retain structural and addressed holds and cannot freeze an omitted hold as pass
+ok 4 - direct-session receipts retain structural and addressed holds and cannot freeze an omitted hold as pass
+# Subtest: direct-session and CLI histories share held-criterion repair and disposition requirements
+ok 5 - direct-session and CLI histories share held-criterion repair and disposition requirements
+# Subtest: direct-session holds retain the three-hold stop and cannot be rerolled by changing review source
+ok 6 - direct-session holds retain the three-hold stop and cannot be rerolled by changing review source
+# Subtest: AC1 committed-only deterministic subject; narrative blinding; all five hash inputs
+ok 7 - AC1 committed-only deterministic subject; narrative blinding; all five hash inputs
+# Subtest: AC2 compiled identity, mask, lens, pinned questions, one-shot cadence and authority refusals
+ok 8 - AC2 compiled identity, mask, lens, pinned questions, one-shot cadence and authority refusals
+# Subtest: AC3 closed schema, exhaustive ids, verdict construction, row-less exclusion drift and gap deferrals
+ok 9 - AC3 closed schema, exhaustive ids, verdict construction, row-less exclusion drift and gap deferrals
+# Subtest: AC3/5 deferrals require a later sequence member; outside, closed, self, earlier and missing orders refuse
+ok 10 - AC3/5 deferrals require a later sequence member; outside, closed, self, earlier and missing orders refuse
+# Subtest: AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal
+ok 11 - AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal
+# Subtest: AC5 unanswered drift and receipt-text override refuse; captured, attributed control event discharges
+ok 12 - AC5 unanswered drift and receipt-text override refuse; captured, attributed control event discharges
+# Subtest: AC5 pass after held criterion repair; elsewhere and whitespace edits cannot re-roll
+ok 13 - AC5 pass after held criterion repair; elsewhere and whitespace edits cannot re-roll
+# Subtest: AC5 third consecutive hold stops the pass, including changed sequence labels and pre-dispatch CLI
+ok 14 - AC5 third consecutive hold stops the pass, including changed sequence labels and pre-dispatch CLI
+# Subtest: AC2/4 transport adapters keep fixed schema, empty cwd and no model tools; host rejects a mismatched receipt
+ok 15 - AC2/4 transport adapters keep fixed schema, empty cwd and no model tools; host rejects a mismatched receipt
+# Subtest: WO-125 plan CLI accepts Codex GPT-6 Astra/max and records only a launch claim
+ok 16 - WO-125 plan CLI accepts Codex GPT-6 Astra/max and records only a launch claim
+# Subtest: WO-042 continuation admits required execution metadata before and after commit without rewriting the receipt
+ok 17 - WO-042 continuation admits required execution metadata before and after commit without rewriting the receipt
+# Subtest: WO-043 continuation admits only the reviewed dependency transcription and preserves receipt bytes
+ok 18 - WO-043 continuation admits only the reviewed dependency transcription and preserves receipt bytes
+# Subtest: WO-042 continuation rejects planning edits and forged execution classifications in both HEAD and the workspace
+ok 19 - WO-042 continuation rejects planning edits and forged execution classifications in both HEAD and the workspace
+# Subtest: AC5 forward-only gate, real-adapter fixture receipt, and stale committed standard refusal
+ok 20 - AC5 forward-only gate, real-adapter fixture receipt, and stale committed standard refusal
+# Subtest: receipt source symlinks refuse and CLI override retains the acting account label
+ok 21 - receipt source symlinks refuse and CLI override retains the acting account label
+# Subtest: WO-126 direct command files an immutable committed receipt, rejects bad input and carries unchanged verdicts
+ok 22 - WO-126 direct command files an immutable committed receipt, rejects bad input and carries unchanged verdicts
+# Subtest: WO-126 planning start requires clean main and full scope retains every judgment
+ok 23 - WO-126 planning start requires clean main and full scope retains every judgment
+# Subtest: WO-126 legacy cost adoption preserves receipts and refuses any substantive authority edit
+ok 24 - WO-126 legacy cost adoption preserves receipts and refuses any substantive authority edit
+# Subtest: WO-126 cost input holds missing or unbalanced additions and refuses stale subject evidence
+ok 25 - WO-126 cost input holds missing or unbalanced additions and refuses stale subject evidence
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 120842.537666
+
+Transcript 2: deadline-fixtures-final.log
+TAP version 13
+# Subtest: the scheduler declaration derives finite bounds and refuses an unbounded class
+ok 1 - the scheduler declaration derives finite bounds and refuses an unbounded class
+# Subtest: a slow barrier double survives simulated load and a hit reads current peers
+ok 2 - a slow barrier double survives simulated load and a hit reads current peers
+# Subtest: a slow subprocess double passes the derived bound and a hung process retains its diagnostic
+ok 3 - a slow subprocess double passes the derived bound and a hung process retains its diagnostic
+# Subtest: async process timeout is distinguished from an ordinary caller kill
+ok 4 - async process timeout is distinguished from an ordinary caller kill
+# Subtest: the synchronous subprocess boundary preserves timeout failure
+ok 5 - the synchronous subprocess boundary preserves timeout failure
+# Subtest: measurement acceptance rejects reuse, source drift and an incomplete consecutive series
+ok 6 - measurement acceptance rejects reuse, source drift and an incomplete consecutive series
+# Subtest: one recorded timeline carries peers and computes its observed scheduling critical path offline
+ok 7 - one recorded timeline carries peers and computes its observed scheduling critical path offline
+# Subtest: reuse keys distinguish the declared load policy without transient peer or log identities
+ok 8 - reuse keys distinguish the declared load policy without transient peer or log identities
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1086.594958
+
+Transcript 3: harness-fixtures.log
+TAP version 13
+# Subtest: WO-125 F3 runner refuses generated-hook writes throughout the gate and releases on exit
+ok 1 - WO-125 F3 runner refuses generated-hook writes throughout the gate and releases on exit
+# Subtest: WO-125 F3 evidence refuses generated-hook writes throughout the gate and releases on exit
+ok 2 - WO-125 F3 evidence refuses generated-hook writes throughout the gate and releases on exit
+# Subtest: WO-125 F3 entry refuses generated-hook writes throughout the gate and releases on exit
+ok 3 - WO-125 F3 entry refuses generated-hook writes throughout the gate and releases on exit
+# Subtest: WO-125 F3 a marker left by a killed gate owner does not block writes
+ok 4 - WO-125 F3 a marker left by a killed gate owner does not block writes
+# Subtest: WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+ok 5 - WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal
+# Subtest: WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries
+ok 6 - WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries
+# Subtest: WO-126 inherited output corpus adds no reads; authored bounded delivery rejects gaps, truncation and stale hashes
+ok 7 - WO-126 inherited output corpus adds no reads; authored bounded delivery rejects gaps, truncation and stale hashes
+# Subtest: WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement
+ok 8 - WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement
+# Subtest: WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+ok 9 - WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+# Subtest: WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+ok 10 - WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+# Subtest: WO-039 control observation uses the canonical read-only lifecycle command
+ok 11 - WO-039 control observation uses the canonical read-only lifecycle command
+# Subtest: WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+ok 12 - WO-039 whole-procedure context includes late directives and refuses unaccounted reads
+# Subtest: WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+ok 13 - WO-039 generated read observer spans the session and its bounded scope closes alternate read routes
+# Subtest: WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+ok 14 - WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+# Subtest: WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+ok 15 - WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects
+# Subtest: WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+ok 16 - WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main
+# Subtest: WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+ok 17 - WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+# Subtest: WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated messages through generated processes
+ok 18 - WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated messages through generated processes
+# Subtest: WO-039 foreign writer reservations refuse while their owner lives, reclaim with a record when it is dead, and stay inspectable
+ok 19 - WO-039 foreign writer reservations refuse while their owner lives, reclaim with a record when it is dead, and stay inspectable
+# Subtest: WO-039 concurrent dead-owner recovery admits exactly one writer while the first owner's work is outstanding
+ok 20 - WO-039 concurrent dead-owner recovery admits exactly one writer while the first owner's work is outstanding
+# Subtest: WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+ok 21 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+# Subtest: WO-039 an operator release judges, retires and journals one observed reservation
+ok 22 - WO-039 an operator release judges, retires and journals one observed reservation
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 133656.569417
+
+Transcript 4: runner-fixtures.log
+TAP version 13
+# Subtest: the scheduler declaration derives finite bounds and refuses an unbounded class
+ok 1 - the scheduler declaration derives finite bounds and refuses an unbounded class
+# Subtest: a slow barrier double survives simulated load and a hit reads current peers
+ok 2 - a slow barrier double survives simulated load and a hit reads current peers
+# Subtest: a slow subprocess double passes the derived bound and a hung process retains its diagnostic
+ok 3 - a slow subprocess double passes the derived bound and a hung process retains its diagnostic
+# Subtest: async process timeout is distinguished from an ordinary caller kill
+ok 4 - async process timeout is distinguished from an ordinary caller kill
+# Subtest: one recorded timeline carries peers and computes its observed scheduling critical path offline
+ok 5 - one recorded timeline carries peers and computes its observed scheduling critical path offline
+# Subtest: reuse keys distinguish the declared load policy without transient peer or log identities
+ok 6 - reuse keys distinguish the declared load policy without transient peer or log identities
+# Subtest: case inventory includes all pre-existing release scenarios plus preflight and rejects duplicates
+ok 7 - case inventory includes all pre-existing release scenarios plus preflight and rejects duplicates
+# Subtest: sealed fixture copies share no mutable refs or files and refuse a changed template
+ok 8 - sealed fixture copies share no mutable refs or files and refuse a changed template
+# Subtest: fixture context cleans only its owned temporary root
+ok 9 - fixture context cleans only its owned temporary root
+# Subtest: full inventory retains every command in the previous package test chain
+ok 10 - full inventory retains every command in the previous package test chain
+# Subtest: package suites bound child-file concurrency as well as outer scheduling
+ok 11 - package suites bound child-file concurrency as well as outer scheduling
+# Subtest: build is a barrier, independent suites overlap, shared groups cannot overlap
+ok 12 - build is a barrier, independent suites overlap, shared groups cannot overlap
+# Subtest: serial scheduling has one active suite and failed build launches no dependents
+ok 13 - serial scheduling has one active suite and failed build launches no dependents
+# Subtest: stale generated evidence stops the gate before expensive fixtures
+ok 14 - stale generated evidence stops the gate before expensive fixtures
+# Subtest: package tests and fixtures wait for preflights and never start after a failed preflight
+ok 15 - package tests and fixtures wait for preflights and never start after a failed preflight
+# Subtest: failed split-case diagnostics survive aggregate evidence as addressed logs
+ok 16 - failed split-case diagnostics survive aggregate evidence as addressed logs
+# Subtest: hook fixtures and console share the cap while explicit isolated tasks stay alone
+ok 17 - hook fixtures and console share the cap while explicit isolated tasks stay alone
+# Subtest: test discovery refuses missing compiled cases instead of silently succeeding
+ok 18 - test discovery refuses missing compiled cases instead of silently succeeding
+# Subtest: timeout is an executed failure with suite identity and measured duration
+ok 19 - timeout is an executed failure with suite identity and measured duration
+# Subtest: only and document CLI selection execute their declared checks without a code build
+ok 20 - only and document CLI selection execute their declared checks without a code build
+# Subtest: WO-125 nested gate markers remain independent and local to their worktree
+ok 21 - WO-125 nested gate markers remain independent and local to their worktree
+# Subtest: WO-125 gate inputs include tracked ignored files and new installed roots, excluding scratch
+ok 22 - WO-125 gate inputs include tracked ignored files and new installed roots, excluding scratch
+# Subtest: WO-125 VER-002 installed input case aliases include prospective roots
+ok 23 - WO-125 VER-002 installed input case aliases include prospective roots
+# Subtest: WO-125 VER-002 resolves dangling links and physical parent traversal
+ok 24 - WO-125 VER-002 resolves dangling links and physical parent traversal
+# Subtest: WO-125 VER-003 protects pre-existing hard links while ordinary scratch stays writable
+ok 25 - WO-125 VER-003 protects pre-existing hard links while ordinary scratch stays writable
+# Subtest: release cases share the global cap, wait for preparation and require complete coverage
+ok 26 - release cases share the global cap, wait for preparation and require complete coverage
+# Subtest: planning task dispatch delivers each selection flag to the executable
+ok 27 - planning task dispatch delivers each selection flag to the executable
+# Subtest: live progress arrives before a running process completes and remains bounded
+ok 28 - live progress arrives before a running process completes and remains bounded
+# Subtest: gate children preserve executable precedence and future paths while removing repeated searches
+ok 29 - gate children preserve executable precedence and future paths while removing repeated searches
+# Subtest: suite execution and fingerprints share a stable reviewed environment without proxy credentials
+ok 30 - suite execution and fingerprints share a stable reviewed environment without proxy credentials
+# Subtest: reviewed inputs invalidate source, tests, helpers, config, dependencies, documents, paths and environment
+ok 31 - reviewed inputs invalidate source, tests, helpers, config, dependencies, documents, paths and environment
+# Subtest: host configuration content invalidates and unknown startup adapters force execution
+ok 32 - host configuration content invalidates and unknown startup adapters force execution
+# Subtest: a resolved tool's bytes invalidate even when its PATH and name stay unchanged
+ok 33 - a resolved tool's bytes invalidate even when its PATH and name stay unchanged
+# Subtest: missing, corrupt, failing and unexecuted cache rows never supply success; reuse retains provenance
+ok 34 - missing, corrupt, failing and unexecuted cache rows never supply success; reuse retains provenance
+# Subtest: unmodelled external and ignored directory links force fresh execution
+ok 35 - unmodelled external and ignored directory links force fresh execution
+# Subtest: runner composes unchanged inputs across doc trees, honors --fresh, and refuses mid-run changes
+ok 36 - runner composes unchanged inputs across doc trees, honors --fresh, and refuses mid-run changes
+# Subtest: an unchanged gate retry retains passing source checks and reruns the failure and live guard
+ok 37 - an unchanged gate retry retains passing source checks and reruns the failure and live guard
+1..37
+# tests 37
+# suites 0
+# pass 37
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 31130.237375

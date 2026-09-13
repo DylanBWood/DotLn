@@ -8,7 +8,7 @@
 - [x] [WO-042] — Authority provenance and monotone envelopes · **final-reviewed**
 - [x] [WO-043] — Typed dependency truth · **final-reviewed**
 - [x] [WO-125] — Codex effort selection · **final-reviewed**
-- [ ] [WO-128] — Fresh gates pass first time · **queued**
+- [x] [WO-128] — Fresh gates pass first time · **final-reviewed**
 - [ ] [WO-129] — Suite evidence keyed by declared inputs · **queued**
 - [ ] [WO-130] — Suites execute in a replica of declared inputs · **queued**
 - [ ] [WO-131] — Remaining suites declared under replica execution · **queued**
@@ -1522,23 +1522,6 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-124/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-124-impact-surfaces-derivation.md](WO-124-impact-surfaces-derivation.md)
 
-### WO-128
-
-[WO-128 — Fresh gates pass first time: every wall-clock deadline a gate child can hit survives the full gate's load, and the exclusive-suite workaround is re-measured (version assigned at activation)](WO-128-fresh-gates-pass-first-time.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-126: satisfied-by-close (met) — the runner, its exclusive scheduling (D012) and its suite reuse (D009); WO-125: satisfied-by-close (met) — gate-input protection during live runs and the console diagnosis in its reports; WO-039: reference-only (non-blocking) — the fifth repair receipt ordered the console suite after the package suites and left the collector budget unchanged.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model for the runner, the collector budget and the fixtures; the measurement series runs on the operator's machine. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: adds one operator-run measurement series inside the order (five fresh full gates at the 2026-09-12 durations of 476–839 s, once, or twice if the shared-cap series fails and the retained configuration is measured again) and one diagnostic record per deadline hit (bytes on disk, no context read); adds no step to any phase. Removes the failed fresh full gate and its rerun: on 2026-09-11/12 twelve fresh full gates across WO-043, WO-125 and WO-127 failed on a load-sensitive deadline or on a tree changed during the run, 8,387 s in total, and each was followed by a passing rerun of 41–419 s. If the exclusivity re-measurement passes, it also removes up to 206 s of concurrency-one time per fresh gate, the &#96;harness-fixtures&#96; and &#96;process-debt&#96; spans measured at 2026-09-12T16:08Z. Context bytes, commands and tokens per gate are unchanged; gate runs per phase drop from two to one.
-- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-128/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-128-fresh-gates-pass-first-time.md](WO-128-fresh-gates-pass-first-time.md)
-
 ### WO-129
 
 [WO-129 — Suite evidence keyed by declared inputs: a lifecycle transition, a commit of unchanged bytes or a sibling worktree no longer invalidates suites that did not read what changed, and every miss names what did (version assigned at activation)](WO-129-suite-evidence-input-identity.md)
@@ -2288,6 +2271,24 @@ None.
 - Cost: Adds bounded closeout enumeration and byte verification for retained local records, plus focused regression cases; removes manual archival and a full release gate that rejects unchanged planning inputs after execution commits. Focused preservation fixtures took 1517.638 ms and the planning-cost regression took 875.693 ms; retain measured observations without inventing caps.
 - Latest attestation: harness codex-cli; version 0.154.0; model gpt-6-astra; effort max; source operator-attested; account not-applicable.
 - Authority: [docs/work-orders/WO-127-release-close-recovery.md](WO-127-release-close-recovery.md)
+
+### WO-128
+
+[WO-128 — Fresh gates pass first time: every wall-clock deadline a gate child can hit survives the full gate's load, and the exclusive-suite workaround is re-measured (v0.17.3)](WO-128-fresh-gates-pass-first-time.md)
+
+- State: closed.
+- Application target: v0.17.3.
+- Dependencies: typed; activation not applicable.
+- References: WO-126: satisfied-by-close (met) — the runner, its exclusive scheduling (D012) and its suite reuse (D009); WO-125: satisfied-by-close (met) — gate-input protection during live runs and the console diagnosis in its reports; WO-039: reference-only (non-blocking) — the fifth repair receipt ordered the console suite after the package suites and left the collector budget unchanged.
+- Verification: [VER-001](../../docs/verifications/WO-128/VER-001.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-128/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model for the runner, the collector budget and the fixtures; the measurement series runs on the operator's machine. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds one operator-run measurement series inside the order (five fresh full gates at the 2026-09-12 durations of 476–839 s, once, or twice if the shared-cap series fails and the retained configuration is measured again) and one diagnostic record per deadline hit (bytes on disk, no context read); adds no step to any phase. Removes the failed fresh full gate and its rerun: on 2026-09-11/12 twelve fresh full gates across WO-043, WO-125 and WO-127 failed on a load-sensitive deadline or on a tree changed during the run, 8,387 s in total, and each was followed by a passing rerun of 41–419 s. If the exclusivity re-measurement passes, it also removes up to 206 s of concurrency-one time per fresh gate, the &#96;harness-fixtures&#96; and &#96;process-debt&#96; spans measured at 2026-09-12T16:08Z. Context bytes, commands and tokens per gate are unchanged; gate runs per phase drop from two to one.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-128/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness claude-code; version 2.1.270; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-128-fresh-gates-pass-first-time.md](WO-128-fresh-gates-pass-first-time.md)
 
 ## Historical
 

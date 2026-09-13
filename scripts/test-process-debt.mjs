@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync, spawn, spawnSync } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
+import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { createHash } from "node:crypto";
 import {
   copyFileSync,

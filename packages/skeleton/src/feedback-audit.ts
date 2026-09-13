@@ -1,4 +1,7 @@
-import { spawnSync, execFileSync } from "node:child_process";
+import {
+  observedExecFileSync as execFileSync,
+  observedSpawnSync as spawnSync,
+} from "./gate-deadlines.mjs";
 import { lstatSync, readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import {
@@ -20,6 +23,7 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/feedback-boundary.ts",
   "packages/skeleton/src/feedback-source-comments.ts",
   "packages/skeleton/src/feedback-audit.ts",
+  "packages/skeleton/src/gate-deadlines.mjs",
   "packages/skeleton/src/feedback-selfhost.ts",
   "packages/skeleton/src/reactor.ts",
   "packages/skeleton/src/verification-protocol.ts",
