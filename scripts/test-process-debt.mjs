@@ -6,7 +6,9 @@ import { createHash } from "node:crypto";
 import {
   copyFileSync,
   cpSync,
+  chmodSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -20,6 +22,8 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import {
+  activeGateRuns,
+  beginGateRun,
   gateTreeHash,
   findGateCheck,
   readGateChecks,
@@ -68,7 +72,11 @@ import {
 import {
   beginHarnessSession,
   harnessOutputObligations,
+  dispatchAdmissionPolicy,
   evaluateHarnessHook,
+  harnessWriterView,
+  releaseHarnessWriter,
+  seedHarnessWriter,
   permissionEffect,
   observeHarnessDelivery,
   readHarnessOutput,
@@ -76,7 +84,10 @@ import {
   observeSessionHarnessVersion,
 } from "../packages/skeleton/dist/src/harness-host.js";
 import { feedbackBoundary } from "../packages/skeleton/dist/src/feedback-boundary.js";
-import { hasAiAttribution } from "../packages/compiler/dist/src/feedback.js";
+import {
+  compileFeedbackUnits,
+  hasAiAttribution,
+} from "../packages/compiler/dist/src/feedback.js";
 import {
   invocationEffects,
   shellInvocations,
@@ -129,9 +140,21 @@ const snapshot = (root) => {
   walk();
   return result;
 };
+const writableOwnedTree = (path) => {
+  const info = lstatSync(path);
+  if (info.isSymbolicLink()) return;
+  chmodSync(path, (info.mode & 0o777) | (info.isDirectory() ? 0o700 : 0o200));
+  if (info.isDirectory())
+    for (const entry of readdirSync(path)) writableOwnedTree(join(path, entry));
+};
 function repo(t, { runtime = false } = {}) {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "dotln-debt-")));
-  t.after(() => rmSync(root, { recursive: true, force: true }));
+  t.after(() => {
+    // Snapshot copies can retain read-only mount modes. Restore only this
+    // fixture's owned entries, without following links back to installed roots.
+    writableOwnedTree(root);
+    rmSync(root, { recursive: true, force: true });
+  });
   git(root, "init", "-q", "-b", "wo-999");
   assert.equal(realpathSync(git(root, "rev-parse", "--show-toplevel")), root);
   git(root, "config", "user.name", "Fixture");
@@ -173,8 +196,11 @@ function repo(t, { runtime = false } = {}) {
       cpSync(
         join(source, `packages/${name}/dist`),
         join(root, `packages/${name}/dist`),
-        { recursive: true },
+        { recursive: true, dereference: true },
       );
+      // A replica mounts its installed runtime read-only. This fixture owns a
+      // writable copy so its publication and deliberate-damage checks stay local.
+      writableOwnedTree(join(root, `packages/${name}/dist`));
       cpSync(
         join(source, `packages/${name}/package.json`),
         join(root, `packages/${name}/package.json`),
@@ -3671,4 +3697,501 @@ test("source-reconciled overlapping usage replaces aggregation without deleting 
   assert.equal(order.usage.length, 1);
   assert.equal(order.usage[0].supersedes, undefined);
   assert.equal(order.usage[0].sessionKey, undefined);
+});
+
+test("WO-130 the session hook records the operator's dispatch from the phrase, passes a recorded one and refuses an illegal one", async (t) => {
+  const root = repo(t, { runtime: true });
+  // A lifecycle stub with legal actions: status reports them, fix and verify
+  // record their transitions, and anything else refuses as the real command does.
+  write(
+    root,
+    "scripts/resume.mjs",
+    `import { appendFileSync, readFileSync, writeFileSync } from "node:fs";
+const statePath = "docs/control/local/lifecycle-stub.json";
+const state = JSON.parse(readFileSync(statePath, "utf8"));
+const legal = { "needs-fix": ["fix"], repairing: ["repair-complete"], "ready-to-verify": ["verify"], verifying: ["verification-result"] };
+const briefings = {
+  repairing: "Repair docs/work-orders/WO-999-fixture.md using docs/verifications/WO-999/VER-001.md; read both artifacts.\\nExecutor entry duties:\\nIntent to Act is equipped: fixture.",
+  verifying: "Verify into docs/verifications/WO-999/VER-002.md.",
+};
+const [action] = process.argv.slice(2);
+if (action === "status") {
+  console.log(JSON.stringify({ workOrder: "WO-999", workOrderPath: "docs/work-orders/WO-999-fixture.md", phase: state.phase, latestVerdict: null, legalNextActions: legal[state.phase] ?? [] }));
+} else if (action === "briefing") {
+  if (!briefings[state.phase]) {
+    console.error("error: no dispatch is recorded in phase " + state.phase);
+    process.exit(1);
+  }
+  console.log(briefings[state.phase]);
+} else if ((legal[state.phase] ?? []).includes(action)) {
+  state.phase = action === "fix" ? "repairing" : "verifying";
+  writeFileSync(statePath, JSON.stringify(state));
+  appendFileSync("docs/control/orders/WO-999.jsonl", JSON.stringify({ schemaVersion: 1, type: action === "fix" ? "RepairRequested" : "VerificationRequested", workOrderId: "WO-999", recordedAt: new Date().toISOString() }) + "\\n");
+  console.log(briefings[state.phase]);
+} else {
+  console.error("error: cannot perform action in phase " + state.phase + "; run: npm run resume -- " + (legal[state.phase] ?? ["none"])[0]);
+  process.exit(1);
+}
+`,
+  );
+  write(
+    root,
+    "docs/control/local/lifecycle-stub.json",
+    JSON.stringify({ phase: "needs-fix" }),
+  );
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "Lifecycle stub with legal actions");
+  emitHarness(root);
+  // The dispatch is judged by the compiled policy the installed writer hook
+  // carries: the host compiles the same unit at the same hash, and refuses
+  // once the emitted manifest no longer records the inventory it ships with.
+  assert.deepEqual(
+    dispatchAdmissionPolicy(root),
+    config(root, "concurrent-work-requires-worktrees").policy,
+  );
+  const manifestPath = join(root, ".claude/harness-manifest.json");
+  const manifest = readFileSync(manifestPath, "utf8");
+  writeFileSync(
+    manifestPath,
+    manifest
+      .replaceAll(
+        config(root, "session").runtime.files[0].hash,
+        "fnv1a64:0000000000000000",
+      )
+      .replace(
+        /"feedbackPolicyHash": "[^"]+"/,
+        '"feedbackPolicyHash": "fnv1a64:0000000000000000"',
+      ),
+  );
+  assert.throws(
+    () => dispatchAdmissionPolicy(root),
+    /manifest does not record this feedback policy/,
+  );
+  writeFileSync(manifestPath, manifest);
+  const call = (session, prompt) =>
+    evaluateHarnessHook(
+      config(root, "session"),
+      input(root, "UserPromptSubmit", session, { prompt }),
+      root,
+      feedbackBoundary,
+    );
+  const events = () =>
+    readFileSync(join(root, "docs/control/orders/WO-999.jsonl"), "utf8")
+      .trim()
+      .split("\n").length;
+  const phase = () =>
+    JSON.parse(
+      readFileSync(
+        join(root, "docs/control/local/lifecycle-stub.json"),
+        "utf8",
+      ),
+    ).phase;
+  assert.equal(events(), 1);
+  const recorded = await call("dispatch-fix", "resume: fix");
+  assert.match(
+    recorded.hookSpecificOutput.additionalContext,
+    /Dispatch recorded by the harness: npm run resume -- fix\. Never repeat it\./,
+  );
+  assert.match(
+    recorded.hookSpecificOutput.additionalContext,
+    /Never repeat it\. Open the reply with one line that begins 'I intend to' and names the concrete initial action, before any tool call\.\nRepair docs\/work-orders\/WO-999-fixture\.md/,
+  );
+  assert.match(
+    recorded.hookSpecificOutput.additionalContext,
+    /Executor entry duties:\nIntent to Act is equipped: fixture/,
+  );
+  // The receipt is the operator's terminal evidence of the dispatch and its
+  // equipped supports; the briefing above reaches only the model.
+  assert.equal(
+    recorded.systemMessage,
+    "DotLn: recorded npm run resume -- fix for WO-999 (executor); equipped supports: Intent to Act.",
+  );
+  assert.equal(events(), 2);
+  assert.equal(phase(), "repairing");
+  assert.equal(state(root, "dispatch-fix").expectedEvent, "RepairCompleted");
+  assert.equal(state(root, "dispatch-fix").startingEventCount, 2);
+  // A session resuming the recorded repair receives the same briefing and
+  // receipt from the lifecycle's read-only projection, without a transition.
+  const again = await call("dispatch-again", "resume: fix");
+  assert.match(
+    again.hookSpecificOutput.additionalContext,
+    /Dispatch fix is already recorded \(phase repairing\); continue without repeating it\. Open the reply with one line that begins 'I intend to' and names the concrete initial action, before any tool call\.\nRepair docs\/work-orders\/WO-999-fixture\.md using docs\/verifications\/WO-999\/VER-001\.md; read both artifacts\.\nExecutor entry duties:\nIntent to Act is equipped: fixture\./,
+  );
+  assert.equal(
+    again.systemMessage,
+    "DotLn: dispatch fix is already recorded for WO-999 (executor); continuing in phase repairing; equipped supports: Intent to Act.",
+  );
+  assert.equal(events(), 2);
+  assert.equal(phase(), "repairing");
+  const illegal = await call("dispatch-verify", "resume: verify");
+  assert.equal(illegal.decision, "block");
+  assert.match(
+    illegal.reason,
+    /resume: verify is not a legal dispatch in phase repairing; legal actions: repair-complete/,
+  );
+  assert.equal(illegal.systemMessage, undefined);
+  assert.equal(events(), 2);
+  assert.equal(existsSync(statePath(root, "dispatch-verify")), false);
+  const status = await call("dispatch-status", "resume: status");
+  assert.doesNotMatch(status.hookSpecificOutput.additionalContext, /Dispatch/);
+  assert.equal(status.systemMessage, undefined);
+  assert.equal(events(), 2);
+  // A lifecycle that exposes legal actions but cannot project the recorded
+  // dispatch's briefing refuses the resumed phrase, naming the failure, rather
+  // than passing it without the supports and the intent instruction.
+  write(
+    root,
+    "scripts/resume.mjs",
+    `import { readFileSync } from "node:fs";
+const state = JSON.parse(readFileSync("docs/control/local/lifecycle-stub.json", "utf8"));
+if (process.argv[2] === "status") console.log(JSON.stringify({ workOrder: "WO-999", workOrderPath: "docs/work-orders/WO-999-fixture.md", phase: state.phase, latestVerdict: null, legalNextActions: ["repair-complete"] }));
+else { console.error("error: unknown resume action: " + process.argv[2]); process.exit(1); }
+`,
+  );
+  const unbriefed = await call("dispatch-unbriefed", "resume: fix");
+  assert.equal(unbriefed.decision, "block");
+  assert.equal(
+    unbriefed.reason,
+    "DOTLN_HARNESS_REFUSED: dispatch fix is already recorded (phase repairing) but its briefing is unavailable: error: unknown resume action: briefing",
+  );
+  assert.equal(unbriefed.systemMessage, undefined);
+  assert.equal(events(), 2);
+  assert.equal(existsSync(statePath(root, "dispatch-unbriefed")), false);
+  // A lifecycle without legal actions (an older projection or a plain stub)
+  // leaves the dispatch to the role, as before.
+  write(
+    root,
+    "scripts/resume.mjs",
+    'console.log(JSON.stringify({workOrder:"WO-999",workOrderPath:"docs/work-orders/WO-999-fixture.md",phase:"needs-fix"}));\n',
+  );
+  const legacy = await call("dispatch-legacy", "resume: fix");
+  assert.doesNotMatch(legacy.hookSpecificOutput.additionalContext, /Dispatch/);
+  assert.equal(legacy.systemMessage, undefined);
+  assert.equal(events(), 2);
+});
+
+test("WO-130 a prompt dispatch is admitted exactly as the command it replaces: a live gate or a foreign writer refuses it before any lifecycle change, an admitted one holds the writer, a resumed one receives the recorded briefing, and next stays a metadata command", async (t) => {
+  const root = repo(t, { runtime: true });
+  // The real lifecycle, its libraries and the source modules they import, so
+  // the guarded cases judge actual events, checkpoints and projections.
+  cpSync(join(source, "scripts/resume.mjs"), join(root, "scripts/resume.mjs"));
+  cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  for (const name of ["compiler", "kernel", "skeleton"])
+    cpSync(
+      join(source, `packages/${name}/src`),
+      join(root, `packages/${name}/src`),
+      { recursive: true },
+    );
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 fixture\n\n**Model:** any capable model.\n**Effort:** executor any; verifier any; reviewer any.\n",
+  );
+  git(root, "add", ".");
+  git(root, "commit", "-qm", "Real lifecycle");
+  emitHarness(root);
+  const hook = (name, payload) => {
+    const run = spawnSync(
+      process.execPath,
+      [join(root, `.claude/hooks/${name}.mjs`)],
+      {
+        cwd: root,
+        input: JSON.stringify(payload),
+        encoding: "utf8",
+        timeout: 20_000,
+      },
+    );
+    assert.equal(run.status, 0, run.stderr);
+    return JSON.parse(run.stdout);
+  };
+  const prompt = (session, text) =>
+    hook("session", input(root, "UserPromptSubmit", session, { prompt: text }));
+  const tool = (name, session, command) =>
+    hook(
+      name,
+      input(root, "PreToolUse", session, {
+        tool_name: "Bash",
+        tool_input: { command },
+      }),
+    );
+  const status = () => {
+    const run = spawnSync(
+      process.execPath,
+      ["scripts/resume.mjs", "status", "--json"],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(run.status, 0, run.stderr);
+    return JSON.parse(run.stdout);
+  };
+  const lifecycle = () => ({
+    events: readFileSync(
+      join(root, "docs/control/orders/WO-999.jsonl"),
+      "utf8",
+    ),
+    current: existsSync(join(root, "docs/control/current.md"))
+      ? readFileSync(join(root, "docs/control/current.md"), "utf8")
+      : null,
+    refs: git(
+      root,
+      "for-each-ref",
+      "--format=%(refname) %(objectname)",
+      "refs/dotln/",
+    ),
+    reports: existsSync(join(root, "docs/verifications"))
+      ? readdirSync(join(root, "docs/verifications"), { recursive: true })
+      : [],
+    phase: status().phase,
+  });
+  const actor = (session) => createHash("sha256").update(session).digest("hex");
+  const lock = join(root, "docs/control/local/harness/writer");
+  const foreign = () => {
+    rmSync(lock, { recursive: true, force: true });
+    seedHarnessWriter(root, {
+      actorId: actor("foreign-session"),
+      worktree: root,
+      owner: { pid: process.pid, source: "parent" },
+      reservedAt: "2026-09-13T00:00:00.000Z",
+    });
+    assert.equal(harnessWriterView(root).alive, true);
+  };
+  const equivalent = "npm run resume -- verify";
+
+  // Phase active: next is a metadata command on the tool path, so the prompt
+  // dispatch admits it under a live gate and a foreign writer, reserves
+  // nothing and appends no event.
+  assert.equal(status().phase, "active");
+  foreign();
+  const gate = beginGateRun(root, "synthetic active evidence gate");
+  t.after(() => gate.release());
+  assert.deepEqual(
+    tool(
+      "concurrent-work-requires-worktrees",
+      "next-session",
+      "npm run resume -- next",
+    ),
+    {},
+  );
+  assert.notEqual(
+    tool("permissions", "next-session", "npm run resume -- next")
+      .hookSpecificOutput?.permissionDecision,
+    "deny",
+  );
+  const activeBefore = lifecycle();
+  const next = prompt("next-session", "resume: next");
+  assert.match(
+    next.hookSpecificOutput.additionalContext,
+    /Dispatch recorded by the harness: npm run resume -- next\. Never repeat it\. Open the reply with one line that begins 'I intend to'/,
+  );
+  assert.match(
+    next.hookSpecificOutput.additionalContext,
+    /Execute docs\/work-orders\/WO-999-fixture\.md\./,
+  );
+  assert.match(
+    next.systemMessage,
+    /^DotLn: recorded npm run resume -- next for WO-999 \(executor\); equipped supports: Adjacent Repair, Intent to Act, /,
+  );
+  assert.equal(harnessWriterView(root).actorId, actor("foreign-session"));
+  const activeAfter = lifecycle();
+  assert.equal(activeAfter.events, activeBefore.events);
+  assert.equal(activeAfter.refs, activeBefore.refs);
+  assert.equal(activeAfter.phase, "active");
+
+  // Phase ready-to-verify: verify appends an event, checkpoints and projects.
+  write(
+    root,
+    "docs/control/orders/WO-999.jsonl",
+    activeAfter.events +
+      JSON.stringify({
+        schemaVersion: 1,
+        type: "ImplementationReady",
+        workOrderId: "WO-999",
+        recordedAt: "2026-09-13T00:00:01.000Z",
+        actor: {
+          harness: "human",
+          harnessVersion: "fixture",
+          model: "fixture",
+          effort: "max",
+          source: "operator-attested",
+        },
+      }) +
+      "\n",
+  );
+  assert.equal(status().phase, "ready-to-verify");
+
+  // A live evidence gate refuses the dispatch with the reason the permission
+  // hook gives the command, reserves nothing and changes no lifecycle byte.
+  rmSync(lock, { recursive: true, force: true });
+  const gated = lifecycle();
+  const gateDenied = tool(
+    "permissions",
+    "gated-session",
+    equivalent,
+  ).hookSpecificOutput;
+  assert.equal(gateDenied.permissionDecision, "deny");
+  const gatedPrompt = prompt("gated-session", "resume: verify");
+  assert.equal(gatedPrompt.decision, "block");
+  assert.equal(gatedPrompt.reason, gateDenied.permissionDecisionReason);
+  assert.match(
+    gatedPrompt.reason,
+    /^DOTLN_HARNESS_REFUSED: write may change gate inputs during active gate synthetic active evidence gate \(run [0-9a-f-]{36}, pid \d+\)$/,
+  );
+  assert.equal(gatedPrompt.systemMessage, undefined);
+  assert.deepEqual(lifecycle(), gated);
+  assert.equal(activeGateRuns(root).length, 1);
+  assert.equal(harnessWriterView(root).reserved, false);
+  assert.equal(existsSync(statePath(root, "gated-session")), false);
+  gate.release();
+  assert.equal(activeGateRuns(root).length, 0);
+
+  // Another session's live reservation refuses it with the reason the writer
+  // hook gives the command, and the holder keeps the worktree.
+  foreign();
+  const reserved = lifecycle();
+  const writerDenied = tool(
+    "concurrent-work-requires-worktrees",
+    "contender",
+    equivalent,
+  ).hookSpecificOutput;
+  assert.equal(writerDenied.permissionDecision, "deny");
+  const contended = prompt("contender", "resume: verify");
+  assert.equal(contended.decision, "block");
+  assert.equal(contended.reason, writerDenied.permissionDecisionReason);
+  assert.match(
+    contended.reason,
+    /^DOTLN_HARNESS_REFUSED: concurrent-work-requires-worktrees: write dispatch lacks a verified exclusive worktree; the worktree is reserved by another session \(actor [0-9a-f]{12}; host process \d+ is alive\)\. Finish that session/,
+  );
+  assert.equal(contended.systemMessage, undefined);
+  assert.deepEqual(lifecycle(), reserved);
+  assert.equal(harnessWriterView(root).actorId, actor("foreign-session"));
+  assert.equal(existsSync(statePath(root, "contender")), false);
+  rmSync(lock, { recursive: true, force: true });
+
+  // Uncontended: the dispatch records exactly once, delivers the allocated
+  // report path with a terminal receipt, and holds the reservation the
+  // session's first write would take.
+  const admitted = prompt("verifier", "resume: verify");
+  assert.match(
+    admitted.hookSpecificOutput.additionalContext,
+    /Dispatch recorded by the harness: npm run resume -- verify\. Never repeat it\.\nVerify docs\/work-orders\/WO-999-fixture\.md; write the immutable report to docs\/verifications\/WO-999\/VER-001\.md\./,
+  );
+  assert.equal(
+    admitted.systemMessage,
+    "DotLn: recorded npm run resume -- verify for WO-999 (verifier); equipped supports: none named by the briefing.",
+  );
+  const recorded = lifecycle();
+  assert.equal(
+    recorded.events.trim().split("\n").length,
+    reserved.events.trim().split("\n").length + 1,
+  );
+  assert.match(
+    recorded.events,
+    /"type":"VerificationRequested","workOrderId":"WO-999","verificationId":"VER-001"/,
+  );
+  assert.equal(recorded.phase, "verifying");
+  assert.match(
+    recorded.refs,
+    /^refs\/dotln\/checkpoint\/WO-999\/1 [0-9a-f]{40}$/m,
+  );
+  assert.equal(harnessWriterView(root).actorId, actor("verifier"));
+  assert.deepEqual(
+    tool(
+      "concurrent-work-requires-worktrees",
+      "verifier",
+      "touch docs/verifications/WO-999/VER-001.md",
+    ),
+    {},
+  );
+  const repeated = prompt("second-verifier", "resume: verify");
+  assert.match(
+    repeated.hookSpecificOutput.additionalContext,
+    /Dispatch verify is already recorded \(phase verifying\); continue without repeating it\.\nVerify docs\/work-orders\/WO-999-fixture\.md; write the immutable report to docs\/verifications\/WO-999\/VER-001\.md\./,
+  );
+  assert.doesNotMatch(
+    repeated.hookSpecificOutput.additionalContext,
+    /I intend to/,
+  );
+  assert.equal(
+    repeated.systemMessage,
+    "DotLn: dispatch verify is already recorded for WO-999 (verifier); continuing in phase verifying; equipped supports: none named by the briefing.",
+  );
+  assert.deepEqual(lifecycle(), recorded);
+  assert.equal(harnessWriterView(root).actorId, actor("verifier"));
+
+  // Phase needs-fix: the recording session's fix delivers the executor
+  // briefing, and a new session that resumes the recorded repair after that
+  // session released the worktree receives the same supports and intent
+  // instruction, reserves nothing and changes no lifecycle byte.
+  write(
+    root,
+    "docs/control/orders/WO-999.jsonl",
+    recorded.events +
+      JSON.stringify({
+        schemaVersion: 1,
+        type: "VerificationCompleted",
+        workOrderId: "WO-999",
+        verificationId: "VER-001",
+        reportPath: "docs/verifications/WO-999/VER-001.md",
+        verdict: "fail",
+        actor: {
+          harness: "human",
+          harnessVersion: "fixture",
+          model: "fixture",
+          effort: "max",
+          source: "operator-attested",
+        },
+        recordedAt: "2026-09-13T00:00:02.000Z",
+      }) +
+      "\n",
+  );
+  write(root, "docs/verifications/WO-999/VER-001.md", "# Synthetic failure\n");
+  rmSync(lock, { recursive: true, force: true });
+  assert.equal(status().phase, "needs-fix");
+  // The transition's optional beacon warning belongs to the recording, not
+  // to the briefing a resumed session receives.
+  const briefingOf = (context) =>
+    context
+      .slice(context.indexOf("\nRepair docs/"))
+      .replace(/\nwarning: [^\n]*$/, "");
+  const supportsOf = (message) =>
+    /; equipped supports: (.+)\.$/.exec(message)?.[1];
+  const repair = prompt("repair-session", "resume: fix");
+  assert.match(
+    repair.hookSpecificOutput.additionalContext,
+    /Dispatch recorded by the harness: npm run resume -- fix\. Never repeat it\. Open the reply with one line that begins 'I intend to' and names the concrete initial action, before any tool call\.\nRepair docs\/work-orders\/WO-999-fixture\.md using docs\/verifications\/WO-999\/VER-001\.md; read both artifacts\.\nExecutor entry duties:\n/,
+  );
+  assert.match(
+    supportsOf(repair.systemMessage),
+    /^Adjacent Repair, Intent to Act, /,
+  );
+  const repairing = lifecycle();
+  assert.equal(repairing.phase, "repairing");
+  assert.equal(
+    repairing.events.trim().split("\n").length,
+    recorded.events.trim().split("\n").length + 2,
+  );
+  assert.equal(harnessWriterView(root).actorId, actor("repair-session"));
+  releaseHarnessWriter(
+    root,
+    input(root, "UserPromptSubmit", "repair-session", {
+      prompt: "resume: fix",
+    }),
+  );
+  assert.equal(harnessWriterView(root).reserved, false);
+  const resumed = prompt("resumed-repair", "resume: fix");
+  assert.match(
+    resumed.hookSpecificOutput.additionalContext,
+    /Dispatch fix is already recorded \(phase repairing\); continue without repeating it\. Open the reply with one line that begins 'I intend to' and names the concrete initial action, before any tool call\.\nRepair docs\/work-orders\/WO-999-fixture\.md/,
+  );
+  assert.equal(
+    briefingOf(resumed.hookSpecificOutput.additionalContext),
+    briefingOf(repair.hookSpecificOutput.additionalContext),
+  );
+  assert.equal(
+    resumed.systemMessage,
+    `DotLn: dispatch fix is already recorded for WO-999 (executor); continuing in phase repairing; equipped supports: ${supportsOf(repair.systemMessage)}.`,
+  );
+  assert.deepEqual(lifecycle(), repairing);
+  assert.equal(harnessWriterView(root).reserved, false);
 });

@@ -118,6 +118,39 @@ hook resolves the exact phrase and reiterates the selected order path; Codex
 uses the same floor dispatch with its project skill. Keep `npm run harness --
 check` green after changing the Contributor source and regenerating the bundle.
 
+**The phrase records its own dispatch (operator direction, 2026-09-13).** In
+Claude Code the generated session hook does not merely resolve the phrase. When
+the canonical status lists the phrase's action (`next`, `fix`, `verify`,
+`final-review`) among the legal next actions, the hook runs that `resume`
+command itself, records the transition and delivers the command's briefing as
+session context before any procedure loads. A phrase whose dispatch is already
+recorded passes without a transition and receives the same briefing and
+terminal receipt, projected read-only by `npm run resume -- briefing` from the
+current phase, so a session that resumes a recorded repair, verification or
+final review starts with the support list and intent instruction the recording
+session received; a lifecycle that cannot project that briefing refuses the
+phrase rather than passing it without them
+([WO-130-D015](../evidence/WO-130/decisions.md#wo-130-d015)). A phrase that is
+not legal in the current phase is refused with the lifecycle's legal actions,
+so no session can begin work on an order whose phase has not moved. A
+lifecycle that exposes no legal actions leaves the command to the role, and
+Codex sessions still run the command explicitly (a resumed Codex session runs
+`npm run resume -- briefing` itself). The prose duty this replaces was skipped in WO-130's repair
+session and cost a second canonical gate
+([WO-130-D011](../evidence/WO-130/decisions.md#wo-130-d011)). The dispatch is
+admitted exactly as the ordinary `npm run resume -- <action>` command it
+replaces: the same active-gate refusal and the same compiled writer-isolation
+unit judge the equivalent invocation before the lifecycle runs, so a live
+evidence gate or another session's live reservation refuses the dispatch with
+the pre-tool hook's reason before any event, checkpoint or control projection
+changes, an admitted dispatch holds the reservation the session's first write
+would take, and `next` stays the metadata command it is on the tool path
+([WO-130-D012](../evidence/WO-130/decisions.md#wo-130-d012)). The briefing
+reaches only the model, so the hook also prints a one-line terminal receipt
+naming the recorded command, work order, role and equipped supports, and the
+delivered context requires the reply to open with the `I intend to` line
+before any tool call ([WO-130-D013](../evidence/WO-130/decisions.md#wo-130-d013)).
+
 **First-party session commands (operator direction, 2026-09-11).** These
 prefixes are part of the supported command vocabulary alongside `resume:`,
 `planning:` and `ideation:`. They do not create lifecycle events:
@@ -188,7 +221,7 @@ table includes the shared goal card and the refuter's separate subject boundary.
    At the dated Codex baseline, run each **state-changing** `resume` command
    with explicit outside-sandbox approval on its first invocation. Codex
    workspace-write protects the resolved Git directory, while each transition's
-   recovery checkpoint writes a Git object and ref there. `status` and `times` are read-only;
+   recovery checkpoint writes a Git object and ref there. `status`, `times` and `briefing` are read-only;
    `next` appends no event and creates no checkpoint but refreshes the workspace
    projection. Neither needs Git escalation. Never run a transition sandboxed
    and then repeat it: the transition records even when its optional checkpoint
@@ -272,7 +305,7 @@ For a read-only view of live worktree projections, run
 only Beacon directory/status metadata, and prints phase-ordered individuals
 plus counts for at most twelve host-projected members. It appends nothing and
 does not repair missing projections. Each state-changing resume append emits
-the selected order's v2 Beacon; `status`, `times`, and `next` do not. A warning
+the selected order's v2 Beacon; `status`, `times`, `briefing`, and `next` do not. A warning
 about optional Beacon emission leaves the transition recorded: inspect status
 and fix the projection problem before continuing; never repeat the transition
 to obtain a Beacon. `.control-beacons/` is a rebuildable checkout-local cache.
@@ -1332,22 +1365,58 @@ claim evidence or releases it does not have.
   refusal double. Planning fixtures and the current planning check remain
   separate required tasks. Live progress names the running suite/case and
   elapsed time, with bounded line count and length. Reviewed input scopes may
-  reuse executed successes across unrelated document edits. WO-129 keys each
-  suite by its declared candidate paths, declared Git state, projected
+  reuse executed successes across unrelated document edits. WO-130 executes
+  kernel, compiler, skeleton, worktree, planning fixtures, process-debt and
+  release cases inside declared-input replicas. Each fresh narrowed execution
+  copies its declared candidate files and links the installed roots to one
+  verified read-only copy per gate in external scratch. Workspace manifests
+  are declaration-owned support for the installed links. Nonce-named replica
+  parents are unlistable; cleanup owns only those gate-created directories.
+  Node preserves replica-relative module paths, npm's cwd-derived local prefix
+  follows the replica, and each suite gets its own temporary root. Other
+  projected candidate paths or unsupported links refuse narrowing before
+  lookup. A harness session's injected Git configuration (`GIT_CONFIG_COUNT`,
+  `GIT_CONFIG_KEY_*`, `GIT_CONFIG_VALUE_*`, `GIT_CONFIG_PARAMETERS`) is
+  invocation metadata: it is absent from every suite's execution and key, so
+  it never refuses narrowing. A refused narrowing is neither silent nor
+  unkeyed: the task runs in the candidate tree under the whole-tree contract
+  (every non-document candidate file plus the declared documents), the fresh
+  explanation and the recorded task row name the refusal, and that key never
+  coincides with a replica key. Replica children carry
+  `GIT_CEILING_DIRECTORIES` at the unlistable parent, so a `git: none` replica
+  discovers no repository above itself
+  ([WO-130-D007](../evidence/WO-130/decisions.md#wo-130-d007)). A dispatched
+  replica failure fails the gate with the suite and its
+  first available missing-path diagnostic; it never silently retries in the
+  candidate tree. Declarations explicitly choose `git: none` or a deterministic
+  `replica-repo`; candidate history and local Git metadata are absent from the
+  latter. The installed inventory includes `.runtime/harness`, and protects
+  those bytes during gates. Setup duration, installed-copy bytes and each
+  replica execution accompany the existing task evidence. A script excluded
+  by a package declaration no longer invalidates that package's success.
+  The `format` task formats code only; Markdown, JSON and event logs keep the
+  bytes their authors and generators wrote
+  ([WO-130-D008](../evidence/WO-130/decisions.md#wo-130-d008)).
+  These copies constrain relative and projected reads for reviewed suites;
+  the accepted unprojected absolute-path/same-user residual remains, with
+  reopening conditions in [WO-130-D001](../evidence/WO-130/decisions.md#wo-130-d001).
+  WO-129 keys each suite by its declared candidate paths, declared Git state, projected
   environment, toolchain and installed roots. Every inventoried suite declares
   Git state: none by default; the index reads `HEAD` and `refs/tags/*`, and the
   current planning checks read `HEAD`. `authority-evidence` reads
   `refs/tags/v0.16.0` for its historical comparisons. Unknown suite names cannot
   grant themselves reuse. Other declared source checks retain complete candidate-tree
-  coverage until narrower scopes are reviewed. Checkpoint refs, unrelated
+  coverage until narrower scopes are reviewed and made executable. Checkpoint refs, unrelated
   branches and committing identical bytes leave suites without those Git inputs
-  reusable. Configuration affecting Git tree reads remains keyed; unmodelled
-  hooks, filters and attribute/exclude adapters still force execution.
+  reusable. Whole-tree configuration affecting Git reads remains keyed; unmodelled
+  hooks, filters and attribute/exclude adapters still force whole-tree execution.
+  Replica keys cover their declared bytes, types and listings, installed roots,
+  host configuration, projected environment, command and mechanism version.
   Sealed version-3 successes live once per repository under
   `<git common dir>/dotln/suite-success`; version-2 records are ignored and
   never migrated. Matching sibling worktrees share successes. Checkout-local
   executable search paths and npm's checkout-local `npm_config_local_prefix`
-  use relative identity, with actual execution values preserved. External npm
+  use relative identity; replica execution rebinds those local paths. External npm
   prefixes and other projected environment differences still invalidate reuse.
   The real-npm sibling regression and tag invalidation correction are recorded
   in [WO-129-D005](../evidence/WO-129/decisions.md#wo-129-d005).

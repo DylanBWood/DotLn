@@ -296,11 +296,12 @@ test("reuse keys distinguish the declared load policy without transient peer or 
     runtime: "fixture",
   };
   const task = {
-    name: "kernel",
+    name: "index",
     command: ["fixture"],
     loadPolicy: { loadClass: "shared", concurrency: 4, version: 1 },
   };
   const first = suiteInputHash(task, snapshot);
+  assert.ok(first, "the fixture must establish a reusable observation");
   assert.equal(
     suiteInputHash(
       {

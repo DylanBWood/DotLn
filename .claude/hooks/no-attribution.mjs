@@ -1,11 +1,11 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:4d9dc4e490824232"}
 try {
-const { feedbackBoundary } = await import("../../.runtime/harness/df7daacfd946b3ed/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/df7daacfd946b3ed/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/eca086f28b683ecb/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/eca086f28b683ecb/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
   "compilerPackageVersion": "0.9.1",
   "runtime": {
-    "skeletonVersion": "0.15.4",
+    "skeletonVersion": "0.15.8",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -26,7 +26,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:ab1f04a1f488b8ed"
+        "hash": "fnv1a64:7b244e1fc426e3df"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -34,7 +34,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
-        "hash": "fnv1a64:d52b125a24776533"
+        "hash": "fnv1a64:d3223185861190e2"
       },
       {
         "path": "packages/skeleton/dist/src/gate-deadlines.mjs",
@@ -49,7 +49,7 @@ await runHarnessHook({
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/df7daacfd946b3ed"
+    "snapshot": ".runtime/harness/eca086f28b683ecb"
   },
   "event": "PreToolUse",
   "tools": {

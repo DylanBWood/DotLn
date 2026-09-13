@@ -29,6 +29,7 @@ import {
 export function gateInstalledInputRoots(root) {
   return [
     "node_modules",
+    ".runtime/harness",
     ...(existsSync(join(root, "packages"))
       ? readdirSync(join(root, "packages"))
           .sort()

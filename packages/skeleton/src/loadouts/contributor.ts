@@ -39,7 +39,7 @@ const common = [
   "Read: `@work-order`",
   "Read: `@citations`",
   "Read source and existing tests relevant to the order before changes. Scope those reads to `@subject-files`; unresolved paths remain a named input requirement.",
-  "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, and `next` need no Git escalation. Never repeat a recorded transition to repair a checkpoint warning.",
+  "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, `briefing`, and `next` need no Git escalation. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and refuses one that is not legal in the current phase. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning.",
   "No branch commits before final review. Never reset, restore, clean, drop a stash, or discard intake. Preserve work through the canonical checkpoint and named recovery procedure if rollback is needed.",
   "Read: `@subject-files`",
   "Read: `package.json`",
@@ -61,8 +61,8 @@ export const contributorRoles: readonly HarnessRole[] = [
     procedure: [
       "For resume: status or resume: times, resolve cwd and Git root, run the matching read-only command, report its observation, and stop. The remaining input and implementation procedure is for next or fix.",
       ...common,
-      "For status or times, run the matching read-only command and report its observation; stop without a transition. For next, run `npm run resume -- next` and follow its emitted path. If closed, report other in-flight orders; only when none remain, give the exact printed worktree-start handoff.",
-      "For fix, run `npm run resume -- fix`; read the original order and its named failure source. Repair only those obligations. A premature repair may reopen only while the unresolved failure source remains.",
+      "For status or times, run the matching read-only command and report its observation; stop without a transition. For next, follow the emitted path in the delivered briefing (Codex runs `npm run resume -- next` itself). If closed, report other in-flight orders; only when none remain, give the exact printed worktree-start handoff.",
+      "For fix, the dispatch is recorded and its briefing delivered with the phrase (Codex runs `npm run resume -- fix` first); read the original order and its named failure source. Repair only those obligations. A premature repair may reopen only while the unresolved failure source remains.",
       "Read: `@failure-report`",
       "Implement the complete bounded deliverable and its write-backs. Prepare its classified release with `npm run release -- prepare --local`; bump only changed components with their compatibility impact and retain all publication controls.",
       evidence,
@@ -79,7 +79,7 @@ export const contributorRoles: readonly HarnessRole[] = [
     feedbackHandlers: handlers,
     procedure: [
       ...common,
-      "Run `npm run resume -- verify`; write only the exact new VER path it allocates. Judge the original order and current subject against its acceptance criteria, reproducing consequential claims and checking earlier findings. Substantive implementation defects become findings for repair.",
+      "The `verify` dispatch is recorded with the phrase and delivers the exact new VER path it allocates (Codex runs `npm run resume -- verify` itself); write only that path. Judge the original order and current subject against its acceptance criteria, reproducing consequential claims and checking earlier findings. Substantive implementation defects become findings for repair.",
       "Read: `@verification-reports`",
       evidence,
       actor,
@@ -96,7 +96,7 @@ export const contributorRoles: readonly HarnessRole[] = [
     feedbackHandlers: handlers,
     procedure: [
       ...common,
-      "Run `npm run resume -- final-review`; use the allocated FINAL path. Review the full subject diff and complete numbered verification sequence against the original order. Handle authorized integration, then rerun checks affected by integration.",
+      "The `final-review` dispatch is recorded with the phrase and delivers the allocated FINAL path (Codex runs `npm run resume -- final-review` itself); use that path. Review the full subject diff and complete numbered verification sequence against the original order. Handle authorized integration, then rerun checks affected by integration.",
       "Read: `@verification-reports`",
       "Read: `docs/product/08-publication-compiler.md#PRs and commits`",
       evidence,
@@ -564,7 +564,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "CLAUDE.md",
     },
     refusal: "claude-command-json-v1",
-    runtime: { skeletonVersion: "0.15.4", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.8", boundaryContract: "feedback-v1" },
   },
   {
     profileId: "codex-cli-0.153.4",
@@ -600,6 +600,6 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "AGENTS.md",
     },
     refusal: "unavailable",
-    runtime: { skeletonVersion: "0.15.4", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.8", boundaryContract: "feedback-v1" },
   },
 ];
