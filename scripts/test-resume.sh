@@ -460,7 +460,8 @@ cmp "$test_root/current-before-bad-status" "$fixture_repo/docs/control/current.m
 cmp "$test_root/log-before-bad-status" "$active_log"
 before_release_close="$(wc -l <"$active_log" | tr -d ' ')"
 release_close_output="$(node "$fixture_repo/scripts/resume.mjs" release-close)"
-grep -Fq 'run the reviewed helper with main as its working checkout' <<<"$release_close_output"
+grep -Fq 'run the reviewed helper from this main checkout' <<<"$release_close_output"
+if grep -Fq ' && ' <<<"$release_close_output"; then printf 'error: handoff printed from main must not change directory\n' >&2; exit 1; fi
 grep -Fq "'$fixture_repo/scripts/release.mjs' close WO-099 --publish" <<<"$release_close_output"
 grep -Fq 'never push main' <<<"$release_close_output"
 test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_release_close"

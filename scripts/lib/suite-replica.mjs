@@ -10,6 +10,7 @@ import {
   readFileSync,
   readdirSync,
   realpathSync,
+  renameSync,
   rmSync,
   symlinkSync,
 } from "node:fs";
@@ -231,6 +232,7 @@ export function createReplicaContext(repo) {
   let copied = false;
   let cleaned = false;
   let copiedIdentity;
+  let copyFailure;
   const measurements = {
     version: replicaMechanismVersion,
     installedCopy: null,
@@ -248,54 +250,94 @@ export function createReplicaContext(repo) {
         throw new Error("Installed inputs changed after the gate copy");
       return;
     }
+    // One gate copies once. A copy that failed names its cause to every later
+    // suite instead of leaving a partial directory for them to collide with.
+    if (copyFailure)
+      throw new Error(
+        `Installed copy failed earlier in this gate: ${copyFailure}`,
+      );
     const started = performance.now();
-    mkdirSync(installed);
+    const partial = `${installed}.partial-${randomUUID()}`;
+    mkdirSync(partial);
     let files = 0,
       bytes = 0;
-    const entries = [...snapshot.installed];
-    // Workspace links need package metadata for Node resolution. These leaves
-    // are explicit in every declaration, verified here and included in its key.
-    for (const path of replicaSupportPaths) {
-      const entry = snapshot.entries.find(([name]) => name === path);
-      if (entry && entry[1][0] !== "absent") entries.push(entry);
-    }
-    const copiedPaths = new Set(entries.map(([path]) => path));
-    for (const [path, value, mode] of entries) {
-      const source = join(repo, path),
-        destination = join(installed, path);
-      if (value === "absent" || value[0] === "absent") continue;
-      if (value === "directory") {
-        mkdirSync(destination, { recursive: true, mode });
-        chmodSync(destination, mode);
-        continue;
+    let published = false;
+    try {
+      const entries = [...snapshot.installed];
+      // Workspace links need package metadata for Node resolution. These leaves
+      // are explicit in every declaration, verified here and included in its key.
+      for (const path of replicaSupportPaths) {
+        const entry = snapshot.entries.find(([name]) => name === path);
+        if (entry && entry[1][0] !== "absent") entries.push(entry);
       }
-      mkdirSync(dirname(destination), { recursive: true });
-      if (value[0] === "link") {
-        const target = resolve(repo, dirname(path), value[1]);
-        const local = relative(repo, target);
-        if (
-          !within(repo, target) ||
-          (!copiedPaths.has(local) &&
-            !entries.some(([name]) => name.startsWith(`${local}/`)))
-        )
-          throw new Error(`Installed link leaves the copied graph: ${path}`);
-        symlinkSync(
-          relative(dirname(destination), join(installed, local)),
-          destination,
-        );
-      } else if (typeof value[0] === "number") {
-        copyFileSync(source, destination);
-        chmodSync(destination, value[0]);
-        if (
-          fileDigest(destination) !== value[1] ||
-          (lstatSync(destination).mode & 0o777) !== value[0]
-        )
-          throw new Error(`Installed copy differs from observation: ${path}`);
-        files++;
-        bytes += lstatSync(destination).size;
-      } else throw new Error(`Unsupported installed input: ${path}`);
+      const copiedPaths = new Set(entries.map(([path]) => path));
+      const linkTargets = new Map(
+        entries
+          .filter(([, value]) => Array.isArray(value) && value[0] === "link")
+          .map(([path, value]) => [path, value[1]]),
+      );
+      const copiedGraph = (local) =>
+        copiedPaths.has(local) ||
+        entries.some(([name]) => name.startsWith(`${local}/`));
+      // A link may name its target through another copied link, as npm's bin
+      // links do through a workspace link. Follow only copied links, one hop
+      // at a time, until the target is a copied entry; a hop that leaves the
+      // repository or lands outside the copied graph refuses as before.
+      const throughCopiedLinks = (local) => {
+        for (let hops = 0; hops < 40; hops++) {
+          if (copiedGraph(local)) return true;
+          let prefix = dirname(local);
+          while (prefix !== "." && !linkTargets.has(prefix))
+            prefix = dirname(prefix);
+          if (prefix === ".") return false;
+          const hop = resolve(repo, dirname(prefix), linkTargets.get(prefix));
+          if (!within(repo, hop)) return false;
+          local = join(relative(repo, hop), relative(prefix, local));
+        }
+        return false;
+      };
+      for (const [path, value, mode] of entries) {
+        const source = join(repo, path),
+          destination = join(partial, path);
+        if (value === "absent" || value[0] === "absent") continue;
+        if (value === "directory") {
+          mkdirSync(destination, { recursive: true, mode });
+          chmodSync(destination, mode);
+          continue;
+        }
+        mkdirSync(dirname(destination), { recursive: true });
+        if (value[0] === "link") {
+          const target = resolve(repo, dirname(path), value[1]);
+          const local = relative(repo, target);
+          if (!within(repo, target) || !throughCopiedLinks(local))
+            throw new Error(`Installed link leaves the copied graph: ${path}`);
+          symlinkSync(
+            relative(dirname(destination), join(partial, local)),
+            destination,
+          );
+        } else if (typeof value[0] === "number") {
+          copyFileSync(source, destination);
+          chmodSync(destination, value[0]);
+          if (
+            fileDigest(destination) !== value[1] ||
+            (lstatSync(destination).mode & 0o777) !== value[0]
+          )
+            throw new Error(`Installed copy differs from observation: ${path}`);
+          files++;
+          bytes += lstatSync(destination).size;
+        } else throw new Error(`Unsupported installed input: ${path}`);
+      }
+      // Publish the verified copy by one rename; nothing observes it earlier.
+      // The rename precedes the read-only pass, which a renamed directory
+      // would otherwise refuse.
+      renameSync(partial, installed);
+      published = true;
+      setReadonly(installed);
+    } catch (error) {
+      copyFailure = error instanceof Error ? error.message : String(error);
+      removeOwned(published ? installed : partial);
+      throw error;
     }
-    setReadonly(installed);
     copied = true;
     copiedIdentity = currentIdentity;
     measurements.installedCopy = {

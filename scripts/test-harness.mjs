@@ -1892,6 +1892,40 @@ test("WO-039 metadata and the exact guarded release helper do not dispatch a cod
       ),
       false,
     );
+    // WO-131: every spelling the lifecycle prints or names is admitted from
+    // main, the read-only preview beside the publication, and nothing else.
+    const quote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
+    for (const spelling of [
+      "node scripts/release.mjs close WO-999 --dry-run",
+      "npm run release -- close WO-999 --publish",
+      `cd ${quote(root)} && ${quote(process.execPath)} ${quote(join(root, "scripts/release.mjs"))} close WO-999 --publish`,
+      `node ${quote(join(root, "scripts/release.mjs"))} close WO-999 --publish --dry-run`,
+    ]) {
+      assert.equal(
+        allowed(
+          invoke(root, "concurrent-work-requires-worktrees", payload(spelling)),
+        ),
+        true,
+        spelling,
+      );
+      assert.equal(
+        allowed(invoke(root, "permissions", payload(spelling))),
+        true,
+        spelling,
+      );
+    }
+    for (const spelling of [
+      "node scripts/release.mjs close WO-999 --publish --force",
+      `cd ${quote(join(root, "packages"))} && node scripts/release.mjs close WO-999 --publish`,
+      "npm run release -- prepare",
+    ])
+      assert.equal(
+        allowed(
+          invoke(root, "concurrent-work-requires-worktrees", payload(spelling)),
+        ),
+        false,
+        spelling,
+      );
     write(root, "docs/control/fixture-status.json", json(control));
     assert.equal(
       allowed(invoke(root, "concurrent-work-requires-worktrees", request)),
