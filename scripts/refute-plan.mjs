@@ -29,7 +29,7 @@ import {
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const usage =
-  "plan subject | check | refute [--slug <label>] [--transport claude-cli-print|codex-cli-exec|fake] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> <actor-flags>";
+  "plan subject | check | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> <actor-flags>";
 const options = (args, allowed) => {
   const out = {};
   for (let i = 0; i < args.length; i++) {
@@ -162,10 +162,10 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     "--direct",
     "--scope",
   ]);
-  if (opt["--direct"]) {
+  if (opt["--direct"] || !opt["--transport"]) {
     if (Object.keys(opt).some((key) => !["--direct", "--scope"].includes(key)))
       throw new Error(
-        "Direct refutation uses the receiving session; only --scope is accepted",
+        "Background refutation accepts only --direct and --scope; external options require an explicit --transport",
       );
     return beginDirectRefutation(root, { scope: opt["--scope"] ?? "pass" });
   }
@@ -228,7 +228,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     await import("../packages/skeleton/dist/src/worker-transport.js");
   const { FakePlanRefutationTransport } =
     await import("../packages/skeleton/dist/src/plan-refutation-fake.js");
-  const name = opt["--transport"] ?? "claude-cli-print";
+  const name = opt["--transport"];
   const { recordUsageObservation } =
     await import("../packages/skeleton/src/usage-observation.mjs");
   const startedAt = new Date().toISOString();

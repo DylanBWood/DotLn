@@ -136,19 +136,20 @@ export const contributorRoles: readonly HarnessRole[] = [
       "Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`",
       "Read: `docs/planning/sequence.md`",
       "Open a planning branch with `npm run plan -- start <slug>` from clean main. Follow the selected section's source/capture instructions and source each decision with its reopening condition. Planning satisfies independent refutation; ideation follows its pipeline or explicit capture-only boundary. Run `npm run test:docs` (plan, index, publication and format only). Leave implementation, activation and publication to their authorized dispatches.",
+      "After committing the planning subject locally, load dotln-refuter and dispatch one fresh background refuter with no inherited conversation. Use the canonical direct prompt and receipt helper; keep the parent as the sole repository writer. Do not launch an external refutation CLI unless the operator explicitly requests that transport.",
     ],
   },
   {
     facetId: "contributor.refuter",
     name: "refuter",
     description:
-      "Independently judge the latest planning pass in the receiving session on planning: refute; planning: refute full judges the whole horizon.",
+      "Run an independent background-worker judgment of the latest planning pass on planning: refute; planning: refute full judges the whole horizon.",
     intents: ["planning: refute", "planning: refute full"],
     feedbackHandlers: handlers,
     procedure: [
-      "Resolve cwd and Git root. The exact phrase selects this independent refuter. The shared goal card supplies purpose; the canonical prompt is the sole subject evidence. Load no map, prior receipt or other subject preread.",
-      "Run `npm run plan -- refute --direct` for planning: refute, or add `--scope full` for planning: refute full. The helper verifies that the committed subject equals the workspace and prints the canonical prompt. Pass scope judges the latest pass's changed orders and sequence; other verdicts carry by hash. Judge the prompt and save the closed JSON result and a plain statement file.",
-      "Run `npm run plan -- receipt <result.json> --statement <statement.txt> [--dispositions <file>]`. The helper validates and screens against local terms, files the immutable direct-session pair, commits a plain subject and runs the plan check. Use these commands, without an ad hoc receipt script. Report scope, elapsed time and the actual result. `refute --transport <name>` is a separate external-refuter route.",
+      "Resolve cwd and Git root. The parent coordinates one fresh background refuter without inherited conversation (Codex: spawn_agent with fork_turns none; Claude: a fresh background agent). Give it only the canonical prompt, its result schema and the shared goal card; no planner narrative, prior receipts or other subject preread. The parent remains the sole repository writer. A worker already given that prompt judges it directly; it does not spawn another refuter.",
+      "Run `npm run plan -- refute` for planning: refute, or add `--scope full` for planning: refute full; --direct remains an alias. The helper verifies committed/workspace equality and prints the canonical prompt and closed JSON schema. Pass scope judges changed orders and sequence; other verdicts carry by hash. The worker returns its frozen JSON and a truthful single-line statement of at most 4000 characters to the parent, using scratch files if needed, with no repository or Git writes. While it runs, complete independent closeout work without changing the frozen subject.",
+      "The parent saves the worker's result and statement in ignored local files and runs `npm run plan -- receipt <result.json> --statement <statement.txt> [--dispositions <file>]`. The helper validates, screens, files and commits the immutable pair and runs the plan check. Preserve the actual verdict; apply only operator-authorized overrides. Repair formatting with the same worker without rerolling the judgment. Report scope, elapsed time and actual result. Use no ad hoc receipt script. External `refute --transport <name>` requires an explicit operator request; do not fall back to it after a worker failure. If background workers are unavailable, report that limitation and preserve the pending review.",
     ],
   },
 ];
@@ -564,7 +565,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "CLAUDE.md",
     },
     refusal: "claude-command-json-v1",
-    runtime: { skeletonVersion: "0.15.9", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.10", boundaryContract: "feedback-v1" },
   },
   {
     profileId: "codex-cli-0.153.4",
@@ -600,6 +601,6 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "AGENTS.md",
     },
     refusal: "unavailable",
-    runtime: { skeletonVersion: "0.15.9", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.10", boundaryContract: "feedback-v1" },
   },
 ];

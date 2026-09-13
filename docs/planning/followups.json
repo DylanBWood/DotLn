@@ -3692,6 +3692,43 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-0a360b3288c15edd",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "040ba780438057003cda09d6e482f228c61d384ae368206b3e59f68a87a52fe6",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d001",
+          "title": "WO-131-D001: Honor an existing attributed override when admitting later planning receipts. Preserve exact receipt/hash/hold addressing, chronology, immutable history and the requirement to answer each",
+          "summary": "{ \"id\": \"WO-131-D001\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator direction to finish the planning branch regardless of the refutation verdict, captured in ignored intake and attributed by the planning override event. This does not activate WO-131.\", \"decision\": \"Honor an existing attributed override when admitting later planning receipts. Preserve exact receipt/hash/hold addressing, chronology, immutable history and the requirement to answer each new hold separately. Retain the current independent HOLD and record the operator-authorized override. WO-130 remains merged and closed.\", \"evidence\": [ \"docs/control/plan-refutations.jsonl\", \"docs/planning/refutations/2026-09-13-planning-dc998fb93",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7d1b05f3001dbba6",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4630ccf4e11b20cbe475b10c79e47b4f23ea5380156a27dc193dd2f510b4bac7",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d002",
+          "title": "WO-131-D002: Dispatch one fresh background refuter without inherited conversation, supplying the canonical prompt, closed result schema and shared goal card. The parent remains the sole repository wri",
+          "summary": "{ \"id\": \"WO-131-D002\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator correction after two failed external CLI refutations: planning sessions must use fresh background workers, as the completed third attempt did. The source instruction is captured in ignored intake.\", \"decision\": \"Dispatch one fresh background refuter without inherited conversation, supplying the canonical prompt, closed result schema and shared goal card. The parent remains the sole repository writer and files the frozen judgment through the receipt helper. Bare plan refute prints that prompt; --direct remains an alias. External transports require an explicit operator request, with no automatic fallback. Update the shared role",
+          "missing": false
+        },
+        {
+          "hash": "b91bec12e45daf0139747b70c7e52a910d55c9ebc8c96d7a0136fbb0f0fd9f0c",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d002",
+          "title": "WO-131-D002: Dispatch one fresh background refuter without inherited conversation, supplying the canonical prompt, closed result schema and shared goal card. The parent remains the sole repository wri",
+          "summary": "{ \"id\": \"WO-131-D002\", \"date\": \"2026-09-13\", \"dispatch\": \"Operator correction after two failed external CLI refutations: planning sessions must use fresh background workers, as the completed third attempt did. The source instruction is captured in ignored intake.\", \"decision\": \"Dispatch one fresh background refuter without inherited conversation, supplying the canonical prompt, closed result schema and shared goal card. The parent remains the sole repository writer and files the frozen judgment through the receipt helper. Bare plan refute prints that prompt; --direct remains an alias. External transports require an explicit operator request, with no automatic fallback. Update the shared role",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

@@ -210,15 +210,22 @@ export async function beginDirectRefutation(
   );
   const { compilePlanRefuter } =
     await import("../../packages/skeleton/dist/src/loadouts/plan-refuter.js");
-  const { planPrompt } =
+  const { planPrompt, planResultSchema } =
     await import("../../packages/skeleton/dist/src/plan-refutation-protocol.js");
   const compiled = compilePlanRefuter(
     subject.revision,
     Date.parse(pending.dispatchedAt),
   );
-  return planPrompt({
-    workOrder: compiled.program.workOrder,
-    subject: { ...subject, judgment: review },
+  return JSON.stringify({
+    ...JSON.parse(
+      planPrompt({
+        workOrder: compiled.program.workOrder,
+        subject: { ...subject, judgment: review },
+      }),
+    ),
+    resultSchema: planResultSchema({ ...subject, judgment: review }),
+    workerInstructions:
+      "Also return a truthful public session statement as one plain line of at most 4000 characters, naming what you actually read. Return the result and statement to the parent; do not edit the repository or commit a receipt.",
   });
 }
 export async function fileDirectRefutation(

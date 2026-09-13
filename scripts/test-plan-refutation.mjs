@@ -953,6 +953,109 @@ export async function fixtures() {
       },
     );
     await check(
+      "an earlier operator override admits later planning without reopening its held order",
+      async () => {
+        const repo = makeRepo(parent, "overridden-history");
+        const held = await writeDirectReceipt(repo, cannedPlanDrift);
+        const heldOrder = read(repo, orderPath("WO-901"));
+        mutate(repo, orderPath("WO-902"), "useful shape", "different shape");
+        await assert.rejects(
+          writeDirectReceipt(repo, cannedPlanDrift),
+          /outside the held criteria/u,
+        );
+        const capture = "docs/intake/notes/override.md";
+        write(repo, capture, "Fixture operator accepts the existing holds.\n");
+        for (const hold of held.holds)
+          await overridePlanHold(repo, {
+            receiptId: held.receiptId,
+            holdId: hold.id,
+            reason: "Fixture operator accepts this existing hold.",
+            actor,
+            capture,
+            captureHash: sha256(read(repo, capture)),
+            now: () => "2030-01-02T12:01:00.000Z",
+          });
+        // A later override cannot retroactively authorize an earlier receipt.
+        await assert.rejects(
+          writeDirectReceipt(repo, cannedPlanDrift),
+          /outside the held criteria/u,
+        );
+        const subject = buildPlanSubject(repo);
+        const fresh = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "after-override",
+          subject,
+          episode: {
+            ...directEpisode(
+              validatePlanResult(cannedPlanDrift(subject), subject),
+            ),
+            completedAt: "2030-01-02T12:02:00.000Z",
+          },
+        });
+        assert.equal(read(repo, orderPath("WO-901")), heldOrder);
+        assert.equal(fresh.dispositions.length, 0);
+        assert.equal(fresh.result.planVerdict, "hold");
+        commit(repo, "receipts and attributed override");
+        assert.deepEqual(await readReceipts(repo), [held, fresh]);
+        assert.throws(
+          () =>
+            checkPassReceipt(
+              passFor(repo),
+              fresh.subject,
+              [held, fresh],
+              readOverrides(repo),
+            ),
+          /unanswered hold/u,
+        );
+      },
+    );
+    await check(
+      "a partial historical override preserves accepted repairs and repeated holds",
+      async () => {
+        const repo = makeRepo(parent, "partly-overridden-history");
+        const twoHolds = (subject) => {
+          const result = cannedPlanDrift(subject);
+          return {
+            ...result,
+            holdReasons: [
+              ...result.holdReasons,
+              {
+                workOrderId: "WO-901",
+                criterionId: "criterion:2",
+                reason: "The second criterion still has a bounded gap.",
+              },
+            ],
+          };
+        };
+        const held = await writeDirectReceipt(repo, twoHolds);
+        const capture = "docs/intake/notes/override.md";
+        write(repo, capture, "Fixture operator accepts only the first hold.\n");
+        await overridePlanHold(repo, {
+          receiptId: held.receiptId,
+          holdId: held.holds[0].id,
+          reason: "Fixture operator accepts only this first hold.",
+          actor,
+          capture,
+          captureHash: sha256(read(repo, capture)),
+          now: () => "2030-01-02T12:01:00.000Z",
+        });
+        mutate(repo, orderPath("WO-901"), "useful shape", "repaired shape");
+        const subject = buildPlanSubject(repo);
+        const fresh = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "partial-override",
+          subject,
+          episode: {
+            ...directEpisode(validatePlanResult(twoHolds(subject), subject)),
+            completedAt: "2030-01-02T12:02:00.000Z",
+          },
+          dispositions: [accept(held)[0]],
+        });
+        commit(repo, "historical partial override and accepted repair");
+        assert.deepEqual(await readReceipts(repo), [held, fresh]);
+      },
+    );
+    await check(
       "AC5 pass after held criterion repair; elsewhere and whitespace edits cannot re-roll",
       async () => {
         const repo = makeRepo(parent, "repair");
@@ -1681,8 +1784,13 @@ else {
         const repo = makeRepo(parent, "direct-command");
         runGit(repo, ["config", "user.name", "Direct Fixture"]);
         runGit(repo, ["config", "user.email", "fixture@example.invalid"]);
-        const prompt = await plan(["refute", "--direct"], repo);
+        await assert.rejects(
+          plan(["refute", "--model", "fixture"], repo),
+          /explicit --transport/u,
+        );
+        const prompt = await plan(["refute"], repo);
         assert.ok(typeof prompt === "string");
+        assert.ok(JSON.parse(prompt).resultSchema);
         assert.ok(!prompt.includes("PLANNER_NARRATIVE_SENTINEL"));
         const subject = buildPlanSubject(repo);
         const resultPath = "docs/control/local/result.json",
@@ -1745,6 +1853,13 @@ else {
         assert.equal(scope.carried[0].workOrderId, "WO-902");
         const secondPrompt = await plan(["refute", "--direct"], repo);
         assert.ok(!secondPrompt.includes("PLANNER_NARRATIVE_SENTINEL"));
+        const schema = JSON.parse(secondPrompt).resultSchema;
+        assert.equal(schema.properties.orders.minItems, 1);
+        assert.equal(schema.properties.orders.maxItems, 1);
+        assert.deepEqual(
+          schema.properties.orders.items.properties.workOrderId.enum,
+          ["WO-901"],
+        );
         const nextResult = passResult(nextSubject);
         nextResult.orders = nextResult.orders.filter(
           (row) => row.workOrderId === "WO-901",
