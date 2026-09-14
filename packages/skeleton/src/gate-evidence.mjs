@@ -27,9 +27,31 @@ import {
 /** Shared with the suite fingerprint: ignored installation bytes are inputs.
  * @param {string} root */
 export function gateInstalledInputRoots(root) {
+  let runtimeRoots = [".runtime/harness"];
+  try {
+    /** @type {{profiles: {profile: {runtime: {snapshot: string}}}[]}} */
+    const manifest = JSON.parse(
+      readFileSync(join(root, ".claude/harness-manifest.json"), "utf8"),
+    );
+    const selected = manifest.profiles.map(
+      (profile) => profile.profile.runtime.snapshot,
+    );
+    if (
+      !selected.length ||
+      selected.some(
+        (path) =>
+          typeof path !== "string" ||
+          !/^\.runtime\/harness\/[a-f0-9]{16}$/.test(path),
+      )
+    )
+      throw new Error("runtime selection unavailable");
+    runtimeRoots = [...new Set(selected)].sort();
+  } catch {
+    // Older or unreadable installations retain every runtime byte as an input.
+  }
   return [
     "node_modules",
-    ".runtime/harness",
+    ...runtimeRoots,
     ...(existsSync(join(root, "packages"))
       ? readdirSync(join(root, "packages"))
           .sort()

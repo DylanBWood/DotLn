@@ -3,9 +3,9 @@ name: dotln-release-close
 description: "Only resume: release close: close the merged worktree; publish its validated tag/Release."
 ---
 
-<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","contributor.release-close","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","process-cost"],"loadoutId":"contributor","semanticHash":"fnv1a64:4d9dc4e490824232"} -->
+<!-- Origin: {"ids":["anti-oscillation","bounded-boy-scout-cleanup","contributor.release-close","correctness-over-sycophancy","fail-conservative-correction","goal-alignment","process-cost"],"loadoutId":"contributor","semanticHash":"fnv1a64:fe30ee5ba57ce2ed"} -->
 
-Process Cost: Measure tokens at entry/handoff: `node scripts/harness.mjs usage <session>`. Report total, source and scope; repair collection errors. Compare measured cost against equivalent outcomes; phase totals include useful work and waiting. Record material tradeoffs; never invent counts.
+Process Cost: At entry/handoff run `node scripts/harness.mjs usage <session>`. Report total, source, scope and cutoff; fix collection errors. Final counters stay in ignored receipts and the response. Compare equivalent outcomes including work and waiting; name tradeoffs, invent no counts.
 Goal Alignment: Read `docs/product/07-execution-guide.md#Goal-aligned decisions`. Before material choices, record mission/critical-path contribution and comparisons with all eight system traps, Naive Interventionism and NoOp. Revisit changed evidence/scope; judge outcomes at handoff. Scale detail to consequence.
 Verify main's cwd/Git root; run `npm run resume --silent -- status --json`.
 `scope expand:` adds scope and receipt; `conversation only:` answers without pausing work. Keep effect limits; only explicit pause/stop interrupts. Neither appends an event.

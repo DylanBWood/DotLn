@@ -67,7 +67,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.15.10";
+export const HARNESS_HOST_VERSION = "0.15.11";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;
@@ -1760,6 +1760,17 @@ function writerIsolationFacts(
       managedReleaseCommand(invocation, root, session))
   )
     return { ...feedbackWriterFacts(root, actorId, []), writable: false };
+  const location = feedbackWriterFacts(root, actorId, []);
+  // A command already ineligible to own this checkout must not leave a lock
+  // behind when the compiled writer predicate refuses it.
+  if (
+    location.cwd !== location.gitRoot ||
+    location.cwd !== location.worktree ||
+    !location.branch ||
+    location.branch === "main" ||
+    location.branch === "HEAD"
+  )
+    return location;
   return feedbackWriterFacts(
     root,
     actorId,
@@ -1796,9 +1807,11 @@ export function harnessFeedbackFacts(
       }
     });
   }
+  // A spawn reserves nothing: the subagent's own writes reserve the writer
+  // when they happen, through this same guard.
   if (
     handler === "writer-isolation" &&
-    ["shell", "write", "spawn"].includes(
+    ["shell", "write"].includes(
       harnessToolEffects[input.tool_name as keyof typeof harnessToolEffects] ??
         "write",
     )
@@ -2137,18 +2150,28 @@ export function permissionEffect(
   }
   const tool = tools?.[input.tool_name ?? ""];
   if (!tool)
-    throw new Error(
+    throw new HarnessCommandRefused(
       `Unclassified effectful tool: ${input.tool_name ?? "unknown"}`,
     );
-  if (tool === "spawn")
-    throw new Error(
-      "Spawned-agent effects require a separate registered worktree adapter",
-    );
+  if (tool === "spawn") {
+    // A subagent of this session acts under the session's own authority and
+    // every effect it performs passes these same guards; the spawn itself
+    // reads and writes nothing. A remote agent runs outside them.
+    if (args.isolation === "remote")
+      throw new HarnessCommandRefused(
+        "Remote subagents run outside this host's guards; run the agent locally",
+      );
+    return "repo.read";
+  }
   if (tool === "write" && !path)
-    throw new Error("Write tool requires a classified path adapter");
+    throw new HarnessCommandRefused(
+      "Write tool requires a classified path adapter",
+    );
   if (tool !== "shell") return tool === "write" ? "repo.write" : "repo.read";
   if (input.tool_name !== "Bash" && typeof args.command !== "string")
-    throw new Error("Opaque shell tool requires a classified command adapter");
+    throw new HarnessCommandRefused(
+      "Opaque shell tool requires a classified command adapter",
+    );
 
   const command = typeof args.command === "string" ? args.command : "";
   const outputRead = outputReadCommand(command);
@@ -2186,9 +2209,34 @@ const protocolRefusal = (event: HarnessEvent, reason: string) =>
           permissionDecisionReason: reason,
         },
       }
-    : event === "Stop"
-      ? { systemMessage: `DotLn: ${reason.replace(/\s+/g, " ")}` }
-      : { decision: "block", reason };
+    : event === "UserPromptSubmit"
+      ? {
+          systemMessage: `DotLn: prompt accepted; ${reason.replace(/\s+/g, " ")}`,
+          hookSpecificOutput: {
+            hookEventName: event,
+            additionalContext: `The operator's prompt is accepted. DotLn could not complete its automatic setup: ${reason}. Inspect canonical status and continue within the operator's authority; do not claim that an unrecorded dispatch ran.`,
+          },
+        }
+      : event === "Stop"
+        ? { systemMessage: `DotLn: ${reason.replace(/\s+/g, " ")}` }
+        : { decision: "block", reason };
+
+// The exact recovery route cannot depend on the runtime it creates. This is
+// mirrored in the compiler's self-contained import-failure fallback and tested
+// through both emitted paths. It is not an arbitrary-command fail-open.
+function bootstrapAccess(input: HarnessInput): boolean {
+  if (["Read", "Glob", "Grep"].includes(input.tool_name ?? "")) return true;
+  if (!["Bash", "exec_command"].includes(input.tool_name ?? "")) return false;
+  const args = input.tool_input ?? {};
+  if ((args.workdir ?? args.cwd ?? input.cwd) !== input.cwd) return false;
+  return [
+    "pwd",
+    "git status --short",
+    "git status --short --branch",
+    "git rev-parse --show-toplevel",
+    "node scripts/bootstrap.mjs",
+  ].includes(String(args.command ?? args.cmd ?? ""));
+}
 
 /** All generated pre-tool boundaries share this guard. There is no agent-
  * supplied gate-child bypass; gate-owned subprocess writes do not dispatch tools.
@@ -2202,7 +2250,9 @@ function activeGateWriteRefusal(
   if (input.hook_event_name !== "PreToolUse") return null;
   const inventory: HookConfig["tools"] = tools ?? harnessToolEffects;
   const tool = inventory[input.tool_name ?? ""];
-  if (tool !== "write" && tool !== "shell" && tool !== "spawn") return null;
+  // A spawn changes no gate input itself; its subagent's effects are guarded
+  // one by one, so a read-only agent can inspect a running gate.
+  if (tool !== "write" && tool !== "shell") return null;
   const args = input.tool_input ?? {};
   const directory = args.workdir ?? args.cwd ?? root;
   const command = args.command ?? args.cmd;
@@ -2695,6 +2745,7 @@ export async function evaluateHarnessHook(
 export async function runHarnessHook(
   config: HookConfig,
   boundary: typeof feedbackBoundary,
+  decodedInput?: HarnessInput,
 ): Promise<void> {
   let observed: { root: string; input: HarnessInput } | undefined;
   let response: Record<string, unknown> = {};
@@ -2703,7 +2754,9 @@ export async function runHarnessHook(
   try {
     // Hook input arrives on a pipe. Drain it through the event loop: a traced
     // synchronous fd-0 read stalled before evaluation under Node 22 on macOS.
-    const input = JSON.parse(await streamText(process.stdin)) as HarnessInput;
+    const input =
+      decodedInput ??
+      (JSON.parse(await streamText(process.stdin)) as HarnessInput);
     const root = harnessRoot(input.cwd);
     const installedRoot = realpathSync(
       fileURLToPath(new URL("../../../../", import.meta.url)),
@@ -2721,14 +2774,30 @@ export async function runHarnessHook(
         : error instanceof HarnessStateUnreadable
           ? "unreadable-state"
           : "runtime-unavailable";
+    // An unexpected failure names its class and a bounded message so it is
+    // never mistaken for a policy refusal; typed refusals carry their own.
+    const failure =
+      error instanceof Error
+        ? `${error.constructor.name}: ${error.message.replace(/[\u0000-\u001f\u007f]+/g, " ").slice(0, 120)}`
+        : "non-error failure";
     response = protocolRefusal(
       config.event,
       error instanceof HarnessCommandRefused
         ? `DOTLN_HARNESS_REFUSED: command classification: ${error.message}`
         : error instanceof HarnessStateUnreadable
           ? `DOTLN_HARNESS_REFUSED: ${error.message}`
-          : "DOTLN_HARNESS_REFUSED: host facts or pinned runtime unavailable",
+          : `DOTLN_HARNESS_REFUSED: host facts or pinned runtime unavailable (${failure})`,
     );
+    if (
+      config.event === "PreToolUse" &&
+      reasonClass === "runtime-unavailable" &&
+      observed &&
+      bootstrapAccess(observed.input)
+    )
+      response = {
+        systemMessage:
+          "DotLn: runtime setup unavailable; read access and node scripts/bootstrap.mjs remain available.",
+      };
   } finally {
     if (observed) {
       try {

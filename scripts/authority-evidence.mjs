@@ -239,7 +239,7 @@ const parseHook = (source) => {
   const call = /await (?:runHarnessHook|runCommitMessageHook)\(/u.exec(source);
   assert.ok(call, "known generated hook adapter");
   const start = call.index + call[0].length;
-  const end = source.indexOf(", feedbackBoundary);", start);
+  const end = source.indexOf(", feedbackBoundary", start);
   assert.ok(end > start);
   return {
     config: JSON.parse(source.slice(start, end)),

@@ -1,4 +1,4 @@
-# WO-131 — Every remaining reusable suite is declared and executed in its replica or retained with a reason, so a document-only change composes the full gate to the build, preparation, the live checks and the current-tree checks (version assigned at activation)
+# WO-131 — Every remaining reusable suite is declared and executed in its replica or retained with a reason, so a document-only change composes the full gate to the build, preparation, the live checks and the current-tree checks (v0.17.6)
 
 **Model:** any capable model; the measured composed gate runs on the
 operator's machine. State the model and effort actually run
@@ -351,3 +351,178 @@ reason to retain the obsolete release target. Under Naive Interventionism,
 the useful release history, review gates and sequence stay intact; the bounded
 document correction is reversible. Reopen if release allocation or the live
 closeout evidence contradicts these assumptions.
+
+## Execution record
+
+### Mandatory operator scope amendments — 2026-09-14
+
+The operator’s successive `scope expand:` instructions add the following
+requirements to this active work order. They are mandatory at implementation,
+independent verification and final review. The reviewed criteria 1–11 above
+remain in force except where explicitly superseded below. These amendments
+are execution authority; they do not claim a new planning-refuter verdict.
+
+The effective patch classification now includes enforced candidate read denial
+for cached replicas and local operator recovery controls, alongside suite
+declarations. Domain-event and export schemas remain unchanged. This updates
+the earlier classification sentence without rewriting the reviewed plan.
+
+12. Operator scope expansion during execution: no startup or prompt-submission
+    hook may prevent the operator from opening Claude or Codex or submitting a
+    prompt. Missing runtime, damaged state, invalid phase, unavailable briefing
+    and a dispatch held by a live gate or writer remain advisory at prompt
+    submission. Generated-hook fixtures prove acceptance and that a refused
+    automatic dispatch performs no lifecycle mutation. Source, emitted hooks,
+    role instructions and product guidance agree on this boundary.
+    New worktrees prepare dependencies and runtime before the launch handoff;
+    raw checkouts retain a source-only bootstrap and read access.
+13. Operator scope expansion reopens the known absolute-path read concern
+    from WO-130 and planning receipts 011 and 012. A suite whose declared
+    source reads an undeclared candidate file by a literal absolute path must
+    not create a reusable narrowed success. When kernel denial is available,
+    apply it to the actual suite and its descendants. Otherwise retain fresh
+    execution under the complete candidate key; record the reason. Reusable
+    narrowed successes must prove the protection of their source execution.
+    Exercise the absolute-path counterexample and unavailable-sandbox case.
+    This supersedes criterion 5 and the non-goal only where they previously
+    required identical reuse eligibility with no effective denial.
+14. `analysis:` and `operator override:` always reach the agent, ahead of
+    imports, lifecycle reads, runtime pins, writer reservations and gate locks.
+    Both suspend DotLn hook enforcement for the current session so diagnosis
+    and authorized recovery tools remain available. No lifecycle event or
+    passing check is fabricated. Explicit exit restores normal behavior; a
+    separate session inherits no override. Generated-hook process fixtures
+    cover healthy and unavailable runtimes, corrupt state, a non-Git working
+    directory, held gates and writer locks. The shared Codex instructions
+    expose the same operator interaction. Read the [ideation breakout receipt](../evidence/WO-131/ideation.md)
+    for the preserved immediate-working-state design and independent review.
+15. Operator scope expansion makes the return on the emergency test/gate work
+    a completion requirement. Before handoff, present an unambiguous measured
+    before/after comparison with the pre-change host rows: fresh gate,
+    document-only change and cross-phase handoff. Include build, preparation,
+    live checks, failed attempts and measurement overhead; identify different
+    workloads or host conditions. Show elapsed seconds saved and percentage
+    reduction per comparable episode, and the aggregate gate time per work
+    order. Report the investment/payback separately, using recorded costs and
+    a break-even count when a direct comparable total exists. Cache-hit counts
+    or an isolated microbenchmark do not establish payoff. An unclear or
+    regressed result keeps this order unfinished until repaired or explicitly
+    accepted by the operator. The post-merge release-close observation remains
+    the separately authorized closeout role's duty under criterion 10.
+    This reopens the scheduling non-goal for the bounded restoration of the
+    two hook suites’ existing isolated class, supported by WO-128 VER-001 F2
+    and measured again on this order’s host.
+
+### Additional operator reference — 2026-09-14
+
+The operator supplied the older proof-carrying-gates analysis as inspiration,
+explicitly noting its age and previously rejected points. Its central design
+principle—compose exact-tree receipts from matching suite evidence—is already
+the implementation’s subject. Its 20–100x, 4–10x and 2–4 minute estimates are
+engineering targets, not observations on this revision. The supplied advice
+to remove exclusivity is superseded here by the later measured WO-128 F2
+comparison and amendment 15. Sharding, copy-on-write fixtures, pure policy
+extraction and model checking remain possible future cold-gate work if the
+current complete measurements justify them; this reference does not authorize
+a test deletion or an unbounded redesign.
+
+### Implementation observations — 2026-09-14
+
+The suite-input and replica changes retained 37 aggregate suites and expanded
+to 79 scheduled tasks. A passing fresh run at tree
+`1be8ba9d1b0baceb5e76ea831ca35fcfc346ac20` took 820.885 seconds with all 79
+tasks executed. Its immediate ordinary retry took 38.357 seconds with 10 fresh
+and 69 reused tasks, saving 782.528 seconds (95.3 percent) on the same source.
+This establishes the work order's primary reuse mechanism; it is not the
+document-transition measurement still required by amendment 15.
+
+The fresh row carried 1,349.504 seconds of aggregate task work, down from
+1,836.983 seconds in the retained comparable profile. Git tracing located the
+remaining planning cost in repeated immutable object reads. Bounded tree and
+blob caches plus batched blob reads reduced the isolated planning fixture from
+230.92 seconds to 77.81 seconds while retaining every case. The final bounded
+scheduler change lets that reduced fixture occupy the lane left by
+process-debt after harness-fixtures completes; it adds no task or assertion.
+Final fresh, document-transition and cross-session outcomes are recorded in
+the [implementation evidence](../evidence/WO-131/README.md).
+
+The accepted final fresh row passed all 37 suites and 79 tasks in 801.849
+seconds. Adding the implementation evidence and regenerating the work-order
+index then produced a 57.403-second full gate with 17 fresh and 62 reused tasks.
+Repeating that exact tree under distinct session PID, transport-command and
+temporary-root values produced the same 17/62 split in 57.413 seconds. Using
+WO-130's observed fresh and composed medians, one fresh plus two later-phase
+gates falls from 1,616.424 to 916.665 seconds: 699.759 seconds (11.663 minutes)
+saved per successful lifecycle. The evidence receipt records the workload
+difference, operating work, physical execution inventory, failed investment
+and break-even without treating the cold gate as a speedup.
+
+### Repair amendments — 2026-09-14
+
+VER-001 failed on F1: declared-suite reuse was conditional on kernel-denial
+availability, and no sandboxed Claude or Codex role session on the operator's
+host can obtain it, so the first independent later-phase gate ran 807.236 s
+with 79 fresh and 0 reused tasks. The operator's direction during `resume: fix`
+and a `scope expand:` received during the same repair add the following. They
+are execution authority like amendments 12–15.
+
+16. The kernel read denial is an addition and never a condition of reuse, as
+    criterion 5 and the design section originally stated. Amendment 13's
+    sentence "Otherwise retain fresh execution under the complete candidate
+    key" and D009's caching condition are withdrawn: a declared suite narrows,
+    executes in its replica, records its success and reuses it whether or not
+    the host can start the sandbox, and every gate and suite row records
+    whether the denial applied. The absolute-path counterexample remains
+    covered where the denial is available and is recorded as the accepted
+    residual with its reopening condition
+    ([D019](../evidence/WO-131/decisions.md#wo-131-d019)). Criteria 7, 10 and
+    11 are measured in sandboxed role sessions, which is where the operator's
+    lifecycle runs. The replica PATH is canonical so that no per-shell entry
+    forks a key ([D020](../evidence/WO-131/decisions.md#wo-131-d020)).
+17. Operator scope expansion: an engineering review of the gate-reuse work
+    across WO-125, WO-126, WO-128, WO-129, WO-130 and WO-131, judged as a
+    distinguished engineer would, is a deliverable of this repair. It records
+    what the six orders built, what is sound, what is not, and which bounded
+    repairs this order applies; findings outside this order's authority are
+    filed to the follow-up queue or named for planning. The record is
+    [`docs/evidence/WO-131/engineering-review.md`](../evidence/WO-131/engineering-review.md).
+
+### Repair record — 2026-09-14
+
+Repaired in a sandboxed Claude Code session (2.1.270, `claude-fable-5-1` at
+max effort, self-reported) whose kernel-denial probe answered `host refused
+sandbox startup`. Changes: the four denial guards removed from the suite
+evidence and replica libraries (F1, F2; D019); the replica PATH made canonical
+after the diagnosis that per-shell dangling entries forked every narrowed key
+between sessions (D020); per-variable environment digests so a fresh
+explanation names the variable; the success cache bounded at 24 records per
+suite; the three-role and release-close fixtures now run their later sessions
+without the denial; the evidence README and performance record state the
+conditions of the earlier rows (F3); the engineering review of amendment 17,
+with its R5 defect repaired in the host source (D021) and installed by the
+operator's `npm run harness -- emit`, recorded as authority evidence revision
+007. Rows: the verifier's sandboxed later-phase gate before the repair ran
+807.236 s with 79 fresh and 0 reused; the accepted fresh gate of this session
+ran 513.023 s with 75 fresh and 4 reused, every declared suite in its replica,
+after a 27.472 s preflight failure and a 547.973 s attempt with one stale
+fixture assertion, all retained in
+[gate-performance.json](../evidence/WO-131/gate-performance.json). The
+document-only composition in this sandboxed session then passed in 63.389 s
+with 17 fresh and 62 reused tasks, against 807.236 s for the same class of
+session before the repair; the second-role-session row of criteria 7 and 11
+is the next verification's first gate.
+
+### Final-review amendment — 2026-09-14
+
+18. During `resume: final review`, the operator explicitly directed this
+    session to fix the recurring final-gate/report-edit/final-gate loop here,
+    without sending the change into another repair session. Tracked reports
+    and generated meters use an explicit observation cutoff before the final
+    gate. Final gate results and completion-time counters stay in the existing
+    ignored receipts and the response; recording them must not require another
+    tracked edit, generation run or gate. Prove the completion path collects
+    final usage after one full gate without changing its checked tree, while
+    substantive report and source corrections still invalidate evidence.
+    This bounded procedural correction and its regression are authorized in
+    the final-review session; earlier independent verification remains evidence
+    for the subject it actually judged. See [D022](../evidence/WO-131/decisions.md#wo-131-d022).

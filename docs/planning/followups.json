@@ -3729,6 +3729,306 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-c408ddb2a36111d2",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "ba73637f644912fab74eecb8c2041086fe758ad46c548e5d82ace8d020e6d6bf",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d003",
+          "title": "WO-131-D003: Prompt submission always remains open. Generated bootstrap failures and host runtime, state or dispatch failures return advisory context, never a blocking response. A failed automatic dis",
+          "summary": "{ \"id\": \"WO-131-D003\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator scope expand during execution: remove the pre-submit blocker that prevents starting Claude or Codex or submitting a resume phrase.\", \"decision\": \"Prompt submission always remains open. Generated bootstrap failures and host runtime, state or dispatch failures return advisory context, never a blocking response. A failed automatic dispatch still performs no lifecycle mutation. Existing command-time authority, writer isolation and evidence checks remain responsible for the attempted effect.\", \"evidence\": [ \"packages/compiler/src/harness.ts emitted decision:block when the session adapter could not load.\", \"packages/s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1b324e34ab44a862",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "99ae74b7d70a992f9bbd96b68ff30f8aa04bce5688bae3b56ba513e5f321487d",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d004",
+          "title": "WO-131-D004: Give every reusable fixture suite declared candidate paths and an explicit environment. Filter both replica execution and identity through that declaration; temporary and gate diagnostic ",
+          "summary": "{ \"id\": \"WO-131-D004\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next selecting WO-131 criteria 1-7 and 9-11.\", \"decision\": \"Give every reusable fixture suite declared candidate paths and an explicit environment. Filter both replica execution and identity through that declaration; temporary and gate diagnostic locations remain runner-owned. Keep real repository evidence and live checks in the candidate tree with named reasons. Replace the runner inventory test's ambient historical Git read with an exact public v0.16.0 package fixture, and run the harness read-only control test against a synthetic repository with the real lifecycle. Add a once-per-gate optional kernel read-denial probe and r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-79d86c12aaa838ec",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "064e4060cad17359423d866feead8b39639f4b1a41af6b7ff7399e3993e2e1d1",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d005",
+          "title": "WO-131-D005: Prepare dependencies, build outputs and generated runtime in worktree start before printing the launch handoff. Provide a dependency-free node scripts/bootstrap.mjs entry point for raw or",
+          "summary": "{ \"id\": \"WO-131-D005\", \"date\": \"2026-09-14\", \"dispatch\": \"Operator follow-up during scope expand: reject the circular requirement for built dependencies before Claude can begin.\", \"decision\": \"Prepare dependencies, build outputs and generated runtime in worktree start before printing the launch handoff. Provide a dependency-free node scripts/bootstrap.mjs entry point for raw or interrupted checkouts. When a generated adapter cannot load, read-only tools and that exact bootstrap command remain available; other tool effects retain their ordinary refusal. Runtime pin checks are DotLn artifact checks, not minimum Claude CLI version checks.\", \"evidence\": [ \"scripts/worktree.mjs start only added t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-49d6a605085453ae",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "13f889d4cb15837b96a3cf68bb4fb400d8d990d03a3d3cfb421c73a47cf419d4",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d006",
+          "title": "WO-131-D006: Preserve the original D001 and D002 planning decisions byte-for-byte and append the execution decisions as D003-D005. The initial write incorrectly assumed this evidence file was new. Com",
+          "summary": "{ \"id\": \"WO-131-D006\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; executor correction during output comparison.\", \"decision\": \"Preserve the original D001 and D002 planning decisions byte-for-byte and append the execution decisions as D003-D005. The initial write incorrectly assumed this evidence file was new. Comparing the diff exposed the replacement; the original Git bytes were restored as the exact prefix before continuing.\", \"evidence\": [ \"git show HEAD:docs/evidence/WO-131/decisions.md contains the two planning decisions; the working file now retains that complete source and the three newly authored execution decisions.\" ], \"rejected\": [ \"Discard either the planning history or the",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-7bf9fcf02a637635",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bfcfa9fdeecb873c4980faab1ff15bbb9f8bd455b13e44a5105876f73e356687",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d007",
+          "title": "WO-131-D007: Handle operator controls before runtime imports or repository-state checks; suspend DotLn hooks for this session until explicit exit. Supply a dependency-free adapter for Codex and raw ch",
+          "summary": "{ \"id\": \"WO-131-D007\", \"date\": \"2026-09-14\", \"dispatch\": \"Operator scope expansions for unconditional analysis: and operator override:, followed by ideation about immediate working-state recovery.\", \"decision\": \"Handle operator controls before runtime imports or repository-state checks; suspend DotLn hooks for this session until explicit exit. Supply a dependency-free adapter for Codex and raw checkouts. Preserve the broader general working-state repair as a candidate in the ideation receipt; no fake lifecycle completion or test result.\", \"evidence\": [ \"docs/evidence/WO-131/ideation.md\", \"Generated PreToolUse catches and host state admission can deny repair tools after accepting the prompt.\"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-eb1fc31f00d12d7c",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "01cb9c0d768afad68b19c048ece12ee0622bf8ace5090430a8a1aa1fa3ae71e3",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d008",
+          "title": "WO-131-D008: Make real host end-to-end comparisons a handoff requirement, including preparation, build, live checks and failed attempts. Show comparable savings per gate and phase episode, work-order ",
+          "summary": "{ \"id\": \"WO-131-D008\", \"date\": \"2026-09-14\", \"dispatch\": \"Operator scope expand: this final emergency gate-cost work order must demonstrate unambiguous speedup and return on the weekend investment before completion.\", \"decision\": \"Make real host end-to-end comparisons a handoff requirement, including preparation, build, live checks and failed attempts. Show comparable savings per gate and phase episode, work-order totals, and investment/payback with explicit limits; do not substitute reuse counts for elapsed time.\", \"evidence\": [ \"WO-131 criteria 4, 7, 10 and 11 already name the 243–419 second document-change class, 41–47 second identical-tree band and 780–805 second fresh full gate.\", \"Oper",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-087cf664336d5f9e",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4701beabdc3aae8120d48d724053cace4716029ebcf37ac1ca1ff1c8fdd8517e",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d009",
+          "title": "WO-131-D009: Resolve the exact absolute-candidate-path counterexample with effective kernel read denial for source executions that populate narrowed success records. Probe once per gate, wrap every na",
+          "summary": "{ \"id\": \"WO-131-D009\", \"date\": \"2026-09-14\", \"dispatch\": \"Operator scope expand: fix the hypothetical WO-130 planning hold that was previously overridden.\", \"decision\": \"Resolve the exact absolute-candidate-path counterexample with effective kernel read denial for source executions that populate narrowed success records. Probe once per gate, wrap every narrowed child and its descendants, and persist the protection in sealed provenance. If denial is unavailable, run the suite fresh against the complete candidate and do not cache that success. Supersede D004’s optional-denial reuse rule under the new operator scope.\", \"evidence\": [ \"docs/planning/refutations/2026-09-12-planning-dc998fb93c27e33",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-169f3fa954b56ae9",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e46ac824b64dd954b23cb9a076e919eb8ad6f28759c5578b677b1654046f83cc",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d010",
+          "title": "WO-131-D010: Fingerprint and copy the runtime snapshots referenced by the installed manifest, preserving all older snapshots on disk without making their recovery history a suite input. If manifest se",
+          "summary": "{ \"id\": \"WO-131-D010\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; criterion 10 release-close reuse and operator requirement for demonstrated payoff.\", \"decision\": \"Fingerprint and copy the runtime snapshots referenced by the installed manifest, preserving all older snapshots on disk without making their recovery history a suite input. If manifest selection is absent or unreadable, retain the complete runtime root conservatively. Prove active-byte invalidation and reuse with differing obsolete histories.\", \"evidence\": [ \"gateInstalledInputRoots includes all of .runtime/harness; suite observation hashes those bytes and the replica copies them.\", \"The active worktree has four retained sna",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e641466676b1a45f",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "333a3b13e669e5f89d509a315512af8f13cf5db627111c34576473704dae0063",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d011",
+          "title": "WO-131-D011: Bump compiler 0.9.1 to 0.9.2 and skeleton 0.15.10 to 0.15.11, including the workspace dependency and runtime pins. These patches correct local harness admission and gate input behavior; d",
+          "summary": "{ \"id\": \"WO-131-D011\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next release preparation under the work order’s patch classification and authorized operator-control scope.\", \"decision\": \"Bump compiler 0.9.1 to 0.9.2 and skeleton 0.15.10 to 0.15.11, including the workspace dependency and runtime pins. These patches correct local harness admission and gate input behavior; domain events and exported runtime schemas remain unchanged. Select new immutable evidence editions for the changed compiler identity and feedback source.\", \"evidence\": [ \"Compiler lowering emits the corrected prompt and dependency-free operator-control entry.\", \"Skeleton host, shared role instructions and installed-input o",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-38f565efb4eaeabd",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "fbab401e93a38b8bf609f4a7af6f3c580ac6c0b75b346ad721bed0d9a7fa9b4e",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d012",
+          "title": "WO-131-D012: Reject an ineligible main/detached checkout before reserving a writer. Drive the generated hooks with the actual lifecycle-printed handoff and preview. Exercise the real release helper af",
+          "summary": "{ \"id\": \"WO-131-D012\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; criteria 8 and 10 require executable release-close handoff and composition evidence.\", \"decision\": \"Reject an ineligible main/detached checkout before reserving a writer. Drive the generated hooks with the actual lifecycle-printed handoff and preview. Exercise the real release helper after a reviewed fixture branch merges with a main-only document, retaining all 62 declared successes across the changed session.\", \"evidence\": [ \"The printed-handoff regression admitted the correct commands but showed that a refused --force spelling left a writer lock. The host now observes checkout eligibility before attempting reservation",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-45507f899790d048",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cebbd672f6686ef12a950e06f73d918a3effc3a86c0dd4f25920d63c4c3c8e06",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d013",
+          "title": "WO-131-D013: Repair fixture assumptions exposed by the first complete host run. Restore write permission only on fixture-owned copied runtime files before fixture cleanup; never follow installed links",
+          "summary": "{ \"id\": \"WO-131-D013\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; actual replica execution and the operator's measured-payoff completion requirement\", \"decision\": \"Repair fixture assumptions exposed by the first complete host run. Restore write permission only on fixture-owned copied runtime files before fixture cleanup; never follow installed links. Declare the resume suite's frozen legacy control inputs. Pin the context comparison's two original activation files as a checked fixture instead of requiring unavailable Git history. Require the WO-032 name prefix when splitting console tests, and pin the console to the already-recorded current feedback edition after the compiler patch. Ke",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0fa7defafb6a0ddb",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e9b3267fa82fe38a657b2d5c2feee037793e7b9210b1177e21049452e9eb913b",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d014",
+          "title": "WO-131-D014: Restore the existing isolated scheduling class for harness-fixtures and process-debt. Keep the task inventory, all test assertions, the global cap for other tasks and the measured deadlin",
+          "summary": "{ \"id\": \"WO-131-D014\", \"date\": \"2026-09-14\", \"dispatch\": \"The operator expands scope to require unambiguous elapsed-time payoff before WO-131 completes; the announced adjacent-0006 scheduling repair follows the first failed host measurement.\", \"decision\": \"Restore the existing isolated scheduling class for harness-fixtures and process-debt. Keep the task inventory, all test assertions, the global cap for other tasks and the measured deadline mechanism. Remeasure fresh and composed host invocations; accept no speed claim from flags or cache counts alone.\", \"evidence\": [ \"WO-128 VER-001 F2 measured identical source and all 78 tasks: 462.3 seconds with these two suites isolated versus 666.5 sec",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f9be41147b3d2232",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "576cc6d3d2f0041d5a0c38a29bc4bc92d791b45257aaf6d3fb705c9c4d9191eb",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d015",
+          "title": "WO-131-D015: Preserve the independently reviewed planning subject and carry all authorized execution amendments in the canonical appended Execution record.",
+          "summary": "{ \"id\": \"WO-131-D015\", \"date\": \"2026-09-14\", \"dispatch\": \"Authorized execution scope expansions; canonical current-plan check refused a changed reviewed planning subject.\", \"kind\": \"correction\", \"decision\": \"Preserve the independently reviewed planning subject and carry all authorized execution amendments in the canonical appended Execution record.\", \"misread\": \"Editing the reviewed acceptance block and regenerating its planning cost table would remain an ordinary execution continuation.\", \"meant\": \"The continuation contract preserves the reviewed plan, accepts its release assignment and accepts an appended Execution record. Operator execution amendments stay explicit and mandatory without i",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-af3acbe40083e5a1",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6746d8385efca4340dbac4aa838ec161e13bf596fcedbfaabc24ed1a728d36fe",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d016",
+          "title": "WO-131-D016: Answer conversational steering briefly and continue the authorized work unless the operator explicitly pauses or stops it.",
+          "summary": "{ \"id\": \"WO-131-D016\", \"date\": \"2026-09-14\", \"dispatch\": \"The operator asked why execution became idle after a conversation-only question.\", \"kind\": \"correction\", \"decision\": \"Answer conversational steering briefly and continue the authorized work unless the operator explicitly pauses or stops it.\", \"misread\": \"The conversation-only prefix ended ongoing execution after the explanatory answer.\", \"meant\": \"The existing executor instruction explicitly says conversation-only answers without pausing work. The original resume-next objective and its scope amendments remain active.\", \"changed\": \"Resume the existing measurement and remaining output review. Preserve the in-flight fresh gate; do not re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b4a2eca39268fa04",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1cc829c8c2157a4ac71e0d63b4d1d1a1de4a3980b687d9f91d3a08abb70cd5ec",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d017",
+          "title": "WO-131-D017: Keep the complete 79-task gate and its assertions. Reduce the cold planning cost by batching immutable committed-object reads and retaining bounded content-addressed tree and blob results",
+          "summary": "{ \"id\": \"WO-131-D017\", \"date\": \"2026-09-14\", \"dispatch\": \"The operator required increased throughput, lower operating expense and lower inventory, then corrected the execution focus: the primary payoff is reuse of passing runs and the work order must finish.\", \"decision\": \"Keep the complete 79-task gate and its assertions. Reduce the cold planning cost by batching immutable committed-object reads and retaining bounded content-addressed tree and blob results within the process. Continue resolving the requested revision for every subject observation and reading workspace subjects from current files. After the harness fixture finishes, schedule the reduced planning fixture in the one lane left ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6f6494639d19765a",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "750956b725865cffd2ca6b7f61aa2b4e3c782d1d84ff0c013c9134122677a7eb",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d018",
+          "title": "WO-131-D018: Accept the bounded planning/process-debt overlap and the content-addressed composition result. Stop performance changes in WO-131. Use the accepted 801.849-second all-fresh row as the beh",
+          "summary": "{ \"id\": \"WO-131-D018\", \"date\": \"2026-09-14\", \"dispatch\": \"The operator made observable speedup and return on the emergency work a completion requirement and emphasized reuse as the primary purpose.\", \"decision\": \"Accept the bounded planning/process-debt overlap and the content-addressed composition result. Stop performance changes in WO-131. Use the accepted 801.849-second all-fresh row as the behavior certificate source and retain the 57.403-second document-transition and 57.413-second changed-session rows as the representative later-phase evidence. Report the cold result, repeated-gate result, lifecycle total, physical execution inventory, gross measurement investment and limits separately",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-e1400b149c31fd9b",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d019",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "02d637fe6cce3e323fd272771269a5f230224f17a2199fff850a4cfdfa2f9bdb",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d019",
+          "title": "WO-131-D019: Restore criterion 5's rule that the kernel read denial is an addition and never a condition of reuse. A declared suite narrows, executes in its replica, records its success and reuses it ",
+          "summary": "{ \"id\": \"WO-131-D019\", \"date\": \"2026-09-14\", \"dispatch\": \"Operator direction during resume: fix after VER-001 F1: remove D009's kernel-denial condition, because reuse must survive in every session and the repository exists to progress DotLn, not to add process.\", \"decision\": \"Restore criterion 5's rule that the kernel read denial is an addition and never a condition of reuse. A declared suite narrows, executes in its replica, records its success and reuses it whether or not the host can start the sandbox. Availability and application are recorded on every gate and suite row and sealed into the source provenance, but neither forks the key nor gates a record's validity. This supersedes amendme",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-86f484e3dbcb75b7",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d020",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8707a17362ed8d2574dbe82cdb607481e030fc4b90ce9359d83d9f68a891a929",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d020",
+          "title": "WO-131-D020: A replica's PATH, in execution and in the key, is the ordered list of existing physical directories from the session PATH, deduplicated, with candidate entries keeping their replica mappi",
+          "summary": "{ \"id\": \"WO-131-D020\", \"date\": \"2026-09-14\", \"dispatch\": \"The same repair dispatch; diagnosed while checking whether removing D009's condition alone would let a sandboxed session reuse the operator's terminal records.\", \"decision\": \"A replica's PATH, in execution and in the key, is the ordered list of existing physical directories from the session PATH, deduplicated, with candidate entries keeping their replica mapping. Entries that do not exist, are not directories, or are symlink or repeated spellings of a directory already listed resolve no executable and are dropped.\", \"evidence\": [ \"With the denial forced available, every narrowed key in this session differed from the operator's records",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-51f95f17157adcca",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d021",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "02fec6058772ab36726a1489ab8cf1c5e21b5efb42e3dfe7f5236b24da4bf525",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d021",
+          "title": "WO-131-D021: Admit a same-host subagent spawn (Agent, Task) as a read-only effect: the subagent acts under the session's own authority and every effect it performs passes the same PreToolUse guards, s",
+          "summary": "{ \"id\": \"WO-131-D021\", \"date\": \"2026-09-14\", \"dispatch\": \"Operator scope expansion for an engineering review of WO-125 through WO-131, then the operator's direction that the subagent refusal found during it is a defect to fix now rather than defer.\", \"decision\": \"Admit a same-host subagent spawn (Agent, Task) as a read-only effect: the subagent acts under the session's own authority and every effect it performs passes the same PreToolUse guards, so the spawn reserves no writer and is admitted during a live gate. Refuse a remote subagent by name. Raise intentional classification refusals as HarnessCommandRefused so their own message reaches the operator, and append the failure class and a bou",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-80f7b9a2155c102b",
+      "key": "decision:docs/evidence/WO-131/decisions.md#wo-131-d022",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8fc6bd4d907901e0f167f60fa8fd3ebdf87753825bb32ecc7d2d0beff92c701a",
+          "ref": "docs/evidence/WO-131/decisions.md#wo-131-d022",
+          "title": "WO-131-D022: End tracked report authoring before the final gate, with a dated measurement cutoff. Keep the final gate's results in existing ignored gate receipts and completion-time usage in existing ",
+          "summary": "{ \"id\": \"WO-131-D022\", \"date\": \"2026-09-14\", \"dispatch\": \"During resume: final review, the operator directed this session to fix the recurring final-gate/report-edit/final-gate loop solely here, without returning it to another repair session.\", \"decision\": \"End tracked report authoring before the final gate, with a dated measurement cutoff. Keep the final gate's results in existing ignored gate receipts and completion-time usage in existing ignored usage receipts; report those observations in the response. After a pass, read current outputs, record the lifecycle result, refresh its index once and hand off. Do not edit tracked reports or rerun release preparation/meta merely to copy the cost ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

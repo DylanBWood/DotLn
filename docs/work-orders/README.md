@@ -11,7 +11,7 @@
 - [x] [WO-128] — Fresh gates pass first time · **final-reviewed**
 - [x] [WO-129] — Suite evidence keyed by declared inputs · **final-reviewed**
 - [x] [WO-130] — Suites execute in a replica of declared inputs · **final-reviewed**
-- [ ] [WO-131] — Remaining suites declared under replica execution · **queued**
+- [x] [WO-131] — Remaining suites declared under replica execution · **final-reviewed**
 - [ ] [WO-044] — Writing-worker and unattended-launch harness truth · **queued**
 - [ ] [WO-067] — PresencePolicy compiled · **queued**
 - [ ] [WO-045] — Event-log and hook-input decoders · **queued**
@@ -1522,23 +1522,6 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-124/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-124-impact-surfaces-derivation.md](WO-124-impact-surfaces-derivation.md)
 
-### WO-131
-
-[WO-131 — Every remaining reusable suite is declared and executed in its replica or retained with a reason, so a document-only change composes the full gate to the build, preparation, the live checks and the current-tree checks (version assigned at activation)](WO-131-remaining-suites-under-replica.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-130: hard (met) — replica execution, the declaration table and the loud failure that this order's declarations rely on.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model; the measured composed gate runs on the operator's machine. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: adds path and environment declarations per narrowed suite and, where the host permits a kernel sandbox, one availability probe per gate; no added prompt, command or operator step per gate beyond WO-130's replica copies. The release-close and installed-link repairs add bounded regression fixtures. Removes the whole-tree executions from every document-only gate: on 2026-09-11/12 the composed gates after a report write ran 32 fresh tasks in 243–419 s while identical-tree reruns ran 10 fresh tasks in 41–47 s; the difference is the whole-tree class re-executing for bytes it never read. The current-tree checks (&#96;format&#96;, &#96;index&#96;, &#96;publication&#96;, &#96;plan&#96; and the evidence checks that read the real repository) and the live checks always execute, so the measured target is the build, preparation and those checks; the &#96;plan&#96; check alone took 33–35 s on 2026-09-12. The post-transition class is WO-129's removal and is not counted here. Criteria 7, 10 and 11 also remove repeated declared-suite execution across role and release-close sessions; their host rows must measure the wall-clock removal, with token and context changes reported as observed or unavailable.
-- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-131/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-131-remaining-suites-under-replica.md](WO-131-remaining-suites-under-replica.md)
-
 ## Closed
 
 ### WO-003
@@ -2291,6 +2274,24 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-130/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness claude-code; version 2.1.270; model claude-opus-5; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-130-declared-suite-inputs-replica.md](WO-130-declared-suite-inputs-replica.md)
+
+### WO-131
+
+[WO-131 — Every remaining reusable suite is declared and executed in its replica or retained with a reason, so a document-only change composes the full gate to the build, preparation, the live checks and the current-tree checks (v0.17.6)](WO-131-remaining-suites-under-replica.md)
+
+- State: closed.
+- Application target: v0.17.6.
+- Dependencies: typed; activation not applicable.
+- References: WO-130: hard (met) — replica execution, the declaration table and the loud failure that this order's declarations rely on.
+- Verification: [VER-002](../../docs/verifications/WO-131/VER-002.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-131/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model; the measured composed gate runs on the operator's machine. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: adds path and environment declarations per narrowed suite and, where the host permits a kernel sandbox, one availability probe per gate; no added prompt, command or operator step per gate beyond WO-130's replica copies. The release-close and installed-link repairs add bounded regression fixtures. Removes the whole-tree executions from every document-only gate: on 2026-09-11/12 the composed gates after a report write ran 32 fresh tasks in 243–419 s while identical-tree reruns ran 10 fresh tasks in 41–47 s; the difference is the whole-tree class re-executing for bytes it never read. The current-tree checks (&#96;format&#96;, &#96;index&#96;, &#96;publication&#96;, &#96;plan&#96; and the evidence checks that read the real repository) and the live checks always execute, so the measured target is the build, preparation and those checks; the &#96;plan&#96; check alone took 33–35 s on 2026-09-12. The post-transition class is WO-129's removal and is not counted here. Criteria 7, 10 and 11 also remove repeated declared-suite execution across role and release-close sessions; their host rows must measure the wall-clock removal, with token and context changes reported as observed or unavailable.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-131/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness codex-cli; version 0.154.0; model gpt-6-astra; effort max; source operator-attested; account not-applicable.
+- Authority: [docs/work-orders/WO-131-remaining-suites-under-replica.md](WO-131-remaining-suites-under-replica.md)
 
 ## Historical
 

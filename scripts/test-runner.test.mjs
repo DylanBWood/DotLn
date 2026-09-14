@@ -35,10 +35,10 @@ const root = resolve(import.meta.dirname, "..");
 const barrier = { name: "build", command: ["build"], build: true };
 test("full inventory retains every command in the previous package test chain", () => {
   const before = JSON.parse(
-    execFileSync("git", ["show", "v0.16.0:package.json"], {
-      cwd: root,
-      encoding: "utf8",
-    }),
+    readFileSync(
+      join(root, "scripts/fixtures/runner-baseline-v0.16.0.json"),
+      "utf8",
+    ),
   ).scripts.test.split(" && ");
   assert.equal(before.length, 37);
   const commands = suites.map((row) =>
@@ -201,7 +201,12 @@ test("package tests and fixtures wait for preflights and never start after a fai
         };
       },
     });
-    for (const name of ["skeleton", "console", "resume"]) {
+    for (const name of [
+      "skeleton",
+      "console:fixtures",
+      "console:current",
+      "resume",
+    ]) {
       if (indexExit) {
         assert.ok(!events.includes(`start:${name}`));
         assert.equal(rows.find((row) => row.name === name).executed, false);
@@ -254,7 +259,23 @@ test("failed split-case diagnostics survive aggregate evidence as addressed logs
       .every((row) => !row.outputRef),
   );
 });
-test("hook fixtures and console share the cap while explicit isolated tasks stay alone", async () => {
+test("constraint suites keep one-piece flow and the measured lane budget", () => {
+  const tasks = expandSuiteTasks(
+    suites.filter((row) => !row.document || row.fast),
+    root,
+    "/synthetic-template",
+  );
+  assert.equal(tasks.length, 79);
+  const planning = tasks.find((row) => row.name === "plan-refutation:fixtures");
+  assert.equal(planning?.loadClass, undefined);
+  assert.equal(planning?.loadSlots, 1);
+  assert.ok(planning?.after.includes("harness-fixtures"));
+  assert.equal(
+    tasks.find((row) => row.name === "runner-fixtures")?.loadClass,
+    "isolated",
+  );
+});
+test("weighted lanes admit one light hook peer and pair cost-ranked heavy tasks", async () => {
   const selected = suites.filter((row) =>
     [
       "build",
@@ -264,7 +285,7 @@ test("hook fixtures and console share the cap while explicit isolated tasks stay
       "process-debt",
     ].includes(row.name),
   );
-  const active = new Set(),
+  const active = new Map(),
     overlap = new Set();
   const rows = await scheduleSuites(expandSuiteTasks(selected, root), {
     concurrency: 4,
@@ -273,19 +294,42 @@ test("hook fixtures and console share the cap while explicit isolated tasks stay
         row.gateContext.loadClass,
         row.build ? "isolated" : "shared",
       );
-      active.add(row.name);
+      assert.ok(
+        [...active.values()].reduce((sum, slots) => sum + slots, 0) +
+          row.gateContext.reservedSlots <=
+          4,
+      );
+      if (["harness-fixtures", "process-debt"].includes(row.name)) {
+        assert.equal(row.gateContext.reservedSlots, 3);
+        assert.equal(row.gateContext.concurrency, 2);
+        assert.ok(
+          !["harness-fixtures", "process-debt"].some((name) =>
+            active.has(name),
+          ),
+        );
+      }
+      if (
+        [...active.keys()].some((name) =>
+          ["harness-fixtures", "process-debt"].includes(name),
+        )
+      )
+        assert.equal(row.gateContext.reservedSlots, 1);
+      active.set(row.name, row.gateContext.reservedSlots);
       if (active.has("harness-fixtures") && active.has("process-debt"))
         overlap.add("hooks");
-      if (active.has("skeleton") && active.has("console"))
-        overlap.add("packages");
+      if (active.has("harness-fixtures") && active.has("console:fixtures"))
+        overlap.add("hook-light");
+      if (active.has("skeleton") && active.has("console:current"))
+        overlap.add("heavy-pair");
       await new Promise((done) => setTimeout(done, 10));
       active.delete(row.name);
       return { name: row.name, exitCode: 0, executed: true };
     },
   });
-  assert.equal(rows.length, selected.length);
-  assert.ok(overlap.has("packages"));
-  assert.ok(overlap.has("hooks"));
+  assert.equal(rows.length, selected.length + 1);
+  assert.ok(overlap.has("hook-light"));
+  assert.ok(overlap.has("heavy-pair"));
+  assert.equal(overlap.has("hooks"), false);
   for (const concurrency of [1, 2, 4]) {
     await scheduleSuites(
       [
@@ -304,7 +348,7 @@ test("hook fixtures and console share the cap while explicit isolated tasks stay
         execute: async (row) => {
           if (row.exclusive) assert.equal(active.size, 0);
           else assert.ok(!active.has("exclusive"));
-          active.add(row.name);
+          active.set(row.name, row.gateContext.reservedSlots);
           await new Promise((done) => setTimeout(done, 5));
           active.delete(row.name);
           return { name: row.name, exitCode: 0 };
@@ -542,7 +586,7 @@ test("WO-125 VER-003 protects pre-existing hard links while ordinary scratch sta
   assert.equal(gateInputPath(repo, "scratch/local-link.txt"), true);
 });
 
-test("release cases share the global cap, wait for preparation and require complete coverage", async () => {
+test("release cases use one background lane, wait for preparation and require complete coverage", async () => {
   const selected = [barrier, suites.find((row) => row.name === "release")];
   const tasks = expandSuiteTasks(selected, root, "/synthetic-template");
   assert.equal(
@@ -550,20 +594,25 @@ test("release cases share the global cap, wait for preparation and require compl
     40,
   );
   let active = 0,
+    activeCases = 0,
     peak = 0,
     prepared = false;
   const rows = await scheduleSuites(tasks, {
     concurrency: 4,
     execute: async (row) => {
-      if (row.name.startsWith("release:case:")) assert.ok(prepared);
+      if (row.name.startsWith("release:case:")) {
+        assert.ok(prepared);
+        assert.equal(activeCases++, 0);
+      }
       peak = Math.max(peak, ++active);
       await new Promise((done) => setTimeout(done, 1));
       active--;
+      if (row.name.startsWith("release:case:")) activeCases--;
       if (row.name === "release:prepare") prepared = true;
       return { name: row.name, exitCode: 0, executed: true, durationMs: 1 };
     },
   });
-  assert.equal(peak, 4);
+  assert.equal(peak, 1);
   assert.equal(aggregateSuiteRows(selected, tasks, rows)[1].exitCode, 0);
   assert.equal(
     aggregateSuiteRows(selected, tasks, rows.slice(0, -1))[1].exitCode,
@@ -587,6 +636,42 @@ test("release cases share the global cap, wait for preparation and require compl
     0,
   );
   assert.equal(aggregateSuiteRows(selected, tasks, refused)[1].exitCode, 1);
+});
+
+test("console split executes every fixture and the current check exactly once", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-console-dispatch-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const directory = join(repo, "packages/console/dist/test");
+  mkdirSync(directory, { recursive: true });
+  const names = [
+    "WO-032 AC1/6 fixture",
+    "WO-032 schema fixture",
+    "WO-032 host collection reads current sources and all shipped exports",
+  ];
+  writeFileSync(
+    join(directory, "board.test.js"),
+    `const test = require('node:test');\n${names
+      .map((name) => `test(${JSON.stringify(name)}, () => {});`)
+      .join("\n")}\n`,
+  );
+  const tasks = expandSuiteTasks(
+    [suites.find((row) => row.name === "console")],
+    repo,
+  );
+  const observed = [];
+  for (const [index, row] of tasks.entries()) {
+    const result = await executeSuite(row, repo);
+    assert.equal(result.exitCode, 0, result.output);
+    const executed = [...result.output.matchAll(/^ok \d+ - (.+)$/gm)].map(
+      (match) => match[1],
+    );
+    assert.deepEqual(
+      executed,
+      index === 0 ? names.slice(0, 2) : names.slice(2),
+    );
+    observed.push(...executed);
+  }
+  assert.deepEqual(observed, names);
 });
 
 test("planning task dispatch delivers each selection flag to the executable", async (t) => {

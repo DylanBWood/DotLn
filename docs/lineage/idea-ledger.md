@@ -6713,3 +6713,22 @@ existing contract; no runtime source, contract, or locked boundary changes.
 - **Doubled shadow gates, time-based expiry, deleting tests, choosing FUP-0091/0111/0132 here** `rejected`
   - Each with its evidence and reversal condition in the map's NoOps of the
     2026-09-12 pass.
+
+## 2026-09-14 — operator recovery during WO-131
+
+- **Unconditional operator controls** `adopted`
+  - `analysis:` interrupts the routine for diagnosis and direction.
+    `operator override:` provides access to tools despite DotLn gates, locks
+    or broken setup. Neither depends on the workflow it may need to repair.
+    Source: the WO-131 intake batch and [breakout receipt](../evidence/WO-131/ideation.md).
+    Promoted to product 07 §Operator recovery controls and WO-131 criterion 14.
+    Reopen if any generated entry path can prevent either command reaching the
+    agent or recovering from a failed harness.
+- **Immediate return to a usable repo** `candidate`
+  - Recovery should put the repository into an operator-authorized working
+    state immediately, preserving work and recording bypassed requirements.
+    Scripts versus assisted repair and arbitrary lifecycle reconstruction
+    remain open. Do not turn an override into invented passing evidence.
+    Source and review: the same breakout receipt; promoted as a candidate in
+    product 07. Reopen for implementation planning or an observed recovery
+    that still requires operator rescue outside the session.

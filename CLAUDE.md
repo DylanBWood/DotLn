@@ -16,31 +16,31 @@ record, never a source to mine. The same clean-room screen always applies.
 
 ## Shared memory
 
-Intake → synthesis into product docs → planning and work orders → execution.
-Write durable decisions into the product docs in the same pass. Model and
-effort assignments belong to each work order. Preserve decisions with their sources and reopening
-conditions. No branch commits before final review; never discard work,
-intake, or recovery refs. Use the canonical recovery procedure when needed.
+Intake → product synthesis → planning/work orders → execution. Record product
+decisions now, with sources and reopening conditions.
+Each order owns model/effort assignments. No branch commits before final review.
+Preserve work, intake and recovery refs; use canonical recovery.
 
 ## Start here
 
-A whole `resume:` phrase dispatches its role through canonical status. Load the
-matching generated skill by name. `@skills` means `.claude/skills` in Claude
-Code or `.agents/skills` in Codex; `AGENTS.md` is this file's symlink.
+Whole `resume:` phrases select their skill through canonical status.
+`@skills`: `.claude/skills` in Claude, `.agents/skills` in Codex.
+`AGENTS.md` symlinks here.
 
 Read[executor]: `@skills/dotln-executor/SKILL.md` — next, fix, status, times.
-
 Read[verifier]: `@skills/dotln-verifier/SKILL.md` — verify.
-
 Read[reviewer]: `@skills/dotln-reviewer/SKILL.md` — final review.
-
 Read[release-close]: `@skills/dotln-release-close/SKILL.md` — release close.
+Read[planner]: `@skills/dotln-planner/SKILL.md` — planning or ideation.
 
-Read[planner]: `@skills/dotln-planner/SKILL.md` — planning or ideation prefix.
+Expand skill read/review selectors from order/report paths. Read cited sections;
+name new inputs.
 
-Each skill declares all required reads, including later output review. Expand
-its selectors from the selected order and canonical report paths; read cited
-sections only. Add newly discovered required inputs to that scope explicitly.
+Always admit `analysis:` (pause for diagnosis/direction) and `operator override:`
+(suspend DotLn gates for authorized recovery), despite repo/harness failures.
+Preserve work; invent no dispatch/pass. Exit: either prefix plus `off`.
+Codex: `node scripts/operator-control.mjs analysis|override|off|status`.
+Host permissions apply.
 
 <!-- dotln-harness:start -->
 Capabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter.

@@ -14,7 +14,7 @@
       "sections": [
         {
           "id": "actors-d388bf69a2138223",
-          "title": "WO-043 self-hosted executor",
+          "title": "WO-131 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -126,7 +126,7 @@
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-24"
@@ -182,7 +182,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1789145547452,
+                  "value": 1789350109896,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-24"
@@ -202,7 +202,7 @@
               "links": [
                 {
                   "label": "Inspect recorded build",
-                  "target": "recorded-build-e7154dd13f854771"
+                  "target": "recorded-build-7162c8c998748032"
                 },
                 {
                   "label": "feedback.audit: allowed",
@@ -226,7 +226,7 @@
         },
         {
           "id": "actors-b9a9504826d64362",
-          "title": "WO-043 self-hosted verifier",
+          "title": "WO-131 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -278,241 +278,10 @@
                   "key": "phase",
                   "label": "Recorded episode phase",
                   "status": "known",
-                  "value": "lease-expired",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-29"
-                  ]
-                },
-                {
-                  "key": "transport",
-                  "label": "Transport",
-                  "status": "known",
-                  "value": "claude-cli-print",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-29"
-                  ]
-                },
-                {
-                  "key": "model",
-                  "label": "Selected model",
-                  "status": "known",
-                  "value": "claude-opus-5",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-29"
-                  ]
-                },
-                {
-                  "key": "effort",
-                  "label": "Selected effort",
-                  "status": "known",
-                  "value": "max",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-29"
-                  ]
-                },
-                {
-                  "key": "selectionSource",
-                  "label": "Selection source",
-                  "status": "known",
-                  "value": "host-launch",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-30"
-                  ]
-                },
-                {
-                  "key": "effectiveModel",
-                  "label": "Observed effective model",
-                  "status": "unknown",
-                  "value": null,
-                  "explanation": "Not recorded by this source",
-                  "evidence": [
-                    "evidence-30"
-                  ]
-                },
-                {
-                  "key": "effectiveEffort",
-                  "label": "Observed effective effort",
-                  "status": "unknown",
-                  "value": null,
-                  "explanation": "Not recorded by this source",
-                  "evidence": [
-                    "evidence-30"
-                  ]
-                },
-                {
-                  "key": "heartbeat",
-                  "label": "Last host heartbeat",
-                  "status": "known",
-                  "value": 1789141950751,
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-29"
-                  ]
-                },
-                {
-                  "key": "lease",
-                  "label": "Recorded lease expiry",
-                  "status": "known",
-                  "value": 1789141955751,
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-29"
-                  ]
-                },
-                {
-                  "key": "buildHash",
-                  "label": "Recorded build hash",
-                  "status": "known",
-                  "value": "fnv1a64:4ac9c60c73810fad",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-31"
-                  ]
-                },
-                {
-                  "key": "hashKind",
-                  "label": "Hash describes",
-                  "status": "known",
-                  "value": "verification-v1 input hash",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-31"
-                  ]
-                },
-                {
-                  "key": "loadoutHash",
-                  "label": "LoadoutGraph semantic hash",
-                  "status": "unknown",
-                  "value": null,
-                  "explanation": "This actor has a compiled policy or verification capsule; the source records no LoadoutGraph hash",
-                  "evidence": [
-                    "evidence-31"
-                  ]
-                },
-                {
-                  "key": "allowed",
-                  "label": "Allowed effects",
-                  "status": "known",
-                  "value": [
-                    "verification.evaluate"
-                  ],
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-31"
-                  ]
-                },
-                {
-                  "key": "denied",
-                  "label": "Denied effects",
-                  "status": "known",
-                  "value": [
-                    "repo.write",
-                    "repo.delete",
-                    "repair.propose",
-                    "publish"
-                  ],
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-31"
-                  ]
-                },
-                {
-                  "key": "grantExpiresAt",
-                  "label": "Recorded grant expiry",
-                  "status": "known",
-                  "value": 1789145550599,
-                  "explanation": "Recorded bound only; the board does not decide current authority",
-                  "evidence": [
-                    "evidence-31"
-                  ]
-                },
-                {
-                  "key": "workOrder",
-                  "label": "Work order",
-                  "status": "known",
-                  "value": "verification_1",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-31"
-                  ]
-                }
-              ],
-              "links": [
-                {
-                  "label": "Inspect recorded build",
-                  "target": "recorded-build-d21ddcadeaf6d899"
-                },
-                {
-                  "label": "verification.evaluate: allowed",
-                  "target": "receipt-2805f0b33e6f4581"
-                },
-                {
-                  "label": "verification.evaluate: observed",
-                  "target": "receipt-24c564a361f9bb3a"
-                },
-                {
-                  "label": "command.result: returned",
-                  "target": "receipt-b7d7188d7fec2792"
-                }
-              ]
-            },
-            {
-              "id": "actor-7040dd0b647a58db",
-              "title": "verifier — ep_verifier_1_attempt_2",
-              "cells": [
-                {
-                  "key": "kind",
-                  "label": "Actor kind",
-                  "status": "known",
-                  "value": "model session",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-33"
-                  ]
-                },
-                {
-                  "key": "identity",
-                  "label": "Identity",
-                  "status": "unknown",
-                  "value": null,
-                  "explanation": "Not recorded by this source",
-                  "evidence": [
-                    "evidence-31"
-                  ]
-                },
-                {
-                  "key": "role",
-                  "label": "Role",
-                  "status": "known",
-                  "value": "verifier",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-33"
-                  ]
-                },
-                {
-                  "key": "episode",
-                  "label": "Episode",
-                  "status": "known",
-                  "value": "ep_verifier_1_attempt_2",
-                  "explanation": null,
-                  "evidence": [
-                    "evidence-32"
-                  ]
-                },
-                {
-                  "key": "phase",
-                  "label": "Recorded episode phase",
-                  "status": "known",
                   "value": "completed",
                   "explanation": null,
                   "evidence": [
-                    "evidence-32"
+                    "evidence-29"
                   ]
                 },
                 {
@@ -522,27 +291,27 @@
                   "value": "claude-cli-print",
                   "explanation": null,
                   "evidence": [
-                    "evidence-32"
+                    "evidence-29"
                   ]
                 },
                 {
                   "key": "model",
                   "label": "Selected model",
                   "status": "known",
-                  "value": "claude-opus-5",
+                  "value": "claude-fable-5-1",
                   "explanation": null,
                   "evidence": [
-                    "evidence-32"
+                    "evidence-29"
                   ]
                 },
                 {
                   "key": "effort",
                   "label": "Selected effort",
                   "status": "known",
-                  "value": "max",
+                  "value": "high",
                   "explanation": null,
                   "evidence": [
-                    "evidence-32"
+                    "evidence-29"
                   ]
                 },
                 {
@@ -552,7 +321,7 @@
                   "value": "host-launch",
                   "explanation": null,
                   "evidence": [
-                    "evidence-33"
+                    "evidence-30"
                   ]
                 },
                 {
@@ -562,7 +331,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-33"
+                    "evidence-30"
                   ]
                 },
                 {
@@ -572,34 +341,34 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-33"
+                    "evidence-30"
                   ]
                 },
                 {
                   "key": "heartbeat",
                   "label": "Last host heartbeat",
                   "status": "known",
-                  "value": 1789142415766,
+                  "value": 1789346568662,
                   "explanation": null,
                   "evidence": [
-                    "evidence-32"
+                    "evidence-29"
                   ]
                 },
                 {
                   "key": "lease",
                   "label": "Recorded lease expiry",
                   "status": "known",
-                  "value": 1789142420766,
+                  "value": 1789346573662,
                   "explanation": null,
                   "evidence": [
-                    "evidence-32"
+                    "evidence-29"
                   ]
                 },
                 {
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:4ac9c60c73810fad",
+                  "value": "fnv1a64:82ba4234ddf94b3e",
                   "explanation": null,
                   "evidence": [
                     "evidence-31"
@@ -656,7 +425,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1789145550599,
+                  "value": 1789350113393,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-31"
@@ -676,7 +445,7 @@
               "links": [
                 {
                   "label": "Inspect recorded build",
-                  "target": "recorded-build-d21ddcadeaf6d899"
+                  "target": "recorded-build-522f820952c4cf31"
                 },
                 {
                   "label": "Acceptance matrix: ws_feedback_audit_verification",
@@ -688,11 +457,11 @@
                 },
                 {
                   "label": "verification.evaluate: observed",
-                  "target": "receipt-24c564a361f9bb3a"
+                  "target": "receipt-0038527cee490293"
                 },
                 {
                   "label": "command.result: returned",
-                  "target": "receipt-b7d7188d7fec2792"
+                  "target": "receipt-bd2310780bb96459"
                 }
               ]
             },
@@ -707,7 +476,7 @@
                   "value": "verification-host",
                   "explanation": null,
                   "evidence": [
-                    "evidence-34"
+                    "evidence-32"
                   ]
                 },
                 {
@@ -717,7 +486,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-34"
+                    "evidence-32"
                   ]
                 },
                 {
@@ -727,7 +496,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-34"
+                    "evidence-32"
                   ]
                 },
                 {
@@ -737,7 +506,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-34"
+                    "evidence-32"
                   ]
                 },
                 {
@@ -747,17 +516,17 @@
                   "value": "VerificationContinuation",
                   "explanation": null,
                   "evidence": [
-                    "evidence-34"
+                    "evidence-32"
                   ]
                 },
                 {
                   "key": "lastActionAt",
                   "label": "Recorded action time",
                   "status": "known",
-                  "value": 1789142416160,
+                  "value": 1789346569263,
                   "explanation": null,
                   "evidence": [
-                    "evidence-34"
+                    "evidence-32"
                   ]
                 },
                 {
@@ -767,7 +536,7 @@
                   "value": null,
                   "explanation": "An event actor id alone does not establish worker liveness",
                   "evidence": [
-                    "evidence-34"
+                    "evidence-32"
                   ]
                 }
               ],
@@ -983,7 +752,7 @@
         },
         {
           "id": "receipts-d388bf69a2138223",
-          "title": "Audit receipts — WO-043 self-hosted executor",
+          "title": "Audit receipts — WO-131 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -1259,7 +1028,7 @@
         },
         {
           "id": "receipts-b9a9504826d64362",
-          "title": "Audit receipts — WO-043 self-hosted verifier",
+          "title": "Audit receipts — WO-131 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -1274,7 +1043,7 @@
                   "value": "verification.evaluate",
                   "explanation": null,
                   "evidence": [
-                    "evidence-38"
+                    "evidence-36"
                   ]
                 },
                 {
@@ -1284,7 +1053,7 @@
                   "value": "allowed",
                   "explanation": null,
                   "evidence": [
-                    "evidence-38"
+                    "evidence-36"
                   ]
                 },
                 {
@@ -1294,7 +1063,7 @@
                   "value": "verification-host",
                   "explanation": null,
                   "evidence": [
-                    "evidence-38"
+                    "evidence-36"
                   ]
                 },
                 {
@@ -1304,7 +1073,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-38"
+                    "evidence-36"
                   ]
                 },
                 {
@@ -1314,7 +1083,7 @@
                   "value": "cmd_3b843b5108e71409",
                   "explanation": null,
                   "evidence": [
-                    "evidence-38"
+                    "evidence-36"
                   ]
                 },
                 {
@@ -1324,7 +1093,7 @@
                   "value": "allowed",
                   "explanation": null,
                   "evidence": [
-                    "evidence-38"
+                    "evidence-36"
                   ]
                 },
                 {
@@ -1334,7 +1103,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-38"
+                    "evidence-36"
                   ]
                 },
                 {
@@ -1346,14 +1115,14 @@
                   ],
                   "explanation": null,
                   "evidence": [
-                    "evidence-38"
+                    "evidence-36"
                   ]
                 }
               ],
               "links": []
             },
             {
-              "id": "receipt-24c564a361f9bb3a",
+              "id": "receipt-0038527cee490293",
               "title": "verification.evaluate — observed",
               "cells": [
                 {
@@ -1363,7 +1132,7 @@
                   "value": "verification.evaluate",
                   "explanation": null,
                   "evidence": [
-                    "evidence-39"
+                    "evidence-37"
                   ]
                 },
                 {
@@ -1373,7 +1142,7 @@
                   "value": "observed",
                   "explanation": null,
                   "evidence": [
-                    "evidence-39"
+                    "evidence-37"
                   ]
                 },
                 {
@@ -1383,7 +1152,7 @@
                   "value": "verification-host",
                   "explanation": null,
                   "evidence": [
-                    "evidence-39"
+                    "evidence-37"
                   ]
                 },
                 {
@@ -1393,7 +1162,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-39"
+                    "evidence-37"
                   ]
                 },
                 {
@@ -1403,7 +1172,7 @@
                   "value": "cmd_3b843b5108e71409",
                   "explanation": null,
                   "evidence": [
-                    "evidence-39"
+                    "evidence-37"
                   ]
                 },
                 {
@@ -1413,7 +1182,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-39"
+                    "evidence-37"
                   ]
                 },
                 {
@@ -1423,7 +1192,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-39"
+                    "evidence-37"
                   ]
                 },
                 {
@@ -1432,18 +1201,18 @@
                   "status": "known",
                   "value": [
                     "event:evt_4",
-                    "event:evt_448"
+                    "event:evt_63"
                   ],
                   "explanation": null,
                   "evidence": [
-                    "evidence-39"
+                    "evidence-37"
                   ]
                 }
               ],
               "links": []
             },
             {
-              "id": "receipt-b7d7188d7fec2792",
+              "id": "receipt-bd2310780bb96459",
               "title": "command.result — returned",
               "cells": [
                 {
@@ -1453,7 +1222,7 @@
                   "value": "command.result",
                   "explanation": null,
                   "evidence": [
-                    "evidence-40"
+                    "evidence-38"
                   ]
                 },
                 {
@@ -1463,7 +1232,7 @@
                   "value": "returned",
                   "explanation": null,
                   "evidence": [
-                    "evidence-40"
+                    "evidence-38"
                   ]
                 },
                 {
@@ -1473,7 +1242,7 @@
                   "value": "verification-host",
                   "explanation": null,
                   "evidence": [
-                    "evidence-40"
+                    "evidence-38"
                   ]
                 },
                 {
@@ -1483,7 +1252,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-40"
+                    "evidence-38"
                   ]
                 },
                 {
@@ -1493,7 +1262,7 @@
                   "value": "cmd_3b843b5108e71409",
                   "explanation": null,
                   "evidence": [
-                    "evidence-40"
+                    "evidence-38"
                   ]
                 },
                 {
@@ -1503,7 +1272,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-40"
+                    "evidence-38"
                   ]
                 },
                 {
@@ -1513,7 +1282,7 @@
                   "value": null,
                   "explanation": "Not recorded by this source",
                   "evidence": [
-                    "evidence-40"
+                    "evidence-38"
                   ]
                 },
                 {
@@ -1521,11 +1290,11 @@
                   "label": "Canonical events",
                   "status": "known",
                   "value": [
-                    "event:evt_448"
+                    "event:evt_63"
                   ],
                   "explanation": null,
                   "evidence": [
-                    "evidence-40"
+                    "evidence-38"
                   ]
                 }
               ],
@@ -1923,19 +1692,19 @@
         },
         {
           "id": "recorded-builds-d388bf69a2138223",
-          "title": "Recorded builds — WO-043 self-hosted executor",
+          "title": "Recorded builds — WO-131 self-hosted executor",
           "status": "available",
           "explanation": null,
           "rows": [
             {
-              "id": "recorded-build-e7154dd13f854771",
+              "id": "recorded-build-7162c8c998748032",
               "title": "feedback-host",
               "cells": [
                 {
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-24"
@@ -1991,7 +1760,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1789145547452,
+                  "value": 1789350109896,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-24"
@@ -2071,19 +1840,19 @@
         },
         {
           "id": "recorded-builds-b9a9504826d64362",
-          "title": "Recorded builds — WO-043 self-hosted verifier",
+          "title": "Recorded builds — WO-131 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
             {
-              "id": "recorded-build-d21ddcadeaf6d899",
+              "id": "recorded-build-522f820952c4cf31",
               "title": "verifier",
               "cells": [
                 {
                   "key": "buildHash",
                   "label": "Recorded build hash",
                   "status": "known",
-                  "value": "fnv1a64:4ac9c60c73810fad",
+                  "value": "fnv1a64:82ba4234ddf94b3e",
                   "explanation": null,
                   "evidence": [
                     "evidence-31"
@@ -2140,7 +1909,7 @@
                   "key": "grantExpiresAt",
                   "label": "Recorded grant expiry",
                   "status": "known",
-                  "value": 1789145550599,
+                  "value": 1789350113393,
                   "explanation": "Recorded bound only; the board does not decide current authority",
                   "evidence": [
                     "evidence-31"
@@ -2253,7 +2022,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-4"
@@ -2493,7 +2262,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-6"
@@ -2733,7 +2502,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-8"
@@ -2973,7 +2742,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-10"
@@ -3213,7 +2982,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-12"
@@ -3453,7 +3222,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-14"
@@ -3693,7 +3462,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-16"
@@ -3933,7 +3702,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-18"
@@ -4173,7 +3942,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-20"
@@ -4413,7 +4182,7 @@
                   "key": "policyHash",
                   "label": "Feedback policy hash",
                   "status": "known",
-                  "value": "fnv1a64:09f5fa33d2dd26fe",
+                  "value": "fnv1a64:78b324215a5854e3",
                   "explanation": null,
                   "evidence": [
                     "evidence-22"
@@ -4639,14 +4408,14 @@
         },
         {
           "id": "matrices-d388bf69a2138223",
-          "title": "Acceptance evidence — WO-043 self-hosted executor",
+          "title": "Acceptance evidence — WO-131 self-hosted executor",
           "status": "available",
           "explanation": "The source records no entries",
           "rows": []
         },
         {
           "id": "matrices-b9a9504826d64362",
-          "title": "Acceptance evidence — WO-043 self-hosted verifier",
+          "title": "Acceptance evidence — WO-131 self-hosted verifier",
           "status": "available",
           "explanation": null,
           "rows": [
@@ -4661,17 +4430,17 @@
                   "value": "complete",
                   "explanation": null,
                   "evidence": [
-                    "evidence-35"
+                    "evidence-33"
                   ]
                 },
                 {
                   "key": "subject",
                   "label": "Subject revision",
                   "status": "known",
-                  "value": "sha256:9686ebc4a6cd61bab43549a0a1197673b9bd2b53f58d8eb2b3a36af860c440bd",
+                  "value": "sha256:c7437cc8553d269b49c0d3bd13f75f1577d1347bbbd8a1199dd8c71db3f337a9",
                   "explanation": null,
                   "evidence": [
-                    "evidence-35"
+                    "evidence-33"
                   ]
                 },
                 {
@@ -4681,7 +4450,7 @@
                   "value": "All ten feedback regression episodes pass with mechanisms present and fail by assertion with only their mechanism removed.",
                   "explanation": null,
                   "evidence": [
-                    "evidence-36"
+                    "evidence-34"
                   ]
                 },
                 {
@@ -4691,7 +4460,7 @@
                   "value": "verified",
                   "explanation": null,
                   "evidence": [
-                    "evidence-36"
+                    "evidence-34"
                   ]
                 },
                 {
@@ -4701,7 +4470,7 @@
                   "value": "behavior",
                   "explanation": null,
                   "evidence": [
-                    "evidence-36"
+                    "evidence-34"
                   ]
                 },
                 {
@@ -4711,17 +4480,17 @@
                   "value": "synthetic-fixture",
                   "explanation": null,
                   "evidence": [
-                    "evidence-36"
+                    "evidence-34"
                   ]
                 },
                 {
                   "key": "AC-causal-fixtures.verifier",
                   "label": "Producing verifier episode",
                   "status": "known",
-                  "value": "ep_verifier_1_attempt_2",
+                  "value": "ep_verifier_1_attempt_1",
                   "explanation": null,
                   "evidence": [
-                    "evidence-36"
+                    "evidence-34"
                   ]
                 },
                 {
@@ -4731,7 +4500,7 @@
                   "value": false,
                   "explanation": null,
                   "evidence": [
-                    "evidence-36"
+                    "evidence-34"
                   ]
                 },
                 {
@@ -4739,11 +4508,11 @@
                   "label": "Evidence references",
                   "status": "known",
                   "value": [
-                    "sha256:9686ebc4a6cd61bab43549a0a1197673b9bd2b53f58d8eb2b3a36af860c440bd:AC-causal-fixtures"
+                    "sha256:c7437cc8553d269b49c0d3bd13f75f1577d1347bbbd8a1199dd8c71db3f337a9:AC-causal-fixtures"
                   ],
                   "explanation": null,
                   "evidence": [
-                    "evidence-36"
+                    "evidence-34"
                   ]
                 },
                 {
@@ -4753,7 +4522,7 @@
                   "value": "The matched instruction projection reduces UTF-8 bytes relative to the WO-004 baseline plus the ten prose equivalents; it makes no effective-session token claim.",
                   "explanation": null,
                   "evidence": [
-                    "evidence-37"
+                    "evidence-35"
                   ]
                 },
                 {
@@ -4763,7 +4532,7 @@
                   "value": "verified",
                   "explanation": null,
                   "evidence": [
-                    "evidence-37"
+                    "evidence-35"
                   ]
                 },
                 {
@@ -4773,7 +4542,7 @@
                   "value": "state",
                   "explanation": null,
                   "evidence": [
-                    "evidence-37"
+                    "evidence-35"
                   ]
                 },
                 {
@@ -4783,17 +4552,17 @@
                   "value": "synthetic-fixture",
                   "explanation": null,
                   "evidence": [
-                    "evidence-37"
+                    "evidence-35"
                   ]
                 },
                 {
                   "key": "AC-context.verifier",
                   "label": "Producing verifier episode",
                   "status": "known",
-                  "value": "ep_verifier_1_attempt_2",
+                  "value": "ep_verifier_1_attempt_1",
                   "explanation": null,
                   "evidence": [
-                    "evidence-37"
+                    "evidence-35"
                   ]
                 },
                 {
@@ -4803,7 +4572,7 @@
                   "value": false,
                   "explanation": null,
                   "evidence": [
-                    "evidence-37"
+                    "evidence-35"
                   ]
                 },
                 {
@@ -4811,11 +4580,11 @@
                   "label": "Evidence references",
                   "status": "known",
                   "value": [
-                    "sha256:9686ebc4a6cd61bab43549a0a1197673b9bd2b53f58d8eb2b3a36af860c440bd:AC-context"
+                    "sha256:c7437cc8553d269b49c0d3bd13f75f1577d1347bbbd8a1199dd8c71db3f337a9:AC-context"
                   ],
                   "explanation": null,
                   "evidence": [
-                    "evidence-37"
+                    "evidence-35"
                   ]
                 }
               ],
@@ -4960,17 +4729,17 @@
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "ref": "docs/evidence/WO-131/feedback-001/feedback.json",
       "status": "available",
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-043/feedback-001/selfhost-audit.jsonl#worker-status",
+      "ref": "docs/evidence/WO-131/feedback-001/selfhost-audit.jsonl#worker-status",
       "status": "available",
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-043/feedback-001/selfhost-audit.jsonl#audit-projections",
+      "ref": "docs/evidence/WO-131/feedback-001/selfhost-audit.jsonl#audit-projections",
       "status": "available",
       "explanation": null
     },
@@ -4980,12 +4749,12 @@
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#worker-status",
+      "ref": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#worker-status",
       "status": "available",
       "explanation": null
     },
     {
-      "ref": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#audit-projections",
+      "ref": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#audit-projections",
       "status": "available",
       "explanation": null
     },
@@ -5068,7 +4837,7 @@
     },
     {
       "id": "evidence-5",
-      "source": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-131/feedback-001/feedback.json",
       "record": "maturity:anti-oscillation; fixtures:anti-oscillation"
     },
     {
@@ -5078,7 +4847,7 @@
     },
     {
       "id": "evidence-7",
-      "source": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-131/feedback-001/feedback.json",
       "record": "maturity:bounded-boy-scout-cleanup; fixtures:bounded-boy-scout-cleanup"
     },
     {
@@ -5088,7 +4857,7 @@
     },
     {
       "id": "evidence-9",
-      "source": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-131/feedback-001/feedback.json",
       "record": "maturity:concurrent-work-requires-worktrees; fixtures:concurrent-work-requires-worktrees"
     },
     {
@@ -5098,7 +4867,7 @@
     },
     {
       "id": "evidence-11",
-      "source": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-131/feedback-001/feedback.json",
       "record": "maturity:correctness-over-sycophancy; fixtures:correctness-over-sycophancy"
     },
     {
@@ -5108,7 +4877,7 @@
     },
     {
       "id": "evidence-13",
-      "source": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-131/feedback-001/feedback.json",
       "record": "maturity:fail-conservative-correction; fixtures:fail-conservative-correction"
     },
     {
@@ -5118,7 +4887,7 @@
     },
     {
       "id": "evidence-15",
-      "source": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-131/feedback-001/feedback.json",
       "record": "maturity:no-attribution; fixtures:no-attribution"
     },
     {
@@ -5128,7 +4897,7 @@
     },
     {
       "id": "evidence-17",
-      "source": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-131/feedback-001/feedback.json",
       "record": "maturity:no-lint-type-disables-as-fixes; fixtures:no-lint-type-disables-as-fixes"
     },
     {
@@ -5138,7 +4907,7 @@
     },
     {
       "id": "evidence-19",
-      "source": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-131/feedback-001/feedback.json",
       "record": "maturity:no-partial-completion; fixtures:no-partial-completion"
     },
     {
@@ -5148,7 +4917,7 @@
     },
     {
       "id": "evidence-21",
-      "source": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-131/feedback-001/feedback.json",
       "record": "maturity:read-your-own-output; fixtures:read-your-own-output"
     },
     {
@@ -5158,93 +4927,83 @@
     },
     {
       "id": "evidence-23",
-      "source": "docs/evidence/WO-043/feedback-001/feedback.json",
+      "source": "docs/evidence/WO-131/feedback-001/feedback.json",
       "record": "maturity:verify-app-before-done; fixtures:verify-app-before-done"
     },
     {
       "id": "evidence-24",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-audit.jsonl#audit-projections",
       "record": "event:evt_1 (FeedbackAuditOpened)"
     },
     {
       "id": "evidence-25",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-audit.jsonl#audit-projections",
       "record": "event:evt_5 (CommandResult)"
     },
     {
       "id": "evidence-26",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-audit.jsonl#audit-projections",
       "record": "receipt:audit:evt_3:authority-decision; event:evt_3"
     },
     {
       "id": "evidence-27",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-audit.jsonl#audit-projections",
       "record": "receipt:audit:evt_5:external-effect; event:evt_3, event:evt_5"
     },
     {
       "id": "evidence-28",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-audit.jsonl#audit-projections",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-audit.jsonl#audit-projections",
       "record": "receipt:audit:evt_5:result; event:evt_5"
     },
     {
       "id": "evidence-29",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#worker-status",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#worker-status",
       "record": "episodes:ep_verifier_1_attempt_1"
     },
     {
       "id": "evidence-30",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#audit-projections",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#audit-projections",
       "record": "event:evt_5 (WorkerAttemptStarted)"
     },
     {
       "id": "evidence-31",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#audit-projections",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#audit-projections",
       "record": "event:evt_4 (CommandPersisted)"
     },
     {
       "id": "evidence-32",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#worker-status",
-      "record": "episodes:ep_verifier_1_attempt_2"
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#audit-projections",
+      "record": "event:evt_65 (VerificationContinuation)"
     },
     {
       "id": "evidence-33",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#audit-projections",
-      "record": "event:evt_9 (WorkerAttemptStarted)"
-    },
-    {
-      "id": "evidence-34",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#audit-projections",
-      "record": "event:evt_450 (VerificationContinuation)"
-    },
-    {
-      "id": "evidence-35",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#worker-status",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#worker-status",
       "record": "acceptanceEvidenceMatrices:ws_feedback_audit_verification"
     },
     {
-      "id": "evidence-36",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#worker-status",
+      "id": "evidence-34",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#worker-status",
       "record": "acceptanceEvidenceMatrices:ws_feedback_audit_verification/criterion:AC-causal-fixtures"
     },
     {
-      "id": "evidence-37",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#worker-status",
+      "id": "evidence-35",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#worker-status",
       "record": "acceptanceEvidenceMatrices:ws_feedback_audit_verification/criterion:AC-context"
     },
     {
-      "id": "evidence-38",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#audit-projections",
+      "id": "evidence-36",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#audit-projections",
       "record": "receipt:audit:evt_4:authority-decision; event:evt_4"
     },
     {
-      "id": "evidence-39",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#audit-projections",
-      "record": "receipt:audit:evt_448:external-effect; event:evt_4, event:evt_448"
+      "id": "evidence-37",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#audit-projections",
+      "record": "receipt:audit:evt_63:external-effect; event:evt_4, event:evt_63"
     },
     {
-      "id": "evidence-40",
-      "source": "docs/evidence/WO-043/feedback-001/selfhost-verification.jsonl#audit-projections",
-      "record": "receipt:audit:evt_448:result; event:evt_448"
+      "id": "evidence-38",
+      "source": "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl#audit-projections",
+      "record": "receipt:audit:evt_63:result; event:evt_63"
     }
   ]
 }

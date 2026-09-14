@@ -38,6 +38,7 @@ import {
   formatSuiteFresh,
 } from "./lib/suite-evidence.mjs";
 import { createReplicaContext, replicaPlan } from "./lib/suite-replica.mjs";
+import { probeKernelDenial, kernelDenialRecord } from "./lib/suite-sandbox.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const node = (name, file, options = {}) => ({
@@ -130,7 +131,10 @@ export const suites = [
     needsBuild: true,
     preflight: true,
   }),
-  nodeTests("harness-fixtures", "scripts/test-harness.mjs"),
+  nodeTests("harness-fixtures", "scripts/test-harness.mjs", {
+    group: "hook-heavy",
+    loadSlots: 3,
+  }),
   node("harness", "scripts/harness.mjs", {
     args: ["check"],
     fast: true,
@@ -169,7 +173,10 @@ export const suites = [
   }),
   nodeTests("mutation", "corpus/mutation/wo108-selftest.test.mjs"),
   nodeTests("runner-fixtures", "scripts/test-runner.test.mjs"),
-  nodeTests("process-debt", "scripts/test-process-debt.mjs"),
+  nodeTests("process-debt", "scripts/test-process-debt.mjs", {
+    group: "hook-heavy",
+    loadSlots: 3,
+  }),
   node("meta", "scripts/meta.mjs", {
     args: ["--check"],
     fast: true,
@@ -194,7 +201,22 @@ export function validateSuites(table) {
       (!row.command.length && row.name !== "document-barrier")
     )
       throw new Error("Invalid suite declaration");
+  for (const row of table)
+    if (
+      row.loadSlots !== undefined &&
+      (!Number.isInteger(row.loadSlots) ||
+        row.loadSlots < 1 ||
+        row.loadSlots > 4)
+    )
+      throw new Error(`Invalid scheduler lane reservation: ${row.name}`);
 }
+
+const explicitlyIsolated = (row) =>
+  Boolean(row.build || row.exclusive || row.loadClass === "isolated");
+const reservedSlots = (row, concurrency) =>
+  explicitlyIsolated(row)
+    ? concurrency
+    : Math.min(row.loadSlots ?? 1, concurrency);
 
 export function expand(command, repo) {
   return command.flatMap((part) => {
@@ -229,6 +251,7 @@ export function executeSuite(
   let command;
   try {
     command = expand([...row.command, ...(row.args ?? [])], repo);
+    if (row.executionWrapper) command = [...row.executionWrapper, ...command];
   } catch (error) {
     return Promise.resolve({
       name: row.name,
@@ -314,7 +337,7 @@ export function executeSuite(
   });
 }
 
-/** Explicit barriers and exclusive groups; unrelated suites use separate slots. */
+/** Weighted lanes, explicit barriers and groups bound process-heavy overlap. */
 export async function scheduleSuites(
   table,
   {
@@ -351,13 +374,19 @@ export async function scheduleSuites(
     },
   ) => {
     const { startedAt, concurrentAtStart } = observation;
-    const isolated = row.build || row.exclusive || row.loadClass === "isolated";
+    const isolated = explicitlyIsolated(row);
+    const occupiedSlots = laneIndexes.length;
+    const peerConcurrency = isolated
+      ? 1
+      : Math.max(1, concurrency - occupiedSlots + 1);
     const gateContext = {
       ...diagnosticContext,
       task: row.name,
       loadClass: isolated ? "isolated" : "shared",
-      concurrency: isolated ? 1 : concurrency,
-      loadFactor: (isolated ? 1 : concurrency) * 2,
+      concurrency: peerConcurrency,
+      loadFactor: peerConcurrency * 2,
+      reservedSlots: occupiedSlots,
+      slotCapacity: concurrency,
     };
     const result = await execute({ ...row, gateContext }, repo);
     const finishedAt = new Date().toISOString();
@@ -371,6 +400,7 @@ export async function scheduleSuites(
       loadClass: gateContext.loadClass,
       loadFactor: gateContext.loadFactor,
       peerCap: gateContext.concurrency - 1,
+      reservedSlots: occupiedSlots,
       lanes: laneIndexes,
     };
   };
@@ -416,12 +446,16 @@ export async function scheduleSuites(
           output: "Required preflight or fixture preparation failed",
         });
       }
-    while (!exclusive && active.size < concurrency) {
+    while (!exclusive && lanes.some((lane) => lane.active === null)) {
+      const freeLanes = lanes
+        .map((lane, index) => ({ lane, index }))
+        .filter(({ lane }) => lane.active === null)
+        .map(({ index }) => index);
       const index = pending.findIndex(
         (row) =>
+          reservedSlots(row, concurrency) <= freeLanes.length &&
           (!row.group || !groups.has(row.group)) &&
-          (!(row.exclusive || row.loadClass === "isolated") ||
-            active.size === 0) &&
+          (!explicitlyIsolated(row) || active.size === 0) &&
           (row.after ?? []).every((name) =>
             results.some(
               (result) => result.name === name && result.exitCode === 0,
@@ -430,12 +464,10 @@ export async function scheduleSuites(
       );
       if (index < 0) break;
       const [row] = pending.splice(index, 1);
-      const isolated = row.exclusive || row.loadClass === "isolated";
+      const isolated = explicitlyIsolated(row);
       if (isolated) exclusive = true;
       if (row.group) groups.add(row.group);
-      const laneIndexes = isolated
-        ? lanes.map((_, index) => index)
-        : [lanes.findIndex((lane) => lane.active === null)];
+      const laneIndexes = freeLanes.slice(0, reservedSlots(row, concurrency));
       const predecessors = [
         build.name,
         ...(row.after ?? []),
@@ -482,71 +514,112 @@ export async function scheduleSuites(
 }
 
 export function expandSuiteTasks(selected, repo, template) {
-  const priorities = {
-    worktree: 100,
-    skeleton: 90,
-    console: 85,
-    "harness-fixtures": 130,
-    resume: 70,
-    "process-debt": 120,
+  const profiles = {
+    "harness-fixtures": { priority: 200, loadSlots: 3 },
+    "process-debt": { priority: 190, loadSlots: 3 },
+    "plan-refutation:fixtures": {
+      priority: 180,
+      loadSlots: 1,
+      after: ["harness-fixtures"],
+    },
+    "runner-fixtures": { priority: 170, loadClass: "isolated" },
+    worktree: { priority: 160, loadSlots: 2 },
+    skeleton: { priority: 150, loadSlots: 2 },
+    resume: { priority: 140, loadSlots: 2 },
+    "work-orders-fixtures": { priority: 130, loadSlots: 2 },
+    "plan-refutation:current": { priority: 120, loadSlots: 2 },
+    "console:current": { priority: 115, loadSlots: 2 },
   };
-  const tasks = selected.flatMap((row) => {
-    if (row.name === "release") {
-      if (!template) throw new Error("Release fixture template is required");
-      return [
-        {
-          ...row,
-          name: "release:prepare",
-          priority: 110,
-          args: ["--prepare-template", template],
-        },
-        ...releaseCases(repo).map((name) => ({
-          ...row,
-          name: `release:case:${name}`,
-          priority: 60,
-          after: ["release:prepare"],
-          args: ["--case", name, "--template", template],
-          inputCommand: [
-            ...row.command,
-            "--case",
-            name,
-            "--template",
-            "<prepared-from-suite-inputs>",
-          ],
-        })),
-      ];
-    }
-    if (row.name === "plan-refutation")
-      return [
-        {
-          ...row,
-          name: "plan-refutation:fixtures",
-          // node --test discards script arguments on the supported Node line.
-          // This file already awaits node:test cases when launched directly.
-          command: [process.execPath, "scripts/test-plan-refutation.mjs"],
-          priority: 100,
-          args: ["--fixtures-only"],
-        },
-        {
-          ...row,
-          name: "plan-refutation:current",
-          command: [process.execPath, "scripts/test-plan-refutation.mjs"],
-          args: ["--check-only"],
-        },
-      ];
-    if (row.name === "runner-fixtures")
-      return [
-        {
-          ...row,
-          args: [
-            "scripts/test-suite-evidence.mjs",
-            "scripts/test-release-fixtures.mjs",
-            "scripts/test-gate-deadlines.mjs",
-          ],
-        },
-      ];
-    return [{ ...row, priority: priorities[row.name] ?? 0 }];
-  });
+  const tasks = selected
+    .flatMap((row) => {
+      if (row.name === "release") {
+        if (!template) throw new Error("Release fixture template is required");
+        return [
+          {
+            ...row,
+            name: "release:prepare",
+            priority: 110,
+            args: ["--prepare-template", template],
+          },
+          ...releaseCases(repo).map((name) => ({
+            ...row,
+            name: `release:case:${name}`,
+            priority: 60,
+            group: "release-cases",
+            after: ["release:prepare"],
+            args: ["--case", name, "--template", template],
+            inputCommand: [
+              ...row.command,
+              "--case",
+              name,
+              "--template",
+              "<prepared-from-suite-inputs>",
+            ],
+          })),
+        ];
+      }
+      if (row.name === "plan-refutation")
+        return [
+          {
+            ...row,
+            name: "plan-refutation:fixtures",
+            // node --test discards script arguments on the supported Node line.
+            // This file already awaits node:test cases when launched directly.
+            command: [process.execPath, "scripts/test-plan-refutation.mjs"],
+            priority: 100,
+            args: ["--fixtures-only"],
+          },
+          {
+            ...row,
+            name: "plan-refutation:current",
+            command: [process.execPath, "scripts/test-plan-refutation.mjs"],
+            args: ["--check-only"],
+          },
+        ];
+      if (row.name === "console") {
+        const current =
+          "WO-032 host collection reads current sources and all shipped exports";
+        const select = (pattern) => [
+          row.command[0],
+          `--test-name-pattern=${pattern}`,
+          ...row.command.slice(1),
+        ];
+        return [
+          {
+            ...row,
+            name: "console:fixtures",
+            // A bare negative lookahead also matches Node's file-level parent,
+            // which selects all descendants. Require the actual test prefix.
+            command: select("^WO-032 (?!host collection)"),
+            priority: 85,
+          },
+          {
+            ...row,
+            name: "console:current",
+            command: select(current),
+            reuse: "live",
+          },
+        ];
+      }
+      if (row.name === "runner-fixtures")
+        return [
+          {
+            ...row,
+            args: [
+              "scripts/test-suite-evidence.mjs",
+              "scripts/test-release-fixtures.mjs",
+              "scripts/test-gate-deadlines.mjs",
+              "scripts/test-suite-sandbox.mjs",
+            ],
+          },
+        ];
+      return [row];
+    })
+    .map((row) => ({
+      ...row,
+      ...(profiles[row.name] ?? {}),
+      priority: profiles[row.name]?.priority ?? row.priority ?? 0,
+    }));
   const preflight = tasks.filter((row) => row.preflight).map((row) => row.name);
   return tasks.map((row) => ({
     ...row,
@@ -602,16 +675,24 @@ export function aggregateSuiteRows(selected, tasks, rows) {
   });
 }
 
-export async function runGate(args = process.argv.slice(2), repo = root) {
+export async function runGate(
+  args = process.argv.slice(2),
+  repo = root,
+  options = {},
+) {
   const active = beginGateRun(repo, "scripts/test-runner.mjs");
   try {
-    return await runGateChecks(args, repo);
+    return await runGateChecks(args, repo, options);
   } finally {
     active.release();
   }
 }
 
-async function runGateChecks(args, repo) {
+async function runGateChecks(
+  args,
+  repo,
+  { kernelProbe = probeKernelDenial } = {},
+) {
   let full = false,
     document = false,
     serial = false,
@@ -664,23 +745,24 @@ async function runGateChecks(args, repo) {
     ? 1
     : Math.max(1, Math.min(4, Math.floor(availableParallelism() / 2)));
   const tasks = expandSuiteTasks(selected, repo, fixture?.template).map(
-    (row) => ({
-      ...row,
-      loadPolicy: {
-        loadClass:
-          row.build || row.exclusive || row.loadClass === "isolated"
-            ? "isolated"
-            : "shared",
-        concurrency:
-          row.build || row.exclusive || row.loadClass === "isolated"
-            ? 1
-            : concurrency,
-        version: 1,
-      },
-    }),
+    (row) => {
+      const slots = reservedSlots(row, concurrency);
+      const isolated = explicitlyIsolated(row);
+      return {
+        ...row,
+        loadPolicy: {
+          loadClass: isolated ? "isolated" : "shared",
+          concurrency: isolated ? 1 : Math.max(1, concurrency - slots + 1),
+          priority: row.priority ?? 0,
+          reservedSlots: slots,
+          version: 2,
+        },
+      };
+    },
   );
   const replicas = createReplicaContext(repo);
   try {
+    const kernelDenial = kernelProbe(repo);
     const diagnosticRoot = replicas.diagnostics;
     const peerFile = join(diagnosticRoot, "active.json");
     const deadlineLog = join(diagnosticRoot, "deadlines.jsonl");
@@ -705,7 +787,8 @@ async function runGateChecks(args, repo) {
             executed: true,
             output: "",
           };
-        if (scoped && !row.build && !before) before = observeSuiteInputs(repo);
+        if (scoped && !row.build && !before)
+          before = { ...observeSuiteInputs(repo), kernelDenial };
         const declaration = suiteDeclaration(row);
         const plan =
           before && !row.build ? replicaPlan(row, declaration, before) : null;
@@ -716,6 +799,7 @@ async function runGateChecks(args, repo) {
           return {
             ...reusableResult(row, cached, inputHash),
             executionRoot: plan && !plan.refusal ? "replica" : "candidate",
+            kernelDenial: kernelDenialRecord(kernelDenial),
             ...(plan?.refusal ? { narrowingRefusal: plan.refusal } : {}),
           };
         const identity = suiteInputIdentity(row, before);
@@ -742,7 +826,15 @@ async function runGateChecks(args, repo) {
           if (plan && !plan.refusal)
             replica = replicas.create(row, declaration, before);
           const result = await executeSuite(
-            replica ? { ...row, executionEnvironment: replica.env } : row,
+            replica
+              ? {
+                  ...row,
+                  executionEnvironment: replica.env,
+                  ...(kernelDenial.available
+                    ? { executionWrapper: kernelDenial.command }
+                    : {}),
+                }
+              : row,
             replica?.root ?? cwd,
             900_000,
             ({ name, message, elapsedMs }) =>
@@ -762,6 +854,7 @@ async function runGateChecks(args, repo) {
             inputHash,
             freshReason,
             executionRoot: replica ? "replica" : "candidate",
+            kernelDenial: kernelDenialRecord(kernelDenial, Boolean(replica)),
             ...(replica ? { replica: replica.measurement } : {}),
             ...(plan?.refusal ? { narrowingRefusal: plan.refusal } : {}),
           };
@@ -794,7 +887,7 @@ async function runGateChecks(args, repo) {
             console.log(`  [${row.name}] ${line}`);
       },
     });
-    const after = before ? observeSuiteInputs(repo) : null;
+    const after = before ? { ...observeSuiteInputs(repo), kernelDenial } : null;
     for (const row of taskRows) {
       const task = tasks.find((task) => task.name === row.name);
       if (row.inputHash && row.inputHash !== suiteInputHash(task, after)) {
@@ -832,11 +925,13 @@ async function runGateChecks(args, repo) {
       ...(before ? { inputEnvironmentKeys: before.environmentKeys } : {}),
       ...(before ? { executionFacts: before.executionFacts } : {}),
       replicaSetup: replicas.measurements,
+      kernelDenial: kernelDenialRecord(kernelDenial),
       requiredSuites: selected.map((row) => row.name),
       loadClass: {
         sharedCap: concurrency,
         factorPerSlot: 2,
         maxHostLoadPerCpu: 2,
+        scheduler: "weighted-longest-first-v2",
       },
       taskTimeline: taskRows
         .filter((row) => row.startedAt)
@@ -853,6 +948,7 @@ async function runGateChecks(args, repo) {
             loadClass,
             loadFactor,
             peerCap,
+            reservedSlots,
           }) => ({
             name,
             startedAt,
@@ -865,6 +961,7 @@ async function runGateChecks(args, repo) {
             loadClass,
             loadFactor,
             peerCap,
+            reservedSlots,
           }),
         ),
       deadlineDiagnostics: existsSync(deadlineLog)

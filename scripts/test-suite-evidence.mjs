@@ -16,7 +16,7 @@ import {
   symlinkSync,
   writeFileSync,
 } from "node:fs";
-import { delimiter, dirname, join, relative } from "node:path";
+import { delimiter, dirname, isAbsolute, join, relative } from "node:path";
 import { tmpdir } from "node:os";
 import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
@@ -33,9 +33,11 @@ import {
   suiteCacheDirectory,
   explainSuiteFresh,
   formatSuiteFresh,
+  pruneSuiteSuccesses,
+  retainedSuccessesPerSuite,
 } from "./lib/suite-evidence.mjs";
 import {
-  runGate,
+  runGate as runActualGate,
   executeSuite,
   suites,
   expandSuiteTasks,
@@ -47,6 +49,16 @@ import {
   replicaMechanismVersion,
 } from "./lib/suite-replica.mjs";
 import { readGateChecks } from "./lib/gate-evidence.mjs";
+
+// These are synthetic cache/scheduling fixtures. The real kernel adapter is
+// covered separately by test-suite-sandbox, including an outside-sandbox run.
+const fixtureKernelProbe = () => ({
+  available: true,
+  reason: "synthetic protection adapter",
+  command: [],
+});
+const runGate = (args, root) =>
+  runActualGate(args, root, { kernelProbe: fixtureKernelProbe });
 
 const write = (root, path, value) => {
   mkdirSync(dirname(join(root, path)), { recursive: true });
@@ -92,6 +104,11 @@ const source = {
   durationMs: 1234,
   executed: true,
   exitCode: 0,
+  kernelDenial: {
+    available: true,
+    applied: true,
+    reason: "synthetic cache record",
+  },
 };
 
 test("WO-129 every inventoried task declares Git state and unknown callers cannot grant themselves reuse", () => {
@@ -103,6 +120,15 @@ test("WO-129 every inventoried task declares Git state and unknown callers canno
   for (const task of tasks) {
     assert.ok(suiteDeclaration(task), task.name);
     assert.deepEqual(task.git, suiteDeclaration(task).git, task.name);
+    const declaration = suiteDeclaration(task);
+    if (declaration.paths) {
+      assert.ok(declaration.environment.length > 0, task.name);
+      assert.equal(
+        new Set(declaration.environment).size,
+        declaration.environment.length,
+        task.name,
+      );
+    } else assert.ok(declaration.retention?.length > 0, task.name);
   }
   assert.equal(suiteDeclaration({ name: "release:case:unknown" }), null);
   assert.equal(
@@ -112,6 +138,223 @@ test("WO-129 every inventoried task declares Git state and unknown callers canno
     ),
     null,
   );
+});
+
+test("WO-131 runtime-history differences preserve reuse while current pinned bytes invalidate it", (t) => {
+  const { root } = fixture(t);
+  const active = ".runtime/harness/1111111111111111";
+  const old = ".runtime/harness/2222222222222222";
+  write(
+    root,
+    ".claude/harness-manifest.json",
+    JSON.stringify({
+      profiles: [{ profile: { runtime: { snapshot: active } } }],
+    }),
+  );
+  write(root, `${active}/runtime.mjs`, "active\n");
+  const before = observeSuiteInputs(root);
+  const key = suiteInputHash(row, before);
+  assert.ok(key);
+  assert.ok(before.installedRoots.includes(active));
+  assert.ok(!before.installedRoots.includes(".runtime/harness"));
+  write(root, `${old}/runtime.mjs`, "retained\n");
+  assert.equal(suiteInputHash(row, observeSuiteInputs(root)), key);
+  assert.equal(
+    readFileSync(join(root, `${old}/runtime.mjs`), "utf8"),
+    "retained\n",
+  );
+  write(root, `${active}/runtime.mjs`, "active changed\n");
+  assert.notEqual(suiteInputHash(row, observeSuiteInputs(root)), key);
+  write(root, ".claude/harness-manifest.json", "{broken");
+  const unknown = suiteInputHash(row, observeSuiteInputs(root));
+  write(root, `${old}/runtime.mjs`, "retained changed\n");
+  assert.notEqual(suiteInputHash(row, observeSuiteInputs(root)), unknown);
+});
+
+test("WO-131 declared environment drives both execution and identity, ignoring unrelated session inputs", (t) => {
+  const { root } = fixture(t);
+  const env = {
+    ...process.env,
+    TZ: "UTC",
+    CLAUDE_PID: "111",
+    GIT_SSH_COMMAND: "first-session",
+    TMPDIR: "/first-session/tmp",
+  };
+  const before = observeSuiteInputs(root, { env });
+  const key = suiteInputHash(row, before);
+  assert.ok(key);
+  for (const name of ["CLAUDE_PID", "GIT_SSH_COMMAND", "TMPDIR"])
+    assert.equal(
+      suiteInputHash(
+        row,
+        observeSuiteInputs(root, {
+          env: { ...env, [name]: "different-session" },
+        }),
+      ),
+      key,
+      name,
+    );
+  assert.notEqual(
+    suiteInputHash(
+      row,
+      observeSuiteInputs(root, { env: { ...env, TZ: "America/New_York" } }),
+    ),
+    key,
+  );
+  const context = createReplicaContext(root);
+  t.after(() => context.cleanup());
+  const replica = context.create(row, suiteDeclaration(row), before);
+  t.after(() => replica.cleanup());
+  const actual = execFileSync(
+    process.execPath,
+    [
+      "-e",
+      "process.stdout.write(JSON.stringify({TZ:process.env.TZ,CLAUDE_PID:process.env.CLAUDE_PID,GIT_SSH_COMMAND:process.env.GIT_SSH_COMMAND,TMPDIR:process.env.TMPDIR}))",
+    ],
+    { cwd: replica.root, env: replica.env, encoding: "utf8" },
+  );
+  const observed = JSON.parse(actual);
+  assert.equal(observed.TZ, "UTC");
+  assert.equal(observed.CLAUDE_PID, undefined);
+  assert.equal(observed.GIT_SSH_COMMAND, undefined);
+  assert.equal(observed.TMPDIR, replica.env.TMPDIR);
+  assert.notEqual(observed.TMPDIR, env.TMPDIR);
+});
+
+test("WO-131 replica PATH identity is the ordered existing physical directories, so dangling per-shell entries and spellings never fork a key across sessions", (t) => {
+  const { root } = fixture(t);
+  const tools = mkdtempSync(join(tmpdir(), "dotln-path-tools-"));
+  t.after(() => rmSync(tools, { recursive: true, force: true }));
+  const physical = join(tools, "physical");
+  mkdirSync(physical);
+  symlinkSync(physical, join(tools, "session-12345"));
+  writeFileSync(join(tools, "not-a-directory"), "");
+  const dangling = join(tools, "multishell-99999", "bin");
+  const canonical = `${physical}${delimiter}${process.env.PATH}`;
+  const keyFor = (PATH) =>
+    suiteInputHash(
+      row,
+      observeSuiteInputs(root, { env: { ...process.env, PATH } }),
+    );
+  const key = keyFor(canonical);
+  assert.ok(key);
+  for (const PATH of [
+    `${dangling}${delimiter}${join(tools, "session-12345")}${delimiter}${process.env.PATH}`,
+    `${physical}${delimiter}${physical}${delimiter}${process.env.PATH}${delimiter}${join(tools, "not-a-directory")}`,
+    `${realpathSync(physical)}${delimiter}${process.env.PATH}`,
+  ])
+    assert.equal(keyFor(PATH), key, PATH);
+  mkdirSync(join(tools, "other"));
+  assert.notEqual(
+    keyFor(`${join(tools, "other")}${delimiter}${canonical}`),
+    key,
+  );
+  const snapshot = observeSuiteInputs(root, {
+    env: {
+      ...process.env,
+      PATH: `${dangling}${delimiter}${join(tools, "session-12345")}${delimiter}${process.env.PATH}`,
+    },
+  });
+  const context = createReplicaContext(root);
+  t.after(() => context.cleanup());
+  const replica = context.create(row, suiteDeclaration(row), snapshot);
+  t.after(() => replica.cleanup());
+  const entries = replica.env.PATH.split(delimiter);
+  assert.equal(entries[0], realpathSync(physical));
+  assert.ok(!entries.includes(dangling));
+  assert.ok(!entries.includes(join(tools, "session-12345")));
+  assert.equal(new Set(entries).size, entries.length);
+  for (const entry of entries)
+    if (isAbsolute(entry) && !entry.startsWith(replica.root))
+      assert.ok(lstatSync(entry).isDirectory(), entry);
+});
+
+test("WO-131 a fresh explanation names the changed environment variables, never their values", (t) => {
+  const { root } = fixture(t);
+  const tools = mkdtempSync(join(tmpdir(), "dotln-env-diagnostic-"));
+  t.after(() => rmSync(tools, { recursive: true, force: true }));
+  mkdirSync(join(tools, "session-a"));
+  mkdirSync(join(tools, "session-b"));
+  const env = (directory, extra = {}) => ({
+    ...process.env,
+    ...extra,
+    PATH: `${directory}${delimiter}${process.env.PATH}`,
+  });
+  const first = observeSuiteInputs(root, {
+    env: env(join(tools, "session-a")),
+  });
+  const key = suiteInputHash(row, first);
+  const identity = suiteInputIdentity(row, first);
+  assert.ok(Object.keys(identity.variables).includes("PATH"));
+  assert.ok(
+    Object.values(identity.variables).every((hash) =>
+      /^[a-f0-9]{64}$/.test(hash),
+    ),
+  );
+  assert.ok(
+    saveSuiteSuccess(
+      root,
+      row,
+      key,
+      { ...source, recordedAt: new Date().toISOString() },
+      identity,
+    ),
+  );
+  const record = JSON.parse(
+    readFileSync(
+      join(suiteCacheDirectory(root, row.name), `${key}.json`),
+      "utf8",
+    ),
+  );
+  assert.deepEqual(record.variables, identity.variables);
+  assert.ok(!JSON.stringify(record).includes(join(tools, "session-a")));
+  const second = observeSuiteInputs(root, {
+    env: env(join(tools, "session-b"), { LANG: "C" }),
+  });
+  const reason = explainSuiteFresh(
+    root,
+    row,
+    suiteInputIdentity(row, second),
+    null,
+  );
+  assert.equal(reason.reason, "inputs changed");
+  const environment = reason.changes.find(
+    (change) => change.inputClass === "environment",
+  );
+  assert.deepEqual(environment.paths, ["LANG", "PATH"]);
+  assert.match(formatSuiteFresh(reason), /environment: LANG, PATH/);
+});
+
+test("WO-131 the success cache keeps only the newest records per suite", (t) => {
+  const { root } = fixture(t);
+  const directory = suiteCacheDirectory(root, row.name);
+  const keys = [];
+  for (let index = 0; index < retainedSuccessesPerSuite + 6; index++) {
+    write(root, "docs/product/02-domain-model.md", `edition ${index}\n`);
+    const snapshot = observeSuiteInputs(root);
+    const key = suiteInputHash(row, snapshot);
+    assert.ok(
+      saveSuiteSuccess(
+        root,
+        row,
+        key,
+        { ...source, recordedAt: new Date(index * 1000).toISOString() },
+        suiteInputIdentity(row, snapshot),
+      ),
+    );
+    keys.push(key);
+  }
+  const retained = readdirSync(directory).filter((file) =>
+    /^[a-f0-9]{64}\.json$/.test(file),
+  );
+  assert.equal(retained.length, retainedSuccessesPerSuite);
+  assert.ok(loadSuiteSuccess(root, row.name, keys.at(-1)));
+  assert.ok(
+    loadSuiteSuccess(root, row.name, keys.at(-retainedSuccessesPerSuite)),
+  );
+  assert.equal(loadSuiteSuccess(root, row.name, keys[0]), null);
+  assert.equal(pruneSuiteSuccesses(directory, `${keys.at(-1)}.json`), 0);
+  assert.equal(pruneSuiteSuccesses(join(root, "absent"), "none"), 0);
 });
 
 test("WO-129 Git changes invalidate only declared state; unrelated config and execution facts do not", (t) => {
@@ -282,7 +525,7 @@ writeFileSync("packages/kernel/dist/test/fixture.test.js", ${JSON.stringify('imp
 import {runGate} from ${JSON.stringify(new URL("./test-runner.mjs", import.meta.url).href)};
 import {suiteEnvironment} from ${JSON.stringify(new URL("./lib/suite-evidence.mjs", import.meta.url).href)};
 assert.equal(suiteEnvironment().npm_config_local_prefix, process.cwd());
-const result = await runGate(["--only", "kernel"], process.cwd());
+const result = await runGate(["--only", "kernel"], process.cwd(), { kernelProbe: () => ({ available: true, reason: "synthetic npm adapter", command: [] }) });
 console.log("NPM_GATE_RESULT " + JSON.stringify(result));
 process.exitCode = result.exitCode;
 `,
@@ -509,13 +752,7 @@ test("suite execution and fingerprints share a stable reviewed environment witho
     suiteEnvironment(suiteEnvironment(env)),
     suiteEnvironment(env),
   );
-  for (const key of [
-    "TZ",
-    "LC_ALL",
-    "npm_config_audit",
-    "NODE_NO_WARNINGS",
-    "DOTLN_CACHE_FIXTURE",
-  ]) {
+  for (const key of ["TZ", "LC_ALL", "npm_config_audit", "NODE_NO_WARNINGS"]) {
     assert.notEqual(
       suiteInputHash(
         row,
@@ -753,7 +990,7 @@ test("missing, corrupt, failing and unexecuted cache rows never supply success; 
   assert.equal(loadSuiteSuccess(root, row.name, inputHash), null);
   writeFileSync(path, "{");
   assert.equal(loadSuiteSuccess(root, row.name, inputHash), null);
-  writeFileSync(path, bytes.replace('"version":3', '"version":2'));
+  writeFileSync(path, bytes.replace('"version":4', '"version":3'));
   assert.equal(loadSuiteSuccess(root, row.name, inputHash), null);
   const unsealed = JSON.parse(bytes);
   delete unsealed.seal;
@@ -1194,11 +1431,11 @@ test("WO-130 escaping links, arguments and environment refuse narrowing before l
   );
   assert.ok(suiteInputHash(leaking, snapshot));
   assert.notEqual(suiteInputHash(leaking, snapshot), narrowed);
-  const revealing = { ...process.env, DOTLN_FIXTURE_PATH: root };
+  const revealing = { ...process.env, SHELL: root };
   const environment = observeSuiteInputs(root, { env: revealing });
   assert.match(
     replicaPlan(row, suiteDeclaration(row), environment).refusal,
-    /DOTLN_FIXTURE_PATH/,
+    /SHELL/,
   );
   const refused = suiteInputHash(row, environment);
   assert.ok(refused);
@@ -1225,19 +1462,19 @@ test("WO-130 a refused narrowing executes whole-tree under its own key, names th
     `import {mkdirSync,writeFileSync} from 'node:fs';
 mkdirSync('packages/kernel/dist/test',{recursive:true});writeFileSync('packages/kernel/dist/test/fixture.test.js',"import test from 'node:test'; test('replica',()=>{});\\n");`,
   );
-  const original = process.env.DOTLN_FIXTURE_PATH;
+  const original = process.env.SHELL;
   t.after(() => {
-    if (original === undefined) delete process.env.DOTLN_FIXTURE_PATH;
-    else process.env.DOTLN_FIXTURE_PATH = original;
+    if (original === undefined) delete process.env.SHELL;
+    else process.env.SHELL = original;
   });
-  process.env.DOTLN_FIXTURE_PATH = root;
+  process.env.SHELL = root;
   const refused = await runGate(["--only", "kernel"], root);
   assert.equal(refused.exitCode, 0);
   assert.equal(refused.reusedSuites, 0);
   assert.equal(refused.replicaSetup.suites.length, 0);
   assert.match(
     refused.freshReasons.find((value) => value.name === "kernel").policy,
-    /DOTLN_FIXTURE_PATH/,
+    /SHELL/,
   );
   // With --only, the aggregate shares the suite row's check id; only the suite
   // row carries the task name and its execution root.
@@ -1245,7 +1482,7 @@ mkdirSync('packages/kernel/dist/test',{recursive:true});writeFileSync('packages/
     (value) => value.checkId === "suite:kernel" && value.name === "kernel",
   );
   assert.equal(recorded.executionRoot, "candidate");
-  assert.match(recorded.narrowingRefusal, /DOTLN_FIXTURE_PATH/);
+  assert.match(recorded.narrowingRefusal, /SHELL/);
   const reused = await runGate(["--only", "kernel"], root);
   assert.equal(reused.reusedSuites, 1);
   assert.equal(reused.replicaSetup.suites.length, 0);
@@ -1253,7 +1490,7 @@ mkdirSync('packages/kernel/dist/test',{recursive:true});writeFileSync('packages/
   const wholeTree = await runGate(["--only", "kernel"], root);
   assert.equal(wholeTree.reusedSuites, 0);
   assert.equal(wholeTree.replicaSetup.suites.length, 0);
-  delete process.env.DOTLN_FIXTURE_PATH;
+  delete process.env.SHELL;
   const narrowed = await runGate(["--only", "kernel"], root);
   assert.equal(narrowed.reusedSuites, 0);
   assert.equal(narrowed.replicaSetup.suites.length, 1);

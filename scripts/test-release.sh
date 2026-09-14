@@ -178,6 +178,7 @@ make_repo() {
     '#!/usr/bin/env bash' \
     'set -euo pipefail' \
     "real_npm='$real_npm'" \
+    "node_bin='$node_bin'" \
     "real_publish='$real_publish'" \
     'case "${1:-}" in' \
     '  --version) printf "10.8.0\\n" ;;' \
@@ -198,6 +199,7 @@ make_repo() {
     '  run)' \
     '    if [[ "${2:-}" != "test:full" ]]; then exit 64; fi' \
     '    printf "full\\n" >>"$DOTLN_NPM_LOG"' \
+    '    if [[ -f scripts/fixture-full-gate.mjs ]]; then exec "$node_bin" scripts/fixture-full-gate.mjs; fi' \
     '    exec "$0" test ;;' \
     '  test)' \
     '    printf "test\\n" >>"$DOTLN_NPM_LOG"' \
@@ -1288,6 +1290,25 @@ assert.deepEqual(manifest.evidence.map(row => row.command), ["npm run test:full"
 for (const row of manifest.evidence) {assert.equal(row.treeHash, process.argv[3]); assert.ok(row.durationMs >= 0);}
 NODE
 printf 'current release manifest reused one executed full gate by exact Git tree with durations\n'
+
+# Exercise the real closeout consumer after a reviewed branch merges with an
+# unrelated main-only document. Its aggregate is new; all 62 declared suite
+# successes must come from the handed-off review despite the new session.
+make_repo cache_composition
+subject="$fixture/reviewed"
+git -C "$main" worktree add -b wo-099 "$subject" main >/dev/null 2>&1
+"$node_bin" "$script_dir/test-release-composition.mjs" prepare "$subject"
+commit_candidate "$subject" WO-099 v0.2.1
+"$node_bin" "$script_dir/test-release-composition.mjs" installed "$subject"
+(cd "$subject" && PATH="$bin:$PATH" CLAUDE_PID=500001 GIT_SSH_COMMAND=synthetic-review "$node_bin" scripts/fixture-full-gate.mjs) >"$fixture/reviewed-gate.log"
+printf 'Independent main-only document\n' >"$main/docs/merge-note.md"
+git -C "$main" add docs/merge-note.md
+git -C "$main" commit -m 'Synthetic main-only document' >/dev/null
+git -C "$main" merge --no-edit wo-099 >/dev/null
+"$node_bin" "$script_dir/test-release-composition.mjs" handoff "$subject" "$main"
+git -C "$main" push origin main >/dev/null 2>&1
+CLAUDE_PID=500002 GIT_SSH_COMMAND=synthetic-close release_close WO-099 --publish >"$fixture/close-gate.log"
+"$node_bin" "$script_dir/test-release-composition.mjs" assert "$main"
 }
 
 release_case_concurrent() {

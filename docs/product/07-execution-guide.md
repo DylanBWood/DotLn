@@ -128,11 +128,20 @@ recorded passes without a transition and receives the same briefing and
 terminal receipt, projected read-only by `npm run resume -- briefing` from the
 current phase, so a session that resumes a recorded repair, verification or
 final review starts with the support list and intent instruction the recording
-session received; a lifecycle that cannot project that briefing refuses the
-phrase rather than passing it without them
+session received. A lifecycle that cannot project that briefing accepts the
+prompt and supplies advisory context about the missing setup
 ([WO-130-D015](../evidence/WO-130/decisions.md#wo-130-d015)). A phrase that is
-not legal in the current phase is refused with the lifecycle's legal actions,
-so no session can begin work on an order whose phase has not moved. A
+not legal in the current phase is accepted with the lifecycle's legal actions
+and no automatic transition. **Operator correction during WO-131:** startup
+and prompt submission must never block access to Claude or Codex. Missing
+runtime, unreadable state, unavailable briefings and refused dispatches are
+advisory at this boundary. Command-time guards still judge attempted effects;
+an accepted prompt does not claim its dispatch ran. Worktree creation prepares
+dependencies and the hook runtime before printing the launch handoff. A raw or
+interrupted checkout can run `node scripts/bootstrap.mjs`; this source-only
+entry point and read access remain available even when a pre-tool adapter
+cannot load. Bootstrap installs with lifecycle scripts disabled, builds, then
+emits the local hooks, with no new operator step. A
 lifecycle that exposes no legal actions leaves the command to the role, and
 Codex sessions still run the command explicitly (a resumed Codex session runs
 `npm run resume -- briefing` itself). The prose duty this replaces was skipped in WO-130's repair
@@ -421,6 +430,39 @@ Run the affected executable checks and release/publication preflights on the int
 The existing resume phrases remain the operator interface. The actor performing a handoff completes authorized integration chores within that session. `npm run release -- prepare` handles a colliding target, the README claim, and a dated roadmap note under the recorded release classification. It uses origin's tag observation; `--local` deliberately uses only the fetched local tag snapshot. It never publishes, alters component versions, or appends control events. A missing component bump against the verified branch baseline remains an executor defect. A component bump that was valid at verification may be retimed during integration if upstream consumed the same version, preserving its already-declared compatibility impact and recording that evidence; this is distinct from omitting the original bump. `npm test` runs `check-surfaces --local` before expensive suites against annotated local releases in the subject's own `HEAD` ancestry. Worktrees share tag refs, so an unintegrated sibling's newer tag is excluded from this verification baseline. `worktree publish` / `release close` retain the authoritative remote check on the integrated result. No command acquires authority from a sibling's phase.
 
 The fuller `worktree sync` automation remains WO-033's deliverable. Until it ships, the integrating actor runs the existing preserve → fetch/merge → apply → regenerate procedure and records the evidence-impact assessment. That manual seam is explicit; it is not a rule that workflows restart when their bases differ. The [breakout receipt](../evidence/WO-041/ideation.md) records the measured failure that prompted this correction.
+
+## Operator recovery controls
+
+`analysis:` interrupts the current routine and opens operator-directed diagnosis.
+The agent explains the observed state, constraints and next options, and awaits
+direction before resuming the interrupted routine. Treat the Westworld analogy
+as this interaction shape. Preserve pending work. Diagnostic access cannot
+depend on a valid worktree, lifecycle, runtime, version observation or gate.
+
+`operator override:` opens an explicit recovery session in which DotLn's hooks
+do not veto the operator's instructions or the tools needed to carry them out.
+It precedes runtime imports and repository-state checks. The mode is scoped to
+the session and continues until `operator override: off`; a new session does
+not inherit it. `analysis:` also suspends hook enforcement so diagnosis cannot
+be locked behind a broken command classifier. The phrase itself authorizes
+diagnosis; subsequent operator instructions determine any repair effects.
+Neither command performs a lifecycle dispatch or claims a check passed.
+The agent still acts within the actual operator request and the host's tool
+permissions. These controls must be present in Claude's generated entry code
+and Codex's shared instructions, with a dependency-free local adapter.
+
+**Candidate — immediate working-state recovery.** Operator override must be
+able to restore a usable working repository despite DotLn holds, locks,
+incomplete setup or damaged operational state. Recovery may use a dedicated
+script or an operator-directed ad hoc repair; no healthy harness or approval
+from the broken gate may be a prerequisite. Preserve source, intake and prior
+evidence, record the operator's disposition and the old state, and expose which
+requirements were bypassed. An operator-authorized working state is distinct
+from measured passing verification. General lifecycle reconstruction, live
+process handling and the recovery event shape remain planning choices. The
+unconditional entry commands are WO-131 scope; this general helper is a
+preserved requirement, not a claim of implemented recovery for every corrupt
+repository. Source and review duties: [WO-131 ideation receipt](../evidence/WO-131/ideation.md).
 
 ## Operator-opened ideation mode
 
@@ -1268,6 +1310,24 @@ claim evidence or releases it does not have.
   and release-close follow the same entry/handoff measurement duty through
   their generated role instructions. Resolve a collection failure before
   reporting completion. Do not substitute another session or invent zero.
+  **Operator correction, 2026-09-14: the final gate ends report authoring.**
+  Finish tracked reports, required measurements, release preparation and meter
+  generation before the final gate. State each report's observation cutoff;
+  cite the lifecycle completion event for the final checked tree. Run
+  `npm run harness -- evidence`, then on pass read the current outputs, record
+  the lifecycle result, refresh its index once and hand off. The final gate's
+  timings remain in ignored `docs/control/local/harness/checks.json` and its
+  archives; handoff counters remain in ignored
+  `docs/control/local/process/usage.jsonl`. Report those later observations in
+  the response. Do not edit a checked report, regenerate its meter, or rerun
+  release preparation merely to include the cost of checking that report.
+  Completion already recollects usage without changing the candidate tree.
+  Its event and index are expected post-check records, not a new obligation
+  to gate the gate's own completion. A substantive correction still requires
+  affected checks at its new bytes; no report, evidence or source path is
+  excluded from the exact-tree requirement. VER-002's three completion runs
+  after report edits were avoidable recurring work, not a required safety
+  property ([WO-131-D022](../evidence/WO-131/decisions.md#wo-131-d022)).
   Codex cached input is already included in its input count; Claude cache reads
   and cache writes are added to uncached input and output. Duplicate Claude
   message IDs count once. These totals are usage, not context-window occupancy
@@ -1376,9 +1436,11 @@ claim evidence or releases it does not have.
   refusal double. Planning fixtures and the current planning check remain
   separate required tasks. Live progress names the running suite/case and
   elapsed time, with bounded line count and length. Reviewed input scopes may
-  reuse executed successes across unrelated document edits. WO-130 executes
-  kernel, compiler, skeleton, worktree, planning fixtures, process-debt and
-  release cases inside declared-input replicas. Each fresh narrowed execution
+  reuse executed successes across unrelated document edits. WO-131 declares all
+  reusable fixture suites, including the remaining shell suites; each other
+  task names its current-tree or live-check retention reason. Console fixture
+  tests and its real host collection check have separate tasks with unchanged
+  assertions. Each fresh narrowed execution
   copies its declared candidate files and links the installed roots to one
   verified read-only copy per gate in external scratch. Workspace manifests
   are declaration-owned support for the installed links. Nonce-named replica
@@ -1391,7 +1453,7 @@ claim evidence or releases it does not have.
   invocation metadata: it is absent from every suite's execution and key, so
   it never refuses narrowing. A refused narrowing is neither silent nor
   unkeyed: the task runs in the candidate tree under the whole-tree contract
-  (every non-document candidate file plus the declared documents), the fresh
+  (all candidate files, including documents outside the declaration), the fresh
   explanation and the recorded task row name the refusal, and that key never
   coincides with a replica key. Replica children carry
   `GIT_CEILING_DIRECTORIES` at the unlistable parent, so a `git: none` replica
@@ -1401,16 +1463,36 @@ claim evidence or releases it does not have.
   first available missing-path diagnostic; it never silently retries in the
   candidate tree. Declarations explicitly choose `git: none` or a deterministic
   `replica-repo`; candidate history and local Git metadata are absent from the
-  latter. The installed inventory includes `.runtime/harness`, and protects
-  those bytes during gates. Setup duration, installed-copy bytes and each
+  latter. The installed inventory includes the manifest-pinned runtime roots
+  under `.runtime/harness` and protects those bytes during gates. Older retained
+  snapshots remain on disk for recovery; their differing history does not
+  invalidate current suites or inflate each gate copy. Absent or unreadable
+  runtime selection conservatively includes the complete runtime directory.
+  Setup duration, installed-copy bytes and each
   replica execution accompany the existing task evidence. A script excluded
   by a package declaration no longer invalidates that package's success.
   The `format` task formats code only; Markdown, JSON and event logs keep the
   bytes their authors and generators wrote
   ([WO-130-D008](../evidence/WO-130/decisions.md#wo-130-d008)).
-  These copies constrain relative and projected reads for reviewed suites;
-  the accepted unprojected absolute-path/same-user residual remains, with
-  reopening conditions in [WO-130-D001](../evidence/WO-130/decisions.md#wo-130-d001).
+  The gate probes effective kernel read denial once, distinguishing denied
+  reads from refused sandbox startup. When available it wraps every narrowed
+  execution and its descendants and records that protection in the sealed
+  source success. The denial is an addition, never a condition of reuse: a
+  host that refuses sandbox startup, which every sandboxed Claude or Codex role
+  session on the operator's host does, still executes the declared suite in
+  its replica, records the success under the same key and reuses it, and every
+  gate and suite row records whether the denial applied
+  ([WO-131-D019](../evidence/WO-131/decisions.md#wo-131-d019)). The accepted
+  residual is a suite that reads an undeclared candidate file by a literal
+  absolute path in a session without the denial; the real-host counterexample,
+  the unavailable-host reuse and the provenance checks are covered by
+  `scripts/test-suite-sandbox.mjs`, and the host observation outside the
+  nested sandbox must also pass. A replica's PATH is the ordered list of
+  existing physical directories from the session PATH, so a dangling per-shell
+  entry, a repeated spelling or a symlink spelling of one directory cannot fork
+  a key between sessions
+  ([WO-131-D020](../evidence/WO-131/decisions.md#wo-131-d020)). The historical
+  planning overrides remain unchanged; D009's caching condition is withdrawn.
   WO-129 keys each suite by its declared candidate paths, declared Git state, projected
   environment, toolchain and installed roots. Every inventoried suite declares
   Git state: none by default; the index reads `HEAD` and `refs/tags/*`, and the
@@ -1423,12 +1505,16 @@ claim evidence or releases it does not have.
   hooks, filters and attribute/exclude adapters still force whole-tree execution.
   Replica keys cover their declared bytes, types and listings, installed roots,
   host configuration, projected environment, command and mechanism version.
-  Sealed version-3 successes live once per repository under
-  `<git common dir>/dotln/suite-success`; version-2 records are ignored and
+  Sealed version-4 successes include source execution protection and live once
+  per repository under `<git common dir>/dotln/suite-success`; older records are ignored and
   never migrated. Matching sibling worktrees share successes. Checkout-local
   executable search paths and npm's checkout-local `npm_config_local_prefix`
   use relative identity; replica execution rebinds those local paths. External npm
   prefixes and other projected environment differences still invalidate reuse.
+  Every narrowed suite now declares the environment it can observe. The same
+  filtered values feed execution and identity; `CLAUDE_PID`, `GIT_SSH_COMMAND`
+  and caller `TMPDIR` are absent, while runner-owned temporary paths replace
+  scratch locations. Changing a declared variable invalidates the success.
   The real-npm sibling regression and tag invalidation correction are recorded
   in [WO-129-D005](../evidence/WO-129/decisions.md#wo-129-d005).
   Physical checkout, CPU count and OS release are execution observations. Each
@@ -1458,8 +1544,24 @@ claim evidence or releases it does not have.
   its load class or measured baseline; see [D008](../evidence/WO-128/decisions.md#wo-128-d008).
   [VER-001 F2](../verifications/WO-128/VER-001.md#findings) measured the shared
   choice at about 204 s more per fresh gate than exclusive scheduling on the
-  same source (462.3 s against 666.5 s); restoring the two flags is an open
-  operator decision recorded in [WO-128-D010](../evidence/WO-128/decisions.md#wo-128-d010).
+  same source (462.3 s against 666.5 s). The operator’s WO-131 scope expansion
+  requires measured payoff before completion and reopens that decision:
+  `harness-fixtures` and `process-debt` again use the existing isolated class.
+  Every task and deadline remains; fresh and composed host timings decide the
+  result. See [WO-131-D014](../evidence/WO-131/decisions.md#wo-131-d014);
+  [WO-128-D010](../evidence/WO-128/decisions.md#wo-128-d010) remains historical.
+  WO-131 also removed repeated immutable Git reads inside the planning subject
+  reader. Each observation still resolves its requested revision, but committed
+  tree indexes and blob bytes are retained by repository and object identity in
+  bounded process-local LRU caches; one `git cat-file --batch` request reads up
+  to 32 missing blobs. Workspace subjects always read current files. The
+  planning fixture keeps all 27 cases and remains one of the same 79 tasks. Its
+  measured fixture work fell from 230.92 seconds to 77.81 seconds. After the
+  three-lane harness fixture completes, the planning fixture may occupy the one
+  lane left by the three-lane process-debt fixture; runner fixtures remain
+  isolated. A changed load declaration invalidates its prior success. See
+  [WO-131-D017](../evidence/WO-131/decisions.md#wo-131-d017) and the
+  [host measurements](../evidence/WO-131/README.md).
   The same suite
   inventory, file-concurrency limit and global cap remain. Each task receives
   a declared shared cap of at most four slots or an isolated cap of one, with

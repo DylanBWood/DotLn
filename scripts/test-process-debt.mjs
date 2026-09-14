@@ -94,6 +94,7 @@ import {
   commitMessageInputs,
 } from "../packages/skeleton/dist/src/harness-command.js";
 import { atomicBuild, publishBuildTree } from "./build.mjs";
+import { bootstrapWorktree } from "./bootstrap.mjs";
 import {
   FOLLOWUPS,
   collectFollowupSources,
@@ -109,7 +110,8 @@ import {
   readAdjacentQueue,
 } from "./lib/adjacent-queue.mjs";
 import { main as planMain } from "./refute-plan.mjs";
-import { runGate, suites } from "./test-runner.mjs";
+import { runGate, suites, expandSuiteTasks } from "./test-runner.mjs";
+import { suiteDeclaration } from "./lib/suite-evidence.mjs";
 import { releaseCases } from "./lib/release-fixtures.mjs";
 import { readControl } from "./lib/control-store.mjs";
 const source = resolve(import.meta.dirname, "..");
@@ -228,7 +230,7 @@ const input = (root, event, session = "fixture", extra = {}) => ({
 const config = (root, name) =>
   JSON.parse(
     readFileSync(join(root, `.claude/hooks/${name}.mjs`), "utf8").match(
-      /await runHarnessHook\(([\s\S]*), feedbackBoundary\);/,
+      /await runHarnessHook\(([\s\S]*), feedbackBoundary(?:, input)?\);/,
     )[1],
   );
 const statePath = (root, session = "fixture") =>
@@ -237,7 +239,71 @@ const statePath = (root, session = "fixture") =>
     `docs/control/local/harness/${createHash("sha256").update(session).digest("hex")}.json`,
   );
 
-test("WO-129 three-role full gates compose through lifecycle transitions at each exact tree", async (t) => {
+test("WO-131 a same-host subagent spawn is admitted, a remote one is refused by name, and an unclassified tool names itself", (t) => {
+  const root = repo(t);
+  emitHarness(root);
+  const invoke = (extra) => {
+    const run = spawnSync(process.execPath, [".claude/hooks/permissions.mjs"], {
+      cwd: root,
+      encoding: "utf8",
+      input: JSON.stringify(input(root, "PreToolUse", `${root}:spawn`, extra)),
+    });
+    assert.equal(run.status, 0, run.stderr);
+    return JSON.parse(run.stdout).hookSpecificOutput ?? {};
+  };
+  const agent = {
+    description: "Read-only survey",
+    prompt: "Summarize the orders",
+    subagent_type: "Explore",
+  };
+  assert.notEqual(
+    invoke({ tool_name: "Agent", tool_input: agent }).permissionDecision,
+    "deny",
+  );
+  assert.notEqual(
+    invoke({
+      tool_name: "Task",
+      tool_input: { ...agent, isolation: "worktree" },
+    }).permissionDecision,
+    "deny",
+  );
+  const remote = invoke({
+    tool_name: "Agent",
+    tool_input: { ...agent, isolation: "remote" },
+  });
+  assert.equal(remote.permissionDecision, "deny");
+  assert.match(remote.permissionDecisionReason, /Remote subagents/);
+  assert.doesNotMatch(remote.permissionDecisionReason, /host facts/);
+  const unknown = invoke({
+    tool_name: "SomeNewTool",
+    tool_input: { anything: true },
+  });
+  assert.equal(unknown.permissionDecision, "deny");
+  assert.match(
+    unknown.permissionDecisionReason,
+    /Unclassified effectful tool: SomeNewTool/,
+  );
+  // A spawn during a live gate is admitted too: the subagent's own writes
+  // are refused one by one while the gate holds its inputs.
+  const active = beginGateRun(root, "npm run test:full");
+  try {
+    assert.notEqual(
+      invoke({ tool_name: "Agent", tool_input: agent }).permissionDecision,
+      "deny",
+    );
+    assert.equal(
+      invoke({
+        tool_name: "Write",
+        tool_input: { file_path: join(root, "package.json"), content: "{}" },
+      }).permissionDecision,
+      "deny",
+    );
+  } finally {
+    active.release();
+  }
+});
+
+test("WO-131 three-role full gates compose through lifecycle transitions and distinct session environments", async (t) => {
   const root = repo(t);
   write(
     root,
@@ -261,6 +327,7 @@ test("WO-129 three-role full gates compose through lifecycle transitions at each
     "scripts/test-suite-evidence.mjs",
     "scripts/test-release-fixtures.mjs",
     "scripts/test-gate-deadlines.mjs",
+    "scripts/test-suite-sandbox.mjs",
     "corpus/harness/wo101-id-corpus.test.mjs",
     "corpus/mutation/wo108-selftest.test.mjs",
   ])
@@ -283,10 +350,41 @@ for(const name of ['kernel','compiler','skeleton','console']) {
   );
   git(root, "add", ".");
   git(root, "commit", "-qm", "Synthetic full gate inventory");
-  const first = await runGate(["--full"], root);
+  // This lifecycle fixture owns synthetic checks; the real denial adapter has
+  // separate executed process coverage. The implementation session can apply
+  // the denial; the verification and final-review sessions are sandboxed role
+  // sessions whose host refuses sandbox startup. Reuse across them proves the
+  // denial is an addition, never a condition.
+  const gate = (denialAvailable) =>
+    runGate(["--full"], root, {
+      kernelProbe: () =>
+        denialAvailable
+          ? {
+              available: true,
+              reason: "synthetic lifecycle adapter",
+              command: [],
+            }
+          : {
+              available: false,
+              reason: "synthetic role session refuses sandbox startup",
+            },
+    });
+  const tasks = expandSuiteTasks(
+    suites.filter((row) => !row.document || row.fast),
+    root,
+    "/synthetic-template",
+  );
+  const reusable = tasks
+    .filter(
+      (row) => suiteDeclaration(row)?.paths && row.name !== "release:prepare",
+    )
+    .map((row) => row.name)
+    .sort();
+  const first = await gate(true);
   assert.equal(first.exitCode, 0);
-  assert.equal(first.freshSuites, 78);
+  assert.equal(first.freshSuites, tasks.length);
   assert.equal(first.reusedSuites, 0);
+  assert.equal(first.kernelDenial.available, true);
   const segment = "docs/control/orders/WO-999.jsonl";
   let ordinal = 1;
   const transition = (type, extra = {}) => {
@@ -319,20 +417,52 @@ for(const name of ['kernel','compiler','skeleton','console']) {
     source: "operator-attested",
   };
   const measured = [];
+  const roleTemps = mkdtempSync(join(tmpdir(), "dotln-role-session-"));
+  t.after(() => rmSync(roleTemps, { recursive: true, force: true }));
+  const variables = ["CLAUDE_PID", "GIT_SSH_COMMAND", "TMPDIR"];
+  const priorEnvironment = Object.fromEntries(
+    variables.map((name) => [name, process.env[name]]),
+  );
+  t.after(() => {
+    for (const [name, value] of Object.entries(priorEnvironment)) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+  });
   const composed = async () => {
+    process.env.CLAUDE_PID = String(500_000 + measured.length);
+    process.env.GIT_SSH_COMMAND = `synthetic-session-${measured.length}`;
+    process.env.TMPDIR = join(roleTemps, String(measured.length));
+    mkdirSync(process.env.TMPDIR, { recursive: true });
     const expected = gateTreeHash(root);
-    const result = await runGate(["--full"], root);
+    const result = await gate(false);
     assert.equal(result.exitCode, 0);
+    assert.equal(result.kernelDenial.available, false);
     assert.equal(result.executionMode, "composed");
-    assert.equal(result.freshSuites, 32);
-    assert.equal(result.reusedSuites, 46);
+    assert.equal(result.freshSuites, tasks.length - reusable.length);
+    assert.equal(result.reusedSuites, reusable.length);
+    assert.deepEqual(
+      result.taskTimeline
+        .filter((row) => row.reused)
+        .map((row) => row.name)
+        .sort(),
+      reusable,
+    );
     assert.equal(result.treeHash, expected);
     assert.ok(
       ![first, ...measured].some((prior) => prior.treeHash === expected),
     );
-    assert.equal(result.freshReasons.length, 32);
+    assert.equal(result.freshReasons.length, tasks.length - reusable.length);
     const retained = findGateCheck(root, "npm run test:full", expected);
-    assert.equal(retained.reusedSuites, 46);
+    assert.equal(retained.reusedSuites, reusable.length);
+    assert.equal(retained.kernelDenial.available, false);
+    const carried = readGateChecks(root, expected).findLast(
+      (row) =>
+        row.checkId === `suite:${reusable[0]}` && row.treeHash === expected,
+    );
+    assert.equal(carried.reused, true);
+    assert.equal(carried.kernelDenial.available, false);
+    assert.equal(carried.sourceExecution.kernelDenial.applied, true);
     measured.push(result);
   };
   assert.equal(
@@ -549,8 +679,21 @@ test("session outputs include only two observed edits; generated and oversized f
   assert.deepEqual(harnessOutputObligations(root, state(root)), owed);
 });
 
-test("all four completion actions demand full evidence and current reads while Stop advises and releases", async (t) => {
+test("all four completion actions collect final usage after one gate without invalidating reports; Stop advises and releases", async (t) => {
   const root = repo(t, { runtime: true });
+  write(
+    root,
+    "package.json",
+    json({
+      type: "module",
+      scripts: { "test:full": "node .runtime/check.mjs" },
+    }),
+  );
+  write(
+    root,
+    ".runtime/check.mjs",
+    "import { appendFileSync } from 'node:fs'; appendFileSync('.runtime/runs.txt', 'full\\n');\n",
+  );
   const oldHome = process.env.CODEX_HOME,
     oldThread = process.env.CODEX_THREAD_ID;
   process.env.CODEX_HOME = join(root, ".runtime/codex");
@@ -577,7 +720,9 @@ test("all four completion actions demand full evidence and current reads while S
       /npm run test:full/,
     );
   }
-  recordGateChecks(root, [gate(root), gate(root, "git diff --check")]);
+  const checkedTree = gateTreeHash(root);
+  const finalChecks = runHarnessEvidence(root);
+  assert.ok(finalChecks.every((row) => row.exitCode === 0 && row.executed));
   const deliveredRoles = new Set();
   for (const [action, role] of actions) {
     if (!deliveredRoles.has(role))
@@ -626,6 +771,24 @@ test("all four completion actions demand full evidence and current reads while S
         .readCount,
       1,
     );
+    // The counters arrive after the full gate and are collected by completion.
+    // Reading/reporting those local receipts must not demand another gate.
+    const usage = readFileSync(
+      join(root, "docs/control/local/process/usage.jsonl"),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map(JSON.parse)
+      .at(-1);
+    assert.equal(usage.observation.usage.totalTokens, 120);
+    assert.equal(usage.role, role);
+    assert.equal(gateTreeHash(root), checkedTree);
+    assert.deepEqual(readGateChecks(root, checkedTree), finalChecks);
+    assert.equal(
+      readFileSync(join(root, ".runtime/runs.txt"), "utf8"),
+      "full\n",
+    );
     const ownState = state(root, role);
     ownState.remainingWork = ["criterion unresolved"];
     writeFileSync(statePath(root, role), json(ownState));
@@ -636,6 +799,11 @@ test("all four completion actions demand full evidence and current reads while S
     ownState.remainingWork = [];
     writeFileSync(statePath(root, role), json(ownState));
   }
+  write(root, "own.txt", "A substantive report correction after the gate.\n");
+  await assert.rejects(
+    requireLifecycleEvidence(root, "final-review-result", "pass", "WO-999"),
+    /npm run test:full/,
+  );
   beginHarnessSession(root, "fixture", "executor");
   const request = input(root, "PreToolUse", "fixture", {
     tool_name: "Edit",
@@ -1187,7 +1355,6 @@ test("effect inventory refuses opaque tools and classifies invocations instead o
   for (const name of [
     "Monitor",
     "NotebookEdit",
-    "Agent",
     "unknown_effectful_tool",
     "write_stdin",
   ])
@@ -1195,6 +1362,21 @@ test("effect inventory refuses opaque tools and classifies invocations instead o
       () => permissionEffect({ tool_name: name, tool_input: {} }),
       /adapter|Unclassified|Unknown|unclassified|unsupported/i,
     );
+  // A same-host subagent spawn is a read: its own effects are guarded one by
+  // one. Only a remote agent leaves those guards.
+  for (const name of ["Agent", "Task"])
+    assert.equal(
+      permissionEffect({ tool_name: name, tool_input: {} }),
+      "repo.read",
+    );
+  assert.throws(
+    () =>
+      permissionEffect({
+        tool_name: "Agent",
+        tool_input: { isolation: "remote" },
+      }),
+    /Remote subagents/,
+  );
 });
 
 test("ancestor text mapping resolves an opaque process name once per session", async (t) => {
@@ -3699,7 +3881,443 @@ test("source-reconciled overlapping usage replaces aggregation without deleting 
   assert.equal(order.usage[0].sessionKey, undefined);
 });
 
-test("WO-130 the session hook records the operator's dispatch from the phrase, passes a recorded one and refuses an illegal one", async (t) => {
+test("WO-131 operator-control precedes runtime, state, Git, gate and writer checks in every generated hook", (t) => {
+  const root = repo(t, { runtime: true });
+  emitHarness(root);
+  const settings = JSON.parse(
+    readFileSync(join(root, ".claude/settings.json"), "utf8"),
+  );
+  const paths = Object.entries(settings.hooks).flatMap(([event, rows]) =>
+    rows.flatMap((row) =>
+      row.hooks.map((hook) => ({
+        event,
+        path: join(
+          root,
+          ".claude/hooks",
+          /hooks\/([^"/]+\.mjs)/.exec(hook.command)[1],
+        ),
+      })),
+    ),
+  );
+  const originals = new Map(
+    paths.map(({ path }) => [path, readFileSync(path, "utf8")]),
+  );
+  const sessionHook = paths.find(
+    ({ event }) => event === "UserPromptSubmit",
+  ).path;
+  const preHook = paths.find(({ event }) => event === "PreToolUse").path;
+  const controlLog = join(root, "docs/control/orders/WO-999.jsonl");
+  const before = readFileSync(controlLog, "utf8");
+  seedHarnessWriter(root, {
+    actorId: createHash("sha256").update(`${root}:foreign`).digest("hex"),
+    worktree: root,
+    owner: { pid: process.pid, source: "parent" },
+    reservedAt: new Date().toISOString(),
+  });
+  const writerBefore = harnessWriterView(root);
+  const invoke = (path, event, session, extra = {}) => {
+    const run = spawnSync(process.execPath, [path], {
+      cwd: root,
+      encoding: "utf8",
+      timeout: 20_000,
+      input: JSON.stringify(
+        input(root, event, session, {
+          tool_name: "Bash",
+          tool_input: { command: "node arbitrary-recovery.mjs" },
+          ...extra,
+        }),
+      ),
+    });
+    assert.equal(run.status, 0, run.stderr);
+    return JSON.parse(run.stdout);
+  };
+  const accepts = (response) => {
+    assert.equal(response.decision, undefined);
+    assert.notEqual(response.continue, false);
+    assert.notEqual(response.hookSpecificOutput?.permissionDecision, "deny");
+    assert.match(response.systemMessage, /operator-control/);
+  };
+  for (const mode of ["analysis", "operator override"]) {
+    const session = `${root}:${mode}`;
+    const held = beginGateRun(root, "operator-control fixture gate");
+    try {
+      // Corruption includes the normal session and journal, not merely an
+      // illegal lifecycle phase. Operator control cannot parse either first.
+      writeFileSync(statePath(root, session), "{broken");
+      writeFileSync(
+        statePath(root, session).replace(/\.json$/, ".jsonl"),
+        "{broken\n",
+      );
+      for (const failure of ["healthy-runtime", "missing-runtime", "bad-pin"]) {
+        for (const [path, original] of originals)
+          writeFileSync(
+            path,
+            failure === "missing-runtime"
+              ? original.replaceAll(
+                  "packages/skeleton/dist/src/",
+                  "missing-runtime/",
+                )
+              : failure === "bad-pin"
+                ? original.replace(
+                    /"hash": "fnv1a64:[^"]+"/,
+                    '"hash": "fnv1a64:0000000000000000"',
+                  )
+                : original,
+          );
+        accepts(
+          invoke(sessionHook, "UserPromptSubmit", session, {
+            prompt: `${mode}: explain and repair`,
+            cwd: dirname(root),
+          }),
+        );
+        for (const { path, event } of paths)
+          accepts(
+            invoke(path, event, session, {
+              cwd: dirname(root),
+              ...(event === "UserPromptSubmit"
+                ? { prompt: "continue the diagnosis" }
+                : {}),
+            }),
+          );
+      }
+      assert.equal(
+        readFileSync(controlLog, "utf8"),
+        before,
+        "no lifecycle event invented",
+      );
+      assert.equal(
+        activeGateRuns(root).length,
+        1,
+        "opening control preserves the existing gate",
+      );
+      assert.deepEqual(
+        harnessWriterView(root),
+        writerBefore,
+        "opening control preserves the existing writer",
+      );
+      const other = invoke(preHook, "PreToolUse", session + ":other");
+      assert.equal(
+        other.hookSpecificOutput?.permissionDecision,
+        "deny",
+        "another session inherits no override",
+      );
+      accepts(
+        invoke(sessionHook, "UserPromptSubmit", session, {
+          prompt: `${mode}: off`,
+        }),
+      );
+      assert.equal(
+        invoke(preHook, "PreToolUse", session).hookSpecificOutput
+          ?.permissionDecision,
+        "deny",
+        "explicit exit restores normal checks",
+      );
+    } finally {
+      held.release();
+      for (const [path, original] of originals) writeFileSync(path, original);
+    }
+  }
+});
+
+test("WO-131 generated hooks admit the printed release-close handoff and preview from main without a writer", (t) => {
+  const root = repo(t, { runtime: true });
+  git(root, "branch", "-m", "main");
+  cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  copyFileSync(
+    join(source, "scripts/resume.mjs"),
+    join(root, "scripts/resume.mjs"),
+  );
+  installBeaconFixture(root);
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — fixture (v0.2.1)\n\n**Objective:** Synthetic closeout.\n",
+  );
+  write(
+    root,
+    "scripts/release.mjs",
+    "throw new Error('admission must not execute publication');\n",
+  );
+  const segment = join(root, "docs/control/orders/WO-999.jsonl");
+  const events = [
+    { type: "ImplementationReady" },
+    {
+      type: "VerificationRequested",
+      verificationId: "VER-001",
+      reportPath: "docs/verifications/WO-999/VER-001.md",
+    },
+    {
+      type: "VerificationCompleted",
+      verificationId: "VER-001",
+      verdict: "pass",
+    },
+    {
+      type: "FinalReviewRequested",
+      finalReviewId: "FINAL-001",
+      throughVerificationId: "VER-001",
+      reportPath: "docs/final-reviews/WO-999/FINAL-001.md",
+    },
+    {
+      type: "FinalReviewCompleted",
+      finalReviewId: "FINAL-001",
+      verdict: "pass",
+    },
+  ];
+  writeFileSync(
+    segment,
+    readFileSync(segment, "utf8") +
+      events
+        .map((event) =>
+          JSON.stringify({ schemaVersion: 1, workOrderId: "WO-999", ...event }),
+        )
+        .join("\n") +
+      "\n",
+  );
+  emitHarness(root);
+  const printed = spawnSync(
+    process.execPath,
+    ["scripts/resume.mjs", "release-close"],
+    { cwd: root, encoding: "utf8" },
+  );
+  assert.equal(printed.status, 0, printed.stderr);
+  const handoff = printed.stdout.match(
+    /from this main checkout: (.+?)\. This narrowly/,
+  )[1];
+  assert.doesNotMatch(handoff, /^cd /);
+  const invoke = (name, event, extra = {}) => {
+    const run = spawnSync(process.execPath, [`.claude/hooks/${name}.mjs`], {
+      cwd: root,
+      encoding: "utf8",
+      input: JSON.stringify(input(root, event, `${root}:close`, extra)),
+    });
+    assert.equal(run.status, 0, run.stderr);
+    return JSON.parse(run.stdout);
+  };
+  invoke("session", "UserPromptSubmit", { prompt: "resume: release close" });
+  const before = readFileSync(segment, "utf8");
+  for (const command of [
+    handoff,
+    handoff.replace(/--publish$/, "--dry-run"),
+    "npm run release -- close WO-999 --publish",
+  ])
+    for (const name of ["permissions", "concurrent-work-requires-worktrees"])
+      assert.notEqual(
+        invoke(name, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+        }).hookSpecificOutput?.permissionDecision,
+        "deny",
+        command,
+      );
+  const rejected = invoke("concurrent-work-requires-worktrees", "PreToolUse", {
+    tool_name: "Bash",
+    tool_input: { command: handoff + " --force" },
+  });
+  assert.equal(rejected.hookSpecificOutput?.permissionDecision, "deny");
+  assert.match(
+    rejected.hookSpecificOutput?.permissionDecisionReason,
+    /verified exclusive worktree/,
+  );
+  assert.equal(harnessWriterView(root).reserved, false);
+  assert.equal(readFileSync(segment, "utf8"), before);
+});
+
+test("WO-131 operator-control source adapter works without Git or dependencies and retains session isolation", (t) => {
+  const root = repo(t);
+  // Copy only the actual dependency-free source paths; no package manifests,
+  // node_modules, dist, lifecycle or generated harness is required.
+  const bare = join(root, "bare");
+  write(
+    bare,
+    "scripts/operator-control.mjs",
+    readFileSync(join(source, "scripts/operator-control.mjs")),
+  );
+  write(
+    bare,
+    "packages/compiler/src/operator-control.mjs",
+    readFileSync(join(source, "packages/compiler/src/operator-control.mjs")),
+  );
+  const session = `${root}:adapter`;
+  const run = (mode, id = session) =>
+    spawnSync(
+      process.execPath,
+      [join(bare, "scripts/operator-control.mjs"), mode, "--session", id],
+      { cwd: bare, encoding: "utf8" },
+    );
+  for (const mode of ["analysis", "override", "off"]) {
+    const result = run(mode);
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /operator-control/);
+  }
+  assert.match(run("status").stdout, /ordinary workflow/);
+  assert.match(run("status", session + ":other").stdout, /ordinary workflow/);
+  const unavailable = join(bare, "not-a-directory");
+  writeFileSync(unavailable, "fixture\n");
+  const failedStore = spawnSync(
+    process.execPath,
+    [
+      join(bare, "scripts/operator-control.mjs"),
+      "override",
+      "--session",
+      session,
+    ],
+    {
+      cwd: bare,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        TMPDIR: unavailable,
+        TMP: unavailable,
+        TEMP: unavailable,
+      },
+    },
+  );
+  assert.equal(failedStore.status, 0, failedStore.stderr);
+  assert.match(failedStore.stdout, /could not be read or persisted.*advisory/);
+});
+
+test("WO-131 generated prompt hook accepts missing runtime, damaged state and malformed input", (t) => {
+  const root = repo(t, { runtime: true });
+  emitHarness(root);
+  const path = join(root, ".claude/hooks/session.mjs");
+  const original = readFileSync(path, "utf8");
+  const accepts = (payload, expected) => {
+    const run = spawnSync(process.execPath, [path], {
+      cwd: root,
+      input: payload,
+      encoding: "utf8",
+      timeout: 20_000,
+    });
+    assert.equal(run.status, 0, run.stderr);
+    const response = JSON.parse(run.stdout);
+    assert.equal(response.decision, undefined);
+    assert.equal(response.continue, undefined);
+    assert.notEqual(response.hookSpecificOutput?.permissionDecision, "deny");
+    assert.match(response.systemMessage, /prompt accepted/);
+    assert.match(response.systemMessage, expected);
+    assert.equal(harnessWriterView(root).reserved, false);
+  };
+  const payload = JSON.stringify(
+    input(root, "UserPromptSubmit", "broken-prompt", {
+      prompt: "resume: next",
+    }),
+  );
+  // Exercise the generated bootstrap catch, before the host can even load.
+  writeFileSync(
+    path,
+    original.replaceAll("packages/skeleton/dist/src/", "missing-runtime/"),
+  );
+  accepts(payload, /built adapter unavailable/);
+  writeFileSync(path, original);
+  write(
+    root,
+    "docs/control/local/harness/" +
+      createHash("sha256").update("broken-prompt").digest("hex") +
+      ".json",
+    "{broken",
+  );
+  accepts(payload, /session state unreadable/);
+  accepts("{not-json", /built adapter unavailable/);
+  writeFileSync(
+    path,
+    original.replace(
+      /"hash": "fnv1a64:[^"]+"/,
+      '"hash": "fnv1a64:0000000000000000"',
+    ),
+  );
+  accepts(payload, /host facts or pinned runtime unavailable/);
+});
+
+test("WO-131 bootstrap works without dependencies and stops before a launch handoff when preparation fails", (t) => {
+  const root = repo(t);
+  write(root, ".claude/harness-manifest.json", "{}\n");
+  const calls = [];
+  const run = (command, args, options) => {
+    assert.equal(options.cwd, root);
+    calls.push([command, ...args]);
+    return { status: 0, stdout: root + "\n" };
+  };
+  assert.equal(bootstrapWorktree(root, run), 3);
+  assert.deepEqual(calls, [
+    ["git", "rev-parse", "--show-toplevel"],
+    ["npm", "ci", "--ignore-scripts", "--no-audit", "--no-fund"],
+    ["npm", "run", "build", "--silent"],
+    [process.execPath, "scripts/harness.mjs", "emit"],
+  ]);
+  calls.length = 0;
+  assert.throws(
+    () =>
+      bootstrapWorktree(root, (command, args, options) => {
+        const result = run(command, args, options);
+        return command === "npm" ? { status: 1 } : result;
+      }),
+    /checkout is preserved.*Retry node scripts\/bootstrap.mjs/,
+  );
+  assert.equal(calls.length, 2);
+});
+
+test("WO-131 missing bootstrap runtime permits reads and its exact repair command through every pre-tool hook", (t) => {
+  const root = repo(t, { runtime: true });
+  emitHarness(root);
+  const settings = JSON.parse(
+    readFileSync(join(root, ".claude/settings.json"), "utf8"),
+  );
+  const hooks = settings.hooks.PreToolUse.flatMap((entry) => entry.hooks);
+  for (const hook of hooks) {
+    const name = /hooks\/([^"/]+\.mjs)/.exec(hook.command)[1];
+    const path = join(root, ".claude/hooks", name);
+    const original = readFileSync(path, "utf8");
+    for (const broken of [
+      original.replaceAll("packages/skeleton/dist/src/", "missing-runtime/"),
+      original.replace(
+        /"hash": "fnv1a64:[^"]+"/,
+        '"hash": "fnv1a64:0000000000000000"',
+      ),
+    ]) {
+      writeFileSync(path, broken);
+      for (const [tool_name, tool_input, admitted] of [
+        ["Read", { file_path: "CLAUDE.md" }, true],
+        ["Bash", { command: "node scripts/bootstrap.mjs" }, true],
+        [
+          "exec_command",
+          { cmd: "node scripts/bootstrap.mjs", workdir: root },
+          true,
+        ],
+        ["Bash", { command: "node scripts/bootstrap.mjs && git push" }, false],
+        [
+          "Bash",
+          { command: "node scripts/bootstrap.mjs", cwd: dirname(root) },
+          false,
+        ],
+        ["Edit", { file_path: "fixture.ts" }, false],
+      ]) {
+        const run = spawnSync(process.execPath, [path], {
+          cwd: root,
+          encoding: "utf8",
+          timeout: 20_000,
+          input: JSON.stringify(
+            input(root, "PreToolUse", "bootstrap-session", {
+              tool_name,
+              tool_input,
+            }),
+          ),
+        });
+        assert.equal(run.status, 0, run.stderr);
+        const response = JSON.parse(run.stdout);
+        assert.equal(
+          response.hookSpecificOutput?.permissionDecision !== "deny",
+          admitted,
+          `${name}: ${JSON.stringify(tool_input)}`,
+        );
+      }
+    }
+    writeFileSync(path, original);
+  }
+});
+
+test("WO-131 prompt submission records legal dispatches and accepts illegal or unbriefed requests with context", async (t) => {
   const root = repo(t, { runtime: true });
   // A lifecycle stub with legal actions: status reports them, fix and verify
   // record their transitions, and anything else refuses as the real command does.
@@ -3824,12 +4442,12 @@ if (action === "status") {
   assert.equal(events(), 2);
   assert.equal(phase(), "repairing");
   const illegal = await call("dispatch-verify", "resume: verify");
-  assert.equal(illegal.decision, "block");
+  assert.equal(illegal.decision, undefined);
   assert.match(
-    illegal.reason,
+    illegal.hookSpecificOutput.additionalContext,
     /resume: verify is not a legal dispatch in phase repairing; legal actions: repair-complete/,
   );
-  assert.equal(illegal.systemMessage, undefined);
+  assert.match(illegal.systemMessage, /prompt accepted/);
   assert.equal(events(), 2);
   assert.equal(existsSync(statePath(root, "dispatch-verify")), false);
   const status = await call("dispatch-status", "resume: status");
@@ -3837,8 +4455,7 @@ if (action === "status") {
   assert.equal(status.systemMessage, undefined);
   assert.equal(events(), 2);
   // A lifecycle that exposes legal actions but cannot project the recorded
-  // dispatch's briefing refuses the resumed phrase, naming the failure, rather
-  // than passing it without the supports and the intent instruction.
+  // dispatch's briefing accepts the prompt and explains that setup failed.
   write(
     root,
     "scripts/resume.mjs",
@@ -3849,12 +4466,12 @@ else { console.error("error: unknown resume action: " + process.argv[2]); proces
 `,
   );
   const unbriefed = await call("dispatch-unbriefed", "resume: fix");
-  assert.equal(unbriefed.decision, "block");
-  assert.equal(
-    unbriefed.reason,
-    "DOTLN_HARNESS_REFUSED: dispatch fix is already recorded (phase repairing) but its briefing is unavailable: error: unknown resume action: briefing",
+  assert.equal(unbriefed.decision, undefined);
+  assert.match(
+    unbriefed.hookSpecificOutput.additionalContext,
+    /dispatch fix is already recorded \(phase repairing\) but its briefing is unavailable: error: unknown resume action: briefing/,
   );
-  assert.equal(unbriefed.systemMessage, undefined);
+  assert.match(unbriefed.systemMessage, /prompt accepted/);
   assert.equal(events(), 2);
   assert.equal(existsSync(statePath(root, "dispatch-unbriefed")), false);
   // A lifecycle without legal actions (an older projection or a plain stub)
@@ -3870,7 +4487,7 @@ else { console.error("error: unknown resume action: " + process.argv[2]); proces
   assert.equal(events(), 2);
 });
 
-test("WO-130 a prompt dispatch is admitted exactly as the command it replaces: a live gate or a foreign writer refuses it before any lifecycle change, an admitted one holds the writer, a resumed one receives the recorded briefing, and next stays a metadata command", async (t) => {
+test("WO-131 prompt submission stays open while dispatches retain the ordinary command's gate and writer checks", async (t) => {
   const root = repo(t, { runtime: true });
   // The real lifecycle, its libraries and the source modules they import, so
   // the guarded cases judge actual events, checkpoints and projections.
@@ -4031,13 +4648,17 @@ test("WO-130 a prompt dispatch is admitted exactly as the command it replaces: a
   ).hookSpecificOutput;
   assert.equal(gateDenied.permissionDecision, "deny");
   const gatedPrompt = prompt("gated-session", "resume: verify");
-  assert.equal(gatedPrompt.decision, "block");
-  assert.equal(gatedPrompt.reason, gateDenied.permissionDecisionReason);
-  assert.match(
-    gatedPrompt.reason,
-    /^DOTLN_HARNESS_REFUSED: write may change gate inputs during active gate synthetic active evidence gate \(run [0-9a-f-]{36}, pid \d+\)$/,
+  assert.equal(gatedPrompt.decision, undefined);
+  assert.ok(
+    gatedPrompt.hookSpecificOutput.additionalContext.includes(
+      gateDenied.permissionDecisionReason,
+    ),
   );
-  assert.equal(gatedPrompt.systemMessage, undefined);
+  assert.match(
+    gatedPrompt.hookSpecificOutput.additionalContext,
+    /DOTLN_HARNESS_REFUSED: write may change gate inputs during active gate synthetic active evidence gate \(run [0-9a-f-]{36}, pid \d+\)/,
+  );
+  assert.match(gatedPrompt.systemMessage, /prompt accepted/);
   assert.deepEqual(lifecycle(), gated);
   assert.equal(activeGateRuns(root).length, 1);
   assert.equal(harnessWriterView(root).reserved, false);
@@ -4056,13 +4677,17 @@ test("WO-130 a prompt dispatch is admitted exactly as the command it replaces: a
   ).hookSpecificOutput;
   assert.equal(writerDenied.permissionDecision, "deny");
   const contended = prompt("contender", "resume: verify");
-  assert.equal(contended.decision, "block");
-  assert.equal(contended.reason, writerDenied.permissionDecisionReason);
-  assert.match(
-    contended.reason,
-    /^DOTLN_HARNESS_REFUSED: concurrent-work-requires-worktrees: write dispatch lacks a verified exclusive worktree; the worktree is reserved by another session \(actor [0-9a-f]{12}; host process \d+ is alive\)\. Finish that session/,
+  assert.equal(contended.decision, undefined);
+  assert.ok(
+    contended.hookSpecificOutput.additionalContext.includes(
+      writerDenied.permissionDecisionReason,
+    ),
   );
-  assert.equal(contended.systemMessage, undefined);
+  assert.match(
+    contended.hookSpecificOutput.additionalContext,
+    /DOTLN_HARNESS_REFUSED: concurrent-work-requires-worktrees: write dispatch lacks a verified exclusive worktree; the worktree is reserved by another session \(actor [0-9a-f]{12}; host process \d+ is alive\)\. Finish that session/,
+  );
+  assert.match(contended.systemMessage, /prompt accepted/);
   assert.deepEqual(lifecycle(), reserved);
   assert.equal(harnessWriterView(root).actorId, actor("foreign-session"));
   assert.equal(existsSync(statePath(root, "contender")), false);

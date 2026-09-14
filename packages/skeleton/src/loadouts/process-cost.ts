@@ -4,5 +4,5 @@ import { promptSupport } from "./prompt-support.js";
 export const processCost = promptSupport(
   "process-cost",
   "Process Cost",
-  "Process Cost: Measure tokens at entry/handoff: `node scripts/harness.mjs usage <session>`. Report total, source and scope; repair collection errors. Compare measured cost against equivalent outcomes; phase totals include useful work and waiting. Record material tradeoffs; never invent counts.",
+  "Process Cost: At entry/handoff run `node scripts/harness.mjs usage <session>`. Report total, source, scope and cutoff; fix collection errors. Final counters stay in ignored receipts and the response. Compare equivalent outcomes including work and waiting; name tradeoffs, invent no counts.",
 );

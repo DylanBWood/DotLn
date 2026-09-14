@@ -1,4 +1,5 @@
 import { COMPILER_PACKAGE_VERSION } from "./artifact-identity.js";
+import { operatorControl } from "./operator-control.mjs";
 import {
   assertCompiledFeedback,
   compileFeedbackUnits,
@@ -397,18 +398,36 @@ export function lowerToHarness(
                 "DOTLN_HARNESS_REFUSED: built adapter unavailable",
             },
           }
-        : event === "Stop"
+        : event === "UserPromptSubmit"
           ? {
               systemMessage:
-                "DotLn: built adapter unavailable; lifecycle evidence remains required.",
+                "DotLn: prompt accepted; built adapter unavailable. Read the repository instructions and run node scripts/bootstrap.mjs to prepare this worktree.",
             }
-          : {
-              decision: "block",
-              reason: "DOTLN_HARNESS_REFUSED: built adapter unavailable",
-            };
+          : event === "Stop"
+            ? {
+                systemMessage:
+                  "DotLn: built adapter unavailable; lifecycle evidence remains required.",
+              }
+            : {
+                decision: "block",
+                reason: "DOTLN_HARNESS_REFUSED: built adapter unavailable",
+              };
+    const fallback =
+      event === "PreToolUse"
+        ? `let response = ${JSON.stringify(unavailable)};
+try {
+  const args = input?.tool_input ?? {};
+  const read = ["Read", "Glob", "Grep"].includes(input.tool_name);
+  const shell = ["Bash", "exec_command"].includes(input.tool_name)
+    && (args.workdir ?? args.cwd ?? input.cwd) === input.cwd
+    && ["pwd", "git status --short", "git status --short --branch", "git rev-parse --show-toplevel", "node scripts/bootstrap.mjs"].includes(String(args.command ?? args.cmd ?? ""));
+  if (read || shell) response = { systemMessage: "DotLn: built adapter unavailable; read access and node scripts/bootstrap.mjs remain available." };
+} catch {}
+process.stdout.write(JSON.stringify(response));`
+        : `process.stdout.write(${JSON.stringify(JSON.stringify(unavailable))});`;
     emit(
       path,
-      `${header}try {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, ...(config as object) }).trim()}, feedbackBoundary);\n} catch { process.stdout.write(${JSON.stringify(JSON.stringify(unavailable))}); }\n`,
+      `${header}let input;\ntry {\nconst { text } = await import("node:stream/consumers");\ninput = JSON.parse(await text(process.stdin));\nconst control = await (${operatorControl.toString()})(input, ${JSON.stringify(event)});\nif (control) { process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, ...(config as object) }).trim()}, feedbackBoundary, input);\n}\n} catch { ${fallback} }\n`,
       names,
       rung,
     );

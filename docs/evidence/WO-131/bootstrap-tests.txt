@@ -1,0 +1,20 @@
+TAP version 13
+# Subtest: WO-131 bootstrap works without dependencies and stops before a launch handoff when preparation fails
+ok 1 - WO-131 bootstrap works without dependencies and stops before a launch handoff when preparation fails
+  ---
+  duration_ms: 172.653375
+  ...
+# Subtest: WO-131 missing bootstrap runtime permits reads and its exact repair command through every pre-tool hook
+ok 2 - WO-131 missing bootstrap runtime permits reads and its exact repair command through every pre-tool hook
+  ---
+  duration_ms: 4171.095875
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4439.543958

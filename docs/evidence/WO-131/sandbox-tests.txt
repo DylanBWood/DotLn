@@ -1,0 +1,74 @@
+TAP version 13
+# FRESH build (preparation; no prior success)
+# PROGRESS [build] 0.0 s started
+# Subtest: WO-131 sandbox probe distinguishes denied reads from unavailable startup
+ok 1 - WO-131 sandbox probe distinguishes denied reads from unavailable startup
+  ---
+  duration_ms: 0.610459
+  ...
+# Subtest: WO-131 actual host denies literal absolute candidate reads in parent and descendant processes
+ok 2 - WO-131 actual host denies literal absolute candidate reads in parent and descendant processes # SKIP host refused sandbox startup
+  ---
+  duration_ms: 287.30225
+  ...
+# PASS build 0.05 s
+# FRESH kernel (no prior success)
+# PROGRESS [kernel] 0.0 s started
+# PROGRESS [kernel] 0.1 s \# Subtest: fixture
+# PASS kernel 0.09 s
+# npm test: 2 passed; 0 failed; 1.51 s; 2 fresh / 0 reused tasks
+# FRESH build (preparation; no prior success)
+# PROGRESS [build] 0.0 s started
+# PASS build 0.06 s
+# REUSE kernel original 0.09 s at 2026-09-14T15:55:20.409Z
+# npm test: 2 passed; 0 failed; 1.33 s; 1 fresh / 1 reused tasks
+# FRESH build (preparation; no prior success)
+# PROGRESS [build] 0.0 s started
+# PASS build 0.05 s
+# REUSE kernel original 0.09 s at 2026-09-14T15:55:20.409Z
+# npm test: 2 passed; 0 failed; 1.29 s; 1 fresh / 1 reused tasks
+# FRESH build (preparation; no prior success)
+# PROGRESS [build] 0.0 s started
+# PASS build 0.06 s
+# FRESH kernel (documents: docs/product/02-domain-model.md)
+# PROGRESS [kernel] 0.0 s started
+# PROGRESS [kernel] 0.1 s \# Subtest: fixture
+# PASS kernel 0.09 s
+# npm test: 2 passed; 0 failed; 1.44 s; 2 fresh / 0 reused tasks
+# FRESH build (preparation; no prior success)
+# PROGRESS [build] 0.0 s started
+# Subtest: WO-131 unavailable denial still narrows, records its provenance and reuses across sessions with or without the denial
+ok 3 - WO-131 unavailable denial still narrows, records its provenance and reuses across sessions with or without the denial
+  ---
+  duration_ms: 6886.121209
+  ...
+# PASS build 0.06 s
+# FRESH kernel (no prior success)
+# PROGRESS [kernel] 0.0 s started
+# PROGRESS [kernel] 0.1 s \# Subtest: fixture
+# PASS kernel 0.13 s
+# npm test: 2 passed; 0 failed; 1.51 s; 2 fresh / 0 reused tasks
+# FRESH build (preparation; no prior success)
+# PROGRESS [build] 0.0 s started
+# PASS build 0.06 s
+# REUSE kernel original 0.13 s at 2026-09-14T15:55:27.336Z
+# npm test: 2 passed; 0 failed; 1.31 s; 1 fresh / 1 reused tasks
+# FRESH build (preparation; no prior success)
+# PROGRESS [build] 0.0 s started
+# PASS build 0.06 s
+# REUSE kernel original 0.13 s at 2026-09-14T15:55:27.336Z
+# npm test: 2 passed; 0 failed; 1.30 s; 1 fresh / 1 reused tasks
+# Subtest: WO-131 runner applies one probed wrapper, seals its source execution provenance and a session without the denial reuses it
+ok 4 - WO-131 runner applies one probed wrapper, seals its source execution provenance and a session without the denial reuses it
+  ---
+  duration_ms: 5162.367917
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 12393.521375

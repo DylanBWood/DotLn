@@ -104,6 +104,10 @@ try {
         console.log(JSON.stringify({ checks }));
         if (checks.some((check) => check.exitCode !== 0 || !check.executed))
           process.exitCode = 1;
+        else
+          console.log(
+            "Final evidence passed. Keep tracked reports at their stated measurement cutoff; gate results remain in docs/control/local/harness/checks.json and usage in docs/control/local/process/usage.jsonl. Read current outputs, record the lifecycle result, refresh its index once and hand off. Report final timings and counters in the response; do not edit reports or rerun generation and the gate solely to copy these results.",
+          );
       } finally {
         active.release();
       }
