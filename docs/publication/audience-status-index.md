@@ -212,6 +212,7 @@ as a current blocked verdict.
 | [Operator resume phrases — how you get dispatched](../product/07-execution-guide.md#operator-resume-phrases--how-you-get-dispatched)                         | software-engineer                   | implemented |
 | [Independent workflows and integration](../product/07-execution-guide.md#independent-workflows-and-integration)                                              | software-engineer                   | implemented |
 | [Operator-opened ideation mode](../product/07-execution-guide.md#operator-opened-ideation-mode)                                                              | software-engineer                   | specified   |
+| [Operator recovery controls](../product/07-execution-guide.md#operator-recovery-controls)                                                                  | software-engineer                   | specified   |
 | [Ideation breakout receipt and verification](../product/07-execution-guide.md#ideation-breakout-receipt-and-verification)                                    | software-engineer                   | specified   |
 | [Operator-opened planning pass](../product/07-execution-guide.md#operator-opened-planning-pass)                                                              | software-engineer                   | implemented |
 | [Retained planning follow-ups](../product/07-execution-guide.md#retained-planning-follow-ups)                                                                | software-engineer                   | implemented |

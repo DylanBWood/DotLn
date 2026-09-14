@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-14T14:04:29.611Z",
+  "baseline": {
+    "workOrder": "WO-130",
+    "fresh": {
+      "observations": 8,
+      "minimumMs": 780365,
+      "medianMs": 797118,
+      "maximumMs": 811264,
+      "taskCount": 78
+    },
+    "composed": {
+      "observations": 5,
+      "minimumMs": 398712,
+      "medianMs": 409653,
+      "maximumMs": 432311,
+      "freshTasks": 32,
+      "reusedTasks": 46
+    },
+    "source": "docs/evidence/WO-131/historical-gate-costs.json"
+  },
+  "acceptedFresh": {
+    "treeHash": "ee5b5829982a98d9ff2fb5f234ccf08ee19864d3",
+    "recordedAt": "2026-09-14T14:04:29.611Z",
+    "durationMs": 801849,
+    "freshTasks": 79,
+    "reusedTasks": 0,
+    "passedSuites": 37,
+    "failedSuites": 0,
+    "aggregateTaskWorkMs": 1458937,
+    "criticalPathMs": 800388,
+    "evidenceRef": "host-gate:ee5b5829982a98d9ff2fb5f234ccf08ee19864d3:npm run test:full"
+  },
+  "sameTreeComposition": {
+    "treeHash": "1be8ba9d1b0baceb5e76ea831ca35fcfc346ac20",
+    "recordedAt": "2026-09-14T13:37:00.080Z",
+    "durationMs": 38357,
+    "freshTasks": 10,
+    "reusedTasks": 69,
+    "passedSuites": 37,
+    "failedSuites": 0,
+    "freshReferenceMs": 820885,
+    "savedMs": 782528,
+    "reductionPercent": 95.33,
+    "speedup": 21.4,
+    "evidenceRef": "host-gate:1be8ba9d1b0baceb5e76ea831ca35fcfc346ac20:npm run test:full"
+  },
+  "documentTransition": {
+    "treeHash": "1fe382902f77e8256557da8e6c375d30fa69e57c",
+    "recordedAt": "2026-09-14T14:09:15.479Z",
+    "durationMs": 57403,
+    "freshTasks": 17,
+    "reusedTasks": 62,
+    "passedSuites": 37,
+    "failedSuites": 0,
+    "aggregateTaskWorkMs": 105071,
+    "freshNames": [
+      "build",
+      "publication",
+      "format",
+      "license-surfaces",
+      "harness",
+      "release-surfaces",
+      "harness-context",
+      "artifact-evidence",
+      "harness-evidence",
+      "authority-evidence",
+      "meta",
+      "feedback-evidence",
+      "verification-evidence",
+      "index",
+      "release:prepare",
+      "plan-refutation:current",
+      "console:current"
+    ],
+    "evidenceRef": "host-gate:1fe382902f77e8256557da8e6c375d30fa69e57c:npm run test:full"
+  },
+  "changedSession": {
+    "treeHash": "1fe382902f77e8256557da8e6c375d30fa69e57c",
+    "recordedAt": "2026-09-14T14:11:54.339Z",
+    "durationMs": 57413,
+    "freshTasks": 17,
+    "reusedTasks": 62,
+    "passedSuites": 37,
+    "failedSuites": 0,
+    "aggregateTaskWorkMs": 105253,
+    "changedInvocationValues": [
+      "CLAUDE_PID",
+      "GIT_SSH_COMMAND",
+      "TMPDIR"
+    ],
+    "evidenceRef": "host-gate:1fe382902f77e8256557da8e6c375d30fa69e57c:npm run test:full"
+  },
+  "representativeLifecycle": {
+    "baselineMs": 1616424,
+    "currentMs": 916665,
+    "savedMs": 699759,
+    "reductionPercent": 43.29,
+    "speedup": 1.76,
+    "baselinePhysicalExecutions": 142,
+    "currentPhysicalExecutions": 113,
+    "physicalExecutionsSaved": 29,
+    "physicalExecutionReductionPercent": 20.42
+  },
+  "coldWorkComparison": {
+    "priorAggregateTaskWorkMs": 1836983,
+    "acceptedAggregateTaskWorkMs": 1458937,
+    "savedMs": 378046,
+    "reductionPercent": 20.58
+  },
+  "grossMeasurementInvestment": {
+    "durationMs": 6625898,
+    "includedInvocationCount": 14,
+    "scope": "Recorded WO-131 full-gate and explicit phase measurement invocations through the changed-session row; excludes targeted tests and operator labor.",
+    "documentTransitionBreakEvenLaterGates": 18.81,
+    "representativeLifecycleBreakEvenWorkOrders": 9.47
+  },
+  "inventory": {
+    "aggregateSuites": 37,
+    "scheduledTasks": 79,
+    "deletedTests": 0,
+    "sameTreePhysicalExecutions": 10,
+    "sameTreeReusedCertificates": 69,
+    "physicalExecutionReductionPercent": 87.34
+  },
+  "repair": {
+    "date": "2026-09-14",
+    "session": "sandboxed Claude Code role session; kernel denial probe: host refused sandbox startup; every declared suite executed in its replica",
+    "verificationBefore": {
+      "treeHash": "0fa17674d9a4aec7663268e4a6c90af7aa1386b7",
+      "recordedAt": "2026-09-14T14:47:56.892Z",
+      "durationMs": 807236,
+      "freshTasks": 79,
+      "reusedTasks": 0,
+      "executionRoot": "candidate",
+      "source": "docs/verifications/WO-131/VER-001.md F1"
+    },
+    "attempts": [
+      {
+        "treeHash": "338e49d1b3d71f032225a56948f9cd264bd7a073",
+        "recordedAt": "2026-09-14T16:12:35.005Z",
+        "durationMs": 27472,
+        "freshTasks": 14,
+        "reusedTasks": 0,
+        "passedSuites": 13,
+        "failedSuites": 24,
+        "cause": "authority-evidence preflight: revision 006 stale after the hook regeneration; revision 007 recorded"
+      },
+      {
+        "treeHash": "01613db3c2ffe7926c96649983a721e89819ea60",
+        "recordedAt": "2026-09-14T16:23:39.630Z",
+        "durationMs": 547973,
+        "freshTasks": 79,
+        "reusedTasks": 0,
+        "passedSuites": 36,
+        "failedSuites": 1,
+        "replicaSuites": 63,
+        "aggregateTaskWorkMs": 968727,
+        "criticalPathMs": 546326,
+        "cause": "process-debt asserted the withdrawn spawn refusal; fixture updated"
+      }
+    ],
+    "sandboxedFresh": {
+      "treeHash": "0adcc393a773f6ba5b9b956d66f2eaba3dc31e02",
+      "recordedAt": "2026-09-14T16:33:30.885Z",
+      "durationMs": 513023,
+      "freshTasks": 75,
+      "reusedTasks": 4,
+      "reusedNames": [
+        "artifact-corpus",
+        "compiler",
+        "kernel",
+        "skeleton"
+      ],
+      "passedSuites": 37,
+      "failedSuites": 0,
+      "replicaSuites": 59,
+      "aggregateTaskWorkMs": 914437,
+      "criticalPathMs": 511392,
+      "evidenceRef": "host-gate:0adcc393a773f6ba5b9b956d66f2eaba3dc31e02:npm run test:full"
+    },
+    "sandboxedDocumentTransition": {
+      "treeHash": "4dd64c8a865caac429cebf15995e4a537d88d805",
+      "recordedAt": "2026-09-14T16:37:13.705Z",
+      "durationMs": 63389,
+      "freshTasks": 17,
+      "reusedTasks": 62,
+      "passedSuites": 37,
+      "failedSuites": 0,
+      "aggregateTaskWorkMs": 110538,
+      "criticalPathMs": 61885,
+      "freshNames": [
+        "build",
+        "publication",
+        "format",
+        "license-surfaces",
+        "harness",
+        "release-surfaces",
+        "harness-context",
+        "artifact-evidence",
+        "harness-evidence",
+        "authority-evidence",
+        "meta",
+        "feedback-evidence",
+        "verification-evidence",
+        "index",
+        "release:prepare",
+        "plan-refutation:current",
+        "console:current"
+      ],
+      "beforeRepairMs": 807236,
+      "savedMs": 743847,
+      "reductionPercent": 92.15,
+      "evidenceRef": "host-gate:4dd64c8a865caac429cebf15995e4a537d88d805:npm run test:full"
+    },
+    "successCache": {
+      "beforeRecords": 1909,
+      "beforeBytes": 161262628,
+      "afterRecords": 1664,
+      "afterBytes": 116778973,
+      "retainedPerSuite": 24
+    }
+  },
+  "limits": [
+    "WO-130 and WO-131 do not have identical task inventories; WO-131 has one additional scheduled task and additional behavior.",
+    "The same-tree composition is reported separately from the required document-transition observation.",
+    "Aggregate task work sums overlapping durations and is not wall time.",
+    "Release-close post-merge measurement belongs to the later closeout role.",
+    "The acceptedFresh, documentTransition and changedSession rows were recorded in a session where the kernel read denial was available; changedSession varied CLAUDE_PID, GIT_SSH_COMMAND and TMPDIR inside one shell and was not a second role session. Before the 2026-09-14 repair those rows required the denial and a sandboxed role session reused nothing (VER-001 F1).",
+    "The repair rows ran in a sandboxed session without the denial and with replica execution; their lower fresh wall-clock is consistent with the removed per-process sandbox wrapper but was not isolated and is not claimed as a speedup.",
+    "The independentVerification row is the first gate of VER-002 in a distinct sandboxed role session; it closes the recording gap noted by VER-002 F1. The earlier changedSession row remains a same-shell proxy."
+  ],
+  "independentVerification": {
+    "source": "docs/verifications/WO-131/VER-002.md",
+    "treeHash": "f7347d1667708707487357237396136d6e7117b5",
+    "recordedAt": "2026-09-14T16:44:19.840Z",
+    "durationMs": 62377,
+    "freshTasks": 17,
+    "reusedTasks": 62,
+    "passedSuites": 37,
+    "failedSuites": 0,
+    "kernelDenial": {
+      "available": false,
+      "reason": "host refused sandbox startup",
+      "applied": false
+    },
+    "freshNames": [
+      "build",
+      "publication",
+      "format",
+      "license-surfaces",
+      "harness",
+      "release-surfaces",
+      "harness-context",
+      "artifact-evidence",
+      "harness-evidence",
+      "authority-evidence",
+      "meta",
+      "feedback-evidence",
+      "verification-evidence",
+      "index",
+      "release:prepare",
+      "plan-refutation:current",
+      "console:current"
+    ],
+    "beforeRepairMs": 807236,
+    "savedMs": 744859,
+    "reductionPercent": 92.27,
+    "evidenceRef": "host-gate:f7347d1667708707487357237396136d6e7117b5:npm run test:full"
+  }
+}

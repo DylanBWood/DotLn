@@ -31,6 +31,8 @@ export type ContributorSupportSwitches = ExecutorSupportSwitches &
   Readonly<{ "process-cost"?: boolean; "goal-alignment"?: boolean }>;
 
 const handlers = personalFeedbackUnits.map((unit) => unit.trigger);
+const operatorControls =
+  "Operator controls precede workflow: `analysis:` pauses for diagnosis/direction; `operator override:` suspends DotLn gates for authorized recovery, regardless of harness/repo state. Preserve pending work; invent no dispatch or passing check. Exit with either prefix plus `off`. Codex: `node scripts/operator-control.mjs analysis|override|off|status` needs no build or Git. Host permissions apply. Read product 07 §Operator recovery controls for the broader recovery candidate.";
 const common = [
   "Resolve physical cwd and Git root before changing files or running Git commands. Work only in the selected worktree; one writable coding agent owns it.",
   "Run `npm run resume --silent -- status --json`; use its canonical selected order, phase, report paths, and legal actions. A stale Markdown projection is repaired only by the next legal transition.",
@@ -39,7 +41,7 @@ const common = [
   "Read: `@work-order`",
   "Read: `@citations`",
   "Read source and existing tests relevant to the order before changes. Scope those reads to `@subject-files`; unresolved paths remain a named input requirement.",
-  "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, `briefing`, and `next` need no Git escalation. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and refuses one that is not legal in the current phase. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning.",
+  "State-changing resume commands require one-invocation outside-sandbox approval in Codex; inspect the exact command, package mapping, and lifecycle-script diff first. `status`, `times`, `briefing`, and `next` need no Git escalation. In Claude Code the session hook records the dispatch named by the operator's phrase (`next`, `fix`, `verify`, `final-review`) before this procedure loads, delivers that command's briefing, passes a phrase whose dispatch is already recorded with the same briefing and receipt projected read-only by `npm run resume -- briefing` (a resumed Codex session runs that command itself), and reports a dispatch that is not legal in the current phase without rejecting the prompt. Prompt submission always remains open: setup, runtime and state failures are advisory, never a reason to deny access to Claude or Codex. It admits the dispatch exactly as the ordinary command: a live evidence gate or another session's writer reservation refuses it before any lifecycle change, and the terminal shows a one-line receipt naming the recorded dispatch and the equipped supports. Run no dispatch the harness recorded. Never repeat a recorded transition to repair a checkpoint warning.",
   "No branch commits before final review. Never reset, restore, clean, drop a stash, or discard intake. Preserve work through the canonical checkpoint and named recovery procedure if rollback is needed.",
   "Read: `@subject-files`",
   "Read: `package.json`",
@@ -49,7 +51,7 @@ const common = [
 const actor =
   "Completion flags: `--harness <harness> --harness-version <version> --model <model> --effort <level> --source <self-reported|harness-readback|operator-attested>`. Use exposed values; an unknown required effort blocks the handoff. The repository's Codex default is GPT-6 Astra at max, operator-attested unless actual readback is exposed.";
 const evidence =
-  "Finish measurements, required generation, release preparation and authored reports before completion. Run only `npm run harness -- evidence` for the final full gate and diff check. After build, it prepares the work-order index, decisions, follow-ups and generated harness before fingerprinting; unchanged outputs are not rewritten. Immutable evidence, publication locks and release targets remain explicit inputs. It reuses current successes. A separate fast gate is for an explicit fresh measurement, not a turn-end obligation. Diagnose failures, then retry this command; preflights stop costly suites and passing source checks are retained. A failed verification or review needs its reproduction and `git diff --check`. Review this session's authored outputs at current bytes; inherited changes add no read obligation. Generated files and files over 64 KB owe their declared generation or validation check. Use `node scripts/harness.mjs read-output <path> --offset 0 --length 8192` for bounded delivery and follow nextOffset. Claude observes tool reads; Codex uses the explicit begin/observe/delivered adapter without claiming automatic hooks. Stop gives one advisory line and releases the writer; completion commands enforce the same evidence conditions.";
+  "Finish measurements, generation, release preparation and reports before the final gate. Date their cutoff; cite the completion event for the final checked tree. Run only `npm run harness -- evidence` for the final full gate and diff check. It builds and refreshes the work-order index, decisions, follow-ups and harness before fingerprinting, preserving unchanged bytes. On pass, freeze source and reports: read current outputs, record the result, refresh its index once and hand off. Final timings and usage stay in ignored receipts and the response; never edit checked reports or rerun release-prepare/meta solely to copy counters. Completion collects usage itself. Results, counters and completion bookkeeping require no further gate. Substantive corrections still need affected checks at new bytes; no source, report or evidence path is exempt from exact-tree validation. Immutable evidence, publication locks and release targets remain explicit inputs. A separate fast gate is only for an explicit measurement. Diagnose failures before retrying; preflights stop costly suites and unchanged successes are reused. A failed review or verification needs its reproduction and `git diff --check`. Review current authored outputs; inherited changes add no reads. Generated files and files over 64 KB owe their generation or validation check. Use `node scripts/harness.mjs read-output <path> --offset 0 --length 8192` and follow nextOffset. Claude observes reads; Codex uses explicit begin/observe/delivered without claiming automatic hooks. Stop advises once and releases the writer; completion enforces evidence.";
 export const contributorRoles: readonly HarnessRole[] = [
   {
     facetId: "contributor.executor",
@@ -152,7 +154,10 @@ export const contributorRoles: readonly HarnessRole[] = [
       "The parent saves the worker's result and statement in ignored local files and runs `npm run plan -- receipt <result.json> --statement <statement.txt> [--dispositions <file>]`. The helper validates, screens, files and commits the immutable pair and runs the plan check. Preserve the actual verdict; apply only operator-authorized overrides. Repair formatting with the same worker without rerolling the judgment. Report scope, elapsed time and actual result. Use no ad hoc receipt script. External `refute --transport <name>` requires an explicit operator request; do not fall back to it after a worker failure. If background workers are unavailable, report that limitation and preserve the pending review.",
     ],
   },
-];
+].map((role) => ({
+  ...role,
+  procedure: [operatorControls, ...role.procedure],
+}));
 
 export const contributorEnvelope: AuthorityEnvelope = {
   authorityEnvelopeId: "contributor.sandboxed",
@@ -565,7 +570,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "CLAUDE.md",
     },
     refusal: "claude-command-json-v1",
-    runtime: { skeletonVersion: "0.15.10", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.11", boundaryContract: "feedback-v1" },
   },
   {
     profileId: "codex-cli-0.153.4",
@@ -601,6 +606,6 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "AGENTS.md",
     },
     refusal: "unavailable",
-    runtime: { skeletonVersion: "0.15.10", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.11", boundaryContract: "feedback-v1" },
   },
 ];

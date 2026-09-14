@@ -3,18 +3,18 @@
   "editions": {
     "authority": {
       "workOrder": "WO-131",
-      "revision": "002"
+      "revision": "009"
     },
     "artifact-identity": {
-      "workOrder": "WO-043",
+      "workOrder": "WO-131",
       "revision": null
     },
     "verification": {
-      "workOrder": "WO-043",
+      "workOrder": "WO-131",
       "revision": null
     },
     "feedback": {
-      "workOrder": "WO-129",
+      "workOrder": "WO-131",
       "revision": "001"
     }
   }

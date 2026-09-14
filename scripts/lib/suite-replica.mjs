@@ -24,7 +24,7 @@ import {
   resolve,
 } from "node:path";
 
-export const replicaMechanismVersion = 2;
+export const replicaMechanismVersion = 3;
 export const replicaNodeOptions = "--preserve-symlinks";
 export const replicaMainNodeOptions = `${replicaNodeOptions} --preserve-symlinks-main`;
 export const supportedReplicaNodeOptions = (value) =>
@@ -47,6 +47,17 @@ export const declaredPath = (paths, path) =>
       : path === input,
   );
 
+/** A declaration restricts execution and identity together. Fixtures supply
+ * their own harness identities; an ambient session cannot become a hidden input. */
+export const declaredSuiteEnvironment = (declaration, inherited) =>
+  Array.isArray(declaration?.environment)
+    ? Object.fromEntries(
+        Object.entries(inherited).filter(([name]) =>
+          declaration.environment.includes(name),
+        ),
+      )
+    : inherited;
+
 /** Select only candidate entries, plus structural parent directories. Directory
  * listings are represented by these selected names, never an ignored subtree. */
 export function replicaEntries(declaration, snapshot) {
@@ -60,6 +71,44 @@ export function replicaEntries(declaration, snapshot) {
   return snapshot.entries.filter(
     ([path]) => parents.has(path) || declaredPath(declaration.paths, path),
   );
+}
+
+/** Executable resolution walks existing directories in order, so those are the
+ * replica's PATH and its identity. A dangling per-shell entry, a repeated
+ * spelling, a symlink spelling of one directory or a non-directory resolves
+ * nothing and would otherwise fork one host's key between its sessions.
+ * Candidate entries keep their replica mapping; they may exist only there. */
+export function canonicalPathEntries(value, repo, aliases, root) {
+  const seen = new Set();
+  const entries = [];
+  for (const part of value.split(delimiter)) {
+    let entry = part;
+    if (part) {
+      const lexical = resolve(repo, part);
+      let physical = null;
+      try {
+        physical = realpathSync(lexical);
+      } catch {
+        /* Absent outside the candidate: dropped below. Absent inside it: mapped. */
+      }
+      const candidate = physical ?? lexical;
+      const base = aliases.find((alias) => within(alias, candidate));
+      if (base) entry = join(root, relative(base, candidate));
+      else if (isAbsolute(part)) {
+        if (!physical) continue;
+        try {
+          if (!lstatSync(physical).isDirectory()) continue;
+        } catch {
+          continue;
+        }
+        entry = physical;
+      }
+    }
+    if (seen.has(entry)) continue;
+    seen.add(entry);
+    entries.push(entry);
+  }
+  return entries;
 }
 
 /** The placeholders are the identity of runner-owned locations. Actual paths
@@ -103,14 +152,9 @@ export function projectReplicaEnvironment(
     return { refusal: "environment overrides the replica Git repository" };
   for (const [name, value] of Object.entries(env)) {
     if (name === "PATH") {
-      env[name] = value
-        .split(delimiter)
-        .map((part) => {
-          const absolute = physicalPath(resolve(repo, part));
-          const base = aliases.find((alias) => within(alias, absolute));
-          return base ? join(root, relative(base, absolute)) : part;
-        })
-        .join(delimiter);
+      env[name] = canonicalPathEntries(value, repo, aliases, root).join(
+        delimiter,
+      );
     } else if (
       /^npm_config_local_prefix$/i.test(name) &&
       aliases.includes(value)
@@ -143,6 +187,8 @@ export function projectReplicaEnvironment(
 export function replicaPlan(row, declaration, snapshot) {
   if (!declaration?.paths) return null;
   const refuse = (refusal) => ({ refusal });
+  // Kernel read denial is an addition where the host can start it, never a
+  // condition of narrowing: its availability is recorded, not keyed.
   if (!snapshot?.installedReusable)
     return refuse("installed inputs contain an unsupported link or file");
   if (!snapshot.replicaHostReusable)
@@ -160,7 +206,7 @@ export function replicaPlan(row, declaration, snapshot) {
     return refuse("suite arguments reveal the candidate tree");
   const projection = projectReplicaEnvironment(
     snapshot.repo,
-    snapshot.env,
+    declaredSuiteEnvironment(declaration, snapshot.env),
     "<replica>",
     "<suite-temporary>",
     declaration.nodeOptions,
@@ -391,7 +437,7 @@ export function createReplicaContext(repo) {
       }
       const projection = projectReplicaEnvironment(
         repo,
-        snapshot.env,
+        declaredSuiteEnvironment(declaration, snapshot.env),
         root,
         temporary,
         declaration.nodeOptions,

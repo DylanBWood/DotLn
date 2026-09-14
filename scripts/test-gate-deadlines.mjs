@@ -298,7 +298,13 @@ test("reuse keys distinguish the declared load policy without transient peer or 
   const task = {
     name: "index",
     command: ["fixture"],
-    loadPolicy: { loadClass: "shared", concurrency: 4, version: 1 },
+    loadPolicy: {
+      loadClass: "shared",
+      concurrency: 3,
+      priority: 120,
+      reservedSlots: 2,
+      version: 2,
+    },
   };
   const first = suiteInputHash(task, snapshot);
   assert.ok(first, "the fixture must establish a reusable observation");
@@ -315,6 +321,13 @@ test("reuse keys distinguish the declared load policy without transient peer or 
   assert.notEqual(
     suiteInputHash(
       { ...task, loadPolicy: { ...task.loadPolicy, concurrency: 1 } },
+      snapshot,
+    ),
+    first,
+  );
+  assert.notEqual(
+    suiteInputHash(
+      { ...task, loadPolicy: { ...task.loadPolicy, reservedSlots: 3 } },
       snapshot,
     ),
     first,

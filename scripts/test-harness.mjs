@@ -12,8 +12,10 @@ import {
 import { createHash } from "node:crypto";
 import {
   cpSync,
+  chmodSync,
   existsSync,
   linkSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
@@ -90,6 +92,17 @@ const write = (root, path, contents) => {
   writeFileSync(join(root, path), contents);
 };
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
+const writableFixtureCopy = (path) => {
+  const info = lstatSync(path);
+  if (info.isSymbolicLink()) return;
+  chmodSync(path, info.mode | 0o200 | (info.isDirectory() ? 0o700 : 0));
+  if (info.isDirectory())
+    for (const name of readdirSync(path)) writableFixtureCopy(join(path, name));
+};
+const removeFixture = (path, options) => {
+  if (existsSync(path)) writableFixtureCopy(path);
+  rmSync(path, options);
+};
 const control = {
   workOrder: "WO-999",
   workOrderPath: "docs/work-orders/WO-999-fixture.md",
@@ -106,6 +119,9 @@ function fixture() {
       join(root, `packages/${name}/dist/src`),
       { recursive: true },
     );
+    // The replica's installed graph is read-only. This fixture owns a mutable
+    // copy for deliberate damage and cleanup; never follow its external links.
+    writableFixtureCopy(join(root, `packages/${name}/dist`));
     cpSync(
       join(sourceRoot, `packages/${name}/package.json`),
       join(root, `packages/${name}/package.json`),
@@ -204,7 +220,9 @@ const configFor = (root, name) => {
     readFileSync(
       join(root, `.claude/hooks/${hookName(name)}.mjs`),
       "utf8",
-    ).match(/await runHarnessHook\(([\s\S]*), feedbackBoundary\);/)[1],
+    ).match(
+      /await runHarnessHook\(([\s\S]*), feedbackBoundary(?:, input)?\);/,
+    )[1],
   );
   if (stopUnits.has(name)) {
     config.kind = "feedback";
@@ -224,8 +242,8 @@ function invoke(root, name, payload, removed = false) {
     writeFileSync(
       path,
       source.replace(
-        /await runHarnessHook\([\s\S]*, feedbackBoundary\);/,
-        `await runHarnessHook(${json(config).trim()}, feedbackBoundary);`,
+        /await runHarnessHook\([\s\S]*, feedbackBoundary(?:, input)?\);/,
+        `await runHarnessHook(${json(config).trim()}, feedbackBoundary, input);`,
       ),
     );
   }
@@ -258,8 +276,8 @@ test("WO-129 generated hooks refuse writes to a linked worktree's shared suite c
   const sibling = realpathSync(
     mkdtempSync(join(tmpdir(), "dotln-cache-hook-")),
   );
-  t.after(() => rmSync(sibling, { recursive: true, force: true }));
-  t.after(() => rmSync(root, { recursive: true, force: true }));
+  t.after(() => removeFixture(sibling, { recursive: true, force: true }));
+  t.after(() => removeFixture(root, { recursive: true, force: true }));
   git(root, "worktree", "add", "--detach", sibling, "HEAD");
   for (const path of ["packages", "node_modules"])
     cpSync(join(root, path), join(sibling, path), { recursive: true });
@@ -738,7 +756,7 @@ while (!existsSync("${local}/" + stage + ".go")) {
         t.signal.removeEventListener("abort", release);
         release();
         if (finished) await finished;
-        rmSync(root, { recursive: true, force: true });
+        removeFixture(root, { recursive: true, force: true });
       }
     },
   );
@@ -795,7 +813,7 @@ test("WO-125 F3 a marker left by a killed gate owner does not block writes", asy
   } finally {
     if (child.exitCode === null) child.kill("SIGKILL");
     await exited;
-    rmSync(root, { recursive: true, force: true });
+    removeFixture(root, { recursive: true, force: true });
   }
 });
 const session = {
@@ -1065,7 +1083,7 @@ test("WO-039 generated hook subprocesses agree with the existing boundaries, inc
       false,
     );
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -1145,7 +1163,7 @@ test("WO-039 ranged receipts require complete current bytes despite gaps, duplic
     await observeInProcess(root, nativeRead(root, "review.txt", 1, 1));
     assert.equal(readiness(root, "read-your-own-output"), true);
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -1244,7 +1262,7 @@ test("WO-126 inherited output corpus adds no reads; authored bounded delivery re
       /output|refus|contained/i,
     );
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -1299,8 +1317,8 @@ test("WO-039 installed bundle detects content, missing, unexpected and manifest 
     assert.throws(() => emitHarness(root), /symlink|regular file/);
     assert.equal(readFileSync(join(outside, "sentinel"), "utf8"), "preserve\n");
   } finally {
-    rmSync(root, { recursive: true });
-    rmSync(outside, { recursive: true });
+    removeFixture(root, { recursive: true });
+    removeFixture(outside, { recursive: true });
   }
 });
 
@@ -1320,7 +1338,7 @@ test("WO-039 local terms are unavailable honestly or refuse without echoing the 
     );
     assert.equal(termsCheck(root, ["CLAUDE.md"]).status, "present");
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -1349,8 +1367,38 @@ test("WO-039 target does not change Seiri or Entropy Reducer semantic hashes", (
   );
 });
 
-test("WO-039 control observation uses the canonical read-only lifecycle command", () => {
-  const projection = join(sourceRoot, "docs/control/current.md");
+test("WO-039 control observation uses the canonical read-only lifecycle command", (t) => {
+  const root = fixture();
+  t.after(() => removeFixture(root, { recursive: true, force: true }));
+  cpSync(join(sourceRoot, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+  });
+  cpSync(
+    join(sourceRoot, "scripts/resume.mjs"),
+    join(root, "scripts/resume.mjs"),
+  );
+  for (const name of ["compiler", "kernel", "skeleton"])
+    cpSync(
+      join(sourceRoot, `packages/${name}/src`),
+      join(root, `packages/${name}/src`),
+      { recursive: true },
+    );
+  write(
+    root,
+    "docs/control/orders/WO-999.jsonl",
+    JSON.stringify({
+      schemaVersion: 1,
+      type: "WorkOrderActivated",
+      workOrderId: "WO-999",
+      workOrderPath: "docs/work-orders/WO-999-fixture.md",
+    }) + "\n",
+  );
+  write(
+    root,
+    "docs/control/current.md",
+    "Synthetic stale projection must remain untouched.\n",
+  );
+  const projection = join(root, "docs/control/current.md");
   const before = readFileSync(projection);
   assert.ok(
     [
@@ -1363,7 +1411,7 @@ test("WO-039 control observation uses the canonical read-only lifecycle command"
       "verified",
       "final-review",
       "closed",
-    ].includes(harnessControl(sourceRoot).phase),
+    ].includes(harnessControl(root).phase),
   );
   assert.deepEqual(readFileSync(projection), before);
 });
@@ -1607,7 +1655,7 @@ test("WO-039 generated read observer spans the session and its bounded scope clo
       "external attempted paths are reduced to a shape",
     );
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -1686,11 +1734,11 @@ test("WO-039 confirmed-token adapter uses the compiled correction and survives i
         expected,
       );
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
-test("WO-039 commit-message adapter has boundary parity and missing built adapters refuse before effects", () => {
+test("WO-039 commit-message adapter has boundary parity; unavailable runtime preserves prompts and reads but refuses writes", () => {
   const root = fixture();
   try {
     const path = join(root, ".claude/hooks/commit-msg.mjs");
@@ -1737,6 +1785,9 @@ test("WO-039 commit-message adapter has boundary parity and missing built adapte
       }).status,
       0,
     );
+    writableFixtureCopy(
+      join(root, configFor(root, "permissions").runtime.snapshot),
+    );
     rmSync(
       join(
         root,
@@ -1755,7 +1806,8 @@ test("WO-039 commit-message adapter has boundary parity and missing built adapte
           }),
         ),
       ),
-      false,
+      true,
+      "read access remains available to diagnose the unavailable adapter",
     );
     assert.equal(
       allowed(
@@ -1765,10 +1817,25 @@ test("WO-039 commit-message adapter has boundary parity and missing built adapte
           input(root, "UserPromptSubmit", { prompt: "resume: next" }),
         ),
       ),
+      true,
+      "prompt submission never depends on a built adapter",
+    );
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "permissions",
+          input(root, "PreToolUse", {
+            tool_name: "Edit",
+            tool_input: { file_path: join(root, "fixture.ts") },
+          }),
+        ),
+      ),
       false,
+      "ordinary write effects still require the adapter or an explicit operator control",
     );
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -1933,7 +2000,7 @@ test("WO-039 metadata and the exact guarded release helper do not dispatch a cod
       "an open lifecycle never gains the managed-close route",
     );
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -2014,7 +2081,7 @@ test("WO-039 completion tracks outputs across commits and auxiliary prompts reta
     );
     assert.equal(readiness(root, "read-your-own-output"), true);
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -2081,7 +2148,7 @@ test("WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated mess
       false,
     );
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -2425,7 +2492,7 @@ test("WO-039 foreign writer reservations refuse while their owner lives, reclaim
       "a migrated self-distrusted identity stays untrusted",
     );
   } finally {
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -2645,7 +2712,7 @@ test("WO-039 concurrent dead-owner recovery admits exactly one writer while the 
   } finally {
     for (const child of children)
       if (child.exitCode === null) child.kill("SIGKILL");
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -2745,7 +2812,7 @@ test("WO-039 a refreshed reservation survives a stale reclaimer that classified 
   } finally {
     for (const child of children)
       if (child.exitCode === null) child.kill("SIGKILL");
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });
 
@@ -2827,6 +2894,6 @@ test("WO-039 an operator release judges, retires and journals one observed reser
   } finally {
     for (const child of children)
       if (child.exitCode === null) child.kill("SIGKILL");
-    rmSync(root, { recursive: true });
+    removeFixture(root, { recursive: true });
   }
 });

@@ -1,0 +1,20 @@
+TAP version 13
+# Subtest: WO-131 operator-control precedes runtime, state, Git, gate and writer checks in every generated hook
+ok 1 - WO-131 operator-control precedes runtime, state, Git, gate and writer checks in every generated hook
+  ---
+  duration_ms: 3364.574209
+  ...
+# Subtest: WO-131 operator-control source adapter works without Git or dependencies and retains session isolation
+ok 2 - WO-131 operator-control source adapter works without Git or dependencies and retains session isolation
+  ---
+  duration_ms: 436.350458
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3882.128375

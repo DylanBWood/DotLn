@@ -11,6 +11,7 @@ import {
   readlinkSync,
   realpathSync,
   renameSync,
+  rmSync,
   writeFileSync,
 } from "node:fs";
 import {
@@ -38,7 +39,7 @@ import {
   replicaSupportPaths,
 } from "./suite-replica.mjs";
 
-const version = 3;
+const version = 4;
 const declarationVersion = 2;
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const jsonHash = (value) => digest(JSON.stringify(value));
@@ -47,6 +48,10 @@ export function suiteEnvironment(env = process.env, gateContext) {
   // Offline repository suites cannot see rotating proxy credentials or unrelated
   // invocation metadata. New environment-dependent coverage must extend this
   // reviewed projection, not silently reuse observations made under other inputs.
+  // The scheduler's gate context (DOTLN_GATE_LOAD_CLASS, _CONCURRENCY,
+  // _LOAD_FACTOR, _TASK, _PEER_FILE, _DEADLINE_LOG) is execution-only by
+  // design: it names runner-owned diagnostics and this host's declared load,
+  // never a suite input, and the cache is per machine.
   const names = new Set([
     "PATH",
     "HOME",
@@ -57,6 +62,7 @@ export function suiteEnvironment(env = process.env, gateContext) {
     "LANG",
     "TZ",
     "CI",
+    "DOTLN_GATE_CHILD",
     "BASH_ENV",
     "ENV",
     "CODEX_HOME",
@@ -125,6 +131,52 @@ const fixturePaths = [
   "NOTICE",
   "tsconfig.json",
   "package-lock.json",
+  ".prettierrc.json",
+];
+// Shell/Node/npm/Git behavior shared by the fixture suites. Session identities,
+// transport commands and harness homes are deliberately absent. Startup adapters
+// remain declared so an unsupported override still refuses narrowing.
+const fixtureEnvironment = [
+  "PATH",
+  "HOME",
+  "SHELL",
+  "LANG",
+  "TZ",
+  "CI",
+  "DOTLN_GATE_CHILD",
+  "LC_ALL",
+  "LC_CTYPE",
+  "LC_COLLATE",
+  "LC_MESSAGES",
+  "LC_MONETARY",
+  "LC_NUMERIC",
+  "LC_TIME",
+  "SystemRoot",
+  "COMSPEC",
+  "PATHEXT",
+  "NODE_OPTIONS",
+  "NODE_PATH",
+  "NODE_NO_WARNINGS",
+  "BASH_ENV",
+  "ENV",
+  "GIT_CONFIG_GLOBAL",
+  "GIT_CONFIG_SYSTEM",
+  "GIT_CONFIG_NOSYSTEM",
+  "GIT_DIR",
+  "GIT_WORK_TREE",
+  "GIT_COMMON_DIR",
+  "GIT_INDEX_FILE",
+  "GIT_OBJECT_DIRECTORY",
+  "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+  "GIT_TEMPLATE_DIR",
+  "npm_config_userconfig",
+  "NPM_CONFIG_USERCONFIG",
+  "npm_config_globalconfig",
+  "NPM_CONFIG_GLOBALCONFIG",
+  "npm_config_local_prefix",
+  "NPM_CONFIG_LOCAL_PREFIX",
+  "npm_config_ignore_scripts",
+  "npm_config_audit",
 ];
 const replicaScopes = {
   kernel: [...packagePaths, "docs/product/02-domain-model.md"],
@@ -154,6 +206,86 @@ const replicaScopes = {
   worktree: [...fixturePaths, "docs/LEGAL.md"],
   "plan-refutation:fixtures": [...fixturePaths, "docs/control/budgets.json"],
   "process-debt": [...fixturePaths, "docs/control/budgets.json"],
+  resume: [
+    ...fixturePaths,
+    "docs/control/resume.jsonl",
+    "docs/evidence/WO-030/legacy-fold.json",
+    "docs/evidence/WO-030/legacy-times.json",
+  ],
+  checkpoint: fixturePaths,
+  "work-orders-fixtures": fixturePaths,
+  "publication-fixtures": fixturePaths,
+  "backup-intake": fixturePaths,
+  "fixture-temp-root": fixturePaths,
+  "github-body": fixturePaths,
+  "release-preparation": fixturePaths,
+  "license-fixtures": [
+    ...fixturePaths,
+    "docs/LEGAL.md",
+    "docs/releases/tag-manifest.template.json",
+  ],
+  "adjacent-queue": fixturePaths,
+  "authority-grants": fixturePaths,
+  "harness-fixtures": [
+    ...fixturePaths,
+    "docs/evidence/WO-029/baseline.json",
+    "docs/product/07-execution-guide.md",
+    "docs/product/08-publication-compiler.md",
+  ],
+  "runner-fixtures": [...fixturePaths, "corpus/", "docs/control/budgets.json"],
+  "artifact-corpus": [...packagePaths, "corpus/"],
+  mutation: [...fixturePaths, "corpus/mutation/"],
+  "console:fixtures": [
+    ...fixturePaths,
+    "packages/console/fixtures/",
+    "docs/product/13-uifa-roles.md",
+    "docs/control/orders/WO-031.jsonl",
+    "docs/evidence/WO-131/feedback-001/feedback.json",
+    "docs/evidence/WO-131/feedback-001/selfhost-audit.jsonl",
+    "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl",
+    "docs/planning/refutations/2026-09-06-phase-two-redirect-002.json",
+    "docs/planning/refutations/2026-09-06-phase-two-redirect-003.json",
+    "docs/planning/refutations/2026-09-06-phase-two-redirect-004.json",
+    "docs/planning/refutations/2026-09-06-phase-two-redirect-005.json",
+    "docs/planning/refutations/2026-09-06-phase-two-redirect-006.json",
+    "docs/planning/refutations/2026-09-06-phase-two-redirect.json",
+    "docs/planning/refutations/2026-09-07-wo041-live-001.json",
+  ],
+};
+const retentionReasons = {
+  console:
+    "Expanded into declared fixtures and the current host collection check.",
+  "console:current":
+    "Real host collection checks current documents and shipped exports.",
+  build: "Build must publish this invocation's package outputs.",
+  "document-barrier": "Scheduling barrier for the current document gate.",
+  "release-surfaces":
+    "Live release/component checks use this checkout and its release refs.",
+  "license-surfaces":
+    "Live check of the current repository's publication surfaces.",
+  harness: "Live check of installed generated hooks and local terms.",
+  "harness-context": "Live check of installed role context and local terms.",
+  "harness-evidence": "Live check of the current installed harness evidence.",
+  meta: "Live cost and follow-up projections include local observations.",
+  format: "Current-tree formatting covers every candidate code file.",
+  index:
+    "Current work-order index reads candidate documents, HEAD and release refs.",
+  publication: "Current publication locks cover the real product documents.",
+  plan: "Current planning check reads candidate planning documents and HEAD.",
+  "plan-refutation:current":
+    "Current planning check reads candidate planning documents and HEAD.",
+  "authority-evidence":
+    "Current authority evidence reads candidate artifacts and the historical release ref.",
+  "artifact-evidence":
+    "Current artifact evidence validates the real repository's recorded edition.",
+  "verification-evidence":
+    "Current verification evidence validates the real repository's recorded edition.",
+  "feedback-evidence":
+    "Current feedback evidence validates the real repository's recorded edition.",
+  release:
+    "Expanded into declared preparation and case tasks before execution.",
+  "plan-refutation":
+    "Expanded into declared fixtures and the current planning check before execution.",
 };
 const scopes = Object.fromEntries(
   [
@@ -180,6 +312,8 @@ const scopes = Object.fromEntries(
     "compiler",
     "skeleton",
     "console",
+    "console:fixtures",
+    "console:current",
     "adjacent-queue",
     "authority-grants",
     "authority-evidence",
@@ -206,6 +340,14 @@ const scopes = Object.fromEntries(
     name,
     {
       version: declarationVersion,
+      ...(retentionReasons[name]
+        ? { retention: retentionReasons[name] }
+        : {
+            environment: [
+              ...fixtureEnvironment,
+              ...(name === "skeleton" ? ["DOTLN_FEEDBACK_ABLATE"] : []),
+            ],
+          }),
       paths:
         name.startsWith("release:case:") || name === "release:prepare"
           ? [
@@ -220,6 +362,14 @@ const scopes = Object.fromEntries(
           "worktree",
           "process-debt",
           "plan-refutation:fixtures",
+          "resume",
+          "checkpoint",
+          "work-orders-fixtures",
+          "publication-fixtures",
+          "harness-fixtures",
+          "runner-fixtures",
+          "console:fixtures",
+          "license-fixtures",
         ].includes(name) ||
         name.startsWith("release:case:") ||
         name === "release:prepare"
@@ -231,7 +381,12 @@ const scopes = Object.fromEntries(
               : ["plan", "plan-refutation:current"].includes(name)
                 ? "HEAD"
                 : "none",
-      nodeOptions: ["kernel", "compiler", "skeleton"].includes(name)
+      nodeOptions: [
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console:fixtures",
+      ].includes(name)
         ? replicaMainNodeOptions
         : replicaNodeOptions,
     },
@@ -588,6 +743,11 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
     reusable,
     meter,
     environmentKeys: environment.map(([key]) => key),
+    // Per-variable digests let a fresh explanation name the variable that
+    // changed; no value is retained.
+    environmentDigests: Object.fromEntries(
+      environment.map(([key, value]) => [key, digest(value)]),
+    ),
     executionFacts: {
       checkout: digest(physical),
       cpus: availableParallelism(),
@@ -601,18 +761,11 @@ export function suiteInputIdentity(row, snapshot) {
   if (!snapshot || !declaration) return null;
   const replica = replicaPlan(row, declaration, snapshot);
   const narrowed = Boolean(replica && !replica.refusal);
-  // A refused narrowing executes in the candidate tree under the whole-tree
-  // contract: every non-document candidate entry plus the declared documents.
+  // A refused narrowing executes under the complete candidate contract. It may
+  // read any candidate document, including documents outside its declaration.
   // Its key never coincides with a replica key: the declaration digest names
   // the execution root, and only replica runs carry the mechanism version.
-  const selected = narrowed
-    ? replica.entries
-    : snapshot.entries.filter(
-        ([path]) =>
-          !declaration.paths ||
-          !path.startsWith("docs/") ||
-          declaredPath(declaration.paths, path),
-      );
+  const selected = narrowed ? replica.entries : snapshot.entries;
   const paths = Object.fromEntries(
     selected.map(([path, value]) => [path, jsonHash(value)]),
   );
@@ -644,10 +797,23 @@ export function suiteInputIdentity(row, snapshot) {
       loadPolicy: row.loadPolicy ?? null,
     }),
   };
+  // Variable digests are diagnostics beside the key, never part of it: a
+  // fresh explanation names the changed variables, and no value is retained.
+  const variables = Object.fromEntries(
+    (narrowed
+      ? Object.entries(replica.environment).map(([name, value]) => [
+          name,
+          digest(String(value)),
+        ])
+      : Object.entries(snapshot.environmentDigests ?? {})
+    ).sort(([a], [b]) => a.localeCompare(b)),
+  );
   return {
+    execution: narrowed ? "replica" : "candidate",
     inputHash: jsonHash({ version, name: row.name, digests }),
     digests,
     paths,
+    variables,
   };
 }
 
@@ -686,6 +852,7 @@ function valid(record, name, inputHash) {
   if (
     !record ||
     record.version !== version ||
+    !["replica", "candidate"].includes(record.execution) ||
     record.name !== name ||
     record.inputHash !== inputHash ||
     !hashPattern.test(inputHash) ||
@@ -703,11 +870,24 @@ function valid(record, name, inputHash) {
         !isAbsolute(path) &&
         !path.split("/").includes("..") &&
         hashPattern.test(hash),
-    )
+    ) ||
+    (record.variables !== undefined &&
+      !(
+        record.variables &&
+        typeof record.variables === "object" &&
+        !Array.isArray(record.variables) &&
+        Object.entries(record.variables).every(
+          ([name, hash]) =>
+            /^[^\s=]{1,200}$/.test(name) && hashPattern.test(hash),
+        )
+      ))
   )
     return false;
   const { seal, ...body } = record;
   const source = record.source;
+  // Kernel-denial provenance is recorded and sealed, never a validity
+  // condition: a replica success carries whether its execution was wrapped,
+  // and a session that cannot start the sandbox reuses it under the same key.
   return (
     seal === jsonHash(body) &&
     source?.executed === true &&
@@ -778,7 +958,21 @@ export function explainSuiteFresh(repo, row, identity, policy) {
                     prior.paths[path] !== identity.paths[path],
                 )
                 .sort()
-            : [];
+            : inputClass === "environment" &&
+                prior.variables &&
+                identity.variables
+              ? [
+                  ...new Set([
+                    ...Object.keys(prior.variables),
+                    ...Object.keys(identity.variables),
+                  ]),
+                ]
+                  .filter(
+                    (name) =>
+                      prior.variables[name] !== identity.variables[name],
+                  )
+                  .sort()
+              : [];
           return {
             inputClass,
             paths: paths
@@ -815,14 +1009,53 @@ export function formatSuiteFresh(reason) {
     .filter(Boolean)
     .join("; ");
 }
+// Successes are a cache, not evidence: the gate ledger keeps the rows. Only
+// the newest records per suite can still match a live tree, so the cache stays
+// bounded instead of growing by every whole-tree inventory per gate.
+export const retainedSuccessesPerSuite = 24;
+export function pruneSuiteSuccesses(directory, keep) {
+  let files;
+  try {
+    files = readdirSync(directory).filter((file) =>
+      /^[a-f0-9]{64}\.json$/.test(file),
+    );
+  } catch {
+    return 0;
+  }
+  if (files.length <= retainedSuccessesPerSuite) return 0;
+  const dated = files
+    .map((file) => {
+      let modified = 0;
+      try {
+        modified = lstatSync(join(directory, file)).mtimeMs;
+      } catch {
+        /* Removed by a concurrent gate; nothing to order. */
+      }
+      return { file, modified };
+    })
+    .sort((a, b) => b.modified - a.modified || a.file.localeCompare(b.file));
+  let pruned = 0;
+  for (const { file } of dated.slice(retainedSuccessesPerSuite)) {
+    if (file === keep) continue;
+    try {
+      rmSync(join(directory, file));
+      pruned++;
+    } catch {
+      /* A concurrent gate may already have removed it. */
+    }
+  }
+  return pruned;
+}
 export function saveSuiteSuccess(repo, row, inputHash, source, identity) {
   if (!inputHash || identity?.inputHash !== inputHash) return false;
   const body = {
     version,
+    execution: identity.execution,
     name: row.name,
     inputHash,
     digests: identity.digests,
     paths: identity.paths,
+    ...(identity.variables ? { variables: identity.variables } : {}),
     source: {
       treeHash: source.treeHash,
       recordedAt: source.recordedAt,
@@ -830,6 +1063,7 @@ export function saveSuiteSuccess(repo, row, inputHash, source, identity) {
       durationMs: source.durationMs,
       exitCode: source.exitCode,
       executed: source.executed,
+      ...(source.kernelDenial ? { kernelDenial: source.kernelDenial } : {}),
       ...(source.startedAt
         ? { startedAt: source.startedAt, finishedAt: source.finishedAt }
         : {}),
@@ -845,6 +1079,7 @@ export function saveSuiteSuccess(repo, row, inputHash, source, identity) {
     mode: 0o600,
   });
   renameSync(temporary, path);
+  pruneSuiteSuccesses(dirname(path), `${inputHash}.json`);
   return true;
 }
 

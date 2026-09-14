@@ -24,36 +24,131 @@ export const sha256 = (value) =>
 // occurs before hashing source bytes. A revision id is provenance, not identity.
 export const hashParts = (parts) => sha256(JSON.stringify(parts));
 
+const TREE_CACHE_LIMIT = 64;
+const BLOB_CACHE_LIMIT = 2048;
+const BLOB_BATCH_LIMIT = 32;
+const treeCache = new Map();
+const blobCache = new Map();
+const cached = (cache, key) => {
+  if (!cache.has(key)) return undefined;
+  const value = cache.get(key);
+  cache.delete(key);
+  cache.set(key, value);
+  return value;
+};
+const retain = (cache, key, value, limit) => {
+  cache.delete(key);
+  cache.set(key, value);
+  while (cache.size > limit) cache.delete(cache.keys().next().value);
+  return value;
+};
+const readBlobBatch = (root, oids) => {
+  const output = runGit(root, ["cat-file", "--batch"], {
+    encoding: "latin1",
+    input: `${oids.join("\n")}\n`,
+    trim: false,
+  });
+  const sources = new Map();
+  let offset = 0;
+  for (const oid of oids) {
+    const headerEnd = output.indexOf("\n", offset);
+    if (headerEnd < 0)
+      throw new Error("git cat-file batch returned a truncated header");
+    const [actual, type, sizeText, ...extra] = output
+      .slice(offset, headerEnd)
+      .split(" ");
+    const size = Number(sizeText);
+    if (
+      actual !== oid ||
+      type !== "blob" ||
+      extra.length ||
+      !Number.isSafeInteger(size) ||
+      size < 0
+    )
+      throw new Error(`git cat-file batch returned an invalid blob: ${oid}`);
+    const start = headerEnd + 1;
+    const end = start + size;
+    if (end >= output.length || output[end] !== "\n")
+      throw new Error(`git cat-file batch returned truncated bytes: ${oid}`);
+    sources.set(
+      oid,
+      Buffer.from(output.slice(start, end), "latin1").toString("utf8"),
+    );
+    offset = end + 1;
+  }
+  if (offset !== output.length)
+    throw new Error("git cat-file batch returned trailing bytes");
+  return sources;
+};
+
 export const committedReader = (root, revision = "HEAD") => {
   const commit = runGit(root, [
     "rev-parse",
     "--verify",
     `${revision}^{commit}`,
   ]);
-  const entries = new Map(
-    runGit(root, ["ls-tree", "-rz", commit], { trim: false })
-      .split("\0")
-      .filter(Boolean)
-      .map((entry) => {
-        const [meta, path] = entry.split("\t");
-        const [mode, type, oid] = meta.split(" ");
-        return [path, { mode, type, oid }];
+  const treeKey = `${root}\0${commit}`;
+  const entries =
+    cached(treeCache, treeKey) ??
+    retain(
+      treeCache,
+      treeKey,
+      new Map(
+        runGit(root, ["ls-tree", "-rz", commit], { trim: false })
+          .split("\0")
+          .filter(Boolean)
+          .map((entry) => {
+            const [meta, path] = entry.split("\t");
+            const [mode, type, oid] = meta.split(" ");
+            return [path, { mode, type, oid }];
+          }),
+      ),
+      TREE_CACHE_LIMIT,
+    );
+  const requireBlob = (path) => {
+    const entry = entries.get(path);
+    if (
+      !entry ||
+      entry.type !== "blob" ||
+      !["100644", "100755"].includes(entry.mode)
+    )
+      throw new Error(
+        `plan subject requires a committed regular file: ${path}`,
+      );
+    return entry;
+  };
+  const readMany = (paths) => {
+    const requested = [...new Set(paths)];
+    const sources = new Map();
+    const misses = new Map();
+    for (const path of requested) {
+      const { oid } = requireBlob(path);
+      const key = `${root}\0${oid}`;
+      const source = cached(blobCache, key);
+      if (source === undefined) misses.set(oid, key);
+      else sources.set(oid, source);
+    }
+    const oids = [...misses.keys()];
+    for (let offset = 0; offset < oids.length; offset += BLOB_BATCH_LIMIT) {
+      const batch = oids.slice(offset, offset + BLOB_BATCH_LIMIT);
+      for (const [oid, source] of readBlobBatch(root, batch)) {
+        sources.set(oid, source);
+        retain(blobCache, misses.get(oid), source, BLOB_CACHE_LIMIT);
+      }
+    }
+    return new Map(
+      requested.map((path) => {
+        const { oid } = requireBlob(path);
+        return [path, sources.get(oid)];
       }),
-  );
+    );
+  };
   return {
     revision: commit,
     paths: [...entries.keys()],
+    readMany,
     read(path) {
-      const entry = entries.get(path);
-      if (
-        !entry ||
-        entry.type !== "blob" ||
-        !["100644", "100755"].includes(entry.mode)
-      )
-        throw new Error(
-          `plan subject requires a committed regular file: ${path}`,
-        );
-      return runGit(root, ["cat-file", "blob", entry.oid], { trim: false });
+      return readMany([path]).get(path);
     },
   };
 };
@@ -157,14 +252,28 @@ export function buildPlanSubject(
   )?.[0];
   if (!block) throw new Error("expected a byte-addressable sequence block");
   const parts = [["sequence", block]];
-  const orders = sequence.map(({ id }) => {
+  const orderPaths = sequence.map(({ id }) => {
     const paths = committed.paths.filter((path) =>
       new RegExp(`^docs/work-orders/${id}-[^/]+\\.md$`, "u").test(path),
     );
     // Workspace observation also notices drafts that have not been committed.
     if (paths.length !== 1)
       throw new Error(`expected one committed order file for ${id}`);
-    const path = paths[0];
+    return paths[0];
+  });
+  if (!workspace)
+    committed.readMany([
+      ...orderPaths,
+      "docs/product/00-vision.md",
+      "docs/product/13-uifa-roles.md",
+      "docs/planning/capability-table.md",
+      ...(includeCost ? [budgetPath] : []),
+      ...(includeCost && has("docs/planning/cost-table.json")
+        ? ["docs/planning/cost-table.json"]
+        : []),
+    ]);
+  const orders = sequence.map(({ id }, index) => {
+    const path = orderPaths[index];
     const source = read(path);
     parts.push([path, source]);
     return parsePlanOrder(source, path, id, { includeCost });

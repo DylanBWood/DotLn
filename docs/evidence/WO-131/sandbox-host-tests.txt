@@ -1,0 +1,105 @@
+FRESH build (preparation; no prior success)
+PROGRESS [build] 0.0 s started
+TAP version 13
+# Subtest: WO-131 sandbox probe distinguishes denied reads from unavailable startup
+ok 1 - WO-131 sandbox probe distinguishes denied reads from unavailable startup
+  ---
+  duration_ms: 1.1345
+  ...
+# Subtest: WO-131 actual host denies literal absolute candidate reads in parent and descendant processes
+ok 2 - WO-131 actual host denies literal absolute candidate reads in parent and descendant processes
+  ---
+  duration_ms: 441.918375
+  ...
+PASS build 0.04 s
+FRESH kernel (candidate read denial unavailable: fixture refuses sandbox startup; no prior success)
+PROGRESS [kernel] 0.0 s started
+PROGRESS [kernel] 0.1 s # Subtest: literal candidate read
+PASS kernel 0.09 s
+npm test: 2 passed; 0 failed; 1.40 s; 2 fresh / 0 reused tasks
+FRESH build (preparation; no prior success)
+PROGRESS [build] 0.0 s started
+PASS build 0.04 s
+FRESH kernel (candidate read denial unavailable: fixture refuses sandbox startup; no prior success)
+PROGRESS [kernel] 0.0 s started
+PROGRESS [kernel] 0.1 s # Subtest: literal candidate read
+PASS kernel 0.09 s
+npm test: 2 passed; 0 failed; 1.32 s; 2 fresh / 0 reused tasks
+FRESH build (preparation; no prior success)
+PROGRESS [build] 0.0 s started
+PASS build 0.04 s
+FRESH kernel (candidate read denial unavailable: fixture refuses sandbox startup; no prior success)
+PROGRESS [kernel] 0.0 s started
+PROGRESS [kernel] 0.1 s # Subtest: literal candidate read
+PROGRESS [kernel] 0.1 s not ok 1 - literal candidate read
+FAIL kernel 0.09 s
+  [kernel] TAP version 13
+  [kernel] # Subtest: literal candidate read
+  [kernel] not ok 1 - literal candidate read
+  [kernel]   ---
+  [kernel]   duration_ms: 1.13325
+  [kernel]   location: '<temporary-path>'
+  [kernel]   failureType: 'testCodeFailure'
+  [kernel]   error: |-
+  [kernel]     Expected values to be strictly equal:
+  [kernel]     + actual - expected
+  [kernel]     
+  [kernel]     + 'changed'
+  [kernel]     - 'good'
+  [kernel]   code: 'ERR_ASSERTION'
+  [kernel]   name: 'AssertionError'
+  [kernel]   expected: 'good'
+  [kernel]   actual: 'changed'
+  [kernel]   operator: 'strictEqual'
+  [kernel]   stack: |-
+  [kernel]     TestContext.<anonymous> (file://<temporary-path>)
+  [kernel]     Test.runInAsyncScope (node:async_hooks:206:9)
+  [kernel]     Test.run (node:internal/test_runner/test:824:25)
+  [kernel]     Test.processPendingSubtests (node:internal/test_runner/test:533:18)
+  [kernel]     node:internal/test_runner/harness:247:12
+  [kernel]     node:internal/process/task_queues:140:7
+  [kernel]     AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+  [kernel]     AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+  [kernel]   ...
+  [kernel] 1..1
+  [kernel] # tests 1
+  [kernel] # suites 0
+  [kernel] # pass 0
+  [kernel] # fail 1
+  [kernel] # cancelled 0
+  [kernel] # skipped 0
+  [kernel] # todo 0
+  [kernel] # duration_ms 51.040709
+npm test: 1 passed; 1 failed; 1.35 s; 2 fresh / 0 reused tasks
+FRESH build (preparation; no prior success)
+PROGRESS [build] 0.0 s started
+# Subtest: WO-131 unavailable denial never caches a successful absolute candidate read
+ok 3 - WO-131 unavailable denial never caches a successful absolute candidate read
+  ---
+  duration_ms: 4794.208916
+  ...
+PASS build 0.04 s
+FRESH kernel (no prior success)
+PROGRESS [kernel] 0.0 s started
+PROGRESS [kernel] 0.1 s # Subtest: fixture
+PASS kernel 0.13 s
+npm test: 2 passed; 0 failed; 1.42 s; 2 fresh / 0 reused tasks
+FRESH build (preparation; no prior success)
+PROGRESS [build] 0.0 s started
+PASS build 0.04 s
+REUSE kernel original 0.13 s at 2026-09-14T00:32:31.562Z
+npm test: 2 passed; 0 failed; 1.23 s; 1 fresh / 1 reused tasks
+# Subtest: WO-131 runner applies one probed wrapper and seals its source execution provenance
+ok 4 - WO-131 runner applies one probed wrapper and seals its source execution provenance
+  ---
+  duration_ms: 3145.723333
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8386.724625

@@ -52,6 +52,7 @@ printf '{"name":"@dotln/kernel","version":"0.1.0"}\n' >"$main/packages/kernel/pa
 node "$script_dir/test-license-fixture.mjs" "$main"
 cp "$script_dir/../.gitignore" "$main/.gitignore"
 printf 'EXAMPLE=tracked\n' >"$main/.env.example"
+printf '%s\n' 'import {mkdirSync,writeFileSync} from "node:fs"; mkdirSync(".runtime",{recursive:true}); writeFileSync(".runtime/bootstrap-ready", "prepared before launch");' >"$main/scripts/bootstrap.mjs"
 git -C "$main" add .
 git -C "$main" commit -m initial >/dev/null
 git -C "$main" push -u origin main >/dev/null 2>&1
@@ -85,6 +86,7 @@ chmod +x "$test_root/bin/codex"
 start_output="$(PATH="$test_root/bin:$PATH" node "$main/scripts/worktree.mjs" start WO-099 docs/work-orders/WO-099-fixture.md)"
 subject="$test_root/project-wo099"
 test -d "$subject"
+test -f "$subject/.runtime/bootstrap-ready"
 grep -q '"workOrderId":"WO-099"' "$subject/docs/control/orders/WO-099.jsonl"
 grep -Fq "cd '$subject'" <<<"$start_output"
 grep -Fq '  codex' <<<"$start_output"
@@ -376,9 +378,9 @@ test "$(git -C "$subject" rev-parse wo-099)" = "$(git --git-dir="$test_root/orig
 remote_refs="$(git --git-dir="$test_root/origin.git" for-each-ref --format='%(refname)' | LC_ALL=C sort)"
 test "$remote_refs" = $'refs/heads/main\nrefs/heads/wo-099'
 grep -Fq "cd '$main'" <<<"$publish_output"
-grep -Fq "'$node_bin' '$subject/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"
-if grep -Fq 'npm run release -- close WO-099 --publish' <<<"$publish_output"; then
-  printf 'error: publish handed release close to the stale main helper\n' >&2
+grep -Fq "'$node_bin' '$main/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"
+if grep -Fq "'$subject/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"; then
+  printf 'error: post-merge handoff names the helper the close will remove\n' >&2
   exit 1
 fi
 test "$(sed -n '1p' "$gh_log")" = '--version'

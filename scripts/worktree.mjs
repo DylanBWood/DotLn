@@ -189,6 +189,19 @@ const main = async () => {
       throw new Error(
         `worktree created but resume activation failed: ${(activated.stderr || activated.stdout).trim()}`,
       );
+    // A fresh Git worktree has no ignored dependencies or pinned hook runtime.
+    // Prepare it before telling the operator to enter either model session.
+    const bootstrap = join(target, "scripts/bootstrap.mjs");
+    if (existsSync(bootstrap)) {
+      const prepared = spawnSync(process.execPath, [bootstrap], {
+        cwd: target,
+        stdio: "inherit",
+      });
+      if (prepared.status !== 0)
+        throw new Error(
+          `worktree created and preserved at ${target}; preparation failed. Retry node scripts/bootstrap.mjs there. Prompts remain available.`,
+        );
+    }
     process.stdout.write(
       `Created ${target} on ${branch}.\n${activated.stdout}Phase: active.\nNext (run manually):\n  cd ${shellQuote(target)}\n  codex\n  enter: resume: next\n`,
     );
@@ -299,7 +312,7 @@ const main = async () => {
       throw new Error(
         `branch pushed but PR creation failed: ${(opened.stderr || opened.stdout).trim()}`,
       );
-    const releaseHandoff = `  cd ${shellQuote(mainPath)}\n  ${shellQuote(process.execPath)} ${shellQuote(join(subject, "scripts/release.mjs"))} close ${workOrderId} --publish`;
+    const releaseHandoff = `  cd ${shellQuote(mainPath)}\n  ${shellQuote(process.execPath)} ${shellQuote(join(mainPath, "scripts/release.mjs"))} close ${workOrderId} --publish`;
     process.stdout.write(
       `Pushed ${branch} and opened ${opened.stdout.trim()}\nAfter the operator merges the PR and authorizes resume: release close, run:\n${releaseHandoff}\n`,
     );

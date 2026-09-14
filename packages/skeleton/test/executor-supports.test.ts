@@ -84,9 +84,14 @@ test("WO-042 atomic support switches compose independently and removal restores 
       procedure.some((line) => line.includes("Repair only those obligations.")),
       !ids.includes(adjacentRepair.supportFacetId),
     );
-    assert.ok(procedure[0]!.includes("read-only command"));
-    assert.ok(procedure[0]!.includes("stop"));
+    assert.ok(procedure[0]!.includes("Operator controls precede workflow"));
+    const readOnlyEntry = procedure.findIndex((line) =>
+      line.includes("read-only command"),
+    );
+    assert.ok(readOnlyEntry > 0);
+    assert.ok(procedure[readOnlyEntry]!.includes("stop"));
     const firstSubjectRead = procedure.indexOf("Read: `@work-order`");
+    assert.ok(readOnlyEntry < firstSubjectRead);
     for (const id of ids)
       assert.ok(
         procedure.indexOf(text(id)) < firstSubjectRead,

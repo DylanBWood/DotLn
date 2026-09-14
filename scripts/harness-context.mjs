@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
@@ -18,7 +19,6 @@ import {
   countReads,
   directedReads,
   legacyDirectedReads,
-  snapshotReader,
 } from "./lib/harness-context.mjs";
 import { measureColdStarts, requireBudgets } from "./lib/process-budget.mjs";
 
@@ -46,7 +46,26 @@ export function fixtureSelectors(read) {
   };
 }
 export function measureHarnessContext(overrides = new Map()) {
-  const snapshot = snapshotReader(root);
+  // This comparison uses two immutable activation files, not candidate history.
+  // Pin their bytes so the same regression runs in a history-free replica.
+  const baseline = JSON.parse(
+    readFileSync(
+      join(root, "scripts/fixtures/harness-context/baseline.json"),
+      "utf8",
+    ),
+  );
+  assert.equal(baseline.ref, HARNESS_CONTEXT_BASE);
+  const snapshot = {
+    read(path) {
+      const file = baseline.files[path];
+      assert.ok(file, `Undeclared context baseline: ${path}`);
+      assert.equal(
+        createHash("sha256").update(file.text).digest("hex"),
+        file.sha256,
+      );
+      return file.text;
+    },
+  };
   const installation = harnessInstallation();
   const files = new Map(
     installation.files.map((file) => [file.path, file.contents]),
