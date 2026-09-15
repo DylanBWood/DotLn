@@ -2,6 +2,15 @@ export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue =
   JsonPrimitive | { readonly [key: string]: JsonValue } | readonly JsonValue[];
 
+export type DecodeResult<T> =
+  | { readonly ok: true; readonly value: T }
+  | {
+      readonly ok: false;
+      readonly code: string;
+      readonly path: string;
+      readonly message: string;
+    };
+
 export interface EventEnvelope<
   T extends string = string,
   P extends JsonValue = JsonValue,

@@ -1,0 +1,134 @@
+[
+  {
+    "name": "missing-schemaVersion",
+    "line": "{\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "MISSING_FIELD",
+    "path": "$.schemaVersion"
+  },
+  {
+    "name": "missing-eventId",
+    "line": "{\"schemaVersion\":1,\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "MISSING_FIELD",
+    "path": "$.eventId"
+  },
+  {
+    "name": "missing-type",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "MISSING_FIELD",
+    "path": "$.type"
+  },
+  {
+    "name": "missing-occurredAt",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "MISSING_FIELD",
+    "path": "$.occurredAt"
+  },
+  {
+    "name": "missing-actorId",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "MISSING_FIELD",
+    "path": "$.actorId"
+  },
+  {
+    "name": "missing-workstreamId",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"payload\":{}}",
+    "code": "MISSING_FIELD",
+    "path": "$.workstreamId"
+  },
+  {
+    "name": "missing-payload",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\"}",
+    "code": "MISSING_FIELD",
+    "path": "$.payload"
+  },
+  {
+    "name": "future-schema",
+    "line": "{\"schemaVersion\":2,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "UNSUPPORTED_SCHEMA",
+    "path": "$.schemaVersion"
+  },
+  {
+    "name": "event-order",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_2\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "EVENT_ORDER",
+    "path": "$.eventId"
+  },
+  {
+    "name": "unknown-field",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{},\"extra\":true}",
+    "code": "UNKNOWN_FIELD",
+    "path": "$.extra"
+  },
+  {
+    "name": "non-object-holder",
+    "line": "[]",
+    "code": "EXPECTED_OBJECT",
+    "path": "$"
+  },
+  {
+    "name": "non-string-eventId",
+    "line": "{\"schemaVersion\":1,\"eventId\":7,\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "EXPECTED_STRING",
+    "path": "$.eventId"
+  },
+  {
+    "name": "non-string-type",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":7,\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "EXPECTED_STRING",
+    "path": "$.type"
+  },
+  {
+    "name": "non-string-actorId",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":7,\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "EXPECTED_STRING",
+    "path": "$.actorId"
+  },
+  {
+    "name": "non-string-workstreamId",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":7,\"payload\":{}}",
+    "code": "EXPECTED_STRING",
+    "path": "$.workstreamId"
+  },
+  {
+    "name": "non-string-episodeId",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{},\"episodeId\":7}",
+    "code": "EXPECTED_STRING",
+    "path": "$.episodeId"
+  },
+  {
+    "name": "non-string-correlationId",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{},\"correlationId\":7}",
+    "code": "EXPECTED_STRING",
+    "path": "$.correlationId"
+  },
+  {
+    "name": "non-string-causationId",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{},\"causationId\":7}",
+    "code": "EXPECTED_STRING",
+    "path": "$.causationId"
+  },
+  {
+    "name": "string-time",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":\"1\",\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "EXPECTED_NUMBER",
+    "path": "$.occurredAt"
+  },
+  {
+    "name": "overflow-time",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1e309,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{}}",
+    "code": "EXPECTED_FINITE_NUMBER",
+    "path": "$.occurredAt"
+  },
+  {
+    "name": "overflow-payload",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{\"values\":[1e309]}}",
+    "code": "NON_JSON_NUMBER",
+    "path": "$.payload.values[0]"
+  },
+  {
+    "name": "prototype-field",
+    "line": "{\"schemaVersion\":1,\"eventId\":\"evt_1\",\"type\":\"Observed\",\"occurredAt\":1,\"actorId\":\"actor\",\"workstreamId\":\"stream\",\"payload\":{},\"__proto__\":{}}",
+    "code": "UNKNOWN_FIELD",
+    "path": "$.__proto__"
+  }
+]

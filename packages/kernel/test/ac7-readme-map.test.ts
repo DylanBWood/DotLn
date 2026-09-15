@@ -212,6 +212,7 @@ const leftColumnNames = (rows: readonly MapRow[]): ReadonlySet<string> => {
 const KNOWN_SURFACE: readonly string[] = [
   "JsonPrimitive",
   "JsonValue",
+  "DecodeResult",
   "EventEnvelope",
   "EventDraft",
   "Comparison",
@@ -268,6 +269,7 @@ const KNOWN_SURFACE: readonly string[] = [
   "JsonlLog",
   "appendEvent",
   "decodeLog",
+  "tryDecodeLog",
   "encodeLog",
 ];
 

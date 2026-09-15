@@ -1,0 +1,19 @@
+{
+  "nonEventPaths": {
+    "corpus/fixtures/ids/command-id-vectors.jsonl": "ID vectors",
+    "corpus/fixtures/ids/stable-hash-vectors.jsonl": "ID vectors",
+    "corpus/fixtures/program/enumerated-000.jsonl": "Program vectors",
+    "corpus/fixtures/program/enumerated-001.jsonl": "Program vectors",
+    "corpus/fixtures/program/enumerated-002.jsonl": "Program vectors",
+    "corpus/fixtures/program/enumerated-003.jsonl": "Program vectors",
+    "corpus/fixtures/program/matching-await.jsonl": "Program vectors",
+    "corpus/fixtures/program/matching-invoke.jsonl": "Program vectors",
+    "corpus/fixtures/program/sequence-laws.jsonl": "Program vectors",
+    "corpus/mutation/candidates-3dc19b7342ad03662172cf86663f406b96a43db4.jsonl": "Mutation records",
+    "corpus/mutation/kill-matrix-3dc19b7342ad03662172cf86663f406b96a43db4.jsonl": "Mutation records",
+    "corpus/mutation/sites-3dc19b7342ad03662172cf86663f406b96a43db4.jsonl": "Mutation records",
+    "docs/control/resume.jsonl": "Lifecycle control",
+    "docs/control/plan-refutations.jsonl": "Planning refutation control"
+  },
+  "controlSegmentPattern": "^docs/control/orders/WO-\\d{3}\\.jsonl$"
+}
