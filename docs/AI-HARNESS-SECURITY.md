@@ -34,24 +34,53 @@ harness that launches them. Browser, web-search, plugin, app, MCP, and other
 connectors can have separate permission and network boundaries; neither shell
 sandbox below automatically governs all of them.
 
-## Current posture
+## DotLn hook boundary — WO-132, 2026-09-15
 
-| Control                  | Claude Code                                                                          | Codex CLI                                                                                 |
-| ------------------------ | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| Filesystem sandbox       | enabled                                                                              | `workspace-write`                                                                         |
-| File-edit review         | in-workspace edits auto-accept; review occurs through the working-tree diff          | edits inside `workspace-write` run without a separate harness prompt                      |
-| Command review           | sandbox-contained Bash auto-allows; explicit denies and sandbox boundaries still win | user reviews sandbox-boundary escalation                                                  |
-| Shell network            | sandboxed and permission-gated                                                       | disabled inside the workspace sandbox                                                     |
+DotLn's generated hooks refuse two conditions: a second live writer in the same
+worktree, and a write to the product gate's inputs or success record while the
+reviewer's `npm test -- --review` is running. The writer reservation applies on
+main as on a work-order branch; dead reservations may be reclaimed.
+
+Unclassified tools, unsupported shell forms, unavailable adapters, outside-root
+reads, output-read observation failures and attribution pre-checks emit advisory
+information and defer to the host's own permission decision. A post-tool
+observer cannot turn a completed read into a refused operation. This delegation
+grants no new network, filesystem, credential or publication authority. Existing
+host denials for publication, SSH/SCP/SFTP and credential access remain in force.
+Claude applies the generated hooks; Codex receives the same invariants and
+commands as role text without claiming automatic hook enforcement.
+
+Harness, version, model, effort and source are recorded as supplied. `unknown`
+is admitted; `ultra` and `ultra code` are `xhigh` with `mode: subagents` and raw
+spelling. Missing discovery/readback data and older or unfamiliar versions yield
+warnings rather than DotLn refusals. These observations do not certify host
+compatibility or effective settings. Host approval and actual CLI failures still
+apply. WO-132 changes repository policy; it does not alter account settings.
+
+Release close consumes the reviewer's committed product-gate row and runs no
+suite or dependency install. Its egress preflight and the host's permissions
+still govern publication. Worktree cleanup follows publication as best effort;
+protected local settings or intake can block cleanup without undoing the release.
+
+## Recorded host posture (2026-09-01, with dated amendments)
+
+| Control                  | Claude Code                                                                                                   | Codex CLI                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Filesystem sandbox       | enabled                                                                                                       | `workspace-write`                                                                         |
+| File-edit review         | in-workspace edits auto-accept; review occurs through the working-tree diff                                   | edits inside `workspace-write` run without a separate harness prompt                      |
+| Command review           | sandbox-contained Bash auto-allows; explicit denies and sandbox boundaries still win                          | user reviews sandbox-boundary escalation                                                  |
+| Shell network            | sandboxed and permission-gated                                                                                | disabled inside the workspace sandbox                                                     |
 | Unsandboxed fallback     | request with approval: a command may ask to run unsandboxed and the permission mode reviews that ask (WO-044) | explicit approval required                                                                |
-| Sandbox startup failure  | fail closed                                                                          | helper/config diagnostics must pass                                                       |
-| SSH safeguards           | SSH credential reads/writes and direct `ssh`, `scp`, and `sftp` commands are denied  | no command allow rules; shell SSH cannot cross the network boundary without user approval |
-| Remembered command rules | no checkout-local allow entries                                                      | no command allow rules                                                                    |
+| Sandbox startup failure  | fail closed                                                                                                   | helper/config diagnostics must pass                                                       |
+| SSH safeguards           | SSH credential reads/writes and direct `ssh`, `scp`, and `sftp` commands are denied                           | no command allow rules; shell SSH cannot cross the network boundary without user approval |
+| Remembered command rules | no checkout-local allow entries                                                                               | no command allow rules                                                                    |
 
 The review rows are intentionally not described as identical. Claude's posture
 combines two independent controls: `acceptEdits` accepts in-workspace edits, and
 sandbox auto-allow accepts Bash only when the command remains in the enabled
-sandbox. Fail-closed startup, disabled unsandboxed fallback, and the
-credential/SSH denials remain compensating controls. Codex 0.151.0's locally
+sandbox. Fail-closed startup, permission-reviewed unsandboxed requests and the
+credential/SSH denials remain compensating controls; the WO-044 amendment permits
+requesting host approval for an unsandboxed command. Codex 0.151.0's locally
 supported low-friction mode automatically runs routine work inside the workspace
 and asks when a command needs to cross a sandbox boundary. It does not prompt
 for every Bash invocation.
@@ -171,8 +200,10 @@ This exact root `.claude/settings.local.json` is persistent operator-owned
 harness state. It is not read by the repository's release scripts or test
 chain, so main-checkout release close allows its presence without copying or
 inspecting it. That exception is not a cleanup rule: a copy inside a disposable
-worktree remains protected and must block removal. No other `.claude/**` path is
-allowed, and moving the file immediately before close does not change settings
+worktree remains protected and may block removal. Under WO-132, that cleanup
+blocker is reported after publication; it does not block the release. Other
+ignored and untracked material is also reported without treating it as tracked
+source dirt. Moving settings immediately before close does not change settings
 already loaded by the current harness session.
 
 `autoAllowBashIfSandboxed: true` is the explicit parallel-work tradeoff recorded

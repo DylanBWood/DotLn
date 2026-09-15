@@ -131,7 +131,7 @@ const currentObservations = (values: readonly SignalObservation[]) =>
         : ("not-applicable" as const),
   }));
 
-test("WO-021 normative v2 and phase-group data match the blueprint", () => {
+test("[document] WO-021 normative v2 and phase-group data match the blueprint", () => {
   const domain = readFileSync(
     new URL("../../../../docs/product/02-domain-model.md", import.meta.url),
     "utf8",

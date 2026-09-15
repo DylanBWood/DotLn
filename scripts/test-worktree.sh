@@ -151,6 +151,8 @@ node "$subject/scripts/resume.mjs" final-review-result pass \
 printf 'done\n' >"$subject/result.txt"
 printf '%s\n' 'This reviewed PR body stays on one physical source line even though it is longer than eighty characters, leaving visual wrapping to the reader.' >"$subject/pr-body.md"
 git -C "$subject" add .
+"$node_bin" "$script_dir/test-release-composition.mjs" record "$subject" WO-099
+git -C "$subject" add docs/control
 git -C "$subject" commit -m complete >/dev/null
 
 mkdir -p "$test_root/no-gh-bin"
@@ -370,7 +372,9 @@ git -C "$subject" update-index --assume-unchanged pr-body.md "$notes_path"
 printf 'hidden uncommitted private body\n' >"$subject/pr-body.md"
 printf '<!-- hidden malformed notes -->\n' >"$subject/$notes_path"
 publish_output="$(PATH="$test_root/bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_GH_BODY="$published_body" GH_REPO=wrong/target GH_HOST=wrong.example node "$subject/scripts/worktree.mjs" publish WO-099 --title ':sparkles: fixture' --body-file pr-body.md)"
-cmp "$committed_body" "$published_body"
+grep -Fq "$(cat "$committed_body")" "$published_body"
+grep -Fq 'dotln-product-gate:start' "$published_body"
+grep -Fq '"checkId": "npm test"' "$published_body"
 cp "$committed_body" "$subject/pr-body.md"
 cp "$committed_notes" "$subject/$notes_path"
 git -C "$subject" update-index --no-assume-unchanged pr-body.md "$notes_path"

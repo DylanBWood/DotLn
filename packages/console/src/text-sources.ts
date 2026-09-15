@@ -303,8 +303,12 @@ export function parseRefutation(
     throw new Error("unsupported refutation receipt format");
   const result = versioned ? object(record["result"]) : record;
   const verdict = string(result["planVerdict"]);
-  if (!["pass", "hold"].includes(verdict))
-    throw new Error("invalid plan verdict");
+  const goalReview =
+    versioned && result["schemaVersion"] === "plan-goal-review-v1";
+  const verdicts = goalReview
+    ? ["aligned", "aligned-with-findings", "misaligned"]
+    : ["pass", "hold"];
+  if (!verdicts.includes(verdict)) throw new Error("invalid plan verdict");
   return {
     receipt: versioned
       ? string(record["receiptId"])
@@ -326,10 +330,25 @@ export function parseRefutation(
       return {
         workOrder: string(row["workOrderId"]),
         verdict: string(row["verdict"]),
-        reason: string(row["reason"]),
-        thesis: optionalString(row["thesis"]) ?? null,
-        capabilityRow: optionalString(row["capabilityRow"]) ?? null,
-        roles: strings(row["rolesServed"]),
+        reason: goalReview
+          ? [
+              `Critical path and NoOp: ${string(row["criticalPathAndNoOp"])}`,
+              `System traps: ${string(row["systemTraps"])}`,
+              `Removal balance: ${string(row["removalBalance"])}`,
+              `Failure behavior: ${string(row["failureBehavior"])}`,
+              ...array(row["findings"]).map((item) => {
+                const finding = object(item);
+                const evidence = optionalString(finding["evidence"]);
+                const reopenWhen = optionalString(finding["reopenWhen"]);
+                return `${string(finding["criterionId"])} (${string(finding["kind"])}): ${string(finding["reason"])}${evidence ? ` Evidence: ${evidence}.` : ""}${reopenWhen ? ` Reopen when: ${reopenWhen}` : ""}`;
+              }),
+            ].join("\n")
+          : string(row["reason"]),
+        thesis: goalReview ? null : (optionalString(row["thesis"]) ?? null),
+        capabilityRow: goalReview
+          ? null
+          : (optionalString(row["capabilityRow"]) ?? null),
+        roles: goalReview ? [] : strings(row["rolesServed"]),
       };
     }),
   };

@@ -20,6 +20,16 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**Current contract (WO-132, 2026-09-15).** Lifecycle completions record their
+reports without requiring a product gate. The final reviewer runs
+`npm test -- --review` once; PR publication and release close consume its
+committed success row by code identity, with reviewed and merged trees recorded
+separately. Close publishes without suites or installation and attempts cleanup
+afterwards. Version/effort discovery and process-cost observations are advisory.
+The dated activation records below retain their original versions and evidence;
+WO-132 supersedes their repeated exact-tree gates, suite-cache and version-floor
+requirements without rewriting that history.
+
 **WO-129 activation completion (2026-09-13):** application `v0.17.4` is the
 next patch above local annotated `v0.17.3`. Skeleton `0.15.4` repairs transport
 version admission and protects the shared suite cache. Minimum CLI versions
@@ -260,32 +270,31 @@ new patch release. Do not invent a retroactive `v0.1.0` tag unless its exact
 reviewed commit and evidence can be reconstructed. Tag creation and remote
 publication remain explicit operator actions.
 
-Release closeout is the final workflow task after PR merge, not an activity
-hidden inside final review. The guarded close command finishes the merged
-worktree/branch, fast-forwards the clean main checkout to `origin/main`, and
-requires the closed control state to name the same work order. At a new SemVer
-boundary it runs `npm ci` before evidence, proves tracked files remain
-unchanged, reruns the declared evidence, builds and validates the manifest and
-notes, and creates/pushes only the annotated tag when its explicit publish form
-was authorized. It never pushes `main`. The `resume: release close` phrase is
-that explicit tag-publication authorization. Without it, the raw command still
-performs guarded closeout and validation but withholds tag creation and
-publication. If any guarded release-close check refuses before tag creation —
-including declared evidence, manifest derivation or validation, or another
-release gate — do not tag. The lifecycle should grow a first-class
-**fix-in-place** recovery for such a failure: preserve the interrupted release
-obligation and target, open and activate a bounded patch work order from current
-`origin/main`, drive it through the ordinary implementation, independent
-verification, final review, and merge gates, then resume the interrupted
-closeout. “In place” means continuity of the parent closeout episode, not
-editing `main`, reusing a removed worktree, bypassing review, or carrying
-tag-publication authority into the patch. WO-012 and WO-015 are reference cases
-for the current manual composition of those steps; neither adds the still-future
-durable command/event surface or repeated-failure semantics.
+**Release closeout after WO-132 (2026-09-15).** The separately authorized
+post-merge task proves egress, fast-forwards main and validates release surfaces,
+notes and the manifest. The reviewer's single `npm test -- --review` run supplies
+a passing `npm test` row in committed final-review control history. PR publication
+and close require the same code identity; the manifest records both the reviewed
+tree and merged tree. Documentation, reports, generated projections and release
+text do not invalidate that code key. Close builds missing runtime output, runs
+no suite or dependency installation, and creates/pushes the annotated tag and
+GitHub Release only with explicit publication authority. `resume: release close`
+is that authority. The raw command without `--publish` prepares and validates
+without creating a tag or Release.
+
+Worktree finish and derived-worktree settlement follow publication as best effort.
+They preserve protected intake and local material and report cleanup blockers
+without failing the release. Tracked dirt, missing reviewer evidence, mismatched
+code identity or invalid release surfaces still prevent publication. If a failure
+occurs before tag creation, preserve the obligation and target; do not fabricate
+evidence or tag. WO-012 and WO-015 remain historical examples of bounded patch
+recovery. A general durable fix-in-place recovery workflow remains future work.
+WO-132 supersedes their teardown-first, install-and-rerun release procedure;
+the historical evidence remains unchanged.
 
 An application target in a work-order heading that is strictly below the latest
-release is a successful no-release closeout, leaving clean `main` in the closed,
-between-work-orders state rather than publishing backwards. An equal version is
+release is a successful no-release closeout. The command reports remaining
+in-flight orders and cleanup blockers rather than publishing backwards. An equal version is
 idempotent only when the existing validated annotated tag names that exact
 commit; any conflict refuses. An operator who deliberately defers an otherwise
 eligible release records the reason in a reviewed durable artifact; absence of a
@@ -373,7 +382,7 @@ The earlier [activation comparison](../planning/work-order-index-activation-2026
 remains a dated observation of the token view.
 
 `npm run work-orders -- index` explicitly refreshes the generated view.
-`index --check`, included in `npm test`, checks current headers/control against
+`index --check`, included in `npm run test:docs`, checks current headers/control against
 the recorded tag-object snapshot; missing or changed recorded tags refuse, and
 additional local release tags are reported as newer attribution evidence.
 Typed release dependencies observe current local ancestry, so a referenced
@@ -895,7 +904,8 @@ For reasoning-effort experiments, a complete work order is the default unit for
 verification and final review: it is already the bounded unit whose evidence and
 judgment must cohere. Compare declared settings such as `xhigh` and `max` over
 representative orders before splitting those roles into smaller fragments merely
-to create more samples. An unmapped label remains a raw `unknown`, and a lower
+to create more samples. Under WO-132, reported labels remain as given; `unknown` is admitted, and
+`ultra`/`ultra code` mean `xhigh` with subagents and raw spelling. A lower
 token or account-cap observation is motivation for a controlled comparison—not
 evidence that effort, model quality, or work-order size caused it.
 

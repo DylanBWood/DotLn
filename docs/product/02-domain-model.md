@@ -124,21 +124,16 @@ From WO-030, each order owns one append-only control segment (or its unchanged
 legacy-log location), and the shared fold keeps lifecycle legality and evidence
 independent while selection chooses which order to inspect.
 
-The resume control log pins an actor attestation on each completion event as
-`{ harness, harnessVersion, model, effort, raw?, source, accountLabel? }`. `effort` is one of
-`low | medium | high | xhigh | max | unknown`; `raw` preserves an unrecognized
-label when present; and `source` is `self-reported | harness-readback |
-operator-attested`. This record is control-plane evidence and does not enlarge
-the Result envelope. A self-report proves only that the control log received a
-claim attributed to that actor, not independent authorship or the unobserved
-effective setting; the source label prevents that claim from being laundered
-into readback. WO-009's runtime attempt event separately records transport,
-harness version, selected model and effort with `selectionSource: host-launch`;
-`effectiveModel` and `effectiveEffort` remain `unknown`. Those host launch
-claims do not expand the control actor attestation or the Result envelope.
-Recognized effort values require value-specific selector or
-effective-readback evidence for the same harness version; a harness without it
-must attest `unknown`. Actor values are single-line. `not-applicable` denotes a structurally absent harness/model field,
+The resume control log pins an actor attestation on each completion as
+`{ harness, harnessVersion, model, effort, mode?, raw?, source, accountLabel? }`.
+WO-132 records supplied harness, version, model, effort and source labels;
+missing discovery/readback data is advisory. `ultra` and `ultra code` normalize
+to `effort: xhigh`, `mode: subagents` with raw spelling; other labels, including
+`unknown`, remain as supplied. This is control-plane evidence and does not
+enlarge the Result envelope. A self-report records a claim, not independent
+authorship or effective-setting readback. Runtime host-launch observations
+separately retain selected transport/model/effort and unknown effective values.
+Actor values are single-line. `not-applicable` denotes a structurally absent harness/model field,
 while `unknown` denotes an existing value that is unavailable. The conventional
 unassisted-human record is `{ harness: "human", harnessVersion:
 "not-applicable", model: "human", effort: "unknown", source:
@@ -468,6 +463,36 @@ is implemented for equipped WO-011 feedback boundaries. Outside that host,
 the execution guide still applies the judgment manually.
 
 ### Feedback compiler v1
+
+**Current harness policy (WO-132, 2026-09-15).** Writer isolation equips
+`concurrent-work-requires-worktrees` version 2: one registered writer per physical
+worktree on any branch, including main. It supersedes version 1's main-branch
+exclusion. The other hard DotLn hook boundary protects product-gate inputs and
+the success record during the reviewer's live `npm test -- --review`. Unclassified
+commands/tools, unavailable adapters, outside-root reads, attribution pre-checks
+and observer failures are advisory and defer to host permissions. The generic
+feedback evaluator and historical unit definitions retain their typed contracts;
+this is the current Contributor harness policy, not a claim that all feedback
+handlers have become equivalent.
+
+Lifecycle completions run their inline diff check and record reports and actor
+fields without requiring a test gate, output-read receipt or usage counter.
+The reviewer runs the product gate once and commits its successful code-identity
+row in the final-review event. PR publication and release close consume that row;
+source changes invalidate it, while reports and generated control projections do
+not. Replica execution, declared-input suite reuse and the shared success cache
+leave the runner. Evidence editions identify content rather than requiring a
+new live audit for a component-version bump alone. Missing process observations
+remain unknown and cost shortfalls feed planning, never completion refusal.
+See [WO-132](../work-orders/WO-132-machinery-stand-down.md) and the
+[execution guide](07-execution-guide.md) for the current lifecycle contract.
+
+#### Feedback implementation through WO-131 — historical contract
+
+The following account preserves the original unit, classifier, evidence and
+cache contracts and their sources. Its pre-effect refusals and full-gate/reuse
+requirements are superseded for current Contributor sessions by WO-132 above;
+previous receipts and definitions are not rewritten.
 
 WO-011 adds the separate `feedback-v1` contract in compiler `0.6.0` and skeleton
 `0.12.0`. The [personal catalog](../../packages/skeleton/src/loadouts/feedback.ts)

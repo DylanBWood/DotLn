@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { availableParallelism } from "node:os";
 import {
   existsSync,
@@ -16,29 +16,16 @@ import { gateCriticalPath } from "./lib/gate-timeline.mjs";
 import {
   beginGateRun,
   gateTreeHash,
+  gateCodeIdentity,
   recordGateChecks,
 } from "./lib/gate-evidence.mjs";
-import { readBudgets, budgetVerdict } from "./lib/process-budget.mjs";
 import {
   createReleaseFixtureContext,
   releaseCases,
 } from "./lib/release-fixtures.mjs";
-import {
-  completeCoverage,
-  loadSuiteSuccess,
-  observeSuiteInputs,
-  reusableResult,
-  saveSuiteSuccess,
-  suiteInputHash,
-  suiteScope,
-  suiteEnvironment,
-  suiteDeclaration,
-  suiteInputIdentity,
-  explainSuiteFresh,
-  formatSuiteFresh,
-} from "./lib/suite-evidence.mjs";
-import { createReplicaContext, replicaPlan } from "./lib/suite-replica.mjs";
-import { probeKernelDenial, kernelDenialRecord } from "./lib/suite-sandbox.mjs";
+import { completeCoverage, suiteEnvironment } from "./lib/suite-evidence.mjs";
+
+import { evidenceSources } from "./lib/evidence-sources.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const node = (name, file, options = {}) => ({
@@ -51,6 +38,12 @@ const nodeTests = (name, pattern, options = {}) => ({
   command: [
     process.execPath,
     "--test",
+    ...(options.skipPattern
+      ? [`--test-skip-pattern=${options.skipPattern}`]
+      : []),
+    ...(options.namePattern
+      ? [`--test-name-pattern=${options.namePattern}`]
+      : []),
     ...(options.fileConcurrency
       ? [`--test-concurrency=${options.fileConcurrency}`]
       : []),
@@ -65,6 +58,175 @@ const shell = (name, file) => ({
   command: ["bash", file],
   needsBuild: true,
 });
+
+// Machinery declarations select optional review checks by their own source paths.
+const machinerySources = {
+  "fixture-temp-root": [
+    "scripts/test-temp-root.sh",
+    "scripts/test-fixture-temp-root.sh",
+  ],
+  "harness-probe": [
+    "scripts/lib/writing-worker-probe.mjs",
+    "scripts/probe-worker-hosts.mjs",
+    "scripts/test-harness-probe.mjs",
+  ],
+  "harness-fixtures": [
+    "scripts/terms.mjs",
+    "scripts/harness-context.mjs",
+    "scripts/lib/harness-context.mjs",
+    "packages/skeleton/src/feedback-boundary.ts",
+    "packages/skeleton/src/gate-evidence.mjs",
+    "scripts/test-harness.mjs",
+    "scripts/lib/harness.mjs",
+    "packages/compiler/src/harness.ts",
+    "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/harness-command.ts",
+    "packages/skeleton/src/loadouts/",
+  ],
+  harness: [
+    "scripts/harness.mjs",
+    "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/gate-evidence.mjs",
+    "scripts/lib/harness.mjs",
+    "packages/compiler/src/harness.ts",
+    "packages/skeleton/src/loadouts/",
+  ],
+  "harness-context": [
+    "scripts/lib/process-budget.mjs",
+    "scripts/lib/harness.mjs",
+    "scripts/harness-context.mjs",
+    "scripts/lib/harness-context.mjs",
+  ],
+  "harness-evidence": evidenceSources["harness"],
+  "plan-refutation": [
+    "packages/skeleton/src/plan-refutation-host.ts",
+    "packages/skeleton/src/plan-refutation-fake.ts",
+    "packages/skeleton/src/worker-transport.ts",
+    "scripts/test-plan-refutation.mjs",
+    "scripts/refute-plan.mjs",
+    "scripts/lib/plan-",
+    "packages/skeleton/src/plan-refutation-protocol.ts",
+    "packages/skeleton/src/loadouts/plan-refuter.ts",
+  ],
+  "runner-fixtures": [
+    "scripts/lib/gate-timeline.mjs",
+    "scripts/measure-gates.mjs",
+    "scripts/lib/gate-evidence.mjs",
+    "scripts/test-runner.mjs",
+    "scripts/test-runner.test.mjs",
+    "scripts/test-gate-deadlines.mjs",
+    "scripts/test-release-fixtures.mjs",
+    "scripts/lib/suite-evidence.mjs",
+    "scripts/lib/release-fixtures.mjs",
+    "packages/skeleton/src/gate-evidence.mjs",
+    "packages/skeleton/src/gate-deadlines.mjs",
+  ],
+  "process-debt": [
+    "scripts/lib/meta.mjs",
+    "scripts/lib/intake-reconciliation.mjs",
+    "scripts/lib/evidence-preparation.mjs",
+    "scripts/lib/planning-followups.mjs",
+    "scripts/build.mjs",
+    "scripts/work-orders.mjs",
+    "scripts/discover.mjs",
+    "packages/skeleton/src/usage-observation.mjs",
+    "scripts/test-process-debt.mjs",
+    "scripts/lib/lifecycle-evidence.mjs",
+    "scripts/lib/process-budget.mjs",
+    "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/gate-evidence.mjs",
+  ],
+  mutation: ["corpus/mutation/"],
+  "authority-evidence": evidenceSources["authority"],
+  "artifact-evidence": evidenceSources["artifact-identity"],
+  "verification-evidence": evidenceSources["verification"],
+  "feedback-evidence": evidenceSources["feedback"],
+  meta: [
+    "scripts/lib/control-store.mjs",
+    "scripts/lib/control-time.mjs",
+    "scripts/lib/planning-followups.mjs",
+    "packages/skeleton/src/usage-observation.mjs",
+    "scripts/meta.mjs",
+    "scripts/lib/meta.mjs",
+    "scripts/lib/process-budget.mjs",
+  ],
+};
+const protection = {
+  build: "source compiles into runnable packages",
+  "release-surfaces":
+    "release claims match component versions and reviewed notes",
+  "release-preparation":
+    "release preparation preserves source and chooses the classified target",
+  "github-body": "published descriptions preserve reviewed content",
+  "license-fixtures":
+    "source-only publication preserves license and package privacy",
+  "license-surfaces": "shipped license and private-package pins remain valid",
+  "publication-fixtures":
+    "public editions retain their reviewed source boundaries",
+  "backup-intake": "private intake survives backup and recovery",
+  resume: "work-order transitions preserve reports and legal phase order",
+  checkpoint: "pending work can be recovered from named checkpoints",
+  worktree: "isolated work and intake survive publish and close",
+  release: "reviewed releases publish idempotently from merged main",
+  kernel: "domain events and human judgment contracts replay consistently",
+  compiler: "supports compile to the intended constraints and harness behavior",
+  skeleton: "the local runtime executes work within admitted authority",
+  console: "operators can inspect current work and recorded evidence",
+  "work-orders-fixtures":
+    "work-order lookup and dependencies identify executable work",
+  "adjacent-queue": "operator steering controls the next bounded repair",
+  "authority-grants": "workers cannot grant themselves additional authority",
+  "artifact-corpus":
+    "artifact identity remains stable and collisions are refused",
+};
+function classifySuite(row) {
+  const machinery = Object.hasOwn(machinerySources, row.name);
+  const document = Boolean(
+    row.document ||
+    [
+      "release-surfaces",
+      "authority-evidence",
+      "artifact-evidence",
+      "verification-evidence",
+      "feedback-evidence",
+      "harness",
+      "harness-context",
+      "harness-evidence",
+      "meta",
+    ].includes(row.name),
+  );
+  return {
+    ...row,
+    machinery,
+    document,
+    product: !machinery && !document,
+    protects:
+      row.protects ??
+      protection[row.name] ??
+      `${row.name} validates its declared project surface`,
+    sources: machinerySources[row.name] ?? [],
+  };
+}
+export function changedMachinery(repo, table = suites, base = "origin/main") {
+  let run = spawnSync("git", ["diff", "--name-only", base, "--"], {
+    cwd: repo,
+    encoding: "utf8",
+  });
+  if (run.status !== 0)
+    run = spawnSync("git", ["diff", "--name-only", "main", "--"], {
+      cwd: repo,
+      encoding: "utf8",
+    });
+  if (run.status !== 0) return table.filter((row) => row.machinery);
+  const files = run.stdout.split("\n").filter(Boolean);
+  return table.filter(
+    (row) =>
+      row.machinery &&
+      row.sources.some((source) =>
+        files.some((file) => file === source || file.startsWith(source)),
+      ),
+  );
+}
 
 // Every command from the 2026-09-09 chain has one declared owner below. Build
 // deletion and shell glob assertions are replaced by atomic-build and expand().
@@ -82,14 +244,12 @@ export const suites = [
     fast: true,
     needsBuild: true,
     preflight: true,
-    reuse: "live",
   }),
   nodeTests("release-preparation", "scripts/test-release-preparation.mjs"),
   nodeTests("github-body", "scripts/test-github-body.mjs"),
   nodeTests("license-fixtures", "scripts/test-license-surfaces.mjs"),
   node("license-surfaces", "scripts/license-surfaces.mjs", {
     preflight: true,
-    reuse: "live",
   }),
   shell("fixture-temp-root", "scripts/test-fixture-temp-root.sh"),
   shell("publication-fixtures", "scripts/test-publication.sh"),
@@ -103,7 +263,6 @@ export const suites = [
     fast: true,
     document: true,
     preflight: true,
-    reuse: "live",
   }),
   node("index", "scripts/work-orders.mjs", {
     args: ["index", "--check"],
@@ -115,6 +274,9 @@ export const suites = [
     nodeTests(name, `packages/${name}/dist/test/*.test.js`, {
       fast: true,
       packageTest: true,
+      ...(["skeleton", "console"].includes(name)
+        ? { skipPattern: "\\[document\\]" }
+        : {}),
       ...(name === "console" ? {} : { group: "package-tests" }),
       // The outer runner owns parallelism. Node otherwise launches one test
       // process per available CPU on top of every other active suite.
@@ -122,6 +284,15 @@ export const suites = [
         1,
         Math.min(2, Math.floor(availableParallelism() / 4)),
       ),
+    }),
+  ),
+  ...["skeleton", "console"].map((name) =>
+    nodeTests(`${name}-docs`, `packages/${name}/dist/test/*.test.js`, {
+      document: true,
+      namePattern: "\\[document\\]",
+      fileConcurrency: 2,
+      protects:
+        "current product documentation and recorded inputs agree with their runtime projections",
     }),
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
@@ -134,28 +305,32 @@ export const suites = [
   }),
   nodeTests("harness-fixtures", "scripts/test-harness.mjs", {
     group: "hook-heavy",
-    loadSlots: 3,
+    exclusive: true,
   }),
   node("harness", "scripts/harness.mjs", {
     args: ["check"],
     fast: true,
     needsBuild: true,
     preflight: true,
-    reuse: "live",
   }),
   node("harness-context", "scripts/harness-context.mjs", {
     args: ["--check"],
     fast: true,
     needsBuild: true,
     preflight: true,
-    reuse: "live",
   }),
   node("harness-evidence", "scripts/harness-evidence.mjs", {
     needsBuild: true,
     preflight: true,
-    reuse: "live",
   }),
-  nodeTests("plan-refutation", "scripts/test-plan-refutation.mjs"),
+  node("plan-refutation", "scripts/test-plan-refutation.mjs", {
+    args: ["--fixtures-only"],
+    needsBuild: true,
+  }),
+  node("plan-refutation-current", "scripts/test-plan-refutation.mjs", {
+    args: ["--check-only"],
+    document: true,
+  }),
   nodeTests("artifact-corpus", "corpus/harness/wo101-id-corpus.test.mjs"),
   node("artifact-evidence", "scripts/artifact-identity-evidence.mjs", {
     args: ["--check"],
@@ -176,16 +351,15 @@ export const suites = [
   nodeTests("runner-fixtures", "scripts/test-runner.test.mjs"),
   nodeTests("process-debt", "scripts/test-process-debt.mjs", {
     group: "hook-heavy",
-    loadSlots: 3,
+    exclusive: true,
   }),
   node("meta", "scripts/meta.mjs", {
     args: ["--check"],
     fast: true,
     preflight: true,
-    reuse: "live",
   }),
   node("plan", "scripts/refute-plan.mjs", { args: ["check"], document: true }),
-].map((row) => ({ ...row, git: suiteDeclaration(row)?.git }));
+].map(classifySuite);
 
 export function validateSuites(table) {
   if (
@@ -221,7 +395,7 @@ const reservedSlots = (row, concurrency) =>
 
 export function expand(command, repo) {
   return command.flatMap((part) => {
-    if (!part.includes("*")) return [part];
+    if (part.startsWith("--") || !part.includes("*")) return [part];
     if (!/^[^*]+\/\*\.test\.js$/.test(part))
       throw new Error(`Unsupported test glob: ${part}`);
     const directory = dirname(part);
@@ -577,23 +751,10 @@ export async function scheduleSuites(
 }
 
 export function expandSuiteTasks(selected, repo, template) {
-  const profiles = {
-    "harness-fixtures": { priority: 200, loadSlots: 3 },
-    "process-debt": { priority: 190, loadSlots: 3 },
-    "plan-refutation:fixtures": {
-      priority: 180,
-      loadSlots: 1,
-      after: ["harness-fixtures"],
-    },
-    "runner-fixtures": { priority: 170, loadClass: "isolated" },
-    worktree: { priority: 160, loadSlots: 2 },
-    skeleton: { priority: 150, loadSlots: 2 },
-    resume: { priority: 140, loadSlots: 2 },
-    "work-orders-fixtures": { priority: 130, loadSlots: 2 },
-    "plan-refutation:current": { priority: 120, loadSlots: 2 },
-    "console:current": { priority: 115, loadSlots: 2 },
-  };
-  const tasks = selected
+  const preflight = selected
+    .filter((row) => row.preflight)
+    .map((row) => row.name);
+  return selected
     .flatMap((row) => {
       if (row.name === "release") {
         if (!template) throw new Error("Release fixture template is required");
@@ -601,67 +762,16 @@ export function expandSuiteTasks(selected, repo, template) {
           {
             ...row,
             name: "release:prepare",
-            priority: 110,
+            priority: 100,
             args: ["--prepare-template", template],
           },
           ...releaseCases(repo).map((name) => ({
             ...row,
             name: `release:case:${name}`,
             priority: 60,
-            group: "release-cases",
             after: ["release:prepare"],
             args: ["--case", name, "--template", template],
-            inputCommand: [
-              ...row.command,
-              "--case",
-              name,
-              "--template",
-              "<prepared-from-suite-inputs>",
-            ],
           })),
-        ];
-      }
-      if (row.name === "plan-refutation")
-        return [
-          {
-            ...row,
-            name: "plan-refutation:fixtures",
-            // node --test discards script arguments on the supported Node line.
-            // This file already awaits node:test cases when launched directly.
-            command: [process.execPath, "scripts/test-plan-refutation.mjs"],
-            priority: 100,
-            args: ["--fixtures-only"],
-          },
-          {
-            ...row,
-            name: "plan-refutation:current",
-            command: [process.execPath, "scripts/test-plan-refutation.mjs"],
-            args: ["--check-only"],
-          },
-        ];
-      if (row.name === "console") {
-        const current =
-          "WO-032 host collection reads current sources and all shipped exports";
-        const select = (pattern) => [
-          row.command[0],
-          `--test-name-pattern=${pattern}`,
-          ...row.command.slice(1),
-        ];
-        return [
-          {
-            ...row,
-            name: "console:fixtures",
-            // A bare negative lookahead also matches Node's file-level parent,
-            // which selects all descendants. Require the actual test prefix.
-            command: select("^WO-032 (?!host collection)"),
-            priority: 85,
-          },
-          {
-            ...row,
-            name: "console:current",
-            command: select(current),
-            reuse: "live",
-          },
         ];
       }
       if (row.name === "runner-fixtures")
@@ -669,10 +779,8 @@ export function expandSuiteTasks(selected, repo, template) {
           {
             ...row,
             args: [
-              "scripts/test-suite-evidence.mjs",
               "scripts/test-release-fixtures.mjs",
               "scripts/test-gate-deadlines.mjs",
-              "scripts/test-suite-sandbox.mjs",
             ],
           },
         ];
@@ -680,22 +788,17 @@ export function expandSuiteTasks(selected, repo, template) {
     })
     .map((row) => ({
       ...row,
-      ...(profiles[row.name] ?? {}),
-      priority: profiles[row.name]?.priority ?? row.priority ?? 0,
+      priority:
+        row.priority ??
+        (row.exclusive
+          ? 200
+          : ["skeleton", "worktree", "resume"].includes(row.name)
+            ? 80
+            : 0),
+      ...(!row.build && !row.preflight && preflight.length
+        ? { after: [...new Set([...(row.after ?? []), ...preflight])] }
+        : {}),
     }));
-  const preflight = tasks.filter((row) => row.preflight).map((row) => row.name);
-  return tasks.map((row) => ({
-    ...row,
-    git: suiteDeclaration(row)?.git,
-    // Checks can reuse their complete inputs even when no narrower document
-    // scope is known. Preparation has effects needed by this invocation.
-    ...(!row.build && row.name !== "release:prepare" && !row.reuse
-      ? { reuse: "tree" }
-      : {}),
-    ...(!row.build && !row.preflight && preflight.length
-      ? { after: [...new Set([...(row.after ?? []), ...preflight])] }
-      : {}),
-  }));
 }
 
 export function aggregateSuiteRows(selected, tasks, rows) {
@@ -743,6 +846,7 @@ export async function runGate(
   repo = root,
   options = {},
 ) {
+  if (args.includes("--list")) return runGateChecks(args, repo, options);
   const active = beginGateRun(repo, "scripts/test-runner.mjs");
   try {
     return await runGateChecks(args, repo, {
@@ -754,62 +858,56 @@ export async function runGate(
   }
 }
 
-async function runGateChecks(
-  args,
-  repo,
-  { kernelProbe = probeKernelDenial, stopRequested = () => false } = {},
-) {
-  let full = false,
-    document = false,
+async function runGateChecks(args, repo, { stopRequested = () => false } = {}) {
+  let document = false,
+    machinery = false,
+    review = false,
     serial = false,
-    fresh = false,
+    list = false,
     only;
   for (let index = 0; index < args.length; index++) {
     const arg = args[index];
-    if (arg === "--full") full = true;
-    else if (arg === "--document") document = true;
+    if (arg === "--document") document = true;
+    else if (arg === "--machinery") machinery = true;
+    else if (arg === "--review" || arg === "--full") review = true;
     else if (arg === "--serial") serial = true;
-    else if (arg === "--fresh") fresh = true;
-    else if (arg === "--only" && !only) only = args[++index];
+    else if (arg === "--list") list = true;
+    else if (arg === "--fresh") {
+      /* Every invocation is fresh. */
+    } else if (arg === "--only" && !only) only = args[++index];
     else
       throw new Error(
-        "usage: test-runner [--full|--document] [--only <suite>] [--serial] [--fresh]",
+        "usage: test-runner [--document|--machinery|--review] [--only <suite>] [--serial] [--list]",
       );
   }
-  if (document && full) throw new Error("Select one gate");
   if (only && !suites.some((row) => row.name === only))
     throw new Error(`Unknown suite: ${only}`);
-  const checkId = document
-    ? "npm run test:docs"
-    : full
-      ? "npm run test:full"
-      : "npm test";
-  const treeHash = gateTreeHash(repo);
-  const started = Date.now();
-  // A stop request (node scripts/harness.mjs evidence --stop) is honored at
-  // the next boundary this runner owns: no further suite starts, running
-  // suites are ended through their abort signal, and no check is recorded.
-  const stop = new AbortController();
-  let stopReason = null;
-  const stopping = () => {
-    if (!stopReason && stopRequested()) {
-      stopReason = `Gate stopped by request after ${((Date.now() - started) / 1000).toFixed(1)} s; no check recorded for tree ${treeHash}`;
-      stop.abort();
-    }
-    return stopReason !== null;
-  };
-  const stopPoll = setInterval(stopping, 500);
   let selected = suites.filter((row) =>
     only
       ? row.name === only
       : document
         ? row.document
-        : full
-          ? !row.document || row.fast
-          : row.fast,
+        : machinery
+          ? row.machinery
+          : row.product,
   );
-  // The document gate needs no compilation. A synthetic barrier keeps scheduling
-  // invariants identical without executing a build or any code suite.
+  if (review && !only && !document && !machinery)
+    selected = [...new Set([...selected, ...changedMachinery(repo)])];
+  if (list) {
+    for (const row of selected)
+      console.log(`${row.name} — protects: ${row.protects}`);
+    return { exitCode: 0 };
+  }
+  const checkId = only
+    ? `suite:${only}`
+    : document
+      ? "npm run test:docs"
+      : machinery
+        ? "npm run test:machinery"
+        : "npm test";
+  const treeHash = gateTreeHash(repo),
+    codeIdentity = gateCodeIdentity(repo),
+    started = Date.now();
   const needsBuild = selected.some((row) => row.needsBuild || row.build);
   selected = [
     needsBuild
@@ -820,335 +918,119 @@ async function runGateChecks(
   const fixture = selected.some((row) => row.name === "release")
     ? createReleaseFixtureContext()
     : null;
+  const diagnosticRoot = join(repo, "docs/control/local/harness/runner");
+  mkdirSync(diagnosticRoot, { recursive: true });
+  const peerFile = join(diagnosticRoot, "active.json"),
+    deadlineLog = join(diagnosticRoot, "deadlines.jsonl");
+  writeFileSync(deadlineLog, "");
   const concurrency = serial
     ? 1
     : Math.max(1, Math.min(4, Math.floor(availableParallelism() / 2)));
-  const tasks = expandSuiteTasks(selected, repo, fixture?.template).map(
-    (row) => {
-      const slots = reservedSlots(row, concurrency);
-      const isolated = explicitlyIsolated(row);
-      return {
-        ...row,
-        loadPolicy: {
-          loadClass: isolated ? "isolated" : "shared",
-          concurrency: isolated ? 1 : Math.max(1, concurrency - slots + 1),
-          priority: row.priority ?? 0,
-          reservedSlots: slots,
-          version: 2,
-        },
-      };
-    },
-  );
-  const replicas = createReplicaContext(repo);
+  const tasks = expandSuiteTasks(selected, repo, fixture?.template);
+  const stop = new AbortController();
+  const stopping = () => {
+    if (stopRequested()) stop.abort();
+    return stop.signal.aborted;
+  };
+  const poll = setInterval(stopping, 500);
   try {
-    const kernelDenial = kernelProbe(repo);
-    const diagnosticRoot = replicas.diagnostics;
-    const peerFile = join(diagnosticRoot, "active.json");
-    const deadlineLog = join(diagnosticRoot, "deadlines.jsonl");
-    const scoped = tasks.some(
-      (task) => task.reuse === "tree" || suiteScope(task) !== null,
-    );
-    let before;
     const taskRows = await scheduleSuites(tasks, {
       repo,
+      concurrency,
+      stopRequested: stopping,
       diagnosticContext: { peerFile, deadlineLog },
       onActiveChange(names) {
         writeFileSync(`${peerFile}.tmp`, JSON.stringify({ tasks: names }));
         renameSync(`${peerFile}.tmp`, peerFile);
       },
-      ...(serial ? { concurrency: 1 } : {}),
-      stopRequested: stopping,
-      execute: async (row, cwd) => {
-        if (row.name === "document-barrier")
-          return {
-            name: row.name,
-            exitCode: 0,
-            durationMs: 0,
-            executed: true,
-            output: "",
-          };
-        if (stopping())
-          return {
-            name: row.name,
-            exitCode: 1,
-            durationMs: 0,
-            executed: false,
-            output: "Gate stopped by request before this suite started",
-          };
-        if (scoped && !row.build && !before)
-          before = { ...observeSuiteInputs(repo), kernelDenial };
-        const declaration = suiteDeclaration(row);
-        const plan =
-          before && !row.build ? replicaPlan(row, declaration, before) : null;
-        const inputHash =
-          row.build || !before ? null : suiteInputHash(row, before);
-        const cached = !fresh && loadSuiteSuccess(repo, row.name, inputHash);
-        if (cached)
-          return {
-            ...reusableResult(row, cached, inputHash),
-            executionRoot: plan && !plan.refusal ? "replica" : "candidate",
-            kernelDenial: kernelDenialRecord(kernelDenial),
-            ...(plan?.refusal ? { narrowingRefusal: plan.refusal } : {}),
-          };
-        const identity = suiteInputIdentity(row, before);
-        const freshReason = explainSuiteFresh(
-          repo,
-          row,
-          identity,
-          fresh
-            ? "forced fresh"
-            : row.build || row.name === "release:prepare"
-              ? "preparation"
-              : row.reuse === "live"
-                ? "live check"
-                : !suiteDeclaration(row)
-                  ? "undeclared suite"
-                  : before && !before.reusable
-                    ? "unreusable snapshot"
-                    : plan?.refusal,
-        );
-        console.log(`FRESH ${row.name} (${formatSuiteFresh(freshReason)})`);
-        let replica;
-        let completed;
-        try {
-          if (plan && !plan.refusal)
-            replica = replicas.create(row, declaration, before);
-          const result = await executeSuite(
-            replica
-              ? {
-                  ...row,
-                  executionEnvironment: replica.env,
-                  ...(kernelDenial.available
-                    ? { executionWrapper: kernelDenial.command }
-                    : {}),
-                }
-              : row,
-            replica?.root ?? cwd,
-            900_000,
-            ({ name, message, elapsedMs }) =>
-              console.log(
-                `PROGRESS [${name}] ${(elapsedMs / 1000).toFixed(1)} s ${message}`,
-              ),
-            stop.signal,
-          );
-          if (replica && result.exitCode !== 0) {
-            const missing =
-              /(?:ENOENT[^\n]*|Cannot find (?:module|package)[^\n]*|[^\n]*No such file or directory[^\n]*)/.exec(
-                result.output,
-              )?.[0];
-            result.output = `Replica suite ${row.name} failed${missing ? `; first unreadable path: ${missing}` : "; no missing-path diagnostic reported"}. No candidate-tree fallback.\n${result.output}`;
-          }
-          completed = {
-            ...result,
-            inputHash,
-            freshReason,
-            executionRoot: replica ? "replica" : "candidate",
-            kernelDenial: kernelDenialRecord(kernelDenial, Boolean(replica)),
-            ...(replica ? { replica: replica.measurement } : {}),
-            ...(plan?.refusal ? { narrowingRefusal: plan.refusal } : {}),
-          };
-        } catch (error) {
-          completed = {
-            name: row.name,
-            exitCode: 1,
-            durationMs: 0,
-            executed: false,
-            inputHash,
-            freshReason,
-            output: `Replica setup for ${row.name} failed: ${error.message}. No candidate-tree fallback.`,
-          };
-        }
-        try {
-          replica?.cleanup();
-        } catch (error) {
-          completed.exitCode = 1;
-          completed.output += `\nReplica cleanup for ${row.name} failed: ${error.message}`;
-        }
-        return completed;
-      },
+      execute: async (row, cwd) =>
+        row.name === "document-barrier"
+          ? {
+              name: row.name,
+              exitCode: 0,
+              durationMs: 0,
+              executed: true,
+              output: "",
+            }
+          : executeSuite(
+              row,
+              cwd,
+              900_000,
+              ({ name, message, elapsedMs }) =>
+                console.log(
+                  `PROGRESS [${name}] ${(elapsedMs / 1000).toFixed(1)} s ${message}`,
+                ),
+              stop.signal,
+            ),
       onResult(row) {
         if (row.name === "document-barrier") return;
         console.log(
-          `${row.reused ? "REUSE" : row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${row.reused ? `original ${(row.sourceExecution.durationMs / 1000).toFixed(2)} s at ${row.sourceExecution.recordedAt}` : `${(row.durationMs / 1000).toFixed(2)} s`}${row.durationMs > 30_000 ? " — split candidate (>30 s)" : ""}`,
+          `${row.exitCode === 0 ? "PASS" : "FAIL"} ${row.name} ${(row.durationMs / 1000).toFixed(2)} s`,
         );
-        if (row.exitCode !== 0 || /^FAIL /m.test(row.output))
-          for (const line of row.output.trimEnd().split("\n"))
+        if (row.exitCode !== 0)
+          for (const line of (row.output ?? "").trimEnd().split("\n"))
             console.log(`  [${row.name}] ${line}`);
       },
     });
-    if (stopping()) throw new Error(stopReason);
-    const after = before ? { ...observeSuiteInputs(repo), kernelDenial } : null;
-    for (const row of taskRows) {
-      const task = tasks.find((task) => task.name === row.name);
-      if (row.inputHash && row.inputHash !== suiteInputHash(task, after)) {
-        row.exitCode = 1;
-        row.output += "\nSuite inputs changed during the gate";
-      }
-    }
+    if (stopping())
+      throw new Error(
+        `Gate stopped by request after ${((Date.now() - started) / 1000).toFixed(1)} s; no check recorded for tree ${treeHash}`,
+      );
     const rows = aggregateSuiteRows(selected, tasks, taskRows);
-    const unchanged = gateTreeHash(repo) === treeHash;
-    const durationMs = Date.now() - started;
-    let withinBudget;
-    const recordedAt = new Date().toISOString();
+    const unchanged = gateCodeIdentity(repo) === codeIdentity;
     const check = {
-      checkId: only ? `suite:${only}` : checkId,
+      checkId,
       treeHash,
+      codeIdentity,
       subject: treeHash,
-      durationMs,
-      exitCode: 1,
+      durationMs: Date.now() - started,
+      exitCode: completeCoverage(tasks, taskRows) && unchanged ? 0 : 1,
       executed: true,
-      evidenceRef: `host-gate:${treeHash}:${only ?? checkId}`,
-      recordedAt,
-      executionMode: fresh
-        ? "forced-fresh"
-        : taskRows.some((row) => row.reused)
-          ? "composed"
-          : "fresh",
+      evidenceRef: `host-gate:${codeIdentity}:${only ?? checkId}`,
+      recordedAt: new Date().toISOString(),
+      executionMode: "fresh",
       freshSuites: taskRows.filter((row) => row.executed).length,
-      reusedSuites: taskRows.filter((row) => row.reused).length,
-      freshReasons: taskRows
-        .filter((row) => row.executed && row.name !== "document-barrier")
-        .map((row) => ({ name: row.name, ...row.freshReason })),
-      inputObservation: [before, after]
-        .filter(Boolean)
-        .map((snapshot) => snapshot.meter),
-      ...(before ? { inputEnvironmentKeys: before.environmentKeys } : {}),
-      ...(before ? { executionFacts: before.executionFacts } : {}),
-      replicaSetup: replicas.measurements,
-      kernelDenial: kernelDenialRecord(kernelDenial),
+      reusedSuites: 0,
       requiredSuites: selected.map((row) => row.name),
+      cases: rows,
       loadClass: {
         sharedCap: concurrency,
         factorPerSlot: 2,
         maxHostLoadPerCpu: 2,
-        scheduler: "weighted-longest-first-v2",
+        scheduler: "exclusive-machinery-v1",
       },
       taskTimeline: taskRows
         .filter((row) => row.startedAt)
-        .map(
-          ({
-            name,
-            startedAt,
-            finishedAt,
-            concurrentAtStart,
-            predecessors,
-            schedulerDurationMs,
-            executed,
-            reused,
-            loadClass,
-            loadFactor,
-            peerCap,
-            reservedSlots,
-          }) => ({
-            name,
-            startedAt,
-            finishedAt,
-            concurrentAtStart,
-            predecessors,
-            schedulerDurationMs,
-            executed,
-            reused: Boolean(reused),
-            loadClass,
-            loadFactor,
-            peerCap,
-            reservedSlots,
-          }),
-        ),
+        .map(({ output, ...row }) => row),
       deadlineDiagnostics: existsSync(deadlineLog)
         ? readFileSync(deadlineLog, "utf8")
-            .trim()
             .split("\n")
             .filter(Boolean)
             .map(JSON.parse)
             .filter((row) => row.hit)
         : [],
     };
-    // All children have settled and diagnostics have been read. Finish owned
-    // cleanup before publishing a successful gate or caching suite results.
-    replicas.cleanup();
     check.criticalPath = gateCriticalPath(check);
     try {
       const { readControl } = await import("./lib/control-store.mjs");
-      const control = readControl(repo);
-      const active = [...control.orders].filter(
+      const active = [...readControl(repo).orders].filter(
         ([, row]) => row.state.phase !== "closed",
       );
       if (active.length === 1) check.workOrder = active[0][0];
     } catch {
-      /* Isolated runner fixtures may have no lifecycle store. */
+      /* Standalone fixture. */
     }
-    const budgets = readBudgets(repo);
-    withinBudget = Boolean(
-      full ||
-      document ||
-      only ||
-      budgetVerdict(
-        budgets,
-        "fastGateMs",
-        durationMs,
-        budgets?.limits.fastGateMs ?? 120_000,
-        check.workOrder,
-      ) !== "breach",
-    );
-    check.exitCode =
-      completeCoverage(tasks, taskRows) &&
-      rows.every((row) => row.exitCode === 0) &&
-      unchanged &&
-      withinBudget
-        ? 0
-        : 1;
-    // Only the runner records its own successful completion; a subprocess cannot
-    // supply a green aggregate. Preserve timed-out/failed attempts as executed.
-    const {
-      taskTimeline,
-      criticalPath,
-      deadlineDiagnostics,
-      freshReasons,
-      replicaSetup,
-      ...suiteMetadata
-    } = check;
-    recordGateChecks(repo, [
-      ...rows
-        .filter((row) => row.name !== "document-barrier")
-        .map((row) => ({
-          ...suiteMetadata,
-          ...row,
-          checkId: `suite:${row.name}`,
-          exitCode: unchanged ? row.exitCode : 1,
-        })),
-      check,
-    ]);
-    // Preserve only executed successes at matching before/after inputs. These can
-    // survive an unrelated document edit; the aggregate still requires exact tree.
-    for (const row of taskRows)
-      if (row.executed && row.exitCode === 0 && row.inputHash)
-        saveSuiteSuccess(
-          repo,
-          row,
-          row.inputHash,
-          {
-            ...check,
-            ...row,
-            evidenceRef: `host-suite:${treeHash}:${row.name}`,
-          },
-          suiteInputIdentity(
-            tasks.find((task) => task.name === row.name),
-            before,
-          ),
-        );
+    if (!only && !document && !machinery) recordGateChecks(repo, [check]);
     console.log(
-      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh / ${check.reusedSuites} reused tasks${unchanged ? "" : "; tree changed"}${withinBudget ? "" : "; fast gate exceeds 120 s budget"}`,
+      `${checkId}: ${rows.filter((row) => row.exitCode === 0).length} passed; ${rows.filter((row) => row.exitCode !== 0).length} failed; ${(check.durationMs / 1000).toFixed(2)} s; ${check.freshSuites} fresh tasks${unchanged ? "" : "; code changed"}`,
     );
     return check;
   } finally {
-    clearInterval(stopPoll);
-    try {
-      fixture?.cleanup();
-    } finally {
-      replicas.cleanup();
-    }
+    clearInterval(poll);
+    fixture?.cleanup();
   }
 }
+
 if (
   process.argv[1] &&
   pathToFileURL(resolve(process.argv[1])).href === import.meta.url

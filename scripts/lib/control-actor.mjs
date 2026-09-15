@@ -17,11 +17,16 @@ export const projectActor = (actor) =>
 
 export const renderAttestation = (actor) => {
   if (!actor) return "none";
-  const { harness, harnessVersion, model, effort, raw, source, accountLabel } =
-    projectActor(actor);
-  const effortText =
-    effort === "unknown" && typeof raw === "string"
-      ? `unknown (raw: ${raw})`
-      : effort;
+  const {
+    harness,
+    harnessVersion,
+    model,
+    effort,
+    raw,
+    mode,
+    source,
+    accountLabel,
+  } = projectActor(actor);
+  const effortText = `${effort}${mode ? ` (${mode})` : ""}${typeof raw === "string" ? ` (raw: ${raw})` : ""}`;
   return `harness ${harness}; version ${harnessVersion}; model ${model}; effort ${effortText}; source ${source}; account ${accountLabel}`;
 };

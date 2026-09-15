@@ -688,7 +688,79 @@ test("WO-032 the last manual and latest versioned refutations populate verdicts 
   );
 });
 
-test("WO-032 AC5 each role's pinned answering cells exist and the questions match product 13", () => {
+test("WO-132 goal receipts render answers, findings and recorded hold status", () => {
+  for (const verdict of ["aligned", "aligned-with-findings", "misaligned"]) {
+    const finding = {
+      criterionId: "AC1",
+      kind: verdict === "misaligned" ? "observed-failure" : "known-issue",
+      reason: "Synthetic fixture finding.",
+      evidence: verdict === "misaligned" ? "observation:fixture" : null,
+      reopenWhen: verdict === "misaligned" ? null : "A recorded run fails.",
+    };
+    const value = {
+      schemaVersion: "plan-refutation-receipt-v1",
+      receiptId: "2030-01-01-goal-001",
+      pass: { kind: "planning" },
+      result: {
+        schemaVersion: "plan-goal-review-v1",
+        planVerdict: verdict,
+        holdReasons:
+          verdict === "misaligned"
+            ? [
+                {
+                  workOrderId: "WO-132",
+                  criterionId: "AC1",
+                  reason: finding.reason,
+                },
+              ]
+            : [],
+        orders: [
+          {
+            workOrderId: "WO-132",
+            verdict,
+            criticalPathAndNoOp: "Unblocks the fixture gate.",
+            systemTraps: "Considers all eight traps.",
+            removalBalance: "Removes a recurring check.",
+            failureBehavior: "Retains the previous behavior.",
+            findings: verdict === "aligned" ? [] : [finding],
+          },
+        ],
+      },
+    };
+    const ref = "docs/planning/refutations/2030-01-01-goal-001.json";
+    const result = parseRefutation(ref, value);
+    assert.equal(result.planVerdict, verdict);
+    assert.deepEqual(result.rows[0]!.roles, []);
+    assert.equal(result.rows[0]!.thesis, null);
+    for (const answer of [
+      "Unblocks the fixture gate.",
+      "Considers all eight traps.",
+      "Removes a recurring check.",
+      "Retains the previous behavior.",
+    ])
+      assert.ok(result.rows[0]!.reason.includes(answer));
+    if (verdict !== "aligned") {
+      assert.ok(result.rows[0]!.reason.includes(finding.reason));
+      assert.ok(
+        result.rows[0]!.reason.includes(
+          finding.evidence ?? finding.reopenWhen!,
+        ),
+      );
+    }
+    const verdicts = section(
+      projectBoard({ refutations: available(ref, [{ ref, value }]) }),
+      "refutation-verdicts",
+    );
+    assert.equal(verdicts.status, "available");
+    assert.equal(
+      cells(verdicts.rows[0]!)["holdStatus"]!.value,
+      verdict === "misaligned" ? "hold" : "no holds recorded",
+    );
+    assert.equal(cells(verdicts.rows[1]!)["verdict"]!.value, verdict);
+  }
+});
+
+test("[document] WO-032 AC5 each role's pinned answering cells exist and the questions match product 13", () => {
   const mapping = JSON.parse(
     readFileSync(join(fixtureRoot, "role-answers.json"), "utf8"),
   ) as {
@@ -857,7 +929,7 @@ test("WO-032 unavailable worker stores stay unavailable; corrupt logs do not bec
   }
 });
 
-test("WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store", async () => {
+test("[document] WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store", async () => {
   const directory = mkdtempSync(join(tmpdir(), "dotln-console-read-only-"));
   const absent = join(directory, "missing-store");
   const paths = [

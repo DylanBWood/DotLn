@@ -779,12 +779,22 @@
           "scope": "named top-level persisted key only; operator selects GPT-6 Astra/max; no effective-session readback"
         },
         "sessionEffortSelector": {
-          "classification": "not found",
+          "classification": "observed",
           "dedicatedControl": "--effort",
           "genericConfigOverride": {
             "classification": "documented locally",
             "control": "--config key=value"
-          }
+          },
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "control": "-c model_reasoning_effort=<level>",
+          "evidence": "docs/discovery/codex-effort-2026-09-11.json",
+          "scope": "accepted launch labels from the five recorded probes; no effective-session readback or admission floor"
         },
         "effectiveEffortReadback": {
           "classification": "not found",

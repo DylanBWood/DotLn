@@ -1,4 +1,4 @@
-// Origin: {"ids":["concurrent-work-requires-worktrees"],"loadoutId":"contributor","semanticHash":"fnv1a64:fe30ee5ba57ce2ed"}
+// Origin: {"ids":["concurrent-work-requires-worktrees"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
 let input;
 try {
 const { text } = await import("node:stream/consumers");
@@ -90,17 +90,17 @@ const control = await (async function operatorControl(input, event) {
     }
 })(input, "PreToolUse");
 if (control) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/354272bf63a0fc1e/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/354272bf63a0fc1e/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/7b3c264bb69b6f3f/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/7b3c264bb69b6f3f/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.9.3",
+  "compilerPackageVersion": "0.10.0",
   "runtime": {
-    "skeletonVersion": "0.15.12",
+    "skeletonVersion": "0.16.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/feedback.js",
-        "hash": "fnv1a64:4bdd1cdb762a966b"
+        "hash": "fnv1a64:9f5023e4c2650af7"
       },
       {
         "path": "packages/compiler/dist/src/attribution.mjs",
@@ -116,15 +116,15 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:857d7925b8f422fb"
+        "hash": "fnv1a64:b6ac5719288e751f"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
-        "hash": "fnv1a64:d4ce24dd844a4aa5"
+        "hash": "fnv1a64:d3696a82e454ead0"
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
-        "hash": "fnv1a64:76059d44040531b1"
+        "hash": "fnv1a64:52bc0be53a929a4f"
       },
       {
         "path": "packages/skeleton/dist/src/gate-deadlines.mjs",
@@ -132,7 +132,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/usage-observation.mjs",
-        "hash": "fnv1a64:63758af4d47a6236"
+        "hash": "fnv1a64:4f3d424f0ca3725e"
       },
       {
         "path": "packages/skeleton/dist/src/writer-teardown.mjs",
@@ -143,7 +143,7 @@ await runHarnessHook({
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/354272bf63a0fc1e"
+    "snapshot": ".runtime/harness/7b3c264bb69b6f3f"
   },
   "event": "PreToolUse",
   "tools": {
@@ -180,22 +180,23 @@ await runHarnessHook({
   "kind": "feedback",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.9.3",
+    "compilerPackageVersion": "0.10.0",
     "units": [
       {
         "unitId": "concurrent-work-requires-worktrees",
-        "version": 1,
+        "version": 2,
         "incident": {
           "sourceRefs": [
             "docs/lineage/idea-ledger.md",
-            "docs/product/07-execution-guide.md"
+            "docs/product/07-execution-guide.md",
+            "docs/work-orders/WO-132-machinery-stand-down.md"
           ],
           "sourceTreatment": "synthesized-from-public-lineage",
-          "summary": "The implementation discipline and concurrent workflow rules require a verified worktree and one writer per worktree.",
+          "summary": "WO-132 removes the main-branch exclusion while retaining one registered writer per worktree.",
           "retainedSource": "public-reference"
         },
-        "undesiredBehavior": "Do not dispatch a writer into main, a mismatched repository root, or a worktree occupied by another writer.",
-        "desiredBehavior": "Resolve physical cwd and Git root and require exactly one registered writer for that worktree before writable dispatch.",
+        "undesiredBehavior": "Do not dispatch a second writer into an occupied worktree.",
+        "desiredBehavior": "Resolve physical cwd and Git root and require exactly one registered writer per worktree on any branch, including main.",
         "scope": [
           "equipped-feedback-host",
           "personal-profile"
@@ -203,7 +204,7 @@ await runHarnessHook({
         "trigger": "writer-isolation",
         "mechanism": {
           "handler": "writer-isolation",
-          "version": 1,
+          "version": 2,
           "rationale": "A pre-dispatch invariant checks current host facts; a static repository test cannot see live writer reservations."
         },
         "enforcement": "hard",
@@ -212,13 +213,15 @@ await runHarnessHook({
           "resolved-cwd-and-root"
         ],
         "regressionFixtures": [
-          "WO-011 regression concurrent-work-requires-worktrees"
+          "WO-132 concurrent-work-requires-worktrees version 2"
         ],
         "conflicts": [],
-        "supersedes": [],
+        "supersedes": [
+          "concurrent-work-requires-worktrees@1"
+        ],
         "retirementCondition": "Retire this immutable version only when a named replacement preserves its regression evidence; retain the old definition for replay.",
         "nextMaturityCondition": "Collect host-observed use beyond controlled fixtures, including false activations and overrides, before claiming broader maturity.",
-        "proseEquivalent": "Do not dispatch a writer into main, a mismatched repository root, or a worktree occupied by another writer. Resolve physical cwd and Git root and require exactly one registered writer for that worktree before writable dispatch."
+        "proseEquivalent": "One registered writer owns each worktree on any branch, including main."
       }
     ],
     "mechanisms": [
@@ -230,20 +233,22 @@ await runHarnessHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:d7b095fa6ee61bc3"
+    "policyHash": "fnv1a64:79e4ef806377b34f"
   },
   "correctionToken": null
 }, feedbackBoundary, input);
 }
-} catch { let response = {"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"DOTLN_HARNESS_REFUSED: built adapter unavailable. Still admitted while the adapter is unavailable: Read, Glob and Grep, and in this checkout exactly pwd; git status --short; git status --short --branch; git rev-parse --show-toplevel; node scripts/bootstrap.mjs (also joined by && or ; when every segment is one of these). Run node scripts/bootstrap.mjs to prepare this worktree."}};
+} catch { const response = { systemMessage: "DotLn advisory: built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide." };
 try {
-  const args = input?.tool_input ?? {};
-  const read = ["Read", "Glob", "Grep"].includes(input.tool_name);
-  const admitted = ["pwd","git status --short","git status --short --branch","git rev-parse --show-toplevel","node scripts/bootstrap.mjs"];
-  const segments = String(args.command ?? args.cmd ?? "").split("&&").flatMap((part) => part.split(";")).map((part) => part.trim());
-  const shell = ["Bash", "exec_command"].includes(input.tool_name)
-    && (args.workdir ?? args.cwd ?? input.cwd) === input.cwd
-    && segments.length > 0 && segments.every((segment) => admitted.includes(segment));
-  if (read || shell) response = { systemMessage: "DotLn: built adapter unavailable. Still admitted while the adapter is unavailable: Read, Glob and Grep, and in this checkout exactly pwd; git status --short; git status --short --branch; git rev-parse --show-toplevel; node scripts/bootstrap.mjs (also joined by && or ; when every segment is one of these). Run node scripts/bootstrap.mjs to prepare this worktree." };
+  const fs = await import("node:fs");
+  const { join } = await import("node:path");
+  const { createHash } = await import("node:crypto");
+  const root = typeof input?.cwd === "string" ? input.cwd : process.cwd();
+  const directory = join(root, "docs/control/local/harness");
+  const key = createHash("sha256").update(String(input?.session_id ?? "unknown")).digest("hex");
+  const path = join(directory, key + ".jsonl");
+  fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
+  if (!fs.existsSync(path) || fs.lstatSync(path).isFile())
+    fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: "PreToolUse", advisory: response.systemMessage, delegated: true }) + "\n", { mode: 0o600 });
 } catch {}
 process.stdout.write(JSON.stringify(response)); }

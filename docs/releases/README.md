@@ -13,9 +13,10 @@ populates it only from the merged repository, installed toolchain, control
 state, and observed evidence. The same implementation re-derives those fields
 before publication; `npm run release -- validate <manifest.json>` exposes that
 validator for inspection and mutation tests. Because the validator derives
-cadence compatibility from the built `@dotln/kernel` exports, run
-`npm run build` or the evidence gate before validating on a fresh checkout.
-After evidence builds the kernel, cadence compatibility comes from the built
+cadence compatibility from the built `@dotln/kernel` exports, standalone
+validation needs the built runtime. Release close builds missing runtime output
+itself; it does not install dependencies or run a test gate. Compatibility comes
+from the built
 `@dotln/kernel` exports: the type-exhaustive `CADENCE_KINDS` constant supplies
 the complete list, `EVALUABLE_CADENCE_KINDS` supplies the evaluable subset, and
 the runtime `Cadence` constructors must match the complete list in both
@@ -62,25 +63,43 @@ human layer is visible on the
 [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases); its body
 links back to both local commands rather than duplicating the JSON manifest.
 
-`release close WO-NNN` performs guarded closeout and preparation. On the first
-post-merge invocation, use the absolute subject-helper command emitted by
-`worktree publish` or `resume release-close`; it runs with main as the working
-checkout and uses the reviewed subject release and worktree helpers through the
-pre-fast-forward cleanup boundary. After the subject is removed, recoverable
-reruns use `npm run release -- close WO-NNN` from updated main. Either form may
-fast-forward local `main` and remove the known merged worktree and local branch.
-At a new eligible boundary it also installs exact dependencies and runs release
-evidence, but without `--publish` it creates no tag. Lower and
-already-published targets return after their own validation. Adding `--publish`
-is explicit authority to create and push only the validated annotated tag and,
-after that push succeeds, create its matching GitHub Release. A post-tag Release
-failure is recoverable: rerun the same command, which validates the immutable
-tag and creates the missing projection or refuses the first differing body line
-without editing it. Whether disposable built-kernel output is absent or already
-present, that retry reproduces the release evidence first so tagged
-compatibility data is checked against a fresh build rather than trusted ignored
-bytes. Neither form pushes a `main` commit, publishes a package, or implies
-binary, container, or hosted distribution.
+## Reviewer evidence and publish-only close — WO-132, 2026-09-15
+
+The reviewer runs `npm test -- --review` once after its last source edit. That
+command includes machinery suites selected by changed declared sources and
+records its success as `checkId: npm test`. The passing final-review event stores
+the row in committed control history. Publication reads that committed row;
+the review worktree and its local gate cache need not exist on main.
+
+The new manifest's evidence row records `command`, `exitCode`, `executed`,
+`outputSha256`, `codeIdentity`, `reviewedTree`, `mergeTree`, `durationMs`,
+`recordedAt` and `evidenceRef`. The reviewed and merged exact trees can differ
+while the code identity stays equal. Reports, control events, generated
+projections and release prose do not change that key. A source change or missing
+reviewer row refuses publication. Historical tags keep their existing evidence
+rows and their original validator; no earlier tag is migrated in place.
+
+Run from the merged main checkout:
+
+```bash
+npm run release -- close WO-NNN --publish
+```
+
+Close proves egress first, fast-forwards main, checks README/component/notes/license
+surfaces, builds missing runtime output and validates the manifest. It runs no
+suite, dependency install or CLI smoke check. It then creates and pushes only
+the annotated tag and creates the matching GitHub Release. `--dry-run` previews
+the same sequence and the manifest without publication; without `--publish`,
+the command prepares and validates without creating a tag or Release.
+
+Worktree finish and derived-worktree settlement run after publication as best
+effort. Protected local material is preserved; ignored and untracked material
+and cleanup blockers are reported. Only tracked dirt blocks the clean-source
+requirement. Lower targets complete as no-release closes; equal targets validate
+the existing immutable record. If Release creation fails after the tag push,
+rerun the same close to create the missing projection or report a body mismatch
+without editing the tag or Release. No form pushes a main commit, publishes a
+package or implies binary, container or hosted distribution.
 
 `npm run release -- publish-notes vX.Y.Z` is the separate operator-run backfill
 for an annotated tag that predates WO-024. It uses that tag's existing human

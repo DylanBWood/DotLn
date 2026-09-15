@@ -5,7 +5,11 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
-import { evidenceArgs } from "../packages/skeleton/src/evidence-editions.mjs";
+import {
+  evidenceArgs,
+  sameEvidenceSourceContent,
+} from "../packages/skeleton/src/evidence-editions.mjs";
+import { evidenceSources } from "./lib/evidence-sources.mjs";
 import {
   COMPOSITION_PRECEDENCE,
   COMPILER_PACKAGE_VERSION,
@@ -37,7 +41,10 @@ import {
   defaultExecutorSupportIds,
   executorSupports,
 } from "../packages/skeleton/dist/src/loadouts/executor-supports.js";
-import { compilePlanRefuter } from "../packages/skeleton/dist/src/loadouts/plan-refuter.js";
+import {
+  compilePlanRefuter,
+  planRefuterLoadout,
+} from "../packages/skeleton/dist/src/loadouts/plan-refuter.js";
 import { checkHarness, harnessInstallation } from "./lib/harness.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -79,42 +86,189 @@ const results = {
   ),
   planRefuter: compilePlanRefuter("fixture", 0),
 };
+// Reconstruct the old inspection under the current compiler and verify every
+// historical digest before comparing the one authorized WO-132 migration.
+const oldPlanSource = prior("packages/skeleton/src/loadouts/plan-refuter.ts");
+const oldStrings = (pattern) => {
+  const match = oldPlanSource.match(pattern);
+  assert.ok(match, "historical plan-refuter inspection source");
+  return [...match[1].matchAll(/"(?:\\.|[^"\\])*"/gu)].map(([literal]) =>
+    JSON.parse(literal),
+  );
+};
+const oldQuestions = oldStrings(
+  /export const PLAN_REFUTER_QUESTIONS = \[([\s\S]*?)\] as const;/u,
+);
+const oldConstraints = oldStrings(/constraints: \[([\s\S]*?)\]/u);
+const oldOutputSchema = oldPlanSource.match(
+  /outputContract: \{ schema: ("[^"\n]+") \}/u,
+);
+assert.ok(oldOutputSchema, "historical plan-refuter output contract");
+assert.equal(oldConstraints[1], "No drift finding without a vision passage");
+const migratedInspection = {
+  acceptanceCriteria: [
+    "For each order, which critical-path gate does it unblock and what is the NoOp cost in the records?",
+    "How do all eight system traps apply to the order's own process cost?",
+    "Does the Cost line name a removal larger than the addition?",
+    "Does failure of the mechanism degrade to the old behavior rather than refusing?",
+  ],
+  constraints: oldConstraints.map((text, index) =>
+    index === 1
+      ? "Only observed failure or vision contradiction holds; hypothetical issues name reopening observations"
+      : text,
+  ),
+  outputContract: { schema: "plan-goal-review-v1" },
+};
+const currentPlan = planRefuterLoadout(
+  baseline.fixtures.planRefuter.artifactIdentity.authorityExpiresAt,
+);
+assert.deepEqual(
+  currentPlan.role.obligations,
+  migratedInspection.acceptanceCriteria,
+);
+const oldPlan = compileLoadout(
+  {
+    ...currentPlan,
+    role: { ...currentPlan.role, obligations: oldQuestions },
+    activeMechanics: currentPlan.activeMechanics.map((active) => ({
+      ...active,
+      workOrder: {
+        ...active.workOrder,
+        acceptanceCriteria: oldQuestions,
+        constraints: oldConstraints,
+        outputContract: { schema: JSON.parse(oldOutputSchema[1]) },
+      },
+    })),
+  },
+  baseline.fixtures.planRefuter.artifactIdentity.compilationEnvironment,
+);
+assert.equal(oldPlan.ok, true, "historical plan-refuter compilation");
 const compatibility = Object.entries(results).map(([name, result]) => {
   assert.equal(result.ok, true, name);
   const before = baseline.fixtures[name];
+  const historical = name === "planRefuter" ? oldPlan : result;
   assert.equal(
-    result.semanticHash,
+    historical.semanticHash,
     before.semanticHash,
-    `${name} semantic hash`,
+    `${name} historical semantic hash`,
   );
   assert.equal(
-    hash(result.program),
+    hash(historical.program),
     before.programHash,
-    `${name} program bytes`,
+    `${name} historical program bytes`,
   );
   assert.equal(
-    hash(result.program.inspection),
+    hash(historical.program.inspection),
     before.inspectionHash,
-    `${name} authored inspection bytes`,
+    `${name} historical authored inspection bytes`,
   );
   assert.deepEqual(
     {
-      ...result.artifactIdentity,
+      ...historical.artifactIdentity,
       compilerPackageVersion: before.artifactIdentity.compilerPackageVersion,
     },
     before.artifactIdentity,
-    `${name} only the compiler package identity changes`,
+    `${name} historical compilation changes only compiler package identity`,
   );
   assert.equal(
     result.artifactIdentity.compilerPackageVersion,
     COMPILER_PACKAGE_VERSION,
+  );
+  if (name === "planRefuter") {
+    assert.deepEqual(
+      result.program,
+      {
+        ...oldPlan.program,
+        workOrder: { ...oldPlan.program.workOrder, ...migratedInspection },
+      },
+      "WO-132 changes only the plan-refuter questions, hold constraint and output schema",
+    );
+    assert.deepEqual(
+      result.program.authorityEnvelope,
+      oldPlan.program.authorityEnvelope,
+      "plan-refuter authority envelope is unchanged",
+    );
+    assert.deepEqual(
+      result.program.ambientEffects,
+      oldPlan.program.ambientEffects,
+      "plan-refuter ambient effects are unchanged",
+    );
+    assert.deepEqual(
+      result.program.workOrder.allowedOperations,
+      oldPlan.program.workOrder.allowedOperations,
+      "plan-refuter allowed operations are unchanged",
+    );
+    assert.deepEqual(
+      result.program.workOrder.prohibitedOperations,
+      oldPlan.program.workOrder.prohibitedOperations,
+      "plan-refuter denied operations are unchanged",
+    );
+    assert.equal(
+      result.artifactIdentity.componentDefinitions.length,
+      before.artifactIdentity.componentDefinitions.length,
+    );
+    assert.deepEqual(
+      result.artifactIdentity,
+      {
+        ...before.artifactIdentity,
+        compilerPackageVersion: COMPILER_PACKAGE_VERSION,
+        semanticHash: result.semanticHash,
+        componentDefinitions: before.artifactIdentity.componentDefinitions.map(
+          (entry, index) => ({
+            ...entry,
+            definitionHash:
+              result.artifactIdentity.componentDefinitions[index]
+                .definitionHash,
+          }),
+        ),
+      },
+      "plan-refuter identity changes only release, semantic and component-definition hashes",
+    );
+  }
+  const changedArtifactIdentityFields = Object.keys(
+    result.artifactIdentity,
+  ).filter(
+    (field) =>
+      canonicalStringify(result.artifactIdentity[field]) !==
+      canonicalStringify(before.artifactIdentity[field]),
+  );
+  assert.deepEqual(
+    changedArtifactIdentityFields,
+    name === "planRefuter"
+      ? ["compilerPackageVersion", "semanticHash", "componentDefinitions"]
+      : ["compilerPackageVersion"],
   );
   return {
     fixture: name,
     semanticHash: result.semanticHash,
     programHash: hash(result.program),
     inspectionHash: hash(result.program.inspection),
-    changedArtifactIdentityFields: ["compilerPackageVersion"],
+    changedArtifactIdentityFields,
+    ...(name === "planRefuter"
+      ? {
+          migration: {
+            source: "docs/work-orders/WO-132-machinery-stand-down.md",
+            criterion: "AC11",
+            previousSemanticHash: before.semanticHash,
+            changedProgramFields: [
+              "workOrder.acceptanceCriteria",
+              "workOrder.constraints[1]",
+              "workOrder.outputContract.schema",
+            ],
+            changedComponentDefinitionFields:
+              result.artifactIdentity.componentDefinitions.flatMap(
+                (entry, index) =>
+                  entry.definitionHash !==
+                  before.artifactIdentity.componentDefinitions[index]
+                    .definitionHash
+                    ? [`componentDefinitions[${index}].definitionHash`]
+                    : [],
+              ),
+            authorityUnchanged: true,
+            effectsUnchanged: true,
+          },
+        }
+      : {}),
   };
 });
 const frozen = [
@@ -484,22 +638,37 @@ const bundleDiff = {
     files: overlayFiles,
   },
 };
-for (const [name, value] of [
-  ["authority.json", transcript],
-  ["bundle-diff.json", bundleDiff],
-]) {
-  const contents = JSON.stringify(value, null, 2) + "\n";
+const files = new Map([
+  ["authority.json", JSON.stringify(transcript, null, 2) + "\n"],
+  ["bundle-diff.json", JSON.stringify(bundleDiff, null, 2) + "\n"],
+]);
+const preserved =
+  mode === "--check" &&
+  [...files].some(
+    ([name, contents]) =>
+      readFileSync(new URL(name, directory), "utf8") !== contents,
+  ) &&
+  sameEvidenceSourceContent(
+    root,
+    [...files.keys()].map((name) => `${selection.directory}/${name}`),
+    evidenceSources.authority,
+  );
+for (const [name, contents] of files) {
   const path = new URL(name, directory);
   if (mode === "--write" && !existsSync(path)) {
     mkdirSync(directory, { recursive: true });
     writeFileSync(path, contents, { flag: "wx" });
-  } else
+  } else if (!preserved)
     assert.equal(
       readFileSync(path, "utf8"),
       contents,
       `stale ${editionLabel} evidence: ${name}; select a new edition or revision to preserve existing evidence`,
     );
 }
+if (preserved)
+  console.log(
+    "Retained immutable authority evidence: behavior source is unchanged apart from component release labels.",
+  );
 console.log(
-  `${mode === "--write" ? "Recorded" : "Verified"} four unchanged programs, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
+  `${mode === "--write" ? "Recorded" : "Verified"} three unchanged programs, the WO-132 plan-refuter question/schema migration, four widening rejections, nine runtime denials, admitted/reverted grants and ${comparisonPaths.length} bundle comparisons (including additions and removals).`,
 );

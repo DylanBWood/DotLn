@@ -1,188 +1,179 @@
 import assert from "node:assert/strict";
 import {
   appendFileSync,
-  chmodSync,
-  cpSync,
+  existsSync,
   mkdirSync,
   readFileSync,
-  symlinkSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, delimiter, join, resolve } from "node:path";
+import { dirname, join } from "node:path";
+import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
-import { suites, expandSuiteTasks, runGate } from "./test-runner.mjs";
-import { suiteDeclaration } from "./lib/suite-evidence.mjs";
-import { releaseCases } from "./lib/release-fixtures.mjs";
-import { readGateChecks, recordGateChecks } from "./lib/gate-evidence.mjs";
-import { installLicenseFixture } from "./test-license-fixture.mjs";
 
-const source = resolve(import.meta.dirname, "..");
-const write = (root, path, value) => {
+const [action, root, workOrder = "WO-099"] = process.argv.slice(2);
+const write = (path, value) => {
   mkdirSync(dirname(join(root, path)), { recursive: true });
   writeFileSync(join(root, path), value);
 };
-if (process.argv[1] === import.meta.filename) {
-  const [action, root, target] = process.argv.slice(2);
+const run = (command, args) => {
+  const result = spawnSync(command, args, { cwd: root, encoding: "utf8" });
   assert.equal(
-    JSON.parse(readFileSync(join(root, "package.json"), "utf8")).name,
-    "release-fixture",
+    result.status,
+    0,
+    `${command} ${args.join(" ")}\n${result.stdout}${result.stderr}`,
   );
-  if (action === "prepare") {
-    // Keep the actual closeout and release checks. Only the fixture suite bodies
-    // are synthetic; the scheduler, keys, sealed successes and closeout are real.
-    const preserved = new Set([
-      "scripts/release.mjs",
-      "scripts/worktree.mjs",
-      "scripts/resume.mjs",
-      "scripts/license-surfaces.mjs",
-    ]);
-    for (const suite of suites)
-      for (const path of suite.command.filter((part) =>
-        part.startsWith("scripts/"),
-      ))
-        if (!preserved.has(path))
-          write(
-            root,
-            path,
-            path.endsWith(".sh")
-              ? "#!/bin/sh\nexit 0\n"
-              : "// Synthetic check.\n",
-          );
-    for (const path of [
-      "scripts/test-suite-evidence.mjs",
-      "scripts/test-suite-sandbox.mjs",
-      "scripts/test-release-fixtures.mjs",
-      "scripts/test-gate-deadlines.mjs",
-      "corpus/harness/wo101-id-corpus.test.mjs",
-      "corpus/mutation/wo108-selftest.test.mjs",
-    ])
-      write(root, path, "// Synthetic check.\n");
-    write(
-      root,
-      "scripts/test-release.sh",
-      releaseCases(source)
-        .map((name) => `release_case_${name}() {\n  :\n}\n`)
-        .join("\n"),
-    );
-    for (const name of ["compiler", "console"])
-      write(
-        root,
-        `packages/${name}/package.json`,
-        JSON.stringify({
-          name: `@dotln/${name}`,
-          version: "0.1.0",
-          type: "module",
-        }) + "\n",
-      );
-    const skeletonPath = join(root, "packages/skeleton/package.json");
-    const skeleton = JSON.parse(readFileSync(skeletonPath, "utf8"));
-    skeleton.type = "module";
-    writeFileSync(skeletonPath, JSON.stringify(skeleton, null, 2) + "\n");
-    installLicenseFixture(root);
-    const packagePath = join(root, "package.json");
-    const manifest = JSON.parse(readFileSync(packagePath, "utf8"));
-    manifest.scripts["test:full"] = "node scripts/fixture-full-gate.mjs";
-    manifest.scripts["format:check"] = "node scripts/fixture-check.mjs";
-    writeFileSync(packagePath, JSON.stringify(manifest, null, 2) + "\n");
-    write(root, "scripts/fixture-check.mjs", "// Synthetic format check.\n");
-    write(
-      root,
-      "scripts/build.mjs",
-      `import {mkdirSync,writeFileSync,copyFileSync,rmSync} from 'node:fs';for(const name of ['kernel','compiler','skeleton','console']) {const dir='packages/'+name+'/dist/test';rmSync('packages/'+name+'/dist',{recursive:true,force:true});mkdirSync(dir,{recursive:true});writeFileSync(dir+'/fixture.test.js',"import test from 'node:test';test('synthetic',()=>{});\\n");}mkdirSync('packages/kernel/dist/src',{recursive:true});copyFileSync('packages/kernel/test-fixtures/runtime-valid.mjs','packages/kernel/dist/src/index.js');mkdirSync('packages/skeleton/dist/src',{recursive:true});writeFileSync('packages/skeleton/dist/src/cli.js',\"console.log('fixture skeleton passed');\\n\");\n`,
-    );
-    write(
-      root,
-      "scripts/fixture-full-gate.mjs",
-      `import {runReleaseCompositionGate} from ${JSON.stringify(pathToFileURL(import.meta.filename).href)};await runReleaseCompositionGate(process.cwd());\n`,
-    );
-  } else if (action === "installed") {
-    write(
-      root,
-      "node_modules/typescript/bin/tsc",
-      "#!/usr/bin/env node\nconsole.log('Version 5.4.5');\n",
-    );
-    chmodSync(join(root, "node_modules/typescript/bin/tsc"), 0o755);
-    mkdirSync(join(root, "node_modules/.bin"), { recursive: true });
-    symlinkSync("../typescript/bin/tsc", join(root, "node_modules/.bin/tsc"));
-  } else if (action === "handoff") {
-    for (const path of [
-      "node_modules",
-      "packages/kernel/dist",
-      "packages/compiler/dist",
-      "packages/skeleton/dist",
-      "packages/console/dist",
-    ])
-      cpSync(join(root, path), join(target, path), {
-        recursive: true,
-        verbatimSymlinks: true,
-      });
-    recordGateChecks(target, readGateChecks(root));
-  } else if (action === "assert") {
-    const rows = readFileSync(join(dirname(root), "composition.jsonl"), "utf8")
-      .trim()
-      .split("\n")
-      .map(JSON.parse);
-    assert.equal(rows.length, 2);
-    assert.equal(rows[0].reusedSuites, 0);
-    assert.notEqual(rows[0].treeHash, rows[1].treeHash);
-    assert.equal(
-      rows[1].freshSuites,
-      rows[1].expectedFresh.length,
-      JSON.stringify(rows[1].freshReasons),
-    );
-    assert.equal(rows[1].reusedSuites, rows[1].expectedReuse.length);
-    assert.deepEqual(rows[1].reused, rows[1].expectedReuse);
-    console.log(
-      `release close after reviewed-branch merge: ${rows[1].freshSuites} fresh / ${rows[1].reusedSuites} reused; source evidence handed off; session environment changed`,
-    );
-  } else throw new Error("fixture action required");
-}
-
-export async function runReleaseCompositionGate(root) {
-  // Remove only the release transport's npm/Git doubles. The nested runner uses
-  // real npm and Git, while the outer closeout retains its local publication doubles.
-  process.env.PATH = (process.env.PATH ?? "")
-    .split(delimiter)
-    .filter((path) => path !== join(dirname(root), "bin"))
-    .join(delimiter);
-  const tasks = expandSuiteTasks(
-    suites.filter((row) => !row.document || row.fast),
-    root,
-    "/synthetic-template",
+  return result.stdout;
+};
+if (action === "record") {
+  // Other release cases isolate a publication invariant with a synthetic reviewer
+  // observation. The lifecycle case below executes the product check itself.
+  const { gateTreeHash, gateCodeIdentity } = await import(
+    pathToFileURL(join(root, "scripts/lib/gate-evidence.mjs"))
   );
-  // The reviewed gate and the release close both run as sandboxed sessions
-  // whose host refuses sandbox startup: the reviewed successes must carry
-  // without the denial, which is an addition and never a condition of reuse.
-  const result = await runGate(["--full"], root, {
-    kernelProbe: () => ({
-      available: false,
-      reason: "synthetic release-close session refuses sandbox startup",
-    }),
-  });
-  const expectedReuse = tasks
+  const segmented = join(root, `docs/control/orders/${workOrder}.jsonl`);
+  const segment = existsSync(segmented)
+    ? segmented
+    : join(root, "docs/control/resume.jsonl");
+  const events = readFileSync(segment, "utf8")
+    .trim()
+    .split("\n")
+    .map(JSON.parse);
+  const event = events
     .filter(
-      (row) => suiteDeclaration(row)?.paths && row.name !== "release:prepare",
+      (row) =>
+        row.type === "FinalReviewCompleted" && row.workOrderId === workOrder,
     )
-    .map((row) => row.name)
-    .sort();
-  const reusableNames = new Set(expectedReuse);
-  appendFileSync(
-    join(dirname(root), "composition.jsonl"),
-    JSON.stringify({
-      treeHash: result.treeHash,
-      freshSuites: result.freshSuites,
-      reusedSuites: result.reusedSuites,
-      freshReasons: result.freshReasons,
-      reused: result.taskTimeline
-        .filter((row) => row.reused)
-        .map((row) => row.name)
-        .sort(),
-      expectedFresh: tasks
-        .filter((row) => !reusableNames.has(row.name))
-        .map((row) => row.name)
-        .sort(),
-      expectedReuse,
-    }) + "\n",
+    .at(-1);
+  assert.ok(event, `missing synthetic review for ${workOrder}`);
+  event.evidence = {
+    productGate: {
+      checkId: "npm test",
+      codeIdentity: gateCodeIdentity(root),
+      treeHash: gateTreeHash(root),
+      durationMs: 1,
+      exitCode: 0,
+      executed: true,
+      evidenceRef: "fixture:synthetic-review-observation",
+      recordedAt: "2026-09-15T00:00:00.000Z",
+    },
+  };
+  writeFileSync(segment, events.map(JSON.stringify).join("\n") + "\n");
+} else if (action === "prepare") {
+  const manifest = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+  manifest.scripts.test = "node scripts/fixture-one-gate.mjs";
+  write("package.json", JSON.stringify(manifest, null, 2) + "\n");
+  write("scripts/fixture-product.mjs", "export const add = (a, b) => a + b;\n");
+  write(
+    "scripts/fixture-one-gate.mjs",
+    `
+import assert from 'node:assert/strict';
+import {appendFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {add} from './fixture-product.mjs';
+import {gateTreeHash,gateCodeIdentity,recordGateChecks} from './lib/gate-evidence.mjs';
+const started=Date.now();
+assert.equal(add(2,3),5);assert.equal(add(-3,2),-1);
+const output='fixture product assertions passed';
+const row={checkId:'npm test',codeIdentity:gateCodeIdentity(process.cwd()),treeHash:gateTreeHash(process.cwd()),durationMs:Date.now()-started,executed:true,exitCode:0,evidenceRef:'fixture:executed-product-gate',recordedAt:new Date().toISOString(),outputSha256:createHash('sha256').update(output).digest('hex')};
+recordGateChecks(process.cwd(),[row]);
+appendFileSync(process.env.DOTLN_ONE_GATE_LOG,JSON.stringify(row)+'\\n');
+console.log(output);
+`,
   );
-  assert.equal(result.exitCode, 0);
-}
+  write(
+    `docs/work-orders/${workOrder}-fixture.md`,
+    `# ${workOrder} — one-gate lifecycle, v0.2.1\n\n**Model:** any.\n**Effort:** executor any; verifier any; reviewer any.\n\n**Objective:** Publish one reviewed product gate after report and control edits.\n\n**Non-goals:** No package distribution.\n`,
+  );
+  write(
+    `docs/final-reviews/${workOrder}/PR.md`,
+    "One product gate covers the code through publication.\n",
+  );
+  write(
+    `docs/final-reviews/${workOrder}/RELEASE-NOTES.md`,
+    "## Release overview\n\nOne gate survives report updates.\n\n## Read before upgrading\n\nNone.\n\n## Substantive changes\n\nPublication consumes the reviewed product gate.\n\n## Progressive polish\n\nNone.\n\n## Evidence and compatibility\n\nA fixture executes all lifecycle commands and one product gate.\n",
+  );
+  run("git", ["add", "."]);
+  run("git", ["commit", "-m", "fixture product source"]);
+} else if (action === "lifecycle") {
+  const flags = [
+    "--harness",
+    "fixture",
+    "--harness-version",
+    "unrecorded",
+    "--model",
+    "fixture",
+    "--effort",
+    "ultra",
+    "--source",
+    "self-reported",
+  ];
+  const actor = {
+    harness: "fixture",
+    harnessVersion: "unrecorded",
+    model: "fixture",
+    effort: "xhigh",
+    mode: "subagents",
+    raw: "ultra",
+    source: "self-reported",
+  };
+  const resume = (...args) =>
+    run(process.execPath, ["scripts/resume.mjs", ...args]);
+  resume("activate", workOrder, `docs/work-orders/${workOrder}-fixture.md`);
+  resume("implementation-ready", ...flags);
+  resume("verify");
+  write(
+    `docs/verifications/${workOrder}/VER-001.md`,
+    `# Verification\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\nThe product fixture is ready for review.\n`,
+  );
+  resume("verification-result", "pass", ...flags);
+  resume("final-review");
+  run("npm", ["test"]);
+  // Both reports change after the only gate. No session state is installed.
+  appendFileSync(
+    join(root, `docs/verifications/${workOrder}/VER-001.md`),
+    "\nRecorded after the product gate.\n",
+  );
+  write(
+    `docs/final-reviews/${workOrder}/FINAL-001.md`,
+    `# Final review\n\n**Actor attestation:** ${JSON.stringify(actor)}\n\nOne npm test run passed before these report bytes.\n`,
+  );
+  resume("final-review-result", "pass", ...flags);
+  run("git", ["add", "."]);
+  run("git", ["commit", "-m", "fixture review and reports after gate"]);
+  console.log(
+    "activate → implementation-ready → verify → verification-result pass → final-review → npm test → report edits → final-review-result pass",
+  );
+} else if (action === "assert") {
+  const rows = readFileSync(process.env.DOTLN_ONE_GATE_LOG, "utf8")
+    .trim()
+    .split("\n")
+    .map(JSON.parse);
+  assert.equal(
+    rows.length,
+    1,
+    "whole lifecycle must execute exactly one product gate",
+  );
+  const manifest = JSON.parse(
+    run(process.execPath, [
+      "scripts/release.mjs",
+      "manifest-from-tag",
+      "v0.2.1",
+    ]),
+  );
+  assert.equal(manifest.evidence.length, 1);
+  assert.equal(manifest.evidence[0].codeIdentity, rows[0].codeIdentity);
+  assert.equal(manifest.evidence[0].reviewedTree, rows[0].treeHash);
+  assert.notEqual(manifest.evidence[0].mergeTree, rows[0].treeHash);
+  const { readGateChecks } = await import(
+    pathToFileURL(join(root, "scripts/lib/gate-evidence.mjs"))
+  );
+  assert.ok(
+    !readGateChecks(root).some(
+      (row) => row.treeHash === manifest.evidence[0].mergeTree,
+    ),
+    "close must not record a main gate",
+  );
+  console.log(
+    "publish → merge → close: exactly one executed product gate; distinct reviewed/merge trees; no main gate required",
+  );
+} else throw new Error("fixture action required");

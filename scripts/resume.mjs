@@ -69,10 +69,11 @@ const environmentPath = join(repoRoot, "docs/discovery/environment.json");
 const effortLevels = ["low", "medium", "high", "xhigh", "max"];
 const effortDeclarations = new Set([
   "any",
+  ...effortLevels,
   ...effortLevels.map((level) => `${level}+`),
 ]);
 const actorFlagUsage =
-  "--harness <claude-code|codex-cli|human|other:label> --harness-version <version> --model <model> --effort <level> --source <self-reported|harness-readback|operator-attested> [--account-label <label>]";
+  "--harness <harness> --harness-version <version> --model <model> --effort <level> --source <source> [--account-label <label>]";
 const actorHeaderPrefix = "**Actor attestation:**";
 const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
 
@@ -332,7 +333,7 @@ const workOrderDeclaration = (
       `work order must place **Effort:** immediately after **Model:** in its header: ${workOrderPath}`,
     );
   const effort = fieldAt("Effort", effortIndex);
-  const level = "(any|low\\+|medium\\+|high\\+|xhigh\\+|max\\+)";
+  const level = "(any|low\\+?|medium\\+?|high\\+?|xhigh\\+?|max\\+?)";
   const match = new RegExp(
     `^\\*\\*Effort:\\*\\*\\s+executor\\s+${level}\\s*;\\s*verifier\\s+${level}\\s*;\\s*reviewer\\s+${level}(?:\\.\\s*.*|\\.)?$`,
   ).exec(effort.paragraph);
@@ -471,53 +472,27 @@ export const parseActor = (action, args, positional = "") => {
   const model = values.get("--model");
   const suppliedEffort = values.get("--effort");
   const source = values.get("--source");
+  const subagents = ["ultra", "ultra code"].includes(
+    suppliedEffort.toLowerCase(),
+  );
   if (
-    !["claude-code", "codex-cli", "human"].includes(harness) &&
-    !/^other:[A-Za-z0-9][A-Za-z0-9._-]*$/.test(harness)
+    !hasRecordedEffortValue(
+      harness,
+      harnessVersion,
+      subagents ? "xhigh" : suppliedEffort,
+    )
   )
-    throw new Error(
-      `invalid --harness ${harness}; ${actorUsage(action, positional)}`,
-    );
-  if (
-    !["self-reported", "harness-readback", "operator-attested"].includes(source)
-  )
-    throw new Error(
-      `invalid --source ${source}; ${actorUsage(action, positional)}`,
-    );
-  if (
-    source === "harness-readback" &&
-    !hasObservedEffortReadbackValue(harness, harnessVersion, suppliedEffort)
-  )
-    throw new Error(
-      `harness-readback refused for ${harness} ${harnessVersion} effort ${suppliedEffort}: no matching observed effective-effort readback is recorded for that version and value (${recordedVersionsMessage(harness)}); use self-reported or operator-attested${sessionLabelHint(harness, suppliedEffort)}`,
-    );
-
-  const recognizedEffort = effortLevels.includes(suppliedEffort);
-  const supportedEffort =
-    recognizedEffort &&
-    hasRecordedEffortValue(harness, harnessVersion, suppliedEffort);
-  const outsideObservedLine =
-    recognizedEffort &&
-    !supportedEffort &&
-    /^\d+\.\d+\.\d+$/.test(harnessVersion) &&
-    harnessEvidence(harness)?.versionLines?.length;
-  if (outsideObservedLine)
-    process.stderr.write(
-      `warning: ${harness} ${harnessVersion} is outside ${recordedVersionsMessage(harness)}; effort records unknown\n`,
-    );
-  if (recognizedEffort && !supportedEffort && !outsideObservedLine)
-    throw new Error(
-      `attested effort ${suppliedEffort} refused for ${harness} ${harnessVersion}: no matching selector or effective-readback evidence records that value (${recordedVersionsMessage(harness)}); use --effort unknown or record bounded discovery evidence`,
+    console.warn(
+      `Advisory: attestation recorded as supplied; ${harness} ${harnessVersion} effort ${suppliedEffort} has no matching discovery observation.`,
     );
   const actor = {
     harness,
     harnessVersion,
     model,
-    effort: recognizedEffort && supportedEffort ? suppliedEffort : "unknown",
+    effort: subagents ? "xhigh" : suppliedEffort,
+    ...(subagents ? { mode: "subagents", raw: suppliedEffort } : {}),
+    source,
   };
-  if (!recognizedEffort && suppliedEffort !== "unknown")
-    actor.raw = suppliedEffort;
-  actor.source = source;
   const accountLabel = values.has("--account-label")
     ? values.get("--account-label")
     : process.env.DOTLN_ACCOUNT_LABEL;
@@ -526,41 +501,18 @@ export const parseActor = (action, args, positional = "") => {
   return actor;
 };
 
-const renderEffort = ({ effort, raw }) =>
-  effort === "unknown" && typeof raw === "string"
-    ? `unknown (raw: ${raw})`
-    : effort;
-
-const sessionLabelHint = (harness, raw) => {
-  const notes = harnessEvidence(harness)?.sessionLabelNotes;
-  const labelNote =
-    notes && typeof notes === "object" && Object.hasOwn(notes, raw)
-      ? notes[raw]
-      : undefined;
-  return labelNote?.classification === "operator-attested" &&
-    effortLevels.includes(labelNote.reasoningEffort) &&
-    labelNote.attestationSource === "operator-attested" &&
-    labelNote.automaticConversion === false
-    ? `; see docs/discovery/environment.json effortReadbackProbe.harnesses.${harness}.sessionLabelNotes.${raw}; resume does not convert session labels, so supply --effort ${labelNote.reasoningEffort} --source ${labelNote.attestationSource} only when that recorded attestation applies`
-    : "";
-};
+const renderEffort = ({ effort, raw, mode }) =>
+  `${effort}${mode ? ` (${mode})` : ""}${raw ? ` (raw: ${raw})` : ""}`;
 
 const validateEffort = (actor, role, declaration, workOrderPath) => {
-  const required = declaration.efforts[role];
-  if (required === "any") return;
-  const minimum = required.slice(0, -1);
+  const recommended = declaration.efforts[role].replace(/\+$/, "");
   if (
-    actor.effort === "unknown" ||
-    effortLevels.indexOf(actor.effort) < effortLevels.indexOf(minimum)
-  ) {
-    const labelHint =
-      actor.effort === "unknown" && typeof actor.raw === "string"
-        ? sessionLabelHint(actor.harness, actor.raw)
-        : "";
-    throw new Error(
-      `attested ${role} effort ${renderEffort(actor)} is below declared ${required} in ${workOrderPath}${labelHint}; add a dated operator amendment to that work order's **Effort:** line, then rerun`,
+    recommended !== "any" &&
+    effortLevels.indexOf(actor.effort) < effortLevels.indexOf(recommended)
+  )
+    console.warn(
+      `Advisory: attested ${role} effort ${renderEffort(actor)} is below recommendation ${recommended} in ${workOrderPath}; recorded as given.`,
     );
-  }
 };
 
 const activeWorkOrderDeclaration = (state) =>
@@ -646,9 +598,10 @@ const projectOrder = (state, events) => {
     finalReview: state.finalReviewId ?? null,
     finalReviewPath: state.finalReviewPath ?? null,
     latestAttestation: projectActor(state.latestAttestation),
-    effortDrift: state.effortPairs.map(({ effort, raw }) => ({
+    effortDrift: state.effortPairs.map(({ effort, raw, mode }) => ({
       effort,
       ...(raw === undefined ? {} : { raw }),
+      ...(mode === undefined ? {} : { mode }),
     })),
     ...controlTimeProjection(events),
     latestCheckpoint: state.latestCheckpointRef
@@ -752,7 +705,7 @@ const requirePhase = (state, ...phases) => {
  */
 const executionBriefing = (state) => {
   const declaration = activeWorkOrderDeclaration(state);
-  return `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; after its evidence gate passes, run ${commandFor("implementation-ready")}.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
+  return `Execute ${state.workOrderPath}.\n${declaration.modelSource}\n${declaration.effortSource}\nRead that authority and only its cited blueprint sections; when its deliverable and evidence exist, run ${commandFor("implementation-ready")}.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
 };
 const repairBriefing = (state) =>
   `Repair ${state.workOrderPath} using ${state.failureSourcePath}; read both artifacts.${executorEntryBriefing(repoRoot, state.workOrderId)}`;
@@ -1108,7 +1061,7 @@ export const main = async (argv = process.argv.slice(2)) => {
       // and it survives the removal of the subject worktree the helper performs.
       const helper = `${shellQuote(process.execPath)} ${shellQuote(join(mainPath, "scripts/release.mjs"))} close ${state.workOrderId} --publish`;
       const egress =
-        "The helper needs network egress to the GitHub host for fetch, ls-remote, the tag push and the Release: run it from an operator terminal with egress (a sandboxed agent session cannot publish), after --dry-run proves reachability.";
+        "The helper needs network egress to the GitHub host for fetch, ls-remote, the tag push and the Release: run it in an authorized session with egress and host approval. --dry-run previews reachability and the publication manifest.";
       message =
         resolve(mainPath) === resolve(repoRoot)
           ? `After the operator merges the PR, run the reviewed helper from this main checkout: ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`

@@ -28,6 +28,9 @@ import {
   activeGateRuns,
   beginGateRun,
   gateInputPath,
+  gateCodeIdentity,
+  gateTreeHash,
+  findGateCheck,
   gateRunLineage,
   gateStopRequested,
   GATE_RUN_ENVIRONMENT,
@@ -48,7 +51,12 @@ test("full inventory retains every command in the previous package test chain", 
   assert.equal(before.length, 37);
   const commands = suites.map((row) =>
     [...row.command, ...(row.args ?? [])]
-      .filter((part) => !part.startsWith("--test-concurrency="))
+      .filter(
+        (part) =>
+          !part.startsWith("--test-concurrency=") &&
+          !part.startsWith("--test-name-pattern=") &&
+          !part.startsWith("--test-skip-pattern="),
+      )
       .map((part) => (part === process.execPath ? "node" : part))
       .join(" "),
   );
@@ -80,9 +88,10 @@ test("full inventory retains every command in the previous package test chain", 
         "$1",
       )
       .replace(
-        /^node (scripts\/test-(?:github-body|plan-refutation)\.mjs)$/,
-        "node --test $1",
-      );
+        /^node scripts\/test-plan-refutation\.mjs$/,
+        "node scripts/test-plan-refutation.mjs --fixtures-only",
+      )
+      .replace(/^node (scripts\/test-github-body\.mjs)$/, "node --test $1");
     assert.ok(
       commands.includes(normalized),
       `missing prior command: ${command}`,
@@ -206,12 +215,7 @@ test("package tests and fixtures wait for preflights and never start after a fai
         };
       },
     });
-    for (const name of [
-      "skeleton",
-      "console:fixtures",
-      "console:current",
-      "resume",
-    ]) {
+    for (const name of ["skeleton", "console", "resume"]) {
       if (indexExit) {
         assert.ok(!events.includes(`start:${name}`));
         assert.equal(rows.find((row) => row.name === name).executed, false);
@@ -264,23 +268,20 @@ test("failed split-case diagnostics survive aggregate evidence as addressed logs
       .every((row) => !row.outputRef),
   );
 });
-test("constraint suites keep one-piece flow and the measured lane budget", () => {
-  const tasks = expandSuiteTasks(
-    suites.filter((row) => !row.document || row.fast),
-    root,
-    "/synthetic-template",
+test("product suites describe protection, machinery is separate and only release expands", () => {
+  for (const row of suites.filter((row) => row.product))
+    assert.ok(row.protects?.length > 10, row.name);
+  for (const row of suites.filter((row) => row.machinery))
+    assert.ok(row.sources.length, row.name);
+  const selected = suites.filter((row) => row.name !== "release");
+  assert.deepEqual(
+    expandSuiteTasks(selected, root).map((row) => row.name),
+    selected.map((row) => row.name),
   );
-  assert.equal(tasks.length, 82);
-  const planning = tasks.find((row) => row.name === "plan-refutation:fixtures");
-  assert.equal(planning?.loadClass, undefined);
-  assert.equal(planning?.loadSlots, 1);
-  assert.ok(planning?.after.includes("harness-fixtures"));
-  assert.equal(
-    tasks.find((row) => row.name === "runner-fixtures")?.loadClass,
-    "isolated",
-  );
+  for (const name of ["harness-fixtures", "process-debt"])
+    assert.equal(suites.find((row) => row.name === name).exclusive, true);
 });
-test("weighted lanes admit one light hook peer and pair cost-ranked heavy tasks", async () => {
+test("exclusive machinery runs alone and product suites overlap within lane capacity", async () => {
   const selected = suites.filter((row) =>
     [
       "build",
@@ -297,7 +298,7 @@ test("weighted lanes admit one light hook peer and pair cost-ranked heavy tasks"
     execute: async (row) => {
       assert.equal(
         row.gateContext.loadClass,
-        row.build ? "isolated" : "shared",
+        row.build || row.exclusive ? "isolated" : "shared",
       );
       assert.ok(
         [...active.values()].reduce((sum, slots) => sum + slots, 0) +
@@ -305,34 +306,28 @@ test("weighted lanes admit one light hook peer and pair cost-ranked heavy tasks"
           4,
       );
       if (["harness-fixtures", "process-debt"].includes(row.name)) {
-        assert.equal(row.gateContext.reservedSlots, 3);
-        assert.equal(row.gateContext.concurrency, 2);
+        assert.equal(row.gateContext.reservedSlots, 4);
+        assert.equal(row.gateContext.concurrency, 1);
         assert.ok(
           !["harness-fixtures", "process-debt"].some((name) =>
             active.has(name),
           ),
         );
       }
-      if (
-        [...active.keys()].some((name) =>
-          ["harness-fixtures", "process-debt"].includes(name),
-        )
-      )
-        assert.equal(row.gateContext.reservedSlots, 1);
       active.set(row.name, row.gateContext.reservedSlots);
       if (active.has("harness-fixtures") && active.has("process-debt"))
         overlap.add("hooks");
       if (active.has("harness-fixtures") && active.has("console:fixtures"))
         overlap.add("hook-light");
-      if (active.has("skeleton") && active.has("console:current"))
+      if (active.has("skeleton") && active.has("console"))
         overlap.add("heavy-pair");
       await new Promise((done) => setTimeout(done, 10));
       active.delete(row.name);
       return { name: row.name, exitCode: 0, executed: true };
     },
   });
-  assert.equal(rows.length, selected.length + 1);
-  assert.ok(overlap.has("hook-light"));
+  assert.equal(rows.length, selected.length);
+  assert.equal(overlap.has("hook-light"), false);
   assert.ok(overlap.has("heavy-pair"));
   assert.equal(overlap.has("hooks"), false);
   for (const concurrency of [1, 2, 4]) {
@@ -391,7 +386,7 @@ test("timeout is an executed failure with suite identity and measured duration",
   assert.match(row.output, /Suite slow-fixture timed out/);
 });
 
-test("only and document CLI selection execute their declared checks without a code build", async () => {
+test("only and document CLI selection execute their declared checks with the projection build", async () => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-runner-cli-"));
   try {
     const git = (...args) =>
@@ -415,6 +410,17 @@ test("only and document CLI selection execute their declared checks without a co
       "check-publication.mjs",
       "work-orders.mjs",
       "refute-plan.mjs",
+      "test-plan-refutation.mjs",
+      "release.mjs",
+      "authority-evidence.mjs",
+      "artifact-identity-evidence.mjs",
+      "verification-evidence.mjs",
+      "feedback-evidence.mjs",
+      "harness.mjs",
+      "harness-context.mjs",
+      "harness-evidence.mjs",
+      "meta.mjs",
+      "build.mjs",
     ])
       writeFileSync(
         join(repo, "scripts", file),
@@ -424,10 +430,11 @@ test("only and document CLI selection execute their declared checks without a co
               .replace(/^/, 'import fs from "node:fs";\n')
           : observer,
       );
-    writeFileSync(
-      join(repo, "scripts/build.mjs"),
-      'throw new Error("document gate ran a code build");',
-    );
+    for (const name of ["skeleton", "console"]) {
+      const directory = join(repo, `packages/${name}/dist/test`);
+      mkdirSync(directory, { recursive: true });
+      writeFileSync(join(directory, "fixture.test.js"), observer);
+    }
     writeFileSync(
       join(repo, "package.json"),
       JSON.stringify({
@@ -451,19 +458,16 @@ test("only and document CLI selection execute their declared checks without a co
       .trim()
       .split("\n")
       .map(JSON.parse);
-    assert.equal(observed.length, 4);
-    assert.ok(!observed.some((row) => row[0].includes("build")));
+    const documentCount = suites.filter((row) => row.document).length + 1;
+    assert.equal(observed.length, 1 + documentCount);
+    assert.ok(observed.some((row) => row[0].includes("build")));
     assert.deepEqual(observed.at(-1).slice(1), ["check"]);
     const repeated = await runGate(["--document", "--serial"], repo);
-    assert.equal(
-      repeated.reusedSuites,
-      3,
-      "source checks reuse the same tree while publication observes local terms",
-    );
+    assert.equal(repeated.reusedSuites, 0, "each requested suite runs fresh");
     assert.equal(
       readFileSync(join(repo, "observed.jsonl"), "utf8").trim().split("\n")
         .length,
-      5,
+      1 + 2 * documentCount,
     );
     await assert.rejects(runGate(["--only", "unknown"], repo), /Unknown suite/);
     assert.deepEqual(
@@ -853,12 +857,12 @@ test("WO-125 VER-003 protects pre-existing hard links while ordinary scratch sta
   assert.equal(gateInputPath(repo, "scratch/local-link.txt"), true);
 });
 
-test("release cases use one background lane, wait for preparation and require complete coverage", async () => {
+test("release cases use concurrent lanes, wait for preparation and require complete coverage", async () => {
   const selected = [barrier, suites.find((row) => row.name === "release")];
   const tasks = expandSuiteTasks(selected, root, "/synthetic-template");
   assert.equal(
     tasks.filter((row) => row.name.startsWith("release:case:")).length,
-    42,
+    (await import("./lib/release-fixtures.mjs")).releaseCases(root).length,
   );
   let active = 0,
     activeCases = 0,
@@ -869,7 +873,7 @@ test("release cases use one background lane, wait for preparation and require co
     execute: async (row) => {
       if (row.name.startsWith("release:case:")) {
         assert.ok(prepared);
-        assert.equal(activeCases++, 0);
+        activeCases++;
       }
       peak = Math.max(peak, ++active);
       await new Promise((done) => setTimeout(done, 1));
@@ -879,7 +883,7 @@ test("release cases use one background lane, wait for preparation and require co
       return { name: row.name, exitCode: 0, executed: true, durationMs: 1 };
     },
   });
-  assert.equal(peak, 1);
+  assert.ok(peak >= 2);
   assert.equal(aggregateSuiteRows(selected, tasks, rows)[1].exitCode, 0);
   assert.equal(
     aggregateSuiteRows(selected, tasks, rows.slice(0, -1))[1].exitCode,
@@ -905,7 +909,7 @@ test("release cases use one background lane, wait for preparation and require co
   assert.equal(aggregateSuiteRows(selected, tasks, refused)[1].exitCode, 1);
 });
 
-test("console split executes every fixture and the current check exactly once", async (t) => {
+test("console product and document selections execute every test exactly once", async (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-console-dispatch-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   const directory = join(repo, "packages/console/dist/test");
@@ -913,7 +917,7 @@ test("console split executes every fixture and the current check exactly once", 
   const names = [
     "WO-032 AC1/6 fixture",
     "WO-032 schema fixture",
-    "WO-032 host collection reads current sources and all shipped exports",
+    "[document] WO-032 host collection reads current sources and all shipped exports",
   ];
   writeFileSync(
     join(directory, "board.test.js"),
@@ -922,19 +926,21 @@ test("console split executes every fixture and the current check exactly once", 
       .join("\n")}\n`,
   );
   const tasks = expandSuiteTasks(
-    [suites.find((row) => row.name === "console")],
+    suites.filter((row) => ["console", "console-docs"].includes(row.name)),
     repo,
   );
   const observed = [];
   for (const [index, row] of tasks.entries()) {
     const result = await executeSuite(row, repo);
     assert.equal(result.exitCode, 0, result.output);
-    const executed = [...result.output.matchAll(/^ok \d+ - (.+)$/gm)].map(
-      (match) => match[1],
-    );
+    const executed = [...result.output.matchAll(/^ok \d+ - (.+)$/gm)]
+      .map((match) => match[1])
+      .filter((name) => !name.includes(" # SKIP"));
     assert.deepEqual(
       executed,
-      index === 0 ? names.slice(0, 2) : names.slice(2),
+      names.filter(
+        (name) => row.name.endsWith("-docs") === name.includes("[document]"),
+      ),
     );
     observed.push(...executed);
   }
@@ -953,8 +959,8 @@ test("planning task dispatch delivers each selection flag to the executable", as
     [suites.find((row) => row.name === "plan-refutation")],
     repo,
   );
-  assert.equal(tasks.length, 2);
-  for (const [index, flag] of ["--fixtures-only", "--check-only"].entries()) {
+  assert.equal(tasks.length, 1);
+  for (const [index, flag] of ["--fixtures-only"].entries()) {
     const result = await executeSuite(tasks[index], repo);
     assert.equal(result.exitCode, 0);
     assert.deepEqual(JSON.parse(result.output), [flag]);
@@ -1007,4 +1013,80 @@ test("live progress arrives before a running process completes and remains bound
   );
   assert.equal(lots.length, 81);
   assert.ok(lots.every((row) => row.message.length <= 200));
+});
+
+test("code identity follows tracked source and dependency bytes across processes and revisions", () => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-code-identity-"));
+  const git = (...args) =>
+    execFileSync("git", ["-C", repo, ...args], { encoding: "utf8" }).trim();
+  try {
+    git("init", "-q");
+    git("config", "user.name", "Fixture");
+    git("config", "user.email", "fixture@example.invalid");
+    mkdirSync(join(repo, "docs"));
+    writeFileSync(
+      join(repo, ".gitattributes"),
+      "projection.js dotln-generated\n",
+    );
+    writeFileSync(join(repo, "source.js"), "export const result = 1;\n");
+    writeFileSync(join(repo, "projection.js"), "generated one\n");
+    writeFileSync(join(repo, "docs/report.md"), "report one\n");
+    writeFileSync(
+      join(repo, "package.json"),
+      '{"private":true,"dependencies":{"fixture":"1.0.0"}}\n',
+    );
+    git("add", ".");
+    git("commit", "-qm", "fixture");
+    const code = gateCodeIdentity(repo),
+      tree = gateTreeHash(repo);
+    assert.equal(gateCodeIdentity(repo, "HEAD"), code);
+    recordGateChecks(repo, [
+      {
+        checkId: "npm test",
+        codeIdentity: code,
+        treeHash: tree,
+        subject: tree,
+        executed: true,
+        exitCode: 0,
+        durationMs: 1,
+        evidenceRef: "fixture:executed",
+        recordedAt: new Date().toISOString(),
+      },
+    ]);
+    writeFileSync(join(repo, "docs/report.md"), "report after gate\n");
+    writeFileSync(join(repo, "projection.js"), "generated two\n");
+    assert.notEqual(gateTreeHash(repo), tree);
+    assert.equal(gateCodeIdentity(repo), code);
+    const module = new URL("./lib/gate-evidence.mjs", import.meta.url).href;
+    const command = `import {gateCodeIdentity,findGateCheck} from ${JSON.stringify(module)}; const root=process.argv[1]; console.log(JSON.stringify({code:gateCodeIdentity(root),found:Boolean(findGateCheck(root,"npm test","different-tree"))}));`;
+    const readback = JSON.parse(
+      execFileSync(
+        "bash",
+        [
+          "-c",
+          'exec "$1" --input-type=module -e "$2" "$3"',
+          "code-identity",
+          process.execPath,
+          command,
+          repo,
+        ],
+        { encoding: "utf8" },
+      ),
+    );
+    assert.deepEqual(readback, { code, found: true });
+    writeFileSync(join(repo, "source.js"), "export const result = 2;\n");
+    assert.notEqual(gateCodeIdentity(repo), code);
+    assert.equal(findGateCheck(repo, "npm test", tree), undefined);
+    writeFileSync(join(repo, "source.js"), "export const result = 1;\n");
+    writeFileSync(
+      join(repo, "package.json"),
+      '{"private":true,"dependencies":{"fixture":"2.0.0"}}\n',
+    );
+    assert.notEqual(gateCodeIdentity(repo), code);
+    git("add", ".");
+    git("commit", "-qm", "dependency update");
+    assert.equal(gateCodeIdentity(repo, "HEAD"), gateCodeIdentity(repo));
+  } finally {
+    rmSync(repo, { recursive: true, force: true });
+  }
 });

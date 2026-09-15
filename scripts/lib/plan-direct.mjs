@@ -13,9 +13,9 @@ import {
   writePlanReceipt,
   checkPlanGate,
   RECEIPTS,
+  requireChangedPlanEvidence,
 } from "./plan-receipts.mjs";
 import { containedRegularFile } from "./paths.mjs";
-import { readBudgets } from "./process-budget.mjs";
 
 const local = "docs/control/local/plan";
 export const planOrderHash = (order) =>
@@ -54,6 +54,7 @@ export async function planJudgmentScope(root, subject, pass, scope = "pass") {
       try {
         const before = buildPlanSubject(root, `${introduced}^`, {
           costTable: false,
+          goalReview: Boolean(subject.goalReview),
         });
         changed = new Set(
           subject.orders
@@ -79,10 +80,12 @@ export async function planJudgmentScope(root, subject, pass, scope = "pass") {
   )) {
     const prior = [...history]
       .reverse()
-      .find((receipt) =>
-        receipt.subject.orders.some(
-          (row) => row.workOrderId === order.workOrderId,
-        ),
+      .find(
+        (receipt) =>
+          receipt.subject.goalReview &&
+          receipt.subject.orders.some(
+            (row) => row.workOrderId === order.workOrderId,
+          ),
       );
     if (
       !prior?.subject.orders.some(
@@ -167,13 +170,17 @@ export async function beginDirectRefutation(
   root,
   { scope = "pass", now = () => new Date().toISOString() } = {},
 ) {
-  const subject = buildPlanSubject(root),
+  const subject = buildPlanSubject(root, "HEAD", { goalReview: true }),
     pass = latestPlanningPass(root);
-  if (buildPlanSubject(root, "HEAD", { workspace: true }).hash !== subject.hash)
+  if (
+    buildPlanSubject(root, "HEAD", { workspace: true, goalReview: true })
+      .hash !== subject.hash
+  )
     throw new Error(
       "commit the planning subject before refutation; committed subject differs from workspace",
     );
   const history = await readReceipts(root);
+  requireChangedPlanEvidence(pass, subject, history);
   if (
     history.some(
       (row) => row.pass.id === pass.id && row.subject.hash === subject.hash,
@@ -253,31 +260,22 @@ export async function fileDirectRefutation(
   )
     throw new Error("Invalid direct refutation pointer");
   const pending = JSON.parse(readFileSync(join(root, pointer.path), "utf8"));
-  const subject = buildPlanSubject(root);
+  const subject = buildPlanSubject(root, "HEAD", { goalReview: true });
   if (
     subject.hash !== pending.subjectHash ||
-    buildPlanSubject(root, "HEAD", { workspace: true }).hash !== subject.hash
+    buildPlanSubject(root, "HEAD", { workspace: true, goalReview: true })
+      .hash !== subject.hash
   )
     throw new Error("Direct refutation subject is stale");
   const completedAt = now(),
     durationMs = Date.parse(completedAt) - Date.parse(pending.dispatchedAt);
   if (!Number.isFinite(durationMs) || durationMs < 0)
     throw new Error("Invalid direct refutation duration");
-  const budget = readBudgets(root);
-  if (
-    pending.review.scope === "pass" &&
-    budget &&
-    durationMs > budget.limits.passRefutationMs &&
-    !budget.acceptances.some(
-      (row) => row.metric === "passRefutationMs" && durationMs <= row.ceiling,
-    )
-  )
-    throw new Error(
-      `Pass refutation exceeded ${budget.limits.passRefutationMs} ms; a dated acceptance or new full-scope dispatch is required`,
-    );
   const { validatePlanResult } =
     await import("../../packages/skeleton/dist/src/plan-refutation-protocol.js");
   const raw = JSON.parse(readFileSync(join(root, resultPath), "utf8"));
+  if (raw.schemaVersion !== "plan-goal-review-v1")
+    throw new Error("new refutations require plan-goal-review-v1 findings");
   const result = validatePlanResult(
     await carryPlanResult(root, subject, pending.review, raw),
     subject,

@@ -21,6 +21,7 @@ import { compilePlanRefuter } from "../packages/skeleton/dist/src/loadouts/plan-
 import {
   FakePlanRefutationTransport,
   cannedPlanDrift,
+  cannedGoalReview,
 } from "../packages/skeleton/dist/src/plan-refutation-fake.js";
 import { runPlanRefutation } from "../packages/skeleton/dist/src/plan-refutation-host.js";
 import { validatePlanResult } from "../packages/skeleton/dist/src/plan-refutation-protocol.js";
@@ -41,6 +42,7 @@ import {
   checkPlanGate,
   OVERRIDES,
   overridePlanHold,
+  disposePlanHold,
   readOverrides,
   readReceipts,
   RECEIPTS,
@@ -130,6 +132,20 @@ const makeRepo = (parent, name) => {
     repo,
     "docs/planning/capability-table.md",
     "# Capabilities\n\n| Capability | Level | Narrative |\n| --- | --- | --- |\n| `fixture.first` | **0 — latent** | PLANNER_NARRATIVE_SENTINEL |\n",
+  );
+  write(
+    repo,
+    "docs/product/07-execution-guide.md",
+    "# Fixture guide\n\n## Goal-aligned decisions\n\nConsider all eight system traps and observed operator flow.\n\n## Platform-first\n\n" +
+      read(root, "docs/product/07-execution-guide.md").match(
+        /the point is to create a platform,[\s\S]*?before a later pass pays it again\./u,
+      )[0] +
+      "\n",
+  );
+  write(
+    repo,
+    "docs/planning/critical-path-2026-09-08.md",
+    "# Fixture critical path\n\n## The critical path\n\nGate R delivers an independently verified runtime loop.\n",
   );
   for (const id of ["WO-901", "WO-902"]) write(repo, orderPath(id), order(id));
   commit(repo, "before mechanism");
@@ -236,6 +252,482 @@ export async function fixtures() {
   );
   const check = (label, run) => test(label, run);
   try {
+    await check(
+      "WO-132 goal review preserves hypothetical findings without holding and requires observed evidence",
+      async () => {
+        const repo = makeRepo(parent, "goal-findings");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const input = cannedGoalReview(subject);
+        input.orders[0].verdict = "misaligned";
+        input.orders[0].findings = [
+          {
+            criterionId: "criterion:1",
+            kind: "observed-failure",
+            reason: "A constructed failure could happen.",
+            evidence: null,
+            reopenWhen: "A recorded run exhibits the failure.",
+          },
+        ];
+        input.planVerdict = "misaligned";
+        input.holdReasons = [
+          {
+            workOrderId: "WO-901",
+            criterionId: "criterion:1",
+            reason: "The hypothetical must hold.",
+          },
+        ];
+        const known = validatePlanResult(input, subject);
+        assert.equal(known.planVerdict, "aligned-with-findings");
+        assert.equal(known.orders[0].findings[0].kind, "known-issue");
+        assert.equal(known.holdReasons.length, 0);
+        input.orders[0].findings[0] = {
+          ...input.orders[0].findings[0],
+          kind: "vision-contradiction",
+          evidence: subject.standard.exclusions[0].id,
+        };
+        assert.equal(
+          validatePlanResult(input, subject).planVerdict,
+          "misaligned",
+        );
+        assert.equal(
+          validatePlanResult(cannedGoalReview(subject), subject).planVerdict,
+          "aligned",
+          "missing Cost produces no structural hold",
+        );
+        const prompt = JSON.parse(
+          await beginDirectRefutation(repo, {
+            now: () => "2030-01-02T12:00:00.000Z",
+          }),
+        );
+        assert.equal(
+          prompt.subject.goalReview.platformStandard,
+          subject.goalReview.platformStandard,
+        );
+        assert.match(
+          prompt.subject.goalReview.platformStandard,
+          /^the point is to create a platform,/u,
+        );
+        assert.match(prompt.outputInstructions, /all eight system traps/u);
+        assert.equal(
+          prompt.resultSchema.properties.planVerdict.enum.join(","),
+          "aligned,aligned-with-findings,misaligned",
+        );
+      },
+    );
+    await check(
+      "WO-132 legacy holds accept bound criterion repairs without replacing their immutable receipt",
+      async () => {
+        const repo = makeRepo(parent, "legacy-disposition-repair");
+        const held = await writeDirectReceipt(repo, (subject) => ({
+          ...passResult(subject),
+          planVerdict: "hold",
+          holdReasons: [
+            {
+              workOrderId: "WO-901",
+              criterionId: "criterion:1",
+              reason: "Recorded fixture behavior needs repair.",
+            },
+          ],
+        }));
+        commit(repo, "immutable legacy judgment");
+        const originals = Object.fromEntries(
+          ["json", "md"].map((extension) => [
+            extension,
+            read(repo, `${RECEIPTS}/${held.receiptId}.${extension}`),
+          ]),
+        );
+        const path = orderPath("WO-901");
+        write(
+          repo,
+          path,
+          read(repo, path).replace(
+            "Evidence confirms a useful shape.",
+            "Evidence confirms the repaired useful shape.",
+          ),
+        );
+        await disposePlanHold(repo, {
+          receiptId: held.receiptId,
+          holdId: held.holds[0].id,
+          reason: "The criterion now requires the repaired behavior.",
+          now: () => "2030-01-02T12:01:00.000Z",
+        });
+        const dirty = await checkPlanGate(repo);
+        assert.ok(
+          dirty.continuation.workspaceUpdates.some(
+            (row) => row.kind === "disposed-criterion",
+          ),
+        );
+        assert.deepEqual(dirty.continuation.committedUpdates, []);
+        commit(repo, "record only criterion repair and disposition");
+        const committed = await checkPlanGate(repo);
+        assert.deepEqual(
+          committed.continuation.committedUpdates,
+          dirty.continuation.workspaceUpdates,
+        );
+        assert.equal((await readReceipts(repo)).length, 1);
+        for (const extension of ["json", "md"])
+          assert.equal(
+            read(repo, `${RECEIPTS}/${held.receiptId}.${extension}`),
+            originals[extension],
+          );
+        write(
+          repo,
+          path,
+          read(repo, path).replace(
+            "Keep a bounded result.",
+            "Change a different criterion.",
+          ),
+        );
+        await assert.rejects(
+          checkPlanGate(repo),
+          /changed criterion has no text-bound disposition/u,
+        );
+        commit(repo, "unrelated criterion edit is still refused");
+        await assert.rejects(
+          checkPlanGate(repo),
+          /changed criterion has no text-bound disposition/u,
+        );
+      },
+    );
+    await check(
+      "WO-132 goal dispositions and overrides bind only the exact repaired Cost declaration",
+      async () => {
+        for (const [label, beforeCost, afterCost, override] of [
+          [
+            "replace",
+            "**Cost:** Adds one check.\n\n",
+            "**Cost:** Removes two recurring checks for one addition.\n\n",
+            false,
+          ],
+          ["add", "", "**Cost:** Removes the recurring gate.\n\n", true],
+          ["remove", "**Cost:** Adds one check.\n\n", "", false],
+        ]) {
+          const repo = makeRepo(parent, `goal-cost-disposition-${label}`);
+          const path = orderPath("WO-901");
+          write(
+            repo,
+            path,
+            order("WO-901").replace("**Model:**", `${beforeCost}**Model:**`),
+          );
+          if (beforeCost) commit(repo, "goal Cost subject");
+          const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+          const result = cannedGoalReview(subject);
+          result.orders[0].verdict = "misaligned";
+          result.orders[0].findings = [
+            {
+              criterionId: "criterion:1",
+              kind: "vision-contradiction",
+              reason: "The Cost promise conflicts with the fixture vision.",
+              evidence: subject.standard.theses[0].id,
+              reopenWhen: null,
+            },
+          ];
+          const held = await writePlanReceipt(repo, {
+            pass: passFor(repo),
+            slug: "cost",
+            subject,
+            episode: directEpisode(validatePlanResult(result, subject)),
+          });
+          commit(repo, "immutable goal judgment");
+          const originals = Object.fromEntries(
+            ["json", "md"].map((extension) => [
+              extension,
+              read(repo, `${RECEIPTS}/${held.receiptId}.${extension}`),
+            ]),
+          );
+          const repaired = order("WO-901")
+            .replace("**Model:**", `${afterCost}**Model:**`)
+            .replace(
+              "Evidence confirms a useful shape.",
+              label === "replace"
+                ? "Evidence confirms the repaired useful shape."
+                : "Evidence confirms a useful shape.",
+            );
+          write(repo, path, repaired);
+          commit(repo, "repair only the Cost field");
+          await assert.rejects(
+            beginDirectRefutation(repo),
+            /one judgment per pass/u,
+          );
+          const args = {
+            receiptId: held.receiptId,
+            holdId: held.holds[0].id,
+            reason: "Accept the exact repaired Cost declaration.",
+            now: () => "2030-01-02T12:01:00.000Z",
+          };
+          let event;
+          if (override) {
+            const capture = "docs/intake/operator.md",
+              bytes = "Operator accepts this fixture Cost repair.\n";
+            write(repo, capture, bytes);
+            event = await overridePlanHold(repo, {
+              ...args,
+              capture,
+              captureHash: sha256(bytes),
+            });
+          } else event = await disposePlanHold(repo, args);
+          assert.equal(event.sourceCostHash, sha256(beforeCost));
+          assert.equal(event.costHash, sha256(afterCost));
+          const accepted = await checkPlanGate(repo);
+          assert.ok(
+            accepted.continuation.workspaceUpdates.some(
+              (row) => row.kind === "disposed-cost",
+            ),
+          );
+          assert.equal(
+            accepted.continuation.workspaceUpdates.some(
+              (row) => row.kind === "disposed-criterion",
+            ),
+            label === "replace",
+          );
+          assert.equal((await readReceipts(repo)).length, 1);
+          for (const extension of ["json", "md"])
+            assert.equal(
+              read(repo, `${RECEIPTS}/${held.receiptId}.${extension}`),
+              originals[extension],
+            );
+          commit(repo, "record Cost disposition without another judgment");
+          assert.ok(
+            (await checkPlanGate(repo)).continuation.committedUpdates.some(
+              (row) => row.kind === "disposed-cost",
+            ),
+          );
+          write(
+            repo,
+            path,
+            repaired
+              .replace(
+                "**Model:**",
+                "**Cost:** An unrelated replacement.\n\n**Model:**",
+              )
+              .replace(afterCost, ""),
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /changed Cost declaration has no text-bound disposition/u,
+          );
+          write(
+            repo,
+            path,
+            repaired.replace(
+              "Keep a bounded result.",
+              "Change a different criterion.",
+            ),
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /changed criterion has no text-bound disposition/u,
+          );
+          write(
+            repo,
+            path,
+            repaired.replace(
+              "**Objective:** Move the shape.",
+              "**Objective:** An unrelated objective.",
+            ),
+          );
+          await assert.rejects(
+            checkPlanGate(repo),
+            /existing work-order bytes changed/u,
+          );
+        }
+      },
+    );
+    await check(
+      "WO-132 one judgment survives a disposed criterion repair and later findings cannot reopen its text",
+      async () => {
+        const repo = makeRepo(parent, "goal-disposition");
+        const tablePath = "docs/planning/cost-table.json";
+        const table = {
+          rows: [{ workOrder: "WO-901", metrics: { gateMs: 605000 } }],
+          traps: [],
+        };
+        write(repo, tablePath, JSON.stringify(table));
+        commit(repo, "observed gate row");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const heldResult = cannedGoalReview(subject);
+        heldResult.orders[0].verdict = "misaligned";
+        heldResult.orders[0].findings = [
+          {
+            criterionId: "criterion:1",
+            kind: "observed-failure",
+            reason: "The recorded gate exceeded the target.",
+            evidence: subject.goalReview.observations[0].id,
+            reopenWhen: "A later gate still exceeds the target.",
+          },
+        ];
+        const validated = validatePlanResult(heldResult, subject);
+        const held = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "goal",
+          subject,
+          episode: directEpisode(validated),
+        });
+        await assert.rejects(checkPlanGate(repo), /unanswered hold/u);
+        const beforeBytes = read(repo, `${RECEIPTS}/${held.receiptId}.json`);
+        mutate(
+          repo,
+          orderPath("WO-901"),
+          "Evidence confirms a useful shape.",
+          "Evidence confirms a useful shape in under six minutes.",
+        );
+        await assert.rejects(
+          beginDirectRefutation(repo),
+          /one judgment per pass/u,
+        );
+        await disposePlanHold(repo, {
+          receiptId: held.receiptId,
+          holdId: held.holds[0].id,
+          reason: "The criterion now sets the observed operator target.",
+          now: () => "2030-01-02T12:01:00.000Z",
+        });
+        const gate = await checkPlanGate(repo);
+        assert.ok(
+          gate.continuation.workspaceUpdates.some(
+            (row) => row.kind === "disposed-criterion",
+          ),
+        );
+        assert.equal((await readReceipts(repo)).length, 1);
+        assert.equal(
+          read(repo, `${RECEIPTS}/${held.receiptId}.json`),
+          beforeBytes,
+        );
+        table.rows[0].observedAt = "2030-01-02T12:01:30.000Z";
+        write(repo, tablePath, JSON.stringify(table));
+        commit(repo, "observation timestamp only");
+        await assert.rejects(
+          beginDirectRefutation(repo),
+          /one judgment per pass/u,
+        );
+        assert.equal(
+          (await checkPlanGate(repo)).passes,
+          1,
+          "timestamp refresh keeps the original judgment",
+        );
+        // A new recorded observation, rather than the criterion edit, permits a new judgment.
+        table.rows[0].metrics.gateMs = 610000;
+        write(repo, tablePath, JSON.stringify(table));
+        commit(repo, "new observed gate row");
+        const prompt = JSON.parse(
+          await beginDirectRefutation(repo, {
+            now: () => "2030-01-02T12:02:00.000Z",
+          }),
+        );
+        const next = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const repeated = cannedGoalReview(next);
+        repeated.orders = repeated.orders.filter((row) =>
+          prompt.subject.orders.some(
+            (order) => order.workOrderId === row.workOrderId,
+          ),
+        );
+        repeated.orders[0].verdict = "misaligned";
+        repeated.orders[0].findings = heldResult.orders[0].findings;
+        write(repo, "docs/control/local/result.json", JSON.stringify(repeated));
+        write(
+          repo,
+          "docs/control/local/statement.txt",
+          "Reviewed the changed recorded observation.",
+        );
+        const filed = await fileDirectRefutation(
+          repo,
+          "docs/control/local/result.json",
+          "docs/control/local/statement.txt",
+          { commit: false, now: () => "2030-01-02T12:05:00.000Z" },
+        );
+        assert.equal(filed.verdict, "aligned-with-findings");
+        const latest = (await readReceipts(repo)).at(-1);
+        assert.equal(latest.holds.length, 0);
+        assert.equal(latest.result.orders[0].findings[0].kind, "known-issue");
+      },
+    );
+    await check(
+      "WO-132 override command accepts capture authority without actor flags",
+      async () => {
+        const repo = makeRepo(parent, "goal-override");
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
+        const input = cannedGoalReview(subject);
+        input.orders[0].verdict = "misaligned";
+        input.orders[0].findings = [
+          {
+            criterionId: "criterion:1",
+            kind: "vision-contradiction",
+            reason: "The criterion contradicts the supplied exclusion.",
+            evidence: subject.standard.exclusions[0].id,
+            reopenWhen: null,
+          },
+        ];
+        const result = validatePlanResult(input, subject);
+        const receipt = await writePlanReceipt(repo, {
+          pass: passFor(repo),
+          slug: "override",
+          subject,
+          episode: {
+            ...directEpisode(result),
+            completedAt: "2020-01-02T12:00:00.000Z",
+          },
+        });
+        const capture = "docs/intake/notes/override.md";
+        write(repo, capture, "The fixture operator accepts this criterion.\n");
+        const event = await plan(
+          [
+            "override",
+            receipt.receiptId,
+            receipt.holds[0].id,
+            "Accept the criterion.",
+            "--capture",
+            capture,
+            "--capture-hash",
+            sha256(read(repo, capture)),
+          ],
+          repo,
+        );
+        assert.equal(event.actor.model, "unknown");
+        assert.equal((await checkPlanGate(repo)).passes, 1);
+        write(
+          repo,
+          PLAN_LEDGER,
+          read(repo, PLAN_LEDGER) +
+            "\n## 2030-01-03 next planning pass\n\nOne changed order.\n",
+        );
+        write(
+          repo,
+          orderPath("WO-902"),
+          order("WO-902").replace("useful shape", "another useful shape"),
+        );
+        commit(repo, "next pass carries accepted criterion");
+        const prompt = JSON.parse(
+          await beginDirectRefutation(repo, {
+            now: () => "2030-01-03T12:00:00.000Z",
+          }),
+        );
+        assert.deepEqual(
+          prompt.subject.orders.map((row) => row.workOrderId),
+          ["WO-902"],
+        );
+        const next = cannedGoalReview(
+          buildPlanSubject(repo, "HEAD", { goalReview: true }),
+        );
+        next.orders = next.orders.filter((row) => row.workOrderId === "WO-902");
+        write(repo, "docs/control/local/result.json", JSON.stringify(next));
+        write(
+          repo,
+          "docs/control/local/statement.txt",
+          "Judged only the changed order.",
+        );
+        const filed = await fileDirectRefutation(
+          repo,
+          "docs/control/local/result.json",
+          "docs/control/local/statement.txt",
+          { commit: false, now: () => "2030-01-03T12:00:01.000Z" },
+        );
+        assert.equal(filed.carried, 1);
+        assert.equal(filed.verdict, "aligned-with-findings");
+        assert.equal(
+          (await readReceipts(repo)).at(-1).result.orders[0].findings[0].kind,
+          "known-issue",
+        );
+      },
+    );
     await check(
       "direct-session frozen result round-trips and gates without invented launch provenance",
       async () => {
@@ -452,7 +944,7 @@ export async function fixtures() {
       },
     );
     await check(
-      "direct-session holds retain the three-hold stop and cannot be rerolled by changing review source",
+      "historical direct-session receipts retain identities without a third-hold stop",
       async () => {
         const repo = makeRepo(parent, "direct-limit");
         const receipts = [];
@@ -461,15 +953,13 @@ export async function fixtures() {
           receipts.push(await writeDirectReceipt(repo, cannedPlanDrift));
         }
         mutate(repo, orderPath("WO-901"), "useful", "useful-final");
-        await assert.rejects(
-          writeDirectReceipt(repo, passResult, receipts.flatMap(accept)),
-          /third consecutive hold/u,
+        const repaired = await writeDirectReceipt(
+          repo,
+          passResult,
+          receipts.flatMap(accept),
         );
-        await assert.rejects(
-          writeReceipt(repo, passResult, receipts.flatMap(accept)),
-          /third consecutive hold/u,
-        );
-        assert.equal((await readReceipts(repo)).length, 3);
+        assert.equal(repaired.result.planVerdict, "pass");
+        assert.equal((await readReceipts(repo)).length, 4);
       },
     );
     await check(
@@ -557,12 +1047,10 @@ export async function fixtures() {
       async () => {
         const compiled = compilePlanRefuter("fixture", now());
         assert.deepEqual(compiled.program.workOrder.acceptanceCriteria, [
-          "For each planned order: thesis-advancing, machinery, or drift?",
-          "Which vision thesis or exclusion passage supports that verdict?",
-          "Which capability row would the order move or create?",
-          "Which of the five UIFA roles gets a surface?",
-          "What is the single largest remaining gap to the one-paragraph story?",
-          "Does the horizon pass or hold, and which order and criterion must answer each hold?",
+          "For each order, which critical-path gate does it unblock and what is the NoOp cost in the records?",
+          "How do all eight system traps apply to the order's own process cost?",
+          "Does the Cost line name a removal larger than the addition?",
+          "Does failure of the mechanism degrade to the old behavior rather than refusing?",
         ]);
         assert.equal(compiled.mask.mask, "Contra-Auguste");
         assert.equal(compiled.lens, "architecture-and-semantics");
@@ -997,15 +1485,14 @@ export async function fixtures() {
         assert.equal(fresh.result.planVerdict, "hold");
         commit(repo, "receipts and attributed override");
         assert.deepEqual(await readReceipts(repo), [held, fresh]);
-        assert.throws(
-          () =>
-            checkPassReceipt(
-              passFor(repo),
-              fresh.subject,
-              [held, fresh],
-              readOverrides(repo),
-            ),
-          /unanswered hold/u,
+        assert.equal(
+          checkPassReceipt(
+            passFor(repo),
+            fresh.subject,
+            [held, fresh],
+            readOverrides(repo),
+          ),
+          fresh,
         );
       },
     );
@@ -1102,7 +1589,7 @@ export async function fixtures() {
       },
     );
     await check(
-      "AC5 third consecutive hold stops the pass, including changed sequence labels and pre-dispatch CLI",
+      "historical holds remain addressed and immutable after removing the third-hold stop",
       async () => {
         const repo = makeRepo(parent, "limit");
         const receipts = [await writeReceipt(repo)];
@@ -1113,26 +1600,14 @@ export async function fixtures() {
           );
         }
         mutate(repo, orderPath("WO-901"), "useful", "useful-final");
-        await assert.rejects(
-          writeReceipt(repo, passResult, receipts.flatMap(accept)),
-          /third consecutive hold/u,
-        );
-        await assert.rejects(
-          plan(["refute", "--transport", "fake"], repo),
-          /third consecutive hold/u,
-        );
-        mutate(repo, PLAN_MAP, "First", "first");
-        await assert.rejects(
-          writeReceipt(repo, passResult, receipts.flatMap(accept)),
-          /third consecutive hold/u,
-        );
+        // Old receipts remain immutable, but a fourth attempt has no count gate.
         const third = receipts[2];
-        assert.throws(
-          () =>
-            checkPassReceipt(passFor(repo), third.subject, receipts, [], {
-              requireLive: false,
-            }),
-          /unanswered hold/u,
+        assert.equal(
+          checkPassReceipt(passFor(repo), third.subject, receipts, [], {
+            requireLive: false,
+          }),
+          third,
+          "accepted dispositions bind the repaired criterion even when a later old-format receipt repeats its hold",
         );
         assert.equal((await readReceipts(repo)).length, 3);
         write(
@@ -1238,7 +1713,7 @@ export async function fixtures() {
       "WO-125 plan CLI accepts Codex GPT-6 Astra/max and records only a launch claim",
       async () => {
         const repo = makeRepo(parent, "codex-effort-cli");
-        const subject = buildPlanSubject(repo);
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
         const bin = join(repo, "bin");
         mkdirSync(bin);
         const argsPath = join(repo, "codex-args.json");
@@ -1248,7 +1723,7 @@ export async function fixtures() {
               type: "item.completed",
               item: {
                 type: "agent_message",
-                text: JSON.stringify(passResult(subject)),
+                text: JSON.stringify(cannedGoalReview(subject)),
               },
             },
             {
@@ -1286,7 +1761,7 @@ else {
             ],
             repo,
           );
-          assert.equal(result.verdict, "pass");
+          assert.equal(result.verdict, "aligned");
         } finally {
           if (previousPath === undefined) delete process.env.PATH;
           else process.env.PATH = previousPath;
@@ -1792,7 +2267,7 @@ else {
         assert.ok(typeof prompt === "string");
         assert.ok(JSON.parse(prompt).resultSchema);
         assert.ok(!prompt.includes("PLANNER_NARRATIVE_SENTINEL"));
-        const subject = buildPlanSubject(repo);
+        const subject = buildPlanSubject(repo, "HEAD", { goalReview: true });
         const resultPath = "docs/control/local/result.json",
           statementPath = "docs/control/local/statement.txt";
         write(repo, resultPath, "{}");
@@ -1803,9 +2278,9 @@ else {
         );
         await assert.rejects(
           plan(["receipt", resultPath, "--statement", statementPath], repo),
-          /One direct result/,
+          /plan-goal-review-v1/,
         );
-        write(repo, resultPath, JSON.stringify(passResult(subject)));
+        write(repo, resultPath, JSON.stringify(cannedGoalReview(subject)));
         write(
           repo,
           orderPath("WO-901"),
@@ -1824,13 +2299,16 @@ else {
           repo,
         );
         assert.equal(first.scope, "pass");
-        assert.equal(first.verdict, "pass");
+        assert.equal(first.verdict, "aligned");
         assert.equal(runGit(repo, ["status", "--porcelain"]), "");
         assert.match(
           runGit(repo, ["log", "-1", "--format=%s"]),
           /^Record planning refutation /,
         );
-        await assert.rejects(plan(["refute", "--direct"], repo), /re-rolled/);
+        await assert.rejects(
+          plan(["refute", "--direct"], repo),
+          /one judgment per pass/,
+        );
         write(
           repo,
           PLAN_LEDGER,
@@ -1843,7 +2321,9 @@ else {
           order("WO-901").replace("useful shape", "new useful shape"),
         );
         commit(repo, "one-order pass");
-        const nextSubject = buildPlanSubject(repo);
+        const nextSubject = buildPlanSubject(repo, "HEAD", {
+          goalReview: true,
+        });
         const scope = await planJudgmentScope(
           repo,
           nextSubject,
@@ -1860,7 +2340,7 @@ else {
           schema.properties.orders.items.properties.workOrderId.enum,
           ["WO-901"],
         );
-        const nextResult = passResult(nextSubject);
+        const nextResult = cannedGoalReview(nextSubject);
         nextResult.orders = nextResult.orders.filter(
           (row) => row.workOrderId === "WO-901",
         );
@@ -1870,7 +2350,7 @@ else {
           repo,
         );
         assert.equal(second.carried, 1);
-        assert.equal(second.verdict, "pass");
+        assert.equal(second.verdict, "aligned");
         const receipts = await readReceipts(repo);
         assert.deepEqual(
           receipts[1].result.orders[1],
@@ -2189,29 +2669,31 @@ else {
           "2030-01-02T12:00:00.000Z",
           "repeating the prompt must not reset the dispatch clock",
         );
+        const goalSubject = buildPlanSubject(repo, "HEAD", {
+          goalReview: true,
+        });
         write(
           repo,
           "docs/control/local/result.json",
-          JSON.stringify(passResult(subject)),
+          JSON.stringify(cannedGoalReview(goalSubject)),
         );
         write(
           repo,
           "docs/control/local/statement.txt",
           "Synthetic canonical-only judgment.",
         );
-        await assert.rejects(
-          fileDirectRefutation(
-            repo,
-            "docs/control/local/result.json",
-            "docs/control/local/statement.txt",
-            { commit: false, now: () => "2030-01-02T12:02:00.001Z" },
-          ),
-          /exceeded 120000 ms/,
+        const filed = await fileDirectRefutation(
+          repo,
+          "docs/control/local/result.json",
+          "docs/control/local/statement.txt",
+          { commit: false, now: () => "2030-01-02T12:02:00.001Z" },
         );
+        assert.equal(filed.durationMs, 120001);
+        assert.equal(filed.verdict, "aligned");
         assert.equal(
           (await readReceipts(repo)).length,
-          0,
-          "over-budget judgment must not file evidence",
+          1,
+          "elapsed time is recorded without a budget refusal",
         );
         write(
           repo,

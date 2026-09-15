@@ -281,7 +281,7 @@ inventing limits.
 The pre-tool attribution check extracts messages from actual parsed commit
 invocations, including supported wrappers. A search or quoted example naming
 `git commit` is data; an actual commit without available literal message bytes
-gets a named classification refusal. The Git commit hook still checks the final
+gets a named classification advisory and defers to host permissions. The Git commit hook still checks the final
 message bytes independently.
 
 Select the gitmoji with the same care as the wording. Consult the
@@ -348,6 +348,27 @@ items, fenced or indented code, tables, and explicit hard breaks retain their
 semantic lines. Publication validates the current committed body and preserves
 its bytes. Historical reviewed artifacts are immutable and exempt from this
 forward authoring profile.
+
+## Tag evidence after WO-132 (2026-09-15)
+
+The annotated tag's compatibility manifest consumes the successful reviewer
+`npm test` row from the committed `FinalReviewCompleted` event. The reviewer
+invokes `npm test -- --review` once, including machinery checks selected by
+changed sources. Publication requires its code identity to match the committed
+code being published. The manifest records the command, successful execution,
+`outputSha256`, `codeIdentity`, `reviewedTree`, `mergeTree`, duration, timestamp
+and evidence reference. The exact tree remains provenance; code identity is the
+reuse key. Reports, control records, generated projections and release prose may
+change between review and merge without invalidating that key.
+
+The PR body carries the same product-gate record. Release close proves egress,
+fast-forwards main, checks release/notes/license surfaces, builds missing runtime
+output and validates the manifest before creating the tag and GitHub Release.
+It runs no suite, `npm ci` or CLI smoke check. Cleanup and derived-worktree
+settlement follow publication as best effort. A missing or mismatched committed
+reviewer row refuses publication rather than inventing replacement evidence.
+Historical tag manifests retain their original evidence-row shapes and validation;
+WO-132 does not rewrite earlier releases.
 
 ## Bootstrap path
 

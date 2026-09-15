@@ -1,4 +1,4 @@
-# `@dotln/compiler` v0.7.0
+# `@dotln/compiler` v0.10.0
 
 The pure DotLn composition compiler. It has zero runtime dependencies and no
 I/O: callers pass a `LoadoutGraph` plus an explicit environment and receive a

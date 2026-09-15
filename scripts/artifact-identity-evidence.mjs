@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { currentEvidence } from "../packages/skeleton/src/evidence-editions.mjs";
+import {
+  currentEvidence,
+  sameEvidenceSourceContent,
+  writeEvidenceFile,
+} from "../packages/skeleton/src/evidence-editions.mjs";
+import { evidenceSources } from "./lib/evidence-sources.mjs";
 import {
   canonicalStringify,
   compileLoadout,
@@ -306,18 +311,31 @@ const files = new Map([
     json({ schemaVersion: 1, synthetic: true, transcripts }),
   ],
 ]);
+const preserved =
+  mode[0] === "--check" &&
+  [...files].some(
+    ([name, bytes]) => read(`${evidenceDirectory}/${name}`) !== bytes,
+  ) &&
+  sameEvidenceSourceContent(
+    fileURLToPath(root),
+    [...files.keys()].map((name) => `${evidenceDirectory}/${name}`),
+    evidenceSources["artifact-identity"],
+  );
 for (const [name, bytes] of files) {
   const path = `${evidenceDirectory}/${name}`;
   if (mode[0] === "--write") {
-    mkdirSync(new URL(`${evidenceDirectory}/`, root), { recursive: true });
-    writeFileSync(new URL(path, root), bytes);
-  } else if (read(path) !== bytes) {
+    writeEvidenceFile(new URL(path, root), bytes);
+  } else if (!preserved && read(path) !== bytes) {
     console.error(
-      `stale artifact evidence: ${path}; inspect the change before regenerating with --write`,
+      `stale artifact evidence: ${path}; select a new edition to preserve the historical evidence`,
     );
     process.exitCode = 1;
   }
 }
+if (preserved)
+  console.log(
+    "Retained immutable artifact evidence: behavior source is unchanged apart from component release labels.",
+  );
 if (!process.exitCode)
   console.log(
     `${mode[0] === "--write" ? "Recorded" : "Verified"} ${files.size} current artifact evidence files in ${evidenceDirectory}; original semantic hashes and frozen oracle unchanged.`,

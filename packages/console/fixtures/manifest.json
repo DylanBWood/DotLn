@@ -1,6 +1,6 @@
 {
   "fixtureVersion": "uifa-board-fixtures-v1",
-  "capture": "2026-09-07 WO-032 executor; canonical records and source-format snapshots. Constellation checkout addresses replaced by declared fixture addresses; no liveness or human identity inferred. 2026-09-08 WO-039 integration: the self-hosted case follows the WO-039 feedback edition recorded under compiler 0.7.0, because the skeleton refuses the WO-011 edition's verifier stream as persisted compilation drift; the WO-011 edition remains historical bytes. 2026-09-08 WO-042 integration: the self-hosted case follows the live WO-042 feedback edition under compiler 0.8.0; prior editions remain historical bytes. WO-042 final source: the self-hosted case and collector follow immutable feedback revision 002 after the console patch changed the declared lock projection; the earlier WO-042 feedback directory stays intact. 2026-09-09 WO-126 integration: self-hosted input follows feedback revision 002 under compiler 0.9.0; the current v2 unit snapshot distinguishes prose/advice from prevented incidents. Prior source editions and the v1 unit snapshot remain intact. Current selfhost recording follows docs/evidence/WO-043/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-131/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-044/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-044/feedback-002; previous source editions retain their bytes.",
+  "capture": "2026-09-07 WO-032 executor; canonical records and source-format snapshots. Constellation checkout addresses replaced by declared fixture addresses; no liveness or human identity inferred. 2026-09-08 WO-039 integration: the self-hosted case follows the WO-039 feedback edition recorded under compiler 0.7.0, because the skeleton refuses the WO-011 edition's verifier stream as persisted compilation drift; the WO-011 edition remains historical bytes. 2026-09-08 WO-042 integration: the self-hosted case follows the live WO-042 feedback edition under compiler 0.8.0; prior editions remain historical bytes. WO-042 final source: the self-hosted case and collector follow immutable feedback revision 002 after the console patch changed the declared lock projection; the earlier WO-042 feedback directory stays intact. 2026-09-09 WO-126 integration: self-hosted input follows feedback revision 002 under compiler 0.9.0; the current v2 unit snapshot distinguishes prose/advice from prevented incidents. Prior source editions and the v1 unit snapshot remain intact. Current selfhost recording follows docs/evidence/WO-043/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-131/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-044/feedback-001; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-044/feedback-002; previous source editions retain their bytes. Current selfhost recording follows docs/evidence/WO-132/feedback; previous source editions retain their bytes. WO-132 fixture migration pins the current personal feedback units, including writer-isolation version 2; earlier snapshots remain unchanged.",
   "inputs": {
     "loadouts": {
       "path": "packages/console/fixtures/inputs/loadouts.json",
@@ -69,22 +69,22 @@
       "sha256": "4f89e73d7776c7d990f9ba1cea9fcfe0192f8d6cb02f38a24379645193467029"
     },
     "selfhostAudit": {
-      "path": "docs/evidence/WO-044/feedback-002/selfhost-audit.jsonl",
-      "ref": "docs/evidence/WO-044/feedback-002/selfhost-audit.jsonl",
+      "path": "docs/evidence/WO-132/feedback/selfhost-audit.jsonl",
+      "ref": "docs/evidence/WO-132/feedback/selfhost-audit.jsonl",
       "format": "log",
-      "sha256": "3193eccbdb54b9ba5c741a8b0d11ce3a02248fd0f041945e2690d75f1d423b88"
+      "sha256": "8860686b49271869d9f3ed7be358e35f03264eb69246f36091687f9d74bf8998"
     },
     "selfhostVerifier": {
-      "path": "docs/evidence/WO-044/feedback-002/selfhost-verification.jsonl",
-      "ref": "docs/evidence/WO-044/feedback-002/selfhost-verification.jsonl",
+      "path": "docs/evidence/WO-132/feedback/selfhost-verification.jsonl",
+      "ref": "docs/evidence/WO-132/feedback/selfhost-verification.jsonl",
       "format": "log",
-      "sha256": "5750d3a28078732cf8e7a2598394172c5ccf9788a5691f7bd0180c89f32f08e3"
+      "sha256": "c12e9338872573d30dae8d1e58056497cddb19d0ad9e752cc91704c44d3a78d6"
     },
     "maturity": {
-      "path": "docs/evidence/WO-044/feedback-002/feedback.json",
-      "ref": "docs/evidence/WO-044/feedback-002/feedback.json",
+      "path": "docs/evidence/WO-132/feedback/feedback.json",
+      "ref": "docs/evidence/WO-132/feedback/feedback.json",
       "format": "json",
-      "sha256": "39f0f26306e3f4dd52aeb2b55f75769a4fece61ddadabb5ba03bd8beabfbc609"
+      "sha256": "aa6494c0fae79dab535cf6e049aa7eacf6ff1f7546896e827a96c23ff93d7acd"
     },
     "controlLog": {
       "path": "docs/control/orders/WO-031.jsonl",
@@ -139,6 +139,12 @@
       "ref": "packages/skeleton/src/loadouts/feedback.ts",
       "format": "json",
       "sha256": "3f6091643c9d2620d3de50eece05de0e4c2a6a93ff5e83dc08274b6be8091c6d"
+    },
+    "feedbackUnitsWo132": {
+      "path": "packages/console/fixtures/inputs/feedbackUnits-wo132.json",
+      "ref": "packages/skeleton/src/loadouts/feedback.ts",
+      "format": "json",
+      "sha256": "8b62e6ed577ca6157988f8d8fa7a33c98be76d8c570de88261ec64db77e604e4"
     }
   },
   "cases": {
@@ -157,16 +163,16 @@
       "stores": [
         {
           "id": "selfhost-audit",
-          "label": "WO-044 self-hosted executor",
+          "label": "WO-132 self-hosted executor",
           "input": "selfhostAudit"
         },
         {
           "id": "selfhost-verifier",
-          "label": "WO-044 self-hosted verifier",
+          "label": "WO-132 self-hosted verifier",
           "input": "selfhostVerifier"
         }
       ],
-      "feedbackUnits": "feedbackUnitsWo126",
+      "feedbackUnits": "feedbackUnitsWo132",
       "maturity": "maturity"
     },
     "control": {

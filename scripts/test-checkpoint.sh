@@ -105,10 +105,17 @@ git -C "$stale_repo" commit -m initial >/dev/null
 node "$stale_repo/scripts/resume.mjs" activate WO-098 docs/work-orders/WO-098-fixture.md >/dev/null
 prior_checkpoint="$(git -C "$stale_repo" for-each-ref --format='%(refname)' refs/dotln/checkpoint/WO-098/)"
 test -n "$prior_checkpoint"
-printf '#!/usr/bin/env bash\nexit 73\n' >"$test_root/failing-git/git"
+# Let the inline whitespace check and tree observation run; fail only the
+# checkpoint commit. Without the fixture-only real Git path, all Git is absent.
+real_git="$(command -v git)"
+printf '%s\n' \
+  '#!/bin/sh' \
+  'if [ -z "${DOTLN_CHECKPOINT_REAL_GIT:-}" ]; then exit 73; fi' \
+  'if [ "${1:-}" = commit-tree ] || { [ "${1:-}" = -C ] && [ "${3:-}" = commit-tree ]; }; then exit 73; fi' \
+  'exec "$DOTLN_CHECKPOINT_REAL_GIT" "$@"' >"$test_root/failing-git/git"
 chmod +x "$test_root/failing-git/git"
 node_bin="$(command -v node)"
-checkpoint_warning="$(PATH="$test_root/failing-git" "$node_bin" "$stale_repo/scripts/resume.mjs" implementation-ready \
+checkpoint_warning="$(DOTLN_CHECKPOINT_REAL_GIT="$real_git" PATH="$test_root/failing-git" "$node_bin" "$stale_repo/scripts/resume.mjs" implementation-ready \
   --harness codex-cli \
   --harness-version fixture \
   --model fixture-model \

@@ -174,6 +174,31 @@ export const personalFeedbackUnits: readonly FeedbackUnit[] =
     const prose = proseHandlers.has(unit.trigger);
     const advisory = prose || stopHandlers.has(unit.trigger);
     const attribution = unit.trigger === "attribution";
+    if (unit.trigger === "writer-isolation")
+      return {
+        ...unit,
+        version: 2,
+        incident: {
+          ...unit.incident,
+          sourceRefs: [
+            ...unit.incident.sourceRefs,
+            "docs/work-orders/WO-132-machinery-stand-down.md",
+          ],
+          summary:
+            "WO-132 removes the main-branch exclusion while retaining one registered writer per worktree.",
+        },
+        undesiredBehavior:
+          "Do not dispatch a second writer into an occupied worktree.",
+        desiredBehavior:
+          "Resolve physical cwd and Git root and require exactly one registered writer per worktree on any branch, including main.",
+        mechanism: { ...unit.mechanism, version: 2 },
+        regressionFixtures: [
+          "WO-132 concurrent-work-requires-worktrees version 2",
+        ],
+        supersedes: [`${unit.unitId}@1`],
+        proseEquivalent:
+          "One registered writer owns each worktree on any branch, including main.",
+      };
     if (!advisory && !attribution) return unit;
     const undesiredBehavior =
       unit.trigger === "decision-lineage"

@@ -1,4 +1,6 @@
-# `@dotln/skeleton` 0.13.0
+# `@dotln/skeleton` 0.16.0
+
+For application v0.18.0, writer reservations apply on every branch, hook judgments delegate to host permissions except writer/live-gate protection, actor labels are recorded as supplied, and new planning receipts use the goal-review contract.
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on

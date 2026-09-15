@@ -4,7 +4,7 @@
 
 ## Proposed order
 
-- [ ] [WO-132] — Machinery stand-down · **queued**
+- [x] [WO-132] — Machinery stand-down · **final-reviewed**
 - [x] [WO-126] — Process debt · **final-reviewed**
 - [x] [WO-042] — Authority provenance and monotone envelopes · **final-reviewed**
 - [x] [WO-043] — Typed dependency truth · **final-reviewed**
@@ -1506,23 +1506,6 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-124/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-124-impact-surfaces-derivation.md](WO-124-impact-surfaces-derivation.md)
 
-### WO-132
-
-[WO-132 — Machinery stand-down: transitions stop gating, one product gate runs once per order by code identity, release close only publishes, and versions, effort and tools are logged, never refused (v0.18.0)](WO-132-machinery-stand-down.md)
-
-- State: draft.
-- Application target: v0.18.0.
-- Dependencies: typed; dependency-ready.
-- References: WO-044: satisfied-by-close (met) — the base: release-close repairs, derived-worktree settlement, egress-first close and the fail-only evidence path this order keeps; WO-126: reference-only (non-blocking) — the lifecycle evidence contract and exact-tree key this order replaces; WO-131: reference-only (non-blocking) — the replica execution, declared-input reuse and engineering review this order retires or cites.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes); nothing in this order or the lifecycle it changes requires a particular one.
-- Effort: executor any; verifier any; reviewer any.
-- Cost: adds nothing recurring: no new check, receipt, hook, key or ritual. Removes, per order, every gate run that a lifecycle transition demanded (on 2026-09-15 the operator's host ran eight full gates of 633, 634, 648, 644, 570, 67, 71 and 605 s, six of them cold with 78–82 fresh tasks; WO-044's close alone paid five, about 52 minutes) and the fresh gate, &#96;npm ci&#96; and CLI smoke row at release close (605 s, 82 fresh, 0 reused at v0.17.7); removes the replica copies, kernel-denial probes, per-task expansion and the isolated 135 s runner suite from the default gate, whose estimated fresh wall-clock with only product and lifecycle suites is about 250 s against 605 s today; removes the effort, version and readback refusals and their dated-amendment round trips, the main-branch shell refusals that cost the v0.17.6 close two override episodes and this pass's opening, and the refutation loop that cost the 2026-09-12 pass three holds at 2,454, 833 and 333 s and the 2026-09-13 refresh a fourth at 755 s. Context bytes and tokens per session fall by the refusal reads and the report-edit/gate loop; commands per order fall by the override round trips. No reduction is claimed for the product suites themselves.
-- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-132/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-132-machinery-stand-down.md](WO-132-machinery-stand-down.md)
-
 ## Closed
 
 ### WO-003
@@ -2311,6 +2294,24 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-131/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness codex-cli; version 0.154.0; model gpt-6-astra; effort max; source operator-attested; account not-applicable.
 - Authority: [docs/work-orders/WO-131-remaining-suites-under-replica.md](WO-131-remaining-suites-under-replica.md)
+
+### WO-132
+
+[WO-132 — Machinery stand-down: transitions stop gating, one product gate runs once per order by code identity, release close only publishes, and versions, effort and tools are logged, never refused (v0.18.0)](WO-132-machinery-stand-down.md)
+
+- State: closed.
+- Application target: v0.18.0.
+- Dependencies: typed; activation not applicable.
+- References: WO-044: satisfied-by-close (met) — the base: release-close repairs, derived-worktree settlement, egress-first close and the fail-only evidence path this order keeps; WO-126: reference-only (non-blocking) — the lifecycle evidence contract and exact-tree key this order replaces; WO-131: reference-only (non-blocking) — the replica execution, declared-input reuse and engineering review this order retires or cites.
+- Verification: [VER-005](../../docs/verifications/WO-132/VER-005.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-132/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes); nothing in this order or the lifecycle it changes requires a particular one.
+- Effort: executor any; verifier any; reviewer any.
+- Cost: adds nothing recurring: no new check, receipt, hook, key or ritual. Removes, per order, every gate run that a lifecycle transition demanded (on 2026-09-15 the operator's host ran eight full gates of 633, 634, 648, 644, 570, 67, 71 and 605 s, six of them cold with 78–82 fresh tasks; WO-044's close alone paid five, about 52 minutes) and the fresh gate, &#96;npm ci&#96; and CLI smoke row at release close (605 s, 82 fresh, 0 reused at v0.17.7); removes the replica copies, kernel-denial probes, per-task expansion and the isolated 135 s runner suite from the default gate, whose estimated fresh wall-clock with only product and lifecycle suites is about 250 s against 605 s today; removes the effort, version and readback refusals and their dated-amendment round trips, the main-branch shell refusals that cost the v0.17.6 close two override episodes and this pass's opening, and the refutation loop that cost the 2026-09-12 pass three holds at 2,454, 833 and 333 s and the 2026-09-13 refresh a fourth at 755 s. Context bytes and tokens per session fall by the refusal reads and the report-edit/gate loop; commands per order fall by the override round trips. No reduction is claimed for the product suites themselves.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-132/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness claude-code; version 2.1.272; model claude-fable-5-1; effort xhigh; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-132-machinery-stand-down.md](WO-132-machinery-stand-down.md)
 
 ## Historical
 

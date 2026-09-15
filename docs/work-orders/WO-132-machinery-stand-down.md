@@ -371,3 +371,16 @@ executor iteration (reopen per the planning diagnosis §7 item 5).
    dated direction.
 4. The two kept refusals are hard on Claude and role text on Codex, which
    fires no hooks; the operator accepts that asymmetry as a host fact.
+
+## Execution record
+
+2026-09-15: The operator explicitly removed criterion 14's eight-hour cutoff
+and automatic fallback during `resume: next`: take the time and resources
+necessary to finish. Its original planning text above remains the historical
+subject; this execution amendment supersedes that stop condition. Optional
+revert commands are recorded in WO-132-D001 and were not executed.
+
+The actual next work order's one-gate control segment can only be observed
+after that order runs. This order supplies the complete executable lifecycle
+fixture and its current gate measurements; the future observation remains a
+named reopening condition rather than invented evidence.

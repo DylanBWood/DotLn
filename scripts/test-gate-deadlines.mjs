@@ -12,7 +12,7 @@ import {
   startDeadline,
 } from "../packages/skeleton/src/gate-deadlines.mjs";
 import { executeSuite, scheduleSuites } from "./test-runner.mjs";
-import { suiteEnvironment, suiteInputHash } from "./lib/suite-evidence.mjs";
+import { suiteEnvironment } from "./lib/suite-evidence.mjs";
 import { gateCriticalPath } from "./lib/gate-timeline.mjs";
 import { checkMeasurementSeries } from "./measure-gates.mjs";
 
@@ -284,53 +284,6 @@ test("one recorded timeline carries peers and computes its observed scheduling c
   assert.throws(
     () => gateCriticalPath([{ ...rows[0], predecessors: ["missing"] }]),
     /Missing timeline/,
-  );
-});
-
-test("reuse keys distinguish the declared load policy without transient peer or log identities", () => {
-  const snapshot = {
-    reusable: true,
-    entries: [],
-    context: { git: "fixture", environment: "fixture", toolchain: "fixture" },
-    gitState: {},
-    runtime: "fixture",
-  };
-  const task = {
-    name: "index",
-    command: ["fixture"],
-    loadPolicy: {
-      loadClass: "shared",
-      concurrency: 3,
-      priority: 120,
-      reservedSlots: 2,
-      version: 2,
-    },
-  };
-  const first = suiteInputHash(task, snapshot);
-  assert.ok(first, "the fixture must establish a reusable observation");
-  assert.equal(
-    suiteInputHash(
-      {
-        ...task,
-        gateContext: { peerFile: "different", deadlineLog: "different" },
-      },
-      snapshot,
-    ),
-    first,
-  );
-  assert.notEqual(
-    suiteInputHash(
-      { ...task, loadPolicy: { ...task.loadPolicy, concurrency: 1 } },
-      snapshot,
-    ),
-    first,
-  );
-  assert.notEqual(
-    suiteInputHash(
-      { ...task, loadPolicy: { ...task.loadPolicy, reservedSlots: 3 } },
-      snapshot,
-    ),
-    first,
   );
 });
 

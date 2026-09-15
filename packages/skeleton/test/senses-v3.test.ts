@@ -156,6 +156,12 @@ test("WO-022 AC9 v3 data, algebraic product bounds, all residues for representat
     ["authenticator", 0.5],
   ] as const)
     assert.throws(() => encodeV3Beacon({ ...first, [key]: value }), /digit/);
+  t.diagnostic(
+    `v2 × epoch × authenticator = 288 × 256 × 65536 = ${product}; MAX_V3_CODE=${MAX_V3_CODE}; MAX_V3_LOGICAL_BYTES=${MAX_V3_LOGICAL_BYTES}; 589824 exhaustive representative residue round trips`,
+  );
+});
+
+test("[document] WO-022 normative v3 codebook data matches the blueprint", () => {
   const domain = readFileSync(
     join(repository, "docs/product/02-domain-model.md"),
     "utf8",
@@ -165,9 +171,6 @@ test("WO-022 AC9 v3 data, algebraic product bounds, all residues for representat
     ?.match(/```json\n([\s\S]*?)\n```/u)?.[1];
   assert.ok(normative, "v3 normative data is present in the blueprint");
   assert.deepEqual(BEACON_V3_CODEBOOK, JSON.parse(normative));
-  t.diagnostic(
-    `v2 × epoch × authenticator = 288 × 256 × 65536 = ${product}; MAX_V3_CODE=${MAX_V3_CODE}; MAX_V3_LOGICAL_BYTES=${MAX_V3_LOGICAL_BYTES}; 589824 exhaustive representative residue round trips`,
-  );
 });
 
 test("WO-022 AC9 maximum v3 is sparse through atomic replacement; unsupported hosts create no file", (t) => {

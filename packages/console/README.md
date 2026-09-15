@@ -1,5 +1,7 @@
 # Actor board
 
+Component `0.1.6` prepares application `v0.18.0`: the board reads goal-review verdicts and findings, and the current selfhost fixture records the WO-132 writer-v2 evidence. Historical fixture snapshots remain unchanged.
+
 UIFA v0 is a read-only board over recorded actors, builds, mechanisms, work,
 and blueprint evidence. It shipped in application `v0.14.0` as console
 component `0.1.0`; component `0.1.1` moves its default self-hosted evidence

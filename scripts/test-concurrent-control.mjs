@@ -18,6 +18,11 @@ import {
   readControl,
 } from "./lib/control-store.mjs";
 import { localReleaseRecords } from "./lib/release-records.mjs";
+import {
+  gateCodeIdentity,
+  gateTreeHash,
+  recordGateChecks,
+} from "./lib/gate-evidence.mjs";
 import { readIndex } from "./work-orders.mjs";
 await test("test-concurrent-control", async (t) => {
   let fixture,
@@ -153,6 +158,19 @@ await test("test-concurrent-control", async (t) => {
           "README.md",
           `# Fixture\n\n<!-- DOTLN-RELEASE-BEGIN -->\n\nThis source is DotLn \`${version}\`.\n<!-- DOTLN-RELEASE-END -->\n`,
         );
+        git(root, ["add", "."]);
+        recordGateChecks(root, [
+          {
+            checkId: "npm test",
+            codeIdentity: gateCodeIdentity(root),
+            treeHash: gateTreeHash(root),
+            durationMs: 1,
+            exitCode: 0,
+            executed: true,
+            evidenceRef: "fixture:concurrent-review-observation",
+            recordedAt: new Date().toISOString(),
+          },
+        ]);
         resume(root, ["final-review-result", "pass", ...actorArgs]);
         command(root, "work-orders", ["index"]);
         commit(root, `${id} final review pass`);

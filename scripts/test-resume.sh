@@ -192,8 +192,6 @@ assert_refusal 'usage: resume implementation-ready' implementation-ready \
   --harness claude-code --harness-version fixture-1 --model fixture.model/alpha --source self-reported
 assert_refusal 'usage: resume implementation-ready' implementation-ready \
   --harness claude-code --harness-version fixture-1 --model fixture.model/alpha --effort xhigh
-assert_refusal 'invalid --source observed' implementation-ready \
-  --harness claude-code --harness-version fixture-1 --model fixture.model/alpha --effort xhigh --source observed
 assert_refusal 'usage: resume implementation-ready' implementation-ready \
   --harness claude-code --harness-version fixture-1 --model '' --effort xhigh --source self-reported
 assert_refusal 'usage: resume implementation-ready' implementation-ready \
@@ -202,39 +200,17 @@ assert_refusal 'usage: resume implementation-ready' implementation-ready \
   --harness claude-code --harness-version fixture-1 --model $'fixture.model/alpha\n- Effort drift: forged' --effort xhigh --source self-reported
 assert_refusal 'usage: resume implementation-ready' implementation-ready \
   --harness claude-code --harness-version fixture-1 --model "fixture.model/alpha${u2028}forged" --effort xhigh --source self-reported
-assert_refusal 'attested effort xhigh refused for other:fixture fixture-3' implementation-ready \
-  --harness other:fixture --harness-version fixture-3 --model fixture.model/gamma --effort xhigh --source self-reported
-assert_refusal 'recorded observed versions: fixture-1, fixture-2' implementation-ready \
-  --harness codex-cli --harness-version fixture-old --model fixture.model/beta --effort xhigh --source self-reported
-assert_refusal 'attested effort max refused for codex-cli fixture-2' implementation-ready \
-  --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort max --source self-reported
-assert_refusal 'attested executor effort medium is below declared high+' implementation-ready \
-  --harness claude-code --harness-version fixture-1 --model fixture.model/alpha --effort medium --source self-reported
-assert_refusal 'sessionLabelNotes.ultracode' implementation-ready \
-  --harness claude-code --harness-version fixture-1 --model fixture.model/alpha --effort ultracode --source self-reported
-assert_refusal 'sessionLabelNotes.ultracode' implementation-ready \
-  --harness claude-code --harness-version fixture-1 --model fixture.model/alpha --effort ultracode --source harness-readback
-for unattested_label in constructor toString __proto__ malformed; do
-  before_unattested_label="$(event_count)"
-  if unattested_output="$(node "$fixture_repo/scripts/resume.mjs" implementation-ready \
-    --harness claude-code --harness-version fixture-1 --model fixture.model/alpha \
-    --effort "$unattested_label" --source self-reported 2>&1)"; then
-    printf 'error: unattested effort label %s accepted\n' "$unattested_label" >&2
-    exit 1
-  fi
-  grep -Fq "unknown (raw: $unattested_label)" <<<"$unattested_output"
-  if grep -Eq 'sessionLabelNotes|undefined' <<<"$unattested_output"; then
-    printf 'error: unattested effort label %s inherited guidance\n' "$unattested_label" >&2
-    exit 1
-  fi
-  test "$(event_count)" = "$before_unattested_label"
-done
-assert_refusal 'recorded observed versions: fixture-1, fixture-2' implementation-ready \
-  --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort xhigh --source harness-readback
-assert_refusal 'recorded observed versions: fixture-0, fixture-1' implementation-ready \
-  --harness claude-code --harness-version fixture-old --model fixture.model/alpha --effort xhigh --source harness-readback
-assert_refusal 'harness-readback refused for claude-code fixture-1 effort high' implementation-ready \
-  --harness claude-code --harness-version fixture-1 --model fixture.model/alpha --effort high --source harness-readback
+# Attestations are presence-checked data; recommendations and discovery never refuse.
+node --input-type=module - "$fixture_repo/scripts/resume.mjs" <<'NODE'
+import assert from "node:assert/strict";
+const {parseActor}=await import(process.argv[2]);
+for (const effort of ["low","medium","max","unknown","constructor","toString","__proto__","malformed","ultracode"])
+  assert.equal(parseActor("fixture",["--harness","made-up","--harness-version","unobserved","--model","fixture","--effort",effort,"--source","observed"]).effort,effort);
+for (const raw of ["ultra","ultra code"]) {
+  const actor=parseActor("fixture",["--harness","unknown","--harness-version","unknown","--model","unknown","--effort",raw,"--source","unknown"]);
+  assert.deepEqual(actor,{harness:"unknown",harnessVersion:"unknown",model:"unknown",effort:"xhigh",mode:"subagents",raw,source:"unknown"});
+}
+NODE
 node "$fixture_repo/scripts/resume.mjs" implementation-ready \
   --harness claude-code \
   --harness-version fixture-0 \
@@ -270,20 +246,8 @@ assert_refusal 'verification report must contain exactly one machine-readable ac
 printf '%s\n' \
   '# fail' \
   '' \
-  '**Actor attestation:** {"harness":"made-up","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"unknown","raw":"ultracode","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
-assert_refusal 'invalid --harness made-up' verification-result fail \
-  --harness made-up --harness-version fixture-2 --model fixture.model/beta --effort ultracode --source self-reported
-printf '%s\n' \
-  '# fail' \
-  '' \
-  '**Actor attestation:** {"harness":"other:","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"unknown","raw":"ultracode","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
-assert_refusal 'invalid --harness other:' verification-result fail \
-  --harness other: --harness-version fixture-2 --model fixture.model/beta --effort ultracode --source self-reported
-printf '%s\n' \
-  '# fail' \
-  '' \
-  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"unknown","raw":"ultracode","source":"self-reported"}' \
-  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"unknown","raw":"ultracode","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"ultracode","source":"self-reported"}' \
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"ultracode","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
 assert_refusal 'verification report must contain exactly one machine-readable actor header' verification-result fail \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort ultracode --source self-reported
 printf '%s\n' \
@@ -295,13 +259,13 @@ assert_refusal 'verification report has malformed actor header' verification-res
 printf '%s\n' \
   '# fail' \
   '' \
-  '**Actor attestation:** {"harness":"spoof","harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"unknown","raw":"ultracode","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
+  '**Actor attestation:** {"harness":"spoof","harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"ultracode","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
 assert_refusal 'verification report actor header does not match the completion actor' verification-result fail \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort ultracode --source self-reported
 printf '%s\n' \
   '# fail' \
   '' \
-  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"unknown","raw":"ultracode","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"ultracode","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-002.md"
 assert_refusal 'verification report actor header does not match the completion actor' verification-result fail \
   --harness codex-cli --harness-version fixture-2 --model fixture.model/beta --effort xhigh --source self-reported
 run_with_actor verification-result ultracode fail
@@ -309,11 +273,11 @@ node - "$active_log" <<'NODE'
 const fs = require("node:fs");
 const events = fs.readFileSync(process.argv[2], "utf8").trim().split("\n").map(JSON.parse);
 const actor = events.at(-1).actor;
-const expected = { harness: "codex-cli", harnessVersion: "fixture-2", model: "fixture.model/beta", effort: "unknown", raw: "ultracode", source: "self-reported" };
+const expected = { harness: "codex-cli", harnessVersion: "fixture-2", model: "fixture.model/beta", effort: "ultracode", source: "self-reported" };
 if (JSON.stringify(actor) !== JSON.stringify(expected)) throw new Error(`raw effort was not preserved: ${JSON.stringify(actor)}`);
 NODE
-grep -Fq 'Latest attestation: harness codex-cli; version fixture-2; model fixture.model/beta; effort unknown (raw: ultracode); source self-reported' "$fixture_repo/docs/control/current.md"
-grep -Fq 'Effort drift: xhigh -> unknown (raw: ultracode)' "$fixture_repo/docs/control/current.md"
+grep -Fq 'Latest attestation: harness codex-cli; version fixture-2; model fixture.model/beta; effort ultracode; source self-reported' "$fixture_repo/docs/control/current.md"
+grep -Fq 'Effort drift: xhigh -> ultracode' "$fixture_repo/docs/control/current.md"
 refuse_next
 run fix
 refuse_next
@@ -342,9 +306,9 @@ grep -q 'VER-003.md' "$fixture_repo/docs/control/current.md"
 printf '%s\n' \
   '# pass' \
   '' \
-  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"unknown","raw":"ultracode","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-003.md"
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"ultracode","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-003.md"
 run_with_actor verification-result ultracode pass
-test "$(grep -F 'Effort drift:' "$fixture_repo/docs/control/current.md")" = '- Effort drift: xhigh -> unknown (raw: ultracode) -> high'
+test "$(grep -F 'Effort drift:' "$fixture_repo/docs/control/current.md")" = '- Effort drift: xhigh -> ultracode -> high'
 refuse_next
 run final-review
 refuse_next
@@ -372,9 +336,9 @@ grep -q 'VER-004.md' "$fixture_repo/docs/control/current.md"
 printf '%s\n' \
   '# repaired pass' \
   '' \
-  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"unknown","raw":"ultracode-2","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-004.md"
+  '**Actor attestation:** {"harness":"codex-cli","harnessVersion":"fixture-2","model":"fixture.model/beta","effort":"ultracode-2","source":"self-reported"}' >"$fixture_repo/docs/verifications/WO-099/VER-004.md"
 run_with_actor verification-result ultracode-2 pass
-grep -Fq 'Effort drift: xhigh -> unknown (raw: ultracode) -> high -> unknown (raw: ultracode-2)' "$fixture_repo/docs/control/current.md"
+grep -Fq 'Effort drift: xhigh -> ultracode -> high -> ultracode-2' "$fixture_repo/docs/control/current.md"
 run final-review
 grep -q 'FINAL-003.md' "$fixture_repo/docs/control/current.md"
 printf '%s\n' \
@@ -390,7 +354,7 @@ final_pass_output="$(node "$fixture_repo/scripts/resume.mjs" final-review-result
   --effort unknown \
   --source operator-attested 2>/dev/null)"
 assert_status_read_only
-assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"unknown","raw":"ultracode"},{"effort":"high"},{"effort":"unknown","raw":"ultracode-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"]}'
+assert_status_json '{"workOrder":"WO-099","workOrderPath":"docs/work-orders/WO-099-fixture.md","phase":"closed","latestVerification":"VER-004","verificationPath":"docs/verifications/WO-099/VER-004.md","latestVerdict":"pass","finalReview":"FINAL-003","finalReviewPath":"docs/final-reviews/WO-099/FINAL-003.md","latestAttestation":{"harness":"human","harnessVersion":"not-applicable","model":"human","effort":"unknown","source":"operator-attested"},"effortDrift":[{"effort":"xhigh"},{"effort":"ultracode"},{"effort":"high"},{"effort":"ultracode-2"},{"effort":"unknown"}],"latestCheckpoint":{"unavailable":true},"legalNextActions":["release-close","next","activate"]}'
 grep -Fq 'npm run worktree -- publish WO-099 --title <title> --body-file <contained-reviewed-body-path>' <<<"$final_pass_output"
 grep -Fq 'Latest attestation: harness human; version not-applicable; model human; effort unknown; source operator-attested' "$fixture_repo/docs/control/current.md"
 if grep -Fq 'raw: unknown' "$fixture_repo/docs/control/current.md"; then printf 'error: canonical unknown was duplicated as a raw label\n' >&2; exit 1; fi
@@ -440,9 +404,9 @@ assert.deepStrictEqual(status, {
   latestAttestation: { harness: "human", harnessVersion: "not-applicable", model: "human", effort: "unknown", source: "operator-attested", accountLabel: "not-applicable" },
   effortDrift: [
     { effort: "xhigh" },
-    { effort: "unknown", raw: "ultracode" },
+    { effort: "ultracode" },
     { effort: "high" },
-    { effort: "unknown", raw: "ultracode-2" },
+    { effort: "ultracode-2" },
     { effort: "unknown" },
   ],
   latestCheckpoint: { unavailable: true },
@@ -490,6 +454,8 @@ mkdir -p "$legacy_repo/scripts" "$legacy_repo/docs/work-orders" "$legacy_repo/do
 cp -- "$script_dir/resume.mjs" "$legacy_repo/scripts/resume.mjs"
 cp -R -- "$script_dir/lib" "$legacy_repo/scripts/lib"
 node "$script_dir/test-beacon-fixture.mjs" "$legacy_repo"
+git init -q "$legacy_repo"
+cp -- "$script_dir/../.gitignore" "$legacy_repo/.gitignore"
 printf '%s\n' \
   '# legacy active fixture' \
   '' \
@@ -564,6 +530,8 @@ mkdir -p "$time_repo/scripts" "$time_repo/docs/work-orders"
 cp -- "$script_dir/resume.mjs" "$time_repo/scripts/resume.mjs"
 cp -R -- "$script_dir/lib" "$time_repo/scripts/lib"
 node "$script_dir/test-beacon-fixture.mjs" "$time_repo"
+git init -q "$time_repo"
+cp -- "$script_dir/../.gitignore" "$time_repo/.gitignore"
 printf '%s\n' '# time fixture' '' '**Model:** any.' '**Effort:** executor any; verifier any; reviewer any.' >"$time_repo/docs/work-orders/WO-087-time.md"
 node --input-type=module - "$time_repo" "$test_root" <<'NODE'
 import assert from "node:assert/strict";
@@ -583,7 +551,7 @@ const stderr = process.stderr.write;
 const call = async (args) => {
   let output = "";
   process.stdout.write = (chunk) => { output += chunk; return true; };
-  process.stderr.write = () => true; // This deliberately non-Git fixture cannot checkpoint.
+  process.stderr.write = () => true; // This unborn fixture cannot checkpoint.
   try { await main(args); } finally { process.stdout.write = stdout; process.stderr.write = stderr; }
   return output;
 };

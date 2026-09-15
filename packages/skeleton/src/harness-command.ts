@@ -1,11 +1,11 @@
 import { basename } from "node:path";
 
-/** A classified refusal is distinct from missing host facts or runtime bytes. */
+/** Classification could not establish an effect; generated hooks advise the host. */
 export class HarnessCommandRefused extends Error {}
 
 /** Effect inventory for the tools exposed by the observed harness profiles.
  * Unknown names are never presumed to be reads. Opaque shell/delegation routes
- * need the same adapter as their native counterparts before they may run.
+ * are delegated to host permissions when their effects cannot be classified.
  */
 export const harnessToolEffects = {
   Read: "read",
@@ -300,6 +300,18 @@ export function shellInvocations(source: string): string[][] {
   return shellWords(source).map(({ words }) => words.map((word) => word.value));
 }
 
+// Redirect operators and filename expansion differ between shells: a leading
+// `!` can be zsh's clobber mark, and `=` can expand to a command path. Require
+// a plain path prefix instead of treating every captured suffix as literal.
+// The lone dash remains a filename for append and a descriptor operand for >&.
+const literalRedirectOperand = (
+  word: ShellWord | undefined,
+): word is ShellWord =>
+  word !== undefined &&
+  !word.dynamic &&
+  /^(?:[A-Za-z0-9._/]|-$)/.test(word.value) &&
+  !/[*?\[\]{}~<>]/.test(word.value);
+
 /** Bounded destination adapter for gate admission. null means the destinations
  * are opaque, never an empty write set. Keep expansion/quotation provenance;
  * arbitrary scripts and interpreters need their own reviewed path adapter.
@@ -317,13 +329,26 @@ export function shellWritePaths(source: string): readonly string[] | null {
         // Mixed/escaped wildcard forms stay opaque to this bounded adapter.
         if (word.dynamic || /[*?\[\]{}~]/.test(word.value)) return null;
         if (/^(?:\d*[<>]&\d+)$/.test(word.value) && !word.quoted) continue;
+        // Only `>&` treats a number or `-` as descriptor duplication/closure.
+        // zsh's `>>&` opens an append file even for those literal names.
+        // A spaced operand is the next word, as for `>` and `>>`.
+        const ampersandRedirect = /^\d*(>>?)&(.*)$/.exec(word.value);
+        if (ampersandRedirect && !word.quoted) {
+          const operand = ampersandRedirect[2]
+            ? { ...word, value: ampersandRedirect[2] }
+            : words[++index];
+          if (!literalRedirectOperand(operand)) return null;
+          if (ampersandRedirect[1] === ">" && /^(?:\d+|-)$/.test(operand.value))
+            continue;
+          paths.push(operand.value);
+          continue;
+        }
         const redirect = /^(?:\d*>>?|&>>?)(.*)$/.exec(word.value);
         if (redirect && !word.quoted) {
           const target = redirect[1]
             ? { ...word, value: redirect[1] }
             : words[++index];
-          if (!target || target.dynamic || /[*?\[\]{}~<>]/.test(target.value))
-            return null;
+          if (!literalRedirectOperand(target)) return null;
           paths.push(target.value);
         } else {
           // Mixed quoted/unquoted redirects and embedded redirects are opaque.
@@ -333,7 +358,19 @@ export function shellWritePaths(source: string): readonly string[] | null {
       }
       const [program, ...args] = command;
       if (!program) continue;
-      if (["echo", "printf", "cat", "pwd", "true", "false"].includes(program))
+      if (
+        [
+          "echo",
+          "printf",
+          "cat",
+          "pwd",
+          "true",
+          "false",
+          "ls",
+          "head",
+          "grep",
+        ].includes(program)
+      )
         continue;
       const flags: Record<string, RegExp> = {
         touch: /^-(?:[acmh]+|-)/,

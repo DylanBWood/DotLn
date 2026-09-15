@@ -17,6 +17,7 @@ import { PLAN_REFUTATION_LIMITS } from "./plan-refutation-protocol.js";
 import { decodeUsageSource, usageObservation } from "./usage-observation.mjs";
 import {
   WorkerFailure,
+  normalizeWorkerEffort,
   WORKER_TIMEOUT_MS,
   type CommandReceipt,
   type WorkerRequest,
@@ -33,6 +34,8 @@ import {
   type TransportRequest,
   type TransportResultFor,
 } from "./verification-protocol.js";
+
+export { normalizeWorkerEffort };
 
 export interface WorkerLaunch {
   readonly binary: string;
@@ -179,12 +182,12 @@ const codexDisabled = [
   "unified_exec",
 ];
 
-export const MINIMUM_CLI_VERSIONS = {
+export const OBSERVED_CLI_VERSIONS = {
   claude: "2.1.270",
   codex: "0.154.0",
 } as const;
 
-/** Version observations establish a floor, never an upper bound for upgrades. */
+/** Version comparisons produce observations, never launch refusals. */
 function meetsMinimumVersion(version: string, minimum: string): boolean {
   if (!/^\d+\.\d+\.\d+$/u.test(version)) return false;
   const actual = version.split(".").map(Number);
@@ -204,16 +207,28 @@ export function canonicalWorkerArgs(
   harnessVersion = "unknown",
 ): readonly string[] {
   validateTransportRequest(request);
+  if (typeof request.effort !== "string" || !request.effort.trim())
+    throw new WorkerFailure("profile-refused", "worker effort must be present");
+  const selection = normalizeWorkerEffort(request.effort);
+  // Hosts can normalize ultra before dispatch while retaining its mode.
+  const subagents =
+    selection.mode === "subagents" ||
+    ("mode" in request && request.mode === "subagents");
+  if (
+    !["low", "medium", "high", "xhigh", "max", "unknown"].includes(
+      selection.effort,
+    )
+  )
+    process.stderr.write(
+      `DotLn advisory: requested worker effort ${JSON.stringify(request.effort)} is unrecorded; the host will evaluate it.\n`,
+    );
   if (name === "fake") throw new WorkerFailure("profile-refused");
   if (name === "claude-cli-print") {
-    if (request.effort === "unknown")
-      throw new WorkerFailure("profile-refused");
     return [
       "--print",
       "--model",
       request.model,
-      "--effort",
-      request.effort,
+      ...(selection.effort === "unknown" ? [] : ["--effort", selection.effort]),
       "--output-format",
       "json",
       "--json-schema",
@@ -244,15 +259,9 @@ export function canonicalWorkerArgs(
           : "1.00",
     ];
   }
-  // WO-125 observed these five levels; WO-129 makes its version a minimum.
-  if (
-    request.effort !== "unknown" &&
-    (!meetsMinimumVersion(harnessVersion, MINIMUM_CLI_VERSIONS.codex) ||
-      !["low", "medium", "high", "xhigh", "max"].includes(request.effort))
-  )
-    throw new WorkerFailure(
-      "profile-refused",
-      `Codex effort ${request.effort} unavailable for ${harnessVersion}; requires CLI >= ${MINIMUM_CLI_VERSIONS.codex} and a declared effort; see docs/discovery/codex-effort-2026-09-11.json`,
+  if (!meetsMinimumVersion(harnessVersion, OBSERVED_CLI_VERSIONS.codex))
+    process.stderr.write(
+      `DotLn advisory: Codex CLI ${harnessVersion} is outside the recorded version observation ${OBSERVED_CLI_VERSIONS.codex}; launch continues.\n`,
     );
   return [
     "exec",
@@ -286,10 +295,15 @@ export function canonicalWorkerArgs(
     "memories.generate_memories=false",
     "-c",
     'shell_environment_policy.inherit="none"',
-    ...codexDisabled.flatMap((name) => ["--disable", name]),
-    ...(request.effort === "unknown"
+    ...codexDisabled
+      .filter(
+        (feature) =>
+          !subagents || !["multi_agent", "multi_agent_v2"].includes(feature),
+      )
+      .flatMap((feature) => ["--disable", feature]),
+    ...(selection.effort === "unknown"
       ? []
-      : ["-c", `model_reasoning_effort="${request.effort}"`]),
+      : ["-c", `model_reasoning_effort=${JSON.stringify(selection.effort)}`]),
     "-",
   ];
 }
@@ -381,26 +395,32 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
   readonly harnessVersion: string;
   constructor(
     private readonly binary: string,
-    minimumVersion: string,
+    observedVersion: string,
     private readonly runner: ProcessRunner = runWorkerProcess,
     version?: string,
     private readonly onUsage?: (
       observation: ReturnType<typeof usageObservation>,
     ) => void,
   ) {
-    const installed =
-      version ??
-      execFileSync(binary, ["--version"], {
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "ignore"],
-        timeout: 5_000,
-      });
+    let installed = version;
+    if (installed === undefined) {
+      try {
+        installed = execFileSync(binary, ["--version"], {
+          encoding: "utf8",
+          stdio: ["ignore", "pipe", "ignore"],
+          timeout: 5_000,
+        });
+      } catch {
+        process.stderr.write(
+          `DotLn advisory: ${binary} version observation unavailable; launch continues.\n`,
+        );
+      }
+    }
     this.harnessVersion =
-      installed.match(/\b\d+\.\d+\.\d+\b/u)?.[0] ?? "unknown";
-    if (!meetsMinimumVersion(this.harnessVersion, minimumVersion))
-      throw new WorkerFailure(
-        "profile-refused",
-        `${binary} CLI ${this.harnessVersion} requires version >= ${minimumVersion}`,
+      version ?? installed?.match(/\b\d+\.\d+\.\d+\b/u)?.[0] ?? "unknown";
+    if (!meetsMinimumVersion(this.harnessVersion, observedVersion))
+      process.stderr.write(
+        `DotLn advisory: ${binary} CLI ${this.harnessVersion} is outside the recorded version observation ${observedVersion}; launch continues.\n`,
       );
   }
   dispatch<R extends TransportRequest>(
@@ -471,7 +491,7 @@ export class ClaudeCliPrintWorkOrderTransport extends CliWorkOrderTransport {
     version?: string,
     onUsage?: (observation: ReturnType<typeof usageObservation>) => void,
   ) {
-    super("claude", MINIMUM_CLI_VERSIONS.claude, runner, version, onUsage);
+    super("claude", OBSERVED_CLI_VERSIONS.claude, runner, version, onUsage);
   }
 }
 export class CodexCliExecWorkOrderTransport extends CliWorkOrderTransport {
@@ -481,6 +501,6 @@ export class CodexCliExecWorkOrderTransport extends CliWorkOrderTransport {
     version?: string,
     onUsage?: (observation: ReturnType<typeof usageObservation>) => void,
   ) {
-    super("codex", MINIMUM_CLI_VERSIONS.codex, runner, version, onUsage);
+    super("codex", OBSERVED_CLI_VERSIONS.codex, runner, version, onUsage);
   }
 }

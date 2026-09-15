@@ -48,12 +48,14 @@ import {
 } from "../src/worker-transport.js";
 import {
   WorkerFailure,
+  normalizeWorkerEffort,
   LEASE_MS,
   parseWorkerResult,
   type WorkerRequest,
   type WorkerResult,
   type WorkerEffort,
 } from "../src/worker-protocol.js";
+import type { PlanRefutationRequest } from "../src/plan-refutation-protocol.js";
 import { WorkerStore } from "../src/worker-store.js";
 import { WorkerHost } from "../src/worker-host.js";
 import { createWorkerFixture, runWorkerDemo } from "../src/worker-demo.js";
@@ -175,13 +177,11 @@ test("WO-009 AC6 canonical launch shapes pin model, settings, memory, persistenc
   ]) {
     assert.equal(b[b.indexOf(disabled) - 1], "--disable");
   }
-  assert.throws(
-    () => canonicalWorkerArgs("codex-cli-exec", request, "/schema", "0.153.4"),
-    WorkerFailure,
+  assert.doesNotThrow(() =>
+    canonicalWorkerArgs("codex-cli-exec", request, "/schema", "0.153.4"),
   );
-  assert.throws(
+  assert.doesNotThrow(
     () => new CodexCliExecWorkOrderTransport(undefined, "0.153.4"),
-    WorkerFailure,
   );
   assert.throws(
     () =>
@@ -299,23 +299,31 @@ test("WO-125 observed efforts reach the process and durable launch claim without
   }
 });
 
-test("WO-129 versions below the Codex effort minimum refuse and name discovery", () => {
+test("WO-132 unrecorded versions and efforts reach host launch without discovery refusal", () => {
   const driver = new LiveReactorDriver();
   startScenario(driver);
-  for (const effort of ["low", "medium", "high", "xhigh", "max"] as const)
-    assert.throws(
-      () =>
+  for (const version of ["0.153.4", "unknown", "future-version"])
+    for (const effort of [
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max",
+      "minimal",
+      "none",
+      "MAX",
+    ])
+      assert.ok(
         canonicalWorkerArgs(
           "codex-cli-exec",
           { ...stateRequest(driver), effort },
           "/schema",
-          "0.153.4",
-        ),
-      /profile-refused.*docs\/discovery\/codex-effort-2026-09-11\.json/,
-    );
+          version,
+        ).includes(`model_reasoning_effort=${JSON.stringify(effort)}`),
+      );
 });
 
-test("WO-129 minimum versions admit upgrades and preserve the requested Fable launch", async () => {
+test("WO-132 version observations admit older, unknown and upgraded workers without changing the requested model", async () => {
   for (const [Transport, name, versions, older] of [
     [
       ClaudeCliPrintWorkOrderTransport,
@@ -330,13 +338,7 @@ test("WO-129 minimum versions admit upgrades and preserve the requested Fable la
       ["0.153.99", "0.99.999"],
     ],
   ] as const) {
-    for (const version of [...older, "unknown", "invalid"]) {
-      assert.throws(
-        () => new Transport(undefined, version),
-        /profile-refused.*requires version >=/,
-      );
-    }
-    for (const version of versions) {
+    for (const version of [...older, "unknown", "invalid", ...versions]) {
       const launches: WorkerLaunch[] = [];
       const transport = new Transport(
         cliRunner(name, "success", launches),
@@ -386,61 +388,109 @@ test("WO-129 minimum versions admit upgrades and preserve the requested Fable la
   }
 });
 
-test("WO-125 F1 rejects unobserved runtime effort values before process launch", () => {
+test("WO-132 effort presence is required and quoted config values cannot add options", () => {
   const driver = new LiveReactorDriver();
   startScenario(driver);
-  let launches = 0;
-  const transport = new CodexCliExecWorkOrderTransport(() => {
-    launches++;
-    throw new Error("unexpected process launch");
-  }, "0.154.0");
-  for (const effort of [
-    "minimal",
-    "none",
-    "MAX",
-    'max"\nsandbox_mode="danger-full-access',
-    "",
-    null,
-    undefined,
-    5,
-  ])
-    assert.throws(
-      () =>
-        transport.dispatch(
-          { ...stateRequest(driver), effort: effort as WorkerEffort },
-          Date.now,
-        ),
-      /profile-refused.*docs\/discovery\/codex-effort-2026-09-11\.json/s,
-    );
-  assert.equal(launches, 0);
-});
-
-test("WO-125 F2 an omitted version cannot authorize explicit effort", () => {
-  const driver = new LiveReactorDriver();
-  startScenario(driver);
-  for (const effort of ["low", "medium", "high", "xhigh", "max"] as const)
+  for (const effort of ["", null, undefined, 5])
     assert.throws(
       () =>
         canonicalWorkerArgs(
           "codex-cli-exec",
-          { ...stateRequest(driver), effort },
-          "/schema.json",
+          { ...stateRequest(driver), effort: effort as WorkerEffort },
+          "/schema",
         ),
-      /profile-refused.*unknown.*docs\/discovery\/codex-effort-2026-09-11\.json/,
+      /worker effort must be present/,
     );
-  assert.deepEqual(
-    canonicalWorkerArgs(
-      "codex-cli-exec",
-      { ...stateRequest(driver), effort: "unknown" },
-      "/schema.json",
-    ),
-    JSON.parse(
-      readFileSync(
-        new URL("../../fixtures/codex-unknown-args.json", import.meta.url),
-        "utf8",
-      ),
-    ),
+  const effort = 'max"\nsandbox_mode="danger-full-access';
+  const args = canonicalWorkerArgs(
+    "codex-cli-exec",
+    { ...stateRequest(driver), effort },
+    "/schema",
   );
+  assert.ok(args.includes(`model_reasoning_effort=${JSON.stringify(effort)}`));
+  assert.ok(!args.includes('sandbox_mode="danger-full-access"'));
+});
+
+test("WO-132 normalized plan-refuter effort retains its subagent mode at launch", () => {
+  const driver = new LiveReactorDriver();
+  startScenario(driver);
+  const base = stateRequest(driver);
+  const hash = `sha256:${"1".repeat(64)}`;
+  for (const effort of ["ultra", "ultra code"]) {
+    const request: PlanRefutationRequest = {
+      kind: "plan-refutation",
+      command: {
+        ...base.command,
+        intent: {
+          kind: "Act",
+          effect: "repo.read.plan-subject",
+          payload: { subjectHash: hash },
+        },
+      },
+      workOrder: base.workOrder,
+      subject: {
+        schemaVersion: "plan-subject-v1",
+        revision: "fixture",
+        hash,
+        sequenceHash: hash,
+        inputs: [],
+        standard: {
+          theses: [],
+          exclusions: [],
+          roles: [],
+          rolesTable: "",
+          capabilities: [],
+        },
+        orders: [],
+        deferrals: [],
+      },
+      episodeId: "plan_fixture",
+      model: base.model,
+      cwd: base.cwd,
+      profile: { profileId: "plan-refutation-v1", modelTools: [] },
+      ...normalizeWorkerEffort(effort),
+    };
+    assert.equal(request.mode, "subagents");
+    assert.equal(request.raw, effort);
+    const args = canonicalWorkerArgs(
+      "codex-cli-exec",
+      request,
+      "/schema",
+      "unknown",
+    );
+    assert.ok(args.includes('model_reasoning_effort="xhigh"'));
+    assert.ok(!args.includes("multi_agent"));
+    assert.ok(!args.includes("multi_agent_v2"));
+  }
+});
+
+test("WO-132 ultra modes select xhigh, retain host permissions and permit Codex subagents", () => {
+  const driver = new LiveReactorDriver();
+  startScenario(driver);
+  for (const effort of ["ultra", "ultra code"])
+    for (const name of ["claude-cli-print", "codex-cli-exec"] as const) {
+      const args = canonicalWorkerArgs(
+        name,
+        { ...stateRequest(driver), effort },
+        "/schema",
+        "unknown",
+      );
+      if (name === "codex-cli-exec") {
+        assert.ok(args.includes('model_reasoning_effort="xhigh"'));
+        assert.ok(!args.includes("multi_agent"));
+        assert.ok(!args.includes("multi_agent_v2"));
+        assert.ok(args.includes('approval_policy="never"'));
+        assert.ok(
+          args.includes("permissions.dotln-worker.network.enabled=false"),
+        );
+      } else assert.equal(args[args.indexOf("--effort") + 1], "xhigh");
+    }
+  const unknown = canonicalWorkerArgs(
+    "claude-cli-print",
+    { ...stateRequest(driver), effort: "unknown" },
+    "/schema",
+  );
+  assert.ok(!unknown.includes("--effort"));
 });
 
 test("WO-009 AC3 deterministic real-Git create, verified cwd/base, collision and dirty cleanup refusal", () => {
@@ -1175,5 +1225,33 @@ test("WO-009 concurrent dead-host reclaimers admit only one writer and abandoned
     for (const child of children)
       if (child.exitCode === null) child.kill("SIGKILL");
     rmSync(root, { recursive: true });
+  }
+});
+
+test("WO-132 the public worker CLI admits ultra and unrecorded selectors before transport", () => {
+  for (const effort of ["ultra", "ultra code", "future-selector"]) {
+    const store = temporary();
+    try {
+      const result = spawnSync(
+        process.execPath,
+        [
+          fileURLToPath(new URL("../src/dotln.js", import.meta.url)),
+          "verify-demo",
+          "--store",
+          store,
+          "--transport",
+          "fake",
+          "--model",
+          "synthetic",
+          "--effort",
+          effort,
+        ],
+        { encoding: "utf8", timeout: 30000 },
+      );
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(JSON.parse(result.stdout).status, "completed");
+    } finally {
+      rmSync(store, { recursive: true });
+    }
   }
 });

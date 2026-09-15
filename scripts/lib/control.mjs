@@ -132,6 +132,7 @@ const scanControl = (events, visit) => {
       state.latestAttestation = event.actor;
       const pair = {
         effort: event.actor.effort,
+        ...(event.actor.mode ? { mode: event.actor.mode } : {}),
         raw: typeof event.actor.raw === "string" ? event.actor.raw : undefined,
       };
       if (

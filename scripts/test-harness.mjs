@@ -46,6 +46,7 @@ import {
 } from "../packages/skeleton/dist/src/feedback-boundary.js";
 import {
   beginHarnessSession,
+  measureHarnessSessionUsage,
   harnessOutputObligations,
   harnessControl,
   harnessFeedbackFacts,
@@ -74,7 +75,12 @@ import {
   checkContextMeasurement,
   measureHarnessContext,
 } from "./harness-context.mjs";
-import { activeGateRuns, gateTreeHash } from "./lib/gate-evidence.mjs";
+import {
+  activeGateRuns,
+  beginGateRun,
+  gateInputPath,
+  gateTreeHash,
+} from "./lib/gate-evidence.mjs";
 
 const sourceRoot = fileURLToPath(new URL("../", import.meta.url));
 // Fixtures own the harness-process identity: generated hooks record this test
@@ -271,48 +277,6 @@ const allowed = (result) =>
   result.decision !== "block" &&
   result.hookSpecificOutput?.permissionDecision !== "deny";
 
-test("WO-129 generated hooks refuse writes to a linked worktree's shared suite cache", (t) => {
-  const root = fixture();
-  const sibling = realpathSync(
-    mkdtempSync(join(tmpdir(), "dotln-cache-hook-")),
-  );
-  t.after(() => removeFixture(sibling, { recursive: true, force: true }));
-  t.after(() => removeFixture(root, { recursive: true, force: true }));
-  git(root, "worktree", "add", "--detach", sibling, "HEAD");
-  for (const path of ["packages", "node_modules"])
-    cpSync(join(root, path), join(sibling, path), { recursive: true });
-  emitHarness(sibling);
-  const cache = join(root, ".git/dotln/suite-success/fixture/record.json");
-  for (const attempt of [
-    {
-      tool_name: "Write",
-      tool_input: { file_path: cache, content: "forged\n" },
-    },
-    {
-      tool_name: "Edit",
-      tool_input: {
-        file_path: cache,
-        old_string: "success",
-        new_string: "forged",
-      },
-    },
-    {
-      tool_name: "Bash",
-      tool_input: {
-        command: `mkdir -p '${dirname(cache)}' && printf forged > '${cache}'`,
-      },
-    },
-  ]) {
-    const result = invoke(
-      sibling,
-      "permissions",
-      input(sibling, "PreToolUse", attempt),
-    );
-    assert.equal(allowed(result), false);
-    assert.equal(existsSync(cache), false);
-  }
-});
-
 for (const mode of ["runner", "evidence", "entry"])
   test(
     `WO-125 F3 ${mode} refuses generated-hook writes throughout the gate and releases on exit`,
@@ -367,7 +331,7 @@ for (const mode of ["runner", "evidence", "entry"])
           json({
             scripts: {
               "format:check": "node hold-gate.mjs checks",
-              "test:full": "node hold-gate.mjs checks",
+              test: "node hold-gate.mjs checks",
               build: "node hold-gate.mjs build",
               harness: packageScripts.harness,
             },
@@ -928,7 +892,7 @@ function parity(root, name, payload, expected, state = session) {
   const result = invoke(root, name, payload);
   assert.equal(
     allowed(result),
-    payload.hook_event_name === "Stop" ? true : verdict,
+    name === "concurrent-work-requires-worktrees" ? verdict : true,
     `${name} generated subprocess parity: ${JSON.stringify(result)}`,
   );
   assert.equal(
@@ -938,7 +902,7 @@ function parity(root, name, payload, expected, state = session) {
   );
 }
 
-test("WO-039 generated hook subprocesses agree with the existing boundaries, including unit removal", () => {
+test("WO-132 hooks preserve boundary observations and delegate non-writer judgments, including unit removal", () => {
   const root = fixture();
   try {
     invoke(
@@ -973,7 +937,7 @@ test("WO-039 generated hook subprocesses agree with the existing boundaries, inc
         tool_name: "Write",
         tool_input: { file_path: join(root, "fixture.ts") },
       }),
-      false,
+      true,
     );
     git(root, "switch", "wo-999");
     const before = readFileSync(join(root, "fixture.ts"), "utf8");
@@ -1008,7 +972,7 @@ test("WO-039 generated hook subprocesses agree with the existing boundaries, inc
           }),
         ),
       ),
-      false,
+      true,
     );
     assert.equal(
       allowed(
@@ -1074,7 +1038,7 @@ test("WO-039 generated hook subprocesses agree with the existing boundaries, inc
       assert.equal(allowed(response), true);
       assert.match(
         response.systemMessage,
-        /^DotLn: pending .*verify-app-before-done/,
+        /^DotLn advisory: pending .*verify-app-before-done/,
       );
       assert.equal(response.systemMessage.split("\n").length, 1);
     }
@@ -1167,7 +1131,7 @@ test("WO-039 ranged receipts require complete current bytes despite gaps, duplic
   }
 });
 
-test("WO-126 inherited output corpus adds no reads; authored bounded delivery rejects gaps, truncation and stale hashes", async () => {
+test("WO-132 inherited outputs add no reads; invalid deliveries advise without creating read receipts", async () => {
   const root = fixture();
   try {
     for (let index = 0; index < 128; index++)
@@ -1222,7 +1186,7 @@ test("WO-126 inherited output corpus adds no reads; authored bounded delivery re
               tool_response: { stdout: JSON.stringify(chunk).slice(0, -20) },
             }),
           ),
-          false,
+          true,
         );
         assert.equal(
           allowed(
@@ -1236,7 +1200,7 @@ test("WO-126 inherited output corpus adds no reads; authored bounded delivery re
               },
             }),
           ),
-          false,
+          true,
         );
       }
       await observeInProcess(root, payload);
@@ -1416,7 +1380,7 @@ test("WO-039 control observation uses the canonical read-only lifecycle command"
   assert.deepEqual(readFileSync(projection), before);
 });
 
-test("WO-039 whole-procedure context includes late directives and refuses unaccounted reads", () => {
+test("WO-132 whole-procedure context reports late and unaccounted reads with advisory growth", () => {
   const files = {
     "late.md": "first\nsecond\n",
     "order.md": "# Order\n",
@@ -1479,10 +1443,25 @@ test("WO-039 whole-procedure context includes late directives and refuses unacco
   assert.ok(
     notLower.profiles[0].residue[0].files.includes("fixture/late-large.md"),
   );
-  assert.throws(() => checkContextMeasurement(notLower), /late-large\.md/);
+  const warnings = [];
+  const previousWarn = console.warn;
+  try {
+    console.warn = (message) => warnings.push(String(message));
+    assert.doesNotThrow(() => checkContextMeasurement(notLower));
+  } finally {
+    console.warn = previousWarn;
+  }
+  assert.ok(
+    warnings.some(
+      (message) =>
+        message.startsWith("Advisory: .claude/skills/executor:") &&
+        message.includes("fixture/late-large.md"),
+    ),
+    "larger directed context remains visible as an advisory",
+  );
 });
 
-test("WO-039 generated read observer spans the session and its bounded scope closes alternate read routes", () => {
+test("WO-132 generated read observer spans the session and records alternate read routes", () => {
   const root = fixture();
   try {
     write(
@@ -1502,11 +1481,11 @@ test("WO-039 generated read observer spans the session and its bounded scope clo
     );
     for (const [tool_name, tool_input, expected] of [
       ["Read", { file_path: join(root, "fixture.ts") }, true],
-      ["Read", { file_path: join(root, "package.json") }, false],
-      ["Bash", { command: "cat fixture.ts" }, false],
+      ["Read", { file_path: join(root, "package.json") }, true],
+      ["Bash", { command: "cat fixture.ts" }, true],
       ["Bash", { command: "pwd" }, true],
-      ["Skill", { skill: "dotln-reviewer" }, false],
-      ["Grep", { pattern: ".*" }, false],
+      ["Skill", { skill: "dotln-reviewer" }, true],
+      ["Grep", { pattern: ".*" }, true],
     ])
       assert.equal(
         allowed(
@@ -1555,14 +1534,14 @@ test("WO-039 generated read observer spans the session and its bounded scope clo
           tool_input: { file_path: join(root, "package.json") },
         }),
       ),
-      false,
-      "a late read still fails after a Stop attempt",
+      true,
+      "a late read is observed after a Stop attempt",
     );
     const directed = [{ path: "fixture.ts", startLine: 1, endLine: 1 }];
     const enforced = scopeReadEvidence(directed, observations(root));
-    assert.equal(enforced.refusalCounts.Read, 1);
-    assert.equal(enforced.refusalCounts.Bash, 1);
-    assert.equal(enforced.refusedReads[0].path, "package.json");
+    assert.equal(enforced.refusalCounts.Read ?? 0, 0);
+    assert.equal(enforced.refusalCounts.Bash ?? 0, 0);
+    assert.equal(enforced.refusedReads.length, 0);
     assert.equal(enforced.unlocatedReadRefusals, 0);
     assert.equal(enforced.attemptedOutsideDirectedSet[0].path, "package.json");
     write(
@@ -1602,8 +1581,8 @@ test("WO-039 generated read observer spans the session and its bounded scope clo
     );
     const observedScope = scopeReadEvidence(directed, observations(root));
     assert.equal(
-      observedScope.refusalCounts.Read,
-      1,
+      observedScope.refusalCounts.Read ?? 0,
+      0,
       "the observe-only attempt is not counted as a refused read",
     );
     assert.equal(
@@ -1627,8 +1606,8 @@ test("WO-039 generated read observer spans the session and its bounded scope clo
           }),
         ),
       ),
-      false,
-      "observation never expands the compiled authority",
+      true,
+      "the host decides reads outside compiled authority",
     );
     assert.equal(
       allowed(
@@ -1641,7 +1620,7 @@ test("WO-039 generated read observer spans the session and its bounded scope clo
           }),
         ),
       ),
-      false,
+      true,
     );
     const outsideAttempt = scopeReadEvidence(directed, observations(root));
     assert.ok(
@@ -1718,7 +1697,7 @@ test("WO-039 confirmed-token adapter uses the compiled correction and survives i
     );
     for (const [tool_name, expected] of [
       ["Read", true],
-      ["Edit", false],
+      ["Edit", true],
     ])
       assert.equal(
         allowed(
@@ -1738,7 +1717,7 @@ test("WO-039 confirmed-token adapter uses the compiled correction and survives i
   }
 });
 
-test("WO-039 commit-message adapter has boundary parity; unavailable runtime preserves prompts and reads but refuses writes", () => {
+test("WO-132 commit-message adapter retains publication checks; unavailable runtime delegates all tool access", () => {
   const root = fixture();
   try {
     const path = join(root, ".claude/hooks/commit-msg.mjs");
@@ -1831,173 +1810,8 @@ test("WO-039 commit-message adapter has boundary parity; unavailable runtime pre
           }),
         ),
       ),
-      false,
-      "ordinary write effects still require the adapter or an explicit operator control",
-    );
-  } finally {
-    removeFixture(root, { recursive: true });
-  }
-});
-
-test("WO-039 metadata and the exact guarded release helper do not dispatch a coding writer into main", () => {
-  const root = fixture();
-  try {
-    git(root, "switch", "-c", "main");
-    const payload = (command) =>
-      input(root, "PreToolUse", { tool_name: "Bash", tool_input: { command } });
-    parity(
-      root,
-      "concurrent-work-requires-worktrees",
-      payload("pwd && git rev-parse --show-toplevel"),
       true,
-    );
-    assert.equal(
-      existsSync(join(root, "docs/control/local/harness/writer")),
-      false,
-    );
-    parity(
-      root,
-      "concurrent-work-requires-worktrees",
-      payload(
-        "node scripts/harness.mjs read-output fixture.ts --offset 0 --length 8192",
-      ),
-      true,
-    );
-    assert.equal(
-      existsSync(join(root, "docs/control/local/harness/writer")),
-      false,
-      "bounded output reads never reserve a coding writer, including on main",
-    );
-    assert.equal(
-      allowed(
-        invoke(
-          root,
-          "permissions",
-          payload("node scripts/harness.mjs read-output fixture.ts"),
-        ),
-      ),
-      true,
-    );
-    assert.equal(
-      allowed(
-        invoke(
-          root,
-          "permissions",
-          payload("node scripts/harness.mjs read-output .env"),
-        ),
-      ),
-      false,
-      "the helper retains native credential-path denial",
-    );
-    assert.equal(
-      allowed(
-        invoke(
-          root,
-          "permissions",
-          payload("node scripts/harness.mjs read-output .env && pwd"),
-        ),
-      ),
-      false,
-      "shell composition cannot bypass credential-path denial",
-    );
-    parity(
-      root,
-      "concurrent-work-requires-worktrees",
-      payload("node arbitrary-writer.mjs"),
-      false,
-    );
-    write(
-      root,
-      "docs/control/fixture-status.json",
-      json({ ...control, phase: "closed" }),
-    );
-    write(
-      root,
-      "scripts/release.mjs",
-      "throw new Error('fixture helper must never execute');\n",
-    );
-    invoke(
-      root,
-      "session",
-      input(root, "UserPromptSubmit", { prompt: "resume: release close" }),
-    );
-    const request = payload("node scripts/release.mjs close WO-999 --publish");
-    const config = configFor(root, "concurrent-work-requires-worktrees");
-    const facts = harnessFeedbackFacts(config.policy, request, root, {
-      ...session,
-      role: "release-close",
-      intent: "resume: release close",
-    });
-    assert.equal(facts[0].writable, false);
-    assert.doesNotThrow(() =>
-      feedbackBoundary(config.policy, facts[0], () => {}),
-    );
-    assert.equal(
-      allowed(invoke(root, "concurrent-work-requires-worktrees", request)),
-      true,
-    );
-    assert.equal(allowed(invoke(root, "permissions", request)), true);
-    assert.equal(
-      allowed(
-        invoke(
-          root,
-          "concurrent-work-requires-worktrees",
-          payload("node scripts/release.mjs close WO-998 --publish"),
-        ),
-      ),
-      false,
-    );
-    assert.equal(
-      allowed(
-        invoke(
-          root,
-          "concurrent-work-requires-worktrees",
-          payload(
-            "node scripts/release.mjs close WO-999 --publish && node arbitrary-writer.mjs",
-          ),
-        ),
-      ),
-      false,
-    );
-    // WO-131: every spelling the lifecycle prints or names is admitted from
-    // main, the read-only preview beside the publication, and nothing else.
-    const quote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
-    for (const spelling of [
-      "node scripts/release.mjs close WO-999 --dry-run",
-      "npm run release -- close WO-999 --publish",
-      `cd ${quote(root)} && ${quote(process.execPath)} ${quote(join(root, "scripts/release.mjs"))} close WO-999 --publish`,
-      `node ${quote(join(root, "scripts/release.mjs"))} close WO-999 --publish --dry-run`,
-    ]) {
-      assert.equal(
-        allowed(
-          invoke(root, "concurrent-work-requires-worktrees", payload(spelling)),
-        ),
-        true,
-        spelling,
-      );
-      assert.equal(
-        allowed(invoke(root, "permissions", payload(spelling))),
-        true,
-        spelling,
-      );
-    }
-    for (const spelling of [
-      "node scripts/release.mjs close WO-999 --publish --force",
-      `cd ${quote(join(root, "packages"))} && node scripts/release.mjs close WO-999 --publish`,
-      "npm run release -- prepare",
-    ])
-      assert.equal(
-        allowed(
-          invoke(root, "concurrent-work-requires-worktrees", payload(spelling)),
-        ),
-        false,
-        spelling,
-      );
-    write(root, "docs/control/fixture-status.json", json(control));
-    assert.equal(
-      allowed(invoke(root, "concurrent-work-requires-worktrees", request)),
-      false,
-      "an open lifecycle never gains the managed-close route",
+      "ordinary write effects delegate to host permissions when the adapter is unavailable",
     );
   } finally {
     removeFixture(root, { recursive: true });
@@ -2145,7 +1959,7 @@ test("WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated mess
     );
     assert.equal(
       allowed(await piped(bytes.subarray(0, bytes.length - 1))),
-      false,
+      true,
     );
   } finally {
     removeFixture(root, { recursive: true });
@@ -2894,6 +2708,360 @@ test("WO-039 an operator release judges, retires and journals one observed reser
   } finally {
     for (const child of children)
       if (child.exitCode === null) child.kill("SIGKILL");
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-132 generated hooks delegate classification, attribution, scope and runtime gaps with advisory journal rows", () => {
+  const root = fixture();
+  try {
+    const journal = join(
+      root,
+      "docs/control/local/harness",
+      createHash("sha256").update("synthetic-session").digest("hex") + ".jsonl",
+    );
+    const delegated = (hook, payload) => {
+      const result = invoke(root, hook, payload);
+      assert.equal(allowed(result), true, JSON.stringify(result));
+      assert.match(
+        result.systemMessage,
+        /DotLn advisory:.*host permissions decide/,
+      );
+      const rows = readFileSync(journal, "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse);
+      assert.ok(
+        rows.some(
+          (row) => row.delegated && row.advisory === result.systemMessage,
+        ),
+      );
+      return result;
+    };
+    for (const name of ["SubagentHandback", "SendMessage", "SomeNewTool"])
+      delegated(
+        "permissions",
+        input(root, "PreToolUse", { tool_name: name, tool_input: {} }),
+      );
+    for (const command of [
+      "for file in a b; do printf '%s' \"$file\"; done",
+      "echo $(printf value)",
+    ])
+      delegated(
+        "permissions",
+        input(root, "PreToolUse", {
+          tool_name: "Bash",
+          tool_input: { command },
+        }),
+      );
+    delegated(
+      "permissions",
+      input(root, "PreToolUse", {
+        tool_name: "Read",
+        tool_input: { file_path: "/outside/fixture.txt" },
+      }),
+    );
+    delegated(
+      "no-attribution",
+      input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_input: { command: "git commit -m 'Generated by Codex'" },
+      }),
+    );
+    write(
+      root,
+      "docs/control/local/harness/read-scope.json",
+      json({
+        role: "executor",
+        skill: "fixture",
+        reads: [],
+        commands: [],
+        mode: "enforce",
+      }),
+    );
+    delegated(
+      "permissions",
+      input(root, "PreToolUse", {
+        tool_name: "Read",
+        tool_input: { file_path: join(root, "fixture.ts") },
+      }),
+    );
+    delegated(
+      "read-observer",
+      input(root, "PostToolUse", {
+        tool_name: "Read",
+        tool_input: { file_path: "/outside/fixture.txt" },
+        tool_response: {},
+      }),
+    );
+    // Missing pinned runtime takes the generated, self-contained fallback.
+    removeFixture(join(root, ".runtime"), { recursive: true, force: true });
+    delegated(
+      "permissions",
+      input(root, "PreToolUse", {
+        tool_name: "Write",
+        tool_input: { file_path: join(root, "fixture.ts") },
+      }),
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-132 main uses one reservation for build, bootstrap, history and release; coordination tools do not become writers", () => {
+  const root = fixture();
+  try {
+    git(root, "switch", "-c", "main");
+    assert.equal(
+      allowed(
+        invoke(
+          root,
+          "concurrent-work-requires-worktrees",
+          input(root, "PreToolUse", {
+            tool_name: "Bash",
+            tool_input: { command: "pwd" },
+          }),
+        ),
+      ),
+      true,
+    );
+    assert.equal(
+      existsSync(join(root, "docs/control/local/harness/writer")),
+      false,
+    );
+    const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+    pkg.scripts.build = "node scripts/bootstrap.mjs";
+    write(root, "package.json", json(pkg));
+    write(
+      root,
+      "scripts/bootstrap.mjs",
+      "process.stdout.write('fixture bootstrap\\n');\n",
+    );
+    write(
+      root,
+      "scripts/release.mjs",
+      "process.stdout.write('fixture release\\n');\n",
+    );
+    for (const [command, binary, args] of [
+      ["npm run build", "npm", ["run", "build"]],
+      [
+        "node scripts/bootstrap.mjs",
+        process.execPath,
+        ["scripts/bootstrap.mjs"],
+      ],
+      ["git log --oneline", "git", ["log", "--oneline"]],
+      [
+        "node scripts/release.mjs close WO-999 --publish",
+        process.execPath,
+        ["scripts/release.mjs", "close", "WO-999", "--publish"],
+      ],
+    ]) {
+      const payload = input(root, "PreToolUse", {
+        tool_name: "Bash",
+        tool_input: { command },
+      });
+      assert.equal(
+        allowed(invoke(root, "concurrent-work-requires-worktrees", payload)),
+        true,
+      );
+      assert.equal(allowed(invoke(root, "permissions", payload)), true);
+      assert.equal(
+        spawnSync(binary, args, { cwd: root, encoding: "utf8" }).status,
+        0,
+      );
+    }
+    const second = input(root, "PreToolUse", {
+      session_id: "other-writer",
+      tool_name: "Bash",
+      tool_input: { command: "npm run build" },
+    });
+    const refusal = invoke(root, "concurrent-work-requires-worktrees", second);
+    assert.equal(refusal.hookSpecificOutput?.permissionDecision, "deny");
+    assert.match(
+      refusal.hookSpecificOutput.permissionDecisionReason,
+      /reserved by another session/,
+    );
+    for (const tool_name of ["SubagentHandback", "SendMessage", "SomeNewTool"])
+      assert.equal(
+        allowed(
+          invoke(root, "concurrent-work-requires-worktrees", {
+            ...second,
+            tool_name,
+            tool_input: {},
+          }),
+        ),
+        true,
+      );
+    releaseHarnessWriter(root, input(root, "Stop"));
+    seedHarnessWriter(root, {
+      actorId: "dead-holder",
+      worktree: root,
+      owner: { pid: 99999999, source: "parent" },
+      reservedAt: new Date().toISOString(),
+    });
+    assert.equal(
+      allowed(invoke(root, "concurrent-work-requires-worktrees", second)),
+      true,
+    );
+    assert.match(
+      readFileSync(
+        join(root, "docs/control/local/harness/writer-events.jsonl"),
+        "utf8",
+      ),
+      /"event":"reclaimed"/,
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-132 only the live product gate refuses input and success-record writes, including opaque shell writes", () => {
+  const root = fixture();
+  try {
+    // VER-003 F1: these literal append destinations are protected gate inputs.
+    for (const path of ["1", "-"]) write(root, path, "seed\n");
+    git(root, "add", "--", "1", "-");
+    for (const path of ["1", "-"])
+      assert.equal(gateInputPath(root, path), true, path);
+    const payload = (tool_name, tool_input) =>
+      input(root, "PreToolUse", { tool_name, tool_input });
+    const shellPayloads = (command) => [
+      payload("Bash", { command }),
+      payload("exec_command", { command }),
+      payload("exec_command", { cmd: command }),
+    ];
+    const writes = [
+      payload("Write", {
+        file_path: join(root, "fixture.ts"),
+        content: "changed",
+      }),
+      payload("Write", {
+        file_path: join(root, "docs/control/local/harness/checks.json"),
+        content: "[]",
+      }),
+      payload("Bash", {
+        command: 'for file in fixture.ts; do printf change > "$file"; done',
+      }),
+      payload("Bash", { command: "echo $(printf change) > fixture.ts" }),
+      ...[
+        "ls scripts > fixture.ts",
+        "head -5 fixture.ts >> docs/control/local/harness/checks.json",
+        "grep -n value fixture.ts | tee fixture.ts",
+        "ls scripts && touch fixture.ts",
+        'ls "$(touch fixture.ts)"',
+        "for file in fixture.ts; do head -5 fixture.ts; done",
+        "head -5 <(cat fixture.ts)",
+        "grep value *.ts",
+        'ls "$TARGET"',
+        "env ls scripts",
+        "rg --pre script value fixture.ts",
+        // VER-002 F1: descriptor-style redirects open their operand as a file.
+        "ls scripts >&packages/skeleton/dist/src/harness-command.js",
+        "ls scripts 1>&packages/skeleton/dist/src/harness-command.js",
+        "ls scripts >>&packages/skeleton/dist/src/harness-command.js",
+        `head -5 fixture.ts >&${join(root, "packages/skeleton/dist/src/harness-command.js")}`,
+        "grep value fixture.ts >&./node_modules/y",
+        "ls scripts >& fixture.ts",
+      ].map((command) => payload("Bash", { command })),
+      ...[
+        "echo marker >>&1",
+        "echo marker >>&-",
+        "echo marker >>& 1",
+        "echo marker >>& -",
+        "echo marker 1>>&1",
+        "ls scripts >>&1",
+        "head -1 fixture.ts >>&-",
+        // VER-004 F1: shell-special prefixes must never be classified as
+        // literal paths that the unanchored dist/node_modules rules ignore.
+        "ls scripts >!packages/skeleton/dist/src/harness-command.js",
+        "ls scripts 1>!packages/skeleton/dist/src/harness-command.js",
+        "ls scripts >>!packages/skeleton/dist/src/harness-command.js",
+        "ls scripts >&!packages/skeleton/dist/src/harness-command.js",
+        "ls scripts >>&!packages/skeleton/dist/src/harness-command.js",
+        "ls scripts &>!packages/skeleton/dist/src/harness-command.js",
+        "ls scripts &>>!packages/skeleton/dist/src/harness-command.js",
+        `head -1 fixture.ts >!${join(root, "packages/skeleton/dist/src/harness-command.js")}`,
+        "grep value fixture.ts >!./node_modules/y",
+        "echo x >!packages/skeleton/dist/src/harness-command.js",
+        "ls scripts >! packages/skeleton/dist/src/harness-command.js",
+        "ls scripts >&! ./node_modules/y",
+        "ls scripts >=packages/skeleton/dist/src/harness-command.js",
+        "ls scripts >& =./node_modules/y",
+      ].flatMap(shellPayloads),
+    ];
+    const reads = [
+      payload("Bash", { command: "ls scripts" }),
+      payload("Bash", { command: "head -5 fixture.ts" }),
+      payload("Bash", { command: "grep -n value fixture.ts | head -40" }),
+      ...[
+        "ls scripts 2>&-",
+        "ls scripts >&-",
+        "ls scripts 2>& 1",
+        "grep -n value fixture.ts 2>&1 | head -3",
+      ].flatMap(shellPayloads),
+      payload("exec_command", { command: "ls -l scripts" }),
+      payload("Bash", { command: "node scripts/harness.mjs evidence --stop" }),
+      payload("Read", { file_path: join(root, "fixture.ts") }),
+    ];
+    const active = beginGateRun(root, "npm test");
+    try {
+      for (const hook of [
+        "permissions",
+        "concurrent-work-requires-worktrees",
+        "write-observer",
+      ]) {
+        for (const request of writes)
+          assert.equal(
+            invoke(root, hook, request).hookSpecificOutput?.permissionDecision,
+            "deny",
+            `${hook}: ${JSON.stringify(request.tool_input)}`,
+          );
+        for (const request of reads)
+          assert.equal(
+            allowed(invoke(root, hook, request)),
+            true,
+            `${hook}: ${JSON.stringify(request.tool_input)}`,
+          );
+      }
+    } finally {
+      active.release();
+    }
+    for (const request of writes)
+      assert.equal(allowed(invoke(root, "permissions", request)), true);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-132 missing process-cost counters record unknown at the current dispatch cutoff", () => {
+  const root = fixture();
+  try {
+    const startedAt = new Date().toISOString();
+    const observation = measureHarnessSessionUsage(
+      root,
+      {
+        role: "executor",
+        workOrder: "WO-999",
+        startedAt,
+        reads: [],
+        startingEventCount: 0,
+      },
+      "unobserved-session",
+      join(root, "missing-transcript.jsonl"),
+    );
+    assert.equal(observation.source, "unavailable");
+    assert.equal(observation.scope, "dispatch");
+    assert.equal(observation.usage.totalTokens, null);
+    assert.ok(Date.parse(observation.observedAt) >= Date.parse(startedAt));
+    const rows = readFileSync(
+      join(root, "docs/control/local/process/usage.jsonl"),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    assert.deepEqual(rows.at(-1).observation, observation);
+  } finally {
     removeFixture(root, { recursive: true });
   }
 });

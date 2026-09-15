@@ -225,7 +225,7 @@ table includes the shared goal card and the refuter's separate subject boundary.
    | `resume: fix`           | `npm run resume -- fix`                                                                                                                                                                                                    | repair, reading BOTH the original work order and named failure source; if a repair was prematurely marked complete, the phrase may reopen it only while that unresolved source remains                                                                                   |
    | `resume: verify`        | `npm run resume -- verify`                                                                                                                                                                                                 | verify, writing the exact `VER-NNN` path it allocates                                                                                                                                                                                                                    |
    | `resume: final review`  | `npm run resume -- final-review`                                                                                                                                                                                           | review into the allocated `FINAL-NNN`; on pass, record it, commit the reviewed state, push only the WO branch, and open its PR                                                                                                                                           |
-   | `resume: release close` | run the exact `cd <main> && node <subject>/scripts/release.mjs close WO-NNN --publish` command projected by `resume release-close` or printed by `worktree publish`; after the subject is already removed, use main's copy | finish the merged worktree with the reviewed subject helpers, update main, and either publish the validated annotated tag plus its matching GitHub Release or record the honest no-release result; if Release creation fails after the tag push, rerun from updated main |
+   | `resume: release close` | run the exact `cd <main> && node <main>/scripts/release.mjs close WO-NNN --publish` command projected by `resume release-close` or printed by `worktree publish`; after the subject is already removed, use main's copy | update main, consume the reviewer product gate, publish the validated tag and Release, then attempt worktree cleanup; if Release creation fails after tag push, rerun from updated main |
 
    At the dated Codex baseline, run each **state-changing** `resume` command
    with explicit outside-sandbox approval on its first invocation. Codex
@@ -241,7 +241,10 @@ table includes the shared goal card and the refuter's separate subject boundary.
    `docs/AI-HARNESS-SECURITY.md` for the tested versions, Claude's current
    behavior, verification, and rollback.
 
-3. Record your outcome when your evidence exists, not before:
+3. Record your outcome when the deliverable, report and evidence exist.
+   Completion runs `git diff --check` inline. Gate rows, session authorship,
+   output reads, usage, projections and planning handoffs are advisory;
+   illegal phases and absent/mismatched reports or attestations still refuse:
    `npm run resume -- implementation-ready <actor-flags>` (executor: the
    deliverable is built and its work-order evidence is green, so it is ready to
    verify), `npm run resume -- verification-result pass|fail <actor-flags>`,
@@ -254,8 +257,8 @@ table includes the shared goal card and the refuter's separate subject boundary.
    exactly one `**Actor attestation:** {<normalized actor JSON>}` line in the
    allocated report beside the human-readable actor prose. The completion
    command refuses if that header is absent, malformed, or differs from its
-   flags; an unrecognized supplied effort appears in the JSON as `unknown` plus
-   `raw`. This pre-append check resolves the report/event ordering without
+   flags; supplied values remain as given, while `ultra` and `ultra code`
+   become `xhigh` with `mode: subagents` and their `raw` spelling. This pre-append check resolves the report/event ordering without
    editing immutable evidence afterward. **A repair episode is not
    finished until `repair-complete` is recorded** — otherwise the next session
    resumes into the wrong phase. The remaining action,
@@ -292,8 +295,8 @@ segments contained in each tagged revision. Prefix checks are per segment; a
 sibling merge cannot shift another order's close ordinal. Run
 `npm run work-orders -- index` after executor dispatch, before its evidence gate, and again
 after `implementation-ready`; verification and final-review actors refresh
-after dispatch and after recording their result. `npm test` includes
-`index --check`: it refuses a stale projection or a missing/changed recorded tag,
+after dispatch and after recording their result. `npm run test:docs` includes
+`index --check`: it reports a stale projection or a missing/changed recorded tag,
 while reporting additional local release tags as newer evidence. Explicit
 regeneration includes those tags. No lifecycle transition regenerates the
 index; its final refresh is later than the transition's immutable checkpoint.
@@ -625,7 +628,7 @@ Preconditions and inputs:
    active order is context, never a scope fence, exactly as in ideation mode.
    Run `npm run plan -- start <slug>` before the first planning write. It
    requires clean main and creates `planning/YYYY-MM-DD-<slug>` through the
-   classified command path; an unknown effectful tool is refused. It also
+   classified command path; unknown tool effects are advisory and host permissions decide. It also
    returns the first bounded page of the public follow-up register. A stale
    register refuses entry before creating the branch; refresh it with
    `npm run meta` and include that document update in the preceding checkpoint.
@@ -664,7 +667,7 @@ check. No ad hoc receipt code is needed.
 The default pass scope judges orders created or changed by the latest dated
 planning pass, plus the sequence; unchanged orders carry their latest verdict
 by hash. The receipt records scope, carried identities and dispatch-to-file
-wall-clock. The pass budget is 120 seconds unless a dated acceptance applies.
+wall-clock. Wall-clock is observed, with no pass-budget refusal.
 Full scope judges every order. Independence remains session-attested; no
 unknown model setting becomes readback.
 
@@ -676,19 +679,28 @@ unavailable, preserve the pending review and report the limitation. Repair a
 worker's result formatting with that same worker without rerolling its judgment.
 An explicitly requested transport's failure includes its CLI exit code and stderr. Direct and external
 judgments retain the same hold and disposition rules. Finish with
-`npm run test:docs`: index, publication, formatting and plan checks, with no
-build or code suites. The [receipt convention](../planning/refutations/README.md)
+`npm run test:docs`: index, publication, formatting, plan and current-document checks. It builds
+missing/current runtime output for the named projection comparisons, without
+the product or machinery fixture suites. The [receipt convention](../planning/refutations/README.md)
 details the result and provenance contracts.
 
-A hold requires either a changed named criterion and a fresh receipt carrying
-its dated accepted disposition, or an operator-authorized
-`npm run plan -- override <receipt-id> <hold-id> <reason>` event with actor flags,
-an ignored intake capture and its SHA-256. Accepted text never discharges a hold
-by itself, and receipt text never grants an override. The third consecutive
-hold over one sequence stops that pass. A subsequent pass may repair it, but
-must carry every earlier hold forward or explicitly identify the changed
-criterion. Override attribution records the acting session; it does not prove
-the human's identity or let a planner supply its own authorization.
+New judgments use `aligned`, `aligned-with-findings` and `misaligned`. Only
+misalignment supported by an observed failure or a supplied vision passage
+holds. A constructible counterexample is a known issue with a concrete
+reopening observation. Each judgment answers critical-path and NoOp cost,
+all eight system traps, removal balance, and failure behavior. Missing cost
+observations remain unknown.
+
+There is one judgment per planning pass. Repair a named criterion and record
+`npm run plan -- dispose <receipt-id> <hold-id> '<disposition and reason>'`.
+The existing control log binds the original and accepted criterion text, including
+repairs of historical holds. A goal-review disposition or override also binds
+the exact old and accepted Cost declaration when that field changes. It admits
+only those bound repairs; no second judgment follows unless recorded evidence changes. A timestamp refresh
+alone is not new evidence. An operator-authorized override retains its ignored
+intake capture and provenance. Accepted text cannot be raised as another hold;
+later concerns become known issues with reopening observations. There is no
+third-hold stop. Historical receipts retain their original bytes and meaning.
 
 The gate is forward-only from the mechanism's first-parent introduction/merge
 date. Earlier headings, including same-day headings already present at that
@@ -699,8 +711,8 @@ admitting only an assigned release placeholder, appended execution-record
 sections, and appended dated reassessments of existing capability ids for
 orders in that reviewed sequence. It reports these execution updates separately;
 they are not a fresh planning verdict. Existing text and rows, objectives,
-criteria, dependencies, non-goals, sequence, vision and roles still require a
-matching refutation when changed. Producing a new receipt still requires its
+dependencies, non-goals, sequence, vision and roles still require a
+matching subject. Criterion and goal-review Cost repairs use their text-bound disposition. Producing a new receipt still requires its
 complete committed subject and an identical workspace. Earlier receipts keep
 their judged revisions, with unresolved holds carried through the receipt chain.
 WO-126 has one explicit contract-adoption exception: the exact
@@ -729,9 +741,9 @@ Standard artifacts, all doc-only:
 - product-doc write-back for durable understanding, with the publication
   index and edition locks repaired in the same pass;
 - `npm run meta -- --plan-cost` refreshes the bounded, subject-hashed cost
-  table after the subject revision. It carries dated acceptances, latest meter
-  rows and trap signals; stale evidence refuses. Missing cost or added process
-  without a removal or dated acceptance produces a structural hold;
+  table after the subject revision. It carries latest meter rows and trap
+  signals. Stale or missing observations are labeled; cost shortfalls become
+  planning input and never create an automatic structural hold;
 - `npm run work-orders -- index` regenerated and `npm run test:docs` green.
   A document-only pass runs no code suite.
 
@@ -917,160 +929,51 @@ candidate closes on that order's merge.
 
 ## Workflow closeout and releases
 
-Final review prepares and publishes a clean PR; the operator retains merge
-authority. After the PR is merged, `resume: release close` runs the guarded
-close command. The close needs network egress to the GitHub host for the
-fetch, the tag push and the Release; `--dry-run` proves origin reachability
-before any local prerequisite and names the host, and a sandboxed agent
-session cannot publish, so the publish runs from an operator terminal with
-egress (WO-044). It updates `main`, proves the reviewed branch is contained in
-`origin/main`, and removes only its known worktree and merged branch. Ordinary
-tracked or untracked dirt is refused by the clean-worktree gate. Ignored raw
-material under `docs/intake/` is reconciled by the reviewed helper before
-teardown. Non-disposable ignored files and directories under
-`docs/control/local/` are archived with their relative structure in main's
-ignored `docs/control/local/retained/WO-NNN/`, including adjacent-work records,
-feedback evidence, process measurements, prototypes and the subject's terms
-file. These records stay distinct from main's active state. Directory contents
-and empty directories survive; differing file or directory collisions use a
-`.from-WO-NNN` suffix, numbered when needed, without overwriting existing state.
-Identical copies are reused on retry. The helper validates the whole plan and
-refuses symlinks or destinations that would expose files through Git before
-copying. Exclusive copies and final byte verification leave sources intact
-until guarded teardown; an interrupted or corrupt partial copy is retained,
-and a retry preserves the complete source at a collision path. Receipts show
-paths, dispositions and byte counts, never private contents or content hashes.
-`--dry-run` prints the plan without fetching, copying, deleting, running a gate
-or publishing. Other non-disposable ignored material still refuses removal.
-Known dependency/build outputs, `.runtime/` snapshots, `.control-beacons/`,
-`.DS_Store`, `.tsbuildinfo` and `docs/control/local/harness/**` are disposable;
-intake protection takes precedence over build-shaped names. A nested
-repository, which Git lists as one opaque entry, is classified explicitly
-(WO-044): only `.git` with an unborn HEAD, no refs or index entries and no
-loose, packed, alternate or garbage object storage is disposable fixture
-scaffolding. An unreadable repository is preserved or refused, never assumed
-empty; corrupt repositories are detected from their `.git` entry even when
-Git omits that directory from its file inventory. One with content under
-`docs/control/local/` or `docs/intake/` is
-preserved as a directory unit; one elsewhere refuses with its lane. A refusal
-lists every blocking entry at once with its lane classification and that
-lane's remedy, never a content hash, and names the intake archive command only
-for intake material. The feedback verifier removes its own empty mount
-repository after each run. Closing an order also settles its derived
-worktrees (WO-044): a registration whose directory is gone is pruned; a
-detached derivative that names the order (a measurement sibling or a
-temporary subject) and is clean, has no active gate and has no writer
-reservation has its non-disposable control and
-intake material preserved into the same retained lane and is then removed;
-every other derivative is reported with its blocker and the exact removal
-command. Writer registration holds a shared lease outside the subject directory;
-teardown holds an exclusive lock there and refuses outstanding leases. This
-excludes a racing writer during removal while allowing competing recovery
-attempts and owner refresh through the existing conditional reservation protocol.
-Live, uncertain, malformed and stale reservations are kept until that protocol
-releases them. An abandoned transition lock or lease requires inspection rather
-than inferred reclamation.
+Final review publishes the reviewed work-order branch and PR; the operator
+retains merge authority. After merge, `resume: release close` authorizes the
+exact helper command printed by `resume release-close` or `worktree publish`.
+Run main's helper with main as the working directory; retries use the same
+updated main after the subject is removed.
 
-Main's release-influence guard permits `docs/intake/**`, all of
-`docs/control/local/`, the exact `.claude/settings.local.json` and disposable
-outputs. The subject's local files outside `harness/**`, and its settings file,
-remain non-disposable. The helper archives the control records and continues
-to refuse unknown ignored material, including that settings file. Main's
-terms file and active local records stay intact. Gate evidence is handed off
-through its existing merge helper, separately from archival; the retained
-sources are rechecked immediately before teardown. If it refuses, report the
-refusal; never write a closeout script.
+The command proves origin reachability first, fast-forwards main, checks the
+README release block, component bumps, notes profile and license pins, and
+builds missing skeleton/kernel dist using installed dependencies. It consumes
+the committed final-review event's passing `npm test` row. The reviewed source
+and merged source must have equal code identity; the tag manifest records both
+trees, the code identity, duration, time and evidence reference. It runs no suite,
+`npm ci` or CLI smoke. Reports, control events, generated indexes, PR bodies and
+release notes may follow the gate without changing its identity.
 
-When a planner pins a tagging target above the latest published tag, updating
-the root README release block to that target is an executor deliverable, not a
-post-tag repair. After synchronization and before dependency installation,
-`release close` runs the same `check-surfaces` preflight as `worktree publish`:
-the README block must match release truth, every component whose `src/` changed
-since the preceding tag must have a different component version, and the
-current committed PR/release-note bodies must satisfy the renderer-wrapped
-profile. The `license-surfaces` rules require Apache-2.0 and `private: true`
-in the root and every workspace, the exact publication-refusal lifecycle
-command, and the three license-file SHA-256 values pinned in `docs/LEGAL.md`.
-The checker runs offline npm dry runs against isolated copies of the selected
-manifests and requires the specific refusal exit and marker; unrelated npm
-failures do not satisfy the rule. `--committed` reads Git blobs for the pins,
-metadata, and probe inputs. `npm run license-surfaces` also runs this bounded
-check on its own, and `npm test` includes it. Failure reports observed and
-expected values and stops before `npm ci`, tag creation, or GitHub mutation.
+`--publish` creates and pushes only the validated annotated tag, then creates
+its matching GitHub Release. The current human notes remain byte-exact from
+review through tag and Release. Never move a tag, edit a published Release,
+push main or imply package/binary/hosted distribution. An equal target is an
+idempotent retry only when the immutable tag names the same commit and manifest;
+a differing Release body refuses without editing it. If Release creation fails
+after tag push, rerun the same command. A lower target is an explicit no-release
+outcome. A deliberately deferred eligible release needs a durable disposition.
 
-Before pushing, `worktree publish` also checks every commit in the local
-`origin/main..HEAD` range, including merged side branches, against
-[CONTRIBUTING.md](../../CONTRIBUTING.md). An outside author's commit requires
-a parsed DCO 1.1 `Signed-off-by` trailer matching its raw author name and email.
-The operator's exact public author identity is exempt; the committer and local
-Git settings cannot supply that exemption. This is forward-only from the base
-and verifies an attestation, not personal identity. It installs no Git hook.
+Only tracked dirt refuses publication. Untracked and ignored local material is
+listed and retained. After publication, worktree finish and derived-worktree
+settlement run as best effort. Cleanup blockers are reported without failing a
+successful publication; never force teardown. The existing preservation helper
+keeps single-copy intake and non-disposable control material in main's ignored
+`docs/control/local/retained/WO-NNN/` lane, preserving collisions and checking
+copied bytes. It refuses unsafe symlinks and uncertain writer/gate ownership.
+Those teardown protections remain independent of publication eligibility.
 
-For a release boundary, the command works from the fetched `origin/main` HEAD to
-which local `main` was fast-forwarded, not a separately resolved work-order
-merge commit. The reviewed work-order branch must be contained in that history;
-any later commits already present at synchronization are included in the tagged
-source. It reuses successful `npm run test:full` evidence only for the exact
-current Git tree; otherwise it runs the full gate. The manifest records tree
-hash, duration and the evidence reference. Dependency installation is needed
-only when execution lacks its installed dependencies. It proves evidence
-leaves tracked files unchanged, populates and re-validates the
-immutable manifest, assembles the five-section edition from reviewed notes in
-first-parent order, and creates and pushes only their annotated tag. After that
-push succeeds, it creates the matching GitHub Release from the human layer; the
-JSON manifest remains in the tag rather than being pasted into the projection.
-The current release-note prose remains byte-exact from final review through the
-tag and GitHub projection; no close-time formatter inserts a source width.
-The publish form is authorized by the operator's phrase; a raw run without
-`--publish` performs guarded closeout and validation, then prints the exact
-authorized tag command. Never tag the feature branch, tag failing evidence, move
-an existing tag, edit a published Release, push `main`, or imply that
-npm/binary/hosted distribution occurred when the release is source-only. A
-failed release check opens a patch work order. A version strictly below the
-latest tag is an explicit no-release outcome. The named order stays closed;
-other in-flight orders remain visible, and the checkout is between work orders
-only when none remain. An equal version is idempotent only when the
-existing validated annotated tag names the exact current commit; a mismatch
-refuses.
+`--dry-run` previews the prospective merged revision, manifest and cleanup
+without moving main, registering/removing a worktree or publishing. It fetches
+origin metadata and may build missing preview runtime in owned scratch, using
+existing dependencies. It runs no suite or installation. Host egress and
+approval remain host controls; the authorized session uses that permission flow.
 
-Both release-close forms perform guarded synchronization and cleanup before
-evaluating the release boundary: they may fast-forward local `main` and remove
-the known merged worktree and local branch. At a new eligible boundary they also
-reuse or execute the full gate by tree hash; lower or already-published targets return
-after their own validation. Under `--publish`, GitHub CLI availability and
-authentication are checked before tag-object creation. If GitHub Release
-creation fails after the validated tag was pushed, the command exits non-zero,
-leaves that immutable tag intact, and names the recoverable state. Rerunning the
-same close command validates the equal tag byte for byte, creates the missing
-Release, or refuses at the first differing body line; it never edits the
-Release. Equal-tag retries apply the same exact-tree evidence predicate before
-re-deriving compatibility; ignored built output is not evidence. Legacy tags
-retain their historical four-command manifest contract.
-Omitting `--publish` withholds tag and Release creation; it is preparation, not
-a read-only command.
-
-The first post-merge close always runs the reviewed helper from the still-
-present subject worktree while the shell's working directory is the main
-checkout. `worktree publish` and `resume release-close` print that exact
-absolute command. The loaded subject `release.mjs` delegates cleanup to its
-sibling subject `worktree.mjs`, so a policy change in the just-merged work order
-cannot be bypassed by stale pre-fast-forward main helpers. The helper validates
-and fast-forwards main before safely removing its own source worktree. If a
-recoverable failure happens after that removal—such as GitHub Release creation
-after a successful tag push—the updated main copy owns reruns through ordinary
-`npm run release -- close WO-NNN --publish`. WO-004 first needed the shape
-because pre-merge main had no release helper; the reviewed-helper rule applies
-to every later close as well.
-
-A deliberately deferred eligible release must retain a durable reason in the
-follow-on patch work order or another reviewed repository artifact; silence is
-not a release disposition.
-
-`npm run release -- notes vX.Y.Z` and `npm run release -- list` inspect local
-annotated release records without network access. Historical tags that predate
-the reviewed edition may receive a GitHub projection only through the separate
-operator-run `release publish-notes vX.Y.Z` command; agents test that path with
-a stub but never perform a backfill against origin.
+`worktree publish` validates the committed review row against the branch's code
+identity and adds its machine-readable record to the PR body. Existing DCO,
+publication, license and source-only controls remain. `npm run release -- notes
+vX.Y.Z` and `npm run release -- list` inspect local annotated records without
+network. Historical backfill remains separately authorized through
+`release publish-notes`; old tag manifests retain their original contracts.
 
 ## Documentation freshness and ownership
 
@@ -1128,7 +1031,7 @@ claim evidence or releases it does not have.
   `npm run adjacent -- list`; its chat and channel observations are actor-attested.
   Equipped duties run at entry, including the initial Intent to Act announcement.
   Ordinary `next`/`fix` projects installed equipment and queue state without
-  requiring a named-support prompt. Completion refuses queued/running items;
+  requiring a named-support prompt. Completion advises about queued/running items;
   complete them or record an explicit disposition, with a public FUP for deferrals.
 - **Release assignment is opt-out (operator default, 2026-09-04).** Prepare
   the classified next release and update its source claim unless the operator
@@ -1231,8 +1134,8 @@ claim evidence or releases it does not have.
   pre-2026-09-09 ledger-entry duty is discharged by the decisions file and its
   index row; the work-order index marks this substitution. WO-084 retains its
   separately authorized byte-preserving historical migration.
-- **Isolation.** The main checkout is the control plane. Model-authored code
-  changes happen on branches/worktrees; verify `pwd` and repo root before any
+- **Isolation.** The main checkout is the control plane. Product changes remain reviewed through branches/worktrees; a session may
+  plan, build, bootstrap and publish on main under its writer reservation; verify `pwd` and repo root before any
   git operation. One writer per worktree is enforced by the generated hook's
   reservation, keyed by the session and its harness process. A session refused
   for a foreign reservation runs `node scripts/harness.mjs writer --show` to
@@ -1241,8 +1144,8 @@ claim evidence or releases it does not have.
   a live one must finish, and an operator releases a stuck one from a terminal
   outside any governed session with `node scripts/harness.mjs writer --release`
   (`--force` only for a live owner; a release acts only on the holder it
-  judged). Never widen the metadata allowlist to lifecycle commands to get
-  past it.
+  judged). The branch name is not a writer predicate. A second live writer still refuses;
+  unclassified tools and command shapes delegate to host permissions.
 - **No new dependencies** without a one-paragraph note in the relevant decision
   record. The kernel stays framework-free, period.
 - **No config mutation of safety boundaries** (git config, hooks, permissions,
@@ -1312,103 +1215,45 @@ claim evidence or releases it does not have.
   only": answer conversationally and continue the active implementation;
   pausing requires an explicit request to pause or stop
   ([WO-126-D019](../evidence/WO-126/decisions.md#wo-126-d019)).
-- **Process budget (operator correction, 2026-09-09).** Every gate must be
-  cheaper than the failure it prevents, and the repository's own records
-  decide. Hard enforcement lives in the lifecycle commands, which check
-  evidence; a hook that fires at turn end advises in one line and never
-  blocks. A read obligation covers what the session wrote or regenerated,
-  minus generated artifacts and oversized files, which owe a check instead;
-  inherited bytes owe nothing. A full gate runs once per tree hash and its
-  evidence is reused by hash at every later step including the tag; the fast
-  gate is for iteration. No session writes a closeout script; if a helper
-  refuses, report the refusal. Any size, duration or count that grows from
-  one order to the next past its budget needs a dated operator acceptance,
-  or the fast gate fails. A finding that would otherwise become a
-  nomination gets a criterion in the order that found it. The standing
-  questions for every process, asked by the repository through the meter,
-  the order template, the refuter and the role skills, never by the
-  operator: how do we make this quicker; how do we make this take less
-  context; how do we make this consume fewer resources; how do we make a
-  six-step process four steps and perform as well or better. A new user
-  must never find the simplest action the most expensive in time, resources
-  or context. Data the repository generates or collects is kept when it
-  materially informs a later decision, whatever it costs to produce, and
-  cut only when nothing decides on it; cost alone never removes a record,
-  and annoyance is not the test (operator clarification, 2026-09-09). The
-  lens for the process itself is Meadows' system traps, five of which the
-  operator named as live here on 2026-09-09: rule beating, seeking the
-  wrong goal, shifting the burden to the intervenor, drift to low
-  performance, and policy resistance. Each has a signal in the repository's
-  own data and the meter reports them per order; a session that satisfies
-  a gate against its purpose, optimizes a proxy, leans on the operator,
-  sizes against the previous instance, or works around a rule is in one of
-  them. Save observed runtime and token usage with their source in evidence;
-  never repeat unmeasured-cost boilerplate in operator updates (operator correction, 2026-09-11;
-  [WO-127-D003](../evidence/WO-127/decisions.md#wo-127-d003)).
-  `npm run meta` reports available observations and previous-order deltas
-  for all six dispatch kinds; three consecutive worsening order deltas nominate
-  a trap for reopening. Historical gaps stay historical. The fast gate
-  checks `docs/control/budgets.json`; token, dollar and PR-body ceilings remain
-  unset under the operator's same-day direction to collect usage first.
-  `release prepare` inserts the meter table into PR.md, and status prints one
-  health line. The first WO-126 observation remains its immutable baseline.
-  The operator's later 2026-09-11 correction makes token collection mandatory:
-  both Codex and Claude record usable counters, so a new session must measure
-  them rather than report null or claim they are untracked. The explicit
-  adapter runs `node scripts/harness.mjs usage <session>` after session entry
-  and before handoff; Claude's Stop hook also reads its actual transcript.
-  The collector matches session identity and physical worktree, records numeric
-  totals with source, time and scope, and refuses absent or mismatched counters.
-  The four lifecycle completion actions recollect them before appending; a
-  missing measurement cannot produce a completed handoff. Planning, refutation
-  and release-close follow the same entry/handoff measurement duty through
-  their generated role instructions. Resolve a collection failure before
-  reporting completion. Do not substitute another session or invent zero.
-  **Operator correction, 2026-09-14: the final gate ends report authoring.**
-  Finish tracked reports, required measurements, release preparation and meter
-  generation before the final gate. State each report's observation cutoff;
-  cite the lifecycle completion event for the final checked tree. Run
-  `npm run harness -- evidence`, then on pass read the current outputs, record
-  the lifecycle result, refresh its index once and hand off. The final gate's
-  timings remain in ignored `docs/control/local/harness/checks.json` and its
-  archives; handoff counters remain in ignored
-  `docs/control/local/process/usage.jsonl`. Report those later observations in
-  the response. Do not edit a checked report, regenerate its meter, or rerun
-  release preparation merely to include the cost of checking that report.
-  Completion already recollects usage without changing the candidate tree.
-  Its event and index are expected post-check records, not a new obligation
-  to gate the gate's own completion. A substantive correction still requires
-  affected checks at its new bytes; no report, evidence or source path is
-  excluded from the exact-tree requirement. VER-002's three completion runs
-  after report edits were avoidable recurring work, not a required safety
-  property ([WO-131-D022](../evidence/WO-131/decisions.md#wo-131-d022)).
-  Codex cached input is already included in its input count; Claude cache reads
-  and cache writes are added to uncached input and output. Duplicate Claude
-  message IDs count once. These totals are usage, not context-window occupancy
-  or a billing estimate. Transcript text, raw session IDs and paths stay local.
-  An unreported price may remain absent; that never excuses absent token counts.
-  VER-002 F5's 2026-09-11 correction replaces the partial implementation window
-  with its source-reproduced completion window through append-only reconciliation.
-  The two earlier executor handoffs total 40,706,766 tokens; retained post-handoff
-  readings bring those dispatches to 41,353,517. A meter snapshot must identify
-  its observation cutoff; refreshing it from partial rows does not establish
-  completed-dispatch usage. See the [reconciliation](../evidence/WO-043/usage-reconciliation-002.json).
-  See [WO-043's breakout receipt](../evidence/WO-043/ideation-commands-and-usage.md).
-  The operator's later same-day ideation preserves
-  [all eight system traps](05-pattern-library.md#candidate--all-eight-system-traps-as-a-design-lens)
-  as a broader design lens, adding commons depletion, escalation and success to
-  the successful to the candidate analysis. The five existing meter rows remain
-  the implemented scope. Correlated observations invite diagnosis and a bounded
-  comparison; they do not alone establish a trap's causal loop or authorize a
-  new gate. Whole-file output review remains a candidate for that comparison.
-  The operator later authorized suite-input evidence reuse in WO-126; its
-  exact-tree aggregate retains the completion guard described below.
-  The meter also reports authorship-snapshot count, total and mean duration,
-  bytes hashed and subprocess count per order and dispatch. Claude's writing
-  tools take a before and after snapshot; explicit Codex observations are
-  batched and labeled. Snapshot means are not per-tool or whole-hook latency.
-  The original WO-126 Cost estimate omitted this recurring work; its execution
-  cost correction and VER-001 F6 preserve that omission and the measured cost.
+- **Process budget (WO-132, 2026-09-15).** Compare total work and waiting
+  against the failure a mechanism prevents. `npm run meta` prints each closed
+  order's Cost promise beside available observed gate/usage rows and their
+  cutoffs. Explicit measurable shortfalls are planning inputs; ambiguous or
+  missing observations are unknown. No cost, duration, context or token
+  observation refuses a command or completion. Entry/handoff usage is recorded
+  when available, never substituted from another session or invented as zero.
+  Counters and final timings stay in ignored local observations and the
+  response; reports may cite them without causing a product-gate rerun.
+  All eight system traps and Naive Interventionism remain decision lenses,
+  with the NoOp comparison in the existing per-order decisions. Historical
+  WO-126–WO-131 measurements remain immutable evidence of the retired system.
+
+  The complete wrapped Cost paragraph is the promise, through its next field,
+  paragraph or end of file. Only finite, nonnegative measured durations can
+  establish a gate-time outcome; an observed zero remains valid. Estimates
+  and limits in other sections are not inferred as Cost ceilings. The
+  [WO-132 repair decisions](../evidence/WO-132/decisions.md#wo-132-d004)
+  record the parser correction and its end-to-end regression.
+
+  During the live gate, the existing shell destination adapter recognizes
+  ordinary `ls`, `head` and `grep` reads, including literal pipelines.
+  Ordinary literal redirections and chained writes identify their destinations,
+  including the descriptor-style `>&file`, `1>&file` and `>>&file` forms that
+  VER-002 found admitted; a descriptor number or `-` after `>&` names no file.
+  Zsh's `>>&` is append redirection: its operand is a filename even when it
+  is numeric or `-` (VER-003 F1). Redirect operands must start with an ASCII
+  letter, digit, dot, underscore or slash, or be the literal dash filename.
+  Shell-special prefixes such as `!` (zsh's clobber override) and `=` remain
+  opaque and are refused during a live gate (VER-004 F1); the adapter does
+  not pass their ambiguous spelling to the path classifier.
+  `for` loops, substitutions and other opaque commands retain their conservative
+  gate refusal; use the host's read tools for those reads. This does not change
+  writer reservations or the host's permissions. See
+  [WO-132-D005](../evidence/WO-132/decisions.md#wo-132-d005),
+  [WO-132-D006](../evidence/WO-132/decisions.md#wo-132-d006),
+  [WO-132-D007](../evidence/WO-132/decisions.md#wo-132-d007) and
+  [WO-132-D008](../evidence/WO-132/decisions.md#wo-132-d008).
+
 - **Machinery stand-down (operator direction, 2026-09-15).** The lifecycle
   exists to carry the rules so the operator's attention does not; when it
   costs more attention than it saves, it is the defect. The operator's
@@ -1430,91 +1275,28 @@ claim evidence or releases it does not have.
   constructible counterexample is a known issue, never a hold. A complaint
   or direction the operator states in a capture is a decision and is
   recorded as one. A mechanism is added only with the removal it pays for,
-  reconciled at closeout against the observed rows. Until WO-132 merges, the
-  commands still enforce the prior contract and `operator override:` remains
-  the recovery route; the diagnosis of how four passes compounded the
+  reconciled at closeout against the observed rows. WO-132 implements this contract; `operator override:` remains available for
+  authorized recovery. The diagnosis of how four passes compounded the
   problem is [the planning document](../planning/machinery-stand-down-2026-09-15.md).
-- **Write once, run once (operator correction, 2026-09-10).** A report,
-  receipt or record is written after every measurement it cites is in hand
-  and every claim in it has been checked, and the evidence gate runs once, at
-  the final tree, after its last byte. No cosmetic edit follows the gate; an
-  edit the gate has already paid for is a defect of the session, not a reason
-  for another run. The VER-003 session paid two extra gate runs and a repeated
-  whole-file receipt read for one report because it wrote, measured, edited
-  and re-ran; the operator's correction sets that level. The mechanism half
-  belongs in the shared instructions and runner. The operator's later
-  correction rejects treating a recurring loop as one session's mistake:
-  use `npm run harness -- evidence` as the single completion command,
-  supplying full and diff evidence and retaining their actual identities.
-  Finish measurements, authored reports and explicit release or evidence
-  editions first; a turn end alone does not require a fast gate. The canonical
-  evidence command builds, refreshes the work-order index, decisions index,
-  follow-up register and generated harness, then fingerprints the prepared tree.
-  Those generators leave unchanged bytes and modification times alone. The
-  preparation owns no historical evidence, planning-cost observation, publication
-  source lock or release target. Their source review remains explicit. All
-  package tests and fixtures wait for successful preflights, so a preparation
-  refusal cannot start expensive tests in parallel. Direct test commands and
-  `harness check` remain validation-only ([WO-127-D007](../evidence/WO-127/decisions.md#wo-127-d007)).
-  **Gate input protection (operator clarification, 2026-09-11):** live gate
-  markers fence agent writes only where they could invalidate the run: the
-  candidate Git tree, including tracked and non-ignored reports, and the
-  installed dependencies and package build outputs included in suite snapshots.
-  Ignored scratch and local observation writes outside those inputs remain
-  eligible under existing authority. Generated pre-tool hooks refuse Write,
-  Edit and shell writes targeting protected inputs before dispatch, naming the
-  active command and run. Shell destinations that cannot be classified remain
-  conservatively refused; bounded ignored destinations and metadata reads stay
-  available. The package evidence command marks its build, preparation and
-  checks; direct runner and evidence calls mark their own lifetimes. Nested
-  runs own independent markers, normal completion releases them, and an exited
-  owner cannot block writes through a stale marker. PID birth observations
-  distinguish reuse where the process table is available.
-  **Stopping your own gate (operator correction, 2026-09-14, WO-044):** a
-  session ends a gate it started without any operator step, in Claude and
-  Codex alike. `node scripts/harness.mjs evidence --stop` (also
-  `npm run harness -- evidence --stop`, which then neither builds nor marks a
-  run) is admitted while the gate holds the tree; it writes one ignored stop
-  request per live run and waits a bounded time. Every gate process names its
-  own run and its ancestors' runs to its children, so each polls the request
-  at the next boundary it owns: the runner starts no further suite, ends its
-  running suites through their abort signal and throws; the evidence command
-  records no check. On POSIX each suite starts in its own process group;
-  cancellation sends that owned group SIGTERM, then SIGKILL after one second.
-  Descendants inheriting stdout/stderr cannot keep the gate pending: at the
-  escalation boundary the runner closes its pipe readers and finishes the
-  stopped result even if a descendant left the group or signalling failed.
-  No process-table scan or unrelated process is a signal target. The stop
-  lineage is stripped from every suite's environment and key,
-  so it never re-keys a suite. The
-  harness's own task-stop tools are classified as the session's process
-  control and admitted too, and the refusal a live gate gives names this route.
-  The existing final
-  input comparison remains necessary for unhooked edits and tool-boundary races
-  ([WO-125-D003](../evidence/WO-125/decisions.md#wo-125-d003)).
-  The VER-002 repair resolves physical path components, including dangling
-  symlink targets and parent traversal after directory symlinks. Installed-root
-  comparisons follow Git's case-insensitive setting, with native on-disk spelling
-  for existing components. Shell destinations and working directories retain
-  their traversal order. Link entries and physical targets are both checked, so
-  ignored links into ignored scratch remain eligible. Held-stage fixtures use
-  test-owned release and timeout cleanup instead of an expiring stage deadline
-  ([WO-125-D004](../evidence/WO-125/decisions.md#wo-125-d004)).
-  The VER-003 repair also protects existing non-directory destinations with
-  multiple hard links: their other names may alias gate inputs. This deliberately
-  includes multiply-linked scratch files; ordinary scratch remains eligible
-  ([WO-125-D005](../evidence/WO-125/decisions.md#wo-125-d005)).
-  After diagnosis, retry that command and reuse passing source checks whose
-  inputs are unchanged. A failed verification or review records its
-  reproduction and diff evidence without seeking a green application gate
-  ([WO-126-D014](../evidence/WO-126/decisions.md#wo-126-d014),
-  [WO-126-D018](../evidence/WO-126/decisions.md#wo-126-d018),
-  [WO-126-D022](../evidence/WO-126/decisions.md#wo-126-d022)).
-  Use `npm run harness -- evidence --fail` for that diff-only receipt. The
-  package command retains its build and projection preparation; the default
-  command and a passing lifecycle verdict still require the full gate. The
-  public-command regression covers the selector through the wrapper and parser
-  ([WO-044-D017](../evidence/WO-044/decisions.md#wo-044-d017)).
+- **Write once, run once (WO-132).** The reviewer stages intended new source
+  files and runs `npm test -- --review` once after the last source edit. The
+  runner records `npm test` by tracked, non-generated code identity, excluding
+  `docs/`, `.claude/`, `.agents/`, root Markdown and Git's `dotln-generated`
+  paths. The exact tested tree remains beside that key. New source bytes
+  require a new final product gate; report/control/index/release-text edits do
+  not. Executor and verifier run product tests when useful to their evidence.
+  Lifecycle transitions run only the inline whitespace check and record their
+  reports/attestations without gate, read or usage prerequisites.
+  Live gates still protect source, installed inputs and the success record
+  from concurrent writes. One registered writer owns the worktree. Other hook
+  judgments advise and delegate to host permissions. `node scripts/harness.mjs
+  evidence --stop` ends the session's own gate at its next boundary and records
+  no passing check. Children retain owned process-group cancellation, finite
+  deadlines and peer observations. `harness evidence` remains a convenience
+  for product and diff checks; `--fail` records only the diff check. It is not
+  a lifecycle prerequisite. Read authored outputs and validate generated
+  outputs using their existing commands, without a new receipt ritual.
+
 - **Build publication (operator decision, 2026-09-09).** Compile into staging
   with the existing Node toolchain, replace each complete output file atomically,
   and finish the build barrier before dependent application commands run.
@@ -1531,313 +1313,56 @@ claim evidence or releases it does not have.
   stdin read before hook evaluation. The repair retains fail-closed parsing,
   pinned-runtime validation and generated-process integration coverage
   ([WO-127-D006](../evidence/WO-127/decisions.md#wo-127-d006)).
-- **Gate execution and reuse (operator decision, 2026-09-09).** The runner
-  retains every suite owner and schedules 40 named release cases under the
-  shared cap of four jobs, after a prepared fixture dependency. A sealed
-  synthetic template supplies independent copies, with no shared writable
-  refs; the license scenario and dedicated license fixtures retain real npm
-  dry runs, while unrelated release cases use their explicit publication
-  refusal double. Planning fixtures and the current planning check remain
-  separate required tasks. Live progress names the running suite/case and
-  elapsed time, with bounded line count and length. Reviewed input scopes may
-  reuse executed successes across unrelated document edits. WO-131 declares all
-  reusable fixture suites, including the remaining shell suites; each other
-  task names its current-tree or live-check retention reason. Console fixture
-  tests and its real host collection check have separate tasks with unchanged
-  assertions. Each fresh narrowed execution
-  copies its declared candidate files and links the installed roots to one
-  verified read-only copy per gate in external scratch. Workspace manifests
-  are declaration-owned support for the installed links. Nonce-named replica
-  parents are unlistable; cleanup owns only those gate-created directories.
-  Node preserves replica-relative module paths, npm's cwd-derived local prefix
-  follows the replica, and each suite gets its own temporary root. Other
-  projected candidate paths or unsupported links refuse narrowing before
-  lookup. A harness session's injected Git configuration (`GIT_CONFIG_COUNT`,
-  `GIT_CONFIG_KEY_*`, `GIT_CONFIG_VALUE_*`, `GIT_CONFIG_PARAMETERS`) is
-  invocation metadata: it is absent from every suite's execution and key, so
-  it never refuses narrowing. A refused narrowing is neither silent nor
-  unkeyed: the task runs in the candidate tree under the whole-tree contract
-  (all candidate files, including documents outside the declaration), the fresh
-  explanation and the recorded task row name the refusal, and that key never
-  coincides with a replica key. Replica children carry
-  `GIT_CEILING_DIRECTORIES` at the unlistable parent, so a `git: none` replica
-  discovers no repository above itself
-  ([WO-130-D007](../evidence/WO-130/decisions.md#wo-130-d007)). A dispatched
-  replica failure fails the gate with the suite and its
-  first available missing-path diagnostic; it never silently retries in the
-  candidate tree. Declarations explicitly choose `git: none` or a deterministic
-  `replica-repo`; candidate history and local Git metadata are absent from the
-  latter. The installed inventory includes the manifest-pinned runtime roots
-  under `.runtime/harness` and protects those bytes during gates. Older retained
-  snapshots remain on disk for recovery; their differing history does not
-  invalidate current suites or inflate each gate copy. Absent or unreadable
-  runtime selection conservatively includes the complete runtime directory.
-  Setup duration, installed-copy bytes and each
-  replica execution accompany the existing task evidence. A script excluded
-  by a package declaration no longer invalidates that package's success.
-  The `format` task formats code only; Markdown, JSON and event logs keep the
-  bytes their authors and generators wrote
-  ([WO-130-D008](../evidence/WO-130/decisions.md#wo-130-d008)).
-  The gate probes effective kernel read denial once, distinguishing denied
-  reads from refused sandbox startup. When available it wraps every narrowed
-  execution and its descendants and records that protection in the sealed
-  source success. The denial is an addition, never a condition of reuse: a
-  host that refuses sandbox startup, which every sandboxed Claude or Codex role
-  session on the operator's host does, still executes the declared suite in
-  its replica, records the success under the same key and reuses it, and every
-  gate and suite row records whether the denial applied
-  ([WO-131-D019](../evidence/WO-131/decisions.md#wo-131-d019)). The accepted
-  residual is a suite that reads an undeclared candidate file by a literal
-  absolute path in a session without the denial; the real-host counterexample,
-  the unavailable-host reuse and the provenance checks are covered by
-  `scripts/test-suite-sandbox.mjs`, and the host observation outside the
-  nested sandbox must also pass. A replica's PATH is the ordered list of
-  existing physical directories from the session PATH, so a dangling per-shell
-  entry, a repeated spelling or a symlink spelling of one directory cannot fork
-  a key between sessions
-  ([WO-131-D020](../evidence/WO-131/decisions.md#wo-131-d020)). The historical
-  planning overrides remain unchanged; D009's caching condition is withdrawn.
-  WO-129 keys each suite by its declared candidate paths, declared Git state, projected
-  environment, toolchain and installed roots. Every inventoried suite declares
-  Git state: none by default; the index reads `HEAD` and `refs/tags/*`, and the
-  current planning checks read `HEAD`. `authority-evidence` reads
-  `refs/tags/v0.16.0` for its historical comparisons. Unknown suite names cannot
-  grant themselves reuse. Other declared source checks retain complete candidate-tree
-  coverage until narrower scopes are reviewed and made executable. Checkpoint refs, unrelated
-  branches and committing identical bytes leave suites without those Git inputs
-  reusable. Whole-tree configuration affecting Git reads remains keyed; unmodelled
-  hooks, filters and attribute/exclude adapters still force whole-tree execution.
-  Replica keys cover their declared bytes, types and listings, installed roots,
-  host configuration, projected environment, command and mechanism version.
-  Sealed version-4 successes include source execution protection and live once
-  per repository under `<git common dir>/dotln/suite-success`; older records are ignored and
-  never migrated. Matching sibling worktrees share successes. Checkout-local
-  executable search paths and npm's checkout-local `npm_config_local_prefix`
-  use relative identity; replica execution rebinds those local paths. External npm
-  prefixes and other projected environment differences still invalidate reuse.
-  Every narrowed suite now declares the environment it can observe. The same
-  filtered values feed execution and identity; `CLAUDE_PID`, `GIT_SSH_COMMAND`
-  and caller `TMPDIR` are absent, while runner-owned temporary paths replace
-  scratch locations. Changing a declared variable invalidates the success.
-  The real-npm sibling regression and tag invalidation correction are recorded
-  in [WO-129-D005](../evidence/WO-129/decisions.md#wo-129-d005).
-  Physical checkout, CPU count and OS release are execution observations. Each
-  fresh task reports changed
-  input classes against its newest prior success, with bounded source/document
-  paths, or no prior success. Forced/live execution is also identified. See
-  [WO-129-D003](../evidence/WO-129/decisions.md#wo-129-d003).
-  Build, fixture preparation and checks of live local
-  terms, installed hooks or the meter still execute; unknown callers have no
-  reuse grant. The original execution tree, time and duration remain visible.
-  `npm run test:full -- --fresh` and `npm test -- --fresh` measure cold execution
-  through the canonical entry points; ordinary invocations may compose
-  evidence and label their fresh/reused task counts. The final aggregate still
-  covers the exact current tree. Input hashing is measured filesystem work,
-  not context bytes. Gate child environments retain the first occurrence of
-  each exact `PATH` entry, removing repeated searches from nested npm without
-  changing precedence or dropping unique, relative, empty or not-yet-existing
-  entries. Compare the same invocation environment and check the harness
-  wrapper separately; a direct runner observation is not automatically an npm
-  timing observation. See [WO-126-D009](../evidence/WO-126/decisions.md#wo-126-d009)
-  and the [invocation correction](../evidence/WO-126/decisions.md#wo-126-d010).
-  WO-128 removes VER-002's exclusive scheduling of `harness-fixtures` and
-  `process-debt` after [five consecutive fresh full passes](../evidence/WO-128/shared-series-002.json)
-  on the operator's host, with all 78 tasks executed and zero reuse in each.
-  The [earlier failed series and signal-fixture repair](../evidence/WO-128/decisions.md#wo-128-d007)
-  remain recorded. Reopen the shared choice when a diagnosed failure invalidates
-  its load class or measured baseline; see [D008](../evidence/WO-128/decisions.md#wo-128-d008).
-  [VER-001 F2](../verifications/WO-128/VER-001.md#findings) measured the shared
-  choice at about 204 s more per fresh gate than exclusive scheduling on the
-  same source (462.3 s against 666.5 s). The operator’s WO-131 scope expansion
-  requires measured payoff before completion and reopens that decision:
-  `harness-fixtures` and `process-debt` again use the existing isolated class.
-  Every task and deadline remains; fresh and composed host timings decide the
-  result. See [WO-131-D014](../evidence/WO-131/decisions.md#wo-131-d014);
-  [WO-128-D010](../evidence/WO-128/decisions.md#wo-128-d010) remains historical.
-  WO-131 also removed repeated immutable Git reads inside the planning subject
-  reader. Each observation still resolves its requested revision, but committed
-  tree indexes and blob bytes are retained by repository and object identity in
-  bounded process-local LRU caches; one `git cat-file --batch` request reads up
-  to 32 missing blobs. Workspace subjects always read current files. The
-  planning fixture keeps all 27 cases and remains one of the same 79 tasks. Its
-  measured fixture work fell from 230.92 seconds to 77.81 seconds. After the
-  three-lane harness fixture completes, the planning fixture may occupy the one
-  lane left by the three-lane process-debt fixture; runner fixtures remain
-  isolated. A changed load declaration invalidates its prior success. See
-  [WO-131-D017](../evidence/WO-131/decisions.md#wo-131-d017) and the
-  [host measurements](../evidence/WO-131/README.md).
-  The same suite
-  inventory, file-concurrency limit and global cap remain. Each task receives
-  a declared shared cap of at most four slots or an isolated cap of one, with
-  a load factor of twice the slot count. The console's read-only command bound
-  is the larger of its existing 60-second floor and its measured 17.2-second
-  baseline multiplied by that factor. Other inventoried finite bounds remain
-  protected by the peer cap; semantic timeout fixtures retain their values.
-  Deadline hits record the site, elapsed duration, current peers and host load.
-  Missing observations and unestablished causes remain explicit. A host-load
-  observation is not a causal diagnosis and never triggers an automatic retry.
-  Task start/end, start peers and scheduler predecessors accompany the gate
-  row, supporting an offline critical-path trace. These are additive fields;
-  reused results retain their original execution provenance. The declared load
-  policy participates in reuse validity; transient diagnostic file identities
-  do not change the task policy. See the [deadline inventory and measurement
-  procedure](../evidence/WO-128/diagnosis.md) and
-  [WO-128-D004](../evidence/WO-128/decisions.md#wo-128-d004).
-  Gate children and input fingerprints now share a declared environment;
-  unknown variables and rotating proxy credentials are absent from both.
-  Selected names, never values, accompany the input observations. This removes
-  misses caused only by invocation metadata without hiding an input from the
-  fingerprint. Hook process timings are separate from authorship snapshots;
-  their journal rows add no subprocess or session-file read per hook. See
-  [WO-126-D012](../evidence/WO-126/decisions.md#wo-126-d012) and the
-  [repair measurements](../evidence/WO-126/repair-002.md).
-  Package suites start after the build without waiting for generated-file
-  preflights. Fixture suites retain those dependencies, and a failed preflight
-  still fails the aggregate. This preserves the fast gate's critical path
-  ([WO-126-D026](../evidence/WO-126/decisions.md#wo-126-d026)). Failed split cases
-  retain their own addressed diagnostic logs through aggregation, so their
-  names, execution metadata and output remain available without rerunning the
-  gate ([WO-126-D025](../evidence/WO-126/decisions.md#wo-126-d025)). The existing
-  hook timing row records each deny/block and, when supplied, a digest of the
-  tool-use identity scoped to session, event and tool. The meter counts distinct
-  invocations across hooks and repeated deliveries without retaining raw
-  identities or command text. Historical or identity-free rows remain separate
-  outcomes and may overcount commands; their missing correlation is not inferred
-  from timestamps. Advisory Stop messages do not increment the signal
-  ([WO-126-D024](../evidence/WO-126/decisions.md#wo-126-d024),
-  [WO-126-D028](../evidence/WO-126/decisions.md#wo-126-d028)).
-  **Measured 2026-09-12 (planning pass).** From the host's retained gate rows:
-  after every lifecycle transition the next full gate executed all 78 tasks
-  fresh, because the shared input key hashes every ref, `HEAD`, the checkout
-  path and the CPU count, so a checkpoint ref invalidates suites that never
-  read it; a document-only change still re-executes the whole-tree class of
-  suites (243–419 s) while an identical tree composes in 41–47 s; and twelve
-  fresh full gates failed on fixed wall-clock deadlines under load (`console`
-  six, `plan-refutation:current` two, `harness-fixtures` two,
-  `runner-fixtures` one) or on a tree changed during the run (two), each
-  followed by a passing rerun. WO-128 to WO-130 carry the repairs: deadlines
-  that survive load with D012's exclusivity re-measured, a suite key of
-  declared inputs shared across sibling worktrees with explained misses, and
-  execution of every narrowed suite inside a replica of its declared inputs,
-  so that an undeclared file cannot influence any run (WO-130 and WO-131;
-  validation by probing replicas was withdrawn at receipts 009 and 010 of
-  the same pass). Until they land, the identity rule above is unchanged. WO-127-D007 later
-  made every package test wait for the preflights again; the runner's
-  dependency table, not the D026 sentence above, is the authority.
+- **Gate execution and reuse (WO-132).** `npm test -- --list` prints each
+  product/lifecycle suite and the operator-visible behavior it protects.
+  Suites run fresh in the working tree, one task per suite except independent
+  release cases, which share a prepared synthetic template and run in multiple
+  lanes. Replica copies, declared-input keys, shared success cache, kernel-denial
+  probes and their machinery-only tests are removed. `npm run test:machinery`
+  runs the machinery suites on demand; the reviewer's `npm test -- --review`
+  includes them only when their own declared sources changed since the base.
+  Document-sensitive live checks remain in `npm run test:docs`.
+  The scheduler retains load-derived deadlines, peer observations, a four-lane
+  cap and bounded live progress. Harness fixtures and process-debt fixtures use
+  exclusive scheduling, restoring the faster measured WO-128 D010 choice
+  (462 seconds exclusive versus 666 shared). Future scheduling changes require
+  a same-source comparison. The acceptance target is three consecutive fresh
+  product gates below 360 seconds on the operator's host; their rows belong in
+  WO-132 evidence. No product test is deleted; product-test removal still goes
+  through the mutation corpus. The immutable WO-129–WO-131 records describe
+  the former implementation, not current reuse behavior.
+
 - **Return shape.** End with a compact result: what changed, evidence pointers,
   deviations from the work order, open questions. Terse; no narration theater,
   no apology theater.
 
 ## Model-specific notes
 
-**CLI compatibility (WO-129, operator correction 2026-09-13):** the latest
-observed baselines are minimum versions: Claude Code `2.1.270` and Codex CLI
-`0.154.0`. Numeric patch, minor and major upgrades are admitted without an
-upper bound or another allowlist edit. Older or unparseable versions refuse
-with the required minimum. These are deliberately maintained baselines, not
-floors silently raised by each invocation. The requested model (including
-Fable), restricted launch profile and result validation remain unchanged;
-actual CLI incompatibility fails the invocation without model fallback.
-See [WO-129-D002](../evidence/WO-129/decisions.md#wo-129-d002).
+**Version and effort observations (WO-132, 2026-09-15).** Harness,
+version, model, effort and source are required attestation fields and are
+recorded as supplied, including `unknown`. `Effort:` recommendations accept
+`any` or a level with or without `+`; below-recommended values and missing
+version/selector/readback observations warn without refusing. CLI transports
+attempt the requested model and effort and report actual invocation failures;
+version minima and discovery gaps no longer prevent launch.
 
-**Codex transport selection (WO-125, updated by WO-129):** the five
-[observed CLI 0.154.0 rows](../discovery/codex-effort-2026-09-11.json)
-accept `low`, `medium`, `high`, `xhigh` and `max` through
-`-c model_reasoning_effort="<level>"`. The worker and plan-refuter transport
-forwards the explicit request while ignoring user configuration. `unknown`
-adds no effort override and preserves the historical argument bytes. The adapter
-checks runtime membership in the five observed levels and the same numeric
-minimum version used by the transport; an omitted builder version is `unknown`.
-Unsupported effort values and explicit levels below `0.154.0` refuse before
-launch with the discovery record named. Historical `0.153.4` observations remain
-evidence of that older launch, not current transport admission.
-No probe returned an effort field: the requested level is a `host-launch`
-claim, with effective effort and model still `unknown`. This transport rule
-does not change the separately sourced completion-actor attestations below.
+`ultra` and `ultra code` normalize to `effort: xhigh`, `mode: subagents`, and
+the supplied `raw` spelling. Other labels remain as given. Codex launches in
+subagents mode do not disable multi-agent features. Accepted selectors are
+launch observations, not effective-session readback. The five existing Codex
+0.154.0 probes record low, medium, high, xhigh and max; discovery preserves
+historical observations and never acts as an admission list.
 
-WO-011's equipped feedback host absorbs the executable checks for decision
-lineage, evidence-backed judgments, semantic correction, application checks,
-attribution, writer isolation, suppression diffs, output reads, complete scope,
-and bounded cleanup at its declared boundaries. The
-[contract and evidence](02-domain-model.md#feedback-compiler-v1) identify those
-consumers and their limits. Ordinary `resume` sessions still follow this guide;
-the matched context measurement does not authorize removing rules from unrelated
-harness startup files or claim that all manual duties have been replaced.
+The operator default remains GPT-6 Astra/max for Codex unless changed, labeled
+operator-attested when no actual readback exists. Optional `--account-label`
+retains its public opaque-label grammar; no private account meaning is inferred.
+Reports carry exactly one normalized actor header matching completion flags.
+The control log preserves all earlier actor values; historical evidence is not
+rewritten to the new grammar. Values are single-line data and missing required
+fields remain a syntax error.
 
-- **Operator default (2026-09-04):** Codex steps use GPT-6 Astra at `max`
-  unless the operator specifies otherwise. This is an operator-attested
-  selection; record the actual exposed harness/version and do not call it
-  effective-session readback. Preserve the active work order's minimums and
-  explicitly handle a conflicting required actor instead of silently
-  substituting. Other harnesses and the Entropy Reducer's compiled Fable
-  assignment retain their own declarations.
-- A required model is a hard constraint under Principle 8, and declared effort
-  is a hard constraint under the active work order and WO-019 mechanism. If you
-  do not meet either, stop and say so; never silently proceed as a substitute. Every
-  newly activated work order carries both a `Model:` line and an `Effort:` line
-  declaring `executor`, `verifier`, and `reviewer` as `any` or a minimum on
-  `low < medium < high < xhigh < max`. `Model: any` means any capable model;
-  effort remains independently constrained. The leading metadata region
-  contains exactly one of each field, with the complete Effort field following
-  Model apart from blank lines; duplicate, body-buried, reordered, missing, or
-  malformed declarations refuse. `resume -- next` repeats both complete source
-  fields in the dispatch briefing.
-- The four completion events carry an `actor` attestation: harness and version,
-  model, effort, and epistemic source. Recognized ladder values remain exact; an
-  unrecognized label is stored as `effort: unknown` plus its verbatim `raw`
-  value. A recognized claim is accepted only when bounded discovery records
-  that value for a harness version listed as observed through a versioned
-  selector or readback; otherwise the actor must attest `unknown`. Each
-  harness's `versions` array is observation history in oldest-to-newest order,
-  with the newest entry last. Any listed observed version remains valid; append
-  a newly observed version rather than replacing an earlier one. Refusals name
-  the observed versions on record so an upgrade gap is visible before a report
-  is filed. `unknown` satisfies only a role declared `any`. A below-minimum
-  transition appends nothing and can proceed only after a dated operator
-  amendment to the work order—not an override flag. `harness-readback` is valid only where
-  `docs/discovery/environment.json` records an observed effective session
-  readback for that exact harness/version; a persisted setting or accepted
-  launch selector alone is not readback. `self-reported` deliberately records a claim rather than
-  surveilling the session to prove it: the declared-effort gate compares that
-  claim, and the source label states the evidence limit. This does not authorize
-  silent degradation; it prevents an unobserved value from masquerading as
-  observed fact. Echo the attested values in the session result, but the log is
-  the durable record and `current.md` projects the latest value and within-order
-  drift.
-- **Optional account label (WO-031):** all four completion commands accept
-  `--account-label <label>`. `DOTLN_ACCOUNT_LABEL` supplies the default for that
-  shell; an explicit flag wins even when the environment default is invalid.
-  A label must match `^[a-z][a-z0-9-]{0,15}$` exactly, with no control or line
-  separator characters. Empty or invalid values refuse before append. When
-  absent, the stored actor omits the field and projections show `not-applicable`;
-  no account is inferred. The label goes last in the normalized actor JSON,
-  including verification/final-review report headers when supplied. The private
-  meaning may be recorded one line per label in ignored
-  `docs/control/local/account-labels.md`; no script reads it. Use opaque labels
-  without identity or plan information. This public profile accepts that distinct
-  labels disclose distinct accounts; a stricter profile leaves the field unset.
-- A session label can describe more than reasoning effort. The documented
-  Claude Code `ultracode` note means dynamic workflows plus `xhigh` reasoning;
-  only the latter occupies the effort ladder. When that dated operator
-  attestation applies, the actor still supplies both `--effort xhigh` and
-  `--source operator-attested`. `resume` points an unrecognized `ultracode` claim to the
-  note but never converts it automatically, and no other unknown label inherits
-  the mapping.
-- Actor flag values are one-line data. Control characters and Unicode line
-  separators refuse rather than entering the Markdown projection. Use
-  `not-applicable` when a field is structurally absent, and `unknown` when a
-  value exists but cannot be known. The conventional unassisted-human tuple is
-  harness `human`, harness version `not-applicable`, model `human`, effort
-  `unknown`, and source `operator-attested`.
-- **Migration note (2026-09-02):** effort enforcement is forward-only from
-  WO-019. Historical work-order headers, completion events, and report prose are
-  not backfilled or invalidated. New activations carry
-  `effortDeclarationValidated: true`; a still-active pre-WO-019 event without it
-  can finish against a visibly synthesized `any` declaration if Effort is
-  absent, while WO-019 and every marked activation remain strict. In particular, WO-001 through WO-003 retain the
-  disclosed low-versus-documented-xhigh drift, and historical free-form labels
-  remain what their reports said rather than being rewritten into the new
-  ladder. See `docs/PLAYBOOK.md` §Who does what.
+
+
 - **Control-time migration (2026-09-04, WO-028):** every new transition
   records host UTC `recordedAt` at append; it is optional under schema version
   `1`, and old events are never rewritten. Timing cannot order events or grant
@@ -1856,9 +1381,9 @@ harness startup files or claim that all manual duties have been replaced.
   text or a fabricated price. The time field itself remains unchanged.
 - **Version-line attestation (WO-126):** `npm run discover -- harness` appends
   a bounded observation of the running CLI's major.minor line and newest patch,
-  plus whether Claude's effort readback channel exists. Any patch on an
-  observed line may retain its declared effort; an unobserved line records
-  unknown and names the line. Session entry warns once when the observed CLI
+  plus whether Claude's effort readback channel exists. WO-132 supersedes
+  its effort admission rule: all supplied labels are preserved, including
+  unknown versions and efforts. Session entry warns once when the observed CLI
   leaves the recorded line. WO-042's unknown attestation remains unchanged.
   Session detection prefers the explicit harness input, then the exposed
   running executable, then a matching ancestor executable from the host process

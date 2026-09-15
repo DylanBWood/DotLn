@@ -18,23 +18,28 @@ current subject, and relevant prior reports before appending the next report.
 The final reviewer reads the original work order and the complete ordered
 verification sequence so the code → verify → fix history remains visible.
 
-For work orders governed by the effort-attestation mechanism, the verifier
-states its harness, harness version, model, effort, and epistemic source in prose
-and includes exactly one single-line machine header using the normalized actor
-shape (including `raw` only when applicable):
+**Current attestation contract (WO-132, 2026-09-15).** The verifier records
+its actual harness, version, model, effort and epistemic source. These fields
+are required as observations; discovery gaps, version minimums, effort
+recommendations and absent readback do not refuse a completion. `unknown` is
+admitted and other values remain as supplied. A report includes exactly one
+single-line machine header matching the completion actor:
 
 ```markdown
 **Actor attestation:** {"harness":"claude-code","harnessVersion":"<version>","model":"<model>","effort":"xhigh","source":"self-reported"}
 ```
 
-The canonical serialization has no extra whitespace and orders keys as
-`harness`, `harnessVersion`, `model`, `effort`, optional `raw`, `source`, then
-the optional `accountLabel` that WO-031 added, which is present only when the
-completion supplied one. For example, an unmapped label is:
+Canonical field order follows the completion parser: `harness`, `harnessVersion`,
+`model`, `effort`, optional `mode` and `raw`, `source`, then optional `accountLabel`.
+`ultra` and `ultra code` normalize to `xhigh` with subagents while retaining the
+raw spelling:
 
 ```markdown
-**Actor attestation:** {"harness":"codex-cli","harnessVersion":"<version>","model":"<model>","effort":"unknown","raw":"ultracode","source":"self-reported"}
+**Actor attestation:** {"harness":"codex-cli","harnessVersion":"unknown","model":"unknown","effort":"xhigh","mode":"subagents","raw":"ultra code","source":"self-reported"}
 ```
+
+For the second example, pass `--effort 'ultra code'` so the completion parser
+records the normalized level, mode and original spelling together.
 
 The report necessarily exists before its `VerificationCompleted` event. The
 verifier therefore invokes `verification-result` with those same values;
@@ -46,6 +51,19 @@ event together; a quoted header must not begin at column one, because the
 completion command requires exactly one such line in the report it checks, so
 indent or blockquote it. Reports from before the 2026-09-02 forward-only migration
 legitimately have neither machine header nor control-log actor.
+
+**Evidence migration (WO-132, 2026-09-15).** WO-126 through WO-131 reports,
+receipts, timings and evidence editions remain immutable and retain the contract
+under which they were recorded. Current completion commands run `git diff --check`
+and append the legal event without requiring a full test gate, session authorship,
+output-read receipts or usage counters. Missing observations are advisory and
+usage remains `unknown` when unavailable. This does not convert unsupported
+acceptance claims into passes: the verifier still runs the evidence needed to
+judge the work order. The reviewer runs the product gate once with
+`npm test -- --review`; its committed success row, keyed by code identity, is the
+PR and release evidence. Release close runs no suite. A report or control write
+after the run does not invalidate code identity. Historical whole-tree and
+replica/cache requirements are not retroactively imposed or erased.
 
 Reports may contain bounded repair checklists, but they do not expand work-order
 scope. New authority comes only from the operator or an amended/new work order.

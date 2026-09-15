@@ -15,6 +15,7 @@ import {
   hashParts,
   PLAN_LEDGER,
   planningPasses,
+  planCostDeclaration,
   sha256,
 } from "./plan-subject.mjs";
 import { checkLocalTerms } from "./terms.mjs";
@@ -99,7 +100,7 @@ export const renderPlanReceipt = (receipt) =>
       : `Dispatched: ${receipt.episode.dispatchedAt}. Completed: ${receipt.episode.completedAt}. Local-terms list: **${receipt.localTerms.status}**.`,
     "",
     receipt.episode.kind === "direct-session"
-      ? `Judgment basis: canonical subject and plan-refutation-v1 protocol. Independence is session-attested; context isolation was not enforced and model tools were available. Session statement: ${receipt.episode.statement}`
+      ? `Judgment basis: canonical subject and ${receipt.subject.goalReview ? "plan-goal-review-v1" : "plan-refutation-v1"} protocol. Independence is session-attested; context isolation was not enforced and model tools were available. Session statement: ${receipt.episode.statement}`
       : "The subject was compiled from committed vision sections, the roles table, capability rows, and order title/objective/criteria/non-goals. Planner narrative, ledger, earlier verdicts, and model tools were excluded. The host created an empty scratch working directory for this one-shot episode.",
     "",
     receipt.subject.orders.some(({ workOrderId }) => workOrderId === "WO-041")
@@ -130,7 +131,9 @@ export const renderPlanReceipt = (receipt) =>
     JSON.stringify(receipt.dispositions, null, 2),
     "```",
     "",
-    "Accepted dispositions name changed criteria; they do not discharge holds. Operator overrides exist only in the append-only planning control log, with actor, date, and an ignored capture's SHA-256. No text in this receipt grants an override. This receipt is immutable; a later attempt creates a new pair of files.",
+    receipt.subject.goalReview
+      ? "Only evidence-backed misalignment holds. Criterion-text-bound dispositions in the planning control log settle findings without another judgment; known issues name reopening observations. This receipt and all historical receipts remain immutable."
+      : "Accepted dispositions name changed criteria; they do not discharge holds. Operator overrides exist only in the append-only planning control log, with actor, date, and an ignored capture's SHA-256. No text in this receipt grants an override. This receipt is immutable; a later attempt creates a new pair of files.",
     "",
     `Receipt hash: \`${receipt.receiptHash}\`.`,
     "",
@@ -177,7 +180,12 @@ export async function validateReceipt(root, receipt) {
     "receipt digest mismatch",
   );
   check(
-    same(receipt.subject, buildPlanSubject(root, receipt.subject.revision)),
+    same(
+      receipt.subject,
+      buildPlanSubject(root, receipt.subject.revision, {
+        goalReview: Boolean(receipt.subject.goalReview),
+      }),
+    ),
     "receipt subject does not match committed sources",
   );
   const { validatePlanResult } = await protocol();
@@ -287,13 +295,15 @@ export async function validateReceipt(root, receipt) {
         "completedAt",
         "semanticHash",
         "commandReceipt",
+        ...(e.mode ? ["mode"] : []),
+        ...(e.raw ? ["raw"] : []),
       ]) &&
         ["fake", "claude-cli-print", "codex-cli-exec"].includes(e.transport) &&
         text(e.harnessVersion) &&
         /^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,99}$/u.test(e.model) &&
-        ["low", "medium", "high", "xhigh", "max", "unknown"].includes(
-          e.effort,
-        ) &&
+        text(e.effort) &&
+        (!e.mode || e.mode === "subagents") &&
+        (!e.raw || text(e.raw)) &&
         e.selectionSource === "host-launch" &&
         e.effectiveModel === "unknown" &&
         e.effectiveEffort === "unknown" &&
@@ -350,8 +360,120 @@ const criterion = (subject, hold) =>
     ?.criteria.find(({ id }) => id === hold.criterionId)?.text;
 const meaningful = (value) =>
   value?.normalize("NFKC").replace(/\s+/gu, " ").trim();
-const sequenceKey = (receipt) =>
-  receipt.subject.orders.map(({ workOrderId }) => workOrderId).join(",");
+export const criterionHash = (value) => sha256(meaningful(value) ?? "");
+export const isGoalReview = (receipt) =>
+  receipt.result.schemaVersion === "plan-goal-review-v1";
+
+/** A goal hold may be repaired in its Cost field alongside its criterion. */
+const repairedCostBinding = (root, receipt, hold) => {
+  if (!receipt.subject.goalReview) return {};
+  const path = receipt.subject.orders.find(
+    (row) => row.workOrderId === hold.workOrderId,
+  ).path;
+  const before = planCostDeclaration(
+    committedReader(root, receipt.subject.revision).read(path),
+  );
+  const after = planCostDeclaration(read(root, path));
+  return before === after
+    ? {}
+    : { sourceCostHash: sha256(before), costHash: sha256(after) };
+};
+
+/** Both historical dispositions and new control events bind accepted text. */
+export function criterionDispositions(receipts, events) {
+  const bindings = events.flatMap((event) => {
+    if (event.schemaVersion === 2) return [event];
+    const receipt = receipts.find(
+      (row) =>
+        row.receiptId === event.receiptId &&
+        row.receiptHash === event.receiptHash,
+    );
+    const hold = receipt?.holds.find((row) => row.id === event.holdId);
+    return hold
+      ? [
+          {
+            ...event,
+            workOrderId: hold.workOrderId,
+            criterionId: hold.criterionId,
+            sourceCriterionHash: criterionHash(
+              criterion(receipt.subject, hold),
+            ),
+            criterionHash: criterionHash(criterion(receipt.subject, hold)),
+          },
+        ]
+      : [];
+  });
+  for (const receipt of receipts)
+    for (const disposition of receipt.dispositions) {
+      const source = receipts.find(
+        (row) => row.receiptId === disposition.receiptId,
+      );
+      const hold = source?.holds.find((row) => row.id === disposition.holdId);
+      if (hold)
+        bindings.push({
+          ...disposition,
+          recordedAt: receipt.episode.completedAt,
+          sourceCriterionHash: criterionHash(criterion(source.subject, hold)),
+          criterionHash: criterionHash(criterion(receipt.subject, hold)),
+        });
+    }
+  return bindings;
+}
+const isDisposed = (hold, subject, bindings) =>
+  bindings.some(
+    (binding) =>
+      binding.workOrderId === hold.workOrderId &&
+      binding.criterionId === hold.criterionId &&
+      binding.criterionHash === criterionHash(criterion(subject, hold)),
+  );
+
+export function applyPlanDispositions(result, subject, receipts, events) {
+  if (result.schemaVersion !== "plan-goal-review-v1") return result;
+  const bindings = criterionDispositions(receipts, events);
+  return {
+    ...result,
+    orders: result.orders.map((order) => {
+      const findings = order.findings.map((finding) =>
+        isDisposed(
+          { ...finding, workOrderId: order.workOrderId },
+          subject,
+          bindings,
+        )
+          ? {
+              ...finding,
+              kind: "known-issue",
+              evidence: null,
+              reopenWhen:
+                finding.reopenWhen ??
+                "A new observed failure warrants reopening the accepted criterion text at a later planning pass.",
+            }
+          : finding,
+      );
+      return {
+        ...order,
+        findings,
+        verdict:
+          order.verdict === "misaligned" &&
+          findings.some((finding) => finding.kind !== "known-issue")
+            ? "misaligned"
+            : findings.length
+              ? "aligned-with-findings"
+              : "aligned",
+      };
+    }),
+  };
+}
+
+export function requireChangedPlanEvidence(pass, subject, history) {
+  const prior = [...history]
+    .reverse()
+    .find((row) => row.pass.id === pass.id && isGoalReview(row));
+  check(
+    !prior ||
+      prior.subject.goalReview.evidenceHash !== subject.goalReview.evidenceHash,
+    "one judgment per pass; dispositions settle repairs, and another judgment requires changed observed evidence",
+  );
+}
 
 export function admitReceipt(receipt, history, overrides = []) {
   for (const carried of receipt.episode.review?.carried ?? []) {
@@ -386,9 +508,15 @@ export function admitReceipt(receipt, history, overrides = []) {
           receipt.result.orders.find(
             (row) => row.workOrderId === carried.workOrderId,
           ),
-          prior.result.orders.find(
-            (row) => row.workOrderId === carried.workOrderId,
-          ),
+          (isGoalReview(receipt)
+            ? applyPlanDispositions(
+                prior.result,
+                receipt.subject,
+                history,
+                overrides,
+              )
+            : prior.result
+          ).orders.find((row) => row.workOrderId === carried.workOrderId),
         ),
       "carried verdict must be the latest unchanged order judgment",
     );
@@ -406,23 +534,37 @@ export function admitReceipt(receipt, history, overrides = []) {
       : item.pass.id === receipt.pass.id,
   );
   const samePass = prior.filter((item) => item.pass.id === receipt.pass.id);
-  let held = 0;
-  for (const item of [...samePass].reverse()) {
-    if (
-      item.result.planVerdict !== "hold" ||
-      sequenceKey(item) !== sequenceKey(samePass.at(-1))
-    )
-      break;
-    held++;
-  }
-  check(
-    held < 3,
-    "third consecutive hold stops this planning pass; operator override or next pass required",
-  );
   check(
     !samePass.length || samePass.at(-1).subject.hash !== receipt.subject.hash,
     "same subject cannot be re-rolled",
   );
+  if (isGoalReview(receipt)) {
+    requireChangedPlanEvidence(receipt.pass, receipt.subject, prior);
+    const bindings = criterionDispositions(history, overrides).filter(
+      (row) => row.recordedAt <= receipt.episode.completedAt,
+    );
+    check(
+      !receipt.holds.some((hold) =>
+        isDisposed(hold, receipt.subject, bindings),
+      ),
+      "a disposition already binds this criterion text; preserve it as a known issue instead of re-raising the hold",
+    );
+    for (const disposition of receipt.dispositions)
+      check(
+        history.some(
+          (old) =>
+            old.receiptId === disposition.receiptId &&
+            old.holds.some(
+              (hold) =>
+                hold.id === disposition.holdId &&
+                hold.workOrderId === disposition.workOrderId &&
+                hold.criterionId === disposition.criterionId,
+            ),
+        ),
+        "disposition names no prior hold",
+      );
+    return;
+  }
   const used = new Set();
   const overridden = (old, hold) =>
     overrides.some(
@@ -564,11 +706,16 @@ export async function writePlanReceipt(
       "receipt slug must be a public lowercase label",
     );
     if (episode.kind === "direct-session" && pass.kind === "planning") {
-      const current = buildPlanSubject(root);
+      const current = buildPlanSubject(root, "HEAD", {
+        goalReview: Boolean(subject.goalReview),
+      });
       check(
         subject.hash === current.hash &&
           current.hash ===
-            buildPlanSubject(root, "HEAD", { workspace: true }).hash,
+            buildPlanSubject(root, "HEAD", {
+              workspace: true,
+              goalReview: Boolean(subject.goalReview),
+            }).hash,
         "direct-session planning receipt requires the current committed and workspace subject",
       );
     }
@@ -577,7 +724,12 @@ export async function writePlanReceipt(
     const receiptId = `${episode.completedAt.slice(0, 10)}-${slug}-${String(ordinal).padStart(3, "0")}`;
     const { result: rawResult, ...provenance } = episode;
     const { validatePlanResult } = await protocol();
-    const result = validatePlanResult(rawResult, subject);
+    const result = validatePlanResult(
+      applyPlanDispositions(rawResult, subject, history, readOverrides(root)),
+      subject,
+    );
+    if (provenance.kind === "direct-session" && subject.goalReview)
+      provenance.resultHash = sha256(`${JSON.stringify(result, null, 2)}\n`);
     const localTerms = checkLocalTerms(root, [
       { name: "validated-result", text: JSON.stringify(result) },
       {
@@ -678,6 +830,52 @@ export function readOverrides(root) {
     .filter(Boolean)
     .map((line) => {
       const event = json(line, "planning control log");
+      if (event.schemaVersion === 2) {
+        const override = event.type === "PlanHoldOverridden";
+        check(
+          exact(event, [
+            "schemaVersion",
+            "type",
+            "recordedAt",
+            "receiptId",
+            "receiptHash",
+            "holdId",
+            "reason",
+            "workOrderId",
+            "criterionId",
+            "sourceCriterionHash",
+            "criterionHash",
+            ...("sourceCostHash" in event || "costHash" in event
+              ? ["sourceCostHash", "costHash"]
+              : []),
+            ...(override ? ["actor", "captureHash"] : []),
+          ]) &&
+            ["PlanHoldDisposed", "PlanHoldOverridden"].includes(event.type) &&
+            timestamp(event.recordedAt) &&
+            validReceiptId(event.receiptId) &&
+            validDigest(event.receiptHash) &&
+            /^hold-[0-9a-f]{24}$/u.test(event.holdId) &&
+            text(event.reason) &&
+            /^WO-\d{3}$/u.test(event.workOrderId) &&
+            /^criterion:\d+$/u.test(event.criterionId) &&
+            validDigest(event.sourceCriterionHash) &&
+            validDigest(event.criterionHash) &&
+            (!("sourceCostHash" in event || "costHash" in event) ||
+              (validDigest(event.sourceCostHash) &&
+                validDigest(event.costHash))),
+          "invalid criterion-bound disposition event",
+        );
+        if (override)
+          check(
+            validDigest(event.captureHash) &&
+              event.actor &&
+              ["harness", "harnessVersion", "model", "effort", "source"].every(
+                (key) => text(event.actor[key]),
+              ),
+            "invalid override provenance",
+          );
+        return event;
+      }
       check(
         exact(event, [
           "schemaVersion",
@@ -711,7 +909,13 @@ export async function overridePlanHold(
     receiptId,
     holdId,
     reason,
-    actor,
+    actor = {
+      harness: "unknown",
+      harnessVersion: "unknown",
+      model: "unknown",
+      effort: "unknown",
+      source: "unknown",
+    },
     capture,
     captureHash,
     now = () => new Date().toISOString(),
@@ -741,7 +945,13 @@ export async function overridePlanHold(
         !runGit(root, ["ls-files", "--", capture]),
       "operator capture must remain untracked",
     );
-    actorValid(actor);
+    check(
+      actor &&
+        ["harness", "harnessVersion", "model", "effort", "source"].every(
+          (key) => text(actor[key]),
+        ),
+      "override actor fields must be present",
+    );
     check(text(reason), "override reason is required");
     const receipts = await readReceipts(root);
     const receipt = receipts.find((item) => item.receiptId === receiptId);
@@ -762,7 +972,7 @@ export async function overridePlanHold(
       "override timestamp precedes its receipt",
     );
     const event = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       type: "PlanHoldOverridden",
       recordedAt,
       receiptId,
@@ -771,9 +981,82 @@ export async function overridePlanHold(
       reason,
       actor,
       captureHash,
+      ...repairedCostBinding(
+        root,
+        receipt,
+        receipt.holds.find((row) => row.id === holdId),
+      ),
+      workOrderId: receipt.holds.find((row) => row.id === holdId).workOrderId,
+      criterionId: receipt.holds.find((row) => row.id === holdId).criterionId,
+      sourceCriterionHash: criterionHash(
+        criterion(
+          receipt.subject,
+          receipt.holds.find((row) => row.id === holdId),
+        ),
+      ),
+      criterionHash: criterionHash(
+        criterion(
+          buildPlanSubject(root, "HEAD", {
+            workspace: true,
+            goalReview: Boolean(receipt.subject.goalReview),
+          }),
+          receipt.holds.find((row) => row.id === holdId),
+        ),
+      ),
     };
     checkLocalTerms(root, [
       { name: "override-event", text: JSON.stringify(event) },
+    ]);
+    ensureDirectory(root, "docs/control");
+    appendFileSync(join(root, OVERRIDES), `${JSON.stringify(event)}\n`, {
+      mode: 0o644,
+    });
+    return event;
+  });
+}
+
+/** Record the repair once; no worker or replacement judgment is needed. */
+export async function disposePlanHold(
+  root,
+  { receiptId, holdId, reason, now = () => new Date().toISOString() },
+) {
+  return locked(root, async () => {
+    const receipts = await readReceipts(root);
+    const receipt = receipts.find((row) => row.receiptId === receiptId);
+    const hold = receipt?.holds.find((row) => row.id === holdId);
+    check(
+      hold && text(reason),
+      "disposition requires a recorded hold and reason",
+    );
+    const current = buildPlanSubject(root, "HEAD", {
+      workspace: true,
+      goalReview: Boolean(receipt.subject.goalReview),
+    });
+    check(
+      criterion(current, hold) !== undefined,
+      "disposed criterion must remain in the current subject",
+    );
+    const event = {
+      schemaVersion: 2,
+      type: "PlanHoldDisposed",
+      recordedAt: now(),
+      receiptId,
+      receiptHash: receipt.receiptHash,
+      holdId,
+      reason,
+      workOrderId: hold.workOrderId,
+      criterionId: hold.criterionId,
+      sourceCriterionHash: criterionHash(criterion(receipt.subject, hold)),
+      criterionHash: criterionHash(criterion(current, hold)),
+      ...repairedCostBinding(root, receipt, hold),
+    };
+    check(
+      timestamp(event.recordedAt) &&
+        event.recordedAt >= receipt.episode.completedAt,
+      "disposition timestamp precedes its receipt",
+    );
+    checkLocalTerms(root, [
+      { name: "disposition-event", text: JSON.stringify(event) },
     ]);
     ensureDirectory(root, "docs/control");
     appendFileSync(join(root, OVERRIDES), `${JSON.stringify(event)}\n`, {
@@ -788,7 +1071,7 @@ export function checkPassReceipt(
   subject,
   receipts,
   overrides,
-  { requireLive = true } = {},
+  { requireLive = true, currentSubject = subject } = {},
 ) {
   const latest = receipts
     .filter(
@@ -798,7 +1081,8 @@ export function checkPassReceipt(
     .sort((a, b) => a.ordinal - b.ordinal)
     .at(-1);
   check(
-    latest && latest.subject.hash === subject.hash,
+    latest &&
+      (latest.subject.hash === subject.hash || latest.subject.goalReview),
     `planning pass ${pass.id} needs a receipt matching the current subject`,
   );
   check(
@@ -807,19 +1091,10 @@ export function checkPassReceipt(
       ["claude-cli-print", "codex-cli-exec"].includes(latest.episode.transport),
     "planning gate requires an actual CLI or direct-session review",
   );
+  const bindings = criterionDispositions(receipts, overrides);
   for (const hold of latest.holds)
     check(
-      overrides.some(
-        (event) =>
-          event.type === "PlanHoldOverridden" &&
-          event.receiptId === latest.receiptId &&
-          event.receiptHash === latest.receiptHash &&
-          event.holdId === hold.id &&
-          event.actor &&
-          validDigest(event.captureHash) &&
-          timestamp(event.recordedAt) &&
-          event.recordedAt >= latest.episode.completedAt,
-      ),
+      isDisposed(hold, currentSubject, bindings),
       `unanswered hold ${latest.receiptId}:${hold.id}`,
     );
   return latest;
@@ -835,7 +1110,30 @@ export async function checkPlanGate(root) {
         (receipt) =>
           receipt.receiptId === event.receiptId &&
           receipt.receiptHash === event.receiptHash &&
-          receipt.holds.some(({ id }) => id === event.holdId),
+          receipt.holds.some(
+            (hold) =>
+              hold.id === event.holdId &&
+              (event.schemaVersion !== 2 ||
+                (hold.workOrderId === event.workOrderId &&
+                  hold.criterionId === event.criterionId &&
+                  criterionHash(criterion(receipt.subject, hold)) ===
+                    event.sourceCriterionHash &&
+                  (!event.sourceCostHash ||
+                    (receipt.subject.goalReview &&
+                      event.sourceCostHash ===
+                        sha256(
+                          planCostDeclaration(
+                            committedReader(
+                              root,
+                              receipt.subject.revision,
+                            ).read(
+                              receipt.subject.orders.find(
+                                (row) => row.workOrderId === hold.workOrderId,
+                              ).path,
+                            ),
+                          ),
+                        ))))),
+          ),
       ),
       "override names missing receipt or hold",
     );
@@ -876,8 +1174,16 @@ export async function checkPlanGate(root) {
   );
   let continuation = null;
   if (passes.length) {
-    const subject = buildPlanSubject(root);
-    const observed = buildPlanSubject(root, "HEAD", { workspace: true });
+    const currentReceipt = [...receipts]
+      .reverse()
+      .find((receipt) => receipt.pass.kind === "planning");
+    const subject = buildPlanSubject(root, "HEAD", {
+      goalReview: Boolean(currentReceipt?.subject.goalReview),
+    });
+    const observed = buildPlanSubject(root, "HEAD", {
+      workspace: true,
+      goalReview: Boolean(currentReceipt?.subject.goalReview),
+    });
     for (const pass of passes)
       check(
         receipts.some(
@@ -896,15 +1202,20 @@ export async function checkPlanGate(root) {
       passes.some((pass) => pass.id === latest?.pass.id),
       "current horizon receipt does not name an enforced planning pass",
     );
-    checkPassReceipt(latest.pass, latest.subject, receipts, overrides);
+    checkPassReceipt(latest.pass, latest.subject, receipts, overrides, {
+      currentSubject: observed,
+    });
     continuation = {
       receiptId: latest.receiptId,
       judgedSubject: latest.subject.hash,
       committedSubject: subject.hash,
       workspaceSubject: observed.hash,
-      committedUpdates: checkPlanContinuation(root, latest.subject, subject),
+      committedUpdates: checkPlanContinuation(root, latest.subject, subject, {
+        dispositions: criterionDispositions(receipts, overrides),
+      }),
       workspaceUpdates: checkPlanContinuation(root, latest.subject, observed, {
         workspace: true,
+        dispositions: criterionDispositions(receipts, overrides),
       }),
     };
   }

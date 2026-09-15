@@ -32,7 +32,7 @@ const equipped = personalFeedbackUnits.filter(
   (unit) => unit.unitId !== process.env.DOTLN_FEEDBACK_ABLATE,
 );
 for (const unit of personalFeedbackUnits.filter((unit) => unit.version === 2))
-  test(`WO-126 ${unit.unitId} version 2`, () => {
+  test(unit.regressionFixtures[0]!, () => {
     const program = compileFeedbackUnits(equipped);
     if (unit.mechanism.kind === "prose") {
       for (const profile of contributorProfiles) {
@@ -59,6 +59,16 @@ for (const unit of personalFeedbackUnits.filter((unit) => unit.version === 2))
       assert.equal(unit.requiredEvidence.length, 0);
     } else {
       const requests: Record<string, FeedbackRequest> = {
+        "writer-isolation": {
+          kind: "writer-isolation",
+          actorId: "writer-a",
+          worktree: "/fixture",
+          cwd: "/fixture",
+          gitRoot: "/fixture",
+          branch: "main",
+          writable: true,
+          writers: [{ actorId: "writer-b", worktree: "/fixture" }],
+        },
         attribution: {
           kind: "attribution",
           message: "Codex-Session: https://example.invalid/session/fixture",
@@ -122,4 +132,27 @@ test("WO-126 retains v1 empty-output and all-attempt evidence semantics", () => 
   };
   assert.equal(evaluateFeedback(legacy, attempts).allowed, false);
   assert.equal(evaluateFeedback(current, attempts).violations.length, 0);
+});
+
+test("WO-132 writer v2 admits main and preserves v1 historical replay", () => {
+  const request: FeedbackRequest = {
+    kind: "writer-isolation",
+    actorId: "writer-a",
+    worktree: "/fixture",
+    cwd: "/fixture",
+    gitRoot: "/fixture",
+    branch: "main",
+    writable: true,
+    writers: [{ actorId: "writer-a", worktree: "/fixture" }],
+  };
+  assert.equal(
+    evaluateFeedback(compileFeedbackUnits(retainedFeedbackUnitsV1), request)
+      .allowed,
+    false,
+  );
+  assert.equal(
+    evaluateFeedback(compileFeedbackUnits(personalFeedbackUnits), request)
+      .allowed,
+    true,
+  );
 });
