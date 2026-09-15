@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:779d65cf922fb894dbc4495d472803a98d7d9daf41a4ae097347625864a5f90f`
+`sha256:aee249ca292b1d9318ac904830b10849c712451ecb517578f39981603f521e6d`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -48,6 +48,7 @@ route through the [base outline](base-outline.md); mechanics stay one link away.
 5. **A workstream remembers even when a session ends**
    - durable objectives, fresh task-scoped sessions and continuation; staged
      fixture-inspection workers with visible status and interruption recovery;
+     malformed saved state stops recovery and stays available for inspection;
      proposed independent contribution tracks
    - sources:
      [Actors and episodes](../product/02-domain-model.md#actors-and-episodes-the-edge),

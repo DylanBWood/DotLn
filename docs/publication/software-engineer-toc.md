@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:0c0ae6b3bd677188fd89a617c079b22ce59d99aa53e54359485e06727dde28ce`
+`sha256:5a8a34efa5b7529d0e8bc8edd6ad83b98b3c2086e4ff3867ba3ef93219aa11a2`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -69,7 +69,10 @@ implementation-deep, lossy projection of the same
 
 9. **Disposable sessions, continuations, and cadence races**
    - host heartbeat/lease fencing, result admission and pending-command
-     recovery, idempotent inspection and repair continuation, claim-typed acceptance/staleness matrices, read-only status and NoOp traces; worker claims remain separate from host liveness
+     recovery, positive decoding before lock reclaim or dispatch, byte-preserving
+     malformed-state refusal, idempotent inspection and repair continuation,
+     claim-typed acceptance/staleness matrices, read-only status and NoOp traces;
+     worker claims remain separate from host liveness
    - sources:
      [Session lifecycle and resilience](../product/03-architecture.md#session-lifecycle--resilience),
      [Operator-presence policy](../product/03-architecture.md#operator-presence-policy)

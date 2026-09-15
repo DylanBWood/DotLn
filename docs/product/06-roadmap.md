@@ -20,6 +20,11 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-048 activation completion (2026-09-15):** application `v0.20.1` and
+skeleton `0.17.1` stage positive decoding before worker/verification recovery
+effects. Kernel/compiler versions, persisted contracts and hash rules remain
+unchanged; malformed stores preserve their bytes for inspection.
+
 **WO-067 activation completion (2026-09-15):** application `v0.19.0` is the
 next minor above the observed local annotated `v0.18.0`. The activation had
 retained its version placeholder; this completes its declared minor assignment.
