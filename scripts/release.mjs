@@ -38,7 +38,7 @@ import {
   runGitPathList,
 } from "./lib/git.mjs";
 import {
-  classifyIgnoredMaterial,
+  describeIgnoredMaterial,
   parseJson,
   readJsonFile,
   workOrderAuthorityPath,
@@ -157,12 +157,29 @@ const ensureNoIgnoredInfluence = (path) => {
     "--ignored",
     "--exclude-standard",
   ]).filter(
-    (candidate) => !classifyIgnoredMaterial(candidate).releaseEvidenceAllowed,
+    (candidate) =>
+      !describeIgnoredMaterial(path, candidate).releaseEvidenceAllowed,
   );
   if (ignored.length > 0)
     throw new Error(
-      `main checkout contains ignored material that can contaminate release evidence: ${ignored[0]}`,
+      `main checkout contains ignored material that can contaminate release evidence: ${ignored.join(", ")}`,
     );
+};
+// Release close fetches, lists tags, pushes the tag and creates the Release
+// over the network. Prove reachability before any local prerequisite so a
+// session without egress learns it first, not last (WO-044).
+const ensureOriginReachable = (root) => {
+  const repository = resolveGitHubPushTarget(root);
+  const probe = execute(
+    "git",
+    ["ls-remote", "--exit-code", "--heads", "origin", "main"],
+    { cwd: root, timeout: 60_000 },
+  );
+  if (probe.status !== 0)
+    throw new Error(
+      `release close needs network egress to ${repository.host} (git fetch, git ls-remote, the tag push and the GitHub Release); origin is unreachable from this session: ${failureOf(probe, "git ls-remote failed")}. Run the close from an operator terminal with egress; a sandboxed agent session cannot publish.`,
+    );
+  return repository;
 };
 const remoteTags = (root) => {
   const rows = runGit(root, ["ls-remote", "--tags", "origin"]);
@@ -1395,6 +1412,17 @@ const updateMainAndFinish = (root, workOrderId) => {
         );
       removeMergedBranch(root, branch);
     }
+    // The subject is already gone; its derived worktrees still settle (WO-044).
+    const settled = execute(
+      process.execPath,
+      [join(toolRoot, "scripts/worktree.mjs"), "settle", workOrderId],
+      { cwd: root },
+    );
+    if (settled.status !== 0)
+      throw new Error(
+        `cannot settle derived worktrees: ${failureOf(settled, "worktree settle failed")}`,
+      );
+    finishOutput = settled.stdout;
   }
   ensureClean(root);
   const head = runGit(root, ["rev-parse", "HEAD"]);
@@ -1592,6 +1620,10 @@ const close = (workOrderId, args) => {
       `release close must run from the main control-plane checkout: ${root}`,
     );
   if (args.includes("--dry-run")) {
+    const reachable = ensureOriginReachable(root);
+    process.stdout.write(
+      `Origin reachable: ${reachable.host} (git ls-remote); publication also needs gh authentication there.\n`,
+    );
     ensureClean(root);
     ensureNoIgnoredInfluence(root);
     const subject = parseWorktrees(root).find(
@@ -1611,12 +1643,27 @@ const close = (workOrderId, args) => {
       if (result.status !== 0)
         throw new Error(failureOf(result, "close preview failed"));
       process.stdout.write(result.stdout);
+    } else {
+      const settled = execute(
+        process.execPath,
+        [
+          join(toolRoot, "scripts/worktree.mjs"),
+          "settle",
+          workOrderId,
+          "--dry-run",
+        ],
+        { cwd: root },
+      );
+      if (settled.status !== 0)
+        throw new Error(failureOf(settled, "settle preview failed"));
+      process.stdout.write(settled.stdout);
     }
     process.stdout.write(
       `Dry run: would validate merged ${workOrderId}, reuse successful evidence only at the exact tree hash, and ${publish ? "publish its validated annotated tag and matching Release" : "prepare its release"}. No changes made.\n`,
     );
     return;
   }
+  ensureOriginReachable(root);
   const finishOutput = updateMainAndFinish(root, workOrderId);
   const state = parseControlStateAt(root, "HEAD", workOrderId);
   if (state.workOrderId !== workOrderId)

@@ -662,6 +662,53 @@ test -f "$main/$foreign_path"
 assert_no_candidate_tag "$main" "$origin"
 }
 
+release_case_unreachable() {
+make_repo unreachable
+commit_candidate "$main" WO-099 v0.2.1
+git -C "$main" push origin main >/dev/null 2>&1
+# WO-044: egress is proven before any local prerequisite, and the dry run
+# names the host it needs.
+reachable_output="$(release_close WO-099 --dry-run)"
+grep -Fq 'Origin reachable: github.com' <<<"$reachable_output"
+mv -- "$origin" "$origin.away"
+if unreachable_output="$(release_close WO-099 --dry-run 2>&1)"; then printf 'error: unreachable origin passed the dry run\n' >&2; exit 1; fi
+grep -Fq 'release close needs network egress to github.com' <<<"$unreachable_output"
+grep -Fq 'operator terminal with egress' <<<"$unreachable_output"
+printf 'dirty\n' >"$main/untracked.txt"
+if publish_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: unreachable origin published\n' >&2; exit 1; fi
+grep -Fq 'release close needs network egress to github.com' <<<"$publish_output"
+if grep -Fq 'working tree is not clean' <<<"$publish_output"; then printf 'error: a local prerequisite was reported before egress\n' >&2; exit 1; fi
+rm -- "$main/untracked.txt"
+mv -- "$origin.away" "$origin"
+assert_no_candidate_tag "$main" "$origin"
+printf 'release close proves origin reachability before any local prerequisite\n'
+}
+
+release_case_derived() {
+make_repo derived
+commit_candidate "$main" WO-099 v0.0.2 v0.2.0
+git -C "$main" push origin main >/dev/null 2>&1
+# WO-044: a close whose subject worktree is already gone still settles the
+# order's derived worktrees, in the preview and in the close.
+derived_clean="$fixture/project-wo099-measure-001"
+derived_dirty="$fixture/project-wo099-measure-002"
+git -C "$main" worktree add --detach "$derived_clean" >/dev/null 2>&1
+git -C "$main" worktree add --detach "$derived_dirty" >/dev/null 2>&1
+printf 'unsaved\n' >"$derived_dirty/notes.txt"
+derived_preview="$(release_close WO-099 --dry-run)"
+grep -Fq "Derived worktree $derived_clean: would remove" <<<"$derived_preview"
+grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$derived_preview"
+test -d "$derived_clean"
+derived_output="$(release_close WO-099 --publish)"
+grep -Fq "Derived worktree $derived_clean: removed" <<<"$derived_output"
+grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$derived_output"
+grep -Fq 'below latest release v0.2.0' <<<"$derived_output"
+test ! -e "$derived_clean"
+test -f "$derived_dirty/notes.txt"
+git -C "$main" worktree remove --force "$derived_dirty" >/dev/null
+printf 'release close settled derived worktrees without a subject worktree\n'
+}
+
 release_case_settings_scope() {
 make_repo settings_scope
 commit_candidate "$main" WO-099 v0.2.1
@@ -1295,6 +1342,9 @@ printf 'current release manifest reused one executed full gate by exact Git tree
 # unrelated main-only document. Its aggregate is new; all 62 declared suite
 # successes must come from the handed-off review despite the new session.
 make_repo cache_composition
+# Main's checkout may carry permission residue Git never records: the
+# reviewed worktree checks out 0644 while main's copy stays 0600 (WO-044).
+chmod 600 "$main/scripts/lib/harness-context.mjs"
 subject="$fixture/reviewed"
 git -C "$main" worktree add -b wo-099 "$subject" main >/dev/null 2>&1
 "$node_bin" "$script_dir/test-release-composition.mjs" prepare "$subject"

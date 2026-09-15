@@ -1,5 +1,12 @@
 import { observedExecFileSync as execFileSync } from "./gate-deadlines.mjs";
-import { existsSync, lstatSync, mkdirSync, realpathSync } from "node:fs";
+import {
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readdirSync,
+  realpathSync,
+  rmSync,
+} from "node:fs";
 import {
   canonicalStringify,
   compileFeedbackAudit,
@@ -354,7 +361,9 @@ export async function runFeedbackSelfhost(options: FeedbackSelfhostOptions) {
       if (realpathSync(mountRoot) !== mount || dirty)
         throw new Error("feedback verifier mount contains extra context");
       // No model filesystem tools: the capsule is the complete explicit read projection.
-      const envelope = await host.run(mount, options.model, options.effort);
+      const envelope = await host
+        .run(mount, options.model, options.effort)
+        .finally(() => removeMountScaffolding(mount));
       if (envelope.status !== "completed")
         throw new Error("feedback verifier incomplete");
     }
@@ -373,3 +382,42 @@ export async function runFeedbackSelfhost(options: FeedbackSelfhostOptions) {
 }
 const same = (a: unknown, b: unknown) =>
   canonicalStringify(a) === canonicalStringify(b);
+/** The mount is an empty repository created only as the verifier's working
+ * root. Removing it after the run keeps the feedback lane free of scaffolding
+ * that a worktree closeout would otherwise have to classify (WO-044). Anything
+ * beyond `.git` or any commit is not scaffolding and stays. */
+export function removeMountScaffolding(mount: string): void {
+  try {
+    if (readdirSync(mount).join() !== ".git") return;
+    if (!lstatSync(join(mount, ".git")).isDirectory()) return;
+    const git = (...args: string[]) =>
+      execFileSync(
+        "git",
+        ["--git-dir", join(mount, ".git"), "--work-tree", mount, ...args],
+        {
+          cwd: mount,
+          stdio: "pipe",
+          encoding: "utf8",
+          timeout: 5000,
+        },
+      ).trim();
+    if (
+      git("for-each-ref", "--format=%(refname)") ||
+      git("ls-files", "--stage")
+    )
+      return;
+    if (!/^refs\/heads\/.+/.test(git("symbolic-ref", "--quiet", "HEAD")))
+      return;
+    const objects = git("count-objects", "-v");
+    if (
+      !["count", "in-pack", "packs", "garbage"].every((key) =>
+        new RegExp(`^${key}: 0$`, "m").test(objects),
+      ) ||
+      /^alternate:/m.test(objects)
+    )
+      return;
+    rmSync(mount, { recursive: true, force: true });
+  } catch {
+    // A mount that cannot be inspected is left for the closeout classifier.
+  }
+}

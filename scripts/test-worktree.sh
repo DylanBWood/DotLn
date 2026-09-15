@@ -379,6 +379,7 @@ remote_refs="$(git --git-dir="$test_root/origin.git" for-each-ref --format='%(re
 test "$remote_refs" = $'refs/heads/main\nrefs/heads/wo-099'
 grep -Fq "cd '$main'" <<<"$publish_output"
 grep -Fq "'$node_bin' '$main/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"
+grep -Fq 'network egress to the GitHub host' <<<"$publish_output"
 if grep -Fq "'$subject/scripts/release.mjs' close WO-099 --publish" <<<"$publish_output"; then
   printf 'error: post-merge handoff names the helper the close will remove\n' >&2
   exit 1
@@ -399,15 +400,29 @@ git -C "$main" merge --ff-only origin/wo-099 >/dev/null
 git -C "$main" push origin main >/dev/null 2>&1
 printf 'SECRET=fixture-only\n' >"$subject/.env"
 printf 'disposable build state\n' >"$subject/tsconfig.tsbuildinfo"
+# WO-044: every blocker is listed at once with its lane and remedy; an empty
+# nested repository is scaffolding; a nested repository with content outside
+# the preserved lanes blocks with its own remedy and is never deleted.
+mkdir -p "$subject/docs/control/local/feedback/verifier/mount" "$subject/vendor/node_modules/kept-repo"
+git -C "$subject/docs/control/local/feedback/verifier/mount" init -q
+git -C "$subject/vendor/node_modules/kept-repo" init -q
+printf 'kept nested content\n' >"$subject/vendor/node_modules/kept-repo/file.txt"
 if finish_output="$(finish_worktree WO-099 2>&1)"; then printf 'error: ignored secret was deleted\n' >&2; exit 1; fi
-grep -Fq '.env' <<<"$finish_output"
-grep -Fq 'npm run backup:intake' <<<"$finish_output"
+grep -Fq '(2 entries; nothing here deletes ignored material)' <<<"$finish_output"
+grep -Fq '.env: other lane: ignored file; move it outside the checkout or delete it from an operator terminal' <<<"$finish_output"
+grep -Fq 'vendor/node_modules/kept-repo/: other lane: nested repository with content and no commit; move it outside the checkout from an operator terminal' <<<"$finish_output"
+if grep -Fq 'npm run backup:intake' <<<"$finish_output"; then printf 'error: intake archive named for non-intake material\n' >&2; exit 1; fi
+if grep -Fq 'verifier/mount' <<<"$finish_output"; then printf 'error: empty nested repository reported as a blocker\n' >&2; exit 1; fi
 if grep -Fq 'SECRET=fixture-only' <<<"$finish_output"; then printf 'error: ignored-file content leaked in refusal\n' >&2; exit 1; fi
 test -f "$subject/.env"
 test -f "$subject/tsconfig.tsbuildinfo"
 test -d "$subject"
+test -f "$subject/vendor/node_modules/kept-repo/file.txt"
+test -d "$subject/vendor/node_modules/kept-repo/.git"
 test -n "$(git -C "$main" branch --list wo-099)"
 rm -- "$subject/.env" "$subject/tsconfig.tsbuildinfo"
+rm -rf -- "$subject/vendor" "$subject/docs/control/local/feedback"
+printf 'removal refusal listed every blocker with its lane and remedy\n'
 mkdir -p "$subject/docs/intake"
 intake_path="docs/intake/raw${u202f}note.md"
 assert_u202f "$intake_path"
@@ -502,6 +517,14 @@ NODE
 mkdir -p "$subject/docs/control/local/prototypes/nested" "$subject/docs/control/local/process/empty" "$main/docs/control/local"
 printf 'subject retained record\000bytes\n' >"$subject/docs/control/local/adjacent-work.jsonl"
 printf 'subject prototype\n' >"$subject/docs/control/local/prototypes/nested/source.txt"
+# WO-044: a nested repository with content in the control lane is preserved
+# as a directory unit; an empty verifier mount is discarded as scaffolding.
+mkdir -p "$subject/docs/control/local/prototypes/repo" "$subject/docs/control/local/feedback/verifier/mount"
+git -C "$subject/docs/control/local/prototypes/repo" init -q
+printf 'kept nested content\n' >"$subject/docs/control/local/prototypes/repo/file.txt"
+git -C "$subject/docs/control/local/prototypes/repo" -c user.name=Fixture -c user.email=fixture@example.invalid add file.txt
+git -C "$subject/docs/control/local/prototypes/repo" -c user.name=Fixture -c user.email=fixture@example.invalid commit -qm kept
+git -C "$subject/docs/control/local/feedback/verifier/mount" init -q
 printf 'subject terms\n' >"$subject/docs/control/local/terms.txt"
 printf 'main active terms\n' >"$main/docs/control/local/terms.txt"
 printf 'main active queue\n' >"$main/docs/control/local/adjacent-work.jsonl"
@@ -515,20 +538,83 @@ for (const [index, root] of process.argv.slice(2).entries()) {
   recordGateChecks(root, [{ checkId: `fixture-closeout-${index}`, treeHash, subject: treeHash, durationMs: 1, exitCode: 0, executed: true, evidenceRef: "synthetic-closeout-handoff", recordedAt: new Date().toISOString() }]);
 }
 NODE
+# WO-044: derived detached worktrees of the closing order are pruned,
+# preserved-and-removed when safe, or reported with their blocker.
+derived_clean="$test_root/project-wo099-measure-001"
+derived_dirty="$test_root/project-wo099-measure-002"
+derived_gone="$test_root/project-wo099-measure-003"
+derived_retained="$test_root/wo099-host-fixture/subject"
+derived_writer="$test_root/project-wo099-measure-writer"
+derived_unknown="$test_root/project-wo099-measure-unknown"
+git -C "$main" worktree add --detach "$derived_writer" >/dev/null 2>&1
+git -C "$main" worktree add --detach "$derived_unknown" >/dev/null 2>&1
+mkdir -p "$derived_writer/docs/control/local/harness/writer" "$derived_unknown/docs/control/local/harness/writer"
+printf '{"actorId":"fixture-live","owner":{"pid":%s,"source":"parent"}}\n' "$$" >"$derived_writer/docs/control/local/harness/writer/reservation-00000000000000000000000000000000.json"
+printf '{"actorId":"fixture-unknown"}\n' >"$derived_unknown/docs/control/local/harness/writer/reservation-00000000000000000000000000000000.json"
+git -C "$main" worktree add --detach "$derived_clean" >/dev/null 2>&1
+git -C "$main" worktree add --detach "$derived_dirty" >/dev/null 2>&1
+git -C "$main" worktree add --detach "$derived_gone" >/dev/null 2>&1
+git -C "$main" worktree add --detach "$derived_retained" >/dev/null 2>&1
+printf 'measurement build state\n' >"$derived_clean/tsconfig.tsbuildinfo"
+printf 'unsaved\n' >"$derived_dirty/notes.txt"
+mkdir -p "$derived_retained/docs/control/local/measure"
+printf 'derived measurement log\n' >"$derived_retained/docs/control/local/measure/log.txt"
+rm -rf -- "$derived_gone"
 retained_main_refs="$(git -C "$main" show-ref)"
 retained_subject_head="$(git -C "$subject" rev-parse HEAD)"
 retained_preview="$(finish_worktree WO-099 --dry-run 2>&1)"
 grep -Fq 'docs/control/local/retained/WO-099/adjacent-work.jsonl' <<<"$retained_preview"
 grep -Fq 'docs/control/local/retained/WO-099/process/empty' <<<"$retained_preview"
+grep -Fq '"docs/control/local/prototypes/repo": nested repository preserved as a directory unit' <<<"$retained_preview"
+grep -Fq '"docs/control/local/feedback/verifier/mount": nested repository discarded as empty fixture scaffolding (only .git, no commit)' <<<"$retained_preview"
+grep -Fq 'docs/control/local/retained/WO-099/prototypes/repo/.git/HEAD' <<<"$retained_preview"
+grep -Fq 'docs/control/local/retained/WO-099/prototypes/repo/file.txt' <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_clean: would remove" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes); remove it from an operator terminal with git worktree remove --force" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_writer: kept (writer reservation" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_unknown: kept (writer reservation" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_gone: would prune (directory missing)" <<<"$retained_preview"
+grep -Fq "Derived worktree $derived_retained: would remove (detached, clean, idle; 1 preserved files" <<<"$retained_preview"
+test -d "$derived_clean"
+test -d "$derived_retained"
 test ! -e "$main/docs/control/local/retained"
 test -f "$subject/docs/control/local/adjacent-work.jsonl"
 test "$(git -C "$main" show-ref)" = "$retained_main_refs"
 test "$(git -C "$subject" rev-parse HEAD)" = "$retained_subject_head"
-finish_worktree WO-099 >/dev/null
+retained_finish="$(finish_worktree WO-099)"
 test ! -e "$subject"
+grep -Fq "Derived worktree $derived_clean: removed" <<<"$retained_finish"
+grep -Fq "Derived worktree $derived_dirty: kept (uncommitted changes)" <<<"$retained_finish"
+grep -Fq "Derived worktree $derived_gone: pruned (directory missing)" <<<"$retained_finish"
+grep -Fq "Derived worktree $derived_retained: removed" <<<"$retained_finish"
+test ! -e "$derived_clean"
+test ! -e "$derived_retained"
+test -f "$derived_dirty/notes.txt"
+test -d "$derived_writer"
+test -d "$derived_unknown"
+grep -Fq "Derived worktree $derived_writer: kept (writer reservation" <<<"$retained_finish"
+grep -Fq "Derived worktree $derived_unknown: kept (writer reservation" <<<"$retained_finish"
+git -C "$main" worktree remove --force "$derived_writer" >/dev/null
+git -C "$main" worktree remove --force "$derived_unknown" >/dev/null
+test "$(cat "$main/docs/control/local/retained/WO-099/measure/log.txt")" = 'derived measurement log'
+if git -C "$main" worktree list --porcelain | grep -Fq "$derived_clean"; then printf 'error: removed derived worktree still registered\n' >&2; exit 1; fi
+if git -C "$main" worktree list --porcelain | grep -Fq "$derived_gone"; then printf 'error: missing derived worktree not pruned\n' >&2; exit 1; fi
+git -C "$main" worktree list --porcelain | grep -Fq "$derived_dirty"
+git -C "$main" worktree remove --force "$derived_dirty" >/dev/null
+printf 'derived worktrees settled: pruned, preserved and removed, or kept with a blocker\n'
+# The same settlement runs on its own after the subject is already gone.
+git -C "$main" worktree add --detach "$test_root/project-wo099-measure-009" >/dev/null 2>&1
+settle_output="$(cd "$main" && node "$main/scripts/worktree.mjs" settle WO-099)"
+grep -Fq "Derived worktree $test_root/project-wo099-measure-009: removed" <<<"$settle_output"
+test ! -e "$test_root/project-wo099-measure-009"
+test "$(cd "$main" && node "$main/scripts/worktree.mjs" settle WO-099)" = 'No derived worktrees for WO-099.'
+printf 'settle removed a derived worktree with no subject present\n'
 cmp "$test_root/retained-expected.bin" "$main/docs/control/local/retained/WO-099/adjacent-work.jsonl"
 test -f "$main/docs/control/local/retained/WO-099/prototypes/nested/source.txt"
 test -d "$main/docs/control/local/retained/WO-099/process/empty"
+test "$(cat "$main/docs/control/local/retained/WO-099/prototypes/repo/file.txt")" = 'kept nested content'
+test -f "$main/docs/control/local/retained/WO-099/prototypes/repo/.git/HEAD"
+test ! -e "$main/docs/control/local/retained/WO-099/feedback"
 test "$(cat "$main/docs/control/local/terms.txt")" = 'main active terms'
 test "$(cat "$main/docs/control/local/adjacent-work.jsonl")" = 'main active queue'
 test "$(cat "$main/docs/control/local/retained/WO-099/terms.txt")" = 'subject terms'
