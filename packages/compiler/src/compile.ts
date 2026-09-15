@@ -6,6 +6,7 @@ import {
 } from "./normalize.js";
 import { loadoutFromEditableView } from "./views.js";
 import { deriveArtifactIdentity } from "./artifact-identity.js";
+import { compilePresence } from "./presence.js";
 import {
   applyAuthorityGrants,
   authorityDiagnostics,
@@ -1042,13 +1043,18 @@ export const compileLoadout = (
     ),
   );
   if (diagnostics.length > 0) return { ok: false, diagnostics };
-  const program = emitProgram(
+  const base = emitProgram(
     graph,
     environment,
     claimResult.resolutions,
     claimResult.effectiveClaims,
   );
+  const presence = compilePresence(graph, base, environment);
+  const program = presence.policies.length
+    ? normalizeCompiledProgram({ ...base, presence: presence.policies })
+    : base;
   const projectionDiagnostics = [
+    ...presence.diagnostics,
     ...grantEnvelopeDiagnostics(program),
     ...inspectionAuthorityDiagnostics(program),
   ];

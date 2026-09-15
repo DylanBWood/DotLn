@@ -1,5 +1,6 @@
 import { canonicalStringify, semanticHash } from "./normalize.js";
 import { projectAuthorityInspection } from "./authority.js";
+import { projectPresenceInspection } from "./presence.js";
 import type {
   CompileCorrection,
   CompileDiagnostic,
@@ -96,8 +97,19 @@ export const renderCompiledDiff = (
   const reference = after?.inspection ?? before?.inspection;
   if (reference === undefined)
     throw new Error("compiled diff requires a before or after program");
-  const left = before?.inspection ?? emptyInspection(reference);
-  const right = after?.inspection ?? emptyInspection(reference);
+  const withPresence = (program: CompiledProgram | undefined) => {
+    const authored = program?.inspection ?? emptyInspection(reference);
+    const presence = program
+      ? projectPresenceInspection(program)
+      : { pulse: [], interrupt: [] };
+    return {
+      ...authored,
+      pulse: [...authored.pulse, ...presence.pulse],
+      interrupt: [...authored.interrupt, ...presence.interrupt],
+    };
+  };
+  const left = withPresence(before);
+  const right = withPresence(after);
   const leftAuthority = before
     ? projectAuthorityInspection(before)
     : { grants: [], restrictions: [] };
