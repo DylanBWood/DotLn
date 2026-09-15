@@ -1,6 +1,6 @@
-# `@dotln/skeleton` 0.16.0
+# `@dotln/skeleton` 0.17.0
 
-For application v0.18.0, writer reservations apply on every branch, hook judgments delegate to host permissions except writer/live-gate protection, actor labels are recorded as supplied, and new planning receipts use the goal-review contract.
+For application v0.20.0, hook input is positively decoded before ordinary host work. `decodeHarnessInput(value, expectedEvent?)` returns the kernel `DecodeResult` shape, validates every declared input field and the configured event, and retains unconsumed native metadata. `tool_name` is a string; `tool_input` and `tool_response` are objects. Invalid JSON and malformed fields use the event's existing protocol response with a code and JSON path. PreToolUse denies; prompt submission remains accepted with a diagnostic, and PostToolUse/Stop report the failure. The generated entry preserves valid `analysis:` and `operator override:` recovery even when the built runtime is unavailable.
 
 The walking-skeleton component first shipped in application release `v0.2.0`.
 Its component version was corrected forward from `0.2.0` to `0.3.0` on

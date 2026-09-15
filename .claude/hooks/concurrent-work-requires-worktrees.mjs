@@ -2,8 +2,10 @@
 let input;
 try {
 const { text } = await import("node:stream/consumers");
-input = JSON.parse(await text(process.stdin));
-const control = await (async function operatorControl(input, event) {
+const rawInput = await text(process.stdin);
+try { input = JSON.parse(rawInput); } catch {}
+const recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || ("PreToolUse" === "UserPromptSubmit" && /^(analysis|operator override):(?:\s|$)/i.test((input.prompt ?? "").trim())));
+const control = recoveryInput ? await (async function operatorControl(input, event) {
     const prompt = event === "UserPromptSubmit" ? (input.prompt?.trim() ?? "") : "";
     const entered = /^(analysis|operator override):(?:\s|$)/i.exec(prompt);
     const exit = /^(analysis|operator override):\s*off\s*$/i.test(prompt);
@@ -88,19 +90,19 @@ const control = await (async function operatorControl(input, event) {
         // A broken recovery-state store must not become another recovery gate.
         return message(requested && requested !== "normal" ? requested : "unavailable", "Recovery state could not be read or persisted; this hook remains advisory.");
     }
-})(input, "PreToolUse");
+})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, "PreToolUse") : null;
 if (control) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/f1f7fc0e67e4664f/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/f1f7fc0e67e4664f/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/902393d5d4254be5/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/902393d5d4254be5/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.11.0",
+  "compilerPackageVersion": "0.11.1",
   "runtime": {
-    "skeletonVersion": "0.16.0",
+    "skeletonVersion": "0.17.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:1b5bcfd3ddd69851"
+        "hash": "fnv1a64:de7ebb5d6ad7243c"
       },
       {
         "path": "packages/compiler/dist/src/feedback.js",
@@ -120,7 +122,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:b6ac5719288e751f"
+        "hash": "fnv1a64:4dca55faa2db51e6"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -147,7 +149,7 @@ await runHarnessHook({
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/f1f7fc0e67e4664f"
+    "snapshot": ".runtime/harness/902393d5d4254be5"
   },
   "event": "PreToolUse",
   "tools": {
@@ -184,7 +186,7 @@ await runHarnessHook({
   "kind": "feedback",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.11.0",
+    "compilerPackageVersion": "0.11.1",
     "units": [
       {
         "unitId": "concurrent-work-requires-worktrees",
@@ -237,10 +239,10 @@ await runHarnessHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:b618ee73a54fc58c"
+    "policyHash": "fnv1a64:e79cad0bf9f28fcb"
   },
   "correctionToken": null
-}, feedbackBoundary, input);
+}, feedbackBoundary, input, rawInput);
 }
 } catch { const response = { systemMessage: "DotLn advisory: built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide." };
 try {

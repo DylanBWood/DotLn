@@ -1,15 +1,15 @@
 // Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/f1f7fc0e67e4664f/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/f1f7fc0e67e4664f/packages/skeleton/dist/src/feedback-boundary.js");
+const { runCommitMessageHook } = await import("../../.runtime/harness/902393d5d4254be5/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/902393d5d4254be5/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.11.0",
+  "compilerPackageVersion": "0.11.1",
   "runtime": {
-    "skeletonVersion": "0.16.0",
+    "skeletonVersion": "0.17.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:1b5bcfd3ddd69851"
+        "hash": "fnv1a64:de7ebb5d6ad7243c"
       },
       {
         "path": "packages/compiler/dist/src/feedback.js",
@@ -29,7 +29,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:b6ac5719288e751f"
+        "hash": "fnv1a64:4dca55faa2db51e6"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -56,11 +56,11 @@ await runCommitMessageHook({
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/f1f7fc0e67e4664f"
+    "snapshot": ".runtime/harness/902393d5d4254be5"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.11.0",
+    "compilerPackageVersion": "0.11.1",
     "units": [
       {
         "unitId": "no-attribution",
@@ -113,6 +113,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:a95a5275d473645b"
+    "policyHash": "fnv1a64:899ed2d96c78c740"
   }
 }, feedbackBoundary);
