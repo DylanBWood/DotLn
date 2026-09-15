@@ -4532,6 +4532,81 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-a36acf0e68625a7d",
+      "key": "decision:docs/evidence/WO-045/decisions.md#wo-045-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "64d95415a7cbeceeb94d700a0efc0835d8ca17cf495df3acc2a16bcc861b89a8",
+          "ref": "docs/evidence/WO-045/decisions.md#wo-045-d001",
+          "title": "WO-045-D001: Implement positive schema-1 event and declared hook-field decoders, keeping JSON payload semantics and historical framing.",
+          "summary": "{ \"id\": \"WO-045-D001\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Implement positive schema-1 event and declared hook-field decoders, keeping JSON payload semantics and historical framing.\", \"evidence\": [ \"packages/kernel/src/store.ts\", \"packages/skeleton/src/harness-host.ts\", \"docs/product/02-domain-model.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves malformed input to downstream casts and failures.\" }, { \"option\": \"Schema library\", \"reason\": \"Adds a runtime dependency against ADR-0002.\" }, { \"option\": \"Validate payload semantics\", \"reason\": \"Those belong to reactors.\" } ], \"reopenWhen\": \"Valid persisted streams or native hook metadata regress, or measured d",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-cd31bd86a918eb82",
+      "key": "decision:docs/evidence/WO-045/decisions.md#wo-045-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5916dc3573e067020612eaf6c1808e624d4a1110ea6b97e26af84a4f07dffefe",
+          "ref": "docs/evidence/WO-045/decisions.md#wo-045-d002",
+          "title": "WO-045-D002: Apply the operator-authorized generated-entry fix and amend AC4 while preserving valid recovery before runtime imports.",
+          "summary": "{ \"id\": \"WO-045-D002\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Apply the operator-authorized generated-entry fix and amend AC4 while preserving valid recovery before runtime imports.\", \"evidence\": [ \"packages/compiler/src/harness.ts\", \"packages/compiler/src/operator-control.mjs\", \"docs/work-orders/WO-045-store-and-hook-input-decoders.md\" ], \"rejected\": [ { \"option\": \"Runtime-only decoding\", \"reason\": \"The generated prelude can bypass it for malformed session/prompt or raw JSON.\" }, { \"option\": \"Load runtime before recovery\", \"reason\": \"Would make recovery depend on repository/runtime health.\" } ], \"reopenWhen\": \"Valid analysis/override becomes unreachable or malformed ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b8032db353fd5853",
+      "key": "decision:docs/evidence/WO-045/decisions.md#wo-045-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d8e4b41637ee28dcd13c64a009853757c486a671698c9e62e153722b79b84d97",
+          "ref": "docs/evidence/WO-045/decisions.md#wo-045-d003",
+          "title": "WO-045-D003: Stage v0.19.0 with kernel 0.3.0, skeleton 0.17.0 and compiler 0.10.1; retain L2 capability and immutable historical evidence.",
+          "summary": "{ \"id\": \"WO-045-D003\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Stage v0.19.0 with kernel 0.3.0, skeleton 0.17.0 and compiler 0.10.1; retain L2 capability and immutable historical evidence.\", \"evidence\": [ \"package-lock.json\", \"docs/product/06-roadmap.md\", \"docs/planning/capability-table.md\" ], \"rejected\": [ { \"option\": \"Patch application\", \"reason\": \"The new strict codec and host decoder match the selected minor classification.\" }, { \"option\": \"Raise store capability level\", \"reason\": \"No durable adapter or real-worker recovery proof is added.\" } ], \"reopenWhen\": \"Independent review identifies different compatibility impact or a preserved evidence edition fails current",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d39fa3c635b49401",
+      "key": "decision:docs/evidence/WO-045/decisions.md#wo-045-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "04e283fc6efc59ccd0fd59ded3bb4a9db79bde76361c5873037023ecfbc2ae16",
+          "ref": "docs/evidence/WO-045/decisions.md#wo-045-d004",
+          "title": "WO-045-D004: Integrate published v0.19.0, retime WO-045 to v0.20.0 under its existing minor classification, and advance the compiler patch to 0.11.1.",
+          "summary": "{ \"id\": \"WO-045-D004\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Integrate published v0.19.0, retime WO-045 to v0.20.0 under its existing minor classification, and advance the compiler patch to 0.11.1.\", \"evidence\": [ \"docs/verifications/WO-045/VER-001.md\", \"docs/product/07-execution-guide.md\", \"docs/product/10-ir-compatibility.md\" ], \"rejected\": [ { \"option\": \"NoOp or retain v0.19.0 / compiler 0.10.1\", \"reason\": \"The tag is already published and integration would downgrade the compiler.\" }, { \"option\": \"Reimplement the accepted decoders\", \"reason\": \"VER-001 found their required behavior correct; F1 concerns integration and release evidence.\" } ], \"reopenWhen\": \"Integrati",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f84282410812bf0c",
+      "key": "decision:docs/evidence/WO-045/decisions.md#wo-045-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "97b7e185afd7f757b84b902af2e2935f2e1b3b660e0399aa83e2c8baf1221262",
+          "ref": "docs/evidence/WO-045/decisions.md#wo-045-d005",
+          "title": "WO-045-D005: Allow numbered artifact-identity and verification editions within the same work order, using the existing revision selector and immutable writer.",
+          "summary": "{ \"id\": \"WO-045-D005\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Allow numbered artifact-identity and verification editions within the same work order, using the existing revision selector and immutable writer.\", \"evidence\": [ \"packages/skeleton/src/evidence-editions.mjs\", \"scripts/artifact-identity-evidence.mjs\", \"scripts/verification-evidence.mjs\", \"docs/verifications/WO-045/VER-001.md\" ], \"rejected\": [ { \"option\": \"Overwrite original evidence\", \"reason\": \"Would erase the subject observed by VER-001 and violate immutable evidence.\" }, { \"option\": \"Invent another work-order identity\", \"reason\": \"The evidence belongs to this repair; an unrelated identity would misstate pr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

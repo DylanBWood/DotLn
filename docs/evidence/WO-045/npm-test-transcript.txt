@@ -1,0 +1,304 @@
+
+> test
+> node scripts/test-runner.mjs
+
+PROGRESS [build] 0.0 s started
+PASS build 2.61 s
+PROGRESS [license-surfaces] 0.0 s started
+PASS license-surfaces 2.43 s
+PROGRESS [release:prepare] 0.0 s started
+PROGRESS [resume] 0.0 s started
+PROGRESS [worktree] 0.0 s started
+PROGRESS [skeleton] 0.0 s started
+PROGRESS [skeleton] 0.6 s # Subtest: WO-029 new host equips v2, pins authority atomically, and receipts every compiled consumer with replay identity
+PROGRESS [skeleton] 3.2 s # Subtest: WO-020 AC5 concurrent metadata observer sees only complete codewords and fixed addresses
+PROGRESS [release:prepare] 3.7 s PROGRESS release template prepared
+PASS release:prepare 3.79 s
+PROGRESS [release:case:preflight] 0.0 s started
+PROGRESS [release:case:preflight] 0.3 s PROGRESS release case preflight started
+PROGRESS [release:case:preflight] 0.8 s PROGRESS release case preflight passed
+PASS release:case:preflight 0.79 s
+PROGRESS [release:case:surfaces] 0.0 s started
+PROGRESS [release:case:surfaces] 0.2 s PROGRESS release case surfaces started
+PROGRESS [skeleton] 6.0 s # Subtest: WO-021 agent constellation CLI persists permission/refusal and one metadata perception through the reactor
+PROGRESS [skeleton] 8.0 s # Subtest: current evidence follows one manifest, independent of active order; explicit historical pins survive
+PROGRESS [skeleton] 14.3 s # Subtest: feedback audit pins labeled projections and keeps release-only workspace metadata stable
+PROGRESS [resume] 15.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 15.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:surfaces] 24.6 s PROGRESS release case surfaces passed
+PASS release:case:surfaces 24.69 s
+PROGRESS [release:case:surfaces_local_snapshot] 0.0 s started
+PROGRESS [release:case:surfaces_local_snapshot] 0.2 s PROGRESS release case surfaces_local_snapshot started
+PROGRESS [resume] 30.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 30.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 30.0 s running; last report: ok 85 - WO-011 regression bounded-boy-scout-cleanup
+PROGRESS [skeleton] 33.0 s # Subtest: WO-129 Claude upgrades retain version observations above the supported minimum
+PROGRESS [release:case:surfaces_local_snapshot] 8.2 s PROGRESS release case surfaces_local_snapshot passed
+PASS release:case:surfaces_local_snapshot 8.32 s
+PROGRESS [release:case:prepare_independent] 0.0 s started
+PROGRESS [release:case:prepare_independent] 0.3 s PROGRESS release case prepare_independent started
+PROGRESS [release:case:prepare_independent] 5.7 s PROGRESS release case prepare_independent passed
+PASS release:case:prepare_independent 5.90 s
+PROGRESS [release:case:license_surfaces] 0.0 s started
+PROGRESS [release:case:license_surfaces] 0.3 s PROGRESS release case license_surfaces started
+PROGRESS [resume] 45.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 45.0 s running; last report: waiting for the next case report
+PROGRESS [resume] 60.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 60.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 60.0 s running; last report: ok 125 - WO-022 AC8 canonical control-log re-derivation uses the same host v3 writer and key
+PROGRESS [release:case:license_surfaces] 18.2 s PROGRESS release case license_surfaces passed
+PASS release:case:license_surfaces 18.29 s
+PROGRESS [release:case:surfaces_committed_readme] 0.0 s started
+PROGRESS [release:case:surfaces_committed_readme] 0.2 s PROGRESS release case surfaces_committed_readme started
+PROGRESS [skeleton] 62.0 s # Subtest: WO-010 AC1/2/3/5 claude-cli-print dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+PROGRESS [release:case:surfaces_committed_readme] 9.0 s PROGRESS release case surfaces_committed_readme passed
+PASS release:case:surfaces_committed_readme 9.14 s
+PROGRESS [release:case:surfaces_lower] 0.0 s started
+PROGRESS [release:case:surfaces_lower] 0.2 s PROGRESS release case surfaces_lower started
+PROGRESS [resume] 75.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 75.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:surfaces_lower] 7.8 s PROGRESS release case surfaces_lower passed
+PASS release:case:surfaces_lower 7.92 s
+PROGRESS [release:case:surfaces_first] 0.0 s started
+PROGRESS [release:case:surfaces_first] 0.2 s PROGRESS release case surfaces_first started
+PROGRESS [release:case:surfaces_first] 5.6 s PROGRESS release case surfaces_first passed
+PASS release:case:surfaces_first 5.65 s
+PROGRESS [release:case:surfaces_component] 0.0 s started
+PROGRESS [release:case:surfaces_component] 0.1 s PROGRESS release case surfaces_component started
+PROGRESS [resume] 90.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 90.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 90.0 s running; last report: ok 126 - WO-010 AC1/2/3/5 claude-cli-print dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+PROGRESS [skeleton] 94.0 s # Subtest: WO-010 AC1/2/3/5 codex-cli-exec dispatch → finding → fresh focused repair → re-verification uses the kernel loop
+PROGRESS [release:case:surfaces_component] 13.4 s PROGRESS release case surfaces_component passed
+PASS release:case:surfaces_component 13.48 s
+PROGRESS [release:case:surfaces_non_source] 0.0 s started
+PROGRESS [release:case:surfaces_non_source] 0.1 s PROGRESS release case surfaces_non_source started
+PROGRESS [release:case:surfaces_non_source] 5.2 s PROGRESS release case surfaces_non_source passed
+PASS release:case:surfaces_non_source 5.31 s
+PROGRESS [release:case:surfaces_new_component] 0.0 s started
+PROGRESS [release:case:surfaces_new_component] 0.2 s PROGRESS release case surfaces_new_component started
+PROGRESS [resume] 105.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 105.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:surfaces_new_component] 7.1 s PROGRESS release case surfaces_new_component passed
+PASS release:case:surfaces_new_component 7.13 s
+PROGRESS [release:case:surfaceclose] 0.0 s started
+PROGRESS [release:case:surfaceclose] 0.2 s PROGRESS release case surfaceclose started
+PROGRESS [resume] 120.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 120.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 120.0 s running; last report: ok 131 - WO-010 AC4/5 dotln status exposes stale evidence mid-workstream and is read-only
+PROGRESS [skeleton] 125.0 s # Subtest: WO-010 completed-result crash recovery retains the producing verifier and invokes no duplicate effect
+PROGRESS [release:case:surfaceclose] 19.8 s PROGRESS release case surfaceclose passed
+PASS release:case:surfaceclose 20.00 s
+PROGRESS [release:case:surfaceclose_linked] 0.0 s started
+PROGRESS [release:case:surfaceclose_linked] 0.4 s PROGRESS release case surfaceclose_linked started
+PROGRESS [resume] 135.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 135.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 144.5 s # Subtest: WO-010 an admitted-result prefix recovers completion status and its continuation exactly once
+PROGRESS [resume] 150.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 150.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:surfaceclose_linked] 21.9 s PROGRESS release case surfaceclose_linked passed
+PASS release:case:surfaceclose_linked 21.97 s
+PROGRESS [release:case:bodyclose] 0.0 s started
+PROGRESS [release:case:bodyclose] 0.3 s PROGRESS release case bodyclose started
+PROGRESS [skeleton] 164.6 s # Subtest: WO-010 claude-cli-print killed verifier retains its command and recovers in a fresh leased episode
+PROGRESS [resume] 165.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 165.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:bodyclose] 15.2 s PROGRESS release case bodyclose passed
+PASS release:case:bodyclose 15.30 s
+PROGRESS [release:case:dirty] 0.0 s started
+PROGRESS [release:case:dirty] 0.3 s PROGRESS release case dirty started
+PROGRESS [skeleton] 176.8 s # Subtest: WO-010 claude-cli-print model refusal and forged passes retain pending work
+PROGRESS [resume] 180.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 180.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:dirty] 20.2 s PROGRESS release case dirty passed
+PASS release:case:dirty 20.27 s
+PROGRESS [release:case:unreachable] 0.0 s started
+PROGRESS [release:case:unreachable] 0.1 s PROGRESS release case unreachable started
+PROGRESS [skeleton] 188.2 s # Subtest: WO-010 codex-cli-exec killed verifier retains its command and recovers in a fresh leased episode
+PROGRESS [resume] 195.0 s running; last report: waiting for the next case report
+PROGRESS [worktree] 195.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton] 195.9 s # Subtest: WO-010 codex-cli-exec model refusal and forged passes retain pending work
+PASS skeleton 196.11 s
+PROGRESS [release:case:derived] 0.0 s started
+PROGRESS [release:case:derived] 0.1 s PROGRESS release case derived started
+PROGRESS [release:case:unreachable] 9.0 s PROGRESS release case unreachable passed
+PASS release:case:unreachable 9.08 s
+PROGRESS [release:case:settings_scope] 0.0 s started
+PROGRESS [release:case:settings_scope] 0.2 s PROGRESS release case settings_scope started
+PROGRESS [resume] 197.5 s # Subtest: test-control-segments
+PASS resume 197.69 s
+PROGRESS [release:case:nonmain] 0.0 s started
+PROGRESS [release:case:nonmain] 0.1 s PROGRESS release case nonmain started
+PROGRESS [release:case:nonmain] 1.5 s PROGRESS release case nonmain passed
+PASS release:case:nonmain 1.58 s
+PROGRESS [release:case:divergence] 0.0 s started
+PROGRESS [release:case:divergence] 0.1 s PROGRESS release case divergence started
+PROGRESS [release:case:divergence] 1.5 s PROGRESS release case divergence passed
+PASS release:case:divergence 1.54 s
+PROGRESS [release:case:malformed] 0.0 s started
+PROGRESS [release:case:malformed] 0.1 s PROGRESS release case malformed started
+PROGRESS [release:case:derived] 5.1 s PROGRESS release case derived passed
+PASS release:case:derived 5.15 s
+PROGRESS [release:case:missinggh] 0.0 s started
+PROGRESS [release:case:missinggh] 0.2 s PROGRESS release case missinggh started
+PROGRESS [release:case:malformed] 1.9 s PROGRESS release case malformed passed
+PASS release:case:malformed 1.99 s
+PROGRESS [release:case:unauthenticated] 0.0 s started
+PROGRESS [release:case:unauthenticated] 0.1 s PROGRESS release case unauthenticated started
+PROGRESS [release:case:settings_scope] 5.9 s PROGRESS release case settings_scope passed
+PASS release:case:settings_scope 5.94 s
+PROGRESS [release:case:splitorigin] 0.0 s started
+PROGRESS [release:case:splitorigin] 0.2 s PROGRESS release case splitorigin started
+PROGRESS [release:case:splitorigin] 1.8 s PROGRESS release case splitorigin passed
+PASS release:case:splitorigin 1.86 s
+PROGRESS [release:case:lower] 0.0 s started
+PROGRESS [release:case:lower] 0.1 s PROGRESS release case lower started
+PROGRESS [release:case:missinggh] 4.9 s PROGRESS release case missinggh passed
+PASS release:case:missinggh 4.98 s
+PROGRESS [release:case:failures] 0.0 s started
+PROGRESS [release:case:failures] 0.1 s PROGRESS release case failures started
+PROGRESS [release:case:unauthenticated] 3.8 s PROGRESS release case unauthenticated passed
+PASS release:case:unauthenticated 3.87 s
+PROGRESS [release:case:cadence_missing] 0.0 s started
+PROGRESS [release:case:cadence_missing] 0.2 s PROGRESS release case cadence_missing started
+PROGRESS [release:case:lower] 3.8 s PROGRESS release case lower passed
+PASS release:case:lower 3.87 s
+PROGRESS [release:case:cadence_inconsistent] 0.0 s started
+PROGRESS [release:case:cadence_inconsistent] 0.1 s PROGRESS release case cadence_inconsistent started
+PROGRESS [worktree] 210.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:cadence_missing] 4.1 s PROGRESS release case cadence_missing passed
+PASS release:case:cadence_missing 4.15 s
+PROGRESS [release:case:conflict] 0.0 s started
+PROGRESS [release:case:conflict] 0.2 s PROGRESS release case conflict started
+PROGRESS [release:case:failures] 5.4 s PROGRESS release case failures passed
+PASS release:case:failures 5.44 s
+PROGRESS [release:case:localconflict] 0.0 s started
+PROGRESS [release:case:localconflict] 0.1 s PROGRESS release case localconflict started
+PROGRESS [release:case:localconflict] 2.9 s PROGRESS release case localconflict passed
+PASS release:case:localconflict 2.96 s
+PROGRESS [release:case:nestedtag] 0.0 s started
+PROGRESS [release:case:nestedtag] 0.1 s PROGRESS release case nestedtag started
+PROGRESS [release:case:conflict] 3.9 s PROGRESS release case conflict passed
+PASS release:case:conflict 4.02 s
+PROGRESS [release:case:prepare] 0.0 s started
+PROGRESS [release:case:prepare] 0.1 s PROGRESS release case prepare started
+PROGRESS [release:case:cadence_inconsistent] 8.4 s PROGRESS release case cadence_inconsistent passed
+PASS release:case:cadence_inconsistent 8.41 s
+PROGRESS [release:case:missinglocalprevious] 0.0 s started
+PROGRESS [release:case:missinglocalprevious] 0.1 s PROGRESS release case missinglocalprevious started
+PROGRESS [release:case:nestedtag] 2.8 s PROGRESS release case nestedtag passed
+PASS release:case:nestedtag 2.92 s
+PROGRESS [release:case:pushfail] 0.0 s started
+PROGRESS [release:case:pushfail] 0.1 s PROGRESS release case pushfail started
+PROGRESS [release:case:prepare] 5.1 s PROGRESS release case prepare passed
+PASS release:case:prepare 5.11 s
+PROGRESS [release:case:refrecovery] 0.0 s started
+PROGRESS [release:case:refrecovery] 0.1 s PROGRESS release case refrecovery started
+PROGRESS [release:case:missinglocalprevious] 7.0 s PROGRESS release case missinglocalprevious passed
+PASS release:case:missinglocalprevious 7.19 s
+PROGRESS [release:case:createrecovery] 0.0 s started
+PROGRESS [release:case:createrecovery] 0.1 s PROGRESS release case createrecovery started
+PROGRESS [worktree] 225.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:pushfail] 8.9 s PROGRESS release case pushfail passed
+PASS release:case:pushfail 8.96 s
+PROGRESS [release:case:stale_helpers] 0.0 s started
+PROGRESS [release:case:stale_helpers] 0.2 s PROGRESS release case stale_helpers started
+PROGRESS [release:case:refrecovery] 18.5 s PROGRESS release case refrecovery passed
+PASS release:case:refrecovery 18.62 s
+PROGRESS [release:case:success] 0.0 s started
+PROGRESS [release:case:success] 0.1 s PROGRESS release case success started
+PROGRESS [worktree] 240.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:createrecovery] 30.0 s running; last report: PROGRESS release case createrecovery started
+PROGRESS [release:case:stale_helpers] 28.4 s PROGRESS release case stale_helpers passed
+PROGRESS [worktree] 255.0 s running; last report: waiting for the next case report
+PASS release:case:stale_helpers 28.50 s
+PROGRESS [release:case:edition] 0.0 s started
+PROGRESS [release:case:edition] 0.1 s PROGRESS release case edition started
+PROGRESS [worktree] 259.0 s # Subtest: test-control-beacons
+PASS worktree 259.10 s
+PROGRESS [release:case:firstrelease] 0.0 s started
+PROGRESS [release:case:firstrelease] 0.1 s PROGRESS release case firstrelease started
+PROGRESS [release:case:createrecovery] 37.5 s PROGRESS release case createrecovery passed
+PASS release:case:createrecovery 37.52 s
+PROGRESS [release:case:cached_evidence] 0.0 s started
+PROGRESS [release:case:cached_evidence] 0.1 s PROGRESS release case cached_evidence started
+PROGRESS [release:case:firstrelease] 5.1 s PROGRESS release case firstrelease passed
+PASS release:case:firstrelease 5.13 s
+PROGRESS [release:case:composed_evidence] 0.0 s started
+PROGRESS [release:case:composed_evidence] 0.1 s PROGRESS release case composed_evidence started
+PROGRESS [release:case:success] 27.5 s PROGRESS release case success passed
+PASS release:case:success 27.60 s
+PROGRESS [release:case:concurrent] 0.0 s started
+PROGRESS [release:case:concurrent] 0.1 s PROGRESS release case concurrent started
+PROGRESS [release:case:edition] 12.9 s PROGRESS release case edition passed
+PASS release:case:edition 12.96 s
+PROGRESS [release-preparation] 0.0 s started
+PROGRESS [release-preparation] 15.0 s running; last report: waiting for the next case report
+PROGRESS [release-preparation] 17.9 s # Subtest: release preparation retimes only three source surfaces and is idempotent
+PASS release-preparation 17.92 s
+PROGRESS [github-body] 0.0 s started
+PROGRESS [github-body] 0.3 s # Subtest: GitHub prose profile case 1
+PASS github-body 0.27 s
+PROGRESS [license-fixtures] 0.0 s started
+PROGRESS [release:case:cached_evidence] 30.0 s running; last report: PROGRESS release case cached_evidence started
+PROGRESS [release:case:composed_evidence] 30.0 s running; last report: PROGRESS release case composed_evidence started
+PROGRESS [release:case:concurrent] 30.0 s running; last report: PROGRESS release case concurrent started
+PROGRESS [release:case:cached_evidence] 35.5 s PROGRESS release case cached_evidence passed
+PASS release:case:cached_evidence 35.65 s
+PROGRESS [publication-fixtures] 0.0 s started
+PROGRESS [release:case:composed_evidence] 34.8 s PROGRESS release case composed_evidence passed
+PASS release:case:composed_evidence 34.92 s
+PROGRESS [backup-intake] 0.0 s started
+PROGRESS [license-fixtures] 15.0 s running; last report: waiting for the next case report
+PASS backup-intake 2.26 s
+PROGRESS [checkpoint] 0.0 s started
+PASS publication-fixtures 5.59 s
+PROGRESS [work-orders-fixtures] 0.0 s started
+PROGRESS [release:case:concurrent] 45.0 s running; last report: PROGRESS release case concurrent started
+PROGRESS [license-fixtures] 30.0 s running; last report: waiting for the next case report
+PROGRESS [checkpoint] 15.0 s running; last report: waiting for the next case report
+PROGRESS [work-orders-fixtures] 15.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:concurrent] 60.0 s running; last report: PROGRESS release case concurrent started
+PASS checkpoint 26.29 s
+PROGRESS [kernel] 0.0 s started
+PROGRESS [kernel] 0.6 s # Subtest: AC1 evidence: no ambient Date.now or Math.random read on either branch (poisoned globals)
+PROGRESS [kernel] 1.6 s # Subtest: packages/kernel/dist/test/public-api.test.js
+PASS kernel 2.15 s
+PROGRESS [compiler] 0.0 s started
+PROGRESS [compiler] 0.5 s # Subtest: WO-029 seiri: exact identity, manifest membership and independent no-BigInt FNV agreement
+PROGRESS [license-fixtures] 44.3 s # Subtest: real npm refuses every validated manifest before packing, despite ambient script suppression
+PASS license-fixtures 44.31 s
+PROGRESS [console] 0.0 s started
+PROGRESS [compiler] 1.6 s # Subtest: WO-010 AC2 verifier compilation positively selects nested context, is pure and cannot retain implementer prose
+PASS compiler 1.63 s
+PROGRESS [adjacent-queue] 0.0 s started
+PROGRESS [work-orders-fixtures] 30.0 s running; last report: waiting for the next case report
+PROGRESS [console] 2.8 s # Subtest: WO-032 AC1/6 wo009: recorded JSON and both renders; pure, schema-valid, linked and bounded
+PASS console 2.85 s
+PROGRESS [authority-grants] 0.0 s started
+PROGRESS [authority-grants] 0.3 s # Subtest: WO-042 AC2 trace, effective envelope and runtime authorize agree for every layer and restoration
+PASS authority-grants 0.32 s
+PROGRESS [artifact-corpus] 0.0 s started
+PROGRESS [adjacent-queue] 2.4 s # Subtest: WO-042 queued fixes require diagnosis, announcement, steering checkpoint and current priority
+PASS adjacent-queue 2.42 s
+PROGRESS [artifact-corpus] 0.4 s # Subtest: WO-101 independent pair-arithmetic hash is planted on published FNV-1a-64 values
+PASS artifact-corpus 0.43 s
+PROGRESS [release:case:concurrent] 75.0 s running; last report: PROGRESS release case concurrent started
+PROGRESS [work-orders-fixtures] 45.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:concurrent] 90.0 s running; last report: PROGRESS release case concurrent started
+PROGRESS [work-orders-fixtures] 60.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:concurrent] 105.0 s running; last report: PROGRESS release case concurrent started
+PROGRESS [work-orders-fixtures] 75.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:concurrent] 120.0 s running; last report: PROGRESS release case concurrent started
+PROGRESS [work-orders-fixtures] 90.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:concurrent] 135.0 s running; last report: PROGRESS release case concurrent started
+PROGRESS [work-orders-fixtures] 105.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:concurrent] 150.0 s running; last report: PROGRESS release case concurrent started
+PROGRESS [work-orders-fixtures] 120.0 s running; last report: waiting for the next case report
+PROGRESS [release:case:concurrent] 165.0 s running; last report: PROGRESS release case concurrent started
+PROGRESS [work-orders-fixtures] 133.1 s # Subtest: index derives release membership, no-release, unreleased, active, blocked, ready, malformed and unknown
+PASS work-orders-fixtures 133.29 s
+PROGRESS [release:case:concurrent] 179.0 s # Subtest: test-concurrent-control
+PROGRESS [release:case:concurrent] 179.0 s PROGRESS release case concurrent passed
+PASS release:case:concurrent 179.09 s
+npm test: 19 passed; 0 failed; 450.49 s; 62 fresh tasks

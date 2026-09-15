@@ -1,0 +1,30 @@
+TAP version 13
+# Subtest: current evidence follows one manifest, independent of active order; explicit historical pins survive
+ok 1 - current evidence follows one manifest, independent of active order; explicit historical pins survive
+  ---
+  duration_ms: 3.176458
+  ...
+# Subtest: repair revisions preserve the original artifact and verification evidence
+ok 2 - repair revisions preserve the original artifact and verification evidence
+  ---
+  duration_ms: 2.7765
+  ...
+# Subtest: evidence compares component release labels by content and preserves behavioral inputs
+ok 3 - evidence compares component release labels by content and preserves behavioral inputs
+  ---
+  duration_ms: 0.606208
+  ...
+# Subtest: immutable evidence admits a component-only bump while source, external dependency, and evidence changes invalidate
+ok 4 - immutable evidence admits a component-only bump while source, external dependency, and evidence changes invalidate
+  ---
+  duration_ms: 1611.609917
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1689.62925
