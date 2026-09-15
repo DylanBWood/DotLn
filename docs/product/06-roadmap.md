@@ -20,6 +20,8 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-046 activation completion (2026-09-15):** application `v0.21.0` stages the executable Program type and typed continuation decoder; kernel `0.4.0` and skeleton `0.18.0` carry the API and persisted-input boundary changes. The full authoring grammar, event schema and semantic/artifact identities are unchanged.
+
 **WO-067 activation completion (2026-09-15):** application `v0.19.0` is the
 next minor above the observed local annotated `v0.18.0`. The activation had
 retained its version placeholder; this completes its declared minor assignment.

@@ -1,4 +1,4 @@
-# WO-046 — The executable program grammar is a type: `ExecutableProgramV1` is what the stepper accepts, continuations decode against it, and a deferred kind fails at decode rather than mid-episode (version assigned at activation)
+# WO-046 — The executable program grammar is a type: `ExecutableProgramV1` is what the stepper accepts, continuations decode against it, and a deferred kind fails at decode rather than mid-episode (v0.21.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
