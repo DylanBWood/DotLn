@@ -35,7 +35,7 @@ labeled below; an unobserved value is unknown.
 | Refused for harness versions and effort | `scripts/resume.mjs` refuses an attested effort below the order's `Effort:` line (561), an effort value without a recorded selector or readback (492, 510) and the worker transport refuses CLI versions below 2.1.270 / 0.154.0 and unrecorded effort pairs (`packages/skeleton/src/worker-transport.ts` 182–256). `ultra` and `ultra code` match no label and become `unknown`. |
 | Release close is a multi-hour stage | v0.17.0 needed a patch order and manual archival; v0.17.5 failed inside its own gate and needed a fix pull request; v0.17.6 was never published (two failed gates, blockers cleared by hand, egress discovered last, two override episodes); v0.17.7 ran a fresh 605 s gate with 0 of 82 reused. On main, the writer-isolation unit refuses every shell command that is not on an exact metadata list, so a session cannot build, bootstrap or inspect there. |
 | Refutation is theoretical | Receipts 009–012: four holds, dispatch-to-file 2,454, 833, 333 and 755 s against a 120 s budget; receipts 010 and 011 say in their own words that the holds are "logical counterexamples to the contract, not executed failures". Two holds were overridden by the operator; receipt 012 re-raised the hold 011 had overridden, and WO-131 amendment 13 then re-imported it as scope, producing a design (kernel-denial-conditioned reuse) that failed VER-001 and was removed by D019. |
-| Claude cannot ask, Codex can | Every DotLn hook path answers `deny` or nothing; no path emits `ask`. A hook `deny` pre-empts the host's own permission prompt, so the operator's global `allowUnsandboxedCommands` change (WO-044-D009) never reaches a DotLn-refused command. Codex fires no project hooks, so it only ever sees the host's approval prompt. Five of the six recorded refusals this week were the DotLn classifier, each repaired by adding one tool name; `SubagentHandback` and `SendMessage` were the next two, live in this pass. |
+| Claude cannot ask, Codex can | Every DotLn hook path answers `deny` or nothing; no path emits `ask`. A hook `deny` pre-empts the host's own permission prompt, so the operator's global `allowUnsandboxedCommands` change (WO-044-D009) never reaches a DotLn-refused command. Codex fires no project hooks, so it only ever sees the host's approval prompt. Five of the six recorded refusals this week were the DotLn classifier, each repaired by adding one tool name; `SubagentHandback` and `SendMessage` were the next two, live in this pass. The ignored hook journals for 2026-09-12 to 2026-09-15 hold 21 writer-isolation refusals, all inside three release-close sessions on main and one subagent session, and 48 command-classification refusals, 38 of them on 2026-09-15. The 2026-09-15 effort refusal on Codex had a specific cause: the discovery registry lists only `max` for Codex although the 0.154.0 probe recorded every level as accepted, so any other value was refused. |
 
 ## 2. Meta pass — the four planning passes and why each compounded the problem
 
@@ -170,6 +170,17 @@ Each is one edit in one place, not an order. WO-132 carries them as criteria.
 10. **Cross-session claims need a second process.** Any future reuse or
     composition claim is established only by a gate run from a different shell
     and session, never by a same-session proxy.
+11. **Refinements from the refusal inventory, carried into WO-132's
+    execution as part of its cited diagnosis.** The lifecycle commands honour
+    an open `operator override:` session with a recorded bypassed
+    requirement instead of needing an ad hoc recovery script (WO-044's
+    verifier needed one). A post-tool observer failure, such as a read
+    outside the worktree surface, never blocks a completed read. Release
+    close lists ignored material under the local lanes and untracked files
+    outside the tracked tree and continues; only tracked dirt refuses. The
+    plan-override command needs no actor flags once the refuter's holds are
+    dispositions. The discovery registry records every effort level each
+    harness's probe accepted, so a registry gap can never refuse a label.
 
 ## 6. What stays
 
