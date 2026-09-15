@@ -1,0 +1,5529 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-132",
+  "observedAt": "2026-09-15T07:29:46.051Z",
+  "command": "npm test",
+  "source": "Actual host runner records; no suite reuse or simulated gate timings.",
+  "runtime": {
+    "node": "v22.2.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "scheduler": {
+      "sharedCap": 4,
+      "factorPerSlot": 2,
+      "maxHostLoadPerCpu": 2,
+      "scheduler": "exclusive-machinery-v1"
+    }
+  },
+  "baseline": {
+    "durationMs": 605000,
+    "freshTasks": 82,
+    "source": "docs/planning/machinery-stand-down-2026-09-15.md",
+    "sourceKind": "prior planning observation; not rerun"
+  },
+  "integrationAttempt": {
+    "checkId": "npm test",
+    "recordedAt": "2026-09-15T06:39:27.323Z",
+    "treeHash": "c04bfe491cfa1891ae2a0dbcfe1cf4f2bfe2f2fc",
+    "codeIdentity": "ec1ba06559b7fa0735af5d8ac56a0569c6caac5004a245191da9b8d5d1cbaa36",
+    "durationMs": 243151,
+    "exitCode": 1,
+    "executed": true,
+    "evidenceRef": "host-gate:ec1ba06559b7fa0735af5d8ac56a0569c6caac5004a245191da9b8d5d1cbaa36:npm test",
+    "executionMode": "fresh",
+    "freshTasks": 62,
+    "reusedTasks": 0,
+    "requiredSuites": [
+      "build",
+      "release-preparation",
+      "github-body",
+      "license-fixtures",
+      "license-surfaces",
+      "publication-fixtures",
+      "backup-intake",
+      "resume",
+      "checkpoint",
+      "worktree",
+      "release",
+      "work-orders-fixtures",
+      "kernel",
+      "compiler",
+      "skeleton",
+      "console",
+      "adjacent-queue",
+      "authority-grants",
+      "artifact-corpus"
+    ],
+    "failedSuites": [
+      "checkpoint",
+      "compiler",
+      "skeleton",
+      "console"
+    ],
+    "releaseCases": 43,
+    "releaseLanes": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "maximumConcurrentReleaseCases": 4,
+    "taskTimeline": [
+      {
+        "name": "build",
+        "startedAt": "2026-09-15T06:35:24.173Z",
+        "finishedAt": "2026-09-15T06:35:26.514Z",
+        "durationMs": 2341,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "concurrentAtStart": [],
+        "predecessors": []
+      },
+      {
+        "name": "license-surfaces",
+        "startedAt": "2026-09-15T06:35:26.515Z",
+        "finishedAt": "2026-09-15T06:35:28.443Z",
+        "durationMs": 1928,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build"
+        ]
+      },
+      {
+        "name": "release:prepare",
+        "startedAt": "2026-09-15T06:35:28.444Z",
+        "finishedAt": "2026-09-15T06:35:30.060Z",
+        "durationMs": 1616,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [],
+        "predecessors": [
+          "build",
+          "license-surfaces"
+        ]
+      },
+      {
+        "name": "release:case:preflight",
+        "startedAt": "2026-09-15T06:35:30.060Z",
+        "finishedAt": "2026-09-15T06:35:30.453Z",
+        "durationMs": 392,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces"
+        ]
+      },
+      {
+        "name": "release:case:surfaces",
+        "startedAt": "2026-09-15T06:35:30.453Z",
+        "finishedAt": "2026-09-15T06:35:46.535Z",
+        "durationMs": 16082,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:preflight"
+        ]
+      },
+      {
+        "name": "release:case:surfaces_local_snapshot",
+        "startedAt": "2026-09-15T06:35:46.536Z",
+        "finishedAt": "2026-09-15T06:35:51.046Z",
+        "durationMs": 4510,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:surfaces"
+        ]
+      },
+      {
+        "name": "release:case:prepare_independent",
+        "startedAt": "2026-09-15T06:35:51.046Z",
+        "finishedAt": "2026-09-15T06:35:55.163Z",
+        "durationMs": 4117,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:surfaces_local_snapshot"
+        ]
+      },
+      {
+        "name": "release:case:license_surfaces",
+        "startedAt": "2026-09-15T06:35:55.164Z",
+        "finishedAt": "2026-09-15T06:36:08.850Z",
+        "durationMs": 13685,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:prepare_independent"
+        ]
+      },
+      {
+        "name": "release:case:surfaces_committed_readme",
+        "startedAt": "2026-09-15T06:36:08.850Z",
+        "finishedAt": "2026-09-15T06:36:15.847Z",
+        "durationMs": 6997,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:license_surfaces"
+        ]
+      },
+      {
+        "name": "release:case:surfaces_lower",
+        "startedAt": "2026-09-15T06:36:15.848Z",
+        "finishedAt": "2026-09-15T06:36:21.535Z",
+        "durationMs": 5687,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:surfaces_committed_readme"
+        ]
+      },
+      {
+        "name": "release:case:surfaces_first",
+        "startedAt": "2026-09-15T06:36:21.535Z",
+        "finishedAt": "2026-09-15T06:36:26.243Z",
+        "durationMs": 4708,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:surfaces_lower"
+        ]
+      },
+      {
+        "name": "release:case:surfaces_component",
+        "startedAt": "2026-09-15T06:36:26.243Z",
+        "finishedAt": "2026-09-15T06:36:36.212Z",
+        "durationMs": 9969,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:surfaces_first"
+        ]
+      },
+      {
+        "name": "release:case:surfaces_non_source",
+        "startedAt": "2026-09-15T06:36:36.212Z",
+        "finishedAt": "2026-09-15T06:36:40.768Z",
+        "durationMs": 4555,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:surfaces_component"
+        ]
+      },
+      {
+        "name": "release:case:surfaces_new_component",
+        "startedAt": "2026-09-15T06:36:40.768Z",
+        "finishedAt": "2026-09-15T06:36:45.488Z",
+        "durationMs": 4720,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:surfaces_non_source"
+        ]
+      },
+      {
+        "name": "release:case:surfaceclose",
+        "startedAt": "2026-09-15T06:36:45.488Z",
+        "finishedAt": "2026-09-15T06:36:57.377Z",
+        "durationMs": 11889,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:surfaces_new_component"
+        ]
+      },
+      {
+        "name": "release:case:surfaceclose_linked",
+        "startedAt": "2026-09-15T06:36:57.377Z",
+        "finishedAt": "2026-09-15T06:37:09.158Z",
+        "durationMs": 11780,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:surfaceclose"
+        ]
+      },
+      {
+        "name": "release:case:bodyclose",
+        "startedAt": "2026-09-15T06:37:09.158Z",
+        "finishedAt": "2026-09-15T06:37:18.961Z",
+        "durationMs": 9801,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:surfaceclose_linked"
+        ]
+      },
+      {
+        "name": "release:case:dirty",
+        "startedAt": "2026-09-15T06:37:18.961Z",
+        "finishedAt": "2026-09-15T06:37:31.617Z",
+        "durationMs": 12656,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:bodyclose"
+        ]
+      },
+      {
+        "name": "release:case:unreachable",
+        "startedAt": "2026-09-15T06:37:31.617Z",
+        "finishedAt": "2026-09-15T06:37:40.213Z",
+        "durationMs": 8596,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:dirty"
+        ]
+      },
+      {
+        "name": "skeleton",
+        "startedAt": "2026-09-15T06:35:28.444Z",
+        "finishedAt": "2026-09-15T06:37:41.309Z",
+        "durationMs": 132859,
+        "exitCode": 1,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "release:prepare",
+          "resume",
+          "worktree"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces"
+        ]
+      },
+      {
+        "name": "release:case:derived",
+        "startedAt": "2026-09-15T06:37:40.213Z",
+        "finishedAt": "2026-09-15T06:37:43.597Z",
+        "durationMs": 3384,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "skeleton"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:unreachable"
+        ]
+      },
+      {
+        "name": "resume",
+        "startedAt": "2026-09-15T06:35:28.444Z",
+        "finishedAt": "2026-09-15T06:37:44.080Z",
+        "durationMs": 135634,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          1
+        ],
+        "concurrentAtStart": [
+          "release:prepare"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces"
+        ]
+      },
+      {
+        "name": "release:case:nonmain",
+        "startedAt": "2026-09-15T06:37:43.597Z",
+        "finishedAt": "2026-09-15T06:37:45.005Z",
+        "durationMs": 1408,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "release:case:settings_scope"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:derived"
+        ]
+      },
+      {
+        "name": "release:case:settings_scope",
+        "startedAt": "2026-09-15T06:37:41.313Z",
+        "finishedAt": "2026-09-15T06:37:45.336Z",
+        "durationMs": 4023,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "resume",
+          "worktree",
+          "release:case:derived"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "skeleton"
+        ]
+      },
+      {
+        "name": "release:case:divergence",
+        "startedAt": "2026-09-15T06:37:44.081Z",
+        "finishedAt": "2026-09-15T06:37:45.874Z",
+        "durationMs": 1793,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          1
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:settings_scope",
+          "release:case:nonmain"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "resume"
+        ]
+      },
+      {
+        "name": "release:case:malformed",
+        "startedAt": "2026-09-15T06:37:45.005Z",
+        "finishedAt": "2026-09-15T06:37:46.971Z",
+        "durationMs": 1966,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:settings_scope",
+          "release:case:divergence"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:nonmain"
+        ]
+      },
+      {
+        "name": "release:case:splitorigin",
+        "startedAt": "2026-09-15T06:37:46.972Z",
+        "finishedAt": "2026-09-15T06:37:48.029Z",
+        "durationMs": 1057,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:missinggh",
+          "release:case:unauthenticated"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:malformed"
+        ]
+      },
+      {
+        "name": "release:case:unauthenticated",
+        "startedAt": "2026-09-15T06:37:45.875Z",
+        "finishedAt": "2026-09-15T06:37:48.430Z",
+        "durationMs": 2555,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          1
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:malformed",
+          "release:case:missinggh"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:divergence"
+        ]
+      },
+      {
+        "name": "release:case:missinggh",
+        "startedAt": "2026-09-15T06:37:45.336Z",
+        "finishedAt": "2026-09-15T06:37:49.122Z",
+        "durationMs": 3786,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:divergence",
+          "release:case:malformed"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:settings_scope"
+        ]
+      },
+      {
+        "name": "release:case:lower",
+        "startedAt": "2026-09-15T06:37:48.030Z",
+        "finishedAt": "2026-09-15T06:37:50.590Z",
+        "durationMs": 2560,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:missinggh",
+          "release:case:unauthenticated"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:splitorigin"
+        ]
+      },
+      {
+        "name": "release:case:cadence_missing",
+        "startedAt": "2026-09-15T06:37:49.123Z",
+        "finishedAt": "2026-09-15T06:37:51.463Z",
+        "durationMs": 2340,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:lower",
+          "release:case:failures"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:missinggh"
+        ]
+      },
+      {
+        "name": "release:case:failures",
+        "startedAt": "2026-09-15T06:37:48.430Z",
+        "finishedAt": "2026-09-15T06:37:52.271Z",
+        "durationMs": 3840,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          1
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:missinggh",
+          "release:case:lower"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:unauthenticated"
+        ]
+      },
+      {
+        "name": "release:case:conflict",
+        "startedAt": "2026-09-15T06:37:51.464Z",
+        "finishedAt": "2026-09-15T06:37:53.805Z",
+        "durationMs": 2341,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:failures",
+          "release:case:cadence_inconsistent"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:cadence_missing"
+        ]
+      },
+      {
+        "name": "release:case:localconflict",
+        "startedAt": "2026-09-15T06:37:52.271Z",
+        "finishedAt": "2026-09-15T06:37:54.265Z",
+        "durationMs": 1993,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          1
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:cadence_inconsistent",
+          "release:case:conflict"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:failures"
+        ]
+      },
+      {
+        "name": "release:case:cadence_inconsistent",
+        "startedAt": "2026-09-15T06:37:50.591Z",
+        "finishedAt": "2026-09-15T06:37:55.774Z",
+        "durationMs": 5182,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:failures",
+          "release:case:cadence_missing"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:lower"
+        ]
+      },
+      {
+        "name": "release:case:nestedtag",
+        "startedAt": "2026-09-15T06:37:53.805Z",
+        "finishedAt": "2026-09-15T06:37:55.900Z",
+        "durationMs": 2095,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:cadence_inconsistent",
+          "release:case:localconflict"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:conflict"
+        ]
+      },
+      {
+        "name": "release:case:prepare",
+        "startedAt": "2026-09-15T06:37:54.265Z",
+        "finishedAt": "2026-09-15T06:37:59.394Z",
+        "durationMs": 5128,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          1
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:cadence_inconsistent",
+          "release:case:nestedtag"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:localconflict"
+        ]
+      },
+      {
+        "name": "release:case:missinglocalprevious",
+        "startedAt": "2026-09-15T06:37:55.774Z",
+        "finishedAt": "2026-09-15T06:38:02.278Z",
+        "durationMs": 6504,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:nestedtag",
+          "release:case:prepare"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:cadence_inconsistent"
+        ]
+      },
+      {
+        "name": "release:case:pushfail",
+        "startedAt": "2026-09-15T06:37:55.901Z",
+        "finishedAt": "2026-09-15T06:38:02.682Z",
+        "durationMs": 6781,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:prepare",
+          "release:case:missinglocalprevious"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:nestedtag"
+        ]
+      },
+      {
+        "name": "release:case:refrecovery",
+        "startedAt": "2026-09-15T06:37:59.394Z",
+        "finishedAt": "2026-09-15T06:38:11.247Z",
+        "durationMs": 11853,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          1
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:missinglocalprevious",
+          "release:case:pushfail"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:prepare"
+        ]
+      },
+      {
+        "name": "release:case:stale_helpers",
+        "startedAt": "2026-09-15T06:38:02.682Z",
+        "finishedAt": "2026-09-15T06:38:20.615Z",
+        "durationMs": 17931,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:refrecovery",
+          "release:case:createrecovery"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:pushfail"
+        ]
+      },
+      {
+        "name": "worktree",
+        "startedAt": "2026-09-15T06:35:28.444Z",
+        "finishedAt": "2026-09-15T06:38:23.527Z",
+        "durationMs": 175080,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          2
+        ],
+        "concurrentAtStart": [
+          "release:prepare",
+          "resume"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces"
+        ]
+      },
+      {
+        "name": "release:case:createrecovery",
+        "startedAt": "2026-09-15T06:38:02.278Z",
+        "finishedAt": "2026-09-15T06:38:25.557Z",
+        "durationMs": 23279,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:pushfail",
+          "release:case:refrecovery"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:missinglocalprevious"
+        ]
+      },
+      {
+        "name": "release:case:firstrelease",
+        "startedAt": "2026-09-15T06:38:23.528Z",
+        "finishedAt": "2026-09-15T06:38:27.249Z",
+        "durationMs": 3721,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          2
+        ],
+        "concurrentAtStart": [
+          "release:case:createrecovery",
+          "release:case:success",
+          "release:case:edition"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "worktree"
+        ]
+      },
+      {
+        "name": "release:case:success",
+        "startedAt": "2026-09-15T06:38:11.247Z",
+        "finishedAt": "2026-09-15T06:38:28.980Z",
+        "durationMs": 17732,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          1
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:createrecovery",
+          "release:case:stale_helpers"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:refrecovery"
+        ]
+      },
+      {
+        "name": "release:case:edition",
+        "startedAt": "2026-09-15T06:38:20.615Z",
+        "finishedAt": "2026-09-15T06:38:29.715Z",
+        "durationMs": 9100,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "worktree",
+          "release:case:createrecovery",
+          "release:case:success"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:stale_helpers"
+        ]
+      },
+      {
+        "name": "release:case:cached_evidence",
+        "startedAt": "2026-09-15T06:38:25.558Z",
+        "finishedAt": "2026-09-15T06:38:29.922Z",
+        "durationMs": 4364,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "release:case:success",
+          "release:case:edition",
+          "release:case:firstrelease"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:createrecovery"
+        ]
+      },
+      {
+        "name": "github-body",
+        "startedAt": "2026-09-15T06:38:29.922Z",
+        "finishedAt": "2026-09-15T06:38:30.046Z",
+        "durationMs": 123,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "release:case:composed_evidence",
+          "release:case:concurrent",
+          "release-preparation"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "release:case:cached_evidence"
+        ]
+      },
+      {
+        "name": "release-preparation",
+        "startedAt": "2026-09-15T06:38:29.716Z",
+        "finishedAt": "2026-09-15T06:38:39.411Z",
+        "durationMs": 9695,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "release:case:cached_evidence",
+          "release:case:composed_evidence",
+          "release:case:concurrent"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "release:case:edition"
+        ]
+      },
+      {
+        "name": "publication-fixtures",
+        "startedAt": "2026-09-15T06:38:39.412Z",
+        "finishedAt": "2026-09-15T06:38:41.422Z",
+        "durationMs": 2010,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "release:case:composed_evidence",
+          "release:case:concurrent",
+          "license-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "release-preparation"
+        ]
+      },
+      {
+        "name": "release:case:composed_evidence",
+        "startedAt": "2026-09-15T06:38:27.249Z",
+        "finishedAt": "2026-09-15T06:38:42.040Z",
+        "durationMs": 14791,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          2
+        ],
+        "concurrentAtStart": [
+          "release:case:success",
+          "release:case:edition",
+          "release:case:cached_evidence"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:firstrelease"
+        ]
+      },
+      {
+        "name": "backup-intake",
+        "startedAt": "2026-09-15T06:38:41.423Z",
+        "finishedAt": "2026-09-15T06:38:42.071Z",
+        "durationMs": 648,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "release:case:composed_evidence",
+          "release:case:concurrent",
+          "license-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "publication-fixtures"
+        ]
+      },
+      {
+        "name": "checkpoint",
+        "startedAt": "2026-09-15T06:38:42.041Z",
+        "finishedAt": "2026-09-15T06:38:50.499Z",
+        "durationMs": 8458,
+        "exitCode": 1,
+        "executed": true,
+        "lanes": [
+          2
+        ],
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "backup-intake"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "release:case:composed_evidence"
+        ]
+      },
+      {
+        "name": "kernel",
+        "startedAt": "2026-09-15T06:38:50.499Z",
+        "finishedAt": "2026-09-15T06:38:51.214Z",
+        "durationMs": 715,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          2
+        ],
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "checkpoint",
+          "skeleton"
+        ]
+      },
+      {
+        "name": "compiler",
+        "startedAt": "2026-09-15T06:38:51.214Z",
+        "finishedAt": "2026-09-15T06:38:52.081Z",
+        "durationMs": 865,
+        "exitCode": 1,
+        "executed": true,
+        "lanes": [
+          2
+        ],
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "kernel"
+        ]
+      },
+      {
+        "name": "license-fixtures",
+        "startedAt": "2026-09-15T06:38:30.046Z",
+        "finishedAt": "2026-09-15T06:38:52.535Z",
+        "durationMs": 22489,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "release:case:composed_evidence",
+          "release:case:concurrent",
+          "release-preparation"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "github-body"
+        ]
+      },
+      {
+        "name": "adjacent-queue",
+        "startedAt": "2026-09-15T06:38:52.536Z",
+        "finishedAt": "2026-09-15T06:38:53.655Z",
+        "durationMs": 1119,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "work-orders-fixtures",
+          "console"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "license-fixtures"
+        ]
+      },
+      {
+        "name": "authority-grants",
+        "startedAt": "2026-09-15T06:38:53.656Z",
+        "finishedAt": "2026-09-15T06:38:53.827Z",
+        "durationMs": 171,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "work-orders-fixtures",
+          "console"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "adjacent-queue"
+        ]
+      },
+      {
+        "name": "artifact-corpus",
+        "startedAt": "2026-09-15T06:38:53.827Z",
+        "finishedAt": "2026-09-15T06:38:54.069Z",
+        "durationMs": 242,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          0
+        ],
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "work-orders-fixtures",
+          "console"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "authority-grants"
+        ]
+      },
+      {
+        "name": "console",
+        "startedAt": "2026-09-15T06:38:52.086Z",
+        "finishedAt": "2026-09-15T06:38:54.208Z",
+        "durationMs": 2122,
+        "exitCode": 1,
+        "executed": true,
+        "lanes": [
+          2
+        ],
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "work-orders-fixtures"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "compiler"
+        ]
+      },
+      {
+        "name": "work-orders-fixtures",
+        "startedAt": "2026-09-15T06:38:42.071Z",
+        "finishedAt": "2026-09-15T06:39:26.910Z",
+        "durationMs": 44839,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          3
+        ],
+        "concurrentAtStart": [
+          "release:case:concurrent",
+          "license-fixtures",
+          "checkpoint"
+        ],
+        "predecessors": [
+          "build",
+          "license-surfaces",
+          "backup-intake"
+        ]
+      },
+      {
+        "name": "release:case:concurrent",
+        "startedAt": "2026-09-15T06:38:28.980Z",
+        "finishedAt": "2026-09-15T06:39:27.172Z",
+        "durationMs": 58191,
+        "exitCode": 0,
+        "executed": true,
+        "lanes": [
+          1
+        ],
+        "concurrentAtStart": [
+          "release:case:edition",
+          "release:case:cached_evidence",
+          "release:case:composed_evidence"
+        ],
+        "predecessors": [
+          "build",
+          "release:prepare",
+          "license-surfaces",
+          "release:case:success"
+        ]
+      }
+    ]
+  },
+  "consecutiveFreshRuns": [
+    {
+      "checkId": "npm test",
+      "recordedAt": "2026-09-15T07:21:02.597Z",
+      "treeHash": "da3a234c6b88b46d3f30b8aeade887c0f7df2683",
+      "codeIdentity": "e2a8b9c7620bae5313ee0ae3eb0d27ebf06917a758403015cb37a3057834d646",
+      "durationMs": 254908,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:e2a8b9c7620bae5313ee0ae3eb0d27ebf06917a758403015cb37a3057834d646:npm test",
+      "executionMode": "fresh",
+      "freshTasks": 62,
+      "reusedTasks": 0,
+      "requiredSuites": [
+        "build",
+        "release-preparation",
+        "github-body",
+        "license-fixtures",
+        "license-surfaces",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "checkpoint",
+        "worktree",
+        "release",
+        "work-orders-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "adjacent-queue",
+        "authority-grants",
+        "artifact-corpus"
+      ],
+      "failedSuites": [],
+      "releaseCases": 43,
+      "releaseLanes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "maximumConcurrentReleaseCases": 4,
+      "taskTimeline": [
+        {
+          "name": "build",
+          "startedAt": "2026-09-15T07:16:47.690Z",
+          "finishedAt": "2026-09-15T07:16:49.987Z",
+          "durationMs": 2297,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "concurrentAtStart": [],
+          "predecessors": []
+        },
+        {
+          "name": "license-surfaces",
+          "startedAt": "2026-09-15T07:16:49.988Z",
+          "finishedAt": "2026-09-15T07:16:51.877Z",
+          "durationMs": 1889,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [],
+          "predecessors": [
+            "build"
+          ]
+        },
+        {
+          "name": "release:prepare",
+          "startedAt": "2026-09-15T07:16:51.877Z",
+          "finishedAt": "2026-09-15T07:16:53.416Z",
+          "durationMs": 1538,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:preflight",
+          "startedAt": "2026-09-15T07:16:53.416Z",
+          "finishedAt": "2026-09-15T07:16:53.838Z",
+          "durationMs": 422,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:surfaces",
+          "startedAt": "2026-09-15T07:16:53.839Z",
+          "finishedAt": "2026-09-15T07:17:08.024Z",
+          "durationMs": 14185,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:preflight"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_local_snapshot",
+          "startedAt": "2026-09-15T07:17:08.025Z",
+          "finishedAt": "2026-09-15T07:17:12.679Z",
+          "durationMs": 4654,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces"
+          ]
+        },
+        {
+          "name": "release:case:prepare_independent",
+          "startedAt": "2026-09-15T07:17:12.679Z",
+          "finishedAt": "2026-09-15T07:17:17.189Z",
+          "durationMs": 4509,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_local_snapshot"
+          ]
+        },
+        {
+          "name": "release:case:license_surfaces",
+          "startedAt": "2026-09-15T07:17:17.190Z",
+          "finishedAt": "2026-09-15T07:17:30.029Z",
+          "durationMs": 12839,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:prepare_independent"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_committed_readme",
+          "startedAt": "2026-09-15T07:17:30.030Z",
+          "finishedAt": "2026-09-15T07:17:38.082Z",
+          "durationMs": 8052,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:license_surfaces"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_lower",
+          "startedAt": "2026-09-15T07:17:38.082Z",
+          "finishedAt": "2026-09-15T07:17:43.763Z",
+          "durationMs": 5677,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_committed_readme"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_first",
+          "startedAt": "2026-09-15T07:17:43.764Z",
+          "finishedAt": "2026-09-15T07:17:48.275Z",
+          "durationMs": 4511,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_lower"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_component",
+          "startedAt": "2026-09-15T07:17:48.275Z",
+          "finishedAt": "2026-09-15T07:17:58.730Z",
+          "durationMs": 10453,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_first"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_non_source",
+          "startedAt": "2026-09-15T07:17:58.730Z",
+          "finishedAt": "2026-09-15T07:18:03.279Z",
+          "durationMs": 4549,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_component"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_new_component",
+          "startedAt": "2026-09-15T07:18:03.280Z",
+          "finishedAt": "2026-09-15T07:18:07.868Z",
+          "durationMs": 4587,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_non_source"
+          ]
+        },
+        {
+          "name": "release:case:surfaceclose",
+          "startedAt": "2026-09-15T07:18:07.868Z",
+          "finishedAt": "2026-09-15T07:18:19.501Z",
+          "durationMs": 11633,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_new_component"
+          ]
+        },
+        {
+          "name": "release:case:surfaceclose_linked",
+          "startedAt": "2026-09-15T07:18:19.502Z",
+          "finishedAt": "2026-09-15T07:18:30.912Z",
+          "durationMs": 11410,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaceclose"
+          ]
+        },
+        {
+          "name": "release:case:bodyclose",
+          "startedAt": "2026-09-15T07:18:30.912Z",
+          "finishedAt": "2026-09-15T07:18:42.052Z",
+          "durationMs": 11139,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaceclose_linked"
+          ]
+        },
+        {
+          "name": "release:case:dirty",
+          "startedAt": "2026-09-15T07:18:42.053Z",
+          "finishedAt": "2026-09-15T07:18:58.763Z",
+          "durationMs": 16710,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:bodyclose"
+          ]
+        },
+        {
+          "name": "release:case:unreachable",
+          "startedAt": "2026-09-15T07:18:58.764Z",
+          "finishedAt": "2026-09-15T07:19:09.234Z",
+          "durationMs": 10469,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:dirty"
+          ]
+        },
+        {
+          "name": "skeleton",
+          "startedAt": "2026-09-15T07:16:51.878Z",
+          "finishedAt": "2026-09-15T07:19:11.711Z",
+          "durationMs": 139828,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "release:prepare",
+            "resume",
+            "worktree"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:derived",
+          "startedAt": "2026-09-15T07:19:09.234Z",
+          "finishedAt": "2026-09-15T07:19:13.324Z",
+          "durationMs": 4090,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:unreachable"
+          ]
+        },
+        {
+          "name": "resume",
+          "startedAt": "2026-09-15T07:16:51.877Z",
+          "finishedAt": "2026-09-15T07:19:14.410Z",
+          "durationMs": 142531,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "release:prepare"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:nonmain",
+          "startedAt": "2026-09-15T07:19:13.325Z",
+          "finishedAt": "2026-09-15T07:19:14.614Z",
+          "durationMs": 1289,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "release:case:settings_scope"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:derived"
+          ]
+        },
+        {
+          "name": "release:case:settings_scope",
+          "startedAt": "2026-09-15T07:19:11.711Z",
+          "finishedAt": "2026-09-15T07:19:16.091Z",
+          "durationMs": 4380,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "release:case:derived"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "skeleton"
+          ]
+        },
+        {
+          "name": "release:case:divergence",
+          "startedAt": "2026-09-15T07:19:14.411Z",
+          "finishedAt": "2026-09-15T07:19:16.283Z",
+          "durationMs": 1872,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:settings_scope",
+            "release:case:nonmain"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "resume"
+          ]
+        },
+        {
+          "name": "release:case:malformed",
+          "startedAt": "2026-09-15T07:19:14.614Z",
+          "finishedAt": "2026-09-15T07:19:16.615Z",
+          "durationMs": 2001,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:settings_scope",
+            "release:case:divergence"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:nonmain"
+          ]
+        },
+        {
+          "name": "release:case:splitorigin",
+          "startedAt": "2026-09-15T07:19:16.616Z",
+          "finishedAt": "2026-09-15T07:19:18.437Z",
+          "durationMs": 1821,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinggh",
+            "release:case:unauthenticated"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:malformed"
+          ]
+        },
+        {
+          "name": "release:case:unauthenticated",
+          "startedAt": "2026-09-15T07:19:16.284Z",
+          "finishedAt": "2026-09-15T07:19:19.548Z",
+          "durationMs": 3264,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:malformed",
+            "release:case:missinggh"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:divergence"
+          ]
+        },
+        {
+          "name": "release:case:missinggh",
+          "startedAt": "2026-09-15T07:19:16.091Z",
+          "finishedAt": "2026-09-15T07:19:19.845Z",
+          "durationMs": 3753,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:divergence",
+            "release:case:malformed"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:settings_scope"
+          ]
+        },
+        {
+          "name": "release:case:lower",
+          "startedAt": "2026-09-15T07:19:18.437Z",
+          "finishedAt": "2026-09-15T07:19:21.336Z",
+          "durationMs": 2899,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinggh",
+            "release:case:unauthenticated"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:splitorigin"
+          ]
+        },
+        {
+          "name": "release:case:cadence_missing",
+          "startedAt": "2026-09-15T07:19:19.845Z",
+          "finishedAt": "2026-09-15T07:19:23.035Z",
+          "durationMs": 3189,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:lower",
+            "release:case:failures"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:missinggh"
+          ]
+        },
+        {
+          "name": "release:case:failures",
+          "startedAt": "2026-09-15T07:19:19.549Z",
+          "finishedAt": "2026-09-15T07:19:24.164Z",
+          "durationMs": 4615,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinggh",
+            "release:case:lower"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:unauthenticated"
+          ]
+        },
+        {
+          "name": "release:case:conflict",
+          "startedAt": "2026-09-15T07:19:23.035Z",
+          "finishedAt": "2026-09-15T07:19:25.632Z",
+          "durationMs": 2597,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:failures",
+            "release:case:cadence_inconsistent"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:cadence_missing"
+          ]
+        },
+        {
+          "name": "release:case:localconflict",
+          "startedAt": "2026-09-15T07:19:24.164Z",
+          "finishedAt": "2026-09-15T07:19:26.136Z",
+          "durationMs": 1971,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:cadence_inconsistent",
+            "release:case:conflict"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:failures"
+          ]
+        },
+        {
+          "name": "release:case:cadence_inconsistent",
+          "startedAt": "2026-09-15T07:19:21.336Z",
+          "finishedAt": "2026-09-15T07:19:26.710Z",
+          "durationMs": 5373,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:failures",
+            "release:case:cadence_missing"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:lower"
+          ]
+        },
+        {
+          "name": "release:case:nestedtag",
+          "startedAt": "2026-09-15T07:19:25.632Z",
+          "finishedAt": "2026-09-15T07:19:28.460Z",
+          "durationMs": 2827,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:cadence_inconsistent",
+            "release:case:localconflict"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:conflict"
+          ]
+        },
+        {
+          "name": "release:case:prepare",
+          "startedAt": "2026-09-15T07:19:26.137Z",
+          "finishedAt": "2026-09-15T07:19:31.595Z",
+          "durationMs": 5458,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:cadence_inconsistent",
+            "release:case:nestedtag"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:localconflict"
+          ]
+        },
+        {
+          "name": "release:case:missinglocalprevious",
+          "startedAt": "2026-09-15T07:19:26.710Z",
+          "finishedAt": "2026-09-15T07:19:32.984Z",
+          "durationMs": 6273,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:nestedtag",
+            "release:case:prepare"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:cadence_inconsistent"
+          ]
+        },
+        {
+          "name": "release:case:pushfail",
+          "startedAt": "2026-09-15T07:19:28.460Z",
+          "finishedAt": "2026-09-15T07:19:35.210Z",
+          "durationMs": 6750,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:prepare",
+            "release:case:missinglocalprevious"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:nestedtag"
+          ]
+        },
+        {
+          "name": "release:case:refrecovery",
+          "startedAt": "2026-09-15T07:19:31.596Z",
+          "finishedAt": "2026-09-15T07:19:43.161Z",
+          "durationMs": 11564,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinglocalprevious",
+            "release:case:pushfail"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:prepare"
+          ]
+        },
+        {
+          "name": "release:case:stale_helpers",
+          "startedAt": "2026-09-15T07:19:35.211Z",
+          "finishedAt": "2026-09-15T07:19:52.949Z",
+          "durationMs": 17738,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:refrecovery",
+            "release:case:createrecovery"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:pushfail"
+          ]
+        },
+        {
+          "name": "worktree",
+          "startedAt": "2026-09-15T07:16:51.877Z",
+          "finishedAt": "2026-09-15T07:19:55.293Z",
+          "durationMs": 183413,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:prepare",
+            "resume"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:createrecovery",
+          "startedAt": "2026-09-15T07:19:32.985Z",
+          "finishedAt": "2026-09-15T07:19:56.982Z",
+          "durationMs": 23997,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:pushfail",
+            "release:case:refrecovery"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:missinglocalprevious"
+          ]
+        },
+        {
+          "name": "release:case:firstrelease",
+          "startedAt": "2026-09-15T07:19:55.294Z",
+          "finishedAt": "2026-09-15T07:19:58.958Z",
+          "durationMs": 3664,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:createrecovery",
+            "release:case:success",
+            "release:case:edition"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "worktree"
+          ]
+        },
+        {
+          "name": "release:case:success",
+          "startedAt": "2026-09-15T07:19:43.161Z",
+          "finishedAt": "2026-09-15T07:20:01.026Z",
+          "durationMs": 17865,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:createrecovery",
+            "release:case:stale_helpers"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:refrecovery"
+          ]
+        },
+        {
+          "name": "release:case:edition",
+          "startedAt": "2026-09-15T07:19:52.949Z",
+          "finishedAt": "2026-09-15T07:20:01.920Z",
+          "durationMs": 8970,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:createrecovery",
+            "release:case:success"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:stale_helpers"
+          ]
+        },
+        {
+          "name": "release:case:cached_evidence",
+          "startedAt": "2026-09-15T07:19:56.983Z",
+          "finishedAt": "2026-09-15T07:20:09.008Z",
+          "durationMs": 12025,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "release:case:success",
+            "release:case:edition",
+            "release:case:firstrelease"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:createrecovery"
+          ]
+        },
+        {
+          "name": "release-preparation",
+          "startedAt": "2026-09-15T07:20:01.921Z",
+          "finishedAt": "2026-09-15T07:20:09.074Z",
+          "durationMs": 7153,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "release:case:cached_evidence",
+            "release:case:composed_evidence",
+            "release:case:concurrent"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release:case:edition"
+          ]
+        },
+        {
+          "name": "github-body",
+          "startedAt": "2026-09-15T07:20:09.008Z",
+          "finishedAt": "2026-09-15T07:20:09.111Z",
+          "durationMs": 103,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "release:case:composed_evidence",
+            "release:case:concurrent",
+            "release-preparation"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release:case:cached_evidence"
+          ]
+        },
+        {
+          "name": "release:case:composed_evidence",
+          "startedAt": "2026-09-15T07:19:58.959Z",
+          "finishedAt": "2026-09-15T07:20:10.108Z",
+          "durationMs": 11149,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:success",
+            "release:case:edition",
+            "release:case:cached_evidence"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:firstrelease"
+          ]
+        },
+        {
+          "name": "backup-intake",
+          "startedAt": "2026-09-15T07:20:10.108Z",
+          "finishedAt": "2026-09-15T07:20:10.536Z",
+          "durationMs": 428,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "publication-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release:case:composed_evidence"
+          ]
+        },
+        {
+          "name": "publication-fixtures",
+          "startedAt": "2026-09-15T07:20:09.111Z",
+          "finishedAt": "2026-09-15T07:20:10.754Z",
+          "durationMs": 1643,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "release:case:composed_evidence",
+            "release:case:concurrent",
+            "license-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "github-body"
+          ]
+        },
+        {
+          "name": "checkpoint",
+          "startedAt": "2026-09-15T07:20:10.537Z",
+          "finishedAt": "2026-09-15T07:20:21.513Z",
+          "durationMs": 10976,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "publication-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "backup-intake"
+          ]
+        },
+        {
+          "name": "kernel",
+          "startedAt": "2026-09-15T07:20:21.514Z",
+          "finishedAt": "2026-09-15T07:20:22.213Z",
+          "durationMs": 699,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "checkpoint",
+            "skeleton"
+          ]
+        },
+        {
+          "name": "compiler",
+          "startedAt": "2026-09-15T07:20:22.214Z",
+          "finishedAt": "2026-09-15T07:20:23.160Z",
+          "durationMs": 946,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "kernel"
+          ]
+        },
+        {
+          "name": "console",
+          "startedAt": "2026-09-15T07:20:23.160Z",
+          "finishedAt": "2026-09-15T07:20:25.502Z",
+          "durationMs": 2342,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "compiler"
+          ]
+        },
+        {
+          "name": "adjacent-queue",
+          "startedAt": "2026-09-15T07:20:25.502Z",
+          "finishedAt": "2026-09-15T07:20:26.917Z",
+          "durationMs": 1415,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "console"
+          ]
+        },
+        {
+          "name": "authority-grants",
+          "startedAt": "2026-09-15T07:20:26.918Z",
+          "finishedAt": "2026-09-15T07:20:27.202Z",
+          "durationMs": 284,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "adjacent-queue"
+          ]
+        },
+        {
+          "name": "artifact-corpus",
+          "startedAt": "2026-09-15T07:20:27.203Z",
+          "finishedAt": "2026-09-15T07:20:27.527Z",
+          "durationMs": 324,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "authority-grants"
+          ]
+        },
+        {
+          "name": "license-fixtures",
+          "startedAt": "2026-09-15T07:20:09.075Z",
+          "finishedAt": "2026-09-15T07:20:32.890Z",
+          "durationMs": 23815,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "release:case:composed_evidence",
+            "release:case:concurrent",
+            "github-body"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release-preparation"
+          ]
+        },
+        {
+          "name": "work-orders-fixtures",
+          "startedAt": "2026-09-15T07:20:10.754Z",
+          "finishedAt": "2026-09-15T07:21:01.715Z",
+          "durationMs": 50961,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "checkpoint"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "publication-fixtures"
+          ]
+        },
+        {
+          "name": "release:case:concurrent",
+          "startedAt": "2026-09-15T07:20:01.026Z",
+          "finishedAt": "2026-09-15T07:21:02.429Z",
+          "durationMs": 61403,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "release:case:edition",
+            "release:case:cached_evidence",
+            "release:case:composed_evidence"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:success"
+          ]
+        }
+      ],
+      "sequence": 1,
+      "transcriptSha256": "b5cd89de46af391849b2fecf8766f0cb77d6da5b66321075229e7b49fd560592"
+    },
+    {
+      "checkId": "npm test",
+      "recordedAt": "2026-09-15T07:25:14.003Z",
+      "treeHash": "da3a234c6b88b46d3f30b8aeade887c0f7df2683",
+      "codeIdentity": "e2a8b9c7620bae5313ee0ae3eb0d27ebf06917a758403015cb37a3057834d646",
+      "durationMs": 250500,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:e2a8b9c7620bae5313ee0ae3eb0d27ebf06917a758403015cb37a3057834d646:npm test",
+      "executionMode": "fresh",
+      "freshTasks": 62,
+      "reusedTasks": 0,
+      "requiredSuites": [
+        "build",
+        "release-preparation",
+        "github-body",
+        "license-fixtures",
+        "license-surfaces",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "checkpoint",
+        "worktree",
+        "release",
+        "work-orders-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "adjacent-queue",
+        "authority-grants",
+        "artifact-corpus"
+      ],
+      "failedSuites": [],
+      "releaseCases": 43,
+      "releaseLanes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "maximumConcurrentReleaseCases": 4,
+      "taskTimeline": [
+        {
+          "name": "build",
+          "startedAt": "2026-09-15T07:21:03.505Z",
+          "finishedAt": "2026-09-15T07:21:05.790Z",
+          "durationMs": 2285,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "concurrentAtStart": [],
+          "predecessors": []
+        },
+        {
+          "name": "license-surfaces",
+          "startedAt": "2026-09-15T07:21:05.791Z",
+          "finishedAt": "2026-09-15T07:21:07.637Z",
+          "durationMs": 1846,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [],
+          "predecessors": [
+            "build"
+          ]
+        },
+        {
+          "name": "release:prepare",
+          "startedAt": "2026-09-15T07:21:07.637Z",
+          "finishedAt": "2026-09-15T07:21:09.322Z",
+          "durationMs": 1684,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:preflight",
+          "startedAt": "2026-09-15T07:21:09.322Z",
+          "finishedAt": "2026-09-15T07:21:09.594Z",
+          "durationMs": 272,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:surfaces",
+          "startedAt": "2026-09-15T07:21:09.595Z",
+          "finishedAt": "2026-09-15T07:21:23.598Z",
+          "durationMs": 14002,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:preflight"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_local_snapshot",
+          "startedAt": "2026-09-15T07:21:23.598Z",
+          "finishedAt": "2026-09-15T07:21:28.936Z",
+          "durationMs": 5338,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces"
+          ]
+        },
+        {
+          "name": "release:case:prepare_independent",
+          "startedAt": "2026-09-15T07:21:28.937Z",
+          "finishedAt": "2026-09-15T07:21:32.910Z",
+          "durationMs": 3973,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_local_snapshot"
+          ]
+        },
+        {
+          "name": "release:case:license_surfaces",
+          "startedAt": "2026-09-15T07:21:32.910Z",
+          "finishedAt": "2026-09-15T07:21:46.243Z",
+          "durationMs": 13333,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:prepare_independent"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_committed_readme",
+          "startedAt": "2026-09-15T07:21:46.244Z",
+          "finishedAt": "2026-09-15T07:21:54.370Z",
+          "durationMs": 8126,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:license_surfaces"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_lower",
+          "startedAt": "2026-09-15T07:21:54.370Z",
+          "finishedAt": "2026-09-15T07:21:59.995Z",
+          "durationMs": 5624,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_committed_readme"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_first",
+          "startedAt": "2026-09-15T07:21:59.996Z",
+          "finishedAt": "2026-09-15T07:22:05.109Z",
+          "durationMs": 5113,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_lower"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_component",
+          "startedAt": "2026-09-15T07:22:05.109Z",
+          "finishedAt": "2026-09-15T07:22:15.965Z",
+          "durationMs": 10856,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_first"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_non_source",
+          "startedAt": "2026-09-15T07:22:15.965Z",
+          "finishedAt": "2026-09-15T07:22:20.331Z",
+          "durationMs": 4365,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_component"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_new_component",
+          "startedAt": "2026-09-15T07:22:20.332Z",
+          "finishedAt": "2026-09-15T07:22:25.053Z",
+          "durationMs": 4721,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_non_source"
+          ]
+        },
+        {
+          "name": "release:case:surfaceclose",
+          "startedAt": "2026-09-15T07:22:25.053Z",
+          "finishedAt": "2026-09-15T07:22:37.687Z",
+          "durationMs": 12634,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_new_component"
+          ]
+        },
+        {
+          "name": "release:case:surfaceclose_linked",
+          "startedAt": "2026-09-15T07:22:37.688Z",
+          "finishedAt": "2026-09-15T07:22:50.321Z",
+          "durationMs": 12633,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaceclose"
+          ]
+        },
+        {
+          "name": "release:case:bodyclose",
+          "startedAt": "2026-09-15T07:22:50.322Z",
+          "finishedAt": "2026-09-15T07:23:02.012Z",
+          "durationMs": 11690,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaceclose_linked"
+          ]
+        },
+        {
+          "name": "release:case:dirty",
+          "startedAt": "2026-09-15T07:23:02.012Z",
+          "finishedAt": "2026-09-15T07:23:16.858Z",
+          "durationMs": 14845,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:bodyclose"
+          ]
+        },
+        {
+          "name": "release:case:unreachable",
+          "startedAt": "2026-09-15T07:23:16.859Z",
+          "finishedAt": "2026-09-15T07:23:26.628Z",
+          "durationMs": 9769,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:dirty"
+          ]
+        },
+        {
+          "name": "skeleton",
+          "startedAt": "2026-09-15T07:21:07.638Z",
+          "finishedAt": "2026-09-15T07:23:29.063Z",
+          "durationMs": 141420,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "release:prepare",
+            "resume",
+            "worktree"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:derived",
+          "startedAt": "2026-09-15T07:23:26.629Z",
+          "finishedAt": "2026-09-15T07:23:30.642Z",
+          "durationMs": 4013,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:unreachable"
+          ]
+        },
+        {
+          "name": "resume",
+          "startedAt": "2026-09-15T07:21:07.637Z",
+          "finishedAt": "2026-09-15T07:23:30.902Z",
+          "durationMs": 143263,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "release:prepare"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:nonmain",
+          "startedAt": "2026-09-15T07:23:30.643Z",
+          "finishedAt": "2026-09-15T07:23:32.218Z",
+          "durationMs": 1574,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "release:case:settings_scope"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:derived"
+          ]
+        },
+        {
+          "name": "release:case:divergence",
+          "startedAt": "2026-09-15T07:23:30.903Z",
+          "finishedAt": "2026-09-15T07:23:32.474Z",
+          "durationMs": 1571,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:settings_scope",
+            "release:case:nonmain"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "resume"
+          ]
+        },
+        {
+          "name": "release:case:settings_scope",
+          "startedAt": "2026-09-15T07:23:29.063Z",
+          "finishedAt": "2026-09-15T07:23:33.399Z",
+          "durationMs": 4336,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "release:case:derived"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "skeleton"
+          ]
+        },
+        {
+          "name": "release:case:malformed",
+          "startedAt": "2026-09-15T07:23:32.218Z",
+          "finishedAt": "2026-09-15T07:23:33.849Z",
+          "durationMs": 1631,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:settings_scope",
+            "release:case:divergence"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:nonmain"
+          ]
+        },
+        {
+          "name": "release:case:splitorigin",
+          "startedAt": "2026-09-15T07:23:33.849Z",
+          "finishedAt": "2026-09-15T07:23:35.184Z",
+          "durationMs": 1334,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinggh",
+            "release:case:unauthenticated"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:malformed"
+          ]
+        },
+        {
+          "name": "release:case:unauthenticated",
+          "startedAt": "2026-09-15T07:23:33.400Z",
+          "finishedAt": "2026-09-15T07:23:35.977Z",
+          "durationMs": 2577,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:malformed",
+            "release:case:missinggh"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:settings_scope"
+          ]
+        },
+        {
+          "name": "release:case:missinggh",
+          "startedAt": "2026-09-15T07:23:32.474Z",
+          "finishedAt": "2026-09-15T07:23:36.230Z",
+          "durationMs": 3756,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:settings_scope",
+            "release:case:malformed"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:divergence"
+          ]
+        },
+        {
+          "name": "release:case:lower",
+          "startedAt": "2026-09-15T07:23:35.184Z",
+          "finishedAt": "2026-09-15T07:23:37.850Z",
+          "durationMs": 2665,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinggh",
+            "release:case:unauthenticated"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:splitorigin"
+          ]
+        },
+        {
+          "name": "release:case:cadence_missing",
+          "startedAt": "2026-09-15T07:23:36.230Z",
+          "finishedAt": "2026-09-15T07:23:38.950Z",
+          "durationMs": 2719,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:lower",
+            "release:case:failures"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:missinggh"
+          ]
+        },
+        {
+          "name": "release:case:failures",
+          "startedAt": "2026-09-15T07:23:35.978Z",
+          "finishedAt": "2026-09-15T07:23:39.394Z",
+          "durationMs": 3416,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinggh",
+            "release:case:lower"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:unauthenticated"
+          ]
+        },
+        {
+          "name": "release:case:localconflict",
+          "startedAt": "2026-09-15T07:23:39.394Z",
+          "finishedAt": "2026-09-15T07:23:41.653Z",
+          "durationMs": 2258,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:cadence_inconsistent",
+            "release:case:conflict"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:failures"
+          ]
+        },
+        {
+          "name": "release:case:conflict",
+          "startedAt": "2026-09-15T07:23:38.950Z",
+          "finishedAt": "2026-09-15T07:23:41.788Z",
+          "durationMs": 2838,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:failures",
+            "release:case:cadence_inconsistent"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:cadence_missing"
+          ]
+        },
+        {
+          "name": "release:case:cadence_inconsistent",
+          "startedAt": "2026-09-15T07:23:37.850Z",
+          "finishedAt": "2026-09-15T07:23:43.356Z",
+          "durationMs": 5506,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:failures",
+            "release:case:cadence_missing"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:lower"
+          ]
+        },
+        {
+          "name": "release:case:nestedtag",
+          "startedAt": "2026-09-15T07:23:41.653Z",
+          "finishedAt": "2026-09-15T07:23:44.902Z",
+          "durationMs": 3249,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:cadence_inconsistent",
+            "release:case:conflict"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:localconflict"
+          ]
+        },
+        {
+          "name": "release:case:prepare",
+          "startedAt": "2026-09-15T07:23:41.789Z",
+          "finishedAt": "2026-09-15T07:23:48.023Z",
+          "durationMs": 6234,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:cadence_inconsistent",
+            "release:case:nestedtag"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:conflict"
+          ]
+        },
+        {
+          "name": "release:case:missinglocalprevious",
+          "startedAt": "2026-09-15T07:23:43.356Z",
+          "finishedAt": "2026-09-15T07:23:49.749Z",
+          "durationMs": 6393,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:nestedtag",
+            "release:case:prepare"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:cadence_inconsistent"
+          ]
+        },
+        {
+          "name": "release:case:pushfail",
+          "startedAt": "2026-09-15T07:23:44.903Z",
+          "finishedAt": "2026-09-15T07:23:51.577Z",
+          "durationMs": 6673,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:prepare",
+            "release:case:missinglocalprevious"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:nestedtag"
+          ]
+        },
+        {
+          "name": "release:case:refrecovery",
+          "startedAt": "2026-09-15T07:23:48.024Z",
+          "finishedAt": "2026-09-15T07:23:58.663Z",
+          "durationMs": 10639,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinglocalprevious",
+            "release:case:pushfail"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:prepare"
+          ]
+        },
+        {
+          "name": "release:case:stale_helpers",
+          "startedAt": "2026-09-15T07:23:51.577Z",
+          "finishedAt": "2026-09-15T07:24:07.813Z",
+          "durationMs": 16234,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:refrecovery",
+            "release:case:createrecovery"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:pushfail"
+          ]
+        },
+        {
+          "name": "worktree",
+          "startedAt": "2026-09-15T07:21:07.638Z",
+          "finishedAt": "2026-09-15T07:24:09.594Z",
+          "durationMs": 181953,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:prepare",
+            "resume"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:createrecovery",
+          "startedAt": "2026-09-15T07:23:49.750Z",
+          "finishedAt": "2026-09-15T07:24:11.675Z",
+          "durationMs": 21925,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:pushfail",
+            "release:case:refrecovery"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:missinglocalprevious"
+          ]
+        },
+        {
+          "name": "release:case:firstrelease",
+          "startedAt": "2026-09-15T07:24:09.594Z",
+          "finishedAt": "2026-09-15T07:24:13.264Z",
+          "durationMs": 3670,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:createrecovery",
+            "release:case:success",
+            "release:case:edition"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "worktree"
+          ]
+        },
+        {
+          "name": "release:case:success",
+          "startedAt": "2026-09-15T07:23:58.663Z",
+          "finishedAt": "2026-09-15T07:24:15.343Z",
+          "durationMs": 16680,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:createrecovery",
+            "release:case:stale_helpers"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:refrecovery"
+          ]
+        },
+        {
+          "name": "release:case:edition",
+          "startedAt": "2026-09-15T07:24:07.813Z",
+          "finishedAt": "2026-09-15T07:24:16.328Z",
+          "durationMs": 8515,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:createrecovery",
+            "release:case:success"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:stale_helpers"
+          ]
+        },
+        {
+          "name": "release-preparation",
+          "startedAt": "2026-09-15T07:24:16.329Z",
+          "finishedAt": "2026-09-15T07:24:23.297Z",
+          "durationMs": 6968,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "release:case:cached_evidence",
+            "release:case:composed_evidence",
+            "release:case:concurrent"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release:case:edition"
+          ]
+        },
+        {
+          "name": "github-body",
+          "startedAt": "2026-09-15T07:24:23.297Z",
+          "finishedAt": "2026-09-15T07:24:23.401Z",
+          "durationMs": 103,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "release:case:cached_evidence",
+            "release:case:composed_evidence",
+            "release:case:concurrent"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release-preparation"
+          ]
+        },
+        {
+          "name": "release:case:cached_evidence",
+          "startedAt": "2026-09-15T07:24:11.676Z",
+          "finishedAt": "2026-09-15T07:24:23.503Z",
+          "durationMs": 11827,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "release:case:success",
+            "release:case:edition",
+            "release:case:firstrelease"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:createrecovery"
+          ]
+        },
+        {
+          "name": "release:case:composed_evidence",
+          "startedAt": "2026-09-15T07:24:13.265Z",
+          "finishedAt": "2026-09-15T07:24:24.019Z",
+          "durationMs": 10753,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:success",
+            "release:case:edition",
+            "release:case:cached_evidence"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:firstrelease"
+          ]
+        },
+        {
+          "name": "backup-intake",
+          "startedAt": "2026-09-15T07:24:24.019Z",
+          "finishedAt": "2026-09-15T07:24:24.437Z",
+          "durationMs": 418,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "publication-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release:case:composed_evidence"
+          ]
+        },
+        {
+          "name": "publication-fixtures",
+          "startedAt": "2026-09-15T07:24:23.503Z",
+          "finishedAt": "2026-09-15T07:24:25.618Z",
+          "durationMs": 2115,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "release:case:composed_evidence",
+            "release:case:concurrent",
+            "license-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release:case:cached_evidence"
+          ]
+        },
+        {
+          "name": "checkpoint",
+          "startedAt": "2026-09-15T07:24:24.437Z",
+          "finishedAt": "2026-09-15T07:24:35.770Z",
+          "durationMs": 11333,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "publication-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "backup-intake"
+          ]
+        },
+        {
+          "name": "kernel",
+          "startedAt": "2026-09-15T07:24:35.770Z",
+          "finishedAt": "2026-09-15T07:24:36.434Z",
+          "durationMs": 663,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "checkpoint",
+            "skeleton"
+          ]
+        },
+        {
+          "name": "compiler",
+          "startedAt": "2026-09-15T07:24:36.435Z",
+          "finishedAt": "2026-09-15T07:24:37.399Z",
+          "durationMs": 964,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "kernel"
+          ]
+        },
+        {
+          "name": "console",
+          "startedAt": "2026-09-15T07:24:37.399Z",
+          "finishedAt": "2026-09-15T07:24:39.866Z",
+          "durationMs": 2465,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "compiler"
+          ]
+        },
+        {
+          "name": "adjacent-queue",
+          "startedAt": "2026-09-15T07:24:39.866Z",
+          "finishedAt": "2026-09-15T07:24:41.157Z",
+          "durationMs": 1291,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "console"
+          ]
+        },
+        {
+          "name": "authority-grants",
+          "startedAt": "2026-09-15T07:24:41.158Z",
+          "finishedAt": "2026-09-15T07:24:41.325Z",
+          "durationMs": 167,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "adjacent-queue"
+          ]
+        },
+        {
+          "name": "artifact-corpus",
+          "startedAt": "2026-09-15T07:24:41.325Z",
+          "finishedAt": "2026-09-15T07:24:41.641Z",
+          "durationMs": 316,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "authority-grants"
+          ]
+        },
+        {
+          "name": "license-fixtures",
+          "startedAt": "2026-09-15T07:24:23.401Z",
+          "finishedAt": "2026-09-15T07:24:47.323Z",
+          "durationMs": 23922,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "release:case:cached_evidence",
+            "release:case:composed_evidence",
+            "release:case:concurrent"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "github-body"
+          ]
+        },
+        {
+          "name": "work-orders-fixtures",
+          "startedAt": "2026-09-15T07:24:25.619Z",
+          "finishedAt": "2026-09-15T07:25:13.744Z",
+          "durationMs": 48125,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "checkpoint"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "publication-fixtures"
+          ]
+        },
+        {
+          "name": "release:case:concurrent",
+          "startedAt": "2026-09-15T07:24:15.343Z",
+          "finishedAt": "2026-09-15T07:25:13.844Z",
+          "durationMs": 58501,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "release:case:edition",
+            "release:case:cached_evidence",
+            "release:case:composed_evidence"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:success"
+          ]
+        }
+      ],
+      "sequence": 2,
+      "transcriptSha256": "c2e4ff0f116a7194371a58942039fe02a5d343f5ae9bfae5166160599c70e78f"
+    },
+    {
+      "checkId": "npm test",
+      "recordedAt": "2026-09-15T07:29:21.070Z",
+      "treeHash": "da3a234c6b88b46d3f30b8aeade887c0f7df2683",
+      "codeIdentity": "e2a8b9c7620bae5313ee0ae3eb0d27ebf06917a758403015cb37a3057834d646",
+      "durationMs": 246160,
+      "exitCode": 0,
+      "executed": true,
+      "evidenceRef": "host-gate:e2a8b9c7620bae5313ee0ae3eb0d27ebf06917a758403015cb37a3057834d646:npm test",
+      "executionMode": "fresh",
+      "freshTasks": 62,
+      "reusedTasks": 0,
+      "requiredSuites": [
+        "build",
+        "release-preparation",
+        "github-body",
+        "license-fixtures",
+        "license-surfaces",
+        "publication-fixtures",
+        "backup-intake",
+        "resume",
+        "checkpoint",
+        "worktree",
+        "release",
+        "work-orders-fixtures",
+        "kernel",
+        "compiler",
+        "skeleton",
+        "console",
+        "adjacent-queue",
+        "authority-grants",
+        "artifact-corpus"
+      ],
+      "failedSuites": [],
+      "releaseCases": 43,
+      "releaseLanes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "maximumConcurrentReleaseCases": 4,
+      "taskTimeline": [
+        {
+          "name": "build",
+          "startedAt": "2026-09-15T07:25:14.912Z",
+          "finishedAt": "2026-09-15T07:25:17.350Z",
+          "durationMs": 2438,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "concurrentAtStart": [],
+          "predecessors": []
+        },
+        {
+          "name": "license-surfaces",
+          "startedAt": "2026-09-15T07:25:17.351Z",
+          "finishedAt": "2026-09-15T07:25:19.215Z",
+          "durationMs": 1864,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [],
+          "predecessors": [
+            "build"
+          ]
+        },
+        {
+          "name": "release:prepare",
+          "startedAt": "2026-09-15T07:25:19.215Z",
+          "finishedAt": "2026-09-15T07:25:20.887Z",
+          "durationMs": 1671,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:preflight",
+          "startedAt": "2026-09-15T07:25:20.888Z",
+          "finishedAt": "2026-09-15T07:25:21.295Z",
+          "durationMs": 407,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:surfaces",
+          "startedAt": "2026-09-15T07:25:21.295Z",
+          "finishedAt": "2026-09-15T07:25:36.118Z",
+          "durationMs": 14823,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:preflight"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_local_snapshot",
+          "startedAt": "2026-09-15T07:25:36.119Z",
+          "finishedAt": "2026-09-15T07:25:41.184Z",
+          "durationMs": 5064,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces"
+          ]
+        },
+        {
+          "name": "release:case:prepare_independent",
+          "startedAt": "2026-09-15T07:25:41.184Z",
+          "finishedAt": "2026-09-15T07:25:45.537Z",
+          "durationMs": 4353,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_local_snapshot"
+          ]
+        },
+        {
+          "name": "release:case:license_surfaces",
+          "startedAt": "2026-09-15T07:25:45.537Z",
+          "finishedAt": "2026-09-15T07:25:58.911Z",
+          "durationMs": 13372,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:prepare_independent"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_committed_readme",
+          "startedAt": "2026-09-15T07:25:58.911Z",
+          "finishedAt": "2026-09-15T07:26:06.393Z",
+          "durationMs": 7482,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:license_surfaces"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_lower",
+          "startedAt": "2026-09-15T07:26:06.393Z",
+          "finishedAt": "2026-09-15T07:26:12.290Z",
+          "durationMs": 5896,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_committed_readme"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_first",
+          "startedAt": "2026-09-15T07:26:12.290Z",
+          "finishedAt": "2026-09-15T07:26:17.307Z",
+          "durationMs": 5017,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_lower"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_component",
+          "startedAt": "2026-09-15T07:26:17.308Z",
+          "finishedAt": "2026-09-15T07:26:26.950Z",
+          "durationMs": 9642,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_first"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_non_source",
+          "startedAt": "2026-09-15T07:26:26.950Z",
+          "finishedAt": "2026-09-15T07:26:31.139Z",
+          "durationMs": 4188,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_component"
+          ]
+        },
+        {
+          "name": "release:case:surfaces_new_component",
+          "startedAt": "2026-09-15T07:26:31.139Z",
+          "finishedAt": "2026-09-15T07:26:35.497Z",
+          "durationMs": 4358,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_non_source"
+          ]
+        },
+        {
+          "name": "release:case:surfaceclose",
+          "startedAt": "2026-09-15T07:26:35.497Z",
+          "finishedAt": "2026-09-15T07:26:46.770Z",
+          "durationMs": 11272,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaces_new_component"
+          ]
+        },
+        {
+          "name": "release:case:surfaceclose_linked",
+          "startedAt": "2026-09-15T07:26:46.771Z",
+          "finishedAt": "2026-09-15T07:26:58.930Z",
+          "durationMs": 12159,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaceclose"
+          ]
+        },
+        {
+          "name": "release:case:bodyclose",
+          "startedAt": "2026-09-15T07:26:58.931Z",
+          "finishedAt": "2026-09-15T07:27:09.765Z",
+          "durationMs": 10834,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:surfaceclose_linked"
+          ]
+        },
+        {
+          "name": "release:case:dirty",
+          "startedAt": "2026-09-15T07:27:09.765Z",
+          "finishedAt": "2026-09-15T07:27:23.614Z",
+          "durationMs": 13848,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:bodyclose"
+          ]
+        },
+        {
+          "name": "release:case:unreachable",
+          "startedAt": "2026-09-15T07:27:23.615Z",
+          "finishedAt": "2026-09-15T07:27:33.124Z",
+          "durationMs": 9509,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:dirty"
+          ]
+        },
+        {
+          "name": "skeleton",
+          "startedAt": "2026-09-15T07:25:19.216Z",
+          "finishedAt": "2026-09-15T07:27:35.399Z",
+          "durationMs": 136179,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "release:prepare",
+            "resume",
+            "worktree"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:derived",
+          "startedAt": "2026-09-15T07:27:33.124Z",
+          "finishedAt": "2026-09-15T07:27:36.855Z",
+          "durationMs": 3731,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "skeleton"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:unreachable"
+          ]
+        },
+        {
+          "name": "resume",
+          "startedAt": "2026-09-15T07:25:19.216Z",
+          "finishedAt": "2026-09-15T07:27:37.480Z",
+          "durationMs": 138263,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "release:prepare"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:nonmain",
+          "startedAt": "2026-09-15T07:27:36.856Z",
+          "finishedAt": "2026-09-15T07:27:38.295Z",
+          "durationMs": 1439,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "release:case:settings_scope"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:derived"
+          ]
+        },
+        {
+          "name": "release:case:divergence",
+          "startedAt": "2026-09-15T07:27:37.481Z",
+          "finishedAt": "2026-09-15T07:27:39.160Z",
+          "durationMs": 1679,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:settings_scope",
+            "release:case:nonmain"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "resume"
+          ]
+        },
+        {
+          "name": "release:case:settings_scope",
+          "startedAt": "2026-09-15T07:27:35.399Z",
+          "finishedAt": "2026-09-15T07:27:39.494Z",
+          "durationMs": 4094,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "resume",
+            "worktree",
+            "release:case:derived"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "skeleton"
+          ]
+        },
+        {
+          "name": "release:case:malformed",
+          "startedAt": "2026-09-15T07:27:38.295Z",
+          "finishedAt": "2026-09-15T07:27:40.014Z",
+          "durationMs": 1718,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:settings_scope",
+            "release:case:divergence"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:nonmain"
+          ]
+        },
+        {
+          "name": "release:case:splitorigin",
+          "startedAt": "2026-09-15T07:27:40.014Z",
+          "finishedAt": "2026-09-15T07:27:41.315Z",
+          "durationMs": 1301,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinggh",
+            "release:case:unauthenticated"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:malformed"
+          ]
+        },
+        {
+          "name": "release:case:unauthenticated",
+          "startedAt": "2026-09-15T07:27:39.494Z",
+          "finishedAt": "2026-09-15T07:27:42.116Z",
+          "durationMs": 2621,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:malformed",
+            "release:case:missinggh"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:settings_scope"
+          ]
+        },
+        {
+          "name": "release:case:missinggh",
+          "startedAt": "2026-09-15T07:27:39.161Z",
+          "finishedAt": "2026-09-15T07:27:42.357Z",
+          "durationMs": 3196,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:settings_scope",
+            "release:case:malformed"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:divergence"
+          ]
+        },
+        {
+          "name": "release:case:lower",
+          "startedAt": "2026-09-15T07:27:41.315Z",
+          "finishedAt": "2026-09-15T07:27:43.952Z",
+          "durationMs": 2637,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinggh",
+            "release:case:unauthenticated"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:splitorigin"
+          ]
+        },
+        {
+          "name": "release:case:cadence_missing",
+          "startedAt": "2026-09-15T07:27:42.358Z",
+          "finishedAt": "2026-09-15T07:27:44.825Z",
+          "durationMs": 2467,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:lower",
+            "release:case:failures"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:missinggh"
+          ]
+        },
+        {
+          "name": "release:case:failures",
+          "startedAt": "2026-09-15T07:27:42.116Z",
+          "finishedAt": "2026-09-15T07:27:45.950Z",
+          "durationMs": 3834,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinggh",
+            "release:case:lower"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:unauthenticated"
+          ]
+        },
+        {
+          "name": "release:case:conflict",
+          "startedAt": "2026-09-15T07:27:44.825Z",
+          "finishedAt": "2026-09-15T07:27:47.318Z",
+          "durationMs": 2493,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:failures",
+            "release:case:cadence_inconsistent"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:cadence_missing"
+          ]
+        },
+        {
+          "name": "release:case:localconflict",
+          "startedAt": "2026-09-15T07:27:45.950Z",
+          "finishedAt": "2026-09-15T07:27:47.774Z",
+          "durationMs": 1824,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:cadence_inconsistent",
+            "release:case:conflict"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:failures"
+          ]
+        },
+        {
+          "name": "release:case:cadence_inconsistent",
+          "startedAt": "2026-09-15T07:27:43.952Z",
+          "finishedAt": "2026-09-15T07:27:49.270Z",
+          "durationMs": 5318,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:failures",
+            "release:case:cadence_missing"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:lower"
+          ]
+        },
+        {
+          "name": "release:case:nestedtag",
+          "startedAt": "2026-09-15T07:27:47.319Z",
+          "finishedAt": "2026-09-15T07:27:49.489Z",
+          "durationMs": 2170,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:cadence_inconsistent",
+            "release:case:localconflict"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:conflict"
+          ]
+        },
+        {
+          "name": "release:case:prepare",
+          "startedAt": "2026-09-15T07:27:47.774Z",
+          "finishedAt": "2026-09-15T07:27:52.590Z",
+          "durationMs": 4816,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:cadence_inconsistent",
+            "release:case:nestedtag"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:localconflict"
+          ]
+        },
+        {
+          "name": "release:case:missinglocalprevious",
+          "startedAt": "2026-09-15T07:27:49.270Z",
+          "finishedAt": "2026-09-15T07:27:55.126Z",
+          "durationMs": 5856,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:nestedtag",
+            "release:case:prepare"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:cadence_inconsistent"
+          ]
+        },
+        {
+          "name": "release:case:pushfail",
+          "startedAt": "2026-09-15T07:27:49.490Z",
+          "finishedAt": "2026-09-15T07:27:56.352Z",
+          "durationMs": 6862,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:prepare",
+            "release:case:missinglocalprevious"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:nestedtag"
+          ]
+        },
+        {
+          "name": "release:case:refrecovery",
+          "startedAt": "2026-09-15T07:27:52.591Z",
+          "finishedAt": "2026-09-15T07:28:04.014Z",
+          "durationMs": 11423,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:missinglocalprevious",
+            "release:case:pushfail"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:prepare"
+          ]
+        },
+        {
+          "name": "release:case:stale_helpers",
+          "startedAt": "2026-09-15T07:27:56.352Z",
+          "finishedAt": "2026-09-15T07:28:14.439Z",
+          "durationMs": 18086,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:refrecovery",
+            "release:case:createrecovery"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:pushfail"
+          ]
+        },
+        {
+          "name": "worktree",
+          "startedAt": "2026-09-15T07:25:19.216Z",
+          "finishedAt": "2026-09-15T07:28:16.941Z",
+          "durationMs": 177722,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:prepare",
+            "resume"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces"
+          ]
+        },
+        {
+          "name": "release:case:createrecovery",
+          "startedAt": "2026-09-15T07:27:55.127Z",
+          "finishedAt": "2026-09-15T07:28:18.674Z",
+          "durationMs": 23547,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:pushfail",
+            "release:case:refrecovery"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:missinglocalprevious"
+          ]
+        },
+        {
+          "name": "release:case:firstrelease",
+          "startedAt": "2026-09-15T07:28:16.942Z",
+          "finishedAt": "2026-09-15T07:28:20.829Z",
+          "durationMs": 3887,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:createrecovery",
+            "release:case:success",
+            "release:case:edition"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "worktree"
+          ]
+        },
+        {
+          "name": "release:case:success",
+          "startedAt": "2026-09-15T07:28:04.015Z",
+          "finishedAt": "2026-09-15T07:28:22.490Z",
+          "durationMs": 18475,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:createrecovery",
+            "release:case:stale_helpers"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:refrecovery"
+          ]
+        },
+        {
+          "name": "release:case:edition",
+          "startedAt": "2026-09-15T07:28:14.439Z",
+          "finishedAt": "2026-09-15T07:28:23.590Z",
+          "durationMs": 9151,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "worktree",
+            "release:case:createrecovery",
+            "release:case:success"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:stale_helpers"
+          ]
+        },
+        {
+          "name": "release-preparation",
+          "startedAt": "2026-09-15T07:28:23.590Z",
+          "finishedAt": "2026-09-15T07:28:30.551Z",
+          "durationMs": 6960,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "release:case:cached_evidence",
+            "release:case:composed_evidence",
+            "release:case:concurrent"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release:case:edition"
+          ]
+        },
+        {
+          "name": "github-body",
+          "startedAt": "2026-09-15T07:28:30.551Z",
+          "finishedAt": "2026-09-15T07:28:30.656Z",
+          "durationMs": 104,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "release:case:cached_evidence",
+            "release:case:composed_evidence",
+            "release:case:concurrent"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release-preparation"
+          ]
+        },
+        {
+          "name": "release:case:cached_evidence",
+          "startedAt": "2026-09-15T07:28:18.675Z",
+          "finishedAt": "2026-09-15T07:28:30.889Z",
+          "durationMs": 12214,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "release:case:success",
+            "release:case:edition",
+            "release:case:firstrelease"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:createrecovery"
+          ]
+        },
+        {
+          "name": "release:case:composed_evidence",
+          "startedAt": "2026-09-15T07:28:20.829Z",
+          "finishedAt": "2026-09-15T07:28:31.995Z",
+          "durationMs": 11165,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:success",
+            "release:case:edition",
+            "release:case:cached_evidence"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:firstrelease"
+          ]
+        },
+        {
+          "name": "backup-intake",
+          "startedAt": "2026-09-15T07:28:31.995Z",
+          "finishedAt": "2026-09-15T07:28:32.492Z",
+          "durationMs": 496,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "publication-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release:case:composed_evidence"
+          ]
+        },
+        {
+          "name": "publication-fixtures",
+          "startedAt": "2026-09-15T07:28:30.890Z",
+          "finishedAt": "2026-09-15T07:28:32.754Z",
+          "durationMs": 1864,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "release:case:composed_evidence",
+            "release:case:concurrent",
+            "license-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "release:case:cached_evidence"
+          ]
+        },
+        {
+          "name": "checkpoint",
+          "startedAt": "2026-09-15T07:28:32.492Z",
+          "finishedAt": "2026-09-15T07:28:43.151Z",
+          "durationMs": 10659,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "publication-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "backup-intake"
+          ]
+        },
+        {
+          "name": "kernel",
+          "startedAt": "2026-09-15T07:28:43.152Z",
+          "finishedAt": "2026-09-15T07:28:43.780Z",
+          "durationMs": 628,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "checkpoint",
+            "skeleton"
+          ]
+        },
+        {
+          "name": "compiler",
+          "startedAt": "2026-09-15T07:28:43.781Z",
+          "finishedAt": "2026-09-15T07:28:44.712Z",
+          "durationMs": 931,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "kernel"
+          ]
+        },
+        {
+          "name": "console",
+          "startedAt": "2026-09-15T07:28:44.713Z",
+          "finishedAt": "2026-09-15T07:28:46.952Z",
+          "durationMs": 2239,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "compiler"
+          ]
+        },
+        {
+          "name": "adjacent-queue",
+          "startedAt": "2026-09-15T07:28:46.952Z",
+          "finishedAt": "2026-09-15T07:28:48.242Z",
+          "durationMs": 1290,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "console"
+          ]
+        },
+        {
+          "name": "authority-grants",
+          "startedAt": "2026-09-15T07:28:48.243Z",
+          "finishedAt": "2026-09-15T07:28:48.476Z",
+          "durationMs": 233,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "adjacent-queue"
+          ]
+        },
+        {
+          "name": "artifact-corpus",
+          "startedAt": "2026-09-15T07:28:48.477Z",
+          "finishedAt": "2026-09-15T07:28:48.734Z",
+          "durationMs": 257,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            2
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "work-orders-fixtures"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "authority-grants"
+          ]
+        },
+        {
+          "name": "license-fixtures",
+          "startedAt": "2026-09-15T07:28:30.657Z",
+          "finishedAt": "2026-09-15T07:28:53.723Z",
+          "durationMs": 23065,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            1
+          ],
+          "concurrentAtStart": [
+            "release:case:cached_evidence",
+            "release:case:composed_evidence",
+            "release:case:concurrent"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "github-body"
+          ]
+        },
+        {
+          "name": "work-orders-fixtures",
+          "startedAt": "2026-09-15T07:28:32.754Z",
+          "finishedAt": "2026-09-15T07:29:20.882Z",
+          "durationMs": 48127,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            0
+          ],
+          "concurrentAtStart": [
+            "release:case:concurrent",
+            "license-fixtures",
+            "checkpoint"
+          ],
+          "predecessors": [
+            "build",
+            "license-surfaces",
+            "publication-fixtures"
+          ]
+        },
+        {
+          "name": "release:case:concurrent",
+          "startedAt": "2026-09-15T07:28:22.491Z",
+          "finishedAt": "2026-09-15T07:29:20.927Z",
+          "durationMs": 58436,
+          "exitCode": 0,
+          "executed": true,
+          "lanes": [
+            3
+          ],
+          "concurrentAtStart": [
+            "release:case:edition",
+            "release:case:cached_evidence",
+            "release:case:composed_evidence"
+          ],
+          "predecessors": [
+            "build",
+            "release:prepare",
+            "license-surfaces",
+            "release:case:success"
+          ]
+        }
+      ],
+      "sequence": 3,
+      "transcriptSha256": "e1c3549883444b627c3dc8d0ded93c1e717ca05a3f67c084072d1956779be87a"
+    }
+  ],
+  "comparison": {
+    "baselineMs": 605000,
+    "meanFreshMs": 250522.66666666666,
+    "thresholdMs": 360000,
+    "allThreeBelowThreshold": true,
+    "taskReduction": 20
+  },
+  "limits": [
+    "Local transport doubles establish the release lifecycle; actual publication is a separate dispatch.",
+    "The next real work order one-gate control history is a future observation.",
+    "Fresh means every declared task executed; dependencies and ordinary operating-system caches were not removed."
+  ],
+  "postReportLookup": {
+    "codeIdentity": "e2a8b9c7620bae5313ee0ae3eb0d27ebf06917a758403015cb37a3057834d646",
+    "passingGateAfterReportEdits": true,
+    "gateRecordedAt": "2026-09-15T07:29:21.070Z",
+    "currentTree": "5e111519a4920d893d7d8ec1462b25ebc5fae403",
+    "reviewedTree": "da3a234c6b88b46d3f30b8aeade887c0f7df2683",
+    "source": "A separate Bash process after report, index and meta writeback; the exact tree differs and the successful product row still resolves."
+  }
+}

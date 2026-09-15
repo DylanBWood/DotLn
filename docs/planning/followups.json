@@ -1713,6 +1713,13 @@
           "title": "Work-order navigation and identity (candidate)",
           "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
           "missing": false
+        },
+        {
+          "hash": "4b43cb36fdc6402d60b6d7452603defc96622baa4c215dba047f097af6e0b1a8",
+          "ref": "docs/product/06-roadmap.md#work-order-navigation-and-identity-candidate",
+          "title": "Work-order navigation and identity (candidate)",
+          "summary": "## Work-order navigation and identity (candidate) The current control projection answers one narrow question: given a selected work order and its independently folded phase, which lifecycle transitions are legal now? It does not answer which backlog order should be activated after close. The release ladder, hard dependency graph, adjacent evidence/corpus work, and operator preference are distinct planning inputs and must not be collapsed into the next integer. Keep three answers visible: 1. **Workflow legal next:** the transition allowed for the selected order, such as verify, repair, or final review. 2. **Eligible now:** every candidate whose hard dependencies, activation prerequisites, aut",
+          "missing": false
         }
       ],
       "dispositions": []
@@ -4349,6 +4356,133 @@
           "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
           "title": "NoOps of the 2026-09-15 machinery stand-down pass.",
           "summary": "- **NoOps of the 2026-09-15 machinery stand-down pass.** Weighed and declined, each with its evidence and reversal condition in [the planning document §7](machinery-stand-down-2026-09-15.md#7-declined-alternatives--the-noop-register-of-this-pass). (1) _Revert pull requests #54 to #62 wholesale._ Declined: it also removes the repairs of observed failures (egress-first close, derived-worktree settlement, nested-repository classification, the operator controls, background refuters, the gate stop, the permission-bit key, load-derived deadlines) and restores a 476 s whole-tree gate, not a six-minute one. Reverse: if WO-132 is not implementation-ready within one eight-hour executor session, revert",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b1986c2e0233c032",
+      "key": "decision:docs/evidence/WO-132/decisions.md#wo-132-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "34eb0246fa5897e7de42fd2b54f2419dd3497aeb45d124d0aef963959013035d",
+          "ref": "docs/evidence/WO-132/decisions.md#wo-132-d001",
+          "title": "WO-132-D001: Implement the machinery stand-down as the single bounded system change authorized by WO-132; remove transition gate requirements and replica reuse before simplifying their consumers.",
+          "summary": "{ \"id\": \"WO-132-D001\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Implement the machinery stand-down as the single bounded system change authorized by WO-132; remove transition gate requirements and replica reuse before simplifying their consumers.\", \"evidence\": [ \"docs/work-orders/WO-132-machinery-stand-down.md\", \"docs/planning/machinery-stand-down-2026-09-15.md\", \"docs/evidence/WO-128/decisions.md#wo-128-d010\", \"scripts/lib/lifecycle-evidence.mjs\", \"scripts/test-runner.mjs\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"The recorded eight gates and repeated permission/refutation refusals would continue blocking the selected product critical path.\" }, { \"option\": \"Repai",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f29b83b7aa40bf68",
+      "key": "decision:docs/evidence/WO-132/decisions.md#wo-132-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "be6104186d7c6afbc21739fdd47729c981c7c18a2b22aeec4c074f59b6d9300b",
+          "ref": "docs/evidence/WO-132/decisions.md#wo-132-d002",
+          "title": "WO-132-D002: Retire repeated lifecycle gates and runner replicas; retain a tracked-source product identity, one reviewer row and the two hook invariants. Keep historical evidence immutable and compare",
+          "summary": "{ \"id\": \"WO-132-D002\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Retire repeated lifecycle gates and runner replicas; retain a tracked-source product identity, one reviewer row and the two hook invariants. Keep historical evidence immutable and compare edition sources directly when only component release labels change. Prepare application v0.18.0 with compiler 0.10.0, skeleton 0.16.0 and console 0.1.6.\", \"evidence\": [ \"docs/work-orders/WO-132-machinery-stand-down.md\", \"docs/planning/machinery-stand-down-2026-09-15.md\", \"docs/evidence/WO-044/decisions.md#wo-044-d016\", \"docs/evidence/WO-128/decisions.md#wo-128-d010\", \"docs/evidence/WO-131/engineering-review.md\", \"scripts/t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f23aa5b6a02adcc9",
+      "key": "decision:docs/evidence/WO-132/decisions.md#wo-132-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "98c0e6acc7c3680bf0b27c437e66176db26b30efe052de00d52b9a740dafda57",
+          "ref": "docs/evidence/WO-132/decisions.md#wo-132-d003",
+          "title": "WO-132-D003: Complete the disposition migration for historical holds and permit an exact Cost-header repair within the existing criterion-bound disposition or override. Generate current release notes ",
+          "summary": "{ \"id\": \"WO-132-D003\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Complete the disposition migration for historical holds and permit an exact Cost-header repair within the existing criterion-bound disposition or override. Generate current release notes from the reviewer-evidence contract without claiming an unexecuted dependency install.\", \"evidence\": [ \"docs/work-orders/WO-132-machinery-stand-down.md#acceptance-criteria-all-required\", \"scripts/lib/plan-receipts.mjs\", \"scripts/lib/plan-continuation.mjs\", \"scripts/release.mjs\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Source audit reproduced a disposed historical hold remaining unanswered and identified a Cost repair",
+          "missing": false
+        },
+        {
+          "hash": "5e5670079c2c8c5df037cd0ab3e9fcd42f244acfe9c8dbfd0b42570b0432c482",
+          "ref": "docs/evidence/WO-132/decisions.md#wo-132-d003",
+          "title": "WO-132-D003: Complete the disposition migration for historical holds and permit an exact Cost-header repair within the existing criterion-bound disposition or override. Generate current release notes ",
+          "summary": "{ \"id\": \"WO-132-D003\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Complete the disposition migration for historical holds and permit an exact Cost-header repair within the existing criterion-bound disposition or override. Generate current release notes from the reviewer-evidence contract without claiming an unexecuted dependency install.\", \"evidence\": [ \"docs/work-orders/WO-132-machinery-stand-down.md\", \"scripts/lib/plan-receipts.mjs\", \"scripts/lib/plan-continuation.mjs\", \"scripts/release.mjs\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Source audit reproduced a disposed historical hold remaining unanswered and identified a Cost repair blocked from both continuation a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0022a893a68a9c7c",
+      "key": "decision:docs/evidence/WO-132/decisions.md#wo-132-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e7d62ea45c57751f37da87653c061b34e2e2b1ae448b6c70d542908fc73d44cd",
+          "ref": "docs/evidence/WO-132/decisions.md#wo-132-d004",
+          "title": "WO-132-D004: Repair VER-001 F1 by reading the complete Cost paragraph through its field, paragraph or true end-of-file boundary, and exercise the closed-order collection and rendered planning-input pa",
+          "summary": "{ \"id\": \"WO-132-D004\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-001 F1 by reading the complete Cost paragraph through its field, paragraph or true end-of-file boundary, and exercise the closed-order collection and rendered planning-input path with wrapped authority text.\", \"evidence\": [ \"docs/verifications/WO-132/VER-001.md#f1\", \"scripts/lib/meta.mjs\", \"scripts/test-process-debt.mjs\", \"docs/work-orders/WO-126-process-debt.md\", \"docs/product/07-execution-guide.md#discipline\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"The printed promise drops the removal clause and cannot inform the next product-planning decision.\" }, { \"option\": \"Remove end-of-file suppor",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c07a6e2e07860e80",
+      "key": "decision:docs/evidence/WO-132/decisions.md#wo-132-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "02560d1b0a4323ca3bcba1415696a91cde123f81faebbee51a6d28ee04ae30b8",
+          "ref": "docs/evidence/WO-132/decisions.md#wo-132-d005",
+          "title": "WO-132-D005: Apply the operator-approved adjacent repairs in order: exclude unavailable or invalid durations from cost outcomes, then admit ls, head and grep through the existing bounded gate destinat",
+          "summary": "{ \"id\": \"WO-132-D005\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Apply the operator-approved adjacent repairs in order: exclude unavailable or invalid durations from cost outcomes, then admit ls, head and grep through the existing bounded gate destination adapter with read and write regression coverage.\", \"evidence\": [ \"scripts/lib/meta.mjs\", \"docs/verifications/WO-132/VER-001.md#f2\", \"docs/verifications/WO-132/VER-001.md#f3\", \"packages/skeleton/src/harness-command.ts\", \"scripts/test-harness.mjs\", \"docs/planning/machinery-stand-down-2026-09-15.md#7-declined-alternatives--the-noop-register-of-this-pass\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Missing duration curre",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1bd8841c3e49d263",
+      "key": "decision:docs/evidence/WO-132/decisions.md#wo-132-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "aaddc9cddf1105bc7d69e0b09d6d2f58a26294241fe4b2290c5b7c983ab2ccf9",
+          "ref": "docs/evidence/WO-132/decisions.md#wo-132-d006",
+          "title": "WO-132-D006: Repair VER-002 F1 in the bounded gate destination adapter: >&word, N>&word and >>&word record word as the destination when the operand is not a descriptor number, - records no destination",
+          "summary": "{ \"id\": \"WO-132-D006\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-002 F1 in the bounded gate destination adapter: `>&word`, `N>&word` and `>>&word` record `word` as the destination when the operand is not a descriptor number, `-` records no destination, a spaced operand is the next word, and a missing, expanded or wildcard operand stays opaque; pin the parse with an adapter unit test and with hook-fixture denials into `packages/<pkg>/dist` and `./node_modules` (F2).\", \"evidence\": [ \"docs/verifications/WO-132/VER-002.md#f1\", \"docs/verifications/WO-132/VER-002.md#f2\", \"packages/skeleton/src/harness-command.ts\", \"scripts/test-process-debt.mjs\", \"scripts/test-harnes",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fefea233efadceeb",
+      "key": "decision:docs/evidence/WO-132/decisions.md#wo-132-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b6f049231b1c18328acdd0dee08df94923e769bd4f17fbd0b2a90317e95e8856",
+          "ref": "docs/evidence/WO-132/decisions.md#wo-132-d007",
+          "title": "WO-132-D007: Repair VER-003 F1 by distinguishing the single-output redirect operator from append before interpreting its operand: numeric and dash operands after >& duplicate or close descriptors, whi",
+          "summary": "{ \"id\": \"WO-132-D007\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-003 F1 by distinguishing the single-output redirect operator from append before interpreting its operand: numeric and dash operands after >& duplicate or close descriptors, while >>& retains them as filenames. Extend the existing parser and generated-hook regressions with the seven reported commands.\", \"evidence\": [ \"docs/verifications/WO-132/VER-003.md#f1--append-operands-are-discarded-as-descriptors\", \"packages/skeleton/src/harness-command.ts\", \"scripts/test-process-debt.mjs\", \"scripts/test-harness.mjs\", \"https://zsh.sourceforge.io/Doc/Release/Redirection.html\" ], \"rejected\": [ { \"option\": \"NoOp",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-fd360ff070c5afd0",
+      "key": "decision:docs/evidence/WO-132/decisions.md#wo-132-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "47016d15df378b4f2519f3f64edb5f7110cba1344259ecc6fa8a9c1446920f4c",
+          "ref": "docs/evidence/WO-132/decisions.md#wo-132-d008",
+          "title": "WO-132-D008: Repair VER-004 F1 with one shared literal-operand boundary in both output-redirect branches. An operand must start with an ASCII letter, digit, dot, underscore or slash, or be the literal",
+          "summary": "{ \"id\": \"WO-132-D008\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Repair VER-004 F1 with one shared literal-operand boundary in both output-redirect branches. An operand must start with an ASCII letter, digit, dot, underscore or slash, or be the literal dash filename; shell-special prefixes such as ! and = stay opaque. Preserve the existing expansion checks, descriptor-only reads and literal append destinations. Pin every reported command against the parser and generated live-gate hooks.\", \"evidence\": [ \"docs/verifications/WO-132/VER-004.md\", \"packages/skeleton/src/harness-command.ts\", \"scripts/test-process-debt.mjs\", \"scripts/test-harness.mjs\", \"https://zsh.sourceforge.io",
           "missing": false
         }
       ],
