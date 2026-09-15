@@ -33,11 +33,16 @@ export type ContributorSupportSwitches = ExecutorSupportSwitches &
 const handlers = personalFeedbackUnits.map((unit) => unit.trigger);
 const operatorControls =
   "Operator controls precede workflow: `analysis:` pauses for diagnosis/direction; `operator override:` suspends DotLn gates for authorized recovery, regardless of harness/repo state. Preserve pending work; invent no dispatch or passing check. Exit with either prefix plus `off`. Codex: `node scripts/operator-control.mjs analysis|override|off|status` needs no build or Git. Host permissions apply. Read product 07 §Operator recovery controls for the broader recovery candidate.";
+// Every role in both harnesses carries this line (operator direction,
+// 2026-09-14, WO-044): a guess presented as a finding is a defect.
+const noGuessing =
+  "Never guess: an unobserved value is `unknown`, `untested` or `blocked`; each claim names its source or what is missing.";
 const common = [
   "Resolve physical cwd and Git root before changing files or running Git commands. Work only in the selected worktree; one writable coding agent owns it.",
   "Run `npm run resume --silent -- status --json`; use its canonical selected order, phase, report paths, and legal actions. A stale Markdown projection is repaired only by the next legal transition.",
   "Status may name artifacts for other roles. Load a report only when this role's Read directives or the active order's citations select it; a path in status is metadata, not a read directive.",
   "Skills supply procedure, never authority or phase state. Preserve the operator's intent and work-order model/effort minimum. Never invent effective-session readback.",
+  noGuessing,
   "Read: `@work-order`",
   "Read: `@citations`",
   "Read source and existing tests relevant to the order before changes. Scope those reads to `@subject-files`; unresolved paths remain a named input requirement.",
@@ -51,7 +56,7 @@ const common = [
 const actor =
   "Completion flags: `--harness <harness> --harness-version <version> --model <model> --effort <level> --source <self-reported|harness-readback|operator-attested>`. Use exposed values; an unknown required effort blocks the handoff. The repository's Codex default is GPT-6 Astra at max, operator-attested unless actual readback is exposed.";
 const evidence =
-  "Finish measurements, generation, release preparation and reports before the final gate. Date their cutoff; cite the completion event for the final checked tree. Run only `npm run harness -- evidence` for the final full gate and diff check. It builds and refreshes the work-order index, decisions, follow-ups and harness before fingerprinting, preserving unchanged bytes. On pass, freeze source and reports: read current outputs, record the result, refresh its index once and hand off. Final timings and usage stay in ignored receipts and the response; never edit checked reports or rerun release-prepare/meta solely to copy counters. Completion collects usage itself. Results, counters and completion bookkeeping require no further gate. Substantive corrections still need affected checks at new bytes; no source, report or evidence path is exempt from exact-tree validation. Immutable evidence, publication locks and release targets remain explicit inputs. A separate fast gate is only for an explicit measurement. Diagnose failures before retrying; preflights stop costly suites and unchanged successes are reused. A failed review or verification needs its reproduction and `git diff --check`. Review current authored outputs; inherited changes add no reads. Generated files and files over 64 KB owe their generation or validation check. Use `node scripts/harness.mjs read-output <path> --offset 0 --length 8192` and follow nextOffset. Claude observes reads; Codex uses explicit begin/observe/delivered without claiming automatic hooks. Stop advises once and releases the writer; completion enforces evidence.";
+  "Finish measurements, generation, release preparation and reports before the final gate. Date their cutoff; cite the completion event for the final checked tree. Run only `npm run harness -- evidence` for the final full gate and diff check. It builds and refreshes the work-order index, decisions, follow-ups and harness before fingerprinting, preserving unchanged bytes. On pass, freeze source and reports: read current outputs, record the result, refresh its index once and hand off. Final timings and usage stay in ignored receipts and the response; never edit checked reports or rerun release-prepare/meta solely to copy counters. Completion collects usage itself. Results, counters and completion bookkeeping require no further gate. Substantive corrections still need affected checks at new bytes; no source, report or evidence path is exempt from exact-tree validation. Immutable evidence, publication locks and release targets remain explicit inputs. A separate fast gate is only for an explicit measurement. A gate you must end, you end yourself: `node scripts/harness.mjs evidence --stop` is admitted while it runs, it stops at its next boundary and records no check; never hand that to the operator. Diagnose failures before retrying; preflights stop costly suites and unchanged successes are reused. A failed review or verification needs its reproduction and `git diff --check`, which `npm run harness -- evidence --fail` records alone, skipping the suite gate a failing verdict does not require. Review current authored outputs; inherited changes add no reads. Generated files and files over 64 KB owe their generation or validation check. Use `node scripts/harness.mjs read-output <path> --offset 0 --length 8192` and follow nextOffset. Claude observes reads; Codex uses explicit begin/observe/delivered without claiming automatic hooks. Stop advises once and releases the writer; completion enforces evidence.";
 export const contributorRoles: readonly HarnessRole[] = [
   {
     facetId: "contributor.executor",
@@ -117,10 +122,11 @@ export const contributorRoles: readonly HarnessRole[] = [
     feedbackHandlers: handlers,
     procedure: [
       "Only resume: release close authorizes this. In main, verify cwd/Git root; run `npm run resume --silent -- status --json`.",
+      noGuessing,
       "Read: `@work-order`",
       "Read: `@citations`",
       "Read: `@final-review`",
-      "Run the exact `npm run resume -- release-close` or worktree-publish handoff in main; after removal use main's helper. Use it for partial-publication retries too.",
+      "Run the exact `npm run resume -- release-close` or worktree-publish handoff in main; after removal use main's helper. Use it for partial-publication retries too. It needs network egress to the GitHub host: run it from an operator terminal with egress after `--dry-run` proves reachability; a sandboxed session cannot publish.",
       "The helper validates merge, cleanliness, evidence and tag/Release identity, reconciles intake and retains state/collision bytes in main's ignored retained/WO-NNN lane. Keep main's terms.txt and gate-evidence handoff. `--dry-run` previews. Report refusals; never force teardown or repeat transitions.",
       "Publish only the validated tag/Release; report no-release or remaining work. Never edit Releases, push main, merge PRs, publish packages/binaries or change settings.",
     ],
@@ -134,6 +140,7 @@ export const contributorRoles: readonly HarnessRole[] = [
     feedbackHandlers: handlers,
     procedure: [
       "Resolve cwd and Git root. A planning: prefix selects the document-only planning pass. An ideation: prefix selects capture, clean-room synthesis, ledger and product-doc write-back unless it explicitly says capture-only. Preserve any ongoing work-order obligation. The skill supplies no activation or external-effect authority.",
+      noGuessing,
       "Read: `docs/product/07-execution-guide.md#Operator-opened planning pass`",
       "Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`",
       "Read: `docs/planning/sequence.md`",
@@ -150,6 +157,7 @@ export const contributorRoles: readonly HarnessRole[] = [
     feedbackHandlers: handlers,
     procedure: [
       "Resolve cwd and Git root. The parent coordinates one fresh background refuter without inherited conversation (Codex: spawn_agent with fork_turns none; Claude: a fresh background agent). Give it only the canonical prompt, its result schema and the shared goal card; no planner narrative, prior receipts or other subject preread. The parent remains the sole repository writer. A worker already given that prompt judges it directly; it does not spawn another refuter.",
+      noGuessing,
       "Run `npm run plan -- refute` for planning: refute, or add `--scope full` for planning: refute full; --direct remains an alias. The helper verifies committed/workspace equality and prints the canonical prompt and closed JSON schema. Pass scope judges changed orders and sequence; other verdicts carry by hash. The worker returns its frozen JSON and a truthful single-line statement of at most 4000 characters to the parent, using scratch files if needed, with no repository or Git writes. While it runs, complete independent closeout work without changing the frozen subject.",
       "The parent saves the worker's result and statement in ignored local files and runs `npm run plan -- receipt <result.json> --statement <statement.txt> [--dispositions <file>]`. The helper validates, screens, files and commits the immutable pair and runs the plan check. Preserve the actual verdict; apply only operator-authorized overrides. Repair formatting with the same worker without rerolling the judgment. Report scope, elapsed time and actual result. Use no ad hoc receipt script. External `refute --transport <name>` requires an explicit operator request; do not fall back to it after a worker failure. If background workers are unavailable, report that limitation and preserve the pending review.",
     ],
@@ -393,10 +401,11 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
     role.name === "release-close"
       ? [
           "Verify main's cwd/Git root; run `npm run resume --silent -- status --json`.",
+          noGuessing,
           "Read: `@work-order`",
           "Read: `@citations`",
           "Read: `@final-review`",
-          "Use main's exact release-close/worktree-publish handoff; use its helper after removal or partial publication.",
+          "Use main's exact release-close/worktree-publish handoff; use its helper after removal or partial publication. It needs network egress to the GitHub host: run it from an operator terminal with egress after `--dry-run` proves reachability; a sandboxed session cannot publish.",
           "Helper checks release prerequisites, reconciles intake and retains state/collisions in ignored retained/WO-NNN. Keep terms.txt and gate-evidence handoff. `--dry-run` previews. Report refusals; never force teardown/repeat transitions.",
           "Publish only that tag/Release; report no-release/remaining work. No Release edits, main pushes, PR merges, package/binary publication or settings changes.",
         ]
@@ -570,7 +579,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "CLAUDE.md",
     },
     refusal: "claude-command-json-v1",
-    runtime: { skeletonVersion: "0.15.11", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.12", boundaryContract: "feedback-v1" },
   },
   {
     profileId: "codex-cli-0.153.4",
@@ -606,6 +615,6 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "AGENTS.md",
     },
     refusal: "unavailable",
-    runtime: { skeletonVersion: "0.15.11", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.15.12", boundaryContract: "feedback-v1" },
   },
 ];

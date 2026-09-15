@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09",
+  "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09; operator direction during resume: next on 2026-09-14 (WO-044): artificial caps yield to needed rules and accuracy comes before efficiency, so the cold-start ceilings the shared no-guessing line touches carry real margin",
   "dispatches": {
     "executor": { "tokens": null, "costUsd": null },
     "verifier": { "tokens": null, "costUsd": null },
@@ -11,10 +11,10 @@
   },
   "limits": {
     "coldStartBytes": {
-      "executor": 16384,
-      "verifier": 12288,
-      "reviewer": 14336,
-      "release-close": 6144,
+      "executor": 20480,
+      "verifier": 16384,
+      "reviewer": 16384,
+      "release-close": 8192,
       "planner": 24576,
       "refuter": null
     },

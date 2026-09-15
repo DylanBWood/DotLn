@@ -42,7 +42,7 @@ sandbox below automatically governs all of them.
 | File-edit review         | in-workspace edits auto-accept; review occurs through the working-tree diff          | edits inside `workspace-write` run without a separate harness prompt                      |
 | Command review           | sandbox-contained Bash auto-allows; explicit denies and sandbox boundaries still win | user reviews sandbox-boundary escalation                                                  |
 | Shell network            | sandboxed and permission-gated                                                       | disabled inside the workspace sandbox                                                     |
-| Unsandboxed fallback     | disabled                                                                             | explicit approval required                                                                |
+| Unsandboxed fallback     | request with approval: a command may ask to run unsandboxed and the permission mode reviews that ask (WO-044) | explicit approval required                                                                |
 | Sandbox startup failure  | fail closed                                                                          | helper/config diagnostics must pass                                                       |
 | SSH safeguards           | SSH credential reads/writes and direct `ssh`, `scp`, and `sftp` commands are denied  | no command allow rules; shell SSH cannot cross the network boundary without user approval |
 | Remembered command rules | no checkout-local allow entries                                                      | no command allow rules                                                                    |
@@ -133,7 +133,7 @@ Personal user settings (`~/.claude/settings.json`):
     "enabled": true,
     "autoAllowBashIfSandboxed": true,
     "failIfUnavailable": true,
-    "allowUnsandboxedCommands": false,
+    "allowUnsandboxedCommands": true,
     "credentials": {
       "files": [{ "path": "~/.ssh", "mode": "deny" }]
     }
@@ -177,7 +177,15 @@ already loaded by the current harness session.
 
 `autoAllowBashIfSandboxed: true` is the explicit parallel-work tradeoff recorded
 by ADR-0004. It removes ordinary per-command review only for Bash that remains
-inside the active sandbox. `defaultMode: "acceptEdits"` separately persists
+inside the active sandbox. `allowUnsandboxedCommands: true` (operator direction,
+2026-09-14, WO-044) lets a session ask to run one command outside the sandbox;
+the sandbox stays on by default and every such ask is reviewed by the
+permission mode, which is the same request-and-approve shape Codex offers
+through its on-request approval policy. It was turned on because two required
+steps could not run inside the sandbox at all: regenerating the checked-in hook
+and skill files, which live on the host's protected paths, and launching a
+child harness that must read the credential store. Handing either step back to
+the operator's terminal is a defect, not a procedure. `defaultMode: "acceptEdits"` separately persists
 automatic in-workspace editing for new sessions; it is not auto mode or bypass
 permissions, and explicit deny rules still win.
 
@@ -220,6 +228,9 @@ Do not verify by attempting a real SSH connection or opening a private key.
 - To disable Claude's sandbox intentionally, set `sandbox.enabled` to `false` or
   use the current `/sandbox` UI. This removes a useful defense and is not the
   recommended DotLn posture.
+- To refuse every unsandboxed ask again, set `allowUnsandboxedCommands` to
+  `false`; sessions then cannot regenerate generated surfaces or launch an
+  authenticated child harness, and those steps return to an operator terminal.
 - Removing `failIfUnavailable` or `allowUnsandboxedCommands` returns those
   controls to version-dependent defaults. Keep the SSH credential block and deny
   rules unless the intent is also to make those credentials reachable.

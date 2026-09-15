@@ -22,9 +22,16 @@ export const harnessToolEffects = {
   Bash: "shell",
   Monitor: "shell",
   TaskOutput: "read",
-  KillShell: "shell",
+  // Ending a task this session started changes no repository byte and is the
+  // session's own route out of a running gate; a stopped gate records nothing.
+  KillShell: "stop",
+  TaskStop: "stop",
   Agent: "spawn",
   Task: "spawn",
+  // A workflow orchestrates subagents of this session; the orchestration itself
+  // touches no repository byte, and each subagent's own tool calls pass these
+  // same guards.
+  Workflow: "spawn",
   Skill: "interaction",
   TodoWrite: "interaction",
   AskUserQuestion: "interaction",

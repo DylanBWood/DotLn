@@ -206,9 +206,96 @@ export function suiteSuccessPath(root, path) {
 }
 
 /** @typedef {{contract: "gate-run-v1", runId: string, command: string, pid: number, startedAt: string, processStartedAt: string|null}} GateRun */
+/** @typedef {{contract: "gate-stop-v1", runId: string, requestedAt: string}} GateStop */
 /** @param {string} root */
 const gateRunsDirectory = (root) =>
   join(realpathSync(root), "docs/control/local/harness/active-gates");
+const gateRunId = /^[a-f0-9-]{36}$/;
+/** Every gate process names its own run and its ancestors' runs to its
+ * children here, so a stop request for any of them reaches the whole tree
+ * without signals to processes whose identity a sandbox cannot verify. */
+export const GATE_RUN_ENVIRONMENT = "DOTLN_GATE_RUNS";
+/** @param {NodeJS.ProcessEnv} [env] */
+export const gateRunLineage = (env = process.env) =>
+  (env[GATE_RUN_ENVIRONMENT] ?? "")
+    .split(",")
+    .filter((runId) => gateRunId.test(runId));
+/** @param {string} root @param {string} runId */
+const gateStopPath = (root, runId) =>
+  join(gateRunsDirectory(root), `${runId}.stop`);
+/** Run ids among the given lineage that carry a stop request. A gate polls
+ * this at every boundary it owns and stops itself; nothing here signals a pid.
+ * @param {string} root @param {readonly string[]} [runIds] */
+export function gateStopRequested(root, runIds = gateRunLineage()) {
+  return runIds.filter((runId) => existsSync(gateStopPath(root, runId)));
+}
+/** Ask every live gate in this worktree to stop, then wait a bounded time for
+ * the markers to clear. The request is a file the running gate reads at its
+ * next boundary; a gate that has not reached one yet keeps its request and
+ * stays reported as active with its pids. Requests left by dead runs are swept.
+ * @param {string} root @param {{waitMs?: number}} [options] */
+export function requestGateStop(root, { waitMs = 20_000 } = {}) {
+  const directory = gateRunsDirectory(root);
+  const runs = activeGateRuns(root);
+  /** @type {string[]} */
+  let names = [];
+  try {
+    names = readdirSync(directory);
+  } catch (error) {
+    if (/** @type {NodeJS.ErrnoException} */ (error).code !== "ENOENT")
+      throw error;
+  }
+  for (const name of names) {
+    const runId = name.endsWith(".stop") ? name.slice(0, -5) : null;
+    if (
+      runId &&
+      gateRunId.test(runId) &&
+      !runs.some((run) => run.runId === runId)
+    )
+      try {
+        unlinkSync(join(directory, name));
+      } catch (error) {
+        if (/** @type {NodeJS.ErrnoException} */ (error).code !== "ENOENT")
+          throw error;
+      }
+  }
+  const requestedAt = new Date().toISOString();
+  for (const run of runs) {
+    const path = gateStopPath(root, run.runId);
+    const prepared = `${path}.${randomUUID()}.prepare`;
+    writeFileSync(
+      prepared,
+      JSON.stringify({
+        contract: "gate-stop-v1",
+        runId: run.runId,
+        requestedAt,
+      }) + "\n",
+      { flag: "wx", mode: 0o600 },
+    );
+    renameSync(prepared, path);
+  }
+  const deadline = Date.now() + Math.max(0, waitMs);
+  let active = runs;
+  while (active.length && Date.now() < deadline) {
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250);
+    active = activeGateRuns(root);
+  }
+  const view = (/** @type {GateRun} */ run) => ({
+    runId: run.runId,
+    command: run.command,
+    pid: run.pid,
+    startedAt: run.startedAt,
+  });
+  return {
+    contract: "gate-stop-v1",
+    requestedAt,
+    requested: runs.map(view),
+    stopped: runs
+      .filter((run) => !active.some((row) => row.runId === run.runId))
+      .map(view),
+    active: active.map(view),
+  };
+}
 /** A PID birth observation prevents reuse from reviving an old marker when ps
  * is available. Signal zero still distinguishes an exited owner in a sandbox.
  * @param {number} pid */
@@ -296,17 +383,38 @@ export function beginGateRun(root, command) {
     mode: 0o600,
   });
   renameSync(prepared, path);
-  const release = () => {
-    process.removeListener("exit", release);
+  // Children inherit the lineage, so one stop request reaches every process
+  // of this gate; a stop for an ancestor run stops this run too.
+  const ancestors = gateRunLineage();
+  process.env[GATE_RUN_ENVIRONMENT] = [...ancestors, run.runId].join(",");
+  const lineage = [...ancestors, run.runId];
+  // Resolved now: a fixture may remove its root before releasing the marker.
+  const stopFile = join(directory, `${run.runId}.stop`);
+  /** @param {string} file */
+  const remove = (file) => {
     try {
-      unlinkSync(path);
+      unlinkSync(file);
     } catch (error) {
       if (/** @type {NodeJS.ErrnoException} */ (error).code !== "ENOENT")
         throw error;
     }
   };
+  const release = () => {
+    process.removeListener("exit", release);
+    const remaining = gateRunLineage().filter((id) => id !== run.runId);
+    if (remaining.length)
+      process.env[GATE_RUN_ENVIRONMENT] = remaining.join(",");
+    else delete process.env[GATE_RUN_ENVIRONMENT];
+    remove(stopFile);
+    remove(path);
+  };
   process.once("exit", release);
-  return { run, release };
+  return {
+    run,
+    release,
+    /** True once a stop was requested for this run or an ancestor run. */
+    stopRequested: () => gateStopRequested(root, lineage).length > 0,
+  };
 }
 
 /** @typedef {{exitCode: number, executed: boolean, output?: string, outputRef?: string, cases?: GateDiagnostic[]}} GateDiagnostic */
@@ -619,3 +727,16 @@ export function requireGateChecks(root, required) {
     );
   return treeHash;
 }
+
+/** The application checks a lifecycle verdict must carry at its tree. A failing
+ * verification or review is an evidence-bearing report, never a green-code claim,
+ * so it owes only the whitespace check; every other outcome owes the full suite
+ * gate first. Both the lifecycle evidence gate and the harness evidence runner
+ * read this one definition, so the required set cannot drift between them.
+ * @param {string} [verdict]
+ * @returns {string[]}
+ */
+export const lifecycleRequiredChecks = (verdict) =>
+  verdict === "fail"
+    ? ["git diff --check"]
+    : ["npm run test:full", "git diff --check"];
