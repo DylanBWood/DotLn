@@ -82,6 +82,71 @@ test("current evidence follows one manifest, independent of active order; explic
   }
 });
 
+test("repair revisions preserve the original artifact and verification evidence", () => {
+  const root = mkdtempSync(join(tmpdir(), "dotln-evidence-repair-"));
+  try {
+    mkdirSync(join(root, "docs/evidence"), { recursive: true });
+    const editions = {
+      "artifact-identity": { workOrder: "WO-045", revision: "001" },
+      verification: { workOrder: "WO-045", revision: "001" },
+    };
+    writeFileSync(
+      join(root, "docs/evidence/current.json"),
+      JSON.stringify({ schemaVersion: 1, editions }),
+    );
+    for (const kind of ["artifact-identity", "verification"] as const) {
+      const original = evidenceArgs(root, kind, [
+        "--edition",
+        "WO-045",
+        "--write",
+      ]);
+      assert.equal(
+        original.selection.directory,
+        `docs/evidence/WO-045/${kind}`,
+      );
+      const revised = evidenceArgs(root, kind, [
+        "--revision",
+        "001",
+        "--write",
+      ]);
+      assert.deepEqual(revised.args, ["--write"]);
+      assert.equal(
+        revised.selection.directory,
+        `docs/evidence/WO-045/${kind}/001`,
+      );
+      assert.equal(
+        currentEvidence(root, kind).directory,
+        revised.selection.directory,
+      );
+      const historicalPath = join(
+        root,
+        original.selection.directory,
+        "evidence.json",
+      );
+      const revisedPath = join(
+        root,
+        revised.selection.directory,
+        "evidence.json",
+      );
+      writeEvidenceFile(historicalPath, "original\n");
+      writeEvidenceFile(revisedPath, "repair\n");
+      assert.equal(readFileSync(historicalPath, "utf8"), "original\n");
+      assert.equal(readFileSync(revisedPath, "utf8"), "repair\n");
+      assert.throws(
+        () => writeEvidenceFile(revisedPath, "replacement\n"),
+        /immutable/,
+      );
+      for (const revision of ["000", "1", "0001", "../001", "001/next"])
+        assert.throws(
+          () => evidenceArgs(root, kind, ["--revision", revision]),
+          /Invalid/,
+        );
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("evidence compares component release labels by content and preserves behavioral inputs", () => {
   const manifest = {
     name: "@dotln/skeleton",
