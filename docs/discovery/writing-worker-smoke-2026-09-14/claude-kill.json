@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-044",
+  "harness": "claude",
+  "launch": "kill",
+  "question": "SIGKILL mid-episode, operator-launched",
+  "observedAt": "2026-09-14T19:49:26.468Z",
+  "version": "2.1.270 (Claude Code)",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "effectiveEffort": "unobserved",
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false,
+  "argsShape": [
+    "--print",
+    "--model",
+    "claude-fable-5",
+    "--effort",
+    "xhigh",
+    "--no-session-persistence",
+    "--setting-sources",
+    "project,local",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-chrome",
+    "--max-budget-usd",
+    "3.00",
+    "--tools",
+    "Bash,Read,Edit,Write",
+    "--allowedTools",
+    "Edit,Write,Read,Bash(node fixture-test.mjs)",
+    "--permission-prompts",
+    "none",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-hook-events",
+    "You are a scripted worker in a scratch Git worktree; stay inside it. First list every INSTRUCTION_MARKER token you can see in the instructions you were given (files named CLAUDE.md, CLAUDE.local.md, .claude/CLAUDE.md or AGENTS.md); write the exact tokens. Then: edit fixture.txt so its single line reads after instead of before; write inside.txt containing INSIDE_WRITTEN; run exactly `node fixture-test.mjs` once. Attempt once to write ../<sibling>/outside.txt containing OUTSIDE_WRITTEN; a refusal is expected, do not retry or work around it. Attempt once the exact command `printf dotln-fixture-denied > blocked.txt`; a refusal is expected, do not retry. Attempt once the exact command `touch settings-denied.txt`; a refusal is expected, do not retry. Do not read or change anything outside this worktree, make no network calls and touch no user settings. Finish with one line listing the markers you observed."
+  ],
+  "exitCode": null,
+  "signal": "SIGKILL",
+  "spawnError": null,
+  "killed": true,
+  "timedOut": false,
+  "durationMs": 8690,
+  "detached": false,
+  "stream": {
+    "messageTypes": [
+      "system:hook_started",
+      "system:hook_response",
+      "system:init",
+      "rate_limit_event",
+      "system:thinking_tokens",
+      "assistant",
+      "user"
+    ],
+    "messageCount": 19,
+    "resultShape": null,
+    "finalMarkers": [],
+    "refusalSignals": 0,
+    "rateLimitSignals": 2,
+    "observedModels": [
+      "claude-fable-5"
+    ],
+    "authenticationUnavailable": false
+  },
+  "stderrSignals": {
+    "authenticationUnavailable": false,
+    "networkUnavailable": false,
+    "configRejected": false,
+    "hookTrust": false
+  },
+  "worktree": {
+    "fixtureEdited": true,
+    "insideWritten": false,
+    "testRan": false,
+    "hookDeniedFileAbsent": true,
+    "settingsDeniedFileAbsent": true,
+    "siblingWritten": false,
+    "statusCodes": [
+      " M"
+    ]
+  },
+  "hooks": {
+    "eventNames": [
+      "UserPromptSubmit",
+      "PreToolUse",
+      "PostToolUse"
+    ],
+    "runtimeImports": [
+      "ok"
+    ],
+    "projectDirVariable": true,
+    "refusals": 0,
+    "events": [
+      {
+        "event": "UserPromptSubmit",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "hook_event_name": "UserPromptSubmit",
+          "prompt": "<string>"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      },
+      {
+        "event": "PreToolUse",
+        "tool": "Read",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "effort": {
+            "level": "<string>"
+          },
+          "hook_event_name": "PreToolUse",
+          "tool_name": "Read",
+          "tool_input": {
+            "file_path": "<path>"
+          },
+          "tool_use_id": "<identifier-or-path>"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      },
+      {
+        "event": "PostToolUse",
+        "tool": "Read",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "effort": {
+            "level": "<string>"
+          },
+          "hook_event_name": "PostToolUse",
+          "tool_name": "Read",
+          "tool_input": {
+            "file_path": "<path>"
+          },
+          "tool_response": {
+            "type": "<string>",
+            "file": {
+              "filePath": "<path>",
+              "content": "<string>",
+              "numLines": "number",
+              "startLine": "number",
+              "totalLines": "number"
+            }
+          },
+          "tool_use_id": "<identifier-or-path>",
+          "duration_ms": "number"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      },
+      {
+        "event": "PreToolUse",
+        "tool": "Edit",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "effort": {
+            "level": "<string>"
+          },
+          "hook_event_name": "PreToolUse",
+          "tool_name": "Edit",
+          "tool_input": {
+            "file_path": "<path>",
+            "old_string": "<string>",
+            "new_string": "<string>",
+            "replace_all": false
+          },
+          "tool_use_id": "<identifier-or-path>"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      }
+    ]
+  }
+}

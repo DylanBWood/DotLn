@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-044",
+  "harness": "codex",
+  "launch": "detached",
+  "question": "detached launch with no terminal and stored authentication",
+  "observedAt": "2026-09-14T19:54:49.516Z",
+  "version": "codex-cli 0.154.0",
+  "actor": {
+    "harness": "codex-cli",
+    "model": "gpt-6-astra",
+    "effort": "max",
+    "source": "launch-selector"
+  },
+  "effectiveEffort": "unobserved",
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false,
+  "argsShape": [
+    "-a",
+    "never",
+    "exec",
+    "--ephemeral",
+    "--ignore-user-config",
+    "--sandbox",
+    "workspace-write",
+    "--model",
+    "gpt-6-astra",
+    "-c",
+    "model_reasoning_effort=\"max\"",
+    "--cd",
+    "<scratch>",
+    "--json",
+    "Reply with exactly the single word DETACHED_OK and nothing else. Use no tools."
+  ],
+  "exitCode": 0,
+  "signal": null,
+  "spawnError": null,
+  "killed": false,
+  "timedOut": false,
+  "durationMs": 6028,
+  "detached": true,
+  "stream": {
+    "messageTypes": [
+      "thread.started",
+      "turn.started",
+      "item.completed",
+      "turn.completed"
+    ],
+    "messageCount": 4,
+    "resultShape": null,
+    "finalMarkers": [
+      "DETACHED_OK"
+    ],
+    "refusalSignals": 0,
+    "rateLimitSignals": 0,
+    "observedModels": [],
+    "authenticationUnavailable": false
+  },
+  "stderrSignals": {
+    "authenticationUnavailable": false,
+    "networkUnavailable": false,
+    "configRejected": false,
+    "hookTrust": false
+  },
+  "worktree": {
+    "fixtureEdited": false,
+    "insideWritten": false,
+    "testRan": false,
+    "hookDeniedFileAbsent": true,
+    "settingsDeniedFileAbsent": true,
+    "siblingWritten": false,
+    "statusCodes": []
+  },
+  "hooks": {
+    "eventNames": [],
+    "runtimeImports": [],
+    "projectDirVariable": false,
+    "refusals": 0,
+    "events": []
+  },
+  "rawTranscriptRetainedAtCollection": true,
+  "corrections": [
+    {
+      "finding": "VER-001 F6",
+      "correctedAt": "2026-09-14T22:05:57.269Z",
+      "disposition": "original owned spool removed",
+      "evidence": "unique probe-spool creation timestamp within this recorded launch and exactly stdout/stderr entries; no raw transcript was read"
+    }
+  ]
+}

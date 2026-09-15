@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-044",
+  "record": "docs/discovery/writing-worker-smoke-2026-09-14.md",
+  "runs": [
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-allowed-tools-repair-1.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-allowed-tools.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-background.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-concurrent.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-detached.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-kill.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-prompt-no-terminal-repair-1.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-prompt-no-terminal.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-resident-kill-repair-1.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-settings-control-repair-1.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-settings-deny-repair-1.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-surface.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/claude-tools-only.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/codex-approval-no-terminal-repair-1.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/codex-approval-no-terminal.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/codex-concurrent.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/codex-detached.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/codex-kill.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/codex-named-profile.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/codex-resident-kill-repair-1.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/codex-surface.json",
+    "docs/discovery/writing-worker-smoke-2026-09-14/codex-workspace-write.json"
+  ],
+  "rows": [
+    {
+      "id": "C-W1",
+      "harness": "claude",
+      "label": "ambiguous",
+      "run": "writing-worker-smoke-2026-09-14/claude-tools-only.json"
+    },
+    {
+      "id": "C-W2",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-allowed-tools-repair-1.json"
+    },
+    {
+      "id": "C-W3",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-settings-deny-repair-1.json",
+      "supportingRun": "writing-worker-smoke-2026-09-14/claude-settings-control-repair-1.json"
+    },
+    {
+      "id": "C-W4",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-allowed-tools-repair-1.json"
+    },
+    {
+      "id": "C-W5",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-allowed-tools-repair-1.json"
+    },
+    {
+      "id": "C-W6",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-allowed-tools-repair-1.json"
+    },
+    {
+      "id": "C-W7",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-allowed-tools-repair-1.json"
+    },
+    {
+      "id": "C-W8",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-allowed-tools-repair-1.json"
+    },
+    {
+      "id": "C-W9",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-allowed-tools-repair-1.json"
+    },
+    {
+      "id": "C-W10",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-allowed-tools-repair-1.json"
+    },
+    {
+      "id": "C-K1",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-kill.json"
+    },
+    {
+      "id": "C-U1",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-detached.json"
+    },
+    {
+      "id": "C-U2",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-prompt-no-terminal-repair-1.json"
+    },
+    {
+      "id": "C-U3",
+      "harness": "claude",
+      "label": "unavailable",
+      "run": "writing-worker-smoke-2026-09-14/claude-surface.json"
+    },
+    {
+      "id": "C-U4",
+      "harness": "claude",
+      "label": "unavailable",
+      "run": "writing-worker-smoke-2026-09-14/claude-background.json"
+    },
+    {
+      "id": "C-U5",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-concurrent.json"
+    },
+    {
+      "id": "C-U6",
+      "harness": "claude",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/claude-resident-kill-repair-1.json"
+    },
+    {
+      "id": "X-W1",
+      "harness": "codex",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/codex-workspace-write.json"
+    },
+    {
+      "id": "X-W2",
+      "harness": "codex",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/codex-named-profile.json"
+    },
+    {
+      "id": "X-W3",
+      "harness": "codex",
+      "label": "unavailable",
+      "run": "writing-worker-smoke-2026-09-14/codex-workspace-write.json"
+    },
+    {
+      "id": "X-W4",
+      "harness": "codex",
+      "label": "unavailable",
+      "run": "writing-worker-smoke-2026-09-14/codex-workspace-write.json"
+    },
+    {
+      "id": "X-W5",
+      "harness": "codex",
+      "label": "unavailable",
+      "run": "writing-worker-smoke-2026-09-14/codex-workspace-write.json"
+    },
+    {
+      "id": "X-W6",
+      "harness": "codex",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/codex-workspace-write.json"
+    },
+    {
+      "id": "X-W7",
+      "harness": "codex",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/codex-workspace-write.json"
+    },
+    {
+      "id": "X-W8",
+      "harness": "codex",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/codex-workspace-write.json"
+    },
+    {
+      "id": "X-W10",
+      "harness": "codex",
+      "label": "unavailable",
+      "run": "writing-worker-smoke-2026-09-14/codex-workspace-write.json"
+    },
+    {
+      "id": "X-K1",
+      "harness": "codex",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/codex-kill.json"
+    },
+    {
+      "id": "X-U1",
+      "harness": "codex",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/codex-detached.json"
+    },
+    {
+      "id": "X-U2",
+      "harness": "codex",
+      "label": "ambiguous",
+      "run": "writing-worker-smoke-2026-09-14/codex-approval-no-terminal-repair-1.json"
+    },
+    {
+      "id": "X-U3",
+      "harness": "codex",
+      "label": "unavailable",
+      "run": "writing-worker-smoke-2026-09-14/codex-surface.json"
+    },
+    {
+      "id": "X-U4",
+      "harness": "codex",
+      "label": "unavailable",
+      "run": "writing-worker-smoke-2026-09-14/codex-surface.json"
+    },
+    {
+      "id": "X-U5",
+      "harness": "codex",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/codex-concurrent.json"
+    },
+    {
+      "id": "X-U6",
+      "harness": "codex",
+      "label": "observed",
+      "run": "writing-worker-smoke-2026-09-14/codex-resident-kill-repair-1.json"
+    }
+  ],
+  "counts": {
+    "observed": 23,
+    "blocked": 0,
+    "unavailable": 8,
+    "ambiguous": 2
+  }
+}

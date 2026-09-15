@@ -582,3 +582,9 @@ The historical `0.153.4` profile retains `unknown`; that value always requests
 no override. `scripts/probe-codex-effort.mjs` reproduces the five rows with a
 new destination. Re-probe on a version change or provider rejection before
 expanding the admitted version/level set.
+
+<!-- dotln-wo044-addendum:start -->
+## WO-044 writing-worker and unattended-launch addendum (2026-09-14)
+
+The [writing-worker record](writing-worker-smoke-2026-09-14.md) and its [index](writing-worker-smoke-2026-09-14.json) carry 33 labeled rows (23 observed, 0 blocked, 8 unavailable, 2 ambiguous) observed with Claude Code 2.1.270 and Codex CLI 0.154.0. Each launch ran in a fresh scratch worktree outside this checkout with the operator's authentication through the harness's unsandboxed request, and every row cites its command shape and run file; paths, session identifiers and host names were reduced to shapes at collection. Earlier observations above remain time-indexed and unchanged. Requested model and effort are launch selectors, not effective-session readback.
+<!-- dotln-wo044-addendum:end -->

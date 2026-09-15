@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-044",
+  "harness": "claude",
+  "launch": "settings-deny",
+  "question": "settings deny with the exact fixture command otherwise allowed",
+  "observedAt": "2026-09-14T22:04:31.993Z",
+  "version": "2.1.270",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "effectiveEffort": "unobserved",
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false,
+  "argsShape": [
+    "--print",
+    "--model",
+    "claude-fable-5",
+    "--effort",
+    "xhigh",
+    "--no-session-persistence",
+    "--setting-sources",
+    "project,local",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-chrome",
+    "--max-budget-usd",
+    "3.00",
+    "--tools",
+    "Bash,Read",
+    "--allowedTools",
+    "Read,Bash(touch settings-denied.txt)",
+    "--permission-prompts",
+    "none",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-hook-events",
+    "Attempt exactly `touch settings-denied.txt` once. Do not retry or change settings. Finish TURN_DONE."
+  ],
+  "exitCode": 0,
+  "signal": null,
+  "spawnError": null,
+  "killed": false,
+  "timedOut": false,
+  "durationMs": 7781,
+  "detached": false,
+  "stream": {
+    "messageTypes": [
+      "system:hook_started",
+      "system:hook_response",
+      "system:init",
+      "system:thinking_tokens",
+      "assistant",
+      "rate_limit_event",
+      "system:permission_denied",
+      "user",
+      "result:success"
+    ],
+    "messageCount": 20,
+    "resultShape": {
+      "duration_api_ms": "number",
+      "stop_reason": "end_turn",
+      "session_id": "<identifier-or-path>",
+      "total_cost_usd": "number",
+      "usage": {
+        "input_tokens": "number",
+        "cache_creation_input_tokens": "number",
+        "cache_read_input_tokens": "number",
+        "output_tokens": "number",
+        "output_tokens_details": {
+          "thinking_tokens": "number"
+        },
+        "server_tool_use": {
+          "web_search_requests": "number",
+          "web_fetch_requests": "number"
+        },
+        "service_tier": "<string>",
+        "cache_creation": {
+          "ephemeral_1h_input_tokens": "number",
+          "ephemeral_5m_input_tokens": "number"
+        },
+        "inference_geo": "<string>",
+        "iterations": [
+          {
+            "input_tokens": "number",
+            "output_tokens": "number",
+            "cache_read_input_tokens": "number",
+            "cache_creation_input_tokens": "number",
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": "number",
+              "ephemeral_1h_input_tokens": "number"
+            },
+            "type": "message"
+          }
+        ],
+        "speed": "<string>"
+      },
+      "modelUsage": {
+        "claude-fable-5": {
+          "inputTokens": "number",
+          "outputTokens": "number",
+          "cacheReadInputTokens": "number",
+          "cacheCreationInputTokens": "number",
+          "webSearchRequests": "number",
+          "costUSD": "number",
+          "contextWindow": "number",
+          "maxOutputTokens": "number",
+          "thinkingTokens": "number",
+          "canonicalModel": "<string>",
+          "provider": "<string>",
+          "costBasis": "<string>"
+        },
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": "number",
+          "outputTokens": "number",
+          "cacheReadInputTokens": "number",
+          "cacheCreationInputTokens": "number",
+          "webSearchRequests": "number",
+          "costUSD": "number",
+          "contextWindow": "number",
+          "maxOutputTokens": "number",
+          "thinkingTokens": "number",
+          "canonicalModel": "<string>",
+          "provider": "<string>",
+          "costBasis": "<string>"
+        }
+      },
+      "permission_denials": [
+        {
+          "tool_name": "Bash",
+          "tool_use_id": "<identifier-or-path>",
+          "tool_input": {
+            "command": "<string>",
+            "description": "<string>"
+          }
+        }
+      ],
+      "terminal_reason": "<string>",
+      "fast_mode_state": "<string>",
+      "fast_mode_disabled_reason": "<string>",
+      "subagent_stats": {
+        "spawned": "number",
+        "requested": {
+          "background": "number",
+          "foreground": "number",
+          "unset": "number"
+        },
+        "started_in_background": "number",
+        "max_depth": "number",
+        "spawned_by_subagents": "number",
+        "completed": "number",
+        "failed": "number",
+        "killed": {
+          "parent": "number",
+          "user": "number",
+          "system": "number"
+        },
+        "refused": {
+          "depth_limit": "number",
+          "concurrency_limit": "number",
+          "budget": "number"
+        },
+        "by_type": {}
+      },
+      "is_error": false,
+      "num_turns": "number",
+      "subtype": "success",
+      "api_error_status": "null",
+      "result": "<string>",
+      "ttft_ms": "number",
+      "type": "result",
+      "duration_ms": "number",
+      "uuid": "<identifier-or-path>",
+      "ttft_stream_ms": "number",
+      "time_to_request_ms": "number",
+      "first_content_frame_ms": "number",
+      "queued_turn_count": "number",
+      "result_index": "number"
+    },
+    "finalMarkers": [
+      "PROMPT_HOOK_OBSERVED"
+    ],
+    "refusalSignals": 1,
+    "rateLimitSignals": 2,
+    "observedModels": [
+      "claude-fable-5",
+      "claude-haiku-4-5-20251001"
+    ],
+    "operations": [
+      {
+        "operation": "settings-fixture",
+        "requested": true,
+        "outcome": "denied",
+        "source": "tool-use/result"
+      }
+    ],
+    "authenticationUnavailable": false
+  },
+  "stderrSignals": {
+    "authenticationUnavailable": false,
+    "networkUnavailable": false,
+    "configRejected": false,
+    "hookTrust": false
+  },
+  "worktree": {
+    "fixtureEdited": false,
+    "insideWritten": false,
+    "testRan": false,
+    "hookDeniedFileAbsent": true,
+    "settingsDeniedFileAbsent": true,
+    "siblingWritten": false,
+    "statusCodes": []
+  },
+  "hooks": {
+    "eventNames": [
+      "UserPromptSubmit",
+      "PreToolUse",
+      "Stop"
+    ],
+    "runtimeImports": [
+      "ok"
+    ],
+    "projectDirVariable": true,
+    "refusals": 0,
+    "events": [
+      {
+        "event": "UserPromptSubmit",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "hook_event_name": "UserPromptSubmit",
+          "prompt": "<string>"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      },
+      {
+        "event": "PreToolUse",
+        "tool": "Bash",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "effort": {
+            "level": "<string>"
+          },
+          "hook_event_name": "PreToolUse",
+          "tool_name": "Bash",
+          "tool_input": {
+            "command": "<string>",
+            "description": "<string>"
+          },
+          "tool_use_id": "<identifier-or-path>"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      },
+      {
+        "event": "Stop",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "effort": {
+            "level": "<string>"
+          },
+          "hook_event_name": "Stop",
+          "stop_hook_active": false,
+          "last_assistant_message": "<string>",
+          "background_tasks": [],
+          "session_crons": []
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      }
+    ]
+  }
+}
