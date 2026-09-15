@@ -6836,6 +6836,18 @@ existing contract; no runtime source, contract, or locked boundary changes.
     were refused as unclassified tools, so the reports were recovered from
     the session transcripts; `git worktree prune` needed one host-approved
     unsandboxed retry because the sandbox denies `.git/worktrees`.
+  - The refutation itself reproduced mechanism 2 of the diagnosis live:
+    the first fresh worker judged a subject that the timing-acceptance
+    cost-table refresh then changed, so its result was refused as stale and
+    a second fresh worker judged the current subject (receipt 013,
+    dispatch-to-file 808,618 ms, verdict pass with no holds and six known
+    issues); the host still recorded the receipt as a hold because it
+    carried WO-130 criterion 1's absolute-path hold forward from receipt
+    012, whose override bound only that receipt's hash. The operator's
+    2026-09-15 direction was applied as an attributed override of the
+    carried hold (the third time for the same finding), recorded in the
+    planning control log with the capture's SHA-256; WO-132 criterion 11
+    binds dispositions to criterion text so a fourth cannot occur.
 - **Process cost of this pass** `adopted`
   - Entry measurement (`node scripts/harness.mjs usage`, scope dispatch,
     source claude-transcript-message-usage, 2026-09-15T04:16Z): 538,326
