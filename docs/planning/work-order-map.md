@@ -174,6 +174,57 @@ record carries the known issue and its reopening conditions; product 07
 §Candidate — refutation pass worth its cost carries the direction for the
 next pass. The pass closes on receipt 011 with its hold overridden.
 
+**Machinery stand-down (2026-09-15):** the operator opened a planning pass
+after the `v0.17.7` close with the verdict that the machinery orders
+(WO-125, WO-126, WO-128 to WO-131, WO-044) made the lifecycle worse and
+stalled product work for five days, and asked for a meta pass over the
+previous planning passes and a meta-meta pass over the planning process
+itself. The pass ran six independent diagnoses over the records and filed
+[the planning document](machinery-stand-down-2026-09-15.md). What the
+records show: the canonical fresh gate went from 476 s at WO-126's close to
+570–648 s with 82 tasks (780–881 s under the replicas in between), every
+cross-session gate row is cold because the lifecycle requires a full-gate
+row at a whole-tree hash that includes the reports and control events each
+transition writes, thirteen of the fourteen merges after WO-042 changed
+machinery and none the kernel, four refutation receipts held on constructed
+counterexamples at 2,454 to 755 s each, and the release close for v0.17.6
+was never published. The meta-meta finding is that the planning process
+rewards adding a mechanism and never charges for one: the refuter rewards
+contract completeness, Cost lines are judged by a regex at filing and never
+reconciled, the meter cannot fire on a sawtooth, findings become criteria in
+the order that found them, a complaint counts as a question, and nothing
+ranks logging above refusing. The pass files one order at the head of the
+sequence by the operator's exemption,
+[WO-132](../work-orders/WO-132-machinery-stand-down.md), with one wholesale
+change and eleven surgical fixes: transitions never require gate evidence;
+one product gate runs once per order at final review keyed by code identity
+and is the evidence the pull request, the tag and the close consume; release
+close is the post-merge publish and runs no suite; replica execution and
+declared-input reuse leave the default path with their suites; attestation,
+versions and effort are logged, never refused, with `ultra` recorded as
+`xhigh` plus subagents; the writer-isolation unit drops its main-branch
+conjunct; DotLn's hooks refuse a second writer and a live-gate write and
+delegate everything else to the host prompt on both harnesses; the default
+gate holds the product and lifecycle suites, each naming what it protects,
+estimated at about 250 s fresh against 605 s; the refuter becomes a goal
+review whose only holds are observed failures; Cost lines are reconciled at
+closeout. Goal alignment: the mission's operator-flow outcome is the
+attention the machinery consumes; the critical path is every remaining
+order paying gates per phase and a close per order; the NoOp baseline is
+WO-044's five fresh gates and two override episodes per order; the traps
+weighed are shifting the burden to the intervenor (the loop and the
+overrides), rule beating (a same-session reuse proxy certified three
+orders), drift to low performance (a slower scheduling configuration kept
+against its own measurement), seeking the wrong goal (refuting sentences
+instead of judging alignment) and policy resistance (each guard's refusal
+sending the operator to do the machine's work); success to the successful,
+escalation and commons cost are addressed by removing rather than adding.
+The dispatch is captured verbatim in ignored intake (SHA-256
+`19061ea60115a416bc536e4eae66faffc5549dfd9a33841d886bd51dffd8350f`); the
+refutation is one background goal review. The first mandatory replan
+checkpoint after WO-044 stays open for the pass that follows this order,
+which designs WO-049, WO-051 and WO-068 from the writing-worker record.
+
 Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
 
 Earlier rationale is preserved in the [planning archive](archive/work-order-map-2026-09-09.md).
@@ -304,6 +355,36 @@ identity migration.
   never; the counterexamples are recorded. (13) _Access-time tracking._
   Declined: it cannot capture a probe of an absent path. Reverse never for
   that reason.
+- **NoOps of the 2026-09-15 machinery stand-down pass.** Weighed and
+  declined, each with its evidence and reversal condition in
+  [the planning document §7](machinery-stand-down-2026-09-15.md#7-declined-alternatives--the-noop-register-of-this-pass).
+  (1) _Revert pull requests #54 to #62 wholesale._ Declined: it also removes
+  the repairs of observed failures (egress-first close, derived-worktree
+  settlement, nested-repository classification, the operator controls,
+  background refuters, the gate stop, the permission-bit key, load-derived
+  deadlines) and restores a 476 s whole-tree gate, not a six-minute one.
+  Reverse: if WO-132 is not implementation-ready within one eight-hour
+  executor session, revert the WO-129 to WO-131 line instead. (2) _Turn off
+  every test._ Declined: product suites cost 94 s of task time and the
+  operator's need is to know which are useful, answered by classification.
+  (3) _The key repair alone (WO-044-D016's three items)._ Declined: it leaves
+  every transition gating and every refusal intact. (4) _One order per fix._
+  Declined: each order pays the cost model it removes; the 2026-09-12 pass
+  filed four and paid four lifecycles. (5) _Opt-in replica reuse._ Declined:
+  it keeps suites, probes and copies for a consumer the lifecycle no longer
+  has. Reverse: a once-per-order gate over six minutes after the inventory
+  split and a demand for faster executor iteration, then a per-suite memo
+  established by a second-process row. (6) _Classify read-only shell for the
+  writer guard._ Declined: every classification gap this week became a
+  refusal; dropping the branch conjunct changes no write authority.
+  (7) _A detached release worktree._ Declined: it preserves the conjunct
+  that refuses status, usage, build and bootstrap on main. (8) _An
+  operator-only release close._ Declined: the operator defined a step handed
+  to a terminal as a defect. (9) _Process cost as a completion requirement._
+  Declined: a missing counter is recorded as unknown. (10) _A hold budget
+  alone._ Declined: the judgment itself changes. (11) _FUP-0091, FUP-0111 or
+  FUP-0132 in this pass._ Declined: every remaining order pays the cost model
+  this order removes. Reverse at the next pass.
 - **Critical-path candidates — recorded 2026-09-08 by the critical-path
   planning pass and allocated the same day at the operator's correction.**
   The runtime boundary codecs are WO-045 to WO-048; writing-worker harness
@@ -827,6 +908,7 @@ Retained dependency wording is dated planning context, not a second state source
 | [WO-129](../work-orders/WO-129-suite-evidence-input-identity.md)      | test infrastructure — the suite key of declared inputs, the cache shared across worktrees under the Git common directory, explained misses                                                                                                                                                     | after WO-128 in the same lane; assign version at activation (patch); the operator records one composed gate after a transition                                                                                             | runner and fixture implementer, then independent verifier                                                 | two-worktree fixtures; generated hooks for the cache-path refusal                                                                                                     | `scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/test-suite-evidence.mjs`, `scripts/test-process-debt.mjs`, product 07                                                                      |
 | [WO-130](../work-orders/WO-130-declared-suite-inputs-replica.md)      | test infrastructure — narrowed suites execute inside a replica of their declared inputs; the six reviewed scopes migrate; package suites stop re-executing for source they never read                                                                                                          | after WO-129 in the same lane; assign version at activation (patch); the operator records one fresh gate and one composed source change                                                                                    | runner and fixture implementer, then independent verifier                                                 | plain copies in ignored scratch; no new dependency                                                                                                                    | `scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/test-suite-evidence.mjs`, `scripts/test-process-debt.mjs`, product 07                                                                      |
 | [WO-131](../work-orders/WO-131-remaining-suites-under-replica.md)     | test infrastructure — the remaining suites declared and executed in replicas or retained with a reason; document-only gates compose; a kernel denial where the host permits it                                                                                                                 | after WO-130 in the same lane; assign version at activation (patch); the operator records one composed document-only gate and the terminal probe                                                                           | runner and fixture implementer, then independent verifier                                                 | replica execution from WO-130; `sandbox-exec` only where available, never required                                                                                    | `scripts/lib/suite-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/test-suite-evidence.mjs`, `scripts/test-process-debt.mjs`, product 07                                                                      |
+| [WO-132](../work-orders/WO-132-machinery-stand-down.md) | lifecycle machinery — transitions never gate; one product gate per order keyed by code identity; release close publishes only; attestation, versions and effort logged; two hook refusals; default gate of product and lifecycle suites; goal-review refuter | first, alone, by the operator's 2026-09-15 exemption; assign version at activation (minor); the operator runs three fresh gates and one lifecycle on the host | lifecycle, runner, release and harness implementer, then independent verifier | the operator's host for the fresh rows; egress and gh authentication for the release fixture's real path are not required | `scripts/resume.mjs`, `scripts/lib/lifecycle-evidence.mjs`, `packages/skeleton/src/gate-evidence.mjs`, `scripts/test-runner.mjs`, `scripts/lib/suite-evidence.mjs`, `scripts/release.mjs`, `scripts/worktree.mjs`, `packages/skeleton/src/harness-host.ts`, `packages/skeleton/src/harness-command.ts`, `packages/compiler/src/feedback.ts`, `packages/compiler/src/harness.ts`, `packages/skeleton/src/worker-transport.ts`, `packages/skeleton/src/plan-refutation-protocol.ts`, product 07 |
 | [WO-101](../work-orders/WO-101-program-and-hash-corpus.md)            | evidence/corpus — Program and identity regression floor                                                                                                                                                                                                                                        | not applicable                                                                                                                                                                                                             | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | `corpus/harness/`, fixtures, manifests                                                                                                                                                                           |
 | [WO-102](../work-orders/WO-102-cadence-corpus.md)                     | evidence/corpus — cadence boundary sweep                                                                                                                                                                                                                                                       | assign version and close disposition; pin suitable base/deps and governed closeout path                                                                                                                                    | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | cadence fixtures and manifests                                                                                                                                                                                   |
 | [WO-103](../work-orders/WO-103-authority-outbox-corpus.md)            | evidence/corpus — authority/outbox decision table                                                                                                                                                                                                                                              | assign version and close disposition; pin the landed WO-017 base and governed closeout path                                                                                                                                | deterministic corpus executor                                                                             | offline harness                                                                                                                                                       | authority/outbox fixtures and manifests                                                                                                                                                                          |
