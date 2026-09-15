@@ -344,6 +344,102 @@ export interface ResourceModel {
   readonly reservations: readonly ResourceReservation[];
 }
 
+export const PRESENCE_AXES = [
+  "attention",
+  "work-scope",
+  "effect-authority",
+  "external-capability",
+] as const;
+
+/** Restrictions are relative to the final compiled base, never the prior phase. */
+export interface PresenceNarrowing {
+  readonly allowedEffects?: readonly string[];
+  readonly deniedEffects?: readonly string[];
+  readonly resourceLimits?: Readonly<Record<string, number>>;
+  readonly requiredEvidence?: readonly string[];
+  readonly expiresAt?: number;
+  readonly revocationEventTypes?: readonly string[];
+  readonly revocationConditions?: readonly PredicateRef[];
+}
+
+export interface PresencePhase {
+  readonly phaseId: string;
+  readonly entry:
+    Readonly<{ cadence: CadenceSpec }> | Readonly<{ condition: PredicateRef }>;
+  readonly attentionPriority: number;
+  readonly scope: Readonly<{
+    readonly surfaces: readonly string[];
+    /** Host-counted ceilings; declarations by an actor are not measurements. */
+    readonly changeSize: Readonly<{ files: number; lines: number }>;
+    readonly budget: Readonly<Record<string, number>>;
+  }>;
+  readonly envelope: PresenceNarrowing;
+  readonly requiredCapabilities: readonly string[];
+  readonly discretionary: boolean;
+  readonly inFlightOnReturn: "finish" | "kill";
+}
+
+export interface PresencePolicy {
+  readonly policyId: string;
+  readonly version: number;
+  readonly axes: readonly (typeof PRESENCE_AXES)[number][];
+  readonly phases: readonly PresencePhase[];
+  readonly curve: "progressive";
+  readonly returnRule: "cancel-on-return";
+  /** Expire phase allocations; fresh absence is needed to rearm. */
+  readonly decay: Readonly<{ idleMs: number; expires: "phase" }>;
+}
+
+export interface PresenceTransition {
+  readonly from: string;
+  readonly on:
+    "absence" | "verified-success" | "failure" | "return" | "idle-expired";
+  readonly to: string;
+  readonly guard:
+    | "recorded-presence"
+    | "current-policy-episode-while-absent"
+    | "idle-deadline-while-absent";
+  readonly actions: readonly (
+    | "arm-phase"
+    | "cancel-pending"
+    | "reset-progress"
+    | "expire-phase"
+    | "finish-discretionary"
+    | "kill-discretionary"
+    | "preserve-foreground"
+  )[];
+}
+
+export interface CompiledPresencePhase extends PresencePhase {
+  readonly effectiveEnvelope: AuthorityEnvelope;
+  readonly cadence: CadenceSpec;
+  readonly cancelOn: readonly PredicateRef[];
+  readonly statechartGate: Readonly<{
+    activationCondition: PredicateRef;
+    interruptionCondition: PredicateRef;
+  }>;
+  readonly availability:
+    | Readonly<{ kind: "ready" }>
+    | Readonly<{
+        kind: "NoOp";
+        reason: string;
+        missingCapabilities: readonly string[];
+      }>;
+}
+
+export interface CompiledPresencePolicy extends Omit<PresencePolicy, "phases"> {
+  readonly baseAuthorityEnvelopeId: string;
+  readonly sourceGrantIds: readonly string[];
+  readonly phases: readonly CompiledPresencePhase[];
+  readonly idleCadence: CadenceSpec;
+  readonly statechart: Readonly<{
+    initial: "present";
+    /** Return is projected before due/outcome events at the same log time. */
+    returnPrecedence: "before-dispatch-and-outcome";
+    transitions: readonly PresenceTransition[];
+  }>;
+}
+
 export interface LoadoutGraph {
   readonly schemaVersion: 1;
   readonly loadoutId: string;
@@ -359,6 +455,7 @@ export interface LoadoutGraph {
   readonly resourceModel: ResourceModel;
   readonly polarAxes: readonly PolarAxis[];
   readonly authorityGrants?: readonly AuthorityGrant[];
+  readonly presence?: readonly PresencePolicy[];
 }
 
 export interface Phenotype {
@@ -512,6 +609,8 @@ export interface CompiledProgram {
   readonly authorityEnvelope: AuthorityEnvelope;
   /** Omitted when empty to preserve grant-free loadout-v1 semantic bytes. */
   readonly grants?: readonly AuthorityGrant[];
+  /** Omitted when empty to preserve existing semantic bytes. */
+  readonly presence?: readonly CompiledPresencePolicy[];
   readonly cadences: readonly CompiledCadence[];
   readonly statechartGuards: readonly CompiledStatechartGuard[];
   readonly schemas: readonly CompiledSchema[];
@@ -600,7 +699,8 @@ export type FunctionTableRow =
       value: ResourceModel;
     }>
   | Readonly<{ kind: "polar-axis"; key: string; value: PolarAxis }>
-  | Readonly<{ kind: "authority-grant"; key: string; value: AuthorityGrant }>;
+  | Readonly<{ kind: "authority-grant"; key: string; value: AuthorityGrant }>
+  | Readonly<{ kind: "presence-policy"; key: string; value: PresencePolicy }>;
 
 export interface FunctionTableView {
   readonly view: "function-table";
@@ -620,6 +720,7 @@ export interface StatechartJsonView {
     ambientEffects: readonly AmbientEffect[];
     polarAxes: readonly PolarAxis[];
     authorityGrants?: readonly AuthorityGrant[];
+    presence?: readonly PresencePolicy[];
   }>;
   readonly states: Readonly<{
     equipped: Readonly<{

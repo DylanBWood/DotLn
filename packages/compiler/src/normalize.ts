@@ -1,3 +1,4 @@
+import { normalizePresencePolicies } from "./presence-schema.js";
 import type {
   ActiveMechanic,
   AmbientEffect,
@@ -408,6 +409,11 @@ export const normalizeAuthorityGrants = (
   return by(grants, (grant) => grant.grantId);
 };
 
+const presenceFields = (value: LoadoutGraph["presence"]) => {
+  const presence = normalizePresencePolicies(value === undefined ? [] : value);
+  return presence.length ? { presence } : {};
+};
+
 export const normalizeLoadoutGraph = (value: LoadoutGraph): LoadoutGraph =>
   canonicalize({
     schemaVersion: 1,
@@ -445,6 +451,7 @@ export const normalizeLoadoutGraph = (value: LoadoutGraph): LoadoutGraph =>
       (entry) => entry.polarAxisId,
     ),
     authorityGrants: normalizeAuthorityGrants(value.authorityGrants ?? []),
+    ...presenceFields(value.presence),
   }) as LoadoutGraph;
 
 export const normalizeCompiledProgram = (

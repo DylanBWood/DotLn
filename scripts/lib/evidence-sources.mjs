@@ -14,6 +14,8 @@ const commonSources = [
   "packages/compiler/src/index.ts",
   "packages/compiler/src/normalize.ts",
   "packages/compiler/src/operator-control.mjs",
+  "packages/compiler/src/presence-schema.ts",
+  "packages/compiler/src/presence.ts",
   "packages/compiler/src/render.ts",
   "packages/compiler/src/seiri.ts",
   "packages/compiler/src/senses.ts",

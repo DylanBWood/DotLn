@@ -1368,6 +1368,42 @@ cancels future pulses on return. That proves one guard and return race. It does
 not select a universal platform direction or the author's eventual personal
 profile.
 
+**Compiled subset (WO-067, 2026-09-15).** The optional build collection is
+specified in [LoadoutGraph v1](02-domain-model.md#compiled-presence-policies).
+Its progressive curve enters the first phase on a recorded present→absent
+edge, advances exactly once on the current policy episode's verified success,
+and resets on failure or successful completion of the peak. Phase order and
+ceilings are owner-authored data. The three-phase fixture is probe (one file),
+widen (three files in one surface), peak (eight files across the fixture
+portfolio), reset and loop. This is the bounded interpretation selected by
+WO-067; general hold/shrink/time-conditioned profiles remain candidate work.
+
+The compiler emits a statechart with `present`, named phase states and
+`expired`, and typed transition guards/actions. WO-068 supplies its consuming
+host. A host selects one named policy; a collection does not implicitly combine
+their allocations or dispatch multiple portfolios. It uses recorded time,
+presence and episode identity/generation; outcomes from a prior arm or a
+foreground task cannot advance the policy. `current-policy-episode-while-absent`
+requires the matching current episode and arm, and a verified result for success.
+Return is projected before a due pulse or outcome at the same recorded time.
+`dotln.presence.phase-ready@1` requires the selected policy/phase, absence and
+no in-flight policy episode. `dotln.presence.returned@1` cancels pending
+cadences. `dotln.presence.interrupt-phase@1` interrupts in-flight work only
+when returned, discretionary and marked `kill`; `finish` drains without
+advancing the reset curve. An explicitly requested foreground task continues
+under its own authority. Every dispatch still checks scope, remaining budget,
+effective envelope and the host's current capabilities.
+
+Idle time is measured since the last recorded policy activity (entry,
+dispatch or outcome), only while no policy episode is in flight. At the
+`After(idleMs)` deadline, `idle-deadline-while-absent` expires phase attention,
+scope/budget and effect allocation, cancels pending dispatch and enters
+`expired`. A recorded return followed by fresh absence rearms the first phase;
+repeated absence observations cannot silently replenish an expired allocation.
+The foreground task retains its own authority. The fixture interpreter executes
+the emitted table and real kernel cadence/authorization functions; it is not a
+resident scheduler or a claim that live adapters enforce this policy today.
+
 ### Candidate — progressive absence authority and return readiness
 
 The author's candidate profile keeps foreground intent first while present and

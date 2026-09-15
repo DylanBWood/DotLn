@@ -90,14 +90,18 @@ const control = await (async function operatorControl(input, event) {
     }
 })(input, "PostToolUse");
 if (control) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/7b3c264bb69b6f3f/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/7b3c264bb69b6f3f/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/f1f7fc0e67e4664f/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/f1f7fc0e67e4664f/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.10.0",
+  "compilerPackageVersion": "0.11.0",
   "runtime": {
     "skeletonVersion": "0.16.0",
     "boundaryContract": "feedback-v1",
     "files": [
+      {
+        "path": "packages/compiler/dist/src/artifact-identity.js",
+        "hash": "fnv1a64:1b5bcfd3ddd69851"
+      },
       {
         "path": "packages/compiler/dist/src/feedback.js",
         "hash": "fnv1a64:9f5023e4c2650af7"
@@ -143,7 +147,7 @@ await runHarnessHook({
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/7b3c264bb69b6f3f"
+    "snapshot": ".runtime/harness/f1f7fc0e67e4664f"
   },
   "event": "PostToolUse",
   "tools": {
@@ -180,7 +184,7 @@ await runHarnessHook({
   "kind": "feedback",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.10.0",
+    "compilerPackageVersion": "0.11.0",
     "units": [
       {
         "unitId": "no-lint-type-disables-as-fixes",
@@ -230,7 +234,7 @@ await runHarnessHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:1db56a03e6be5781"
+    "policyHash": "fnv1a64:20baaade4f0182a2"
   },
   "correctionToken": null
 }, feedbackBoundary, input);

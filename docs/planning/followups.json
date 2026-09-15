@@ -4487,6 +4487,51 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-0c09d10ffc0ad1b4",
+      "key": "decision:docs/evidence/WO-067/decisions.md#wo-067-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cd953cb30bb68ab63e942eb41bd43443f4b5b37441e76b14e5cd80190d81e1c8",
+          "ref": "docs/evidence/WO-067/decisions.md#wo-067-d001",
+          "title": "WO-067-D001: Compile optional presence policies with ordered phases, four separate axes, kernel cadence and transition data, and restrictions under the final compiled base; keep scheduling with WO-068",
+          "summary": "{ \"id\": \"WO-067-D001\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Compile optional presence policies with ordered phases, four separate axes, kernel cadence and transition data, and restrictions under the final compiled base; keep scheduling with WO-068 and omit empty presence from semantic identity.\", \"evidence\": [ \"WO-067 and ADR-0007 require a reproducible build policy.\", \"Existing compile.ts, normalize.ts, authority.ts and view/hash tests establish the base and compatibility conventions.\" ], \"rejected\": [ \"NoOp leaves the resident gate without policy data.\", \"A new schedule language duplicates kernel cadences.\", \"Ambient runtime flags lose build identity; absence cann",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-96923946b2fd4aea",
+      "key": "decision:docs/evidence/WO-067/decisions.md#wo-067-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6e5b64dc1eeeac995e240e2c153c3102964ffc6c6942db8a347184747c28c447",
+          "ref": "docs/evidence/WO-067/decisions.md#wo-067-d002",
+          "title": "WO-067-D002: Complete the unassigned activation as application v0.19.0 and compiler 0.11.0 under the declared minor classification. Correct authority and return lowering from read-only review and test",
+          "summary": "{ \"id\": \"WO-067-D002\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Complete the unassigned activation as application v0.19.0 and compiler 0.11.0 under the declared minor classification. Correct authority and return lowering from read-only review and test actual unit resource consumption.\", \"evidence\": [ \"release prepare --local refused the version placeholder before editing.\", \"Latest observed local annotated release is v0.18.0.\", \"Read-only review identified inherited resource-key lookup and finish/kill gate ambiguity.\", \"First kernel fixture run showed authorization spends one unit per resource action.\" ], \"rejected\": [ \"Retain an unassigned target: release preparation c",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-12b99047c9036fb0",
+      "key": "decision:docs/evidence/WO-067/decisions.md#wo-067-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "c40a2da9f0c8488e92e2655352a683177433ef2435f8d40d5e36e1ee555a336f",
+          "ref": "docs/evidence/WO-067/decisions.md#wo-067-d003",
+          "title": "WO-067-D003: Pin the compiler artifact-identity module in harness runtime files so a compiler-only version change creates a fresh immutable snapshot; retain previous snapshots and prove the generated ",
+          "summary": "{ \"id\": \"WO-067-D003\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next; operator explicitly replied Proceed with the bounded repair to the adjacent snapshot repair.\", \"decision\": \"Pin the compiler artifact-identity module in harness runtime files so a compiler-only version change creates a fresh immutable snapshot; retain previous snapshots and prove the generated writer hook runs.\", \"evidence\": [ \"The generated hook named compiler 0.11.0 while reused snapshot 7b3c264bb69b6f3f still loaded compiler 0.10.0; invocation reported Pinned harness runtime unavailable.\", \"scripts/lib/harness.mjs fingerprints its runtimeFiles list, which omitted the compiler module that supplies the version checked b",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

@@ -90,14 +90,18 @@ const control = await (async function operatorControl(input, event) {
     }
 })(input, "Stop");
 if (control) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/7b3c264bb69b6f3f/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/7b3c264bb69b6f3f/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/f1f7fc0e67e4664f/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/f1f7fc0e67e4664f/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.10.0",
+  "compilerPackageVersion": "0.11.0",
   "runtime": {
     "skeletonVersion": "0.16.0",
     "boundaryContract": "feedback-v1",
     "files": [
+      {
+        "path": "packages/compiler/dist/src/artifact-identity.js",
+        "hash": "fnv1a64:1b5bcfd3ddd69851"
+      },
       {
         "path": "packages/compiler/dist/src/feedback.js",
         "hash": "fnv1a64:9f5023e4c2650af7"
@@ -143,7 +147,7 @@ await runHarnessHook({
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/7b3c264bb69b6f3f"
+    "snapshot": ".runtime/harness/f1f7fc0e67e4664f"
   },
   "event": "Stop",
   "tools": {
@@ -180,7 +184,7 @@ await runHarnessHook({
   "kind": "finish",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.10.0",
+    "compilerPackageVersion": "0.11.0",
     "units": [
       {
         "unitId": "anti-oscillation",
@@ -648,7 +652,7 @@ await runHarnessHook({
         "enforcement": "advisory"
       }
     ],
-    "policyHash": "fnv1a64:b821b2ace445ff54"
+    "policyHash": "fnv1a64:88a49cd5631fa26b"
   }
 }, feedbackBoundary, input);
 }

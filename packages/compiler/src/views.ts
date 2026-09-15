@@ -22,6 +22,7 @@ const rowKindOrder: Readonly<Record<FunctionTableRow["kind"], number>> = {
   "resource-model": 10,
   "polar-axis": 11,
   "authority-grant": 12,
+  "presence-policy": 13,
 };
 
 const compareRows = (left: FunctionTableRow, right: FunctionTableRow): number =>
@@ -124,6 +125,11 @@ export const functionTableFromLoadout = (
       key: value.grantId,
       value,
     })),
+    ...(graph.presence ?? []).map((value): FunctionTableRow => ({
+      kind: "presence-policy",
+      key: value.policyId,
+      value,
+    })),
   ];
   return {
     view: "function-table",
@@ -157,6 +163,13 @@ export const loadoutFromFunctionTable = (
     authorityGrants: many(source.rows, "authority-grant").map(
       (row) => row.value,
     ),
+    ...(many(source.rows, "presence-policy").length
+      ? {
+          presence: many(source.rows, "presence-policy").map(
+            (row) => row.value,
+          ),
+        }
+      : {}),
   });
 };
 
@@ -176,6 +189,7 @@ export const statechartJsonFromLoadout = (
       ambientEffects: graph.ambientEffects,
       polarAxes: graph.polarAxes,
       authorityGrants: graph.authorityGrants ?? [],
+      ...(graph.presence?.length ? { presence: graph.presence } : {}),
     },
     states: {
       equipped: {
@@ -208,6 +222,9 @@ export const loadoutFromStatechartJson = (
     resourceModel: source.context.resourceModel,
     polarAxes: source.context.polarAxes,
     authorityGrants: source.context.authorityGrants ?? [],
+    ...(source.context.presence === undefined
+      ? {}
+      : { presence: source.context.presence }),
   });
 
 export const loadoutFromEditableView = (source: EditableView): LoadoutGraph => {

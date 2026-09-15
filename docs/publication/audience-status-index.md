@@ -40,6 +40,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Actors and episodes (the edge)](../product/02-domain-model.md#actors-and-episodes-the-edge)                          | everyday-ai-user, software-engineer | specified   |
 | [Identity and composition](../product/02-domain-model.md#identity-and-composition)                                    | everyday-ai-user, software-engineer | specified   |
 | [LoadoutGraph v1 payload contract](../product/02-domain-model.md#loadoutgraph-v1-payload-contract)                    | software-engineer                   | implemented |
+| [Compiled presence policies](../product/02-domain-model.md#compiled-presence-policies) | software-engineer | implemented |
 | [Authority grants and trusted admission](../product/02-domain-model.md#authority-grants-and-trusted-admission)        | software-engineer                   | implemented |
 | [Artifact identity v1](../product/02-domain-model.md#artifact-identity-v1)                                            | software-engineer                   | implemented |
 | [Feedback](../product/02-domain-model.md#feedback)                                                                    | everyday-ai-user, software-engineer | specified   |
