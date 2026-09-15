@@ -1,0 +1,19 @@
+{
+  "base": "v0.19.0",
+  "manifestEquivalentExceptRuntimeAndFilePins": true,
+  "hookConfigsEquivalentExceptRuntimePins": true,
+  "changedGeneratedFiles": [
+    ".claude/hooks/commit-msg.mjs",
+    ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+    ".claude/hooks/finish.mjs",
+    ".claude/hooks/no-attribution.mjs",
+    ".claude/hooks/no-lint-type-disables-as-fixes.mjs",
+    ".claude/hooks/permissions.mjs",
+    ".claude/hooks/read-observer.mjs",
+    ".claude/hooks/session.mjs",
+    ".claude/hooks/write-observer.mjs"
+  ],
+  "handwrittenFloorAndSkillsUnchanged": true,
+  "entryChange": "Original text reaches decoder; minimal recovery preflight preserves valid stateless and session recovery",
+  "evidence": "npm run harness -- check plus generated-hook/recovery fixtures establish emitted entry behavior"
+}

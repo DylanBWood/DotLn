@@ -30,8 +30,6 @@ export function currentEvidence(root, kind, override) {
       row.revision === null ||
       (typeof row.revision === "string" && /^(?!000)\d{3}$/.test(row.revision))
     ) ||
-    (["artifact-identity", "verification"].includes(kind) &&
-      row.revision !== null) ||
     (kind === "feedback" && row.workOrder === "WO-011" && row.revision !== null)
   )
     throw new Error(`Invalid current-evidence edition: ${kind}`);
@@ -46,7 +44,7 @@ export function currentEvidence(root, kind, override) {
         ? edition.workOrder === "WO-011"
           ? ""
           : `feedback${edition.revision ? `-${edition.revision}` : ""}`
-        : kind;
+        : `${kind}${edition.revision ? `/${edition.revision}` : ""}`;
   return {
     ...edition,
     label: `${edition.workOrder}${edition.revision ? ` revision ${edition.revision}` : ""}`,

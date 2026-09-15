@@ -1,0 +1,150 @@
+TAP version 13
+# Subtest: WO-067 compiler-only release installs a fresh compatible harness snapshot
+ok 1 - WO-067 compiler-only release installs a fresh compatible harness snapshot
+  ---
+  duration_ms: 759.433791
+  ...
+# Subtest: WO-045 generated hooks reject malformed input before ordinary host effects
+ok 2 - WO-045 generated hooks reject malformed input before ordinary host effects
+  ---
+  duration_ms: 1392.023
+  ...
+# Subtest: WO-125 F3 runner refuses generated-hook writes throughout the gate and releases on exit
+ok 3 - WO-125 F3 runner refuses generated-hook writes throughout the gate and releases on exit
+  ---
+  duration_ms: 29174.52475
+  ...
+# Subtest: WO-125 F3 evidence refuses generated-hook writes throughout the gate and releases on exit
+ok 4 - WO-125 F3 evidence refuses generated-hook writes throughout the gate and releases on exit
+  ---
+  duration_ms: 21378.637916
+  ...
+# Subtest: WO-125 F3 entry refuses generated-hook writes throughout the gate and releases on exit
+ok 5 - WO-125 F3 entry refuses generated-hook writes throughout the gate and releases on exit
+  ---
+  duration_ms: 68271.644042
+  ...
+# > test
+# > node fixture-check.mjs
+# DotLn advisory: shared instruction context changed from 3878 to 3912 bytes; capability residue remains visible in both harnesses.
+# DotLn advisory: shared instruction context changed from 3878 to 3912 bytes; capability residue remains visible in both harnesses.
+# Subtest: WO-125 F3 a marker left by a killed gate owner does not block writes
+ok 6 - WO-125 F3 a marker left by a killed gate owner does not block writes
+  ---
+  duration_ms: 2059.5395
+  ...
+# Subtest: WO-132 hooks preserve boundary observations and delegate non-writer judgments, including unit removal
+ok 7 - WO-132 hooks preserve boundary observations and delegate non-writer judgments, including unit removal
+  ---
+  duration_ms: 26465.819625
+  ...
+# Subtest: WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries
+ok 8 - WO-039 ranged receipts require complete current bytes despite gaps, duplicates and stale or mismatched deliveries
+  ---
+  duration_ms: 10745.038208
+  ...
+# Subtest: WO-132 inherited outputs add no reads; invalid deliveries advise without creating read receipts
+ok 9 - WO-132 inherited outputs add no reads; invalid deliveries advise without creating read receipts
+  ---
+  duration_ms: 6669.185375
+  ...
+# Subtest: WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement
+ok 10 - WO-039 installed bundle detects content, missing, unexpected and manifest drift and refuses unowned replacement
+  ---
+  duration_ms: 1139.323083
+  ...
+# Subtest: WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+ok 11 - WO-039 local terms are unavailable honestly or refuse without echoing the synthetic term
+  ---
+  duration_ms: 617.32425
+  ...
+# Subtest: WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+ok 12 - WO-039 target does not change Seiri or Entropy Reducer semantic hashes
+  ---
+  duration_ms: 35.02975
+  ...
+# Subtest: WO-039 control observation uses the canonical read-only lifecycle command
+ok 13 - WO-039 control observation uses the canonical read-only lifecycle command
+  ---
+  duration_ms: 714.183208
+  ...
+# Subtest: WO-132 whole-procedure context reports late and unaccounted reads with advisory growth
+ok 14 - WO-132 whole-procedure context reports late and unaccounted reads with advisory growth
+  ---
+  duration_ms: 105.085792
+  ...
+# Subtest: WO-132 generated read observer spans the session and records alternate read routes
+ok 15 - WO-132 generated read observer spans the session and records alternate read routes
+  ---
+  duration_ms: 5212.447875
+  ...
+# Subtest: WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+ok 16 - WO-039 confirmed-token adapter uses the compiled correction and survives independent prompt bookkeeping
+  ---
+  duration_ms: 2194.168167
+  ...
+# Subtest: WO-132 commit-message adapter retains publication checks; unavailable runtime delegates all tool access
+ok 17 - WO-132 commit-message adapter retains publication checks; unavailable runtime delegates all tool access
+  ---
+  duration_ms: 1902.617583
+  ...
+# Subtest: WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+ok 18 - WO-039 completion tracks outputs across commits and auxiliary prompts retain the active obligation
+  ---
+  duration_ms: 4775.1395
+  ...
+# Subtest: WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated messages through generated processes
+ok 19 - WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated messages through generated processes
+  ---
+  duration_ms: 1616.571708
+  ...
+# Subtest: WO-039 foreign writer reservations refuse while their owner lives, reclaim with a record when it is dead, and stay inspectable
+ok 20 - WO-039 foreign writer reservations refuse while their owner lives, reclaim with a record when it is dead, and stay inspectable
+  ---
+  duration_ms: 19623.584625
+  ...
+# Subtest: WO-039 concurrent dead-owner recovery admits exactly one writer while the first owner's work is outstanding
+ok 21 - WO-039 concurrent dead-owner recovery admits exactly one writer while the first owner's work is outstanding
+  ---
+  duration_ms: 6374.555583
+  ...
+# Subtest: WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+ok 22 - WO-039 a refreshed reservation survives a stale reclaimer that classified its previous facts
+  ---
+  duration_ms: 5162.539292
+  ...
+# DotLn advisory: process-cost counters unavailable; recorded unknown.
+# Subtest: WO-039 an operator release judges, retires and journals one observed reservation
+ok 23 - WO-039 an operator release judges, retires and journals one observed reservation
+  ---
+  duration_ms: 5425.422125
+  ...
+# Subtest: WO-132 generated hooks delegate classification, attribution, scope and runtime gaps with advisory journal rows
+ok 24 - WO-132 generated hooks delegate classification, attribution, scope and runtime gaps with advisory journal rows
+  ---
+  duration_ms: 2615.355875
+  ...
+# Subtest: WO-132 main uses one reservation for build, bootstrap, history and release; coordination tools do not become writers
+ok 25 - WO-132 main uses one reservation for build, bootstrap, history and release; coordination tools do not become writers
+  ---
+  duration_ms: 4798.717875
+  ...
+# Subtest: WO-132 only the live product gate refuses input and success-record writes, including opaque shell writes
+ok 26 - WO-132 only the live product gate refuses input and success-record writes, including opaque shell writes
+  ---
+  duration_ms: 70749.410333
+  ...
+# Subtest: WO-132 missing process-cost counters record unknown at the current dispatch cutoff
+ok 27 - WO-132 missing process-cost counters record unknown at the current dispatch cutoff
+  ---
+  duration_ms: 309.6525
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 300365.828166

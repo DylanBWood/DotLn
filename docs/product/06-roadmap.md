@@ -28,6 +28,15 @@ views. Kernel, skeleton and console source versions remain fixed; the skeleton
 compiler dependency pin follows the new compiler package. Resident scheduling
 remains WO-068. See [WO-067 decisions](../evidence/WO-067/decisions.md).
 
+**WO-045 activation completion (2026-09-15):** application `v0.20.0` is the
+next minor above published `v0.19.0`. The activation staged `v0.19.0` above
+local `v0.18.0`; WO-067 published that tag first, so the repair integrated it
+and retimed this order (D004). Kernel `0.3.0` adds typed positive JSONL
+decoding; skeleton `0.17.0` adds hook input decoding. Operator-authorized
+generated-entry repair advances compiler to `0.11.1` above WO-067's `0.11.0`.
+Schema and compiler contracts and hash preimages remain unchanged; no
+historical log migration. See [WO-045 decisions](../evidence/WO-045/decisions.md).
+
 **Current contract (WO-132, 2026-09-15).** Lifecycle completions record their
 reports without requiring a product gate. The final reviewer runs
 `npm test -- --review` once; PR publication and release close consume its

@@ -1,9 +1,13 @@
-# `@dotln/compiler` v0.10.0
+# `@dotln/compiler` v0.11.1
 
 The pure DotLn composition compiler. It has zero runtime dependencies and no
 I/O: callers pass a `LoadoutGraph` plus an explicit environment and receive a
 compiled program plus a separate `ArtifactIdentityV1`, or inspectable diagnostics. The skeleton CLI is the current
 host adapter that prints its projections.
+
+Component `0.11.1` repairs generated hook entry: malformed input reaches the
+host's typed decoder, while valid recovery controls remain ahead of runtime
+imports. Compiler contract and definition-hash preimages are unchanged.
 
 ## What v1 compiles
 

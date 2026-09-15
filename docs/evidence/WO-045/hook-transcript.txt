@@ -1,0 +1,20 @@
+TAP version 13
+# Subtest: WO-045 generated hooks reject malformed input before ordinary host effects
+ok 1 - WO-045 generated hooks reject malformed input before ordinary host effects
+  ---
+  duration_ms: 1057.130083
+  ...
+# Subtest: WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated messages through generated processes
+ok 2 - WO-127 hook stdin handles manifest-sized, chunked UTF-8 and truncated messages through generated processes
+  ---
+  duration_ms: 900.274417
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2029.127042

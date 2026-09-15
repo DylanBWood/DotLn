@@ -247,7 +247,7 @@ const input = (root, event, session = "fixture", extra = {}) => ({
 const config = (root, name) =>
   JSON.parse(
     readFileSync(join(root, `.claude/hooks/${name}.mjs`), "utf8").match(
-      /await runHarnessHook\(([\s\S]*), feedbackBoundary(?:, input)?\);/,
+      /await runHarnessHook\(([\s\S]*), feedbackBoundary(?:, input(?:, rawInput)?)?\);/,
     )[1],
   );
 const statePath = (root, session = "fixture") =>
@@ -4768,7 +4768,7 @@ test("WO-131 generated prompt hook accepts missing runtime, damaged state and ma
     assert.equal(response.decision, undefined);
     assert.equal(response.continue, undefined);
     assert.notEqual(response.hookSpecificOutput?.permissionDecision, "deny");
-    assert.match(response.systemMessage, /advisory:/);
+    assert.match(response.systemMessage, /advisory:|prompt accepted;/);
     assert.match(response.systemMessage, expected);
     assert.equal(harnessWriterView(root).reserved, false);
   };
@@ -4792,7 +4792,7 @@ test("WO-131 generated prompt hook accepts missing runtime, damaged state and ma
     "{broken",
   );
   accepts(payload, /session state unreadable/);
-  accepts("{not-json", /built adapter unavailable/);
+  accepts("{not-json", /DOTLN_HARNESS_INPUT_REFUSED: INVALID_JSON at \$:/);
   writeFileSync(
     path,
     original.replace(

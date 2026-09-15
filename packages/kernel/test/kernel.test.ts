@@ -330,7 +330,7 @@ test("AC5 row 1: replay recovers persisted pending command for idempotent redisp
     ),
   );
   const persisted = persistCommand(emptyOutbox(), authorized.command);
-  const persistedEvent = event("persist-1", "CommandPersisted", 1, {
+  const persistedEvent = event("evt_1", "CommandPersisted", 1, {
     command: authorized.command as unknown as JsonValue,
   });
   const recovered = replayOutbox(decodeLog(encodeLog([persistedEvent])));

@@ -26,6 +26,7 @@ import {
 } from "node:path";
 import { fileURLToPath } from "node:url";
 import { text as streamText } from "node:stream/consumers";
+import type { DecodeResult } from "@dotln/kernel";
 import {
   applyFeedbackCorrection,
   compileFeedbackUnits,
@@ -68,7 +69,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.16.0";
+export const HARNESS_HOST_VERSION = "0.17.0";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;
@@ -83,6 +84,122 @@ export interface HarnessInput {
   readonly harness_version?: string;
   /** Claude sets this when it re-enters Stop because a Stop hook refused. */
   readonly stop_hook_active?: boolean;
+}
+
+/** Decode declared host fields; unconsumed native metadata is forward-compatible. */
+export function decodeHarnessInput(
+  value: unknown,
+  expectedEvent?: HarnessEvent,
+): DecodeResult<HarnessInput> {
+  try {
+    return decodeHarnessRecord(value, expectedEvent);
+  } catch {
+    return {
+      ok: false,
+      code: "UNREADABLE_INPUT",
+      path: "$",
+      message: "hook input properties are unreadable",
+    };
+  }
+}
+
+function decodeHarnessRecord(
+  value: unknown,
+  expectedEvent?: HarnessEvent,
+): DecodeResult<HarnessInput> {
+  const fail = (
+    code: string,
+    path: string,
+    message: string,
+  ): DecodeResult<never> => ({ ok: false, code, path, message });
+  const object = (input: unknown): input is Record<string, unknown> =>
+    input !== null &&
+    typeof input === "object" &&
+    !Array.isArray(input) &&
+    [Object.prototype, null].includes(Object.getPrototypeOf(input));
+  if (!object(value))
+    return fail("EXPECTED_OBJECT", "$", "expected a hook input object");
+  for (const key of [
+    "hook_event_name",
+    "cwd",
+    "session_id",
+    "tool_name",
+    "tool_use_id",
+    "transcript_path",
+    "harness_version",
+    "prompt",
+    "tool_input",
+    "tool_response",
+    "effort",
+    "stop_hook_active",
+  ]) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (descriptor && !("value" in descriptor))
+      return fail("EXPECTED_DATA_FIELD", `$.${key}`, "expected a data field");
+  }
+  for (const key of ["hook_event_name", "cwd", "session_id"])
+    if (!Object.hasOwn(value, key))
+      return fail("MISSING_FIELD", `$.${key}`, "missing required field");
+  for (const key of [
+    "hook_event_name",
+    "cwd",
+    "session_id",
+    "tool_name",
+    "tool_use_id",
+    "transcript_path",
+    "harness_version",
+    "prompt",
+  ])
+    if (key in value && typeof value[key] !== "string")
+      return fail("EXPECTED_STRING", `$.${key}`, "expected a string");
+  if (
+    !["PreToolUse", "PostToolUse", "Stop", "UserPromptSubmit"].includes(
+      value.hook_event_name as string,
+    )
+  )
+    return fail("UNKNOWN_EVENT", "$.hook_event_name", "unsupported hook event");
+  if (expectedEvent !== undefined && value.hook_event_name !== expectedEvent)
+    return fail(
+      "EVENT_MISMATCH",
+      "$.hook_event_name",
+      `expected ${expectedEvent}`,
+    );
+  if (value.session_id === "")
+    return fail(
+      "EMPTY_SESSION",
+      "$.session_id",
+      "expected a nonempty session id",
+    );
+  for (const key of ["tool_input", "tool_response", "effort"])
+    if (key in value && !object(value[key]))
+      return fail("EXPECTED_OBJECT", `$.${key}`, "expected an object");
+  if (object(value.effort)) {
+    const descriptor = Object.getOwnPropertyDescriptor(value.effort, "level");
+    if (descriptor && !("value" in descriptor))
+      return fail(
+        "EXPECTED_DATA_FIELD",
+        "$.effort.level",
+        "expected a data field",
+      );
+  }
+  if (
+    object(value.effort) &&
+    "level" in value.effort &&
+    !["low", "medium", "high", "xhigh", "max"].includes(
+      value.effort.level as string,
+    )
+  )
+    return fail(
+      "INVALID_EFFORT",
+      "$.effort.level",
+      "expected low, medium, high, xhigh or max",
+    );
+  if (
+    "stop_hook_active" in value &&
+    typeof value.stop_hook_active !== "boolean"
+  )
+    return fail("EXPECTED_BOOLEAN", "$.stop_hook_active", "expected a boolean");
+  return { ok: true, value: value as unknown as HarnessInput };
 }
 export interface HarnessCheck {
   readonly checkId: string;
@@ -2713,7 +2830,8 @@ export async function evaluateHarnessHook(
 export async function runHarnessHook(
   config: HookConfig,
   boundary: typeof feedbackBoundary,
-  decodedInput?: HarnessInput,
+  decodedInput?: unknown,
+  inputText?: string,
 ): Promise<void> {
   let observed: { root: string; input: HarnessInput } | undefined;
   let response: Record<string, unknown> = {};
@@ -2722,9 +2840,35 @@ export async function runHarnessHook(
   try {
     // Hook input arrives on a pipe. Drain it through the event loop: a traced
     // synchronous fd-0 read stalled before evaluation under Node 22 on macOS.
-    const input =
-      decodedInput ??
-      (JSON.parse(await streamText(process.stdin)) as HarnessInput);
+    let value = decodedInput;
+    if (inputText !== undefined || decodedInput === undefined) {
+      try {
+        value = JSON.parse(inputText ?? (await streamText(process.stdin)));
+      } catch {
+        process.stdout.write(
+          JSON.stringify(
+            protocolRefusal(
+              config.event,
+              "DOTLN_HARNESS_INPUT_REFUSED: INVALID_JSON at $: invalid JSON",
+            ),
+          ),
+        );
+        return;
+      }
+    }
+    const decoded = decodeHarnessInput(value, config.event);
+    if (!decoded.ok) {
+      process.stdout.write(
+        JSON.stringify(
+          protocolRefusal(
+            config.event,
+            `DOTLN_HARNESS_INPUT_REFUSED: ${decoded.code} at ${decoded.path}: ${decoded.message}`,
+          ),
+        ),
+      );
+      return;
+    }
+    const input = decoded.value;
     const root = harnessRoot(input.cwd);
     observed = { root, input };
     const installedRoot = realpathSync(

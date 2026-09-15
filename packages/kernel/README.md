@@ -1,4 +1,4 @@
-# `@dotln/kernel` v0.2.1
+# `@dotln/kernel` v0.3.0
 
 The deterministic, framework-free DotLn core. Kernel functions perform no I/O
 and consult no ambient clock or randomness. Import the public API from
@@ -20,7 +20,7 @@ and consult no ambient clock or randomness. Import the public API from
 | `PredicateRef`, `Predicate`, `predicate`                                                                                      | Conditions as data: the versioned predicate registry consulted by Cadence and Program guards             |
 | `AuthorityEnvelope`, `authorize`, `AuthorizationResult`, `Refusal`                                                            | AuthorityEnvelope and structural command-authorization guard                                             |
 | `WorkOrder`, `ResultEnvelope`                                                                                                 | WorkOrder and Result envelope                                                                            |
-| `ReplayResult`, `JsonlLog`, `appendEvent`, `encodeLog`, `decodeLog`, `replay`                                                 | Event store (append-only JSONL); eventId edge-assigned at the store boundary; deterministic replay       |
+| `ReplayResult`, `JsonlLog`, `appendEvent`, `encodeLog`, `decodeLog`, `tryDecodeLog`, `DecodeResult`, `replay`                                                 | Event store (append-only JSONL); eventId edge-assigned at the store boundary; deterministic replay       |
 | `OutboxEntry`, `OutboxState`, `emptyOutbox`, `persistCommand`, `pendingCommands`, `replayOutbox`, `applyCommandResult`        | Command outbox protocol: replay recovery and deterministic duplicate-result dedup                        |
 | `PresenceDecision`, `guardQueuedPulse`                                                                                        | Reactor guard for the operator-return race: NoOp Intent with evidence, plus future Schedule cancellation |
 
@@ -38,10 +38,17 @@ exact by root kind and shallow by shape: a listed combinator such as `Gate` or
 consumer must not read membership as a promise about nested trees. A recursive
 evaluable subset type is recorded as a candidate in the idea ledger.
 
-Component `0.2.1` is staged for application release `v0.4.1`: the additive
-`CADENCE_KINDS` data export lets release compatibility derive both cadence lists
-from the built kernel while compile-time exhaustiveness and runtime constructor
-checks bind it to `Cadence.T`.
+Component `0.3.0` is staged for application `v0.20.0`. `tryDecodeLog` returns
+`DecodeResult<readonly Event[]>`: either `{ ok: true, value }` or
+`{ ok: false, code, path, message }`. Every envelope must have schema version 1,
+sequential `evt_<n>` identity, required string fields, finite numeric time,
+optional string IDs, a JSON payload, and no unknown envelope fields. Payload
+scalars, null, arrays and objects remain valid; payload semantics belong to
+reactors. The failure message names the physical line and JSON path.
+`decodeLog` throws that message for existing callers; `appendEvent` validates
+the existing log before assigning the next ID. Empty logs and newline-terminated
+valid logs (including CRLF) retain their framing contract. No migration or
+historical log rewriting occurs.
 
 Run `npm test` at the repository root for the acceptance and failure-injection
 suite.

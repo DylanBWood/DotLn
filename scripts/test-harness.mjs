@@ -227,7 +227,7 @@ const configFor = (root, name) => {
       join(root, `.claude/hooks/${hookName(name)}.mjs`),
       "utf8",
     ).match(
-      /await runHarnessHook\(([\s\S]*), feedbackBoundary(?:, input)?\);/,
+      /await runHarnessHook\(([\s\S]*), feedbackBoundary(?:, input(?:, rawInput)?)?\);/,
     )[1],
   );
   if (stopUnits.has(name)) {
@@ -248,8 +248,8 @@ function invoke(root, name, payload, removed = false) {
     writeFileSync(
       path,
       source.replace(
-        /await runHarnessHook\([\s\S]*, feedbackBoundary(?:, input)?\);/,
-        `await runHarnessHook(${json(config).trim()}, feedbackBoundary, input);`,
+        /await runHarnessHook\([\s\S]*, feedbackBoundary(?:, input(?:, rawInput)?)?\);/,
+        `await runHarnessHook(${json(config).trim()}, feedbackBoundary, input, rawInput);`,
       ),
     );
   }
@@ -335,6 +335,111 @@ test("WO-067 compiler-only release installs a fresh compatible harness snapshot"
       existsSync(join(root, "docs/control/local/harness/writer")),
       "emitted hook actually reserves its writer",
     );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-045 generated hooks reject malformed input before ordinary host effects", () => {
+  const root = fixture();
+  try {
+    const initial = input(root, "PreToolUse");
+    const malformed = [
+      ["{", "INVALID_JSON", "$"],
+      ["null", "EXPECTED_OBJECT", "$"],
+      [JSON.stringify({ ...initial, cwd: 7 }), "EXPECTED_STRING", "$.cwd"],
+      [
+        JSON.stringify({ ...initial, session_id: 7 }),
+        "EXPECTED_STRING",
+        "$.session_id",
+      ],
+      [
+        JSON.stringify({ ...initial, tool_name: {} }),
+        "EXPECTED_STRING",
+        "$.tool_name",
+      ],
+      [
+        JSON.stringify({ ...initial, tool_input: [] }),
+        "EXPECTED_OBJECT",
+        "$.tool_input",
+      ],
+      [
+        JSON.stringify({ ...initial, tool_response: null }),
+        "EXPECTED_OBJECT",
+        "$.tool_response",
+      ],
+      [
+        JSON.stringify({ ...initial, effort: { level: "ultra" } }),
+        "INVALID_EFFORT",
+        "$.effort.level",
+      ],
+      [
+        JSON.stringify({ ...initial, stop_hook_active: "yes" }),
+        "EXPECTED_BOOLEAN",
+        "$.stop_hook_active",
+      ],
+      [
+        JSON.stringify({ ...initial, hook_event_name: "Stop" }),
+        "EVENT_MISMATCH",
+        "$.hook_event_name",
+      ],
+    ];
+    const state = join(root, "docs/control/local/harness");
+    const before = existsSync(state) ? readdirSync(state) : [];
+    for (const [raw, code, path] of malformed) {
+      const run = spawnSync(
+        process.execPath,
+        [join(root, ".claude/hooks/concurrent-work-requires-worktrees.mjs")],
+        {
+          cwd: root,
+          input: raw,
+          encoding: "utf8",
+          timeout: 20000,
+        },
+      );
+      assert.equal(run.status, 0, run.stderr);
+      assert.equal(run.stderr, "");
+      assert.deepEqual(JSON.parse(run.stdout).hookSpecificOutput, {
+        hookEventName: "PreToolUse",
+        permissionDecision: "deny",
+        permissionDecisionReason: JSON.parse(run.stdout).hookSpecificOutput
+          .permissionDecisionReason,
+      });
+      assert.ok(
+        JSON.parse(
+          run.stdout,
+        ).hookSpecificOutput.permissionDecisionReason.includes(
+          `${code} at ${path}:`,
+        ),
+      );
+      assert.deepEqual(
+        existsSync(state) ? readdirSync(state) : [],
+        before,
+        "malformed input wrote host state",
+      );
+    }
+    for (const prompt of ["analysis: diagnose", "operator override: recover"]) {
+      const recovery = invoke(root, "session", {
+        hook_event_name: "UserPromptSubmit",
+        cwd: root,
+        prompt,
+      });
+      assert.match(
+        recovery.systemMessage,
+        /operator-control (analysis|override)/,
+      );
+      assert.equal(allowed(recovery), true);
+    }
+    const prompt = invoke(
+      root,
+      "session",
+      input(root, "UserPromptSubmit", { prompt: 7 }),
+    );
+    assert.match(
+      prompt.systemMessage,
+      /prompt accepted; DOTLN_HARNESS_INPUT_REFUSED: EXPECTED_STRING at \$\.prompt/,
+    );
+    assert.deepEqual(existsSync(state) ? readdirSync(state) : [], before);
   } finally {
     removeFixture(root, { recursive: true });
   }
