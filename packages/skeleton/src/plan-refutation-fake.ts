@@ -1,5 +1,7 @@
 import type {
   PlanRefutationRequest,
+  LegacyPlanRefutationResult,
+  GoalReviewResult,
   PlanRefutationResult,
   PlanSubject,
 } from "./plan-refutation-protocol.js";
@@ -7,7 +9,7 @@ import type { WorkOrderTransport } from "./worker-transport.js";
 
 export const cannedPlanDrift = (
   subject: PlanSubject,
-): PlanRefutationResult => ({
+): LegacyPlanRefutationResult => ({
   orders: subject.orders.map((order, i) => ({
     workOrderId: order.workOrderId,
     verdict: i === 0 ? "drift" : "thesis-advancing",
@@ -35,10 +37,30 @@ export const cannedPlanDrift = (
   ],
 });
 
+export const cannedGoalReview = (subject: PlanSubject): GoalReviewResult => ({
+  schemaVersion: "plan-goal-review-v1",
+  orders: subject.orders.map((order) => ({
+    workOrderId: order.workOrderId,
+    verdict: "aligned",
+    criticalPathAndNoOp: "Synthetic fixture gate; no observed NoOp cost.",
+    systemTraps: "Synthetic fixture considers all eight system traps.",
+    removalBalance: "Unknown fixture process cost; no structural hold.",
+    failureBehavior: "Synthetic fixture retains the previous behavior.",
+    findings: [],
+  })),
+  planVerdict: "aligned",
+  holdReasons: [],
+});
+
 export class FakePlanRefutationTransport implements WorkOrderTransport<PlanRefutationRequest> {
   readonly name = "fake" as const;
   readonly harnessVersion = "fixture-v1";
-  constructor(private readonly result = cannedPlanDrift) {}
+  constructor(
+    private readonly result: (subject: PlanSubject) => PlanRefutationResult = (
+      subject,
+    ) =>
+      subject.goalReview ? cannedGoalReview(subject) : cannedPlanDrift(subject),
+  ) {}
   dispatch(request: PlanRefutationRequest, now: () => number) {
     return {
       receipt: Promise.resolve({

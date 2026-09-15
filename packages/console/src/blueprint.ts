@@ -136,7 +136,7 @@ export function projectBlueprint(
             known(
               "holdStatus",
               "Recorded hold status",
-              result.planVerdict === "hold" ? "hold" : "no holds recorded",
+              result.holdReasons.length ? "hold" : "no holds recorded",
               evidence,
               "Receipt result only; this board does not evaluate overrides, staleness, or planning-gate legality",
             ),

@@ -395,10 +395,13 @@ function reason(
         ? "AI attribution footer or trailer"
         : null;
     case "writer-isolation":
+      // Preserve the original unit's replay semantics; its replacement permits
+      // a reserved writer on every branch, including main.
+      if (!reuseEvidence && request.writable && request.branch === "main")
+        return "write dispatch lacks a verified exclusive worktree";
       return !request.writable ||
         (request.cwd === request.gitRoot &&
           request.cwd === request.worktree &&
-          request.branch !== "main" &&
           request.branch !== "HEAD" &&
           request.branch.length > 0 &&
           request.writers.filter(

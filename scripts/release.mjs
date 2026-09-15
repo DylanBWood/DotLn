@@ -7,6 +7,7 @@ import {
   readFileSync,
   readdirSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { release as osRelease, tmpdir } from "node:os";
@@ -29,7 +30,6 @@ import {
 } from "./lib/release-preparation.mjs";
 import { licenseSurfaceRules } from "./license-surfaces.mjs";
 import {
-  ensureClean,
   failureOf,
   mainWorktree as findMainWorktree,
   parseWorktrees,
@@ -38,7 +38,6 @@ import {
   runGitPathList,
 } from "./lib/git.mjs";
 import {
-  describeIgnoredMaterial,
   parseJson,
   readJsonFile,
   workOrderAuthorityPath,
@@ -62,17 +61,17 @@ import {
   localTags,
   manifestFromTag,
   manifestWorkOrders,
+  reviewedProductGate,
   semver,
   strictVersionsIn,
   tagAnnotation,
 } from "./lib/release-records.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-import {
-  findGateCheck,
-  gateTreeHash,
-  recordGateChecks,
-} from "./lib/gate-evidence.mjs";
+// Dry-run reads the prospective merge revision while leaving main in place.
+let sourceRevision = "HEAD";
+let previewRuntimeRoot;
+
 const evidenceCommands = [
   "npm ci",
   "npm test",
@@ -149,21 +148,29 @@ const addedControlEvents = (root, parent, commit) =>
     readControl(root, commit),
     `${parent ?? "the empty history"} and ${commit}`,
   );
-const ensureNoIgnoredInfluence = (path) => {
-  const ignored = runGitPathList(path, [
-    "ls-files",
-    "-z",
-    "--others",
-    "--ignored",
-    "--exclude-standard",
-  ]).filter(
-    (candidate) =>
-      !describeIgnoredMaterial(path, candidate).releaseEvidenceAllowed,
-  );
-  if (ignored.length > 0)
+const ensureTrackedClean = (root) => {
+  const dirty = runGit(root, ["status", "--porcelain", "--untracked-files=no"]);
+  if (dirty)
     throw new Error(
-      `main checkout contains ignored material that can contaminate release evidence: ${ignored.join(", ")}`,
+      `tracked working tree is not clean: ${dirty.split("\n")[0]}`,
     );
+};
+const reportLocalMaterial = (root) => {
+  for (const [label, flags] of [
+    ["untracked", ["--others", "--exclude-standard"]],
+    ["ignored", ["--others", "--ignored", "--exclude-standard"]],
+  ]) {
+    const paths = runGitPathList(root, ["ls-files", "-z", ...flags]);
+    // Installed output is routine; retained local material remains visible.
+    const local = paths.filter(
+      (path) =>
+        !/^(?:node_modules|packages\/[^/]+\/dist|\.runtime)\//.test(path),
+    );
+    if (local.length)
+      process.stdout.write(
+        `Advisory: retained ${label} material: ${local.join(", ")}\n`,
+      );
+  }
 };
 // Release close fetches, lists tags, pushes the tag and creates the Release
 // over the network. Prove reachability before any local prerequisite so a
@@ -177,7 +184,7 @@ const ensureOriginReachable = (root) => {
   );
   if (probe.status !== 0)
     throw new Error(
-      `release close needs network egress to ${repository.host} (git fetch, git ls-remote, the tag push and the GitHub Release); origin is unreachable from this session: ${failureOf(probe, "git ls-remote failed")}. Run the close from an operator terminal with egress; a sandboxed agent session cannot publish.`,
+      `release close needs network egress to ${repository.host} (git fetch, git ls-remote, the tag push and the GitHub Release); origin is unreachable from this session: ${failureOf(probe, "git ls-remote failed")}. Run the authorized close from a session with egress; host approval governs any outside-sandbox execution.`,
     );
   return repository;
 };
@@ -608,7 +615,7 @@ const exactSchemaVersion = (source, pattern, name) => {
 };
 const builtKernelCadence = (root) => {
   const moduleUrl = pathToFileURL(
-    join(root, "packages/kernel/dist/src/index.js"),
+    join(previewRuntimeRoot ?? root, "packages/kernel/dist/src/index.js"),
   ).href;
   const probe = `
     const kernel = await import(${JSON.stringify(moduleUrl)});
@@ -684,9 +691,10 @@ const builtKernelCadence = (root) => {
   };
 };
 const compatibility = (root) => {
-  const types = readFileSync(
-    join(root, "packages/kernel/src/types.ts"),
-    "utf8",
+  const types = repositoryFile(
+    root,
+    "packages/kernel/src/types.ts",
+    sourceRevision,
   );
   const eventEnvelope = exactSchemaVersion(
     types,
@@ -717,42 +725,42 @@ const versionOutput = (command, args, cwd, label) => {
   return result.stdout.trim();
 };
 const toolchain = (root) => {
-  const typescript = versionOutput(
-    join(root, "node_modules/.bin/tsc"),
-    ["--version"],
-    root,
-    "TypeScript version",
-  ).replace(/^Version\s+/, "");
-  const lock = readJsonFile(join(root, "package-lock.json"));
-  const lockedTypescript =
-    lock.packages?.["node_modules/typescript"]?.version ??
-    lock.packages?.[""]?.devDependencies?.typescript;
-  if (typescript !== lockedTypescript)
-    throw new Error(
-      `installed TypeScript ${typescript} does not match lockfile ${lockedTypescript ?? "missing"}`,
-    );
+  const lock = JSON.parse(
+    repositoryFile(root, "package-lock.json", sourceRevision),
+  );
   return {
     node: process.version,
     npm: versionOutput("npm", ["--version"], root, "npm version"),
-    typescript,
+    typescript:
+      lock.packages?.["node_modules/typescript"]?.version ??
+      lock.packages?.[""]?.devDependencies?.typescript ??
+      "unknown",
     platform: `${process.platform} ${osRelease()}`,
   };
 };
 const gitIdentity = (root) => ({
-  commit: runGit(root, ["rev-parse", "HEAD"]),
-  subject: runGit(root, ["log", "-1", "--format=%s"]),
-  committedAt: runGit(root, ["log", "-1", "--format=%cI"]),
+  commit: runGit(root, ["rev-parse", sourceRevision]),
+  subject: runGit(root, ["log", "-1", "--format=%s", sourceRevision]),
+  committedAt: runGit(root, ["log", "-1", "--format=%cI", sourceRevision]),
 });
 const changedSubjects = (root, previousRelease) => {
-  const range = previousRelease ? `${previousRelease}..HEAD` : "HEAD";
+  const range = previousRelease
+    ? `${previousRelease}..${sourceRevision}`
+    : sourceRevision;
   return runGit(root, ["log", "--reverse", "--format=%s", range])
     .split("\n")
     .filter(Boolean);
 };
 const changedFiles = (root, previousRelease) => {
   const args = previousRelease
-    ? ["diff", "--no-renames", "--name-only", "-z", `${previousRelease}..HEAD`]
-    : ["ls-tree", "-r", "--name-only", "-z", "HEAD"];
+    ? [
+        "diff",
+        "--no-renames",
+        "--name-only",
+        "-z",
+        `${previousRelease}..${sourceRevision}`,
+      ]
+    : ["ls-tree", "-r", "--name-only", "-z", sourceRevision];
   return runGitPathList(root, args).sort();
 };
 const reviewArtifacts = (root, workOrderId) =>
@@ -762,12 +770,16 @@ const reviewArtifacts = (root, workOrderId) =>
       "-r",
       "--name-only",
       "-z",
-      "HEAD",
+      sourceRevision,
       "--",
       `${parent}/${workOrderId}`,
     ]).filter((path) => path.endsWith(".md")),
   );
-const firstParentCommits = (root, previousRelease, release = "HEAD") => {
+const firstParentCommits = (
+  root,
+  previousRelease,
+  release = sourceRevision,
+) => {
   const range = previousRelease ? `${previousRelease}..${release}` : release;
   const output = runGit(root, [
     "rev-list",
@@ -824,7 +836,7 @@ const notesContractWasActive = (root, revision) =>
     ({ event }) => passedFinalReview(event) && event.workOrderId === "WO-024",
   );
 const workOrderTitleAtHead = (root, workOrderId) => {
-  const activation = controlEventsAt(root, "HEAD")
+  const activation = controlEventsAt(root, sourceRevision)
     .map(({ event }) => event)
     .filter(
       (event) =>
@@ -843,7 +855,7 @@ const workOrderTitleAtHead = (root, workOrderId) => {
       `cannot resolve work-order authority for release notes: ${workOrderId}`,
     );
   }
-  const source = optionalGitFile(root, "HEAD", authorityPath);
+  const source = optionalGitFile(root, sourceRevision, authorityPath);
   if (source === undefined)
     throw new Error(
       `cannot read work-order authority from HEAD for release notes: ${workOrderId}`,
@@ -941,7 +953,7 @@ const releaseNoteEntries = (root, previousRelease) => {
       .map(({ subject }) => subject);
     let parsed;
     if (entry.notesChanged || !entry.legacy) {
-      const source = optionalGitFile(root, "HEAD", path);
+      const source = optionalGitFile(root, sourceRevision, path);
       if (source === undefined)
         throw new Error(`${path}: release-notes file is missing from HEAD`);
       parsed = parseReleaseNotes(source, path);
@@ -957,7 +969,7 @@ const releaseNoteEntries = (root, previousRelease) => {
     };
   });
 };
-const criticalNotes = (files) => {
+const criticalNotes = (files, evidence) => {
   const notes = [
     "Source-only release: no package, binary, container, or hosted artifact is published.",
   ];
@@ -987,7 +999,9 @@ const criticalNotes = (files) => {
     );
   if (files.includes("package-lock.json"))
     notes.push(
-      "The locked dependency graph changed; release evidence was run after a fresh npm ci.",
+      evidence.length === 1 && evidence[0]?.command === "npm test"
+        ? "The locked dependency graph changed; the release manifest records the reviewer’s npm test evidence for this code identity."
+        : "The locked dependency graph changed; release evidence was run after a fresh npm ci.",
     );
   return notes;
 };
@@ -999,7 +1013,13 @@ const baseManifest = (
   recordedToolchain,
 ) => {
   const templatePath = join(root, "docs/releases/tag-manifest.template.json");
-  const template = readJsonFile(templatePath);
+  const template = JSON.parse(
+    repositoryFile(
+      root,
+      "docs/releases/tag-manifest.template.json",
+      sourceRevision,
+    ),
+  );
   if (template.schemaVersion !== 1)
     throw new Error(`unsupported release manifest template: ${templatePath}`);
   assertShape(template, templateShape);
@@ -1027,7 +1047,10 @@ const baseManifest = (
       id: authority.id,
       path: authority.path,
     },
-    versions: { ...template.versions, ...packageVersions(root, "HEAD") },
+    versions: {
+      ...template.versions,
+      ...packageVersions(root, sourceRevision),
+    },
     ...compatible,
     toolchain: {
       ...template.toolchain,
@@ -1036,7 +1059,7 @@ const baseManifest = (
     evidence,
     notes: {
       visiblePayoff: authority.objective,
-      critical: criticalNotes(files),
+      critical: criticalNotes(files, evidence),
       operatorActions: [
         "Read the compatibility fields and known limitations before consuming this source release.",
       ],
@@ -1077,6 +1100,28 @@ const firstDifference = (expected, actual, path = "$") => {
   return undefined;
 };
 const validateEvidence = (evidence) => {
+  if (
+    Array.isArray(evidence) &&
+    evidence.length === 1 &&
+    evidence[0]?.command === "npm test"
+  ) {
+    const row = evidence[0];
+    if (
+      row.exitCode !== 0 ||
+      row.executed !== true ||
+      !/^[a-f0-9]{64}$/.test(row.codeIdentity ?? "") ||
+      !/^[a-f0-9]{64}$/.test(row.outputSha256 ?? "") ||
+      ![row.reviewedTree, row.mergeTree].every((tree) =>
+        /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(tree ?? ""),
+      ) ||
+      !Number.isFinite(row.durationMs) ||
+      row.durationMs < 0 ||
+      !Number.isFinite(Date.parse(row.recordedAt)) ||
+      !row.evidenceRef
+    )
+      throw new Error("invalid reviewer product-gate evidence");
+    return;
+  }
   const commands =
     Array.isArray(evidence) &&
     evidence[0]?.command === currentEvidenceCommands[0]
@@ -1106,8 +1151,22 @@ const validateEvidence = (evidence) => {
 };
 const validateManifest = (root, manifest) => {
   validateEvidence(manifest.evidence);
-  const state = parseControlStateAt(root, "HEAD", manifest.workOrder?.id);
-  const authority = workOrderAuthority(root, state, "HEAD");
+  if (
+    manifest.evidence.length === 1 &&
+    manifest.evidence[0].command === "npm test"
+  ) {
+    const expectedEvidence = releaseEvidence(root, manifest.workOrder?.id);
+    if (firstDifference(expectedEvidence, manifest.evidence))
+      throw new Error(
+        "release evidence differs from the recorded reviewer product gate or merge tree",
+      );
+  }
+  const state = parseControlStateAt(
+    root,
+    sourceRevision,
+    manifest.workOrder?.id,
+  );
+  const authority = workOrderAuthority(root, state, sourceRevision);
   const expected = baseManifest(
     root,
     authority,
@@ -1123,8 +1182,21 @@ const validateManifest = (root, manifest) => {
 };
 const validatePublishedManifest = (root, manifest) => {
   validateEvidence(manifest.evidence);
+  if (
+    manifest.evidence.length === 1 &&
+    manifest.evidence[0].command === "npm test" &&
+    firstDifference(
+      releaseEvidence(root, manifest.workOrder?.id),
+      manifest.evidence,
+    )
+  )
+    throw new Error(
+      "published evidence differs from its recorded reviewer product gate",
+    );
   const recorded = manifest.toolchain;
-  const lock = readJsonFile(join(root, "package-lock.json"));
+  const lock = JSON.parse(
+    repositoryFile(root, "package-lock.json", sourceRevision),
+  );
   const lockedTypescript =
     lock.packages?.["node_modules/typescript"]?.version ??
     lock.packages?.[""]?.devDependencies?.typescript;
@@ -1139,8 +1211,12 @@ const validatePublishedManifest = (root, manifest) => {
     throw new Error(
       "published manifest contains an invalid recorded toolchain",
     );
-  const state = parseControlStateAt(root, "HEAD", manifest.workOrder?.id);
-  const authority = workOrderAuthority(root, state, "HEAD");
+  const state = parseControlStateAt(
+    root,
+    sourceRevision,
+    manifest.workOrder?.id,
+  );
+  const authority = workOrderAuthority(root, state, sourceRevision);
   const expected = baseManifest(
     root,
     authority,
@@ -1155,96 +1231,85 @@ const validatePublishedManifest = (root, manifest) => {
     );
   return manifest;
 };
-const evidenceRow = (root, command, executable, args) => {
-  process.stdout.write(`Running ${command}...\n`);
-  const result = execute(executable, args, { cwd: root });
-  const output = outputOf(result);
-  if (result.status !== 0) {
-    const tail = output.trim().slice(-1600);
-    throw new Error(
-      `${command} failed (exit ${result.status ?? "spawn"})${tail ? `:\n${tail}` : ""}`,
-    );
-  }
-  return { command, exitCode: 0, outputSha256: sha256(output) };
-};
-const runEvidence = (root) => {
-  const current = readJsonFile(join(root, "package.json")).scripts?.[
-    "test:full"
+const releaseEvidence = (root, workOrderId) => {
+  const gate = reviewedProductGate(root, workOrderId, sourceRevision);
+  return [
+    {
+      command: "npm test",
+      exitCode: 0,
+      executed: true,
+      outputSha256: gate.outputSha256 ?? sha256(JSON.stringify(gate)),
+      codeIdentity: gate.codeIdentity,
+      reviewedTree: gate.treeHash,
+      mergeTree: runGit(root, ["rev-parse", `${sourceRevision}^{tree}`]),
+      durationMs: gate.durationMs,
+      recordedAt: gate.recordedAt,
+      evidenceRef: gate.evidenceRef,
+    },
   ];
-  if (current) {
-    ensureClean(root);
-    const treeHash = gateTreeHash(root);
-    const evidence = [];
-    for (const [command, executable, args] of [
-      [currentEvidenceCommands[0], "npm", ["run", "test:full"]],
-      [
-        currentEvidenceCommands[1],
-        process.execPath,
-        [join(root, "packages/skeleton/dist/src/cli.js")],
-      ],
-      [currentEvidenceCommands[2], "git", ["status", "--porcelain"]],
-    ]) {
-      let cached = findGateCheck(root, command, treeHash);
-      if (!cached) {
-        if (
-          command === currentEvidenceCommands[0] &&
-          !existsSync(join(root, "node_modules/typescript/bin/tsc"))
-        )
-          evidenceRow(root, "npm ci", "npm", ["ci"]);
-        if (
-          command === currentEvidenceCommands[1] &&
-          !existsSync(join(root, "packages/skeleton/dist/src/cli.js"))
-        )
-          evidenceRow(root, "npm run build", "npm", ["run", "build"]);
-        const started = Date.now();
-        const row = evidenceRow(root, command, executable, args);
-        ensureClean(root);
-        if (gateTreeHash(root) !== treeHash)
-          throw new Error("Release subject changed during evidence");
-        cached = findGateCheck(root, command, treeHash) ?? {
-          checkId: command,
-          treeHash,
-          subject: treeHash,
-          durationMs: Date.now() - started,
-          exitCode: 0,
-          executed: true,
-          evidenceRef: `release-gate:${treeHash}:${command}`,
-          recordedAt: new Date().toISOString(),
-          outputSha256: row.outputSha256,
-        };
-        recordGateChecks(root, [cached]);
-      } else
-        process.stdout.write(
-          `Reusing ${command} for identical tree ${treeHash}; original duration ${cached.durationMs} ms.\n`,
-        );
-      evidence.push({
-        command,
-        exitCode: 0,
-        outputSha256: cached.outputSha256 ?? sha256(JSON.stringify(cached)),
-        treeHash,
-        durationMs: cached.durationMs,
-      });
-    }
-    return evidence;
-  }
-  const evidence = [];
-  evidence.push(evidenceRow(root, evidenceCommands[0], "npm", ["ci"]));
-  ensureClean(root);
-  evidence.push(evidenceRow(root, evidenceCommands[1], "npm", ["test"]));
-  ensureClean(root);
-  evidence.push(
-    evidenceRow(root, evidenceCommands[2], process.execPath, [
-      join(root, "packages/skeleton/dist/src/cli.js"),
-    ]),
+};
+const ensureReleaseRuntime = (root) => {
+  if (
+    ["skeleton", "kernel"].every((name) =>
+      existsSync(
+        join(
+          root,
+          `packages/${name}/dist/src/${name === "kernel" ? "index.js" : "cli.js"}`,
+        ),
+      ),
+    )
+  )
+    return;
+  process.stdout.write(
+    "Building release metadata runtime (no installation or test suite).\n",
   );
-  ensureClean(root);
-  const cleanOutput = runGit(root, ["status", "--porcelain"]);
-  evidence.push({
-    command: evidenceCommands[3],
-    exitCode: 0,
-    outputSha256: sha256(cleanOutput),
-  });
-  return evidence;
+  const built = execute("npm", ["run", "build"], { cwd: root });
+  if (built.status !== 0)
+    throw new Error(
+      `release metadata build failed: ${failureOf(built, "build unavailable; install dependencies separately")}`,
+    );
+};
+const withPreviewRuntime = (root, operation) => {
+  // This is an unregistered preview directory, never a release worktree. Its
+  // temporary index and build output are removed without moving main or any branch.
+  const temporary = mkdtempSync(join(tmpdir(), "dotln-release-preview-"));
+  try {
+    const env = {
+      ...process.env,
+      GIT_INDEX_FILE: join(temporary, ".preview-index"),
+    };
+    runGit(root, ["read-tree", sourceRevision], { env });
+    runGit(root, ["checkout-index", "--all", `--prefix=${temporary}/`], {
+      env,
+    });
+    rmSync(join(temporary, ".preview-index"));
+    if (existsSync(join(root, "node_modules")))
+      symlinkSync(join(root, "node_modules"), join(temporary, "node_modules"));
+    // Installed dist can satisfy a byte-identical source preview without build.
+    const kernelDelta = runGit(root, [
+      "diff",
+      "--name-only",
+      "HEAD",
+      sourceRevision,
+      "--",
+      "packages/kernel",
+      "packages/skeleton",
+    ]);
+    if (
+      !kernelDelta &&
+      existsSync(join(root, "packages/kernel/dist/src/index.js")) &&
+      existsSync(join(root, "packages/skeleton/dist/src/cli.js"))
+    ) {
+      previewRuntimeRoot = root;
+    } else {
+      ensureReleaseRuntime(temporary);
+      previewRuntimeRoot = temporary;
+    }
+    return operation();
+  } finally {
+    previewRuntimeRoot = undefined;
+    rmSync(temporary, { recursive: true, force: true });
+  }
 };
 const displayValue = (value) =>
   value === null || value === undefined ? "none" : String(value);
@@ -1276,7 +1341,7 @@ const machineEvidence = (manifest) => {
     "- Release evidence:",
     ...manifest.evidence.map(
       (row) =>
-        `  - \`${row.command}\`: exit ${row.exitCode}; output SHA-256 \`${row.outputSha256}\``,
+        `  - \`${row.command}\`: exit ${row.exitCode}; output SHA-256 \`${row.outputSha256}\`${row.codeIdentity ? `; code identity \`${row.codeIdentity}\`; reviewed tree \`${row.reviewedTree}\`; merge tree \`${row.mergeTree}\`` : ""}`,
     ),
     "- Review lineage:",
     ...(reviews.length > 0
@@ -1372,66 +1437,65 @@ const publishedTag = (name, local, remote) => {
     throw new Error(`${name} differs between local and origin`);
   return remoteTag;
 };
-const updateMainAndFinish = (root, workOrderId) => {
-  let finishOutput = "";
-  ensureClean(root);
-  ensureNoIgnoredInfluence(root);
+const updateMain = (root) => {
+  ensureTrackedClean(root);
+  reportLocalMaterial(root);
   if (runGit(root, ["symbolic-ref", "--short", "HEAD"]) !== "main")
     throw new Error("release close must run from the main branch checkout");
-  const branch = `wo-${workOrderId.slice(3)}`;
-  const subject = parseWorktrees(root).find(
-    (item) => item.branch === `refs/heads/${branch}`,
-  );
-  if (subject?.worktree) {
-    const finished = execute(
-      process.execPath,
-      [join(toolRoot, "scripts/worktree.mjs"), "finish", workOrderId],
-      { cwd: root },
+  runGit(root, ["fetch", "origin", "main"]);
+  runGit(root, ["merge", "--ff-only", "origin/main"]);
+  if (
+    runGit(root, ["rev-parse", "HEAD"]) !==
+    runGit(root, ["rev-parse", "origin/main"])
+  )
+    throw new Error("main is not synchronized with origin/main");
+};
+const finishPublishedWorktree = (root, workOrderId, dryRun = false) => {
+  try {
+    const branch = `wo-${workOrderId.slice(3)}`;
+    const subject = parseWorktrees(root).find(
+      (item) => item.branch === `refs/heads/${branch}`,
     );
-    if (finished.status !== 0)
-      throw new Error(
-        `cannot finish merged worktree: ${failureOf(finished, "worktree finish failed")}`,
-      );
-    finishOutput = finished.stdout;
-  } else {
-    runGit(root, ["fetch", "origin", "main"]);
-    runGit(root, ["merge", "--ff-only", "origin/main"]);
-    const localBranch = runGit(root, ["branch", "--list", branch]);
-    if (localBranch) {
-      const merged = execute("git", [
-        "-C",
-        root,
-        "merge-base",
-        "--is-ancestor",
-        branch,
-        "origin/main",
-      ]);
-      if (merged.status !== 0)
-        throw new Error(
-          `${branch} exists locally but is not merged into origin/main`,
+    const actions = subject?.worktree ? ["finish", "settle"] : ["settle"];
+    for (const action of actions) {
+      try {
+        const finished = execute(
+          process.execPath,
+          [
+            join(dryRun ? toolRoot : root, "scripts/worktree.mjs"),
+            action,
+            workOrderId,
+            ...(dryRun ? ["--dry-run"] : []),
+          ],
+          { cwd: root },
         );
-      removeMergedBranch(root, branch);
+        if (finished.stdout) process.stdout.write(finished.stdout);
+        if (finished.status !== 0)
+          throw new Error(failureOf(finished, `${action} failed`));
+      } catch (error) {
+        process.stdout.write(
+          `Advisory: ${dryRun ? "prospective" : "published release"} cleanup blocker: ${error.message}\n`,
+        );
+      }
     }
-    // The subject is already gone; its derived worktrees still settle (WO-044).
-    const settled = execute(
-      process.execPath,
-      [join(toolRoot, "scripts/worktree.mjs"), "settle", workOrderId],
-      { cwd: root },
+    if (
+      !subject?.worktree &&
+      !dryRun &&
+      runGit(root, ["branch", "--list", branch])
+    ) {
+      try {
+        removeMergedBranch(root, branch);
+      } catch (error) {
+        process.stdout.write(
+          `Advisory: published release branch cleanup blocker: ${error.message}\n`,
+        );
+      }
+    }
+  } catch (error) {
+    process.stdout.write(
+      `Advisory: ${dryRun ? "prospective" : "published release"} cleanup blocker: ${error.message}\n`,
     );
-    if (settled.status !== 0)
-      throw new Error(
-        `cannot settle derived worktrees: ${failureOf(settled, "worktree settle failed")}`,
-      );
-    finishOutput = settled.stdout;
   }
-  ensureClean(root);
-  const head = runGit(root, ["rev-parse", "HEAD"]);
-  const originMain = runGit(root, ["rev-parse", "origin/main"]);
-  if (head !== originMain)
-    throw new Error(
-      `main is not synchronized with origin/main (${head} != ${originMain})`,
-    );
-  return finishOutput;
 };
 const executeGh = (root, args) => {
   return execute("gh", args, {
@@ -1619,58 +1683,34 @@ const close = (workOrderId, args) => {
     throw new Error(
       `release close must run from the main control-plane checkout: ${root}`,
     );
-  if (args.includes("--dry-run")) {
-    const reachable = ensureOriginReachable(root);
+  const dryRun = args.includes("--dry-run");
+  const reachable = ensureOriginReachable(root);
+  if (dryRun)
     process.stdout.write(
       `Origin reachable: ${reachable.host} (git ls-remote); publication also needs gh authentication there.\n`,
     );
-    ensureClean(root);
-    ensureNoIgnoredInfluence(root);
-    const subject = parseWorktrees(root).find(
-      (item) => item.branch === `refs/heads/wo-${workOrderId.slice(3)}`,
-    );
-    if (subject?.worktree) {
-      const result = execute(
-        process.execPath,
-        [
-          join(toolRoot, "scripts/worktree.mjs"),
-          "finish",
-          workOrderId,
-          "--dry-run",
-        ],
-        { cwd: root },
-      );
-      if (result.status !== 0)
-        throw new Error(failureOf(result, "close preview failed"));
-      process.stdout.write(result.stdout);
-    } else {
-      const settled = execute(
-        process.execPath,
-        [
-          join(toolRoot, "scripts/worktree.mjs"),
-          "settle",
-          workOrderId,
-          "--dry-run",
-        ],
-        { cwd: root },
-      );
-      if (settled.status !== 0)
-        throw new Error(failureOf(settled, "settle preview failed"));
-      process.stdout.write(settled.stdout);
-    }
-    process.stdout.write(
-      `Dry run: would validate merged ${workOrderId}, reuse successful evidence only at the exact tree hash, and ${publish ? "publish its validated annotated tag and matching Release" : "prepare its release"}. No changes made.\n`,
-    );
-    return;
-  }
-  ensureOriginReachable(root);
-  const finishOutput = updateMainAndFinish(root, workOrderId);
-  const state = parseControlStateAt(root, "HEAD", workOrderId);
+  if (dryRun) {
+    ensureTrackedClean(root);
+    reportLocalMaterial(root);
+    runGit(root, ["fetch", "origin", "main"]);
+    sourceRevision = runGit(root, ["rev-parse", "origin/main"]);
+    const ancestor = execute("git", [
+      "-C",
+      root,
+      "merge-base",
+      "--is-ancestor",
+      "HEAD",
+      sourceRevision,
+    ]);
+    if (ancestor.status !== 0)
+      throw new Error("main cannot fast-forward to origin/main");
+  } else updateMain(root);
+  const state = parseControlStateAt(root, sourceRevision, workOrderId);
   if (state.workOrderId !== workOrderId)
     throw new Error(
       `merged control state is for ${state.workOrderId ?? "none"}, not ${workOrderId}`,
     );
-  const authority = workOrderAuthority(root, state, "HEAD");
+  const authority = workOrderAuthority(root, state, sourceRevision);
   let local = localTags(root);
   const remote = remoteTags(root);
   const latest = latestVersion(remote);
@@ -1686,7 +1726,7 @@ const close = (workOrderId, args) => {
   }
   const surfaceCheck = checkSurfaces(root, {
     state,
-    revision: "HEAD",
+    revision: sourceRevision,
     expectedWorkOrderId: workOrderId,
     authority,
     local,
@@ -1697,13 +1737,13 @@ const close = (workOrderId, args) => {
     process.exitCode = 1;
     return;
   }
-  process.stdout.write(finishOutput);
-  const head = runGit(root, ["rev-parse", "HEAD"]);
-  const remaining = openOrders(readControl(root, "HEAD"));
+  const head = runGit(root, ["rev-parse", sourceRevision]);
+  const remaining = openOrders(readControl(root, sourceRevision));
   const mainStatus = remaining.length
-    ? `Main is clean; in-flight orders: ${remaining.join(", ")}.`
-    : "Main is clean and between work orders.";
+    ? `Main tracked files are clean; in-flight orders: ${remaining.join(", ")}.`
+    : "Main tracked files are clean and between work orders.";
   if (latest && compareVersions(authority.version, latest) < 0) {
+    if (publish || dryRun) finishPublishedWorktree(root, workOrderId, dryRun);
     process.stdout.write(
       `${workOrderId} closes ${authority.version}, below latest release ${latest}; no release tag is due. ${mainStatus}\n`,
     );
@@ -1715,15 +1755,20 @@ const close = (workOrderId, args) => {
       `release tag ${authority.version} is blocked by nested tag ${blockingTag}`,
     );
   if (latest && compareVersions(authority.version, latest) === 0) {
-    const repository = publish ? ensureGhPreflight(root) : undefined;
-    runEvidence(root);
-    const existing = ensureExistingRelease(
-      root,
-      authority.version,
-      head,
-      local,
-      remote,
-    );
+    const repository = publish && !dryRun ? ensureGhPreflight(root) : undefined;
+    if (!dryRun) ensureReleaseRuntime(root);
+    const inspectExisting = () =>
+      ensureExistingRelease(root, authority.version, head, local, remote);
+    const existing = dryRun
+      ? withPreviewRuntime(root, inspectExisting)
+      : inspectExisting();
+    if (dryRun) {
+      process.stdout.write(
+        `Dry run: would fast-forward main to ${head}, validate the recorded reviewer gate, and reconcile the existing Release.\n${JSON.stringify(existing.manifest, null, 2)}\n`,
+      );
+      finishPublishedWorktree(root, workOrderId, true);
+      return;
+    }
     const projection = publish
       ? ensureGitHubRelease(
           root,
@@ -1732,6 +1777,7 @@ const close = (workOrderId, args) => {
           projectedReleaseBody(authority.version, existing.humanLayer),
         )
       : undefined;
+    if (publish) finishPublishedWorktree(root, workOrderId);
     process.stdout.write(
       `${authority.version} is already published from ${head}${projection ? `; GitHub Release ${projection}` : ""}. ${mainStatus}\n`,
     );
@@ -1751,15 +1797,27 @@ const close = (workOrderId, args) => {
   }
   if (local.has(authority.version) || remote.has(authority.version))
     throw new Error(`release tag already exists: ${authority.version}`);
-  const repository = publish ? ensureGhPreflight(root) : undefined;
-  const tagger = publish
-    ? runGit(root, ["var", "GIT_COMMITTER_IDENT"])
-    : undefined;
-  const evidence = runEvidence(root);
-  const manifest = validateManifest(
-    root,
-    baseManifest(root, authority, latest, evidence),
-  );
+  const repository = publish && !dryRun ? ensureGhPreflight(root) : undefined;
+  const tagger =
+    publish && !dryRun
+      ? runGit(root, ["var", "GIT_COMMITTER_IDENT"])
+      : undefined;
+  const evidence = releaseEvidence(root, workOrderId);
+  const prepareManifest = () =>
+    validateManifest(root, baseManifest(root, authority, latest, evidence));
+  let manifest;
+  if (dryRun) manifest = withPreviewRuntime(root, prepareManifest);
+  else {
+    ensureReleaseRuntime(root);
+    manifest = prepareManifest();
+  }
+  if (dryRun) {
+    process.stdout.write(
+      `Dry run: would fast-forward main to ${head}, run surface checks, build missing dist, validate this reviewer-gate manifest, ${publish ? "create and push the annotated tag and create the Release" : "prepare the release"}, then attempt worktree cleanup. No suite, install or CLI smoke runs.\n${JSON.stringify(manifest, null, 2)}\n`,
+    );
+    finishPublishedWorktree(root, workOrderId, true);
+    return;
+  }
   const humanLayer = releaseEdition(root, manifest);
   const message = tagMessage(root, manifest);
   if (!publish) {
@@ -1775,7 +1833,8 @@ const close = (workOrderId, args) => {
     authority.version,
     projectedReleaseBody(authority.version, humanLayer),
   );
-  ensureClean(root);
+  ensureTrackedClean(root);
+  finishPublishedWorktree(root, workOrderId);
   process.stdout.write(
     `Published annotated ${authority.version} (${tagObject}) for ${head}; GitHub Release ${projection}. ${mainStatus}\n`,
   );
@@ -1889,6 +1948,8 @@ const publishHistoricalNotes = (tag) => {
 };
 
 const main = async () => {
+  sourceRevision = "HEAD";
+  previewRuntimeRoot = undefined;
   const [action, ...args] = process.argv.slice(2);
   if (action === "close") return close(args[0], args.slice(1));
   if (action === "prepare") {
@@ -1946,7 +2007,7 @@ const main = async () => {
         "usage: release check-surfaces [--local] [--committed [WO-NNN]]",
       );
     const result = checkSurfaces(toolRoot, {
-      revision: selection.includes("--committed") ? "HEAD" : undefined,
+      revision: selection.includes("--committed") ? sourceRevision : undefined,
       expectedWorkOrderId: selection[1],
       localOnly,
     });

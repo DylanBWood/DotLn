@@ -29,6 +29,7 @@ export const FEEDBACK_SOURCE_PATHS = [
   "packages/skeleton/src/verification-protocol.ts",
   "packages/skeleton/src/verification-host.ts",
   "packages/skeleton/src/worker-transport.ts",
+  "packages/skeleton/src/worker-protocol.ts",
   "packages/skeleton/src/usage-observation.mjs",
   "packages/skeleton/src/worker-store.ts",
   "packages/skeleton/test/feedback-fixtures.test.ts",
@@ -154,10 +155,7 @@ export function runFeedbackRegressions(
   const fixture = "packages/skeleton/dist/test/feedback-fixtures.test.js";
   const run = (unitId: string, removed: boolean) => {
     const unit = program.units.find((row) => row.unitId === unitId)!;
-    const name =
-      unit.version === 1
-        ? `WO-011 regression ${unitId}`
-        : `WO-126 ${unitId} version 2`;
+    const name = unit.regressionFixtures[0]!;
     const env = { ...process.env };
     delete env.DOTLN_FEEDBACK_ABLATE;
     // An independent test subprocess must not inherit its parent's test-runner IPC mode.

@@ -1,4 +1,4 @@
-// Origin: {"ids":["no-lint-type-disables-as-fixes"],"loadoutId":"contributor","semanticHash":"fnv1a64:fe30ee5ba57ce2ed"}
+// Origin: {"ids":["no-lint-type-disables-as-fixes"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
 let input;
 try {
 const { text } = await import("node:stream/consumers");
@@ -90,17 +90,17 @@ const control = await (async function operatorControl(input, event) {
     }
 })(input, "PostToolUse");
 if (control) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/354272bf63a0fc1e/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/354272bf63a0fc1e/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/7b3c264bb69b6f3f/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/7b3c264bb69b6f3f/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.9.3",
+  "compilerPackageVersion": "0.10.0",
   "runtime": {
-    "skeletonVersion": "0.15.12",
+    "skeletonVersion": "0.16.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/feedback.js",
-        "hash": "fnv1a64:4bdd1cdb762a966b"
+        "hash": "fnv1a64:9f5023e4c2650af7"
       },
       {
         "path": "packages/compiler/dist/src/attribution.mjs",
@@ -116,15 +116,15 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:857d7925b8f422fb"
+        "hash": "fnv1a64:b6ac5719288e751f"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
-        "hash": "fnv1a64:d4ce24dd844a4aa5"
+        "hash": "fnv1a64:d3696a82e454ead0"
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
-        "hash": "fnv1a64:76059d44040531b1"
+        "hash": "fnv1a64:52bc0be53a929a4f"
       },
       {
         "path": "packages/skeleton/dist/src/gate-deadlines.mjs",
@@ -132,7 +132,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/usage-observation.mjs",
-        "hash": "fnv1a64:63758af4d47a6236"
+        "hash": "fnv1a64:4f3d424f0ca3725e"
       },
       {
         "path": "packages/skeleton/dist/src/writer-teardown.mjs",
@@ -143,7 +143,7 @@ await runHarnessHook({
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/354272bf63a0fc1e"
+    "snapshot": ".runtime/harness/7b3c264bb69b6f3f"
   },
   "event": "PostToolUse",
   "tools": {
@@ -180,7 +180,7 @@ await runHarnessHook({
   "kind": "feedback",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.9.3",
+    "compilerPackageVersion": "0.10.0",
     "units": [
       {
         "unitId": "no-lint-type-disables-as-fixes",
@@ -230,9 +230,22 @@ await runHarnessHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:9390e4fc1f968304"
+    "policyHash": "fnv1a64:1db56a03e6be5781"
   },
   "correctionToken": null
 }, feedbackBoundary, input);
 }
-} catch { process.stdout.write("{\"decision\":\"block\",\"reason\":\"DOTLN_HARNESS_REFUSED: built adapter unavailable\"}"); }
+} catch { const response = { systemMessage: "DotLn advisory: built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide." };
+try {
+  const fs = await import("node:fs");
+  const { join } = await import("node:path");
+  const { createHash } = await import("node:crypto");
+  const root = typeof input?.cwd === "string" ? input.cwd : process.cwd();
+  const directory = join(root, "docs/control/local/harness");
+  const key = createHash("sha256").update(String(input?.session_id ?? "unknown")).digest("hex");
+  const path = join(directory, key + ".jsonl");
+  fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
+  if (!fs.existsSync(path) || fs.lstatSync(path).isFile())
+    fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: "PostToolUse", advisory: response.systemMessage, delegated: true }) + "\n", { mode: 0o600 });
+} catch {}
+process.stdout.write(JSON.stringify(response)); }

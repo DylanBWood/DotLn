@@ -1,15 +1,15 @@
-// Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:fe30ee5ba57ce2ed"}
-const { runCommitMessageHook } = await import("../../.runtime/harness/354272bf63a0fc1e/packages/skeleton/dist/src/harness-host.js");
-const { feedbackBoundary } = await import("../../.runtime/harness/354272bf63a0fc1e/packages/skeleton/dist/src/feedback-boundary.js");
+// Origin: {"ids":["no-attribution"],"loadoutId":"contributor","semanticHash":"fnv1a64:f7e29ff3f4ede75c"}
+const { runCommitMessageHook } = await import("../../.runtime/harness/7b3c264bb69b6f3f/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/7b3c264bb69b6f3f/packages/skeleton/dist/src/feedback-boundary.js");
 await runCommitMessageHook({
-  "compilerPackageVersion": "0.9.3",
+  "compilerPackageVersion": "0.10.0",
   "runtime": {
-    "skeletonVersion": "0.15.12",
+    "skeletonVersion": "0.16.0",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/feedback.js",
-        "hash": "fnv1a64:4bdd1cdb762a966b"
+        "hash": "fnv1a64:9f5023e4c2650af7"
       },
       {
         "path": "packages/compiler/dist/src/attribution.mjs",
@@ -25,15 +25,15 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:857d7925b8f422fb"
+        "hash": "fnv1a64:b6ac5719288e751f"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
-        "hash": "fnv1a64:d4ce24dd844a4aa5"
+        "hash": "fnv1a64:d3696a82e454ead0"
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
-        "hash": "fnv1a64:76059d44040531b1"
+        "hash": "fnv1a64:52bc0be53a929a4f"
       },
       {
         "path": "packages/skeleton/dist/src/gate-deadlines.mjs",
@@ -41,7 +41,7 @@ await runCommitMessageHook({
       },
       {
         "path": "packages/skeleton/dist/src/usage-observation.mjs",
-        "hash": "fnv1a64:63758af4d47a6236"
+        "hash": "fnv1a64:4f3d424f0ca3725e"
       },
       {
         "path": "packages/skeleton/dist/src/writer-teardown.mjs",
@@ -52,11 +52,11 @@ await runCommitMessageHook({
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/354272bf63a0fc1e"
+    "snapshot": ".runtime/harness/7b3c264bb69b6f3f"
   },
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.9.3",
+    "compilerPackageVersion": "0.10.0",
     "units": [
       {
         "unitId": "no-attribution",
@@ -109,6 +109,6 @@ await runCommitMessageHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:165f0cce1680b9c1"
+    "policyHash": "fnv1a64:a59f441d690bf48c"
   }
 }, feedbackBoundary);

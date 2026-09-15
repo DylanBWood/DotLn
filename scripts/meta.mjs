@@ -13,6 +13,7 @@ import {
   recordUsageObservation,
   collectSessionUsage,
   usageSessionKey,
+  usageObservation,
 } from "../packages/skeleton/src/usage-observation.mjs";
 import { syncFollowups } from "./lib/planning-followups.mjs";
 
@@ -58,13 +59,23 @@ export async function metaMain(args = process.argv.slice(2), repo = root) {
       );
     const identity = options["--session"] ?? process.env.CODEX_THREAD_ID;
     const key = identity ? usageSessionKey(identity) : undefined;
-    const observation = collectSessionUsage(repo, {
-      since,
-      sessionKey: key,
-      ...(options["--transcript"]
-        ? { transcriptPath: options["--transcript"] }
-        : {}),
-    });
+    let observation;
+    try {
+      observation = collectSessionUsage(repo, {
+        since,
+        sessionKey: key,
+        ...(options["--transcript"]
+          ? { transcriptPath: options["--transcript"] }
+          : {}),
+      });
+    } catch (error) {
+      observation = {
+        ...usageObservation([]),
+        observedAt: new Date().toISOString(),
+        scope: "dispatch",
+      };
+      console.warn(`Advisory: usage unknown: ${error.message}`);
+    }
     recordUsageObservation(repo, {
       workOrder: options["--work-order"] ?? null,
       role: options["--role"],

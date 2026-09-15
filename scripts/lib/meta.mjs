@@ -19,7 +19,6 @@ import {
   budgetVerdict,
   dispatchKinds,
   measureColdStarts,
-  requireBudgets,
 } from "./process-budget.mjs";
 
 const json = (root, path, fallback = null) =>
@@ -378,6 +377,64 @@ export function trapRows(orders) {
   });
 }
 
+/** Reconcile an explicit cost promise against recorded outcomes. Ambiguous prose
+ * and absent measurements stay unknown; this projection never grants or refuses. */
+export function reconcileCost(workOrder, cost, gateRows, observedAt) {
+  const rows = gateRows.filter(
+    (row) =>
+      row.workOrder === workOrder &&
+      ["npm test", "npm run test:full"].includes(row.checkId) &&
+      row.executed,
+  );
+  const bound =
+    /(?:fresh (?:product )?gate|fresh wall-clock)[^.;]{0,70}?(?:under|below|less than|<)\s*(\d+(?:\.\d+)?)\s*(seconds?|secs?|s|minutes?|mins?|m)\b/i.exec(
+      cost,
+    );
+  const ceilingMs = bound
+    ? Number(bound[1]) * (/^m/.test(bound[2]) ? 60000 : 1000)
+    : null;
+  const fresh = rows.filter(
+    (row) =>
+      row.exitCode === 0 &&
+      Number.isFinite(row.durationMs) &&
+      row.durationMs >= 0 &&
+      (!row.reusedSuites || row.executionMode === "fresh"),
+  );
+  const shortfall =
+    ceilingMs !== null && fresh.some((row) => row.durationMs >= ceilingMs);
+  return {
+    workOrder,
+    promisedRemoval: cost || "unknown",
+    observedAt,
+    observedRows: rows.map(
+      ({
+        checkId,
+        recordedAt,
+        durationMs,
+        exitCode,
+        evidenceRef,
+        executionMode,
+      }) => ({
+        checkId,
+        recordedAt,
+        durationMs,
+        exitCode,
+        evidenceRef,
+        executionMode,
+      }),
+    ),
+    ceilingMs,
+    outcome: shortfall
+      ? "shortfall"
+      : ceilingMs !== null && fresh.length
+        ? "met"
+        : "unknown",
+    planningInput: shortfall
+      ? "Measured fresh gate exceeds the promised limit; reconsider at planning."
+      : null,
+  };
+}
+
 export async function collectMeta(
   root,
   { now = new Date().toISOString(), previousEdition = "v0.16.0" } = {},
@@ -480,6 +537,32 @@ export async function collectMeta(
         check.workOrder === workOrder &&
         ["npm test", "npm run test:full"].includes(check.checkId),
     );
+    const successfulGate = gateRows.findLast(
+      (row) => row.executed === true && row.exitCode === 0,
+    );
+    // Count observed tasks in the latest successful gate, not gate invocations
+    // or top-level suites: release cases can be separate tasks. Historical
+    // reuse counts remain part of their aggregate's coverage; new gates are fresh.
+    const legacyGateSteps = successfulGate
+      ? checks.filter(
+          (row) =>
+            row.workOrder === workOrder &&
+            row.recordedAt === successfulGate.recordedAt &&
+            row.checkId.startsWith("suite:"),
+        ).length
+      : 0;
+    const gateSteps =
+      Number.isSafeInteger(successfulGate?.freshSuites) &&
+      successfulGate.freshSuites >= 0
+        ? successfulGate.freshSuites +
+          (Number.isSafeInteger(successfulGate.reusedSuites) &&
+          successfulGate.reusedSuites >= 0
+            ? successfulGate.reusedSuites
+            : 0)
+        : Array.isArray(successfulGate?.taskTimeline)
+          ? successfulGate.taskTimeline.filter((row) => row.executed === true)
+              .length
+          : legacyGateSteps || null;
     const evidence = events
       .map((event) => event.evidence)
       .filter(Boolean)
@@ -559,15 +642,7 @@ export async function collectMeta(
         titles.findLast((value) => value.workOrder === workOrder)?.characters ??
         prior?.metrics.subjectCharacters ??
         null,
-      gateStepCount:
-        checks.filter(
-          (value) =>
-            value.workOrder === workOrder &&
-            value.recordedAt === gateRows.at(-1)?.recordedAt &&
-            value.checkId.startsWith("suite:"),
-        ).length ||
-        prior?.metrics.gateStepCount ||
-        null,
+      gateStepCount: gateSteps ?? prior?.metrics.gateStepCount ?? null,
       operatorCorrections: decisions.filter(
         (value) => value.workOrder === workOrder && value.kind === "correction",
       ).length,
@@ -814,6 +889,35 @@ export async function collectMeta(
     observedAt: now,
     revision: git(root, ["rev-parse", "HEAD"]),
     orders,
+    costReconciliation: closed.map(([workOrder, row]) => {
+      const path = row.state.workOrderPath;
+      const authority =
+        path && existsSync(join(root, path))
+          ? readFileSync(join(root, path), "utf8")
+          : "";
+      const cost =
+        /^\*\*Cost:\*\*[^\S\r\n]*([\s\S]*?)(?=\n\s*\n|\n\*\*|(?![\s\S]))/m
+          .exec(authority)?.[1]
+          ?.replace(/\s+/g, " ")
+          .trim() ?? "";
+      const current = reconcileCost(workOrder, cost, checks, now);
+      const snapshot =
+        json(root, `docs/evidence/${workOrder}/meta.json`) ??
+        json(root, `docs/evidence/${workOrder}/meta-baseline.json`);
+      const prior = snapshot?.orders?.find(
+        (entry) => entry.workOrder === workOrder,
+      );
+      return {
+        ...current,
+        historicalMetrics: prior
+          ? {
+              source: `docs/evidence/${workOrder}/meta${existsSync(join(root, `docs/evidence/${workOrder}/meta.json`)) ? "" : "-baseline"}.json`,
+              cutoff: snapshot.observedAt,
+              metrics: prior.metrics,
+            }
+          : null,
+      };
+    }),
     unassignedDispatches: usageRows(root, null),
     coldStart,
     declared,
@@ -909,6 +1013,12 @@ export function renderMeta(meta) {
     "Merged title series (characters; no numeric limit):",
     ...meta.subjects.map((row) => `${row.characters}: ${row.title}`),
     "",
+    "Closed-order cost reconciliation (planning input only):",
+    ...(meta.costReconciliation ?? []).map(
+      (row) =>
+        `${row.workOrder}: promised removal: ${row.promisedRemoval}; observed: ${row.observedRows.length ? row.observedRows.map((gate) => `${gate.checkId} ${display(gate.durationMs)} ms at ${gate.recordedAt} (${gate.evidenceRef})`).join("; ") : row.historicalMetrics ? `historical metrics ${JSON.stringify(row.historicalMetrics.metrics)}; source ${row.historicalMetrics.source}; cutoff ${row.historicalMetrics.cutoff}` : "unknown"}; outcome ${row.outcome}${row.planningInput ? `; PLANNING INPUT: ${row.planningInput}` : ""}`,
+    ),
+    "",
     "Budget observations:",
     ...meta.budgets.map(
       (row) =>
@@ -935,5 +1045,8 @@ export function metaHealth(meta) {
   return `Process health: ${breached ? `${breached} budget breaches` : "no observed budget breach"}; ${latest?.workOrder ?? "no work"} tokens ${display(latest?.metrics.tokens)}; ${meta.reopenCandidates.length} reopen candidates; unset limits remain unset.`;
 }
 export function checkMeta(meta) {
-  requireBudgets(meta.budgets);
+  for (const row of meta.budgets.filter((row) => row.verdict === "breach"))
+    console.warn(
+      `Advisory: process budget ${row.metric}=${row.value ?? row.bytes} exceeds ${row.ceiling}; planning input.`,
+    );
 }

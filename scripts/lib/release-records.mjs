@@ -2,6 +2,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { runGit } from "./git.mjs";
 import { parseJson } from "./paths.mjs";
+import { readControl } from "./control-store.mjs";
+import { gateCodeIdentity } from "./gate-evidence.mjs";
 
 export const semver = (value) => {
   const match = /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(value);
@@ -180,4 +182,54 @@ export const localReleaseRecords = (root, snapshot) => {
   if (snapshot && records.length !== snapshot.length)
     throw new Error("recorded tag snapshot contains a non-release tag");
   return records;
+};
+
+// Publication consumes the reviewer's observation from committed control history.
+// Local gate caches and the review worktree may already be absent on main.
+export const reviewedProductGate = (root, workOrderId, revision = "HEAD") => {
+  const control = readControl(root, revision);
+  const review = [...control.eventSegments.values()]
+    .flat()
+    .filter(
+      (event) =>
+        event.workOrderId === workOrderId &&
+        event.type === "FinalReviewCompleted",
+    )
+    .at(-1);
+  const gate = review?.evidence?.productGate;
+  if (
+    review?.verdict !== "pass" ||
+    gate?.checkId !== "npm test" ||
+    gate.executed !== true ||
+    gate.exitCode !== 0 ||
+    !/^[a-f0-9]{64}$/.test(gate.codeIdentity ?? "") ||
+    !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(gate.treeHash ?? "") ||
+    !Number.isFinite(gate.durationMs) ||
+    gate.durationMs < 0 ||
+    typeof gate.evidenceRef !== "string" ||
+    !gate.evidenceRef ||
+    !Number.isFinite(Date.parse(gate.recordedAt))
+  )
+    throw new Error(
+      `${workOrderId} has no recorded passing reviewer npm test row`,
+    );
+  if (gate.codeIdentity !== gateCodeIdentity(root, revision))
+    throw new Error(
+      `${workOrderId} reviewed code identity differs from ${revision}; source changed after the product gate`,
+    );
+  return gate;
+};
+
+export const productGateBody = (gate) => {
+  const record = {
+    checkId: gate.checkId,
+    codeIdentity: gate.codeIdentity,
+    reviewedTree: gate.treeHash,
+    durationMs: gate.durationMs,
+    exitCode: gate.exitCode,
+    executed: gate.executed,
+    evidenceRef: gate.evidenceRef,
+    recordedAt: gate.recordedAt,
+  };
+  return `<!-- dotln-product-gate:start -->\n## Product gate\n\nReviewer \`npm test\` passed in ${gate.durationMs} ms. Reports and release metadata may follow this reviewed tree without changing its code identity.\n\n\`\`\`json\n${JSON.stringify(record, null, 2)}\n\`\`\`\n<!-- dotln-product-gate:end -->`;
 };

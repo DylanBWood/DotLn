@@ -41,7 +41,7 @@ const claim: BeaconClaimRecord = {
   refusalCount: 0,
 };
 
-test("WO-020 normative codebook data matches the blueprint and all seven audit classes", () => {
+test("[document] WO-020 normative codebook data matches the blueprint and all seven audit classes", () => {
   const domain = readFileSync(
     new URL("../../../../docs/product/02-domain-model.md", import.meta.url),
     "utf8",

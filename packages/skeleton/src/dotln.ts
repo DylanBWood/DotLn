@@ -68,7 +68,7 @@ try {
     if (
       !["fake", "claude-cli-print", "codex-cli-exec"].includes(transportName) ||
       !model ||
-      !["low", "medium", "high", "xhigh", "max", "unknown"].includes(effort)
+      !effort.trim()
     )
       throw new Error("demo requires an explicit transport, model and effort");
     if (transportName !== "fake" && process.env.DOTLN_LIVE_WORKERS !== "1")
@@ -136,7 +136,7 @@ try {
     if (
       !model ||
       !effort ||
-      !["low", "medium", "high", "xhigh", "max", "unknown"].includes(effort) ||
+      !effort.trim() ||
       !["claude-cli-print", "codex-cli-exec"].includes(transportName ?? "") ||
       switches.has("--json")
     )

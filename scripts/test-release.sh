@@ -197,12 +197,15 @@ make_repo() {
     '    chmod +x node_modules/.bin/tsc' \
     '    printf "fixture npm ci passed\\n" ;;' \
     '  run)' \
-    '    if [[ "${2:-}" != "test:full" ]]; then exit 64; fi' \
-    '    printf "full\\n" >>"$DOTLN_NPM_LOG"' \
-    '    if [[ -f scripts/fixture-full-gate.mjs ]]; then exec "$node_bin" scripts/fixture-full-gate.mjs; fi' \
-    '    exec "$0" test ;;' \
+    '    if [[ "${2:-}" != "build" ]]; then exit 64; fi' \
+    '    printf "build\\n" >>"$DOTLN_NPM_LOG"' \
+    '    if [[ "${DOTLN_FIXTURE_NPM_FAIL:-}" == "build" ]]; then exit 8; fi' \
+    '    mkdir -p packages/skeleton/dist/src' \
+    '    printf "console.log(\"fixture skeleton bootstrap\");\\n" >packages/skeleton/dist/src/cli.js' \
+    '    DOTLN_FIXTURE_BUILD=1 exec "$0" test ;;' \
     '  test)' \
-    '    printf "test\\n" >>"$DOTLN_NPM_LOG"' \
+    '    if [[ "${DOTLN_FIXTURE_BUILD:-}" != 1 ]]; then printf "test\\n" >>"$DOTLN_NPM_LOG"; fi' \
+    '    if [[ -f scripts/fixture-one-gate.mjs && "${DOTLN_FIXTURE_BUILD:-}" != 1 ]]; then exec "$node_bin" scripts/fixture-one-gate.mjs; fi' \
     '    if [[ "${DOTLN_FIXTURE_NPM_FAIL:-}" == "test" ]]; then exit 8; fi' \
     '    mkdir -p packages/kernel/dist/src' \
     '    case "${DOTLN_FIXTURE_KERNEL:-valid}" in' \
@@ -227,6 +230,10 @@ make_repo() {
     'if [[ "${1:-} ${2:-}" == "auth status" ]]; then' \
     '  if [[ "${DOTLN_FIXTURE_GH_FAIL:-}" == "auth" ]]; then printf "not authenticated\\n" >&2; exit 4; fi' \
     '  printf "authenticated fixture\\n"; exit 0' \
+    'fi' \
+    'if [[ "${1:-} ${2:-}" == "pr create" ]]; then' \
+    '  while (( "$#" )); do if [[ "$1" == "--body-file" ]]; then cp "$2" "$DOTLN_GH_STATE/pr.body"; shift 2; else shift; fi; done' \
+    '  printf "https://example.invalid/pr/99\\n"; exit 0' \
     'fi' \
     'if [[ "${1:-}" == "release" ]]; then' \
     '  tag="${3:-}"' \
@@ -273,6 +280,8 @@ commit_candidate() {
   printf '# %s — release fixture, %s\n\n**Objective:** Deliver the visible fixture payoff for %s.\n\n**Non-goals:** Package and hosted distribution remain outside this source release.\n' "$id" "$version" "$id" >"$repository/$authority"
   write_control_events "$repository/docs/control/resume.jsonl" "$id" "$authority"
   git -C "$repository" add .
+  "$node_bin" "$script_dir/test-release-composition.mjs" record "$repository" "$id"
+  git -C "$repository" add docs/control
   git -C "$repository" commit -m "$id candidate $version" >/dev/null
 }
 
@@ -298,6 +307,8 @@ commit_legacy_multicommit_candidate() {
     "{\"schemaVersion\":1,\"type\":\"FinalReviewRequested\",\"workOrderId\":\"$id\",\"finalReviewId\":\"FINAL-001\",\"reportPath\":\"docs/final-reviews/$id/FINAL-001.md\"}" \
     "{\"schemaVersion\":1,\"type\":\"FinalReviewCompleted\",\"workOrderId\":\"$id\",\"finalReviewId\":\"FINAL-001\",\"reportPath\":\"docs/final-reviews/$id/FINAL-001.md\",\"verdict\":\"pass\"}" >>"$repository/docs/control/resume.jsonl"
   git -C "$repository" add .
+  "$node_bin" "$script_dir/test-release-composition.mjs" record "$repository" "$id"
+  git -C "$repository" add docs/control
   git -C "$repository" commit -m "$id final review pass" >/dev/null
 }
 
@@ -338,6 +349,8 @@ commit_reviewed_candidate() {
   printf '# reviewed PR body fixture\n' >"$review_dir/PR.md"
   printf 'release tooling changed\n' >"$repository/scripts/release.fixture.mjs"
   git -C "$repository" add .
+  "$node_bin" "$script_dir/test-release-composition.mjs" record "$repository" "$id"
+  git -C "$repository" add docs/control
   git -C "$repository" commit -m "$id reviewed candidate $version" >/dev/null
 }
 
@@ -612,7 +625,7 @@ if linked_close_surface_output="$(release_close WO-099 --publish 2>&1)"; then
   printf 'error: linked-worktree release close accepted a stale release block\n' >&2
   exit 1
 fi
-test ! -d "$linked_subject"
+test -d "$linked_subject" # publication failed, so cleanup must not run
 test ! -e "$npm_log"
 assert_no_candidate_tag "$main" "$origin"
 assert_surface_failure 'FAIL release-block: observed v0.2.0; expected exactly one v0.2.1'
@@ -649,17 +662,20 @@ release_case_dirty() {
 make_repo dirty
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
-printf 'dirty\n' >"$main/untracked.txt"
-if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: dirty release close succeeded\n' >&2; exit 1; fi
+printf 'tracked dirt\n' >>"$main/README.md"
+if release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: tracked dirt published\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
-rm -- "$main/untracked.txt"
+git -C "$main" checkout -- README.md
+printf 'untracked retained\n' >"$main/untracked.txt"
 foreign_path=".env.fixture${u202f}foreign"
 assert_u202f "$foreign_path"
 printf 'IGNORED=fixture\n' >"$main/$foreign_path"
-if ignored_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: ignored release influence succeeded\n' >&2; exit 1; fi
-test "$ignored_output" = "error: main checkout contains ignored material that can contaminate release evidence: $foreign_path"
+ignored_output="$(release_close WO-099 --publish)"
+grep -Fq 'Published annotated v0.2.1' <<<"$ignored_output"
+grep -Fq 'retained untracked material: untracked.txt' <<<"$ignored_output"
+grep -Fq "$foreign_path" <<<"$ignored_output"
+test -f "$main/untracked.txt"
 test -f "$main/$foreign_path"
-assert_no_candidate_tag "$main" "$origin"
 }
 
 release_case_unreachable() {
@@ -673,7 +689,7 @@ grep -Fq 'Origin reachable: github.com' <<<"$reachable_output"
 mv -- "$origin" "$origin.away"
 if unreachable_output="$(release_close WO-099 --dry-run 2>&1)"; then printf 'error: unreachable origin passed the dry run\n' >&2; exit 1; fi
 grep -Fq 'release close needs network egress to github.com' <<<"$unreachable_output"
-grep -Fq 'operator terminal with egress' <<<"$unreachable_output"
+grep -Fq 'authorized close from a session with egress' <<<"$unreachable_output"
 printf 'dirty\n' >"$main/untracked.txt"
 if publish_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: unreachable origin published\n' >&2; exit 1; fi
 grep -Fq 'release close needs network egress to github.com' <<<"$publish_output"
@@ -716,11 +732,11 @@ git -C "$main" push origin main >/dev/null 2>&1
 mkdir -p "$main/.claude"
 printf '/.claude/other.local.json\n' >>"$main/.git/info/exclude"
 printf 'other ignored harness state\n' >"$main/.claude/other.local.json"
-if settings_scope_output="$(release_close WO-099 --publish 2>&1)"; then printf 'error: broadened .claude release exception succeeded\n' >&2; exit 1; fi
-test "$settings_scope_output" = 'error: main checkout contains ignored material that can contaminate release evidence: .claude/other.local.json'
+settings_scope_output="$(release_close WO-099 --publish)"
+grep -Fq '.claude/other.local.json' <<<"$settings_scope_output"
+grep -Fq 'Published annotated v0.2.1' <<<"$settings_scope_output"
 test -f "$main/.claude/other.local.json"
-assert_no_candidate_tag "$main" "$origin"
-printf 'release influence permits only the exact root harness-settings path\n'
+printf 'release close reports ignored harness state without refusing publication\n'
 }
 
 release_case_nonmain() {
@@ -818,9 +834,15 @@ release_case_failures() {
 make_repo failures
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
-if DOTLN_FIXTURE_NPM_FAIL=ci release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: dependency failure published\n' >&2; exit 1; fi
+if DOTLN_FIXTURE_NPM_FAIL=build release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: build failure published\n' >&2; exit 1; fi
 assert_no_candidate_tag "$main" "$origin"
-if DOTLN_FIXTURE_NPM_FAIL=test release_close WO-099 --publish >/dev/null 2>&1; then printf 'error: evidence failure published\n' >&2; exit 1; fi
+# A source change after the reviewed row is not covered by that observation.
+printf 'changed source\n' >>"$main/scripts/release.fixture.mjs"
+git -C "$main" add .
+git -C "$main" commit -m 'fixture source after review' >/dev/null
+git -C "$main" push origin main >/dev/null 2>&1
+if mismatch="$(release_close WO-099 --publish 2>&1)"; then printf 'error: mismatched reviewer code published\n' >&2; exit 1; fi
+grep -Fq 'reviewed code identity differs' <<<"$mismatch"
 assert_no_candidate_tag "$main" "$origin"
 }
 
@@ -934,12 +956,13 @@ grep -Fq 'tag published; GitHub Release not created; rerun the same command' <<<
 test ! "$(git -C "$main" tag --list v0.2.1)"
 test "$(git --git-dir="$origin" cat-file -t v0.2.1)" = tag
 if grep -q '^release ' "$gh_log"; then printf 'error: gh release ran after failed local tag ref\n' >&2; exit 1; fi
-printf '%s\n' 'throw new Error("ignored stale artifact executed");' >"$main/packages/kernel/dist/src/index.js"
-ref_recovery_tests_before="$(grep -c '^test$' "$npm_log")"
+rm "$main/packages/kernel/dist/src/index.js"
+ref_recovery_builds_before="$(grep -c '^build$' "$npm_log")"
 ref_recovery_output="$(release_close WO-099 --publish)"
 grep -Fq 'GitHub Release created' <<<"$ref_recovery_output"
 test -f "$main/packages/kernel/dist/src/index.js"
-test "$(grep -c '^test$' "$npm_log")" = "$((ref_recovery_tests_before + 1))"
+test "$(grep -c '^build$' "$npm_log")" = "$((ref_recovery_builds_before + 1))"
+if grep -q '^test$\|^ci$' "$npm_log"; then exit 1; fi
 if grep -Fq 'ignored stale artifact executed' "$main/packages/kernel/dist/src/index.js"; then printf 'error: equal-tag recovery trusted stale ignored build output\n' >&2; exit 1; fi
 test "$(git -C "$main" cat-file -t v0.2.1)" = tag
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
@@ -955,10 +978,11 @@ test "$(git -C "$main" cat-file -t v0.2.1)" = tag
 test "$(git -C "$main" rev-list -n 1 v0.2.1)" = "$(git --git-dir="$origin" rev-list -n 1 v0.2.1)"
 test ! -e "$gh_state/v0.2.1.body"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
-create_recovery_tests_before="$(grep -c '^test$' "$npm_log")"
+create_recovery_builds_before="$(grep -c '^build$' "$npm_log")"
 recovery_output="$(release_close WO-099 --publish)"
 grep -Fq 'GitHub Release created' <<<"$recovery_output"
-test "$(grep -c '^test$' "$npm_log")" = "$((create_recovery_tests_before + 1))"
+test "$(grep -c '^build$' "$npm_log")" = "$create_recovery_builds_before"
+if grep -q '^test$\|^ci$' "$npm_log"; then exit 1; fi
 test -f "$gh_state/v0.2.1.body"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 2
 release_close WO-099 --publish >/dev/null
@@ -1020,6 +1044,11 @@ test ! -e "$stale_worktree_marker"
 test ! -e "$main/docs/intake/dist/x.md"
 stale_close_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" DOTLN_STALE_RELEASE_MARKER="$stale_release_marker" DOTLN_STALE_WORKTREE_MARKER="$stale_worktree_marker" "$node_bin" "$stale_subject/scripts/release.mjs" close WO-099)"
 grep -Fq 'Prepared and validated v0.2.1' <<<"$stale_close_output"
+test -d "$stale_subject"
+test ! -e "$main/docs/intake/dist/x.md"
+assert_no_candidate_tag "$main" "$origin"
+stale_published_output="$(release_close WO-099 --publish)"
+grep -Fq 'Published annotated v0.2.1' <<<"$stale_published_output"
 grep -Fxq 'protected staged intake' "$main/docs/intake/dist/x.md"
 test -f "$main/.claude/settings.local.json"
 test ! -e "$stale_subject"
@@ -1027,8 +1056,8 @@ test "$(git -C "$main" branch --list wo-099)" = ""
 test "$(git -C "$main" rev-parse HEAD)" = "$(git -C "$main" rev-parse origin/main)"
 test ! -e "$stale_release_marker"
 test ! -e "$stale_worktree_marker"
-assert_no_candidate_tag "$main" "$origin"
-printf 'reviewed subject helpers guarded their own pre-fast-forward close and cleanup\n'
+test "$(git -C "$main" cat-file -t v0.2.1)" = tag
+printf 'reviewed subject helpers preview before fast-forward; cleanup follows publication only\n'
 }
 
 release_case_success() {
@@ -1082,7 +1111,10 @@ preview_gh="$(wc -l <"$gh_log")"
 preview_output="$(cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/release.mjs" close WO-099 --publish --dry-run)"
 grep -Fq 'collision.md.from-WO-099' <<<"$preview_output"
 test "$(git -C "$main" rev-parse HEAD)" = "$preview_head"
-test "$(wc -l <"$npm_log")" = "$preview_npm"
+test "$(wc -l <"$npm_log")" -eq "$((preview_npm + 1))"
+if grep -q '^test$\|^ci$' "$npm_log"; then printf 'error: preview executed a gate or install\n' >&2; exit 1; fi
+grep -Fq '"reviewedTree"' <<<"$preview_output"
+grep -Fq '"mergeTree"' <<<"$preview_output"
 test "$(wc -l <"$gh_log")" = "$preview_gh"
 test ! -e "$main/docs/intake/new.md"
 test -f "$subject/docs/intake/new.md"
@@ -1102,8 +1134,8 @@ grep -Eq '^release create v0\.2\.1 --repo github\.com/dotln-fixture/success --ve
 grep -Fq 'npm run release -- notes v0.2.1' "$gh_state/v0.2.1.body"
 grep -Fq 'npm run release -- manifest-from-tag v0.2.1' "$gh_state/v0.2.1.body"
 if grep -Fq 'DOTLN-MANIFEST-BEGIN' "$gh_state/v0.2.1.body"; then printf 'error: GitHub Release body contains manifest JSON\n' >&2; exit 1; fi
-grep -Fq 'ci-started-without-node-modules' "$npm_log"
-grep -Fq 'test' "$npm_log"
+grep -Fq 'build' "$npm_log"
+if grep -q '^ci$\|^test$' "$npm_log"; then printf 'error: close ran an install or suite\n' >&2; exit 1; fi
 test ! -e "$subject"
 test "$(git -C "$main" branch --list wo-099)" = ""
 test "$(git -C "$main" status --porcelain)" = ""
@@ -1117,15 +1149,13 @@ remote_tags="$(git --git-dir="$origin" for-each-ref --format='%(refname)' refs/t
 test "$remote_tags" = $'refs/tags/v0.2.0\nrefs/tags/v0.2.1'
 published_object="$(git -C "$main" rev-parse v0.2.1^{tag})"
 case "$main/node_modules" in "$test_root"/*/node_modules) rm -rf -- "$main/node_modules" ;; *) exit 1 ;; esac
-rerun_ci_before="$(grep -c '^ci$' "$npm_log")"
-rerun_tests_before="$(grep -c '^test$' "$npm_log")"
+rerun_builds_before="$(grep -c '^build$' "$npm_log")"
 rerun_output="$(release_close WO-099 --publish)"
 grep -Fq 'v0.2.1 is already published' <<<"$rerun_output"
 test "$(git -C "$main" rev-parse v0.2.1^{tag})" = "$published_object"
 test "$(grep -c '^release create v0.2.1 ' "$gh_log")" = 1
-test "$(grep -c '^ci$' "$npm_log")" = "$((rerun_ci_before + 1))"
-test "$(grep -c '^test$' "$npm_log")" = "$((rerun_tests_before + 1))"
-test -d "$main/node_modules"
+test "$(grep -c '^build$' "$npm_log")" = "$rerun_builds_before"
+test ! -d "$main/node_modules"
 PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mjs" manifest-from-tag v0.2.1 >"$fixture/manifest.json"
 "$node_bin" --input-type=module -e '
   import assert from "node:assert/strict";
@@ -1315,50 +1345,100 @@ PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$main/scripts/release.mj
 
 release_case_cached_evidence() {
 make_repo cached_evidence
-"$node_bin" - "$main/package.json" <<'NODE'
-const fs = require("node:fs");
-const path = process.argv[2], value = JSON.parse(fs.readFileSync(path, "utf8"));
-value.scripts["test:full"] = "node fixture-full-gate.mjs";
-fs.writeFileSync(path, JSON.stringify(value, null, 2) + "\n");
+"$node_bin" - "$main/package-lock.json" <<'NODE'
+const fs = require("node:fs"), path = process.argv[2];
+const lock = JSON.parse(fs.readFileSync(path, "utf8"));
+lock.packages["node_modules/fixture-dependency"] = { version: "1.0.0" };
+fs.writeFileSync(path, JSON.stringify(lock, null, 2) + "\n");
 NODE
 commit_candidate "$main" WO-099 v0.2.1
 git -C "$main" push origin main >/dev/null 2>&1
-cold_output="$(release_close WO-099)"
-grep -Fq 'Running npm run test:full' <<<"$cold_output"
-test "$(grep -c '^full$' "$npm_log")" = 1
+test ! -f "$main/docs/control/local/harness/checks.json"
+prepared="$(release_close WO-099)"
+grep -Fq 'Prepared and validated' <<<"$prepared"
 cache_output="$(release_close WO-099 --publish)"
-grep -Fq 'Reusing npm run test:full for identical tree' <<<"$cache_output"
-test "$(grep -c '^full$' "$npm_log")" = 1
+grep -Fq 'Published annotated' <<<"$cache_output"
+if grep -q '^test$\|^ci$\|^full$' "$npm_log"; then printf 'error: close executed a gate or install\n' >&2; exit 1; fi
 release_command manifest-from-tag v0.2.1 >"$fixture/current-manifest.json"
-"$node_bin" - "$fixture/current-manifest.json" "$(git -C "$main" rev-parse HEAD^{tree})" <<'NODE'
+release_command notes v0.2.1 >"$fixture/current-notes.md"
+"$node_bin" - "$fixture/current-manifest.json" "$fixture/current-notes.md" "$gh_state/v0.2.1.body" <<'NODE'
 const assert = require("node:assert/strict"), fs = require("node:fs");
 const manifest = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
-assert.deepEqual(manifest.evidence.map(row => row.command), ["npm run test:full", "node packages/skeleton/dist/src/cli.js", "git status --porcelain"]);
-for (const row of manifest.evidence) {assert.equal(row.treeHash, process.argv[3]); assert.ok(row.durationMs >= 0);}
+assert.deepEqual(manifest.evidence.map(row => row.command), ["npm test"]);
+assert.match(manifest.evidence[0].codeIdentity, /^[a-f0-9]{64}$/);
+assert.notEqual(manifest.evidence[0].reviewedTree, manifest.evidence[0].mergeTree);
+assert.ok(manifest.notes.changedFiles.includes("package-lock.json"));
+const notice = "The locked dependency graph changed; the release manifest records the reviewer’s npm test evidence for this code identity.";
+assert.ok(manifest.notes.critical.includes(notice));
+for (const path of process.argv.slice(3)) {
+  const notes = fs.readFileSync(path, "utf8");
+  assert.ok(notes.includes(notice));
+  assert.doesNotMatch(notes, /npm ci|smoke|node packages\/skeleton\/dist\/src\/cli\.js/);
+}
 NODE
-printf 'current release manifest reused one executed full gate by exact Git tree with durations\n'
+# Pin synthetic annotations in each historical evidence format. Recovery must
+# reconstruct their original notices and complete notes without changing bytes.
+for historical_contract in install full; do
+  "$node_bin" - "$fixture" "$historical_contract" <<'NODE'
+const fs = require("node:fs"), path = require("node:path");
+const [fixture, contract] = process.argv.slice(2);
+const manifest = JSON.parse(fs.readFileSync(path.join(fixture, "current-manifest.json"), "utf8"));
+const commands = contract === "install"
+  ? ["npm ci", "npm test", "node packages/skeleton/dist/src/cli.js", "git status --porcelain"]
+  : ["npm run test:full", "node packages/skeleton/dist/src/cli.js", "git status --porcelain"];
+const treeHash = manifest.evidence[0].mergeTree;
+manifest.evidence = commands.map(command => ({command, exitCode: 0, outputSha256: "a".repeat(64), ...(contract === "full" ? {treeHash, durationMs: 1} : {})}));
+const notice = "The locked dependency graph changed; release evidence was run after a fresh npm ci.";
+manifest.notes.critical = manifest.notes.critical.map(item => item.startsWith("The locked dependency graph changed;") ? notice : item);
+const notes = fs.readFileSync(path.join(fixture, "current-notes.md"), "utf8")
+  .replace(/The locked dependency graph changed;[^\n]+/, notice)
+  .replace(/- Release evidence:\n[\s\S]*?\n- Review lineage:/,
+    "- Release evidence:\n" + manifest.evidence.map(row => `  - \`${row.command}\`: exit 0; output SHA-256 \`${row.outputSha256}\``).join("\n") + "\n- Review lineage:");
+fs.writeFileSync(path.join(fixture, "historical-notes.md"), notes);
+fs.writeFileSync(path.join(fixture, "historical-tag.txt"), `${notes}\nDOTLN-MANIFEST-BEGIN\n${JSON.stringify(manifest, null, 2)}\nDOTLN-MANIFEST-END\n`);
+NODE
+  git -C "$main" tag -f -a v0.2.1 --cleanup=verbatim -F "$fixture/historical-tag.txt" >/dev/null
+  git -C "$main" push --force origin refs/tags/v0.2.1 >/dev/null 2>&1
+  historical_object="$(git -C "$main" rev-parse v0.2.1^{tag})"
+  historical_output="$(release_close WO-099)"
+  grep -Fq 'v0.2.1 is already published' <<<"$historical_output"
+  release_command notes v0.2.1 >"$fixture/recovered-notes.md"
+  cmp "$fixture/historical-notes.md" "$fixture/recovered-notes.md"
+  test "$(git -C "$main" rev-parse v0.2.1^{tag})" = "$historical_object"
+done
+printf 'reviewer evidence notes are truthful; both historical note formats reconstruct byte-for-byte\n'
+}
 
-# Exercise the real closeout consumer after a reviewed branch merges with an
-# unrelated main-only document. Its aggregate is new; all 62 declared suite
-# successes must come from the handed-off review despite the new session.
-make_repo cache_composition
-# Main's checkout may carry permission residue Git never records: the
-# reviewed worktree checks out 0644 while main's copy stays 0600 (WO-044).
-chmod 600 "$main/scripts/lib/harness-context.mjs"
-subject="$fixture/reviewed"
+release_case_composed_evidence() {
+make_repo composed_evidence
+git -C "$main" config user.email dylanwoodconsulting@gmail.com
+git -C "$main" config user.name 'Dylan Wood'
+subject="$fixture/project-wo099"
 git -C "$main" worktree add -b wo-099 "$subject" main >/dev/null 2>&1
+write_release_block "$subject" v0.2.1
 "$node_bin" "$script_dir/test-release-composition.mjs" prepare "$subject"
-commit_candidate "$subject" WO-099 v0.2.1
-"$node_bin" "$script_dir/test-release-composition.mjs" installed "$subject"
-(cd "$subject" && PATH="$bin:$PATH" CLAUDE_PID=500001 GIT_SSH_COMMAND=synthetic-review "$node_bin" scripts/fixture-full-gate.mjs) >"$fixture/reviewed-gate.log"
-printf 'Independent main-only document\n' >"$main/docs/merge-note.md"
+export DOTLN_ONE_GATE_LOG="$fixture/one-gate.jsonl"
+(cd "$subject" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" "$script_dir/test-release-composition.mjs" lifecycle "$subject") >"$fixture/lifecycle.log"
+PATH="$bin:$PATH" DOTLN_GH_LOG="$gh_log" DOTLN_GH_STATE="$gh_state" DOTLN_GH_ORIGIN="$origin" "$node_bin" "$subject/scripts/worktree.mjs" publish WO-099 --title 'Fixture one-gate lifecycle' --body-file docs/final-reviews/WO-099/PR.md >"$fixture/publish.log"
+printf 'Main-only documentation after review.\n' >"$main/docs/merge-note.md"
 git -C "$main" add docs/merge-note.md
 git -C "$main" commit -m 'Synthetic main-only document' >/dev/null
 git -C "$main" merge --no-edit wo-099 >/dev/null
-"$node_bin" "$script_dir/test-release-composition.mjs" handoff "$subject" "$main"
 git -C "$main" push origin main >/dev/null 2>&1
-CLAUDE_PID=500002 GIT_SSH_COMMAND=synthetic-close release_close WO-099 --publish >"$fixture/close-gate.log"
+test ! -f "$main/docs/control/local/harness/checks.json"
+printf 'retain this unfinished local note\n' >"$subject/uncommitted.txt"
+close_started="$($node_bin -e 'console.log(Date.now())')"
+release_close WO-099 --publish >"$fixture/close.log"
+grep -Fq 'Published annotated v0.2.1' "$fixture/close.log"
+grep -Fq 'cleanup blocker' "$fixture/close.log"
+test -f "$subject/uncommitted.txt"
+close_elapsed="$($node_bin -e 'console.log(Date.now()-Number(process.argv[1]))' "$close_started")"
+test "$close_elapsed" -lt 120000
 "$node_bin" "$script_dir/test-release-composition.mjs" assert "$main"
+test "$(grep -c '^test$' "$npm_log")" = 1
+if grep -q '^ci$\|^full$' "$npm_log"; then printf 'error: close ran install or legacy gate\n' >&2; exit 1; fi
+printf 'one-gate lifecycle close: %s ms excluding network (local transport fixture)\n' "$close_elapsed"
+unset DOTLN_ONE_GATE_LOG
 }
 
 release_case_concurrent() {

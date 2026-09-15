@@ -44,4 +44,14 @@ Host permissions apply.
 
 <!-- dotln-harness:start -->
 Capabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter.
+DotLn reserves one writer per worktree on any branch, including main, and refuses writes to gate inputs or the success record during a live npm test. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop. Claude hooks enforce these two invariants; Codex carries the same duties as role text. Every other hook judgment is advisory and host permissions decide.
+claude-code-2.1.263: clean-room: Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.
+codex-cli-0.153.4: concurrent-work-requires-worktrees: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.
+codex-cli-0.153.4: no-attribution: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.
+codex-cli-0.153.4: no-lint-type-disables-as-fixes: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.
+codex-cli-0.153.4: no-partial-completion: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.
+codex-cli-0.153.4: read-your-own-output: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.
+codex-cli-0.153.4: verify-app-before-done: No project hook fired in the bounded Codex probe; the role skill carries the remaining duty.
+codex-cli-0.153.4: contributor.permissions: Pre-effect envelope checks unavailable in this harness; native sandbox and approval remain host controls.
+codex-cli-0.153.4: clean-room: Source provenance needs operator judgment; the hand-written Clean Room floor stays locked.
 <!-- dotln-harness:end -->

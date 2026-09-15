@@ -49,15 +49,14 @@ import {
   activeGateRuns,
   beginGateRun,
   gateInputPath,
-  suiteSuccessPath,
   gateTreeHash,
   findGateCheck,
-  readGateChecks,
   recordGateChecks,
-  lifecycleRequiredChecks,
+  gateCodeIdentity,
 } from "./gate-evidence.mjs";
 import {
   collectSessionUsage,
+  usageObservation,
   recordUsageObservation,
   usageSessionKey,
 } from "./usage-observation.mjs";
@@ -69,7 +68,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.15.12";
+export const HARNESS_HOST_VERSION = "0.16.0";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;
@@ -92,6 +91,7 @@ export interface HarnessCheck {
   readonly executed: boolean;
   readonly evidenceRef: string;
   readonly treeHash?: string;
+  readonly codeIdentity?: string;
   readonly durationMs?: number;
 }
 export interface HarnessSession {
@@ -206,7 +206,8 @@ const physicalLines = (text: string) =>
 const lineParts = (text: string) => text.match(/[^\n]*\n|[^\n]+$/g) ?? [];
 export const harnessStateDirectory = (root: string) =>
   join(root, "docs/control/local/harness");
-const sessionKey = (input: HarnessInput) => digest(input.session_id);
+const sessionKey = (input: HarnessInput) =>
+  digest(input.session_id ?? "unknown");
 const statePath = (root: string, input: HarnessInput) =>
   join(harnessStateDirectory(root), `${sessionKey(input)}.json`);
 const git = (root: string, args: readonly string[], acceptFailure = false) => {
@@ -1337,8 +1338,8 @@ export function beginHarnessSession(
   };
 }
 
-/** The same mandatory collector serves explicit Codex sessions, Claude hooks
- * and lifecycle completion. Only numeric observations leave the transcript. */
+/** Collection serves explicit sessions and hooks; missing counters are an
+ * observation, never a completion refusal. Transcript contents stay private. */
 export function measureHarnessSessionUsage(
   root: string,
   session: HarnessSession,
@@ -1354,11 +1355,23 @@ export function measureHarnessSessionUsage(
     (process.env.CODEX_THREAD_ID
       ? usageSessionKey(process.env.CODEX_THREAD_ID)
       : key);
-  const observation = collectSessionUsage(root, {
-    sessionKey: sourceKey,
-    since: session.startedAt,
-    ...(transcriptPath ? { transcriptPath } : {}),
-  });
+  let observation: ReturnType<typeof usageObservation>;
+  try {
+    observation = collectSessionUsage(root, {
+      sessionKey: sourceKey,
+      since: session.startedAt,
+      ...(transcriptPath ? { transcriptPath } : {}),
+    });
+  } catch {
+    observation = {
+      ...usageObservation([]),
+      observedAt: new Date().toISOString(),
+      scope: "dispatch",
+    };
+    process.stderr.write(
+      "DotLn advisory: process-cost counters unavailable; recorded unknown.\n",
+    );
+  }
   recordUsageObservation(root, {
     workOrder: session.workOrder ?? null,
     role: session.role,
@@ -1579,7 +1592,10 @@ export function runHarnessEvidence(
   root: string,
   pendingVerdict?: string,
 ): readonly HarnessCheck[] {
-  const active = beginGateRun(root, "harness evidence checks");
+  const active = beginGateRun(
+    root,
+    pendingVerdict === "fail" ? "git diff --check" : "npm test",
+  );
   try {
     return runHarnessEvidenceChecks(root, active.stopRequested, pendingVerdict);
   } finally {
@@ -1601,15 +1617,18 @@ function runHarnessEvidenceChecks(
         `Gate stopped by request during ${checkId}; no check recorded`,
       );
   };
-  // A failing verdict owes only the whitespace check; the shared contract keeps
-  // this runner and the lifecycle gate from drifting. An absent verdict keeps
-  // the full set, so the default gate is byte-for-byte unchanged.
-  const required = lifecycleRequiredChecks(pendingVerdict);
+  // Explicit evidence remains a useful product-gate command. Completion uses
+  // its own inline diff check and never requests this gate.
+  const codeIdentity = gateCodeIdentity(root);
+  const required =
+    pendingVerdict === "fail"
+      ? ["git diff --check"]
+      : ["npm test", "git diff --check"];
   const commands = [
     {
-      checkId: "npm run test:full",
+      checkId: "npm test",
       executable: "npm",
-      args: ["run", "test:full"],
+      args: ["test"],
     },
     {
       checkId: "git diff --check",
@@ -1625,7 +1644,7 @@ function runHarnessEvidenceChecks(
     const run = spawnSync(executable, args, {
       cwd: root,
       encoding: "utf8",
-      timeout: checkId === "npm run test:full" ? 900_000 : 150_000,
+      timeout: checkId === "npm test" ? 900_000 : 150_000,
       maxBuffer: 32 * 1024 * 1024,
     });
     process.stdout.write(run.stdout ?? "");
@@ -1642,8 +1661,9 @@ function runHarnessEvidenceChecks(
     }
     return {
       checkId,
-      subject: treeHash,
+      subject: checkId === "npm test" ? codeIdentity : treeHash,
       treeHash,
+      ...(checkId === "npm test" ? { codeIdentity } : {}),
       durationMs,
       exitCode: run.status ?? 1,
       executed: true,
@@ -1651,7 +1671,10 @@ function runHarnessEvidenceChecks(
       recordedAt: new Date().toISOString(),
     };
   });
-  if (gateTreeHash(root) !== treeHash)
+  if (
+    gateTreeHash(root) !== treeHash ||
+    gateCodeIdentity(root) !== codeIdentity
+  )
     throw new Error("Source changed during required checks");
   recordGateChecks(root, runs);
   return runs;
@@ -1704,80 +1727,9 @@ function metadataCommand(command: string, repositoryCommands = true): boolean {
     )
   );
 }
-/** This is a call to the existing guarded lifecycle host, not a source-writer dispatch. */
-function managedReleaseCommand(
-  input: HarnessInput,
-  root: string,
-  session: HarnessSession,
-): boolean {
-  if (input.tool_name !== "Bash" || session.intent !== "resume: release close")
-    return false;
-  const command = input.tool_input?.command;
-  if (
-    typeof command !== "string" ||
-    !/scripts\/release\.mjs|npm run release --/.test(command)
-  )
-    return false;
-  const control = harnessControl(root);
-  if (control.phase !== "closed" || !control.workOrder) return false;
-  const worktrees = git(root, ["worktree", "list", "--porcelain"])
-    .trim()
-    .split("\n\n")
-    .map((block) => ({
-      path: /^worktree (.+)$/m.exec(block)?.[1],
-      branch: /^branch refs\/heads\/(.+)$/m.exec(block)?.[1],
-    }));
-  // The post-merge handoff runs in the main checkout. Main's copy of the helper
-  // is the reviewed one once the order is merged, and it survives the removal
-  // of the subject worktree the helper performs; the subject's own copy stays
-  // admitted while that worktree exists.
-  const main = worktrees.find((tree) => tree.branch === "main");
-  if (!main?.path || realpathSync(main.path) !== root) return false;
-  const subject = worktrees.find(
-    (tree) => tree.branch === control.workOrder!.toLowerCase(),
-  )?.path;
-  const scripts = [join(root, "scripts/release.mjs")];
-  if (subject) {
-    try {
-      scripts.push(join(realpathSync(subject), "scripts/release.mjs"));
-    } catch {
-      // A worktree entry whose directory is gone names no helper.
-    }
-  }
-  const helpers = scripts.filter(
-    (script) => existsSync(script) && lstatSync(script).isFile(),
-  );
-  if (!helpers.length) return false;
-  const order = control.workOrder;
-  // Every spelling the lifecycle prints or names is admitted, with the
-  // read-only preview beside the publication; nothing else is.
-  const admitted = [
-    "--publish",
-    "--dry-run",
-    "--publish --dry-run",
-    "--dry-run --publish",
-  ].flatMap((flags) => [
-    ...helpers.flatMap((script) =>
-      [shellQuote(process.execPath), "node"].map(
-        (node) => `${node} ${shellQuote(script)} close ${order} ${flags}`,
-      ),
-    ),
-    `node scripts/release.mjs close ${order} ${flags}`,
-    `npm run release -- close ${order} ${flags}`,
-  ]);
-  // The printed handoff may lead with a change into the main checkout the
-  // session already occupies; that prefix is a no-op here, not a cwd override.
-  const bare = [`cd ${shellQuote(root)} && `, `cd ${root} && `].reduce(
-    (value, prefix) =>
-      value.startsWith(prefix) ? value.slice(prefix.length) : value,
-    command.trim(),
-  );
-  return admitted.includes(bare);
-}
-
 /**
- * Writer facts for one tool invocation. Metadata, managed-usage and managed
- * release commands are read-only and reserve nothing; any other invocation
+ * Writer facts for one tool invocation. Metadata and managed-usage commands
+ * reserve nothing; any other shell or write invocation
  * reserves or refreshes this session's writer and reports every holder. The
  * reservation journals under the observed event, so a prompt dispatch admitted
  * through its equivalent invocation records its acquisition against the prompt.
@@ -1792,9 +1744,7 @@ function writerIsolationFacts(
   const command = String(invocation.tool_input?.command ?? "");
   if (
     invocation.tool_name === "Bash" &&
-    (metadataCommand(command) ||
-      managedUsageCommand(invocation, session) ||
-      managedReleaseCommand(invocation, root, session))
+    (metadataCommand(command) || managedUsageCommand(invocation, session))
   )
     return { ...feedbackWriterFacts(root, actorId, []), writable: false };
   const location = feedbackWriterFacts(root, actorId, []);
@@ -1804,7 +1754,6 @@ function writerIsolationFacts(
     location.cwd !== location.gitRoot ||
     location.cwd !== location.worktree ||
     !location.branch ||
-    location.branch === "main" ||
     location.branch === "HEAD"
   )
     return location;
@@ -1850,7 +1799,7 @@ export function harnessFeedbackFacts(
     handler === "writer-isolation" &&
     ["shell", "write"].includes(
       harnessToolEffects[input.tool_name as keyof typeof harnessToolEffects] ??
-        "write",
+        "unclassified",
     )
   )
     return [writerIsolationFacts(root, input, session)];
@@ -1902,18 +1851,21 @@ export function harnessFeedbackFacts(
   )
     return [];
   if (handler === "application-evidence") {
-    const subject = harnessSubject(root);
+    const tree = harnessSubject(root);
+    const subject = gateCodeIdentity(root);
+    const requiredChecks = ["npm test", "git diff --check"];
     return [
       {
         kind: "application-evidence",
         subject,
-        requiredChecks: [
-          findGateCheck(root, "npm run test:full", subject)
-            ? "npm run test:full"
-            : "npm test",
-          "git diff --check",
-        ],
-        runs: readGateChecks(root),
+        requiredChecks,
+        // The product row names current code; the whitespace row must still
+        // name the current exact tree. Both witness this subject only after
+        // their own identity checks pass.
+        runs: requiredChecks.flatMap((check) => {
+          const row = findGateCheck(root, check, tree);
+          return row ? [{ ...row, subject }] : [];
+        }),
       },
     ];
   }
@@ -2240,6 +2192,9 @@ export function permissionEffect(
  */
 const stopReentry = (input: HarnessInput) =>
   input.hook_event_name === "Stop" && input.stop_hook_active === true;
+const protocolAdvisory = (reason: string) => ({
+  systemMessage: `DotLn advisory: ${reason.replace(/\s+/g, " ")}; host permissions decide.`,
+});
 const protocolRefusal = (event: HarnessEvent, reason: string) =>
   event === "PreToolUse"
     ? {
@@ -2259,42 +2214,12 @@ const protocolRefusal = (event: HarnessEvent, reason: string) =>
         }
       : event === "Stop"
         ? { systemMessage: `DotLn: ${reason.replace(/\s+/g, " ")}` }
-        : { decision: "block", reason };
+        : protocolAdvisory(reason);
 
-// The exact recovery route cannot depend on the runtime it creates. This is
-// mirrored in the compiler's self-contained import-failure fallback and tested
-// through both emitted paths. It is not an arbitrary-command fail-open.
-const BOOTSTRAP_HATCH_COMMANDS = [
-  "pwd",
-  "git status --short",
-  "git status --short --branch",
-  "git rev-parse --show-toplevel",
-  "node scripts/bootstrap.mjs",
-];
-/** Stated in the denial and in the advisory alike, in the same words as the
- * compiler's self-contained fallback, so a recovering session sees what
- * remains available instead of concluding tool use is blocked (WO-044). */
-export const BOOTSTRAP_HATCH_TEXT = `Still admitted while the adapter is unavailable: Read, Glob and Grep, and in this checkout exactly ${BOOTSTRAP_HATCH_COMMANDS.join("; ")} (also joined by && or ; when every segment is one of these). Run node scripts/bootstrap.mjs to prepare this worktree.`;
-function bootstrapAccess(input: HarnessInput): boolean {
-  if (["Read", "Glob", "Grep"].includes(input.tool_name ?? "")) return true;
-  if (!["Bash", "exec_command"].includes(input.tool_name ?? "")) return false;
-  const args = input.tool_input ?? {};
-  if ((args.workdir ?? args.cwd ?? input.cwd) !== input.cwd) return false;
-  // Allowlisted segments compose; any other segment, pipe or redirect refuses.
-  const segments = String(args.command ?? args.cmd ?? "")
-    .split("&&")
-    .flatMap((part) => part.split(";"))
-    .map((part) => part.trim());
-  return (
-    segments.length > 0 &&
-    segments.every((segment) => BOOTSTRAP_HATCH_COMMANDS.includes(segment))
-  );
-}
-
-/** The session's own route out of a running gate, admitted while the gate
- * holds the tree in Claude and Codex alike. It writes only the ignored stop
- * request the gate reads at its next boundary; it builds nothing and signals
- * no pid. */
+/** Recovery is advisory: the host retains its own sandbox and approval. */
+export const BOOTSTRAP_HATCH_TEXT =
+  "Run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide tool access.";
+/** The session's own stop request is admitted while its gate holds inputs. */
 const GATE_STOP_COMMANDS = [
   "node scripts/harness.mjs evidence --stop",
   "npm run harness -- evidence --stop",
@@ -2319,28 +2244,6 @@ function activeGateWriteRefusal(
   // one by one, so a read-only agent can inspect a running gate.
   if (tool !== "write" && tool !== "shell") return null;
   const args = input.tool_input ?? {};
-  const directory = args.workdir ?? args.cwd ?? root;
-  const command = args.command ?? args.cmd;
-  const destinations =
-    tool === "write"
-      ? [args.file_path ?? args.notebook_path]
-      : tool === "shell" && typeof command === "string"
-        ? shellWritePaths(command)
-        : null;
-  if (
-    typeof directory === "string" &&
-    destinations?.some(
-      (path) =>
-        typeof path === "string" &&
-        suiteSuccessPath(
-          root,
-          isAbsolute(path)
-            ? path
-            : `${isAbsolute(directory) ? directory : `${root}/${directory}`}/${path}`,
-        ),
-    )
-  )
-    return "DOTLN_HARNESS_REFUSED: suite-success cache is runner-owned Git metadata";
   const runs = activeGateRuns(root);
   if (!runs.length) return null;
   if (tool === "write") {
@@ -2376,7 +2279,13 @@ function activeGateWriteRefusal(
     } catch {
       // An opaque or unclassifiable shell cannot establish that it is read-only.
     }
-    const paths = typeof command === "string" ? shellWritePaths(command) : null;
+    let paths: readonly string[] | null = null;
+    try {
+      paths = typeof command === "string" ? shellWritePaths(command) : null;
+    } catch {
+      // Classification gaps delegate normally, but cannot prove that a shell
+      // invocation leaves the inputs of an already-running gate untouched.
+    }
     if (
       directory &&
       paths &&
@@ -2638,11 +2547,8 @@ export async function evaluateHarnessHook(
       ...(outside.length ? { outsideDirectedSet: outside } : {}),
     });
     writeJson(statePath(root, input), session);
-    if (outside.length && scope?.mode !== "observe")
-      return protocolRefusal(
-        config.event,
-        "DOTLN_HARNESS_REFUSED: observed read outside the directed set",
-      );
+    if (outside.length)
+      return protocolAdvisory("observed read outside the directed set");
     return {};
   }
   if (config.kind === "finish") {
@@ -2676,9 +2582,7 @@ export async function evaluateHarnessHook(
             input.transcript_path,
           );
         } catch {
-          unmet.push(
-            "token measurement: repair current-session transcript collection before handoff",
-          );
+          unmet.push("process-cost observation could not be recorded");
           record(root, input, { usage: "collection-failed" });
         }
       }
@@ -2696,36 +2600,24 @@ export async function evaluateHarnessHook(
     }
     return unmet.length
       ? {
-          systemMessage: `DotLn: pending ${unmet.join(", ")}; lifecycle completion still requires evidence.`,
+          systemMessage: `DotLn advisory: pending ${unmet.join(", ")}; these observations do not block lifecycle completion.`,
         }
       : {};
   }
   if (config.kind === "permission") {
     if (!config.envelope) throw new Error("Missing compiled authority");
     const scopeResult = scope ? readScopeRefusal(input, root, scope) : null;
-    const observedOnly =
-      scope?.mode === "observe" &&
-      scopeResult?.reason === "read outside the mechanically directed set";
     if (scopeResult) {
       record(root, input, {
-        allowed: observedOnly,
-        ...(observedOnly
-          ? { readScopeObservation: scopeResult.reason }
-          : { readScopeRefusal: scopeResult.reason }),
+        allowed: true,
+        readScopeObservation: scopeResult.reason,
         ...(scopeResult.attemptedRead
           ? { attemptedRead: scopeResult.attemptedRead }
           : {}),
       });
     }
-    if (scopeResult && !observedOnly) {
-      return protocolRefusal(
-        config.event,
-        `DOTLN_HARNESS_REFUSED: ${scopeResult.reason}`,
-      );
-    }
-    const effect = managedReleaseCommand(input, root, session)
-      ? "lifecycle.run"
-      : permissionEffect(input, root, config.tools);
+    if (scopeResult) return protocolAdvisory(scopeResult.reason);
+    const effect = permissionEffect(input, root, config.tools);
     const decision = harnessAuthorization(
       session.correction
         ? {
@@ -2741,10 +2633,7 @@ export async function evaluateHarnessHook(
     record(root, input, { effect, allowed: decision.authorized });
     return decision.authorized
       ? {}
-      : protocolRefusal(
-          config.event,
-          "DOTLN_HARNESS_REFUSED: compiled authority does not permit this effect",
-        );
+      : protocolAdvisory(`compiled authority does not permit ${effect}`);
   }
   if (!config.policy) throw new Error("Missing compiled unit");
   if (
@@ -2804,10 +2693,20 @@ export async function evaluateHarnessHook(
       ...(reentry ? { stopReentry: true } : {}),
     });
     if (reentry) return {};
-    return protocolRefusal(
-      config.event,
-      `DOTLN_HARNESS_REFUSED: ${feedbackRefusalReason(error, facts, root)}`,
+    const foreignWriter = facts.some(
+      (fact) =>
+        fact.kind === "writer-isolation" &&
+        fact.writable &&
+        fact.writers.some(
+          (writer) =>
+            writer.worktree === fact.worktree &&
+            writer.actorId !== fact.actorId,
+        ),
     );
+    const reason = feedbackRefusalReason(error, facts, root);
+    return foreignWriter
+      ? protocolRefusal(config.event, `DOTLN_HARNESS_REFUSED: ${reason}`)
+      : protocolAdvisory(reason);
   }
 }
 
@@ -2827,6 +2726,7 @@ export async function runHarnessHook(
       decodedInput ??
       (JSON.parse(await streamText(process.stdin)) as HarnessInput);
     const root = harnessRoot(input.cwd);
+    observed = { root, input };
     const installedRoot = realpathSync(
       fileURLToPath(new URL("../../../../", import.meta.url)),
     );
@@ -2834,7 +2734,6 @@ export async function runHarnessHook(
       installedRoot !== realpathSync(join(root, config.runtime.snapshot ?? "."))
     )
       throw new Error("Hook and worktree roots disagree");
-    observed = { root, input };
     response = await evaluateHarnessHook(config, input, root, boundary);
   } catch (error) {
     reasonClass =
@@ -2849,23 +2748,13 @@ export async function runHarnessHook(
       error instanceof Error
         ? `${error.constructor.name}: ${error.message.replace(/[\u0000-\u001f\u007f]+/g, " ").slice(0, 120)}`
         : "non-error failure";
-    response = protocolRefusal(
-      config.event,
+    response = protocolAdvisory(
       error instanceof HarnessCommandRefused
-        ? `DOTLN_HARNESS_REFUSED: command classification: ${error.message}`
+        ? `command classification: ${error.message}`
         : error instanceof HarnessStateUnreadable
-          ? `DOTLN_HARNESS_REFUSED: ${error.message}`
-          : `DOTLN_HARNESS_REFUSED: host facts or pinned runtime unavailable (${failure})${config.event === "PreToolUse" ? `. ${BOOTSTRAP_HATCH_TEXT}` : ""}`,
+          ? error.message
+          : `host facts or pinned runtime unavailable (${failure}); run node scripts/bootstrap.mjs to prepare this worktree`,
     );
-    if (
-      config.event === "PreToolUse" &&
-      reasonClass === "runtime-unavailable" &&
-      observed &&
-      bootstrapAccess(observed.input)
-    )
-      response = {
-        systemMessage: `DotLn: runtime setup unavailable. ${BOOTSTRAP_HATCH_TEXT}`,
-      };
   } finally {
     if (observed) {
       try {
@@ -2876,6 +2765,10 @@ export async function runHarnessHook(
           response.decision === "block" ||
           permission?.permissionDecision === "deny";
         record(root, input, {
+          ...(typeof response.systemMessage === "string" &&
+          response.systemMessage.startsWith("DotLn advisory:")
+            ? { advisory: response.systemMessage, delegated: true }
+            : {}),
           // Retain each hook outcome but correlate denials of the same tool use.
           // Raw tool/session identities and command bytes stay out of the row.
           ...(refused

@@ -34,10 +34,11 @@
     "harness": "node scripts/harness-entry.mjs",
     "terms": "node scripts/terms.mjs",
     "adjacent": "node scripts/adjacent-work.mjs",
-    "test:full": "node scripts/test-runner.mjs --full",
+    "test:full": "node scripts/test-runner.mjs --review",
     "test:docs": "node scripts/test-runner.mjs --document",
     "discover": "node scripts/discover.mjs",
-    "meta": "node scripts/meta.mjs"
+    "meta": "node scripts/meta.mjs",
+    "test:machinery": "node scripts/test-runner.mjs --machinery"
   },
   "devDependencies": {
     "@types/node": "22.20.1",

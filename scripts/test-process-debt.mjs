@@ -25,6 +25,7 @@ import {
   activeGateRuns,
   beginGateRun,
   gateTreeHash,
+  gateCodeIdentity,
   findGateCheck,
   readGateChecks,
   recordGateChecks,
@@ -50,6 +51,8 @@ import {
 } from "./lib/process-budget.mjs";
 import {
   collectMeta,
+  reconcileCost,
+  renderMeta,
   codeDiffBytes,
   readDecisions,
   writeDecisionsIndex,
@@ -63,6 +66,7 @@ import { main as workOrders } from "./work-orders.mjs";
 import { probeHarness, discoverHarness } from "./discover.mjs";
 import {
   collectSessionUsage,
+  requireMeasuredUsage,
   recordUsageObservation,
   usageObservation,
   usageSessionKey,
@@ -95,6 +99,7 @@ import {
 import {
   invocationEffects,
   shellInvocations,
+  shellWritePaths,
   commitMessageInputs,
 } from "../packages/skeleton/dist/src/harness-command.js";
 import { atomicBuild, publishBuildTree } from "./build.mjs";
@@ -114,10 +119,6 @@ import {
   readAdjacentQueue,
 } from "./lib/adjacent-queue.mjs";
 import { main as planMain } from "./refute-plan.mjs";
-import { runGate, suites, expandSuiteTasks } from "./test-runner.mjs";
-import { suiteDeclaration } from "./lib/suite-evidence.mjs";
-import { releaseCases } from "./lib/release-fixtures.mjs";
-import { readControl } from "./lib/control-store.mjs";
 const source = resolve(import.meta.dirname, "..");
 const json = (value) => JSON.stringify(value, null, 2) + "\n";
 const write = (root, path, value) => {
@@ -188,7 +189,7 @@ function repo(t, { runtime = false } = {}) {
     "package.json",
     json({
       type: "module",
-      scripts: { test: "node -e ''", "test:full": "node -e ''" },
+      scripts: { test: "node -e ''" },
     }),
   );
   write(root, "own.txt", "original\n");
@@ -255,7 +256,88 @@ const statePath = (root, session = "fixture") =>
     `docs/control/local/harness/${createHash("sha256").update(session).digest("hex")}.json`,
   );
 
-test("WO-131 a same-host subagent spawn is admitted, a remote one is refused by name, and an unclassified tool names itself", (t) => {
+test("WO-132 VER-002 F1 / VER-003 F1 output redirects distinguish append filenames from descriptor operands", () => {
+  const dist = "packages/skeleton/dist/src/harness-command.js";
+  for (const [command, paths] of [
+    [`ls scripts >&${dist}`, [dist]],
+    [`ls scripts 1>&${dist}`, [dist]],
+    [`ls scripts >>&${dist}`, [dist]],
+    [`head -5 fixture.ts >& ${dist}`, [dist]],
+    ["grep value fixture.ts >&./node_modules/y", ["./node_modules/y"]],
+    [`ls scripts &>${dist}`, [dist]],
+    ["ls scripts > fixture.ts 2>&1", ["fixture.ts"]],
+    ["ls scripts 2>&-", []],
+    ["ls scripts >&-", []],
+    ["ls scripts 2>& 1", []],
+    ["grep -n value fixture.ts 2>&1 | head -3", []],
+    // zsh's append operator always opens a file, including numeric/dash names.
+    ["echo marker >>&1", ["1"]],
+    ["echo marker >>&-", ["-"]],
+    ["echo marker >>& 1", ["1"]],
+    ["echo marker >>& -", ["-"]],
+    ["echo marker 1>>&1", ["1"]],
+    ["ls scripts >>&1", ["1"]],
+    ["head -1 fixture.ts >>&-", ["-"]],
+  ])
+    assert.deepEqual(shellWritePaths(command), paths, command);
+  // Input duplication, a missing operand and expanded operands stay opaque.
+  for (const command of [
+    "ls scripts <&fixture.ts",
+    "ls scripts >&",
+    "ls scripts >&$TARGET",
+    "ls scripts >&*.js",
+    "ls scripts >>&",
+    "ls scripts >>&$TARGET",
+    "ls scripts >>&*.js",
+  ])
+    assert.equal(shellWritePaths(command), null, command);
+});
+
+test("WO-132 VER-004 F1 shell-special redirect operands stay opaque", () => {
+  const dist = "packages/skeleton/dist/src/harness-command.js";
+  for (const command of [
+    `ls scripts >!${dist}`,
+    `ls scripts 1>!${dist}`,
+    `ls scripts >>!${dist}`,
+    `ls scripts >&!${dist}`,
+    `ls scripts >>&!${dist}`,
+    `ls scripts &>!${dist}`,
+    `ls scripts &>>!${dist}`,
+    `head -1 fixture.ts >!/fixture/${dist}`,
+    "grep value fixture.ts >!./node_modules/y",
+    `echo x >!${dist}`,
+  ])
+    assert.equal(shellWritePaths(command), null, command);
+
+  // Both operand branches must reject the class, including a separate word.
+  // '=' can expand a command path in zsh; neither glyph is a literal prefix
+  // that this shell-independent adapter can safely send to gateInputPath.
+  for (const operator of [">", ">>", ">&", ">>&", "&>", "&>>"])
+    for (const descriptor of ["", "1", "2"])
+      for (const spacing of ["", " "])
+        for (const prefix of ["!", "="])
+          for (const path of [dist, "/fixture/" + dist, "./node_modules/y"]) {
+            const command = `echo x ${descriptor}${operator}${spacing}${prefix}${path}`;
+            assert.equal(shellWritePaths(command), null, command);
+          }
+
+  // Ordinary path prefixes and literal punctuation later in a path retain
+  // their destinations. In particular, VER-003's dash append file stays a file.
+  for (const path of [
+    "scratch",
+    "1",
+    ".scratch",
+    "_scratch",
+    "/tmp/scratch",
+    "./!scratch",
+    "./=scratch",
+    "-",
+  ])
+    for (const operator of [">", ">>", ">>&", "&>", "&>>"])
+      assert.deepEqual(shellWritePaths(`echo x ${operator} ${path}`), [path]);
+});
+
+test("WO-132 spawn and classification advisories delegate to host permissions while live-gate writes remain denied", (t) => {
   const root = repo(t);
   emitHarness(root);
   const invoke = (extra) => {
@@ -265,7 +347,11 @@ test("WO-131 a same-host subagent spawn is admitted, a remote one is refused by 
       input: JSON.stringify(input(root, "PreToolUse", `${root}:spawn`, extra)),
     });
     assert.equal(run.status, 0, run.stderr);
-    return JSON.parse(run.stdout).hookSpecificOutput ?? {};
+    const response = JSON.parse(run.stdout);
+    return {
+      ...response.hookSpecificOutput,
+      systemMessage: response.systemMessage,
+    };
   };
   const agent = {
     description: "Read-only survey",
@@ -287,21 +373,21 @@ test("WO-131 a same-host subagent spawn is admitted, a remote one is refused by 
     tool_name: "Agent",
     tool_input: { ...agent, isolation: "remote" },
   });
-  assert.equal(remote.permissionDecision, "deny");
-  assert.match(remote.permissionDecisionReason, /Remote subagents/);
-  assert.doesNotMatch(remote.permissionDecisionReason, /host facts/);
+  assert.equal(remote.permissionDecision, undefined);
+  assert.match(remote.systemMessage, /Remote subagents/);
+  assert.doesNotMatch(remote.systemMessage, /host facts/);
   const unknown = invoke({
     tool_name: "SomeNewTool",
     tool_input: { anything: true },
   });
-  assert.equal(unknown.permissionDecision, "deny");
+  assert.equal(unknown.permissionDecision, undefined);
   assert.match(
-    unknown.permissionDecisionReason,
+    unknown.systemMessage,
     /Unclassified effectful tool: SomeNewTool/,
   );
   // A spawn during a live gate is admitted too: the subagent's own writes
   // are refused one by one while the gate holds its inputs.
-  const active = beginGateRun(root, "npm run test:full");
+  const active = beginGateRun(root, "npm test");
   try {
     assert.notEqual(
       invoke({ tool_name: "Agent", tool_input: agent }).permissionDecision,
@@ -364,213 +450,13 @@ test("WO-131 a same-host subagent spawn is admitted, a remote one is refused by 
   }
 });
 
-test("WO-131 three-role full gates compose through lifecycle transitions and distinct session environments", async (t) => {
-  const root = repo(t);
-  write(
-    root,
-    "package.json",
-    json({ type: "module", scripts: { "format:check": "node checks.mjs" } }),
-  );
-  write(root, "checks.mjs", "// Synthetic successful check.\n");
-  for (const suite of suites) {
-    for (const path of suite.command.filter((part) =>
-      part.startsWith("scripts/"),
-    ))
-      write(
-        root,
-        path,
-        path.endsWith(".sh")
-          ? "#!/bin/sh\nexit 0\n"
-          : "// Synthetic successful check.\n",
-      );
-  }
-  for (const path of [
-    "scripts/test-suite-evidence.mjs",
-    "scripts/test-release-fixtures.mjs",
-    "scripts/test-gate-deadlines.mjs",
-    "scripts/test-suite-sandbox.mjs",
-    "corpus/harness/wo101-id-corpus.test.mjs",
-    "corpus/mutation/wo108-selftest.test.mjs",
-  ])
-    write(root, path, "// Synthetic successful check.\n");
-  write(
-    root,
-    "scripts/test-release.sh",
-    releaseCases(source)
-      .map((name) => `release_case_${name}() {\n  :\n}\n`)
-      .join("\n"),
-  );
-  write(
-    root,
-    "scripts/build.mjs",
-    `import {mkdirSync,writeFileSync} from 'node:fs';
-for(const name of ['kernel','compiler','skeleton','console']) {
-  const dir='packages/'+name+'/dist/test'; mkdirSync(dir,{recursive:true});
-  writeFileSync(dir+'/fixture.test.js',"import test from 'node:test'; test('synthetic',()=>{});\\n");
-}\n`,
-  );
-  git(root, "add", ".");
-  git(root, "commit", "-qm", "Synthetic full gate inventory");
-  // This lifecycle fixture owns synthetic checks; the real denial adapter has
-  // separate executed process coverage. The implementation session can apply
-  // the denial; the verification and final-review sessions are sandboxed role
-  // sessions whose host refuses sandbox startup. Reuse across them proves the
-  // denial is an addition, never a condition.
-  const gate = (denialAvailable) =>
-    runGate(["--full"], root, {
-      kernelProbe: () =>
-        denialAvailable
-          ? {
-              available: true,
-              reason: "synthetic lifecycle adapter",
-              command: [],
-            }
-          : {
-              available: false,
-              reason: "synthetic role session refuses sandbox startup",
-            },
-    });
-  const tasks = expandSuiteTasks(
-    suites.filter((row) => !row.document || row.fast),
-    root,
-    "/synthetic-template",
-  );
-  const reusable = tasks
-    .filter(
-      (row) => suiteDeclaration(row)?.paths && row.name !== "release:prepare",
-    )
-    .map((row) => row.name)
-    .sort();
-  const first = await gate(true);
-  assert.equal(first.exitCode, 0);
-  assert.equal(first.freshSuites, tasks.length);
-  assert.equal(first.reusedSuites, 0);
-  assert.equal(first.kernelDenial.available, true);
-  const segment = "docs/control/orders/WO-999.jsonl";
-  let ordinal = 1;
-  const transition = (type, extra = {}) => {
-    write(
-      root,
-      segment,
-      readFileSync(join(root, segment), "utf8") +
-        JSON.stringify({
-          schemaVersion: 1,
-          recordedAt: new Date().toISOString(),
-          type,
-          workOrderId: "WO-999",
-          ...extra,
-        }) +
-        "\n",
-    );
-    git(
-      root,
-      "update-ref",
-      `refs/dotln/checkpoint/WO-999/${++ordinal}`,
-      "HEAD",
-    );
-    return readControl(root).orders.get("WO-999").state;
-  };
-  const actor = {
-    harness: "human",
-    harnessVersion: "not-applicable",
-    model: "human",
-    effort: "max",
-    source: "operator-attested",
-  };
-  const measured = [];
-  const roleTemps = mkdtempSync(join(tmpdir(), "dotln-role-session-"));
-  t.after(() => rmSync(roleTemps, { recursive: true, force: true }));
-  const variables = ["CLAUDE_PID", "GIT_SSH_COMMAND", "TMPDIR"];
-  const priorEnvironment = Object.fromEntries(
-    variables.map((name) => [name, process.env[name]]),
-  );
-  t.after(() => {
-    for (const [name, value] of Object.entries(priorEnvironment)) {
-      if (value === undefined) delete process.env[name];
-      else process.env[name] = value;
-    }
-  });
-  const composed = async () => {
-    process.env.CLAUDE_PID = String(500_000 + measured.length);
-    process.env.GIT_SSH_COMMAND = `synthetic-session-${measured.length}`;
-    process.env.TMPDIR = join(roleTemps, String(measured.length));
-    mkdirSync(process.env.TMPDIR, { recursive: true });
-    const expected = gateTreeHash(root);
-    const result = await gate(false);
-    assert.equal(result.exitCode, 0);
-    assert.equal(result.kernelDenial.available, false);
-    assert.equal(result.executionMode, "composed");
-    assert.equal(result.freshSuites, tasks.length - reusable.length);
-    assert.equal(result.reusedSuites, reusable.length);
-    assert.deepEqual(
-      result.taskTimeline
-        .filter((row) => row.reused)
-        .map((row) => row.name)
-        .sort(),
-      reusable,
-    );
-    assert.equal(result.treeHash, expected);
-    assert.ok(
-      ![first, ...measured].some((prior) => prior.treeHash === expected),
-    );
-    assert.equal(result.freshReasons.length, tasks.length - reusable.length);
-    const retained = findGateCheck(root, "npm run test:full", expected);
-    assert.equal(retained.reusedSuites, reusable.length);
-    assert.equal(retained.kernelDenial.available, false);
-    const carried = readGateChecks(root, expected).findLast(
-      (row) =>
-        row.checkId === `suite:${reusable[0]}` && row.treeHash === expected,
-    );
-    assert.equal(carried.reused, true);
-    assert.equal(carried.kernelDenial.available, false);
-    assert.equal(carried.sourceExecution.kernelDenial.applied, true);
-    measured.push(result);
-  };
-  assert.equal(
-    transition("ImplementationReady", { actor }).phase,
-    "ready-to-verify",
-  );
-  await composed();
-  const reportPath = "docs/verifications/WO-999/VER-001.md";
-  transition("VerificationRequested", {
-    verificationId: "VER-001",
-    reportPath,
-  });
-  write(root, reportPath, "# Synthetic verification\nPASS\n");
-  assert.equal(
-    transition("VerificationCompleted", {
-      verificationId: "VER-001",
-      reportPath,
-      verdict: "pass",
-      actor,
-    }).phase,
-    "verified",
-  );
-  await composed();
-  const finalPath = "docs/final-reviews/WO-999/FINAL-001.md";
-  transition("FinalReviewRequested", {
-    finalReviewId: "FINAL-001",
-    throughVerificationId: "VER-001",
-    reportPath: finalPath,
-  });
-  write(root, finalPath, "# Synthetic final review\nPASS\n");
-  assert.equal(
-    transition("FinalReviewCompleted", {
-      finalReviewId: "FINAL-001",
-      reportPath: finalPath,
-      verdict: "pass",
-      actor,
-    }).phase,
-    "closed",
-  );
-  await composed();
-});
 const state = (root, session = "fixture") =>
   JSON.parse(readFileSync(statePath(root, session), "utf8"));
-const gate = (root, checkId = "npm run test:full", exitCode = 0) => ({
+const gate = (root, checkId = "fixture:tree-check", exitCode = 0) => ({
   checkId,
   treeHash: gateTreeHash(root),
-  subject: gateTreeHash(root),
+  subject: checkId === "npm test" ? gateCodeIdentity(root) : gateTreeHash(root),
+  ...(checkId === "npm test" ? { codeIdentity: gateCodeIdentity(root) } : {}),
   durationMs: 17,
   exitCode,
   executed: true,
@@ -740,21 +626,8 @@ test("session outputs include only two observed edits; generated and oversized f
   assert.deepEqual(harnessOutputObligations(root, state(root)), owed);
 });
 
-test("all four completion actions collect final usage after one gate without invalidating reports; Stop advises and releases", async (t) => {
+test("WO-132 all four completions admit missing gates, reads and counters; Stop advises and releases", async (t) => {
   const root = repo(t, { runtime: true });
-  write(
-    root,
-    "package.json",
-    json({
-      type: "module",
-      scripts: { "test:full": "node .runtime/check.mjs" },
-    }),
-  );
-  write(
-    root,
-    ".runtime/check.mjs",
-    "import { appendFileSync } from 'node:fs'; appendFileSync('.runtime/runs.txt', 'full\\n');\n",
-  );
   const oldHome = process.env.CODEX_HOME,
     oldThread = process.env.CODEX_THREAD_ID;
   process.env.CODEX_HOME = join(root, ".runtime/codex");
@@ -774,31 +647,54 @@ test("all four completion actions collect final usage after one gate without inv
   ];
   write(root, "own.txt", "authored\n");
   for (const [action, role] of actions) {
-    if (!existsSync(statePath(root, role)))
-      beginHarnessSession(root, role, role, ["own.txt"]);
-    await assert.rejects(
-      requireLifecycleEvidence(root, action, "pass", "WO-999"),
-      /npm run test:full/,
+    const noSession = await requireLifecycleEvidence(
+      root,
+      action,
+      "pass",
+      "WO-999",
     );
+    if (!existsSync(statePath(root, role))) {
+      assert.ok(
+        noSession.advisories.some((message) =>
+          /authorship and output reads unavailable/.test(message),
+        ),
+      );
+      beginHarnessSession(root, role, role, ["own.txt"]);
+    }
+    const result = await requireLifecycleEvidence(
+      root,
+      action,
+      "pass",
+      "WO-999",
+    );
+    assert.ok(
+      result.advisories.some((message) => /Outputs not read/.test(message)),
+    );
+    assert.equal(result.productGate, undefined);
+    const usage = readFileSync(
+      join(root, "docs/control/local/process/usage.jsonl"),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map(JSON.parse)
+      .at(-1);
+    assert.equal(usage.role, role);
+    assert.equal(usage.observation.source, "unavailable");
+    assert.equal(usage.observation.scope, "dispatch");
+    assert.equal(usage.observation.usage.totalTokens, null);
+    assert.ok(usage.observation.observedAt);
   }
+  assert.ok(
+    readGateChecks(root).every((row) => row.checkId === "git diff --check"),
+  );
   const checkedTree = gateTreeHash(root);
-  const finalChecks = runHarnessEvidence(root);
-  assert.ok(finalChecks.every((row) => row.exitCode === 0 && row.executed));
-  const deliveredRoles = new Set();
   for (const [action, role] of actions) {
-    if (!deliveredRoles.has(role))
-      await assert.rejects(
-        requireLifecycleEvidence(root, action, "pass", "WO-999"),
-        /Output not read/,
-      );
-    deliveredRoles.add(role);
-    const delivered = readHarnessOutput(root, "own.txt", 0, 8192);
-    observeHarnessDelivery(root, role, json(delivered));
-    if (action === "implementation-ready")
-      await assert.rejects(
-        requireLifecycleEvidence(root, action, "pass", "WO-999"),
-        /Token measurement/,
-      );
+    observeHarnessDelivery(
+      root,
+      role,
+      json(readHarnessOutput(root, "own.txt", 0, 8192)),
+    );
     const timestamp = new Date().toISOString();
     write(
       root,
@@ -827,13 +723,15 @@ test("all four completion actions collect final usage after one gate without inv
         .map(JSON.stringify)
         .join("\n") + "\n",
     );
-    assert.equal(
-      (await requireLifecycleEvidence(root, action, "pass", "WO-999"))
-        .readCount,
-      1,
+    const completed = await requireLifecycleEvidence(
+      root,
+      action,
+      "pass",
+      "WO-999",
     );
-    // The counters arrive after the full gate and are collected by completion.
-    // Reading/reporting those local receipts must not demand another gate.
+    assert.ok(
+      !completed.advisories.some((message) => /Outputs not read/.test(message)),
+    );
     const usage = readFileSync(
       join(root, "docs/control/local/process/usage.jsonl"),
       "utf8",
@@ -845,34 +743,44 @@ test("all four completion actions collect final usage after one gate without inv
     assert.equal(usage.observation.usage.totalTokens, 120);
     assert.equal(usage.role, role);
     assert.equal(gateTreeHash(root), checkedTree);
-    assert.deepEqual(readGateChecks(root, checkedTree), finalChecks);
-    assert.equal(
-      readFileSync(join(root, ".runtime/runs.txt"), "utf8"),
-      "full\n",
-    );
     const ownState = state(root, role);
     ownState.remainingWork = ["criterion unresolved"];
     writeFileSync(statePath(root, role), json(ownState));
-    await assert.rejects(
-      requireLifecycleEvidence(root, action, "pass", "WO-999"),
-      /work remains incomplete/,
+    const remaining = await requireLifecycleEvidence(
+      root,
+      action,
+      "pass",
+      "WO-999",
     );
-    ownState.remainingWork = [];
-    writeFileSync(statePath(root, role), json(ownState));
+    assert.ok(
+      remaining.advisories.some((message) =>
+        /remaining work.*criterion unresolved/.test(message),
+      ),
+    );
   }
-  write(root, "own.txt", "A substantive report correction after the gate.\n");
-  await assert.rejects(
-    requireLifecycleEvidence(root, "final-review-result", "pass", "WO-999"),
-    /npm run test:full/,
+  write(root, "own.txt", "A substantive correction after completion.\n");
+  const changed = await requireLifecycleEvidence(
+    root,
+    "final-review-result",
+    "pass",
+    "WO-999",
   );
+  assert.ok(
+    changed.advisories.some((message) => /Outputs not read/.test(message)),
+  );
+  write(root, "own.txt", "Trailing whitespace remains a completion error. \n");
+  await assert.rejects(
+    requireLifecycleEvidence(root, "implementation-ready", "pass", "WO-999"),
+    /git diff --check failed/,
+  );
+  write(root, "own.txt", "Valid bytes.\n");
   beginHarnessSession(root, "fixture", "executor");
-  const request = input(root, "PreToolUse", "fixture", {
-    tool_name: "Edit",
-    tool_input: { file_path: join(root, "own.txt") },
-  });
   await evaluateHarnessHook(
     config(root, "concurrent-work-requires-worktrees"),
-    request,
+    input(root, "PreToolUse", "fixture", {
+      tool_name: "Edit",
+      tool_input: { file_path: join(root, "own.txt") },
+    }),
     root,
     feedbackBoundary,
   );
@@ -886,7 +794,8 @@ test("all four completion actions collect final usage after one gate without inv
   assert.ok(
     !stopped.decision && !stopped.hookSpecificOutput?.permissionDecision,
   );
-  assert.match(stopped.systemMessage, /^DotLn: pending /);
+  assert.match(stopped.systemMessage, /^DotLn advisory: pending /);
+  assert.match(stopped.systemMessage, /do not block lifecycle completion/);
   assert.equal(stopped.systemMessage.split("\n").length, 1);
   assert.equal(
     existsSync(join(root, "docs/control/local/harness/writer")),
@@ -921,119 +830,69 @@ test("attribution settings and all agent session forms are checked", (t) => {
   assert.throws(() => checkHarness(root), /drift|settings|different|stale/);
 });
 
-test("failed verification and review validate oversized documents, generated index and report without requiring green code", async (t) => {
+test("WO-132 verification and review observe oversized, generated and unread reports without requiring green code", async (t) => {
   const root = repo(t, { runtime: true });
-  const oldHome = process.env.CODEX_HOME,
-    oldThread = process.env.CODEX_THREAD_ID;
-  process.env.CODEX_HOME = join(root, ".runtime/codex");
-  process.env.CODEX_THREAD_ID = "failed-verdict-usage";
-  t.after(() => {
-    if (oldHome === undefined) delete process.env.CODEX_HOME;
-    else process.env.CODEX_HOME = oldHome;
-    if (oldThread === undefined) delete process.env.CODEX_THREAD_ID;
-    else process.env.CODEX_THREAD_ID = oldThread;
-  });
   write(
     root,
     ".gitattributes",
     readFileSync(new URL("../.gitattributes", import.meta.url), "utf8"),
   );
-  const roles = [
-    ["verification-result", "verifier"],
-    ["final-review-result", "reviewer"],
-  ];
   write(root, "docs/work-orders/README.md", "Generated verification status\n");
   write(root, "docs/product/03-architecture.md", "a".repeat(65537));
   write(root, "report.md", "FAIL: reproduced fixture failure\n");
-  for (const [, role] of roles)
+  recordGateChecks(root, [gate(root, "npm test", 1)]);
+  for (const [action, role] of [
+    ["verification-result", "verifier"],
+    ["final-review-result", "reviewer"],
+  ]) {
     beginHarnessSession(root, role, role, [
       "docs/work-orders/README.md",
       "docs/product/03-architecture.md",
       "report.md",
     ]);
-  const timestamp = new Date().toISOString();
-  write(
-    root,
-    ".runtime/codex/sessions/failed-verdict-usage.jsonl",
-    [
-      {
-        type: "session_meta",
-        timestamp,
-        payload: { id: "failed-verdict-usage", cwd: root },
-      },
-      {
-        type: "event_msg",
-        timestamp,
-        payload: {
-          type: "token_count",
-          info: {
-            total_token_usage: {
-              input_tokens: 100,
-              output_tokens: 20,
-              total_tokens: 120,
-            },
-          },
-        },
-      },
-    ]
-      .map(JSON.stringify)
-      .join("\n") + "\n",
-  );
-  const refuses = async (pattern = /Output not read or checked/) => {
-    for (const [action] of roles)
-      await assert.rejects(
-        requireLifecycleEvidence(root, action, "fail", "WO-999"),
-        pattern,
+    const obligations = harnessOutputObligations(root, state(root, role));
+    assert.deepEqual(
+      obligations
+        .filter((row) => row.obligation === "check")
+        .map((row) => row.path),
+      ["docs/product/03-architecture.md", "docs/work-orders/README.md"],
+    );
+    for (const verdict of ["fail", "pass"]) {
+      const result = await requireLifecycleEvidence(
+        root,
+        action,
+        verdict,
+        "WO-999",
       );
-  };
-  recordGateChecks(root, [
-    gate(root, "git diff --check"),
-    gate(root, "npm run test:full", 1),
-  ]);
-  await refuses();
-  recordGateChecks(root, [gate(root, "suite:format")]);
-  await refuses();
-  recordGateChecks(root, [gate(root, "suite:index")]);
-  recordGateChecks(root, [gate(root, "suite:publication", 1)]);
-  await refuses();
-  recordGateChecks(root, [gate(root, "suite:publication")]);
-  await refuses();
-  for (const [action, role] of roles) {
+      assert.ok(
+        result.advisories.some((message) =>
+          /Outputs not read.*report.md/.test(message),
+        ),
+      );
+      assert.equal(result.productGate, undefined);
+    }
     observeHarnessDelivery(
       root,
       role,
       json(readHarnessOutput(root, "report.md")),
     );
-    const result = await requireLifecycleEvidence(
+    const read = await requireLifecycleEvidence(root, action, "fail", "WO-999");
+    assert.ok(
+      !read.advisories.some((message) => /Outputs not read/.test(message)),
+    );
+    write(root, "report.md", `FAIL: ${role} correction after delivery\n`);
+    const changed = await requireLifecycleEvidence(
       root,
       action,
       "fail",
       "WO-999",
     );
-    assert.equal(result.checkCount, 2);
-    assert.equal(result.readCount, 1);
-    await assert.rejects(
-      requireLifecycleEvidence(root, action, "pass", "WO-999"),
-      /npm run test:full/,
+    assert.ok(
+      changed.advisories.some((message) =>
+        /Outputs not read.*report.md/.test(message),
+      ),
     );
   }
-  write(root, "report.md", "FAIL: changed after delivery\n");
-  recordGateChecks(root, [
-    gate(root, "git diff --check"),
-    gate(root, "suite:index"),
-    gate(root, "suite:publication"),
-  ]);
-  await refuses();
-  for (const [, role] of roles)
-    observeHarnessDelivery(
-      root,
-      role,
-      json(readHarnessOutput(root, "report.md")),
-    );
-  write(root, "docs/product/03-architecture.md", "b".repeat(65537));
-  await refuses(/git diff --check/);
-  recordGateChecks(root, [gate(root, "git diff --check")]);
-  await refuses();
 });
 
 test("evidence preparation repairs owned projections before fingerprinting, preserves explicit inputs and is idempotent", (t) => {
@@ -1130,13 +989,12 @@ test("evidence preparation repairs owned projections before fingerprinting, pres
     "package.json",
     json({
       type: "module",
-      scripts: { "test:full": "node -e 'process.exit(7)'" },
+      scripts: { test: "node -e 'process.exit(7)'" },
     }),
   );
   prepareHarnessEvidence(root);
   assert.notEqual(
-    runHarnessEvidence(root).find((row) => row.checkId === "npm run test:full")
-      .exitCode,
+    runHarnessEvidence(root).find((row) => row.checkId === "npm test").exitCode,
     0,
   );
 });
@@ -2037,7 +1895,7 @@ test("case-folded executable names retain effects without folding data operands"
   ]);
 });
 
-test("effect-program operands retain the denial floor except proven message and search data", (t) => {
+test("effect-program classification preserves effect distinctions while hooks delegate to host permissions", (t) => {
   const commands = [
     ...["-x", "--exec", "--exec="].map(
       (flag) =>
@@ -2119,7 +1977,7 @@ test("effect-program operands retain the denial floor except proven message and 
 
   const root = repo(t, { runtime: true });
   emitHarness(root);
-  for (const [denied, cases] of [
+  for (const [advised, cases] of [
     [true, commands],
     [false, controls],
   ])
@@ -2139,16 +1997,23 @@ test("effect-program operands retain the denial floor except proven message and 
         },
       );
       assert.equal(result.status, 0, result.stderr);
+      const response = JSON.parse(result.stdout);
       assert.equal(
-        JSON.parse(result.stdout).hookSpecificOutput?.permissionDecision ===
-          "deny",
-        denied,
+        response.hookSpecificOutput?.permissionDecision,
+        undefined,
         command,
       );
+      if (advised)
+        assert.match(
+          response.systemMessage,
+          /advisory:.*host permissions decide/,
+          command,
+        );
+      else assert.deepEqual(response, {}, command);
     }
 });
 
-test("all wired hooks count one refusal per tool use without retaining its identity", async (t) => {
+test("live-gate hooks count one invariant refusal per tool use without retaining its identity", async (t) => {
   const root = repo(t, { runtime: true });
   emitHarness(root);
   beginHarnessSession(root, "fixture", "executor");
@@ -2156,7 +2021,9 @@ test("all wired hooks count one refusal per tool use without retaining its ident
     readFileSync(join(root, ".claude/settings.json"), "utf8"),
   );
   const hooks = settings.hooks.PreToolUse.flatMap((row) => row.hooks);
-  const command = "git $FIXTURE_COMMAND";
+  const command = "touch own.txt";
+  const active = beginGateRun(root, "npm test");
+  t.after(() => active.release());
   const runHooks = (toolUseId, session = "fixture") => {
     let denied = 0;
     for (const hook of hooks) {
@@ -2201,7 +2068,7 @@ test("all wired hooks count one refusal per tool use without retaining its ident
     assert.ok(!journal.includes(value));
 });
 
-test("guard refusals are journaled once per installed-hook denial without command bytes", async (t) => {
+test("WO-132 delegated advisories are journaled without counting guard refusals or retaining command bytes", async (t) => {
   const root = repo(t, { runtime: true });
   emitHarness(root);
   beginHarnessSession(root, "fixture", "executor");
@@ -2223,8 +2090,8 @@ test("guard refusals are journaled once per installed-hook denial without comman
   for (const command of commands)
     assert.equal(
       invoke("permissions", "PreToolUse", "Bash", command).hookSpecificOutput
-        .permissionDecision,
-      "deny",
+        ?.permissionDecision,
+      undefined,
     );
   assert.deepEqual(
     invoke("permissions", "PreToolUse", "Bash", "echo admitted-fixture"),
@@ -2236,8 +2103,8 @@ test("guard refusals are journaled once per installed-hook denial without comman
       "PreToolUse",
       "Bash",
       "git commit -m 'Claude-Session: fixture'",
-    ).hookSpecificOutput.permissionDecision,
-    "deny",
+    ).hookSpecificOutput?.permissionDecision,
+    undefined,
   );
   const stop = invoke("finish", "Stop", undefined, undefined);
   assert.ok(stop.systemMessage);
@@ -2251,21 +2118,23 @@ test("guard refusals are journaled once per installed-hook denial without comman
     .split("\n")
     .map(JSON.parse)
     .filter((row) => row.refusal);
-  assert.equal(refusals.length, 3);
-  assert.deepEqual(refusals.map((row) => row.refusal.reasonClass).sort(), [
-    "authority",
-    "command-classification",
-    "feedback",
-  ]);
-  assert.ok(
-    refusals.every((row) => row.event === "PreToolUse" && row.tool === "Bash"),
+  assert.equal(refusals.length, 0);
+  const advisories = journal
+    .trim()
+    .split("\n")
+    .map(JSON.parse)
+    .filter((row) => row.delegated);
+  assert.equal(
+    advisories.filter((row) => row.event === "PreToolUse").length,
+    3,
   );
+  assert.ok(advisories.every((row) => /advisory:/.test(row.advisory)));
   for (const command of [...commands, "Claude-Session: fixture"])
     assert.ok(!journal.includes(command));
   const measured = (await collectMeta(root)).orders.find(
     (row) => row.workOrder === "WO-999",
   );
-  assert.equal(measured.metrics.guardRefusals, 3);
+  assert.equal(measured.metrics.guardRefusals, 0);
   assert.equal(measured.metrics.stopRefusals, 0);
 });
 
@@ -2311,7 +2180,7 @@ test("dynamic executable and subcommand operands refuse while literal dollars an
     assert.deepEqual(invocationEffects(command), ["shell.run"], command);
 });
 
-test("commit attribution extracts actual invocation messages and gives actionable refusals", (t) => {
+test("commit attribution extracts actual invocation messages and hooks give actionable advisories", (t) => {
   for (const command of [
     "echo 'git commit'",
     "echo 'git commit -m x'",
@@ -2374,27 +2243,21 @@ test("commit attribution extracts actual invocation messages and gives actionabl
   assert.deepEqual(invoke("git commit -m fix"), {});
   assert.deepEqual(invoke("xargs git commit -m fix --"), {});
   assert.equal(
-    invoke("xargs git commit -m fix").hookSpecificOutput.permissionDecision,
-    "deny",
+    invoke("xargs git commit -m fix").hookSpecificOutput?.permissionDecision,
+    undefined,
   );
   const refused = invoke("git commit");
-  assert.match(
-    refused.hookSpecificOutput.permissionDecisionReason,
-    /command classification: Commit message/,
-  );
-  assert.doesNotMatch(
-    refused.hookSpecificOutput.permissionDecisionReason,
-    /runtime unavailable/,
-  );
+  assert.match(refused.systemMessage, /command classification: Commit message/);
+  assert.doesNotMatch(refused.systemMessage, /runtime unavailable/);
   write(root, "message.txt", "Claude-Session: synthetic\n");
   assert.equal(
     invoke("exec git commit -F message.txt").hookSpecificOutput
-      .permissionDecision,
-    "deny",
+      ?.permissionDecision,
+    undefined,
   );
 });
 
-test("installed permission hook distinguishes classifier refusal from runtime failure", async (t) => {
+test("installed permission hook distinguishes classification advisories from runtime failure", async (t) => {
   const root = repo(t, { runtime: true });
   emitHarness(root);
   beginHarnessSession(root, "fixture", "executor");
@@ -2453,23 +2316,17 @@ test("installed permission hook distinguishes classifier refusal from runtime fa
   ])
     assert.equal(
       invoke(command).hookSpecificOutput?.permissionDecision,
-      "deny",
+      undefined,
     );
   assert.deepEqual(invoke("node -e 'console.log(\n1)'"), {});
   assert.match(
-    invoke("git $P").hookSpecificOutput.permissionDecisionReason,
+    invoke("git $P").systemMessage,
     /command classification: Dynamic/,
   );
   const refused = invoke("echo $(git push)");
-  assert.equal(refused.hookSpecificOutput.permissionDecision, "deny");
-  assert.match(
-    refused.hookSpecificOutput.permissionDecisionReason,
-    /command classification: Dynamic/,
-  );
-  assert.doesNotMatch(
-    refused.hookSpecificOutput.permissionDecisionReason,
-    /runtime unavailable/,
-  );
+  assert.equal(refused.hookSpecificOutput?.permissionDecision, undefined);
+  assert.match(refused.systemMessage, /command classification: Dynamic/);
+  assert.doesNotMatch(refused.systemMessage, /runtime unavailable/);
   const timings = readFileSync(
     statePath(root).replace(/\.json$/, ".jsonl"),
     "utf8",
@@ -2503,8 +2360,8 @@ test("harness evidence --fail records only the diff check the failing verdict re
   const root = repo(t, { runtime: true });
   for (const name of ["harness.mjs", "harness-entry.mjs", "work-orders.mjs"])
     copyFileSync(join(source, "scripts", name), join(root, "scripts", name));
-  // Keep the real preparation dependency graph local: replica execution
-  // preserves symlinks, so a link to scripts/lib changes relative imports.
+  // Keep the real preparation dependency graph local so relative imports
+  // resolve to the fixture-owned source files.
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
     dereference: true,
@@ -2541,7 +2398,6 @@ test("harness evidence --fail records only the diff check the failing verdict re
           .scripts.harness,
         build: "node .runtime/check.mjs",
         test: "node .runtime/check.mjs",
-        "test:full": "node .runtime/check.mjs",
       },
     }),
   );
@@ -2586,68 +2442,74 @@ test("harness evidence --fail records only the diff check the failing verdict re
     ["build"],
     "the package wrapper builds but never spawns the suite gate on failure",
   );
-  await assert.rejects(
-    requireLifecycleEvidence(root, "verification-result", "pass", "WO-999"),
-    /npm run test:full/,
-    "the fail-path diff check cannot satisfy a passing gate",
+  const completion = await requireLifecycleEvidence(
+    root,
+    "verification-result",
+    "pass",
+    "WO-999",
+  );
+  assert.equal(
+    completion.productGate,
+    undefined,
+    "completion does not require a product gate",
   );
   const fullChecks = invoke();
   assert.deepEqual(
-    fullChecks.map((check) => check.checkId).sort(),
-    ["git diff --check", "npm run test:full"],
-    "an absent verdict still runs the full gate",
+    [...new Set(fullChecks.map((check) => check.checkId))].sort(),
+    ["git diff --check", "npm test"],
+    "an absent verdict explicitly runs the product gate",
   );
   assert.ok(
     fullChecks.every((check) => check.executed && check.exitCode === 0),
   );
-  assert.deepEqual(runs(), ["build", "build", "test:full"]);
+  assert.deepEqual(runs(), ["build", "build", "test"]);
 });
 
-test("harness evidence reuses the current full gate without relabeling or repeating code checks", async (t) => {
+test("WO-132 harness evidence reuses product results across document edits and invalidates source edits", async (t) => {
   const root = repo(t, { runtime: true });
   emitHarness(root);
   beginHarnessSession(root, "fixture", "executor");
   write(
     root,
     "package.json",
-    json({
-      type: "module",
-      scripts: {
-        test: "node .runtime/check.mjs",
-        "test:full": "node .runtime/check.mjs",
-      },
-    }),
+    json({ type: "module", scripts: { test: "node .runtime/check.mjs" } }),
   );
   write(
     root,
     ".runtime/check.mjs",
-    "import { appendFileSync } from 'node:fs'; appendFileSync('.runtime/runs.txt', process.env.npm_lifecycle_event + '\\n');\n",
+    "import { appendFileSync } from 'node:fs'; appendFileSync('.runtime/runs.txt', 'test\\n');\n",
   );
   const count = () =>
     readFileSync(join(root, ".runtime/runs.txt"), "utf8").trim().split("\n");
-  assert.equal(runHarnessEvidence(root)[0].checkId, "npm run test:full");
-  assert.deepEqual(count(), ["test:full"]);
-
+  const initial = runHarnessEvidence(root);
+  assert.deepEqual(
+    initial.map((row) => row.checkId),
+    ["npm test", "git diff --check"],
+  );
+  assert.equal(initial[0].codeIdentity, gateCodeIdentity(root));
+  assert.deepEqual(count(), ["test"]);
   write(root, "docs/receipt.md", "Documentation changed after measurement.\n");
-  const started = Date.now();
-  const executed = spawnSync("npm", ["run", "test:full"], {
-    cwd: root,
-    encoding: "utf8",
-  });
-  assert.equal(executed.status, 0, executed.stderr);
-  const full = {
-    ...gate(root),
-    durationMs: Date.now() - started,
-    evidenceRef: "fixture:executed-npm-full",
-  };
-  recordGateChecks(root, [full]);
   const reused = runHarnessEvidence(root);
-  assert.equal(reused[0].checkId, "npm run test:full");
-  assert.equal(reused[0].evidenceRef, full.evidenceRef);
-  assert.equal(reused[0].recordedAt, full.recordedAt);
-  assert.equal(reused[0].durationMs, full.durationMs);
-  assert.deepEqual(count(), ["test:full", "test:full"]);
-  assert.equal(findGateCheck(root, "npm test", full.treeHash), undefined);
+  assert.deepEqual(reused[0], initial[0]);
+  assert.deepEqual(
+    findGateCheck(root, "npm test", gateTreeHash(root)),
+    initial[0],
+    "the shared lookup matches product identity independently of the requested tree",
+  );
+  assert.notEqual(reused[1].treeHash, initial[1].treeHash);
+  const review = await requireLifecycleEvidence(
+    root,
+    "final-review-result",
+    "pass",
+    "WO-999",
+  );
+  assert.equal(review.productGate.codeIdentity, initial[0].codeIdentity);
+  assert.ok(
+    !review.advisories.some((message) =>
+      /No passing product gate/.test(message),
+    ),
+  );
+  assert.deepEqual(count(), ["test"]);
   const facts = [];
   await evaluateHarnessHook(
     config(root, "finish"),
@@ -2660,24 +2522,25 @@ test("harness evidence reuses the current full gate without relabeling or repeat
   );
   assert.deepEqual(
     facts.find((fact) => fact.kind === "application-evidence").requiredChecks,
-    ["npm run test:full", "git diff --check"],
+    ["npm test", "git diff --check"],
   );
-
-  write(root, "docs/receipt.md", "New current tree.\n");
+  write(root, "docs/receipt.md", "New document bytes.\n");
   recordGateChecks(root, [
-    gate(root, "npm run test:full", 1),
-    { ...gate(root), executed: false },
+    { ...initial[0], exitCode: 1, recordedAt: new Date().toISOString() },
+    { ...initial[0], executed: false, recordedAt: new Date().toISOString() },
   ]);
-  assert.equal(runHarnessEvidence(root)[0].checkId, "npm run test:full");
-  assert.deepEqual(count(), ["test:full", "test:full", "test:full"]);
+  assert.deepEqual(
+    runHarnessEvidence(root)[0],
+    initial[0],
+    "failed or unexecuted later observations do not erase a successful result",
+  );
+  assert.deepEqual(count(), ["test"]);
   write(root, "changed-source.js", "export const changed = true;\n");
-  assert.equal(runHarnessEvidence(root)[0].checkId, "npm run test:full");
-  assert.deepEqual(count(), [
-    "test:full",
-    "test:full",
-    "test:full",
-    "test:full",
-  ]);
+  git(root, "add", "changed-source.js");
+  const changed = runHarnessEvidence(root);
+  assert.notEqual(changed[0].codeIdentity, initial[0].codeIdentity);
+  assert.equal(changed[0].codeIdentity, gateCodeIdentity(root));
+  assert.deepEqual(count(), ["test", "test"]);
 });
 
 test("concurrent observers publish readable session state and persistent damage is named", async (t) => {
@@ -2783,7 +2646,7 @@ test("concurrent observers publish readable session state and persistent damage 
   );
   assert.equal(failed.status, 0, failed.stderr);
   assert.match(
-    JSON.parse(failed.stdout).hookSpecificOutput.permissionDecisionReason,
+    JSON.parse(failed.stdout).systemMessage,
     /session state unreadable/,
   );
   assert.equal(readFileSync(statePath(root, "concurrent-state"), "utf8"), "{");
@@ -3243,8 +3106,11 @@ test("budgets keep unselected caps unset and cold-start measurement ignores prod
     "Unrelated product prose\n".repeat(1000),
   );
   assert.deepEqual(measureColdStarts(root), before);
-  assert.throws(
-    () =>
+  const warnings = [];
+  const previousWarn = console.warn;
+  try {
+    console.warn = (message) => warnings.push(String(message));
+    assert.doesNotThrow(() =>
       requireBudgets([
         {
           metric: "sequenceBytes",
@@ -3252,9 +3118,28 @@ test("budgets keep unselected caps unset and cold-start measurement ignores prod
           ceiling: 8192,
           verdict: "breach",
         },
+        {
+          metric: "executor.tokens",
+          value: null,
+          ceiling: null,
+          verdict: "unset",
+        },
       ]),
-    /without a dated acceptance/,
-  );
+    );
+    requireBudgets([
+      {
+        metric: "sequenceBytes",
+        value: 8192,
+        ceiling: 8192,
+        verdict: "within",
+      },
+    ]);
+  } finally {
+    console.warn = previousWarn;
+  }
+  assert.deepEqual(warnings, [
+    "Advisory: process budget exceeded: sequenceBytes=8193 > 8192",
+  ]);
   budgets.acceptances.push({
     date: "2026-09-09",
     metric: "sequenceBytes",
@@ -3263,6 +3148,315 @@ test("budgets keep unselected caps unset and cold-start measurement ignores prod
     reason: "fixture",
   });
   assert.equal(budgetVerdict(budgets, "sequenceBytes", 8193, 8192), "accepted");
+});
+
+test("WO-132 meta counts tasks from the latest successful aggregate and preserves legacy observations", async (t) => {
+  const root = repo(t);
+  const workOrder = "WO-999";
+  write(
+    root,
+    `docs/evidence/${workOrder}/meta.json`,
+    json({ orders: [{ workOrder, metrics: { gateStepCount: 82 } }] }),
+  );
+  const gate = {
+    workOrder,
+    checkId: "npm test",
+    treeHash: "1".repeat(40),
+    recordedAt: "2026-09-15T12:00:00.000Z",
+    executed: true,
+    exitCode: 0,
+    durationMs: 1000,
+  };
+  const count = async (rows) => {
+    write(root, "docs/control/local/harness/checks.json", json(rows));
+    return (await collectMeta(root)).orders.find(
+      (row) => row.workOrder === workOrder,
+    ).metrics.gateStepCount;
+  };
+  assert.equal(
+    await count([]),
+    82,
+    "a historical snapshot remains the fallback",
+  );
+  const successful = { ...gate, freshSuites: 19 };
+  assert.equal(
+    await count([
+      successful,
+      {
+        ...gate,
+        recordedAt: "2026-09-15T12:01:00.000Z",
+        freshSuites: 2,
+        exitCode: 1,
+      },
+      {
+        ...gate,
+        recordedAt: "2026-09-15T12:02:00.000Z",
+        freshSuites: 1,
+        executed: false,
+      },
+      {
+        ...gate,
+        workOrder: "WO-998",
+        recordedAt: "2026-09-15T12:03:00.000Z",
+        freshSuites: 3,
+      },
+    ]),
+    19,
+    "failed, unexecuted and other-order runs do not replace the latest successful count",
+  );
+  assert.equal(
+    await count([
+      {
+        ...gate,
+        taskTimeline: [
+          { executed: true },
+          { executed: false },
+          { executed: true },
+        ],
+      },
+    ]),
+    2,
+    "timeline fallback counts only executed tasks",
+  );
+  assert.equal(
+    await count([
+      { ...gate, checkId: "npm run test:full" },
+      { ...gate, checkId: "suite:first" },
+      { ...gate, checkId: "suite:second" },
+      {
+        ...gate,
+        checkId: "suite:other-run",
+        recordedAt: "2026-09-14T12:00:00.000Z",
+      },
+    ]),
+    2,
+    "legacy counts stay bound to the successful aggregate timestamp",
+  );
+  assert.equal(
+    await count([{ ...gate, freshSuites: 7, reusedSuites: 75 }]),
+    82,
+    "historical reuse remains part of that gate's observed task coverage",
+  );
+  assert.equal(
+    await count([{ ...gate, freshSuites: 0 }]),
+    0,
+    "an observed zero does not become the old snapshot",
+  );
+  write(
+    root,
+    `docs/evidence/${workOrder}/meta.json`,
+    json({ orders: [{ workOrder, metrics: {} }] }),
+  );
+  assert.equal(
+    await count([]),
+    null,
+    "absent task observations remain unknown",
+  );
+});
+
+test("WO-132 cost reconciliation reads wrapped authority through collection and printed shortfalls", async (t) => {
+  const root = repo(t);
+  const workOrder = "WO-999";
+  const path = "docs/work-orders/WO-999-fixture.md";
+  const segment = join(root, "docs/control/orders/WO-999.jsonl");
+  writeFileSync(
+    segment,
+    readFileSync(segment, "utf8") +
+      [
+        { type: "ImplementationReady" },
+        { type: "VerificationRequested", verificationId: "VER-001" },
+        {
+          type: "VerificationCompleted",
+          verificationId: "VER-001",
+          verdict: "pass",
+        },
+        { type: "FinalReviewRequested", finalReviewId: "FINAL-001" },
+        {
+          type: "FinalReviewCompleted",
+          finalReviewId: "FINAL-001",
+          verdict: "pass",
+        },
+      ]
+        .map((event) =>
+          JSON.stringify({
+            schemaVersion: 1,
+            workOrderId: workOrder,
+            ...event,
+          }),
+        )
+        .join("\n") +
+      "\n",
+  );
+  const measured = {
+    workOrder,
+    checkId: "npm test",
+    treeHash: "1".repeat(40),
+    recordedAt: "2026-09-15T11:59:00.000Z",
+    durationMs: 150_000,
+    exitCode: 0,
+    executed: true,
+    evidenceRef: "fixture:wrapped-cost-product-gate",
+    executionMode: "fresh",
+  };
+  write(root, "docs/control/local/harness/checks.json", json([measured]));
+  const wrapped =
+    "adds fixture setup;\nremoves repeated checks, bringing the fresh product gate under 2.5 minutes.";
+  for (const ending of [
+    "\n\nUnrelated paragraph.",
+    "\n**Depends on:** unrelated field.",
+    "",
+  ]) {
+    write(root, path, `# WO-999\n\n**Cost:** ${wrapped}${ending}`);
+    const meta = await collectMeta(root);
+    const row = meta.costReconciliation.find(
+      (entry) => entry.workOrder === workOrder,
+    );
+    assert.equal(row.promisedRemoval, wrapped.replace("\n", " "));
+    assert.equal(row.ceilingMs, 150_000);
+    assert.equal(row.outcome, "shortfall");
+    assert.equal(row.observedRows[0].evidenceRef, measured.evidenceRef);
+    const printed = renderMeta(meta)
+      .split("\n")
+      .find((line) => line.startsWith(`${workOrder}: promised removal:`));
+    assert.ok(printed.includes(row.promisedRemoval));
+    assert.ok(printed.includes(measured.evidenceRef));
+    assert.match(printed, /PLANNING INPUT/);
+    assert.ok(!printed.includes("Unrelated") && !printed.includes("unrelated"));
+  }
+  const authority = readFileSync(
+    join(source, "docs/work-orders/WO-126-process-debt.md"),
+    "utf8",
+  );
+  const costParagraph = authority
+    .slice(authority.indexOf("**Cost:**"), authority.indexOf("**Depends on:**"))
+    .trim();
+  assert.ok(costParagraph.includes("\n") && costParagraph.includes("removes"));
+  write(root, path, authority);
+  const historical = (await collectMeta(root)).costReconciliation.find(
+    (entry) => entry.workOrder === workOrder,
+  );
+  assert.equal(
+    historical.promisedRemoval,
+    costParagraph.slice("**Cost:**".length).replace(/\s+/g, " ").trim(),
+  );
+  assert.equal(
+    historical.outcome,
+    "unknown",
+    "an estimate is not an explicit ceiling",
+  );
+  write(
+    root,
+    path,
+    "# WO-999\n\n**Cost:**\n**Depends on:** unrelated field.\n",
+  );
+  assert.equal(
+    (await collectMeta(root)).costReconciliation[0].promisedRemoval,
+    "unknown",
+  );
+});
+
+test("WO-132 cost reconciliation keeps missing measurements unknown and makes measured shortfalls planning input", () => {
+  const workOrder = "WO-999";
+  const observedAt = "2026-09-15T12:00:00.000Z";
+  const cost =
+    "Bring the fresh product gate under 2.5 minutes by removing redundant checks.";
+  const measured = {
+    workOrder,
+    checkId: "npm test",
+    recordedAt: "2026-09-15T11:59:00.000Z",
+    durationMs: 149_999,
+    exitCode: 0,
+    executed: true,
+    evidenceRef: "fixture:measured-product-gate",
+    executionMode: "fresh",
+    output: "Unneeded fixture diagnostic",
+  };
+  const absent = reconcileCost(workOrder, cost, [], observedAt);
+  assert.equal(absent.promisedRemoval, cost);
+  assert.equal(absent.observedAt, observedAt);
+  assert.equal(absent.ceilingMs, 150_000);
+  assert.equal(absent.outcome, "unknown");
+  assert.equal(absent.planningInput, null);
+  assert.deepEqual(absent.observedRows, []);
+  for (const durationMs of [undefined, null, NaN, Infinity, -1, "1000"]) {
+    const unavailable = reconcileCost(
+      workOrder,
+      cost,
+      [{ ...measured, durationMs }],
+      observedAt,
+    );
+    assert.equal(
+      unavailable.outcome,
+      "unknown",
+      `invalid duration ${durationMs}`,
+    );
+    assert.equal(unavailable.planningInput, null);
+    assert.equal(
+      unavailable.observedRows.length,
+      1,
+      "retain the observation without treating it as a measurement",
+    );
+  }
+  assert.equal(
+    reconcileCost(workOrder, cost, [{ ...measured, durationMs: 0 }], observedAt)
+      .outcome,
+    "met",
+    "an observed zero is valid",
+  );
+  const met = reconcileCost(
+    workOrder,
+    cost,
+    [
+      measured,
+      { ...measured, workOrder: "WO-998", durationMs: 300_000 },
+      { ...measured, checkId: "git diff --check", durationMs: 300_000 },
+      { ...measured, executed: false, durationMs: 300_000 },
+    ],
+    observedAt,
+  );
+  assert.equal(met.outcome, "met");
+  assert.equal(met.planningInput, null);
+  assert.equal(met.observedRows.length, 1);
+  assert.equal(met.observedRows[0].evidenceRef, measured.evidenceRef);
+  assert.ok(!JSON.stringify(met).includes(measured.output));
+  const shortfall = reconcileCost(
+    workOrder,
+    cost,
+    [{ ...measured, durationMs: 150_000 }],
+    observedAt,
+  );
+  assert.equal(
+    shortfall.outcome,
+    "shortfall",
+    "an under target is not met at the boundary",
+  );
+  assert.match(
+    shortfall.planningInput,
+    /Measured fresh gate.*promised limit.*planning/,
+  );
+  assert.equal(shortfall.observedRows[0].durationMs, 150_000);
+  const seconds = reconcileCost(
+    workOrder,
+    "Keep fresh wall-clock below 25 seconds.",
+    [],
+    observedAt,
+  );
+  assert.equal(seconds.ceilingMs, 25_000);
+  assert.equal(seconds.outcome, "unknown");
+  const ambiguous = reconcileCost(
+    workOrder,
+    "Reduce repeated process overhead.",
+    [measured],
+    observedAt,
+  );
+  assert.equal(ambiguous.ceilingMs, null);
+  assert.equal(ambiguous.outcome, "unknown");
+  assert.equal(ambiguous.planningInput, null);
+  assert.equal(
+    reconcileCost(workOrder, cost, [{ ...measured, exitCode: 1 }], observedAt)
+      .outcome,
+    "unknown",
+  );
 });
 
 test("usage projections collect known counters without transcript text, estimates or invented costs", () => {
@@ -3776,7 +3970,7 @@ test("dist publication replaces whole files, removes stale outputs and refuses s
   );
 });
 
-test("current-session token collection measures both harnesses and refuses missing, stale or foreign counters", async (t) => {
+test("strict token collectors reject unavailable sources while usage observations can record unknown counters", async (t) => {
   const root = repo(t);
   const codexDirectory = join(root, ".runtime/codex"),
     claudeDirectory = join(root, ".runtime/claude");
@@ -3864,19 +4058,26 @@ test("current-session token collection measures both harnesses and refuses missi
     () => collectSessionUsage(root, options),
     /Token measurement required/,
   );
+  const unknown = usageObservation([]);
   assert.throws(
-    () =>
-      recordUsageObservation(root, {
-        workOrder: "WO-999",
-        role: "executor",
-        observation: usageObservation([]),
-      }),
+    () => requireMeasuredUsage(unknown),
     /Token measurement required/,
   );
-  assert.equal(
-    existsSync(join(root, "docs/control/local/process/usage.jsonl")),
-    false,
+  recordUsageObservation(root, {
+    workOrder: "WO-999",
+    role: "executor",
+    startedAt: since,
+    sessionKey: usageSessionKey("current-claude"),
+    observation: unknown,
+  });
+  const unknownRow = JSON.parse(
+    readFileSync(
+      join(root, "docs/control/local/process/usage.jsonl"),
+      "utf8",
+    ).trim(),
   );
+  assert.equal(unknownRow.observation.source, "unavailable");
+  assert.equal(unknownRow.observation.usage.totalTokens, null);
 
   const message = (id, output, timestamp = "2026-09-11T10:01:00Z") => ({
     type: "assistant",
@@ -3925,7 +4126,16 @@ test("current-session token collection measures both harnesses and refuses missi
   const order = (await collectMeta(root)).orders.find(
     (row) => row.workOrder === "WO-999",
   );
-  assert.equal(order.usage.length, 1);
+  assert.equal(
+    order.usage.length,
+    2,
+    "unknown and measured source observations remain visible",
+  );
+  assert.equal(
+    order.usage.filter((row) => row.observation.source === "unavailable")
+      .length,
+    1,
+  );
   assert.equal(order.metrics.tokens, 100);
   assert.ok(
     !JSON.stringify(order.usage).includes(usageSessionKey("current-claude")),
@@ -4005,7 +4215,7 @@ test("conversation-only questions and scope additions preserve the running lifec
   );
 });
 
-test("bare executor next/fix project installed defaults and completion rejects unfinished adjacent work", async (t) => {
+test("bare executor next/fix project installed defaults and completion advises about unfinished adjacent work", async (t) => {
   const root = repo(t, { runtime: true });
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
     recursive: true,
@@ -4097,11 +4307,19 @@ test("bare executor next/fix project installed defaults and completion rejects u
   assert.match(fix.stdout, /Repair .*Adjacent Repair is equipped/s);
   assert.match(fix.stdout, /Intent to Act is equipped/);
   assert.match(fix.stdout, /next adjacent-0001: Bounded adjacent fixture/);
-  for (const action of ["implementation-ready", "repair-complete"])
-    await assert.rejects(
-      requireLifecycleEvidence(root, action, undefined, "WO-999"),
-      /unresolved adjacent work.*queued/,
+  for (const action of ["implementation-ready", "repair-complete"]) {
+    const result = await requireLifecycleEvidence(
+      root,
+      action,
+      undefined,
+      "WO-999",
     );
+    assert.ok(
+      result.advisories.some((message) =>
+        /unresolved adjacent work.*queued/.test(message),
+      ),
+    );
+  }
   apply({
     kind: "announce",
     itemId: item.id,
@@ -4130,7 +4348,7 @@ test("bare executor next/fix project installed defaults and completion rejects u
   assert.deepEqual(requirePlanningHandoffs(root, "WO-999"), []);
 });
 
-test("usage measurement is available on main only for the calling role session", async (t) => {
+test("WO-132 caller usage avoids a writer reservation and other main writes reserve normally", async (t) => {
   const root = repo(t, { runtime: true });
   emitHarness(root);
   git(root, "branch", "-m", "main");
@@ -4157,11 +4375,22 @@ test("usage measurement is available on main only for the calling role session",
     "node scripts/harness.mjs usage meter-session && touch own.txt",
     "node scripts/harness.mjs usage meter-session --extra",
   ])
-    assert.equal(
+    assert.notEqual(
       (await invoke(command)).hookSpecificOutput?.permissionDecision,
       "deny",
       command,
     );
+  assert.equal(harnessWriterView(root).reserved, true);
+  const foreign = await evaluateHarnessHook(
+    policy,
+    input(root, "PreToolUse", "another-main-session", {
+      tool_name: "Edit",
+      tool_input: { file_path: "own.txt" },
+    }),
+    root,
+    feedbackBoundary,
+  );
+  assert.equal(foreign.hookSpecificOutput?.permissionDecision, "deny");
 });
 
 test("source-reconciled overlapping usage replaces aggregation without deleting observations", async (t) => {
@@ -4333,21 +4562,32 @@ test("WO-131 operator-control precedes runtime, state, Git, gate and writer chec
         "opening control preserves the existing writer",
       );
       const other = invoke(preHook, "PreToolUse", session + ":other");
-      assert.equal(
-        other.hookSpecificOutput?.permissionDecision,
-        "deny",
+      assert.equal(other.hookSpecificOutput?.permissionDecision, undefined);
+      assert.match(other.systemMessage, /pinned runtime unavailable/);
+      assert.doesNotMatch(
+        other.systemMessage,
+        /operator-control/,
         "another session inherits no override",
+      );
+      writeFileSync(preHook, originals.get(preHook));
+      const guarded = invoke(preHook, "PreToolUse", session + ":other");
+      assert.equal(
+        guarded.hookSpecificOutput?.permissionDecision,
+        "deny",
+        "a functioning hook retains the live-gate guard",
       );
       accepts(
         invoke(sessionHook, "UserPromptSubmit", session, {
           prompt: `${mode}: off`,
         }),
       );
-      assert.equal(
-        invoke(preHook, "PreToolUse", session).hookSpecificOutput
-          ?.permissionDecision,
-        "deny",
-        "explicit exit restores normal checks",
+      const exited = invoke(preHook, "PreToolUse", session);
+      assert.equal(exited.hookSpecificOutput?.permissionDecision, undefined);
+      assert.match(exited.systemMessage, /session state unreadable/);
+      assert.doesNotMatch(
+        exited.systemMessage,
+        /operator-control/,
+        "explicit exit restores ordinary advisory handling",
       );
     } finally {
       held.release();
@@ -4356,7 +4596,7 @@ test("WO-131 operator-control precedes runtime, state, Git, gate and writer chec
   }
 });
 
-test("WO-131 generated hooks admit the printed release-close handoff and preview from main without a writer", (t) => {
+test("WO-132 generated release-close handoff and preview use the main writer reservation", (t) => {
   const root = repo(t, { runtime: true });
   git(root, "branch", "-m", "main");
   cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
@@ -4448,16 +4688,12 @@ test("WO-131 generated hooks admit the printed release-close handoff and preview
         "deny",
         command,
       );
-  const rejected = invoke("concurrent-work-requires-worktrees", "PreToolUse", {
+  const extended = invoke("concurrent-work-requires-worktrees", "PreToolUse", {
     tool_name: "Bash",
     tool_input: { command: handoff + " --force" },
   });
-  assert.equal(rejected.hookSpecificOutput?.permissionDecision, "deny");
-  assert.match(
-    rejected.hookSpecificOutput?.permissionDecisionReason,
-    /verified exclusive worktree/,
-  );
-  assert.equal(harnessWriterView(root).reserved, false);
+  assert.equal(extended.hookSpecificOutput?.permissionDecision, undefined);
+  assert.equal(harnessWriterView(root).reserved, true);
   assert.equal(readFileSync(segment, "utf8"), before);
 });
 
@@ -4532,7 +4768,7 @@ test("WO-131 generated prompt hook accepts missing runtime, damaged state and ma
     assert.equal(response.decision, undefined);
     assert.equal(response.continue, undefined);
     assert.notEqual(response.hookSpecificOutput?.permissionDecision, "deny");
-    assert.match(response.systemMessage, /prompt accepted/);
+    assert.match(response.systemMessage, /advisory:/);
     assert.match(response.systemMessage, expected);
     assert.equal(harnessWriterView(root).reserved, false);
   };
@@ -4595,7 +4831,7 @@ test("WO-131 bootstrap works without dependencies and stops before a launch hand
   assert.equal(calls.length, 2);
 });
 
-test("WO-131 missing bootstrap runtime permits reads and its exact repair command through every pre-tool hook", (t) => {
+test("WO-132 missing bootstrap runtime delegates every pre-tool hook to host permissions", (t) => {
   const root = repo(t, { runtime: true });
   emitHarness(root);
   const settings = JSON.parse(
@@ -4614,34 +4850,25 @@ test("WO-131 missing bootstrap runtime permits reads and its exact repair comman
       ),
     ]) {
       writeFileSync(path, broken);
-      for (const [tool_name, tool_input, admitted] of [
-        ["Read", { file_path: "CLAUDE.md" }, true],
-        ["Bash", { command: "node scripts/bootstrap.mjs" }, true],
-        [
-          "exec_command",
-          { cmd: "node scripts/bootstrap.mjs", workdir: root },
-          true,
-        ],
-        ["Bash", { command: "node scripts/bootstrap.mjs && git push" }, false],
-        [
-          "Bash",
-          { command: "node scripts/bootstrap.mjs", cwd: dirname(root) },
-          false,
-        ],
-        ["Edit", { file_path: "fixture.ts" }, false],
-        // WO-044: allowlisted segments compose; any other segment refuses.
-        ["Bash", { command: "pwd && git status --short" }, true],
+      for (const [tool_name, tool_input] of [
+        ["Read", { file_path: "CLAUDE.md" }],
+        ["Bash", { command: "node scripts/bootstrap.mjs" }],
+        ["exec_command", { cmd: "node scripts/bootstrap.mjs", workdir: root }],
+        ["Bash", { command: "node scripts/bootstrap.mjs && git push" }],
+        ["Bash", { command: "node scripts/bootstrap.mjs", cwd: dirname(root) }],
+        ["Edit", { file_path: "fixture.ts" }],
+        // Joined commands and unknown syntax also delegate to the host.
+        ["Bash", { command: "pwd && git status --short" }],
         [
           "Bash",
           {
             command:
               "node scripts/bootstrap.mjs; git rev-parse --show-toplevel",
           },
-          true,
         ],
-        ["Bash", { command: "pwd && ls" }, false],
-        ["Bash", { command: "pwd | cat" }, false],
-        ["Bash", { command: "pwd;" }, false],
+        ["Bash", { command: "pwd && ls" }],
+        ["Bash", { command: "pwd | cat" }],
+        ["Bash", { command: "pwd;" }],
       ]) {
         const run = spawnSync(process.execPath, [path], {
           cwd: root,
@@ -4658,16 +4885,16 @@ test("WO-131 missing bootstrap runtime permits reads and its exact repair comman
         const response = JSON.parse(run.stdout);
         assert.equal(
           response.hookSpecificOutput?.permissionDecision !== "deny",
-          admitted,
+          true,
           `${name}: ${JSON.stringify(tool_input)}`,
         );
-        // WO-044: the denial names its own hatch in the advisory's words.
-        const words = admitted
-          ? response.systemMessage
-          : response.hookSpecificOutput.permissionDecisionReason;
-        assert.match(words, /Read, Glob and Grep/, name);
-        assert.match(words, /node scripts\/bootstrap\.mjs/, name);
-        assert.match(words, /joined by && or ;/, name);
+        assert.match(response.systemMessage, /advisory:/, name);
+        assert.match(
+          response.systemMessage,
+          /node scripts\/bootstrap\.mjs/,
+          name,
+        );
+        assert.match(response.systemMessage, /host permissions decide/, name);
       }
     }
     writeFileSync(path, original);

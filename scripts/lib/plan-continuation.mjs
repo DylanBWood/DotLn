@@ -1,6 +1,11 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { committedReader, sha256 } from "./plan-subject.mjs";
+import {
+  committedReader,
+  sha256,
+  parsePlanOrder,
+  planCostDeclaration,
+} from "./plan-subject.mjs";
 import { containedRegularFile } from "./paths.mjs";
 import { LEGACY_COST_HEADER } from "./legacy-cost.mjs";
 import { dependencyMigration } from "./plan-dependency-migration.mjs";
@@ -106,7 +111,7 @@ export function checkPlanContinuation(
   root,
   judged,
   current,
-  { workspace = false } = {},
+  { workspace = false, dispositions = [] } = {},
 ) {
   if (judged.hash === current.hash) return [];
   const original = committedReader(root, judged.revision);
@@ -139,12 +144,24 @@ export function checkPlanContinuation(
       ({ name }) =>
         !orderPaths.has(name) &&
         !name.startsWith("capability:") &&
-        !(adoptsCost && name === "cost-table"),
+        !(adoptsCost && name === "cost-table") &&
+        !(judged.goalReview && ["goal-review", "cost-table"].includes(name)),
     );
   requireSamePlan(
     same(fixedInputs(judged), fixedInputs(current)),
     "sequence, vision, roles or order inventory changed",
   );
+  if (judged.goalReview)
+    requireSamePlan(
+      current.goalReview &&
+        [
+          "platformStandard",
+          "goalStandard",
+          "criticalPath",
+          "evidenceHash",
+        ].every((key) => same(judged.goalReview[key], current.goalReview[key])),
+      "observed evidence or goal standard changed",
+    );
   const updates = adoptsCost
     ? [
         {
@@ -156,9 +173,14 @@ export function checkPlanContinuation(
         },
       ]
     : [];
+  if (judged.goalReview && !same(judged.costTable, current.costTable))
+    updates.push({
+      path: "docs/planning/cost-table.json",
+      kind: "cost-observation-metadata",
+    });
   const migrateDependencies = dependencyMigration(judged, original, read);
   for (const { path, workOrderId } of judged.orders) {
-    const before = original.read(path);
+    let before = original.read(path);
     let after = read(path);
     if (
       adoptsCost &&
@@ -177,6 +199,76 @@ export function checkPlanContinuation(
         workOrderId,
         kind: "unavailable-legacy-cost-declaration",
       });
+    }
+    if (
+      judged.goalReview ||
+      dispositions.some((row) => row.workOrderId === workOrderId)
+    ) {
+      const oldOrder = parsePlanOrder(before, path, workOrderId);
+      const newOrder = parsePlanOrder(after, path, workOrderId);
+      const textHash = (text) =>
+        sha256(text?.normalize("NFKC").replace(/\s+/gu, " ").trim() ?? "");
+      if (judged.goalReview) {
+        const oldCost = planCostDeclaration(before),
+          newCost = planCostDeclaration(after);
+        if (oldCost !== newCost) {
+          requireSamePlan(
+            dispositions.some(
+              (row) =>
+                row.workOrderId === workOrderId &&
+                row.sourceCostHash === sha256(oldCost) &&
+                row.costHash === sha256(newCost) &&
+                oldOrder.criteria.some(
+                  (criterion) =>
+                    criterion.id === row.criterionId &&
+                    row.sourceCriterionHash === textHash(criterion.text),
+                ) &&
+                newOrder.criteria.some(
+                  (criterion) =>
+                    criterion.id === row.criterionId &&
+                    row.criterionHash === textHash(criterion.text),
+                ),
+            ),
+            "changed Cost declaration has no text-bound disposition",
+          );
+          if (oldCost) before = before.replace(oldCost, "");
+          if (newCost) after = after.replace(newCost, "");
+          updates.push({ path, workOrderId, kind: "disposed-cost" });
+        }
+      }
+      requireSamePlan(
+        oldOrder.criteria.length === newOrder.criteria.length,
+        "criterion inventory changed",
+      );
+      for (const oldCriterion of oldOrder.criteria) {
+        const newCriterion = newOrder.criteria.find(
+          (row) => row.id === oldCriterion.id,
+        );
+        if (oldCriterion.text === newCriterion.text) continue;
+        requireSamePlan(
+          dispositions.some(
+            (row) =>
+              row.workOrderId === workOrderId &&
+              row.criterionId === oldCriterion.id &&
+              row.sourceCriterionHash === textHash(oldCriterion.text) &&
+              row.criterionHash === textHash(newCriterion.text),
+          ),
+          "changed criterion has no text-bound disposition",
+        );
+        const start = after.indexOf("**Acceptance criteria");
+        const target = after.indexOf(newCriterion.text, start);
+        requireSamePlan(target >= start, "disposed criterion text not found");
+        after =
+          after.slice(0, target) +
+          oldCriterion.text +
+          after.slice(target + newCriterion.text.length);
+        updates.push({
+          path,
+          workOrderId,
+          kind: "disposed-criterion",
+          criterionId: oldCriterion.id,
+        });
+      }
     }
     if (before === after) continue;
     const assigned = releaseAssignment(before, after);

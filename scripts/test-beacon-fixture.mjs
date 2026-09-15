@@ -78,7 +78,11 @@ export const assertControlBeacon = (root, status) => {
         codebookVersion: 2,
         phase: status.phase,
         latestVerdict: status.latestVerdict ?? "unknown",
-        effort: status.latestAttestation?.effort ?? "unknown",
+        effort: ["low", "medium", "high", "xhigh", "max"].includes(
+          status.latestAttestation?.effort,
+        )
+          ? status.latestAttestation.effort
+          : "unknown",
         provenance: "host-projected",
       },
     });

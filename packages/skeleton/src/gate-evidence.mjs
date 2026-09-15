@@ -129,6 +129,11 @@ export function gateInputPath(root, path) {
     if (local === ".." || local.startsWith(`..${sep}`) || isAbsolute(local))
       return false;
     const matched = spelling(local);
+    if (
+      matched === "docs/control/local/harness/checks.json" ||
+      matched.startsWith("docs/control/local/harness/check-history/")
+    )
+      return true;
     if (!local || matched === ".git" || matched.startsWith(`.git${sep}`))
       return true;
     const packageName = /^packages\/([^/]+)/.exec(matched)?.[1];
@@ -174,35 +179,6 @@ export function gateInputPath(root, path) {
       throw new Error("Gate input classification unavailable");
     return ignored.status !== 0;
   });
-}
-
-const suiteDirectories = new Map();
-/** One disposable suite cache per Git common directory, including linked trees.
- * @param {string} root */
-export function suiteSuccessDirectory(root) {
-  root = realpathSync(root);
-  if (!suiteDirectories.has(root)) {
-    const common = git(root, ["rev-parse", "--git-common-dir"]).trim();
-    suiteDirectories.set(
-      root,
-      join(realpathSync(resolve(root, common)), "dotln/suite-success"),
-    );
-  }
-  return suiteDirectories.get(root);
-}
-/** Recognize literal destinations and physical aliases of trusted suite records.
- * @param {string} root
- * @param {string} path */
-export function suiteSuccessPath(root, path) {
-  const cache = prospectiveRealpath(suiteSuccessDirectory(root));
-  const target = prospectiveRealpath(
-    isAbsolute(path) ? path : `${root}${sep}${path}`,
-  );
-  const part = relative(cache, target);
-  return (
-    part === "" ||
-    (part !== ".." && !part.startsWith(`..${sep}`) && !isAbsolute(part))
-  );
 }
 
 /** @typedef {{contract: "gate-run-v1", runId: string, command: string, pid: number, startedAt: string, processStartedAt: string|null}} GateRun */
@@ -418,7 +394,7 @@ export function beginGateRun(root, command) {
 }
 
 /** @typedef {{exitCode: number, executed: boolean, output?: string, outputRef?: string, cases?: GateDiagnostic[]}} GateDiagnostic */
-/** @typedef {GateDiagnostic & {checkId: string, treeHash: string, subject: string, durationMs: number, evidenceRef: string, recordedAt: string}} GateCheck */
+/** @typedef {GateDiagnostic & {checkId: string, treeHash: string, codeIdentity?: string, subject: string, durationMs: number, evidenceRef: string, recordedAt: string}} GateCheck */
 /** @param {string} root @param {string[]} args */
 function git(root, args) {
   const run = spawnSync("git", args, {
@@ -583,6 +559,110 @@ export function gateTreeHash(root) {
 /** @param {string} root */
 export const checksPath = (root) =>
   join(root, "docs/control/local/harness/checks.json");
+
+/** Product evidence follows tracked source bytes, independent of reports and
+ * generated projections. Stage new source files before the reviewer's gate.
+ * @param {string} root @param {string} [revision] */
+export function gateCodeIdentity(root, revision) {
+  /** @type {{path:string,mode?:string,object?:string}[]} */
+  const entries = revision
+    ? git(root, ["ls-tree", "-r", "-z", revision])
+        .split("\0")
+        .filter(Boolean)
+        .map((row) => {
+          const match = /^(\d+) (?:blob|commit) ([a-f0-9]+)\t([\s\S]+)$/.exec(
+            row,
+          );
+          if (!match || !match[1] || !match[2] || !match[3])
+            throw new Error("Unsupported committed code entry");
+          return { path: match[3], mode: match[1], object: match[2] };
+        })
+    : [
+        ...new Set(git(root, ["ls-files", "-z"]).split("\0").filter(Boolean)),
+      ].map((path) => ({ path }));
+  const attributes = spawnSync(
+    "git",
+    [
+      "check-attr",
+      ...(revision ? [`--source=${revision}`] : []),
+      "-z",
+      "--stdin",
+      "dotln-generated",
+    ],
+    {
+      cwd: root,
+      encoding: "utf8",
+      input: entries.map((row) => row.path).join("\0") + "\0",
+      maxBuffer: 32 * 1024 * 1024,
+    },
+  );
+  if (attributes.status !== 0)
+    throw new Error("Generated source classification unavailable");
+  const fields = attributes.stdout.split("\0"),
+    generated = new Set();
+  for (let index = 0; index + 2 < fields.length; index += 3)
+    if (fields[index + 2] === "set") generated.add(fields[index]);
+  const selected = entries
+    .filter(
+      ({ path }) =>
+        !(
+          /^(?:docs|\.claude|\.agents)\//.test(path) ||
+          /^[^/]+\.md$/i.test(path) ||
+          generated.has(path)
+        ),
+    )
+    .sort((a, b) => a.path.localeCompare(b.path, "en"));
+  const blobs = new Map();
+  if (revision && selected.length) {
+    const result = spawnSync("git", ["cat-file", "--batch"], {
+      cwd: root,
+      input: selected.map((row) => row.object).join("\n") + "\n",
+      maxBuffer: 128 * 1024 * 1024,
+    });
+    if (result.status !== 0)
+      throw new Error("Committed code bytes unavailable");
+    const output = Buffer.from(result.stdout);
+    let offset = 0;
+    for (const row of selected) {
+      const end = output.indexOf(10, offset),
+        header = output.subarray(offset, end).toString("utf8");
+      const match = /^[a-f0-9]+ blob (\d+)$/.exec(header);
+      if (!match) throw new Error("Unsupported committed code object");
+      const size = Number(match[1]);
+      blobs.set(row.path, output.subarray(end + 1, end + 1 + size));
+      offset = end + size + 2;
+    }
+  }
+  const digest = createHash("sha256").update("dotln-code-v1\0");
+  for (const row of selected) {
+    let bytes, mode;
+    if (revision) {
+      bytes = blobs.get(row.path);
+      mode =
+        row.mode === "120000"
+          ? "link"
+          : row.mode === "100755"
+            ? "executable"
+            : "file";
+    } else {
+      const absolute = join(root, row.path),
+        stat = lstatSync(absolute, { throwIfNoEntry: false });
+      if (!stat) continue;
+      if (!stat.isFile() && !stat.isSymbolicLink())
+        throw new Error("Unsupported code identity entry");
+      bytes = stat.isSymbolicLink()
+        ? Buffer.from(readlinkSync(absolute))
+        : readFileSync(absolute);
+      mode = stat.isSymbolicLink()
+        ? "link"
+        : stat.mode & 0o111
+          ? "executable"
+          : "file";
+    }
+    digest.update(`${row.path}\0${mode}\0${bytes.length}\0`).update(bytes);
+  }
+  return digest.digest("hex");
+}
 /** The hot index stays bounded; older executable observations remain addressed
  * by tree for reuse and meter history. Suite stdout is not an evidence field.
  */
@@ -701,19 +781,24 @@ export function recordGateChecks(root, additions) {
 /** A failed attempt does not erase a later or earlier successful run at identical bytes.
  * @param {string} root @param {string} checkId @param {string} treeHash
  */
-export const findGateCheck = (root, checkId, treeHash) =>
-  readGateChecks(root, treeHash)
+export const findGateCheck = (root, checkId, treeHash) => {
+  const codeIdentity =
+    checkId === "npm test" ? gateCodeIdentity(root) : undefined;
+  return readGateChecks(root, checkId === "npm test" ? undefined : treeHash)
     .reverse()
     .find(
       (row) =>
         row.checkId === checkId &&
-        row.treeHash === treeHash &&
+        (checkId === "npm test"
+          ? row.codeIdentity === codeIdentity
+          : row.treeHash === treeHash) &&
         row.executed === true &&
         row.exitCode === 0 &&
         Number.isFinite(row.durationMs) &&
         row.durationMs >= 0 &&
         Boolean(row.evidenceRef),
     );
+};
 
 /** @param {string} root @param {string[]} required */
 export function requireGateChecks(root, required) {
@@ -728,15 +813,8 @@ export function requireGateChecks(root, required) {
   return treeHash;
 }
 
-/** The application checks a lifecycle verdict must carry at its tree. A failing
- * verification or review is an evidence-bearing report, never a green-code claim,
- * so it owes only the whitespace check; every other outcome owes the full suite
- * gate first. Both the lifecycle evidence gate and the harness evidence runner
- * read this one definition, so the required set cannot drift between them.
- * @param {string} [verdict]
- * @returns {string[]}
+/** Completion executes the whitespace check inline. Product tests are a review
+ * and publication obligation, never a transition prerequisite.
+ * @param {string} [_verdict] @returns {string[]}
  */
-export const lifecycleRequiredChecks = (verdict) =>
-  verdict === "fail"
-    ? ["git diff --check"]
-    : ["npm run test:full", "git diff --check"];
+export const lifecycleRequiredChecks = (_verdict) => ["git diff --check"];

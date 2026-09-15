@@ -35,6 +35,10 @@ import { statusProjection } from "./resume.mjs";
 import { readControl } from "./lib/control-store.mjs";
 import { constellation, prepareBeaconDisposal } from "./lib/beacons.mjs";
 import { contributionSignoffRules } from "./lib/contributions.mjs";
+import {
+  reviewedProductGate,
+  productGateBody,
+} from "./lib/release-records.mjs";
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const shellQuote = (value) => `'${value.replaceAll("'", `'\\''`)}'`;
@@ -409,7 +413,15 @@ const main = async () => {
     for (const row of mergedSubjects(mainPath))
       process.stdout.write(`  ${row.characters}: ${row.title}\n`);
     process.stdout.write(`Proposed ${[...title].length}: ${title}\n`);
-    const opened = withTemporaryBody(body, (committedBodyPath) => {
+    const gate = reviewedProductGate(subject, workOrderId);
+    const gateBlock = productGateBody(gate);
+    const publicationBody = body.includes("<!-- dotln-product-gate:start -->")
+      ? body.replace(
+          /<!-- dotln-product-gate:start -->[\s\S]*?<!-- dotln-product-gate:end -->/,
+          gateBlock,
+        )
+      : `${body.trimEnd()}\n\n${gateBlock}\n`;
+    const opened = withTemporaryBody(publicationBody, (committedBodyPath) => {
       runGit(subject, ["push", "--no-follow-tags", "-u", "origin", branch]);
       return executeGh(subject, [
         "pr",
@@ -432,7 +444,7 @@ const main = async () => {
       );
     const releaseHandoff = `  cd ${shellQuote(mainPath)}\n  ${shellQuote(process.execPath)} ${shellQuote(join(mainPath, "scripts/release.mjs"))} close ${workOrderId} --publish`;
     process.stdout.write(
-      `Pushed ${branch} and opened ${opened.stdout.trim()}\nAfter the operator merges the PR and authorizes resume: release close, run:\n${releaseHandoff}\nThe close needs network egress to the GitHub host; run it from an operator terminal with egress, after --dry-run proves reachability.\n`,
+      `Pushed ${branch} and opened ${opened.stdout.trim()}\nAfter the operator merges the PR and authorizes resume: release close, run:\n${releaseHandoff}\nThe authorized close needs network egress to the GitHub host; --dry-run proves reachability and host permissions govern execution.\n`,
     );
   } else if (action === "finish") {
     if (actionArgs.some((arg) => arg !== "--dry-run") || actionArgs.length > 1)

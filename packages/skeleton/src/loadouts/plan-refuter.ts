@@ -9,12 +9,10 @@ import {
 } from "./entropy-reducer.js";
 
 export const PLAN_REFUTER_QUESTIONS = [
-  "For each planned order: thesis-advancing, machinery, or drift?",
-  "Which vision thesis or exclusion passage supports that verdict?",
-  "Which capability row would the order move or create?",
-  "Which of the five UIFA roles gets a surface?",
-  "What is the single largest remaining gap to the one-paragraph story?",
-  "Does the horizon pass or hold, and which order and criterion must answer each hold?",
+  "For each order, which critical-path gate does it unblock and what is the NoOp cost in the records?",
+  "How do all eight system traps apply to the order's own process cost?",
+  "Does the Cost line name a removal larger than the addition?",
+  "Does failure of the mechanism degrade to the old behavior rather than refusing?",
 ] as const;
 export const PLAN_REFUTER_ALLOWED = ["repo.read*", "report.emit"] as const;
 export const PLAN_REFUTER_DENIED = [
@@ -84,7 +82,7 @@ export function planRefuterLoadout(expiresAt: number): LoadoutGraph {
           decisions: ["Contra-Auguste mask; architecture-and-semantics lens"],
           constraints: [
             "No planner narrative or previous receipts",
-            "No drift finding without a vision passage",
+            "Only observed failure or vision contradiction holds; hypothetical issues name reopening observations",
             "No model tools",
             "The clean-room floor is locked",
           ],
@@ -95,7 +93,7 @@ export function planRefuterLoadout(expiresAt: number): LoadoutGraph {
           ],
           allowedOperations: [...PLAN_REFUTER_ALLOWED],
           prohibitedOperations: [...PLAN_REFUTER_DENIED],
-          outputContract: { schema: "plan-refutation-v1" },
+          outputContract: { schema: "plan-goal-review-v1" },
         },
         authorityEnvelope: {
           ...active.authorityEnvelope,

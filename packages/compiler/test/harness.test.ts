@@ -4,6 +4,7 @@ import {
   compileFeedbackUnits,
   compileLoadout,
   lowerToHarness,
+  mergeHarnessFragments,
   requireCompiled,
   seiriEnvironment,
   seiriLoadout,
@@ -248,4 +249,55 @@ test("WO-039 profile observations, authority identity and bounded residue refuse
     ),
   );
   assert.ok(!fallback.files.some((file) => file.path.endsWith(".mjs")));
+});
+
+test("WO-132 both harness roles receive identical duties and the shared instruction includes missing-hook residue", () => {
+  const availableBundle = lower();
+  const unavailable = {
+    available: false,
+    evidence: "docs/probe.md#unobserved",
+    reason: "No project hook fired",
+  };
+  const noHooksBundle = lower(program, feedback, {
+    ...profile,
+    profileId: "fixture-codex",
+    harness: "codex-cli",
+    skills: { ...profile.skills, root: ".agents/skills" },
+    instruction: { ...profile.instruction, path: "AGENTS.md" },
+    settings: {
+      ...unavailable,
+      path: ".claude/settings.json",
+      deny: false,
+      allow: false,
+    },
+    refusal: "unavailable",
+    events: {
+      PreToolUse: unavailable,
+      PostToolUse: unavailable,
+      Stop: unavailable,
+      UserPromptSubmit: unavailable,
+    },
+  });
+  assert.equal(
+    availableBundle.files.find((file) => file.path.endsWith("SKILL.md"))!
+      .contents,
+    noHooksBundle.files.find((file) => file.path.endsWith("SKILL.md"))!
+      .contents,
+  );
+  const merged = mergeHarnessFragments([availableBundle, noHooksBundle]);
+  assert.match(
+    merged,
+    /fixture-codex: fixture-attribution: No project hook fired/,
+  );
+  assert.match(merged, /one writer per worktree on any branch, including main/);
+  assert.match(merged, /success record during a live npm test/);
+  assert.match(merged, /node scripts\/harness\.mjs evidence --stop/);
+  for (const file of availableBundle.files.filter(
+    (file) =>
+      file.path.endsWith(".mjs") && !file.path.endsWith("commit-msg.mjs"),
+  )) {
+    assert.match(file.contents, /built adapter unavailable/);
+    assert.match(file.contents, /delegated: true/);
+    assert.doesNotMatch(file.contents, /permissionDecision: "deny"/);
+  }
 });

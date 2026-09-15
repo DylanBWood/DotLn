@@ -3,7 +3,11 @@ import assert from "node:assert/strict";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
-import { evidenceArgs } from "../packages/skeleton/src/evidence-editions.mjs";
+import {
+  evidenceArgs,
+  sameEvidenceSourceContent,
+} from "../packages/skeleton/src/evidence-editions.mjs";
+import { evidenceSources } from "./lib/evidence-sources.mjs";
 import { canonicalStringify } from "@dotln/compiler";
 import { decodeLog, replay } from "@dotln/kernel";
 import { personalFeedback } from "../packages/skeleton/dist/src/loadouts/feedback.js";
@@ -117,17 +121,42 @@ if (mode === "--record-selfhost") {
   if (mode === "--write") {
     immutableWrite("feedback.json", json(report));
   } else {
-    assert.equal(
-      canonicalStringify(
-        JSON.parse(readFileSync(join(destination, "feedback.json"), "utf8")),
-      ),
-      canonicalStringify(report),
-      "feedback evidence is stale",
+    const recorded = JSON.parse(
+      readFileSync(join(destination, "feedback.json"), "utf8"),
     );
-    validateSelfhost(
-      readFileSync(join(destination, "selfhost-audit.jsonl"), "utf8"),
-      readFileSync(join(destination, "selfhost-verification.jsonl"), "utf8"),
-    );
+    const preserved =
+      canonicalStringify(recorded) !== canonicalStringify(report) &&
+      sameEvidenceSourceContent(
+        root,
+        [
+          "feedback.json",
+          "selfhost-audit.jsonl",
+          "selfhost-verification.jsonl",
+        ].map((name) => `${selection.directory}/${name}`),
+        evidenceSources.feedback,
+      );
+    if (preserved) {
+      // The old compiler/package identities remain in the historical live logs.
+      // Current regressions must still produce the same non-identity report.
+      assert.deepEqual(
+        { ...recorded, policyHash: report.policyHash, subject: report.subject },
+        report,
+        "feedback behavior changed",
+      );
+      console.log(
+        "Retained immutable live feedback audit: behavior source is unchanged apart from component release labels.",
+      );
+    } else {
+      assert.equal(
+        canonicalStringify(recorded),
+        canonicalStringify(report),
+        "feedback evidence is stale",
+      );
+      validateSelfhost(
+        readFileSync(join(destination, "selfhost-audit.jsonl"), "utf8"),
+        readFileSync(join(destination, "selfhost-verification.jsonl"), "utf8"),
+      );
+    }
   }
   console.log(
     `${mode === "--write" ? "Recorded" : "Verified"} ten passing regressions, ten removal failures, and ${report.context.savedBytes} fewer instruction bytes in the matched projection.`,

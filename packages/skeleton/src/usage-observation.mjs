@@ -366,7 +366,10 @@ export function collectSessionUsage(root, options = {}) {
 }
 /** @param {string} root @param {{workOrder: string|null, role: string, dispatch?: string, observation: ReturnType<typeof usageObservation>, startedAt?: string, durationMs?: number, ordinal?: number, sessionKey?: string, supersedes?: string[]}} row */
 export function recordUsageObservation(root, row) {
-  requireMeasuredUsage(row.observation);
+  // Missing counters are an honest observation; callers can still require a
+  // measured value explicitly when a test or comparison needs one.
+  if (row.observation.source !== "unavailable")
+    requireMeasuredUsage(row.observation);
   const planning =
     row.workOrder === null &&
     ["planner", "refuter"].includes(row.role) &&

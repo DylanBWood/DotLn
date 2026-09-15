@@ -10,6 +10,8 @@ import {
 import {
   checkPlanGate,
   overridePlanHold,
+  disposePlanHold,
+  requireChangedPlanEvidence,
   readReceipts,
   writePlanReceipt,
 } from "./lib/plan-receipts.mjs";
@@ -29,7 +31,7 @@ import {
 
 const toolRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const usage =
-  "plan subject | check | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> <actor-flags>";
+  "plan subject | check | refute [--direct] [--scope pass|full] | refute --transport claude-cli-print|codex-cli-exec|fake [--slug <label>] [--model <model>] [--effort <level>] [--dispositions <file>] [--evidence-only] | dispose <receipt-id> <hold-id> <reason> | override <receipt-id> <hold-id> <reason> --capture <ignored-intake-file> --capture-hash sha256:<digest> [actor-flags]";
 const options = (args, allowed) => {
   const out = {};
   for (let i = 0; i < args.length; i++) {
@@ -112,10 +114,20 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       dispositions,
     });
   }
-  if (command === "subject" && !rest.length) return buildPlanSubject(root);
+  if (command === "subject" && !rest.length)
+    return buildPlanSubject(root, "HEAD", { goalReview: true });
   if (command === "check" && !rest.length) {
     syncFollowups(root, { check: true });
     return checkPlanGate(root);
+  }
+  if (command === "dispose") {
+    if (rest.length !== 3)
+      throw new Error("usage: plan dispose <receipt-id> <hold-id> <reason>");
+    return disposePlanHold(root, {
+      receiptId: rest[0],
+      holdId: rest[1],
+      reason: rest[2],
+    });
   }
   if (command === "override") {
     const [receiptId, holdId, reason, ...flags] = rest;
@@ -132,9 +144,10 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     const actorArgs = Object.entries(opt)
       .filter(([key]) => !["--capture", "--capture-hash"].includes(key))
       .flat();
-    // Share the lifecycle parser, including observed-version effort checks and
-    // WO-031's explicit flag / acting-session environment account label.
-    const actor = parseActor("plan override", actorArgs);
+    // Identity is optional provenance; the captured direction supplies authority.
+    const actor = actorArgs.length
+      ? parseActor("plan override", actorArgs)
+      : undefined;
     const event = await overridePlanHold(root, {
       receiptId,
       holdId,
@@ -173,7 +186,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     throw new Error(
       "Pass-scoped refutation uses --direct; the external transport judges the full horizon",
     );
-  const subject = buildPlanSubject(root);
+  const subject = buildPlanSubject(root, "HEAD", { goalReview: true });
   const passes = planningPasses(readFileSync(join(root, PLAN_LEDGER), "utf8"));
   const latest = passes.sort((a, b) => b.date.localeCompare(a.date))[0];
   const pass = opt["--evidence-only"]
@@ -186,7 +199,8 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   if (!pass) throw new Error("no dated planning-pass ledger heading");
   if (
     pass.kind === "planning" &&
-    buildPlanSubject(root, "HEAD", { workspace: true }).hash !== subject.hash
+    buildPlanSubject(root, "HEAD", { workspace: true, goalReview: true })
+      .hash !== subject.hash
   )
     throw new Error(
       "commit the planning subject before refutation; draft bytes cannot enter a committed-only brief",
@@ -196,21 +210,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
   );
   if (history.at(-1)?.subject.hash === subject.hash)
     throw new Error("same subject cannot be re-rolled");
-  const tail = history.slice(-3);
-  if (
-    tail.length === 3 &&
-    tail.every(
-      (item) =>
-        item.result.planVerdict === "hold" &&
-        item.subject.orders.map(({ workOrderId }) => workOrderId).join(",") ===
-          tail[0].subject.orders
-            .map(({ workOrderId }) => workOrderId)
-            .join(","),
-    )
-  )
-    throw new Error(
-      "third consecutive hold stops this planning pass; operator override or next pass required",
-    );
+  requireChangedPlanEvidence(pass, subject, history);
   let dispositions = [];
   if (opt["--dispositions"]) {
     const file = resolve(root, opt["--dispositions"]);
@@ -259,8 +259,6 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
         : "fixture");
   const effort =
     opt["--effort"] ?? (name === "codex-cli-exec" ? "unknown" : "max");
-  if (!["low", "medium", "high", "xhigh", "max", "unknown"].includes(effort))
-    throw new Error("unsupported plan effort");
   const episode = await runPlanRefutation(subject, transport, model, effort);
   const receipt = await writePlanReceipt(root, {
     pass,

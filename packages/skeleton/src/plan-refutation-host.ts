@@ -8,17 +8,21 @@ import {
   type PlanRefutationRequest,
   type PlanSubject,
 } from "./plan-refutation-protocol.js";
-import { WorkerFailure, type WorkerEffort } from "./worker-protocol.js";
-import type { WorkOrderTransport } from "./worker-transport.js";
+import { WorkerFailure } from "./worker-protocol.js";
+import {
+  normalizeWorkerEffort,
+  type WorkOrderTransport,
+} from "./worker-transport.js";
 
 /** A one-shot counterpart of the blinded verification capsule host. */
 export async function runPlanRefutation(
   subject: PlanSubject,
   transport: WorkOrderTransport<PlanRefutationRequest>,
   model: string,
-  effort: WorkerEffort,
+  effort: string,
   now = Date.now,
 ) {
+  const selection = normalizeWorkerEffort(effort);
   const dispatchedAt = now();
   const compiled = compilePlanRefuter(subject.revision, dispatchedAt);
   const episodeId = `ep_plan_${subject.hash.slice(7, 23)}`;
@@ -42,7 +46,7 @@ export async function runPlanRefutation(
       subject,
       episodeId,
       model,
-      effort,
+      ...selection,
       cwd,
       profile: { profileId: "plan-refutation-v1", modelTools: [] },
     };
@@ -70,7 +74,7 @@ export async function runPlanRefutation(
       transport: transport.name,
       harnessVersion: transport.harnessVersion,
       model,
-      effort,
+      ...selection,
       selectionSource: "host-launch" as const,
       effectiveModel: "unknown",
       effectiveEffort: "unknown",

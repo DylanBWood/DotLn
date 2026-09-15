@@ -391,55 +391,25 @@ export function lowerToHarness(
   ) => {
     const path = `${hookRoot}/${name}.mjs`;
     const header = `// Origin: ${canonicalStringify(origin(names))}\n`;
-    // The escape hatch is stated in the denial itself, in the same words as
-    // the advisory an admitted call receives, so a recovering session sees
-    // what remains available instead of concluding tool use is blocked.
-    const hatchCommands = [
-      "pwd",
-      "git status --short",
-      "git status --short --branch",
-      "git rev-parse --show-toplevel",
-      "node scripts/bootstrap.mjs",
-    ];
-    const hatchText = `Still admitted while the adapter is unavailable: Read, Glob and Grep, and in this checkout exactly ${hatchCommands.join("; ")} (also joined by && or ; when every segment is one of these). Run node scripts/bootstrap.mjs to prepare this worktree.`;
-    const unavailable =
-      event === "PreToolUse"
-        ? {
-            hookSpecificOutput: {
-              hookEventName: event,
-              permissionDecision: "deny",
-              permissionDecisionReason: `DOTLN_HARNESS_REFUSED: built adapter unavailable. ${hatchText}`,
-            },
-          }
-        : event === "UserPromptSubmit"
-          ? {
-              systemMessage:
-                "DotLn: prompt accepted; built adapter unavailable. Read the repository instructions and run node scripts/bootstrap.mjs to prepare this worktree.",
-            }
-          : event === "Stop"
-            ? {
-                systemMessage:
-                  "DotLn: built adapter unavailable; lifecycle evidence remains required.",
-              }
-            : {
-                decision: "block",
-                reason: "DOTLN_HARNESS_REFUSED: built adapter unavailable",
-              };
-    const fallback =
-      event === "PreToolUse"
-        ? `let response = ${JSON.stringify(unavailable)};
+    const advisory =
+      "DotLn advisory: built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide.";
+    // This path cannot import the unavailable adapter. It only reports and
+    // appends the same bounded observation as the runtime's advisory path.
+    const fallback = `const response = { systemMessage: ${JSON.stringify(advisory)} };
 try {
-  const args = input?.tool_input ?? {};
-  const read = ["Read", "Glob", "Grep"].includes(input.tool_name);
-  const admitted = ${JSON.stringify(hatchCommands)};
-  const segments = String(args.command ?? args.cmd ?? "").split("&&").flatMap((part) => part.split(";")).map((part) => part.trim());
-  const shell = ["Bash", "exec_command"].includes(input.tool_name)
-    && (args.workdir ?? args.cwd ?? input.cwd) === input.cwd
-    && segments.length > 0 && segments.every((segment) => admitted.includes(segment));
-  if (read || shell) response = { systemMessage: ${JSON.stringify(`DotLn: built adapter unavailable. ${hatchText}`)} };
+  const fs = await import("node:fs");
+  const { join } = await import("node:path");
+  const { createHash } = await import("node:crypto");
+  const root = typeof input?.cwd === "string" ? input.cwd : process.cwd();
+  const directory = join(root, "docs/control/local/harness");
+  const key = createHash("sha256").update(String(input?.session_id ?? "unknown")).digest("hex");
+  const path = join(directory, key + ".jsonl");
+  fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
+  if (!fs.existsSync(path) || fs.lstatSync(path).isFile())
+    fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: ${JSON.stringify(event)}, advisory: response.systemMessage, delegated: true }) + "\\n", { mode: 0o600 });
 } catch {}
-process.stdout.write(JSON.stringify(response));`
-        : `process.stdout.write(${JSON.stringify(JSON.stringify(unavailable))});`;
+process.stdout.write(JSON.stringify(response));`;
+
     emit(
       path,
       `${header}let input;\ntry {\nconst { text } = await import("node:stream/consumers");\ninput = JSON.parse(await text(process.stdin));\nconst control = await (${operatorControl.toString()})(input, ${JSON.stringify(event)});\nif (control) { process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, ...(config as object) }).trim()}, feedbackBoundary, input);\n}\n} catch { ${fallback} }\n`,
@@ -612,16 +582,11 @@ process.stdout.write(JSON.stringify(response));`
         ? [facet.facetId]
         : [],
     );
-    const units = feedback.units.filter((unit) => {
-      const event = hookFor[unit.trigger];
-      const carriedByHook =
-        unit.mechanism.kind !== "prose" &&
-        event &&
-        profile.events[event].available &&
-        (unit.trigger !== "semantic-correction" ||
-          program.correctionToken !== null);
-      return role.feedbackHandlers.includes(unit.trigger) && !carriedByHook;
-    });
+    // Both harnesses receive the same duties. Hooks are a host capability,
+    // not a reason to hide a rule or its commands from either role.
+    const units = feedback.units.filter((unit) =>
+      role.feedbackHandlers.includes(unit.trigger),
+    );
     const name = `dotln-${role.name}`;
     if (!profile.skills.available) {
       residue.push({
@@ -641,6 +606,8 @@ process.stdout.write(JSON.stringify(response));`
       `<!-- Origin: ${canonicalStringify(origin([role.facetId, ...supportIds, ...units.map((unit) => unit.unitId)]))} -->`,
       "",
       ...role.procedure,
+      "",
+      HARNESS_BOUNDARIES,
       "",
       ...units.map((unit) => `${unit.unitId}: ${unit.desiredBehavior}`),
       "",
@@ -762,10 +729,24 @@ export function verifyHarnessBundle(bundle: HarnessBundle): boolean {
   );
 }
 
-/** The shared instruction symlink has one block containing profile-qualified residue. */
+/** The two repository invariants have the same operator commands in each harness. */
+const HARNESS_BOUNDARIES =
+  "DotLn reserves one writer per worktree on any branch, including main, and refuses writes to gate inputs or the success record during a live npm test. Inspect the writer with node scripts/harness.mjs writer --show; stop this session's gate with node scripts/harness.mjs evidence --stop. Claude hooks enforce these two invariants; Codex carries the same duties as role text. Every other hook judgment is advisory and host permissions decide.";
+
+/** The shared instruction symlink contains all profile-qualified residue. */
 export function mergeHarnessFragments(
   bundles: readonly HarnessBundle[],
 ): string {
   ensure(bundles.length > 0, "profile manifest required");
-  return `${HARNESS_START}\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter.\n${HARNESS_END}\n`;
+  const lines = [
+    ...new Set(
+      bundles.flatMap((bundle) =>
+        bundle.residue.items.map(
+          (item) =>
+            `${bundle.manifest.profile.profileId}: ${item.originId}: ${item.text ?? item.reason}`,
+        ),
+      ),
+    ),
+  ];
+  return `${HARNESS_START}\nCapabilities and residue: .claude/harness-manifest.json; planning: refute[ full] selects dotln-refuter.\n${HARNESS_BOUNDARIES}\n${lines.join("\n")}${lines.length ? "\n" : ""}${HARNESS_END}\n`;
 }

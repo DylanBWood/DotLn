@@ -6,8 +6,18 @@ import type { FixtureInspectionProfile } from "./execution-environment.js";
 
 export type WorkerTransportName =
   "claude-cli-print" | "codex-cli-exec" | "fake";
-export type WorkerEffort =
-  "low" | "medium" | "high" | "xhigh" | "max" | "unknown";
+/** A requested selector is a log value, not a discovery-registry gate. */
+export type WorkerEffort = string;
+export interface WorkerEffortSelection {
+  readonly effort: string;
+  readonly mode?: "subagents";
+  readonly raw?: string;
+}
+export function normalizeWorkerEffort(effort: string): WorkerEffortSelection {
+  return effort === "ultra" || effort === "ultra code"
+    ? { effort: "xhigh", mode: "subagents", raw: effort }
+    : { effort };
+}
 
 export type { CommandReceipt, ResultEnvelope } from "@dotln/kernel";
 

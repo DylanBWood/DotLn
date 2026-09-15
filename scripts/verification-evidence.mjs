@@ -1,17 +1,15 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdtempSync, readFileSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { currentEvidence } from "../packages/skeleton/src/evidence-editions.mjs";
+import {
+  currentEvidence,
+  sameEvidenceSourceContent,
+  writeEvidenceFile,
+} from "../packages/skeleton/src/evidence-editions.mjs";
+import { evidenceSources } from "./lib/evidence-sources.mjs";
 import { decodeLog, pendingCommands, replayOutbox } from "@dotln/kernel";
 import { runVerificationDemo } from "../packages/skeleton/dist/src/verification-demo.js";
 import { FakeVerificationTransport } from "../packages/skeleton/dist/src/verification-fake.js";
@@ -27,10 +25,8 @@ if (mode.length !== 1 || !["--write", "--check"].includes(mode[0]))
     "usage: verification-evidence.mjs --write|--check (build first)",
   );
 const repository = new URL("../", import.meta.url);
-const root = new URL(
-  `${currentEvidence(fileURLToPath(repository), "verification").directory}/`,
-  repository,
-);
+const selection = currentEvidence(fileURLToPath(repository), "verification");
+const root = new URL(`${selection.directory}/`, repository);
 const directory = realpathSync(
   mkdtempSync(join(tmpdir(), "dotln-verification-evidence-")),
 );
@@ -66,18 +62,32 @@ try {
     ["stale-status.json", json(staleStatus)],
     ["stale-status.txt", renderWorkerStatus(staleStatus) + "\n"],
   ]);
+  const preserved =
+    mode[0] === "--check" &&
+    [...files].some(
+      ([name, contents]) =>
+        readFileSync(new URL(name, root), "utf8") !== contents,
+    ) &&
+    sameEvidenceSourceContent(
+      fileURLToPath(repository),
+      [...files.keys()].map((name) => `${selection.directory}/${name}`),
+      evidenceSources.verification,
+    );
   for (const [name, contents] of files) {
     const path = new URL(name, root);
     if (mode[0] === "--write") {
-      mkdirSync(root, { recursive: true });
-      writeFileSync(path, contents);
-    } else
+      writeEvidenceFile(path, contents);
+    } else if (!preserved)
       assert.equal(
         readFileSync(path, "utf8"),
         contents,
         `stale verification evidence: ${name}`,
       );
   }
+  if (preserved)
+    console.log(
+      "Retained immutable verification evidence: behavior source is unchanged apart from component release labels.",
+    );
   console.log(
     `${mode[0] === "--write" ? "Recorded" : "Verified"} ${files.size} synthetic verification evidence files; planted defect, repair, staleness and replay are green.`,
   );

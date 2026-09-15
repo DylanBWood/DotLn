@@ -180,6 +180,22 @@ const field = (source, label) => {
   return body.join("\n").trim();
 };
 
+/** Exact Cost declaration bytes, including its trailing separator. Absence is
+ * an empty block, so adding or removing only this field can be disposed. */
+export const planCostDeclaration = (source) => {
+  const lines = source.match(/[^\n]*\n|[^\n]+$/g) ?? [];
+  const starts = lines.flatMap((line, i) =>
+    line.startsWith("**Cost:**") ? [i] : [],
+  );
+  if (!starts.length) return "";
+  if (starts.length !== 1) throw new Error("expected one Cost: field");
+  const start = starts[0];
+  const end = lines.findIndex(
+    (line, i) => i > start && /^(?:\*\*[A-Z][^*]+\*\*|#{1,6} )/u.test(line),
+  );
+  return lines.slice(start, end < 0 ? undefined : end).join("");
+};
+
 export const parsePlanOrder = (
   source,
   path,
@@ -216,8 +232,9 @@ export const parsePlanOrder = (
 export function buildPlanSubject(
   root,
   revision = "HEAD",
-  { workspace = false, costTable = true } = {},
+  { workspace = false, costTable = true, goalReview = false } = {},
 ) {
+  if (goalReview) return buildGoalSubject(root, revision, { workspace });
   const committed = committedReader(root, revision);
   const read = workspace
     ? (path) => {
@@ -428,6 +445,120 @@ export function buildPlanSubject(
     orders,
     deferrals,
     ...(costs ? { costTable: costs } : {}),
+  };
+}
+
+/** New judgment inputs are opt-in so every historical subject hash is stable. */
+function buildGoalSubject(root, revision, { workspace }) {
+  const subject = buildPlanSubject(root, revision, {
+    workspace,
+    costTable: false,
+  });
+  const committed = committedReader(root, revision);
+  const has = (path) =>
+    workspace
+      ? containedRegularFile(join(root, path), root)
+      : committed.paths.includes(path);
+  const read = (path) => {
+    if (!has(path))
+      throw new Error(
+        `goal-review source missing or not a contained regular file: ${path}`,
+      );
+    return workspace
+      ? readFileSync(join(root, path), "utf8")
+      : committed.read(path);
+  };
+  const guide = read("docs/product/07-execution-guide.md");
+  const platformStandard = guide.match(
+    /the point is to create a platform,[\s\S]*?before a later pass pays it again\./u,
+  )?.[0];
+  if (!platformStandard)
+    throw new Error("product 07 platform-first standard missing");
+  const goalStandard = section(guide, "Goal-aligned decisions");
+  const criticalPath = section(
+    read("docs/planning/critical-path-2026-09-08.md"),
+    "The critical path",
+  );
+  const path = "docs/planning/cost-table.json";
+  const costs = has(path) ? JSON.parse(read(path)) : null;
+  const costEvidenceStatus = costs
+    ? costs.subjectSourceHash === subject.costTable?.subjectSourceHash
+      ? "current"
+      : "stale"
+    : "unknown";
+  // Retain available meter observations when a criterion repair changes its
+  // source projection. Freshness is described, not a demand for a new judgment.
+  const observedNumber = (value) =>
+    typeof value === "number"
+      ? Number.isFinite(value)
+      : value &&
+        typeof value === "object" &&
+        Object.values(value).some(observedNumber);
+  const observations = [
+    ...(costs?.rows ?? [])
+      .filter((row) => observedNumber(row.metrics))
+      .map((row) => ({
+        id: `${path}#row:${row.workOrder}`,
+        text: JSON.stringify(row),
+      })),
+    ...(costs?.traps ?? [])
+      .filter((row) => observedNumber(row.indicators))
+      .map((row, index) => ({
+        id: `${path}#trap:${row.id ?? index}`,
+        text: JSON.stringify(row),
+      })),
+  ];
+  const evidenceValues = (value) =>
+    Array.isArray(value)
+      ? value.map(evidenceValues)
+      : value && typeof value === "object"
+        ? Object.fromEntries(
+            Object.entries(value)
+              .filter(
+                ([key]) =>
+                  !["observedAt", "collectedAt", "subjectRevision"].includes(
+                    key,
+                  ),
+              )
+              .map(([key, item]) => [key, evidenceValues(item)]),
+          )
+        : value;
+  const goalReview = {
+    platformStandard,
+    goalStandard,
+    criticalPath,
+    evidenceHash: hashParts([
+      subject.standard.theses,
+      subject.standard.exclusions,
+      observations.map((row) => ({
+        id: row.id,
+        value: evidenceValues(JSON.parse(row.text)),
+      })),
+    ]),
+    observations,
+    costEvidenceStatus,
+  };
+  const extra = [
+    ["goal-review", goalReview],
+    ...(costs ? [["cost-table", costs]] : []),
+  ];
+  return {
+    ...subject,
+    orders: subject.orders.map((order) =>
+      parsePlanOrder(read(order.path), order.path, order.workOrderId, {
+        includeCost: true,
+      }),
+    ),
+    hash: hashParts([subject.hash, ...extra]),
+    inputs: [
+      ...subject.inputs,
+      ...extra.map(([name, value]) => ({
+        name,
+        hash: sha256(JSON.stringify(value)),
+      })),
+    ],
+    ...(costs ? { costTable: costs } : {}),
+    goalReview,
   };
 }
 
