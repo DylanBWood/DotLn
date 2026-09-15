@@ -1,5 +1,23 @@
 # Current control state
 
+## WO-048
+
+- Work order: WO-048
+- Work-order path: docs/work-orders/WO-048-worker-host-on-disk-decode.md
+- Phase: final-review
+- Latest verification: VER-001
+- Verification path: docs/verifications/WO-048/VER-001.md
+- Latest verdict: pass
+- Final review: FINAL-001
+- Final-review path: docs/final-reviews/WO-048/FINAL-001.md
+- Latest attestation: harness claude-code; version 2.1.273; model claude-opus-5[1m]; effort unknown; source operator-selected; account not-applicable
+- Effort drift: none
+- Latest recordedAt: 2026-09-15T23:31:31.446Z
+- Elapsed implementation: 1691677 ms
+- Elapsed verification: 693365 ms
+- Latest checkpoint: a6c3bd6de4cc8f200f7fa5f491d9eaccb24f9a4e (restore: `git checkout refs/dotln/checkpoint/WO-048/5 -- .`)
+- Legal next actions: final-review-result
+
 ## WO-045
 
 - Work order: WO-045
