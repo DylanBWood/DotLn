@@ -12,34 +12,22 @@ until it's muscle memory; edit it when reality disagrees.
 | **Entropy Reducer** (Fable 5.1) | compiled WO-023 actor requirement; Claude Code records exact harness version, model, `max` effort, and source | Whole-repository entropy review, reproducible findings, and non-authoritative ProductSuggestion packet payloads | Implementing, filing, promoting, or verifying its own suggestions; changing tracked/control/remote/settings state  |
 | **Opus 5** (1M)                 | the active work order's `verifier` declaration                                                                | Blinded verification of Codex-built work orders                                                                 | Implementing or repairing the work it verifies                                                                     |
 | **Sonnet 5**                    | the active work order's declaration for the role it occupies                                                  | Bounded mechanical work: test scaffolds, renames, formatting, running fixtures, small fan-outs                  | Anything requiring judgment about the blueprint                                                                    |
-| **Codex** (GPT-6 Astra)         | operator-selected `max` default for Codex steps from 2026-09-04; retain the work order's declared minimums    | Execute and repair work orders                                                                                  | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
+| **Codex** (GPT-6 Astra)         | operator-selected `max` default; record the actual model and effort; order declarations are recommendations   | Execute and repair work orders                                                                                  | Acceptance verification of its own work — it reads `AGENTS.md` (symlinked to CLAUDE.md), so the same rules bind it |
 
-Three standing rules:
+Three standing rules (WO-132, 2026-09-15):
 
-- **Implementer ≠ verifier.** Codex executes and repairs; Opus 5 verifies in a
-  fresh blinded session; Fable 5 plans and performs the closing check.
-- **`Model:` line in the work order is law** (Principle 8). `Model: any` means
-  route freely — including by which meter has budget left. Never silently
-  downgrade mid-work-order; switch executors between work orders instead.
-- **Effort is declared per role and attested per completion.** The active work
-  order's `Effort:` line—not this table—sets the executor, verifier, and reviewer
-  minimums. Each completion records harness/version, model, effort, and source in
-  the control log; a below-declared or unknown-under-minimum value appends
-  nothing, and `current.md` exposes within-order drift. Through WO-001, WO-002,
-  and WO-003 the operator later reported that the Codex executor ran at **low**
-  while this table had read `xhigh`; no mechanism detected the discrepancy until
-  that disclosure on 2026-08-31.
-  Those artifacts remain unchanged under the 2026-09-02 forward-only migration.
-  The WO-003 verifier's surviving findings were mostly thin-evidence defects,
-  which is why future attribution is executable rather than prose. An
-  unrecognized label such as historical `ultracode` is `unknown` with its raw
-  spelling preserved. Discovery keeps each harness's observed `versions` in
-  oldest-to-newest order; any listed version remains valid, a new observation
-  appends rather than replaces, and a refusal lists the versions on record. The
-  documented Claude Code `ultracode` note records the operator-attested meaning
-  “dynamic workflows plus `xhigh` reasoning effort.” It never converts the
-  session label automatically: when that attestation applies, the actor still
-  supplies `--effort xhigh --source operator-attested` explicitly.
+- **Implementer ≠ verifier.** A fresh independent session verifies the work;
+  the implementer repairs its findings. Model names in the table are assignments,
+  not the source of independence.
+- **Model and effort are recommendations and observations.** Record the actual
+  harness, version, model, effort and source. Presence is required; a version,
+  discovery gap, missing readback or below-recommendation effort does not refuse
+  a lifecycle completion. `unknown` remains admissible.
+- **Preserve the reported values.** `ultra` and `ultra code` normalize to
+  `effort: xhigh`, `mode: subagents`, with the raw spelling retained. Other labels
+  remain as supplied. Historical low-effort disclosures for WO-001 through
+  WO-003 and the old `ultracode` records remain unchanged; they are not rewritten
+  under this 2026-09-15 migration.
 
 The human roles around this table are the five
 [UIFA roles](product/13-uifa-roles.md). The operator currently wears UIFA devops
@@ -49,7 +37,7 @@ assists it.
 The operator's 2026-09-04 default is GPT-6 Astra with `max` effort for all Codex
 steps unless explicitly changed. Record that selection as operator-attested
 when no effective-session readback exists; do not relabel a persisted selector
-as readback or silently replace another loadout's required actor. The
+as readback. State any change from the recommended assignment. The
 [Entropy Reducer guide](instance/entropy-reducer/README.md) supplies its separate
 manual Fable 5.1/max dispatch and the fresh refutation step.
 
@@ -73,8 +61,10 @@ waiting and interruptions, attributed to the completion actor. Overlapping work
 orders can overlap in the sums. `npm run meta` adds observed tokens and cost
 per dispatch from usage envelopes and interactive counters, with declared
 prompt costs beside them. Unknown observations remain unavailable; it records
-no raw transcript text. Unspecified token, dollar and PR-body caps remain
-unset while usage is collected.
+no raw transcript text. Missing counters are `unknown`, never a completion
+requirement. For closed orders, the meter compares promised removals with
+observed rows; a shortfall is a planning input, not a gate. Unspecified token,
+dollar and PR-body caps remain unset while usage is collected.
 
 ## Harness safety baseline
 
@@ -86,9 +76,13 @@ applies to future model names inside Codex.
 
 The standing security invariant is that a discovered credential, host, open
 port, connector, or capable tool is not authority to use it. Keep untrusted
-execution inside the enabled shell sandbox, route boundary-crossing or
-unsandboxed authority to the operator, deny unsandboxed fallback, and re-check
-effective settings after upgrades.
+execution inside the enabled shell sandbox and route boundary-crossing requests
+through the host's approval mechanism. Re-check effective settings after upgrades.
+DotLn hooks refuse only a second writer in the same worktree and a write to gate
+inputs or its success record during the live reviewer gate. All other hook
+judgments provide advice and defer to host permissions. Claude enforces those
+two hook boundaries; Codex receives the same invariants as role instructions.
+A registered writer may plan, build, bootstrap and close a release on main.
 
 At the 2026-09-01 Codex baseline, `.git` and a linked worktree's resolved Git
 directory remain protected even under `workspace-write`. A Codex session must
@@ -115,7 +109,7 @@ work order—a scope-expansion receipt for verification. Use
 synthesis. You should not need to restate the pipeline after the prefix.
 
 During an active work order, the executor finishes the breakout and continues
-through the evidence gate to ready to verify. You do not need to repeat
+to ready to verify, running the checks the changed claims need. You do not need to repeat
 `continue`; say so when you want a pause or capture only.
 A committed expansion needs explicit authority; the
 receipt names that authority, raw batch, affected ledger/product/decision/
@@ -135,11 +129,17 @@ Run `npm run plan -- start <slug>` to create the planning branch from clean
 main before writing. The planner reads the sequence and the guide's planning
 and ideation sections, then scopes candidate and source lookups. It returns
 synthesized docs, the sequence and map changes, Cost-bearing order drafts and
-a fresh subject-hashed cost table. Commit that subject before refutation.
-`planning: refute` loads the dedicated direct refuter for the latest pass;
-`planning: refute full` judges the whole horizon. The refuter reads only the
-canonical prompt, and the receipt helper validates and files the judgment.
-Finish with `npm run test:docs`, which runs no build or code suite. Planning
+the available process-cost observations. Commit that subject before refutation.
+`planning: refute` judges goal alignment for the latest pass; `planning: refute
+full` judges the whole horizon. The canonical prompt asks about critical-path
+progress and NoOp cost, all eight system traps, removal versus addition, and
+fallback behavior. Only observed failure or contradiction with vision text can
+hold a misaligned order; hypothetical issues carry reopening observations.
+There is one judgment per pass unless observed evidence changes. Use
+`npm run plan -- dispose <receipt-id> <hold-id> '<reason>'` to bind a disposition
+to the criterion text after repair, without another judgment. The
+[receipt convention](planning/refutations/README.md) supplies the exact commands.
+Finish with `npm run test:docs`, which checks current documents and their runtime projections without the product or machinery fixture suites. Planning
 retains its separate publication authority and does not activate an order.
 
 ## The loop, per work order
@@ -151,7 +151,7 @@ header, control, typed dependency, and local release evidence; use the
 and activation preflight. Never choose by the next integer. Revalidate the
 selected row against its work order and the
 current control state before activation. If the docs need updating first, do it
-here. Main checkout is the control plane — no implementation happens here.
+here. Main remains the control plane; one registered writer owns each worktree, including main. Work-order implementation uses its own worktree.
 
 `npm run work-orders -- index` refreshes the evidence view. Its `--check` form
 uses the recorded tag-object snapshot so a new release tag does not break that
@@ -172,16 +172,24 @@ still checks authority, environment, exclusive resources and other prerequisites
 the map supplies recommendations. Typed release dependencies use current local
 ancestry even when release attribution retains its recorded tag snapshot.
 
-WO-126 splits iteration from handoff. `npm test` is the fast gate (120-second
-budget); `npm run test:full` preserves the full evidence inventory through a
-bounded concurrent runner. Both report suite timings. A successful full gate
-is reused only for the exact current Git tree across sessions and release
-close. The build atomically replaces output while installed hooks retain
-pinned runtime snapshots. Stop advises once and releases the writer; lifecycle
-completion commands enforce evidence, remaining-work and authored-output duties.
-Generated and over-64-KB outputs owe validation; inherited dirt owes no byte
-read. Decisions and corrections go to the order's decisions file and generated
-index; the ledger stays with ideation and planning.
+**Current gate contract (WO-132, 2026-09-15).** `npm test` is the product
+and lifecycle gate. `npm test -- --list` names the behavior each suite protects.
+The final reviewer runs `npm test -- --review` once after the last source edit;
+`--review` includes machinery suites only when their declared sources changed.
+`npm run test:machinery` runs that inventory on demand; document-sensitive checks
+stay in `npm run test:docs`. The runner executes fresh suites against the worktree.
+There are no replica executions, per-suite success reuse or 120-second fast-gate
+budget in this contract.
+
+The success row records code identity beside the exact reviewed tree. Reports,
+control events, generated projections and release prose do not invalidate the
+code key. The passing final-review event retains that row for PR publication and
+release close. Executor and verifier checks follow the claims they need to
+establish; a transition never requires the product gate. Completion runs
+`git diff --check`, checks the report and actor fields, and appends the legal
+event. Missing session reads, authorship, usage or planning handoff observations
+are advisory. Decisions and corrections go to the order's decisions file;
+the ledger stays with ideation and planning.
 
 **2. Implement (Codex, fresh session, own worktree).**
 
@@ -244,6 +252,8 @@ resume: verify
 The phrase allocates the immutable `VER-NNN` path and prints the authoritative
 work-order path. The verifier runs the acceptance evidence, writes only that
 report, and records `pass` or `fail`; it does not repair its own findings.
+It runs the product gate when useful, not as a prerequisite to `verification-result`.
+Its report remains immutable even when later bookkeeping changes the exact tree.
 
 **4. Repair or final review.** Each state transition attempts to mint a local
 checkpoint ref before it appends, so use the chat command instead of
@@ -290,6 +300,13 @@ mergeable PR. The notes file is written even for a no-release work order so its
 reviewed prose can ride the next tag. It never merges the PR; that remains
 yours.
 
+After the last source edit, make new source files known to Git and run
+`npm test -- --review` once. Keep gate inputs and the success record unchanged
+while it runs. Reports and release prose may follow the run because they do not
+change code identity. The passing completion records the product-gate row in
+committed control history; publication checks that the reviewed code still
+matches it.
+
 Author the committed PR body and release notes as renderer-wrapped GitHub prose:
 one physical source line per paragraph or list-item paragraph, with separate
 lines retained for actual Markdown structure. Do not hand-wrap them to the
@@ -325,67 +342,43 @@ classic `/branches/main/protection` endpoint is not evidence that the branch is
 unprotected; ruleset-aware inspection is required. Project tooling therefore has
 no direct-push-to-main path.
 
-**5. Merge, clean up, and release-close.** You review and merge the PR. In the
-still-open subject session, enter:
+**5. Merge and release close.** You review and merge the PR, then enter:
 
 ```text
 resume: release close
 ```
 
-That phrase is explicit authority for the agent to run the guarded close from
-the main checkout with tag publication enabled. The command proves the PR is
-merged, fast-forwards `main`, removes the known merged worktree/branch, and then
-checks the work order's application release target. The release-surface
-preflight checks the README claim, source-triggered component versions, and
-current committed GitHub bodies. At a new boundary it reuses a passing
-`npm run test:full` result for the exact Git tree, or runs that gate when no
-matching result exists. It validates the manifest and notes, pushes only the
-annotated tag, then creates the matching GitHub Release from
-the same reviewed human layer. A strictly lower target records an honest
-no-release close; an equal target succeeds only when the existing validated tag
-names the exact commit, otherwise it refuses. If Release creation fails after
-the tag push, leave the tag untouched and rerun the same close command: the
-equal-version path creates the missing projection or refuses a body mismatch
-without editing it. Modern retries reuse the same tree-bound evidence and
-rebuild before importing compatibility fields. Historical tags retain their
-original evidence contract and are validated under that contract.
-Either successful path leaves clean `main` in the closed, between-work-orders
-state. WO-004 was the first scripted `v0.2.1` patch.
+That phrase authorizes the agent to run this command from the main checkout:
 
-For the first close attempt while the subject worktree still exists, use the
-exact `cd <main>` plus `node <subject-worktree>/scripts/release.mjs ...` command
-printed by `worktree publish` or projected by `resume release-close`. The loaded
-subject release helper delegates cleanup to its sibling subject worktree helper,
-then updates main before removing its own source. This keeps a lifecycle-policy
-change in the just-merged work order from being bypassed by stale pre-fast-
-forward helpers in main. WO-004 first required this shape because main had no
-release command at all, but the reviewed-helper rule applies to every close.
-After the subject has already been removed, a recoverable rerun uses the updated
-main checkout's ordinary `npm run release -- close WO-NNN --publish` command.
+```bash
+npm run release -- close WO-NNN --publish
+```
 
-Closeout reconciles subject intake into main with byte verification before
-teardown. Different-byte collisions keep both copies with a `.from-WO-NNN`
-suffix, and `--dry-run` prints the plan without changing either checkout.
-Harness state under `docs/control/local/harness/` is disposable; other local
-control material is preserved in main. Unknown non-disposable ignored material
-still refuses removal. Report that refusal; do not write a closeout script.
-Disposable
-outputs may leave only from root `node_modules/` or `dist/`, from
-`packages/<name>/node_modules/` or `packages/<name>/dist/`, by a `.DS_Store`
-basename, or by a `.tsbuildinfo` suffix. A matching directory segment elsewhere
-is protected, and `docs/intake/**` protection wins even when its descendants are
-named `dist` or `node_modules`. The separate backup command archives the
-checkout where it ran; it does not replace reconciliation. A failed release
-evidence gate creates no tag and must become a patch work order.
+Close proves network egress first, fast-forwards main, checks release surfaces
+and derives the tag manifest from committed source and the reviewer's passing
+`npm test` row in the final-review event. It builds missing runtime output when
+needed; it runs no suite, dependency installation or CLI smoke check. The
+manifest records code identity, the reviewed tree and the merge tree. Changed
+code refuses publication; report and release-text edits do not demand another
+gate. `--dry-run` previews the same steps and manifest without publishing.
+The host must grant the required network and GitHub permissions.
 
-The main checkout's exact `.claude/settings.local.json` is persistent local
-harness state, not release evidence. Main-checkout release close permits that
-one root path, protected `docs/intake/**`, `docs/control/local/**`, and the
-anchored disposable outputs above. This is deliberately asymmetric: a local
-settings copy in the subject worktree remains
-non-disposable and must block removal so the close path cannot erase operator
-settings. Do not generalize the exception to `.claude/**`, and do not copy or
-inspect the local file as part of closeout.
+Close creates and pushes the annotated tag, then creates the GitHub Release.
+Only afterwards does it attempt worktree finish and derived-worktree settlement.
+Cleanup blockers are reported without failing publication. Local intake and
+other protected material are preserved; ignored and untracked material is
+reported. Only tracked dirt blocks the release's clean-source requirement.
+Unknown protected material or a subject's local harness settings can prevent
+worktree removal without preventing the completed release. Do not inspect,
+copy or discard private settings to clear such a blocker.
+
+A strictly lower target is an honest no-release close; an equal target succeeds
+only when the existing validated tag names the expected commit. If GitHub
+Release creation fails after the tag push, preserve the tag and rerun the same
+command. The retry creates the missing projection or reports a differing body
+without silently editing it. Historical tags retain their original evidence
+contracts. WO-132 supersedes the earlier teardown-before-publication and fresh
+release-gate procedure; its old receipts remain historical evidence.
 
 After publication, `npm run release -- notes vX.Y.Z` renders one tag's human
 layer and `npm run release -- list` lists local release tags, commits,
@@ -565,9 +558,10 @@ npm run resume -- repair-complete --harness <harness> --harness-version <version
 npm run resume -- final-review
 npm run resume -- final-review-result pass|fail --harness <harness> --harness-version <version> --model <model> --effort <effort> --source <source>
 npm run worktree -- publish WO-00N --title '<title>' --body-file <contained-reviewed-body-path>
-cd <main> && node <subject>/scripts/release.mjs close WO-00N           # first close: reviewed helpers, no tag
-cd <main> && node <subject>/scripts/release.mjs close WO-00N --publish # first close: explicit tag + Release authority
-npm run release -- close WO-00N --publish                              # recoverable rerun after subject removal
+cd <main>
+npm run release -- close WO-00N --dry-run # preview publication and manifest
+npm run release -- close WO-00N          # prepare and validate; no publication
+npm run release -- close WO-00N --publish # explicit tag + Release authority; also retry
 ```
 
 Verifiers and final reviewers write the exact allocated report path and include
@@ -583,23 +577,19 @@ disposable human projection.
 ## End-of-workflow release task
 
 The canonical operator interface is `resume: release close` after you merge the
-final-review PR. That phrase authorizes the agent to run the exact reviewed-
-subject helper command projected by `resume release-close` or printed by
-`worktree publish`, with the main checkout as its working directory. The tool
-integrates guarded worktree finish, exact-main synchronization, lockfile
-installation, evidence, manifest/notes validation, and annotated-tag publication
-followed by creation of the matching GitHub Release from the same reviewed human
-layer. Once the subject has been removed, an interrupted close reruns through
-the updated main package command. Neither path pushes a main commit or publishes
-an npm package, binary, container, or hosted artifact.
+final-review PR. It authorizes `npm run release -- close WO-NNN --publish` from
+main. The command proves egress, synchronizes main, checks release surfaces,
+builds missing runtime output and validates the manifest against the committed
+reviewer product-gate row. It creates the annotated tag and matching GitHub
+Release, then attempts worktree finish and settlement as best effort. It runs
+no suite, install or CLI smoke check. See [step 5](#the-loop-per-work-order) for
+the evidence identity and cleanup rules.
 
-The form without `--publish` is not read-only: it still performs guarded
-merged-worktree cleanup and fast-forwards local main. At a new eligible boundary
-it also installs the lockfile and runs release evidence; lower or
-already-published targets return after their own validation. The form withholds
-tag and GitHub Release creation/publication. If you deliberately defer an
-otherwise eligible release, require a reviewed durable reason rather than
-leaving publication state ambiguous.
+Without `--publish`, close may fast-forward main and build missing runtime
+output, but creates no tag or Release. `--dry-run` previews the steps and manifest.
+A deliberately deferred eligible release needs a reviewed durable reason.
+Neither form pushes a main commit or publishes a package, binary, container or
+hosted artifact.
 
 Forward manifests and layered notes live in the annotated tag message; the
 checked-in `v0.2.0` files remain the immutable historical exception. If Release

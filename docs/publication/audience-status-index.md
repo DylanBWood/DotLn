@@ -53,6 +53,7 @@ or `deprecated`. No row is derived from or links to gitignored intake.
 | [Beacon group codebook v1 — phase counts](../product/02-domain-model.md#beacon-group-codebook-v1--phase-counts)       | everyday-ai-user, software-engineer | implemented |
 | [Beacon perception and age](../product/02-domain-model.md#beacon-perception-and-age)                                  | everyday-ai-user, software-engineer | implemented |
 | [Formal grounding](../product/02-domain-model.md#formal-grounding)                                                    | software-engineer                   | specified   |
+| [Feedback implementation through WO-131 — historical contract](../product/02-domain-model.md#feedback-implementation-through-wo-131--historical-contract) | software-engineer | implemented |
 
 ## 03 — Architecture
 
@@ -241,6 +242,7 @@ as a current blocked verdict.
 | [Product surface](../product/08-publication-compiler.md#product-surface)                                                                                             | everyday-ai-user, software-engineer | vision    |
 | [PRs and commits](../product/08-publication-compiler.md#prs-and-commits)                                                                                             | software-engineer                   | specified |
 | [Release-note edition](../product/08-publication-compiler.md#release-note-edition)                                                                                   | everyday-ai-user, software-engineer | verified  |
+| [Tag evidence after WO-132 (2026-09-15)](../product/08-publication-compiler.md#tag-evidence-after-wo-132-2026-09-15) | software-engineer | implemented |
 | [Bootstrap path](../product/08-publication-compiler.md#bootstrap-path)                                                                                               | software-engineer                   | planned   |
 
 ## 09 — Audit, records, resilience, and privacy

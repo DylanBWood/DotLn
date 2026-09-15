@@ -84,7 +84,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.17.7`. Prompt submission remains open when setup or lifecycle state fails; `analysis:` and `operator override:` provide session-scoped access for diagnosis and authorized recovery. New worktrees bootstrap before launch. Reusable fixture suites declare their files and environment, and cached replica executions carry effective candidate-read protection. Reviewed suites execute in replicas containing their declared inputs, and package successes survive unrelated script changes. Suite successes are shared across worktrees by declared inputs, with an explanation for each fresh task. Claude Code `2.1.270` and Codex CLI `0.154.0` are minimum versions; newer versions can launch the requested model without an allowlist update. Gate tasks declare bounded scheduler load, retain deadline diagnostics and record their concurrency timeline; the console collector scales its command bound from a measured solo baseline. Codex CLI `0.154.0` workers and plan refuters accept explicitly requested effort from `low` through `max`, with ignored user configuration and unknown effective readback; the [WO-125 observation](docs/discovery/codex-effort-2026-09-11.json) records all five accepted launches. Typed dependency blocks now drive the work-order index and lifecycle JSON status; activation refuses unmet entries before writing control evidence. Compiler `0.9.3` and skeleton `0.15.12` lower the [Contributor build](packages/skeleton/src/loadouts/contributor.ts) into project permissions, hooks and role skills. Process Cost and Goal Alignment are shared supports across every role. Hard lifecycle commands enforce authored-output, application and measured session-token evidence; Stop gives advice. The first-party `scope expand:` and `conversation only:` prefixes add stated work or answer a side question while preserving the current process. `npm test` is the fast gate, while `npm run test:full` supplies evidence reusable by the exact Git tree. The build preserves installed hook runtimes, and release close owns intake reconciliation. The [WO-126 receipt](docs/evidence/WO-126/README.md) records the checks, measured costs and limits. `npm run meta` reports available per-dispatch usage and process trends. Prose-only rules claim instruction delivery, and Codex uses an explicit observation adapter without claiming automatic hooks. Console `0.1.5` shares the current-evidence manifest with the gate and reads its selected feedback evidence and distinguishes advice from prevention. The [actor board](packages/console/README.md), [plan refuter](docs/planning/refutations/README.md), [independent workflow](docs/product/07-execution-guide.md#independent-workflows-and-integration), mutation corpus, inspection workers, verification matrices and Beacon senses remain available. General source-writing workers and portable starter export remain later work. Package publication controls are in [CONTRIBUTING.md](CONTRIBUTING.md); published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases).
+This source prepares DotLn `v0.18.0`. Prompt submission remains open when setup or lifecycle state fails; `analysis:` and `operator override:` provide session-scoped diagnosis and authorized recovery. Work proceeds through independent implementation, verification and final review. Lifecycle completions record their reports and actor attestations after an inline diff check; missing gate, read or usage observations are advisory. The reviewer runs `npm test -- --review` once, and PR publication and release close consume its committed success row by code identity. Reports, control records, generated projections and release prose do not invalidate that row. Release close proves egress, checks release surfaces, builds missing runtime output and publishes the annotated tag and GitHub Release without running a suite or installing dependencies; cleanup follows as best effort. DotLn hooks refuse a second writer in the same worktree and a write during the live reviewer gate, while other decisions defer to host permissions. Harness, version, model and effort are logged as supplied; `unknown` is admitted and `ultra` means `xhigh` with subagents and raw spelling. `npm test` contains product and lifecycle suites; `npm run test:machinery` runs machinery checks on demand, and `--review` selects them when their sources changed. `npm run meta` reports process observations and compares promised removals with observed outcomes as planning input. The [goal review](docs/planning/refutations/README.md) records hypothetical issues with reopening observations and reserves holds for observed failure or contradiction with vision text. The [actor board](packages/console/README.md), [independent workflow](docs/product/07-execution-guide.md#independent-workflows-and-integration), mutation corpus, inspection workers, verification matrices and Beacon senses remain available. General source-writing workers and portable starter export remain later work. Package publication controls are in [CONTRIBUTING.md](CONTRIBUTING.md); published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases).
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
@@ -136,10 +136,13 @@ and the [fresh host probe](docs/discovery/beacon-probe-2026-09-04.md).
 
 The test suite feeds that log through the same pure reactor used by the live
 host and compares complete decisions and semantic projections, including a
-negative verifier outcome. `npm test` runs the bounded fast gate: the package suites, build, format,
-harness, index, publication and process-budget checks. `npm run test:full`
-also runs lifecycle, planning, evidence and mutation checks.
+negative verifier outcome. `npm test` runs fresh product and lifecycle suites;
+`npm test -- --list` explains the operator-visible behavior each protects.
+The reviewer uses `npm test -- --review` once, adding machinery suites selected
+by changed sources. `npm run test:machinery` runs that inventory on demand, and
 `npm run test:docs` checks document-only planning and ideation dispatches.
+The former replica/cache runner and repeated exact-tree lifecycle gates are
+retired by WO-132; old evidence retains its original meaning.
 Evidence was recorded with Node 22 on macOS; the shell suites use macOS
 utilities and fail loudly elsewhere. See the
 [release index](docs/releases/README.md),
@@ -399,9 +402,10 @@ resume: release close
 The phrase resolves against an append-only control log to the active work order
 and the exact artifacts the session must read. Illegal transitions refuse and
 append nothing. Every state-changing transition attempts a recovery checkpoint
-first and records when one is unavailable. A release tag names the reviewed
-merged commit, and its annotation is where the manifest now lives, so a tag can
-never quietly describe a different commit than the one it names.
+first and records when one is unavailable. The reviewer supplies one product-gate
+row keyed by code identity. The release manifest records that row's reviewed
+tree beside the merged tree, and publication requires matching code identity.
+The annotated tag names the merged commit and carries the manifest.
 
 Driving the car while building it has consequences the docs spell out. Past
 artifacts are judged against the process that existed when they were made, and a
@@ -410,8 +414,9 @@ new guard binds new work and never rewrites history to look tidy. When the
 instrument you are using to judge is itself the thing under review, you say so.
 The receipts include the embarrassing ones: for three work orders the executor
 ran at low reasoning effort while the playbook said otherwise, nothing detected
-it, and the nominated fix is a work order that turns declared effort into an
-attested, checked fact instead of prose. One drafted work order goes further and
+it. Those reports remain historical evidence. WO-132 retains truthful
+attestations and removes version and effort refusals that later made the
+lifecycle more expensive than the work it carried. One drafted work order goes further and
 asks DotLn to compile, from its own primitives, the reviewer session that
 drafted several of the other work orders: identity, role, loadout, authority
 envelope, and all. Gödel, Escher, Bach is on the sources list for a reason.
