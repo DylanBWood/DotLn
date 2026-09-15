@@ -1,4 +1,4 @@
-# WO-045 — Positive decoders for the kernel event log and the harness hook input: malformed persisted or supplied state refuses with a typed path before anything runs (version assigned at activation)
+# WO-045 — Positive decoders for the kernel event log and the harness hook input: malformed persisted or supplied state refuses with a typed path before anything runs (v0.20.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -10,6 +10,11 @@ malformed envelopes and a host input decoder; kernel package `0.2.1` moves
 (a stricter public `decodeLog`), skeleton moves for the hook input. No
 contract version, event schema or hash preimage changes. Assigned at
 activation under the standing opt-out default.
+**Repair migration (2026-09-15):** `resume: fix` selects VER-001 F1. Published
+WO-067 `v0.19.0` is integrated as the new AC4 comparison base; this order moves
+to `v0.20.0`, with compiler `0.11.1` above WO-067's `0.11.0`, kernel `0.3.0`
+and skeleton `0.17.0`. D004 records the retiming and evidence impact. The
+original decoder obligations and the authorized entry repair remain required.
 **Nomination provenance:** the 2026-09-08 critical-path planning pass (gate
 C1, first of four bounded orders), cut at the operator's same-day correction
 that the horizon's orders be small. The audit rated this P0; the pass's
@@ -115,7 +120,10 @@ bundle regenerated with new runtime pins; the write-backs below.
    the protocol refusal shape, and every WO-039 hook fixture and live-record
    check passes unchanged over the regenerated bundle.
 4. The committed Contributor bundle differs from the activation base only in
-   runtime file hashes and the manifest; `harness check` passes.
+   runtime pins, the manifest, and the bounded generated hook entry fix that routes
+   malformed input through the typed decoder while preserving valid recovery
+   controls; `harness check` passes. Operator scope expansion, 2026-09-15:
+   explicitly authorized in response to the AC4 conflict diagnosis.
 5. Write-backs land: 02 §Memory and observation (the codec sentence),
    kernel and skeleton READMEs, the capability table's `kernel.jsonl-replay`
    row reassessed, ledger entry; publication index rows and locks if a
