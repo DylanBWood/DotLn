@@ -56,7 +56,7 @@ const act = (effect = "write", resource?: string): ActIntent => ({
   ...(resource === undefined ? {} : { resource }),
   payload: {},
 });
-// Simulates a deserialized continuation carrying a non-JSON-string effect (deserializeContinuation is an unchecked JSON.parse cast).
+// Simulates an untyped caller carrying a non-JSON-string effect past the decoder.
 const forged = (effect: unknown): ActIntent =>
   ({ kind: "Act", effect, payload: {} }) as unknown as ActIntent;
 const requireAuthorized = (

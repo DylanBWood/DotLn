@@ -9,6 +9,7 @@ import {
   evaluateCadence,
   replay,
   stepProgram,
+  decodeContinuation,
 } from "../src/index.js";
 import type {
   Event,
@@ -133,13 +134,18 @@ test("WO-017 evaluable-kind data: every listed Cadence and Program kind evaluate
   ];
   const evaluablePrograms = new Set<string>(EVALUABLE_PROGRAM_KINDS);
   for (const program of programs) {
-    if (evaluablePrograms.has(program.kind))
-      assert.doesNotThrow(() => stepProgram(program, {}, env()));
-    else
-      assert.throws(
-        () => stepProgram(program, {}, env()),
-        new RegExp(`Program ${program.kind} evaluation is deferred`),
-      );
+    const decoded = decodeContinuation(program);
+    if (evaluablePrograms.has(program.kind)) {
+      assert.ok(decoded.ok);
+      assert.doesNotThrow(() => stepProgram(decoded.value, {}, env()));
+    } else {
+      assert.equal(decoded.ok, false);
+      if (!decoded.ok)
+        assert.match(
+          decoded.message,
+          new RegExp(`program ${program.kind} evaluation is deferred`),
+        );
+    }
   }
 });
 
