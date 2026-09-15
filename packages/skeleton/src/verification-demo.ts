@@ -30,6 +30,7 @@ import { WorkerFailure, type WorkerEffort } from "./worker-protocol.js";
 import type { WorkOrderTransport } from "./worker-transport.js";
 import type { EvidenceWorkerRequest } from "./verification-protocol.js";
 import {
+  preflightVerificationRecovery,
   VerificationDriver,
   VerificationHost,
   type VerificationHostOptions,
@@ -348,7 +349,15 @@ export async function runVerificationDemo(
 }> {
   const now = options.now ?? Date.now;
   const store = new WorkerStore(options.directory);
-  store.acquire();
+  store.acquire(() =>
+    preflightVerificationRecovery(
+      store,
+      VERIFICATION_WORKSTREAM,
+      (commandId) => join(store.directory, "worktrees", commandId),
+      options.model,
+      options.effort,
+    ),
+  );
   try {
     const driver = new VerificationDriver(
       store,

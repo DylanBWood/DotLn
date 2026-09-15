@@ -96,7 +96,48 @@ export async function runWorkerDemo(
 ): Promise<{ envelope: ResultEnvelope; scenario: ScenarioResult }> {
   const now = options.now ?? Date.now;
   const store = new WorkerStore(options.directory);
-  store.acquire();
+  store.acquire(() => {
+    const recovered = new LiveReactorDriver();
+    const events = decodeLog(store.read());
+    const configured = events.find(
+      (event) => event.type === "WorkerHostConfigured",
+    );
+    if (
+      configured &&
+      canonicalStringify(configured.payload) !==
+        canonicalStringify({
+          model: options.model,
+          effort: options.effort,
+          transport: options.transport.name,
+        })
+    )
+      throw new Error(
+        "persisted worker selection differs; no silent model substitution",
+      );
+    recovered.restore(store.read());
+    // Reconstruct the original inspection request at each persist boundary;
+    // later completed state need not retain a pending command.
+    for (let index = 0; index < events.length; index++) {
+      if (events[index]!.type !== "CommandPersisted") continue;
+      recovered.restore(
+        events
+          .slice(0, index + 1)
+          .map((event) => JSON.stringify(event) + "\n")
+          .join(""),
+      );
+      new WorkerHost({
+        store,
+        driver: recovered,
+        transport: options.transport,
+        now,
+      }).preflight(
+        join(store.directory, "worktrees", expectedInspectCommandId),
+        options.fixture,
+        options.model,
+        options.effort,
+      );
+    }
+  });
   let driver: LiveReactorDriver | undefined;
   try {
     const writer = options.beacons

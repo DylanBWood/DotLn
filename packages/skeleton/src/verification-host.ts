@@ -6,8 +6,14 @@ import {
   type Event,
   type EventDraft,
   type ResultEnvelope,
+  type Command,
 } from "@dotln/kernel";
-import { canonicalStringify, type CompiledFeedback } from "@dotln/compiler";
+import {
+  assertVerificationTask,
+  canonicalStringify,
+  type CompiledFeedback,
+  type VerificationTask,
+} from "@dotln/compiler";
 import { WorkerStore } from "./worker-store.js";
 import {
   HEARTBEAT_MS,
@@ -34,6 +40,45 @@ import {
   type VerificationState,
 } from "./verification.js";
 import { seiriReactor, type RuntimeState } from "./reactor.js";
+
+/** Run inside WorkerStore.acquire's read-only preflight, including historical
+ * commands whose completion removed them from the driver's pending state. */
+export function preflightVerificationRecovery(
+  store: WorkerStore,
+  workstreamId: string,
+  cwd: (commandId: string) => string,
+  model: string,
+  effort: WorkerEffort,
+  feedback?: CompiledFeedback,
+): void {
+  new VerificationDriver(store, workstreamId);
+  for (const event of decodeLog(store.read())) {
+    if (event.type !== "CommandPersisted") continue;
+    const command = (event.payload as unknown as { command: Command }).command;
+    const capsule = (
+      command.intent.payload as unknown as { capsule: VerificationTask }
+    ).capsule;
+    assertVerificationTask(capsule);
+    const path = cwd(command.commandId);
+    const request: EvidenceWorkerRequest = {
+      ...(feedback ? { feedback } : {}),
+      kind: "evidence-worker",
+      command,
+      capsule,
+      workOrder: capsule.workOrder,
+      episodeId: "recovery_preflight",
+      model,
+      effort,
+      cwd: path,
+      profile: {
+        profileId: "verification-snapshot-v1",
+        mounts: [{ path, access: "read" }],
+      },
+    };
+    validateTransportRequest(request);
+    store.loadResult(request);
+  }
+}
 
 export class VerificationDriver {
   #log: string;
@@ -149,6 +194,28 @@ export interface VerificationHostOptions {
 /** Narrow counterpart of WorkerHost for pinned verification/repair capsules. */
 export class VerificationHost {
   constructor(private readonly options: VerificationHostOptions) {}
+  preflight(cwd: string, model: string, effort: WorkerEffort) {
+    const { driver } = this.options;
+    const pending = driver.state.pending;
+    if (!pending) throw new WorkerFailure("profile-refused");
+    const request: EvidenceWorkerRequest = {
+      ...(this.options.feedback ? { feedback: this.options.feedback } : {}),
+      kind: "evidence-worker",
+      command: pending.command,
+      capsule: pending.capsule,
+      workOrder: pending.capsule.workOrder,
+      episodeId: `${pending.command.episodeId}_attempt_${pending.attempts.length + 1}`,
+      cwd,
+      model,
+      effort,
+      profile: {
+        profileId: "verification-snapshot-v1",
+        mounts: [{ path: cwd, access: "read" }],
+      },
+    };
+    validateTransportRequest(request);
+    return { request, cached: driver.store.loadResult(request) };
+  }
   private expire(): void {
     const { driver, now } = this.options;
     const pending = driver.state.pending;
@@ -180,25 +247,9 @@ export class VerificationHost {
       !verificationAuthorization(driver.state, now()).authorized
     )
       throw new WorkerFailure("profile-refused");
+    const { request, cached } = this.preflight(cwd, model, effort);
+    const episodeId = request.episodeId;
     this.expire();
-    const episodeId = `${pending.command.episodeId}_attempt_${pending.attempts.length + 1}`;
-    const request: EvidenceWorkerRequest = {
-      ...(this.options.feedback ? { feedback: this.options.feedback } : {}),
-      kind: "evidence-worker",
-      command: pending.command,
-      capsule: pending.capsule,
-      workOrder: pending.capsule.workOrder,
-      episodeId,
-      cwd,
-      model,
-      effort,
-      profile: {
-        profileId: "verification-snapshot-v1",
-        mounts: [{ path: cwd, access: "read" }],
-      },
-    };
-    validateTransportRequest(request);
-    const cached = driver.store.loadResult(request);
     if (
       !cached &&
       driver.state.pending!.activeEpisode &&
