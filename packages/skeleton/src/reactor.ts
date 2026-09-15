@@ -4,6 +4,7 @@ import {
   authorize,
   commandId,
   decideProgram,
+  decodeContinuation,
   evaluateCadence,
   guardQueuedPulse,
   type ActIntent,
@@ -12,6 +13,8 @@ import {
   type Command,
   type Decision,
   type Event,
+  type ExecutableProgramV1,
+  type ProgramDecision,
   type EventDraft,
   type JsonValue,
   type KernelEnv,
@@ -269,13 +272,20 @@ const authorityFromState = (state: RuntimeState): AuthorityEnvelope =>
 const revocationsFromState = (state: RuntimeState): readonly Event[] =>
   state.revocationEvents as unknown as readonly Event[];
 
-const programFromState = (state: RuntimeState): Program.T => {
-  if (state.program === null)
-    throw new Error("runtime state lacks continuation");
-  return state.program as unknown as Program.T;
+const persistedContinuation = (
+  value: unknown,
+  location: string,
+): ExecutableProgramV1 => {
+  const decoded = decodeContinuation(value);
+  if (!decoded.ok) throw new Error(`${location}: ${decoded.message}`);
+  return decoded.value;
 };
+const programFromState = (state: RuntimeState): ExecutableProgramV1 =>
+  persistedContinuation(state.program, "runtime program");
 
-const requiredContinuation = (decision: Decision<RuntimeState>): Program.T => {
+const requiredContinuation = (
+  decision: ProgramDecision<RuntimeState>,
+): ExecutableProgramV1 => {
   if (decision.continuation === undefined)
     throw new Error("kernel program decision lacks a continuation");
   return decision.continuation;
@@ -301,7 +311,7 @@ const verificationProgram = (
   workOrder: WorkOrder,
   at: number,
   verificationSubject: string,
-): Program.T => {
+): ExecutableProgramV1 => {
   const inspect = inspectIntent(workOrder);
   const id = commandId(WORKSTREAM, EPISODE, 1, 0);
   return Program.Invoke(id, inspect, {
@@ -1330,6 +1340,7 @@ const react = (
 };
 
 export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
+  if (state.program !== null) programFromState(state);
   if (event.type === "FeedbackAuditOpened" || state.feedback !== undefined)
     return feedbackDecision(state, event);
   if (state.verification !== undefined)
@@ -1452,7 +1463,7 @@ export interface VerificationState {
   readonly authority: AuthorityEnvelope | null;
   readonly revocations: readonly Event[];
   readonly pending: VerificationPending | null;
-  readonly continuation: Program.T;
+  readonly continuation: ExecutableProgramV1;
   readonly next:
     | "unopened"
     | "verify"
@@ -2053,7 +2064,14 @@ export const verificationStateFromRuntime = (
 ): VerificationState => {
   if (state.verification === undefined)
     throw new Error("runtime lacks a verification workstream");
-  return state.verification as unknown as VerificationState;
+  const verification = state.verification as unknown as VerificationState;
+  return {
+    ...verification,
+    continuation: persistedContinuation(
+      verification?.continuation,
+      "verification continuation",
+    ),
+  };
 };
 function verificationDecision(
   state: RuntimeState,

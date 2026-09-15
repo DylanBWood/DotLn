@@ -7,6 +7,7 @@ import {
   type Decision,
   type DecisionTrace,
   type Event,
+  type ExecutableProgramV1,
   type EventDraft,
   type EventEnvelope,
   type JsonValue,
@@ -131,21 +132,27 @@ export function evaluateCadence(
 }
 
 export interface ProgramStep {
-  readonly residual: Program.T;
+  readonly residual: ExecutableProgramV1;
   readonly emitted: readonly EventDraft[];
   readonly intents: readonly ActIntent[];
-  readonly waits: readonly Program.Await[];
+  readonly waits: readonly Extract<ExecutableProgramV1, { kind: "Await" }>[];
 }
-export const EVALUABLE_PROGRAM_KINDS = [
+const defineExecutableKinds = <
+  const Kinds extends readonly ExecutableProgramV1["kind"][],
+>(
+  kinds: Kinds &
+    ([ExecutableProgramV1["kind"]] extends [Kinds[number]] ? unknown : never),
+): Kinds => kinds;
+export const EVALUABLE_PROGRAM_KINDS = defineExecutableKinds([
   "Done",
   "Emit",
   "Invoke",
   "Await",
   "Guard",
   "Sequence",
-] as const satisfies readonly Program.T["kind"][];
+] as const);
 export function stepProgram(
-  program: Program.T,
+  program: ExecutableProgramV1,
   state: JsonValue,
   env: KernelEnv,
   event?: Event,
@@ -229,18 +236,19 @@ export function stepProgram(
       };
     }
     default:
-      throw new Error(`Program ${program.kind} evaluation is deferred`);
+      throw new Error("Invalid executable program");
   }
 }
 
 export interface ProgramDecision<
   S extends JsonValue = JsonValue,
 > extends Decision<S> {
+  readonly continuation: ExecutableProgramV1;
   readonly emitted: readonly EventDraft[];
-  readonly waits: readonly Program.Await[];
+  readonly waits: readonly Extract<ExecutableProgramV1, { kind: "Await" }>[];
 }
 export function decideProgram<S extends JsonValue>(
-  program: Program.T,
+  program: ExecutableProgramV1,
   state: S,
   env: KernelEnv,
   event?: Event,
@@ -267,8 +275,6 @@ export function decideProgram<S extends JsonValue>(
 
 export const serializeContinuation = (program: Program.T): string =>
   JSON.stringify(program);
-export const deserializeContinuation = (value: string): Program.T =>
-  JSON.parse(value) as Program.T;
 
 export function stableHash(value: string): string {
   let h = 0xcbf29ce484222325n;

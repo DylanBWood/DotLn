@@ -61,6 +61,19 @@ Pinned Program payloads use a discriminant `kind` and are exactly: `Done {}`;
 `Compensate { program, compensation }`. The compensation applies only to its
 paired `program`.
 
+The executable subset is `ExecutableProgramV1`: Done, Emit, Invoke, Await,
+Guard and Sequence, with every child and Invoke result branch recursively
+constrained to the same type. `Program.T` remains the full authoring grammar.
+`stepProgram` and `decideProgram` accept only the executable type and return
+executable residuals. `EVALUABLE_PROGRAM_KINDS` exhaustively reflects its kinds.
+`decodeContinuation(unknown)` accepts serialized or parsed JSON and returns
+`DecodeResult<ExecutableProgramV1>`; a deferred kind or malformed field is refused
+with a code, path and message before the skeleton folds persisted runtime or
+verification continuations. Event drafts, Act commands, patterns, predicate
+references and complete Cadence timeout shapes are validated. Registry lookup
+and cadence evaluation retain their existing execution responsibilities.
+`serializeContinuation` and all event/hash representations remain unchanged.
+
 Pinned EventEnvelope schema version 1 is
 `{ schemaVersion: 1, eventId, type, occurredAt, actorId, workstreamId, episodeId?, correlationId?, causationId?, payload }`;
 timestamps are numeric virtual/log time and payload is JSON data. The append

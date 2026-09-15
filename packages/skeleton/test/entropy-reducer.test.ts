@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   authorize,
   stepProgram,
+  decodeContinuation,
   type ActIntent,
   type AuthorityEnvelope,
 } from "@dotln/kernel";
@@ -294,10 +295,12 @@ test("WO-023 AC1 assembles the full deferred Program and once cadence", () => {
     source: "git ls-files -z",
     exclude: ["docs/intake/**"],
   });
+  const decodedCensus = decodeContinuation(census);
+  assert.ok(decodedCensus.ok);
   assert.throws(
     () =>
       stepProgram(
-        census,
+        decodedCensus.value,
         {},
         { now: DISPATCHED_AT, rngState: 1, predicates: {} },
         {

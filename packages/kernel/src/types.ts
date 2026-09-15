@@ -132,25 +132,66 @@ export namespace Program {
     readonly compensation: T;
   }
   export const Done = (): Done => ({ kind: "Done" });
-  export const Emit = (event: EventDraft, next: T): Emit => ({
-    kind: "Emit",
-    event,
-    next,
-  });
-  export const Invoke = (
+  export function Emit(
+    event: EventDraft,
+    next: ExecutableProgramV1,
+  ): Extract<ExecutableProgramV1, { kind: "Emit" }>;
+  export function Emit(event: EventDraft, next: T): Emit;
+  export function Emit(event: EventDraft, next: T): Emit {
+    return {
+      kind: "Emit",
+      event,
+      next,
+    };
+  }
+
+  export function Invoke(
+    commandId: string,
+    command: ActIntent,
+    continuationByResult: Readonly<Record<string, ExecutableProgramV1>>,
+  ): Extract<ExecutableProgramV1, { kind: "Invoke" }>;
+  export function Invoke(
     commandId: string,
     command: ActIntent,
     continuationByResult: Readonly<Record<string, T>>,
-  ): Invoke => ({ kind: "Invoke", commandId, command, continuationByResult });
-  export const Await = (
+  ): Invoke;
+  export function Invoke(
+    commandId: string,
+    command: ActIntent,
+    continuationByResult: Readonly<Record<string, T>>,
+  ): Invoke {
+    return { kind: "Invoke", commandId, command, continuationByResult };
+  }
+
+  export function Await(
+    pattern: EventPattern,
+    timeout: Cadence.T,
+    next: ExecutableProgramV1,
+  ): Extract<ExecutableProgramV1, { kind: "Await" }>;
+  export function Await(
     pattern: EventPattern,
     timeout: Cadence.T,
     next: T,
-  ): Await => ({ kind: "Await", pattern, timeout, next });
-  export const Sequence = (programs: readonly T[]): Sequence => ({
-    kind: "Sequence",
-    programs,
-  });
+  ): Await;
+  export function Await(
+    pattern: EventPattern,
+    timeout: Cadence.T,
+    next: T,
+  ): Await {
+    return { kind: "Await", pattern, timeout, next };
+  }
+
+  export function Sequence(
+    programs: readonly ExecutableProgramV1[],
+  ): Extract<ExecutableProgramV1, { kind: "Sequence" }>;
+  export function Sequence(programs: readonly T[]): Sequence;
+  export function Sequence(programs: readonly T[]): Sequence {
+    return {
+      kind: "Sequence",
+      programs,
+    };
+  }
+
   export const Choose = (
     policyRef: string,
     alternatives: readonly T[],
@@ -163,11 +204,24 @@ export namespace Program {
     kind: "Race",
     programs,
   });
-  export const Guard = (
+  export function Guard(
+    conditionRef: PredicateRef,
+    whenTrue: ExecutableProgramV1,
+    whenFalse: ExecutableProgramV1,
+  ): Extract<ExecutableProgramV1, { kind: "Guard" }>;
+  export function Guard(
     conditionRef: PredicateRef,
     whenTrue: T,
     whenFalse: T,
-  ): Guard => ({ kind: "Guard", conditionRef, whenTrue, whenFalse });
+  ): Guard;
+  export function Guard(
+    conditionRef: PredicateRef,
+    whenTrue: T,
+    whenFalse: T,
+  ): Guard {
+    return { kind: "Guard", conditionRef, whenTrue, whenFalse };
+  }
+
   export const Repeat = (
     program: T,
     stopConditionRef: PredicateRef,
@@ -178,6 +232,24 @@ export namespace Program {
     compensation,
   });
 }
+
+/** Runtime v1 grammar; every continuation edge stays executable. */
+export type ExecutableProgramV1 =
+  | Program.Done
+  | (Omit<Program.Emit, "next"> & { readonly next: ExecutableProgramV1 })
+  | (Omit<Program.Invoke, "continuationByResult"> & {
+      readonly continuationByResult: Readonly<
+        Record<string, ExecutableProgramV1>
+      >;
+    })
+  | (Omit<Program.Await, "next"> & { readonly next: ExecutableProgramV1 })
+  | (Omit<Program.Guard, "whenTrue" | "whenFalse"> & {
+      readonly whenTrue: ExecutableProgramV1;
+      readonly whenFalse: ExecutableProgramV1;
+    })
+  | (Omit<Program.Sequence, "programs"> & {
+      readonly programs: readonly ExecutableProgramV1[];
+    });
 
 export namespace Cadence {
   export type T =

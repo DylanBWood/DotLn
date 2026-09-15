@@ -4,13 +4,14 @@ import {
   Cadence,
   Program,
   decideProgram,
-  deserializeContinuation,
+  decodeContinuation,
   serializeContinuation,
   stepProgram,
 } from "../src/index.js";
 import type {
   ActIntent,
   Event,
+  ExecutableProgramV1,
   EventDraft,
   EventEnvelope,
   JsonValue,
@@ -65,7 +66,7 @@ const invokeIntent: ActIntent = {
   effect: "model.call",
   payload: { prompt: "original" },
 };
-const invokeProgram = (): Program.Invoke =>
+const invokeProgram = () =>
   Program.Invoke("cmd_1", invokeIntent, { ok: Program.Done() });
 const flagRef: PredicateRef = {
   registryId: "state.flag",
@@ -85,7 +86,10 @@ function assertNoFunctions(value: unknown, path: string): void {
 
 // Round-trip discipline applied to every reachable residual: no closures
 // before serialization, JSON.stringify never undefined, lossless round trip.
-function roundTrip(residual: Program.T, label: string): Program.T {
+function roundTrip(
+  residual: ExecutableProgramV1,
+  label: string,
+): ExecutableProgramV1 {
   assertNoFunctions(residual, label);
   const serialized = serializeContinuation(residual);
   assert.equal(
@@ -93,7 +97,9 @@ function roundTrip(residual: Program.T, label: string): Program.T {
     "string",
     `${label}: serializeContinuation produced ${typeof serialized}`,
   );
-  const revived = deserializeContinuation(serialized);
+  const decoded = decodeContinuation(serialized);
+  assert.ok(decoded.ok, decoded.ok ? "" : decoded.message);
+  const revived = decoded.value;
   assert.deepEqual(revived, residual, `${label}: round trip lost information`);
   return revived;
 }
