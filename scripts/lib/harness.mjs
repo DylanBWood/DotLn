@@ -87,6 +87,7 @@ export function harnessInstallation(options = {}) {
     "packages/skeleton/dist/src/gate-evidence.mjs",
     "packages/skeleton/dist/src/gate-deadlines.mjs",
     "packages/skeleton/dist/src/usage-observation.mjs",
+    "packages/skeleton/dist/src/writer-teardown.mjs",
     "packages/skeleton/dist/src/reactor.js",
   ].map((path) => ({
     path,

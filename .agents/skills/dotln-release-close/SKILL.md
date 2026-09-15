@@ -9,10 +9,11 @@ Process Cost: At entry/handoff run `node scripts/harness.mjs usage <session>`. R
 Goal Alignment: Read `docs/product/07-execution-guide.md#Goal-aligned decisions`. Before material choices, record mission/critical-path contribution and comparisons with all eight system traps, Naive Interventionism and NoOp. Revisit changed evidence/scope; judge outcomes at handoff. Scale detail to consequence.
 Verify main's cwd/Git root; run `npm run resume --silent -- status --json`.
 `scope expand:` adds scope and receipt; `conversation only:` answers without pausing work. Keep effect limits; only explicit pause/stop interrupts. Neither appends an event.
+Never guess: an unobserved value is `unknown`, `untested` or `blocked`; each claim names its source or what is missing.
 Read: `@work-order`
 Read: `@citations`
 Read: `@final-review`
-Use main's exact release-close/worktree-publish handoff; use its helper after removal or partial publication.
+Use main's exact release-close/worktree-publish handoff; use its helper after removal or partial publication. It needs network egress to the GitHub host: run it from an operator terminal with egress after `--dry-run` proves reachability; a sandboxed session cannot publish.
 Helper checks release prerequisites, reconciles intake and retains state/collisions in ignored retained/WO-NNN. Keep terms.txt and gate-evidence handoff. `--dry-run` previews. Report refusals; never force teardown/repeat transitions.
 Publish only that tag/Release; report no-release/remaining work. No Release edits, main pushes, PR merges, package/binary publication or settings changes.
 

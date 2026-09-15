@@ -26,7 +26,10 @@ export interface HarnessProfile {
   readonly harness: "claude-code" | "codex-cli";
   readonly observedVersion: string;
   readonly tools?: Readonly<
-    Record<string, "read" | "write" | "shell" | "spawn" | "interaction">
+    Record<
+      string,
+      "read" | "write" | "shell" | "spawn" | "stop" | "interaction"
+    >
   >;
   readonly events: Readonly<Record<HarnessEvent, HarnessObservation>>;
   readonly skills: HarnessObservation & { readonly root: string };
@@ -388,14 +391,24 @@ export function lowerToHarness(
   ) => {
     const path = `${hookRoot}/${name}.mjs`;
     const header = `// Origin: ${canonicalStringify(origin(names))}\n`;
+    // The escape hatch is stated in the denial itself, in the same words as
+    // the advisory an admitted call receives, so a recovering session sees
+    // what remains available instead of concluding tool use is blocked.
+    const hatchCommands = [
+      "pwd",
+      "git status --short",
+      "git status --short --branch",
+      "git rev-parse --show-toplevel",
+      "node scripts/bootstrap.mjs",
+    ];
+    const hatchText = `Still admitted while the adapter is unavailable: Read, Glob and Grep, and in this checkout exactly ${hatchCommands.join("; ")} (also joined by && or ; when every segment is one of these). Run node scripts/bootstrap.mjs to prepare this worktree.`;
     const unavailable =
       event === "PreToolUse"
         ? {
             hookSpecificOutput: {
               hookEventName: event,
               permissionDecision: "deny",
-              permissionDecisionReason:
-                "DOTLN_HARNESS_REFUSED: built adapter unavailable",
+              permissionDecisionReason: `DOTLN_HARNESS_REFUSED: built adapter unavailable. ${hatchText}`,
             },
           }
         : event === "UserPromptSubmit"
@@ -418,10 +431,12 @@ export function lowerToHarness(
 try {
   const args = input?.tool_input ?? {};
   const read = ["Read", "Glob", "Grep"].includes(input.tool_name);
+  const admitted = ${JSON.stringify(hatchCommands)};
+  const segments = String(args.command ?? args.cmd ?? "").split("&&").flatMap((part) => part.split(";")).map((part) => part.trim());
   const shell = ["Bash", "exec_command"].includes(input.tool_name)
     && (args.workdir ?? args.cwd ?? input.cwd) === input.cwd
-    && ["pwd", "git status --short", "git status --short --branch", "git rev-parse --show-toplevel", "node scripts/bootstrap.mjs"].includes(String(args.command ?? args.cmd ?? ""));
-  if (read || shell) response = { systemMessage: "DotLn: built adapter unavailable; read access and node scripts/bootstrap.mjs remain available." };
+    && segments.length > 0 && segments.every((segment) => admitted.includes(segment));
+  if (read || shell) response = { systemMessage: ${JSON.stringify(`DotLn: built adapter unavailable. ${hatchText}`)} };
 } catch {}
 process.stdout.write(JSON.stringify(response));`
         : `process.stdout.write(${JSON.stringify(JSON.stringify(unavailable))});`;

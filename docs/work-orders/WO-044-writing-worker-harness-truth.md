@@ -1,4 +1,4 @@
-# WO-044 — Writing-worker and unattended-launch harness truth: observe what the installed harnesses do when a tool-enabled worker runs in a foreign worktree under that worktree's own hooks, and when a resident process launches them with no operator present (version assigned at activation)
+# WO-044 — Writing-worker and unattended-launch harness truth: observe what the installed harnesses do when a tool-enabled worker runs in a foreign worktree under that worktree's own hooks, and when a resident process launches them with no operator present (v0.17.7)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -163,3 +163,75 @@ benchmarking; the operator's repositories.
 1. The operator runs the live rows from an outside terminal, as WO-039's
    smokes were run.
 2. An unavailable row is a valid result; the next orders design from it.
+
+## Execution record
+
+Operator amendments, 2026-09-14. The operator's `scope expand:` received
+during `resume: next` on 2026-09-14 adds the repairs below to this order. They are execution authority beside the
+unchanged probe deliverable; the pasted analysis that followed the operator's
+own defect list is context supplied for verification, not instruction. Each
+repair is a follow-up queue item with its cause, paths, checks and priority,
+and its material choices are receipted in
+[decisions](../evidence/WO-044/decisions.md).
+
+9. Release-close reuse keys tracked files by content and Git's executable bit
+   only, so a byte-identical checkout with different permission bits reuses
+   the handed-off successes; the reuse fixture reproduces main's 0600 copy.
+10. Worktree removal names every blocking ignored entry with its
+    classification and a lane-specific remedy; a nested repository is
+    classified explicitly, an empty one is disposable scaffolding, a
+    non-empty one is preserved as a directory unit; the feedback verifier
+    removes its mount scaffolding.
+11. `release close --dry-run` checks origin reachability first and the
+    printed handoffs, the release-close role and the guide state the egress
+    requirement.
+12. Closing an order prunes and removes its derived detached worktrees when
+    they are clean, idle and hold only disposable ignored material, and
+    reports every remaining one with its blocker.
+13. The generated adapter-unavailable denial names the admitted read tools
+    and exact commands, and admits an allowlisted leading segment of a
+    compound command only when every later segment is allowlisted.
+14. Every generated role skill in both harnesses carries the shared rule that
+    guessing is refused: an unobserved value is `unknown`, `untested` or
+    `blocked`, and a claim names its source or what is missing.
+
+Criterion 8's exclusion of runtime source and generated configuration changes
+is lifted for the paths these items name; `npm test` green, `git diff --check`
+clean and no user setting or dependency change remain required. The release
+classification becomes patch across the changed components, assigned by
+`npm run release -- prepare --local`.
+
+Operator amendments, 2026-09-14 (second scope expansion, during `resume: fix`).
+The operator's `scope expand:` received during this repair adds two defects to
+this order, and an `operator override:` directs that workflows be made available.
+These are execution authority beside the VER-002 repair (F1, F2); their material
+choices are receipted in [decisions](../evidence/WO-044/decisions.md) D013–D016.
+
+15. The harness evidence runner honours the lifecycle verdict contract: a failing
+    verification or review records only `git diff --check` (via `npm run harness
+    -- evidence --fail`) instead of running the full suite gate a failing verdict
+    does not require, through one shared `lifecycleRequiredChecks(verdict)` that
+    both the lifecycle gate and the runner read. The default gate is unchanged and
+    the pass path still requires `test:full`. The reported "gate over and over"
+    loop is a convention violation of the already-documented freeze-at-cutoff rule,
+    not a code defect; `--fail` cheapens even a violated run.
+16. The Workflow tool is classified as a session spawn in the generated permission
+    guard, so multi-agent orchestration is admitted in normal mode exactly as it
+    already is for `Agent` and `Task`.
+
+The gate reuse defect the operator named ("nothing was reused") is a reuse-key
+contract change — the application-level `test:full` check keyed to the whole tree
+hash including docs, and fixture suites declaring the whole `scripts/` directory —
+that changes what the gate certifies and is verifiable only by full cold gates. On
+the operator's choice ("plan it; ship bounded now") it is routed to a planning pass
+and recorded in `docs/evidence/WO-044/README.md`; it is not repaired here.
+
+Criterion 8's exclusion is further lifted for the paths items 15–16 name
+(`packages/skeleton/src/harness-command.ts`, `packages/skeleton/src/harness-host.ts`,
+`packages/skeleton/src/gate-evidence.mjs`, `scripts/lib/lifecycle-evidence.mjs`,
+`scripts/harness.mjs`, `packages/skeleton/src/loadouts/contributor.ts`, the
+regenerated `.claude`/`.agents` harness surfaces, and the console self-host
+fixtures) and for the VER-002 F1/F2 paths (`packages/skeleton/package.json`,
+`package-lock.json`, `scripts/test-process-debt.mjs`). `npm test` green and
+`git diff --check` clean remain required, with no user setting or third-party
+dependency change.

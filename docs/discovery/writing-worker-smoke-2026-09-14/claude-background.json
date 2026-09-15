@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-044",
+  "harness": "claude",
+  "launch": "background",
+  "question": "background session: launcher surface, idle cost, SIGKILL of a resident-launched episode and recovery",
+  "observedAt": "2026-09-14T19:54:47.246Z",
+  "version": "2.1.270 (Claude Code)",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "low",
+    "source": "launch-selector"
+  },
+  "effectiveEffort": "unobserved",
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false,
+  "background": {
+    "steps": [
+      {
+        "name": "start --bg --print",
+        "exitCode": 1,
+        "idShape": null,
+        "stdoutBytes": 0,
+        "actor": {
+          "model": "claude-fable-5",
+          "effort": "low",
+          "source": "launch-selector corrected from retained code"
+        }
+      },
+      {
+        "name": "start --bg",
+        "exitCode": 0,
+        "idShape": "<session-id>",
+        "stdoutBytes": 241,
+        "actor": {
+          "model": "claude-fable-5",
+          "effort": "low",
+          "source": "launch-selector corrected from retained code"
+        }
+      },
+      {
+        "name": "agents --json",
+        "listingShape": null,
+        "pidExposed": false
+      },
+      {
+        "name": "logs",
+        "exitCode": 1,
+        "stdoutBytes": 0
+      },
+      {
+        "name": "idle-samples",
+        "samples": [],
+        "samplerAvailable": false
+      },
+      {
+        "name": "kill",
+        "killDelivered": false,
+        "stoppedByCommand": 1,
+        "listedAfterKill": false,
+        "statusAfterKill": null
+      },
+      {
+        "name": "resume",
+        "exitCode": 1,
+        "markers": [],
+        "resultShape": null,
+        "actor": {
+          "model": "claude-fable-5",
+          "effort": "low",
+          "source": "launch-selector corrected from retained code"
+        }
+      },
+      {
+        "name": "rm",
+        "exitCode": 1
+      }
+    ],
+    "form": "--bg",
+    "available": false,
+    "argsShape": [
+      "--bg",
+      "--print",
+      "..."
+    ],
+    "reason": "Original launcher token was unconfirmed; resident SIGKILL was not established. See the repair resident-kill attempt for external detached lifecycle evidence."
+  },
+  "corrections": [
+    {
+      "finding": "VER-001 F5",
+      "correctedAt": "2026-09-14T22:05:57.269Z",
+      "previousEffort": "xhigh",
+      "evidence": "retained background launch and resume code explicitly selects low"
+    },
+    {
+      "finding": "VER-001 F8",
+      "correctedAt": "2026-09-14T22:06:36.696Z",
+      "previousAvailable": true,
+      "evidence": "no matched session listing, killDelivered false and failed stop/resume/removal"
+    }
+  ]
+}

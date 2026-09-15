@@ -1107,10 +1107,12 @@ export const main = async (argv = process.argv.slice(2)) => {
       // Main's copy of the helper is the reviewed one once the order is merged,
       // and it survives the removal of the subject worktree the helper performs.
       const helper = `${shellQuote(process.execPath)} ${shellQuote(join(mainPath, "scripts/release.mjs"))} close ${state.workOrderId} --publish`;
+      const egress =
+        "The helper needs network egress to the GitHub host for fetch, ls-remote, the tag push and the Release: run it from an operator terminal with egress (a sandboxed agent session cannot publish), after --dry-run proves reachability.";
       message =
         resolve(mainPath) === resolve(repoRoot)
-          ? `After the operator merges the PR, run the reviewed helper from this main checkout: ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main.`
-          : `After the operator merges the PR, start a session in the main checkout and run the reviewed helper there: cd ${shellQuote(mainPath)} && ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main.`;
+          ? `After the operator merges the PR, run the reviewed helper from this main checkout: ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`
+          : `After the operator merges the PR, start a session in the main checkout and run the reviewed helper there: cd ${shellQuote(mainPath)} && ${helper}. This narrowly authorizes the annotated tag and its matching GitHub Release; never push main. ${egress}`;
       break;
     }
     default:

@@ -374,7 +374,9 @@ it no longer requires the whole execution guide at every cold start.
 
 The `harness-v1` target also emits project settings, hooks and marked residue
 from the same build. The [phase-zero observations](../discovery/harness-smoke-2026-09-07.md)
-predate lowering. Claude's observed event adapters call the existing compiled
+predate lowering, and the [writing-worker and unattended-launch rows](../discovery/writing-worker-smoke-2026-09-14.md)
+(WO-044) precede the target bundle, the writer transport profile and the
+resident launcher. Claude's observed event adapters call the existing compiled
 feedback boundary. Codex ships project skills and the shared instruction block;
 no unobserved hook becomes enforcement. Semantic judgment remains role procedure
 where the harness has no admitted host facts, and an unconfirmed correction

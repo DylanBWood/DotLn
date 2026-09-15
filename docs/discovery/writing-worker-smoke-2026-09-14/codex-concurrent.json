@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-044",
+  "harness": "codex",
+  "launch": "concurrent",
+  "question": "concurrent sessions",
+  "observedAt": "2026-09-14T19:55:04.247Z",
+  "version": "codex-cli 0.154.0",
+  "actor": {
+    "harness": "codex-cli",
+    "model": "gpt-6-astra",
+    "effort": "low",
+    "source": "launch-selector"
+  },
+  "effectiveEffort": "unobserved",
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false,
+  "argsShape": [
+    "-a",
+    "never",
+    "exec",
+    "--ephemeral",
+    "--ignore-user-config",
+    "--sandbox",
+    "workspace-write",
+    "--model",
+    "gpt-6-astra",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "--cd",
+    "<scratch>",
+    "--json",
+    "Reply with exactly the single word CONCURRENT_OK and nothing else. Use no tools."
+  ],
+  "concurrent": [
+    {
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 4522,
+      "markers": [
+        "CONCURRENT_OK"
+      ],
+      "rateLimitSignals": 1,
+      "authenticationUnavailable": false
+    },
+    {
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 5775,
+      "markers": [
+        "CONCURRENT_OK"
+      ],
+      "rateLimitSignals": 1,
+      "authenticationUnavailable": false
+    },
+    {
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 4268,
+      "markers": [
+        "CONCURRENT_OK"
+      ],
+      "rateLimitSignals": 1,
+      "authenticationUnavailable": false
+    }
+  ],
+  "corrections": [
+    {
+      "finding": "VER-001 F5",
+      "correctedAt": "2026-09-14T22:05:57.269Z",
+      "previousEffort": "max",
+      "evidence": "saved argsShape"
+    }
+  ]
+}

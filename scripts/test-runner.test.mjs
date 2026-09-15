@@ -1,12 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
 import {
   existsSync,
   linkSync,
   mkdtempSync,
   mkdirSync,
   readFileSync,
+  readdirSync,
   writeFileSync,
   rmSync,
   symlinkSync,
@@ -27,8 +28,12 @@ import {
   activeGateRuns,
   beginGateRun,
   gateInputPath,
+  gateRunLineage,
+  gateStopRequested,
+  GATE_RUN_ENVIRONMENT,
   recordGateChecks,
   readGateChecks,
+  requestGateStop,
 } from "./lib/gate-evidence.mjs";
 
 const root = resolve(import.meta.dirname, "..");
@@ -265,7 +270,7 @@ test("constraint suites keep one-piece flow and the measured lane budget", () =>
     root,
     "/synthetic-template",
   );
-  assert.equal(tasks.length, 79);
+  assert.equal(tasks.length, 82);
   const planning = tasks.find((row) => row.name === "plan-refutation:fixtures");
   assert.equal(planning?.loadClass, undefined);
   assert.equal(planning?.loadSlots, 1);
@@ -495,6 +500,268 @@ test("WO-125 nested gate markers remain independent and local to their worktree"
   assert.deepEqual(activeGateRuns(repo), []);
 });
 
+test("WO-044 a stop request reaches a gate through its marker lineage and is consumed with the marker", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-stop-"));
+  const markers = join(repo, "docs/control/local/harness/active-gates");
+  const saved = process.env[GATE_RUN_ENVIRONMENT];
+  t.after(() => {
+    if (saved === undefined) delete process.env[GATE_RUN_ENVIRONMENT];
+    else process.env[GATE_RUN_ENVIRONMENT] = saved;
+    rmSync(repo, { recursive: true, force: true });
+  });
+  delete process.env[GATE_RUN_ENVIRONMENT];
+  const idle = requestGateStop(repo, { waitMs: 0 });
+  assert.deepEqual(idle, {
+    contract: "gate-stop-v1",
+    requestedAt: idle.requestedAt,
+    requested: [],
+    stopped: [],
+    active: [],
+  });
+  assert.ok(Number.isFinite(Date.parse(idle.requestedAt)));
+  // A stale request left by a dead run is swept, never honoured by a new run.
+  mkdirSync(markers, { recursive: true });
+  const stale = "00000000-0000-4000-8000-000000000000";
+  writeFileSync(join(markers, `${stale}.stop`), "{}\n");
+  requestGateStop(repo, { waitMs: 0 });
+  assert.equal(existsSync(join(markers, `${stale}.stop`)), false);
+  const outer = beginGateRun(repo, "outer evidence fixture");
+  assert.deepEqual(gateRunLineage(), [outer.run.runId]);
+  const inner = beginGateRun(repo, "inner runner fixture");
+  assert.deepEqual(gateRunLineage(), [outer.run.runId, inner.run.runId]);
+  try {
+    assert.equal(outer.stopRequested(), false);
+    assert.equal(inner.stopRequested(), false);
+    // This process owns both runs, so they stay active for the bounded wait;
+    // each carries a request afterwards and reads it at its next boundary.
+    const outcome = requestGateStop(repo, { waitMs: 0 });
+    assert.deepEqual(
+      outcome.requested.map((run) => run.runId).sort(),
+      [outer.run.runId, inner.run.runId].sort(),
+    );
+    assert.deepEqual(outcome.stopped, []);
+    assert.equal(outcome.active.length, 2);
+    assert.ok(
+      outcome.active.every(
+        (run) => run.pid === process.pid && run.command && run.startedAt,
+      ),
+    );
+    assert.equal(outer.stopRequested(), true);
+    assert.equal(inner.stopRequested(), true);
+    assert.deepEqual(gateStopRequested(repo, [inner.run.runId]), [
+      inner.run.runId,
+    ]);
+    // A child of the inner run inherits both ids and sees the request.
+    const child = spawn(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        `import {gateStopRequested} from ${JSON.stringify(resolve(root, "scripts/lib/gate-evidence.mjs"))}; process.stdout.write(JSON.stringify(gateStopRequested(process.cwd())));`,
+      ],
+      { cwd: repo, stdio: ["ignore", "pipe", "pipe"] },
+    );
+    let stdout = "";
+    child.stdout.on("data", (chunk) => (stdout += chunk));
+    await new Promise((resolveExit) => child.once("close", resolveExit));
+    assert.deepEqual(
+      JSON.parse(stdout).sort(),
+      [outer.run.runId, inner.run.runId].sort(),
+    );
+  } finally {
+    inner.release();
+    outer.release();
+  }
+  assert.deepEqual(gateRunLineage(), []);
+  assert.equal(process.env[GATE_RUN_ENVIRONMENT], undefined);
+  assert.deepEqual(
+    readdirSync(markers).filter((name) => /\.(?:json|stop)$/.test(name)),
+    [],
+    "release removes the marker and its consumed request",
+  );
+});
+
+test("WO-044 a gate that polls its request ends within the stop command's wait and leaves nothing behind", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-gate-stop-child-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const markers = join(repo, "docs/control/local/harness/active-gates");
+  const child = spawn(
+    process.execPath,
+    [
+      "--input-type=module",
+      "-e",
+      `import {beginGateRun} from ${JSON.stringify(resolve(root, "scripts/lib/gate-evidence.mjs"))}; const active = beginGateRun(process.cwd(), "polling gate fixture"); process.stdout.write("ready"); const timer = setInterval(() => { if (active.stopRequested()) { clearInterval(timer); active.release(); process.exit(0); } }, 50);`,
+    ],
+    { cwd: repo, stdio: ["ignore", "pipe", "pipe"] },
+  );
+  const exited = new Promise((resolveExit) => child.once("close", resolveExit));
+  await new Promise((resolveReady, reject) => {
+    child.stdout.once("data", resolveReady);
+    child.once("error", reject);
+    child.once("exit", () => reject(new Error("gate exited before ready")));
+  });
+  assert.equal(activeGateRuns(repo).length, 1);
+  const outcome = requestGateStop(repo, { waitMs: 10_000 });
+  assert.equal(outcome.requested.length, 1);
+  assert.equal(outcome.requested[0].pid, child.pid);
+  assert.deepEqual(outcome.stopped, outcome.requested);
+  assert.deepEqual(outcome.active, []);
+  assert.equal(await exited, 0);
+  assert.deepEqual(activeGateRuns(repo), []);
+  assert.deepEqual(
+    readdirSync(markers).filter((name) => /\.(?:json|stop)$/.test(name)),
+    [],
+  );
+});
+
+test("WO-044 the runner honours a stop request at its next boundary, ends running suites and records no check", async () => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-runner-stop-"));
+  try {
+    const git = (...args) =>
+      execFileSync("git", args, {
+        cwd: repo,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+    git("init", "-q");
+    git("config", "user.name", "Fixture");
+    git("config", "user.email", "fixture@example.invalid");
+    writeFileSync(
+      join(repo, ".gitignore"),
+      "docs/control/local/\nobserved.jsonl\n",
+    );
+    mkdirSync(join(repo, "scripts"));
+    // The suite announces itself, then stays resident long enough for the
+    // runner's poll to end it; a run to completion would take five seconds.
+    writeFileSync(
+      join(repo, "scripts/format.cjs"),
+      'require("node:fs").appendFileSync("observed.jsonl", "format\\n"); setTimeout(() => {}, 5000);',
+    );
+    writeFileSync(
+      join(repo, "package.json"),
+      JSON.stringify({
+        scripts: { "format:check": "node scripts/format.cjs" },
+      }),
+    );
+    git("add", ".");
+    git("commit", "-qm", "Runner stop fixture");
+    // A request already present ends the gate before its first suite.
+    await assert.rejects(
+      runGate(["--only", "format", "--serial"], repo, {
+        stopRequested: () => true,
+      }),
+      /^Error: Gate stopped by request after [\d.]+ s; no check recorded for tree [a-f0-9]{40,64}$/,
+    );
+    assert.equal(existsSync(join(repo, "observed.jsonl")), false);
+    assert.deepEqual(readGateChecks(repo), []);
+    assert.deepEqual(activeGateRuns(repo), []);
+    // A request that arrives while a suite runs ends that suite through the
+    // runner's own abort signal; the suite reports the stop, not a pass.
+    const started = Date.now();
+    await assert.rejects(
+      runGate(["--only", "format", "--serial"], repo, {
+        stopRequested: () => existsSync(join(repo, "observed.jsonl")),
+      }),
+      /Gate stopped by request/,
+    );
+    assert.ok(
+      Date.now() - started < 4000,
+      "the resident suite was ended, not awaited",
+    );
+    assert.equal(
+      readFileSync(join(repo, "observed.jsonl"), "utf8"),
+      "format\n",
+    );
+    assert.deepEqual(readGateChecks(repo), []);
+    assert.deepEqual(activeGateRuns(repo), []);
+  } finally {
+    rmSync(repo, { recursive: true, force: true });
+  }
+});
+
+test("WO-044 an aborted signal ends a running suite and its result names the stop", async () => {
+  const controller = new AbortController();
+  const started = Date.now();
+  setTimeout(() => controller.abort(), 200);
+  const result = await executeSuite(
+    {
+      name: "resident",
+      command: [
+        process.execPath,
+        "-e",
+        'process.on("SIGTERM", () => {}); setInterval(() => {}, 1000);',
+      ],
+    },
+    root,
+    60_000,
+    () => {},
+    controller.signal,
+  );
+  assert.equal(result.exitCode, 1);
+  assert.equal(result.stopped, true);
+  assert.match(result.output, /Suite resident stopped by gate request/);
+  assert.ok(
+    Date.now() - started < 10_000,
+    "SIGKILL follows an ignored SIGTERM",
+  );
+  const already = await executeSuite(
+    {
+      name: "never",
+      command: [process.execPath, "-e", "setInterval(() => {}, 1000)"],
+    },
+    root,
+    60_000,
+    () => {},
+    AbortSignal.abort(),
+  );
+  assert.equal(already.stopped, true);
+  assert.equal(already.exitCode, 1);
+});
+
+test("WO-044 VER-001 cancellation ends a grandchild holding inherited output pipes", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-suite-descendants-"));
+  let descendant;
+  t.after(() => {
+    if (descendant)
+      try {
+        process.kill(descendant, "SIGKILL");
+      } catch {}
+    rmSync(repo, { recursive: true, force: true });
+  });
+  const controller = new AbortController();
+  const running = executeSuite(
+    {
+      name: "descendants",
+      command: [
+        process.execPath,
+        "-e",
+        `
+    const {spawn} = require('node:child_process');
+    const child = spawn(process.execPath, ['-e', 'process.on("SIGTERM",()=>{});require("node:fs").writeFileSync("ready", "yes");setInterval(()=>{},1000)'], {stdio:'inherit'});
+    require('node:fs').writeFileSync('descendant.pid', String(child.pid));
+    setInterval(()=>{},1000);
+  `,
+      ],
+    },
+    repo,
+    10000,
+    () => {},
+    controller.signal,
+  );
+  for (let i = 0; i < 100 && !existsSync(join(repo, "ready")); i++)
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  descendant = Number(readFileSync(join(repo, "descendant.pid"), "utf8"));
+  const started = Date.now();
+  controller.abort();
+  const result = await running;
+  assert.equal(result.stopped, true);
+  assert.equal(result.exitCode, 1);
+  assert.ok(
+    Date.now() - started < 2500,
+    "inherited descriptors cannot hang cancellation",
+  );
+});
+
 test("WO-125 gate inputs include tracked ignored files and new installed roots, excluding scratch", (t) => {
   const repo = mkdtempSync(join(tmpdir(), "dotln-gate-inputs-"));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
@@ -591,7 +858,7 @@ test("release cases use one background lane, wait for preparation and require co
   const tasks = expandSuiteTasks(selected, root, "/synthetic-template");
   assert.equal(
     tasks.filter((row) => row.name.startsWith("release:case:")).length,
-    40,
+    42,
   );
   let active = 0,
     activeCases = 0,

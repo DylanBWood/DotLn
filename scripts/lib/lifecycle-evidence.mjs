@@ -32,13 +32,11 @@ export async function requireLifecycleEvidence(
       await import("./planning-followups.mjs");
     requirePlanningHandoffs(root, workOrder);
   }
-  const { gateTreeHash, findGateCheck } = await import("./gate-evidence.mjs");
+  const { gateTreeHash, findGateCheck, lifecycleRequiredChecks } =
+    await import("./gate-evidence.mjs");
   const treeHash = gateTreeHash(root);
   // A failing verification is an evidence-bearing report, never a green-code claim.
-  const required =
-    verdict === "fail"
-      ? ["git diff --check"]
-      : ["npm run test:full", "git diff --check"];
+  const required = lifecycleRequiredChecks(verdict);
   for (const checkId of required)
     if (!findGateCheck(root, checkId, treeHash))
       throw new Error(

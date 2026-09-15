@@ -745,9 +745,14 @@ test("suite execution and fingerprints share a stable reviewed environment witho
   env.HTTP_PROXY = "synthetic-second";
   env.CLOUDSDK_PROXY_USERNAME = "synthetic-second";
   env.UNREVIEWED_FIXTURE_VARIABLE = "not-an-input";
+  // WO-044: the gate stop lineage changes every run and is runner-owned, so
+  // it is neither executed under nor fingerprinted.
+  env.DOTLN_GATE_RUNS = "00000000-0000-4000-8000-000000000000";
   assert.equal(suiteInputHash(row, observeSuiteInputs(root, { env })), hash);
+  assert.equal(suiteEnvironment(env).DOTLN_GATE_RUNS, undefined);
   assert.ok(before.environmentKeys.includes("DOTLN_CACHE_FIXTURE"));
   assert.ok(!before.environmentKeys.some((key) => /PROXY/.test(key)));
+  assert.ok(!before.environmentKeys.includes("DOTLN_GATE_RUNS"));
   assert.deepEqual(
     suiteEnvironment(suiteEnvironment(env)),
     suiteEnvironment(env),
@@ -1204,10 +1209,12 @@ console.log(JSON.stringify({cwd:process.cwd(),argv:process.argv,env:process.env,
     realpathSync(join(second.root, "node_modules")),
   );
   assert.notEqual(info.installed, realpathSync(join(root, "node_modules")));
+  // The replica receives Git's canonical executable mode, never the
+  // candidate's other permission bits (WO-044).
   assert.equal(
     lstatSync(join(first.root, "packages/kernel/src/declared.mjs")).mode &
       0o777,
-    0o751,
+    0o755,
   );
   assert.equal(
     readFileSync(join(first.root, "packages/kernel/src/alias.mjs"), "utf8"),
@@ -1609,6 +1616,49 @@ mkdirSync('packages/kernel/dist/test',{recursive:true});writeFileSync('packages/
     ),
     before,
   );
+});
+
+test("WO-044 non-executable permission bits never fork a suite key; the executable bit, bytes and names still do", (t) => {
+  const { root } = fixture(t);
+  const candidate = "packages/kernel/src/main.js";
+  const installed = "packages/kernel/dist/src/index.js";
+  write(root, candidate, "declared source\n");
+  execFileSync("git", ["add", "--", candidate], { cwd: root });
+  const key = () => suiteInputHash(row, observeSuiteInputs(root));
+  const before = key();
+  assert.ok(before);
+  // Main's checkout carried a tracked helper at 0600 while its reviewed
+  // worktree checked out 0644; Git shows no difference and neither may the key.
+  for (const mode of [0o600, 0o640, 0o664, 0o444, 0o645, 0o654, 0o655])
+    for (const path of [candidate, installed]) {
+      chmodSync(join(root, path), mode);
+      assert.equal(key(), before, `${path} at ${mode.toString(8)}`);
+      if (path === candidate)
+        assert.equal(
+          execFileSync("git", ["diff", "--name-only", "--", candidate], {
+            cwd: root,
+            encoding: "utf8",
+          }).trim(),
+          "",
+        );
+      chmodSync(join(root, path), 0o644);
+    }
+  chmodSync(join(root, "packages/kernel/src"), 0o700);
+  assert.equal(key(), before, "directory permission residue");
+  chmodSync(join(root, "packages/kernel/src"), 0o755);
+  chmodSync(join(root, candidate), 0o755);
+  const executable = key();
+  assert.notEqual(executable, before, "the executable bit is an input");
+  chmodSync(join(root, candidate), 0o700);
+  assert.equal(key(), executable, "every executable spelling keys alike");
+  chmodSync(join(root, candidate), 0o644);
+  assert.equal(key(), before);
+  chmodSync(join(root, installed), 0o755);
+  assert.notEqual(key(), before, "an installed executable bit is an input");
+  chmodSync(join(root, installed), 0o644);
+  assert.equal(key(), before);
+  write(root, candidate, "changed bytes\n");
+  assert.notEqual(key(), before, "bytes remain an input");
 });
 
 test("WO-130 release preparation cannot carry an undeclared guarded read into its shared template", async (t) => {

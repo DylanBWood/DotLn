@@ -894,7 +894,11 @@ authority is allocated here.
 
 Final review prepares and publishes a clean PR; the operator retains merge
 authority. After the PR is merged, `resume: release close` runs the guarded
-close command. It updates `main`, proves the reviewed branch is contained in
+close command. The close needs network egress to the GitHub host for the
+fetch, the tag push and the Release; `--dry-run` proves origin reachability
+before any local prerequisite and names the host, and a sandboxed agent
+session cannot publish, so the publish runs from an operator terminal with
+egress (WO-044). It updates `main`, proves the reviewed branch is contained in
 `origin/main`, and removes only its known worktree and merged branch. Ordinary
 tracked or untracked dirt is refused by the clean-worktree gate. Ignored raw
 material under `docs/intake/` is reconciled by the reviewed helper before
@@ -915,7 +919,32 @@ paths, dispositions and byte counts, never private contents or content hashes.
 or publishing. Other non-disposable ignored material still refuses removal.
 Known dependency/build outputs, `.runtime/` snapshots, `.control-beacons/`,
 `.DS_Store`, `.tsbuildinfo` and `docs/control/local/harness/**` are disposable;
-intake protection takes precedence over build-shaped names.
+intake protection takes precedence over build-shaped names. A nested
+repository, which Git lists as one opaque entry, is classified explicitly
+(WO-044): only `.git` with an unborn HEAD, no refs or index entries and no
+loose, packed, alternate or garbage object storage is disposable fixture
+scaffolding. An unreadable repository is preserved or refused, never assumed
+empty; corrupt repositories are detected from their `.git` entry even when
+Git omits that directory from its file inventory. One with content under
+`docs/control/local/` or `docs/intake/` is
+preserved as a directory unit; one elsewhere refuses with its lane. A refusal
+lists every blocking entry at once with its lane classification and that
+lane's remedy, never a content hash, and names the intake archive command only
+for intake material. The feedback verifier removes its own empty mount
+repository after each run. Closing an order also settles its derived
+worktrees (WO-044): a registration whose directory is gone is pruned; a
+detached derivative that names the order (a measurement sibling or a
+temporary subject) and is clean, has no active gate and has no writer
+reservation has its non-disposable control and
+intake material preserved into the same retained lane and is then removed;
+every other derivative is reported with its blocker and the exact removal
+command. Writer registration holds a shared lease outside the subject directory;
+teardown holds an exclusive lock there and refuses outstanding leases. This
+excludes a racing writer during removal while allowing competing recovery
+attempts and owner refresh through the existing conditional reservation protocol.
+Live, uncertain, malformed and stale reservations are kept until that protocol
+releases them. An abandoned transition lock or lease requires inspection rather
+than inferred reclamation.
 
 Main's release-influence guard permits `docs/intake/**`, all of
 `docs/control/local/`, the exact `.claude/settings.local.json` and disposable
@@ -1390,7 +1419,27 @@ claim evidence or releases it does not have.
   checks; direct runner and evidence calls mark their own lifetimes. Nested
   runs own independent markers, normal completion releases them, and an exited
   owner cannot block writes through a stale marker. PID birth observations
-  distinguish reuse where the process table is available. The existing final
+  distinguish reuse where the process table is available.
+  **Stopping your own gate (operator correction, 2026-09-14, WO-044):** a
+  session ends a gate it started without any operator step, in Claude and
+  Codex alike. `node scripts/harness.mjs evidence --stop` (also
+  `npm run harness -- evidence --stop`, which then neither builds nor marks a
+  run) is admitted while the gate holds the tree; it writes one ignored stop
+  request per live run and waits a bounded time. Every gate process names its
+  own run and its ancestors' runs to its children, so each polls the request
+  at the next boundary it owns: the runner starts no further suite, ends its
+  running suites through their abort signal and throws; the evidence command
+  records no check. On POSIX each suite starts in its own process group;
+  cancellation sends that owned group SIGTERM, then SIGKILL after one second.
+  Descendants inheriting stdout/stderr cannot keep the gate pending: at the
+  escalation boundary the runner closes its pipe readers and finishes the
+  stopped result even if a descendant left the group or signalling failed.
+  No process-table scan or unrelated process is a signal target. The stop
+  lineage is stripped from every suite's environment and key,
+  so it never re-keys a suite. The
+  harness's own task-stop tools are classified as the session's process
+  control and admitted too, and the refusal a live gate gives names this route.
+  The existing final
   input comparison remains necessary for unhooked edits and tool-boundary races
   ([WO-125-D003](../evidence/WO-125/decisions.md#wo-125-d003)).
   The VER-002 repair resolves physical path components, including dangling
@@ -1411,6 +1460,11 @@ claim evidence or releases it does not have.
   ([WO-126-D014](../evidence/WO-126/decisions.md#wo-126-d014),
   [WO-126-D018](../evidence/WO-126/decisions.md#wo-126-d018),
   [WO-126-D022](../evidence/WO-126/decisions.md#wo-126-d022)).
+  Use `npm run harness -- evidence --fail` for that diff-only receipt. The
+  package command retains its build and projection preparation; the default
+  command and a passing lifecycle verdict still require the full gate. The
+  public-command regression covers the selector through the wrapper and parser
+  ([WO-044-D017](../evidence/WO-044/decisions.md#wo-044-d017)).
 - **Build publication (operator decision, 2026-09-09).** Compile into staging
   with the existing Node toolchain, replace each complete output file atomically,
   and finish the build barrier before dependent application commands run.

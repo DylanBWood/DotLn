@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-044",
+  "harness": "claude",
+  "launch": "concurrent",
+  "question": "concurrent sessions",
+  "observedAt": "2026-09-14T19:49:45.815Z",
+  "version": "2.1.270 (Claude Code)",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "low",
+    "source": "launch-selector"
+  },
+  "effectiveEffort": "unobserved",
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false,
+  "argsShape": [
+    "--print",
+    "--model",
+    "claude-fable-5",
+    "--effort",
+    "low",
+    "--no-session-persistence",
+    "--setting-sources",
+    "project,local",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-chrome",
+    "--max-budget-usd",
+    "3.00",
+    "--tools",
+    "",
+    "--output-format",
+    "json",
+    "Reply with exactly the single word CONCURRENT_OK and nothing else. Use no tools."
+  ],
+  "concurrent": [
+    {
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 4019,
+      "markers": [
+        "PROMPT_HOOK_OBSERVED",
+        "CONCURRENT_OK"
+      ],
+      "rateLimitSignals": 1,
+      "authenticationUnavailable": false
+    },
+    {
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 3014,
+      "markers": [
+        "PROMPT_HOOK_OBSERVED",
+        "CONCURRENT_OK"
+      ],
+      "rateLimitSignals": 1,
+      "authenticationUnavailable": false
+    },
+    {
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 3265,
+      "markers": [
+        "PROMPT_HOOK_OBSERVED",
+        "CONCURRENT_OK"
+      ],
+      "rateLimitSignals": 1,
+      "authenticationUnavailable": false
+    }
+  ],
+  "corrections": [
+    {
+      "finding": "VER-001 F5",
+      "correctedAt": "2026-09-14T22:05:57.269Z",
+      "previousEffort": "xhigh",
+      "evidence": "saved argsShape"
+    }
+  ]
+}

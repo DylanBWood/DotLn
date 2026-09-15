@@ -42,6 +42,8 @@ import {
 const version = 4;
 const declarationVersion = 2;
 const digest = (value) => createHash("sha256").update(value).digest("hex");
+/** Git's two file modes: the executable bit is an input, other bits are not. */
+export const canonicalMode = (mode) => (mode & 0o100 ? 0o755 : 0o644);
 const jsonHash = (value) => digest(JSON.stringify(value));
 export function suiteEnvironment(env = process.env, gateContext) {
   // This is both the execution environment and the fingerprinted environment.
@@ -88,6 +90,10 @@ export function suiteEnvironment(env = process.env, gateContext) {
     ),
   );
   child.DOTLN_GATE_CHILD = "1";
+  // The stop lineage (WO-044) is runner-owned: the runner ends its own suites
+  // on a stop request, and its run ids change every run, so the lineage is
+  // neither a suite input nor part of the execution environment.
+  delete child.DOTLN_GATE_RUNS;
   // Nested npm scripts prepend the same tool directories again. Keep the first
   // occurrence of each exact entry: executable precedence, relative entries,
   // the current-directory entry and paths that may be created later all remain.
@@ -225,6 +231,7 @@ const replicaScopes = {
     "docs/releases/tag-manifest.template.json",
   ],
   "adjacent-queue": fixturePaths,
+  "harness-probe": fixturePaths,
   "authority-grants": fixturePaths,
   "harness-fixtures": [
     ...fixturePaths,
@@ -240,9 +247,9 @@ const replicaScopes = {
     "packages/console/fixtures/",
     "docs/product/13-uifa-roles.md",
     "docs/control/orders/WO-031.jsonl",
-    "docs/evidence/WO-131/feedback-001/feedback.json",
-    "docs/evidence/WO-131/feedback-001/selfhost-audit.jsonl",
-    "docs/evidence/WO-131/feedback-001/selfhost-verification.jsonl",
+    "docs/evidence/WO-044/feedback-002/feedback.json",
+    "docs/evidence/WO-044/feedback-002/selfhost-audit.jsonl",
+    "docs/evidence/WO-044/feedback-002/selfhost-verification.jsonl",
     "docs/planning/refutations/2026-09-06-phase-two-redirect-002.json",
     "docs/planning/refutations/2026-09-06-phase-two-redirect-003.json",
     "docs/planning/refutations/2026-09-06-phase-two-redirect-004.json",
@@ -315,6 +322,7 @@ const scopes = Object.fromEntries(
     "console:fixtures",
     "console:current",
     "adjacent-queue",
+    "harness-probe",
     "authority-grants",
     "authority-evidence",
     "harness-fixtures",
@@ -467,12 +475,16 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
         target && lstatSync(target).isFile() ? file(target) : null,
       ];
     }
-    if (stat.isDirectory()) return ["directory", stat.mode & 0o777];
+    // Git records content and the executable bit. Other permission bits are
+    // checkout residue (umask, a tool's private write) that Git never shows
+    // and a suite never depends on; keying them forked reviewed successes
+    // between a 0600 file in main and its 0644 worktree copy (WO-044).
+    if (stat.isDirectory()) return ["directory", 0o755];
     if (!stat.isFile()) {
       reusable = false;
       return ["unsupported"];
     }
-    return [stat.mode & 0o777, hashFile(path)];
+    return [canonicalMode(stat.mode), hashFile(path)];
   };
   const candidates = new Set(
     git(
@@ -512,7 +524,7 @@ export function observeSuiteInputs(repo, { env = process.env } = {}) {
     }
     const stat = lstatSync(join(repo, path));
     if (stat.isDirectory()) {
-      installed.push([path, "directory", stat.mode & 0o777]);
+      installed.push([path, "directory", 0o755]);
       for (const name of readdirSync(join(repo, path)).sort())
         visit(`${path}/${name}`);
     } else installed.push([path, file(join(repo, path))]);

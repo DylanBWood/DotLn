@@ -2,7 +2,10 @@
 import { mkdirSync, readFileSync, realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import { emitHarness, checkHarness } from "./lib/harness.mjs";
-import { beginGateRun } from "../packages/skeleton/dist/src/gate-evidence.mjs";
+import {
+  beginGateRun,
+  requestGateStop,
+} from "../packages/skeleton/dist/src/gate-evidence.mjs";
 import {
   harnessRoot,
   harnessOutputReadArgs,
@@ -17,7 +20,7 @@ import {
 } from "../packages/skeleton/dist/src/harness-host.js";
 
 const usage =
-  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness evidence | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness writer --show | harness writer --release [--force]";
+  "usage: harness emit|check [--loadout contributor] [--profile id] [--out dir] | harness evidence [--stop|--fail] | harness usage <session> | harness read-output <path> [--offset <byte>] [--length <bytes>] | harness writer --show | harness writer --release [--force]";
 try {
   const root = harnessRoot(process.cwd());
   const [action, ...args] = process.argv.slice(2);
@@ -80,18 +83,34 @@ try {
           : releaseHarnessWriterByOperator(root, force),
       ),
     );
+  } else if (action === "evidence" && args[0] === "--stop") {
+    // The session that started a gate ends it here, in Claude and Codex
+    // alike, without an operator step: every live gate process in this
+    // worktree reads the request at its next boundary, ends its running
+    // suites, records no check and releases its marker.
+    if (args.length !== 1)
+      throw new Error("harness evidence --stop accepts no other arguments");
+    const outcome = requestGateStop(root);
+    console.log(JSON.stringify(outcome));
+    const label = (run) => `${run.command} (run ${run.runId}, pid ${run.pid})`;
+    if (!outcome.requested.length)
+      console.log("No active gate in this worktree; nothing to stop.");
+    else if (outcome.active.length) {
+      console.log(
+        `Stop requested; still running: ${outcome.active.map(label).join("; ")}. Each stops at its next boundary and records no check; run this command again to keep waiting.`,
+      );
+      process.exitCode = 1;
+    } else
+      console.log(
+        `Stopped ${outcome.stopped.map(label).join("; ")}; no check was recorded.`,
+      );
   } else {
-    const options = {};
-    for (let index = 0; index < args.length; index += 2) {
-      if (
-        !["--loadout", "--profile", "--out"].includes(args[index]) ||
-        !args[index + 1]
-      )
-        throw new Error(usage);
-      options[args[index].slice(2)] = args[index + 1];
-    }
     if (action === "evidence") {
-      if (args.length) throw new Error("harness evidence accepts no overrides");
+      const failOnly = args.length === 1 && args[0] === "--fail";
+      if (args.length && !failOnly)
+        throw new Error(
+          "harness evidence accepts no override other than --fail",
+        );
       const active = beginGateRun(root, "node scripts/harness.mjs evidence");
       try {
         const { prepareHarnessEvidence } =
@@ -100,7 +119,11 @@ try {
         console.log(
           `Prepared owned evidence projections in ${preparation.durationMs.toFixed(1)} ms`,
         );
-        const checks = runHarnessEvidence(root);
+        if (active.stopRequested())
+          throw new Error(
+            "Gate stopped by request after preparation; no check recorded",
+          );
+        const checks = runHarnessEvidence(root, failOnly ? "fail" : undefined);
         console.log(JSON.stringify({ checks }));
         if (checks.some((check) => check.exitCode !== 0 || !check.executed))
           process.exitCode = 1;
@@ -113,6 +136,15 @@ try {
       }
     } else {
       if (!["emit", "check"].includes(action)) throw new Error(usage);
+      const options = {};
+      for (let index = 0; index < args.length; index += 2) {
+        if (
+          !["--loadout", "--profile", "--out"].includes(args[index]) ||
+          !args[index + 1]
+        )
+          throw new Error(usage);
+        options[args[index].slice(2)] = args[index + 1];
+      }
       const out = resolve(root, options.out ?? ".");
       if (action === "emit") mkdirSync(out, { recursive: true });
       options.termsRoot = root;

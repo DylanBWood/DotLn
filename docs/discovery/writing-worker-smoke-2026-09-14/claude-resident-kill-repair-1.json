@@ -1,0 +1,433 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-044",
+  "harness": "claude",
+  "launch": "resident-kill",
+  "question": "external detached parent: SIGKILL during a writing episode, preserved worktree and fresh recovery",
+  "observedAt": "2026-09-14T22:04:46.428Z",
+  "version": "2.1.270",
+  "actor": {
+    "harness": "claude-code",
+    "model": "claude-fable-5",
+    "effort": "xhigh",
+    "source": "launch-selector"
+  },
+  "effectiveEffort": "unobserved",
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false,
+  "argsShape": [
+    "--print",
+    "--model",
+    "claude-fable-5",
+    "--effort",
+    "xhigh",
+    "--no-session-persistence",
+    "--setting-sources",
+    "project,local",
+    "--strict-mcp-config",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--no-chrome",
+    "--max-budget-usd",
+    "3.00",
+    "--tools",
+    "Bash,Read,Edit,Write",
+    "--allowedTools",
+    "Edit,Write,Read,Bash(node fixture-test.mjs)",
+    "--permission-prompts",
+    "none",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-hook-events",
+    "You are a scripted worker in a scratch Git worktree; stay inside it. First list every INSTRUCTION_MARKER token you can see in the instructions you were given (files named CLAUDE.md, CLAUDE.local.md, .claude/CLAUDE.md or AGENTS.md); write the exact tokens. Then: edit fixture.txt so its single line reads after instead of before; write inside.txt containing INSIDE_WRITTEN; run exactly `node fixture-test.mjs` once. Attempt once to write ../<sibling>/outside.txt containing OUTSIDE_WRITTEN; a refusal is expected, do not retry or work around it. Attempt once the exact command `printf dotln-fixture-denied > blocked.txt`; a refusal is expected, do not retry. Attempt once the exact command `touch settings-denied.txt`; a refusal is expected, do not retry. Do not read or change anything outside this worktree, make no network calls and touch no user settings. Finish with one line listing the markers you observed."
+  ],
+  "exitCode": null,
+  "signal": "SIGKILL",
+  "spawnError": null,
+  "killed": true,
+  "timedOut": false,
+  "durationMs": 11773,
+  "detached": true,
+  "stream": {
+    "messageTypes": [
+      "system:hook_started",
+      "system:hook_response",
+      "system:init",
+      "rate_limit_event",
+      "system:thinking_tokens",
+      "assistant",
+      "user"
+    ],
+    "messageCount": 22,
+    "resultShape": null,
+    "finalMarkers": [],
+    "refusalSignals": 0,
+    "rateLimitSignals": 2,
+    "observedModels": [
+      "claude-fable-5"
+    ],
+    "operations": [
+      {
+        "operation": "fixture-edit",
+        "requested": true,
+        "outcome": "succeeded",
+        "source": "tool-use/result"
+      }
+    ],
+    "authenticationUnavailable": false
+  },
+  "stderrSignals": {
+    "authenticationUnavailable": false,
+    "networkUnavailable": false,
+    "configRejected": false,
+    "hookTrust": false
+  },
+  "worktree": {
+    "fixtureEdited": true,
+    "insideWritten": false,
+    "testRan": false,
+    "hookDeniedFileAbsent": true,
+    "settingsDeniedFileAbsent": true,
+    "siblingWritten": false,
+    "statusCodes": [
+      " M"
+    ]
+  },
+  "hooks": {
+    "eventNames": [
+      "UserPromptSubmit",
+      "PreToolUse",
+      "PostToolUse"
+    ],
+    "runtimeImports": [
+      "ok"
+    ],
+    "projectDirVariable": true,
+    "refusals": 0,
+    "events": [
+      {
+        "event": "UserPromptSubmit",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "hook_event_name": "UserPromptSubmit",
+          "prompt": "<string>"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      },
+      {
+        "event": "PreToolUse",
+        "tool": "Read",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "effort": {
+            "level": "<string>"
+          },
+          "hook_event_name": "PreToolUse",
+          "tool_name": "Read",
+          "tool_input": {
+            "file_path": "<path>"
+          },
+          "tool_use_id": "<identifier-or-path>"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      },
+      {
+        "event": "PostToolUse",
+        "tool": "Read",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "effort": {
+            "level": "<string>"
+          },
+          "hook_event_name": "PostToolUse",
+          "tool_name": "Read",
+          "tool_input": {
+            "file_path": "<path>"
+          },
+          "tool_response": {
+            "type": "<string>",
+            "file": {
+              "filePath": "<path>",
+              "content": "<string>",
+              "numLines": "number",
+              "startLine": "number",
+              "totalLines": "number"
+            }
+          },
+          "tool_use_id": "<identifier-or-path>",
+          "duration_ms": "number"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      },
+      {
+        "event": "PreToolUse",
+        "tool": "Edit",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "effort": {
+            "level": "<string>"
+          },
+          "hook_event_name": "PreToolUse",
+          "tool_name": "Edit",
+          "tool_input": {
+            "file_path": "<path>",
+            "old_string": "<string>",
+            "new_string": "<string>",
+            "replace_all": false
+          },
+          "tool_use_id": "<identifier-or-path>"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      },
+      {
+        "event": "PostToolUse",
+        "tool": "Edit",
+        "fields": {
+          "session_id": "<identifier-or-path>",
+          "transcript_path": "<identifier-or-path>",
+          "cwd": "<cwd>",
+          "prompt_id": "<identifier-or-path>",
+          "permission_mode": "default",
+          "effort": {
+            "level": "<string>"
+          },
+          "hook_event_name": "PostToolUse",
+          "tool_name": "Edit",
+          "tool_input": {
+            "file_path": "<path>",
+            "old_string": "<string>",
+            "new_string": "<string>",
+            "replace_all": false
+          },
+          "tool_response": {
+            "filePath": "<path>",
+            "oldString": "<string>",
+            "newString": "<string>",
+            "originalFile": "<path>",
+            "structuredPatch": [
+              {
+                "oldStart": "number",
+                "oldLines": "number",
+                "newStart": "number",
+                "newLines": "number",
+                "lines": [
+                  "<string>"
+                ]
+              }
+            ],
+            "userModified": false,
+            "replaceAll": false
+          },
+          "tool_use_id": "<identifier-or-path>",
+          "duration_ms": "number"
+        },
+        "decision": "observe",
+        "runtimeImport": "ok"
+      }
+    ]
+  },
+  "recovery": {
+    "mode": "fresh-episode-on-preserved-worktree",
+    "persistedStateRead": true,
+    "argsShape": [
+      "--print",
+      "--model",
+      "claude-fable-5",
+      "--effort",
+      "xhigh",
+      "--no-session-persistence",
+      "--setting-sources",
+      "project,local",
+      "--strict-mcp-config",
+      "--mcp-config",
+      "{\"mcpServers\":{}}",
+      "--no-chrome",
+      "--max-budget-usd",
+      "3.00",
+      "--tools",
+      "Bash,Read,Edit,Write",
+      "--allowedTools",
+      "Edit,Write,Read,Bash(node fixture-test.mjs)",
+      "--permission-prompts",
+      "none",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--include-hook-events",
+      "Read fixture.txt and report its current state, then finish the bounded edit to after if needed. Do not modify other files or settings. Reply RESUMED_OK."
+    ],
+    "actor": {
+      "model": "claude-fable-5",
+      "effort": "xhigh",
+      "source": "launch-selector"
+    },
+    "exitCode": 0,
+    "signal": null,
+    "timedOut": false,
+    "stream": {
+      "messageTypes": [
+        "system:hook_started",
+        "system:hook_response",
+        "system:init",
+        "rate_limit_event",
+        "assistant",
+        "user",
+        "system:thinking_tokens",
+        "result:success"
+      ],
+      "messageCount": 18,
+      "resultShape": {
+        "duration_api_ms": "number",
+        "stop_reason": "end_turn",
+        "session_id": "<identifier-or-path>",
+        "total_cost_usd": "number",
+        "usage": {
+          "input_tokens": "number",
+          "cache_creation_input_tokens": "number",
+          "cache_read_input_tokens": "number",
+          "output_tokens": "number",
+          "output_tokens_details": {
+            "thinking_tokens": "number"
+          },
+          "server_tool_use": {
+            "web_search_requests": "number",
+            "web_fetch_requests": "number"
+          },
+          "service_tier": "<string>",
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": "number",
+            "ephemeral_5m_input_tokens": "number"
+          },
+          "inference_geo": "<string>",
+          "iterations": [
+            {
+              "input_tokens": "number",
+              "output_tokens": "number",
+              "cache_read_input_tokens": "number",
+              "cache_creation_input_tokens": "number",
+              "cache_creation": {
+                "ephemeral_5m_input_tokens": "number",
+                "ephemeral_1h_input_tokens": "number"
+              },
+              "type": "message"
+            }
+          ],
+          "speed": "<string>"
+        },
+        "modelUsage": {
+          "claude-haiku-4-5-20251001": {
+            "inputTokens": "number",
+            "outputTokens": "number",
+            "cacheReadInputTokens": "number",
+            "cacheCreationInputTokens": "number",
+            "webSearchRequests": "number",
+            "costUSD": "number",
+            "contextWindow": "number",
+            "maxOutputTokens": "number",
+            "thinkingTokens": "number",
+            "canonicalModel": "<string>",
+            "provider": "<string>",
+            "costBasis": "<string>"
+          },
+          "claude-fable-5": {
+            "inputTokens": "number",
+            "outputTokens": "number",
+            "cacheReadInputTokens": "number",
+            "cacheCreationInputTokens": "number",
+            "webSearchRequests": "number",
+            "costUSD": "number",
+            "contextWindow": "number",
+            "maxOutputTokens": "number",
+            "thinkingTokens": "number",
+            "canonicalModel": "<string>",
+            "provider": "<string>",
+            "costBasis": "<string>"
+          }
+        },
+        "permission_denials": [],
+        "terminal_reason": "<string>",
+        "fast_mode_state": "<string>",
+        "fast_mode_disabled_reason": "<string>",
+        "subagent_stats": {
+          "spawned": "number",
+          "requested": {
+            "background": "number",
+            "foreground": "number",
+            "unset": "number"
+          },
+          "started_in_background": "number",
+          "max_depth": "number",
+          "spawned_by_subagents": "number",
+          "completed": "number",
+          "failed": "number",
+          "killed": {
+            "parent": "number",
+            "user": "number",
+            "system": "number"
+          },
+          "refused": {
+            "depth_limit": "number",
+            "concurrency_limit": "number",
+            "budget": "number"
+          },
+          "by_type": {}
+        },
+        "is_error": false,
+        "num_turns": "number",
+        "subtype": "success",
+        "api_error_status": "null",
+        "result": "<string>",
+        "ttft_ms": "number",
+        "type": "result",
+        "duration_ms": "number",
+        "uuid": "<identifier-or-path>",
+        "ttft_stream_ms": "number",
+        "time_to_request_ms": "number",
+        "first_content_frame_ms": "number",
+        "queued_turn_count": "number",
+        "result_index": "number"
+      },
+      "finalMarkers": [
+        "PROMPT_HOOK_OBSERVED",
+        "RESUMED_OK"
+      ],
+      "refusalSignals": 0,
+      "rateLimitSignals": 3,
+      "observedModels": [
+        "claude-fable-5",
+        "claude-haiku-4-5-20251001"
+      ],
+      "operations": [],
+      "authenticationUnavailable": false
+    },
+    "worktree": {
+      "fixtureEdited": true,
+      "insideWritten": false,
+      "statusCodes": [
+        " M"
+      ]
+    },
+    "conversationRecovery": "unavailable: launch profile disables session persistence; transport worker-store recovery not exercised"
+  }
+}

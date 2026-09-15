@@ -90,12 +90,12 @@ const control = await (async function operatorControl(input, event) {
     }
 })(input, "PreToolUse");
 if (control) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/a527128a5b518bb9/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/a527128a5b518bb9/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/354272bf63a0fc1e/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/354272bf63a0fc1e/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.9.2",
+  "compilerPackageVersion": "0.9.3",
   "runtime": {
-    "skeletonVersion": "0.15.11",
+    "skeletonVersion": "0.15.12",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -116,15 +116,15 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:9e6ea83bf678c088"
+        "hash": "fnv1a64:857d7925b8f422fb"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
-        "hash": "fnv1a64:8ec7474b9511d266"
+        "hash": "fnv1a64:d4ce24dd844a4aa5"
       },
       {
         "path": "packages/skeleton/dist/src/gate-evidence.mjs",
-        "hash": "fnv1a64:6b029519b0949506"
+        "hash": "fnv1a64:76059d44040531b1"
       },
       {
         "path": "packages/skeleton/dist/src/gate-deadlines.mjs",
@@ -135,11 +135,15 @@ await runHarnessHook({
         "hash": "fnv1a64:63758af4d47a6236"
       },
       {
+        "path": "packages/skeleton/dist/src/writer-teardown.mjs",
+        "hash": "fnv1a64:02ec5d2fc0848e9d"
+      },
+      {
         "path": "packages/skeleton/dist/src/reactor.js",
         "hash": "fnv1a64:ac4af55f5c7ef6c5"
       }
     ],
-    "snapshot": ".runtime/harness/a527128a5b518bb9"
+    "snapshot": ".runtime/harness/354272bf63a0fc1e"
   },
   "event": "PreToolUse",
   "tools": {
@@ -157,9 +161,11 @@ await runHarnessHook({
     "Bash": "shell",
     "Monitor": "shell",
     "TaskOutput": "read",
-    "KillShell": "shell",
+    "KillShell": "stop",
+    "TaskStop": "stop",
     "Agent": "spawn",
     "Task": "spawn",
+    "Workflow": "spawn",
     "Skill": "interaction",
     "TodoWrite": "interaction",
     "AskUserQuestion": "interaction",
@@ -174,13 +180,15 @@ await runHarnessHook({
   "kind": "observe"
 }, feedbackBoundary, input);
 }
-} catch { let response = {"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"DOTLN_HARNESS_REFUSED: built adapter unavailable"}};
+} catch { let response = {"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"DOTLN_HARNESS_REFUSED: built adapter unavailable. Still admitted while the adapter is unavailable: Read, Glob and Grep, and in this checkout exactly pwd; git status --short; git status --short --branch; git rev-parse --show-toplevel; node scripts/bootstrap.mjs (also joined by && or ; when every segment is one of these). Run node scripts/bootstrap.mjs to prepare this worktree."}};
 try {
   const args = input?.tool_input ?? {};
   const read = ["Read", "Glob", "Grep"].includes(input.tool_name);
+  const admitted = ["pwd","git status --short","git status --short --branch","git rev-parse --show-toplevel","node scripts/bootstrap.mjs"];
+  const segments = String(args.command ?? args.cmd ?? "").split("&&").flatMap((part) => part.split(";")).map((part) => part.trim());
   const shell = ["Bash", "exec_command"].includes(input.tool_name)
     && (args.workdir ?? args.cwd ?? input.cwd) === input.cwd
-    && ["pwd", "git status --short", "git status --short --branch", "git rev-parse --show-toplevel", "node scripts/bootstrap.mjs"].includes(String(args.command ?? args.cmd ?? ""));
-  if (read || shell) response = { systemMessage: "DotLn: built adapter unavailable; read access and node scripts/bootstrap.mjs remain available." };
+    && segments.length > 0 && segments.every((segment) => admitted.includes(segment));
+  if (read || shell) response = { systemMessage: "DotLn: built adapter unavailable. Still admitted while the adapter is unavailable: Read, Glob and Grep, and in this checkout exactly pwd; git status --short; git status --short --branch; git rev-parse --show-toplevel; node scripts/bootstrap.mjs (also joined by && or ; when every segment is one of these). Run node scripts/bootstrap.mjs to prepare this worktree." };
 } catch {}
 process.stdout.write(JSON.stringify(response)); }

@@ -125,6 +125,7 @@ export const suites = [
     }),
   ),
   nodeTests("adjacent-queue", "scripts/test-adjacent-queue.mjs"),
+  nodeTests("harness-probe", "scripts/test-harness-probe.mjs"),
   nodeTests("authority-grants", "scripts/test-authority-grants.mjs"),
   node("authority-evidence", "scripts/authority-evidence.mjs", {
     args: ["--check"],
@@ -240,6 +241,7 @@ export function executeSuite(
   repo,
   timeoutMs = 900_000,
   onProgress = () => {},
+  signal = undefined,
 ) {
   const started = Date.now();
   const env = suiteEnvironment(
@@ -262,20 +264,58 @@ export function executeSuite(
     });
   }
   return new Promise((resolveRun) => {
+    // Each POSIX suite owns a process group, including descendants inheriting
+    // its pipes. Cancellation signals that group, never a scanned process list.
+    const grouped = process.platform !== "win32";
     const child = spawn(command[0], command.slice(1), {
       cwd: repo,
       stdio: ["ignore", "pipe", "pipe"],
       env,
+      detached: grouped,
     });
     let output = "";
     let timedOut = false;
+    let stopped = false;
     let failure;
     let killTimer;
+    let finishTimer;
+    let escalated = false;
+    const terminate = (kind) => {
+      try {
+        if (grouped && child.pid) process.kill(-child.pid, kind);
+        else child.kill(kind);
+      } catch (error) {
+        if (error.code !== "ESRCH") failure ??= error.message;
+      }
+    };
+    const cancel = () => {
+      terminate("SIGTERM");
+      killTimer ??= setTimeout(() => {
+        escalated = true;
+        terminate("SIGKILL");
+        // A descendant may deliberately leave the group or the host may deny
+        // signalling. Its inherited descriptors must not hold the gate open.
+        child.stdout.destroy();
+        child.stderr.destroy();
+        child.unref();
+        finishTimer = setTimeout(() => finish(null), 100);
+      }, 1000);
+    };
+    const stop = () => {
+      stopped = true;
+      onProgress({
+        name: row.name,
+        message: "stopped by gate request",
+        elapsedMs: Date.now() - started,
+      });
+      cancel();
+    };
+    if (signal?.aborted) stop();
+    else signal?.addEventListener("abort", stop, { once: true });
     const timer = setTimeout(() => {
       timedOut = true;
       deadline.finish(true);
-      child.kill("SIGTERM");
-      killTimer = setTimeout(() => child.kill("SIGKILL"), 1000);
+      cancel();
     }, timeoutMs);
     let progressCount = 0;
     let lastProgressAt = started;
@@ -318,10 +358,15 @@ export function executeSuite(
     child.on("error", (error) => {
       failure = error.message;
     });
-    child.on("close", (code) => {
+    let finished = false;
+    const finish = (code) => {
+      if (finished) return;
+      finished = true;
       clearTimeout(timer);
       clearTimeout(killTimer);
+      clearTimeout(finishTimer);
       clearInterval(heartbeat);
+      signal?.removeEventListener("abort", stop);
       const durationMs = Date.now() - started;
       deadline.finish();
       resolveRun({
@@ -329,10 +374,14 @@ export function executeSuite(
         durationMs,
         startedAt: new Date(started).toISOString(),
         finishedAt: new Date().toISOString(),
-        exitCode: timedOut ? 1 : (code ?? 1),
+        exitCode: timedOut || stopped ? 1 : (code ?? 1),
         executed: true,
-        output: `${output}${failure ? `\n${failure}` : ""}${timedOut ? `\nSuite ${row.name} timed out after ${durationMs} ms` : ""}`,
+        ...(stopped ? { stopped: true } : {}),
+        output: `${output}${failure ? `\n${failure}` : ""}${timedOut ? `\nSuite ${row.name} timed out after ${durationMs} ms` : ""}${stopped ? `\nSuite ${row.name} stopped by gate request after ${durationMs} ms` : ""}`,
       });
+    };
+    child.on("close", (code) => {
+      if (!killTimer || escalated) finish(code);
     });
   });
 }
@@ -350,6 +399,7 @@ export async function scheduleSuites(
     onResult = () => {},
     onActiveChange = () => {},
     diagnosticContext = {},
+    stopRequested = () => false,
   } = {},
 ) {
   validateSuites(table);
@@ -429,6 +479,19 @@ export async function scheduleSuites(
   const groups = new Set();
   let exclusive = false;
   while (pending.length || active.size) {
+    // A stop request ends scheduling at this boundary; the suites already
+    // running are ended by their execute adapter and settle below.
+    if (stopRequested())
+      while (pending.length) {
+        const row = pending.pop();
+        finish({
+          name: row.name,
+          exitCode: 1,
+          durationMs: 0,
+          executed: false,
+          output: "Gate stopped by request before this suite started",
+        });
+      }
     for (let index = pending.length - 1; index >= 0; index--)
       if (
         (pending[index].after ?? []).some((name) =>
@@ -682,7 +745,10 @@ export async function runGate(
 ) {
   const active = beginGateRun(repo, "scripts/test-runner.mjs");
   try {
-    return await runGateChecks(args, repo, options);
+    return await runGateChecks(args, repo, {
+      stopRequested: active.stopRequested,
+      ...options,
+    });
   } finally {
     active.release();
   }
@@ -691,7 +757,7 @@ export async function runGate(
 async function runGateChecks(
   args,
   repo,
-  { kernelProbe = probeKernelDenial } = {},
+  { kernelProbe = probeKernelDenial, stopRequested = () => false } = {},
 ) {
   let full = false,
     document = false,
@@ -720,6 +786,19 @@ async function runGateChecks(
       : "npm test";
   const treeHash = gateTreeHash(repo);
   const started = Date.now();
+  // A stop request (node scripts/harness.mjs evidence --stop) is honored at
+  // the next boundary this runner owns: no further suite starts, running
+  // suites are ended through their abort signal, and no check is recorded.
+  const stop = new AbortController();
+  let stopReason = null;
+  const stopping = () => {
+    if (!stopReason && stopRequested()) {
+      stopReason = `Gate stopped by request after ${((Date.now() - started) / 1000).toFixed(1)} s; no check recorded for tree ${treeHash}`;
+      stop.abort();
+    }
+    return stopReason !== null;
+  };
+  const stopPoll = setInterval(stopping, 500);
   let selected = suites.filter((row) =>
     only
       ? row.name === only
@@ -778,6 +857,7 @@ async function runGateChecks(
         renameSync(`${peerFile}.tmp`, peerFile);
       },
       ...(serial ? { concurrency: 1 } : {}),
+      stopRequested: stopping,
       execute: async (row, cwd) => {
         if (row.name === "document-barrier")
           return {
@@ -786,6 +866,14 @@ async function runGateChecks(
             durationMs: 0,
             executed: true,
             output: "",
+          };
+        if (stopping())
+          return {
+            name: row.name,
+            exitCode: 1,
+            durationMs: 0,
+            executed: false,
+            output: "Gate stopped by request before this suite started",
           };
         if (scoped && !row.build && !before)
           before = { ...observeSuiteInputs(repo), kernelDenial };
@@ -841,6 +929,7 @@ async function runGateChecks(
               console.log(
                 `PROGRESS [${name}] ${(elapsedMs / 1000).toFixed(1)} s ${message}`,
               ),
+            stop.signal,
           );
           if (replica && result.exitCode !== 0) {
             const missing =
@@ -887,6 +976,7 @@ async function runGateChecks(
             console.log(`  [${row.name}] ${line}`);
       },
     });
+    if (stopping()) throw new Error(stopReason);
     const after = before ? { ...observeSuiteInputs(repo), kernelDenial } : null;
     for (const row of taskRows) {
       const task = tasks.find((task) => task.name === row.name);
@@ -1051,6 +1141,7 @@ async function runGateChecks(
     );
     return check;
   } finally {
+    clearInterval(stopPoll);
     try {
       fixture?.cleanup();
     } finally {

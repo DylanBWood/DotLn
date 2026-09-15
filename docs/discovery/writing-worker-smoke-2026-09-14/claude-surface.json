@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-044",
+  "harness": "claude",
+  "launch": "surface",
+  "question": "scheduled-task surface",
+  "observedAt": "2026-09-14T19:49:50.077Z",
+  "version": "2.1.270 (Claude Code)",
+  "actor": {
+    "harness": "claude-code",
+    "model": "not-selected",
+    "effort": "not-selected",
+    "source": "launch-selector"
+  },
+  "effectiveEffort": "unobserved",
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false,
+  "surface": {
+    "helpExitCode": 0,
+    "schedulerSubcommand": false,
+    "backgroundLaunch": true,
+    "backgroundSessionCommands": [],
+    "daemonOrAppServer": true,
+    "inSessionSchedulingNoted": "in-session scheduling tools are not observable from the CLI help"
+  },
+  "corrections": [
+    {
+      "finding": "VER-001 F5",
+      "correctedAt": "2026-09-14T22:06:36.695Z",
+      "previousActor": {
+        "harness": "claude-code",
+        "model": "claude-fable-5",
+        "effort": "xhigh",
+        "source": "launch-selector"
+      },
+      "evidence": "help invocation selects no model or effort"
+    }
+  ]
+}

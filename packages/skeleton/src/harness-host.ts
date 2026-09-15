@@ -1,4 +1,5 @@
 import { observedSpawnSync as spawnSync } from "./gate-deadlines.mjs";
+import { withWriterRegistration } from "./writer-teardown.mjs";
 import { createHash, randomBytes } from "node:crypto";
 import {
   appendFileSync,
@@ -53,6 +54,7 @@ import {
   findGateCheck,
   readGateChecks,
   recordGateChecks,
+  lifecycleRequiredChecks,
 } from "./gate-evidence.mjs";
 import {
   collectSessionUsage,
@@ -67,7 +69,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.15.11";
+export const HARNESS_HOST_VERSION = "0.15.12";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;
@@ -139,7 +141,10 @@ interface HookConfig {
   }[];
   readonly instructionFile?: string;
   readonly tools?: Readonly<
-    Record<string, "read" | "write" | "shell" | "spawn" | "interaction">
+    Record<
+      string,
+      "read" | "write" | "shell" | "spawn" | "stop" | "interaction"
+    >
   >;
 }
 interface ControlView {
@@ -909,9 +914,11 @@ function refreshWriterInstance(
 }
 /** Fixture and live-smoke seeding through the same conditional placement, never a hook path. */
 export function seedHarnessWriter(root: string, writer: HarnessWriter): void {
-  mkdirSync(harnessStateDirectory(root), { recursive: true, mode: 0o700 });
-  if (!placeWriterInstance(root, writer))
-    throw new Error("Writer reservation is already held");
+  withWriterRegistration(root, () => {
+    mkdirSync(harnessStateDirectory(root), { recursive: true, mode: 0o700 });
+    if (!placeWriterInstance(root, writer))
+      throw new Error("Writer reservation is already held");
+  });
 }
 /** The view of one observed record: a hashed session key and host process, never a path, session id or instance name. */
 const writerView = (
@@ -1036,6 +1043,15 @@ function migrateLegacyWriter(
  * the filesystem rather than through a guard that could itself be abandoned.
  */
 function reserveHarnessWriter(
+  root: string,
+  input: HarnessInput,
+  actorId: string,
+): readonly HarnessWriter[] {
+  return withWriterRegistration(root, () =>
+    reserveWriterWhileRegistered(root, input, actorId),
+  );
+}
+function reserveWriterWhileRegistered(
   root: string,
   input: HarnessInput,
   actorId: string,
@@ -1559,17 +1575,36 @@ function admitReadBytes(
     });
 }
 
-export function runHarnessEvidence(root: string): readonly HarnessCheck[] {
+export function runHarnessEvidence(
+  root: string,
+  pendingVerdict?: string,
+): readonly HarnessCheck[] {
   const active = beginGateRun(root, "harness evidence checks");
   try {
-    return runHarnessEvidenceChecks(root);
+    return runHarnessEvidenceChecks(root, active.stopRequested, pendingVerdict);
   } finally {
     active.release();
   }
 }
 
-function runHarnessEvidenceChecks(root: string): readonly HarnessCheck[] {
+function runHarnessEvidenceChecks(
+  root: string,
+  stopRequested: () => boolean = () => false,
+  pendingVerdict?: string,
+): readonly HarnessCheck[] {
   const treeHash = gateTreeHash(root);
+  // A stop request ends the gate at the next check boundary; an ended check
+  // is neither a pass nor a recorded failure.
+  const honourStop = (checkId: string) => {
+    if (stopRequested())
+      throw new Error(
+        `Gate stopped by request during ${checkId}; no check recorded`,
+      );
+  };
+  // A failing verdict owes only the whitespace check; the shared contract keeps
+  // this runner and the lifecycle gate from drifting. An absent verdict keeps
+  // the full set, so the default gate is byte-for-byte unchanged.
+  const required = lifecycleRequiredChecks(pendingVerdict);
   const commands = [
     {
       checkId: "npm run test:full",
@@ -1581,10 +1616,11 @@ function runHarnessEvidenceChecks(root: string): readonly HarnessCheck[] {
       executable: "git",
       args: ["diff", "--check"],
     },
-  ];
+  ].filter((command) => required.includes(command.checkId));
   const runs = commands.map(({ checkId, executable, args }) => {
     const cached = findGateCheck(root, checkId, treeHash);
     if (cached) return cached;
+    honourStop(checkId);
     const started = Date.now();
     const run = spawnSync(executable, args, {
       cwd: root,
@@ -1594,6 +1630,7 @@ function runHarnessEvidenceChecks(root: string): readonly HarnessCheck[] {
     });
     process.stdout.write(run.stdout ?? "");
     process.stderr.write(run.stderr ?? "");
+    honourStop(checkId);
     const durationMs = Date.now() - started;
     if (run.error)
       process.stderr.write(
@@ -2163,6 +2200,9 @@ export function permissionEffect(
       );
     return "repo.read";
   }
+  // Ending a task this session started is the session's own process control:
+  // it writes no repository byte, and a gate ended this way records no check.
+  if (tool === "stop") return "shell.run";
   if (tool === "write" && !path)
     throw new HarnessCommandRefused(
       "Write tool requires a classified path adapter",
@@ -2224,19 +2264,44 @@ const protocolRefusal = (event: HarnessEvent, reason: string) =>
 // The exact recovery route cannot depend on the runtime it creates. This is
 // mirrored in the compiler's self-contained import-failure fallback and tested
 // through both emitted paths. It is not an arbitrary-command fail-open.
+const BOOTSTRAP_HATCH_COMMANDS = [
+  "pwd",
+  "git status --short",
+  "git status --short --branch",
+  "git rev-parse --show-toplevel",
+  "node scripts/bootstrap.mjs",
+];
+/** Stated in the denial and in the advisory alike, in the same words as the
+ * compiler's self-contained fallback, so a recovering session sees what
+ * remains available instead of concluding tool use is blocked (WO-044). */
+export const BOOTSTRAP_HATCH_TEXT = `Still admitted while the adapter is unavailable: Read, Glob and Grep, and in this checkout exactly ${BOOTSTRAP_HATCH_COMMANDS.join("; ")} (also joined by && or ; when every segment is one of these). Run node scripts/bootstrap.mjs to prepare this worktree.`;
 function bootstrapAccess(input: HarnessInput): boolean {
   if (["Read", "Glob", "Grep"].includes(input.tool_name ?? "")) return true;
   if (!["Bash", "exec_command"].includes(input.tool_name ?? "")) return false;
   const args = input.tool_input ?? {};
   if ((args.workdir ?? args.cwd ?? input.cwd) !== input.cwd) return false;
-  return [
-    "pwd",
-    "git status --short",
-    "git status --short --branch",
-    "git rev-parse --show-toplevel",
-    "node scripts/bootstrap.mjs",
-  ].includes(String(args.command ?? args.cmd ?? ""));
+  // Allowlisted segments compose; any other segment, pipe or redirect refuses.
+  const segments = String(args.command ?? args.cmd ?? "")
+    .split("&&")
+    .flatMap((part) => part.split(";"))
+    .map((part) => part.trim());
+  return (
+    segments.length > 0 &&
+    segments.every((segment) => BOOTSTRAP_HATCH_COMMANDS.includes(segment))
+  );
 }
+
+/** The session's own route out of a running gate, admitted while the gate
+ * holds the tree in Claude and Codex alike. It writes only the ignored stop
+ * request the gate reads at its next boundary; it builds nothing and signals
+ * no pid. */
+const GATE_STOP_COMMANDS = [
+  "node scripts/harness.mjs evidence --stop",
+  "npm run harness -- evidence --stop",
+];
+export const GATE_STOP_TEXT = `Stop that gate from this session with ${GATE_STOP_COMMANDS[0]} (admitted now; it ends at its next boundary and records no check) or the harness's own task-stop tool, or wait for it to finish.`;
+const gateStopCommand = (command: unknown): boolean =>
+  typeof command === "string" && GATE_STOP_COMMANDS.includes(command.trim());
 
 /** All generated pre-tool boundaries share this guard. There is no agent-
  * supplied gate-child bypass; gate-owned subprocess writes do not dispatch tools.
@@ -2294,8 +2359,12 @@ function activeGateWriteRefusal(
             : `${root}/${requestedDirectory}`,
         );
       // Repository helpers are reviewed at the root, not at a same-named script
-      // below an arbitrary tool cwd. Built-in metadata reads remain usable.
-      if (directory === root && managedUsageCommand(input, session))
+      // below an arbitrary tool cwd. Built-in metadata reads remain usable,
+      // and so is the session's own stop request for this gate.
+      if (
+        directory === root &&
+        (managedUsageCommand(input, session) || gateStopCommand(command))
+      )
         return null;
       if (
         directory &&
@@ -2321,7 +2390,7 @@ function activeGateWriteRefusal(
     )
       return null;
   }
-  return `DOTLN_HARNESS_REFUSED: write may change gate inputs during active gate ${runs.map((run) => `${run.command} (run ${run.runId}, pid ${run.pid})`).join("; ")}`;
+  return `DOTLN_HARNESS_REFUSED: write may change gate inputs during active gate ${runs.map((run) => `${run.command} (run ${run.runId}, pid ${run.pid})`).join("; ")}. ${GATE_STOP_TEXT}`;
 }
 
 function assertHarnessRuntime(
@@ -2786,7 +2855,7 @@ export async function runHarnessHook(
         ? `DOTLN_HARNESS_REFUSED: command classification: ${error.message}`
         : error instanceof HarnessStateUnreadable
           ? `DOTLN_HARNESS_REFUSED: ${error.message}`
-          : `DOTLN_HARNESS_REFUSED: host facts or pinned runtime unavailable (${failure})`,
+          : `DOTLN_HARNESS_REFUSED: host facts or pinned runtime unavailable (${failure})${config.event === "PreToolUse" ? `. ${BOOTSTRAP_HATCH_TEXT}` : ""}`,
     );
     if (
       config.event === "PreToolUse" &&
@@ -2795,8 +2864,7 @@ export async function runHarnessHook(
       bootstrapAccess(observed.input)
     )
       response = {
-        systemMessage:
-          "DotLn: runtime setup unavailable; read access and node scripts/bootstrap.mjs remain available.",
+        systemMessage: `DotLn: runtime setup unavailable. ${BOOTSTRAP_HATCH_TEXT}`,
       };
   } finally {
     if (observed) {

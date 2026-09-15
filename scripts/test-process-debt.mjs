@@ -37,7 +37,11 @@ import {
   renderIntakeReconciliation,
   verifyPreservedMaterial,
 } from "./lib/intake-reconciliation.mjs";
-import { classifyIgnoredMaterial } from "./lib/paths.mjs";
+import {
+  classifyIgnoredMaterial,
+  describeIgnoredMaterial,
+  inspectNestedRepository,
+} from "./lib/paths.mjs";
 import {
   budgetVerdict,
   measureColdStarts,
@@ -155,7 +159,19 @@ function repo(t, { runtime = false } = {}) {
     // Snapshot copies can retain read-only mount modes. Restore only this
     // fixture's owned entries, without following links back to installed roots.
     writableOwnedTree(root);
-    rmSync(root, { recursive: true, force: true });
+    // Git's default background maintenance can spawn a detached `gc` that
+    // recreates .git/info/refs and .git/objects/info/packs after rimraf has
+    // already walked those directories, throwing ENOTEMPTY on a race the fixture
+    // does not own. Bounded retries let the owned removal converge once the
+    // collection finishes, so the suite result stays decided by its assertions
+    // rather than by whether a gc lands mid-teardown. Git's default background
+    // maintenance is left in force; only the removal tolerates its residue.
+    rmSync(root, {
+      recursive: true,
+      force: true,
+      maxRetries: 10,
+      retryDelay: 100,
+    });
   });
   git(root, "init", "-q", "-b", "wo-999");
   assert.equal(realpathSync(git(root, "rev-parse", "--show-toplevel")), root);
@@ -291,12 +307,57 @@ test("WO-131 a same-host subagent spawn is admitted, a remote one is refused by 
       invoke({ tool_name: "Agent", tool_input: agent }).permissionDecision,
       "deny",
     );
+    const refused = invoke({
+      tool_name: "Write",
+      tool_input: { file_path: join(root, "package.json"), content: "{}" },
+    });
+    assert.equal(refused.permissionDecision, "deny");
+    // WO-044: the session's own route out of its gate is admitted while the
+    // gate holds the tree, in both harnesses, and the refusal names it. The
+    // harness stop tools and the exact stop command change no gate input; the
+    // gate itself stays refused until it ends.
+    assert.match(
+      refused.permissionDecisionReason,
+      /Stop that gate from this session with node scripts\/harness\.mjs evidence --stop \(admitted now; it ends at its next boundary and records no check\) or the harness's own task-stop tool, or wait for it to finish\./,
+    );
+    for (const name of ["TaskStop", "KillShell"])
+      assert.notEqual(
+        invoke({ tool_name: name, tool_input: { task_id: "gate" } })
+          .permissionDecision,
+        "deny",
+        name,
+      );
+    for (const command of [
+      "node scripts/harness.mjs evidence --stop",
+      "npm run harness -- evidence --stop",
+    ])
+      assert.notEqual(
+        invoke({ tool_name: "Bash", tool_input: { command } })
+          .permissionDecision,
+        "deny",
+        command,
+      );
+    for (const command of [
+      "node scripts/harness.mjs evidence",
+      "node scripts/harness.mjs evidence --stop && npm run build",
+      "npm run harness -- evidence --stop --force",
+    ])
+      assert.equal(
+        invoke({ tool_name: "Bash", tool_input: { command } })
+          .permissionDecision,
+        "deny",
+        command,
+      );
     assert.equal(
       invoke({
-        tool_name: "Write",
-        tool_input: { file_path: join(root, "package.json"), content: "{}" },
+        tool_name: "Bash",
+        tool_input: {
+          command: "node scripts/harness.mjs evidence --stop",
+          workdir: "scripts",
+        },
       }).permissionDecision,
       "deny",
+      "the stop command is reviewed at the root only",
     );
   } finally {
     active.release();
@@ -1364,10 +1425,17 @@ test("effect inventory refuses opaque tools and classifies invocations instead o
     );
   // A same-host subagent spawn is a read: its own effects are guarded one by
   // one. Only a remote agent leaves those guards.
-  for (const name of ["Agent", "Task"])
+  for (const name of ["Agent", "Task", "Workflow"])
     assert.equal(
       permissionEffect({ tool_name: name, tool_input: {} }),
       "repo.read",
+    );
+  // WO-044: ending a task this session started is its own process control,
+  // never an unclassified effect and never a repository write.
+  for (const name of ["TaskStop", "KillShell"])
+    assert.equal(
+      permissionEffect({ tool_name: name, tool_input: { task_id: "gate" } }),
+      "shell.run",
     );
   assert.throws(
     () =>
@@ -2431,6 +2499,110 @@ test("installed permission hook distinguishes classifier refusal from runtime fa
   );
 });
 
+test("harness evidence --fail records only the diff check the failing verdict requires", async (t) => {
+  const root = repo(t, { runtime: true });
+  for (const name of ["harness.mjs", "harness-entry.mjs", "work-orders.mjs"])
+    copyFileSync(join(source, "scripts", name), join(root, "scripts", name));
+  // Keep the real preparation dependency graph local: replica execution
+  // preserves symlinks, so a link to scripts/lib changes relative imports.
+  cpSync(join(source, "scripts/lib"), join(root, "scripts/lib"), {
+    recursive: true,
+    dereference: true,
+  });
+  mkdirSync(join(root, "packages/skeleton/src"), { recursive: true });
+  for (const name of [
+    "gate-evidence.mjs",
+    "gate-deadlines.mjs",
+    "usage-observation.mjs",
+  ])
+    copyFileSync(
+      join(source, "packages/skeleton/src", name),
+      join(root, "packages/skeleton/src", name),
+    );
+  write(
+    root,
+    "docs/work-orders/WO-999-fixture.md",
+    "# WO-999 — Fixture (v0.1.0)\n\n**Model:** fixture\n**Effort:** max\n**Cost:** fixture\n**Depends on:** none\n",
+  );
+  write(
+    root,
+    "docs/planning/work-order-map.md",
+    "<!-- dotln-work-order-sequence:start -->\n<!-- dotln-work-order-sequence:end -->\n",
+  );
+  emitHarness(root);
+  beginHarnessSession(root, "fixture", "verifier");
+  write(
+    root,
+    "package.json",
+    json({
+      type: "module",
+      scripts: {
+        harness: JSON.parse(readFileSync(join(source, "package.json"), "utf8"))
+          .scripts.harness,
+        build: "node .runtime/check.mjs",
+        test: "node .runtime/check.mjs",
+        "test:full": "node .runtime/check.mjs",
+      },
+    }),
+  );
+  write(
+    root,
+    ".runtime/check.mjs",
+    "import { appendFileSync } from 'node:fs'; appendFileSync('.runtime/runs.txt', process.env.npm_lifecycle_event + '\\n');\n",
+  );
+  const runs = () => {
+    try {
+      return readFileSync(join(root, ".runtime/runs.txt"), "utf8")
+        .trim()
+        .split("\n")
+        .filter(Boolean);
+    } catch {
+      return [];
+    }
+  };
+  const invoke = (...flags) => {
+    const result = spawnSync(
+      "npm",
+      ["run", "harness", "--", "evidence", ...flags],
+      {
+        cwd: root,
+        encoding: "utf8",
+      },
+    );
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    return readGateChecks(root);
+  };
+  const failChecks = invoke("--fail");
+  assert.deepEqual(
+    failChecks.map((check) => check.checkId),
+    ["git diff --check"],
+    "a failing verdict records only the whitespace check",
+  );
+  assert.ok(
+    failChecks.every((check) => check.executed && check.exitCode === 0),
+  );
+  assert.deepEqual(
+    runs(),
+    ["build"],
+    "the package wrapper builds but never spawns the suite gate on failure",
+  );
+  await assert.rejects(
+    requireLifecycleEvidence(root, "verification-result", "pass", "WO-999"),
+    /npm run test:full/,
+    "the fail-path diff check cannot satisfy a passing gate",
+  );
+  const fullChecks = invoke();
+  assert.deepEqual(
+    fullChecks.map((check) => check.checkId).sort(),
+    ["git diff --check", "npm run test:full"],
+    "an absent verdict still runs the full gate",
+  );
+  assert.ok(
+    fullChecks.every((check) => check.executed && check.exitCode === 0),
+  );
+  assert.deepEqual(runs(), ["build", "build", "test:full"]);
+});
+
 test("harness evidence reuses the current full gate without relabeling or repeating code checks", async (t) => {
   const root = repo(t, { runtime: true });
   emitHarness(root);
@@ -2676,6 +2848,171 @@ test("closeout preview and copy preserve collisions, harness state, terms and ev
     join(from, "docs/intake/escape"),
   );
   assert.throws(() => reconcileIntake(from, main, "WO-999"), /symlink|regular/);
+});
+
+test("WO-044 closeout classifies nested repositories: empty scaffolding is discarded, content is preserved as a unit, and every blocker names its lane and remedy", (t) => {
+  const from = repo(t),
+    main = repo(t),
+    local = "docs/control/local";
+  const mount = `${local}/feedback/verifier/mount`;
+  mkdirSync(join(from, mount), { recursive: true });
+  git(join(from, mount), "init", "-q");
+  const kept = `${local}/prototypes/repo`;
+  mkdirSync(join(from, kept), { recursive: true });
+  git(join(from, kept), "init", "-q");
+  write(from, `${kept}/file.txt`, "kept nested content\n");
+  const author = [
+    "-c",
+    "user.name=Fixture",
+    "-c",
+    "user.email=f@example.invalid",
+  ];
+  git(join(from, kept), ...author, "add", "file.txt");
+  git(join(from, kept), ...author, "commit", "-qm", "kept");
+  write(from, `${local}/terms.txt`, "subject terms\n");
+  const preview = reconcileWorktreeMaterial(from, main, "WO-999", {
+    dryRun: true,
+  });
+  assert.deepEqual(
+    preview.nestedRepositories.map((row) => [row.source, row.disposition]),
+    [
+      [mount, "empty-scaffolding"],
+      [kept, "preserved-unit"],
+    ],
+  );
+  const sources = preview.files.map((row) => row.source);
+  assert.ok(sources.includes(`${kept}/.git/HEAD`));
+  assert.ok(sources.includes(`${kept}/file.txt`));
+  assert.ok(!sources.some((path) => path.startsWith(mount)));
+  const rendered = renderIntakeReconciliation(preview);
+  assert.match(
+    rendered,
+    /nested repository discarded as empty fixture scaffolding/,
+  );
+  assert.match(rendered, /nested repository preserved as a directory unit/);
+  const applied = reconcileWorktreeMaterial(from, main, "WO-999");
+  verifyPreservedMaterial(from, main, applied);
+  const archive = `${local}/retained/WO-999`;
+  assert.equal(
+    readFileSync(join(main, archive, "prototypes/repo/file.txt"), "utf8"),
+    "kept nested content\n",
+  );
+  assert.ok(existsSync(join(main, archive, "prototypes/repo/.git/HEAD")));
+  assert.equal(existsSync(join(main, archive, "feedback")), false);
+  const scaffolding = describeIgnoredMaterial(from, `${mount}/`);
+  assert.equal(scaffolding.disposable, true);
+  assert.match(scaffolding.classification, /empty nested repository/);
+  const unit = describeIgnoredMaterial(from, `${kept}/`);
+  assert.equal(unit.disposable, false);
+  assert.match(unit.remedy, /preserved as a directory unit/);
+  const env = describeIgnoredMaterial(from, ".env");
+  assert.equal(env.lane, "other");
+  assert.match(env.remedy, /operator terminal/);
+  assert.doesNotMatch(env.remedy, /backup:intake/);
+  assert.match(
+    describeIgnoredMaterial(from, "docs/intake/raw.md").remedy,
+    /npm run backup:intake/,
+  );
+  assert.match(
+    describeIgnoredMaterial(from, ".claude/settings.local.json").remedy,
+    /never deleted/,
+  );
+  assert.equal(
+    describeIgnoredMaterial(from, "docs/intake/scratch/").disposable,
+    false,
+    "intake protection outranks scaffolding detection",
+  );
+});
+
+test("WO-044 VER-001 preserves unborn repositories with refs, staged-only bytes, dangling objects or unreadable metadata", async (t) => {
+  const { removeMountScaffolding } =
+    await import("../packages/skeleton/dist/src/feedback-selfhost.js");
+  for (const kind of ["refs", "index", "objects", "broken-head"]) {
+    const from = repo(t),
+      main = repo(t);
+    const path = `docs/control/local/prototypes/${kind}`;
+    const nested = join(from, path);
+    mkdirSync(nested, { recursive: true });
+    git(nested, "init", "-q");
+    if (kind === "refs") {
+      git(
+        nested,
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=f@example.invalid",
+        "commit",
+        "--allow-empty",
+        "-qm",
+        "saved",
+      );
+      git(nested, "symbolic-ref", "HEAD", "refs/heads/unborn");
+    } else if (kind === "index" || kind === "objects") {
+      write(nested, "valuable.txt", "saved fixture bytes\n");
+      git(nested, "add", "valuable.txt");
+      if (kind === "objects") git(nested, "rm", "--cached", "valuable.txt");
+      rmSync(join(nested, "valuable.txt"));
+    } else write(nested, ".git/HEAD", "broken\n");
+    assert.equal(inspectNestedRepository(from, path + "/").empty, false, kind);
+    assert.equal(
+      describeIgnoredMaterial(from, path + "/").disposable,
+      false,
+      kind,
+    );
+    if (kind === "broken-head")
+      assert.match(
+        describeIgnoredMaterial(from, path + "/").classification,
+        /commit state unknown/,
+      );
+    const receipt = reconcileWorktreeMaterial(from, main, "WO-999");
+    verifyPreservedMaterial(from, main, receipt);
+    if (kind !== "broken-head")
+      assert.equal(receipt.nestedRepositories[0].disposition, "preserved-unit");
+    assert.ok(receipt.files.length > 0);
+    if (kind === "index")
+      assert.equal(
+        git(
+          join(main, "docs/control/local/retained/WO-999/prototypes", kind),
+          "show",
+          ":valuable.txt",
+        ),
+        "saved fixture bytes",
+      );
+    removeMountScaffolding(nested);
+    assert.ok(existsSync(nested), `feedback mount preserves ${kind}`);
+  }
+});
+
+test("WO-044 VER-001 registration leases exclude teardown while allowing recovery contenders", async (t) => {
+  const {
+    withWriterRegistration,
+    withWriterReservationLock,
+    writerTeardownBlocker,
+  } = await import("../packages/skeleton/src/writer-teardown.mjs");
+  const root = repo(t);
+  withWriterReservationLock(root, () => {
+    assert.throws(
+      () => seedHarnessWriter(root, { actorId: "contender", worktree: root }),
+      /registration or teardown/,
+    );
+  });
+  assert.equal(harnessWriterView(root).reserved, false);
+  withWriterRegistration(root, () => {
+    withWriterRegistration(root, () => {
+      assert.throws(
+        () =>
+          withWriterReservationLock(root, () => assert.fail("teardown ran")),
+        /writer registration in progress/,
+      );
+    });
+  });
+  seedHarnessWriter(root, {
+    actorId: "writer",
+    worktree: root,
+    owner: { pid: process.pid, source: "parent" },
+  });
+  assert.equal(harnessWriterView(root).alive, true);
+  assert.match(writerTeardownBlocker(root), /writer reservation/);
 });
 
 test("closeout archives retained control files and nested directories without changing active main state", (t) => {
@@ -4292,6 +4629,19 @@ test("WO-131 missing bootstrap runtime permits reads and its exact repair comman
           false,
         ],
         ["Edit", { file_path: "fixture.ts" }, false],
+        // WO-044: allowlisted segments compose; any other segment refuses.
+        ["Bash", { command: "pwd && git status --short" }, true],
+        [
+          "Bash",
+          {
+            command:
+              "node scripts/bootstrap.mjs; git rev-parse --show-toplevel",
+          },
+          true,
+        ],
+        ["Bash", { command: "pwd && ls" }, false],
+        ["Bash", { command: "pwd | cat" }, false],
+        ["Bash", { command: "pwd;" }, false],
       ]) {
         const run = spawnSync(process.execPath, [path], {
           cwd: root,
@@ -4311,6 +4661,13 @@ test("WO-131 missing bootstrap runtime permits reads and its exact repair comman
           admitted,
           `${name}: ${JSON.stringify(tool_input)}`,
         );
+        // WO-044: the denial names its own hatch in the advisory's words.
+        const words = admitted
+          ? response.systemMessage
+          : response.hookSpecificOutput.permissionDecisionReason;
+        assert.match(words, /Read, Glob and Grep/, name);
+        assert.match(words, /node scripts\/bootstrap\.mjs/, name);
+        assert.match(words, /joined by && or ;/, name);
       }
     }
     writeFileSync(path, original);

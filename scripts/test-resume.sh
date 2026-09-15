@@ -464,6 +464,7 @@ grep -Fq 'run the reviewed helper from this main checkout' <<<"$release_close_ou
 if grep -Fq ' && ' <<<"$release_close_output"; then printf 'error: handoff printed from main must not change directory\n' >&2; exit 1; fi
 grep -Fq "'$fixture_repo/scripts/release.mjs' close WO-099 --publish" <<<"$release_close_output"
 grep -Fq 'never push main' <<<"$release_close_output"
+grep -Fq 'network egress to the GitHub host' <<<"$release_close_output"
 test "$(wc -l <"$active_log" | tr -d ' ')" = "$before_release_close"
 before_bad_activate="$(wc -l <"$active_log" | tr -d ' ')"
 if run activate WO-100 docs/work-orders/WO-100-next.md 2>/dev/null; then printf 'error: nonexistent work order activated\n' >&2; exit 1; fi

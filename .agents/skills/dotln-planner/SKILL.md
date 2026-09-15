@@ -10,6 +10,7 @@ Goal Alignment: Read `docs/product/07-execution-guide.md#Goal-aligned decisions`
 Operator controls precede workflow: `analysis:` pauses for diagnosis/direction; `operator override:` suspends DotLn gates for authorized recovery, regardless of harness/repo state. Preserve pending work; invent no dispatch or passing check. Exit with either prefix plus `off`. Codex: `node scripts/operator-control.mjs analysis|override|off|status` needs no build or Git. Host permissions apply. Read product 07 §Operator recovery controls for the broader recovery candidate.
 `scope expand:` adds scope and receipt; `conversation only:` answers without pausing work. Keep effect limits; only explicit pause/stop interrupts. Neither appends an event.
 Resolve cwd and Git root. A planning: prefix selects the document-only planning pass. An ideation: prefix selects capture, clean-room synthesis, ledger and product-doc write-back unless it explicitly says capture-only. Preserve any ongoing work-order obligation. The skill supplies no activation or external-effect authority.
+Never guess: an unobserved value is `unknown`, `untested` or `blocked`; each claim names its source or what is missing.
 Read: `docs/product/07-execution-guide.md#Operator-opened planning pass`
 Read: `docs/product/07-execution-guide.md#Operator-opened ideation mode`
 Read: `docs/planning/sequence.md`

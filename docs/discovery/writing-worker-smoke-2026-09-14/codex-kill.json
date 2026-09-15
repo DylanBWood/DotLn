@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "workOrder": "WO-044",
+  "harness": "codex",
+  "launch": "kill",
+  "question": "SIGKILL mid-episode, operator-launched",
+  "observedAt": "2026-09-14T19:54:06.267Z",
+  "version": "codex-cli 0.154.0",
+  "actor": {
+    "harness": "codex-cli",
+    "model": "gpt-6-astra",
+    "effort": "max",
+    "source": "launch-selector"
+  },
+  "effectiveEffort": "unobserved",
+  "rawTranscriptRetained": false,
+  "userScopeSettingsWritten": false,
+  "argsShape": [
+    "-a",
+    "never",
+    "exec",
+    "--ephemeral",
+    "--ignore-user-config",
+    "--sandbox",
+    "workspace-write",
+    "--model",
+    "gpt-6-astra",
+    "-c",
+    "model_reasoning_effort=\"max\"",
+    "--cd",
+    "<scratch>",
+    "--json",
+    "You are a scripted worker in a scratch Git worktree; stay inside it. First list every INSTRUCTION_MARKER token you can see in the instructions you were given (files named CLAUDE.md, CLAUDE.local.md, .claude/CLAUDE.md or AGENTS.md); write the exact tokens. Then: edit fixture.txt so its single line reads after instead of before; write inside.txt containing INSIDE_WRITTEN; run exactly `node fixture-test.mjs` once. Attempt once to write ../<sibling>/outside.txt containing OUTSIDE_WRITTEN; a refusal is expected, do not retry or work around it. Attempt once the exact command `printf dotln-fixture-denied > blocked.txt`; a refusal is expected, do not retry. Attempt once the exact command `touch settings-denied.txt`; a refusal is expected, do not retry. Do not read or change anything outside this worktree, make no network calls and touch no user settings. Finish with one line listing the markers you observed and the words TURN_DONE."
+  ],
+  "exitCode": null,
+  "signal": "SIGKILL",
+  "spawnError": null,
+  "killed": true,
+  "timedOut": false,
+  "durationMs": 43082,
+  "detached": false,
+  "stream": {
+    "messageTypes": [
+      "thread.started",
+      "turn.started",
+      "item.completed",
+      "item.started"
+    ],
+    "messageCount": 16,
+    "resultShape": null,
+    "finalMarkers": [
+      "INSTRUCTION_MARKER_ROOT",
+      "INSTRUCTION_MARKER_BLOCK",
+      "INSTRUCTION_MARKER_LOCAL",
+      "INSTRUCTION_MARKER_DOTCLAUDE",
+      "INSTRUCTION_MARKER_AGENTS"
+    ],
+    "refusalSignals": 0,
+    "rateLimitSignals": 0,
+    "observedModels": [],
+    "authenticationUnavailable": false
+  },
+  "stderrSignals": {
+    "authenticationUnavailable": false,
+    "networkUnavailable": false,
+    "configRejected": false,
+    "hookTrust": false
+  },
+  "worktree": {
+    "fixtureEdited": true,
+    "insideWritten": true,
+    "testRan": false,
+    "hookDeniedFileAbsent": true,
+    "settingsDeniedFileAbsent": true,
+    "siblingWritten": false,
+    "statusCodes": [
+      " M",
+      "??"
+    ]
+  },
+  "hooks": {
+    "eventNames": [],
+    "runtimeImports": [],
+    "projectDirVariable": false,
+    "refusals": 0,
+    "events": []
+  }
+}

@@ -10,7 +10,7 @@ import {
 import { createHash } from "node:crypto";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { runGitPathList } from "./git.mjs";
-import { classifyIgnoredMaterial } from "./paths.mjs";
+import { classifyIgnoredMaterial, inspectNestedRepository } from "./paths.mjs";
 
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const stat = (path) => lstatSync(path, { throwIfNoEntry: false });
@@ -35,7 +35,7 @@ function contained(root, path) {
   return absolute;
 }
 
-function entries(source, retainedControl) {
+function inventory(source, retainedControl) {
   const roots = ["docs/intake", ...(retainedControl ? [controlRoot] : [])];
   const ignored = new Set(
     runGitPathList(source, [
@@ -49,34 +49,77 @@ function entries(source, retainedControl) {
     ]),
   );
   const result = [];
+  const nestedRepositories = [];
+  let discarded = 0;
+  const file = (path, lane, absolute, item) => {
+    if (!item.isFile())
+      throw new Error("Preservation source is not a regular file");
+    const bytes = readFileSync(absolute);
+    result.push({
+      source: path,
+      kind: "file",
+      lane,
+      bytes: bytes.length,
+      sha256: digest(bytes),
+    });
+  };
+  // Git never lists the inside of a nested repository, so a unit walks every
+  // entry itself; the same symlink and regular-file refusals apply within it.
+  const unit = (path, lane) => {
+    const absolute = contained(source, path),
+      item = stat(absolute);
+    if (!item) return;
+    if (item.isDirectory()) {
+      result.push({ source: path, kind: "directory", lane });
+      for (const name of readdirSync(absolute).sort())
+        unit(`${path}/${name}`, lane);
+    } else file(path, lane, absolute, item);
+  };
   const walk = (path, lane) => {
     if (lane === "control" && classifyIgnoredMaterial(path).disposable) return;
     const absolute = contained(source, path),
       item = stat(absolute);
     if (!item) return;
     if (item.isDirectory()) {
-      const start = result.length;
+      if (ignored.has(`${path}/`) || stat(join(absolute, ".git"))) {
+        const nested = inspectNestedRepository(source, `${path}/`);
+        if (nested.repository && nested.empty && lane === "control") {
+          nestedRepositories.push({
+            source: path,
+            lane,
+            disposition: "empty-scaffolding",
+          });
+          discarded++;
+          return;
+        }
+        nestedRepositories.push({
+          source: path,
+          lane,
+          disposition: "preserved-unit",
+        });
+        unit(path, lane);
+        return;
+      }
+      const start = result.length,
+        discardedBefore = discarded;
       result.push({ source: path, kind: "directory", lane });
       for (const name of readdirSync(absolute).sort())
         walk(`${path}/${name}`, lane);
-      if (path === controlRoot && result.length === start + 1) result.pop();
-    } else if (ignored.has(path)) {
-      if (!item.isFile())
-        throw new Error("Preservation source is not a regular file");
-      const bytes = readFileSync(absolute);
-      result.push({
-        source: path,
-        kind: "file",
-        lane,
-        bytes: bytes.length,
-        sha256: digest(bytes),
-      });
-    }
+      // Neither the control root nor a directory that held only discarded
+      // scaffolding is archived as an empty directory.
+      if (
+        result.length === start + 1 &&
+        (path === controlRoot || discarded > discardedBefore)
+      )
+        result.pop();
+    } else if (ignored.has(path)) file(path, lane, absolute, item);
   };
   for (const path of roots)
     walk(path, path === controlRoot ? "control" : "intake");
-  return result;
+  return { entries: result, nestedRepositories };
 }
+const entries = (source, retainedControl) =>
+  inventory(source, retainedControl).entries;
 
 function requireIgnored(main, paths) {
   if (!paths.length) return;
@@ -103,7 +146,11 @@ function plan(source, main, workOrder, retainedControl) {
     directories = [],
     mappings = new Map(),
     used = new Map();
-  for (const entry of entries(source, retainedControl)) {
+  const { entries: rows, nestedRepositories } = inventory(
+    source,
+    retainedControl,
+  );
+  for (const entry of rows) {
     const parent = mappings.get(dirname(entry.source));
     const initial = parent
       ? `${parent}/${entry.source.slice(dirname(entry.source).length + 1)}`
@@ -146,7 +193,7 @@ function plan(source, main, workOrder, retainedControl) {
     main,
     files.map((row) => row.destination),
   );
-  return { files, directories };
+  return { files, directories, nestedRepositories };
 }
 
 export function verifyPreservedMaterial(source, main, receipt) {
@@ -204,7 +251,7 @@ function reconcile(
   main = realpathSync(main);
   const planned =
     source === main
-      ? { files: [], directories: [] }
+      ? { files: [], directories: [], nestedRepositories: [] }
       : plan(source, main, workOrder, retainedControl);
   const proofs = new Map(planned.files.map((row) => [row.source, row.sha256]));
   const receipt = {
@@ -213,6 +260,7 @@ function reconcile(
     retainedControl,
     directories: planned.directories,
     files: planned.files.map(({ sha256, ...row }) => row),
+    nestedRepositories: planned.nestedRepositories,
     bytes: planned.files.reduce((sum, row) => sum + row.bytes, 0),
   };
   preservationProofs.set(receipt, proofs);
@@ -256,6 +304,10 @@ export function renderIntakeReconciliation(receipt) {
   return (
     [
       `${label}${receipt.dryRun ? " preview" : " receipt"}: ${receipt.files.length} files, ${receipt.directories.length} directories, ${receipt.bytes} bytes; source retained until worktree removal.`,
+      ...(receipt.nestedRepositories ?? []).map(
+        (row) =>
+          `  ${JSON.stringify(row.source)}: nested repository ${row.disposition === "empty-scaffolding" ? "discarded as empty fixture scaffolding (only .git, no commit)" : "preserved as a directory unit"}`,
+      ),
       ...[...receipt.directories, ...receipt.files].map(
         (row) =>
           `  ${JSON.stringify(row.source)} -> ${JSON.stringify(row.destination)}: ${row.disposition}${row.kind === "directory" ? ", directory" : `, ${row.bytes} bytes`}`,
