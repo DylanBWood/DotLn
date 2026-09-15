@@ -20,6 +20,14 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-067 activation completion (2026-09-15):** application `v0.19.0` is the
+next minor above the observed local annotated `v0.18.0`. The activation had
+retained its version placeholder; this completes its declared minor assignment.
+Compiler `0.11.0` adds optional compiled presence policies and their editable
+views. Kernel, skeleton and console source versions remain fixed; the skeleton
+compiler dependency pin follows the new compiler package. Resident scheduling
+remains WO-068. See [WO-067 decisions](../evidence/WO-067/decisions.md).
+
 **Current contract (WO-132, 2026-09-15).** Lifecycle completions record their
 reports without requiring a product gate. The final reviewer runs
 `npm test -- --review` once; PR publication and release close consume its

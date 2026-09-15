@@ -104,4 +104,12 @@ doctrine.
 
 ## Amendments
 
-None.
+2026-09-15 — WO-067 compiles the first optional `PresencePolicy` subset:
+four named axes, owner-ordered progressive phases, verified-success advancement,
+failure/peak reset, discretionary return disposition and idle phase expiry.
+Every phase narrows the final compiled base, including its admitted grants and
+support restrictions. Capability is observed and unavailable adapters yield a
+reasoned NoOp. The compiler emits cadences and transitions; resident evaluation
+remains WO-068. General curves and the Blackjack +3 subgame remain candidates.
+See [the contract](../product/02-domain-model.md#compiled-presence-policies) and
+[decision receipt](../evidence/WO-067/decisions.md).

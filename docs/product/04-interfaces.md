@@ -452,6 +452,13 @@ the operator chose to see and touch them.
   RPG title secondary), GRANTS / RESTRICTIONS / OBLIGATION / PASSIVE (activation
   condition) / PULSE (cadence) / INTERRUPT (cancellation); a view flipper cycles
   RPG ↔ business ↔ formal ↔ statechart ↔ code ↔ observed performance.
+- **Presence curve (WO-067):** PULSE derives the declared progression, source
+  base/grants and each phase's attention, surfaces, host-counted file/line
+  ceilings, budget, effective envelope, entry, reset/loop and capability
+  availability from compiled data. INTERRUPT shows cancel-on-return, each phase's
+  finish/kill disposition, foreground continuation and idle expiry/rearming.
+  Authored prose cannot hide a different compiled curve. This text projection
+  does not claim that the resident runtime has evaluated or activated it.
 - **Build inspector ("Path of Building for organizations")**: click any behavior
   → full derivation from base + identity + role + items + supports + environment
   to effective result, conflict winners, per-support true cost, context

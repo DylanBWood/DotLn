@@ -38,6 +38,16 @@ migrates or executes it.
 
 ## Separate version axes
 
+WO-067 prepares application `v0.19.0` and compiler package `0.11.0`. Optional
+presence policies add validated phase/cadence/transition data under loadout
+schema 1 and compiled-program contract 1. Absent/empty presence emits no new
+program bytes, so existing semantic hashes stay exact; policy and phase edits
+change the hash. Policy `version` is independent of the compiler package and
+application release. Kernel `0.2.1`, skeleton `0.16.0` and console `0.1.6`
+retain their source versions; the skeleton dependency pin follows compiler
+`0.11.0`. The new collection requires a consumer that supports its declared
+compiled subset; resident consumption is assigned to WO-068.
+
 Do not collapse these identities into one version number:
 
 - application/runtime version;
