@@ -78,6 +78,9 @@ export function harnessInstallation(options = {}) {
   const feedback = options.feedback ?? personalFeedback();
   const sourceRoot = fileURLToPath(new URL("../../", import.meta.url));
   const runtimeFiles = [
+    // Admission compares this module's compiler version. A compiler-only
+    // release must install a fresh snapshot even when hook handlers are equal.
+    "packages/compiler/dist/src/artifact-identity.js",
     "packages/compiler/dist/src/feedback.js",
     "packages/compiler/dist/src/attribution.mjs",
     "packages/skeleton/dist/src/feedback-boundary.js",

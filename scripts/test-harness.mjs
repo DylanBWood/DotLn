@@ -277,6 +277,69 @@ const allowed = (result) =>
   result.decision !== "block" &&
   result.hookSpecificOutput?.permissionDecision !== "deny";
 
+test("WO-067 compiler-only release installs a fresh compatible harness snapshot", () => {
+  const root = fixture();
+  try {
+    const previous = configFor(root, "concurrent-work-requires-worktrees");
+    const identityPath = "packages/compiler/dist/src/artifact-identity.js";
+    const retained = readFileSync(
+      join(root, previous.runtime.snapshot, identityPath),
+      "utf8",
+    );
+    const version = previous.compilerPackageVersion.split(".").map(Number);
+    version[2] += 1;
+    const updated = version.join(".");
+    write(
+      root,
+      identityPath,
+      retained.replace(
+        `COMPILER_PACKAGE_VERSION = "${previous.compilerPackageVersion}"`,
+        `COMPILER_PACKAGE_VERSION = "${updated}"`,
+      ),
+    );
+    const manifest = JSON.parse(
+      readFileSync(join(root, "packages/compiler/package.json"), "utf8"),
+    );
+    write(
+      root,
+      "packages/compiler/package.json",
+      json({ ...manifest, version: updated }),
+    );
+    const emitted = spawnSync(
+      process.execPath,
+      ["scripts/harness.mjs", "emit"],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(emitted.status, 0, emitted.stderr);
+    const current = configFor(root, "concurrent-work-requires-worktrees");
+    assert.equal(current.compilerPackageVersion, updated);
+    assert.notEqual(current.runtime.snapshot, previous.runtime.snapshot);
+    assert.equal(
+      readFileSync(join(root, previous.runtime.snapshot, identityPath), "utf8"),
+      retained,
+    );
+    const response = invoke(
+      root,
+      "concurrent-work-requires-worktrees",
+      input(root, "PreToolUse", {
+        tool_name: "Write",
+        tool_input: {
+          file_path: join(root, "fixture.ts"),
+          content: "planned write",
+        },
+      }),
+    );
+    assert.equal(allowed(response), true);
+    assert.doesNotMatch(JSON.stringify(response), /unavailable|bootstrap/u);
+    assert.ok(
+      existsSync(join(root, "docs/control/local/harness/writer")),
+      "emitted hook actually reserves its writer",
+    );
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
 for (const mode of ["runner", "evidence", "entry"])
   test(
     `WO-125 F3 ${mode} refuses generated-hook writes throughout the gate and releases on exit`,
