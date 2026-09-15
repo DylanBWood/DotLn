@@ -1,4 +1,4 @@
-# WO-067 — PresencePolicy compiled: a build declares how its actor behaves when the operator is away as a progressive curve over attention, scope, effect authority and external capability, lowered to cadences and per-phase envelopes that can only narrow the base (version assigned at activation)
+# WO-067 — PresencePolicy compiled: a build declares how its actor behaves when the operator is away as a progressive curve over attention, scope, effect authority and external capability, lowered to cadences and per-phase envelopes that can only narrow the base (v0.19.0)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 
@@ -140,3 +140,7 @@ the phases perform (WO-100); the 5S set's own reevaluation cadence
 
 1. The curve reading above matches the predecessor's behavior; the fixture
    policy is data the operator can edit before activation.
+
+## Bounded adjacent repair — 2026-09-15
+
+During `resume: next`, the compiler version bump exposed a stale harness snapshot key. The operator explicitly directed: “Proceed with the bounded repair.” Include the compiler artifact-identity module in `scripts/lib/harness.mjs` runtime pins and add the compiler-only bump regression in `scripts/test-harness.mjs`; regenerate hooks, manifest and current evidence. Preserve old snapshots and all admission checks. The existing full test gate remains required. See WO-067-D003 and queue item `adjacent-0001`.
