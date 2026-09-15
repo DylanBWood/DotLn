@@ -4029,6 +4029,283 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-fb6f641201d86dba",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "9114f0d15e2782d1a52e71a1a8000f2b3d95d46d16691254d66a5701f94c026c",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d001",
+          "title": "WO-044-D001: Fold the release-close repairs into this worktree under the operator's scope expansion. Track each diagnosed repair as a follow-up queue item with its cause, paths, checks and priority; r",
+          "summary": "{ \"id\": \"WO-044-D001\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator scope expand during execution (2026-09-14): fix the defects that surfaced during the WO-131 release close (A through J). The operator clarified that the analysis pasted after defect J is another model's output supplied as context, not instruction.\", \"decision\": \"Fold the release-close repairs into this worktree under the operator's scope expansion. Track each diagnosed repair as a follow-up queue item with its cause, paths, checks and priority; record material choices here; amend WO-044 with a dated operator amendment that admits the named runtime, script and generated-surface changes beside the unchanged probe ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-c90b140fe1923a5d",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5b808d219ae34a5978708aa31ff38f2b64e0347ab4124b293f8eeed095e08cd6",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d002",
+          "title": "WO-044-D002: Key regular files in the suite input snapshot by content and Git's executable bit only (0644 or 0755), and directories by name alone. Add a regression to the release-close reuse fixture t",
+          "summary": "{ \"id\": \"WO-044-D002\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator scope expand (defect E: the release-close reuse fixture failed twice on main under Claude Code and the full gate reused nothing).\", \"decision\": \"Key regular files in the suite input snapshot by content and Git's executable bit only (0644 or 0755), and directories by name alone. Add a regression to the release-close reuse fixture that gives main's copy of a tracked file mode 0600 before the close. Record the refuted hypotheses beside the observed cause.\", \"evidence\": [ \"scripts/lib/suite-evidence.mjs file(): a regular file contributed [stat.mode & 0o777, hash]; a directory contributed its full mode.\", \"Main's che",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-dab18c70ef09ed42",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "264e4dc302120a9f21bf0b11b6840c571578adc8ba2944cfa52c39a84ef51cb4",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d003",
+          "title": "WO-044-D003: Classify every ignored entry by lane (intake, control, settings, other) and kind. A nested repository, which git ls-files reports as one trailing-slash entry, is inspected: only .git and ",
+          "summary": "{ \"id\": \"WO-044-D003\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator scope expand (defects B and C: the removal guard refused on an opaque nested repository, reported one entry with an inapplicable remedy, and treated an empty fixture repository as evidence).\", \"decision\": \"Classify every ignored entry by lane (intake, control, settings, other) and kind. A nested repository, which git ls-files reports as one trailing-slash entry, is inspected: only .git and no commit is disposable scaffolding outside the intake lane; content under docs/control/local or docs/intake is preserved as a directory unit with the same byte proofs and symlink refusals as any other preserved material, and ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-85bfcf8a6c9d45a9",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6c1a599e70d3f9075be600256676235ee214ab370d0640bf8778e99b734270fd",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d004",
+          "title": "WO-044-D004: Prove origin reachability first: release close runs git ls-remote against origin before any local prerequisite in both the --dry-run and publish paths, names the GitHub host and the exact",
+          "summary": "{ \"id\": \"WO-044-D004\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator scope expand (defect D: release close needs network egress and discovers it after every local prerequisite; nothing states the requirement).\", \"decision\": \"Prove origin reachability first: release close runs git ls-remote against origin before any local prerequisite in both the --dry-run and publish paths, names the GitHub host and the exact failure, and tells the operator to run the publish from a terminal with egress. The resume and worktree-publish handoffs, the release-close role text in both harnesses and the guide state the requirement. Every existing guard keeps its place after the precheck.\", \"evidence\":",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4b4331f58e87068c",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "8a7d49b325d0d30d0cf01d8717dbd8619d302109798f09c4a57b3bc9859ae8a7",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d005",
+          "title": "WO-044-D005: When a merged order's worktree is removed, settle the order's derived worktrees in the same run: prune a registration whose directory is gone; for a detached derivative that names the ord",
+          "summary": "{ \"id\": \"WO-044-D005\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator scope expand (defect F: four measurement worktrees and a temporary host subject derived from WO-131 stayed registered and on disk after its release close).\", \"decision\": \"When a merged order's worktree is removed, settle the order's derived worktrees in the same run: prune a registration whose directory is gone; for a detached derivative that names the order and is clean and idle, preserve its non-disposable control and intake material into the same retained lane with the subject's byte proofs and then remove it; report every other derivative with its blocker and the exact removal command. The dry run previews t",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4307deb95618e481",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "061ae71402bc7dd953a59aff8269d168966d0465c7c3e0984514b5786c0db7c8",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d006",
+          "title": "WO-044-D006: The generated PreToolUse fallback states in its denial reason, in the same words as the advisory an admitted call receives, that Read, Glob and Grep and five exact checkout commands remai",
+          "summary": "{ \"id\": \"WO-044-D006\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator scope expand (defect A: the generated adapter-unavailable denial names no escape hatch, and exact-string matching defeats any compound command).\", \"decision\": \"The generated PreToolUse fallback states in its denial reason, in the same words as the advisory an admitted call receives, that Read, Glob and Grep and five exact checkout commands remain admitted while the built adapter is unavailable. A compound command joined by && or ; is admitted only when every segment is one of those commands; a pipe, a redirect or any other segment still refuses. The hook files regenerate through node scripts/harness.mjs emit fro",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-f46f73319f86c3a8",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "750222c5c66a0e2e8af7d5223b20d45f0be751a5936ce26aa1e19516f41b917c",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d007",
+          "title": "WO-044-D007: Settle a closed order's derived worktrees on every close path, not only while the merged subject worktree still exists: a worktree settle action runs the same prune, preserve-and-remove o",
+          "summary": "{ \"id\": \"WO-044-D007\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator question during execution: why the WO-131 measurement worktrees still exist and nothing cleans them up.\", \"decision\": \"Settle a closed order's derived worktrees on every close path, not only while the merged subject worktree still exists: a worktree settle action runs the same prune, preserve-and-remove or report-with-blocker dispositions from main, and release close calls it when the subject is already gone, in the dry run and in the close. The worktree helper's gate-evidence import becomes dynamic again because the static import broke the beacon constellation CLI in a fixture that copies only part of the skele",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-abb6f3987f1b5b3b",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d008",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "077631c75117be0a4839e530f3dda83e8864119a99acd4fdea3e634c4cc41994",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d008",
+          "title": "WO-044-D008: Add one shared line to every role procedure in the contributor loadout, so the executor, verifier, reviewer, planner, refuter and both release-close projections in both harnesses say: nev",
+          "summary": "{ \"id\": \"WO-044-D008\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator scope expand (defects I and J: guessing must be refused in every stage under every harness), followed by the operator's directions that artificial caps yield to needed rules and that accuracy comes before efficiency.\", \"decision\": \"Add one shared line to every role procedure in the contributor loadout, so the executor, verifier, reviewer, planner, refuter and both release-close projections in both harnesses say: never guess; an unobserved value is unknown, untested or blocked; each claim names its source or what is missing. Raise the cold-start byte ceilings that line touches in docs/control/budgets.json with re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-08450604d5e964be",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d009",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "594cbab8fc1f85014313337ff2d88d1e1b6986661dd10b56a1e6e0ad783719cf",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d009",
+          "title": "WO-044-D009: Regenerated hook and skill surfaces are applied through the harness's file tool when the shell sandbox denies the emit command, and the result is verified byte for byte against the emitte",
+          "summary": "{ \"id\": \"WO-044-D009\", \"date\": \"2026-09-14\", \"dispatch\": \"operator override: during resume: next (2026-09-14), with the operator's directions that any step handed to a terminal outside the sandbox is a defect and that a session must request additional authority through the harness rather than hand steps back.\", \"decision\": \"Regenerated hook and skill surfaces are applied through the harness's file tool when the shell sandbox denies the emit command, and the result is verified byte for byte against the emitted set by the harness check. The user-level Claude Code setting sandbox.allowUnsandboxedCommands becomes true so a session can ask to run one command outside the sandbox, reviewed by the p",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4e569bd319d78fbc",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d010",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4701041d8d34dabc4608a875f59a4d7ea82b8c9208788f447a0901779978af9e",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d010",
+          "title": "WO-044-D010: Assign application v0.17.7 to WO-044: v0.17.5 is the latest local annotated tag and v0.17.6 is already assigned to the merged but unpublished WO-131, so the next free patch avoids a two-w",
+          "summary": "{ \"id\": \"WO-044-D010\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; standing release assignment default (patch at activation) with the operator's scope expansion, which changed the compiler and skeleton sources.\", \"decision\": \"Assign application v0.17.7 to WO-044: v0.17.5 is the latest local annotated tag and v0.17.6 is already assigned to the merged but unpublished WO-131, so the next free patch avoids a two-way collision. Bump @dotln/compiler to 0.9.3 and @dotln/skeleton to 0.15.12 (package manifests, lockfile entries and the pinned version literals) because both sources changed in this order; console and kernel stay unchanged. Prepare the release locally.\", \"evidence\": [ \"npm run rele",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d636595e251ba81b",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d011",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "3747a760aff757d32afeae4317dc9d5d41d0c8609ab796f39d2f03090616e598",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d011",
+          "title": "WO-044-D011: Give the session its own route out of a running gate, identical in Claude and Codex: node scripts/harness.mjs evidence --stop (and the package form, which then neither builds nor marks a ",
+          "summary": "{ \"id\": \"WO-044-D011\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator correction during the fourth full gate: a session that cannot stop its own running gate without an operator step is a bug, fixed in this order rather than deferred.\", \"decision\": \"Give the session its own route out of a running gate, identical in Claude and Codex: `node scripts/harness.mjs evidence --stop` (and the package form, which then neither builds nor marks a run) is admitted by the live-gate guard at the worktree root, writes one ignored stop request per live run under the active-gate markers and waits a bounded time. Every gate process publishes its run id and its ancestors' run ids to its children thro",
+          "missing": false
+        },
+        {
+          "hash": "200d5a7d717e1566e05de206a7d31d3164823fdb20ac0a01d4f1844cb3acb778",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d011",
+          "title": "WO-044-D011: Give the session its own route out of a running gate, identical in Claude and Codex: node scripts/harness.mjs evidence --stop (and the package form, which then neither builds nor marks a ",
+          "summary": "{ \"id\": \"WO-044-D011\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: next; operator correction during the fourth full gate: a session that cannot stop its own running gate without an operator step is a bug, fixed in this order rather than deferred.\", \"decision\": \"Give the session its own route out of a running gate, identical in Claude and Codex: `node scripts/harness.mjs evidence --stop` (and the package form, which then neither builds nor marks a run) is admitted by the live-gate guard at the worktree root, writes one ignored stop request per live run under the active-gate markers and waits a bounded time. Every gate process publishes its run id and its ancestors' run ids to its children thro",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-91895ba28d05389a",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d012",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1ae87639e348e11b2febfb694ba1c2ac4411424e2225a3cbd2c71ef803fbcb7d",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d012",
+          "title": "WO-044-D012: Repair all eight counterexamples in the existing deliverable. Prove disposable repository scaffolding using refs, index and object storage, preserving unreadable or unknown state; seriali",
+          "summary": "{ \"id\": \"WO-044-D012\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: fix; VER-001 findings F1–F8\", \"decision\": \"Repair all eight counterexamples in the existing deliverable. Prove disposable repository scaffolding using refs, index and object storage, preserving unreadable or unknown state; serialize derived teardown through the existing writer reservation; cancel owned suite process groups with a bounded pipe fallback; retain operation-specific sanitized probe evidence and classify missing causation as ambiguous; derive launch selectors from executed arguments; remove owned detached spools on every exit; use Git's owner-executable bit; and record bounded detached resident kill/recovery attempt",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9eb63703ce4649ba",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d013",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "96da075cbdf2375843a0f6fbea572b943a78e0121024e3152eaf52861a4b023a",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d013",
+          "title": "WO-044-D013: Complete D010's already-declared compiler pin bump where it was missed — packages/skeleton/package.json:17 and package-lock.json:100 move from 0.9.2 to 0.9.3 to agree with the built compi",
+          "summary": "{ \"id\": \"WO-044-D013\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: fix; VER-002 findings F1 (charged) and F2.\", \"decision\": \"Complete D010's already-declared compiler pin bump where it was missed — packages/skeleton/package.json:17 and package-lock.json:100 move from 0.9.2 to 0.9.3 to agree with the built compiler (F1). Make the process-debt repo() git-fixture teardown tolerate git's detached auto-gc by giving the owned rmSync bounded maxRetries/retryDelay, leaving git's default background maintenance in force so the suite result is decided by its assertions and not by whether a gc lands mid-teardown (F2).\", \"evidence\": [ \"npm ls exited ELSPROBLEMS with '@dotln/compiler@0.9.3 deduped invalid:",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3f4ce57fff2c383c",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d014",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "94c70f9ab5d0c6e1a20ddce6007c24576b694589b82780b4df036aa045b0210b",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d014",
+          "title": "WO-044-D014: Align the harness evidence runner with the lifecycle contract it already carries. Extract one shared lifecycleRequiredChecks(verdict) in gate-evidence.mjs; the lifecycle gate (lifecycle-e",
+          "summary": "{ \"id\": \"WO-044-D014\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: fix; operator scope expand (2026-09-14): the final gate runs 'over and over' and reuse never triggers in verify — fix the gate loop.\", \"decision\": \"Align the harness evidence runner with the lifecycle contract it already carries. Extract one shared lifecycleRequiredChecks(verdict) in gate-evidence.mjs; the lifecycle gate (lifecycle-evidence.mjs) and the runner (harness-host.ts) both read it so they cannot drift. runHarnessEvidence takes an optional pendingVerdict, and `harness evidence` accepts a strict `--fail` selector, so a failing verdict records only `git diff --check` instead of dragging ~10 minutes of test:full to reach",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1c623475a35d5013",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d015",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4c14ca29e19bc4024eb38c6974b6ea793d8db9fb81cfc375ea7dd3d6afb7e576",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d015",
+          "title": "WO-044-D015: Classify the Workflow tool as spawn in harnessToolEffects (packages/skeleton/src/harness-command.ts), the same class as Agent and Task, so the generated permission guard admits it as repo",
+          "summary": "{ \"id\": \"WO-044-D015\", \"date\": \"2026-09-14\", \"dispatch\": \"operator override: during resume: fix (2026-09-14): 'use workflows and make edits to make workflows available'.\", \"decision\": \"Classify the Workflow tool as `spawn` in harnessToolEffects (packages/skeleton/src/harness-command.ts), the same class as Agent and Task, so the generated permission guard admits it as repo.read and treats each subagent's own tool calls as passing the same guards. The re-emit carries the tools-map change into the installed permissions hook. This is the durable analog of D011's TaskStop/KillShell classification; without it the tool is refused as 'Unclassified effectful tool: Workflow' in normal mode.\", \"evidenc",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2aced1f914f376ef",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d016",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "39eb1fcf5098f9218a645e5e6015a6a115f23e13314efe2882bac7d9f2bb1a72",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d016",
+          "title": "WO-044-D016: Route the gate reuse defect to a planning pass rather than repair it here. It is a reuse-KEY CONTRACT change, not a bounded bug: the application-level test:full check is keyed to the whol",
+          "summary": "{ \"id\": \"WO-044-D016\", \"date\": \"2026-09-14\", \"dispatch\": \"resume: fix; operator scope expand (2026-09-14): 'nothing was reused'; the operator chose 'Plan it; ship bounded now' on the reuse fork.\", \"decision\": \"Route the gate reuse defect to a planning pass rather than repair it here. It is a reuse-KEY CONTRACT change, not a bounded bug: the application-level test:full check is keyed to the whole tree hash including docs (gate-evidence.mjs gateTreeHash), so a verifier's report or control edit invalidates the executor's green gate; and fixture suites declare the whole scripts/ directory as an input (suite-evidence.mjs fixturePaths), so any script edit re-keys ~60+ tasks. Both change what the g",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-29274dc120c7421f",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d017",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "d244cc302d0b6e1c3d698ea5aa2e73b312180196e5f375e8a8517570d52f9a0a",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d017",
+          "title": "WO-044-D017: Move the paired emit/check option parser into that action branch so evidence reaches its existing strict --fail selector. Exercise the real package mapping, entry wrapper, CLI parser and ",
+          "summary": "{ \"id\": \"WO-044-D017\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix; VER-003 F1\", \"decision\": \"Move the paired emit/check option parser into that action branch so evidence reaches its existing strict --fail selector. Exercise the real package mapping, entry wrapper, CLI parser and preparation in the existing failure-gate regression, with bounded build and suite payloads. Preserve the default full gate and the lifecycle refusal of a fail-only receipt for a passing verdict.\", \"evidence\": [ \"VER-003 F1 and this repair's baseline: npm run harness -- evidence --fail builds, prints usage and exits 1 before recording checks.\", \"scripts/harness.mjs parses every non-stop evidence argument as an emi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0090495990a2c6bf",
+      "key": "decision:docs/evidence/WO-044/decisions.md#wo-044-d018",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "bc7ab193edb846dd3fae7c411f271a3b344a3b51dc0b0dd7e0f2cf8fd5bc389f",
+          "ref": "docs/evidence/WO-044/decisions.md#wo-044-d018",
+          "title": "WO-044-D018: Correct the prepared root README release block to name compiler 0.9.3 and skeleton 0.15.12, matching the shipped manifests. Keep this repair to the two component declarations and its evid",
+          "summary": "{ \"id\": \"WO-044-D018\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix; VER-004 F1\", \"decision\": \"Correct the prepared root README release block to name compiler 0.9.3 and skeleton 0.15.12, matching the shipped manifests. Keep this repair to the two component declarations and its evidence write-backs.\", \"evidence\": [ \"VER-004 F1 and the executor's executable baseline comparison found README compiler 0.9.2 versus package 0.9.3, and README skeleton 0.15.11 versus package 0.15.12. Console 0.1.5 already matches.\", \"The compiler identity constant and both generated harness profiles agree with the package versions, as independently checked by a read-only audit agent.\", \"Product 07 requires the prep",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

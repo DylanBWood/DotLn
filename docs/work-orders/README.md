@@ -12,7 +12,7 @@
 - [x] [WO-129] — Suite evidence keyed by declared inputs · **final-reviewed**
 - [x] [WO-130] — Suites execute in a replica of declared inputs · **final-reviewed**
 - [x] [WO-131] — Remaining suites declared under replica execution · **final-reviewed**
-- [ ] [WO-044] — Writing-worker and unattended-launch harness truth · **queued**
+- [x] [WO-044] — Writing-worker and unattended-launch harness truth · **final-reviewed**
 - [ ] [WO-067] — PresencePolicy compiled · **queued**
 - [ ] [WO-045] — Event-log and hook-input decoders · **queued**
 - [ ] [WO-046] — Executable program grammar as a type · **queued**
@@ -234,23 +234,6 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-040/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-040-rule-migration-batch-one.md](WO-040-rule-migration-batch-one.md)
 
-### WO-044
-
-[WO-044 — Writing-worker and unattended-launch harness truth: observe what the installed harnesses do when a tool-enabled worker runs in a foreign worktree under that worktree's own hooks, and when a resident process launches them with no operator present (version assigned at activation)](WO-044-writing-worker-harness-truth.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-039: satisfied-by-close (met) — extends the phase-zero record with the writing-worker rows; WO-009: satisfied-by-release (met) v0.10.0 — the canonical launch shapes it varies.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any capable model for the probe script and the record. The live rows need the actual local harnesses (Claude Code; Codex where installed), run from a terminal outside the sandbox, and must state the harness version, model, and effort actually launched (07-execution-guide.md §Model-specific notes).
-- Effort: executor xhigh+; verifier xhigh+; reviewer any.
-- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
-- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-044/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-044-writing-worker-harness-truth.md](WO-044-writing-worker-harness-truth.md)
-
 ### WO-045
 
 [WO-045 — Positive decoders for the kernel event log and the harness hook input: malformed persisted or supplied state refuses with a typed path before anything runs (version assigned at activation)](WO-045-store-and-hook-input-decoders.md)
@@ -325,8 +308,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-044.
-- References: WO-042: hard (met) — a bundle emitted into a target must carry an envelope no support can widen and grants with provenance; WO-044: hard (unmet) — the record must show that the target's hooks, settings and instruction surface apply in the worker's launch mode; otherwise this order is redesigned at R1; WO-039: satisfied-by-close (met) — harness emit, check and the runtime pins it extends.
+- Dependencies: typed; dependency-ready.
+- References: WO-042: hard (met) — a bundle emitted into a target must carry an envelope no support can widen and grants with provenance; WO-044: hard (met) — the record must show that the target's hooks, settings and instruction surface apply in the worker's launch mode; otherwise this order is redesigned at R1; WO-039: satisfied-by-close (met) — harness emit, check and the runtime pins it extends.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -359,8 +342,8 @@ None.
 
 - State: draft.
 - Application target: malformed.
-- Dependencies: typed; blocked on WO-044.
-- References: WO-044: hard (unmet) — the profile is written from observed rows, never assumed; WO-042: hard (met) — the profile's envelope comes only from the base and explicit grants; WO-009: satisfied-by-release (met) v0.10.0 — the transports it extends.
+- Dependencies: typed; dependency-ready.
+- References: WO-044: hard (met) — the profile is written from observed rows, never assumed; WO-042: hard (met) — the profile's envelope comes only from the base and explicit grants; WO-009: satisfied-by-release (met) v0.10.0 — the transports it extends.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -648,8 +631,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-067, WO-050, WO-044.
-- References: WO-067: hard (unmet) — the policy whose cadences and phases the host evaluates; WO-050: hard (unmet) — the reserved slice the host's state lives in (the recorded split condition); WO-044: hard (unmet) — the launcher is designed from the unattended rows, never assumed; WO-009: satisfied-by-release (met) v0.10.0 — the transports and worker store it dispatches through; WO-027: reference-only (non-blocking) — the local-inference probe, as the fourth actor kind's reference.
+- Dependencies: typed; blocked on WO-067, WO-050.
+- References: WO-067: hard (unmet) — the policy whose cadences and phases the host evaluates; WO-050: hard (unmet) — the reserved slice the host's state lives in (the recorded split condition); WO-044: hard (met) — the launcher is designed from the unattended rows, never assumed; WO-009: satisfied-by-release (met) v0.10.0 — the transports and worker store it dispatches through; WO-027: reference-only (non-blocking) — the local-inference probe, as the fourth actor kind's reference.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1460,8 +1443,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-068, WO-067, WO-044.
-- References: WO-068: hard (unmet) — the resident whose presence fold this defines; WO-067: hard (unmet) — the discretionary-phase scope for cancellation; WO-044: hard (unmet) — the rows that say which hook events a scripted prompt fires in each launch mode.
+- Dependencies: typed; blocked on WO-068, WO-067.
+- References: WO-068: hard (unmet) — the resident whose presence fold this defines; WO-067: hard (unmet) — the discretionary-phase scope for cancellation; WO-044: hard (met) — the rows that say which hook events a scripted prompt fires in each launch mode.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -1477,8 +1460,8 @@ None.
 
 - State: draft.
 - Application target: unassigned.
-- Dependencies: typed; blocked on WO-068, WO-051, WO-044.
-- References: WO-068: hard (unmet) — the catalog; WO-051: hard (unmet) — the writer request and profile the cli-worker kind dispatches; WO-044: hard (unmet) — the detached-launch rows the launch path is designed from.
+- Dependencies: typed; blocked on WO-068, WO-051.
+- References: WO-068: hard (unmet) — the catalog; WO-051: hard (unmet) — the writer request and profile the cli-worker kind dispatches; WO-044: hard (met) — the detached-launch rows the launch path is designed from.
 - Verification: none recorded.
 - Final review: none recorded.
 - Release: none recorded.
@@ -2118,6 +2101,24 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-043/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness claude-code; version 2.1.268; model claude-fable-5-1; effort max; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-043-typed-dependency-truth.md](WO-043-typed-dependency-truth.md)
+
+### WO-044
+
+[WO-044 — Writing-worker and unattended-launch harness truth: observe what the installed harnesses do when a tool-enabled worker runs in a foreign worktree under that worktree's own hooks, and when a resident process launches them with no operator present (v0.17.7)](WO-044-writing-worker-harness-truth.md)
+
+- State: closed.
+- Application target: v0.17.7.
+- Dependencies: typed; activation not applicable.
+- References: WO-039: satisfied-by-close (met) — extends the phase-zero record with the writing-worker rows; WO-009: satisfied-by-release (met) v0.10.0 — the canonical launch shapes it varies.
+- Verification: [VER-005](../../docs/verifications/WO-044/VER-005.md) (pass).
+- Final review: [FINAL-001](../../docs/final-reviews/WO-044/FINAL-001.md) (pass).
+- Release: unreleased.
+- Model: any capable model for the probe script and the record. The live rows need the actual local harnesses (Claude Code; Codex where installed), run from a terminal outside the sandbox, and must state the harness version, model, and effort actually launched (07-execution-guide.md §Model-specific notes).
+- Effort: executor xhigh+; verifier xhigh+; reviewer any.
+- Cost: Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-044/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness claude-code; version 2.1.272; model claude-fable-5-1; effort xhigh; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-044-writing-worker-harness-truth.md](WO-044-writing-worker-harness-truth.md)
 
 ### WO-101
 
