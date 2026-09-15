@@ -3113,6 +3113,13 @@
           "title": "Candidate — cold-gate structural cuts",
           "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
           "missing": false
+        },
+        {
+          "hash": "6dadc984dd793f761594552fd68b79d8cdfbc0a4f00845941b12e1111d3c8944",
+          "ref": "docs/product/07-execution-guide.md#candidate--cold-gate-structural-cuts",
+          "title": "Candidate — cold-gate structural cuts",
+          "summary": "## Candidate — cold-gate structural cuts The 2026-09-12 planning pass declined to allocate the structural cuts that the relayed proof-carrying-gates plan proposed for the one fresh full gate, because their benefit is unmeasured until the gate's critical path is recorded. The 2026-09-12T16:08Z fresh gate ran 475 s of wall-clock over 1,229 s of task time: the two exclusive suites held it at concurrency one for 206 s, and perfect packing over the cap of four would take 307 s. WO-128 records each task's concurrent peers in the gate row; that trace is the entry evidence for this candidate. WO-128's [first accepted shared row](../evidence/WO-128/shared-series-002.json) now supplies that evidence: ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -3123,6 +3130,14 @@
           "reason": "Nominated by the 2026-09-12 planning pass as the unallocated remainder of the relayed proof-carrying-gates plan; its entry evidence is WO-128 per-task concurrency trace, which does not exist yet.",
           "reopenWhen": null,
           "at": "2026-09-12T16:40:36.124Z"
+        },
+        {
+          "sourceRevision": 3,
+          "status": "declined",
+          "reason": "2026-09-15 machinery stand-down pass: the recorded 2026-09-15T04:10Z gate names the bounding nodes as the machinery's own suites on a lane-saturated schedule, and the longest suite numbers were spans between split tasks; WO-132 removes that share from the default gate and runs the gate once per order instead of cutting fixtures. NoOp evidence: docs/planning/machinery-stand-down-2026-09-15.md section 7 and the superseded note under the candidate heading.",
+          "reopenWhen": "The once-per-order npm test exceeds six minutes fresh on the operator's host after WO-132's inventory split.",
+          "targets": [],
+          "at": "2026-09-15T05:10:48.383Z"
         }
       ]
     },
@@ -3137,6 +3152,13 @@
           "title": "Candidate — refutation pass worth its cost",
           "summary": "## Candidate — refutation pass worth its cost The 2026-09-12 planning pass paid three direct-session refutations of one subject, all holds: 2,454 s, 833 s and 333 s of recorded dispatch-to-file, and more of operator wall-clock, with the third hold overridden by the operator as a known issue. The holds were logically valid counterexamples to contract wording; none changed the platform the orders build. The operator's direction is recorded: the point is to create a platform, not to prove every constructible case before filing, and the refutation pass must be made worth its cost before a later pass pays it again. The next planning pass measures the refuter's yield against its cost from the rece",
           "missing": false
+        },
+        {
+          "hash": "cf51d3e74294a58b049504277d8df0555888f44720e58e10c3a23c1d4ed1c76c",
+          "ref": "docs/product/07-execution-guide.md#candidate--refutation-pass-worth-its-cost",
+          "title": "Candidate — refutation pass worth its cost",
+          "summary": "## Candidate — refutation pass worth its cost The 2026-09-12 planning pass paid three direct-session refutations of one subject, all holds: 2,454 s, 833 s and 333 s of recorded dispatch-to-file, and more of operator wall-clock, with the third hold overridden by the operator as a known issue. The holds were logically valid counterexamples to contract wording; none changed the platform the orders build. The operator's direction is recorded: the point is to create a platform, not to prove every constructible case before filing, and the refutation pass must be made worth its cost before a later pass pays it again. The next planning pass measures the refuter's yield against its cost from the rece",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -3147,6 +3169,16 @@
           "reason": "Operator direction 2026-09-12 after three held refutations of one pass: the next planning pass measures the refuter yield against its cost and changes the mechanism, its scope or its budget before another pass pays it.",
           "reopenWhen": null,
           "at": "2026-09-12T18:57:44.080Z"
+        },
+        {
+          "sourceRevision": 2,
+          "status": "allocated",
+          "reason": "2026-09-15 machinery stand-down pass: the refuter's yield was measured (receipts 009-012, four holds on constructed counterexamples at 2,454, 833, 333 and 755 s, two overridden, one re-raised and re-imported as scope); the pass selected the bounded goal-review scope with changed hold semantics. WO-132 criterion 11 implements it; the candidate closes on that order's merge.",
+          "reopenWhen": "The goal review passes an order the operator later names misaligned, or WO-132 closes without criterion 11.",
+          "targets": [
+            "WO-132"
+          ],
+          "at": "2026-09-15T05:10:10.793Z"
         }
       ]
     },
@@ -4302,6 +4334,21 @@
           "ref": "docs/evidence/WO-044/decisions.md#wo-044-d018",
           "title": "WO-044-D018: Correct the prepared root README release block to name compiler 0.9.3 and skeleton 0.15.12, matching the shipped manifests. Keep this repair to the two component declarations and its evid",
           "summary": "{ \"id\": \"WO-044-D018\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix; VER-004 F1\", \"decision\": \"Correct the prepared root README release block to name compiler 0.9.3 and skeleton 0.15.12, matching the shipped manifests. Keep this repair to the two component declarations and its evidence write-backs.\", \"evidence\": [ \"VER-004 F1 and the executor's executable baseline comparison found README compiler 0.9.2 versus package 0.9.3, and README skeleton 0.15.11 versus package 0.15.12. Console 0.1.5 already matches.\", \"The compiler identity constant and both generated harness profiles agree with the package versions, as independently checked by a read-only audit agent.\", \"Product 07 requires the prep",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b6a21f54c299e737",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::dad188619d0423735d20ddfff372905796bf4805a6807a3934e60580cc7797a5",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "e7556827820e5786ecf6556d9106eb88e5ac2ac8648c406c43a18058e3119ab4",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "NoOps of the 2026-09-15 machinery stand-down pass.",
+          "summary": "- **NoOps of the 2026-09-15 machinery stand-down pass.** Weighed and declined, each with its evidence and reversal condition in [the planning document §7](machinery-stand-down-2026-09-15.md#7-declined-alternatives--the-noop-register-of-this-pass). (1) _Revert pull requests #54 to #62 wholesale._ Declined: it also removes the repairs of observed failures (egress-first close, derived-worktree settlement, nested-repository classification, the operator controls, background refuters, the gate stop, the permission-bit key, load-derived deadlines) and restores a 476 s whole-tree gate, not a six-minute one. Reverse: if WO-132 is not implementation-ready within one eight-hour executor session, revert",
           "missing": false
         }
       ],

@@ -6732,3 +6732,135 @@ existing contract; no runtime source, contract, or locked boundary changes.
     Source and review: the same breakout receipt; promoted as a candidate in
     product 07. Reopen for implementation planning or an observed recovery
     that still requires operator rescue outside the session.
+
+## 2026-09-15 — Planning pass: machinery stand-down (WO-132)
+
+- **The lifecycle evidence identity is the one wholesale change** `adopted`
+  - The operator opened the pass after WO-044's close with the verdict that
+    WO-125, WO-126, WO-128 to WO-131 and WO-044 made the machinery worse
+    and stalled product work, and asked for a meta pass over the previous
+    planning passes and a meta-meta pass over the planning process, with
+    the intuition of surgical fixes plus one wholesale change. Six
+    background diagnoses and the records agree on the location: every
+    transition requires a full-gate row at a whole-tree hash that includes
+    the reports and control events the transition itself writes, so every
+    stage boundary misses by construction and no per-suite key beneath it
+    can help. Adopted: transitions never require gate evidence; one product
+    gate runs once per order at final review, keyed by code identity, and
+    the pull request, the tag manifest and the release close consume that
+    row; release close runs no suite. The replica execution, declared-input
+    reuse, shared cache, kernel-denial probe and per-task expansion leave
+    the default path with their suites. Filed as
+    [WO-132](../work-orders/WO-132-machinery-stand-down.md) at the head of
+    the sequence, one order by the operator's exemption; the diagnosis is
+    [the planning document](../planning/machinery-stand-down-2026-09-15.md).
+  - Provenance: the dispatch and its three follow-up messages, captured
+    verbatim in ignored intake
+    (`docs/intake/notes/2026-09-15-machinery-stand-down-planning.md`,
+    SHA-256 `19061ea60115a416bc536e4eae66faffc5549dfd9a33841d886bd51dffd8350f`);
+    the ignored gate rows; WO-044-D016; WO-131's engineering review. Reopen
+    if a product defect reaches a tag that a removed suite would have caught,
+    or if the once-per-order gate exceeds six minutes after the inventory
+    split.
+- **Versions, effort and tools are logged, never required** `adopted`
+  - Attestation records harness, version, model, effort and source as
+    given; `ultra` and `ultra code` are `xhigh` with a subagents mode and
+    their raw spelling; effort-below-declared, readback, discovery-row and
+    version-minimum refusals become warnings; `Effort:` lines are
+    recommendations. DotLn's hooks refuse a second writer and a write during
+    the live gate and delegate everything else to the host's own permission
+    prompt, on both harnesses; the writer-isolation unit drops its
+    main-branch conjunct so planning, release close, build and bootstrap run
+    on main under a reservation. Five of six refusals recorded this week
+    were unlisted tool names; this pass's own background workers were
+    refused their handback tool, and the parent was refused `SendMessage`.
+  - Provenance: the capture; WO-044-D006, D009, D011, D015; WO-131 R5;
+    the parity diagnosis. Reopen if a second writer is admitted on main or a
+    host prompt admits an effect the settings deny list should have refused.
+- **Release close is the post-merge publish** `adopted`
+  - From merged main, one command proves egress, fast-forwards, runs the
+    sub-minute surface checks, builds its own dist if missing, cites the
+    reviewer's gate row with both trees, tags and creates the Release;
+    teardown and derived-worktree settlement follow as best effort. The
+    record: v0.17.0 needed a patch order, v0.17.5 a fix pull request,
+    v0.17.6 was never published, v0.17.7 ran a 605 s gate reusing nothing.
+  - Provenance: the capture's pasted analysis (partly wrong on the metadata
+    commands, right on every other shell form); WO-044-D001 to D007, D010;
+    the release-close diagnosis. Reopen at a host that cannot grant egress
+    to any session.
+- **The refuter is a goal review** `adopted`
+  - Four questions per order from the Cost line, the meter and the critical
+    path: the gate it unblocks and the NoOp cost; the eight traps applied to
+    the order's own process cost; whether the removal exceeds the addition;
+    whether failure degrades rather than refuses. A hold needs an observed
+    failure or a vision contradiction; a constructible counterexample is a
+    known issue; one judgment per pass; no third-hold stop; a disposition
+    binds the criterion text. This settles product 07's candidate on the
+    refutation pass's cost by allocation to WO-132 criterion 11.
+  - Provenance: the 2026-09-12 and 2026-09-15 captures; receipts 009 to
+    012 (holds at 2,454, 833, 333 and 755 s; two overridden; one re-raised
+    and re-imported as scope). Reopen if the goal review passes an order
+    the operator later names misaligned.
+- **The default gate is the product gate** `adopted`
+  - Product and lifecycle suites run in `npm test`, each with a `protects:`
+    line; machinery suites run on demand or when their own sources changed;
+    the scheduler restores the configuration WO-128 measured faster. The
+    three longest suite numbers were spans between split tasks; the heavy
+    tasks were the machinery's own fixtures; the estimated default gate is
+    about 250 s against 605 s. Only release, worktree, resume and the three
+    package suites have a recorded catch of a real defect.
+  - Provenance: the test-inventory audit over the ignored gate rows and the
+    90 verification and decision records. Reopen per the first entry.
+- **Why the previous four passes compounded the problem** `adopted`
+  - Each pass shipped a self-measured key, filed Cost lines a regex judged
+    and no closeout reconciled, and let verification of machinery produce
+    machinery repairs in the same order; the refuter rewarded contract
+    completeness, overrides bound receipt hashes so holds re-raised, the
+    meter never fired on a sawtooth, findings became criteria in the order
+    that found them, a complaint counted as a question rather than a
+    decision, and no rule ranked logging above refusing. Recorded in the
+    planning document §2 and §3 with the rules that should have bound and
+    why they did not.
+  - Provenance: the map's rationale for 2026-09-08, 09-09 and 09-12; the
+    receipts; the cost table; the merge history (13 of 14 merges after
+    WO-042 changed machinery, none the kernel).
+- **Corrections during this pass, logged** `adopted`
+  - Operator corrections: open the planning branch without asking (every
+    prior pass had); remove a stale reservation and prune dead worktrees
+    without reporting them; do not wait for hand-holding. Applied: the
+    branch, the reclaimed lock, four pruned registrations and the removed
+    WO-131 temporary host worktree preceded the research report. Self
+    corrections: the first shell commands on main were refused for
+    unlisted metadata forms and a `;` separator, replaced by the listed
+    forms; the background workers' handback and the parent's `SendMessage`
+    were refused as unclassified tools, so the reports were recovered from
+    the session transcripts; `git worktree prune` needed one host-approved
+    unsandboxed retry because the sandbox denies `.git/worktrees`.
+  - The refutation itself reproduced mechanism 2 of the diagnosis live:
+    the first fresh worker judged a subject that the timing-acceptance
+    cost-table refresh then changed, so its result was refused as stale and
+    a second fresh worker judged the current subject (receipt 013,
+    dispatch-to-file 808,618 ms, verdict pass with no holds and six known
+    issues); the host still recorded the receipt as a hold because it
+    carried WO-130 criterion 1's absolute-path hold forward from receipt
+    012, whose override bound only that receipt's hash. The operator's
+    2026-09-15 direction was applied as an attributed override of the
+    carried hold (the third time for the same finding), recorded in the
+    planning control log with the capture's SHA-256; WO-132 criterion 11
+    binds dispositions to criterion text so a fourth cannot occur.
+- **Process cost of this pass** `adopted`
+  - Entry measurement (`node scripts/harness.mjs usage`, scope dispatch,
+    source claude-transcript-message-usage, 2026-09-15T04:16Z): 538,326
+    total tokens (196 input, 439,523 cached input, 92,223 cache write,
+    6,384 output) over 15 steps and 3 commands. Six background diagnoses of
+    about 208,000 to 285,000 tokens and 45 to 109 tool calls each, 13 to 15
+    minutes each. The handoff measurement before the
+    planning commit (2026-09-15T05:10Z, same source and scope): 12,301,289
+    total tokens (1,272 input, 11,756,763 cached input, 420,118 cache
+    write, 123,136 output) over 125 steps and 90 commands; the six
+    background diagnoses' own counters (about 1.5 million tokens) are
+    listed above and are not claimed inside this figure. Tradeoff recorded: the pass ran no code
+    suite; the refutation is one background goal review.
+- **Wholesale revert, turning off every test, the key repair alone, one order per fix, opt-in reuse, a classified read-only guard, a detached release worktree, an operator-only close, process cost as a requirement, a hold budget alone, and the three open follow-ups** `rejected`
+  - Each with its evidence and reversal condition in the planning
+    document's NoOp register (§7) and the map's NoOps of this pass.

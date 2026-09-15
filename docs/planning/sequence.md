@@ -11,6 +11,7 @@ pointers and continuation command; untouched items persist across passes.
 
 <!-- dotln-work-order-sequence:start -->
 
+- WO-132 — Machinery stand-down
 - WO-126 — Process debt
 - WO-042 — Authority provenance and monotone envelopes
 - WO-043 — Typed dependency truth

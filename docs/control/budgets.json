@@ -2,12 +2,30 @@
   "schemaVersion": 1,
   "source": "WO-126 criteria 10 and 15; operator budget clarification during resume: next on 2026-09-09; operator direction during resume: next on 2026-09-14 (WO-044): artificial caps yield to needed rules and accuracy comes before efficiency, so the cold-start ceilings the shared no-guessing line touches carry real margin",
   "dispatches": {
-    "executor": { "tokens": null, "costUsd": null },
-    "verifier": { "tokens": null, "costUsd": null },
-    "reviewer": { "tokens": null, "costUsd": null },
-    "release-close": { "tokens": null, "costUsd": null },
-    "planner": { "tokens": null, "costUsd": null },
-    "refuter": { "tokens": null, "costUsd": null }
+    "executor": {
+      "tokens": null,
+      "costUsd": null
+    },
+    "verifier": {
+      "tokens": null,
+      "costUsd": null
+    },
+    "reviewer": {
+      "tokens": null,
+      "costUsd": null
+    },
+    "release-close": {
+      "tokens": null,
+      "costUsd": null
+    },
+    "planner": {
+      "tokens": null,
+      "costUsd": null
+    },
+    "refuter": {
+      "tokens": null,
+      "costUsd": null
+    }
   },
   "limits": {
     "coldStartBytes": {
@@ -32,6 +50,14 @@
       "dispatch": "refuter",
       "ceiling": 1800000,
       "reason": "Operator accepted the timing overrun for this planning pass and authorized filing its completed one-hold review. This acceptance covers the original review, repeated canonical prompt generation after truncated output, receipt filing, and waiting within a 30-minute ceiling. It applies to this pass only and does not change the default 120-second limit or authorize broader review scope."
+    },
+    {
+      "date": "2026-09-15",
+      "metric": "passRefutationMs",
+      "scope": "planning-39243aa3f0fc8df2",
+      "dispatch": "refuter",
+      "ceiling": 1800000,
+      "reason": "Operator direction 2026-09-15 in the machinery stand-down dispatch (ignored capture SHA-256 19061ea60115a416bc536e4eae66faffc5549dfd9a33841d886bd51dffd8350f): free rein to spend the resources this pass needs. The acceptance covers one background goal review of the committed subject, its file-backed result and receipt filing within a 30-minute ceiling. It applies to this pass only; WO-132 criterion 11 removes the budget refusal for later passes."
     }
   ],
   "unsetPolicy": "Collect observed usage first. The operator left token, dollar and PR-body ceilings unset; null is not zero and never triggers an invented cap.",

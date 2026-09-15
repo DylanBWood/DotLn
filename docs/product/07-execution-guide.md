@@ -863,6 +863,17 @@ the gate after WO-128's exclusivity decision, or when the meter reports three
 consecutive worsening gate deltas. No order, number, sequence position or
 activation authority is allocated here.
 
+**Superseded 2026-09-15.** The recorded 2026-09-15T04:10Z gate names the
+bounding nodes: the machinery's own suites (harness fixtures 145 s, process
+debt 143 s, runner fixtures 135 s isolated, plan-refutation fixtures 69 s)
+on a lane-saturated schedule, while the longest suite numbers (console,
+release, plan-refutation) were spans between split tasks. The machinery
+stand-down pass removes that share from the default gate and runs the gate
+once per order instead of cutting its fixtures
+([WO-132](../work-orders/WO-132-machinery-stand-down.md) criteria 4 to 6).
+Reopen only if the once-per-order `npm test` exceeds six minutes fresh after
+that inventory split.
+
 ## Candidate — refutation pass worth its cost
 
 The 2026-09-12 planning pass paid three direct-session refutations of one
@@ -889,6 +900,20 @@ allocates none.
 Reopen at the next planning pass, or when a refutation's third consecutive
 hold stops a pass again. No order, number, sequence position or activation
 authority is allocated here.
+
+**Resolved 2026-09-15.** The machinery stand-down pass measured the yield:
+receipts 009 to 012 held four times on constructed counterexamples at
+2,454, 833, 333 and 755 s, two holds were overridden, and one overridden
+hold was re-raised by the next receipt and re-imported as scope, producing
+a design that failed verification and was removed. The pass selected the
+bounded scope and changed the hold semantics together: the refuter judges
+goal alignment, system traps, constraint removal and antifragility from the
+Cost line, the meter and the critical path; only an observed failure or a
+vision contradiction holds; a constructible counterexample is a known issue;
+one judgment per pass, no third-hold stop, no budget refusal, and a
+disposition binds the criterion text. Allocated to
+[WO-132](../work-orders/WO-132-machinery-stand-down.md) criterion 11; this
+candidate closes on that order's merge.
 
 ## Workflow closeout and releases
 
@@ -1384,6 +1409,31 @@ claim evidence or releases it does not have.
   batched and labeled. Snapshot means are not per-tool or whole-hook latency.
   The original WO-126 Cost estimate omitted this recurring work; its execution
   cost correction and VER-001 F6 preserve that omission and the measured cost.
+- **Machinery stand-down (operator direction, 2026-09-15).** The lifecycle
+  exists to carry the rules so the operator's attention does not; when it
+  costs more attention than it saves, it is the defect. The operator's
+  standard, recorded from the 2026-09-15 planning dispatch and implemented by
+  [WO-132](../work-orders/WO-132-machinery-stand-down.md): a lifecycle
+  transition records its report and never runs or requires a test gate; one
+  product gate, `npm test`, runs once per order at final review, keyed by the
+  code it tests so that reports, control events, projections and release text
+  never invalidate it, and that row is the evidence the pull request, the tag
+  and the close consume; release close is the post-merge publish of the tag
+  and Release and runs no suite; attested harness, version, model and effort
+  are logged as given and never refuse, and `ultra` means `xhigh` with
+  subagents; DotLn's hooks refuse a second writer in a worktree and a write
+  during the live gate, and delegate every other judgment to the host's own
+  permission prompt on both harnesses; the default gate holds the suites that
+  protect product and lifecycle behavior, each naming what it protects, and
+  the machinery's own suites run on demand; the planning refuter judges goal
+  alignment, system traps, constraint removal and antifragility, and a
+  constructible counterexample is a known issue, never a hold. A complaint
+  or direction the operator states in a capture is a decision and is
+  recorded as one. A mechanism is added only with the removal it pays for,
+  reconciled at closeout against the observed rows. Until WO-132 merges, the
+  commands still enforce the prior contract and `operator override:` remains
+  the recovery route; the diagnosis of how four passes compounded the
+  problem is [the planning document](../planning/machinery-stand-down-2026-09-15.md).
 - **Write once, run once (operator correction, 2026-09-10).** A report,
   receipt or record is written after every measurement it cites is in hand
   and every claim in it has been checked, and the evidence gate runs once, at
