@@ -781,6 +781,73 @@ identity migration.
   are prose in product 13 until a consumer needs one as an event field; the
   first plausible consumer is tester-authored scenarios in WO-011.
 
+## Candidates — release-close and planning-dispatch defects (recorded 2026-09-16)
+
+Nominated for the next planning pass from the v0.23.0 release-close attempt and
+the `runtime.resident` admission pass. Each names the observation that proves
+it and what a fix must do. None is allocated; this section grants no activation
+authority.
+
+**Machine defects.**
+
+1. _An order may mandate a capability id its own gate refuses._ WO-068
+   criterion 7 directed an executor to add a `runtime.resident` row;
+   `scripts/lib/plan-continuation.mjs:94` refuses ids absent from the judged
+   receipt, because a capability id is a planning claim. The order required an
+   edit the repository rejects by design, and no executor repair could clear
+   it: deleting the row fails the criterion, keeping it fails the gate.
+   FINAL-001 recorded this as B1 and nominated two forms — admit new ids
+   through the planning pass that files the order, or teach `reassessments` a
+   dated-addition form for ids the filing order introduces. Neither is chosen.
+   A fix must make the unsatisfiable order unfilable, or make the gate accept
+   it. Reopens at the next order whose criteria name an unjudged id.
+2. _The plan gate was unsatisfiable on any day carrying two passes._
+   `checkPlanGate` demanded a receipt for the later dated heading while
+   `latestPlanningPass` returned the earlier one: both sorted headings by date
+   alone, and `Array.prototype.sort` is stable. Patched in `8a5eb79` by
+   breaking the tie on ledger order. **The patch carries no regression test**,
+   so the defect can return; the test is the nomination. Latent since the
+   mechanism shipped, surfaced by the first day with two passes.
+3. _A final review's stated merge prerequisite is unenforced._ FINAL-001 said
+   in bold that B1 had to clear before the branch merged; it merged at
+   `3b7a315` with B1 unmet, and main inherited a red `test:docs`. A fix must
+   either enforce the prerequisite at the merge transition or stop recording
+   prerequisites that nothing checks.
+
+**Dispatch and reporting defects.** These concern agent behaviour under the
+role text rather than repository machinery, and belong in the process-debt
+track.
+
+4. _A decision dialog stated a review sentence as a machine precondition._ The
+   release-close dialog asserted v0.23.0 "cannot be tagged until" a planning
+   dispatch admitted `runtime.resident`. `scripts/release.mjs` never calls the
+   planning gate, and the dry run passed every real prerequisite. The operator
+   answered a question with a false premise, and that answer is the sole reason
+   the tag was not created. A fix must require any option presented as a
+   blocker to name the command and line that enforces it, or be labelled a
+   documented condition rather than a gate.
+5. _A remedy was recommended without being read._ `planning: refute` was
+   proposed as the way to clear B1 and retracted three minutes later on
+   reading that it files an immutable judgment. Acting on it would have put a
+   judgment procured to unstick a release into the permanent record.
+6. _An operator dispatch prefix was read as conversation._ A message prefixed
+   `planning:` is a dispatch under this guide's §Operator-opened planning pass
+   regardless of its subject. Four turns of diagnosis ran before the pass
+   opened. A fix must treat the prefix as the dispatch and carry any
+   disagreement inside the pass.
+7. _A conclusion was asserted from a partial search._ "No planning gate exists"
+   was claimed after searching `scripts/resume.mjs` and `scripts/release.mjs`
+   and missing `scripts/lib/plan-continuation.mjs`, and the operator's correct
+   `resume: release close` routing was then attributed to operator error. A
+   fix must bind such a claim to its stated search boundary.
+8. _Scope choices were reported as repository refusals._ Declining to patch
+   machinery inside a document-only dispatch was a judgment call presented as
+   though the process had refused, which removed a decision belonging to the
+   operator.
+
+Cost observation: about ninety minutes across three sessions, on a release that
+was publishable throughout.
+
 ## Direct-draft provenance for the 2026-09-02 batch
 
 WO-016 through WO-022 were supplied by the operator as complete public drafts
