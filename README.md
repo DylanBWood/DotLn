@@ -82,9 +82,62 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 
 ## What runs today
 
+<!--
+  Rewrite this block; do not append to it. It says what the software does now,
+  for a reader who has never seen it, and it is not a changelog. When an order
+  changes behavior, fold the change into this prose and delete whatever it
+  superseded; per-order detail belongs in that release's notes. Release close
+  checks only that the block holds exactly one strict version, so its length is
+  an editorial choice and has drifted badly before. Keep the two marker lines
+  the only ones naming them, or release prepare refuses.
+-->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.22.1`. Runtime advisories appear once per session and cause, observers stay silent, and SessionStart names runtime drift. Release close and worktree finish refresh stale pinned runtime bytes after advancing main. Supplied model and effort retain operator-attested provenance, and version-only changes select no machinery suite. Replay accepts an explicit environment projector so applications own their RNG and policy state layout; the supported reserved-key fallback and complete Decision bytes remain unchanged. The single reactor folds typed internal state slices while preserving complete public Decisions and host projections. Worker recovery decodes saved locks, receipts, request keys and verification capsules before reclaiming a lock or dispatching; malformed state remains available for inspection. The kernel accepts recursively executable programs, and typed continuation decoding rejects deferred or malformed persisted nodes before runtime folds. Schema-1 event logs and hook inputs receive positive decoding with typed paths before ordinary evaluation; malformed generated-hook input follows the configured protocol while recovery controls stay available. Optional compiled presence policies describe progressive absence phases, base-bounded authority, return handling, idle expiry and observed adapter availability. The three editable views preserve these policies; resident scheduling remains WO-068. Prompt submission remains open when setup or lifecycle state fails; `analysis:` and `operator override:` provide session-scoped diagnosis and authorized recovery. Work proceeds through independent implementation, verification and final review. Lifecycle completions record their reports and actor attestations after an inline diff check; missing gate, read or usage observations are advisory. The reviewer runs `npm test -- --review` once, and PR publication and release close consume its committed success row by code identity. Reports, control records, generated projections and release prose do not invalidate that row. Release close proves egress, checks release surfaces, builds missing or mismatched pinned runtime output and publishes the annotated tag and GitHub Release without running a suite or installing dependencies; cleanup follows as best effort. DotLn hooks refuse a second writer in the same worktree and a write during the live reviewer gate, while other decisions defer to host permissions. Harness, version, model and effort are logged as supplied; `unknown` is admitted and `ultra` means `xhigh` with subagents and raw spelling. `npm test` contains product and lifecycle suites; `npm run test:machinery` runs machinery checks on demand, and `--review` selects them when their sources changed. `npm run meta` reports process observations and compares promised removals with observed outcomes as planning input. The [goal review](docs/planning/refutations/README.md) records hypothetical issues with reopening observations and reserves holds for observed failure or contradiction with vision text. The [actor board](packages/console/README.md), [independent workflow](docs/product/07-execution-guide.md#independent-workflows-and-integration), mutation corpus, inspection workers, verification matrices and Beacon senses remain available. General source-writing workers and portable starter export remain later work. Package publication controls are in [CONTRIBUTING.md](CONTRIBUTING.md); published source records are on the [GitHub Releases page](https://github.com/DylanBWood/DotLn/releases).
+This source prepares DotLn `v0.23.0`.
+
+**The core.** A local-first compiler turns a loadout graph into a bounded
+program: one identity, one active mechanic, its linked supports, and an
+authority envelope the kernel checks on every decision. One typed reactor folds
+the event log into state slices while preserving complete public Decisions and
+host projections, and replay takes an explicit environment projector, so an
+application owns its own RNG and policy state layout. Every persisted boundary
+decodes before it is folded — schema-1 event logs, hook inputs, recursively
+executable programs, and saved worker locks, receipts, request keys and
+verification capsules — and malformed state is kept for inspection rather than
+truncated. A compiled presence policy can describe progressive absence phases,
+base-bounded authority, return handling, idle expiry and observed adapter
+availability; the three editable views preserve it.
+
+**What you can run.** An offline resident now drives that policy from recorded
+time and explicit presence. It records every clock sample as an event,
+dispatches one declared bounded script per phase when the policy allows, and
+resumes after a kill without dispatching an episode twice. `dotln resident` runs
+the loop, `--once` runs a single cycle under an outside scheduler, and `dotln
+presence away|back` records the operator edge; the [skeleton
+runbook](packages/skeleton/README.md#resident-host) carries the configuration
+and its limits. The [actor board](packages/console/README.md), mutation corpus,
+inspection workers, verification matrices and Beacon senses are also runnable
+today.
+
+**How this repository builds itself.** Work proceeds through independent
+implementation, verification and final review, each recording its own report and
+actor attestation. The reviewer runs `npm test -- --review` once, and both PR
+publication and release close consume that committed success row by code
+identity. Hooks refuse exactly two things — a second writer in one worktree, and
+a write to gate inputs during a live reviewer gate — and defer every other
+judgment to host permissions; `analysis:` and `operator override:` stay
+available even when setup or lifecycle state fails. The [execution
+guide](docs/product/07-execution-guide.md) and its [independent
+workflow](docs/product/07-execution-guide.md#independent-workflows-and-integration)
+carry the rest.
+
+**Not yet.** A live model actor, automatic work derivation, general
+source-writing workers and portable starter export remain later work, and the
+resident's own consumers are still being built. The [goal
+review](docs/planning/refutations/README.md) records hypothetical issues with
+the observations that would reopen them. Package publication controls are in
+[CONTRIBUTING.md](CONTRIBUTING.md); published source records are on the [GitHub
+Releases page](https://github.com/DylanBWood/DotLn/releases).
 <!-- DOTLN-RELEASE-END -->
 
 The walking skeleton first shipped in application release `v0.2.0`.
