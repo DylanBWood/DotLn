@@ -14,6 +14,24 @@ import type {
 } from "./types.js";
 import { repositoryPath, verificationLine } from "./verification.js";
 
+/** Pure output policy; the host supplies its atomic marker operation.
+ * Observation failures show the message; they never alter a permission decision.
+ */
+export function showHarnessAdvisory(
+  sessionId: string | undefined,
+  event: string,
+  cause: string,
+  claimMarker: (key: string) => boolean,
+): boolean {
+  if (event === "PostToolUse") return false;
+  if (!sessionId) return true;
+  try {
+    return claimMarker(JSON.stringify([sessionId, cause]));
+  } catch {
+    return true;
+  }
+}
+
 export type HarnessEvent =
   "PreToolUse" | "PostToolUse" | "Stop" | "UserPromptSubmit";
 export interface HarnessObservation {
@@ -368,7 +386,7 @@ export function lowerToHarness(
         ),
       });
   }
-  const hookPaths = new Map<HarnessEvent, string[]>();
+  const hookPaths = new Map<HarnessEvent | "SessionStart", string[]>();
   const hookRoot = ".claude/hooks";
   const emit = (
     path: string,
@@ -391,28 +409,59 @@ export function lowerToHarness(
   ) => {
     const path = `${hookRoot}/${name}.mjs`;
     const header = `// Origin: ${canonicalStringify(origin(names))}\n`;
-    const advisory =
-      "DotLn advisory: built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide.";
-    // This path cannot import the unavailable adapter. It only reports and
-    // appends the same bounded observation as the runtime's advisory path.
-    const fallback = `const response = { systemMessage: ${JSON.stringify(advisory)} };
+    // The same session file handles startup diagnostics and prompt dispatch.
+    const eventExpression =
+      name === "session"
+        ? `(input?.hook_event_name === "SessionStart" ? "SessionStart" : "UserPromptSubmit")`
+        : JSON.stringify(event);
+    const fallback = `const fs = await import("node:fs");
+const { join } = await import("node:path");
+const { createHash } = await import("node:crypto");
+const root = typeof input?.cwd === "string" ? input.cwd : process.cwd();
+const snapshot = ${JSON.stringify(profile.runtime.snapshot ?? null)};
+let cause = snapshot && !fs.existsSync(join(root, snapshot)) ? "snapshot-missing" : "runtime-unavailable";
 try {
-  const fs = await import("node:fs");
-  const { join } = await import("node:path");
-  const { createHash } = await import("node:crypto");
-  const root = typeof input?.cwd === "string" ? input.cwd : process.cwd();
+  const hash = ${fnv1a64.toString()};
+  for (const file of ${JSON.stringify(profile.runtime.files ?? [])}) {
+    if (fs.existsSync(join(root, file.path)) && "fnv1a64:" + hash(fs.readFileSync(join(root, file.path), "utf8")) !== file.hash) {
+      cause = "pins-differ";
+      break;
+    }
+    if (snapshot) {
+      const saved = join(root, snapshot, file.path);
+      if (!fs.existsSync(saved)) cause = "snapshot-missing";
+      else if ("fnv1a64:" + hash(fs.readFileSync(saved, "utf8")) !== file.hash) {
+        cause = "pins-differ";
+        break;
+      }
+    }
+  }
+} catch {}
+const advisory = "DotLn advisory: " + cause + ": built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide.";
+const response = (${showHarnessAdvisory.toString()})(input?.session_id, ${eventExpression}, cause, (key) => {
+  const directory = join(root, "docs/control/local/harness");
+  fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
+  const marker = join(directory, createHash("sha256").update(key).digest("hex") + ".advisory");
+  try { fs.writeFileSync(marker, "seen\\n", { flag: "wx", mode: 0o600 }); }
+  catch (error) {
+    if (error?.code === "EEXIST") return !fs.lstatSync(marker).isFile();
+    throw error;
+  }
+  return true;
+}) ? { systemMessage: advisory } : {};
+try {
   const directory = join(root, "docs/control/local/harness");
   const key = createHash("sha256").update(String(input?.session_id ?? "unknown")).digest("hex");
   const path = join(directory, key + ".jsonl");
   fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
   if (!fs.existsSync(path) || fs.lstatSync(path).isFile())
-    fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: ${JSON.stringify(event)}, advisory: response.systemMessage, delegated: true }) + "\\n", { mode: 0o600 });
+    fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: ${eventExpression}, advisory, delegated: true }) + "\\n", { mode: 0o600 });
 } catch {}
 process.stdout.write(JSON.stringify(response));`;
 
     emit(
       path,
-      `${header}let input;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (${JSON.stringify(event)} === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\nconst control = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, ${JSON.stringify(event)}) : null;\nif (control) { process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput);\n}\n} catch { ${fallback} }\n`,
+      `${header}let input;\ntry {\nconst { text } = await import("node:stream/consumers");\nconst rawInput = await text(process.stdin);\ntry { input = JSON.parse(rawInput); } catch {}\nconst event = ${eventExpression};\nconst recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\\s|$)/i.test((input.prompt ?? "").trim())));\nconst control = recoveryInput ? await (${operatorControl.toString()})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;\nif (control) { process.stdout.write(JSON.stringify(control)); } else {\nconst { feedbackBoundary } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/feedback-boundary.js");\nconst { runHarnessHook } = await import("../../${profile.runtime.snapshot ? `${profile.runtime.snapshot}/` : ""}packages/skeleton/dist/src/harness-host.js");\nawait runHarnessHook(${json({ compilerPackageVersion: COMPILER_PACKAGE_VERSION, runtime: profile.runtime, event, tools: profile.tools, ...(config as object) }).trim()}, feedbackBoundary, input, rawInput);\n}\n} catch { ${fallback} }\n`,
       names,
       rung,
     );
@@ -564,6 +613,8 @@ process.stdout.write(JSON.stringify(response));`;
       program.roles.map((role) => role.facetId),
       1,
     );
+  if (profile.events.UserPromptSubmit.available)
+    hookPaths.set("SessionStart", [`${hookRoot}/session.mjs`]);
   if (profile.events.Stop.available)
     hook(
       "finish",

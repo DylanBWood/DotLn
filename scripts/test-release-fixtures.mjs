@@ -22,7 +22,7 @@ import {
 const repo = resolve(import.meta.dirname, "..");
 test("case inventory includes existing release scenarios and the one-gate lifecycle and rejects duplicates", (t) => {
   const expected =
-    "preflight surfaces surfaces_local_snapshot prepare_independent license_surfaces surfaces_committed_readme surfaces_lower surfaces_first surfaces_component surfaces_non_source surfaces_new_component surfaceclose surfaceclose_linked bodyclose dirty unreachable derived settings_scope nonmain divergence malformed missinggh unauthenticated splitorigin lower failures cadence_missing cadence_inconsistent conflict localconflict nestedtag prepare missinglocalprevious pushfail refrecovery createrecovery stale_helpers success edition firstrelease cached_evidence composed_evidence concurrent".split(
+    "preflight surfaces surfaces_local_snapshot prepare_independent license_surfaces surfaces_committed_readme surfaces_lower surfaces_first surfaces_component surfaces_non_source surfaces_new_component surfaceclose surfaceclose_linked bodyclose dirty unreachable derived settings_scope nonmain divergence malformed missinggh unauthenticated splitorigin lower failures cadence_missing cadence_inconsistent conflict localconflict nestedtag prepare missinglocalprevious pushfail refrecovery createrecovery stale_helpers runtime_refresh success edition firstrelease cached_evidence composed_evidence concurrent".split(
       " ",
     );
   assert.deepEqual(releaseCases(repo), expected);

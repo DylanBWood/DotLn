@@ -17,6 +17,7 @@ import {
 } from "./lib/plan-receipts.mjs";
 import { containedRegularFile } from "./lib/paths.mjs";
 import { runGit } from "./lib/git.mjs";
+import { reportHarnessRuntime } from "./lib/harness-runtime.mjs";
 import { parseActor } from "./resume.mjs";
 import {
   beginDirectRefutation,
@@ -79,6 +80,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     return planningFollowups(root, { all, cursor: flags[1] ?? null });
   }
   if (command === "start") {
+    reportHarnessRuntime(root);
     if (rest.length !== 1 || !/^[a-z][a-z0-9-]{0,60}$/.test(rest[0]))
       throw new Error("usage: plan start <slug>");
     if (

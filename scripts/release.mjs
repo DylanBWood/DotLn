@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+import {
+  harnessRuntimeCause,
+  refreshHarnessRuntime,
+} from "./lib/harness-runtime.mjs";
 import { createHash } from "node:crypto";
 import {
   existsSync,
@@ -1250,6 +1254,7 @@ const releaseEvidence = (root, workOrderId) => {
 };
 const ensureReleaseRuntime = (root) => {
   if (
+    !harnessRuntimeCause(root) &&
     ["skeleton", "kernel"].every((name) =>
       existsSync(
         join(
@@ -1267,6 +1272,11 @@ const ensureReleaseRuntime = (root) => {
   if (built.status !== 0)
     throw new Error(
       `release metadata build failed: ${failureOf(built, "build unavailable; install dependencies separately")}`,
+    );
+  const remaining = harnessRuntimeCause(root);
+  if (remaining)
+    throw new Error(
+      `Built runtime still ${remaining}; checkout preserved; run node scripts/bootstrap.mjs`,
     );
 };
 const withPreviewRuntime = (root, operation) => {
@@ -1743,6 +1753,7 @@ const close = (workOrderId, args) => {
     ? `Main tracked files are clean; in-flight orders: ${remaining.join(", ")}.`
     : "Main tracked files are clean and between work orders.";
   if (latest && compareVersions(authority.version, latest) < 0) {
+    if (!dryRun) refreshHarnessRuntime(root, () => ensureReleaseRuntime(root));
     if (publish || dryRun) finishPublishedWorktree(root, workOrderId, dryRun);
     process.stdout.write(
       `${workOrderId} closes ${authority.version}, below latest release ${latest}; no release tag is due. ${mainStatus}\n`,
@@ -1813,7 +1824,7 @@ const close = (workOrderId, args) => {
   }
   if (dryRun) {
     process.stdout.write(
-      `Dry run: would fast-forward main to ${head}, run surface checks, build missing dist, validate this reviewer-gate manifest, ${publish ? "create and push the annotated tag and create the Release" : "prepare the release"}, then attempt worktree cleanup. No suite, install or CLI smoke runs.\n${JSON.stringify(manifest, null, 2)}\n`,
+      `Dry run: would fast-forward main to ${head}, run surface checks, build missing or mismatched pinned runtime, validate this reviewer-gate manifest, ${publish ? "create and push the annotated tag and create the Release" : "prepare the release"}, then attempt worktree cleanup. No suite, install or CLI smoke runs.\n${JSON.stringify(manifest, null, 2)}\n`,
     );
     finishPublishedWorktree(root, workOrderId, true);
     return;

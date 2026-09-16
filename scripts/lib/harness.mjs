@@ -81,11 +81,13 @@ export function harnessInstallation(options = {}) {
     // Admission compares this module's compiler version. A compiler-only
     // release must install a fresh snapshot even when hook handlers are equal.
     "packages/compiler/dist/src/artifact-identity.js",
+    "packages/compiler/dist/src/harness.js",
     "packages/compiler/dist/src/feedback.js",
     "packages/compiler/dist/src/attribution.mjs",
     "packages/skeleton/dist/src/feedback-boundary.js",
     "packages/skeleton/dist/src/feedback-source-comments.js",
     "packages/skeleton/dist/src/harness-host.js",
+    "packages/skeleton/dist/src/version.js",
     "packages/skeleton/dist/src/harness-command.js",
     "packages/skeleton/dist/src/gate-evidence.mjs",
     "packages/skeleton/dist/src/gate-deadlines.mjs",

@@ -32,6 +32,7 @@ import {
   compileFeedbackUnits,
   COMPILER_PACKAGE_VERSION,
   fnv1a64,
+  showHarnessAdvisory,
   type AuthorityEnvelope,
   type CompiledFeedback,
   type CorrectionState,
@@ -69,9 +70,10 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.18.3";
+import { HARNESS_HOST_VERSION } from "./version.js";
+export { HARNESS_HOST_VERSION } from "./version.js";
 export interface HarnessInput {
-  readonly hook_event_name: HarnessEvent;
+  readonly hook_event_name: HarnessEvent | "SessionStart";
   readonly cwd: string;
   readonly transcript_path?: string;
   readonly session_id: string;
@@ -89,7 +91,7 @@ export interface HarnessInput {
 /** Decode declared host fields; unconsumed native metadata is forward-compatible. */
 export function decodeHarnessInput(
   value: unknown,
-  expectedEvent?: HarnessEvent,
+  expectedEvent?: HarnessEvent | "SessionStart",
 ): DecodeResult<HarnessInput> {
   try {
     return decodeHarnessRecord(value, expectedEvent);
@@ -105,7 +107,7 @@ export function decodeHarnessInput(
 
 function decodeHarnessRecord(
   value: unknown,
-  expectedEvent?: HarnessEvent,
+  expectedEvent?: HarnessEvent | "SessionStart",
 ): DecodeResult<HarnessInput> {
   const fail = (
     code: string,
@@ -153,9 +155,13 @@ function decodeHarnessRecord(
     if (key in value && typeof value[key] !== "string")
       return fail("EXPECTED_STRING", `$.${key}`, "expected a string");
   if (
-    !["PreToolUse", "PostToolUse", "Stop", "UserPromptSubmit"].includes(
-      value.hook_event_name as string,
-    )
+    ![
+      "PreToolUse",
+      "PostToolUse",
+      "Stop",
+      "UserPromptSubmit",
+      "SessionStart",
+    ].includes(value.hook_event_name as string)
   )
     return fail("UNKNOWN_EVENT", "$.hook_event_name", "unsupported hook event");
   if (expectedEvent !== undefined && value.hook_event_name !== expectedEvent)
@@ -246,7 +252,7 @@ interface HookConfig {
       readonly hash: string;
     }[];
   };
-  readonly event: HarnessEvent;
+  readonly event: HarnessEvent | "SessionStart";
   readonly kind: "feedback" | "permission" | "observe" | "session" | "finish";
   readonly policy?: CompiledFeedback;
   readonly envelope?: AuthorityEnvelope;
@@ -2312,7 +2318,10 @@ const stopReentry = (input: HarnessInput) =>
 const protocolAdvisory = (reason: string) => ({
   systemMessage: `DotLn advisory: ${reason.replace(/\s+/g, " ")}; host permissions decide.`,
 });
-const protocolRefusal = (event: HarnessEvent, reason: string) =>
+const protocolRefusal = (
+  event: HarnessEvent | "SessionStart",
+  reason: string,
+) =>
   event === "PreToolUse"
     ? {
         hookSpecificOutput: {
@@ -2331,7 +2340,9 @@ const protocolRefusal = (event: HarnessEvent, reason: string) =>
         }
       : event === "Stop"
         ? { systemMessage: `DotLn: ${reason.replace(/\s+/g, " ")}` }
-        : protocolAdvisory(reason);
+        : event === "PostToolUse"
+          ? {}
+          : protocolAdvisory(reason);
 
 /** Recovery is advisory: the host retains its own sandbox and approval. */
 export const BOOTSTRAP_HATCH_TEXT =
@@ -2428,18 +2439,23 @@ function assertHarnessRuntime(
     config.runtime.skeletonVersion !== HARNESS_HOST_VERSION ||
     config.runtime.boundaryContract !== "feedback-v1"
   )
-    throw new Error(
-      "Pinned harness runtime unavailable; build the reviewed source",
-    );
-  if (
-    !config.runtime.files?.length ||
-    config.runtime.files.some(
-      (file) =>
-        `fnv1a64:${fnv1a64(readFileSync(contained(root, config.runtime.snapshot ? `${config.runtime.snapshot}/${file.path}` : file.path), "utf8"))}` !==
-        file.hash,
+    throw new Error("pins-differ: pinned runtime version differs");
+  if (!config.runtime.files?.length)
+    throw new Error("runtime-unavailable: runtime pins missing");
+  for (const file of config.runtime.files) {
+    const path = config.runtime.snapshot
+      ? `${config.runtime.snapshot}/${file.path}`
+      : file.path;
+    if (!existsSync(join(root, path)))
+      throw new Error(
+        `${config.runtime.snapshot ? "snapshot-missing" : "runtime-unavailable"}: pinned runtime file missing`,
+      );
+    if (
+      `fnv1a64:${fnv1a64(readFileSync(contained(root, path), "utf8"))}` !==
+      file.hash
     )
-  )
-    throw new Error("Pinned harness runtime bytes differ");
+      throw new Error("pins-differ: pinned runtime bytes differ");
+  }
 }
 export async function evaluateHarnessHook(
   config: HookConfig,
@@ -2447,7 +2463,16 @@ export async function evaluateHarnessHook(
   root: string,
   boundary: typeof feedbackBoundary,
 ): Promise<Record<string, unknown>> {
+  if (config.event === "SessionStart") {
+    const { snapshot, ...built } = config.runtime;
+    assertHarnessRuntime({ ...config, runtime: built }, root);
+  }
   assertHarnessRuntime(config, root);
+  if (
+    config.event === "SessionStart" &&
+    input.hook_event_name === "SessionStart"
+  )
+    return {};
   if (input.hook_event_name !== config.event || !input.session_id)
     throw new Error("Hook input contract mismatch");
   const session = readJson(statePath(root, input), initialSession(), true);
@@ -2856,7 +2881,10 @@ export async function runHarnessHook(
         return;
       }
     }
-    const decoded = decodeHarnessInput(value, config.event);
+    const decoded = decodeHarnessInput(
+      value,
+      config.kind === "session" ? undefined : config.event,
+    );
     if (!decoded.ok) {
       process.stdout.write(
         JSON.stringify(
@@ -2869,6 +2897,8 @@ export async function runHarnessHook(
       return;
     }
     const input = decoded.value;
+    if (config.kind === "session" && input.hook_event_name === "SessionStart")
+      config = { ...config, event: "SessionStart" };
     const root = harnessRoot(input.cwd);
     observed = { root, input };
     const installedRoot = realpathSync(
@@ -2882,10 +2912,13 @@ export async function runHarnessHook(
   } catch (error) {
     reasonClass =
       error instanceof HarnessCommandRefused
-        ? "command-classification"
+        ? "classification"
         : error instanceof HarnessStateUnreadable
           ? "unreadable-state"
-          : "runtime-unavailable";
+          : error instanceof Error &&
+              /^(pins-differ|snapshot-missing):/.test(error.message)
+            ? error.message.split(":")[0]!
+            : "runtime-unavailable";
     // An unexpected failure names its class and a bounded message so it is
     // never mistaken for a policy refusal; typed refusals carry their own.
     const failure =
@@ -2897,7 +2930,7 @@ export async function runHarnessHook(
         ? `command classification: ${error.message}`
         : error instanceof HarnessStateUnreadable
           ? error.message
-          : `host facts or pinned runtime unavailable (${failure}); run node scripts/bootstrap.mjs to prepare this worktree`,
+          : `${reasonClass}: host facts or pinned runtime unavailable (${failure}); run node scripts/bootstrap.mjs to prepare this worktree`,
     );
   } finally {
     if (observed) {
@@ -2946,6 +2979,50 @@ export async function runHarnessHook(
         // Missing optional observation never changes the guard verdict.
       }
     }
+  }
+  if (
+    typeof response.systemMessage === "string" &&
+    response.systemMessage.startsWith("DotLn advisory:")
+  ) {
+    const cause = [
+      "pins-differ",
+      "snapshot-missing",
+      "runtime-unavailable",
+    ].includes(reasonClass)
+      ? reasonClass
+      : "classification";
+    if (
+      !showHarnessAdvisory(
+        observed?.input.session_id,
+        config.event,
+        cause,
+        (key) => {
+          const directory = join(
+            observed?.root ?? process.cwd(),
+            "docs/control/local/harness",
+          );
+          mkdirSync(directory, { recursive: true, mode: 0o700 });
+          const marker = join(
+            directory,
+            createHash("sha256").update(key).digest("hex") + ".advisory",
+          );
+          try {
+            writeFileSync(marker, "seen\n", { flag: "wx", mode: 0o600 });
+          } catch (error) {
+            if (
+              error &&
+              typeof error === "object" &&
+              "code" in error &&
+              error.code === "EEXIST"
+            )
+              return !lstatSync(marker).isFile();
+            throw error;
+          }
+          return true;
+        },
+      )
+    )
+      delete response.systemMessage;
   }
   process.stdout.write(JSON.stringify(response));
 }
