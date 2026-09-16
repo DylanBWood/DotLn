@@ -1,4 +1,9 @@
 import {
+  foldResidentEvent,
+  residentEventTypes,
+  type ResidentState,
+} from "./resident-state.js";
+import {
   Cadence,
   Program,
   authorize,
@@ -105,6 +110,7 @@ export type Loadout = LoadoutGraph;
 type RuntimePolicy = Readonly<{ maintenance: string }>;
 
 export type RuntimeState = Readonly<{
+  resident?: JsonValue;
   sourceChange?: SourceChangeSlice;
   feedback?: JsonValue;
   verification?: JsonValue;
@@ -148,6 +154,7 @@ export type RuntimeState = Readonly<{
 export type WalkingSkeletonSlice = Omit<
   RuntimeState,
   | "sourceChange"
+  | "resident"
   | "feedback"
   | "verification"
   | "workerEpisodeId"
@@ -165,6 +172,7 @@ export type SkeletonState = Readonly<{
   verification: VerificationState | undefined;
   feedback: FeedbackRuntimeState | undefined;
   sourceChange: SourceChangeSlice;
+  resident: ResidentState | undefined;
 }>;
 type SliceDecision<S> = Omit<Decision, "state"> & { readonly state: S };
 
@@ -173,6 +181,7 @@ export const walkingStateFromRuntime = (
 ): WalkingSkeletonSlice => {
   const {
     sourceChange,
+    resident,
     feedback,
     verification,
     workerEpisodeId,
@@ -201,6 +210,9 @@ export const selectFeedbackSlice = (
 export const selectSourceChangeSlice = (
   state: SkeletonState,
 ): SourceChangeSlice => state.sourceChange;
+export const selectResidentSlice = (
+  state: SkeletonState,
+): ResidentState | undefined => state.resident;
 export const kernelStateFromRuntime = (state: RuntimeState) => ({
   rngState: state.rngState,
   policy: state.policy,
@@ -231,6 +243,7 @@ export function skeletonStateFromRuntime(state: RuntimeState): SkeletonState {
         ? undefined
         : feedbackStateFromRuntime(state),
     sourceChange: state.sourceChange ?? {},
+    resident: state.resident as unknown as ResidentState | undefined,
   };
 }
 
@@ -293,12 +306,18 @@ export const sliceEventTypes = {
     ...SEMANTIC_CORRECTIONS,
   ],
   sourceChange: [],
+  resident: residentEventTypes,
 } as const;
 export type FoldedSlice = Exclude<keyof typeof sliceEventTypes, "sourceChange">;
 export function selectEventSlice(
   state: SkeletonState,
   event: Event,
 ): FoldedSlice {
+  if (
+    selectResidentSlice(state) !== undefined ||
+    residentEventTypes.some((type) => type === event.type)
+  )
+    return "resident";
   if (
     event.type === "FeedbackAuditOpened" ||
     selectFeedbackSlice(state) !== undefined
@@ -1622,6 +1641,14 @@ export const seiriReactor: Reactor<RuntimeState> = (runtime, event, env) => {
   // Retain the old validation order even in a feedback/verification workstream.
   if (walking.program !== null) programFromState(walking);
   switch (selectEventSlice(state, event)) {
+    case "resident":
+      return runtimeDecision(
+        observed(
+          foldResidentEvent(selectResidentSlice(state), event, env.predicates),
+          event,
+        ),
+        (resident) => ({ ...runtime, resident: json(resident) }),
+      );
     case "feedback":
       return runtimeDecision(
         feedbackDecision(selectFeedbackSlice(state), event),

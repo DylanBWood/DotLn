@@ -7,13 +7,11 @@ import {
   type LoadoutGraph,
   type CompilationEnvironment,
   type CompiledPresencePolicy,
-  type PresenceTransition,
 } from "@dotln/compiler";
 import {
   authorize,
   evaluateCadence,
   type PredicateRegistry,
-  type JsonValue,
 } from "@dotln/kernel";
 
 const fixture: { graph: LoadoutGraph; environment: CompilationEnvironment } =
@@ -27,40 +25,18 @@ const program = requireCompiled(
   compileLoadout(fixture.graph, fixture.environment),
 );
 const policy = program.presence![0]!;
-const field = (state: JsonValue, key: string) =>
-  (state as Record<string, JsonValue>)[key];
+import {
+  PresenceMachine,
+  presencePredicates,
+} from "../src/presence-machine.js";
 const predicates: PredicateRegistry = {
-  "dotln.presence.phase-ready": {
-    1: ({ state }, params) =>
-      field(state, "present") === false &&
-      field(state, "phase") === params["phaseId"] &&
-      field(state, "policyId") === params["policyId"] &&
-      field(state, "inFlight") === false,
-  },
-  "dotln.presence.returned": {
-    1: ({ state }) => field(state, "present") === true,
-  },
-  "dotln.presence.interrupt-phase": {
-    1: ({ state }, params) =>
-      field(state, "present") === true &&
-      params["discretionary"] === true &&
-      params["inFlightOnReturn"] === "kill",
-  },
+  ...presencePredicates,
   "fixture.enabled": { 1: (_context, params) => params["enabled"] === true },
 };
 
-/** Bounded test host for emitted data, not a resident runtime or scheduler. */
-class FixtureHost {
-  state: string;
-  present = true;
-  now = 0;
-  armedAt = 0;
-  lastActivity = 0;
-  generation = 0;
+/** Fixture effects around the same interpreter consumed by the resident. */
+class FixtureHost extends PresenceMachine {
   serial = 0;
-  current:
-    | { id: string; generation: number; discretionary: boolean; status: string }
-    | undefined;
   foreground = "running";
   foregroundAuthority = {
     authorityEnvelopeId: "fixture.requested-foreground",
@@ -71,12 +47,8 @@ class FixtureHost {
     expiresAt: 100000,
     revocationEventTypes: [],
   };
-  readonly transcript: string[] = [];
-  constructor(readonly compiled: CompiledPresencePolicy = policy) {
-    this.state = compiled.statechart.initial;
-  }
-  phase() {
-    return this.compiled.phases.find((phase) => phase.phaseId === this.state);
+  constructor(compiled: CompiledPresencePolicy = policy) {
+    super(compiled, predicates);
   }
   completeForeground() {
     const result = authorize(
@@ -110,124 +82,8 @@ class FixtureHost {
     this.foreground = "completed";
     this.transcript.push("foreground:completed-under-own-authority");
   }
-  projected() {
-    return {
-      present: this.present,
-      phase: this.state,
-      policyId: this.compiled.policyId,
-      inFlight: this.current !== undefined,
-    };
-  }
-  transition(on: PresenceTransition["on"], episode?: string) {
-    const transition = this.compiled.statechart.transitions.find(
-      (t) => t.from === this.state && t.on === on,
-    );
-    if (!transition) return;
-    if (
-      transition.guard === "current-policy-episode-while-absent" &&
-      (this.present ||
-        !this.current ||
-        episode !== this.current.id ||
-        this.current.generation !== this.generation)
-    )
-      return;
-    if (transition.guard === "idle-deadline-while-absent") {
-      const deadline = evaluateCadence(
-        this.compiled.idleCadence,
-        this.projected(),
-        { now: this.lastActivity, rngState: 0, predicates },
-      );
-      if (
-        this.present ||
-        this.current ||
-        deadline.dueAt === null ||
-        this.now < deadline.dueAt
-      )
-        return;
-    }
-    this.state = transition.to;
-    for (const action of transition.actions) {
-      switch (action) {
-        case "arm-phase":
-          this.armedAt = this.now;
-          this.lastActivity = this.now;
-          break;
-        case "cancel-pending":
-        case "reset-progress":
-          this.generation += 1;
-          break;
-        case "expire-phase":
-          this.transcript.push("expired:attention,work-scope,effect-authority");
-          break;
-        case "finish-discretionary":
-          if (this.current?.discretionary) {
-            this.current.status = "finishing";
-            this.transcript.push("in-flight:finish");
-          }
-          break;
-        case "kill-discretionary":
-          if (this.current?.discretionary) {
-            this.current = undefined;
-            this.transcript.push("in-flight:kill");
-          }
-          break;
-        case "preserve-foreground":
-          assert.equal(this.foreground, "running");
-          break;
-      }
-    }
-    this.transcript.push(`${on}:${this.state}`);
-  }
-  absence(at = this.now) {
-    this.now = at;
-    if (!this.present) return;
-    this.present = false;
-    this.transition("absence");
-  }
-  returned(at = this.now) {
-    this.now = at;
-    this.present = true;
-    this.transition("return");
-  }
-  outcome(
-    kind: "verified-success" | "failure" | "unverified",
-    episode: string,
-    at = this.now,
-  ) {
-    this.now = at;
-    if (kind !== "unverified") this.transition(kind, episode);
-    if (kind !== "unverified" && this.current?.id === episode)
-      this.current = undefined;
-  }
   pulse(at: number) {
-    this.now = at;
-    this.transition("idle-expired");
-    const phase = this.phase();
-    if (!phase) {
-      this.transcript.push(`NoOp:${this.state}`);
-      return;
-    }
-    const evaluation = evaluateCadence(phase.cadence, this.projected(), {
-      now: this.armedAt,
-      rngState: 0,
-      predicates,
-    });
-    if (evaluation.dueAt === null || at < evaluation.dueAt) {
-      this.transcript.push("NoOp:gate-or-cadence");
-      return;
-    }
-    if (phase.availability.kind === "NoOp") {
-      this.transcript.push(`NoOp:${phase.availability.reason}`);
-      return;
-    }
-    this.current = {
-      id: `episode-${++this.serial}`,
-      generation: this.generation,
-      discretionary: phase.discretionary,
-      status: "running",
-    };
-    this.lastActivity = at;
-    this.transcript.push(`dispatch:${phase.phaseId}`);
+    if (this.due(at) !== null) this.dispatch(`episode-${++this.serial}`);
   }
   batch(at: number, events: readonly ("return" | "pulse" | "success")[]) {
     assert.equal(
@@ -251,7 +107,7 @@ test("WO-067 fixture: hold, verified-only advance, failure reset, peak/reset/loo
   assert.equal(host.state, "present");
   host.absence(1);
   host.pulse(10);
-  assert.equal(host.current, undefined);
+  assert.equal(host.current, null);
   host.pulse(11);
   const first = host.current!.id;
   host.outcome("unverified", first);
@@ -298,7 +154,7 @@ test("WO-067 fixture: return kills or finishes discretionary work, preserves for
     host.pulse(10);
     host.batch(11, events);
     assert.equal(host.state, "present");
-    assert.equal(host.current, undefined);
+    assert.equal(host.current, null);
     assert.equal(host.foreground, "running");
     assert.ok(host.transcript.includes("in-flight:kill"));
     assert.deepEqual(
@@ -390,7 +246,7 @@ test("WO-067 fixture: a preauthorized portfolio effect with an unavailable adapt
   const host = new FixtureHost(result.presence![0]!);
   host.absence();
   host.pulse(10);
-  assert.equal(host.current, undefined);
+  assert.equal(host.current, null);
   assert.deepEqual(result.presence![0]!.sourceGrantIds, ["fixture.portfolio"]);
   assert.match(
     host.transcript.at(-1)!,

@@ -60,6 +60,7 @@ test("WO-050 slices have exclusive event ownership in each active mode and an em
     "verification",
     "feedback",
     "sourceChange",
+    "resident",
   ]);
   assert.deepEqual(selectSourceChangeSlice(walking), {});
   assert.equal(
