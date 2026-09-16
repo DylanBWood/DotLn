@@ -4682,6 +4682,51 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-9c04fd3b314e6a29",
+      "key": "decision:docs/evidence/WO-050/decisions.md#wo-050-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5388457d1e9db737a567607d1bdc29c883e64ff2affc2d4c959b522644c8291f",
+          "ref": "docs/evidence/WO-050/decisions.md#wo-050-d001",
+          "title": "WO-050-D001: Preserve public RuntimeState and complete Decision bytes; compose version-1 typed slices internally, with one selected fold and exported host selectors.",
+          "summary": "{ \"id\": \"WO-050-D001\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Preserve public RuntimeState and complete Decision bytes; compose version-1 typed slices internally, with one selected fold and exported host selectors.\", \"evidence\": [ \"packages/skeleton/src/reactor.ts\", \"docs/work-orders/WO-050-reactor-typed-state-slices.md\" ], \"rejected\": [ { \"option\": \"Expose nested Decision state\", \"reason\": \"The operator explicitly selected preservation of complete Decision bytes.\" }, { \"option\": \"NoOp or package split\", \"reason\": \"WO-052 supplies the recorded consumer for an internal seam; a package boundary is unnecessary.\" } ], \"reopenWhen\": \"WO-047 lands or an explicitly authorize",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0399f403d574ebf9",
+      "key": "decision:docs/evidence/WO-050/decisions.md#wo-050-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "10bfeb40a0e223eddfac732c761660265e9afc95ffd53aad2d4351992510ee54",
+          "ref": "docs/evidence/WO-050/decisions.md#wo-050-d002",
+          "title": "WO-050-D002: Capture synthetic worker fixtures once before refactoring; compare complete Decisions and projections on fixed input bytes, retaining historical refusal identities separately.",
+          "summary": "{ \"id\": \"WO-050-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Capture synthetic worker fixtures once before refactoring; compare complete Decisions and projections on fixed input bytes, retaining historical refusal identities separately.\", \"evidence\": [ \"packages/skeleton/fixtures/wo050-identity.json\", \"scripts/reactor-identity.mjs\" ], \"rejected\": [ { \"option\": \"Compare only trace fields or normalize Decision state\", \"reason\": \"Would hide state differences and fail the operator-selected full identity boundary.\" }, { \"option\": \"Claim original WO-009 raw logs or successful old WO-010/011 replay\", \"reason\": \"Those worker logs were not retained and the old compiled-artifa",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8bf908205a43b665",
+      "key": "decision:docs/evidence/WO-050/decisions.md#wo-050-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2785a0480d64ce0db9c1f0355b96ec0fdbcf25013d301181c03d626ecb5eea0e",
+          "ref": "docs/evidence/WO-050/decisions.md#wo-050-d003",
+          "title": "WO-050-D003: Stage application v0.21.2 and skeleton 0.18.2 under the patch classification, refresh runtime pins and fresh verification/feedback evidence, and retain kernel/compiler versions.",
+          "summary": "{ \"id\": \"WO-050-D003\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Stage application v0.21.2 and skeleton 0.18.2 under the patch classification, refresh runtime pins and fresh verification/feedback evidence, and retain kernel/compiler versions.\", \"evidence\": [ \"packages/skeleton/package.json\", \"package-lock.json\", \"docs/evidence/current.json\" ], \"rejected\": [ { \"option\": \"No component bump or overwrite old evidence\", \"reason\": \"Runtime source changed; its patch and current evidence must be explicit while historical bytes remain immutable.\" } ], \"reopenWhen\": \"Integration consumes the target version or independent verification finds changed behavior.\", \"workOrder\": \"WO-050\"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

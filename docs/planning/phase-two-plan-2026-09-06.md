@@ -299,6 +299,11 @@ source, 34 of them in `reactor.ts`. Time enters only through `env.now`;
 | Golden evidence regenerated under the latest order's directory on every compiler version                                                                                                | **Act (docs side):** WO-035's stable receipt homes; the generator paths follow WO-033's roots                                                       | none needed                                                                                                                           |
 | Bash suites use bare `assert` with no case names                                                                                                                                        | **NoOp** beyond the runner; convert one suite per order that touches it                                                                             | A suite that fails twice without a nameable case                                                                                      |
 
+**2026-09-16 — WO-050:** the reactor split reversal condition is honored as a
+bounded prerequisite to WO-052. One decider owns typed slice folds; the operator
+selected an internal versioned composition with the existing public Decision
+state preserved byte-for-byte. A package split remains declined.
+
 ## Documentation sweep — findings and dispositions
 
 Link health is clean: 993 relative links and 422 anchors across 225 Markdown

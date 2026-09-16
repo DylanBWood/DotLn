@@ -4,7 +4,6 @@ import { seiriEnvironment, type CompilationEnvironment } from "@dotln/compiler";
 import {
   artifactRefusalPayload,
   createLoadoutEquippedPayload,
-  isArtifactIdentityV1,
   isArtifactRefusalType,
 } from "./artifact-identity.js";
 import {
@@ -33,6 +32,8 @@ import {
   seiriPredicates,
   seiriReactor,
   workOrderFromState,
+  walkingStateFromRuntime,
+  artifactIdentityFromRuntime,
   type Candidate,
   type Loadout,
   type RuntimeState,
@@ -255,12 +256,14 @@ export class LiveReactorDriver {
 
   /** Exactly once per canonical log, before accepting any new external input. */
   ensureIdentityEnforcement(at: number): void {
-    if (this.#state.identityEnforcementEventId !== null) return;
+    if (
+      walkingStateFromRuntime(this.#state).identityEnforcementEventId !== null
+    )
+      return;
     this.append(
       draft("ArtifactIdentityEnforcementStarted", at, { payloadVersion: 1 }),
     );
   }
-
   equip(
     graph: Loadout,
     environment: CompilationEnvironment = seiriEnvironment(),
@@ -278,17 +281,14 @@ export class LiveReactorDriver {
             artifactRefusalPayload(
               "equip compilation failed",
               null,
-              this.#state.equippedEventId,
-              isArtifactIdentityV1(this.#state.artifactIdentity)
-                ? this.#state.artifactIdentity
-                : null,
+              walkingStateFromRuntime(this.#state).equippedEventId,
+              artifactIdentityFromRuntime(this.#state),
               null,
               result.diagnostics,
             ) as unknown as JsonValue,
           ),
         );
   }
-
   private append(draft: EventDraft): ReactorStep {
     const appended = appendEvent(this.#log, draft);
     this.persistEvent?.(appended.event);
@@ -307,7 +307,6 @@ export class LiveReactorDriver {
     this.onEvents?.(decodeLog(this.#log));
     return { event: appended.event, decision };
   }
-
   restore(log: string): void {
     this.#log = log;
     const restored = replay(
@@ -320,15 +319,12 @@ export class LiveReactorDriver {
     this.#decisions = [...restored.decisions];
     this.onEvents?.(decodeLog(this.#log));
   }
-
   get log(): string {
     return this.#log;
   }
-
   get state(): RuntimeState {
     return this.#state;
   }
-
   get decisions(): readonly Decision<RuntimeState>[] {
     return this.#decisions;
   }
@@ -413,7 +409,8 @@ const project = (events: readonly Event[]): readonly string[] =>
       `${String(index + 1).padStart(2, "0")} ${event.type} — ${event.eventId}`,
   );
 
-export function renderGlyphScene(state: RuntimeState): string {
+export function renderGlyphScene(runtime: RuntimeState): string {
+  const state = walkingStateFromRuntime(runtime);
   const returned = state.presence === "returned";
   return [
     "🐛 Repo Gardener",
@@ -432,17 +429,18 @@ export function renderGlyphScene(state: RuntimeState): string {
   ].join("  ");
 }
 
-const projectResult = (
+export const projectScenario = (
   log: string,
-  state: RuntimeState,
+  runtime: RuntimeState,
   decisions: readonly Decision<RuntimeState>[],
 ): ScenarioResult => {
+  const state = walkingStateFromRuntime(runtime);
   const events = decodeLog(log);
   return {
     log,
     decisions,
     timeline: project(events),
-    glyphScene: renderGlyphScene(state),
+    glyphScene: renderGlyphScene(runtime),
     workOrder: state.workOrder === null ? null : workOrderFromState(state),
     candidates: state.candidates,
     verified: state.verified,
@@ -451,8 +449,6 @@ const projectResult = (
   };
 };
 
-export { projectResult as projectScenario };
-
 export function replayScenario(log: string): ScenarioResult {
   const replayed = replay(
     initialState(),
@@ -460,7 +456,7 @@ export function replayScenario(log: string): ScenarioResult {
     seiriReactor,
     seiriPredicates,
   );
-  return projectResult(log, replayed.state, replayed.decisions);
+  return projectScenario(log, replayed.state, replayed.decisions);
 }
 
 export function startScenario(
@@ -543,7 +539,7 @@ export function runScenario(
     recoveredCommands = pendingCommands(replayOutbox(decodeLog(driver.log)));
     if (recoveredCommands.length === 0)
       return {
-        ...projectResult(driver.log, driver.state, driver.decisions),
+        ...projectScenario(driver.log, driver.state, driver.decisions),
         adapterEffects: executor.effects,
         adapterDispatches: executor.dispatches,
         recoveredCommands,
@@ -574,7 +570,7 @@ export function runScenario(
         isArtifactRefusalType(recovery.decision.continuation.event.type)
       )
         return {
-          ...projectResult(driver.log, driver.state, driver.decisions),
+          ...projectScenario(driver.log, driver.state, driver.decisions),
           adapterEffects: executor.effects,
           adapterDispatches: executor.dispatches,
           recoveredCommands,
@@ -633,7 +629,9 @@ export function finishScenario(
   verifier: ScenarioVerifier = new FakeVerifier(fixture),
 ): ScenarioResult {
   const { away, pulse, command, queuedScheduleId } = opening;
-  const candidates = commandResult.decision.state.candidates;
+  const candidates = walkingStateFromRuntime(
+    commandResult.decision.state,
+  ).candidates;
   const scheduler = new FakeScheduler();
   scheduler.schedule(
     ...away.decision.schedules.map((schedule) => schedule.scheduleId),
@@ -696,7 +694,7 @@ export function finishScenario(
 
   // The initial away event shares this type and has no cause; match the return
   // payload separately to preserve the historical default event bytes.
-  if (driver.state.presence !== "returned")
+  if (walkingStateFromRuntime(driver.state).presence !== "returned")
     driver.feed(
       draft("OperatorPresenceChanged", at(6), {
         presence: "returned",
@@ -727,13 +725,16 @@ export function finishScenario(
       queued.event.eventId,
     ),
   );
-  scheduler.cancel(queued.decision.state.cancelledScheduleIds);
+  scheduler.cancel(
+    walkingStateFromRuntime(queued.decision.state).cancelledScheduleIds,
+  );
   feedOnce(
     draft(
       "SchedulesCancelled",
       queued.event.occurredAt,
       {
-        scheduleIds: queued.decision.state.cancelledScheduleIds,
+        scheduleIds: walkingStateFromRuntime(queued.decision.state)
+          .cancelledScheduleIds,
         activeScheduleIds: scheduler.activeScheduleIds,
       },
       queued.event.eventId,
@@ -741,5 +742,5 @@ export function finishScenario(
     ),
   );
 
-  return projectResult(driver.log, driver.state, driver.decisions);
+  return projectScenario(driver.log, driver.state, driver.decisions);
 }

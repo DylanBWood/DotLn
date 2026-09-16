@@ -39,7 +39,11 @@ import {
   verificationStateFromRuntime,
   type VerificationState,
 } from "./verification.js";
-import { seiriReactor, type RuntimeState } from "./reactor.js";
+import {
+  seiriReactor,
+  kernelStateFromRuntime,
+  type RuntimeState,
+} from "./reactor.js";
 
 /** Run inside WorkerStore.acquire's read-only preflight, including historical
  * commands whose completion removed them from the driver's pending state. */
@@ -112,7 +116,7 @@ export class VerificationDriver {
     const appended = appendEvent(this.#log, draft);
     const decision = seiriReactor(this.#runtime, appended.event, {
       now: appended.event.occurredAt,
-      rngState: 17,
+      ...kernelStateFromRuntime(this.#runtime),
       predicates: {},
     });
     // Contract/refusal checks run before committing an invalid canonical event.
@@ -170,7 +174,7 @@ export class VerificationDriver {
       verificationStateFromRuntime(
         seiriReactor(this.#runtime, candidate, {
           now: candidate.occurredAt,
-          rngState: 17,
+          ...kernelStateFromRuntime(this.#runtime),
           predicates: {},
         }).state,
       ).lastResultEventId !== candidate.eventId
