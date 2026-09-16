@@ -9,6 +9,15 @@ Planning entry returns the pending [follow-up register](followups.json) in
 bounded pages. Use `npm run plan -- followups` for its current counts, source
 pointers and continuation command; untouched items persist across passes.
 
+Lane pairs (operator direction, 2026-09-16): from WO-133 onward the queued
+entries are grouped two per blank-separated pair for two parallel lanes,
+chosen so the two orders name disjoint primary surfaces and neither
+hard-depends on the other; the run after the eleventh pair keeps its serial
+reading order until R2. One order at a time passes final review and release
+close, and the second lane's final review integrates main by the checklist in
+product 07 §Independent workflows and integration. The pairs and their
+evidence are in [the R1 replan document](r1-replan-2026-09-16.md) §7.
+
 <!-- dotln-work-order-sequence:start -->
 
 - WO-132 — Machinery stand-down
@@ -27,27 +36,40 @@ pointers and continuation command; untouched items persist across passes.
 - WO-047 — Replay environment projector
 - WO-048 — Worker and verification hosts decode on-disk state
 - WO-050 — Reactor typed state slices
-- WO-049 — Target-worktree harness bundle
+
+- WO-133 — Stand-down residue
 - WO-068 — Resident host
+
+- WO-049 — Target-worktree harness bundle
+- WO-051 — Source-change writer request and transport profile
+
 - WO-121 — Presence signals with origin
 - WO-119 — Executable discovery producer
-- WO-051 — Source-change writer request and transport profile
-- WO-122 — Actor catalog: cli-worker and human-handoff
+
 - WO-052 — Source-change host and commit receipt
+- WO-122 — Actor catalog: cli-worker and human-handoff
+
 - WO-053 — The first external source change
 - WO-099 — Mission check
+
 - WO-114 — Runtime status projection
 - WO-069 — Configuration root
+
 - WO-070 — Beacon portability
 - WO-120 — Derived work identity
+
 - WO-054 — Verification over a real worktree
+- WO-115 — Console parity contract
+
 - WO-055 — Repair continuation
+- WO-116 — Audit projection served
+
 - WO-056 — Live blinded verification and repair
 - WO-100 — Preauthorized portfolio and work derivation
+
 - WO-111 — The unattended hour
-- WO-115 — Console parity contract
-- WO-116 — Audit projection served
 - WO-117 — Console live host
+
 - WO-074 — Launchpad export kit
 - WO-075 — Kit runtime and harness bundle in the export
 - WO-071 — Registered target repositories

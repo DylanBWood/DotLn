@@ -1742,6 +1742,13 @@
           "title": "Candidate — planner startup context",
           "summary": "## Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured ",
           "missing": false
+        },
+        {
+          "hash": "ae95abdb08eb056e805603f39a6baeb57ef651ddf5a76b93f71c651501edd950",
+          "ref": "docs/product/07-execution-guide.md#candidate--planner-startup-context",
+          "title": "Candidate — planner startup context",
+          "summary": "## Candidate — planner startup context Operator steering during WO-126 identifies excessive context needed to learn the repository's purpose and choose the next work. First measure what the bounded follow-up feed removes. Compare the remaining required reads, context bytes, commands and wall-clock with a short purpose brief and scoped retrieval of candidate authorities. The feed may discharge the candidate-selection part; do not duplicate that implementation or assume it solves orientation to the product. Preserve scope, sources and rejection reasons while reducing reading. Reopen in a planning pass if observed startup still requires broad document loads; settle this candidate with measured ",
+          "missing": false
         }
       ],
       "dispositions": [
@@ -4786,7 +4793,16 @@
           "missing": false
         }
       ],
-      "dispositions": []
+      "dispositions": [
+        {
+          "sourceRevision": 1,
+          "status": "settled",
+          "reason": "The 2026-09-16 R1 replan pass refreshed the planning cost table at its own subject revision, so the plan and plan-refutation-current document suites are green again; WO-047 D004's deferred reconciliation is discharged by that refresh and recorded in the planning document section 5, decision 5.",
+          "reopenWhen": "A later planning subject is committed without its cost-table refresh and the plan check reports stale cost evidence for that revision.",
+          "targets": [],
+          "at": "2026-09-16T03:29:12.770Z"
+        }
+      ]
     },
     {
       "id": "FUP-53b1e09874d73d98",
@@ -4828,6 +4844,66 @@
           "ref": "docs/evidence/WO-047/decisions.md#wo-047-d007",
           "title": "WO-047-D007: Raise the WO-016 scenario.ts source-size bound from 748 to 751 at the operator's explicit direction, so the integrated tree's 750 lines pass, and defer the question of whether scenario.ts",
           "summary": "{ \"id\": \"WO-047-D007\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: final review\", \"decision\": \"Raise the WO-016 scenario.ts source-size bound from 748 to 751 at the operator's explicit direction, so the integrated tree's 750 lines pass, and defer the question of whether scenario.ts should be split instead of ratcheted.\", \"evidence\": [ \"packages/skeleton/test/scenario.test.ts\", \"packages/skeleton/src/scenario.ts\", \"docs/verifications/WO-047/VER-002.md#non-blocking-observations\", \"docs/final-reviews/WO-047/FINAL-001.md\" ], \"rejected\": [ { \"option\": \"Return the bound overflow through repair and fresh verification\", \"reason\": \"The reviewer recommended this and the operator declined it, directing ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-aa942b151fcedc3e",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::93638d7a73a5e4936efba5e0d3b0f11ece97bbfab3dc2747ea95d07ccde6c968",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "6c4fea2a9c5f06cf79bb4a98aca9c4461149a7107f8897af55072419116abd58",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "NoOps of the 2026-09-16 R1 replan pass.",
+          "summary": "- **NoOps of the 2026-09-16 R1 replan pass.** Weighed and declined, each with its evidence and reversal condition in [the planning document §6](r1-replan-2026-09-16.md#6-declined-alternatives--the-noop-register-of-this-pass). (1) _Convert WO-049 to a host-side containment order._ Declined: C-W3, C-W4 and C-W5 show the target's hooks and settings govern a Claude print-mode worker. Reverse: a live smoke where the emitted hook does not fire. (2) _Wait for WO-133 before WO-049 activates._ Declined: no behavior depends on it. (3) _Bundle the residue into WO-049._ Declined: two of the four items are outside its paths. (4) _Four residue orders._ Declined: four lifecycles for four one-file edits. Re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-3f2a874835f66bb5",
+      "key": "candidate:docs/product/07-execution-guide.md#candidate--follow-up-register-settlement",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "593807861ff01ba33ab9d21b38fb1c0b10ffbc70b578cd1c8d2fe3a82c7901d5",
+          "ref": "docs/product/07-execution-guide.md#candidate--follow-up-register-settlement",
+          "title": "Candidate — follow-up register settlement",
+          "summary": "## Candidate — follow-up register settlement The register holds 297 entries with 283 untriaged (2026-09-16). Two mechanisms fill it: the migration harvested every historical candidate heading and NoOp bullet as a pending row, and every per-order decision record is harvested as a follow-up although a decision with a `reopenWhen` observation is a record, not an action. Three planning passes have selected nothing from the feed. A later pass may spend one session settling the migration rows as historical, and may change the collector so a decision record enters the feed only when its reopening observation has been recorded. No order is allocated; reopen at a planning pass that has the session to",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-6c401ec3e9e06edb",
+      "key": "candidate:docs/product/07-execution-guide.md#candidate--local-lane-retention",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "039f8d083f6b1cdb87582714de73f14e784d5873ef5e5acae307fbab87ef9521",
+          "ref": "docs/product/07-execution-guide.md#candidate--local-lane-retention",
+          "title": "Candidate — local lane retention",
+          "summary": "## Candidate — local lane retention Ignored local lanes grow without a rule: 13 immutable harness runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes on 2026-09-16. A retention rule may remove a snapshot no installed manifest pins and a retained lane older than its order's published release, keeping the retained-lane byte proofs. No order is allocated; reopen on disk pressure or when the snapshot count exceeds twenty.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-195ab93be762ad42",
+      "key": "candidate:docs/product/07-execution-guide.md#candidate--stale-writer-reservation-self-diagnosis",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "1c6a45c9b00ea71bb5b0d1df1613e0a050e241f77c92942844c34e612256712a",
+          "ref": "docs/product/07-execution-guide.md#candidate--stale-writer-reservation-self-diagnosis",
+          "title": "Candidate — stale writer reservation self-diagnosis",
+          "summary": "## Candidate — stale writer reservation self-diagnosis WO-050 VER-001 observed a Codex executor's reservation outliving its session with `liveness: unavailable`, refusing every shell command of the next session including `node scripts/harness.mjs writer --show`, until an operator released it from a terminal. The kept invariant is right; the diagnosis path is not. The candidate admits the writer inspection and release commands under a foreign reservation, reports the holder's age on every refusal, and has the Codex lifecycle completion release the reservation it holds. The stand-down declined a shell classifier; this candidate needs none. No order is allocated; reopen on a second observed occ",
           "missing": false
         }
       ],

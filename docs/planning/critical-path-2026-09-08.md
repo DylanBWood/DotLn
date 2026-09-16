@@ -297,6 +297,20 @@ these edges into typed blocks in the order files.
    launch path exists and the resident's first proofs run with `script` and
    `local-model` actors. Nothing after WO-044 in either chain is activated
    before this checkpoint.
+
+   **Decided 2026-09-16** by [the R1 replan pass](r1-replan-2026-09-16.md)
+   §1 from the 33 rows of WO-044's record: the target's hooks and settings
+   govern a Claude print-mode worker, so WO-049 keeps its hook design and
+   is not a host-side containment order; Codex exec fires no hooks, so the
+   bundle carries only the instruction block for it and WO-051's named write
+   profile governs; neither sandbox confines a sibling write, so no order
+   claims sandbox containment; a detached launch with stored authentication
+   works on both harnesses, so `cli-worker` is available in principle and
+   WO-122 fills it while WO-068's own proof uses `script`; no harness has a
+   scheduler, so the resident is its own process with a `--once` tick.
+   Implementation spans since the stand-down are 22 to 87 minutes; no order
+   is split again. The three orders were rewritten as stable contracts at
+   this checkpoint.
 2. **R2, mandatory, after WO-053's and WO-111's receipts.** Decide from the
    episodes: the cost and session counts against the audit's measures; the
    first portfolio edit toward the operator's repositories; whether the

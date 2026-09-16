@@ -434,6 +434,31 @@ The existing resume phrases remain the operator interface. The actor performing 
 
 The fuller `worktree sync` automation remains WO-033's deliverable. Until it ships, the integrating actor runs the existing preserve → fetch/merge → apply → regenerate procedure and records the evidence-impact assessment. That manual seam is explicit; it is not a rule that workflows restart when their bases differ. The [breakout receipt](../evidence/WO-041/ideation.md) records the measured failure that prompted this correction.
 
+**Operator decision (2026-09-16, R1 replan pass): two lanes are the normal
+workflow.** Two work orders run in parallel worktrees as a matter of
+course; the sequence is ordered in lane pairs whose orders name disjoint
+primary surfaces and share no hard edge. The operator still takes one order
+at a time through final review, pull request, merge and release close; that
+remains a discipline in handoff text, not a gate. Because every order since
+the stand-down met a sibling at final review and each integration was
+handled a little differently (a verifier read a sibling's publication as a
+defect; retimes at final review; union merges of the follow-up register;
+regenerated bundles and editions), the integrating final review runs this
+list and nothing else counts as a finding: preserve the branch's work and
+intake; merge main; regenerate the harness bundle and manifest, the
+work-order index, `npm run meta` and the publication locks; union the
+follow-up register by entry id; retime an unpublished release under its
+recorded classification with a dated decision record (a version collision
+is bookkeeping); re-run the affected checks and the one product gate on the
+integrated tree; and record both bases and the carried-forward claims in the
+final report. A sibling's publication, a text conflict, a changed tree hash
+and a version collision are never findings, never a repair and never a new
+verification. A verifier who meets one records it as an observation for the
+reviewer. A step this list does not name is the reopening observation for
+this decision. The capture is
+`docs/intake/notes/2026-09-16-r1-replan-planning.md` (SHA-256
+`07ffad87a856637579b6a40ba7f7bf77a533ccbd5e0622784086bc33a2bab279`).
+
 ## Operator recovery controls
 
 `analysis:` interrupts the current routine and opens operator-directed diagnosis.
@@ -785,6 +810,16 @@ Reopen in a planning pass if observed startup still requires broad document
 loads; settle this candidate with measured evidence if the feed is sufficient.
 The operator expressly permits this comparison after WO-126.
 
+**Measured 2026-09-16 (R1 replan pass).** The pass consumed the feed's first
+page and selected nothing from it: 283 of the 287 pending rows are the
+untriaged migration and the three open items were declined again, as in the
+two passes before it. Orientation still needed canonical status, the
+sequence, the previous planning document and its ledger section, the three
+subject orders, the writing-worker record, the seven closed orders' decision
+records and final reviews, and the code surfaces the orders name. The feed
+cannot be judged until the register settlement candidate below removes the
+migration rows from the pending set; this candidate stays open.
+
 ## Candidate — recurring review of implementation alternatives
 
 The operator's 2026-09-09 ideation during WO-126 asks for useful alternatives
@@ -926,6 +961,41 @@ one judgment per pass, no third-hold stop, no budget refusal, and a
 disposition binds the criterion text. Allocated to
 [WO-132](../work-orders/WO-132-machinery-stand-down.md) criterion 11; this
 candidate closes on that order's merge.
+
+## Candidate — follow-up register settlement
+
+The register holds 297 entries with 283 untriaged (2026-09-16). Two
+mechanisms fill it: the migration harvested every historical candidate
+heading and NoOp bullet as a pending row, and every per-order decision
+record is harvested as a follow-up although a decision with a
+`reopenWhen` observation is a record, not an action. Three planning passes
+have selected nothing from the feed. A later pass may spend one session
+settling the migration rows as historical, and may change the collector so
+a decision record enters the feed only when its reopening observation has
+been recorded. No order is allocated; reopen at a planning pass that has the
+session to spend, or when the pending count exceeds three hundred.
+
+## Candidate — local lane retention
+
+Ignored local lanes grow without a rule: 13 immutable harness runtime
+snapshots (34 MB), 36 MB of hook journals and 31 MB of retained close lanes
+on 2026-09-16. A retention rule may remove a snapshot no installed manifest
+pins and a retained lane older than its order's published release, keeping
+the retained-lane byte proofs. No order is allocated; reopen on disk
+pressure or when the snapshot count exceeds twenty.
+
+## Candidate — stale writer reservation self-diagnosis
+
+WO-050 VER-001 observed a Codex executor's reservation outliving its
+session with `liveness: unavailable`, refusing every shell command of the
+next session including `node scripts/harness.mjs writer --show`, until an
+operator released it from a terminal. The kept invariant is right; the
+diagnosis path is not. The candidate admits the writer inspection and
+release commands under a foreign reservation, reports the holder's age on
+every refusal, and has the Codex lifecycle completion release the
+reservation it holds. The stand-down declined a shell classifier; this
+candidate needs none. No order is allocated; reopen on a second observed
+occurrence.
 
 ## Workflow closeout and releases
 

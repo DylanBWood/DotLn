@@ -6864,3 +6864,108 @@ existing contract; no runtime source, contract, or locked boundary changes.
 - **Wholesale revert, turning off every test, the key repair alone, one order per fix, opt-in reuse, a classified read-only guard, a detached release worktree, an operator-only close, process cost as a requirement, a hold budget alone, and the three open follow-ups** `rejected`
   - Each with its evidence and reversal condition in the planning
     document's NoOp register (§7) and the map's NoOps of this pass.
+
+## 2026-09-16 — Planning pass: R1 replan and the stand-down residue (WO-049, WO-051, WO-068, WO-133)
+
+- **R1 is decided from WO-044's record** `adopted`
+  - The operator opened the pass after the v0.22.0 close to plan WO-049,
+    WO-051 and WO-068 at the mandatory checkpoint, review the receipts since
+    the last pass, and take a meta view; two mid-turn messages added the
+    repeated hook advisory and the two-lane sequence. From the 33 rows: a
+    target's hooks and settings govern a Claude print-mode worker (C-W3,
+    C-W4, C-W5, C-W7); Codex exec fires no hooks but loads the instruction
+    surfaces and confines writes under a named profile (X-W3 to X-W7,
+    X-W2); neither sandbox confines a sibling write (C-W6, X-W6); exact
+    allowed-tool patterns admit editing (C-W1, C-W2); a detached launch
+    with stored authentication completes (C-U1, X-U1); a request with no
+    terminal is auto-denied (C-U2); no harness has a scheduler (C-U3,
+    X-U3); a kill leaves a recoverable worktree (C-U6, X-U6). WO-049 keeps
+    hooks for Claude, an instruction block for both, fails closed and
+    claims no sandbox containment; WO-051 uses the observed shapes with a
+    host-written commit message and three exact Bash patterns; WO-068 is
+    its own process with a `--once` tick, executing WO-067's statechart
+    over WO-050's slices with WO-047's projector. The three orders are
+    rewritten as stable contracts with real Cost lines and recommendation
+    effort lines.
+  - Provenance: the dispatch and both follow-ups, captured verbatim in
+    ignored intake (`docs/intake/notes/2026-09-16-r1-replan-planning.md`,
+    SHA-256 `07ffad87a856637579b6a40ba7f7bf77a533ccbd5e0622784086bc33a2bab279`);
+    [the writing-worker record](../discovery/writing-worker-smoke-2026-09-14.md);
+    [the planning document](../planning/r1-replan-2026-09-16.md) §1 and §2.
+    Reopen if a live smoke contradicts a cited row.
+- **WO-133 carries four residue repairs of WO-132, first, as one order** `adopted`
+  - This session's hook journal held 344 "built adapter unavailable"
+    advisories in three hours because the built runtime predated three
+    release closes and the close builds only a missing `dist`; every
+    completion since 2026-09-15T18:22Z attests `unknown` effort although
+    the operator selected one (WO-050 VER-001 finding 2); five of the seven
+    reviewer gates since the stand-down ran 625 to 840 s because a version
+    literal in `harness-host.ts` or `loadouts/` selected `harness-fixtures`
+    and `process-debt`, against 191 to 413 s without. The order rebuilds
+    after a fast-forward that changes the pins, says the advisory once per
+    session per cause and never from an observer, restores the
+    operator-attested fallback, and moves the literals into one module no
+    machinery suite declares. One order, not four: each item is a one-file
+    edit with an observed row and the 2026-09-12 pass paid four lifecycles
+    for four small orders.
+  - Provenance: the capture (message 2 and its screenshot); the ignored
+    gate rows and hook journals; WO-050 VER-001; WO-047 D005 and WO-048
+    D003. Reopen on a criterion failing after merge or a skeleton reviewer
+    gate above 360 s with only a literal changed.
+- **Two lanes are the normal workflow; the sequence is ordered in lane pairs** `adopted`
+  - The operator's third message. Every order since the stand-down ran in
+    parallel with a sibling and each integration was handled a little
+    differently (a verifier read a sibling's publication as a defect; two
+    retimes at final review; two union merges of the follow-up register;
+    regenerated bundles and editions every time; a ratchet broken by a merge
+    neither branch breached). Recorded in product 07 §Independent workflows
+    and integration as the operator's decision with the integration
+    checklist; one order at a time passes final review and release close.
+    The sequence groups queued orders in eleven blank-separated pairs with
+    disjoint surfaces and no intra-pair hard edge (WO-133 with WO-068,
+    WO-049 with WO-051, WO-121 with WO-119, WO-052 with WO-122, WO-053 with
+    WO-099, then the projection, starter and verification pairs); the run
+    after them keeps its serial order until R2.
+  - Provenance: the capture (message 3); WO-045 FINAL-001 item 9; WO-048
+    D003; WO-047 D005 to D007; the critical-path graph edges. Reopen on a
+    conflict inside a pair or a third lane.
+- **The receipts since the last pass, read and disposed** `adopted`
+  - WO-132, WO-067, WO-045, WO-046, WO-048, WO-050 and WO-047 closed after
+    the stand-down pass; WO-130, WO-131 and WO-044 were that pass's subject.
+    Their nominations are disposed in the planning document §3: WO-047
+    D004's planning reconciliation is settled by this pass's cost-table
+    refresh; `scenario.ts` is extracted at the next needed line rather than
+    ratcheted (WO-068's admitted boy-scout item); `appendEvent` draft
+    validation and the stepper backstop pin are one boy-scout pair for the
+    next kernel order; the weakened `test-worktree.sh` assertion waits for
+    the next order touching that script; the publication-check habit is a
+    role-text line inside WO-133; the stale-reservation hazard, the
+    follow-up register migration and local lane retention are candidates in
+    product 07.
+  - Provenance: the seven orders' decisions, verifications and final
+    reviews; `npm run meta` at the branch.
+- **The repository at v0.22.0** `adopted`
+  - 1,205 documentation files, 74 MB tracked, 13 MB packed; 74,000 source
+    lines with `harness-host.ts` at 3,040 and the process-debt test at
+    5,406; 19 product suites at 191 to 413 s, 16 machinery checks at 547 s,
+    17 document checks at 71 s; hooks at 296 ms mean, about 0.6 s per Bash
+    call; 13 runtime snapshots (34 MB), 36 MB of hook journals and 31 MB of
+    retained lanes with no retention rule; the follow-up register at 297
+    entries, 283 untriaged, 24 harvested today from decision records, and
+    no selection from it in three passes. Reorganization of the host, the
+    scripts, the tests and the evidence was weighed and declined; the
+    documentation reset stays deferred behind WO-053.
+  - Provenance: the planning document §4 with its observed commands.
+- **Corrections during this pass, logged** `adopted`
+  - The session started with its hooks in the fallback, so the writer
+    reservation and usage counters were absent; the planner rebuilt the
+    runtime once (3.9 s) to verify the diagnosis before the branch, after
+    which `harness check` passed. Entry and handoff process cost are
+    unknown for that reason. The operator's second and third messages
+    arrived mid-turn and were folded in before any file was written.
+- **Process cost of this pass** `adopted`
+  - Unknown: `node scripts/harness.mjs usage` had no session to measure.
+    The pass ran no code suite and one background goal review.
+- **A host-side containment order, waiting for WO-133, residue as boy-scout items on WO-049, four residue orders, a model-composed commit message, a harness scheduler, a second statechart interpreter, splitting the host, moving evidence, consolidating scripts, settling the register now, a retention rule now, the two rejected pairings, and a cross-order review gate** `rejected`
+  - Each with its evidence and reversal condition in the planning
+    document's NoOp register (§6) and the map's NoOps of this pass.
