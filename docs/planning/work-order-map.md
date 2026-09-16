@@ -466,6 +466,26 @@ identity migration.
   (13) _Pair WO-068 with WO-051, or WO-133 with WO-049._ Declined: shared
   files. (14) _A cross-order gate for the one-at-a-time final review._
   Declined again; the discipline stays in handoff text.
+- **NoOps of the 2026-09-16 `runtime.resident` admission pass.** Weighed and
+  declined, each with its evidence and reversal condition in
+  [the ledger section](../lineage/idea-ledger.md) for this pass.
+  (1) _Amend the continuation gate to admit new capability ids written back by
+  an executor._ Declined: `scripts/lib/plan-continuation.mjs:94` refuses them
+  by design, and a new id is a planning claim. Reverse: a work order that
+  chooses between FINAL-001's two nominated forms with its own evidence.
+  (2) _Promote `runtime.resident` to 2 — dependable in this pass._ Declined:
+  VER-001 F1 is an important failure path without an automated check, and the
+  table's level-2 rule requires one. Reverse: F1's append-lock recovery window
+  closed under test on the once and loop paths. (3) _Rename the WO-068 heading
+  to `dated reassessment`._ Declined: the row is an addition, not a
+  reassessment of an existing id, and FINAL-001 observed the rename fails
+  differently (`new capability id runtime.resident`). Reverse: none; the
+  receipt of this pass addresses the heading. (4) _File a refutation alone as
+  a receipt refresh._ Declined: it would clear the gate by replacing the judge
+  rather than by judging the claim, and the receipt is immutable. Reverse:
+  none. (5) _Replan the horizon while the branch is open._ Declined: the
+  sequence is unchanged, WO-068 is closed, and the operator's category is the
+  capability claim. Reverse: an operator dispatch naming the horizon.
 - **Critical-path candidates — recorded 2026-09-08 by the critical-path
   planning pass and allocated the same day at the operator's correction.**
   The runtime boundary codecs are WO-045 to WO-048; writing-worker harness

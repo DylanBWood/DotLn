@@ -5043,6 +5043,21 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-967fe2287bbf3990",
+      "key": "candidate:docs/planning/work-order-map.md#preserved-unallocated-candidates::a4b15c53837e05882146beceefddaeb464446c455187b52ced3c347428c99d5f",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "0f39bb555fa15e333710dec91f50fc1b81ab9d0b159a06f48b474fd30504fd28",
+          "ref": "docs/planning/work-order-map.md#preserved-unallocated-candidates",
+          "title": "NoOps of the 2026-09-16 runtime.resident admission pass.",
+          "summary": "- **NoOps of the 2026-09-16 `runtime.resident` admission pass.** Weighed and declined, each with its evidence and reversal condition in [the ledger section](../lineage/idea-ledger.md) for this pass. (1) _Amend the continuation gate to admit new capability ids written back by an executor._ Declined: `scripts/lib/plan-continuation.mjs:94` refuses them by design, and a new id is a planning claim. Reverse: a work order that chooses between FINAL-001's two nominated forms with its own evidence. (2) _Promote `runtime.resident` to 2 — dependable in this pass._ Declined: VER-001 F1 is an important failure path without an automated check, and the table's level-2 rule requires one. Reverse: F1's appen",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
