@@ -1020,6 +1020,40 @@ The capability table can add `efficiencyLevel`, `baseline`, `resourceVector`,
 comes from trustworthy measurements and successful or informative experiments;
 it never raises maturity automatically.
 
+### Candidate — local-model usefulness experiments
+
+Operator direction, 2026-09-16: the next planning pass should give local LLM
+experiments more attention, starting with concrete runner readiness and any
+operator setup needed in LM Studio. Current readiness is unknown; the dated
+WO-027 failure above remains evidence about that probe, not a claim that the
+runner is unusable today. Revisit its named deferral with a fresh bounded
+availability smoke and coordinate any required setup before scheduling runs.
+WO-110 supplies the existing inspection-transport candidate; its present scope
+does not establish source-writing capability or model quality.
+
+After availability, plan a substantially broader comparison effort around the
+same pinned WorkOrder, repository baseline, compiled build and independent
+acceptance criteria. Separate three questions: differences across local and
+remote models under comparable conditions; variation across repeated runs of
+the same model and prompt; and changes caused by prompt or support choices for
+the same order. For the last question, vary one factor at a time and identify
+each distinct compiled build explicitly. Keep the task and other conditions
+fixed; report transport/tool differences that prevent a clean model comparison.
+
+Use the profiling contract above to retain outputs, failures, distributions,
+resource costs and evaluator disagreement. A small pilot should establish
+feasible sample sizes and evaluation cost before larger batches. The intended
+decision is which responsibilities local models can handle reliably, where
+they need deterministic checks or remote assistance, and where they are not
+yet useful. A universal ranking, a large run count or an assumed privacy/cost
+advantage is not the goal. No setup, model download, live launch, sequence
+change or new order is authorized by this candidate alone.
+
+Source: the operator's 2026-09-16 local-model ideation, synthesized in the ledger
+and [WO-051 breakout receipt](../evidence/WO-051/ideation-local-models.md).
+Reopen at the next planning pass or when the operator reports setup readiness;
+record the resulting plan, concrete setup needs and bounded first experiment.
+
 <!-- prettier-ignore -->
 ## v0.0.0 — Clean-room bootstrap  *(mostly complete)*
 

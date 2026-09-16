@@ -1335,6 +1335,42 @@ text, never the default channel for state you own in structured form.
 
   Claude's canonical shape uses `--print --model <required> --effort <declared> --output-format json --json-schema <schema> --no-session-persistence --setting-sources project,local --settings '{"autoMemoryEnabled":false}' --tools "" --disable-slash-commands --safe-mode --strict-mcp-config --mcp-config '{"mcpServers":{}}' --no-chrome --max-budget-usd 1.00`. Safe mode suppresses ambient customization; authentication remains CLI-owned. Codex uses `exec --ephemeral --ignore-user-config --strict-config --model <required> --json --output-schema <schema> --cd <worktree>` and observed named permissions admitting only minimal runtime reads plus the read-only workspace mount, with command network access disabled. Per-invocation overrides disable memories, project instruction loading, MCP, apps, plugins, browser/computer tools, shell/image tools and delegation. Neither adapter supplies a fallback model. Unsupported runtime versions, unavailable models, invalid outputs and unsupported profiles fail closed. Codex effort remains `unknown` because the bounded installed-host probe found no dedicated selector; a generic config override is not silently promoted to observed effort selection. Both model and effort are recorded as host launch claims, with effective readback `unknown`.
 
+  WO-051 adds a separate `WriterRequest` and `source-change-v1` profile beside
+  the unchanged inspection request. The host supplies its compiled authority,
+  WorkOrder, one writable Git worktree under its configured parent, a single
+  exact test command and an existing host-written message file inside the mount.
+  Preflight rejects overlapping launchpad paths, non-root/non-Git mounts,
+  symlink escapes, outside-parent paths and conflicting or remote authority.
+  `writableSurfaces` contains exactly the worktree. The Beacon profile's empty
+  writable tuple is unchanged. The profile grants no effects: the host remains
+  responsible for current compiled authority, expiry, revocation and resources.
+
+  Claude uses the observed C-W2/C-W3/C-W4/C-W8/C-W9 shape: tools
+  `Bash,Read,Edit,Write`, exact `--allowedTools` entries for Edit/Write/Read and
+  three Bash commands (the declared test, `git add -A`, `git commit -F <path>`),
+  no permission prompts, project/local settings, no persistence, strict empty
+  MCP, no browser, a $3 budget and `stream-json` with hook events. Codex uses
+  X-W1/X-W2/X-W8: `-a never exec --ephemeral --ignore-user-config --sandbox
+  workspace-write --cd <worktree> --json`, named `dotln-writer` permissions
+  (`:minimal` read, `:workspace_roots` write, network disabled), and the
+  inspection profile's hardening minus the shell-tool disables; the retained
+  `shell_environment_policy.inherit="none"` is untested with the three
+  authorized commands until WO-053's live smoke. The exact arrays are pinned in
+  synthetic fixtures.
+  Construction refuses tools-only Claude (C-W1, ambiguous), on-request Codex
+  approval (X-U2, ambiguous) and a Codex hook expectation (X-W3, unavailable).
+
+  The six worker-reported envelope fields retain their meanings. Only the host
+  adds `observedCommit: { sha, branch }` when before/after Git HEAD differs,
+  plus `observedDenials` from Claude's terminal `permission_denials` array or
+  `unavailable` for Codex. An edited uncommitted tree has no observed commit.
+  Model-supplied observations refuse; saved host observations remain bound to
+  the request's kind, mount, authority and command in its immutable result key.
+  The sandbox is not the containment boundary: C-W6 and X-W6 observed sibling
+  writes. Target governance and host post-exit checks supply the planned
+  containment proof, not the launch flags alone. WO-051 establishes subprocess
+  fixtures; worktree/message ownership is WO-052 and live proof is WO-053.
+
 - `VerificationAdapter`: when equipped, claim-typed evidence (visual claim →
   rendered-image check; network claim → trace; state claim → DOM/store read),
   recorded into the workstream's AcceptanceEvidenceMatrix. The author's

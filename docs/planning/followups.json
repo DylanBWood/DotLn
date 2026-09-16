@@ -5376,6 +5376,88 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-1aa2504e33959003",
+      "key": "candidate:docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "188790dc6448a17f3363eca9c3de75c892496fdd27fe7705d7751dc22f088c1a",
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments Operator direction, 2026-09-16: the next planning pass should give local LLM experiments more attention, starting with concrete runner readiness and any operator setup needed in LM Studio. Current readiness is unknown; the dated WO-027 failure above remains evidence about that probe, not a claim that the runner is unusable today. Revisit its named deferral with a fresh bounded availability smoke and coordinate any required setup before scheduling runs. WO-110 supplies the existing inspection-transport candidate; its present scope does not establish source-writing capability or model quality. After availability, plan a substantially broader c",
+          "missing": false
+        },
+        {
+          "hash": "3edc25b0021e3a77dbf95a47116a99f815a4bd1e9b8dd059265c612ec95c53da",
+          "ref": "docs/product/06-roadmap.md#candidate--local-model-usefulness-experiments",
+          "title": "Candidate — local-model usefulness experiments",
+          "summary": "### Candidate — local-model usefulness experiments Operator direction, 2026-09-16: the next planning pass should give local LLM experiments more attention, starting with concrete runner readiness and any operator setup needed in LM Studio. Current readiness is unknown; the dated WO-027 failure above remains evidence about that probe, not a claim that the runner is unusable today. Revisit its named deferral with a fresh bounded availability smoke and coordinate any required setup before scheduling runs. WO-110 supplies the existing inspection-transport candidate; its present scope does not establish source-writing capability or model quality. After availability, plan a substantially broader c",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-56b2d81b540555bb",
+      "key": "candidate:docs/product/07-execution-guide.md#candidate--guided-operator-work-orders",
+      "kind": "candidate",
+      "revisions": [
+        {
+          "hash": "60312bbe5828516a0427d898b150dd31048e09d03f16f8af9ef5f70b484c273a",
+          "ref": "docs/product/07-execution-guide.md#candidate--guided-operator-work-orders",
+          "title": "Candidate — guided operator work orders",
+          "summary": "## Candidate — guided operator work orders Operator direction, 2026-09-16: a work-order type should carry guided human work through the normal workflow. Its purpose is to help the operator reach a specific result or setup, including ordinary trial and error, and return either evidence of success or a useful failure artifact. Local inference readiness and possible LM Studio setup are the immediate example; this is a general pattern for work that requires operator participation, not a separate informal checklist. A candidate contract names the desired observable result, starting conditions, constraints and authority, agent and operator responsibilities, success checks, and the evidence to reta",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-2f29dcfe83f52d7b",
+      "key": "decision:docs/evidence/WO-051/decisions.md#wo-051-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "e240203e5291bc191ffe65c9453a54ee522b3890b9a535ec709d5499dc7734ed",
+          "ref": "docs/evidence/WO-051/decisions.md#wo-051-d001",
+          "title": "WO-051-D001: Add a source-change request, environment validation and two fixed launch shapes beside the unchanged inspection contract; observe commits and denials at the host boundary.",
+          "summary": "{ \"id\": \"WO-051-D001\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Add a source-change request, environment validation and two fixed launch shapes beside the unchanged inspection contract; observe commits and denials at the host boundary.\", \"evidence\": [ \"docs/work-orders/WO-051-source-change-transport-profile.md\", \"docs/discovery/writing-worker-smoke-2026-09-14.md\", \"packages/skeleton/src/worker-protocol.ts\", \"packages/skeleton/src/worker-transport.ts\", \"packages/skeleton/src/execution-environment.ts\", \"packages/skeleton/src/verification-protocol.ts\", \"packages/skeleton/src/worker-store.ts\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Inspection cannot exercise repo.wr",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-08a2f12c309b7ea0",
+      "key": "decision:docs/evidence/WO-051/decisions.md#wo-051-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "32d032a299b1dee0a8b2f521ccc72d138b6c5fcc5d1bdff1ea409673e2b70f58",
+          "ref": "docs/evidence/WO-051/decisions.md#wo-051-d002",
+          "title": "WO-051-D002: Stage application v0.24.0 and skeleton 0.20.0, regenerate the harness pins and authority evidence, and create fresh deterministic feedback evidence while retaining the historical live edi",
+          "summary": "{ \"id\": \"WO-051-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Stage application v0.24.0 and skeleton 0.20.0, regenerate the harness pins and authority evidence, and create fresh deterministic feedback evidence while retaining the historical live edition until a new live audit is authorized and recorded.\", \"evidence\": [ \"docs/work-orders/WO-051-source-change-transport-profile.md\", \"packages/skeleton/fixtures/wo051-inspection-baseline.json\", \"packages/skeleton/fixtures/wo051-writer-args.json\", \"packages/skeleton/fixtures/wo051-writer-wire.json\", \"packages/skeleton/test/writer.test.ts\", \"scripts/feedback-evidence.mjs\", \"docs/evidence/WO-051/feedback/feedback.json\" ], \"re",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-efc37eb77a9f2877",
+      "key": "decision:docs/evidence/WO-051/decisions.md#wo-051-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "82d5ad2bea88c896fccebbae61c046a104ea399c3d19314aa5b0e646ac27ac22",
+          "ref": "docs/evidence/WO-051/decisions.md#wo-051-d003",
+          "title": "WO-051-D003: Run the established read-only feedback audit on the changed runtime and preserve WO-053 as the only live source-change smoke. Record this bounded interpretation for independent review ins",
+          "summary": "{ \"id\": \"WO-051-D003\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next; operator direction to decide and log routine workflow choices\", \"decision\": \"Run the established read-only feedback audit on the changed runtime and preserve WO-053 as the only live source-change smoke. Record this bounded interpretation for independent review instead of asking the operator to arbitrate it.\", \"evidence\": [ \"docs/work-orders/WO-051-source-change-transport-profile.md\", \"scripts/feedback-evidence.mjs\", \"packages/skeleton/src/feedback-selfhost.ts\", \"docs/evidence/WO-051/decisions.md\" ], \"rejected\": [ { \"option\": \"Pause for operator arbitration or leave the document check stale\", \"reason\": \"The operator expli",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

@@ -64,6 +64,10 @@ protected local settings or intake can block cleanup without undoing the release
 
 ## Recorded host posture (2026-09-01, with dated amendments)
 
+WO-051's `source-change-v1` worker profile uses one host-declared writable Git
+worktree and the observed WO-044 launch shapes; its sandbox is not a containment
+boundary, and target governance plus host checks still require WO-053's live proof.
+
 | Control                  | Claude Code                                                                                                   | Codex CLI                                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | Filesystem sandbox       | enabled                                                                                                       | `workspace-write`                                                                         |

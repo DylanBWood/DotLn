@@ -1,4 +1,4 @@
-# WO-051 — Source-change writer request and transport profile: a separate writer request with its own validator, prompt and result beside the untouched inspection request, and a `source-change-v1` launch shape for both CLIs taken row by row from the writing-worker record (version assigned at activation)
+# WO-051 — Source-change writer request and transport profile: a separate writer request with its own validator, prompt and result beside the untouched inspection request, and a `source-change-v1` launch shape for both CLIs taken row by row from the writing-worker record (v0.24.0)
 
 **Model:** any capable model for the profile and fixtures; no live launch
 in this order (the live smoke is WO-053's). State the model and effort
@@ -201,3 +201,20 @@ perception profile; wildcard Bash patterns; Codex `on-request` approval.
    `git commit -F` over that file.
 3. The declared test command is one exact string; a target that needs more
    is a later profile with its own rows.
+
+## Execution record
+
+Operator-authorized ideation breakout, 2026-09-16: the operator's `ideation:`
+dispatch adds the document-only local-model experiment synthesis and next-pass
+priority. Read [the breakout receipt](../evidence/WO-051/ideation-local-models.md),
+the 2026-09-16 local-model experiments and guided operator work-order ledger
+entries, product 06 §Candidate — local-model usefulness experiments and product
+07 §Candidate — guided operator work orders during verification and final
+review. This adds no local-model implementation or live launch to this order;
+the receipt records unresolved setup and worktree-local intake reconciliation.
+
+Executor decision after operator direction, 2026-09-16: perform the existing
+read-only feedback audit needed for current runtime evidence; retain the new
+source-change live smoke in WO-053. The operator directed the executor to make
+and log routine workflow decisions for later review. See WO-051-D003; this is
+not a live source-change launch or a substitute for independent verification.

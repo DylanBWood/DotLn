@@ -20,6 +20,13 @@ import {
   type PlanRefutationResult,
 } from "./plan-refutation-protocol.js";
 import {
+  isWriterRequest,
+  parseStoredWriterResult,
+  validateWriterRequest,
+  writerPrompt,
+  writerResultSchema,
+  type WriterRequest,
+  type WriterResult,
   parseWorkerResult,
   resultId,
   validateRequest,
@@ -71,15 +78,17 @@ export interface RepairWorkerResult {
 export type EvidenceWorkerResult =
   VerificationWorkerResult | RepairWorkerResult;
 export type TransportRequest =
-  WorkerRequest | EvidenceWorkerRequest | PlanRefutationRequest;
+  WorkerRequest | WriterRequest | EvidenceWorkerRequest | PlanRefutationRequest;
 export type TransportResult =
-  WorkerResult | EvidenceWorkerResult | PlanRefutationResult;
+  WorkerResult | WriterResult | EvidenceWorkerResult | PlanRefutationResult;
 export type TransportResultFor<R extends TransportRequest> =
   R extends PlanRefutationRequest
     ? PlanRefutationResult
     : R extends EvidenceWorkerRequest
       ? EvidenceWorkerResult
-      : WorkerResult;
+      : R extends WriterRequest
+        ? WriterResult
+        : WorkerResult;
 
 export const isPlanRequest = (
   request: TransportRequest,
@@ -397,6 +406,7 @@ export function evidenceResultSchema(request: EvidenceWorkerRequest): object {
 }
 
 export function validateTransportRequest(request: TransportRequest): void {
+  if (isWriterRequest(request)) return validateWriterRequest(request);
   if (isPlanRequest(request)) return validatePlanRequest(request);
   if (!isEvidenceRequest(request)) return validateRequest(request);
   try {
@@ -425,6 +435,7 @@ export function validateTransportRequest(request: TransportRequest): void {
   }
 }
 export function transportResultSchema(request: TransportRequest): object {
+  if (isWriterRequest(request)) return writerResultSchema(request);
   if (isPlanRequest(request)) return planResultSchema(request.subject);
   return isEvidenceRequest(request)
     ? evidenceResultSchema(request)
@@ -435,14 +446,17 @@ export function parseTransportResult<R extends TransportRequest>(
   request: R,
 ): TransportResultFor<R> {
   return (
-    isPlanRequest(request)
-      ? validatePlanResult(value, request.subject)
-      : isEvidenceRequest(request)
-        ? parseEvidenceResult(value, request)
-        : parseWorkerResult(value, request)
+    isWriterRequest(request)
+      ? parseStoredWriterResult(value, request)
+      : isPlanRequest(request)
+        ? validatePlanResult(value, request.subject)
+        : isEvidenceRequest(request)
+          ? parseEvidenceResult(value, request)
+          : parseWorkerResult(value, request)
   ) as TransportResultFor<R>;
 }
 export function transportPrompt(request: TransportRequest): string {
+  if (isWriterRequest(request)) return writerPrompt(request);
   if (isPlanRequest(request)) {
     validatePlanRequest(request);
     return planPrompt(request);

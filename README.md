@@ -93,7 +93,7 @@ intent → task-scoped build → bounded WorkOrder → disposable executor
 -->
 <!-- DOTLN-RELEASE-BEGIN -->
 
-This source prepares DotLn `v0.23.0`.
+This source prepares DotLn `v0.24.0`.
 
 **The core.** A local-first compiler turns a loadout graph into a bounded
 program: one identity, one active mechanic, its linked supports, and an
@@ -117,7 +117,10 @@ presence away|back` records the operator edge; the [skeleton
 runbook](packages/skeleton/README.md#resident-host) carries the configuration
 and its limits. The [actor board](packages/console/README.md), mutation corpus,
 inspection workers, verification matrices and Beacon senses are also runnable
-today.
+today. A separate source-change transport profile admits one declared writable
+Git worktree, one test command and a host-written commit message, and reports
+host-observed commits and denial counts. Its process-double proof preserves the
+inspection profiles; the target host and live writing proof are still pending.
 
 **How this repository builds itself.** Work proceeds through independent
 implementation, verification and final review, each recording its own report and

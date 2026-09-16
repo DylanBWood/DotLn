@@ -17,6 +17,11 @@ import { PLAN_REFUTATION_LIMITS } from "./plan-refutation-protocol.js";
 import { decodeUsageSource, usageObservation } from "./usage-observation.mjs";
 import {
   WorkerFailure,
+  isWriterRequest,
+  parseWriterResult,
+  type WriterRequest,
+  type WriterResult,
+  type WriterObservations,
   normalizeWorkerEffort,
   WORKER_TIMEOUT_MS,
   type CommandReceipt,
@@ -34,6 +39,8 @@ import {
   type TransportRequest,
   type TransportResultFor,
 } from "./verification-protocol.js";
+
+import { validateSourceChangeEnvironment } from "./source-change-environment.js";
 
 export { normalizeWorkerEffort };
 
@@ -223,6 +230,18 @@ export function canonicalWorkerArgs(
       `DotLn advisory: requested worker effort ${JSON.stringify(request.effort)} is unrecorded; the host will evaluate it.\n`,
     );
   if (name === "fake") throw new WorkerFailure("profile-refused");
+  if (isWriterRequest(request)) {
+    try {
+      validateSourceChangeEnvironment(
+        request.profile,
+        request.cwd,
+        request.commitMessagePath,
+      );
+    } catch {
+      throw new WorkerFailure("profile-refused", "source-change environment");
+    }
+    return sourceChangeArgs(name, request, schemaPath, selection.effort);
+  }
   if (name === "claude-cli-print") {
     return [
       "--print",
@@ -308,10 +327,187 @@ export function canonicalWorkerArgs(
   ];
 }
 
+/** Two fixed shapes from writing-worker-smoke-2026-09-14, not a tool policy DSL.
+ * Existing inspection arguments above intentionally retain their exact bytes.
+ */
+function sourceChangeArgs(
+  name: Exclude<WorkerTransportName, "fake">,
+  request: WriterRequest,
+  schemaPath: string,
+  effort: string,
+): readonly string[] {
+  if (name === "claude-cli-print")
+    return [
+      "--print",
+      "--model",
+      request.model,
+      ...(effort === "unknown" ? [] : ["--effort", effort]),
+      "--no-session-persistence", // C-W9
+      "--setting-sources",
+      "project,local", // C-W3, C-W4 target governance
+      "--strict-mcp-config",
+      "--mcp-config",
+      '{"mcpServers":{}}', // C-W2
+      "--no-chrome",
+      "--max-budget-usd",
+      "3.00", // C-W2
+      "--tools",
+      "Bash,Read,Edit,Write", // C-W2; C-W1 alone is ambiguous
+      "--allowedTools",
+      `Edit,Write,Read,Bash(${request.testCommand}),Bash(git add -A),Bash(git commit -F ${request.commitMessagePath})`,
+      // C-W2 exact-pattern form; WO-051 specializes it to the three host commands.
+      "--permission-prompts",
+      "none", // C-W2; C-U2 establishes unattended denial
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--include-hook-events", // C-W8
+    ];
+  return [
+    "-a",
+    "never",
+    "exec",
+    "--ephemeral",
+    "--ignore-user-config", // X-W1, X-U2
+    "--sandbox",
+    "workspace-write", // X-W1; not containment (X-W6)
+    "--strict-config",
+    "--model",
+    request.model,
+    "--cd",
+    request.cwd,
+    "--json", // X-W8
+    "--output-schema",
+    schemaPath, // Existing output-contract hardening
+    "-c",
+    'default_permissions="dotln-writer"', // X-W2
+    "-c",
+    'permissions.dotln-writer.filesystem={":minimal"="read",":workspace_roots"="write"}', // X-W2
+    "-c",
+    "permissions.dotln-writer.network.enabled=false", // X-W2
+    // Retained hardening; project instructions/hooks are not a Codex guarantee (X-W3).
+    "-c",
+    'web_search="disabled"',
+    "-c",
+    "project_doc_max_bytes=0",
+    "-c",
+    "mcp_servers={}",
+    "-c",
+    "memories.use_memories=false",
+    "-c",
+    "memories.generate_memories=false",
+    "-c",
+    'shell_environment_policy.inherit="none"',
+    // X-W1 needs the shell; all other disabled features stay disabled.
+    ...codexDisabled
+      .filter((feature) => !["shell_tool", "unified_exec"].includes(feature))
+      .flatMap((feature) => ["--disable", feature]),
+    ...(effort === "unknown"
+      ? []
+      : ["-c", `model_reasoning_effort=${JSON.stringify(effort)}`]),
+    "-",
+  ];
+}
+
+function writerGit(cwd: string, args: readonly string[]): string {
+  try {
+    return execFileSync("git", [...args], {
+      cwd,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      timeout: 5_000,
+    }).trim();
+  } catch {
+    throw new WorkerFailure(
+      "profile-refused",
+      "writer Git observation unavailable",
+    );
+  }
+}
+
+function decodeWriterResult(
+  name: WorkerTransportName,
+  output: ProcessResult,
+  request: WriterRequest,
+  before: string,
+): WriterResult {
+  try {
+    const events = output.stdout
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line) as Record<string, unknown>);
+    let reported: unknown;
+    let observedDenials: WriterObservations["observedDenials"] = "unavailable";
+    if (name === "claude-cli-print") {
+      const terminals = events.filter((event) => event.type === "result");
+      const terminal = terminals[0];
+      if (
+        terminals.length !== 1 ||
+        terminal?.subtype !== "success" ||
+        terminal.is_error === true
+      )
+        throw new WorkerFailure("transport-failed", "writer terminal result");
+      // C-W8: result text and permission_denials array, not inspection structured_output.
+      if (
+        !Array.isArray(terminal.permission_denials) ||
+        typeof terminal.result !== "string"
+      )
+        throw new WorkerFailure(
+          "invalid-result",
+          "C-W8 result or permission_denials unavailable",
+        );
+      observedDenials = terminal.permission_denials.length;
+      reported = JSON.parse(terminal.result);
+    } else {
+      if (
+        events.some((event) =>
+          ["error", "turn.failed"].includes(String(event.type)),
+        ) ||
+        !events.some((event) => event.type === "turn.completed")
+      )
+        throw new WorkerFailure("transport-failed", "writer turn incomplete");
+      const messages = events.filter(
+        (event) =>
+          event.type === "item.completed" &&
+          (event.item as { type?: string } | undefined)?.type ===
+            "agent_message",
+      );
+      const text = (messages.at(-1)?.item as { text?: unknown } | undefined)
+        ?.text;
+      if (typeof text !== "string")
+        throw new WorkerFailure(
+          "invalid-result",
+          "writer final message absent",
+        );
+      reported = JSON.parse(text); // X-W8 provides no denial field.
+    }
+    const sha = writerGit(request.cwd, ["rev-parse", "HEAD"]);
+    return parseWriterResult(reported, request, {
+      observedDenials,
+      ...(sha === before
+        ? {}
+        : {
+            observedCommit: {
+              sha,
+              branch: writerGit(request.cwd, [
+                "rev-parse",
+                "--abbrev-ref",
+                "HEAD",
+              ]),
+            },
+          }),
+    });
+  } catch (error) {
+    if (error instanceof WorkerFailure) throw error;
+    throw new WorkerFailure("invalid-result", "writer wire JSON");
+  }
+}
+
 function decodeResult<R extends TransportRequest>(
   name: WorkerTransportName,
   output: ProcessResult,
   request: R,
+  before?: string,
 ): TransportResultFor<R> {
   let wireDetail = `exit-${output.exitCode ?? "unknown"}`;
   if (name === "claude-cli-print") {
@@ -340,6 +536,16 @@ function decodeResult<R extends TransportRequest>(
         ? `${wireDetail}; stderr: ${output.stderr.slice(-4000).replace(/(?:Bearer\s+|(?:api[_-]?key|token|password)\s*[=:]\s*)\S+/gi, "[redacted credential]") || "(empty)"}`
         : wireDetail,
     );
+  }
+  if (isWriterRequest(request)) {
+    if (before === undefined)
+      throw new WorkerFailure("profile-refused", "writer baseline absent");
+    return decodeWriterResult(
+      name,
+      output,
+      request,
+      before,
+    ) as TransportResultFor<R>;
   }
   let parsePhase = "wire-json";
   try {
@@ -443,6 +649,9 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
           mode: 0o600,
         },
       );
+      const before = isWriterRequest(request)
+        ? writerGit(request.cwd, ["rev-parse", "HEAD"])
+        : undefined;
       const process = this.runner({
         binary: this.binary,
         args,
@@ -466,7 +675,7 @@ abstract class CliWorkOrderTransport implements WorkOrderTransport {
         return observation;
       });
       const completed = Promise.all([process.completed, usage])
-        .then(([output]) => decodeResult(this.name, output, request))
+        .then(([output]) => decodeResult(this.name, output, request, before))
         .finally(() => rmSync(schemaDirectory, { recursive: true }));
       void completed.catch(() => {});
       void usage.catch(() => {});

@@ -28,6 +28,8 @@ const commonSources = [
   "packages/kernel/tsconfig.json",
   "packages/skeleton/package.json",
   "packages/skeleton/src/evidence-editions.mjs",
+  "packages/skeleton/src/execution-environment.ts",
+  "packages/skeleton/src/source-change-environment.ts",
   "packages/skeleton/src/reactor.ts",
   "packages/skeleton/src/resident-state.ts",
   "packages/skeleton/src/presence-machine.ts",
