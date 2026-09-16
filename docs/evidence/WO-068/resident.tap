@@ -1,0 +1,252 @@
+TAP version 13
+# Subtest: WO-067 fixture: hold, verified-only advance, failure reset, peak/reset/loop
+ok 1 - WO-067 fixture: hold, verified-only advance, failure reset, peak/reset/loop
+  ---
+  duration_ms: 1.284542
+  ...
+# NoOp:present | absence:probe | NoOp:gate-or-cadence | dispatch:probe | verified-success:widen | dispatch:widen | failure:probe | dispatch:probe | verified-success:widen | dispatch:widen | verified-success:peak | dispatch:peak | verified-success:probe | dispatch:probe | verified-success:widen | dispatch:widen | verified-success:peak | dispatch:peak | verified-success:probe
+# Subtest: WO-067 fixture: return kills or finishes discretionary work, preserves foreground and wins races
+ok 2 - WO-067 fixture: return kills or finishes discretionary work, preserves foreground and wins races
+  ---
+  duration_ms: 0.512916
+  ...
+# absence:probe | dispatch:probe | in-flight:kill | return:present | NoOp:present | foreground:completed-under-own-authority
+# absence:probe | dispatch:probe | in-flight:kill | return:present | NoOp:present | foreground:completed-under-own-authority
+# absence:probe | dispatch:probe | verified-success:widen | dispatch:widen | in-flight:finish | return:present | NoOp:present | absence:probe | NoOp:gate-or-cadence | dispatch:probe | foreground:completed-under-own-authority
+# Subtest: WO-067 fixture: idle deadline expires phase allocation and requires a fresh absence edge
+ok 3 - WO-067 fixture: idle deadline expires phase allocation and requires a fresh absence edge
+  ---
+  duration_ms: 0.112584
+  ...
+# absence:probe | expired:attention,work-scope,effect-authority | idle-expired:expired | NoOp:expired | NoOp:expired | return:present | absence:probe | dispatch:probe | foreground:completed-under-own-authority
+# Subtest: WO-067 fixture: a preauthorized portfolio effect with an unavailable adapter emits NoOp
+ok 4 - WO-067 fixture: a preauthorized portfolio effect with an unavailable adapter emits NoOp
+  ---
+  duration_ms: 2.062167
+  ...
+# absence:probe | NoOp:Presence policy fixture.progressive phase probe: unavailable external capability: adapter.portfolio
+# Subtest: WO-067 fixture: real kernel authorizer enforces every phase ceiling and inherited restrictions
+ok 5 - WO-067 fixture: real kernel authorizer enforces every phase ceiling and inherited restrictions
+  ---
+  duration_ms: 0.523708
+  ...
+# Subtest: WO-067 fixture: condition entry and every emitted cadence execute in the kernel subset
+ok 6 - WO-067 fixture: condition entry and every emitted cadence execute in the kernel subset
+  ---
+  duration_ms: 1.053167
+  ...
+# Subtest: WO-050 full pre-refactor Decision bytes and every retained semantic projection stay identical
+ok 7 - WO-050 full pre-refactor Decision bytes and every retained semantic projection stay identical
+  ---
+  duration_ms: 2088.852917
+  ...
+# Subtest: WO-050 slices have exclusive event ownership in each active mode and an empty source-change slot
+ok 8 - WO-050 slices have exclusive event ownership in each active mode and an empty source-change slot
+  ---
+  duration_ms: 7.672625
+  ...
+# Subtest: WO-050 hosts read raw runtime fields only through exported selectors
+ok 9 - WO-050 hosts read raw runtime fields only through exported selectors
+  ---
+  duration_ms: 0.478125
+  ...
+# Subtest: WO-050 malformed verification continuation and custom predicate context preserve the boundary
+ok 10 - WO-050 malformed verification continuation and custom predicate context preserve the boundary
+  ---
+  duration_ms: 34.962042
+  ...
+# Subtest: WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge
+ok 11 - WO-068 recorded clock drives all phases; replay ignores ambient clock; return cancels; idle needs a fresh edge
+  ---
+  duration_ms: 368.266625
+  ...
+# dispatches=4; replay byte-identical; expired→return→absence rearmed
+# Subtest: WO-068 in-flight kill and finish obey return precedence and reject stale advancement
+ok 12 - WO-068 in-flight kill and finish obey return precedence and reject stale advancement
+  ---
+  duration_ms: 258.796
+  ...
+# Subtest: WO-068 envelope, scope and runtime capability refusals never spawn; unavailable actor has no fallback
+ok 13 - WO-068 envelope, scope and runtime capability refusals never spawn; unavailable actor has no fallback
+  ---
+  duration_ms: 378.967875
+  ...
+# Subtest: WO-068 two once invocations produce byte-identical events to two loop ticks
+ok 14 - WO-068 two once invocations produce byte-identical events to two loop ticks
+  ---
+  duration_ms: 396.915375
+  ...
+# Subtest: WO-068 malformed saved evidence refuses before append/reclaim; presence rejects symlink stores
+ok 15 - WO-068 malformed saved evidence refuses before append/reclaim; presence rejects symlink stores
+  ---
+  duration_ms: 42.237625
+  ...
+# Subtest: WO-068 inspected restart records lost once and cannot reuse dispatched identity
+ok 16 - WO-068 inspected restart records lost once and cannot reuse dispatched identity
+  ---
+  duration_ms: 161.391875
+  ...
+# Subtest: WO-068 native script uses exact argv/cwd, clears inherited env, verifies output and denies network
+ok 17 - WO-068 native script uses exact argv/cwd, clears inherited env, verifies output and denies network
+  ---
+  duration_ms: 640.3225
+  ...
+# native sandbox: EPERM; exact argv/cwd; inherited sentinel absent; timeout/output cap enforced
+# Subtest: WO-068 fresh CLI once and presence commands; SIGKILL recovery and dead-owner reclaim
+ok 18 - WO-068 fresh CLI once and presence commands; SIGKILL recovery and dead-owner reclaim
+  ---
+  duration_ms: 923.099083
+  ...
+# fresh --once exit 0; live-owner refusal; SIGKILL orphan stopped; dead-owner inspection/reclaim; lost recorded once
+# Subtest: WO-016 AC1 one typed reactor and its pure resident helpers own kernel decisions
+ok 19 - WO-016 AC1 one typed reactor and its pure resident helpers own kernel decisions
+  ---
+  duration_ms: 6.52675
+  ...
+# Subtest: WO-016 AC3 live and replay match every complete Decision and semantic projection
+ok 20 - WO-016 AC3 live and replay match every complete Decision and semantic projection
+  ---
+  duration_ms: 106.560417
+  ...
+# Subtest: WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+ok 21 - WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+  ---
+  duration_ms: 1.516708
+  ...
+# Subtest: WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+ok 22 - WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+  ---
+  duration_ms: 45.014958
+  ...
+# Subtest: WO-008 AC2 an unequipped support changes the live reactor program
+ok 23 - WO-008 AC2 an unequipped support changes the live reactor program
+  ---
+  duration_ms: 82.271667
+  ...
+# Subtest: WO-008 AC2 the running reactor consumes compiled cadence identifiers
+ok 24 - WO-008 AC2 the running reactor consumes compiled cadence identifiers
+  ---
+  duration_ms: 43.567833
+  ...
+# Subtest: WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+ok 25 - WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+  ---
+  duration_ms: 1.21025
+  ...
+# Subtest: the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+ok 26 - the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+  ---
+  duration_ms: 42.678542
+  ...
+# Subtest: WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+ok 27 - WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+  ---
+  duration_ms: 42.949958
+  ...
+# Subtest: WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+ok 28 - WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+  ---
+  duration_ms: 42.488
+  ...
+# Subtest: WO-016 step 12 executes the reactor's NoOp and declared cancellations
+ok 29 - WO-016 step 12 executes the reactor's NoOp and declared cancellations
+  ---
+  duration_ms: 43.239292
+  ...
+# Subtest: WO-016 AC4 semantic payload changes alter the decision at their event
+    # Subtest: CommandResult.candidates
+    ok 1 - CommandResult.candidates
+      ---
+      duration_ms: 57.280042
+      ...
+    # Subtest: VerificationCompleted.accepted
+    ok 2 - VerificationCompleted.accepted
+      ---
+      duration_ms: 57.3695
+      ...
+    # Subtest: WorkOrderEmitted.workOrder
+    ok 3 - WorkOrderEmitted.workOrder
+      ---
+      duration_ms: 52.999958
+      ...
+    # Subtest: CommandRefused.reason
+    ok 4 - CommandRefused.reason
+      ---
+      duration_ms: 52.009542
+      ...
+    # Subtest: SchedulesCancelled.scheduleIds
+    ok 5 - SchedulesCancelled.scheduleIds
+      ---
+      duration_ms: 52.978167
+      ...
+    # Subtest: CommandPersisted.command.intent.effect
+    ok 6 - CommandPersisted.command.intent.effect
+      ---
+      duration_ms: 51.598041
+      ...
+    1..6
+ok 30 - WO-016 AC4 semantic payload changes alter the decision at their event
+  ---
+  duration_ms: 367.096
+  ...
+# Subtest: WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+ok 31 - WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+  ---
+  duration_ms: 80.586375
+  ...
+# Subtest: row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+ok 32 - row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+  ---
+  duration_ms: 131.153917
+  ...
+# Subtest: WO-047 complete Decision bytes match across stored skeleton streams
+    # Subtest: WO-003 oracle
+    ok 1 - WO-003 oracle
+      ---
+      duration_ms: 29.22025
+      ...
+    # 21 complete decisions; 280279 identical serialized bytes
+    # Subtest: demo
+    ok 2 - demo
+      ---
+      duration_ms: 28.72475
+      ...
+    # 28 complete decisions; 401014 identical serialized bytes
+    # Subtest: worker recovery
+    ok 3 - worker recovery
+      ---
+      duration_ms: 4.040167
+      ...
+    # 37 complete decisions; 48350 identical serialized bytes
+    # Subtest: verification
+    ok 4 - verification
+      ---
+      duration_ms: 19.218583
+      ...
+    # 31 complete decisions; 732540 identical serialized bytes
+    # Subtest: feedback audit
+    ok 5 - feedback audit
+      ---
+      duration_ms: 16.244542
+      ...
+    # 5 complete decisions; 132378 identical serialized bytes
+    # Subtest: feedback verifier
+    ok 6 - feedback verifier
+      ---
+      duration_ms: 679.58825
+      ...
+    # 43 complete decisions; 79919251 identical serialized bytes
+    1..6
+ok 33 - WO-047 complete Decision bytes match across stored skeleton streams
+  ---
+  duration_ms: 778.024875
+  ...
+1..33
+# tests 45
+# suites 0
+# pass 45
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3249.873208
