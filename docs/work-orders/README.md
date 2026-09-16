@@ -108,6 +108,7 @@ Edit sequence.md's marked sequence to change the plan; do not cross off entries 
 - [WO-103] — Authorization guard and outbox factorial decision-table corpus (version assigned at activation)
 - [WO-105] — Crash-shape corpus: store truncation sweep, skeleton recovery sweep, golden traces, and fixture-tree families (version assigned at activation)
 - [WO-107] — Deterministic profiling harness and first baseline observation corpus (version assigned at activation)
+- [WO-134] — Planning-pass selection: the refutation helpers resolve the current dated pass without depending on ledger insertion order, and a regression test covers two passes sharing one calendar day (v0.23.0)
 
 Full evidence follows, grouped by lifecycle state.
 
@@ -1388,6 +1389,23 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-124/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-124-impact-surfaces-derivation.md](WO-124-impact-surfaces-derivation.md)
 
+### WO-134
+
+[WO-134 — Planning-pass selection: the refutation helpers resolve the current dated pass without depending on ledger insertion order, and a regression test covers two passes sharing one calendar day (v0.23.0)](WO-134-planning-pass-selection.md)
+
+- State: draft.
+- Application target: v0.23.0.
+- Dependencies: conservative token view; does not block.
+- References: none declared.
+- Verification: none recorded.
+- Final review: none recorded.
+- Release: none recorded.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor any; verifier any; reviewer any.
+- Cost: adds no recurring step, check, receipt, hook, key or ritual; adds one test case to an existing suite. It removes an operator correction per same-day planning pass and removes the silent wrong-pass selection that currently depends on a documented but unchecked ledger convention.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-134/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Authority: [docs/work-orders/WO-134-planning-pass-selection.md](WO-134-planning-pass-selection.md)
+
 ## Closed
 
 ### WO-003
@@ -2523,3 +2541,4 @@ See [the human planning map](../planning/work-order-map.md) for recommendation, 
 [WO-131]: WO-131-remaining-suites-under-replica.md
 [WO-132]: WO-132-machinery-stand-down.md
 [WO-133]: WO-133-stand-down-residue.md
+[WO-134]: WO-134-planning-pass-selection.md

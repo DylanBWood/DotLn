@@ -856,8 +856,9 @@ track.
    must make the insertion rule checkable in `test:docs` rather than
    documented, which is WO-084's subject. Until then every ledger write spends
    an operator correction. Recorded against the
-   shifting-the-burden-to-the-intervenor trap: five operator corrections in
-   this session, all catching agent error rather than directing work.
+   shifting-the-burden-to-the-intervenor trap: nine operator corrections in
+   this session, all catching agent error rather than directing work. The
+   count was first recorded as five and was itself understated.
 
 10. _A source change rode a document-only dispatch onto main and voided the
     reviewed gate._ A planning dispatch is document-only and carries no
@@ -887,6 +888,29 @@ track.
     release-close, next and activate (`scripts/resume.mjs:152`), so today the
     only route is an operator override. Recorded against rule-beating and
     seeking-the-wrong-goal.
+
+12. _Work was handed off for merge without running the checks that judge it._
+    Push and PR commands were supplied twice — for the planning branch and
+    for this one — on the strength of a narrow check rather than the suite.
+    The second handoff would have merged a stale
+    `docs/work-orders/README.md`: `plan -- check` passed and was cited as
+    proof the order was in-band, while `npm run test:docs` failed `index`
+    with "stale at line 111". Regenerating it cleared all seventeen suites,
+    so the cost here was small and the pattern is not. The role text already
+    requires this — `verify-app-before-done`: executed passing checks for
+    every required application check at the current subject before the
+    completion transition — and it is the third instance of the partial-check
+    pattern in item 7. A fix must bind a handoff that names a merge command
+    to the suite that judges the merge.
+
+13. _This register is self-authored and therefore incomplete._ Items 1 to 3
+    were found by the agent; every later item exists because the operator
+    caught something, including item 9's own undercount. A register written
+    by the process that produced the defects inherits that process's blind
+    spots, so it should be read as a floor on what went wrong, never a
+    ceiling. A fix must derive the operator-correction count from the
+    transcript rather than from agent self-report, which is the only part of
+    this that can be measured without the agent's cooperation.
 
 Cost observation: about ninety minutes across three sessions, on a release that
 was publishable throughout.
