@@ -171,6 +171,8 @@ in `docs/PLAYBOOK.md`.
 
 One line per `.claude/` or CLAUDE.md change (see execution guide):
 
+- 2026-09-16: WO-133 regenerates per-session advisory suppression, registers the existing session handler for SessionStart under explicit operator direction, and preserves operator-supplied attestations in all six roles.
+
 - 2026-09-11: WO-043 makes scope expansion and side questions first-party session commands, and requires actual Codex/Claude token measurements, activates executor support duties at ordinary entry, and equips Process Cost and Goal Alignment across all roles.
 - 2026-09-11: WO-127 regenerates role procedures to record sourced costs, archive retained worktree control state and prepare owned projections before evidence. Generated hooks consume piped JSON asynchronously; all expensive test suites wait for preflights.
 

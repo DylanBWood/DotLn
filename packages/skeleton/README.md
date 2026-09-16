@@ -1,4 +1,11 @@
-# `@dotln/skeleton` 0.18.3
+# `@dotln/skeleton` 0.18.4
+
+For application v0.22.1 (WO-133), runtime advisories appear once per session and
+cause, with silent PostToolUse observers and a SessionStart diagnostic. Release
+close and worktree finish refresh stale pinned runtime bytes after advancing
+main. All six roles preserve operator-supplied model and effort, and the shared
+`src/version.ts` keeps release-only changes out of machinery suite selection.
+The compiler prelude advances separately to `0.11.2`; contracts stay unchanged.
 
 For application v0.22.0, every skeleton replay path passes `projectRuntimeEnvironment` from `reactor.ts`. The skeleton owns its RNG and policy state layout; complete decisions and serialized bytes remain identical to the kernel fallback.
 

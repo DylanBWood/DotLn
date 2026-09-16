@@ -1,4 +1,8 @@
-# `@dotln/compiler` v0.11.1
+# `@dotln/compiler` v0.11.2
+
+Component `0.11.2` makes generated fallback advisories once per session and cause,
+silences observers, and registers the existing session handler for SessionStart.
+Compilation remains pure; the generated host functions perform local observation.
 
 The pure DotLn composition compiler. It has zero runtime dependencies and no
 I/O: callers pass a `LoadoutGraph` plus an explicit environment and receive a
