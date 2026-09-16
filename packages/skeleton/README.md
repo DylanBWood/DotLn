@@ -128,6 +128,22 @@ catalog definitions remain inert.
 The fake adapter deduplicates by the kernel-generated command id so crash
 recovery can safely re-dispatch pending outbox commands.
 
+## Reactor state slices
+
+`reactor.ts` composes `SkeletonState` version 1 from typed walking-skeleton,
+worker-episode, verification and feedback slices. Each event selects one fold
+by its active workstream mode and event type; unknown observations stay in that
+mode. `sourceChange` is an empty typed slot with no fold for WO-052 to extend.
+Kernel deciders remain owned by the one exported `seiriReactor`.
+
+The operator selected the existing flat `RuntimeState` as the public Decision
+compatibility boundary. Pure adapters expose typed slices internally and write
+only the selected slice back; no state is persisted and no event changes.
+Hosts read exported selectors, including kernel predicate context. WO-047's
+explicit replay projector is pending, so public `rngState` and `policy` stay
+at the top level. The [WO-050 identity receipt](../../docs/evidence/WO-050/implementation.md)
+compares complete Decisions and semantic projections without normalizing state.
+
 ## Disposable workers
 
 Recovery validates the log, lock, saved receipts, request keys and saved

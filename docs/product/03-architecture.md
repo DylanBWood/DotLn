@@ -45,6 +45,10 @@ silently inheriting the whole stack.
 └────────────────────────────────────────────────────────────────┘
 ```
 
+The single skeleton reactor composes version-1 typed walking, worker, verification
+and feedback slices plus an empty source-change slot internally; exported selectors
+serve hosts and a compatibility adapter preserves the public Decision state bytes.
+
 Naming: plain names (kernel, compiler, event store) are canonical in code and
 docs. The flavor names — Forge (compiler), Compendium (pattern library),
 Chronicle (events/lineage), Atlas (repos/workstreams), Simulacrum (simulation
