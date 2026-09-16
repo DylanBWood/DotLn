@@ -797,6 +797,45 @@ choice or reconciling a source change. The metadata and document gates check
 freshness; executor deferrals need a checked public FUP destination. Neither the
 feed nor a disposition grants work-order activation authority.
 
+## Candidate — guided operator work orders
+
+Operator direction, 2026-09-16: a work-order type should carry guided human
+work through the normal workflow. Its purpose is to help the operator reach a
+specific result or setup, including ordinary trial and error, and return either
+evidence of success or a useful failure artifact. Local inference readiness and
+possible LM Studio setup are the immediate example; this is a general pattern
+for work that requires operator participation, not a separate informal checklist.
+
+A candidate contract names the desired observable result, starting conditions,
+constraints and authority, agent and operator responsibilities, success checks,
+and the evidence to retain if attempts fail. The agent proposes the next useful
+step from observed results, explains required operator actions, records what was
+actually attempted and adapts the next step. Unexecuted suggestions remain
+distinct from observations. Preserve progress across pauses and sessions so the
+operator can resume the same order. Trial and error is expected learning, not a
+reason to restart the workflow or silently expand authority.
+
+Two explicit outcomes are needed: a result/setup that passes its declared check,
+or a failure artifact describing the attempted path, observed errors, ruled-out
+causes, remaining blocker and a useful next action or reopening condition.
+Distinguish an environment limitation or exhausted attempt from a defect in
+DotLn. Producing the requested failure artifact can discharge the investigation
+deliverable, but never certifies the original setup as successful. Independent
+review should judge the evidence appropriate to the declared outcome.
+
+The next planning pass should decide how to express this type using existing
+WorkOrders, human-handoff actors, continuation and evidence surfaces, including
+how lifecycle status distinguishes successful setup from completed investigation
+with failure. Preserve the normal authority, privacy and review boundaries.
+No new schema, lifecycle transition or implementation is selected here.
+
+Source: the operator's second 2026-09-16 ideation during WO-051, synthesized in
+the ledger and [breakout receipt](../evidence/WO-051/ideation-local-models.md).
+Reopen at the next planning pass with local-model readiness or another concrete
+operator-assisted outcome. The cost and value question is whether this removes
+repeated setup explanation and lost diagnostic work without adding a separate
+process the operator must manage.
+
 ## Candidate — planner startup context
 
 Operator steering during WO-126 identifies excessive context needed to learn

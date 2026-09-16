@@ -7047,3 +7047,54 @@ existing contract; no runtime source, contract, or locked boundary changes.
 - **A host-side containment order, waiting for WO-133, residue as boy-scout items on WO-049, four residue orders, a model-composed commit message, a harness scheduler, a second statechart interpreter, splitting the host, moving evidence, consolidating scripts, settling the register now, a retention rule now, the two rejected pairings, and a cross-order review gate** `rejected`
   - Each with its evidence and reversal condition in the planning
     document's NoOp register (§6) and the map's NoOps of this pass.
+
+
+## 2026-09-16 — Local-model experiments for practical use
+
+Source: operator `ideation:` during WO-051, captured unedited in
+`docs/intake/notes/WO-051-expanded-ideation-2026-09-16.md`. Shape-First
+Synthesis; clean-room screen found no stop condition. Provisional worktree-local
+intake is backed up and awaits main reconciliation before removal; see
+[the breakout receipt](../evidence/WO-051/ideation-local-models.md).
+
+- **Local runner readiness deserves next-pass priority** `preserved`
+  - The next planning pass should invest more effort in local LLM experiments
+    and establish what operator setup, potentially in LM Studio, is needed.
+    Revisit the existing WO-027 deferral using fresh availability evidence,
+    retaining its dated failure and WO-110's bounded inspection scope. No
+    installation, configuration or launch is implied by this idea. Reopen at
+    the next planning pass or when the operator reports setup readiness.
+- **Matched model and prompt experiments should identify useful local roles** `preserved`
+  - Follow readiness with a larger comparison program using the same WorkOrder
+    and baseline build: compare local and remote models, measure repeated-run
+    variation with the same model and prompt, then vary prompts or supports
+    while pinning the remaining conditions and identifying changed builds.
+    Preserve outputs and failures; compare independently checked quality,
+    reliability, operator intervention and resource cost. The result should
+    identify practical local responsibilities, limitations and hybrid paths,
+    rather than a universal leaderboard. Plan a small pilot before larger
+    batches; model choices, sample sizes and budgets remain unresolved.
+    Promoted to product 06 §Candidate — local-model usefulness experiments;
+    reopen with a ready runner and the next planning pass's disposition.
+
+
+## 2026-09-16 — Guided operator work orders
+
+Source: the second operator `ideation:` message in
+`docs/intake/notes/WO-051-expanded-ideation-2026-09-16.md`, following the local
+model experiment direction. Shape-First Synthesis; clean-room screen found no
+stop condition. The same [breakout receipt](../evidence/WO-051/ideation-local-models.md)
+records staging, review and reconciliation.
+
+- **Setup and assisted outcomes belong in the ordinary work-order flow** `preserved`
+  - Introduce a work-order type that guides the operator toward a specific
+    setup or result, allowing normal trial and error. Close with either checked
+    success evidence or a failure artifact that preserves attempts, observations
+    and the unresolved blocker. LM Studio readiness is a motivating first use,
+    not the type's exclusive purpose. The work order should carry the goal and
+    continuation across sessions instead of leaving setup as informal homework.
+    Its exact schema and lifecycle representation remain for planning; a failure
+    artifact must not imply the requested setup succeeded. Promoted to product
+    07 §Candidate — guided operator work orders. Reopen at the next planning
+    pass alongside local-model readiness, or when another assisted setup/result
+    needs this path.
