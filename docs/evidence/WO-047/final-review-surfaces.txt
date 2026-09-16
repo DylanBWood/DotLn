@@ -1,0 +1,9 @@
+WO-047 final review — release surfaces on the integrated tree
+Executed 2026-09-16T02:45:12Z; main integrated at c4276b6 (v0.21.2).
+
+PASS release-block: observed v0.22.0; expected v0.22.0 (work-order target v0.22.0; latest local tag v0.21.1)
+PASS component-version @dotln/compiler: src unchanged; observed 0.11.1; previous v0.21.1 0.11.1; expected no bump required
+PASS component-version @dotln/console: src unchanged; observed 0.1.6; previous v0.21.1 0.1.6; expected no bump required
+PASS component-version @dotln/kernel: src changed; observed 0.5.0; previous v0.21.1 0.4.0; expected a different version
+PASS component-version @dotln/skeleton: src changed; observed 0.18.3; previous v0.21.1 0.18.1; expected a different version
+PASS github-body-profile: observed docs/final-reviews/WO-047/PR.md; expected one physical line per prose paragraph or list-item paragraph

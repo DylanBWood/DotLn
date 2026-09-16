@@ -20,6 +20,11 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-050 activation completion (2026-09-16):** application `v0.21.2` and
+skeleton `0.18.2` stage the structural state-slice patch. The public Decision
+shape, event schemas, semantic hashes, compiler and kernel versions stay
+unchanged. Internal typed folds reserve the source-change seam for WO-052.
+
 **WO-048 activation completion (2026-09-15):** application `v0.21.1` and
 skeleton `0.18.1` stage positive decoding before worker/verification recovery
 effects. Kernel/compiler versions, persisted contracts and hash rules remain
@@ -1479,7 +1484,7 @@ merge and publication remain separate lifecycle evidence.
 
 **WO-047 replay projection (2026-09-15):**
 
-Application v0.22.0 stages kernel 0.5.0 and skeleton 0.18.2. Replay accepts an
+Application v0.22.0 stages kernel 0.5.0 and skeleton 0.18.3. Replay accepts an
 optional pure environment projector for current state and event, while the
 reserved-key default remains supported. The skeleton passes its own projector
 across all replay and recovery paths. Full decisions and serialized bytes remain

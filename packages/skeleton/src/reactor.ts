@@ -105,6 +105,7 @@ export type Loadout = LoadoutGraph;
 type RuntimePolicy = Readonly<{ maintenance: string }>;
 
 export type RuntimeState = Readonly<{
+  sourceChange?: SourceChangeSlice;
   feedback?: JsonValue;
   verification?: JsonValue;
   presence: "away" | "returned";
@@ -143,13 +144,180 @@ export type RuntimeState = Readonly<{
   workerLeaseExpired: boolean;
 }>;
 
+/** Public Decisions retain RuntimeState; this version belongs only to the fold. */
+export type WalkingSkeletonSlice = Omit<
+  RuntimeState,
+  | "sourceChange"
+  | "feedback"
+  | "verification"
+  | "workerEpisodeId"
+  | "workerLeaseExpired"
+>;
+export type WorkerEpisodeSlice = Readonly<{
+  workerEpisodeId: string | null;
+  workerLeaseExpired: boolean;
+}>;
+export type SourceChangeSlice = Readonly<Record<string, never>>;
+export type SkeletonState = Readonly<{
+  version: 1;
+  walking: WalkingSkeletonSlice;
+  worker: WorkerEpisodeSlice;
+  verification: VerificationState | undefined;
+  feedback: FeedbackRuntimeState | undefined;
+  sourceChange: SourceChangeSlice;
+}>;
+type SliceDecision<S> = Omit<Decision, "state"> & { readonly state: S };
+
+export const walkingStateFromRuntime = (
+  state: RuntimeState,
+): WalkingSkeletonSlice => {
+  const {
+    sourceChange,
+    feedback,
+    verification,
+    workerEpisodeId,
+    workerLeaseExpired,
+    ...walking
+  } = state;
+  return walking;
+};
+export const workerStateFromRuntime = (
+  state: RuntimeState,
+): WorkerEpisodeSlice => ({
+  workerEpisodeId: state.workerEpisodeId,
+  workerLeaseExpired: state.workerLeaseExpired,
+});
+export const selectWalkingSlice = (
+  state: SkeletonState,
+): WalkingSkeletonSlice => state.walking;
+export const selectWorkerSlice = (state: SkeletonState): WorkerEpisodeSlice =>
+  state.worker;
+export const selectVerificationSlice = (
+  state: SkeletonState,
+): VerificationState | undefined => state.verification;
+export const selectFeedbackSlice = (
+  state: SkeletonState,
+): FeedbackRuntimeState | undefined => state.feedback;
+export const selectSourceChangeSlice = (
+  state: SkeletonState,
+): SourceChangeSlice => state.sourceChange;
+export const kernelStateFromRuntime = (state: RuntimeState) => ({
+  rngState: state.rngState,
+  policy: state.policy,
+});
+/** Kernel predicates retain the full public context, including worker lease facts. */
+export const selectPredicateState = (
+  walking: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
+): RuntimeState => ({ ...walking, ...worker });
+export const artifactIdentityFromRuntime = (
+  state: RuntimeState,
+): ArtifactIdentityV1 | null =>
+  isArtifactIdentityV1(state.artifactIdentity) ? state.artifactIdentity : null;
+export const hasFeedbackState = (state: RuntimeState): boolean =>
+  state.feedback !== undefined;
+
+export function skeletonStateFromRuntime(state: RuntimeState): SkeletonState {
+  return {
+    version: 1,
+    walking: walkingStateFromRuntime(state),
+    worker: workerStateFromRuntime(state),
+    verification:
+      state.verification === undefined
+        ? undefined
+        : (state.verification as unknown as VerificationState),
+    feedback:
+      state.feedback === undefined
+        ? undefined
+        : feedbackStateFromRuntime(state),
+    sourceChange: state.sourceChange ?? {},
+  };
+}
+
+/** Only the selected slice is written back; untouched bytes/optional keys survive. */
+function runtimeDecision<S>(
+  decision: SliceDecision<S>,
+  write: (slice: S) => RuntimeState,
+): Decision<RuntimeState> {
+  return { ...decision, state: write(decision.state) };
+}
+
+// Names repeat across modes in the existing event schema. Ownership is a
+// function of (active mode, event type), never competing broadcast reducers.
+export const sliceEventTypes = {
+  walking: [
+    "ArtifactIdentityEnforcementStarted",
+    "LoadoutEquipped",
+    "ArtifactIdentityInvalid",
+    "ArtifactIdentityUnavailable",
+    "ArtifactCompilationRefused",
+    "ArtifactIdentityDrift",
+    "UnknownScheduleRefused",
+    "BeaconSweepRequested",
+    "BeaconObserved",
+    "InspectionTaskCreated",
+    "OperatorPresenceChanged",
+    "CadencePulse",
+    "WorkOrderEmitted",
+    "CommandRedispatchRequested",
+    "CommandPersisted",
+    "CommandRedispatched",
+    "WorkerResultObserved",
+    "CommandResult",
+    "DeletionAttempted",
+    "CommandRefused",
+    "EpisodeTerminated",
+    "VerificationRequested",
+    "VerificationCompleted",
+    "QueuedPulseNoOp",
+    "SchedulesCancelled",
+  ],
+  worker: ["WorkerAttemptStarted", "WorkerLeaseExpired"],
+  verification: [
+    "VerificationOpened",
+    "VerificationDispatchRequested",
+    "CommandPersisted",
+    "WorkerAttemptStarted",
+    "WorkerHeartbeat",
+    "WorkerLeaseExpired",
+    "CommandResult",
+    "VerificationContinuation",
+    "VerificationSubjectSubmitted",
+  ],
+  feedback: [
+    "FeedbackAuditOpened",
+    "FeedbackAuditRequested",
+    "FeedbackAuditExecutionRequested",
+    "CommandPersisted",
+    "CommandResult",
+    ...SEMANTIC_CORRECTIONS,
+  ],
+  sourceChange: [],
+} as const;
+export type FoldedSlice = Exclude<keyof typeof sliceEventTypes, "sourceChange">;
+export function selectEventSlice(
+  state: SkeletonState,
+  event: Event,
+): FoldedSlice {
+  if (
+    event.type === "FeedbackAuditOpened" ||
+    selectFeedbackSlice(state) !== undefined
+  )
+    return "feedback";
+  if (selectVerificationSlice(state) !== undefined) return "verification";
+  if (sliceEventTypes.worker.some((type) => type === event.type))
+    return "worker";
+  return "walking";
+}
+
 export const loadout: Loadout = seiriLoadout;
 
-/** The skeleton owns the layout of its replayable environment state. */
+/** The skeleton owns the layout of its replayable environment state; replay and
+ * the live folds read the same kernel-facing slice, so they cannot drift. */
 export function projectRuntimeEnvironment(
   state: RuntimeState,
 ): Omit<KernelEnv, "now" | "predicates"> {
-  return { rngState: state.rngState, policy: state.policy };
+  return kernelStateFromRuntime(state);
 }
 
 const statePresence = (state: JsonValue): JsonValue | undefined =>
@@ -273,10 +441,10 @@ const cadenceFromCompiled = (compiled: CompiledProgram) => {
   return value;
 };
 
-const authorityFromState = (state: RuntimeState): AuthorityEnvelope =>
+const authorityFromState = (state: WalkingSkeletonSlice): AuthorityEnvelope =>
   state.authority as unknown as AuthorityEnvelope;
 
-const revocationsFromState = (state: RuntimeState): readonly Event[] =>
+const revocationsFromState = (state: WalkingSkeletonSlice): readonly Event[] =>
   state.revocationEvents as unknown as readonly Event[];
 
 const persistedContinuation = (
@@ -287,21 +455,21 @@ const persistedContinuation = (
   if (!decoded.ok) throw new Error(`${location}: ${decoded.message}`);
   return decoded.value;
 };
-const programFromState = (state: RuntimeState): ExecutableProgramV1 =>
+const programFromState = (state: WalkingSkeletonSlice): ExecutableProgramV1 =>
   persistedContinuation(state.program, "runtime program");
 
 const requiredContinuation = (
-  decision: ProgramDecision<RuntimeState>,
+  decision: ProgramDecision<WalkingSkeletonSlice>,
 ): ExecutableProgramV1 => {
   if (decision.continuation === undefined)
     throw new Error("kernel program decision lacks a continuation");
   return decision.continuation;
 };
 
-export const workOrderFromState = (state: RuntimeState): WorkOrder =>
+export const workOrderFromState = (state: WalkingSkeletonSlice): WorkOrder =>
   workOrderFromValue(state.workOrder);
 
-export const commandFromState = (state: RuntimeState): Command => {
+export const commandFromState = (state: WalkingSkeletonSlice): Command => {
   if (state.pendingCommand === null)
     throw new Error("runtime state lacks pending command");
   return state.pendingCommand as unknown as Command;
@@ -363,11 +531,11 @@ const linkedDraft = (
   payload: event.payload,
 });
 
-const observed = (
-  state: RuntimeState,
+const observed = <S>(
+  state: S,
   event: Event,
   branch = "observed",
-): Decision<RuntimeState> => ({
+): SliceDecision<S> => ({
   state,
   intents: [],
   schedules: [],
@@ -381,10 +549,10 @@ const observed = (
 });
 
 const workerNoOp = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
   event: Event,
   reason: string,
-): Decision<RuntimeState> => ({
+): Decision<WalkingSkeletonSlice> => ({
   ...observed(state, event, reason),
   intents: [
     {
@@ -408,10 +576,11 @@ const workerNoOp = (
 });
 
 const workerResultGuard = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
   event: Event,
   env: KernelEnv,
-): Decision<RuntimeState> | undefined => {
+): Decision<WalkingSkeletonSlice> | undefined => {
   if (asObject(event.payload)?.["workerResultVersion"] !== 1)
     return workerNoOp(state, event, "invalid worker receipt");
   if (
@@ -423,8 +592,8 @@ const workerResultGuard = (
   if (env.now >= authorityFromState(state).expiresAt)
     return workerNoOp(state, event, "authority expired");
   if (
-    stringField(event.payload, "workerEpisodeId") !== state.workerEpisodeId ||
-    state.workerLeaseExpired
+    stringField(event.payload, "workerEpisodeId") !== worker.workerEpisodeId ||
+    worker.workerLeaseExpired
   )
     return workerNoOp(state, event, "stale worker lease");
   if (state.presence !== "away")
@@ -432,14 +601,16 @@ const workerResultGuard = (
   return undefined;
 };
 
-const pinnedIdentity = (state: RuntimeState): ArtifactIdentityV1 | null =>
+const pinnedIdentity = (
+  state: WalkingSkeletonSlice,
+): ArtifactIdentityV1 | null =>
   isArtifactIdentityV1(state.artifactIdentity) ? state.artifactIdentity : null;
 
 const withIdentityTrace = (
-  decision: Decision<RuntimeState>,
+  decision: Decision<WalkingSkeletonSlice>,
   identity: ArtifactIdentityV1 | null,
   equippedEventId: string | null,
-): Decision<RuntimeState> =>
+): Decision<WalkingSkeletonSlice> =>
   identity === null || equippedEventId === null
     ? decision
     : {
@@ -456,7 +627,7 @@ const withIdentityTrace = (
       };
 
 const artifactRefused = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
   event: Event,
   type: ArtifactRefusalType,
   reason: string,
@@ -466,7 +637,7 @@ const artifactRefused = (
     diagnostics?: readonly CompileDiagnostic[];
     drift?: readonly ArtifactDriftField[];
   }> = {},
-): Decision<RuntimeState> => {
+): Decision<WalkingSkeletonSlice> => {
   const pin = options.pinned ?? pinnedIdentity(state);
   return {
     state:
@@ -526,9 +697,9 @@ const artifactRefused = (
 };
 
 const equipDecision = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
   event: Event,
-): Decision<RuntimeState> => {
+): Decision<WalkingSkeletonSlice> => {
   const payload = asObject(event.payload);
   const legacy =
     payload === undefined || !Object.hasOwn(payload, "payloadVersion");
@@ -616,10 +787,10 @@ const equipDecision = (
 
 /** Every compiled consumer, including stored authority/continuations, enters here. */
 const withEquippedArtifact = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
   event: Event,
-  consume: (compiled: CompiledProgram) => Decision<RuntimeState>,
-): Decision<RuntimeState> => {
+  consume: (compiled: CompiledProgram) => Decision<WalkingSkeletonSlice>,
+): Decision<WalkingSkeletonSlice> => {
   const pin = pinnedIdentity(state);
   if (state.artifactIdentity !== null && pin === null)
     return artifactRefused(
@@ -686,16 +857,17 @@ const predicateEnv = (env: KernelEnv): Omit<KernelEnv, "now"> => ({
 });
 
 const presenceDecision = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
   event: Event,
   env: KernelEnv,
   compiled: CompiledProgram,
-): Decision<RuntimeState> => {
+): Decision<WalkingSkeletonSlice> => {
   const presence = stringField(event.payload, "presence");
   if (presence !== "away" && presence !== "returned")
     return observed(state, event, "invalid-presence");
 
-  const nextState: RuntimeState = {
+  const nextState: WalkingSkeletonSlice = {
     ...state,
     presence,
     revocationEvents: [
@@ -706,7 +878,12 @@ const presenceDecision = (
   if (presence === "away") {
     const compiledCadence = cadenceFromCompiled(compiled);
     const cadence = compiledCadence.cadence as Cadence.T;
-    const evaluated = evaluateCadence(cadence, nextState, env, event);
+    const evaluated = evaluateCadence(
+      cadence,
+      selectPredicateState(nextState, worker),
+      env,
+      event,
+    );
     if (evaluated.dueAt === null)
       throw new Error("away cadence did not produce a pulse");
     const schedules = [
@@ -770,7 +947,7 @@ const presenceDecision = (
       intentIndex: 0,
       evidence: [],
       revokedBy: revocationsFromState(nextState),
-      state: nextState,
+      state: selectPredicateState(nextState, worker),
       predicateEnv: predicateEnv(env),
     },
   );
@@ -788,11 +965,12 @@ const presenceDecision = (
 };
 
 const pulseDecision = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
   event: Event,
   env: KernelEnv,
   compiled: CompiledProgram,
-): Decision<RuntimeState> => {
+): Decision<WalkingSkeletonSlice> => {
   const scheduleId = stringField(event.payload, "scheduleId");
   const compiledCadence = cadenceFromCompiled(compiled);
   if (scheduleId === compiledCadence.scheduleId) {
@@ -836,10 +1014,13 @@ const pulseDecision = (
   const activationCondition = compiled.statechartGuards[0]?.activationCondition;
   if (activationCondition === undefined)
     throw new Error("compiled loadout lacks an activation guard");
-  const guarded = guardQueuedPulse(state, event, env, activationCondition, [
-    compiledCadence.scheduleId,
-    compiledCadence.queuedScheduleId,
-  ]);
+  const guarded = guardQueuedPulse(
+    selectPredicateState(state, worker),
+    event,
+    env,
+    activationCondition,
+    [compiledCadence.scheduleId, compiledCadence.queuedScheduleId],
+  );
   return {
     state: {
       ...state,
@@ -852,11 +1033,12 @@ const pulseDecision = (
 };
 
 const workOrderDecision = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
   event: Event,
   env: KernelEnv,
   compiled: CompiledProgram,
-): Decision<RuntimeState> => {
+): Decision<WalkingSkeletonSlice> => {
   const workOrder = workOrderFromValue(
     asObject(event.payload)?.["workOrder"] ?? null,
   );
@@ -870,7 +1052,11 @@ const workOrderDecision = (
     event.occurredAt,
     verification.subject,
   );
-  const programDecision = decideProgram(program, state, env);
+  const programDecision = decideProgram(
+    program,
+    selectPredicateState(state, worker),
+    env,
+  );
   const continuation = requiredContinuation(programDecision);
   const inspect = programDecision.intents[0];
   if (inspect?.kind !== "Act")
@@ -884,7 +1070,7 @@ const workOrderDecision = (
     intentIndex: 0,
     evidence: [],
     revokedBy: revocationsFromState(state),
-    state,
+    state: selectPredicateState(state, worker),
     predicateEnv: predicateEnv(env),
   });
   if (!granted.authorized)
@@ -907,10 +1093,11 @@ const workOrderDecision = (
 };
 
 const deletionDecision = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
   event: Event,
   env: KernelEnv,
-): Decision<RuntimeState> => {
+): Decision<WalkingSkeletonSlice> => {
   const effect = stringField(event.payload, "effect") ?? "";
   const paths = stringArrayField(event.payload, "paths");
   const evidence = state.candidates.flatMap((candidate) => candidate.evidence);
@@ -924,7 +1111,7 @@ const deletionDecision = (
     intentIndex: 0,
     evidence,
     revokedBy: revocationsFromState(state),
-    state,
+    state: selectPredicateState(state, worker),
     predicateEnv: predicateEnv(env),
   });
   if (refused.authorized) throw new Error("deletion unexpectedly authorized");
@@ -946,14 +1133,15 @@ const deletionDecision = (
 };
 
 const episodeDecision = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
   event: Event,
   env: KernelEnv,
-): Decision<RuntimeState> => {
+): Decision<WalkingSkeletonSlice> => {
   const result = eventFromState(state.commandResult, "CommandResult");
   const continued = decideProgram(
     programFromState(state),
-    state,
+    selectPredicateState(state, worker),
     { ...env, now: result.occurredAt },
     result,
   );
@@ -977,10 +1165,11 @@ const episodeDecision = (
 };
 
 const beaconSweepDecision = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
   event: Event,
   env: KernelEnv,
-): Decision<RuntimeState> => {
+): Decision<WalkingSkeletonSlice> => {
   const request = event.payload as unknown as BeaconSweepRequest & {
     decisionIndex: number;
     perceptionVersion?: number;
@@ -1052,10 +1241,11 @@ const beaconSweepDecision = (
 };
 
 const beaconObservedDecision = (
-  state: RuntimeState,
+  state: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
   event: Event,
   env: KernelEnv,
-): Decision<RuntimeState> => {
+): Decision<WalkingSkeletonSlice> => {
   const payload = event.payload as unknown as {
     sweptAt: number;
     observations: readonly SignalObservation[];
@@ -1113,7 +1303,7 @@ const beaconObservedDecision = (
           : Number((BigInt(observation.mtimeNs) + 999999n) / 1000000n);
       const evaluated = evaluateCadence(
         Cadence.After(sweep.staleAfterMs),
-        state,
+        selectPredicateState(state, worker),
         { ...env, now: origin },
         event,
       );
@@ -1145,25 +1335,26 @@ const beaconObservedDecision = (
   };
 };
 
-const react = (
-  state: RuntimeState,
+const foldWalkingEvent = (
+  state: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
   event: Event,
   env: KernelEnv,
   compiled?: CompiledProgram,
-): Decision<RuntimeState> => {
+): Decision<WalkingSkeletonSlice> => {
   switch (event.type) {
     case "BeaconSweepRequested":
-      return beaconSweepDecision(state, event, env);
+      return beaconSweepDecision(state, worker, event, env);
     case "BeaconObserved":
-      return beaconObservedDecision(state, event, env);
+      return beaconObservedDecision(state, worker, event, env);
     case "InspectionTaskCreated":
       return observed(state, event, "task-opened");
     case "OperatorPresenceChanged":
-      return presenceDecision(state, event, env, compiled!);
+      return presenceDecision(state, worker, event, env, compiled!);
     case "CadencePulse":
-      return pulseDecision(state, event, env, compiled!);
+      return pulseDecision(state, worker, event, env, compiled!);
     case "WorkOrderEmitted":
-      return workOrderDecision(state, event, env, compiled!);
+      return workOrderDecision(state, worker, event, env, compiled!);
     case "CommandRedispatchRequested":
       if (
         stringField(event.payload, "commandId") === undefined ||
@@ -1189,21 +1380,6 @@ const react = (
             : "operator returned",
         );
       return observed(state, event, "redispatch-ready");
-    case "WorkerAttemptStarted":
-      return observed(
-        {
-          ...state,
-          workerEpisodeId:
-            stringField(event.payload, "workerEpisodeId") ?? null,
-          workerLeaseExpired: false,
-        },
-        event,
-      );
-    case "WorkerLeaseExpired":
-      return stringField(event.payload, "workerEpisodeId") ===
-        state.workerEpisodeId
-        ? observed({ ...state, workerLeaseExpired: true }, event)
-        : observed(state, event, "stale-lease");
     case "CommandPersisted": {
       const command = asObject(event.payload)?.["command"] ?? null;
       const effect =
@@ -1238,14 +1414,14 @@ const react = (
     }
     case "WorkerResultObserved":
       return (
-        workerResultGuard(state, event, env) ??
+        workerResultGuard(state, worker, event, env) ??
         observed(state, event, "worker-result-admissible")
       );
     case "CommandResult": {
       if (event.workstreamId === "ws_beacon_control")
         return observed(state, event, "beacon-sweep-returned");
       if (asObject(event.payload)?.["workerResultVersion"] === 1) {
-        const refusal = workerResultGuard(state, event, env);
+        const refusal = workerResultGuard(state, worker, event, env);
         if (refusal) return refusal;
       }
       const candidates = candidatesField(event.payload);
@@ -1274,7 +1450,7 @@ const react = (
       };
     }
     case "DeletionAttempted":
-      return deletionDecision(state, event, env);
+      return deletionDecision(state, worker, event, env);
     case "CommandRefused":
       if (event.workstreamId === "ws_beacon_control")
         return observed(state, event, "beacon-sweep-refused");
@@ -1302,7 +1478,7 @@ const react = (
         ),
       };
     case "EpisodeTerminated":
-      return episodeDecision(state, event, env);
+      return episodeDecision(state, worker, event, env);
     case "VerificationRequested":
       return {
         ...observed(state, event, "verification-dispatched"),
@@ -1346,13 +1522,12 @@ const react = (
   }
 };
 
-export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
-  if (state.program !== null) programFromState(state);
-  if (event.type === "FeedbackAuditOpened" || state.feedback !== undefined)
-    return feedbackDecision(state, event);
-  if (state.verification !== undefined)
-    return verificationDecision(state, event);
-
+const walkingDecision = (
+  state: WalkingSkeletonSlice,
+  worker: WorkerEpisodeSlice,
+  event: Event,
+  env: KernelEnv,
+): Decision<WalkingSkeletonSlice> => {
   if (event.type === "ArtifactIdentityEnforcementStarted") {
     if (canonicalStringify(event.payload) !== '{"payloadVersion":1}')
       return artifactRefused(
@@ -1411,9 +1586,63 @@ export const seiriReactor: Reactor<RuntimeState> = (state, event, env) => {
     ].includes(event.type);
   return consumesProgram
     ? withEquippedArtifact(state, event, (compiled) =>
-        react(state, event, env, compiled),
+        foldWalkingEvent(state, worker, event, env, compiled),
       )
-    : react(state, event, env);
+    : foldWalkingEvent(state, worker, event, env);
+};
+
+function foldWorkerEvent(
+  state: WorkerEpisodeSlice,
+  event: Event,
+): SliceDecision<WorkerEpisodeSlice> {
+  switch (event.type) {
+    case "WorkerAttemptStarted":
+      return observed(
+        {
+          ...state,
+          workerEpisodeId:
+            stringField(event.payload, "workerEpisodeId") ?? null,
+          workerLeaseExpired: false,
+        },
+        event,
+      );
+    case "WorkerLeaseExpired":
+      return stringField(event.payload, "workerEpisodeId") ===
+        state.workerEpisodeId
+        ? observed({ ...state, workerLeaseExpired: true }, event)
+        : observed(state, event, "stale-lease");
+    default:
+      return observed(state, event);
+  }
+}
+
+export const seiriReactor: Reactor<RuntimeState> = (runtime, event, env) => {
+  const state = skeletonStateFromRuntime(runtime);
+  const walking = selectWalkingSlice(state);
+  // Retain the old validation order even in a feedback/verification workstream.
+  if (walking.program !== null) programFromState(walking);
+  switch (selectEventSlice(state, event)) {
+    case "feedback":
+      return runtimeDecision(
+        feedbackDecision(selectFeedbackSlice(state), event),
+        (feedback) => ({ ...runtime, feedback: json(feedback) }),
+      );
+    case "verification":
+      return runtimeDecision(
+        verificationDecision(selectVerificationSlice(state)!, event),
+        (verification) => ({ ...runtime, verification: json(verification) }),
+      );
+    case "worker":
+      return runtimeDecision(
+        foldWorkerEvent(selectWorkerSlice(state), event),
+        (worker) => ({ ...runtime, ...worker }),
+      );
+    case "walking":
+      return runtimeDecision(
+        walkingDecision(walking, selectWorkerSlice(state), event, env),
+        (next) => ({ ...runtime, ...next }),
+      );
+  }
 };
 
 export const expectedInspectCommandId = commandId(WORKSTREAM, EPISODE, 1, 0);
@@ -2081,13 +2310,19 @@ export const verificationStateFromRuntime = (
   };
 };
 function verificationDecision(
-  state: RuntimeState,
+  state: VerificationState,
   event: Event,
-): Decision<RuntimeState> {
-  const before = verificationStateFromRuntime(state);
+): SliceDecision<VerificationState> {
+  const before = {
+    ...state,
+    continuation: persistedContinuation(
+      state?.continuation,
+      "verification continuation",
+    ),
+  };
   const next = foldVerificationEvent(before, event);
   return {
-    state: { ...state, verification: json(next) },
+    state: next,
     intents:
       before.pending === null && next.pending !== null
         ? [next.pending.command.intent]
@@ -2135,12 +2370,12 @@ export function feedbackStateFromRuntime(
 }
 /** Feedback shares the single kernel decider. All I/O remains in its host. */
 function feedbackDecision(
-  state: RuntimeState,
+  state: FeedbackRuntimeState | undefined,
   event: Event,
-): Decision<RuntimeState> {
+): SliceDecision<FeedbackRuntimeState | undefined> {
   if (event.type === "FeedbackAuditOpened") {
     if (
-      state.feedback !== undefined ||
+      state !== undefined ||
       event.actorId !== "feedback-host" ||
       !event.workstreamId
     )
@@ -2179,13 +2414,10 @@ function feedbackDecision(
         corrections: [],
       },
     };
-    return observed(
-      { ...state, feedback: json(next) },
-      event,
-      "feedback-opened",
-    );
+    return observed(next, event, "feedback-opened");
   }
-  const before = feedbackStateFromRuntime(state);
+  if (state === undefined) throw new Error("feedback workstream not opened");
+  const before = state;
   if (event.workstreamId !== before.workstreamId)
     return observed(state, event, "feedback-outside-workstream");
   assertCompiledFeedback(before.program);
@@ -2199,7 +2431,7 @@ function feedbackDecision(
       event,
     );
     const decision = observed(
-      { ...state, feedback: json({ ...before, policy }) },
+      { ...before, policy },
       event,
       "feedback-correction",
     );
@@ -2292,7 +2524,7 @@ function feedbackDecision(
     const dispatched = decideProgram(program, {}, env(event.occurredAt));
     return {
       ...observed(
-        { ...state, feedback: json({ ...before, pending: grant.command }) },
+        { ...before, pending: grant.command },
         event,
         "feedback-audit-dispatched",
       ),
@@ -2305,7 +2537,7 @@ function feedbackDecision(
     if (!before.pending || before.result || !same(command, before.pending))
       throw new Error("feedback command persistence mismatch");
     return observed(
-      { ...state, feedback: json({ ...before, persisted: true }) },
+      { ...before, persisted: true },
       event,
       "feedback-command-persisted",
     );
@@ -2329,7 +2561,7 @@ function feedbackDecision(
       throw new Error("feedback result mismatch");
     return {
       ...observed(
-        { ...state, feedback: json({ ...before, result: result.report }) },
+        { ...before, result: result.report },
         event,
         "feedback-audit-executed",
       ),

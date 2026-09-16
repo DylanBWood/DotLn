@@ -24,6 +24,7 @@ import {
 import { WorkerStore } from "./worker-store.js";
 import {
   feedbackStateFromRuntime,
+  hasFeedbackState,
   initialState,
   projectRuntimeEnvironment,
   seiriReactor,
@@ -151,7 +152,7 @@ export async function runFeedbackSelfhost(options: FeedbackSelfhostOptions) {
         episodeId: "ep_feedback_executor",
         payload: payload as JsonValue,
       });
-    if (driver.state.feedback === undefined)
+    if (!hasFeedbackState(driver.state))
       record("FeedbackAuditOpened", {
         program,
         workOrder,

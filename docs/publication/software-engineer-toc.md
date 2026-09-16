@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:41ee0e8cb62f5dfed86e5361b8c4880eaca0702aa00b5951b561098a1eaaee5c`
+`sha256:5171de1ae707439c645cf92fd0076a3df16f0d1a2189bfd0de697a9a0862db28`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -156,3 +156,6 @@ implementation-deep, lossy projection of the same
   [IR verification, lineage, and compatibility](../product/10-ir-compatibility.md#ir-verification-lineage-and-compatibility)
 - source/status coverage from the
   [audience/status index](audience-status-index.md)
+
+WO-050 adds internal typed reactor slices behind the unchanged public Decision
+state boundary; one decider and selector-only host reads preserve trace identity.

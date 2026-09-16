@@ -11,6 +11,8 @@ import {
   projectRuntimeEnvironment,
   seiriPredicates,
   seiriReactor,
+  walkingStateFromRuntime,
+  kernelStateFromRuntime,
 } from "./reactor.js";
 import type { BeaconSweepRequest } from "./control-beacon.js";
 import { declareBeaconPerception } from "./execution-environment.js";
@@ -81,12 +83,11 @@ export function projectBeaconSparseTwin(
   const state = initialState();
   const decision = seiriReactor(state, event, {
     now,
-    rngState: state.rngState,
+    ...kernelStateFromRuntime(state),
     predicates: seiriPredicates,
-    policy: state.policy,
   });
   const authorization = (
-    decision.state.beaconSweep as unknown as {
+    walkingStateFromRuntime(decision.state).beaconSweep as unknown as {
       authorization: AuthorizationResult;
     }
   ).authorization;
@@ -134,9 +135,8 @@ export function observeBeaconSweep(
     const appended = appendEvent(currentLog, draft);
     const decision = seiriReactor(folded.state, appended.event, {
       now: appended.event.occurredAt,
-      rngState: folded.state.rngState,
+      ...kernelStateFromRuntime(folded.state),
       predicates: seiriPredicates,
-      policy: folded.state.policy,
     });
     persist(appended.log);
     currentLog = appended.log;
@@ -159,7 +159,8 @@ export function observeBeaconSweep(
     type: "BeaconSweepRequested",
     payload: payload as unknown as JsonValue,
   });
-  const { authorization } = folded.state.beaconSweep as unknown as {
+  const { authorization } = walkingStateFromRuntime(folded.state)
+    .beaconSweep as unknown as {
     authorization: AuthorizationResult;
   };
   if (!authorization.authorized) {

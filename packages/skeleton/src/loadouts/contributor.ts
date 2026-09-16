@@ -580,7 +580,7 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "CLAUDE.md",
     },
     refusal: "claude-command-json-v1",
-    runtime: { skeletonVersion: "0.18.1", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.18.3", boundaryContract: "feedback-v1" },
   },
   {
     profileId: "codex-cli-0.153.4",
@@ -616,6 +616,6 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "AGENTS.md",
     },
     refusal: "unavailable",
-    runtime: { skeletonVersion: "0.18.1", boundaryContract: "feedback-v1" },
+    runtime: { skeletonVersion: "0.18.3", boundaryContract: "feedback-v1" },
   },
 ];

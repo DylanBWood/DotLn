@@ -1,4 +1,4 @@
-# WO-050 — The skeleton reactor's state splits into typed slices behind one decider, with every recorded trace byte-identical, so the next host branch lands in its own slice (version assigned at activation)
+# WO-050 — The skeleton reactor's state splits into typed slices behind one decider, with every recorded trace byte-identical, so the next host branch lands in its own slice (v0.21.2)
 
 **Cost:** Legacy declaration unavailable: added and removed wall-clock, context bytes, commands, tokens and steps were not measured. No reduction is claimed; the next planning refutation must judge this missing cost evidence (WO-126, 2026-09-09).
 

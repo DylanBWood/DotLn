@@ -1,4 +1,4 @@
-# `@dotln/skeleton` 0.18.2
+# `@dotln/skeleton` 0.18.3
 
 For application v0.22.0, every skeleton replay path passes `projectRuntimeEnvironment` from `reactor.ts`. The skeleton owns its RNG and policy state layout; complete decisions and serialized bytes remain identical to the kernel fallback.
 
@@ -129,6 +129,24 @@ wildcard/participating-authority-claim graphs still refuse, while unequipped
 catalog definitions remain inert.
 The fake adapter deduplicates by the kernel-generated command id so crash
 recovery can safely re-dispatch pending outbox commands.
+
+## Reactor state slices
+
+`reactor.ts` composes `SkeletonState` version 1 from typed walking-skeleton,
+worker-episode, verification and feedback slices. Each event selects one fold
+by its active workstream mode and event type; unknown observations stay in that
+mode. `sourceChange` is an empty typed slot with no fold for WO-052 to extend.
+Kernel deciders remain owned by the one exported `seiriReactor`.
+
+The operator selected the existing flat `RuntimeState` as the public Decision
+compatibility boundary. Pure adapters expose typed slices internally and write
+only the selected slice back; no state is persisted and no event changes.
+Hosts read exported selectors, including kernel predicate context. WO-047's
+explicit replay projector has since landed and returns the same
+`kernelStateFromRuntime` slice the live folds read, so public `rngState` and
+`policy` stay at the top level and replay cannot drift from the live path.
+The [WO-050 identity receipt](../../docs/evidence/WO-050/implementation.md)
+compares complete Decisions and semantic projections without normalizing state.
 
 ## Disposable workers
 

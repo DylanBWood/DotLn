@@ -195,8 +195,15 @@ test("WO-016 AC1 one typed reactor owns every skeleton kernel decider", async ()
   );
   assert.match(replayBody, /replay\(/u);
   assert.doesNotMatch(replayBody, /fixture|\.find\(|switch\s*\(|for\s*\(/u);
+  // Raised 748 -> 751 at the operator's direction during WO-047 final review.
+  // WO-050 and WO-047 each bought headroom by deleting the same blank
+  // separators in the LiveReactorDriver getters, so the two savings did not
+  // compose: main banked them and WO-047's four projector arguments landed on
+  // a file with none left. The bound is again at zero headroom; WO-047-D007
+  // records that this defers, and does not answer, whether scenario.ts should
+  // be split instead of ratcheted.
   assert.ok(
-    scenario.split("\n").length - 1 < 748,
+    scenario.split("\n").length - 1 < 751,
     "scenario.ts must remain smaller than the main baseline",
   );
 });

@@ -3,19 +3,19 @@
   "editions": {
     "authority": {
       "workOrder": "WO-047",
-      "revision": null
+      "revision": "001"
     },
     "artifact-identity": {
       "workOrder": "WO-046",
       "revision": null
     },
     "verification": {
-      "workOrder": "WO-048",
+      "workOrder": "WO-050",
       "revision": null
     },
     "feedback": {
       "workOrder": "WO-047",
-      "revision": null
+      "revision": "001"
     }
   }
 }

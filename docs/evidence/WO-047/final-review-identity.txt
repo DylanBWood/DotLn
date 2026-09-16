@@ -1,0 +1,14 @@
+WO-047 final review — replay identity on the integrated tree (main at c4276b6, v0.21.2)
+Executed 2026-09-16T01:59:16Z by the final-review session.
+
+$ node identity-sweep.mjs   # every .jsonl in the worktree, three projector modes
+files=154 replayable=79 events=4876 decisions=4876 mismatches=0
+
+$ node scripts/reactor-identity.mjs --check   # WO-050's frozen 19-case manifest
+Verified 19 complete Decision/projection fixtures without state normalization.
+
+$ node scripts/artifact-identity-evidence.mjs --check
+Verified 4 current artifact evidence files in docs/evidence/WO-046/artifact-identity; original semantic hashes and frozen oracle unchanged.
+
+$ node scripts/verification-evidence.mjs --check
+Verified 4 synthetic verification evidence files; planted defect, repair, staleness and replay are green.

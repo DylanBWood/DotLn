@@ -4684,6 +4684,51 @@
       "dispositions": []
     },
     {
+      "id": "FUP-9c04fd3b314e6a29",
+      "key": "decision:docs/evidence/WO-050/decisions.md#wo-050-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "5388457d1e9db737a567607d1bdc29c883e64ff2affc2d4c959b522644c8291f",
+          "ref": "docs/evidence/WO-050/decisions.md#wo-050-d001",
+          "title": "WO-050-D001: Preserve public RuntimeState and complete Decision bytes; compose version-1 typed slices internally, with one selected fold and exported host selectors.",
+          "summary": "{ \"id\": \"WO-050-D001\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Preserve public RuntimeState and complete Decision bytes; compose version-1 typed slices internally, with one selected fold and exported host selectors.\", \"evidence\": [ \"packages/skeleton/src/reactor.ts\", \"docs/work-orders/WO-050-reactor-typed-state-slices.md\" ], \"rejected\": [ { \"option\": \"Expose nested Decision state\", \"reason\": \"The operator explicitly selected preservation of complete Decision bytes.\" }, { \"option\": \"NoOp or package split\", \"reason\": \"WO-052 supplies the recorded consumer for an internal seam; a package boundary is unnecessary.\" } ], \"reopenWhen\": \"WO-047 lands or an explicitly authorize",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-0399f403d574ebf9",
+      "key": "decision:docs/evidence/WO-050/decisions.md#wo-050-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "10bfeb40a0e223eddfac732c761660265e9afc95ffd53aad2d4351992510ee54",
+          "ref": "docs/evidence/WO-050/decisions.md#wo-050-d002",
+          "title": "WO-050-D002: Capture synthetic worker fixtures once before refactoring; compare complete Decisions and projections on fixed input bytes, retaining historical refusal identities separately.",
+          "summary": "{ \"id\": \"WO-050-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Capture synthetic worker fixtures once before refactoring; compare complete Decisions and projections on fixed input bytes, retaining historical refusal identities separately.\", \"evidence\": [ \"packages/skeleton/fixtures/wo050-identity.json\", \"scripts/reactor-identity.mjs\" ], \"rejected\": [ { \"option\": \"Compare only trace fields or normalize Decision state\", \"reason\": \"Would hide state differences and fail the operator-selected full identity boundary.\" }, { \"option\": \"Claim original WO-009 raw logs or successful old WO-010/011 replay\", \"reason\": \"Those worker logs were not retained and the old compiled-artifa",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8bf908205a43b665",
+      "key": "decision:docs/evidence/WO-050/decisions.md#wo-050-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "2785a0480d64ce0db9c1f0355b96ec0fdbcf25013d301181c03d626ecb5eea0e",
+          "ref": "docs/evidence/WO-050/decisions.md#wo-050-d003",
+          "title": "WO-050-D003: Stage application v0.21.2 and skeleton 0.18.2 under the patch classification, refresh runtime pins and fresh verification/feedback evidence, and retain kernel/compiler versions.",
+          "summary": "{ \"id\": \"WO-050-D003\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Stage application v0.21.2 and skeleton 0.18.2 under the patch classification, refresh runtime pins and fresh verification/feedback evidence, and retain kernel/compiler versions.\", \"evidence\": [ \"packages/skeleton/package.json\", \"package-lock.json\", \"docs/evidence/current.json\" ], \"rejected\": [ { \"option\": \"No component bump or overwrite old evidence\", \"reason\": \"Runtime source changed; its patch and current evidence must be explicit while historical bytes remain immutable.\" } ], \"reopenWhen\": \"Integration consumes the target version or independent verification finds changed behavior.\", \"workOrder\": \"WO-050\"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
       "id": "FUP-9d31a3f04ca58800",
       "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d001",
       "kind": "decision",
@@ -4738,6 +4783,51 @@
           "ref": "docs/evidence/WO-047/decisions.md#wo-047-d004",
           "title": "WO-047-D004: Normalize the inherited capability-table header to its existing console schema; defer inherited planning-cost and continuation reconciliation to the next planning continuation.",
           "summary": "{ \"id\": \"WO-047-D004\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Normalize the inherited capability-table header to its existing console schema; defer inherited planning-cost and continuation reconciliation to the next planning continuation.\", \"evidence\": [ \"docs/planning/capability-table.md\", \"packages/console/src/text-sources.ts\", \"packages/console/test/board.test.ts\", \"scripts/lib/plan-subject.mjs\", \"scripts/lib/plan-continuation.mjs\", \"docs/evidence/WO-047/repair-001.md\" ], \"rejected\": [ { \"option\": \"NoOp on the table header\", \"reason\": \"A one-cell schema mismatch hides all capability rows; normalizing the heading restores the existing contract without changing claims",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-53b1e09874d73d98",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cd84dd4c601c06505e404cc879a1a6bcbdfc8cf45fababc72b8a7a2f3839313b",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d005",
+          "title": "WO-047-D005: Retime the staged skeleton component from 0.18.2 to 0.18.3 after WO-050 published v0.21.2 with skeleton 0.18.2, keeping application v0.22.0 and kernel 0.5.0 and the order's recorded minor",
+          "summary": "{ \"id\": \"WO-047-D005\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: final review\", \"decision\": \"Retime the staged skeleton component from 0.18.2 to 0.18.3 after WO-050 published v0.21.2 with skeleton 0.18.2, keeping application v0.22.0 and kernel 0.5.0 and the order's recorded minor classification.\", \"evidence\": [ \"packages/skeleton/package.json\", \"package-lock.json\", \"packages/skeleton/src/harness-host.ts\", \"packages/skeleton/src/loadouts/contributor.ts\", \"docs/product/06-roadmap.md\", \"docs/evidence/WO-047/final-review-surfaces.txt\" ], \"rejected\": [ { \"option\": \"Keep skeleton 0.18.2\", \"reason\": \"v0.21.2 published that exact component version; a second 0.18.2 with different bytes would make th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4ce9faab70b9f650",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "276965200ea206322049b36fd6cbf9dcfc92ae7b9886294e70ae3277b195825c",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d006",
+          "title": "WO-047-D006: Resolve the integration by having projectRuntimeEnvironment return kernelStateFromRuntime(state) rather than repeating the two field reads, so replay and the live folds project one kernel",
+          "summary": "{ \"id\": \"WO-047-D006\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: final review\", \"decision\": \"Resolve the integration by having projectRuntimeEnvironment return kernelStateFromRuntime(state) rather than repeating the two field reads, so replay and the live folds project one kernel-facing slice.\", \"evidence\": [ \"packages/skeleton/src/reactor.ts\", \"packages/skeleton/src/beacon-observe.ts\", \"packages/skeleton/src/verification-host.ts\", \"docs/planning/critical-path-2026-09-08.json\", \"docs/evidence/WO-047/final-review-identity.txt\" ], \"rejected\": [ { \"option\": \"Keep both functions with identical literal bodies\", \"reason\": \"Two independently maintained copies of the kernel-facing layout can drift,",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9ab36a847c3fa58b",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4ccbf29d3b08ec7ea58d16ba6db77dcf4fa6891359273ffdf1b1738cbd712b72",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d007",
+          "title": "WO-047-D007: Raise the WO-016 scenario.ts source-size bound from 748 to 751 at the operator's explicit direction, so the integrated tree's 750 lines pass, and defer the question of whether scenario.ts",
+          "summary": "{ \"id\": \"WO-047-D007\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: final review\", \"decision\": \"Raise the WO-016 scenario.ts source-size bound from 748 to 751 at the operator's explicit direction, so the integrated tree's 750 lines pass, and defer the question of whether scenario.ts should be split instead of ratcheted.\", \"evidence\": [ \"packages/skeleton/test/scenario.test.ts\", \"packages/skeleton/src/scenario.ts\", \"docs/verifications/WO-047/VER-002.md#non-blocking-observations\", \"docs/final-reviews/WO-047/FINAL-001.md\" ], \"rejected\": [ { \"option\": \"Return the bound overflow through repair and fresh verification\", \"reason\": \"The reviewer recommended this and the operator declined it, directing ",
           "missing": false
         }
       ],

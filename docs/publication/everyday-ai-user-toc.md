@@ -3,7 +3,7 @@
 Source base revision: `f2a4b232e1868691398964433c7e373fca4b84bb`
 
 Source lock:
-`sha256:3777834f44b3af5d335d8e57c0daa3a8bbc3496fdbfd4e5c70942f8998b3542d`
+`sha256:104dfa77578a23a519ea345f182a3a76104a8575ac2eadd9816db81072ca0366`
 
 The base revision identifies where this edition's source set was selected; every
 link must resolve there. The lock pins the exact current bytes of the linked
@@ -117,3 +117,6 @@ check this,” and links to the exact mechanics it compresses. Code shapes, sche
 detail, adapter catalogs, and migration algorithms belong in the
 software-engineer edition unless they are needed to explain a user-visible
 limit.
+
+WO-050 prepares the next worker capability by separating internal episode state
+while preserving the existing visible results and replay behavior.

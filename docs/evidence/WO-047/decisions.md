@@ -220,3 +220,136 @@ Subsequent operator direction released the verification hold and assigned the
 administrative tasks to final review. Record the repair handoff without checking
 the parallel merge or changing versions; preserve the planning follow-up and
 the existing check results. See the repair receipt's operator hold and release.
+
+## WO-047-D005
+
+Retime the staged release after WO-050 published skeleton 0.18.2 (2026-09-15)
+
+```json
+{
+  "id": "WO-047-D005",
+  "date": "2026-09-15",
+  "dispatch": "resume: final review",
+  "decision": "Retime the staged skeleton component from 0.18.2 to 0.18.3 after WO-050 published v0.21.2 with skeleton 0.18.2, keeping application v0.22.0 and kernel 0.5.0 and the order's recorded minor classification.",
+  "evidence": [
+    "packages/skeleton/package.json",
+    "package-lock.json",
+    "packages/skeleton/src/harness-host.ts",
+    "packages/skeleton/src/loadouts/contributor.ts",
+    "docs/product/06-roadmap.md",
+    "docs/evidence/WO-047/final-review-surfaces.txt"
+  ],
+  "rejected": [
+    { "option": "Keep skeleton 0.18.2", "reason": "v0.21.2 published that exact component version; a second 0.18.2 with different bytes would make the component version unusable as an identity." },
+    { "option": "Retime the application target too", "reason": "v0.22.0 is still free above main's v0.21.2, so the recorded minor classification lands unchanged." },
+    { "option": "Leave the runtime literals at 0.18.2", "reason": "WO-048 brought HARNESS_HOST_VERSION and both contributor-profile literals back into agreement with the package version and WO-050 preserved it; reintroducing the gap would restore the defect WO-048 recorded as its observation 7." }
+  ],
+  "reopenWhen": "Another sibling publishes skeleton 0.18.3 or application v0.22.0 before this branch merges, or a check on the integrated tree shows a compatibility impact beyond minor."
+}
+```
+
+Same-day correction to D002, under its own reopening condition ("Integration
+consumes a staged version"). What was misread: nothing. D002 was correct at its
+recorded subject, where the latest local tag was `v0.21.1` and skeleton `0.18.2`
+was free. What was meant: the smallest patch above the then-current release for
+the skeleton runtime alone, under a minor application target. What changed:
+WO-050 merged to `main` as `v0.21.2` with skeleton `0.18.2` while this branch was
+in final review, so the same patch intent now lands at `0.18.3`. The kernel's
+`0.5.0` is untouched by WO-050 and the application target `v0.22.0` remains free,
+so only the skeleton moves. `release check-surfaces --local` agrees at every
+axis on the integrated tree.
+
+## WO-047-D006
+
+Read the replay projection from WO-050's kernel-facing slice (2026-09-15)
+
+```json
+{
+  "id": "WO-047-D006",
+  "date": "2026-09-15",
+  "dispatch": "resume: final review",
+  "decision": "Resolve the integration by having projectRuntimeEnvironment return kernelStateFromRuntime(state) rather than repeating the two field reads, so replay and the live folds project one kernel-facing slice.",
+  "evidence": [
+    "packages/skeleton/src/reactor.ts",
+    "packages/skeleton/src/beacon-observe.ts",
+    "packages/skeleton/src/verification-host.ts",
+    "docs/planning/critical-path-2026-09-08.json",
+    "docs/evidence/WO-047/final-review-identity.txt"
+  ],
+  "rejected": [
+    { "option": "Keep both functions with identical literal bodies", "reason": "Two independently maintained copies of the kernel-facing layout can drift, and a drift between them is exactly a live/replay divergence, which is the failure this order exists to prevent." },
+    { "option": "Delete projectRuntimeEnvironment and pass kernelStateFromRuntime directly", "reason": "The replay projector's declared return type states the kernel contract at the seam; the named export is what the kernel README and product 02 document." },
+    { "option": "Defer to a follow-up order", "reason": "The merge forces a resolution of these files now, and leaving a literal duplicate is a worse record than the one-line delegation the planning receipt already anticipated." }
+  ],
+  "reopenWhen": "The live folds and replay need different environment fields, or a consumer needs a projection that is not the kernel-facing slice."
+}
+```
+
+The 2026-09-08 critical-path receipt records the edge `WO-050 → WO-047`,
+`reference-only`: "the explicit projector reads the kernel-facing slice when it
+has landed". WO-050 landed first and introduced `kernelStateFromRuntime` for its
+direct `seiriReactor` calls in `beacon-observe.ts` and `verification-host.ts`,
+returning `{ rngState, policy }` — byte for byte the projection this order wrote
+for its replay calls. Delegating is behavior-preserving by inspection, and it
+makes the live/replay identity that criterion 1 asserts structural rather than
+merely tested: the two paths can no longer read different fields.
+
+Goal and NoOp: the alternative is a duplicate that a future state-layout change
+must find twice. Naive Interventionism: nothing else in either order's source
+moved; the two other conflicts are import lists resolved by taking both sides.
+Rule beating: the identity claim is re-established by executing the sweep on the
+integrated tree, not carried forward from VER-002's base.
+
+## WO-047-D007
+
+Raise the scenario.ts size ratchet after two orders spent the same headroom (2026-09-15)
+
+```json
+{
+  "id": "WO-047-D007",
+  "date": "2026-09-15",
+  "dispatch": "resume: final review",
+  "decision": "Raise the WO-016 scenario.ts source-size bound from 748 to 751 at the operator's explicit direction, so the integrated tree's 750 lines pass, and defer the question of whether scenario.ts should be split instead of ratcheted.",
+  "evidence": [
+    "packages/skeleton/test/scenario.test.ts",
+    "packages/skeleton/src/scenario.ts",
+    "docs/verifications/WO-047/VER-002.md#non-blocking-observations",
+    "docs/final-reviews/WO-047/FINAL-001.md"
+  ],
+  "rejected": [
+    { "option": "Return the bound overflow through repair and fresh verification", "reason": "The reviewer recommended this and the operator declined it, directing the bump instead. Recorded so the recommendation and its override are both legible." },
+    { "option": "Reviewer shaves two more blank separators", "reason": "It is the third consecutive whitespace shave against the same bound and would have the reviewer certify an uncertified source edit; the operator chose to move the bound openly instead of hiding the growth again." },
+    { "option": "Add slack beyond the current size", "reason": "751 is the minimum that admits 750, so the ratchet keeps its pressure and the next growth is visible rather than absorbed." }
+  ],
+  "reopenWhen": "The next order needs a line in scenario.ts, or a planning pass decides whether to extract from the file rather than raise the bound again."
+}
+```
+
+Authority and disclosure. This is the operator's decision, recorded at their
+direction during final review, not the reviewing session's judgment. The
+reviewer's recommendation was to record a failed final review and return the
+overflow through repair and fresh independent verification, on the grounds
+that product 07 assigns an acceptance defect revealed by a check to repair and
+that a reviewer never writes a source fix and certifies it. The operator judged
+it not worth a cycle, directed the bump, and asked for a note and a later
+revisit. No independent verification covers this bound change: VER-001 and
+VER-002 both judged trees where the bound was `748` and both recorded that it
+was preserved rather than relaxed.
+
+What actually happened, because the cause is not obvious from the number. The
+bound counts newlines in `packages/skeleton/src/scenario.ts`. At the merge base
+it was 745. WO-050 and WO-047 were authored independently against that base and
+each needed a few lines: WO-050 for its slice selectors, WO-047 for the four
+`projectRuntimeEnvironment` arguments. Each bought room by deleting blank
+separators in the `LiveReactorDriver` getter block — and they deleted the *same*
+separators. Overlapping savings do not compose. `main` merged first and banked
+them at 746, so WO-047's four lines landed on a file with no headroom and the
+merged result is 750. Neither branch fails this check alone.
+
+The standing risk this leaves. The bound is once again at zero headroom, so the
+next line added to `scenario.ts` fails the gate exactly as it did here, and the
+cheapest way out will again look like deleting whitespace. That is the guard
+failing at its purpose: it was meant to discourage the file from growing, and it
+has instead been satisfied three times by cosmetic removal. The durable question
+— extract from `scenario.ts`, or accept that it grows and stop pretending the
+ratchet constrains it — is deferred, not answered.

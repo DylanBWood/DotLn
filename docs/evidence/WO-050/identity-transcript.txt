@@ -1,0 +1,22 @@
+Pre-refactor subject: Git HEAD before WO-050 source edits; fixed input digests and complete canonical-byte digests are in packages/skeleton/fixtures/wo050-identity.json.
+Encoding: canonicalStringify of entire Decisions plus semantic projections and every intermediate status/outbox prefix; no Decision state normalization.
+cmp before/0.json after/0.json: exit 0 — packages/skeleton/fixtures/wo050/feedback-correction.jsonl (270080 bytes, 9 Decisions)
+cmp before/1.json after/1.json: exit 0 — packages/skeleton/fixtures/wo050/scenario-recovery.jsonl (1024014 bytes, 31 Decisions)
+cmp before/2.json after/2.json: exit 0 — packages/skeleton/fixtures/wo050/scenario.jsonl (917782 bytes, 28 Decisions)
+cmp before/3.json after/3.json: exit 0 — packages/skeleton/fixtures/wo050/verification.jsonl (1259213 bytes, 31 Decisions)
+cmp before/4.json after/4.json: exit 0 — packages/skeleton/fixtures/wo050/worker-claude.jsonl (1254224 bytes, 37 Decisions)
+cmp before/5.json after/5.json: exit 0 — packages/skeleton/fixtures/wo050/worker-codex.jsonl (1253944 bytes, 37 Decisions)
+cmp before/6.json after/6.json: exit 0 — packages/skeleton/fixtures/wo050/worker-row2-interrupted.jsonl (469285 bytes, 16 Decisions)
+cmp before/7.json after/7.json: exit 0 — packages/skeleton/fixtures/wo050/worker-row2-recovered.jsonl (1448162 bytes, 42 Decisions)
+cmp before/8.json after/8.json: exit 0 — packages/skeleton/fixtures/wo050/worker-row4-quarantined.jsonl (598790 bytes, 19 Decisions)
+cmp before/9.json after/9.json: exit 0 — packages/skeleton/fixtures/wo050/worker-row6-interrupted.jsonl (505052 bytes, 17 Decisions)
+cmp before/10.json after/10.json: exit 0 — packages/skeleton/fixtures/wo050/worker-row6-recovered.jsonl (1483197 bytes, 43 Decisions)
+cmp before/11.json after/11.json: exit 0 — packages/skeleton/fixtures/wo029-legacy-scenario.jsonl (650412 bytes, 21 Decisions)
+cmp before/12.json after/12.json: exit 0 — docs/evidence/WO-010/events.jsonl (53655 bytes, 4 Decisions) [baseline refusal retained]
+cmp before/13.json after/13.json: exit 0 — docs/evidence/WO-011/verification/events.jsonl (53655 bytes, 4 Decisions) [baseline refusal retained]
+cmp before/14.json after/14.json: exit 0 — docs/evidence/WO-011/selfhost-audit.jsonl (135 bytes, 0 Decisions) [baseline refusal retained]
+cmp before/15.json after/15.json: exit 0 — docs/evidence/WO-011/selfhost-verification.jsonl (2109382 bytes, 3 Decisions) [baseline refusal retained]
+cmp before/16.json after/16.json: exit 0 — docs/evidence/WO-048/verification/events.jsonl (1259213 bytes, 31 Decisions)
+cmp before/17.json after/17.json: exit 0 — docs/evidence/WO-048/feedback-002/selfhost-audit.jsonl (218084 bytes, 5 Decisions)
+cmp before/18.json after/18.json: exit 0 — docs/evidence/WO-048/feedback-002/selfhost-verification.jsonl (124549082 bytes, 54 Decisions)
+Final source-change reservation correction: repeated all 19 cmp commands on the rebuilt final source; every exit code remained 0.
