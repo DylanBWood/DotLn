@@ -20,6 +20,19 @@ eventual physical package boundary remains evidence-selected under ADR-0006.
 
 ## Release boundary
 
+**WO-049 activation completion (2026-09-16):** application `v0.24.0` is the
+next minor above the observed local `v0.23.0`. Compiler `0.12.0` adds the
+optional target-worker harness profile and absolute runtime import root;
+skeleton `0.20.0` adds target guard execution and off-target state. Existing
+Contributor behavior, unit predicates, envelope semantics, kernel and console
+versions remain unchanged. The operator approved required pin/version/hash
+updates while retaining Contributor behavior and relative imports. At repair
+the skeleton was retimed to `0.21.0` because WO-051 published `0.20.0` with
+`v0.24.0`; compiler `0.12.0` is unchanged
+([WO-049-D007](../evidence/WO-049/decisions.md#wo-049-d007)).
+
+**WO-049 collision retiming (2026-09-16):** unpublished target `v0.24.0` is superseded by `v0.25.0` under the existing minor classification because the observed release baseline is `v0.24.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
+
 **WO-050 activation completion (2026-09-16):** application `v0.21.2` and
 skeleton `0.18.2` stage the structural state-slice patch. The public Decision
 shape, event schemas, semantic hashes, compiler and kernel versions stay

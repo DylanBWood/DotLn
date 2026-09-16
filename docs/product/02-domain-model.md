@@ -736,7 +736,26 @@ deterministic and dependency-free. Its target input wraps a compiled loadout
 with role and facet adapters; it does not change the `loadout-v1` preimage.
 The envelope must equal the compiled build's envelope. A profile pins a harness
 version, observed capability references, project paths, refusal protocol and
-built runtime bytes. An unobserved capability is unavailable.
+built runtime bytes. An unobserved capability is unavailable. A target profile
+may also deliberately omit an observed capability; its reason distinguishes
+that scope choice from a missing observation, while `available: false` keeps
+the omitted adapter out of the bundle.
+
+WO-049 adds the opt-in `target-worker-v1` profile in compiler `0.12.0` and
+skeleton `0.21.0`. Claude receives PreToolUse permission, writer and attribution
+guards, settings and `CLAUDE.local.md`; Codex receives only the local instruction
+and manifest, with launch governance supplied separately. The emit-time
+`runtime.importRoot` generates absolute file-URL imports into an immutable
+launchpad snapshot and is omitted from manifest/config data. A target prelude
+or runtime failure returns a tool denial; the Contributor advisory fallback
+remains unchanged. Target journal and writer state live in the launchpad lane,
+keyed by a digest of the target's real path. Local exclude ownership keeps the
+bundle out of Git; check verifies bytes and effective ignoring, and remove
+preserves unrelated files. The target manifest carries only relative paths and
+hashes; its self entry hashes the other entries, while the launchpad receipt
+binds its full bytes and preserves applied-grant provenance. See the
+[target runbook](../../packages/skeleton/README.md#target-worktree-bundle) for
+bounded shell support and recovery limits.
 
 A `HarnessBundle` contains `{ path, contents, origin, rung }` files, a manifest
 and residue. Every origin names its unit/facet IDs, loadout ID and semantic hash.

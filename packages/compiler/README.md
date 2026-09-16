@@ -1,4 +1,9 @@
-# `@dotln/compiler` v0.11.2
+# `@dotln/compiler` v0.12.0
+
+Component `0.12.0` adds the opt-in `target-worker-v1` harness profile and
+emit-time absolute runtime import root. Target hooks fail closed and omit
+Contributor lifecycle observers and skills; the default Contributor generator,
+unit predicates, compiled envelope and semantic hash preimages stay unchanged.
 
 Component `0.11.2` makes generated fallback advisories once per session and cause,
 silences observers, and registers the existing session handler for SessionStart.

@@ -297,7 +297,7 @@ function transcriptFiles(directory, depth) {
  * @param {string} root
  * @param {{sessionKey?: string, transcriptPath?: string, since?: string, until?: string, codexDirectory?: string, claudeDirectory?: string, env?: NodeJS.ProcessEnv}} [options]
  */
-export function collectSessionUsage(root, options = {}) {
+function sessionTranscript(root, options = {}) {
   const env = options.env ?? process.env;
   const key =
     options.sessionKey ??
@@ -358,11 +358,94 @@ export function collectSessionUsage(root, options = {}) {
     throw new Error(
       `Token measurement requires exactly one transcript for the current session and worktree; found ${selected.length}`,
     );
-  const observation = requireMeasuredUsage(
-    transcriptUsage(path, options),
+  return path;
+}
+
+/** Usage freshness is independent of the session's model/effort metadata.
+ * @param {string} root
+ * @param {Parameters<typeof sessionTranscript>[1]} [options]
+ */
+export function collectSessionUsage(root, options = {}) {
+  return requireMeasuredUsage(
+    transcriptUsage(sessionTranscript(root, options), options),
     options.since,
   );
-  return observation;
+}
+
+/** Current Codex harness metadata only: never transcript text, IDs or paths.
+ * Missing readback is informational and cannot refuse a workflow action.
+ * @param {string} root
+ * @param {Parameters<typeof sessionTranscript>[1]} [options]
+ */
+export function currentCodexSession(root, options = {}) {
+  try {
+    const rows = decodeUsageSource(
+      readFileSync(sessionTranscript(root, options), "utf8"),
+    );
+    const meta = rows.find((row) => row.type === "session_meta")?.payload;
+    const turn = rows.filter((row) => row.type === "turn_context").at(-1);
+    const model =
+      typeof turn?.payload?.model === "string" &&
+      /^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,99}$/.test(turn.payload.model)
+        ? turn.payload.model
+        : null;
+    const effort = [
+      "none",
+      "minimal",
+      "low",
+      "medium",
+      "high",
+      "xhigh",
+      "max",
+      "ultra",
+      "ultra code",
+    ].includes(turn?.payload?.effort)
+      ? turn.payload.effort
+      : null;
+    const version =
+      typeof meta?.cli_version === "string" &&
+      /^\d+\.\d+\.\d+(?:[-+][a-zA-Z0-9.-]+)?$/.test(meta.cli_version)
+        ? meta.cli_version
+        : null;
+    if (model === null && effort === null && version === null)
+      return {
+        available: false,
+        source: "unavailable",
+        reason: "Current Codex session metadata is incomplete",
+      };
+    return {
+      available: true,
+      harness: "codex-cli",
+      harnessVersion: version,
+      model,
+      effort,
+      source: "codex-session-readback",
+      observedAt:
+        typeof turn?.timestamp === "string" &&
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(
+          turn.timestamp,
+        ) &&
+        Number.isFinite(Date.parse(turn.timestamp))
+          ? turn.timestamp
+          : null,
+    };
+  } catch {
+    return {
+      available: false,
+      source: "unavailable",
+      reason: "Current Codex session metadata could not be read",
+    };
+  }
+}
+
+/** @param {ReturnType<typeof currentCodexSession>} session */
+export function renderCodexSession(session) {
+  if (!session.available)
+    return `Current Codex session: ${session.reason}; no default substituted.`;
+  const mode = ["ultra", "ultra code"].includes(session.effort ?? "")
+    ? " (xhigh + workflows)"
+    : "";
+  return `Current Codex session: ${session.model ?? "unknown"}; effort ${session.effort ?? "unknown"}${mode}; CLI ${session.harnessVersion ?? "unknown"}; source ${session.source}.`;
 }
 /** @param {string} root @param {{workOrder: string|null, role: string, dispatch?: string, observation: ReturnType<typeof usageObservation>, startedAt?: string, durationMs?: number, ordinal?: number, sessionKey?: string, supersedes?: string[]}} row */
 export function recordUsageObservation(root, row) {

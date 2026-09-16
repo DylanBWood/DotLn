@@ -238,7 +238,9 @@ give the paired-wave workflow the sync step it is missing.
   no file is imported both from source and from `dist/`. The kernel,
   compiler, reactor, and codebook semantics are unchanged and every existing
   Beacon fixture passes byte for byte.
-- **Phase 2 — target repositories are builds, not just paths.** A work order
+- **Phase 2 — target repositories are builds, not just paths.** WO-049 is this
+  umbrella's target-bundle emit/check/remove half; repository registration,
+  source-change transport, overlays and sync remain separate work. A work order
   may declare `**Repository:** <id> @ <base>` in its leading metadata; absent
   means `self`. A registered repository carries an **authority profile**,
   which is an `AuthorityEnvelope` in the configuration (allowed and denied

@@ -1,4 +1,8 @@
-# `@dotln/skeleton` 0.19.0
+# `@dotln/skeleton` 0.21.0
+
+For application v0.25.0 (WO-049), target-worker bundles use the launchpad's
+immutable runtime and keep journals and writer reservations outside the target.
+See [Target worktree bundle](#target-worktree-bundle).
 
 For application v0.23.0 (WO-068), an operator-started resident host folds one
 launchpad log, records every wall-clock sample and explicit presence change as
@@ -713,3 +717,48 @@ observer accounts for delivered file ranges through the final Stop. Current
 smokes observe native Read attempts without enforcing the directed ranges and
 fail on any out-of-set observed or attempted read. This is an instrument for the
 bounded smoke, not a general parser for arbitrary shell effects.
+
+
+## Target worktree bundle
+
+From the launchpad root, after building:
+
+```sh
+npm run harness -- emit --target <worktree> --runtime-root <launchpad>
+npm run harness -- check --target <worktree> --runtime-root <launchpad>
+npm run harness -- remove --target <worktree> --runtime-root <launchpad>
+```
+
+The default profile is `target-worker-claude`; select `--profile
+target-worker-codex` to install only `CLAUDE.local.md` and the manifest. A Codex
+launch must explicitly read that instruction block. No Codex hook capability
+is claimed. Launch permissions belong to WO-051; host diff checks and their live
+proof belong to WO-052 and WO-053 respectively.
+
+Claude receives three PreToolUse guards (permission, writer, attribution),
+settings deny rules and the local instruction block. Hook imports are absolute
+file URLs into the pinned launchpad snapshot. Runtime or classification failures
+refuse the tool. Bounded writes must stay inside the target and leave the bundle
+intact. Opaque shell commands, including test scripts and Git commits, need a
+host route; this profile does not claim universal shell containment. The
+attribution adapter checks explicit commit messages independently, but the
+permission guard currently denies the commit command even when that check passes.
+WO-051's transport allowlist does not bypass the guard. Host-authorized opaque
+command execution remains a WO-052/WO-053 integration obligation.
+
+Emit refuses unowned or tracked destination files, symlinks, incompatible
+launchpad runtime bytes and target ignore rules that would expose the bundle.
+It never merges existing settings. Every emitted path and `/.dotln/` goes into
+the repository's local exclude; shared-worktree membership is serialized and
+removal preserves surviving members and pre-existing exclude bytes. Another
+launchpad's managed exclude refuses rather than merging ownership.
+
+The manifest has only relative paths and hashes. Its own entry hashes the
+payload list without that entry; the launchpad receipt hashes the whole manifest.
+`check` verifies bytes, effective Git ignoring and runtime pins. `remove` refuses
+modified owned files, preserves unrelated files and retains the launchpad's
+runtime/journals. Empty target directories may remain. State is under
+`docs/control/local/harness/targets/<digest-of-real-target-path>/`. Raw physical
+paths are not copied into the manifest or installation receipt; only hook import
+lines contain the runtime path. Checks bind local bytes, not hostile-user
+isolation or authenticity.

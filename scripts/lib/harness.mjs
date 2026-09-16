@@ -7,12 +7,15 @@ import {
   readdirSync,
   realpathSync,
   renameSync,
+  rmdirSync,
   symlinkSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createHash } from "node:crypto";
+import { execFileSync, spawnSync } from "node:child_process";
 import {
   canonicalStringify,
   fnv1a64,
@@ -24,6 +27,7 @@ import {
 import {
   contributorConfiguredProgram,
   contributorProfiles,
+  targetWorkerProfiles,
 } from "../../packages/skeleton/dist/src/loadouts/contributor.js";
 import { personalFeedback } from "../../packages/skeleton/dist/src/loadouts/feedback.js";
 import { checkLocalTerms } from "./terms.mjs";
@@ -76,7 +80,8 @@ export function harnessInstallation(options = {}) {
   const program =
     options.program ?? contributorConfiguredProgram(options.supports);
   const feedback = options.feedback ?? personalFeedback();
-  const sourceRoot = fileURLToPath(new URL("../../", import.meta.url));
+  const sourceRoot =
+    options.runtimeRoot ?? fileURLToPath(new URL("../../", import.meta.url));
   const runtimeFiles = [
     // Admission compares this module's compiler version. A compiler-only
     // release must install a fresh snapshot even when hook handlers are equal.
@@ -155,7 +160,14 @@ export function harnessInstallation(options = {}) {
       ].sort(),
     },
   };
-  return { files, manifest, bundles, runtimeSnapshot, runtimeFiles };
+  return {
+    files,
+    manifest,
+    bundles,
+    runtimeSnapshot,
+    runtimeFiles,
+    sourceRoot,
+  };
 }
 const walkOwned = (root) => {
   const paths = [];
@@ -266,7 +278,9 @@ export function preserveHarnessRuntime(
         );
     return;
   }
-  const source = fileURLToPath(new URL("../../", import.meta.url));
+  const source =
+    installation.sourceRoot ??
+    fileURLToPath(new URL("../../", import.meta.url));
   const staging = `${destination}.preparing-${process.pid}`;
   mkdirSync(join(staging, "node_modules/@dotln"), { recursive: true });
   for (const name of readdirSync(join(source, "packages"))) {
@@ -335,3 +349,444 @@ export function checkHarness(root, options = {}) {
     ]),
   };
 }
+
+const targetManifest = ".claude/target-worker-manifest.json";
+const targetDigest = (value) =>
+  createHash("sha256").update(value).digest("hex");
+const targetGit = (root, ...args) =>
+  execFileSync("git", args, {
+    cwd: root,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+    timeout: 10000,
+  }).trim();
+const targetStat = (path) => lstatSync(path, { throwIfNoEntry: false });
+function targetIgnore(context, path, installed = false) {
+  const result = spawnSync(
+    "git",
+    ["check-ignore", "--no-index", "-z", "-v", "--stdin"],
+    {
+      cwd: context.root,
+      input: `${path}\0`,
+      encoding: "utf8",
+      timeout: 10000,
+    },
+  );
+  if (![0, 1].includes(result.status))
+    throw new Error("target ignore observation unavailable");
+  const [source, , pattern] = result.stdout.split("\0");
+  if (
+    pattern?.startsWith("!") &&
+    resolve(context.root, source) !== context.exclude
+  )
+    throw new Error(`target ignore rule exposes bundle: ${path}`);
+  if (installed && (!pattern || pattern.startsWith("!")))
+    throw new Error(`target bundle is Git-visible: ${path}`);
+}
+const targetPaths = new Set([
+  "CLAUDE.local.md",
+  targetManifest,
+  ".claude/settings.json",
+  ".claude/hooks/permissions.mjs",
+  ".claude/hooks/concurrent-work-requires-worktrees.mjs",
+  ".claude/hooks/no-attribution.mjs",
+]);
+function targetFile(root, path) {
+  if (!targetPaths.has(path))
+    throw new Error("target manifest contains an unsupported path");
+  let candidate = root;
+  for (const part of path.split("/")) {
+    candidate = join(candidate, part);
+    const info = targetStat(candidate);
+    if (
+      info &&
+      (info.isSymbolicLink() ||
+        (candidate === join(root, path) ? !info.isFile() : !info.isDirectory()))
+    )
+      throw new Error(
+        `target output is not a regular contained surface: ${path}`,
+      );
+  }
+  return candidate;
+}
+function safeLocalDirectory(root, path) {
+  let candidate = root;
+  for (const part of path.split("/")) {
+    candidate = join(candidate, part);
+    const info = targetStat(candidate);
+    if (info && (!info.isDirectory() || info.isSymbolicLink()))
+      throw new Error("target launchpad state is not a regular directory");
+  }
+  return candidate;
+}
+function targetContext(target, options = {}) {
+  const root = realpathSync(target);
+  if (realpathSync(targetGit(root, "rev-parse", "--show-toplevel")) !== root)
+    throw new Error("target requires the physical Git worktree root");
+  const launchpad = realpathSync(
+    options.runtimeRoot ?? fileURLToPath(new URL("../../", import.meta.url)),
+  );
+  if (
+    root === launchpad ||
+    root.startsWith(`${launchpad}${sep}`) ||
+    launchpad.startsWith(`${root}${sep}`)
+  )
+    throw new Error("target and launchpad must be separate worktrees");
+  const id = targetDigest(root);
+  const lane = safeLocalDirectory(
+    launchpad,
+    `docs/control/local/harness/targets/${id}`,
+  );
+  const receiptPath = join(lane, "installation.json");
+  if (
+    targetStat(receiptPath) &&
+    (!targetStat(receiptPath).isFile() ||
+      targetStat(receiptPath).isSymbolicLink())
+  )
+    throw new Error("target installation receipt is not a regular file");
+  const exclude = resolve(
+    root,
+    targetGit(root, "rev-parse", "--git-path", "info/exclude"),
+  );
+  // Git may legitimately put info/exclude in a shared repository outside this worktree.
+  // Check every existing ancestor without following user-created symlinks.
+  let parent = exclude;
+  while (parent !== dirname(parent)) {
+    const info = targetStat(parent);
+    if (info?.isSymbolicLink())
+      throw new Error("target exclude must not follow symlinks");
+    parent = dirname(parent);
+  }
+  if (targetStat(exclude) && !targetStat(exclude).isFile())
+    throw new Error("target exclude is not a regular file");
+  const excludeKey = targetDigest(exclude);
+  const registryDir = safeLocalDirectory(
+    launchpad,
+    "docs/control/local/harness/excludes",
+  );
+  const registryPath = join(registryDir, `${excludeKey}.json`);
+  if (
+    targetStat(registryPath) &&
+    (!targetStat(registryPath).isFile() ||
+      targetStat(registryPath).isSymbolicLink())
+  )
+    throw new Error("target exclude registry is not a regular file");
+  return {
+    root,
+    launchpad,
+    id,
+    lane,
+    receiptPath,
+    exclude,
+    excludeKey,
+    registryDir,
+    registryPath,
+  };
+}
+const targetJson = (value) => JSON.stringify(value, null, 2) + "\n";
+const readTargetReceipt = (context) =>
+  existsSync(context.receiptPath)
+    ? JSON.parse(readFileSync(context.receiptPath, "utf8"))
+    : null;
+function manifestFiles(context, receipt) {
+  if (
+    !receipt ||
+    receipt.contract !== "target-worker-v1" ||
+    receipt.targetId !== context.id ||
+    receipt.excludeKey !== context.excludeKey
+  )
+    throw new Error("target installation receipt missing or differs");
+  const contents = readFileSync(
+    targetFile(context.root, targetManifest),
+    "utf8",
+  );
+  if (hash(contents) !== receipt.manifestHash)
+    throw new Error("target manifest drift");
+  const manifest = JSON.parse(contents);
+  const files = manifest.installed;
+  if (
+    !Array.isArray(files) ||
+    files.length < 2 ||
+    files.some(
+      (file) =>
+        !file ||
+        Object.keys(file).sort().join() !== "hash,path" ||
+        !targetPaths.has(file.path) ||
+        !/^fnv1a64:[a-f0-9]{16}$/.test(file.hash),
+    ) ||
+    new Set(files.map((file) => file.path)).size !== files.length ||
+    files.filter((file) => file.path === targetManifest).length !== 1
+  )
+    throw new Error("target manifest shape differs");
+  const payload = files.filter((file) => file.path !== targetManifest);
+  // Its self entry binds the payload list; the receipt binds the full manifest bytes.
+  if (
+    files.find((file) => file.path === targetManifest).hash !==
+    hash(targetJson({ installed: payload }))
+  )
+    throw new Error("target manifest self entry differs");
+  return files;
+}
+function excludeRegistry(context) {
+  const contents = existsSync(context.exclude)
+    ? readFileSync(context.exclude, "utf8")
+    : "";
+  if (
+    !existsSync(context.registryPath) &&
+    contents.includes("# target-worker ")
+  )
+    throw new Error("target exclude is managed by another launchpad");
+  let registry = existsSync(context.registryPath)
+    ? JSON.parse(readFileSync(context.registryPath, "utf8"))
+    : null;
+  if (!registry || (!registry.block && !Object.keys(registry.members).length)) {
+    if (contents.includes("# target-worker "))
+      throw new Error("target exclude block drift");
+    registry = {
+      originalLines: contents
+        .split(/\r?\n/)
+        .filter(
+          (line) =>
+            [...targetPaths].some((path) => line === `/${path}`) ||
+            line === "/.dotln/",
+        ),
+      needsNewline: Boolean(contents && !contents.endsWith("\n")),
+      prefixHash: hash(contents),
+      members: {},
+      block: "",
+    };
+  }
+  const marker = `# target-worker ${context.excludeKey}`;
+  const begins = [...contents.matchAll(new RegExp(`^${marker} begin$`, "gm"))];
+  const ends = [...contents.matchAll(new RegExp(`^${marker} end$`, "gm"))];
+  let blockStart = null;
+  let blockEnd = null;
+  if (registry.block) {
+    blockStart = begins[0]?.index;
+    blockEnd = (ends[0]?.index ?? -1) + `${marker} end\n`.length;
+    // Older receipts included the optional separator in their owned block.
+    const expected = registry.block.replace(/^\n/, "");
+    if (
+      begins.length !== 1 ||
+      ends.length !== 1 ||
+      (blockStart !== 0 && contents[blockStart - 1] !== "\n") ||
+      contents.slice(blockStart, blockEnd) !== expected
+    )
+      throw new Error("target exclude block drift");
+  } else if (begins.length || ends.length) {
+    throw new Error("target exclude block drift");
+  }
+  return { registry, contents, blockStart, blockEnd };
+}
+function updateTargetExclude(context, files, remove = false) {
+  const { registry, contents, blockStart, blockEnd } = excludeRegistry(context);
+  if (remove) delete registry.members[context.id];
+  else
+    registry.members[context.id] = files
+      .map((file) => `/${file.path}`)
+      .concat("/.dotln/");
+  const baseLines = new Set(registry.originalLines);
+  const lines = [...new Set(Object.values(registry.members).flat())]
+    .filter((line) => !baseLines.has(line))
+    .sort();
+  const marker = `# target-worker ${context.excludeKey}`;
+  const nextBlock = lines.length
+    ? `${marker} begin\n${lines.join("\n")}\n${marker} end\n`
+    : "";
+  let next;
+  if (registry.block) {
+    let start = blockStart;
+    // A suffix needs this separator. At EOF only reclaim it while the
+    // original prefix is unchanged; older receipts lack that ownership proof.
+    if (
+      !nextBlock &&
+      blockEnd === contents.length &&
+      registry.needsNewline &&
+      start > 0 &&
+      contents[start - 1] === "\n" &&
+      registry.prefixHash === hash(contents.slice(0, start - 1))
+    )
+      start -= 1;
+    next = contents.slice(0, start) + nextBlock + contents.slice(blockEnd);
+  } else {
+    registry.needsNewline = Boolean(contents && !contents.endsWith("\n"));
+    registry.prefixHash = hash(contents);
+    next =
+      contents + (nextBlock && registry.needsNewline ? "\n" : "") + nextBlock;
+  }
+  return { registry: { ...registry, block: nextBlock }, contents: next };
+}
+function writeTargetExclude(context, next) {
+  mkdirSync(dirname(context.exclude), { recursive: true });
+  writeFileSync(context.exclude, next.contents);
+  mkdirSync(context.registryDir, { recursive: true, mode: 0o700 });
+  writeFileSync(context.registryPath, targetJson(next.registry), {
+    mode: 0o600,
+  });
+}
+function emitTargetUnlocked(context, options) {
+  const profile = targetWorkerProfiles.find(
+    (entry) => entry.profileId === (options.profile ?? "target-worker-claude"),
+  );
+  if (!profile) throw new Error("unknown target worker profile");
+  const runtime = harnessInstallation({ runtimeRoot: context.launchpad });
+  if (
+    canonicalStringify(runtime.runtimeFiles) !==
+    canonicalStringify(harnessInstallation().runtimeFiles)
+  )
+    throw new Error(
+      "target launchpad runtime differs from the emitting compiler; run its matching emitter",
+    );
+  const program =
+    options.program ?? contributorConfiguredProgram(options.supports);
+  const feedback = options.feedback ?? personalFeedback();
+  const bundle = lowerToHarness(
+    program,
+    feedback,
+    program.loadout.authorityEnvelope,
+    {
+      ...profile,
+      runtime: {
+        ...profile.runtime,
+        snapshot: runtime.runtimeSnapshot,
+        files: runtime.runtimeFiles,
+        importRoot: context.launchpad,
+        targetId: context.id,
+      },
+    },
+  );
+  const payload = bundle.files.map(({ path, contents }) => ({
+    path,
+    hash: hash(contents),
+  }));
+  const installed = [
+    ...payload,
+    { path: targetManifest, hash: hash(targetJson({ installed: payload })) },
+  ];
+  const manifestText = targetJson({ installed });
+  const previous = readTargetReceipt(context);
+  let owned = [];
+  if (previous) {
+    checkTargetHarness(context.root, options);
+    owned = manifestFiles(context, previous).map((file) => file.path);
+  }
+  for (const file of installed) {
+    const path = targetFile(context.root, file.path);
+    if (targetGit(context.root, "ls-files", "--", file.path))
+      throw new Error(`target output is tracked: ${file.path}`);
+    if (targetStat(path) && !owned.includes(file.path))
+      throw new Error(
+        `unowned target output refuses replacement: ${file.path}`,
+      );
+    targetIgnore(context, file.path);
+  }
+  const nextExclude = updateTargetExclude(context, installed);
+  const receipt = {
+    contract: "target-worker-v1",
+    targetId: context.id,
+    profileId: profile.profileId,
+    manifestHash: hash(manifestText),
+    excludeKey: context.excludeKey,
+    importRoot: "<launchpad>",
+    runtimeSnapshot: runtime.runtimeSnapshot,
+    runtimeFiles: runtime.runtimeFiles,
+    compilerPackageVersion: bundle.manifest.compilerPackageVersion,
+    grants: bundle.manifest.grants,
+    authorityGrantRegistryHash: bundle.manifest.authorityGrantRegistryHash,
+    envelope: program.loadout.authorityEnvelope,
+  };
+  // Validate all paths/ownership before first mutation. Preserve immutable runtime first.
+  preserveHarnessRuntime(context.launchpad, runtime);
+  writeTargetExclude(context, nextExclude);
+  for (const file of bundle.files) {
+    const path = targetFile(context.root, file.path);
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, file.contents);
+  }
+  for (const path of owned.filter(
+    (path) => !installed.some((file) => file.path === path),
+  ))
+    unlinkSync(targetFile(context.root, path));
+  mkdirSync(dirname(targetFile(context.root, targetManifest)), {
+    recursive: true,
+  });
+  writeFileSync(targetFile(context.root, targetManifest), manifestText);
+  mkdirSync(context.lane, { recursive: true, mode: 0o700 });
+  writeFileSync(context.receiptPath, targetJson(receipt), { mode: 0o600 });
+  return { files: installed.length, localTerms: { status: "not-applicable" } };
+}
+export function checkTargetHarness(target, options = {}) {
+  const context = targetContext(target, options);
+  const receipt = readTargetReceipt(context);
+  const files = manifestFiles(context, receipt);
+  const { registry, contents } = excludeRegistry(context);
+  if (!registry.members[context.id])
+    throw new Error("target exclude ownership missing");
+  const lines = contents.split(/\r?\n/);
+  for (const file of files) {
+    const path = targetFile(context.root, file.path);
+    if (!targetStat(path))
+      throw new Error(`target drift: missing ${file.path}`);
+    if (
+      file.path !== targetManifest &&
+      hash(readFileSync(path, "utf8")) !== file.hash
+    )
+      throw new Error(`target drift: ${file.path}`);
+    if (!lines.includes(`/${file.path}`))
+      throw new Error(`target exclude missing: ${file.path}`);
+    if (targetGit(context.root, "ls-files", "--", file.path))
+      throw new Error(`target output is tracked: ${file.path}`);
+    targetIgnore(context, file.path, true);
+  }
+  if (!lines.includes("/.dotln/"))
+    throw new Error("target scratch exclude missing");
+  for (const file of receipt.runtimeFiles) {
+    const path = join(context.launchpad, receipt.runtimeSnapshot, file.path);
+    if (
+      !containedRegularFile(path, context.launchpad) ||
+      hash(readFileSync(path, "utf8")) !== file.hash
+    )
+      throw new Error("target pinned runtime drift");
+  }
+  return { files: files.length, localTerms: { status: "not-applicable" } };
+}
+function removeTargetUnlocked(context) {
+  // Runtime availability is irrelevant to removal; owned file bytes must still match.
+  const receipt = readTargetReceipt(context);
+  const files = manifestFiles(context, receipt);
+  for (const file of files) {
+    const path = targetFile(context.root, file.path);
+    if (
+      file.path !== targetManifest &&
+      hash(readFileSync(path, "utf8")) !== file.hash
+    )
+      throw new Error(`target drift: ${file.path}`);
+    if (targetGit(context.root, "ls-files", "--", file.path))
+      throw new Error(`target output is tracked: ${file.path}`);
+  }
+  const nextExclude = updateTargetExclude(context, files, true);
+  for (const file of files) unlinkSync(targetFile(context.root, file.path));
+  writeTargetExclude(context, nextExclude);
+  unlinkSync(context.receiptPath);
+  return { files: files.length, localTerms: { status: "not-applicable" } };
+}
+
+function targetMutation(target, options, operation) {
+  const context = targetContext(target, options);
+  mkdirSync(context.registryDir, { recursive: true, mode: 0o700 });
+  const lock = join(context.registryDir, `${context.excludeKey}.lock`);
+  try {
+    mkdirSync(lock, { mode: 0o700 });
+  } catch {
+    throw new Error("target exclude mutation is active or requires recovery");
+  }
+  try {
+    return operation(context, options);
+  } finally {
+    rmdirSync(lock);
+  }
+}
+export const emitTargetHarness = (target, options = {}) =>
+  targetMutation(target, options, emitTargetUnlocked);
+export const removeTargetHarness = (target, options = {}) =>
+  targetMutation(target, options, removeTargetUnlocked);

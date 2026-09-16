@@ -1480,8 +1480,11 @@ launch observations, not effective-session readback. The five existing Codex
 0.154.0 probes record low, medium, high, xhigh and max; discovery preserves
 historical observations and never acts as an admission list.
 
-The operator default remains GPT-6 Astra/max for Codex unless changed, labeled
-operator-attested when no actual readback exists. Optional `--account-label`
+Codex briefings, status and usage output report the active thread's model,
+effort and CLI version from its local session metadata. This readback is
+independent of token-counter freshness and adds no admission check. Missing or
+incomplete metadata is reported without substituting a model default. Explicit
+operator-supplied values remain operator-attested when readback is unavailable. Optional `--account-label`
 retains its public opaque-label grammar; no private account meaning is inferred.
 Reports carry exactly one normalized actor header matching completion flags.
 The control log preserves all earlier actor values; historical evidence is not

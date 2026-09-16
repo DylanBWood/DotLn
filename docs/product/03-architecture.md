@@ -58,6 +58,9 @@ Never let a flavor name be the only name.
 
 ## Platform and instance boundary
 
+WO-049's target-worker bundle is local and excluded from Git: its guards import
+the launchpad's pinned runtime, and target commits contain no DotLn bundle files.
+
 DotLn core provides the common legos:
 
 - event, decision, Program, Cadence, continuation, and projection contracts;

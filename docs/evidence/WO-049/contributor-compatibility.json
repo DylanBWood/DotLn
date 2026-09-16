@@ -1,0 +1,23 @@
+{
+  "kind": "executed-comparison",
+  "baseline": "activation HEAD compiler harness.ts",
+  "method": "Transpile activation lowering, bind both versions to identical current dependencies and explicit profile/runtime inputs, deep-compare complete bundles.",
+  "profiles": [
+    {
+      "profile": "claude-code-2.1.263",
+      "files": 17,
+      "bytesEqual": true,
+      "manifestEqual": true,
+      "residueEqual": true
+    },
+    {
+      "profile": "codex-cli-0.153.4",
+      "files": 7,
+      "bytesEqual": true,
+      "manifestEqual": true,
+      "residueEqual": true
+    }
+  ],
+  "scope": "Contributor generation at equal inputs; required version/pin/hash updates remain permitted.",
+  "observedAt": "2026-09-16T19:46:45.781Z"
+}

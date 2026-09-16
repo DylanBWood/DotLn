@@ -12,7 +12,10 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { reportHarnessRuntime } from "./lib/harness-runtime.mjs";
+import {
+  reportHarnessRuntime,
+  codexSessionReport,
+} from "./lib/harness-runtime.mjs";
 import { mainWorktree, runGit } from "./lib/git.mjs";
 import {
   projectActor,
@@ -477,7 +480,7 @@ export const parseActor = (action, args, positional = "") => {
     suppliedSource === "operator-selected-model-effective-effort-unavailable"
       ? "operator-attested"
       : suppliedSource;
-  const subagents = ["ultra", "ultra code"].includes(
+  const subagents = ["ultra", "ultra code", "ultracode"].includes(
     suppliedEffort.toLowerCase(),
   );
   if (
@@ -1087,6 +1090,32 @@ export const main = async (argv = process.argv.slice(2)) => {
       branch ?? selected,
     );
     project(render(control, latestClosed));
+  }
+  // Informational readback, independent of token-counter availability and phase gates.
+  if (
+    process.env.CODEX_THREAD_ID &&
+    [
+      "status",
+      "next",
+      "briefing",
+      "fix",
+      "verify",
+      "final-review",
+      "implementation-ready",
+      "repair-complete",
+      "verification-result",
+      "final-review-result",
+    ].includes(action)
+  ) {
+    const report = await codexSessionReport(repoRoot);
+    message =
+      action === "status" && args.includes("--json")
+        ? JSON.stringify(
+            { ...JSON.parse(message), currentSession: report.session },
+            null,
+            2,
+          )
+        : `${message}\n${report.text}`;
   }
   process.stdout.write(`${message}\n`);
 };
