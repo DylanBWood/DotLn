@@ -12,6 +12,7 @@ import {
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { startDeadline } from "../packages/skeleton/src/gate-deadlines.mjs";
+import { evidenceSourceContent } from "../packages/skeleton/src/evidence-editions.mjs";
 import { gateCriticalPath } from "./lib/gate-timeline.mjs";
 import {
   beginGateRun,
@@ -113,9 +114,11 @@ const machinerySources = {
     "scripts/measure-gates.mjs",
     "scripts/lib/gate-evidence.mjs",
     "scripts/test-runner.mjs",
+    "packages/skeleton/src/evidence-editions.mjs",
     "scripts/test-runner.test.mjs",
     "scripts/test-gate-deadlines.mjs",
     "scripts/test-release-fixtures.mjs",
+    "scripts/test-release.sh",
     "scripts/lib/suite-evidence.mjs",
     "scripts/lib/release-fixtures.mjs",
     "packages/skeleton/src/gate-evidence.mjs",
@@ -131,6 +134,7 @@ const machinerySources = {
     "scripts/discover.mjs",
     "packages/skeleton/src/usage-observation.mjs",
     "scripts/test-process-debt.mjs",
+    "scripts/lib/harness-runtime.mjs",
     "scripts/lib/lifecycle-evidence.mjs",
     "scripts/lib/process-budget.mjs",
     "packages/skeleton/src/harness-host.ts",
@@ -212,13 +216,40 @@ export function changedMachinery(repo, table = suites, base = "origin/main") {
     cwd: repo,
     encoding: "utf8",
   });
-  if (run.status !== 0)
-    run = spawnSync("git", ["diff", "--name-only", "main", "--"], {
+  if (run.status !== 0) {
+    base = "main";
+    run = spawnSync("git", ["diff", "--name-only", base, "--"], {
       cwd: repo,
       encoding: "utf8",
     });
+  }
   if (run.status !== 0) return table.filter((row) => row.machinery);
-  const files = run.stdout.split("\n").filter(Boolean);
+  const files = run.stdout
+    .split("\n")
+    .filter(Boolean)
+    .filter((file) =>
+      table.some(
+        (row) =>
+          row.machinery &&
+          row.sources.some((source) => file.startsWith(source)),
+      ),
+    )
+    .filter((file) => {
+      // Reuse the evidence projection: release literals alone change no behavior.
+      const before = spawnSync("git", ["show", `${base}:${file}`], {
+        cwd: repo,
+        encoding: "utf8",
+      });
+      if (before.status !== 0) return true;
+      try {
+        return (
+          evidenceSourceContent(file, before.stdout) !==
+          evidenceSourceContent(file, readFileSync(join(repo, file), "utf8"))
+        );
+      } catch {
+        return true;
+      }
+    });
   return table.filter(
     (row) =>
       row.machinery &&

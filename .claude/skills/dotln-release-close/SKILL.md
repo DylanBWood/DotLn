@@ -9,6 +9,8 @@ Process Cost: At entry/handoff run `node scripts/harness.mjs usage <session>`. R
 Goal Alignment: Read `docs/product/07-execution-guide.md#Goal-aligned decisions`. Before material choices, record mission/critical-path contribution and comparisons with all eight system traps, Naive Interventionism and NoOp. Revisit changed evidence/scope; judge outcomes at handoff. Scale detail to consequence.
 Verify main's cwd/Git root; run `npm run resume --silent -- status --json`.
 `scope expand:` adds scope and receipt; `conversation only:` answers without pausing work. Keep effect limits; only explicit pause/stop interrupts. Neither appends an event.
+Without effective readback, keep the operator-selected model and effort with `--source operator-attested`; use `unknown` only for a value nobody supplied. The Codex default is GPT-6 Astra at max, operator-attested. Never replace a supplied value with unknown or invent effective readback.
+After an authorized product-document edit, run `npm run publication:check`; this grants no editing authority to a read-only role.
 Never guess: an unobserved value is `unknown`, `untested` or `blocked`; each claim names its source or what is missing.
 Read: `@work-order`
 Read: `@citations`

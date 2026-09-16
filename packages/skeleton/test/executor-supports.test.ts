@@ -36,6 +36,46 @@ const environment = {
   repo: "project",
   baseCommit: "0".repeat(40),
 };
+
+test("WO-133 every generated role preserves supplied actor values and checks edited product publications", () => {
+  const program = contributorProgram();
+  for (const profile of contributorProfiles) {
+    const target = {
+      ...profile,
+      runtime: {
+        ...profile.runtime,
+        files: [
+          "packages/compiler/dist/src/feedback.js",
+          "packages/skeleton/dist/src/feedback-boundary.js",
+          "packages/skeleton/dist/src/feedback-source-comments.js",
+          "packages/skeleton/dist/src/harness-host.js",
+          "packages/skeleton/dist/src/reactor.js",
+        ].map((path) => ({ path, hash: "fnv1a64:0000000000000000" })),
+      },
+    };
+    const bundle = lowerToHarness(
+      program,
+      personalFeedback(),
+      program.loadout.authorityEnvelope,
+      target,
+    );
+    const roles = bundle.files.filter((file) =>
+      file.path.endsWith("/SKILL.md"),
+    );
+    assert.equal(roles.length, 6);
+    for (const role of roles) {
+      assert.match(
+        role.contents,
+        /Without effective readback, keep the operator-selected model and effort with `--source operator-attested`/,
+      );
+      assert.match(role.contents, /unknown` only for a value nobody supplied/);
+      assert.match(
+        role.contents,
+        /authorized product-document edit, run `npm run publication:check`/,
+      );
+    }
+  }
+});
 const text = (id: string) =>
   executorSupports
     .find((support) => support.supportFacetId === id)!

@@ -4,7 +4,8 @@ try {
 const { text } = await import("node:stream/consumers");
 const rawInput = await text(process.stdin);
 try { input = JSON.parse(rawInput); } catch {}
-const recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || ("PreToolUse" === "UserPromptSubmit" && /^(analysis|operator override):(?:\s|$)/i.test((input.prompt ?? "").trim())));
+const event = "PreToolUse";
+const recoveryInput = input !== null && typeof input === "object" && !Array.isArray(input) && (input.prompt === undefined || typeof input.prompt === "string") && (typeof input.session_id === "string" || (event === "UserPromptSubmit" && /^(analysis|operator override):(?:\s|$)/i.test((input.prompt ?? "").trim())));
 const control = recoveryInput ? await (async function operatorControl(input, event) {
     const prompt = event === "UserPromptSubmit" ? (input.prompt?.trim() ?? "") : "";
     const entered = /^(analysis|operator override):(?:\s|$)/i.exec(prompt);
@@ -90,19 +91,23 @@ const control = recoveryInput ? await (async function operatorControl(input, eve
         // A broken recovery-state store must not become another recovery gate.
         return message(requested && requested !== "normal" ? requested : "unavailable", "Recovery state could not be read or persisted; this hook remains advisory.");
     }
-})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, "PreToolUse") : null;
+})({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, event) : null;
 if (control) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/565c8a04c9f957ef/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/565c8a04c9f957ef/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/6b1dc0917ec592c3/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/6b1dc0917ec592c3/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
-  "compilerPackageVersion": "0.11.1",
+  "compilerPackageVersion": "0.11.2",
   "runtime": {
-    "skeletonVersion": "0.18.3",
+    "skeletonVersion": "0.18.4",
     "boundaryContract": "feedback-v1",
     "files": [
       {
         "path": "packages/compiler/dist/src/artifact-identity.js",
-        "hash": "fnv1a64:de7ebb5d6ad7243c"
+        "hash": "fnv1a64:eecdab36d9ace673"
+      },
+      {
+        "path": "packages/compiler/dist/src/harness.js",
+        "hash": "fnv1a64:70ba1a388b0ba537"
       },
       {
         "path": "packages/compiler/dist/src/feedback.js",
@@ -122,7 +127,11 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:468e1d869aed57be"
+        "hash": "fnv1a64:cd8c2c650f74617c"
+      },
+      {
+        "path": "packages/skeleton/dist/src/version.js",
+        "hash": "fnv1a64:386edbbcf7a3e788"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -149,7 +158,7 @@ await runHarnessHook({
         "hash": "fnv1a64:0b6cc9ad2bb31bfd"
       }
     ],
-    "snapshot": ".runtime/harness/565c8a04c9f957ef"
+    "snapshot": ".runtime/harness/6b1dc0917ec592c3"
   },
   "event": "PreToolUse",
   "tools": {
@@ -186,7 +195,7 @@ await runHarnessHook({
   "kind": "feedback",
   "policy": {
     "contractVersion": "feedback-v1",
-    "compilerPackageVersion": "0.11.1",
+    "compilerPackageVersion": "0.11.2",
     "units": [
       {
         "unitId": "concurrent-work-requires-worktrees",
@@ -239,22 +248,68 @@ await runHarnessHook({
         "enforcement": "hard"
       }
     ],
-    "policyHash": "fnv1a64:e79cad0bf9f28fcb"
+    "policyHash": "fnv1a64:d6b90b9542c8e98e"
   },
   "correctionToken": null
 }, feedbackBoundary, input, rawInput);
 }
-} catch { const response = { systemMessage: "DotLn advisory: built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide." };
+} catch { const fs = await import("node:fs");
+const { join } = await import("node:path");
+const { createHash } = await import("node:crypto");
+const root = typeof input?.cwd === "string" ? input.cwd : process.cwd();
+const snapshot = ".runtime/harness/6b1dc0917ec592c3";
+let cause = snapshot && !fs.existsSync(join(root, snapshot)) ? "snapshot-missing" : "runtime-unavailable";
 try {
-  const fs = await import("node:fs");
-  const { join } = await import("node:path");
-  const { createHash } = await import("node:crypto");
-  const root = typeof input?.cwd === "string" ? input.cwd : process.cwd();
+  const hash = (value) => {
+    let hash = 0xcbf29ce484222325n;
+    for (const byte of new TextEncoder().encode(value))
+        hash = ((hash ^ BigInt(byte)) * 0x100000001b3n) & 0xffffffffffffffffn;
+    return hash.toString(16).padStart(16, "0");
+};
+  for (const file of [{"path":"packages/compiler/dist/src/artifact-identity.js","hash":"fnv1a64:eecdab36d9ace673"},{"path":"packages/compiler/dist/src/harness.js","hash":"fnv1a64:70ba1a388b0ba537"},{"path":"packages/compiler/dist/src/feedback.js","hash":"fnv1a64:9f5023e4c2650af7"},{"path":"packages/compiler/dist/src/attribution.mjs","hash":"fnv1a64:7a65d9bab4b81dda"},{"path":"packages/skeleton/dist/src/feedback-boundary.js","hash":"fnv1a64:7acece33d2f838f6"},{"path":"packages/skeleton/dist/src/feedback-source-comments.js","hash":"fnv1a64:6c6f7fcb7164891b"},{"path":"packages/skeleton/dist/src/harness-host.js","hash":"fnv1a64:cd8c2c650f74617c"},{"path":"packages/skeleton/dist/src/version.js","hash":"fnv1a64:386edbbcf7a3e788"},{"path":"packages/skeleton/dist/src/harness-command.js","hash":"fnv1a64:d3696a82e454ead0"},{"path":"packages/skeleton/dist/src/gate-evidence.mjs","hash":"fnv1a64:52bc0be53a929a4f"},{"path":"packages/skeleton/dist/src/gate-deadlines.mjs","hash":"fnv1a64:fed0ae4064c93d4a"},{"path":"packages/skeleton/dist/src/usage-observation.mjs","hash":"fnv1a64:4f3d424f0ca3725e"},{"path":"packages/skeleton/dist/src/writer-teardown.mjs","hash":"fnv1a64:02ec5d2fc0848e9d"},{"path":"packages/skeleton/dist/src/reactor.js","hash":"fnv1a64:0b6cc9ad2bb31bfd"}]) {
+    if (fs.existsSync(join(root, file.path)) && "fnv1a64:" + hash(fs.readFileSync(join(root, file.path), "utf8")) !== file.hash) {
+      cause = "pins-differ";
+      break;
+    }
+    if (snapshot) {
+      const saved = join(root, snapshot, file.path);
+      if (!fs.existsSync(saved)) cause = "snapshot-missing";
+      else if ("fnv1a64:" + hash(fs.readFileSync(saved, "utf8")) !== file.hash) {
+        cause = "pins-differ";
+        break;
+      }
+    }
+  }
+} catch {}
+const advisory = "DotLn advisory: " + cause + ": built adapter unavailable; run node scripts/bootstrap.mjs to prepare this worktree; host permissions decide.";
+const response = (function showHarnessAdvisory(sessionId, event, cause, claimMarker) {
+    if (event === "PostToolUse")
+        return false;
+    if (!sessionId)
+        return true;
+    try {
+        return claimMarker(JSON.stringify([sessionId, cause]));
+    }
+    catch {
+        return true;
+    }
+})(input?.session_id, "PreToolUse", cause, (key) => {
+  const directory = join(root, "docs/control/local/harness");
+  fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
+  const marker = join(directory, createHash("sha256").update(key).digest("hex") + ".advisory");
+  try { fs.writeFileSync(marker, "seen\n", { flag: "wx", mode: 0o600 }); }
+  catch (error) {
+    if (error?.code === "EEXIST") return !fs.lstatSync(marker).isFile();
+    throw error;
+  }
+  return true;
+}) ? { systemMessage: advisory } : {};
+try {
   const directory = join(root, "docs/control/local/harness");
   const key = createHash("sha256").update(String(input?.session_id ?? "unknown")).digest("hex");
   const path = join(directory, key + ".jsonl");
   fs.mkdirSync(directory, { recursive: true, mode: 0o700 });
   if (!fs.existsSync(path) || fs.lstatSync(path).isFile())
-    fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: "PreToolUse", advisory: response.systemMessage, delegated: true }) + "\n", { mode: 0o600 });
+    fs.appendFileSync(path, JSON.stringify({ recordedAt: new Date().toISOString(), event: "PreToolUse", advisory, delegated: true }) + "\n", { mode: 0o600 });
 } catch {}
 process.stdout.write(JSON.stringify(response)); }

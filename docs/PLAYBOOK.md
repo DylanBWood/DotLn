@@ -579,13 +579,17 @@ disposable human projection.
 The canonical operator interface is `resume: release close` after you merge the
 final-review PR. It authorizes `npm run release -- close WO-NNN --publish` from
 main. The command proves egress, synchronizes main, checks release surfaces,
-builds missing runtime output and validates the manifest against the committed
+compares the regenerated pins with built runtime bytes, rebuilds missing or
+mismatched runtime output once, and validates the manifest against the committed
 reviewer product-gate row. It creates the annotated tag and matching GitHub
 Release, then attempts worktree finish and settlement as best effort. It runs
 no suite, install or CLI smoke check. See [step 5](#the-loop-per-work-order) for
 the evidence identity and cleanup rules.
 
-Without `--publish`, close may fast-forward main and build missing runtime
+Worktree finish makes the same pin comparison after its fast-forward and rebuilds
+before removing the merged worktree. A failed build preserves that worktree.
+
+Without `--publish`, close may fast-forward main and rebuild missing or mismatched runtime
 output, but creates no tag or Release. `--dry-run` previews the steps and manifest.
 A deliberately deferred eligible release needs a reviewed durable reason.
 Neither form pushes a main commit or publishes a package, binary, container or

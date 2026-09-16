@@ -23,6 +23,7 @@ import {
   runGate,
   expandSuiteTasks,
   aggregateSuiteRows,
+  changedMachinery,
 } from "./test-runner.mjs";
 import {
   activeGateRuns,
@@ -41,6 +42,156 @@ import {
 
 const root = resolve(import.meta.dirname, "..");
 const barrier = { name: "build", command: ["build"], build: true };
+test("release shell changes select their inventory guard during review", async (t) => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-release-selection-"));
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  const git = (...args) =>
+    execFileSync("git", args, {
+      cwd: repo,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  git("init", "-b", "main");
+  mkdirSync(join(repo, "scripts"));
+  const shell = join(repo, "scripts/test-release.sh");
+  const baseline = "release_case_existing() {\n  :\n}\n";
+  writeFileSync(shell, baseline);
+  git("add", ".");
+  git(
+    "-c",
+    "user.name=Fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+    "commit",
+    "-m",
+    "fixture baseline",
+  );
+  assert.deepEqual(changedMachinery(repo, suites, "main"), []);
+  writeFileSync(shell, baseline + "release_case_added() {\n  :\n}\n");
+  assert.deepEqual(
+    changedMachinery(repo, suites, "main").map((row) => row.name),
+    ["runner-fixtures"],
+  );
+  const messages = [];
+  const saved = console.log;
+  try {
+    console.log = (line) => messages.push(line);
+    await runGate(["--review", "--list"], repo);
+  } finally {
+    console.log = saved;
+  }
+  assert.deepEqual(
+    suites
+      .filter(
+        (row) =>
+          row.machinery &&
+          messages.some((line) => line.startsWith(`${row.name} —`)),
+      )
+      .map((row) => row.name),
+    ["runner-fixtures"],
+  );
+  const tasks = expandSuiteTasks(
+    suites.filter((row) => row.name === "runner-fixtures"),
+    repo,
+  );
+  assert.ok(
+    tasks.some((task) =>
+      task.args?.includes("scripts/test-release-fixtures.mjs"),
+    ),
+  );
+});
+
+test("WO-133 review selection ignores release-only changes and retains host behavior suites", async () => {
+  const repo = mkdtempSync(join(tmpdir(), "dotln-version-selection-"));
+  const git = (...args) =>
+    execFileSync("git", args, {
+      cwd: repo,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  const version = "packages/skeleton/src/version.ts";
+  const compiler = "packages/compiler/src/artifact-identity.ts";
+  try {
+    git("init", "-b", "main");
+    mkdirSync(join(repo, "packages/skeleton/src"), { recursive: true });
+    mkdirSync(join(repo, "packages/compiler/src"), { recursive: true });
+    writeFileSync(
+      join(repo, version),
+      'export const HARNESS_HOST_VERSION = "1.0.0";\n',
+    );
+    writeFileSync(
+      join(repo, compiler),
+      'export const COMPILER_PACKAGE_VERSION = "1.0.0";\n',
+    );
+    writeFileSync(
+      join(repo, "packages/skeleton/src/harness-host.ts"),
+      "export const behavior = 1;\n",
+    );
+    git("add", ".");
+    git(
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "-m",
+      "fixture baseline",
+    );
+    writeFileSync(
+      join(repo, version),
+      'export const HARNESS_HOST_VERSION = "1.0.1";\n',
+    );
+    assert.deepEqual(changedMachinery(repo, suites, "main"), []);
+    const messages = [];
+    const saved = console.log;
+    try {
+      console.log = (line) => messages.push(line);
+      await runGate(["--review", "--list"], repo);
+    } finally {
+      console.log = saved;
+    }
+    for (const row of suites.filter((row) => row.machinery))
+      assert.ok(
+        !messages.some((line) => line.startsWith(`${row.name} —`)),
+        row.name,
+      );
+    writeFileSync(
+      join(repo, compiler),
+      'export const COMPILER_PACKAGE_VERSION = "1.0.1";\n',
+    );
+    assert.deepEqual(changedMachinery(repo, suites, "main"), []);
+    writeFileSync(
+      join(repo, "packages/skeleton/src/harness-host.ts"),
+      "export const behavior = 2;\n",
+    );
+    const selected = changedMachinery(repo, suites, "main").map(
+      (row) => row.name,
+    );
+    assert.ok(selected.includes("harness-fixtures"));
+    assert.ok(selected.includes("process-debt"));
+    for (const row of suites.filter((row) => row.machinery))
+      assert.ok(
+        !row.sources.some((source) => version.startsWith(source)),
+        row.name,
+      );
+    const host = readFileSync(
+      join(root, "packages/skeleton/src/harness-host.ts"),
+      "utf8",
+    );
+    const profiles = readFileSync(
+      join(root, "packages/skeleton/src/loadouts/contributor.ts"),
+      "utf8",
+    );
+    assert.doesNotMatch(host, /HARNESS_HOST_VERSION\s*=\s*["']/);
+    assert.doesNotMatch(profiles, /skeletonVersion:\s*["']/);
+    assert.match(
+      readFileSync(join(root, version), "utf8"),
+      /HARNESS_HOST_VERSION\s*=\s*"\d+\.\d+\.\d+"/,
+    );
+  } finally {
+    rmSync(repo, { recursive: true, force: true });
+  }
+});
 test("full inventory retains every command in the previous package test chain", () => {
   const before = JSON.parse(
     readFileSync(

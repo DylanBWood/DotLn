@@ -202,6 +202,9 @@ make_repo() {
     '    if [[ "${DOTLN_FIXTURE_NPM_FAIL:-}" == "build" ]]; then exit 8; fi' \
     '    mkdir -p packages/skeleton/dist/src' \
     '    printf "console.log(\"fixture skeleton bootstrap\");\\n" >packages/skeleton/dist/src/cli.js' \
+    '    if [[ -f .claude/harness-manifest.json ]]; then' \
+    '      "$node_bin" --input-type=module -e '\''import fs from "node:fs"; import path from "node:path"; const manifest=JSON.parse(fs.readFileSync(".claude/harness-manifest.json","utf8")); for (const entry of manifest.profiles) { const runtime=entry.profile.runtime; for (const file of runtime.files) { const target=path.join(runtime.snapshot,file.path); fs.mkdirSync(path.dirname(target),{recursive:true}); fs.copyFileSync(file.path,target); }}'\''' \
+    '    fi' \
     '    DOTLN_FIXTURE_BUILD=1 exec "$0" test ;;' \
     '  test)' \
     '    if [[ "${DOTLN_FIXTURE_BUILD:-}" != 1 ]]; then printf "test\\n" >>"$DOTLN_NPM_LOG"; fi' \
@@ -1058,6 +1061,91 @@ test ! -e "$stale_release_marker"
 test ! -e "$stale_worktree_marker"
 test "$(git -C "$main" cat-file -t v0.2.1)" = tag
 printf 'reviewed subject helpers preview before fast-forward; cleanup follows publication only\n'
+}
+
+release_case_runtime_refresh() {
+# Every scenario fast-forwards the actual main checkout; no external network.
+for scenario in close-changed close-matching finish-changed finish-matching finish-snapshot finish-failed; do
+  make_repo "runtime-$scenario"
+  if [[ "$scenario" == *matching || "$scenario" == finish-snapshot ]]; then
+    runtime_before='console.log("fixture skeleton bootstrap");'
+  else
+    runtime_before='console.log("old fixture runtime");'
+  fi
+  runtime_pin() {
+    "$node_bin" --input-type=module - "$1" "$2" "$3" <<'NODE'
+import fs from "node:fs";
+import path from "node:path";
+const [root, contents, materialize]=process.argv.slice(2);
+const bytes=contents+"\n";
+let hash=0xcbf29ce484222325n;
+for(const byte of new TextEncoder().encode(bytes)) hash=BigInt.asUintN(64,(hash^BigInt(byte))*0x100000001b3n);
+const digest=hash.toString(16).padStart(16,"0");
+const runtime={snapshot:`.runtime/harness/${digest}`,files:[{path:"packages/skeleton/dist/src/cli.js",hash:`fnv1a64:${digest}`}]};
+fs.mkdirSync(path.join(root,".claude"),{recursive:true});
+fs.writeFileSync(path.join(root,".claude/harness-manifest.json"),JSON.stringify({profiles:[{profile:{runtime}}]})+"\n");
+if(materialize==="yes") for(const prefix of ["",runtime.snapshot]) {
+ const target=path.join(root,prefix,runtime.files[0].path);
+ fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,bytes);
+}
+NODE
+  }
+  runtime_pin "$main" "$runtime_before" yes
+  mkdir -p "$main/packages/kernel/dist/src"
+  cp "$main/packages/kernel/test-fixtures/runtime-valid.mjs" "$main/packages/kernel/dist/src/index.js"
+  git -C "$main" add .claude/harness-manifest.json
+  git -C "$main" commit -m 'fixture installed old runtime pins' >/dev/null
+  git -C "$main" push origin main >/dev/null 2>&1
+  subject="$fixture/project-wo099"
+  git -C "$main" worktree add "$subject" -b wo-099 >/dev/null
+  runtime_pin "$subject" 'console.log("fixture skeleton bootstrap");' no
+  commit_candidate "$subject" WO-099 v0.2.1
+  git -C "$subject" push -u origin wo-099 >/dev/null 2>&1
+  git clone "$origin" "$fixture/integrator" >/dev/null 2>&1
+  git -C "$fixture/integrator" switch main >/dev/null 2>&1
+  git -C "$fixture/integrator" merge --ff-only origin/wo-099 >/dev/null
+  git -C "$fixture/integrator" push origin main >/dev/null 2>&1
+  if [[ "$scenario" == close-changed ]]; then
+    # Old metadata would fail the cadence projection; the rebuilt runtime must win.
+    cp "$main/packages/kernel/test-fixtures/runtime-inconsistent-evaluable.mjs" "$main/packages/kernel/dist/src/index.js"
+  fi
+  if [[ "$scenario" == finish-snapshot ]]; then
+    "$node_bin" -e 'require("node:fs").rmSync(process.argv[1],{recursive:true,force:true})' "$main/.runtime/harness"
+  fi
+  runtime_started="$($node_bin -e 'process.stdout.write(String(Date.now()))')"
+  if [[ "$scenario" == close-* ]]; then
+    release_close WO-099 --publish >"$fixture/refresh.log"
+    test -f "$gh_state/v0.2.1.body"
+  elif [[ "$scenario" == finish-failed ]]; then
+    if (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" DOTLN_FIXTURE_NPM_FAIL=build "$node_bin" scripts/worktree.mjs finish WO-099 >"$fixture/refresh.log" 2>&1); then
+      printf 'error: failed runtime build was accepted\n' >&2; exit 1
+    fi
+    test -d "$subject"
+    test -n "$(git -C "$main" branch --list wo-099)"
+    grep -Fq 'worktree preserved' "$fixture/refresh.log"
+    continue
+  else
+    (cd "$main" && PATH="$bin:$PATH" DOTLN_NPM_LOG="$npm_log" "$node_bin" scripts/worktree.mjs finish WO-099 >"$fixture/refresh.log")
+  fi
+  "$node_bin" - "$runtime_started" "$scenario" <<'NODE'
+const elapsed=Date.now()-Number(process.argv[2]);
+if(elapsed>=120000) throw new Error(`runtime refresh exceeded 120s: ${elapsed}`);
+console.log(`WO-133 ${process.argv[3]} elapsedMs=${elapsed}`);
+NODE
+  "$node_bin" --input-type=module - "$main" <<'NODE'
+import assert from "node:assert/strict";
+import {pathToFileURL} from "node:url";
+const root=process.argv[2];
+const {harnessRuntimeCause}=await import(pathToFileURL(root+"/scripts/lib/harness-runtime.mjs"));
+assert.equal(harnessRuntimeCause(root),null);
+NODE
+  if [[ "$scenario" == *changed || "$scenario" == finish-snapshot ]]; then
+    test "$(grep -c '^build$' "$npm_log")" = 1
+  else
+    test ! -s "$npm_log"
+  fi
+  test ! -d "$subject"
+done
 }
 
 release_case_success() {

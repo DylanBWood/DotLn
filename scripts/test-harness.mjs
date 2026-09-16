@@ -1204,11 +1204,28 @@ test("WO-132 hooks preserve boundary observations and delegate non-writer judgme
     );
     for (const response of [first, second]) {
       assert.equal(allowed(response), true);
+      assert.equal(response.systemMessage, undefined);
+    }
+    const pendingRows = readFileSync(
+      join(
+        root,
+        "docs/control/local/harness",
+        createHash("sha256").update("synthetic-session").digest("hex") +
+          ".jsonl",
+      ),
+      "utf8",
+    )
+      .trim()
+      .split("\n")
+      .map(JSON.parse)
+      .filter((row) => row.delegated)
+      .slice(-2);
+    for (const row of pendingRows) {
       assert.match(
-        response.systemMessage,
+        row.advisory,
         /^DotLn advisory: pending .*verify-app-before-done/,
       );
-      assert.equal(response.systemMessage.split("\n").length, 1);
+      assert.equal(row.advisory.split("\n").length, 1);
     }
     assert.equal(
       existsSync(join(root, "docs/control/local/harness/writer")),
@@ -2888,22 +2905,27 @@ test("WO-132 generated hooks delegate classification, attribution, scope and run
       "docs/control/local/harness",
       createHash("sha256").update("synthetic-session").digest("hex") + ".jsonl",
     );
+    const seen = new Set();
     const delegated = (hook, payload) => {
       const result = invoke(root, hook, payload);
       assert.equal(allowed(result), true, JSON.stringify(result));
-      assert.match(
-        result.systemMessage,
-        /DotLn advisory:.*host permissions decide/,
-      );
       const rows = readFileSync(journal, "utf8")
         .trim()
         .split("\n")
         .map(JSON.parse);
-      assert.ok(
-        rows.some(
-          (row) => row.delegated && row.advisory === result.systemMessage,
-        ),
-      );
+      const advisory = rows.at(-1).advisory;
+      assert.match(advisory, /DotLn advisory:.*host permissions decide/);
+      assert.equal(rows.at(-1).delegated, true);
+      const cause =
+        /snapshot-missing|runtime-unavailable|pins-differ/.exec(
+          advisory,
+        )?.[0] ?? "classification";
+      if (payload.hook_event_name === "PostToolUse" || seen.has(cause))
+        assert.equal(result.systemMessage, undefined);
+      else {
+        assert.equal(result.systemMessage, advisory);
+        seen.add(cause);
+      }
       return result;
     };
     for (const name of ["SubagentHandback", "SendMessage", "SomeNewTool"])
@@ -3229,6 +3251,154 @@ test("WO-132 missing process-cost counters record unknown at the current dispatc
       .split("\n")
       .map(JSON.parse);
     assert.deepEqual(rows.at(-1).observation, observation);
+  } finally {
+    removeFixture(root, { recursive: true });
+  }
+});
+
+test("WO-133 stale generated hooks emit once per session/cause, retain every row and silence observers", () => {
+  const root = fixture();
+  try {
+    const settings = JSON.parse(
+      readFileSync(join(root, ".claude/settings.json"), "utf8"),
+    );
+    assert.deepEqual(
+      settings.hooks.SessionStart,
+      settings.hooks.UserPromptSubmit,
+    );
+    assert.deepEqual(invoke(root, "session", input(root, "SessionStart")), {});
+    const hooks = [
+      "permissions",
+      "write-observer",
+      "concurrent-work-requires-worktrees",
+      "session",
+      "read-observer",
+    ];
+    for (const hook of hooks) {
+      const path = join(root, `.claude/hooks/${hook}.mjs`);
+      writeFileSync(
+        path,
+        readFileSync(path, "utf8").replace(
+          /"hash": "fnv1a64:[^"]+"/,
+          '"hash": "fnv1a64:0000000000000000"',
+        ),
+      );
+    }
+    const journal = (session) =>
+      join(
+        root,
+        "docs/control/local/harness",
+        createHash("sha256").update(session).digest("hex") + ".jsonl",
+      );
+    const responses = [];
+    for (let i = 0; i < 20; i++) {
+      const hook = hooks[i % 3];
+      responses.push(
+        invoke(
+          root,
+          hook,
+          input(root, "PreToolUse", {
+            session_id: "stale",
+            tool_name: "Read",
+            tool_input: { file_path: "fixture.ts" },
+          }),
+        ),
+      );
+    }
+    assert.equal(responses.filter((row) => row.systemMessage).length, 1);
+    assert.match(
+      responses[0].systemMessage,
+      /pins-differ.*node scripts\/bootstrap\.mjs/,
+    );
+    const rows = readFileSync(journal("stale"), "utf8")
+      .trim()
+      .split("\n")
+      .map(JSON.parse);
+    assert.equal(rows.length, 20);
+    assert.ok(
+      rows.every((row) => row.delegated && /pins-differ/.test(row.advisory)),
+    );
+    for (let i = 0; i < 3; i++)
+      assert.deepEqual(
+        invoke(
+          root,
+          "read-observer",
+          input(root, "PostToolUse", {
+            session_id: "observer-first",
+            tool_name: "Read",
+            tool_input: {},
+            tool_response: {},
+          }),
+        ),
+        {},
+      );
+    const startup = invoke(
+      root,
+      "session",
+      input(root, "SessionStart", { session_id: "observer-first" }),
+    );
+    assert.match(
+      startup.systemMessage,
+      /pins-differ.*node scripts\/bootstrap\.mjs/,
+    );
+    assert.equal(startup.systemMessage.split("\n").length, 1);
+    assert.deepEqual(
+      invoke(
+        root,
+        "session",
+        input(root, "SessionStart", { session_id: "observer-first" }),
+      ),
+      {},
+    );
+    // Missing immutable snapshot uses the prelude, sharing the same marker rules.
+    removeFixture(join(root, ".runtime"), { recursive: true, force: true });
+    const first = invoke(
+      root,
+      "session",
+      input(root, "SessionStart", { session_id: "missing" }),
+    );
+    assert.match(
+      first.systemMessage,
+      /snapshot-missing.*node scripts\/bootstrap\.mjs/,
+    );
+    assert.deepEqual(
+      invoke(
+        root,
+        "permissions",
+        input(root, "PreToolUse", {
+          session_id: "missing",
+          tool_name: "Read",
+          tool_input: {},
+        }),
+      ),
+      {},
+    );
+    assert.deepEqual(
+      invoke(
+        root,
+        "read-observer",
+        input(root, "PostToolUse", {
+          session_id: "missing-observer",
+          tool_response: {},
+        }),
+      ),
+      {},
+    );
+    // If local observation storage is unavailable, messages remain visible.
+    removeFixture(join(root, "docs/control/local/harness"), {
+      recursive: true,
+      force: true,
+    });
+    write(root, "docs/control/local/harness", "unwritable directory fixture");
+    for (let i = 0; i < 2; i++)
+      assert.match(
+        invoke(
+          root,
+          "session",
+          input(root, "SessionStart", { session_id: "no-store" }),
+        ).systemMessage,
+        /snapshot-missing/,
+      );
   } finally {
     removeFixture(root, { recursive: true });
   }

@@ -1348,6 +1348,19 @@ claim evidence or releases it does not have.
   reconciled at closeout against the observed rows. WO-132 implements this contract; `operator override:` remains available for
   authorized recovery. The diagnosis of how four passes compounded the
   problem is [the planning document](../planning/machinery-stand-down-2026-09-15.md).
+  WO-133 reports advisory causes (`pins-differ`, `snapshot-missing`,
+  `runtime-unavailable`, `classification`) once per session and cause, using an
+  atomic marker in ignored harness state. Every invocation retains its journal
+  row; PostToolUse observers emit no advisory. If marker storage is unavailable,
+  the message remains visible. SessionStart reuses the session handler to compare
+  built bytes and the pinned snapshot, without dispatching work. `resume` and
+  `plan start` diagnose runtime drift without building. Release close and worktree
+  finish rebuild after their fast-forward when pins differ, preserving publication
+  preflight ordering and the worktree on build failure. All roles retain supplied
+  model and effort with source `operator-attested` when effective readback is
+  unavailable; only an unsupplied value is `unknown`. Authorized product-document
+  edits are followed by `npm run publication:check`. See
+  [WO-133 decisions](../evidence/WO-133/decisions.md).
 - **Write once, run once (WO-132).** The reviewer stages intended new source
   files and runs `npm test -- --review` once after the last source edit. The
   runner records `npm test` by tracked, non-generated code identity, excluding
@@ -1355,6 +1368,11 @@ claim evidence or releases it does not have.
   paths. The exact tested tree remains beside that key. New source bytes
   require a new final product gate; report/control/index/release-text edits do
   not. Executor and verifier run product tests when useful to their evidence.
+  WO-133 keeps the host and both profiles' skeleton version in
+  `packages/skeleton/src/version.ts`, outside machinery source declarations but
+  inside runtime pins. Review selection uses the existing evidence content
+  projection for compiler/package version literals, so version-only bumps select
+  no machinery suite; a host behavior edit still selects its declared suites.
   Lifecycle transitions run only the inline whitespace check and record their
   reports/attestations without gate, read or usage prerequisites.
   Live gates still protect source, installed inputs and the success record

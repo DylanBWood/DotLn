@@ -751,6 +751,9 @@ separates these executable switches from the broader modifier policy model.
 | Semantic correction                                 | UserPromptSubmit types the exact confirmed token, then applies the compiled narrowing response, rung 3 | Unconfirmed token stays in the role skill at rung 7 with a named missing capability                                   |
 | Clean Room                                          | Locked hand-written floor plus a provenance-judgment residue line                                      | No automatic source-provenance judgment is claimed                                                                    |
 
+WO-133 makes the generated prelude report an unavailable runtime once per session
+and cause, retaining every journal row while PostToolUse observers stay silent.
+
 Generated unit hooks import the pinned built `feedbackBoundary`; there is no
 copied predicate. Permission decisions go through the shared reactor's authority
 owner, whose built bytes are pinned with the hook runtime. Host checks execute `npm test` and `git diff --check` and bind

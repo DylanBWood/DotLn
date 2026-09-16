@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { appendEvent, decodeLog, replay, replayOutbox } from "@dotln/kernel";
 import {
   canonicalStringify,
+  COMPILER_PACKAGE_VERSION,
   compileFeedbackAudit,
   compileFeedbackUnits,
 } from "@dotln/compiler";
@@ -300,6 +303,27 @@ export const identityDigest = (bytes) =>
 const [mode, destination] = process.argv.slice(2);
 if (mode === "--capture") await capture(destination);
 if (mode === "--check") {
+  process.stdout.write(
+    execFileSync(
+      process.execPath,
+      [
+        "--import",
+        fileURLToPath(
+          new URL("./fixtures/historical-compiler-loader.mjs", import.meta.url),
+        ),
+        fileURLToPath(import.meta.url),
+        "--check-historical",
+      ],
+      { encoding: "utf8" },
+    ),
+  );
+}
+if (mode === "--check-historical") {
+  assert.equal(
+    COMPILER_PACKAGE_VERSION,
+    "0.11.1",
+    "WO-050 historical compiler identity",
+  );
   const manifest = JSON.parse(
     readFileSync("packages/skeleton/fixtures/wo050-identity.json", "utf8"),
   );
@@ -326,7 +350,7 @@ if (mode === "--check") {
     );
   }
   console.log(
-    `Verified ${manifest.length} complete Decision/projection fixtures without state normalization.`,
+    `Verified ${manifest.length} complete Decision/projection fixtures under recorded compiler identity 0.11.1, without state normalization.`,
   );
 }
 if (mode === "--snapshot") {

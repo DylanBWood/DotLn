@@ -1,4 +1,10 @@
 import test from "node:test";
+import { fnv1a64 } from "../packages/compiler/dist/src/index.js";
+import {
+  harnessRuntimeCause,
+  refreshHarnessRuntime,
+  reportHarnessRuntime,
+} from "./lib/harness-runtime.mjs";
 import assert from "node:assert/strict";
 import { execFileSync, spawn } from "node:child_process";
 import { observedSpawnSync as spawnSync } from "../packages/skeleton/src/gate-deadlines.mjs";
@@ -255,6 +261,16 @@ const statePath = (root, session = "fixture") =>
     root,
     `docs/control/local/harness/${createHash("sha256").update(session).digest("hex")}.json`,
   );
+const advisoryRows = (root, session = "fixture") => {
+  const path = statePath(root, session).replace(/\.json$/, ".jsonl");
+  return existsSync(path)
+    ? readFileSync(path, "utf8")
+        .trim()
+        .split("\n")
+        .map(JSON.parse)
+        .filter((row) => row.delegated)
+    : [];
+};
 
 test("WO-132 VER-002 F1 / VER-003 F1 output redirects distinguish append filenames from descriptor operands", () => {
   const dist = "packages/skeleton/dist/src/harness-command.js";
@@ -381,8 +397,9 @@ test("WO-132 spawn and classification advisories delegate to host permissions wh
     tool_input: { anything: true },
   });
   assert.equal(unknown.permissionDecision, undefined);
+  assert.equal(unknown.systemMessage, undefined);
   assert.match(
-    unknown.systemMessage,
+    advisoryRows(root, `${root}:spawn`).at(-1).advisory,
     /Unclassified effectful tool: SomeNewTool/,
   );
   // A spawn during a live gate is admitted too: the subagent's own writes
@@ -1012,7 +1029,13 @@ test("every installed hook is wired to a harness event or the Git commit boundar
   const installed = installation.manifest.installed.filter((file) =>
     file.path.startsWith(".claude/hooks/"),
   );
-  assert.equal(installed.length, commands.length + 1);
+  assert.equal(installed.length, new Set(commands).size + 1);
+  assert.equal(commands.length, new Set(commands).size + 1);
+  assert.deepEqual(
+    settings.hooks.SessionStart,
+    settings.hooks.UserPromptSubmit,
+  );
+  assert.match(settings.hooks.SessionStart[0].hooks[0].command, /session\.mjs/);
   for (const file of installed)
     assert.ok(
       file.path === ".claude/hooks/commit-msg.mjs" ||
@@ -1977,11 +2000,13 @@ test("effect-program classification preserves effect distinctions while hooks de
 
   const root = repo(t, { runtime: true });
   emitHarness(root);
+  let visible = 0;
   for (const [advised, cases] of [
     [true, commands],
     [false, controls],
   ])
     for (const command of cases) {
+      const before = advisoryRows(root).length;
       const result = spawnSync(
         process.execPath,
         [".claude/hooks/permissions.mjs"],
@@ -2003,14 +2028,18 @@ test("effect-program classification preserves effect distinctions while hooks de
         undefined,
         command,
       );
-      if (advised)
+      const rows = advisoryRows(root);
+      assert.equal(rows.length - before, advised ? 1 : 0, command);
+      if (advised) {
         assert.match(
-          response.systemMessage,
+          rows.at(-1).advisory,
           /advisory:.*host permissions decide/,
           command,
         );
-      else assert.deepEqual(response, {}, command);
+        if (response.systemMessage) visible++;
+      } else assert.deepEqual(response, {}, command);
     }
+  assert.equal(visible, 1);
 });
 
 test("live-gate hooks count one invariant refusal per tool use without retaining its identity", async (t) => {
@@ -2072,6 +2101,7 @@ test("WO-132 delegated advisories are journaled without counting guard refusals 
   const root = repo(t, { runtime: true });
   emitHarness(root);
   beginHarnessSession(root, "fixture", "executor");
+  const visible = [];
   const invoke = (name, event, tool, command) => {
     const result = spawnSync(process.execPath, [`.claude/hooks/${name}.mjs`], {
       cwd: root,
@@ -2084,7 +2114,9 @@ test("WO-132 delegated advisories are journaled without counting guard refusals 
       encoding: "utf8",
     });
     assert.equal(result.status, 0, result.stderr);
-    return JSON.parse(result.stdout);
+    const response = JSON.parse(result.stdout);
+    if (response.systemMessage) visible.push(response.systemMessage);
+    return response;
   };
   const commands = ["git push origin refusal-fixture", "git $FIXTURE_COMMAND"];
   for (const command of commands)
@@ -2107,7 +2139,8 @@ test("WO-132 delegated advisories are journaled without counting guard refusals 
     undefined,
   );
   const stop = invoke("finish", "Stop", undefined, undefined);
-  assert.ok(stop.systemMessage);
+  assert.equal(stop.systemMessage, undefined);
+  assert.equal(visible.length, 1);
   assert.equal(stop.decision, undefined);
   const journal = readFileSync(
     statePath(root).replace(/\.json$/, ".jsonl"),
@@ -2128,6 +2161,7 @@ test("WO-132 delegated advisories are journaled without counting guard refusals 
     advisories.filter((row) => row.event === "PreToolUse").length,
     3,
   );
+  assert.equal(advisories.filter((row) => row.event === "Stop").length, 1);
   assert.ok(advisories.every((row) => /advisory:/.test(row.advisory)));
   for (const command of [...commands, "Claude-Session: fixture"])
     assert.ok(!journal.includes(command));
@@ -2242,13 +2276,14 @@ test("commit attribution extracts actual invocation messages and hooks give acti
   assert.deepEqual(invoke("echo 'git commit'"), {});
   assert.deepEqual(invoke("git commit -m fix"), {});
   assert.deepEqual(invoke("xargs git commit -m fix --"), {});
-  assert.equal(
-    invoke("xargs git commit -m fix").hookSpecificOutput?.permissionDecision,
-    undefined,
-  );
+  const first = invoke("xargs git commit -m fix");
+  assert.equal(first.hookSpecificOutput?.permissionDecision, undefined);
+  assert.match(first.systemMessage, /command classification/);
   const refused = invoke("git commit");
-  assert.match(refused.systemMessage, /command classification: Commit message/);
-  assert.doesNotMatch(refused.systemMessage, /runtime unavailable/);
+  assert.equal(refused.systemMessage, undefined);
+  const advisory = advisoryRows(root, "attribution-fixture").at(-1).advisory;
+  assert.match(advisory, /command classification: Commit message/);
+  assert.doesNotMatch(advisory, /runtime unavailable/);
   write(root, "message.txt", "Claude-Session: synthetic\n");
   assert.equal(
     invoke("exec git commit -F message.txt").hookSpecificOutput
@@ -2261,6 +2296,7 @@ test("installed permission hook distinguishes classification advisories from run
   const root = repo(t, { runtime: true });
   emitHarness(root);
   beginHarnessSession(root, "fixture", "executor");
+  const visible = [];
   const invoke = (command) => {
     const result = spawnSync(
       process.execPath,
@@ -2277,7 +2313,9 @@ test("installed permission hook distinguishes classification advisories from run
       },
     );
     assert.equal(result.status, 0, result.stderr);
-    return JSON.parse(result.stdout);
+    const response = JSON.parse(result.stdout);
+    if (response.systemMessage) visible.push(response.systemMessage);
+    return response;
   };
   for (const command of [
     "git push",
@@ -2319,14 +2357,23 @@ test("installed permission hook distinguishes classification advisories from run
       undefined,
     );
   assert.deepEqual(invoke("node -e 'console.log(\n1)'"), {});
+  assert.equal(invoke("git $P").systemMessage, undefined);
   assert.match(
-    invoke("git $P").systemMessage,
+    advisoryRows(root).at(-1).advisory,
     /command classification: Dynamic/,
   );
   const refused = invoke("echo $(git push)");
   assert.equal(refused.hookSpecificOutput?.permissionDecision, undefined);
-  assert.match(refused.systemMessage, /command classification: Dynamic/);
-  assert.doesNotMatch(refused.systemMessage, /runtime unavailable/);
+  assert.equal(refused.systemMessage, undefined);
+  assert.equal(visible.length, 1);
+  assert.match(
+    advisoryRows(root).at(-1).advisory,
+    /command classification: Dynamic/,
+  );
+  assert.doesNotMatch(
+    advisoryRows(root).at(-1).advisory,
+    /runtime unavailable/,
+  );
   const timings = readFileSync(
     statePath(root).replace(/\.json$/, ".jsonl"),
     "utf8",
@@ -4838,6 +4885,7 @@ test("WO-132 missing bootstrap runtime delegates every pre-tool hook to host per
     readFileSync(join(root, ".claude/settings.json"), "utf8"),
   );
   const hooks = settings.hooks.PreToolUse.flatMap((entry) => entry.hooks);
+  let invocation = 0;
   for (const hook of hooks) {
     const name = /hooks\/([^"/]+\.mjs)/.exec(hook.command)[1];
     const path = join(root, ".claude/hooks", name);
@@ -4875,7 +4923,7 @@ test("WO-132 missing bootstrap runtime delegates every pre-tool hook to host per
           encoding: "utf8",
           timeout: 20_000,
           input: JSON.stringify(
-            input(root, "PreToolUse", "bootstrap-session", {
+            input(root, "PreToolUse", `bootstrap-session-${++invocation}`, {
               tool_name,
               tool_input,
             }),
@@ -5403,4 +5451,69 @@ test("WO-131 prompt submission stays open while dispatches retain the ordinary c
   );
   assert.deepEqual(lifecycle(), repairing);
   assert.equal(harnessWriterView(root).reserved, false);
+});
+
+test("WO-133 source-only runtime diagnosis never builds and refresh verifies the rebuilt pins", (t) => {
+  const root = repo(t);
+  const file = "packages/skeleton/dist/src/version.js";
+  const bytes = 'export const HARNESS_HOST_VERSION = "fixture";\n';
+  const snapshot = ".runtime/harness/0000000000000133";
+  const runtime = {
+    snapshot,
+    files: [{ path: file, hash: `fnv1a64:${fnv1a64(bytes)}` }],
+  };
+  write(
+    root,
+    ".claude/harness-manifest.json",
+    json({ profiles: [{ profile: { runtime } }] }),
+  );
+  assert.equal(harnessRuntimeCause(root), "runtime-unavailable");
+  write(root, file, bytes);
+  assert.equal(harnessRuntimeCause(root), "snapshot-missing");
+  const stderr = process.stderr.write;
+  const lines = [];
+  try {
+    process.stderr.write = (line) => {
+      lines.push(String(line));
+      return true;
+    };
+    assert.equal(reportHarnessRuntime(root), "snapshot-missing");
+  } finally {
+    process.stderr.write = stderr;
+  }
+  assert.equal(lines.length, 1);
+  assert.match(lines[0], /snapshot-missing.*node scripts\/bootstrap\.mjs/);
+  assert.equal(
+    existsSync(join(root, snapshot)),
+    false,
+    "diagnosis does not build",
+  );
+  let builds = 0;
+  assert.equal(
+    refreshHarnessRuntime(root, () => {
+      builds++;
+      write(root, `${snapshot}/${file}`, bytes);
+    }),
+    true,
+  );
+  assert.equal(builds, 1);
+  assert.equal(harnessRuntimeCause(root), null);
+  assert.equal(
+    refreshHarnessRuntime(root, () => {
+      builds++;
+    }),
+    false,
+  );
+  assert.equal(builds, 1);
+  write(root, file, "stale runtime\n");
+  assert.equal(harnessRuntimeCause(root), "pins-differ");
+  assert.throws(
+    () =>
+      refreshHarnessRuntime(root, () => {
+        builds++;
+      }),
+    /still pins-differ.*checkout preserved/,
+  );
+  assert.equal(builds, 2);
+  assert.equal(readFileSync(join(root, file), "utf8"), "stale runtime\n");
 });

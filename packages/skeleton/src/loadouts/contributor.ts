@@ -19,6 +19,7 @@ import {
 } from "./executor-supports.js";
 import { processCost } from "./process-cost.js";
 import { goalAlignment } from "./goal-alignment.js";
+import { HARNESS_HOST_VERSION } from "../version.js";
 
 const sharedSupports = [processCost, goalAlignment];
 const sharedIds = sharedSupports.map((support) => support.supportFacetId);
@@ -419,7 +420,13 @@ const targetRoles: readonly HarnessRole[] = contributorRoles.map((role) => {
             "Only resume: release close: close the merged worktree; publish its validated tag/Release.",
         }
       : {}),
-    procedure: [procedure[0]!, sessionCommands, ...procedure.slice(1)],
+    procedure: [
+      procedure[0]!,
+      sessionCommands,
+      "Without effective readback, keep the operator-selected model and effort with `--source operator-attested`; use `unknown` only for a value nobody supplied. The Codex default is GPT-6 Astra at max, operator-attested. Never replace a supplied value with unknown or invent effective readback.",
+      "After an authorized product-document edit, run `npm run publication:check`; this grants no editing authority to a read-only role.",
+      ...procedure.slice(1),
+    ],
   };
 });
 
@@ -580,7 +587,10 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "CLAUDE.md",
     },
     refusal: "claude-command-json-v1",
-    runtime: { skeletonVersion: "0.18.3", boundaryContract: "feedback-v1" },
+    runtime: {
+      skeletonVersion: HARNESS_HOST_VERSION,
+      boundaryContract: "feedback-v1",
+    },
   },
   {
     profileId: "codex-cli-0.153.4",
@@ -616,6 +626,9 @@ export const contributorProfiles: readonly HarnessProfile[] = [
       path: "AGENTS.md",
     },
     refusal: "unavailable",
-    runtime: { skeletonVersion: "0.18.3", boundaryContract: "feedback-v1" },
+    runtime: {
+      skeletonVersion: HARNESS_HOST_VERSION,
+      boundaryContract: "feedback-v1",
+    },
   },
 ];

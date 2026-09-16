@@ -1,4 +1,4 @@
-# WO-133 — Stand-down residue: the built runtime follows main, an unavailable adapter says so once, attestation keeps the operator's supplied model and effort, and a version bump alone never selects the machinery suites (version assigned at activation)
+# WO-133 — Stand-down residue: the built runtime follows main, an unavailable adapter says so once, attestation keeps the operator's supplied model and effort, and a version bump alone never selects the machinery suites (v0.22.1)
 
 **Model:** any. State the model and effort actually run
 (07-execution-guide.md §Model-specific notes).

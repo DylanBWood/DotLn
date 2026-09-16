@@ -204,6 +204,11 @@ assert_refusal 'usage: resume implementation-ready' implementation-ready \
 node --input-type=module - "$fixture_repo/scripts/resume.mjs" <<'NODE'
 import assert from "node:assert/strict";
 const {parseActor}=await import(process.argv[2]);
+for (const harness of ["claude-code", "codex-cli"])
+  for (const source of ["operator-attested", "operator-selected-model-effective-effort-unavailable"]) {
+    const actor=parseActor("fixture",["--harness",harness,"--harness-version","unobserved","--model","Supplied Model/Next","--effort","Future Effort","--source",source]);
+    assert.deepEqual(actor,{harness,harnessVersion:"unobserved",model:"Supplied Model/Next",effort:"Future Effort",source:"operator-attested"});
+  }
 for (const effort of ["low","medium","max","unknown","constructor","toString","__proto__","malformed","ultracode"])
   assert.equal(parseActor("fixture",["--harness","made-up","--harness-version","unobserved","--model","fixture","--effort",effort,"--source","observed"]).effort,effort);
 for (const raw of ["ultra","ultra code"]) {
@@ -329,7 +334,15 @@ node "$fixture_repo/scripts/resume.mjs" repair-complete \
   --harness-version fixture-1 \
   --model fixture.model/alpha \
   --effort xhigh \
-  --source operator-attested >/dev/null 2>/dev/null
+  --source operator-selected-model-effective-effort-unavailable >/dev/null 2>/dev/null
+node --input-type=module - "$active_log" <<'NODE'
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const event=readFileSync(process.argv[2],"utf8").trim().split("\n").map(JSON.parse).at(-1);
+assert.equal(event.actor.model,"fixture.model/alpha");
+assert.equal(event.actor.effort,"xhigh");
+assert.equal(event.actor.source,"operator-attested");
+NODE
 assert_status_read_only
 run verify
 grep -q 'VER-004.md' "$fixture_repo/docs/control/current.md"

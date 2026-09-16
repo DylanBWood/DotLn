@@ -4908,6 +4908,81 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-d97c1a3c51d836f4",
+      "key": "decision:docs/evidence/WO-133/decisions.md#wo-133-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "211b5c21e748f2069f59ab85cfdba24b7dd16057303332d46bacdc4d56b56df9",
+          "ref": "docs/evidence/WO-133/decisions.md#wo-133-d001",
+          "title": "WO-133-D001: Complete the stand-down at the existing runtime and output boundaries, retaining two refusals and all journal rows.",
+          "summary": "{ \"id\": \"WO-133-D001\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Complete the stand-down at the existing runtime and output boundaries, retaining two refusals and all journal rows.\", \"evidence\": [ \"docs/work-orders/WO-133-stand-down-residue.md\", \"docs/planning/r1-replan-2026-09-16.md\", \"packages/skeleton/src/harness-host.ts\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves repeated advisories, manual rebuilds and lost supplied attestations.\" } ], \"reopenWhen\": \"The first real close or next skeleton reviewer gate reveals repeated output, stale runtime, unnecessary suites or a lost refusal.\", \"workOrder\": \"WO-133\", \"path\": \"docs/evidence/WO-133/decisions.md\" }",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-b495b4c75a342030",
+      "key": "decision:docs/evidence/WO-133/decisions.md#wo-133-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "feeaf11cbdeba64cec1a8b7660acd7002810c45f76ce8c0158be3b44632845ae",
+          "ref": "docs/evidence/WO-133/decisions.md#wo-133-d002",
+          "title": "WO-133-D002: Register the existing session handler for SessionStart as explicitly directed by the operator.",
+          "summary": "{ \"id\": \"WO-133-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Register the existing session handler for SessionStart as explicitly directed by the operator.\", \"evidence\": [ \"docs/work-orders/WO-133-stand-down-residue.md\", \"packages/compiler/src/harness.ts\" ], \"rejected\": [ { \"option\": \"First prompt only\", \"reason\": \"Does not meet the actual SessionStart criterion.\" } ], \"reopenWhen\": \"Live SessionStart registration or payload differs from the documented and fixture-tested contract.\", \"kind\": \"correction\", \"misread\": \"The order assumed SessionStart was already registered.\", \"meant\": \"Diagnose at the actual SessionStart event.\", \"changed\": \"Operator authorized reusing s",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-63fca94f75dbe183",
+      "key": "decision:docs/evidence/WO-133/decisions.md#wo-133-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "85893e92613ad1edc0659bcb87d8cb16e87638260e41c640c49b2fd68b6a7f02",
+          "ref": "docs/evidence/WO-133/decisions.md#wo-133-d003",
+          "title": "WO-133-D003: Stage patch v0.22.1, compiler 0.11.2 and skeleton 0.18.4; reuse the existing evidence projection for version-only review selection.",
+          "summary": "{ \"id\": \"WO-133-D003\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Stage patch v0.22.1, compiler 0.11.2 and skeleton 0.18.4; reuse the existing evidence projection for version-only review selection.\", \"evidence\": [ \"scripts/lib/release-preparation.mjs\", \"scripts/test-runner.mjs\", \"packages/skeleton/src/evidence-editions.mjs\" ], \"rejected\": [ { \"option\": \"Select machinery for release literals\", \"reason\": \"Repeats the measured cost without a behavioral change.\" } ], \"reopenWhen\": \"Integration consumes an assigned version or a behavioral change is omitted from machinery selection.\", \"workOrder\": \"WO-133\", \"path\": \"docs/evidence/WO-133/decisions.md\" }",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-234a4dd1dfeb5772",
+      "key": "decision:docs/evidence/WO-133/decisions.md#wo-133-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "0df094faf2a332f30c1971c52c236624723b51de3ac7780bddfcda4a425a9a54",
+          "ref": "docs/evidence/WO-133/decisions.md#wo-133-d004",
+          "title": "WO-133-D004: Keep compiler purity and production artifact validation intact; isolate the historical compiler identity in the WO-050 oracle child and use current compiled inputs in other tests.",
+          "summary": "{ \"id\": \"WO-133-D004\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Keep compiler purity and production artifact validation intact; isolate the historical compiler identity in the WO-050 oracle child and use current compiled inputs in other tests.\", \"evidence\": [ \"packages/compiler/test/purity.test.ts\", \"docs/evidence/WO-050/decisions.md\", \"packages/skeleton/fixtures/wo050/README.md\", \"scripts/reactor-identity.mjs\", \"scripts/fixtures/historical-compiler-loader.mjs\" ], \"rejected\": [ { \"option\": \"Change production validation to accept obsolete artifacts\", \"reason\": \"WO-050 D002 reserves that compatibility decision for separate scope; this order changes no artifact contract.\" ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-1c9a35a00330aa79",
+      "key": "decision:docs/evidence/WO-133/decisions.md#wo-133-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b8ba0055866c8d3adb3f6487466019d31f93151c95932b0404968209693f0860",
+          "ref": "docs/evidence/WO-133/decisions.md#wo-133-d005",
+          "title": "WO-133-D005: Register runtime_refresh in the expected release inventory and select runner-fixtures when scripts/test-release.sh changes.",
+          "summary": "{ \"id\": \"WO-133-D005\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: fix\", \"decision\": \"Register runtime_refresh in the expected release inventory and select runner-fixtures when scripts/test-release.sh changes.\", \"evidence\": [ \"docs/final-reviews/WO-133/FINAL-001.md\", \"scripts/test-release-fixtures.mjs\", \"scripts/test-runner.mjs\", \"scripts/test-runner.test.mjs\" ], \"rejected\": [ { \"option\": \"Register the case without repairing source selection\", \"reason\": \"Leaves future shell-only additions unable to select their existing inventory guard.\" }, { \"option\": \"Run all machinery for every release change\", \"reason\": \"Adds unrelated recurring cost; one existing suite owns this inventory.\" }, { \"option\"",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { refreshHarnessRuntime } from "./lib/harness-runtime.mjs";
 import {
   existsSync,
   lstatSync,
@@ -510,6 +511,16 @@ const main = async () => {
     );
     if (integrated.phase !== "closed")
       throw new Error(`${workOrderId} is not closed in merged control state`);
+    refreshHarnessRuntime(mainPath, () => {
+      const built = spawnSync("npm", ["run", "build"], {
+        cwd: mainPath,
+        stdio: "inherit",
+      });
+      if (built.status !== 0)
+        throw new Error(
+          "Pinned runtime build failed; worktree preserved; run node scripts/bootstrap.mjs",
+        );
+    });
     const reconciliation = reconcileWorktreeMaterial(
       subject,
       mainPath,

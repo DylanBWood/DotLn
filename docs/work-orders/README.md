@@ -20,7 +20,7 @@
 - [x] [WO-047] — Replay environment projector · **final-reviewed**
 - [x] [WO-048] — Worker and verification hosts decode on-disk state · **final-reviewed**
 - [x] [WO-050] — Reactor typed state slices · **final-reviewed**
-- [ ] [WO-133] — Stand-down residue · **queued**
+- [x] [WO-133] — Stand-down residue · **final-reviewed**
 - [ ] [WO-068] — Resident host · **queued**
 - [ ] [WO-049] — Target-worktree harness bundle · **queued**
 - [ ] [WO-051] — Source-change writer request and transport profile · **queued**
@@ -1405,23 +1405,6 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-124/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Authority: [docs/work-orders/WO-124-impact-surfaces-derivation.md](WO-124-impact-surfaces-derivation.md)
 
-### WO-133
-
-[WO-133 — Stand-down residue: the built runtime follows main, an unavailable adapter says so once, attestation keeps the operator's supplied model and effort, and a version bump alone never selects the machinery suites (version assigned at activation)](WO-133-stand-down-residue.md)
-
-- State: draft.
-- Application target: unassigned.
-- Dependencies: typed; dependency-ready.
-- References: WO-132: satisfied-by-close (met) — the advisory delegation, the publish-only close and the log-only attestation this order completes.
-- Verification: none recorded.
-- Final review: none recorded.
-- Release: none recorded.
-- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
-- Effort: executor any; verifier any; reviewer any.
-- Cost: adds no recurring step, check, receipt, hook, key or ritual; adds one &#96;npm run build&#96; (3.9 s measured) to a release close or worktree finish whose fast-forward changed the pinned runtime. Removes, per session on main after a close, the advisory that today repeats on every hook event (344 journal rows between 2026-09-16T00:08Z and 03:03Z in one session, two per Bash call) and the rebuild the operator has to remember (seven closes on 2026-09-15); removes the &#96;unknown&#96; model and effort that every completion since 2026-09-15T18:22Z has recorded although the operator selected both; removes about 400 s from every reviewer gate whose only change under &#96;harness-host.ts&#96; or &#96;loadouts/&#96; is a version literal (observed 625, 663, 716, 807 and 840 s with &#96;harness-fixtures&#96; and &#96;process-debt&#96; selected against 191 to 413 s without; five of the seven reviewer gates since WO-132 paid it). Context bytes and tokens per session fall by the flood's lines.
-- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-133/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
-- Authority: [docs/work-orders/WO-133-stand-down-residue.md](WO-133-stand-down-residue.md)
-
 ## Closed
 
 ### WO-003
@@ -2336,6 +2319,24 @@ None.
 - Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-132/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
 - Latest attestation: harness claude-code; version 2.1.272; model claude-fable-5-1; effort xhigh; source self-reported; account not-applicable.
 - Authority: [docs/work-orders/WO-132-machinery-stand-down.md](WO-132-machinery-stand-down.md)
+
+### WO-133
+
+[WO-133 — Stand-down residue: the built runtime follows main, an unavailable adapter says so once, attestation keeps the operator's supplied model and effort, and a version bump alone never selects the machinery suites (v0.22.1)](WO-133-stand-down-residue.md)
+
+- State: closed.
+- Application target: v0.22.1.
+- Dependencies: typed; activation not applicable.
+- References: WO-132: satisfied-by-close (met) — the advisory delegation, the publish-only close and the log-only attestation this order completes.
+- Verification: [VER-002](../../docs/verifications/WO-133/VER-002.md) (pass).
+- Final review: [FINAL-002](../../docs/final-reviews/WO-133/FINAL-002.md) (pass).
+- Release: unreleased.
+- Model: any. State the model and effort actually run (07-execution-guide.md §Model-specific notes).
+- Effort: executor any; verifier any; reviewer any.
+- Cost: adds no recurring step, check, receipt, hook, key or ritual; adds one &#96;npm run build&#96; (3.9 s measured) to a release close or worktree finish whose fast-forward changed the pinned runtime. Removes, per session on main after a close, the advisory that today repeats on every hook event (344 journal rows between 2026-09-16T00:08Z and 03:03Z in one session, two per Bash call) and the rebuild the operator has to remember (seven closes on 2026-09-15); removes the &#96;unknown&#96; model and effort that every completion since 2026-09-15T18:22Z has recorded although the operator selected both; removes about 400 s from every reviewer gate whose only change under &#96;harness-host.ts&#96; or &#96;loadouts/&#96; is a version literal (observed 625, 663, 716, 807 and 840 s with &#96;harness-fixtures&#96; and &#96;process-debt&#96; selected against 191 to 413 s without; five of the seven reviewer gates since WO-132 paid it). Context bytes and tokens per session fall by the flood's lines.
+- Inherited ledger duty: discharge with [this order's decisions](../evidence/WO-133/decisions.md) and its row in [the decisions index](../lineage/decisions-index.md); no lifecycle ledger append.
+- Latest attestation: harness claude-code; version 2.1.273; model claude-opus-5&#91;1m&#93;; effort xhigh; source self-reported; account not-applicable.
+- Authority: [docs/work-orders/WO-133-stand-down-residue.md](WO-133-stand-down-residue.md)
 
 ## Historical
 
