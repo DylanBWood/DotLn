@@ -4682,6 +4682,66 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-9d31a3f04ca58800",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1ff75f29ef8ea5fbc38a35c256a9ebd37681378e16a0332b3ce69bff90a7ca44",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d001",
+          "title": "WO-047-D001: Add an optional per-step environment projector; keep the reserved-key fallback unchanged and let the skeleton own its state projection.",
+          "summary": "{ \"id\": \"WO-047-D001\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Add an optional per-step environment projector; keep the reserved-key fallback unchanged and let the skeleton own its state projection.\", \"evidence\": [ \"packages/kernel/src/core.ts\", \"packages/kernel/test/ac2-replay-store.test.ts\", \"packages/skeleton/src/reactor.ts\", \"packages/skeleton/src/scenario.ts\", \"docs/product/02-domain-model.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Keeps future typed state slices coupled to the kernel's literal state keys.\" }, { \"option\": \"Persist the environment on every event\", \"reason\": \"Changes the event schema and duplicates state already derived from the log.\" }, { ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d4f5bb6a4c45bbe7",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b59a8bce6cbcba63cb96de0afc1a96faba222a2e9461dd2adfbdb7fb9821e800",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d002",
+          "title": "WO-047-D002: Stage application v0.22.0, kernel 0.5.0 and skeleton 0.18.2; refresh generated runtime pins and the authority and feedback editions.",
+          "summary": "{ \"id\": \"WO-047-D002\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Stage application v0.22.0, kernel 0.5.0 and skeleton 0.18.2; refresh generated runtime pins and the authority and feedback editions.\", \"evidence\": [ \"package-lock.json\", \"docs/evidence/current.json\", \"scripts/lib/evidence-sources.mjs\", \"packages/skeleton/src/feedback-audit.ts\" ], \"rejected\": [ { \"option\": \"Kernel patch only\", \"reason\": \"An additive public replay API merits a minor version within the order's patch-to-minor classification.\" }, { \"option\": \"Bump compiler or console\", \"reason\": \"Neither implementation changes.\" }, { \"option\": \"Reuse the live feedback audit\", \"reason\": \"The audited reactor and r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8384c6467be46287",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "960ebedba5f2b183cecd356fd5fd712f179b491e2bd4f86a3e0a57f7c2bf2593",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d003",
+          "title": "WO-047-D003: Use the roadmap's existing bold delivery-note form and recompute both audience-edition source locks after reviewing their linked claims.",
+          "summary": "{ \"id\": \"WO-047-D003\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Use the roadmap's existing bold delivery-note form and recompute both audience-edition source locks after reviewing their linked claims.\", \"evidence\": [ \"docs/verifications/WO-047/VER-001.md\", \"docs/product/06-roadmap.md\", \"docs/product/08-publication-compiler.md\", \"docs/publication/everyday-ai-user-toc.md\", \"docs/publication/software-engineer-toc.md\", \"scripts/check-publication.mjs\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves an order-introduced publication regression and stale derivative locks for downstream repair.\" }, { \"option\": \"Index a new roadmap subsection\", \"reason\": \"A staged delivery a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4ec29d347ebc5686",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cb9031688ad64479c9f5b211b99af1881defbe503c896d5fbcb22a630964af22",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d004",
+          "title": "WO-047-D004: Normalize the inherited capability-table header to its existing console schema; defer inherited planning-cost and continuation reconciliation to the next planning continuation.",
+          "summary": "{ \"id\": \"WO-047-D004\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Normalize the inherited capability-table header to its existing console schema; defer inherited planning-cost and continuation reconciliation to the next planning continuation.\", \"evidence\": [ \"docs/planning/capability-table.md\", \"packages/console/src/text-sources.ts\", \"packages/console/test/board.test.ts\", \"scripts/lib/plan-subject.mjs\", \"scripts/lib/plan-continuation.mjs\", \"docs/evidence/WO-047/repair-001.md\" ], \"rejected\": [ { \"option\": \"NoOp on the table header\", \"reason\": \"A one-cell schema mismatch hides all capability rows; normalizing the heading restores the existing contract without changing claims",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }
