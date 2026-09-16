@@ -14,6 +14,17 @@ public draft explicitly marked ready to file, with direct-filing provenance
 recorded on the committed surface. Its compaction-safety capture is a sibling
 record, never a source to mine. The same clean-room screen always applies.
 
+## Evidence before claims — hard rule
+
+Never guess. Check available source, implementation, documentation or executable
+evidence before making a factual claim or choosing an action that depends on it.
+If evidence is missing, say what is unknown and obtain it; never fill the gap
+with an invented fact. Label an inference and state its supporting evidence.
+Do not wait for the operator to challenge a claim before checking it.
+
+When wrong, state the specific error, the checked evidence and the correction
+directly. A wording change does not correct an unsupported claim or decision.
+
 ## Shared memory
 
 Intake → product synthesis → planning/work orders → execution. Record product
