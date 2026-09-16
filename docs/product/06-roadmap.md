@@ -1490,3 +1490,9 @@ reserved-key default remains supported. The skeleton passes its own projector
 across all replay and recovery paths. Full decisions and serialized bytes remain
 identical on the demo, WO-003 oracle, worker, verification, feedback and beacon
 fixtures. Typed state slices remain WO-050. See [the decision record](../evidence/WO-047/decisions.md).
+
+WO-068 release assignment (2026-09-16): stage application `v0.23.0` and
+skeleton `0.19.0` for the new resident host, script catalog and commands.
+Kernel, compiler and console component versions remain unchanged. This local
+assignment completes the activation placeholder under the order's minor
+classification; independent verification and publication remain pending.

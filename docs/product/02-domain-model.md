@@ -107,6 +107,25 @@ In prose, a “task” remains a bounded unit realized as a WorkOrder. Planned
 background-session, subagent, workflow, SDK, browser-driven and human transport
 adapters remain empirically selected per environment (Principle 15).
 
+WO-068 adds the resident's schema-1 events: `ResidentConfigured` pins one
+compiled presence policy and its exact phase actor declarations; `ClockSampled
+{ at }` records every wall-clock input; `OperatorPresenceChanged` records
+`away` or `returned`. `ScriptEpisodeDispatched` persists the deterministic
+policy/phase/cadence/due-time/arm identity before spawn. `ScriptEpisodeObserved`
+retains exit status, signal, stdout SHA-256, a first line bounded to 160
+characters, the host-checked verification result and reason. Success requires
+exit zero and the declared expected stdout digest; script prose cannot certify
+itself. `ScriptEpisodeLost` closes an unobserved dispatch after restart without
+reusing its identity. `ScriptEpisodeRefused` and `ActorUnavailable` retain NoOp
+reasons. Replay validates these records before dead-owner recovery.
+
+This bounded script acceptance contract verifies the declared output, not the
+correctness of arbitrary repository changes. The actor's named surface and
+resource reservation must fit the phase scope and effective envelope. File and
+line amounts are declared reservations, not an OS measurement of actual edits;
+execution-environment containment and source-change verification retain their
+separate work orders. No runtime job is derived from a Contributor stage here.
+
 The WO-009 runtime records each physical incarnation as `WorkerAttemptStarted`,
 followed by acceptance, host-observed heartbeats, and completion, interruption,
 lease expiry, or quarantine. The WorkOrder, continuation and stable command

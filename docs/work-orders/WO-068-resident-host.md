@@ -1,4 +1,4 @@
-# WO-068 — Resident host: one offline local process per launchpad folds the log, records each clock sample as an event, drives the compiled presence statechart, dispatches `script` actor episodes when a phase allows, and resumes idempotently after a kill or a restart, including as a single `--once` tick under an outside scheduler (version assigned at activation)
+# WO-068 — Resident host: one offline local process per launchpad folds the log, records each clock sample as an event, drives the compiled presence statechart, dispatches `script` actor episodes when a phase allows, and resumes idempotently after a kill or a restart, including as a single `--once` tick under an outside scheduler (v0.23.0)
 
 **Model:** any capable model for the host and fixtures; the live rows in
 WO-099 use the actual harnesses. State the model and effort actually run
