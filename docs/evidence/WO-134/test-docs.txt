@@ -1,0 +1,53 @@
+
+> test:docs
+> node scripts/test-runner.mjs --document
+
+PROGRESS [build] 0.0 s started
+PASS build 2.61 s
+PROGRESS [format] 0.0 s started
+PROGRESS [release-surfaces] 0.0 s started
+PROGRESS [publication] 0.0 s started
+PROGRESS [index] 0.0 s started
+PASS publication 1.92 s
+PROGRESS [authority-evidence] 0.0 s started
+PASS format 3.18 s
+PROGRESS [harness] 0.0 s started
+PASS harness 0.38 s
+PROGRESS [harness-context] 0.0 s started
+PASS release-surfaces 5.45 s
+PROGRESS [harness-evidence] 0.0 s started
+PASS harness-context 2.34 s
+PROGRESS [artifact-evidence] 0.0 s started
+PASS artifact-evidence 0.36 s
+PROGRESS [verification-evidence] 0.0 s started
+PASS harness-evidence 2.64 s
+PROGRESS [feedback-evidence] 0.0 s started
+PASS authority-evidence 6.66 s
+PROGRESS [meta] 0.0 s started
+PASS meta 2.81 s
+PROGRESS [index] 15.0 s running; last report: waiting for the next case report
+PASS feedback-evidence 7.21 s
+PASS verification-evidence 11.45 s
+PROGRESS [index] 30.0 s running; last report: waiting for the next case report
+PASS index 30.67 s
+PROGRESS [skeleton-docs] 0.0 s started
+PROGRESS [console-docs] 0.0 s started
+PROGRESS [plan-refutation-current] 0.0 s started
+PROGRESS [plan] 0.0 s started
+PROGRESS [skeleton-docs] 0.3 s # Subtest: packages/skeleton/dist/test/artifact-identity.test.js
+PROGRESS [skeleton-docs] 1.4 s # Subtest: packages/skeleton/dist/test/feedback-host.test.js
+PROGRESS [console-docs] 15.0 s running; last report: waiting for the next case report
+PROGRESS [plan-refutation-current] 15.0 s running; last report: waiting for the next case report
+PROGRESS [plan] 15.0 s running; last report: waiting for the next case report
+PROGRESS [skeleton-docs] 17.8 s # Subtest: packages/skeleton/dist/test/verification.test.js
+PASS skeleton-docs 17.82 s
+PASS plan-refutation-current 18.92 s
+PASS plan 19.04 s
+PROGRESS [console-docs] 30.0 s running; last report: waiting for the next case report
+PROGRESS [console-docs] 45.0 s running; last report: waiting for the next case report
+PROGRESS [console-docs] 55.6 s # Subtest: [document] WO-032 AC5 each role's pinned answering cells exist and the questions match product 13
+PROGRESS [console-docs] 75.0 s running; last report: ok 1 - [document] WO-032 AC5 each role's pinned answering cells exist and the questions match product 13
+PROGRESS [console-docs] 90.0 s running; last report: ok 1 - [document] WO-032 AC5 each role's pinned answering cells exist and the questions match product 13
+PROGRESS [console-docs] 93.4 s # Subtest: [document] WO-032 host collection reads current sources and all shipped exports without changing control or creating a missing store
+PASS console-docs 93.45 s
+npm run test:docs: 17 passed; 0 failed; 126.89 s; 17 fresh tasks

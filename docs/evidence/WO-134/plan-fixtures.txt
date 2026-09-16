@@ -1,0 +1,177 @@
+TAP version 13
+# Subtest: WO-134 both refutation paths select the gate's missing same-day pass independent of ledger order
+ok 1 - WO-134 both refutation paths select the gate's missing same-day pass independent of ledger order
+  ---
+  duration_ms: 52237.025875
+  ...
+# Subtest: WO-132 goal review preserves hypothetical findings without holding and requires observed evidence
+ok 2 - WO-132 goal review preserves hypothetical findings without holding and requires observed evidence
+  ---
+  duration_ms: 1695.904167
+  ...
+# Subtest: WO-132 legacy holds accept bound criterion repairs without replacing their immutable receipt
+ok 3 - WO-132 legacy holds accept bound criterion repairs without replacing their immutable receipt
+  ---
+  duration_ms: 4433.064041
+  ...
+# Subtest: WO-132 goal dispositions and overrides bind only the exact repaired Cost declaration
+ok 4 - WO-132 goal dispositions and overrides bind only the exact repaired Cost declaration
+  ---
+  duration_ms: 20924.609792
+  ...
+# Subtest: WO-132 one judgment survives a disposed criterion repair and later findings cannot reopen its text
+ok 5 - WO-132 one judgment survives a disposed criterion repair and later findings cannot reopen its text
+  ---
+  duration_ms: 8507.660375
+  ...
+# Subtest: WO-132 override command accepts capture authority without actor flags
+ok 6 - WO-132 override command accepts capture authority without actor flags
+  ---
+  duration_ms: 4709.30325
+  ...
+# Subtest: direct-session frozen result round-trips and gates without invented launch provenance
+ok 7 - direct-session frozen result round-trips and gates without invented launch provenance
+  ---
+  duration_ms: 2509.005375
+  ...
+# Subtest: direct-session closed provenance rejects launch claims, verified settings and changed frozen results
+ok 8 - direct-session closed provenance rejects launch claims, verified settings and changed frozen results
+  ---
+  duration_ms: 2188.372208
+  ...
+# Subtest: direct-session publication rejects dirty or stale planning subjects and screens session metadata
+ok 9 - direct-session publication rejects dirty or stale planning subjects and screens session metadata
+  ---
+  duration_ms: 1500.416333
+  ...
+# Subtest: direct-session receipts retain structural and addressed holds and cannot freeze an omitted hold as pass
+ok 10 - direct-session receipts retain structural and addressed holds and cannot freeze an omitted hold as pass
+  ---
+  duration_ms: 7352.100792
+  ...
+# Subtest: direct-session and CLI histories share held-criterion repair and disposition requirements
+ok 11 - direct-session and CLI histories share held-criterion repair and disposition requirements
+  ---
+  duration_ms: 3593.227375
+  ...
+# Subtest: historical direct-session receipts retain identities without a third-hold stop
+ok 12 - historical direct-session receipts retain identities without a third-hold stop
+  ---
+  duration_ms: 3643.653208
+  ...
+# Subtest: AC1 committed-only deterministic subject; narrative blinding; all five hash inputs
+ok 13 - AC1 committed-only deterministic subject; narrative blinding; all five hash inputs
+  ---
+  duration_ms: 4012.236166
+  ...
+# Subtest: AC2 compiled identity, mask, lens, pinned questions, one-shot cadence and authority refusals
+ok 14 - AC2 compiled identity, mask, lens, pinned questions, one-shot cadence and authority refusals
+  ---
+  duration_ms: 0.57425
+  ...
+# Subtest: AC3 closed schema, exhaustive ids, verdict construction, row-less exclusion drift and gap deferrals
+ok 15 - AC3 closed schema, exhaustive ids, verdict construction, row-less exclusion drift and gap deferrals
+  ---
+  duration_ms: 969.063
+  ...
+# Subtest: AC3/5 deferrals require a later sequence member; outside, closed, self, earlier and missing orders refuse
+ok 16 - AC3/5 deferrals require a later sequence member; outside, closed, self, earlier and missing orders refuse
+  ---
+  duration_ms: 4070.099709
+  ...
+# Subtest: AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal
+ok 17 - AC3 local-terms phrases across separators and lines, private diagnostics, and atomic receipt refusal
+  ---
+  duration_ms: 1661.001959
+  ...
+# Subtest: AC5 unanswered drift and receipt-text override refuse; captured, attributed control event discharges
+ok 18 - AC5 unanswered drift and receipt-text override refuse; captured, attributed control event discharges
+  ---
+  duration_ms: 1964.658375
+  ...
+# Subtest: an earlier operator override admits later planning without reopening its held order
+ok 19 - an earlier operator override admits later planning without reopening its held order
+  ---
+  duration_ms: 2613.884792
+  ...
+# Subtest: a partial historical override preserves accepted repairs and repeated holds
+ok 20 - a partial historical override preserves accepted repairs and repeated holds
+  ---
+  duration_ms: 1319.922584
+  ...
+# Subtest: AC5 pass after held criterion repair; elsewhere and whitespace edits cannot re-roll
+ok 21 - AC5 pass after held criterion repair; elsewhere and whitespace edits cannot re-roll
+  ---
+  duration_ms: 1759.356667
+  ...
+# Subtest: historical holds remain addressed and immutable after removing the third-hold stop
+ok 22 - historical holds remain addressed and immutable after removing the third-hold stop
+  ---
+  duration_ms: 1973.56175
+  ...
+# Subtest: AC2/4 transport adapters keep fixed schema, empty cwd and no model tools; host rejects a mismatched receipt
+ok 23 - AC2/4 transport adapters keep fixed schema, empty cwd and no model tools; host rejects a mismatched receipt
+  ---
+  duration_ms: 332.208375
+  ...
+Advisory: attestation recorded as supplied; human fixture effort unknown has no matching discovery observation.
+Advisory: attestation recorded as supplied; human fixture effort unknown has no matching discovery observation.
+# Subtest: WO-125 plan CLI accepts Codex GPT-6 Astra/max and records only a launch claim
+ok 24 - WO-125 plan CLI accepts Codex GPT-6 Astra/max and records only a launch claim
+  ---
+  duration_ms: 1145.92925
+  ...
+# Subtest: WO-042 continuation admits required execution metadata before and after commit without rewriting the receipt
+ok 25 - WO-042 continuation admits required execution metadata before and after commit without rewriting the receipt
+  ---
+  duration_ms: 1520.81775
+  ...
+# Subtest: WO-043 continuation admits only the reviewed dependency transcription and preserves receipt bytes
+ok 26 - WO-043 continuation admits only the reviewed dependency transcription and preserves receipt bytes
+  ---
+  duration_ms: 3625.659584
+  ...
+# Subtest: WO-042 continuation rejects planning edits and forged execution classifications in both HEAD and the workspace
+ok 27 - WO-042 continuation rejects planning edits and forged execution classifications in both HEAD and the workspace
+  ---
+  duration_ms: 4004.669208
+  ...
+# Subtest: AC5 forward-only gate, real-adapter fixture receipt, and stale committed standard refusal
+ok 28 - AC5 forward-only gate, real-adapter fixture receipt, and stale committed standard refusal
+  ---
+  duration_ms: 2703.6165
+  ...
+# Subtest: receipt source symlinks refuse and CLI override retains the acting account label
+ok 29 - receipt source symlinks refuse and CLI override retains the acting account label
+  ---
+  duration_ms: 1071.393417
+  ...
+# Subtest: WO-126 direct command files an immutable committed receipt, rejects bad input and carries unchanged verdicts
+ok 30 - WO-126 direct command files an immutable committed receipt, rejects bad input and carries unchanged verdicts
+  ---
+  duration_ms: 4549.243708
+  ...
+# Subtest: WO-126 planning start requires clean main and full scope retains every judgment
+ok 31 - WO-126 planning start requires clean main and full scope retains every judgment
+  ---
+  duration_ms: 1086.240042
+  ...
+# Subtest: WO-126 legacy cost adoption preserves receipts and refuses any substantive authority edit
+ok 32 - WO-126 legacy cost adoption preserves receipts and refuses any substantive authority edit
+  ---
+  duration_ms: 1836.257084
+  ...
+# Subtest: WO-126 cost input holds missing or unbalanced additions and refuses stale subject evidence
+ok 33 - WO-126 cost input holds missing or unbalanced additions and refuses stale subject evidence
+  ---
+  duration_ms: 3046.862834
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 158943.624

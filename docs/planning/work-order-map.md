@@ -808,6 +808,12 @@ authority.
    breaking the tie on ledger order. **The patch carries no regression test**,
    so the defect can return; the test is the nomination. Latent since the
    mechanism shipped, surfaced by the first day with two passes.
+   **Disposition (2026-09-16, WO-134):** implemented a shared receipt-based
+   same-day selector and regression covering both ledger orders and both
+   refutation paths. The sole unjudged pass wins; otherwise the latest planning
+   receipt wins. Several unjudged same-day headings are reported as ambiguous.
+   [Independent verification passed](../verifications/WO-134/VER-001.md). Reopen on a demonstrated mismatch
+   between dispatch and the gate; see [WO-134-D001](../evidence/WO-134/decisions.md).
 3. _A final review's stated merge prerequisite is unenforced._ FINAL-001 said
    in bold that B1 had to clear before the branch merged; it merged at
    `3b7a315` with B1 unmet, and main inherited a red `test:docs`. A fix must
@@ -859,6 +865,12 @@ track.
    shifting-the-burden-to-the-intervenor trap: nine operator corrections in
    this session, all catching agent error rather than directing work. The
    count was first recorded as five and was itself understated.
+   **Disposition (2026-09-16, WO-134):** the propagation into pass selection is
+   removed by the shared receipt-based rule and section-swap regression;
+   [independent verification passed](../verifications/WO-134/VER-001.md). Enforcing or reorganizing ledger
+   insertion remains with WO-084, under its existing deferral. Reopen the
+   selection portion only on a position-sensitive result; the insertion-rule
+   nomination remains open on the evidence above.
 
 10. _A source change rode a document-only dispatch onto main and voided the
     reviewed gate._ A planning dispatch is document-only and carries no

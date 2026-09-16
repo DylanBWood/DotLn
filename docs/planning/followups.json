@@ -5182,6 +5182,20 @@
           "title": "_The plan gate was unsatisfiable on any day carrying two passes._",
           "summary": "2. _The plan gate was unsatisfiable on any day carrying two passes._ `checkPlanGate` demanded a receipt for the later dated heading while `latestPlanningPass` returned the earlier one: both sorted headings by date alone, and `Array.prototype.sort` is stable. Patched in `8a5eb79` by breaking the tie on ledger order. **The patch carries no regression test**, so the defect can return; the test is the nomination. Latent since the mechanism shipped, surfaced by the first day with two passes.",
           "missing": false
+        },
+        {
+          "hash": "41d7763a42d802b1ed77918354b4f439e81639243fbb8a688e981cb455afc2e9",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_The plan gate was unsatisfiable on any day carrying two passes._",
+          "summary": "2. _The plan gate was unsatisfiable on any day carrying two passes._ `checkPlanGate` demanded a receipt for the later dated heading while `latestPlanningPass` returned the earlier one: both sorted headings by date alone, and `Array.prototype.sort` is stable. Patched in `8a5eb79` by breaking the tie on ledger order. **The patch carries no regression test**, so the defect can return; the test is the nomination. Latent since the mechanism shipped, surfaced by the first day with two passes. **Disposition (2026-09-16, WO-134):** implemented a shared receipt-based same-day selector and regression covering both ledger orders and both refutation paths. The sole unjudged pass wins; otherwise the late",
+          "missing": false
+        },
+        {
+          "hash": "094fd6c6cd362588100b77d45a1bdcfb9526c198d77ab52d0e87595f5059b5b0",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_The plan gate was unsatisfiable on any day carrying two passes._",
+          "summary": "2. _The plan gate was unsatisfiable on any day carrying two passes._ `checkPlanGate` demanded a receipt for the later dated heading while `latestPlanningPass` returned the earlier one: both sorted headings by date alone, and `Array.prototype.sort` is stable. Patched in `8a5eb79` by breaking the tie on ledger order. **The patch carries no regression test**, so the defect can return; the test is the nomination. Latent since the mechanism shipped, surfaced by the first day with two passes. **Disposition (2026-09-16, WO-134):** implemented a shared receipt-based same-day selector and regression covering both ledger orders and both refutation paths. The sole unjudged pass wins; otherwise the late",
+          "missing": false
         }
       ],
       "dispositions": []
@@ -5207,6 +5221,20 @@
         },
         {
           "hash": "3c43f026f2fef4661e1a6c3d9f71cc25edeaed70741a23963e46ad5fa284312d",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_The ledger's declared order is unenforced, so the operator is the check._",
+          "summary": "9. _The ledger's declared order is unenforced, so the operator is the check._ The header states in bold that a new section appends directly below it, never at the end of the file; this pass appended at the end and the operator caught it. `WO-084:53` already records that \"nothing checks the order\", and the file has drifted accordingly — dated sections currently run ascending below the first entry, contradicting the declared newest-first rule. The drift also propagates: the same-day tie-break in `latestPlanningPass` reads ledger position, so a wrong order silently selects the wrong pass. A fix must make the insertion rule checkable in `test:docs` rather than documented, which is WO-084's subje",
+          "missing": false
+        },
+        {
+          "hash": "109a9f50778be8782b8238927acb1db7bcb256f188c41ecb8e7f32ecc691e152",
+          "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
+          "title": "_The ledger's declared order is unenforced, so the operator is the check._",
+          "summary": "9. _The ledger's declared order is unenforced, so the operator is the check._ The header states in bold that a new section appends directly below it, never at the end of the file; this pass appended at the end and the operator caught it. `WO-084:53` already records that \"nothing checks the order\", and the file has drifted accordingly — dated sections currently run ascending below the first entry, contradicting the declared newest-first rule. The drift also propagates: the same-day tie-break in `latestPlanningPass` reads ledger position, so a wrong order silently selects the wrong pass. A fix must make the insertion rule checkable in `test:docs` rather than documented, which is WO-084's subje",
+          "missing": false
+        },
+        {
+          "hash": "79809fdc83cfc55f1c788fa39e300e0794546dbf61e4e8178a83f088f4b77f0a",
           "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
           "title": "_The ledger's declared order is unenforced, so the operator is the check._",
           "summary": "9. _The ledger's declared order is unenforced, so the operator is the check._ The header states in bold that a new section appends directly below it, never at the end of the file; this pass appended at the end and the operator caught it. `WO-084:53` already records that \"nothing checks the order\", and the file has drifted accordingly — dated sections currently run ascending below the first entry, contradicting the declared newest-first rule. The drift also propagates: the same-day tie-break in `latestPlanningPass` reads ledger position, so a wrong order silently selects the wrong pass. A fix must make the insertion rule checkable in `test:docs` rather than documented, which is WO-084's subje",
@@ -5314,6 +5342,36 @@
           "ref": "docs/planning/work-order-map.md#candidates--release-close-and-planning-dispatch-defects-recorded-2026-09-16",
           "title": "_The planning: prefix was read as conversation a second time._ Item 6",
           "summary": "15. _The `planning:` prefix was read as conversation a second time._ Item 6 records the first instance. The fourth session opened with a `planning:` dispatch, the hook resolved the planner role, and the session announced that it had chosen not to open a pass because the message read as a question. That was the same unilateral choice item 6 already names, made against a register entry on the same branch. The operator caught it. A fix for item 6 must survive the agent having read item 6. Cost observation: about ninety minutes across the first three sessions, plus a fourth session of unmeasured length, on a release that was publishable throughout.",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-356df478162a05f3",
+      "key": "decision:docs/evidence/WO-134/decisions.md#wo-134-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "93a3128f7acfa5de1f0ceaa7c682635d61dab63bb0eb6ebcf1130b35dbeb6825",
+          "ref": "docs/evidence/WO-134/decisions.md#wo-134-d001",
+          "title": "WO-134-D001: Share latestPlanningPass between both refutation paths; retain latest-date selection and resolve same-day ties using validated planning receipts.",
+          "summary": "{ \"id\": \"WO-134-D001\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Share latestPlanningPass between both refutation paths; retain latest-date selection and resolve same-day ties using validated planning receipts.\", \"evidence\": [ \"docs/work-orders/WO-134-planning-pass-selection.md\", \"scripts/lib/plan-direct.mjs\", \"scripts/refute-plan.mjs\", \"scripts/lib/plan-receipts.mjs\", \"scripts/lib/plan-subject.mjs\", \"docs/work-orders/WO-084-ledger-order-and-index.md\" ], \"rejected\": [ { \"option\": \"NoOp or a shared ledger-position comparator\", \"reason\": \"Both preserve silent dependence on an unchecked insertion convention and recurring operator repair.\" }, { \"option\": \"Break ties by headi",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-be9a178bada949f0",
+      "key": "decision:docs/evidence/WO-134/decisions.md#wo-134-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "6ed1ca41bf4f1a54da35f04c04970a73a8919e4f18b981ba190cfe6aa24eb89d",
+          "ref": "docs/evidence/WO-134/decisions.md#wo-134-d002",
+          "title": "WO-134-D002: Include the selected pass in new direct-request filenames, preserve older requests, and retain legacy pointer compatibility.",
+          "summary": "{ \"id\": \"WO-134-D002\", \"date\": \"2026-09-16\", \"dispatch\": \"resume: next\", \"decision\": \"Include the selected pass in new direct-request filenames, preserve older requests, and retain legacy pointer compatibility.\", \"evidence\": [ \"scripts/lib/plan-direct.mjs\", \"scripts/test-plan-refutation.mjs\", \"docs/work-orders/WO-134-planning-pass-selection.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Consecutive full-scope direct judgments with identical subjects can retain the old pass despite correct selection.\" }, { \"option\": \"Overwrite or remove the previous request\", \"reason\": \"Discards recovery evidence; a pass-specific filename is sufficient.\" } ], \"reopenWhen\": \"A saved request targets a diff",
           "missing": false
         }
       ],

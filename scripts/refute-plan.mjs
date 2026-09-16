@@ -1,12 +1,8 @@
 #!/usr/bin/env node
 import { readFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import {
-  buildPlanSubject,
-  PLAN_LEDGER,
-  planningPasses,
-} from "./lib/plan-subject.mjs";
+import { buildPlanSubject } from "./lib/plan-subject.mjs";
 import {
   checkPlanGate,
   overridePlanHold,
@@ -22,6 +18,7 @@ import { parseActor } from "./resume.mjs";
 import {
   beginDirectRefutation,
   fileDirectRefutation,
+  latestPlanningPass,
 } from "./lib/plan-direct.mjs";
 import {
   planningFollowups,
@@ -189,22 +186,14 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
       "Pass-scoped refutation uses --direct; the external transport judges the full horizon",
     );
   const subject = buildPlanSubject(root, "HEAD", { goalReview: true });
-  const passes = planningPasses(readFileSync(join(root, PLAN_LEDGER), "utf8"));
-  // Two planning passes can share a calendar day. The ledger header declares
-  // newest section first, so the earlier ledger position is the current pass.
-  const latest = [...passes]
-    .map((row, index) => ({ row, index }))
-    .sort(
-      (a, b) => b.row.date.localeCompare(a.row.date) || a.index - b.index,
-    )[0]?.row;
+  const receipts = await readReceipts(root);
   const pass = opt["--evidence-only"]
     ? {
         id: `evidence-${opt["--slug"] ?? "plan-refutation"}`,
         kind: "evidence",
         heading: null,
       }
-    : latest && { id: latest.id, kind: "planning", heading: latest.heading };
-  if (!pass) throw new Error("no dated planning-pass ledger heading");
+    : await latestPlanningPass(root, receipts);
   if (
     pass.kind === "planning" &&
     buildPlanSubject(root, "HEAD", { workspace: true, goalReview: true })
@@ -213,9 +202,7 @@ export async function main(args = process.argv.slice(2), root = toolRoot) {
     throw new Error(
       "commit the planning subject before refutation; draft bytes cannot enter a committed-only brief",
     );
-  const history = (await readReceipts(root)).filter(
-    (receipt) => receipt.pass.id === pass.id,
-  );
+  const history = receipts.filter((receipt) => receipt.pass.id === pass.id);
   if (history.at(-1)?.subject.hash === subject.hash)
     throw new Error("same subject cannot be re-rolled");
   requireChangedPlanEvidence(pass, subject, history);
