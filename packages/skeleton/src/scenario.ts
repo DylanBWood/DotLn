@@ -30,6 +30,7 @@ import {
   initialState,
   loadout,
   seiriPredicates,
+  projectRuntimeEnvironment,
   seiriReactor,
   workOrderFromState,
   walkingStateFromRuntime,
@@ -298,6 +299,7 @@ export class LiveReactorDriver {
       [appended.event],
       seiriReactor,
       seiriPredicates,
+      projectRuntimeEnvironment,
     );
     const decision = stepped.decisions[0];
     if (decision === undefined)
@@ -314,6 +316,7 @@ export class LiveReactorDriver {
       decodeLog(log),
       seiriReactor,
       seiriPredicates,
+      projectRuntimeEnvironment,
     );
     this.#state = restored.state;
     this.#decisions = [...restored.decisions];
@@ -455,6 +458,7 @@ export function replayScenario(log: string): ScenarioResult {
     decodeLog(log),
     seiriReactor,
     seiriPredicates,
+    projectRuntimeEnvironment,
   );
   return projectScenario(log, replayed.state, replayed.decisions);
 }

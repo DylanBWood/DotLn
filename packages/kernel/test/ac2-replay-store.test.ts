@@ -1,11 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   Cadence,
   Program,
   appendEvent,
   authorize,
   decodeLog,
+  defaultEnvironmentProjection,
   encodeLog,
   evaluateCadence,
   replay,
@@ -66,6 +68,253 @@ const poisoned = <R>(run: () => R): R => {
     globalThis.Math.random = realRandom;
   }
 };
+
+test("WO-047 default projection preserves the reserved-key fallback", () => {
+  for (const state of [
+    null,
+    [],
+    12,
+    "state",
+    true,
+    {},
+    { seed: 17 },
+    { rngState: "17" },
+  ])
+    assert.deepEqual(defaultEnvironmentProjection(state), { rngState: 0 });
+  for (const policy of [null, false, 0, "", [], { maintenance: "read-only" }])
+    assert.deepEqual(defaultEnvironmentProjection({ rngState: 17, policy }), {
+      rngState: 17,
+      policy,
+    });
+  // The omitted callback keeps the old raw-JavaScript numeric behavior too.
+  for (const rngState of [NaN, Infinity, -Infinity, -0]) {
+    assert.ok(
+      Object.is(defaultEnvironmentProjection({ rngState }).rngState, rngState),
+    );
+    let calls = 0;
+    replay(
+      { rngState },
+      [{ ...draft("Tick", 10, {}), eventId: "evt_1" }],
+      (state, _event, environment) => {
+        calls++;
+        assert.ok(Object.is(environment.rngState, rngState));
+        return {
+          state,
+          intents: [],
+          schedules: [],
+          trace: {
+            reactorId: "legacy-number",
+            reactorVersion: "1",
+            branchPath: [],
+            envInputs: [],
+            cadenceEvaluations: [],
+          },
+        };
+      },
+      {},
+    );
+    assert.equal(calls, 1);
+  }
+});
+
+test("WO-047 nested RNG and event-dependent policy project each current pre-step state", () => {
+  type State = { random: { seed: number }; settings: JsonValue };
+  const initial: State = { random: { seed: 42 }, settings: { enabled: true } };
+  const events: Event[] = [10, 20, 30].map((at, index) => ({
+    ...draft("Tick", at, { step: index }),
+    eventId: `evt_${index + 1}`,
+  }));
+  const calls: Array<readonly [number, string]> = [];
+  const projector = (state: State, event: Event) => {
+    calls.push([state.random.seed, event.eventId]);
+    return {
+      rngState: state.random.seed,
+      policy: { settings: state.settings, tick: event.payload },
+    };
+  };
+  const reactor: Reactor<State> = (state, event, environment) => {
+    assert.equal(environment.now, event.occurredAt);
+    assert.equal(environment.predicates, predicates);
+    const cadence = evaluateCadence(
+      Cadence.Backoff(100, 2, 100000, 1, 0.5),
+      state,
+      environment,
+    );
+    return {
+      state: { ...state, random: { seed: cadence.rngState } },
+      intents: [
+        {
+          kind: "NoOp",
+          reason: JSON.stringify(environment.policy ?? null),
+          evidence: [event.eventId],
+          reevaluation: Cadence.After(1),
+          usefulWhen: { registryId: "state.flag", version: 1 },
+        },
+      ],
+      schedules: [],
+      trace: {
+        reactorId: "nested",
+        reactorVersion: "1",
+        branchPath: [event.type],
+        envInputs: [`rng:${environment.rngState}`],
+        cadenceEvaluations: [cadence.trace],
+      },
+    };
+  };
+  const explicit = poisoned(() =>
+    replay(initial, events, reactor, predicates, projector),
+  );
+  assert.deepEqual(calls, [
+    [42, "evt_1"],
+    [1083814273, "evt_2"],
+    [378494188, "evt_3"],
+  ]);
+  assert.deepEqual(
+    poisoned(() => replay(initial, events, reactor, predicates, projector)),
+    explicit,
+  );
+  const fallback = replay(initial, events, reactor, predicates);
+  assert.deepEqual(
+    fallback.decisions.map((decision) => decision.trace.envInputs),
+    [["rng:0"], ["rng:0"], ["rng:0"]],
+  );
+  assert.notDeepEqual(explicit.decisions, fallback.decisions);
+  assert.equal(explicit.decisions[0]?.intents[0]?.kind, "NoOp");
+  assert.match(
+    JSON.stringify(explicit.decisions[0]?.intents),
+    /enabled.*true.*step.*0/u,
+  );
+  assert.equal(calls.length, 6);
+  assert.deepEqual(replay(initial, [], reactor, predicates, projector), {
+    state: initial,
+    decisions: [],
+  });
+  assert.equal(calls.length, 6, "empty logs do not project an environment");
+});
+
+test("WO-047 supplied projections refuse non-finite RNG before the reactor", () => {
+  const event: Event = { ...draft("Tick", 10, {}), eventId: "evt_1" };
+  let invoked = false;
+  const reactor: Reactor = () => {
+    invoked = true;
+    throw new Error("reactor called");
+  };
+  for (const rngState of [NaN, Infinity, -Infinity]) {
+    assert.throws(
+      () => replay({}, [event], reactor, {}, () => ({ rngState })),
+      /projector must return a finite rngState/u,
+    );
+    assert.throws(
+      () =>
+        replay(
+          { rngState },
+          [event],
+          reactor,
+          {},
+          defaultEnvironmentProjection,
+        ),
+      /projector must return a finite rngState/u,
+    );
+  }
+  assert.equal(invoked, false);
+});
+
+test("WO-047 replay owns time and predicates and preserves legacy environment bytes", () => {
+  const event: Event = { ...draft("Tick", 10, {}), eventId: "evt_1" };
+  const state = { rngState: 7, policy: { enabled: true } };
+  const seen: KernelEnv[] = [];
+  const reactor: Reactor<typeof state> = (current, _event, environment) => {
+    seen.push(environment);
+    return {
+      state: current,
+      intents: [],
+      schedules: [],
+      trace: {
+        reactorId: "env",
+        reactorVersion: "1",
+        branchPath: [],
+        envInputs: [JSON.stringify(environment)],
+        cadenceEvaluations: [],
+      },
+    };
+  };
+  const fallback = replay(state, [event], reactor, predicates);
+  const explicit = replay(state, [event], reactor, predicates, () => ({
+    rngState: 7,
+    policy: state.policy,
+    now: 999,
+    predicates: {},
+    extra: "ignored",
+  }));
+  assert.deepEqual(explicit, fallback);
+  assert.equal(JSON.stringify(explicit), JSON.stringify(fallback));
+  assert.deepEqual(Object.keys(seen[1]!), [
+    "now",
+    "rngState",
+    "predicates",
+    "policy",
+  ]);
+  assert.equal(seen[1]?.now, 10);
+  assert.equal(seen[1]?.predicates, predicates);
+  assert.equal(
+    JSON.stringify(seen[1]),
+    '{"now":10,"rngState":7,"predicates":{"state.flag":{}},"policy":{"enabled":true}}',
+  );
+});
+
+test("WO-047 validates and delivers the same projected RNG sample", () => {
+  let reads = 0;
+  const event: Event = { ...draft("Tick", 10, {}), eventId: "evt_1" };
+  const result = replay(
+    {},
+    [event],
+    (state, _event, environment) => {
+      assert.equal(environment.rngState, 7);
+      return {
+        state,
+        intents: [],
+        schedules: [],
+        trace: {
+          reactorId: "projection-sample",
+          reactorVersion: "1",
+          branchPath: [],
+          envInputs: [],
+          cadenceEvaluations: [],
+        },
+      };
+    },
+    {},
+    () => ({
+      get rngState() {
+        return ++reads === 1 ? 7 : NaN;
+      },
+    }),
+  );
+  assert.equal(reads, 1);
+  assert.equal(result.decisions.length, 1);
+});
+
+test("WO-047 reserved application-state reads occur only in the exported default projector", () => {
+  const source = readFileSync(
+    new URL("../../src/core.ts", import.meta.url),
+    "utf8",
+  );
+  const start = source.indexOf("export function defaultEnvironmentProjection(");
+  const end = source.indexOf("export function replay<", start);
+  assert.ok(start >= 0 && end > start);
+  const projection = source.slice(start, end);
+  assert.deepEqual(
+    [...projection.matchAll(/stateField\(state, "([^"]+)"\)/gu)].map(
+      (match) => match[1],
+    ),
+    ["rngState", "policy"],
+  );
+  const outside = source.slice(0, start) + source.slice(end);
+  assert.doesNotMatch(
+    outside,
+    /stateField\([^)]*,\s*["'](?:rngState|policy)["']|\bstate\s*(?:\.\s*(?:rngState|policy)\b|\[\s*["'](?:rngState|policy)["']\s*\])/u,
+  );
+});
 
 test("AC2 evidence: replay consults nothing outside the log — Date.now and Math.random poisoned to throw", () => {
   let log = "";

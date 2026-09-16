@@ -40,6 +40,7 @@ import {
   type VerificationState,
 } from "./verification.js";
 import {
+  projectRuntimeEnvironment,
   seiriReactor,
   kernelStateFromRuntime,
   type RuntimeState,
@@ -99,6 +100,7 @@ export class VerificationDriver {
       decodeLog(this.#log),
       seiriReactor,
       {},
+      projectRuntimeEnvironment,
     );
     this.#runtime = restored.state;
     this.#decisions = [...restored.decisions];

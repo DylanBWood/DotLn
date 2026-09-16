@@ -312,6 +312,14 @@ export function selectEventSlice(
 
 export const loadout: Loadout = seiriLoadout;
 
+/** The skeleton owns the layout of its replayable environment state; replay and
+ * the live folds read the same kernel-facing slice, so they cannot drift. */
+export function projectRuntimeEnvironment(
+  state: RuntimeState,
+): Omit<KernelEnv, "now" | "predicates"> {
+  return kernelStateFromRuntime(state);
+}
+
 const statePresence = (state: JsonValue): JsonValue | undefined =>
   state !== null && !Array.isArray(state) && typeof state === "object"
     ? (state as Readonly<Record<string, JsonValue>>)["presence"]

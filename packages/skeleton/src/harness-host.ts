@@ -69,7 +69,7 @@ import {
   type feedbackBoundary,
 } from "./feedback-boundary.js";
 
-export const HARNESS_HOST_VERSION = "0.18.2";
+export const HARNESS_HOST_VERSION = "0.18.3";
 export interface HarnessInput {
   readonly hook_event_name: HarnessEvent;
   readonly cwd: string;

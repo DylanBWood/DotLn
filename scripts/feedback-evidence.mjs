@@ -17,6 +17,7 @@ import {
 } from "../packages/skeleton/dist/src/feedback-audit.js";
 import {
   initialState,
+  projectRuntimeEnvironment,
   seiriReactor,
   feedbackStateFromRuntime,
 } from "../packages/skeleton/dist/src/reactor.js";
@@ -53,7 +54,13 @@ function immutableWrite(name, source) {
 }
 function validateSelfhost(auditLog, verifierLog) {
   const audit = feedbackStateFromRuntime(
-    replay(initialState(), decodeLog(auditLog), seiriReactor, {}).state,
+    replay(
+      initialState(),
+      decodeLog(auditLog),
+      seiriReactor,
+      {},
+      projectRuntimeEnvironment,
+    ).state,
   );
   assert.equal(
     audit.subject,

@@ -1481,3 +1481,12 @@ merge and publication remain separate lifecycle evidence.
 **WO-039 collision retiming (2026-09-07):** unpublished target `v0.14.0` is superseded by `v0.15.0` under the existing minor classification because the observed release baseline is `v0.14.0`. Scope, acceptance, component versions, and published tags are unchanged by this retiming.
 
 **WO-039 integration note (2026-09-08):** integrating the published `v0.14.0` base showed that the actor board pinned the WO-011 self-hosted edition, which compiler `0.7.0` refuses as persisted compilation drift; the board now reads the WO-039 edition by default and console `0.1.1` records that patch. The classification stays minor and no published tag changes.
+
+**WO-047 replay projection (2026-09-15):**
+
+Application v0.22.0 stages kernel 0.5.0 and skeleton 0.18.3. Replay accepts an
+optional pure environment projector for current state and event, while the
+reserved-key default remains supported. The skeleton passes its own projector
+across all replay and recovery paths. Full decisions and serialized bytes remain
+identical on the demo, WO-003 oracle, worker, verification, feedback and beacon
+fixtures. Typed state slices remain WO-050. See [the decision record](../evidence/WO-047/decisions.md).

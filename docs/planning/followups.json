@@ -4727,6 +4727,111 @@
         }
       ],
       "dispositions": []
+    },
+    {
+      "id": "FUP-9d31a3f04ca58800",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d001",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "1ff75f29ef8ea5fbc38a35c256a9ebd37681378e16a0332b3ce69bff90a7ca44",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d001",
+          "title": "WO-047-D001: Add an optional per-step environment projector; keep the reserved-key fallback unchanged and let the skeleton own its state projection.",
+          "summary": "{ \"id\": \"WO-047-D001\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Add an optional per-step environment projector; keep the reserved-key fallback unchanged and let the skeleton own its state projection.\", \"evidence\": [ \"packages/kernel/src/core.ts\", \"packages/kernel/test/ac2-replay-store.test.ts\", \"packages/skeleton/src/reactor.ts\", \"packages/skeleton/src/scenario.ts\", \"docs/product/02-domain-model.md\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Keeps future typed state slices coupled to the kernel's literal state keys.\" }, { \"option\": \"Persist the environment on every event\", \"reason\": \"Changes the event schema and duplicates state already derived from the log.\" }, { ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-d4f5bb6a4c45bbe7",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d002",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "b59a8bce6cbcba63cb96de0afc1a96faba222a2e9461dd2adfbdb7fb9821e800",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d002",
+          "title": "WO-047-D002: Stage application v0.22.0, kernel 0.5.0 and skeleton 0.18.2; refresh generated runtime pins and the authority and feedback editions.",
+          "summary": "{ \"id\": \"WO-047-D002\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: next\", \"decision\": \"Stage application v0.22.0, kernel 0.5.0 and skeleton 0.18.2; refresh generated runtime pins and the authority and feedback editions.\", \"evidence\": [ \"package-lock.json\", \"docs/evidence/current.json\", \"scripts/lib/evidence-sources.mjs\", \"packages/skeleton/src/feedback-audit.ts\" ], \"rejected\": [ { \"option\": \"Kernel patch only\", \"reason\": \"An additive public replay API merits a minor version within the order's patch-to-minor classification.\" }, { \"option\": \"Bump compiler or console\", \"reason\": \"Neither implementation changes.\" }, { \"option\": \"Reuse the live feedback audit\", \"reason\": \"The audited reactor and r",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-8384c6467be46287",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d003",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "960ebedba5f2b183cecd356fd5fd712f179b491e2bd4f86a3e0a57f7c2bf2593",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d003",
+          "title": "WO-047-D003: Use the roadmap's existing bold delivery-note form and recompute both audience-edition source locks after reviewing their linked claims.",
+          "summary": "{ \"id\": \"WO-047-D003\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Use the roadmap's existing bold delivery-note form and recompute both audience-edition source locks after reviewing their linked claims.\", \"evidence\": [ \"docs/verifications/WO-047/VER-001.md\", \"docs/product/06-roadmap.md\", \"docs/product/08-publication-compiler.md\", \"docs/publication/everyday-ai-user-toc.md\", \"docs/publication/software-engineer-toc.md\", \"scripts/check-publication.mjs\" ], \"rejected\": [ { \"option\": \"NoOp\", \"reason\": \"Leaves an order-introduced publication regression and stale derivative locks for downstream repair.\" }, { \"option\": \"Index a new roadmap subsection\", \"reason\": \"A staged delivery a",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4ec29d347ebc5686",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d004",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cb9031688ad64479c9f5b211b99af1881defbe503c896d5fbcb22a630964af22",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d004",
+          "title": "WO-047-D004: Normalize the inherited capability-table header to its existing console schema; defer inherited planning-cost and continuation reconciliation to the next planning continuation.",
+          "summary": "{ \"id\": \"WO-047-D004\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: fix\", \"decision\": \"Normalize the inherited capability-table header to its existing console schema; defer inherited planning-cost and continuation reconciliation to the next planning continuation.\", \"evidence\": [ \"docs/planning/capability-table.md\", \"packages/console/src/text-sources.ts\", \"packages/console/test/board.test.ts\", \"scripts/lib/plan-subject.mjs\", \"scripts/lib/plan-continuation.mjs\", \"docs/evidence/WO-047/repair-001.md\" ], \"rejected\": [ { \"option\": \"NoOp on the table header\", \"reason\": \"A one-cell schema mismatch hides all capability rows; normalizing the heading restores the existing contract without changing claims",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-53b1e09874d73d98",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d005",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "cd84dd4c601c06505e404cc879a1a6bcbdfc8cf45fababc72b8a7a2f3839313b",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d005",
+          "title": "WO-047-D005: Retime the staged skeleton component from 0.18.2 to 0.18.3 after WO-050 published v0.21.2 with skeleton 0.18.2, keeping application v0.22.0 and kernel 0.5.0 and the order's recorded minor",
+          "summary": "{ \"id\": \"WO-047-D005\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: final review\", \"decision\": \"Retime the staged skeleton component from 0.18.2 to 0.18.3 after WO-050 published v0.21.2 with skeleton 0.18.2, keeping application v0.22.0 and kernel 0.5.0 and the order's recorded minor classification.\", \"evidence\": [ \"packages/skeleton/package.json\", \"package-lock.json\", \"packages/skeleton/src/harness-host.ts\", \"packages/skeleton/src/loadouts/contributor.ts\", \"docs/product/06-roadmap.md\", \"docs/evidence/WO-047/final-review-surfaces.txt\" ], \"rejected\": [ { \"option\": \"Keep skeleton 0.18.2\", \"reason\": \"v0.21.2 published that exact component version; a second 0.18.2 with different bytes would make th",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-4ce9faab70b9f650",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d006",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "276965200ea206322049b36fd6cbf9dcfc92ae7b9886294e70ae3277b195825c",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d006",
+          "title": "WO-047-D006: Resolve the integration by having projectRuntimeEnvironment return kernelStateFromRuntime(state) rather than repeating the two field reads, so replay and the live folds project one kernel",
+          "summary": "{ \"id\": \"WO-047-D006\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: final review\", \"decision\": \"Resolve the integration by having projectRuntimeEnvironment return kernelStateFromRuntime(state) rather than repeating the two field reads, so replay and the live folds project one kernel-facing slice.\", \"evidence\": [ \"packages/skeleton/src/reactor.ts\", \"packages/skeleton/src/beacon-observe.ts\", \"packages/skeleton/src/verification-host.ts\", \"docs/planning/critical-path-2026-09-08.json\", \"docs/evidence/WO-047/final-review-identity.txt\" ], \"rejected\": [ { \"option\": \"Keep both functions with identical literal bodies\", \"reason\": \"Two independently maintained copies of the kernel-facing layout can drift,",
+          "missing": false
+        }
+      ],
+      "dispositions": []
+    },
+    {
+      "id": "FUP-9ab36a847c3fa58b",
+      "key": "decision:docs/evidence/WO-047/decisions.md#wo-047-d007",
+      "kind": "decision",
+      "revisions": [
+        {
+          "hash": "4ccbf29d3b08ec7ea58d16ba6db77dcf4fa6891359273ffdf1b1738cbd712b72",
+          "ref": "docs/evidence/WO-047/decisions.md#wo-047-d007",
+          "title": "WO-047-D007: Raise the WO-016 scenario.ts source-size bound from 748 to 751 at the operator's explicit direction, so the integrated tree's 750 lines pass, and defer the question of whether scenario.ts",
+          "summary": "{ \"id\": \"WO-047-D007\", \"date\": \"2026-09-15\", \"dispatch\": \"resume: final review\", \"decision\": \"Raise the WO-016 scenario.ts source-size bound from 748 to 751 at the operator's explicit direction, so the integrated tree's 750 lines pass, and defer the question of whether scenario.ts should be split instead of ratcheted.\", \"evidence\": [ \"packages/skeleton/test/scenario.test.ts\", \"packages/skeleton/src/scenario.ts\", \"docs/verifications/WO-047/VER-002.md#non-blocking-observations\", \"docs/final-reviews/WO-047/FINAL-001.md\" ], \"rejected\": [ { \"option\": \"Return the bound overflow through repair and fresh verification\", \"reason\": \"The reviewer recommended this and the operator declined it, directing ",
+          "missing": false
+        }
+      ],
+      "dispositions": []
     }
   ]
 }

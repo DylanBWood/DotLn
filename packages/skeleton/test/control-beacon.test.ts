@@ -13,6 +13,7 @@ import { join } from "node:path";
 import {
   decodeLog,
   encodeLog,
+  replay,
   type Event,
   type JsonValue,
 } from "@dotln/kernel";
@@ -503,6 +504,17 @@ test("WO-021 authorization precedes every beacon stat; refusals and one authoriz
       },
       { read },
     );
+    assert.equal(
+      JSON.stringify(
+        replay(
+          initialState(),
+          decodeLog(refused.log),
+          seiriReactor,
+          seiriPredicates,
+        ).decisions,
+      ),
+      JSON.stringify(refused.decisions),
+    );
     assert.equal(refused.authorized, false);
     assert.equal(reads, 0);
     assert.equal(
@@ -528,6 +540,17 @@ test("WO-021 authorization precedes every beacon stat; refusals and one authoriz
     { read },
   );
   assert.equal(reads, 1);
+  assert.equal(
+    JSON.stringify(
+      replay(
+        initialState(),
+        decodeLog(result.log),
+        seiriReactor,
+        seiriPredicates,
+      ).decisions,
+    ),
+    JSON.stringify(result.decisions),
+  );
   assert.equal(result.authorized, true);
   assert.equal(
     decodeLog(result.log).filter(({ type }) => type === "BeaconObserved")

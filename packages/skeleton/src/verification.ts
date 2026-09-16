@@ -11,6 +11,7 @@ import {
 import {
   VERIFICATION_HOST,
   initialVerificationRuntime,
+  projectRuntimeEnvironment,
   seiriReactor,
   verificationStateFromRuntime,
   type AcceptanceEvidenceRow,
@@ -52,8 +53,13 @@ export function replayVerification(
   workstreamId: string,
 ): VerificationState {
   return verificationStateFromRuntime(
-    replay(initialVerificationRuntime(workstreamId), events, seiriReactor, {})
-      .state,
+    replay(
+      initialVerificationRuntime(workstreamId),
+      events,
+      seiriReactor,
+      {},
+      projectRuntimeEnvironment,
+    ).state,
   );
 }
 export interface AcceptanceEvidenceMatrix {

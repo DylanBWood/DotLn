@@ -8,6 +8,7 @@ import {
 } from "@dotln/kernel";
 import {
   initialState,
+  projectRuntimeEnvironment,
   seiriPredicates,
   seiriReactor,
   walkingStateFromRuntime,
@@ -100,7 +101,13 @@ export function projectBeaconSparseTwin(
 }
 
 export function replayBeaconSweep(log: string) {
-  return replay(initialState(), decodeLog(log), seiriReactor, seiriPredicates);
+  return replay(
+    initialState(),
+    decodeLog(log),
+    seiriReactor,
+    seiriPredicates,
+    projectRuntimeEnvironment,
+  );
 }
 
 // Host inputs carry the grant; the Observe intent does not manufacture it.

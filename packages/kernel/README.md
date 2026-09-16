@@ -1,4 +1,4 @@
-# `@dotln/kernel` v0.4.0
+# `@dotln/kernel` v0.5.0
 
 The deterministic, framework-free DotLn core. Kernel functions perform no I/O
 and consult no ambient clock or randomness. Import the public API from
@@ -20,7 +20,7 @@ and consult no ambient clock or randomness. Import the public API from
 | `PredicateRef`, `Predicate`, `predicate`                                                                                      | Conditions as data: the versioned predicate registry consulted by Cadence and Program guards             |
 | `AuthorityEnvelope`, `authorize`, `AuthorizationResult`, `Refusal`                                                            | AuthorityEnvelope and structural command-authorization guard                                             |
 | `WorkOrder`, `ResultEnvelope`                                                                                                 | WorkOrder and Result envelope                                                                            |
-| `ReplayResult`, `JsonlLog`, `appendEvent`, `encodeLog`, `decodeLog`, `tryDecodeLog`, `DecodeResult`, `replay`                                                 | Event store (append-only JSONL); eventId edge-assigned at the store boundary; deterministic replay       |
+| `ReplayResult`, `JsonlLog`, `appendEvent`, `encodeLog`, `decodeLog`, `tryDecodeLog`, `DecodeResult`, `replay`, `defaultEnvironmentProjection`                                                 | Event store (append-only JSONL); eventId edge-assigned at the store boundary; deterministic replay       |
 | `OutboxEntry`, `OutboxState`, `emptyOutbox`, `persistCommand`, `pendingCommands`, `replayOutbox`, `applyCommandResult`        | Command outbox protocol: replay recovery and deterministic duplicate-result dedup                        |
 | `PresenceDecision`, `guardQueuedPulse`                                                                                        | Reactor guard for the operator-return race: NoOp Intent with evidence, plus future Schedule cancellation |
 
@@ -65,3 +65,18 @@ historical log rewriting occurs.
 
 Run `npm test` at the repository root for the acceptance and failure-injection
 suite.
+
+Component `0.5.0` adds an optional fifth argument to
+`replay(initial, events, reactor, predicates, projectEnvironment?)`.
+The pure callback receives the current pre-step state and event and returns
+`Omit<KernelEnv, "now" | "predicates">`: a finite `rngState` and optional `policy`.
+Replay always supplies `now` from `event.occurredAt` and the caller's predicate
+registry. A supplied projector with a non-finite RNG throws before the reactor.
+Callback purity is the author's responsibility, just like reactor purity.
+
+When omitted, `defaultEnvironmentProjection(state)` preserves the existing
+fallback: read the top-level numeric `rngState`, otherwise use zero; promote
+`policy` when present (including null). This legacy numeric check is unchanged.
+Existing valid-JSON replays retain complete Decision bytes. Applications with
+another state layout can project their own fields; the skeleton explicitly uses
+`projectRuntimeEnvironment` across its scenario and recovery paths.

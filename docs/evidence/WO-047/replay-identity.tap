@@ -1,0 +1,694 @@
+TAP version 13
+# Subtest: AC1 evidence: no ambient Date.now or Math.random read on either branch (poisoned globals)
+ok 1 - AC1 evidence: no ambient Date.now or Math.random read on either branch (poisoned globals)
+  ---
+  duration_ms: 0.904167
+  ...
+# Subtest: AC1 evidence: identical decisions across a simulated one-hour ambient clock gap
+ok 2 - AC1 evidence: identical decisions across a simulated one-hour ambient clock gap
+  ---
+  duration_ms: 0.249292
+  ...
+# Subtest: AC1 evidence: cancelledScheduleIds preserves caller order for multi-element schedule lists
+ok 3 - AC1 evidence: cancelledScheduleIds preserves caller order for multi-element schedule lists
+  ---
+  duration_ms: 0.184083
+  ...
+# Subtest: AC1 evidence: full-decision property across varied state, presence, now and rngState
+ok 4 - AC1 evidence: full-decision property across varied state, presence, now and rngState
+  ---
+  duration_ms: 4.681083
+  ...
+# Subtest: AC1 evidence: env.now reaches the predicate and flips the decision branch
+ok 5 - AC1 evidence: env.now reaches the predicate and flips the decision branch
+  ---
+  duration_ms: 0.4755
+  ...
+# Subtest: AC1 evidence: representative returned-path decision matches the full literal Decision
+ok 6 - AC1 evidence: representative returned-path decision matches the full literal Decision
+  ---
+  duration_ms: 0.202084
+  ...
+# Subtest: AC1 evidence: representative away-path decision is literally empty of intents and cancellations
+ok 7 - AC1 evidence: representative away-path decision is literally empty of intents and cancellations
+  ---
+  duration_ms: 0.064875
+  ...
+# Subtest: WO-047 default projection preserves the reserved-key fallback
+ok 8 - WO-047 default projection preserves the reserved-key fallback
+  ---
+  duration_ms: 1.05225
+  ...
+# Subtest: WO-047 nested RNG and event-dependent policy project each current pre-step state
+ok 9 - WO-047 nested RNG and event-dependent policy project each current pre-step state
+  ---
+  duration_ms: 0.634375
+  ...
+# Subtest: WO-047 supplied projections refuse non-finite RNG before the reactor
+ok 10 - WO-047 supplied projections refuse non-finite RNG before the reactor
+  ---
+  duration_ms: 0.219291
+  ...
+# Subtest: WO-047 replay owns time and predicates and preserves legacy environment bytes
+ok 11 - WO-047 replay owns time and predicates and preserves legacy environment bytes
+  ---
+  duration_ms: 0.107125
+  ...
+# Subtest: WO-047 validates and delivers the same projected RNG sample
+ok 12 - WO-047 validates and delivers the same projected RNG sample
+  ---
+  duration_ms: 0.081625
+  ...
+# Subtest: WO-047 reserved application-state reads occur only in the exported default projector
+ok 13 - WO-047 reserved application-state reads occur only in the exported default projector
+  ---
+  duration_ms: 1.3305
+  ...
+# Subtest: AC2 evidence: replay consults nothing outside the log — Date.now and Math.random poisoned to throw
+ok 14 - AC2 evidence: replay consults nothing outside the log — Date.now and Math.random poisoned to throw
+  ---
+  duration_ms: 0.629292
+  ...
+# Subtest: AC2 evidence: evaluateCadence, stepProgram, and authorize never read ambient time or randomness under poison
+ok 15 - AC2 evidence: evaluateCadence, stepProgram, and authorize never read ambient time or randomness under poison
+  ---
+  duration_ms: 0.605792
+  ...
+# Subtest: AC2 evidence: appendEvent edge-assigns sequential literal eventIds evt_1..evt_4
+ok 16 - AC2 evidence: appendEvent edge-assigns sequential literal eventIds evt_1..evt_4
+  ---
+  duration_ms: 0.342541
+  ...
+# Subtest: AC2 evidence: store round trip preserves correlationId, causationId, and episodeId
+ok 17 - AC2 evidence: store round trip preserves correlationId, causationId, and episodeId
+  ---
+  duration_ms: 0.245958
+  ...
+# Subtest: AC2 evidence: encodeLog ends with a newline so appendEvent after a round trip stays well-formed
+ok 18 - AC2 evidence: encodeLog ends with a newline so appendEvent after a round trip stays well-formed
+  ---
+  duration_ms: 0.161917
+  ...
+# Subtest: WO-017 store contract: partial tail refuses decode and append at the offending line
+ok 19 - WO-017 store contract: partial tail refuses decode and append at the offending line
+  ---
+  duration_ms: 0.095042
+  ...
+# Subtest: WO-017 store contract: blank interior line refuses decode and append without shifting ids
+ok 20 - WO-017 store contract: blank interior line refuses decode and append without shifting ids
+  ---
+  duration_ms: 0.076
+  ...
+# Subtest: WO-017 store contract: whitespace-only log refuses decode and append as line one
+ok 21 - WO-017 store contract: whitespace-only log refuses decode and append as line one
+  ---
+  duration_ms: 0.065916
+  ...
+# Subtest: WO-017 store contract: a complete JSON object without its final newline refuses both boundaries
+ok 22 - WO-017 store contract: a complete JSON object without its final newline refuses both boundaries
+  ---
+  duration_ms: 0.059083
+  ...
+# Subtest: WO-017 store contract: every line must decode to a JSON object
+ok 23 - WO-017 store contract: every line must decode to a JSON object
+  ---
+  duration_ms: 0.115541
+  ...
+# Subtest: WO-017 store contract: newline-terminated invalid JSON names its physical line
+ok 24 - WO-017 store contract: newline-terminated invalid JSON names its physical line
+  ---
+  duration_ms: 0.088667
+  ...
+# Subtest: WO-017 store contract: well-formed logs retain exact bytes and count only object lines
+ok 25 - WO-017 store contract: well-formed logs retain exact bytes and count only object lines
+  ---
+  duration_ms: 0.074209
+  ...
+# Subtest: AC3 evidence: Backoff jitter yields exact dueAt and rngState for pinned rngStates with a non-binding clamp
+ok 26 - AC3 evidence: Backoff jitter yields exact dueAt and rngState for pinned rngStates with a non-binding clamp
+  ---
+  duration_ms: 0.871541
+  ...
+# Subtest: AC3 evidence: Backoff rngState chains — successive draws differ and are reproducible
+ok 27 - AC3 evidence: Backoff rngState chains — successive draws differ and are reproducible
+  ---
+  duration_ms: 0.138792
+  ...
+# Subtest: AC3 evidence: Backoff floor clamps a negative jittered delay to zero, never due before now
+ok 28 - AC3 evidence: Backoff floor clamps a negative jittered delay to zero, never due before now
+  ---
+  duration_ms: 0.052792
+  ...
+# Subtest: AC3 evidence: Backoff draws jitter from explicit rngState only — ambient Math.random and Date.now poisoned
+ok 29 - AC3 evidence: Backoff draws jitter from explicit rngState only — ambient Math.random and Date.now poisoned
+  ---
+  duration_ms: 0.132958
+  ...
+# Subtest: AC3 evidence: Every before startAt yields exactly startAt
+ok 30 - AC3 evidence: Every before startAt yields exactly startAt
+  ---
+  duration_ms: 0.093416
+  ...
+# Subtest: AC3 evidence: Every has no fixed points — grid of now/startAt/interval yields the exact next tick strictly after now
+ok 31 - AC3 evidence: Every has no fixed points — grid of now/startAt/interval yields the exact next tick strictly after now
+  ---
+  duration_ms: 0.18125
+  ...
+# Subtest: AC3 evidence: Until open path recurses into the inner cadence verbatim
+ok 32 - AC3 evidence: Until open path recurses into the inner cadence verbatim
+  ---
+  duration_ms: 0.166083
+  ...
+# Subtest: AC3 evidence: predicate registry selects the ref's version
+ok 33 - AC3 evidence: predicate registry selects the ref's version
+  ---
+  duration_ms: 0.073875
+  ...
+# Subtest: AC3 evidence: predicate registry passes ref params through to the predicate
+ok 34 - AC3 evidence: predicate registry passes ref params through to the predicate
+  ---
+  duration_ms: 0.251375
+  ...
+# Subtest: AC3 evidence: predicate registry threads the triggering event into the predicate context
+ok 35 - AC3 evidence: predicate registry threads the triggering event into the predicate context
+  ---
+  duration_ms: 0.234541
+  ...
+# Subtest: AC3 evidence: unknown predicate or unknown version throws naming the id
+ok 36 - AC3 evidence: unknown predicate or unknown version throws naming the id
+  ---
+  duration_ms: 1.2665
+  ...
+# Subtest: AC3 evidence: Gate consults its predicate — false yields null dueAt, and the predicate is actually invoked
+ok 37 - AC3 evidence: Gate consults its predicate — false yields null dueAt, and the predicate is actually invoked
+  ---
+  duration_ms: 0.17125
+  ...
+# Subtest: AC4 evidence: Invoke refuses a foreign commandId — residual deep-equals pre-step program, intents empty, no re-dispatch on any unrelated event
+ok 38 - AC4 evidence: Invoke refuses a foreign commandId — residual deep-equals pre-step program, intents empty, no re-dispatch on any unrelated event
+  ---
+  duration_ms: 1.023541
+  ...
+# Subtest: AC4 evidence: Invoke ignores event type — a non-CommandResult event carrying a matching payload must not advance
+ok 39 - AC4 evidence: Invoke ignores event type — a non-CommandResult event carrying a matching payload must not advance
+  ---
+  duration_ms: 0.088583
+  ...
+# Subtest: AC4 evidence: Await ignores wrong correlationId and wrong type — residual stays the Await and the waits channel reports it
+ok 40 - AC4 evidence: Await ignores wrong correlationId and wrong type — residual stays the Await and the waits channel reports it
+  ---
+  duration_ms: 0.198541
+  ...
+# Subtest: AC4 evidence: decideProgram returns the full literal decision on the no-event dispatch path
+ok 41 - AC4 evidence: decideProgram returns the full literal decision on the no-event dispatch path
+  ---
+  duration_ms: 0.112459
+  ...
+# Subtest: AC4 evidence: decideProgram returns the full literal decision on the event path, including waits-derived cadenceEvaluations
+ok 42 - AC4 evidence: decideProgram returns the full literal decision on the event path, including waits-derived cadenceEvaluations
+  ---
+  duration_ms: 0.11275
+  ...
+# Subtest: AC4 evidence: three-step predicate-ref program round-trips losslessly at every step with a structural pre-serialization closure check
+ok 43 - AC4 evidence: three-step predicate-ref program round-trips losslessly at every step with a structural pre-serialization closure check
+  ---
+  duration_ms: 2.369959
+  ...
+# Subtest: AC4 evidence (B1 regression): prototype-key results throw No Invoke continuation and never resolve native functions
+ok 44 - AC4 evidence (B1 regression): prototype-key results throw No Invoke continuation and never resolve native functions
+  ---
+  duration_ms: 0.116333
+  ...
+# Subtest: AC5 row 1 evidence: authorize + replayOutbox reproduce a literal pending outbox keyed by the real commandId
+ok 45 - AC5 row 1 evidence: authorize + replayOutbox reproduce a literal pending outbox keyed by the real commandId
+  ---
+  duration_ms: 1.57475
+  ...
+# Subtest: AC5 row 1 evidence: a completed command is never re-dispatched — replay of persist+result leaves pendingCommands empty
+ok 46 - AC5 row 1 evidence: a completed command is never re-dispatched — replay of persist+result leaves pendingCommands empty
+  ---
+  duration_ms: 0.162833
+  ...
+# Subtest: WO-017 outbox ordering: a result before persist completes with a preceded-persist trace
+ok 47 - WO-017 outbox ordering: a result before persist completes with a preceded-persist trace
+  ---
+  duration_ms: 0.233125
+  ...
+# Subtest: AC5 row 1 evidence: persistCommand on an existing completed entry does not reset it to pending
+ok 48 - AC5 row 1 evidence: persistCommand on an existing completed entry does not reset it to pending
+  ---
+  duration_ms: 0.059209
+  ...
+# Subtest: AC5 row 3 evidence: first delivery is accepted with literal trace, duplicate deduped with state unchanged
+ok 49 - AC5 row 3 evidence: first delivery is accepted with literal trace, duplicate deduped with state unchanged
+  ---
+  duration_ms: 0.126875
+  ...
+# Subtest: AC5 row 3 evidence: prototype-key commandIds yield the unknown trace and change nothing
+ok 50 - AC5 row 3 evidence: prototype-key commandIds yield the unknown trace and change nothing
+  ---
+  duration_ms: 0.068416
+  ...
+# Subtest: AC5 row 5 evidence: both presence branches produce the literal full decision
+ok 51 - AC5 row 5 evidence: both presence branches produce the literal full decision
+  ---
+  duration_ms: 0.179
+  ...
+# Subtest: AC5 row 5 evidence: the predicate registry is really consulted, once, with the pulse as context event
+ok 52 - AC5 row 5 evidence: the predicate registry is really consulted, once, with the pulse as context event
+  ---
+  duration_ms: 0.168875
+  ...
+# Subtest: B4 regression: episode and workstream commandId namespaces cannot collide, and both commands survive replay
+ok 53 - B4 regression: episode and workstream commandId namespaces cannot collide, and both commands survive replay
+  ---
+  duration_ms: 2.258375
+  ...
+# Subtest: B4 regression: null payloads, non-object commands, and malformed commandIds replay without persisting
+ok 54 - B4 regression: null payloads, non-object commands, and malformed commandIds replay without persisting
+  ---
+  duration_ms: 0.31075
+  ...
+# Subtest: AC6 evidence: multi-element envelope lists bind past element one, refusing and authorizing
+ok 55 - AC6 evidence: multi-element envelope lists bind past element one, refusing and authorizing
+  ---
+  duration_ms: 1.17625
+  ...
+# Subtest: AC6 evidence: effect glob is prefix-anchored and exact patterns are exact
+ok 56 - AC6 evidence: effect glob is prefix-anchored and exact patterns are exact
+  ---
+  duration_ms: 0.241166
+  ...
+# Subtest: AC6 evidence: deny is evaluated before allow for an effect present in both lists
+ok 57 - AC6 evidence: deny is evaluated before allow for an effect present in both lists
+  ---
+  duration_ms: 0.100916
+  ...
+# Subtest: AC6 evidence: refusal draft and trace are structurally complete, episodeId present and absent
+ok 58 - AC6 evidence: refusal draft and trace are structurally complete, episodeId present and absent
+  ---
+  duration_ms: 0.202709
+  ...
+# Subtest: AC6 evidence: authorize never mutates the caller's envelope; decrement is copy-on-write
+ok 59 - AC6 evidence: authorize never mutates the caller's envelope; decrement is copy-on-write
+  ---
+  duration_ms: 0.124875
+  ...
+# Subtest: AC6 regression B2: non-string effect refuses with reason, never throws
+ok 60 - AC6 regression B2: non-string effect refuses with reason, never throws
+  ---
+  duration_ms: 0.175875
+  ...
+# Subtest: AC6 evidence: authorized command carries recomputed commandId and mirrors context episodeId
+ok 61 - AC6 evidence: authorized command carries recomputed commandId and mirrors context episodeId
+  ---
+  duration_ms: 0.113167
+  ...
+# Subtest: WO-017 authority expiry: expiresAt is the first excluded instant
+ok 62 - WO-017 authority expiry: expiresAt is the first excluded instant
+  ---
+  duration_ms: 0.985875
+  ...
+# Subtest: WO-017 authority precedence: every adjacent named rule is first-failing
+ok 63 - WO-017 authority precedence: every adjacent named rule is first-failing
+  ---
+  duration_ms: 0.776792
+  ...
+# Subtest: WO-017 semantic revocation: every condition sees every event, state, and the authorization clock
+ok 64 - WO-017 semantic revocation: every condition sees every event, state, and the authorization clock
+  ---
+  duration_ms: 0.455709
+  ...
+# Subtest: WO-017 semantic revocation: missing inputs, unknown refs, and predicate errors refuse rather than throw or authorize
+ok 65 - WO-017 semantic revocation: missing inputs, unknown refs, and predicate errors refuse rather than throw or authorize
+  ---
+  duration_ms: 0.222
+  ...
+# Subtest: WO-017 semantic revocation: a prior match cannot mask a later predicate error
+ok 66 - WO-017 semantic revocation: a prior match cannot mask a later predicate error
+  ---
+  duration_ms: 0.074833
+  ...
+# Subtest: WO-017 granted trace names effect, canonical time, condition inputs, and consumed resource
+ok 67 - WO-017 granted trace names effect, canonical time, condition inputs, and consumed resource
+  ---
+  duration_ms: 0.072375
+  ...
+# Subtest: AC7 evidence: export extraction catches namespace members, export lists, and multi-declarator consts (literal fixture)
+ok 68 - AC7 evidence: export extraction catches namespace members, export lists, and multi-declarator consts (literal fixture)
+  ---
+  duration_ms: 1.480208
+  ...
+# Subtest: AC7 evidence: every export discovered from dist/src/*.d.ts appears as a README map left-column name, with no ghost rows
+ok 69 - AC7 evidence: every export discovered from dist/src/*.d.ts appears as a README map left-column name, with no ghost rows
+  ---
+  duration_ms: 2.109
+  ...
+# Subtest: AC7 evidence: Program and Cadence namespace member surfaces match the pinned grammar exactly
+ok 70 - AC7 evidence: Program and Cadence namespace member surfaces match the pinned grammar exactly
+  ---
+  duration_ms: 1.189084
+  ...
+# Subtest: AC7 evidence: every README map row's right cell names an entry present in docs/product/02-domain-model.md
+ok 71 - AC7 evidence: every README map row's right cell names an entry present in docs/product/02-domain-model.md
+  ---
+  duration_ms: 1.338208
+  ...
+# Subtest: AC7 evidence: package export targets, @dotln/kernel import, stableHash vector, and commandId namespace equivalence
+ok 72 - AC7 evidence: package export targets, @dotln/kernel import, stableHash vector, and commandId namespace equivalence
+  ---
+  duration_ms: 1.159875
+  ...
+# Subtest: AC1 reactor purity property: kernel presence reactor repeats identical Decision and trace
+ok 73 - AC1 reactor purity property: kernel presence reactor repeats identical Decision and trace
+  ---
+  duration_ms: 3.507167
+  ...
+# Subtest: AC2 replay identity: JSONL round trip yields same state and decisions from log-derived environment
+ok 74 - AC2 replay identity: JSONL round trip yields same state and decisions from log-derived environment
+  ---
+  duration_ms: 0.617208
+  ...
+# Subtest: AC3 cadence virtual time: Every boundaries, Gate, bounded Backoff, Until, Once and After
+ok 75 - AC3 cadence virtual time: Every boundaries, Gate, bounded Backoff, Until, Once and After
+  ---
+  duration_ms: 0.346125
+  ...
+# Subtest: AC4 continuations: correlated Invoke/Await sequence serializes and resumes without closures
+ok 76 - AC4 continuations: correlated Invoke/Await sequence serializes and resumes without closures
+  ---
+  duration_ms: 0.826584
+  ...
+# Subtest: AC5 row 1: replay recovers persisted pending command for idempotent redispatch
+ok 77 - AC5 row 1: replay recovers persisted pending command for idempotent redispatch
+  ---
+  duration_ms: 0.449042
+  ...
+# Subtest: AC5 row 3: duplicate result is ignored by kernel outbox with dedup trace
+ok 78 - AC5 row 3: duplicate result is ignored by kernel outbox with dedup trace
+  ---
+  duration_ms: 0.169541
+  ...
+# Subtest: AC5 row 5: queued pulse rechecks predicate, emits NoOp trace, and cancels future pulses
+ok 79 - AC5 row 5: queued pulse rechecks predicate, emits NoOp trace, and cancels future pulses
+  ---
+  duration_ms: 0.064875
+  ...
+# Subtest: AC6 authorization guard: all refusal branches, patterns, own resources, and accounting
+ok 80 - AC6 authorization guard: all refusal branches, patterns, own resources, and accounting
+  ---
+  duration_ms: 0.354333
+  ...
+# Subtest: AC7 README maps every public export and package import target is valid
+ok 81 - AC7 README maps every public export and package import target is valid
+  ---
+  duration_ms: 3.306458
+  ...
+# Subtest: packages/kernel/dist/test/public-api.test.js
+ok 9 - packages/kernel/dist/test/public-api.test.js
+  ---
+  duration_ms: 86.804
+  ...
+# Subtest: WO-045 malformed envelope corpus returns distinct code/path pairs and physical lines
+ok 83 - WO-045 malformed envelope corpus returns distinct code/path pairs and physical lines
+  ---
+  duration_ms: 2.9365
+  ...
+# Subtest: WO-045 accepts all JSON payload forms, optional string IDs and unchanged framing
+ok 84 - WO-045 accepts all JSON payload forms, optional string IDs and unchanged framing
+  ---
+  duration_ms: 0.319583
+  ...
+# Subtest: WO-045 typed framing failures preserve existing diagnostics
+ok 85 - WO-045 typed framing failures preserve existing diagnostics
+  ---
+  duration_ms: 0.120292
+  ...
+# Subtest: WO-045 deep JSON payloads avoid recursive validator stack exhaustion
+ok 86 - WO-045 deep JSON payloads avoid recursive validator stack exhaustion
+  ---
+  duration_ms: 5.47775
+  ...
+# Subtest: WO-045 committed EventEnvelope streams decode and round-trip byte-identically
+ok 87 - WO-045 committed EventEnvelope streams decode and round-trip byte-identically
+  ---
+  duration_ms: 189.246416
+  ...
+# 83 event streams / 4479 events byte-identical; 42 files classified as other JSONL protocols
+# Subtest: WO-017 evaluable-kind data: every listed Cadence and Program kind evaluates, every unlisted kind throws is deferred
+ok 88 - WO-017 evaluable-kind data: every listed Cadence and Program kind evaluates, every unlisted kind throws is deferred
+  ---
+  duration_ms: 2.026083
+  ...
+# Subtest: WO-017 Program.Sequence empty: one step is Done with no effects or waits
+ok 89 - WO-017 Program.Sequence empty: one step is Done with no effects or waits
+  ---
+  duration_ms: 0.074625
+  ...
+# Subtest: WO-017 Every finite interval: NaN and infinities are refused
+ok 90 - WO-017 Every finite interval: NaN and infinities are refused
+  ---
+  duration_ms: 0.1345
+  ...
+# Subtest: WO-017 Backoff binding: maxMs clamp determines the exact dueAt
+ok 91 - WO-017 Backoff binding: maxMs clamp determines the exact dueAt
+  ---
+  duration_ms: 0.059125
+  ...
+# Subtest: WO-017 replay environment: policy is promoted and absent rngState falls back to zero
+ok 92 - WO-017 replay environment: policy is promoted and absent rngState falls back to zero
+  ---
+  duration_ms: 0.209458
+  ...
+# Subtest: WO-046 executable constructors, parsed and serialized continuations preserve bytes and steps
+ok 93 - WO-046 executable constructors, parsed and serialized continuations preserve bytes and steps
+  ---
+  duration_ms: 1.908708
+  ...
+# Subtest: WO-046 every deferred kind is refused at root and every recursive edge
+ok 94 - WO-046 every deferred kind is refused at root and every recursive edge
+  ---
+  duration_ms: 4.280375
+  ...
+# Subtest: WO-046 malformed nodes and payloads name the precise field
+ok 95 - WO-046 malformed nodes and payloads name the precise field
+  ---
+  duration_ms: 0.609958
+  ...
+# Subtest: WO-046 direct values cannot hide closures, inherited fields, cycles or lossy JSON
+ok 96 - WO-046 direct values cannot hide closures, inherited fields, cycles or lossy JSON
+  ---
+  duration_ms: 0.293583
+  ...
+# Subtest: WO-046 own prototype-named result branches remain data
+ok 97 - WO-046 own prototype-named result branches remain data
+  ---
+  duration_ms: 0.107417
+  ...
+# Subtest: WO-046 Await validates the full Cadence shape without claiming its evaluation
+ok 98 - WO-046 Await validates the full Cadence shape without claiming its evaluation
+  ---
+  duration_ms: 0.205333
+  ...
+# Subtest: WO-046 iterative decoding accepts deep trees without stack overflow
+ok 99 - WO-046 iterative decoding accepts deep trees without stack overflow
+  ---
+  duration_ms: 13.443792
+  ...
+# Subtest: [document] WO-021 normative v2 and phase-group data match the blueprint
+ok 100 - [document] WO-021 normative v2 and phase-group data match the blueprint
+  ---
+  duration_ms: 1.291334
+  ...
+# Subtest: WO-021 v2 exhaustively round-trips every field, retains v1, and pins numeric bounds
+ok 101 - WO-021 v2 exhaustively round-trips every field, retains v1, and pins numeric bounds
+  ---
+  duration_ms: 2.956125
+  ...
+# v2: 288 states; MAX_V2_CODE=1150; dense bytes=81833; all 104 v1 states retain meaning
+# Subtest: WO-021 group exhaustively proves the bounded additive lattice
+ok 102 - WO-021 group exhaustively proves the bounded additive lattice
+  ---
+  duration_ms: 287.801792
+  ...
+# group: 125970 vectors, no collisions; 12 members across all 8 phases; logical maximum=192763452654
+# Subtest: WO-021 maximum dense/sparse files obey allocation bounds; unsupported sizes create nothing
+ok 103 - WO-021 maximum dense/sparse files obey allocation bounds; unsupported sizes create nothing
+  ---
+  duration_ms: 11.061333
+  ...
+# stat: v2 size=81833 blocks=160; group size=192763452654 blocks=0; filesystem block=4096
+# 12 actual member files -> group counts=2,2,2,2,1,1,1,1; group blocks=0
+# Subtest: WO-021 age retains sub-millisecond metadata at skew and cadence boundaries
+ok 104 - WO-021 age retains sub-millisecond metadata at skew and cadence boundaries
+  ---
+  duration_ms: 5.695416
+  ...
+# Subtest: WO-021 authorization precedes every beacon stat; refusals and one authorized perception replay
+ok 105 - WO-021 authorization precedes every beacon stat; refusals and one authorized perception replay
+  ---
+  duration_ms: 5.782708
+  ...
+# refused: 0 metadata reads, 1 CommandRefused, 0 BeaconObserved; authorized: 1 sweep, 1 BeaconObserved; complete decisions and glyph replay identical
+# Subtest: WO-021 observation state cannot change the same authority decision; reactor uses no ambient clock
+ok 106 - WO-021 observation state cannot change the same authority decision; reactor uses no ambient clock
+  ---
+  duration_ms: 0.223583
+  ...
+# Subtest: WO-016 identity extends to live sweep events appended to the walking skeleton
+ok 107 - WO-016 identity extends to live sweep events appended to the walking skeleton
+  ---
+  duration_ms: 45.06275
+  ...
+# Subtest: WO-016 AC1 one typed reactor owns every skeleton kernel decider
+ok 108 - WO-016 AC1 one typed reactor owns every skeleton kernel decider
+  ---
+  duration_ms: 6.465208
+  ...
+# Subtest: WO-016 AC3 live and replay match every complete Decision and semantic projection
+ok 109 - WO-016 AC3 live and replay match every complete Decision and semantic projection
+  ---
+  duration_ms: 115.125459
+  ...
+# Subtest: WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+ok 110 - WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+  ---
+  duration_ms: 1.74475
+  ...
+# Subtest: WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+ok 111 - WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+  ---
+  duration_ms: 47.0135
+  ...
+# Subtest: WO-008 AC2 an unequipped support changes the live reactor program
+ok 112 - WO-008 AC2 an unequipped support changes the live reactor program
+  ---
+  duration_ms: 88.736416
+  ...
+# Subtest: WO-008 AC2 the running reactor consumes compiled cadence identifiers
+ok 113 - WO-008 AC2 the running reactor consumes compiled cadence identifiers
+  ---
+  duration_ms: 43.24
+  ...
+# Subtest: WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+ok 114 - WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+  ---
+  duration_ms: 1.061125
+  ...
+# Subtest: the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+ok 115 - the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+  ---
+  duration_ms: 43.560417
+  ...
+# Subtest: WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+ok 116 - WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+  ---
+  duration_ms: 42.660917
+  ...
+# Subtest: WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+ok 117 - WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+  ---
+  duration_ms: 41.582291
+  ...
+# Subtest: WO-016 step 12 executes the reactor's NoOp and declared cancellations
+ok 118 - WO-016 step 12 executes the reactor's NoOp and declared cancellations
+  ---
+  duration_ms: 41.79875
+  ...
+# Subtest: WO-016 AC4 semantic payload changes alter the decision at their event
+    # Subtest: CommandResult.candidates
+    ok 1 - CommandResult.candidates
+      ---
+      duration_ms: 57.91825
+      ...
+    # Subtest: VerificationCompleted.accepted
+    ok 2 - VerificationCompleted.accepted
+      ---
+      duration_ms: 56.273
+      ...
+    # Subtest: WorkOrderEmitted.workOrder
+    ok 3 - WorkOrderEmitted.workOrder
+      ---
+      duration_ms: 51.344209
+      ...
+    # Subtest: CommandRefused.reason
+    ok 4 - CommandRefused.reason
+      ---
+      duration_ms: 51.321333
+      ...
+    # Subtest: SchedulesCancelled.scheduleIds
+    ok 5 - SchedulesCancelled.scheduleIds
+      ---
+      duration_ms: 51.54925
+      ...
+    # Subtest: CommandPersisted.command.intent.effect
+    ok 6 - CommandPersisted.command.intent.effect
+      ---
+      duration_ms: 49.847458
+      ...
+    1..6
+ok 119 - WO-016 AC4 semantic payload changes alter the decision at their event
+  ---
+  duration_ms: 361.208
+  ...
+# Subtest: WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+ok 120 - WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+  ---
+  duration_ms: 79.011416
+  ...
+# Subtest: row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+ok 121 - row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+  ---
+  duration_ms: 137.618125
+  ...
+# Subtest: WO-047 complete Decision bytes match across stored skeleton streams
+    # Subtest: WO-003 oracle
+    ok 1 - WO-003 oracle
+      ---
+      duration_ms: 28.966166
+      ...
+    # 21 complete decisions; 280279 identical serialized bytes
+    # Subtest: demo
+    ok 2 - demo
+      ---
+      duration_ms: 28.864
+      ...
+    # 28 complete decisions; 401014 identical serialized bytes
+    # Subtest: worker recovery
+    ok 3 - worker recovery
+      ---
+      duration_ms: 4.272
+      ...
+    # 37 complete decisions; 48350 identical serialized bytes
+    # Subtest: verification
+    ok 4 - verification
+      ---
+      duration_ms: 20.166583
+      ...
+    # 31 complete decisions; 732540 identical serialized bytes
+    # Subtest: feedback audit
+    ok 5 - feedback audit
+      ---
+      duration_ms: 16.366417
+      ...
+    # 5 complete decisions; 132378 identical serialized bytes
+    # Subtest: feedback verifier
+    ok 6 - feedback verifier
+      ---
+      duration_ms: 775.657459
+      ...
+    # 54 complete decisions; 92775390 identical serialized bytes
+    1..6
+ok 122 - WO-047 complete Decision bytes match across stored skeleton streams
+  ---
+  duration_ms: 874.93325
+  ...
+1..122
+# tests 134
+# suites 0
+# pass 134
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2059.21975

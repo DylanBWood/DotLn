@@ -92,12 +92,12 @@ const control = recoveryInput ? await (async function operatorControl(input, eve
     }
 })({ ...input, session_id: typeof input.session_id === "string" ? input.session_id : undefined }, "Stop") : null;
 if (control) { process.stdout.write(JSON.stringify(control)); } else {
-const { feedbackBoundary } = await import("../../.runtime/harness/ebbad1641e22c96d/packages/skeleton/dist/src/feedback-boundary.js");
-const { runHarnessHook } = await import("../../.runtime/harness/ebbad1641e22c96d/packages/skeleton/dist/src/harness-host.js");
+const { feedbackBoundary } = await import("../../.runtime/harness/565c8a04c9f957ef/packages/skeleton/dist/src/feedback-boundary.js");
+const { runHarnessHook } = await import("../../.runtime/harness/565c8a04c9f957ef/packages/skeleton/dist/src/harness-host.js");
 await runHarnessHook({
   "compilerPackageVersion": "0.11.1",
   "runtime": {
-    "skeletonVersion": "0.18.2",
+    "skeletonVersion": "0.18.3",
     "boundaryContract": "feedback-v1",
     "files": [
       {
@@ -122,7 +122,7 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/harness-host.js",
-        "hash": "fnv1a64:56edfe00c3a30c7d"
+        "hash": "fnv1a64:468e1d869aed57be"
       },
       {
         "path": "packages/skeleton/dist/src/harness-command.js",
@@ -146,10 +146,10 @@ await runHarnessHook({
       },
       {
         "path": "packages/skeleton/dist/src/reactor.js",
-        "hash": "fnv1a64:cd1922624e641ad1"
+        "hash": "fnv1a64:0b6cc9ad2bb31bfd"
       }
     ],
-    "snapshot": ".runtime/harness/ebbad1641e22c96d"
+    "snapshot": ".runtime/harness/565c8a04c9f957ef"
   },
   "event": "Stop",
   "tools": {

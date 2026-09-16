@@ -1,4 +1,6 @@
-# `@dotln/skeleton` 0.18.0
+# `@dotln/skeleton` 0.18.3
+
+For application v0.22.0, every skeleton replay path passes `projectRuntimeEnvironment` from `reactor.ts`. The skeleton owns its RNG and policy state layout; complete decisions and serialized bytes remain identical to the kernel fallback.
 
 For application v0.21.0, a persisted continuation is decoded before the reactor folds it. `seiriReactor` decodes `state.program` on every event and `verificationStateFromRuntime` decodes the stored verification continuation, so a deferred Program kind or a malformed node refuses with a code and JSON path, prefixed `runtime program:` or `verification continuation:`, before a command is dispatched or a result is consumed. The kernel type those reads produce is `ExecutableProgramV1`.
 
@@ -140,8 +142,10 @@ The operator selected the existing flat `RuntimeState` as the public Decision
 compatibility boundary. Pure adapters expose typed slices internally and write
 only the selected slice back; no state is persisted and no event changes.
 Hosts read exported selectors, including kernel predicate context. WO-047's
-explicit replay projector is pending, so public `rngState` and `policy` stay
-at the top level. The [WO-050 identity receipt](../../docs/evidence/WO-050/implementation.md)
+explicit replay projector has since landed and returns the same
+`kernelStateFromRuntime` slice the live folds read, so public `rngState` and
+`policy` stay at the top level and replay cannot drift from the live path.
+The [WO-050 identity receipt](../../docs/evidence/WO-050/implementation.md)
 compares complete Decisions and semantic projections without normalizing state.
 
 ## Disposable workers
