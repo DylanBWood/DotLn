@@ -18,6 +18,7 @@ import {
   type WorkOrder,
 } from "@dotln/kernel";
 import { withLinkedSupports } from "@dotln/compiler";
+import { currentEvidence } from "../src/evidence-editions.mjs";
 import {
   compileLoadoutProgram,
   compileWorkOrder,
@@ -850,27 +851,25 @@ test("row 1 crash recovery replays state, redispatches, and adapter-deduplicates
 
 test("WO-047 complete Decision bytes match across stored skeleton streams", async (t) => {
   const root = new URL("../../../../", import.meta.url);
+  const evidence = (kind: "artifact-identity" | "verification" | "feedback") =>
+    currentEvidence(fileURLToPath(root), kind).directory;
   const fixtures = [
     [
       "WO-003 oracle",
       "packages/skeleton/fixtures/wo029-legacy-scenario.jsonl",
       null,
     ],
-    ["demo", "docs/evidence/WO-046/artifact-identity/scenario.jsonl", null],
+    ["demo", `${evidence("artifact-identity")}/scenario.jsonl`, null],
     ["worker recovery", "packages/console/fixtures/wo009.events.jsonl", null],
     [
       "verification",
-      "docs/evidence/WO-048/verification/events.jsonl",
+      `${evidence("verification")}/events.jsonl`,
       "ws_independent_verification",
     ],
-    [
-      "feedback audit",
-      "docs/evidence/WO-048/feedback-002/selfhost-audit.jsonl",
-      null,
-    ],
+    ["feedback audit", `${evidence("feedback")}/selfhost-audit.jsonl`, null],
     [
       "feedback verifier",
-      "docs/evidence/WO-048/feedback-002/selfhost-verification.jsonl",
+      `${evidence("feedback")}/selfhost-verification.jsonl`,
       "ws_feedback_audit_verification",
     ],
   ] as const;

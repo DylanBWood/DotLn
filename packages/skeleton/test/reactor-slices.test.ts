@@ -4,7 +4,13 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { decodeLog, type Event } from "@dotln/kernel";
-import { SEMANTIC_CORRECTIONS } from "@dotln/compiler";
+import {
+  SEMANTIC_CORRECTIONS,
+  compileFeedbackUnits,
+  compileFeedbackAudit,
+  type CompiledFeedback,
+} from "@dotln/compiler";
+import { runScenario } from "../src/scenario.js";
 import { ARTIFACT_REFUSAL_TYPES } from "../src/artifact-identity.js";
 import {
   initialState,
@@ -94,11 +100,31 @@ test("WO-050 slices have exclusive event ownership in each active mode and an em
   const correctionLog = decodeLog(
     read("packages/skeleton/fixtures/wo050/feedback-correction.jsonl"),
   );
-  const opened = seiriReactor(initialState(), correctionLog[0]!, {
-    now: 0,
-    rngState: 17,
-    predicates: {},
-  }).state;
+  const opening = correctionLog[0]!;
+  const program = compileFeedbackUnits(
+    (opening.payload as unknown as { program: CompiledFeedback }).program.units,
+  );
+  const opened = seiriReactor(
+    initialState(),
+    {
+      ...opening,
+      payload: {
+        ...(opening.payload as Record<string, never>),
+        program,
+        workOrder: compileFeedbackAudit(
+          program,
+          "fixture",
+          "a".repeat(40),
+          "source-1",
+        ),
+      } as unknown as Event["payload"],
+    },
+    {
+      now: 0,
+      rngState: 17,
+      predicates: {},
+    },
+  ).state;
   const feedback = skeletonStateFromRuntime(opened);
   for (const type of sliceEventTypes.feedback)
     assert.equal(selectEventSlice(feedback, event(type)), "feedback");
@@ -256,7 +282,8 @@ test("WO-050 malformed verification continuation and custom predicate context pr
     /verification continuation:/u,
   );
   const log = decodeLog(
-    read("packages/skeleton/fixtures/wo050/scenario.jsonl"),
+    runScenario(JSON.parse(read("packages/skeleton/fixtures/repo-tree.json")))
+      .log,
   );
   let state = initialState(),
     observations = 0;
