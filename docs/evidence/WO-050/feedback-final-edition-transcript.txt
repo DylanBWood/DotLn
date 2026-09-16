@@ -1,0 +1,1 @@
+Recorded ten passing regressions, ten removal failures, and 1192 fewer instruction bytes in the matched projection.

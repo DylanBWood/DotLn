@@ -1,0 +1,131 @@
+TAP version 13
+# Subtest: WO-050 full pre-refactor Decision bytes and every retained semantic projection stay identical
+ok 1 - WO-050 full pre-refactor Decision bytes and every retained semantic projection stay identical
+  ---
+  duration_ms: 2102.2315
+  ...
+# Subtest: WO-050 slices have exclusive event ownership in each active mode and an empty source-change slot
+ok 2 - WO-050 slices have exclusive event ownership in each active mode and an empty source-change slot
+  ---
+  duration_ms: 5.831209
+  ...
+# Subtest: WO-050 hosts read raw runtime fields only through exported selectors
+ok 3 - WO-050 hosts read raw runtime fields only through exported selectors
+  ---
+  duration_ms: 0.594708
+  ...
+# Subtest: WO-050 malformed verification continuation and custom predicate context preserve the boundary
+ok 4 - WO-050 malformed verification continuation and custom predicate context preserve the boundary
+  ---
+  duration_ms: 19.170125
+  ...
+# Subtest: WO-016 AC1 one typed reactor owns every skeleton kernel decider
+ok 5 - WO-016 AC1 one typed reactor owns every skeleton kernel decider
+  ---
+  duration_ms: 6.324916
+  ...
+# Subtest: WO-016 AC3 live and replay match every complete Decision and semantic projection
+ok 6 - WO-016 AC3 live and replay match every complete Decision and semantic projection
+  ---
+  duration_ms: 43.995
+  ...
+# Subtest: WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+ok 7 - WO-008 AC6 the running scenario consumes the compiled Seiri loadout
+  ---
+  duration_ms: 2.270375
+  ...
+# Subtest: WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+ok 8 - WO-029 the new trace delta adds only the boundary, receipts and pin inputs to the frozen WO-003 mechanics
+  ---
+  duration_ms: 14.801959
+  ...
+# Subtest: WO-008 AC2 an unequipped support changes the live reactor program
+ok 9 - WO-008 AC2 an unequipped support changes the live reactor program
+  ---
+  duration_ms: 28.872209
+  ...
+# Subtest: WO-008 AC2 the running reactor consumes compiled cadence identifiers
+ok 10 - WO-008 AC2 the running reactor consumes compiled cadence identifiers
+  ---
+  duration_ms: 14.251125
+  ...
+# Subtest: WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+ok 11 - WO-008 AC3 the precedence winner authorizes the emitted runtime effect
+  ---
+  duration_ms: 1.096791
+  ...
+# Subtest: the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+ok 12 - the canonical scenario milestones retain exact order with the WO-029 enforcement and receipt delta
+  ---
+  duration_ms: 14.211292
+  ...
+# Subtest: WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+ok 13 - WO-016 AC6 every derived event names an earlier canonical cause and its pulse or command
+  ---
+  duration_ms: 14.554417
+  ...
+# Subtest: WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+ok 14 - WO-016 step 9 preserves deletion paths, evidence, and structural refusal
+  ---
+  duration_ms: 14.358542
+  ...
+# Subtest: WO-016 step 12 executes the reactor's NoOp and declared cancellations
+ok 15 - WO-016 step 12 executes the reactor's NoOp and declared cancellations
+  ---
+  duration_ms: 14.136667
+  ...
+# Subtest: WO-016 AC4 semantic payload changes alter the decision at their event
+    # Subtest: CommandResult.candidates
+    ok 1 - CommandResult.candidates
+      ---
+      duration_ms: 30.341125
+      ...
+    # Subtest: VerificationCompleted.accepted
+    ok 2 - VerificationCompleted.accepted
+      ---
+      duration_ms: 29.723292
+      ...
+    # Subtest: WorkOrderEmitted.workOrder
+    ok 3 - WorkOrderEmitted.workOrder
+      ---
+      duration_ms: 24.775209
+      ...
+    # Subtest: CommandRefused.reason
+    ok 4 - CommandRefused.reason
+      ---
+      duration_ms: 24.843166
+      ...
+    # Subtest: SchedulesCancelled.scheduleIds
+    ok 5 - SchedulesCancelled.scheduleIds
+      ---
+      duration_ms: 25.890125
+      ...
+    # Subtest: CommandPersisted.command.intent.effect
+    ok 6 - CommandPersisted.command.intent.effect
+      ---
+      duration_ms: 24.161833
+      ...
+    1..6
+ok 16 - WO-016 AC4 semantic payload changes alter the decision at their event
+  ---
+  duration_ms: 173.946458
+  ...
+# Subtest: WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+ok 17 - WO-016 AC7 a negative fixture stays unverified in live, replay, and glyph state
+  ---
+  duration_ms: 26.656792
+  ...
+# Subtest: row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+ok 18 - row 1 crash recovery replays state, redispatches, and adapter-deduplicates
+  ---
+  duration_ms: 44.994208
+  ...
+1..18
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2269.417709
